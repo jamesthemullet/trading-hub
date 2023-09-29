@@ -1,0 +1,90 @@
+# These settings are synced to GitHub by https://probot.github.io/apps/settings/
+# Check https://github.com/organizations/DigitalInnovation/settings/installations/17593565 for all settings.
+
+repository:
+  # See https://developer.github.com/v3/repos/#edit for all available settings.
+
+  # The name of the repository. Changing this will rename the repository
+  #name: repo-name
+
+  # A short description of the repository that will show up on GitHub
+  description: The template repo for bootstrap brightcloud
+
+  # A URL with more information about the repository
+  #homepage: https://example.github.io/
+
+  # A comma-separated list of topics to set on the repository
+  topics: brightcloud, azure, terraform, industrialisation, bootstrap
+
+  # Either `true` to make the repository private, or `false` to make it public.
+  private: true
+
+  # Either `true` to enable issues for this repository, `false` to disable them.
+  has_issues: true
+
+  # Either `true` to enable projects for this repository, or `false` to disable them.
+  # If projects are disabled for the organization, passing `true` will cause an API error.
+  has_projects: true
+
+  # Either `true` to enable the wiki for this repository, `false` to disable it.
+  has_wiki: true
+
+  # Either `true` to enable downloads for this repository, `false` to disable them.
+  has_downloads: true
+
+  # Updates the default branch for this repository.
+  default_branch: main
+
+  # Either `true` to allow squash-merging pull requests, or `false` to prevent
+  # squash-merging.
+  allow_squash_merge: false
+
+  # Either `true` to allow merging pull requests with a merge commit, or `false`
+  # to prevent merging pull requests with merge commits.
+  allow_merge_commit: true
+
+  # Either `true` to allow rebase-merging pull requests, or `false` to prevent
+  # rebase-merging.
+  allow_rebase_merge: false
+
+
+# Milestones: define milestones for Issues and Pull Requests
+# state: The state of the milestone. Either `open` or `closed`
+milestones:
+  - title: Alpha
+    description: Issues to create a platform product that enables data for a basic online purchasing journey on Alpha.M&S.com
+    state: open
+  - title: Beta
+    description: Issues to enable data for Beta.M&S.com
+    state: open
+
+
+
+
+# See https://developer.github.com/v3/teams/#add-or-update-team-repository for available options
+# teams:
+#   - name: y-core
+#     permission: admin
+#   - name: yggdrasil-community
+#     permission: push
+
+branches:
+  - name: main
+    # https://developer.github.com/v3/repos/branches/#update-branch-protection
+    # Branch Protection settings. Set to null to disable
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: true
+        require_code_owner_reviews: true
+        dismissal_restrictions:
+          users: []
+          teams: []
+#       required_status_checks:
+#         strict: true
+#         contexts: ["PR Validation"]
+      enforce_admins: true
+      restrictions:
+        apps: []
+        users: []
+        teams: []
