@@ -19,7 +19,7 @@ app_stack = "NODE|18-lts" # Required tag: Provide app_stack details. eg: NODE|16
 use_oidc  = "true"       # Required tag: Set used_oidc as true for using Federated Credentials.
 
 application_stack = {
-  node_version = "16-lts" #CHANGEME # Required set appropriate version of your runtime.
+  node_version = "18-lts" #CHANGEME # Required set appropriate version of your runtime.
 }
 
 #duplicated from app_name as PR environemnts appname is overridden
