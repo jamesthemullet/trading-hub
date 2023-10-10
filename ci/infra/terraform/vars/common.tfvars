@@ -13,7 +13,7 @@ github_repo_name = "trading-hub-release"
 port             = "4000"
 stack_version    = "1"
 
-allowed_uris = ["/health"] #CHANGEME # Update to include your allowed paths
+allowed_uris = ["/*"] #CHANGEME # Update to include your allowed paths
 
 app_stack = "NODE|18-lts" # Required tag: Provide app_stack details. eg: NODE|16-lts, DOCKER
 use_oidc  = "true"       # Required tag: Set used_oidc as true for using Federated Credentials.
