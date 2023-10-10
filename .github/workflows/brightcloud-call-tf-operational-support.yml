@@ -1,0 +1,74 @@
+name: bc-tf-ops-support
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/brightcloud-call-tf-operational-support.yml"
+      - "ci/infra/terraform/vars/common.tfvars"
+      - "ci/infra/terraform/vars/production/**"
+      - "ci/infra/terraform/vars/non-production/**"
+      - "ci/infra/terraform/vars/scripts/**"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/brightcloud-call-tf-operational-support.yml"
+      - "ci/infra/terraform/vars/common.tfvars"
+      - "ci/infra/terraform/vars/production/**"
+      - "ci/infra/terraform/vars/non-production/**"
+      - "ci/infra/terraform/vars/scripts/**"
+jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: check for secrets needed to layer 5
+        id: check-secrets
+        run: |
+          # -z returns true if the variable is null. Below statement returns true only if both the variables are set in secrets.
+          if [ ! -z ${{ secrets.NEW_RELIC_ACCOUNT_ID }} ] && [ ! -z ${{ secrets.PAGERDUTY_TOKEN }} ]; then
+            echo "has_required_secrets=true" >> "$GITHUB_OUTPUT" 
+          fi
+      - name: Check composite parameter for the reusable pipeline
+        id : check-composite-vars
+        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
+    outputs:
+      has_required_secrets: ${{ steps.check-secrets.outputs.has_required_secrets }}
+      oidc: ${{ steps.check-composite-vars.outputs.oidc}}
+
+  call-tf-operational-support:
+    needs:
+      - check-secrets
+    if: ${{ needs.check-secrets.outputs.has_required_secrets == 'true' && needs.check-secrets.outputs.oidc != 'true' }} # pragma: allowlist secret
+    uses: DigitalInnovation/brightcloud/.github/workflows/tf-operational-support.yml@feat/oidcn
+    with:
+      TRIGGER_EVENT: ${{ github.event_name }}
+      BRIGHTCLOUD_REF: feat/oidcn
+    secrets:
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_PASSWORD: ${{ secrets.SP_PASSWORD }}
+      SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
+      NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+      NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+      PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_TOKEN }}
+      REMEDY_FUNCTION_CODE: ${{ secrets.REMEDY_FUNCTION_CODE }}
+
+  call-tf-operational-support-oidc:
+    needs:
+      - check-secrets
+    if: ${{ needs.check-secrets.outputs.has_required_secrets == 'true' && needs.check-secrets.outputs.oidc == 'true' }} # pragma: allowlist secret
+    uses: DigitalInnovation/brightcloud/.github/workflows/tf-operational-support-oidc.yml@feat/oidcn
+    with:
+      TRIGGER_EVENT: ${{ github.event_name }}
+      BRIGHTCLOUD_REF: feat/oidcn
+    secrets:
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
+      NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+      NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+      PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_TOKEN }}
+      REMEDY_FUNCTION_CODE: ${{ secrets.REMEDY_FUNCTION_CODE }}
