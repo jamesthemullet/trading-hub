@@ -1,10 +1,10 @@
 additional_tags = {
-  IOCode             = ""       # Required tag: IOCode of format eg 2000nnnn - can be provided by your delivery owner. #CHANGEME
+  IOCode             = "MA003025"       # Required tag: IOCode of format eg 2000nnnn - can be provided by your delivery owner. #CHANGEME
   Portfolio          = "DotCom" # Required tag: Change as required . #CHANGEME
-  EA_Application_ID  = "XX"     # Required tag: You should have received it from the ecosystem builder in your mailbox . #CHANGEME
+  EA_Application_ID  = "A2654"     # Required tag: You should have received it from the ecosystem builder in your mailbox . #CHANGEME
   BC_Priority        = "M1"
   ExpiryDate         = ""
-  SupportContact     = "" # Required tag: your group mailbox eg: grp-adcp@mnscorp.onmicrosoft.com . #CHANGEME
+  SupportContact     = "grp-search-and-sort@mnscorp.onmicrosoft.com" # Required tag: your group mailbox eg: grp-adcp@mnscorp.onmicrosoft.com . #CHANGEME
   DataClassification = "Internal"
   deploy_app_name    = "trading-hub"
 }
