@@ -1,0 +1,121 @@
+name: bc-bootstrap-init
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/brightcloud-bootstrap-tf.yml'
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+  
+jobs:
+  bootstrap-non-production:
+    runs-on: ubuntu-latest
+    name: Apply non prod state
+    environment:
+      name: Nonprod
+    env:
+      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      ARM_USE_OIDC: true
+      ARM_CLIENT_SECRET: ${{ secrets.SP_PASSWORD }}
+      ARM_TENANT_ID: bd5c6713-7399-4b31-be79-78f2d078e543
+      TF_VAR_subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+      TF_VAR_sp_client_id: ${{ secrets.SP_CLIENT_ID }}
+      TF_VAR_sp_client_secret: ${{ secrets.SP_PASSWORD }}
+      TF_VAR_tenant_id: bd5c6713-7399-4b31-be79-78f2d078e543
+      TF_VAR_saml_github_token: ${{ secrets.SAML_GITHUB_TOKEN }}
+      STATE_ENVIRONMENT: non-production
+      CONTAINERS: '["dev-eun", "dev-euw"]'
+      GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+      VAR_PATH: ${{ github.workspace }}/ci/infra/terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: DigitalInnovation/brightcloud
+          token: ${{ secrets.SAML_GITHUB_TOKEN }}
+          ref: feat/oidcn
+          path: brightcloud
+      - uses: de-vri-es/setup-git-credentials@v2.0.10
+        with:
+          credentials: https://foo:${{ secrets.SAML_GITHUB_TOKEN }}@github.com
+      - name: non-production
+        working-directory: ./brightcloud/ci/infra/terraform
+        run: ./bootstrap-state.sh
+
+  bootstrap-production:
+    runs-on: ubuntu-latest
+    name: Apply prod state
+    environment:
+      name: Prod
+    env:
+      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.SP_PASSWORD }}
+      ARM_USE_OIDC: true
+      ARM_TENANT_ID: bd5c6713-7399-4b31-be79-78f2d078e543
+      TF_VAR_subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+      TF_VAR_sp_client_id: ${{ secrets.SP_CLIENT_ID }}
+      TF_VAR_sp_client_secret: ${{ secrets.SP_PASSWORD }}
+      TF_VAR_tenant_id: bd5c6713-7399-4b31-be79-78f2d078e543
+      TF_VAR_saml_github_token: ${{ secrets.SAML_GITHUB_TOKEN }}
+      STATE_ENVIRONMENT: production
+      CONTAINERS: '["prod-eun", "prod-euw"]'
+      GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+      VAR_PATH: ${{ github.workspace }}/ci/infra/terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: DigitalInnovation/brightcloud
+          token: ${{ secrets.SAML_GITHUB_TOKEN }}
+          ref: feat/oidcn
+          path: brightcloud
+      - uses: de-vri-es/setup-git-credentials@v2.0.10
+        with:
+          credentials: https://foo:${{ secrets.SAML_GITHUB_TOKEN }}@github.com
+      - name: production
+        working-directory: ./brightcloud/ci/infra/terraform
+        run: ./bootstrap-state.sh
+
+  bootstrap-brightcloud:
+    runs-on: ubuntu-latest
+    needs: [bootstrap-production, bootstrap-non-production]
+    name: brightcloud-init
+    env:
+      GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+      GITHUB_WORKSPACE: ${{ github.workspace }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: DigitalInnovation/brightcloud
+          token: ${{ secrets.SAML_GITHUB_TOKEN }}
+          ref: feat/oidcn
+          path: brightcloud
+      - name: debug
+        run: |
+          ${{ github.workspace }}/brightcloud/.github/scripts/repo-bootstrapper.sh -a brightcloud_init
+          rm -rf ${{ github.workspace }}/brightcloud
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4.2.3
+        with:
+          token: ${{secrets.SAML_GITHUB_TOKEN }}
+          branch: bootstrap
+          branch-suffix: random
+          commit-message: "feat: bootstrapping brightcloud terraform ${{ github.run_id }}"
+          title: "automated-brightcloud-bootstrap-runid-${{ github.run_id }}"
+          labels: |
+            brightcloud-init

@@ -1,0 +1,27 @@
+name: bc-pipeline-insights-collector
+
+# This action captures the pipeline run metrics and pushes the data to the below table in New Relic,
+# Table: pipelinemetricsdb and pipelinejobmetricsdb , under the New Relic account ID provided.
+
+on:
+  workflow_run:
+    workflows:
+      - '**'
+    types:
+      - completed
+
+env:
+  LICENSE_KEY: ${{ secrets._NEW_RELIC_LICENSE_KEY }} # INGEST - LICENSE newrelic key
+  ACC_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+
+jobs:
+  send_workflow_metrics_to_newrelic:
+    environment: Prod
+    runs-on: ubuntu-latest
+    steps:
+    - name: sending pipeline information to new Relic
+      if: ${{ env.LICENSE_KEY != '' && env.ACC_ID != '' }}
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/insight@latest
+      with:
+        newRelic_key: ${{ env.LICENSE_KEY }}
+        newRelic_accountId: ${{ env.ACC_ID }}
