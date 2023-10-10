@@ -15,7 +15,7 @@ stack_version    = "1"
 
 allowed_uris = ["/health"] #CHANGEME # Update to include your allowed paths
 
-app_stack = "" # Required tag: Provide app_stack details. eg: NODE|16-lts, DOCKER
+app_stack = "NODE|18-lts" # Required tag: Provide app_stack details. eg: NODE|16-lts, DOCKER
 use_oidc  = "true"       # Required tag: Set used_oidc as true for using Federated Credentials.
 
 application_stack = {
