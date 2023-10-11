@@ -10,7 +10,7 @@ additional_tags = {
 }
 app_name         = "trading-hub" #CHANGEME # Required : Change this as you see appropriate "Preferrably: alphanumberical with hyphens as allowed characters"
 github_repo_name = "trading-hub-release"
-port             = "4000"
+port             = "4200"
 stack_version    = "1"
 
 allowed_uris = ["/*"] #CHANGEME # Update to include your allowed paths
