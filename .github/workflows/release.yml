@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  repository_dispatch:
+    types: [production-release]
+
+  workflow_dispatch:
+    inputs:
+      sync:
+        type: string
+        default: "full"
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  onyx:
+    uses: DigitalInnovation/onyx/.github/workflows/release-to-production.yml@main
+    with:
+      app-name: "trading-hub"
+      new-relic-apm-service-name-prefix: "trading-hub"
+      sit2-edge-base-url: "https://www.sit2.marksandspencer.com"
+      enable-production-deployment: true
+    secrets:
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_PASSWORD: ${{ secrets.SP_PASSWORD }}
+      SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
+      NONPROD_NETSTORAGE_KEY: ${{secrets.NONPROD_NETSTORAGE_SSH_PRIVATE_KEY}}
+      PROD_NETSTORAGE_KEY: ${{secrets.PROD_NETSTORAGE_SSH_PRIVATE_KEY}}
+      FOD_API_KEY: ${{secrets.FOD_API_KEY}}
+      FOD_API_SECRET: ${{secrets.FOD_API_SECRET}}
+      AKAMAI_SIT2_ACCESS_TOKEN: ${{ secrets.AKAMAI_SIT2_ACCESS_TOKEN }}
+      AKAMAI_PURGE_ACCESS_TOKEN: ${{ secrets.AKAMAI_ACCESS_TOKEN }}
+      AKAMAI_PURGE_CLIENT_TOKEN: ${{ secrets.AKAMAI_CLIENT_TOKEN }}
+      AKAMAI_PURGE_CLIENT_SECRET: ${{ secrets.AKAMAI_CLIENT_SECRET }}
+      AKAMAI_PURGE_HOST: ${{ secrets.AKAMAI_HOST }}
