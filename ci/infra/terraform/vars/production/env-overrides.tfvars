@@ -5,3 +5,4 @@ app_environment = {
   "NODE_ENV" : "production"
 }
 allowed_origins = ["marksandspencer.com"]
+override_appwebsite_name = "trading-hub.apps.mnscorp.net"
