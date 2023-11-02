@@ -2,5 +2,3 @@
 app_environment = {
   "APP_NAME" : "trading-hub"
 }
-
-override_appwebsite_name = "nonprod.trading-hub.apps.mnscorp.net"
