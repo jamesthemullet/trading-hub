@@ -152,7 +152,7 @@ jobs:
            
         
       - name: Create Pull Request to add Starter Pipeline and sample source to build.
-        uses: peter-evans/create-pull-request@v4.2.0
+        uses: peter-evans/create-pull-request@v5.0.2
         with: 
           token: ${{secrets.DEVSECOPS_STARTER_INIT_PAT}} 
           branch: devsecops-bootstrap
@@ -260,7 +260,7 @@ jobs:
           git status
                       
       - name: Create Pull Request to add Starter Pipeline and sample source to build.
-        uses: peter-evans/create-pull-request@v4.2.0
+        uses: peter-evans/create-pull-request@v5.0.2
         with: 
           token: ${{secrets.DEVSECOPS_STARTER_INIT_PAT}} 
           branch: devsecops-bootstrap
