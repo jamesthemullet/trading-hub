@@ -1,7 +1,7 @@
 additional_tags = {
-  IOCode             = "MA003025"       # Required tag: IOCode of format eg 2000nnnn - can be provided by your delivery owner. #CHANGEME
-  Portfolio          = "DotCom" # Required tag: Change as required . #CHANGEME
-  EA_Application_ID  = "A2654"     # Required tag: You should have received it from the ecosystem builder in your mailbox . #CHANGEME
+  IOCode             = "MA003025" # Required tag: IOCode of format eg 2000nnnn - can be provided by your delivery owner. #CHANGEME
+  Portfolio          = "DotCom"   # Required tag: Change as required . #CHANGEME
+  EA_Application_ID  = "A2654"    # Required tag: You should have received it from the ecosystem builder in your mailbox . #CHANGEME
   BC_Priority        = "M1"
   ExpiryDate         = ""
   SupportContact     = "grp-search-and-sort@mnscorp.onmicrosoft.com" # Required tag: your group mailbox eg: grp-adcp@mnscorp.onmicrosoft.com . #CHANGEME
@@ -16,7 +16,7 @@ stack_version    = "1"
 allowed_uris = ["/*"] #CHANGEME # Update to include your allowed paths
 
 app_stack = "NODE|18-lts"
-use_oidc  = "true"       # Required tag: Set used_oidc as true for using Federated Credentials.
+use_oidc  = "true" # Required tag: Set used_oidc as true for using Federated Credentials.
 
 application_stack = {
   node_version = "18-lts" #CHANGEME # Required set appropriate version of your runtime.
@@ -28,5 +28,5 @@ newrelic_app_name = "trading-hub" #CHANGEME
 # Custom DNS
 # Uncomment & provide parent domain to be used if custom DNS is required (for production use-cases). This will deploy DNS zones.
 # Otherwise, leave it commented and default Azure domains will be used (good for quick prototypes and demos)
-domain_suffix     = "apps.mnscorp.net" 
+domain_suffix            = "web.engineering.mnscorp.net"
 override_appwebsite_name = "trading-hub"
