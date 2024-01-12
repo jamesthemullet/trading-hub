@@ -28,5 +28,5 @@ newrelic_app_name = "trading-hub" #CHANGEME
 # Custom DNS
 # Uncomment & provide parent domain to be used if custom DNS is required (for production use-cases). This will deploy DNS zones.
 # Otherwise, leave it commented and default Azure domains will be used (good for quick prototypes and demos)
-domain_suffix            = "web.engineering.mnscorp.net"
-override_appwebsite_name = "trading-hub"
+domain_suffix = "web.engineering.mnscorp.net"
+# override_appwebsite_name = "trading-hub"
