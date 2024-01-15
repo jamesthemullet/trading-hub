@@ -2,7 +2,9 @@
 
 app_environment = {
   "APP_NAME" : "trading-hub",
-  "NODE_ENV" : "production"
+  "NEXTAUTH_URL" : "https://dev-trading-hub.azurewebsites.net",
+  "NODE_ENV" : "production",
+  "NODE_OPTIONS" : "--max-http-header-size 32768"
 }
 allowed_origins      = ["marksandspencer.com"]
 enable_frontdoor_waf = "true"
