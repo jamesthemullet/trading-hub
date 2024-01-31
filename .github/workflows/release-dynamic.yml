@@ -1,4 +1,4 @@
-name: Release
+name: Release Dynamic
 
 on:
   repository_dispatch:
@@ -29,4 +29,4 @@ jobs:
       SP_PASSWORD: ${{ secrets.SP_PASSWORD }}
       SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
       BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
-      APP_SECRETS: '{}'
+      APP_SECRETS: "{}"
