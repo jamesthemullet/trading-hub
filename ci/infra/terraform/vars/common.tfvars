@@ -18,7 +18,9 @@ allowed_uris = ["/*"] #CHANGEME # Update to include your allowed paths
 app_stack = "NODE|20-lts"
 use_oidc  = "true" # Required tag: Set used_oidc as true for using Federated Credentials.
 
-application_stack = "NODE|20-lts" # Required tag: Set the application stack as per your application. #CHANGEME
+application_stack = {
+  node_version = "20-lts"
+}
 
 #duplicated from app_name as PR environemnts appname is overridden
 newrelic_app_name = "trading-hub" #CHANGEME
