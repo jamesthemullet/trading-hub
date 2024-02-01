@@ -62,14 +62,11 @@ jobs:
           pnpm install
           pnpm run build
 
-          cd .next/standalone
-          node server.js
-
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
         run: |
           cd .next/standalone
-          zip next.zip ./* .next -qr
+          zip --symlinks next.zip ./* .next -qr
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
