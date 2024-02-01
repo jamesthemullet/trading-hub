@@ -51,7 +51,7 @@ jobs:
           echo "npm version: $(npm --version)"
           echo "node version: $(node --version)"
           npm install
-          npm run build
+          NEXT_TELEMETRY_DISABLED=1 npm run build
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
