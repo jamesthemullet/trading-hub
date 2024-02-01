@@ -81,7 +81,7 @@ jobs:
     environment:
       name: deveun
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v4
       - name: Get terraform settings
         id: get-tf-settings
         shell: bash
