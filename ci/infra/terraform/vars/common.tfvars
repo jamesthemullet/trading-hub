@@ -15,12 +15,7 @@ stack_version    = "1"
 
 allowed_uris = ["/*"] #CHANGEME # Update to include your allowed paths
 
-app_stack = "NODE|18-lts"
 use_oidc  = "true" # Required tag: Set used_oidc as true for using Federated Credentials.
-
-application_stack = {
-  node_version = "18-lts" #CHANGEME # Required set appropriate version of your runtime.
-}
 
 #duplicated from app_name as PR environemnts appname is overridden
 newrelic_app_name = "trading-hub" #CHANGEME
@@ -32,5 +27,6 @@ domain_suffix = "web.engineering.mnscorp.net"
 # override_appwebsite_name = "trading-hub"
 
 site_config = {
+  application_stack = "18-lts"
   app_command_line = "node server.js"
 }
