@@ -23,9 +23,12 @@ jobs:
           echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
           echo "pnpm-version=${PNPM_VERSION}" >> "$GITHUB_OUTPUT"
 
-      - uses: pnpm/action-setup@v2.4.0
-        with:
-          version: ${{ steps.get-versions-from-package-json.outputs.pnpm-version }}
+      - name: Install pnpm
+        shell: bash
+        run: |
+          set -x
+          pnpm install pnpm@${{ steps.get-versions-from-package-json.outputs.pnpm-version }} -g
+          echo "pnpm version: $(pnpm --version)"
 
       - uses: actions/setup-node@v4.0.0
         env:
