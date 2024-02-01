@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "npm": "please-use-pnpm",
-    "yarn": "please-use-pnpm",
+    "npm": ">=9.8.1",
+    "yarn": "please-use-npm",
     "node": "^20.6.1",
-    "pnpm": ">=8.6.3 <9"
+    "pnpm": "please-use-npm"
   },
   "scripts": {
     "dev": "next dev",

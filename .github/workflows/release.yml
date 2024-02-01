@@ -40,13 +40,6 @@ jobs:
           echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
           echo "pnpm-version=${PNPM_VERSION}" >> "$GITHUB_OUTPUT"
 
-      - name: Install pnpm
-        shell: bash
-        run: |
-          set -x
-          npm install pnpm@"${{ steps.get-versions-from-package-json.outputs.pnpm-version }}" -g
-          echo "pnpm version: $(pnpm --version)"
-
       - uses: actions/setup-node@v4.0.0
         env:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: "10"
@@ -59,14 +52,14 @@ jobs:
           set -x
           echo "pnpm version: $(pnpm --version)"
           echo "node version: $(node --version)"
-          pnpm install
-          pnpm run build
+          npm install
+          npm run build
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
         run: |
           cd .next/standalone
-          zip --symlinks next.zip ./* .next -qr
+          zip next.zip ./* .next -qr
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
