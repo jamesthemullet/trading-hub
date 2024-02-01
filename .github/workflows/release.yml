@@ -37,7 +37,7 @@ jobs:
       - name: pnpm install and build
         run: |
           pnpm install
-          pnpm run build --if-present
+          pnpm run build
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
