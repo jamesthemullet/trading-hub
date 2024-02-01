@@ -30,3 +30,7 @@ newrelic_app_name = "trading-hub" #CHANGEME
 # Otherwise, leave it commented and default Azure domains will be used (good for quick prototypes and demos)
 domain_suffix = "web.engineering.mnscorp.net"
 # override_appwebsite_name = "trading-hub"
+
+site_config = {
+  app_command_line = "node server.js"
+}
