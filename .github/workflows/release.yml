@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: |
           set -x
-          pnpm install pnpm@${{ steps.get-versions-from-package-json.outputs.pnpm-version }} -g
+          npm install pnpm@${{ steps.get-versions-from-package-json.outputs.pnpm-version }} -g
           echo "pnpm version: $(pnpm --version)"
 
       - uses: actions/setup-node@v4.0.0
