@@ -101,7 +101,7 @@ jobs:
         uses: azure/login@v1.6.1
         with:
           creds: '{"clientId": "${{ secrets.SP_CLIENT_ID }}", "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
-    
+
       - name: Download artifact from code-quality job
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
         uses: actions/download-artifact@v4
@@ -116,4 +116,3 @@ jobs:
 
       - name: Delete zip file
         run: rm next.zip
-
