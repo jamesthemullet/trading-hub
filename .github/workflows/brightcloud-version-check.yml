@@ -1,11 +1,12 @@
+
 name: bc-version-check
 
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron: '30 5 * * *'
+    - cron:  '30 5 * * *'
   workflow_dispatch:
-
+  
 jobs:
   pull:
     runs-on: ubuntu-latest
@@ -43,8 +44,8 @@ jobs:
         with:
           token: ${{secrets.SAML_GITHUB_TOKEN }}
           branch: brightcloud-version-update
-          commit-message: 'feat: brightcloud version update run ${{ github.run_id }}'
-          title: 'automated-brightcloud-version-update-runid-${{ github.run_id }}'
+          commit-message: "feat: brightcloud version update run ${{ github.run_id }}"
+          title: "automated-brightcloud-version-update-runid-${{ github.run_id }}"
           labels: |
             brightcloud-update
             version-check

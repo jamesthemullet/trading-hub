@@ -2,11 +2,11 @@ name: pr-dyn-env-deploy
 
 env:
   GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
-  BRIGHTCLOUD_REF: main
+  BRIGHTCLOUD_REF: feat/oidcn
 
 permissions:
   id-token: write # This is required for requesting the JWT
-  contents: read # This is required for actions/checkout
+  contents: read  # This is required for actions/checkout
 
 on:
   pull_request:
@@ -21,11 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check composite parameter for the reusable pipeline
-        id: check-composite-vars
+        id : check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
     outputs:
       linux-fx-version: ${{ steps.check-composite-vars.outputs.linux-fx-version }}
       oidc: ${{ steps.check-composite-vars.outputs.oidc}}
+
 
   deploy-dynamic-pr-env:
     if: ${{ github.event.label.name != 'dont-bother-ci' }}
@@ -86,7 +87,7 @@ jobs:
           APP_NAME: ${{ steps.dynamic-env-name.outputs.app-name }}
           TTL: 1h
           MAX_APPS_IN_ASP: 25
-          BRIGHTCLOUD_REF: main
+          BRIGHTCLOUD_REF: feat/oidcn
       - name: print outputs
         run: |
           echo ${{ steps.dynamic-env-deploy.outputs.env-url }}

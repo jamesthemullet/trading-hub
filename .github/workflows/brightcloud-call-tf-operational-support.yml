@@ -2,20 +2,20 @@ name: bc-tf-ops-support
 on:
   pull_request:
     paths:
-      - '.github/workflows/brightcloud-call-tf-operational-support.yml'
-      - 'ci/infra/terraform/vars/common.tfvars'
-      - 'ci/infra/terraform/vars/production/**'
-      - 'ci/infra/terraform/vars/non-production/**'
-      - 'ci/infra/terraform/vars/scripts/**'
+      - ".github/workflows/brightcloud-call-tf-operational-support.yml"
+      - "ci/infra/terraform/vars/common.tfvars"
+      - "ci/infra/terraform/vars/production/**"
+      - "ci/infra/terraform/vars/non-production/**"
+      - "ci/infra/terraform/vars/scripts/**"
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/brightcloud-call-tf-operational-support.yml'
-      - 'ci/infra/terraform/vars/common.tfvars'
-      - 'ci/infra/terraform/vars/production/**'
-      - 'ci/infra/terraform/vars/non-production/**'
-      - 'ci/infra/terraform/vars/scripts/**'
+      - ".github/workflows/brightcloud-call-tf-operational-support.yml"
+      - "ci/infra/terraform/vars/common.tfvars"
+      - "ci/infra/terraform/vars/production/**"
+      - "ci/infra/terraform/vars/non-production/**"
+      - "ci/infra/terraform/vars/scripts/**"
 jobs:
   check-secrets:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
             echo "has_required_secrets=true" >> "$GITHUB_OUTPUT" 
           fi
       - name: Check composite parameter for the reusable pipeline
-        id: check-composite-vars
+        id : check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
     outputs:
       has_required_secrets: ${{ steps.check-secrets.outputs.has_required_secrets }}
