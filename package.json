@@ -12,7 +12,8 @@
     "dev": "next dev",
     "build": "next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
     "next": "14.0.4",
