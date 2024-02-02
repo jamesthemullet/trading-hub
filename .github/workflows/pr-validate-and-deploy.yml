@@ -70,6 +70,8 @@ jobs:
     name: Deploy PR Environment
     runs-on: ubuntu-latest
     needs: code-quality
+    environment:
+      name: deveun
     steps:
       - name: Checkout
         uses: actions/checkout@v4
