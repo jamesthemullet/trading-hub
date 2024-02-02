@@ -5,11 +5,13 @@ const Heading = styled.h1`
   color: purple;
 `;
 
-export default function Home() {
+const Index = () => {
   return (
     <>
       <Heading>Test styled components</Heading>
       <p>Test Version 6</p>
     </>
   );
-}
+};
+
+export default Index;

@@ -2,6 +2,8 @@
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  poweredByHeader: false,
+  pageExtensions: ['page.tsx', 'page.ts'],
 };
 
 export default nextConfig;
