@@ -19,9 +19,9 @@ jobs:
     environment: Prod
     runs-on: ubuntu-latest
     steps:
-    - name: sending pipeline information to new Relic
-      if: ${{ env.LICENSE_KEY != '' && env.ACC_ID != '' }}
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/insight@latest
-      with:
-        newRelic_key: ${{ env.LICENSE_KEY }}
-        newRelic_accountId: ${{ env.ACC_ID }}
+      - name: sending pipeline information to new Relic
+        if: ${{ env.LICENSE_KEY != '' && env.ACC_ID != '' }}
+        uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/insight@latest
+        with:
+          newRelic_key: ${{ env.LICENSE_KEY }}
+          newRelic_accountId: ${{ env.ACC_ID }}

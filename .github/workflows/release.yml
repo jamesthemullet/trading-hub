@@ -40,7 +40,7 @@ jobs:
 
       - uses: actions/setup-node@v4.0.0
         env:
-          SEGMENT_DOWNLOAD_TIMEOUT_MINS: "10"
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: '10'
         with:
           node-version: ${{ steps.get-versions-from-package-json.outputs.node-version }}
           cache: npm

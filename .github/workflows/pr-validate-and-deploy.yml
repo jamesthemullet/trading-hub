@@ -8,7 +8,7 @@ on:
 
 concurrency:
   cancel-in-progress: true
-  group: "${{ github.workflow }} @ ${{ github.ref }}"
+  group: '${{ github.workflow }} @ ${{ github.ref }}'
 
 jobs:
   code-quality:
@@ -28,13 +28,16 @@ jobs:
 
       - uses: actions/setup-node@v4.0.0
         env:
-          SEGMENT_DOWNLOAD_TIMEOUT_MINS: "10"
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: '10'
         with:
           node-version: ${{ steps.get-versions-from-package-json.outputs.node-version }}
           cache: npm
 
       - name: Install dependencies
         run: npm install
+
+      - name: Check formatting
+        run: npm run format:check
 
       - name: Lint
         run: npm run lint

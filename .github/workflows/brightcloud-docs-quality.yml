@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - docs/**
-      - "**.md"
+      - '**.md'
 
 jobs:
   misspell:
@@ -27,8 +27,8 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
-          basedir: "docs"
-          targets: "*.md"
+          basedir: 'docs'
+          targets: '*.md'
 
   # megalinter-docs:
   #   runs-on: ubuntu-latest

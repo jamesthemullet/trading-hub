@@ -7,20 +7,20 @@ env:
 permissions:
   pull-requests: read
   id-token: write # This is required for requesting the JWT
-  contents: read  # This is required for actions/checkout
+  contents: read # This is required for actions/checkout
 
 on:
   schedule:
     # Runs "every quarter hour"
     - cron: '*/15 * * * *'
-jobs:  
+jobs:
   check-vars:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check composite parameter for the reusable pipeline
-        id : check-composite-vars
+        id: check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
     outputs:
       oidc: ${{ steps.check-composite-vars.outputs.oidc}}
@@ -80,7 +80,7 @@ jobs:
               az group delete --yes --no-wait -n $i
             fi
             done
-          
+
   kill-expired-env:
     runs-on: ubuntu-latest
     environment:
