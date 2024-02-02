@@ -116,7 +116,13 @@ jobs:
         shell: bash
         run: |
           set -x
-          echo "Deploying to ${{ steps.dynamic-env-name.outputs.dynamic-env-name }}"
+          resource_group_name=dev-${{ steps.dynamic-env-name.outputs.dynamic-env-name }}-v1-eun-layer3-rg
+          app_name=${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
+          echo deploying $app_name to $resource_group_name
+          az webapp deployment source config-zip \
+            --resource-group $resource_group_name \
+            --name $app_name \
+            --src ./next.zip --timeout 360
 
       - name: Delete zip file
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
