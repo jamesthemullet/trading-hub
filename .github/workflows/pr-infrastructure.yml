@@ -17,22 +17,8 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  check-vars:
-    name: Check TF vars
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Check composite parameter for the reusable pipeline
-        id: check-composite-vars
-        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
-    outputs:
-      linux-fx-version: ${{ steps.check-composite-vars.outputs.linux-fx-version }}
-      oidc: ${{ steps.check-composite-vars.outputs.oidc}}
-
   deploy-pr-infrastructure:
     name: Deploy PR infrastructure
-    needs: check-vars
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -40,6 +26,9 @@ jobs:
       name: deveun
     steps:
       - uses: actions/checkout@v4
+      - name: Check composite parameter for the reusable pipeline
+        id: check-composite-vars
+        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
       - id: dynamic-env-name
         uses: DigitalInnovation/brightcloud/.github/actions/get-app-name@feat/oidcn
       - name: Check infra exists
@@ -70,4 +59,4 @@ jobs:
           TTL: 1h
           MAX_APPS_IN_ASP: 25
           BRIGHTCLOUD_REF: feat/oidcn
-          APP_STACK: ${{ needs.check-vars.outputs.linux-fx-version }}
+          APP_STACK: ${{ steps.check-composite-vars.outputs.linux-fx-version }}
