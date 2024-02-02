@@ -103,17 +103,19 @@ jobs:
         with:
           creds: '{"clientId": "${{ secrets.SP_CLIENT_ID }}", "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
 
-      - name: Download artifact from code-quality job
+      - name: Download artifact
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
         uses: actions/download-artifact@v4
         with:
           name: node-app
 
       - name: Deploy artifact to PR environment
+        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
         shell: bash
         run: |
           set -x
           echo "Deploying to ${{ steps.dynamic-env-name.outputs.dynamic-env-name }}"
 
       - name: Delete zip file
+        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
         run: rm next.zip
