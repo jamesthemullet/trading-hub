@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "npm": ">=9.8.1",
+    "npm": ">=9.6.7",
     "yarn": "please-use-npm",
     "node": "^18.17.0",
     "pnpm": "please-use-npm"
@@ -25,8 +25,23 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "eslint": "8.56.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-deprecation": "^2.0.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-functional": "^6.0.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-jest": "^27.6.3",
+    "eslint-plugin-jest-formatting": "^3.1.0",
+    "eslint-plugin-jsx-a11y": "6.8.0",
+    "eslint-plugin-lodash": "^7.4.0",
+    "eslint-plugin-playwright": "^0.22.1",
+    "eslint-plugin-react": "7.33.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-testing-library": "^6.2.0",
     "eslint-config-next": "14.1.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "prettier": "3.1.0"
   }
 }
