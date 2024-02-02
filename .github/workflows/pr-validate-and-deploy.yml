@@ -1,0 +1,46 @@
+name: PR validate and deploy
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+concurrency:
+  cancel-in-progress: true
+  group: "${{ github.workflow }} @ ${{ github.ref }}"
+
+jobs:
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get versions from package.json
+        id: get-versions-from-package-json
+        shell: bash
+        run: |
+          set -x
+          NODE_VERSION=$(jq -r '.engines.node' < package.json)
+          echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4.0.0
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: "10"
+        with:
+          node-version: ${{ steps.get-versions-from-package-json.outputs.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
