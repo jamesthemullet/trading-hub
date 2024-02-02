@@ -33,11 +33,11 @@ jobs:
           node-version: ${{ steps.get-versions-from-package-json.outputs.node-version }}
           cache: npm
 
-      - name: Check for outdated dependencies
-        run: npm outdated
-
       - name: Install dependencies
         run: npm install
+
+      - name: Check for outdated dependencies
+        run: npm outdated
 
       - name: Check formatting
         run: npm run format:check
