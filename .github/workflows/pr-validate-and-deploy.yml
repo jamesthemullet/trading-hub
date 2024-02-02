@@ -10,6 +10,10 @@ concurrency:
   cancel-in-progress: true
   group: '${{ github.workflow }} @ ${{ github.ref }}'
 
+env:
+  GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+  GITHUB_BOT: y6911777
+
 jobs:
   code-quality:
     name: Code Quality
@@ -53,3 +57,147 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Zip all files for upload between jobs
+        # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
+        run: |
+          cd .next/standalone
+          zip next.zip ./* .next -qr
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-app
+          path: .next/standalone/next.zip
+
+  comment-deployment-message:
+    if: ${{ github.event_name == 'pull_request' }}
+    name: Comment deployment message
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2.4.0
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: ${{ env.GITHUB_BOT }}
+          body-includes: Deploying PR environments
+
+      - name: Create comment
+        if: steps.find-comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v3.0.2
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## Deploying PR environments 🖌
+
+            PR URLs follow the following format:
+            ```
+            https://${{ github.event.pull_request.number }}-[8-letter-app-hash].azurewebsites.net
+            ```
+            > [!NOTE]
+            > 1. PR environments are destroyed overnight
+            > 2. More info on PR URLs format (seen above) [here](https://onyx.engineering.mnscorp.net/how-to/pipelines/pr-envs.html#pr-url-naming-convention)
+
+            | App | URL |
+            | --- | --- |
+
+  deploy-pr-env:
+    name: Deploy PR Environment
+    runs-on: ubuntu-latest
+    needs: code-quality
+    environment:
+      name: deveun
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: dynamic-env-name
+        name: Get PR environment name
+        uses: DigitalInnovation/brightcloud/.github/actions/get-app-name@feat/oidcn
+
+      - name: Check if PR infra is deployed
+        id: check-infra-deployed
+        uses: nick-fields/retry@v2.8.3
+        with:
+          timeout_seconds: 60
+          max_attempts: 10
+          retry_wait_seconds: 10
+          command: |
+            set +e
+            echo "infra_deployed=true" >> "$GITHUB_OUTPUT"
+            curl -I https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net
+            EXITCODE=$?
+            if [ "$EXITCODE" -eq "6" ]; then
+              echo "infra_deployed=false" >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
+            set -e
+            exit 0
+
+      - name: Login via Azure CLI
+        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
+        uses: azure/login@v1.6.1
+        with:
+          creds: '{"clientId": "${{ secrets.SP_CLIENT_ID }}", "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
+
+      - name: Download artifact
+        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: node-app
+
+      - name: Deploy artifact to PR environment
+        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
+        shell: bash
+        run: |
+          set -x
+          resource_group_name=dev-${{ steps.dynamic-env-name.outputs.dynamic-env-name }}-v1-eun-layer3-rg
+          app_name=${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
+          echo deploying $app_name to $resource_group_name
+          az webapp deployment source config-zip \
+            --resource-group $resource_group_name \
+            --name $app_name \
+            --src ./next.zip --timeout 360
+
+      - name: Find deployment comment
+        if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
+        id: find-deployment-comment
+        uses: peter-evans/find-comment@v2.4.0
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: ${{ env.GITHUB_BOT }}
+          body-includes: Deploying PR environments
+
+      - name: Check if already includes URL
+        if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
+        id: check-if-already-includes
+        uses: peter-evans/find-comment@v2.4.0
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: ${{ env.GITHUB_BOT }}
+          body-includes: ${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
+
+      - name: Update deployment comment
+        if: |
+          steps.check-infra-deployed.outputs.infra_deployed == 'true'
+          && steps.find-deployment-comment.outputs.comment-id != ''
+          && steps.check-if-already-includes.outputs.comment-id == ''
+          && github.event_name == 'pull_request'
+        continue-on-error: true
+        uses: peter-evans/create-or-update-comment@v3.0.2
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          comment-id: ${{ steps.find-deployment-comment.outputs.comment-id }}
+          body: |
+            | `${{ steps.dynamic-env-name.outputs.dynamic-env-name }}` | https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net |
+          edit-mode: append
+
+      - name: Delete zip file
+        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
+        run: rm next.zip
+
+      - name: Cancel build due to failure
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.3
