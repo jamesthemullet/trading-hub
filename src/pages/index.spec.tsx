@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
 
-import Index from './index';
+import Index from './index.page';
 
 describe('Index', () => {
   it('renders index page', () => {
