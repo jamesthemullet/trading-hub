@@ -1,0 +1,4 @@
+.github/workflows/brightcloud*
+.next
+**/gql/generated
+**/graphql/generated
