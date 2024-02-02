@@ -1,3 +1,289 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "ignorePatterns": ["**/*"],
+  "plugins": [
+    "simple-import-sort",
+    "functional",
+    "deprecation",
+    "jest-formatting",
+    "jsx-a11y",
+    "lodash",
+    "testing-library",
+    "react-hooks"
+  ],
+  "extends": [
+    "plugin:eslint-comments/recommended",
+    "plugin:jest/recommended",
+    "eslint:recommended",
+    "plugin:functional/recommended",
+    "plugin:jest-formatting/recommended"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      },
+      "rules": {
+        "@typescript-eslint/await-thenable": "error",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "vars": "all",
+            "args": "after-used",
+            "ignoreRestSiblings": false
+          }
+        ],
+        "@typescript-eslint/no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "next-auth/react",
+                "message": "Please use imports from @onyx/session",
+                "allowTypeImports": true
+              }
+            ]
+          }
+        ],
+        "@typescript-eslint/no-duplicate-imports": ["error"],
+        "lodash/import-scope": [2, "method"],
+        "require-await": "error",
+        "padding-line-between-statements": [
+          "error",
+          {
+            "blankLine": "always",
+            "prev": "*",
+            "next": "block-like"
+          },
+          {
+            "blankLine": "always",
+            "prev": "block-like",
+            "next": "*"
+          },
+          {
+            "blankLine": "never",
+            "prev": "case",
+            "next": "*"
+          },
+          {
+            "blankLine": "any",
+            "prev": "if",
+            "next": "*"
+          },
+          {
+            "blankLine": "any",
+            "prev": "*",
+            "next": "if"
+          }
+        ],
+        "deprecation/deprecation": "error",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": ["variable", "typeProperty"],
+            "types": ["boolean"],
+            "format": ["PascalCase"],
+            "filter": {
+              "regex": "(disabled|enabled)",
+              "match": false
+            },
+            "prefix": [
+              "is",
+              "are",
+              "should",
+              "has",
+              "have",
+              "can",
+              "does",
+              "do",
+              "did",
+              "will"
+            ]
+          }
+        ],
+        "no-nested-ternary": "error"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "excludedFiles": ["*.d.*", "playwright.config.ts"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": ["error"]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "excludedFiles": "*.d.*",
+      "rules": {
+        "@typescript-eslint/consistent-type-definitions": ["error", "type"]
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.jsx", "*.tsx"],
+      "rules": {
+        "react/no-array-index-key": "error"
+      }
+    },
+    {
+      "files": ["*.percy.spec.ts*"],
+      "rules": {
+        "jest/expect-expect": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "extends": ["plugin:jsx-a11y/strict"],
+      "rules": {
+        "jsx-a11y/media-has-caption": "off"
+      }
+    },
+    {
+      "files": ["*.tsx", "*.jsx"],
+      "rules": {
+        "react/forbid-component-props": [
+          "error",
+          {
+            "forbid": ["data-testid", "css"]
+          }
+        ],
+        "react/forbid-dom-props": [
+          "error",
+          {
+            "forbid": ["data-testid", "css"]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "func-style": ["error", "expression"],
+        "camelcase": [
+          "error",
+          {
+            "properties": "always"
+          }
+        ],
+        "no-duplicate-imports": "off",
+        "no-use-before-define": "error",
+        "no-else-return": "error",
+        "curly": "error",
+        "eslint-comments/disable-enable-pair": "off",
+        "eslint-comments/no-unused-disable": "error",
+        "no-unused-vars": "off",
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [
+              ["^\\u0000"],
+              ["^react", "^@testing"],
+              ["^[^.]"],
+              ["^\\."]
+            ]
+          }
+        ],
+        "simple-import-sort/exports": "error",
+        "prefer-promise-reject-errors": "error",
+        "spaced-comment": "error",
+        "functional/no-this-expression": "off",
+        "functional/functional-parameters": "off",
+        "functional/no-expression-statement": "off",
+        "functional/no-return-void": "off",
+        "functional/no-mixed-type": "off",
+        "functional/no-conditional-statement": "off",
+        "functional/no-loop-statement": "off",
+        "functional/no-class": "off",
+        "functional/immutable-data": ["error"],
+        "functional/prefer-readonly-type": "off",
+        "quotes": [
+          "error",
+          "single",
+          {
+            "avoidEscape": true,
+            "allowTemplateLiterals": false
+          }
+        ],
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "error",
+        "eqeqeq": "error"
+      }
+    },
+    {
+      "files": ["*.spec.*"],
+      "rules": {
+        "functional/no-return-void": "off",
+        "functional/immutable-data": "off",
+        "functional/no-throw-statement": "off",
+        "@next/next/no-document-import-in-page": "off",
+        "@next/next/no-head-element": "off",
+        "@next/next/no-server-import-in-page": "off"
+      }
+    },
+    {
+      "files": ["*.spec.tsx"],
+      "extends": ["plugin:testing-library/react"],
+      "rules": {
+        "testing-library/no-container": "off",
+        "testing-library/no-node-access": "off",
+        "testing-library/no-wait-for-multiple-assertions": "error",
+        "testing-library/prefer-user-event": "error",
+        "testing-library/render-result-naming-convention": "off"
+      }
+    },
+    {
+      "files": ["jest.config.ts"],
+      "rules": {
+        "functional/immutable-data": "off"
+      }
+    },
+    {
+      "files": ["jest.setup.ts"],
+      "rules": {
+        "functional/immutable-data": "off",
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      "files": ["**/test-utils/**"],
+      "rules": {
+        "functional/immutable-data": "off"
+      }
+    },
+    {
+      "files": ["**/integration/**/*.spec.*"],
+      "rules": {
+        "jest/expect-expect": "off"
+      }
+    },
+    {
+      "files": ["**/support/**/*.ts"],
+      "rules": {
+        "functional/no-method-signature": "off",
+        "functional/no-return-void": "off"
+      }
+    },
+    {
+      "files": ["**/*.stories.*"],
+      "rules": {
+        "functional/immutable-data": "off",
+        "functional/no-conditional-statement": "off"
+      }
+    },
+    {
+      "files": ["*.d.ts"],
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      },
+      "rules": {
+        "@typescript-eslint/no-empty-interface": "off"
+      }
+    }
+  ]
 }
