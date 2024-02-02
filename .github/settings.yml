@@ -47,7 +47,6 @@ repository:
   # rebase-merging.
   allow_rebase_merge: false
 
-
 # Milestones: define milestones for Issues and Pull Requests
 # state: The state of the milestone. Either `open` or `closed`
 milestones:
@@ -57,9 +56,6 @@ milestones:
   - title: Beta
     description: Issues to enable data for Beta.M&S.com
     state: open
-
-
-
 
 # See https://developer.github.com/v3/teams/#add-or-update-team-repository for available options
 # teams:
@@ -80,9 +76,9 @@ branches:
         dismissal_restrictions:
           users: []
           teams: []
-#       required_status_checks:
-#         strict: true
-#         contexts: ["PR Validation"]
+      #       required_status_checks:
+      #         strict: true
+      #         contexts: ["PR Validation"]
       enforce_admins: true
       restrictions:
         apps: []

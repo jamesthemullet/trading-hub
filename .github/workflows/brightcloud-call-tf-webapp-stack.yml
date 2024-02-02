@@ -2,33 +2,33 @@ name: bc-tf-webapp-stack
 on:
   pull_request:
     paths:
-      - ".github/workflows/brightcloud-call-tf-webapp-stack.yml"
-      - "ci/infra/terraform/vars/common.tfvars"
-      - "ci/infra/terraform/layer-1-network-security/**"
-      - "ci/infra/terraform/layer-2-data/**"
-      - "ci/infra/terraform/layer-3-app/**"
-      - "ci/infra/terraform/layer-3-container/**"
-      - "ci/infra/terraform/layer-4-edge/**"
-      - "ci/infra/terraform/vars/**"
+      - '.github/workflows/brightcloud-call-tf-webapp-stack.yml'
+      - 'ci/infra/terraform/vars/common.tfvars'
+      - 'ci/infra/terraform/layer-1-network-security/**'
+      - 'ci/infra/terraform/layer-2-data/**'
+      - 'ci/infra/terraform/layer-3-app/**'
+      - 'ci/infra/terraform/layer-3-container/**'
+      - 'ci/infra/terraform/layer-4-edge/**'
+      - 'ci/infra/terraform/vars/**'
 
   push:
     branches:
       - main
     paths:
-      - ".github/workflows/brightcloud-call-tf-webapp-stack.yml"
-      - "ci/infra/terraform/vars/common.tfvars"
-      - "ci/infra/terraform/layer-1-network-security/**"
-      - "ci/infra/terraform/layer-2-data/**"
-      - "ci/infra/terraform/layer-3-app/**"
-      - "ci/infra/terraform/layer-3-container/**"
-      - "ci/infra/terraform/layer-4-edge/**"
-      - "ci/infra/terraform/vars/**"
+      - '.github/workflows/brightcloud-call-tf-webapp-stack.yml'
+      - 'ci/infra/terraform/vars/common.tfvars'
+      - 'ci/infra/terraform/layer-1-network-security/**'
+      - 'ci/infra/terraform/layer-2-data/**'
+      - 'ci/infra/terraform/layer-3-app/**'
+      - 'ci/infra/terraform/layer-3-container/**'
+      - 'ci/infra/terraform/layer-4-edge/**'
+      - 'ci/infra/terraform/vars/**'
 env:
-  VARS_BASE_PATH: "ci/infra/terraform/vars"
+  VARS_BASE_PATH: 'ci/infra/terraform/vars'
 
 permissions:
   id-token: write # This is required for requesting the JWT
-  contents: read  # This is required for actions/checkout
+  contents: read # This is required for actions/checkout
 # 2
 jobs:
   check-vars:
@@ -37,7 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check composite parameter for the reusable pipeline
-        id : check-composite-vars
+        id: check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
     outputs:
       linux-fx-version: ${{ steps.check-composite-vars.outputs.linux-fx-version }}

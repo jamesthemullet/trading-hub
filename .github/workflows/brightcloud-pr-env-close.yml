@@ -6,11 +6,11 @@ env:
 
 permissions:
   id-token: write # This is required for requesting the JWT
-  contents: read  # This is required for actions/checkout
+  contents: read # This is required for actions/checkout
 
 on:
   pull_request:
-    types: [ closed ]
+    types: [closed]
 
 jobs:
   check-vars:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check composite parameter for the reusable pipeline
-        id : check-composite-vars
+        id: check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
     outputs:
       oidc: ${{ steps.check-composite-vars.outputs.oidc}}
