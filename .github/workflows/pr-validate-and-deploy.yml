@@ -94,7 +94,7 @@ jobs:
 
             PR URLs follow the following format:
             ```
-            https://(0)${{ github.event.pull_request.number }}-[formatted-app-name]-onyx-mns.azurewebsites.net
+            https://${{ github.event.pull_request.number }}-[8-letter-app-hash].azurewebsites.net
             ```
             > [!NOTE]
             > 1. PR environments are destroyed overnight
