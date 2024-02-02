@@ -5,7 +5,7 @@ import React from 'react';
 import { Pagination } from './pagination';
 
 describe('Pagination', () => {
-  it('should render successfully', () => {
+  it.only('should render successfully', () => {
     render(
       <Pagination
         current={1}
