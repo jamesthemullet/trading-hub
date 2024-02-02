@@ -20,7 +20,12 @@ const config: Config = {
     '!**/*.d.ts',
     '!**/*.config.{js,ts}',
   ],
-  coveragePathIgnorePatterns: ['<rootDir>/.next', '/node_modules/', 'coverage', 'test'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/.next',
+    '/node_modules/',
+    'coverage',
+    'test',
+  ],
   testEnvironment: 'jsdom',
 };
 

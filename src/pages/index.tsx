@@ -12,6 +12,6 @@ const Index = () => {
       <p>Test Version 6</p>
     </>
   );
-}
+};
 
 export default Index;
