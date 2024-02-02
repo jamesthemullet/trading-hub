@@ -2,20 +2,20 @@ name: bc-tf-feature-flags
 on:
   pull_request:
     paths:
-      - '.github/workflows/brightcloud-call-tf-feature-flags.yml'
-      - 'ci/infra/terraform/vars/common.tfvars'
-      - 'ci/infra/terraform/vars/production/*'
-      - 'ci/infra/terraform/vars/non-production/*'
-      - 'ci/infra/terraform/vars/feature-flags.json'
+      - ".github/workflows/brightcloud-call-tf-feature-flags.yml"
+      - "ci/infra/terraform/vars/common.tfvars"
+      - "ci/infra/terraform/vars/production/*"
+      - "ci/infra/terraform/vars/non-production/*"
+      - "ci/infra/terraform/vars/feature-flags.json"
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/brightcloud-call-tf-feature-flags.yml'
-      - 'ci/infra/terraform/vars/common.tfvars'
-      - 'ci/infra/terraform/vars/production/*'
-      - 'ci/infra/terraform/vars/non-production/*'
-      - 'ci/infra/terraform/vars/feature-flags.json'
+      - ".github/workflows/brightcloud-call-tf-feature-flags.yml"
+      - "ci/infra/terraform/vars/common.tfvars"
+      - "ci/infra/terraform/vars/production/*"
+      - "ci/infra/terraform/vars/non-production/*"
+      - "ci/infra/terraform/vars/feature-flags.json"
 jobs:
   check-secrets:
     runs-on: ubuntu-latest
