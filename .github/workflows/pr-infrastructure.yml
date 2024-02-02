@@ -1,0 +1,65 @@
+name: PR infrastructure
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.ref }}'
+
+env:
+  ARM_TENANT_ID: bd5c6713-7399-4b31-be79-78f2d078e543
+
+jobs:
+  check-vars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check composite parameter for the reusable pipeline
+        id: check-composite-vars
+        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
+    outputs:
+      linux-fx-version: ${{ steps.check-composite-vars.outputs.linux-fx-version }}
+      oidc: ${{ steps.check-composite-vars.outputs.oidc}}
+
+  deploy-infrastructure-application:
+    needs: check-vars
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - id: dynamic-env-name
+        uses: DigitalInnovation/brightcloud/.github/actions/get-app-name@feat/oidcn
+      - name: Check infra exists
+        continue-on-error: true
+        id: check-pr-infra-exists
+        run: |
+          set +e
+          echo "should_build_env=false" >> "$GITHUB_OUTPUT"
+          curl -I https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net
+          EXITCODE=$?
+          if [ "$EXITCODE" -eq "6" ]; then
+            echo "should_build_env=true" >> "$GITHUB_OUTPUT"
+          fi
+          set -e
+          exit 0
+
+      - name: Deploy PR infrastructure
+        if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
+        uses: DigitalInnovation/brightcloud/.github/actions/webapp-dynamic-env-oidc@feat/oidcn
+        with:
+          SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+          SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+          SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+          BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
+          ALL_SECRETS: ('${{ toJSON(secrets) }}')
+          DYNAMIC_ENV_APP_NAME: ${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
+          APP_NAME: ${{ steps.dynamic-env-name.outputs.app-name }}
+          TTL: 1h
+          MAX_APPS_IN_ASP: 25
+          BRIGHTCLOUD_REF: feat/oidcn
+          APP_STACK: ${{ needs.check-vars.outputs.linux-fx-version }}
