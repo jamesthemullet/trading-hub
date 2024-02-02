@@ -40,7 +40,7 @@ jobs:
           rm -rf ${{ github.workspace }}/brightcloud
           rm -rf ${{ github.workspace }}/brightcloud-template-deployment
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4.2.3
+        uses: peter-evans/create-pull-request@v6.0.0
         with:
           token: ${{secrets.SAML_GITHUB_TOKEN }}
           branch: brightcloud-version-update
