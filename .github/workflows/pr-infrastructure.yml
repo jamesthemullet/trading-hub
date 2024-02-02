@@ -14,6 +14,7 @@ env:
 
 jobs:
   check-vars:
+    name: Check TF vars
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,7 +26,8 @@ jobs:
       linux-fx-version: ${{ steps.check-composite-vars.outputs.linux-fx-version }}
       oidc: ${{ steps.check-composite-vars.outputs.oidc}}
 
-  deploy-infrastructure-application:
+  deploy-pr-infrastructure:
+    name: Deploy PR infrastructure
     needs: check-vars
     runs-on: ubuntu-latest
     strategy:
