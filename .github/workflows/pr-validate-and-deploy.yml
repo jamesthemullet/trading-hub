@@ -36,8 +36,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Check for outdated dependencies
+        run: npm outdated
+
       - name: Check formatting
         run: npm run format:check
+
+      - name: Check typescript
+        run: npm run ts-check
 
       - name: Lint
         run: npm run lint
