@@ -92,6 +92,7 @@ jobs:
             EXITCODE=$?
             if [ "$EXITCODE" -eq "6" ]; then
               echo "infra_deployed=false" >> "$GITHUB_OUTPUT"
+              exit 1
             fi
             set -e
             exit 0
