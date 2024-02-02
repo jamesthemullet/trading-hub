@@ -10,6 +10,10 @@ concurrency:
   cancel-in-progress: true
   group: '${{ github.workflow }} @ ${{ github.ref }}'
 
+env:
+  GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+  GITHUB_BOT: y6911777
+
 jobs:
   code-quality:
     name: Code Quality
@@ -65,6 +69,39 @@ jobs:
         with:
           name: node-app
           path: .next/standalone/next.zip
+
+  comment-deployment-message:
+    if: ${{ github.event_name == 'pull_request' }}
+    name: Comment deployment message
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2.4.0
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: ${{ env.GITHUB_BOT }}
+          body-includes: Deploying PR environments
+
+      - name: Create comment
+        if: steps.find-comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v3.0.2
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## Deploying PR environments 🖌
+
+            PR URLs follow the following format:
+            ```
+            https://(0)${{ github.event.pull_request.number }}-[formatted-app-name]-onyx-mns.azurewebsites.net
+            ```
+            > [!NOTE]
+            > 1. PR environments are destroyed overnight
+            > 2. More info on PR URLs format (seen above) [here](https://onyx.engineering.mnscorp.net/how-to/pipelines/pr-envs.html#pr-url-naming-convention)
+
+            | App | URL |
+            | --- | --- |
 
   deploy-pr-env:
     name: Deploy PR Environment
@@ -124,6 +161,43 @@ jobs:
             --name $app_name \
             --src ./next.zip --timeout 360
 
+      - name: Find deployment comment
+        if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
+        id: find-deployment-comment
+        uses: peter-evans/find-comment@v2.4.0
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: ${{ env.GITHUB_BOT }}
+          body-includes: Deploying PR environments
+
+      - name: Check if already includes URL
+        if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
+        id: check-if-already-includes
+        uses: peter-evans/find-comment@v2.4.0
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: ${{ env.GITHUB_BOT }}
+          body-includes: ${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
+
+      - name: Update deployment comment
+        if: |
+          steps.check-infra-deployed.outputs.infra_deployed == 'true'
+          && steps.find-deployment-comment.outputs.comment-id != ''
+          && steps.check-if-already-includes.outputs.comment-id == ''
+          && github.event_name == 'pull_request'
+        continue-on-error: true
+        uses: peter-evans/create-or-update-comment@v3.0.2
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          comment-id: ${{ steps.find-deployment-comment.outputs.comment-id }}
+          body: |
+            | `${{ steps.dynamic-env-name.outputs.dynamic-env-name }}` | https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net |
+          edit-mode: append
+
       - name: Delete zip file
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
         run: rm next.zip
+
+      - name: Cancel build due to failure
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.3
