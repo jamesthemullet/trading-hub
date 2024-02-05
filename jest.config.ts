@@ -13,6 +13,7 @@ const config: Config = {
     },
   },
   coverageProvider: 'babel',
+  setupFilesAfterEnv: ['./jest.setup.ts'],
   coverageReporters: ['html', 'text', 'json-summary'],
   reporters: ['default'],
   collectCoverageFrom: [
