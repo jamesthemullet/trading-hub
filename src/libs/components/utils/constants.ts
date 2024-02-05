@@ -116,6 +116,54 @@ export const colourDictionary = {
   pattern: colourPalette.primary.pattern,
 };
 
+export const colours = {
+  primary: {
+    main: colourPalette.primary.green,
+    text: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.lightGrey,
+    action: {
+      hover: colourPalette.buttonHoverStyles.primaryHover,
+    },
+  },
+  secondary: {
+    main: 'transparent',
+    text: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.lightGrey,
+    action: {
+      hover: colourPalette.buttonHoverStyles.tertiaryHover,
+    },
+  },
+  tertiary: {
+    main: 'transparent',
+    text: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.lightGrey,
+    action: {
+      hover: colourPalette.buttonHoverStyles.tertiaryHover,
+    },
+  },
+  sparks: {
+    main: colourPalette.sparks.sparksGreen,
+    text: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.lightGrey,
+    action: {
+      hover: colourPalette.functional.reviewGreen,
+    },
+  },
+  divider: {
+    main: colourPalette.tertiary.lightGrey,
+    accessible: colourPalette.tertiary.accessibilityGrey,
+    dark: colourPalette.tertiary.darkGrey,
+  },
+  text: {
+    main: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.accessibilityGrey,
+  },
+  fade: {
+    400: 'rgba(0, 0, 0, 0.4)',
+    500: 'rgba(0, 0, 0, 0.6)',
+  },
+};
+
 export const fonts = {
   primary: {
     regular: 'mnsLondonRegular, Helvetica, Arial, sans-serif',
@@ -139,5 +187,15 @@ export const fonts = {
     1350: '3.5rem',
     1400: '3.75rem',
     1600: '5rem',
+  },
+};
+
+export const typography = {
+  primary: {
+    display: fonts.primary.semiBold,
+    heading: fonts.primary.regular,
+    bodyText: fonts.primary.regular,
+    smallText: fonts.primary.semiBold,
+    smallTextRegular: fonts.primary.regular,
   },
 };
