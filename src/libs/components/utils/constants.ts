@@ -115,3 +115,114 @@ export const colourDictionary = {
   white: colourPalette.primary.white,
   pattern: colourPalette.primary.pattern,
 };
+
+const colours = {
+  primary: {
+    main: colourPalette.primary.green,
+    text: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.lightGrey,
+    action: {
+      hover: colourPalette.buttonHoverStyles.primaryHover,
+    },
+  },
+  secondary: {
+    main: 'transparent',
+    text: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.lightGrey,
+    action: {
+      hover: colourPalette.buttonHoverStyles.tertiaryHover,
+    },
+  },
+  tertiary: {
+    main: 'transparent',
+    text: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.lightGrey,
+    action: {
+      hover: colourPalette.buttonHoverStyles.tertiaryHover,
+    },
+  },
+  sparks: {
+    main: colourPalette.sparks.sparksGreen,
+    text: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.lightGrey,
+    action: {
+      hover: colourPalette.functional.reviewGreen,
+    },
+  },
+  divider: {
+    main: colourPalette.tertiary.lightGrey,
+    accessible: colourPalette.tertiary.accessibilityGrey,
+    dark: colourPalette.tertiary.darkGrey,
+  },
+  text: {
+    main: colourPalette.tertiary.darkGrey,
+    disabled: colourPalette.tertiary.accessibilityGrey,
+  },
+  fade: {
+    400: 'rgba(0, 0, 0, 0.4)',
+    500: 'rgba(0, 0, 0, 0.6)',
+  },
+};
+
+export const fonts = {
+  primary: {
+    regular: 'mnsLondonRegular, Helvetica, Arial, sans-serif',
+    bold: 'mnsLondonBold, Helvetica, Arial, sans-serif',
+    semiBold: 'mnsLondonSemiBold, Helvetica, Arial, sans-serif',
+    italic: 'mnsLondonItalic, Helvetica, Arial, sans-serif',
+    light: 'mnsLondonLight, Helvetica, Arial, sans-serif',
+    boldCondensed: 'mnsLondonBoldCondensed, Helvetica, Arial, sans-serif',
+  },
+};
+
+export const dotcomTheme = {
+  colours,
+  typography: {
+    primary: {
+      display: fonts.primary.semiBold,
+      heading: fonts.primary.regular,
+      bodyText: fonts.primary.regular,
+      smallText: fonts.primary.semiBold,
+      smallTextRegular: fonts.primary.regular,
+    },
+  },
+  fonts: {
+    ...fonts,
+    size: {
+      50: '0.625rem',
+      100: '0.75rem',
+      300: '0.875rem',
+      400: '1rem',
+      600: '1.25rem',
+      800: '1.5rem',
+      1000: '1.75rem',
+      1100: '1.875rem',
+      1150: '2.25rem',
+      1200: '2.5rem',
+      1350: '3.5rem',
+      1400: '3.75rem',
+      1600: '5rem',
+    },
+  },
+  elevations: {
+    low: '0 0 0.125rem rgba(0, 0, 0, 0.09), 0 0.125rem 0.25rem rgba(176, 176, 176, 0.25)',
+    high: '0 0 0.125rem rgba(0, 0, 0, 0.09), 0 0.25rem 0.563rem rgba(176, 176, 176, 0.5)',
+    textDropShadow: '0 0 0.5rem rgba(0, 0, 0, 0.6)',
+    focus: `0 0 0 0.125rem ${colourPalette.primary.white}, 0 0 0 0.25rem ${colourPalette.functional.focusBlue}, 0 0 0.25rem 0.25rem ${colourPalette.functional.focusBlue}`,
+    focusSparks: `0 0 0 0.25rem ${colourPalette.functional.focusBlue}, 0 0 0.25rem 0.25rem ${colourPalette.functional.focusBlue}`,
+  },
+  grid: {
+    containerMaxWidth: 1280,
+    numberOfColumns: 12,
+    numberOfColumnsMobile: 4,
+    gutterWidth: {
+      sm: 16,
+      md: 24,
+    },
+    breakPoints: {
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+    },
+  },
+};

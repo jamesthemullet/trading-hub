@@ -9,10 +9,6 @@ import styled from '@emotion/styled';
 
 import { color, colourDictionary } from '../utils/constants';
 
-type ButtonProps = {
-  isPrimary?: boolean;
-};
-
 const StyledButton = styled.button<ButtonProps>`
   border: solid 1px ${color.lightGrey};
   border-radius: 4px;
@@ -42,7 +38,8 @@ const StyledButton = styled.button<ButtonProps>`
   }
 `;
 
-export type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  isPrimary?: boolean;
   as?: ElementType;
   isDisabled?: boolean;
   href?: string;
@@ -51,7 +48,7 @@ export type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   type?: 'submit' | 'reset' | 'button' | undefined;
 };
 
-export const Button = forwardRef<HTMLButtonElement, Props>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       as = 'button',
@@ -62,7 +59,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
       type = 'button',
       children,
       ...rest
-    }: Props,
+    }: ButtonProps,
     ref: Ref<HTMLButtonElement>
   ) => {
     return (
