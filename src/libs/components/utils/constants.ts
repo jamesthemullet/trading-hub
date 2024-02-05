@@ -115,3 +115,29 @@ export const colourDictionary = {
   white: colourPalette.primary.white,
   pattern: colourPalette.primary.pattern,
 };
+
+export const fonts = {
+  primary: {
+    regular: 'mnsLondonRegular, Helvetica, Arial, sans-serif',
+    bold: 'mnsLondonBold, Helvetica, Arial, sans-serif',
+    semiBold: 'mnsLondonSemiBold, Helvetica, Arial, sans-serif',
+    italic: 'mnsLondonItalic, Helvetica, Arial, sans-serif',
+    light: 'mnsLondonLight, Helvetica, Arial, sans-serif',
+    boldCondensed: 'mnsLondonBoldCondensed, Helvetica, Arial, sans-serif',
+  },
+  size: {
+    50: '0.625rem',
+    100: '0.75rem',
+    300: '0.875rem',
+    400: '1rem',
+    600: '1.25rem',
+    800: '1.5rem',
+    1000: '1.75rem',
+    1100: '1.875rem',
+    1150: '2.25rem',
+    1200: '2.5rem',
+    1350: '3.5rem',
+    1400: '3.75rem',
+    1600: '5rem',
+  },
+};
