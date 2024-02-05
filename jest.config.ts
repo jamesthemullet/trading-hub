@@ -12,14 +12,16 @@ const config: Config = {
       lines: 100,
     },
   },
+  coverageProvider: 'babel',
   setupFilesAfterEnv: ['./jest.setup.ts'],
   coverageReporters: ['html', 'text', 'json-summary'],
-  reporters: ['default'],
+  reporters: ['default', 'jest-junit'],
   collectCoverageFrom: [
     '**/*.{js,jsx,tsx,ts}',
     '!**/generated/*.{js,jsx,tsx,ts}',
     '!**/*.d.ts',
     '!**/*.config.{js,ts}',
+    '!**/constants.{js,ts}',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/.next',
