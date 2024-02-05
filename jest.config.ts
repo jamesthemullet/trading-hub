@@ -12,6 +12,7 @@ const config: Config = {
       lines: 100,
     },
   },
+  coverageProvider: 'babel',
   coverageReporters: ['html', 'text', 'json-summary'],
   reporters: ['default'],
   collectCoverageFrom: [
@@ -19,6 +20,7 @@ const config: Config = {
     '!**/generated/*.{js,jsx,tsx,ts}',
     '!**/*.d.ts',
     '!**/*.config.{js,ts}',
+    '!**/constants.{js,ts}',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/.next',
