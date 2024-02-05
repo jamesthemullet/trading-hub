@@ -5,22 +5,32 @@ import styled from '@emotion/styled';
 import { type ButtonProps, Button } from '../button/button';
 import { Icon } from '../icon/icon';
 import { type InputProps, Input } from '../input/input';
-import {
-  Box,
-  resetSearchInput,
-  sizing,
-  spacing,
-} from '@onyx/ui/components/core-lib';
-import { colourDictionary } from '../utils/constants';
+import { colourDictionary, dotcomTheme } from '../utils/constants';
 import { mediaQuery } from '../utils/media-query';
+import { spacing } from '../utils/spacing';
+import { sizing } from '../utils/sizing';
 
-const Wrapper = styled(Box)`
+export const resetSearchInput = css`
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
   position: relative;
+  align-items: center;
 `;
 
 type IconPosition = 'left' | 'right';
 
-const StyledInput = styled(Input)<{ iconPosition: IconPosition }>`
+const StyledInput = styled(Input)<{
+  iconPosition: IconPosition;
+  theme: typeof dotcomTheme;
+}>`
   &::placeholder {
     color: ${({ theme }) => theme.colours.text.main};
   }
@@ -81,16 +91,19 @@ export const SearchBox = ({
 }: SearchBoxProps) => {
   const {
     icon = <Icon name="Search" size={32} />,
-    variant = 'link - deprecated',
     buttonAriaLabel = 'Search button',
     ...iconButtonPropsRest
   } = iconButtonProps;
   return (
-    <Wrapper display="flex" alignItems="center">
-      <StyledInput type="search" {...inputProps} iconPosition={iconPosition} />
+    <Wrapper>
+      <StyledInput
+        type="search"
+        theme={dotcomTheme}
+        {...inputProps}
+        iconPosition={iconPosition}
+      />
       <StyledButton
         type="submit"
-        variant={variant}
         aria-label={buttonAriaLabel}
         iconPosition={iconPosition}
         {...iconButtonPropsRest}
