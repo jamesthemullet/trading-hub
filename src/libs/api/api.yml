@@ -1,0 +1,476 @@
+openapi: 3.0.3
+info:
+  title: Trading Hub API
+  description: |
+    The Trading Hub API
+  version: 0.0.1
+servers:
+  - url: 'http://api.tradinghub.azurewebsites.com/v1'
+    description: Main (production) server
+  - url: 'http://api.dev.tradinghub.azurewebsites.com/v1'
+    description: Main (dev) server
+  - url: 'http://localhost:4000/v1'
+    description: Local dev server
+paths:
+  /merchandising/category/:
+    get:
+      summary: Get categories available for merchandising
+      description: >-
+        Returns the categories available for merchandising, can be queried by
+        name or category id
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON representation of available categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categories'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/merchandising/category/{categoryId}/preview':
+    post:
+      summary: Preview Search Response
+      description: Returns a search response with specified rules applied.
+      parameters:
+        - in: path
+          name: categoryId
+          schema:
+            type: string
+          required: true
+          description: The category to preview
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+          description: The number of products to display
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRules'
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchPreviewResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /merchandising/ruleset/:
+    get:
+      summary: Retrieve the Rule Sets
+      description: >-
+        All rule sets ordered by most recently changed, can be queried by
+        name, category id or most recent editor
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: either name, category id or most recent editor
+        - in: query
+          name: queryType
+          schema:
+            type: string
+            enum:
+              - category_id
+              - category_name
+              - user_name
+          required: false
+          description: type of query, only used if query specified. default is category_id
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleSets'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create Rule Set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/merchandising/ruleset/{ruleSetId}':
+    put:
+      summary: Update Rule Set
+      description: Persists merchandising rules and takes effect for customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Retrieve Rule Set
+      description: Returns a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete Rule Set
+      description: Deletes a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to delete
+      responses:
+        '200':
+          description: Rule set was deleted successfully
+
+  '/merchandising/product':
+    get:
+      summary: Get products for category
+      description: >-
+        Returns the products for a category, can be queried by name or category
+        id
+      parameters:
+        - in: query
+          name: categoryIds
+          schema:
+            type: array
+            items:
+              type: string
+          required: true
+          description: The category ids to retrieve products for
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSearchResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RuleSets:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedRuleSet'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - ruleSets
+        - pagination
+    RuleSet:
+      type: object
+      properties:
+        categoryId:
+          type: string
+        isEnabled:
+          type: boolean
+        rules:
+          $ref: '#/components/schemas/MerchandisingRules'
+      required:
+        - categoryId
+        - rules
+        - isEnabled
+    ReturnedRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/RuleSet'
+        - type: object
+          properties:
+            id:
+              type: string
+            categoryName:
+              type: string
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
+            - categoryName
+            - lastChanged
+    SearchPreviewResponse:
+      type: object
+      properties:
+        category:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        rules:
+          $ref: '#/components/schemas/MerchandisingRules'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - products
+        - category
+        - rules
+        - pagination
+    ProductSearchResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - products
+        - pagination
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/ProductMetadata'
+        rating:
+          type: number
+        url:
+          type: string
+        price:
+          type: string
+        imageUrl:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+        brand:
+          type: string
+        isInStock:
+          type: boolean
+      required:
+        - id
+        - metadata
+        - rating
+        - url
+        - price
+        - imageUrl
+        - title
+        - brand
+        - isInStock
+    ProductMetadata:
+      type: object
+      properties:
+        isPinned:
+          type: boolean
+      required:
+        - isPinned
+    MerchandisingRules:
+      type: object
+      properties:
+        pinnedProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PinnedProduct'
+        blockedProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlockedProduct'
+        boosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Boost'
+      required:
+        - pinnedProducts
+        - blockedProducts
+        - boosts
+    PinnedProduct:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+    BlockedProduct:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+    Boost:
+      type: object
+      properties:
+        field:
+          type: string
+        boost:
+          type: number
+          format: double
+      required:
+        - field
+        - boost
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      required:
+        - status
+        - message
+    Pagination:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+    Category:
+      type: object
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+        path:
+          type: string
+    Categories:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - categories
+        - pagination
+security:
+  - bearerAuth: []

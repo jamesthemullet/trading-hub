@@ -9,8 +9,9 @@
     "pnpm": "please-use-npm"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
+    "dev": "npm run codegen && next dev",
+    "codegen": "swagger-typescript-api --path src/libs/api/api.yml --output src/libs/api/generated --name open-api.ts --extract-response-body  --clean-output --another-array-type --sort-types --union-enums --extract-enums --enum-names-as-values --route-types",
+    "build": "npm run codegen && next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
@@ -57,6 +58,7 @@
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "prettier": "^3.2",
+    "swagger-typescript-api": "13.0.3",
     "ts-node": "10.9.2",
     "typescript": "^5"
   }
