@@ -38,3 +38,34 @@ export const resetSearchInput = css`
     display: none;
   }
 `;
+
+export type TypographyStyleProps = {
+  isStrong?: boolean;
+};
+
+export const microTypographyStyles = () => css`
+  font-family: ${fonts.primary.semiBold};
+  font-size: ${fonts.size[50]};
+  letter-spacing: 0.25px;
+  line-height: 1.4;
+`;
+
+export const smallTypographyStyles = ({
+  isStrong,
+}: {
+  isStrong?: TypographyStyleProps['isStrong'];
+}) => css`
+  font-family: ${isStrong ? fonts.primary.semiBold : fonts.primary.regular};
+  font-size: ${fonts.size[300]};
+  line-height: 1.5714;
+`;
+
+export const extraSmallTypographyStyles = ({
+  isStrong,
+}: {
+  isStrong?: TypographyStyleProps['isStrong'];
+}) => css`
+  font-family: ${isStrong ? fonts.primary.semiBold : fonts.primary.regular};
+  font-size: ${fonts.size[100]};
+  line-height: 1.5;
+`;
