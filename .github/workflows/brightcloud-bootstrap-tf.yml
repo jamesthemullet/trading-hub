@@ -9,8 +9,8 @@ on:
 
 permissions:
   id-token: write # This is required for requesting the JWT
-  contents: read # This is required for actions/checkout
-
+  contents: read  # This is required for actions/checkout
+  
 jobs:
   bootstrap-non-production:
     runs-on: ubuntu-latest
@@ -110,12 +110,12 @@ jobs:
           ${{ github.workspace }}/brightcloud/.github/scripts/repo-bootstrapper.sh -a brightcloud_init
           rm -rf ${{ github.workspace }}/brightcloud
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6.0.0
+        uses: peter-evans/create-pull-request@v4.2.3
         with:
           token: ${{secrets.SAML_GITHUB_TOKEN }}
           branch: bootstrap
           branch-suffix: random
-          commit-message: 'feat: bootstrapping brightcloud terraform ${{ github.run_id }}'
-          title: 'automated-brightcloud-bootstrap-runid-${{ github.run_id }}'
+          commit-message: "feat: bootstrapping brightcloud terraform ${{ github.run_id }}"
+          title: "automated-brightcloud-bootstrap-runid-${{ github.run_id }}"
           labels: |
             brightcloud-init
