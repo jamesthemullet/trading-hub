@@ -22,6 +22,7 @@ const config: Config = {
     '!**/*.d.ts',
     '!**/*.config.{js,ts}',
     '!**/constants.{js,ts}',
+    '!**/*.styles.{js,ts,tsx}',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/.next',
