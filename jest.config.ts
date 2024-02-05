@@ -15,7 +15,7 @@ const config: Config = {
   coverageProvider: 'babel',
   setupFilesAfterEnv: ['./jest.setup.ts'],
   coverageReporters: ['html', 'text', 'json-summary'],
-  reporters: ['default'],
+  reporters: ['default', 'jest-junit'],
   collectCoverageFrom: [
     '**/*.{js,jsx,tsx,ts}',
     '!**/generated/*.{js,jsx,tsx,ts}',
