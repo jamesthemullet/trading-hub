@@ -12,6 +12,7 @@ const config: Config = {
       lines: 100,
     },
   },
+  setupFilesAfterEnv: ['./jest.setup.ts'],
   coverageReporters: ['html', 'text', 'json-summary'],
   reporters: ['default'],
   collectCoverageFrom: [

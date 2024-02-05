@@ -21,13 +21,10 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "skipLibCheck": true,
-
     "noEmit": true,
     "esModuleInterop": true,
-
     "isolatedModules": true,
     "jsx": "preserve",
-
     "paths": {
       "@/*": ["./src/*"]
     }
