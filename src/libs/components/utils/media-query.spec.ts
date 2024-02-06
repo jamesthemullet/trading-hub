@@ -1,5 +1,3 @@
-import type { Theme } from '@emotion/react';
-
 import { mediaQuery } from './media-query';
 import { dotcomTheme } from './constants';
 
@@ -20,13 +18,13 @@ describe('mediaQuery', () => {
       },
     };
 
-    expect(mediaQuery('md')({ theme: { grid } } as { theme: Theme })).toBe(
+    expect(mediaQuery('md')({ theme: { ...dotcomTheme, grid } })).toBe(
       '@media (min-width: 768px)'
     );
-    expect(mediaQuery('lg')({ theme: { grid } } as { theme: Theme })).toBe(
+    expect(mediaQuery('lg')({ theme: { ...dotcomTheme, grid } })).toBe(
       '@media (min-width: 1024px)'
     );
-    expect(mediaQuery('xl')({ theme: { grid } } as { theme: Theme })).toBe(
+    expect(mediaQuery('xl')({ theme: { ...dotcomTheme, grid } })).toBe(
       '@media (min-width: 1280px)'
     );
   });

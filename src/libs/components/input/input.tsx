@@ -4,24 +4,18 @@ import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMouseFocus } from '@/libs/hooks/use-mouse-focus';
-import { Label } from '@onyx/ui/components/core/label';
-import {
-  type MessagingProps,
-  Messaging,
-} from '@onyx/ui/components/core/messaging';
+import { Label } from '../label/label';
+import { type MessagingProps, Messaging } from '../messaging/messaging';
 import {
   type TooltipProps,
   Tooltip,
   tooltipAriaLabelledBy,
-} from '@onyx/ui/components/core/tooltip';
-import { Typography } from '@onyx/ui/components/core/typography';
-import {
-  formActiveStyles,
-  formDefaultStyles,
-  sizing,
-  spacing,
-} from '@onyx/ui/components/core-lib';
-import { colourDictionary } from '../utils/constants';
+} from '../tooltip/tooltip';
+import { Typography } from '../typography/typography';
+import { colourDictionary, dotcomTheme } from '../utils/constants';
+import { formActiveStyles, formDefaultStyles } from '../utils/shared.styles';
+import { sizing } from '../utils/sizing';
+import { spacing } from '../utils/spacing';
 
 const padding = 1;
 
@@ -29,14 +23,15 @@ const StyledInput = styled.input<{
   isMouseFocus?: boolean;
   isEmpty?: boolean;
   isError?: boolean;
+  theme: typeof dotcomTheme;
 }>`
-  ${({ theme }) => formDefaultStyles({ theme, padding })}
+  ${() => formDefaultStyles({ padding })}
   height: ${sizing(6)};
   width: ${sizing('100%')};
-  ${({ isMouseFocus, isEmpty, theme }) =>
+  ${({ isMouseFocus, isEmpty }) =>
     (isMouseFocus || !isEmpty) &&
     css`
-      ${formActiveStyles(theme)}
+      ${formActiveStyles()}
       padding-left: calc(${spacing(padding)} - 1px);
     `};
   ${({ isError }) =>
@@ -157,6 +152,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           maxLength={maxLength}
           value={inputVal}
           required={isRequired}
+          theme={dotcomTheme}
           {...(tooltip && tooltipAriaLabelledBy(id))}
           {...(message && { isError })}
           {...mouseFocusProps}
