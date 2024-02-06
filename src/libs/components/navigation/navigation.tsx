@@ -14,7 +14,9 @@ const NavigationWrapper = styled.div`
 `;
 
 const List = styled.ul`
-  padding-top: ${spacing(4)};
+  list-style: none;
+  margin: 0;
+  padding: ${spacing(4)} 0 0;
   display: flex;
   flex-wrap: wrap;
   height: calc(100vh - 70px);
