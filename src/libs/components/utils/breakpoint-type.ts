@@ -1,6 +1,11 @@
-import type { dotcomTheme } from './constants';
+/* istanbul ignore file */
+const breakpoints = {
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+};
 
-export type BreakPoint = keyof (typeof dotcomTheme)['grid']['breakPoints'];
+export type BreakPoint = keyof typeof breakpoints;
 type Sm = 'sm';
 type Md = Extract<BreakPoint, 'md'>;
 type Lg = Extract<BreakPoint, 'lg'>;
