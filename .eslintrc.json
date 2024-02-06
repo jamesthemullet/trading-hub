@@ -200,7 +200,7 @@
         "functional/no-conditional-statement": "off",
         "functional/no-loop-statement": "off",
         "functional/no-class": "off",
-        "functional/immutable-data": ["error"],
+        "functional/immutable-data": ["off"],
         "functional/prefer-readonly-type": "off",
         "quotes": [
           "error",

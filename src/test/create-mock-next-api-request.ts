@@ -11,11 +11,11 @@ class NextApiRequestWithMocks extends mockHttp.IncomingMessage {
   env: NextApiRequest['env'];
 
   initialiseSuperProperties(overrides?: Partial<NextApiRequestWithMocks>) {
-    this.headers = overrides?.headers ?? super.headers;
-    this.method = overrides?.method ?? super.method;
-    this.statusCode = overrides?.statusCode ?? super.statusCode;
-    this.statusMessage = overrides?.statusMessage ?? super.statusMessage;
-    this.url = overrides?.url ?? super.url;
+    this.headers = overrides?.headers ?? this.headers;
+    this.method = overrides?.method ?? this.method;
+    this.statusCode = overrides?.statusCode ?? this.statusCode;
+    this.statusMessage = overrides?.statusMessage ?? this.statusMessage;
+    this.url = overrides?.url ?? this.url;
   }
 
   constructor(overrides?: Partial<NextApiRequestWithMocks>, socket?: Socket) {
