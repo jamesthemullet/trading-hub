@@ -13,6 +13,7 @@ const config: Config = {
     },
   },
   coverageProvider: 'babel',
+  setupFiles: ['./jest.polyfills.js'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
   coverageReporters: ['html', 'text', 'json-summary'],
   reporters: ['default', 'jest-junit'],
