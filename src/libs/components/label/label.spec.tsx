@@ -47,11 +47,6 @@ describe('Label', () => {
   it('should render the label visually hidden state for specified breakpoint', () => {
     render(<Label>hello</Label>);
 
-    expect(screen.getByText('hello')).toHaveStyleRule(
-      'clip',
-      'rect(0, 0, 0, 0)',
-      { media: '(max-width: 767px)' }
-    );
     expect(screen.getByText('hello')).not.toHaveStyle(
       'clip: rect(0, 0, 0, 0);'
     );

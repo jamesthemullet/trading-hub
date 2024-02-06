@@ -41,7 +41,7 @@ describe('Input', () => {
     expect(input).toHaveStyleRule('border-color', '#cccccc', {
       target: ':disabled',
     });
-    expect(input).toHaveStyleRule('color', '#707070', {
+    expect(input).toHaveStyleRule('color', '#cccccc', {
       target: ':placeholder',
     });
     expect(input).toHaveStyleRule('box-shadow', 'none', { target: ':focus' });

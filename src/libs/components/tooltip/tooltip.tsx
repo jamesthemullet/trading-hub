@@ -6,7 +6,7 @@ import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
 import { Typography } from '../typography/typography';
 import { colourDictionary } from '../utils/constants';
-import { useOnOutsideClick } from '@/libs/hooks/use-on-outside-click';
+import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
 import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
 

@@ -2,6 +2,8 @@ import type { LabelHTMLAttributes, ReactNode } from 'react';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { type TypographyProps, Typography } from '../typography/typography';
+import { BreakPoints } from '../utils/breakpoint-type';
 import { dotcomTheme } from '../utils/constants';
 
 type BaseLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
@@ -9,16 +11,36 @@ type BaseLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
   isHidden?: boolean;
   isRequired?: boolean;
   children: ReactNode;
+  variant?: TypographyProps['variant'];
+  isStrong?: TypographyProps['isStrong'];
+  hiddenOn?: BreakPoints;
+  visuallyHiddenOn?: never;
   theme?: typeof dotcomTheme;
 };
 
-const StyledLabel = styled.p<BaseLabelProps>`
+const REQUIRED_FIELD_INDICATOR = '*';
+
+const visuallyHide = css`
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  left: -999px;
+  top: auto;
+  white-space: nowrap;
+  width: 1px;
+  height: 1px;
+`;
+
+const StyledLabel = styled(Typography)<BaseLabelProps>`
   ${({ isDisabled }) =>
     !isDisabled &&
     css`
       cursor: pointer;
     `};
-  ${({ isHidden }) => isHidden};
+  ${({ isHidden }) => isHidden && visuallyHide};
   ${({ isDisabled: disabled, theme }) =>
     disabled &&
     css`
@@ -26,15 +48,19 @@ const StyledLabel = styled.p<BaseLabelProps>`
     `};
 `;
 
-export type LabelProps = BaseLabelProps;
+export type LabelProps = BaseLabelProps & {
+  as?: never;
+};
 
-export const Label = ({
-  children,
-  isRequired,
-  theme = dotcomTheme,
-  ...rest
-}: LabelProps) => (
-  <StyledLabel theme={theme} {...rest}>
+export const Label = ({ children, isRequired, ...rest }: LabelProps) => (
+  <StyledLabel
+    variant="small"
+    isStrong
+    theme={dotcomTheme}
+    {...rest}
+    as="label"
+  >
     {children}
+    {isRequired && REQUIRED_FIELD_INDICATOR}
   </StyledLabel>
 );
