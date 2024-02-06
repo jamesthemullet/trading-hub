@@ -1,12 +1,10 @@
-import { screen } from '@testing-library/react';
-
-import { renderWithProviders } from '@onyx/test-utils';
+import { screen, render } from '@testing-library/react';
 
 import { SearchBox } from './search-box';
 
 describe('SearchBox', () => {
   it('should render successfully', () => {
-    renderWithProviders(
+    render(
       <SearchBox
         inputProps={{
           id: 'searchId',
@@ -33,7 +31,7 @@ describe('SearchBox', () => {
   });
 
   it('renders with search icon on the left', () => {
-    renderWithProviders(
+    render(
       <SearchBox
         inputProps={{
           id: 'searchId',
@@ -61,7 +59,7 @@ describe('SearchBox', () => {
   });
 
   it('renders with search icon on the right by default', () => {
-    renderWithProviders(
+    render(
       <SearchBox
         inputProps={{
           id: 'searchId',

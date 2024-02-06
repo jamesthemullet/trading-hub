@@ -1,12 +1,10 @@
-import { screen } from '@testing-library/react';
-
-import { renderWithProviders } from '@onyx/test-utils';
+import { screen, render } from '@testing-library/react';
 
 import { Search } from './search';
 
 describe('Search', () => {
   it('should render rules search', () => {
-    renderWithProviders(<Search />);
+    render(<Search />);
 
     expect(screen.getByPlaceholderText(/Search\.\.\./i)).toBeInTheDocument();
   });

@@ -1,19 +1,17 @@
-import { screen } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import { renderWithProviders } from '@onyx/test-utils';
 
 import { Input } from './input';
 
 describe('Input', () => {
   it('should render successfully', () => {
-    renderWithProviders(<Input id="id" name="input" label="Need input" />);
+    render(<Input id="id" name="input" label="Need input" />);
 
     expect(screen.getByLabelText(/need input/i)).toBeInTheDocument();
   });
 
   it('should hide label', () => {
-    renderWithProviders(
+    render(
       <Input id="id" name="input" label="Need input" isLabelHidden={true} />
     );
 
@@ -24,7 +22,7 @@ describe('Input', () => {
 
   it('should toggle focus styling', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<Input id="id" label="Need input" />);
+    render(<Input id="id" label="Need input" />);
     const input = screen.getByLabelText('Need input');
     await user.click(input);
 
@@ -50,7 +48,7 @@ describe('Input', () => {
   });
 
   it('Should set isEmpty state on initial render', () => {
-    renderWithProviders(<Input id="id" label="input" />);
+    render(<Input id="id" label="input" />);
     const input = screen.getByLabelText('input');
     expect(input).toHaveStyleRule('border', '1px solid #707070');
     expect(input).not.toHaveStyleRule('border-color', '#000000');
@@ -58,7 +56,7 @@ describe('Input', () => {
 
   it('Should update the isEmpty state on change', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<Input id="id" label="input" />);
+    render(<Input id="id" label="input" />);
     const input = screen.getByLabelText('input');
     await user.type(input, 'input now contains text');
     expect(input).toHaveStyleRule('border-color', '#222222');
@@ -67,16 +65,14 @@ describe('Input', () => {
   it('Should invoke a provided onChange callback', async () => {
     const onChangeHandler = jest.fn();
     const user = userEvent.setup();
-    renderWithProviders(
-      <Input id="id" label="input" onChange={onChangeHandler} />
-    );
+    render(<Input id="id" label="input" onChange={onChangeHandler} />);
     const input = screen.getByLabelText('input');
     await user.type(input, 'input now contains text');
     expect(onChangeHandler).toBeCalled();
   });
 
   it('Should be able to display an error message and change border colour', () => {
-    renderWithProviders(
+    render(
       <Input
         id="id"
         label="input"
@@ -89,7 +85,7 @@ describe('Input', () => {
   });
 
   it('Should be able to display an inline error message and change border colour', () => {
-    renderWithProviders(
+    render(
       <Input
         id="id"
         label="input"
@@ -104,7 +100,7 @@ describe('Input', () => {
   it('Should restrict to maxLength when characters > maxLength', async () => {
     const user = userEvent.setup();
     const onChangeHandler = jest.fn();
-    renderWithProviders(
+    render(
       <Input id="id" label="input" onChange={onChangeHandler} maxLength={12} />
     );
     const input = screen.getByLabelText('input');
@@ -115,9 +111,7 @@ describe('Input', () => {
   it('Should not restrict length when maxLength is not provided', async () => {
     const onChangeHandler = jest.fn();
     const user = userEvent.setup();
-    renderWithProviders(
-      <Input id="id" label="input" onChange={onChangeHandler} />
-    );
+    render(<Input id="id" label="input" onChange={onChangeHandler} />);
     const input = screen.getByLabelText('input');
     await user.type(input, 'this is more than 12 characters long');
     expect(input).toHaveValue('this is more than 12 characters long');
@@ -126,7 +120,7 @@ describe('Input', () => {
   it('Should not restrict to maxLength when characters <= maxLength', async () => {
     const onChangeHandler = jest.fn();
     const user = userEvent.setup();
-    renderWithProviders(
+    render(
       <Input id="id" label="input" onChange={onChangeHandler} maxLength={12} />
     );
     const input = screen.getByLabelText('input');
@@ -136,7 +130,7 @@ describe('Input', () => {
 
   it('Should update state to defaultValue when it is provided', () => {
     const onChangeHandler = jest.fn();
-    renderWithProviders(
+    render(
       <Input
         id="id"
         label="input"
@@ -149,7 +143,7 @@ describe('Input', () => {
   });
 
   it('should display a tooltip component when passed', () => {
-    renderWithProviders(
+    render(
       <Input
         id="inputId"
         label="input"
@@ -165,19 +159,19 @@ describe('Input', () => {
   });
 
   it('should display the character limit count when the maxLength prop is truthy', () => {
-    renderWithProviders(<Input id="inputId" label="input" maxLength={10} />);
+    render(<Input id="inputId" label="input" maxLength={10} />);
 
     expect(screen.getByText('10 Characters left')).toBeInTheDocument();
   });
 
   it('should not display the character limit when the maxLength prop is falsy', () => {
-    renderWithProviders(<Input id="inputId" label="input" maxLength={0} />);
+    render(<Input id="inputId" label="input" maxLength={0} />);
 
     expect(screen.queryByText('0 Characters left')).not.toBeInTheDocument();
   });
 
   it('should update the character limit as the user types', async () => {
-    renderWithProviders(<Input id="inputId" label="input" maxLength={10} />);
+    render(<Input id="inputId" label="input" maxLength={10} />);
     const user = userEvent.setup();
 
     const input = screen.getByLabelText('input');
@@ -186,7 +180,7 @@ describe('Input', () => {
   });
 
   it("should display 'character' instead of 'characters' when there is a single character left", async () => {
-    renderWithProviders(<Input id="inputId" label="input" maxLength={10} />);
+    render(<Input id="inputId" label="input" maxLength={10} />);
 
     const user = userEvent.setup();
     const input = screen.getByLabelText('input');
@@ -196,7 +190,7 @@ describe('Input', () => {
   });
 
   it('should prevent further typing when the user reaches the character limit', async () => {
-    renderWithProviders(<Input id="inputId" label="input" maxLength={5} />);
+    render(<Input id="inputId" label="input" maxLength={5} />);
 
     const user = userEvent.setup();
     const input = screen.getByLabelText('input');

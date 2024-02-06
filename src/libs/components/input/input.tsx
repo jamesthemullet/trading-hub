@@ -3,7 +3,7 @@ import { forwardRef, useCallback, useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useMouseFocus } from '@onyx/react-hooks';
+import { useMouseFocus } from '@/libs/hooks/use-mouse-focus';
 import { Label } from '@onyx/ui/components/core/label';
 import {
   type MessagingProps,
