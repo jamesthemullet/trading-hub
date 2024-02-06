@@ -10,10 +10,6 @@ describe('App', () => {
       <App
         Component={() => <div>hello</div>}
         pageProps={{
-          appProps: {
-            config: {},
-            optimizelyDatafile: {},
-          },
           session: null,
         }}
         router={createMockNextRouter()}
