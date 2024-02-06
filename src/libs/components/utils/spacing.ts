@@ -67,7 +67,8 @@ export type RoundNumberSpacingUnit =
 export type SpacingUnit =
   | PercentageSpacingUnit
   | RoundNumberSpacingUnit
-  | FourAndTwelvePixelUnit;
+  | FourAndTwelvePixelUnit
+  | number;
 
 export const spacing = (unit: SpacingUnit) =>
   typeof unit === 'string' ? unit : `${(unit * 8) / 16}rem`;
