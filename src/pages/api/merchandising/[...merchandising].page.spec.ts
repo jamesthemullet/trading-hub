@@ -143,17 +143,17 @@ describe.skip('Merchandising api proxy', () => {
         );
 
         expect(httpGet).toHaveBeenCalled();
-        // expect(httpGet.mock.calls[0][0].url).toBe(
-        //   `${baseUrl}/merchandising/category/1`
-        // );
-        // expect(httpGet.mock.calls[0][0].method).toBe('GET');
-        // expect(httpGet.mock.calls[0][0].body).toBeNull();
-        // expect([...httpGet.mock.calls[0][0].headers]).toEqual([
-        //   ['authorization', 'Bearer token'],
-        // ]);
+        expect(httpGet.mock.calls[0][0].url).toBe(
+          `${baseUrl}/merchandising/category/1`
+        );
+        expect(httpGet.mock.calls[0][0].method).toBe('GET');
+        expect(httpGet.mock.calls[0][0].body).toBeNull();
+        expect([...httpGet.mock.calls[0][0].headers]).toEqual([
+          ['authorization', 'Bearer token'],
+        ]);
 
-        // expect(res.status).toHaveBeenCalledWith(response.status);
-        // expect(res.json).toHaveBeenCalledWith(response.body);
+        expect(res.status).toHaveBeenCalledWith(response.status);
+        expect(res.json).toHaveBeenCalledWith(response.body);
       }
     );
 
