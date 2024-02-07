@@ -13,6 +13,7 @@ const config: Config = {
     },
   },
   coverageProvider: 'babel',
+  setupFiles: ['./jest.polyfills.js'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
   coverageReporters: ['html', 'text', 'json-summary'],
   reporters: ['default', 'jest-junit'],
@@ -23,6 +24,7 @@ const config: Config = {
     '!**/*.config.{js,ts}',
     '!**/constants.{js,ts}',
     '!**/*.styles.{js,ts,tsx}',
+    '!jest.node-fetch-polyfills.js',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/.next',
@@ -33,6 +35,10 @@ const config: Config = {
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/$1',
+  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  testEnvironmentOptions: {
+    customExportConditions: [''],
   },
 };
 
