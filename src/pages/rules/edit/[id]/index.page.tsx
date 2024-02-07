@@ -7,14 +7,15 @@ import {
   ProductSearch,
   Tabs,
   VisualEditor,
+  spacing,
 } from '@/libs/components';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
-
-import { spacing } from '@/libs/components/utils/spacing';
 import { Product } from '@/libs/api';
-import { useUpdateRuleSet } from '@/libs/hooks/use-update-rule-set';
-import { useRuleSetPreview } from '@/libs/hooks/use-rule-set-preview';
-import { useCategoryProductSearch } from '@/libs/hooks/use-category-product-search';
+import {
+  useUpdateRuleSet,
+  useRuleSetPreview,
+  useCategoryProductSearch,
+} from '@/libs/hooks';
 
 const RuleSetOptions = styled.div`
   background-color: #005640;

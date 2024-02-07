@@ -20,3 +20,4 @@ export * from './product-search/product-search';
 export * from './tabs/tabs';
 export * from './visual-editor/visual-editor';
 export * from './product/product';
+export * from './utils/spacing';

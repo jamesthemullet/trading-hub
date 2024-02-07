@@ -6,7 +6,7 @@ import {
   useRuleSetPreview,
   useUpdateRuleSet,
 } from '@/libs/hooks';
-jest.mock('@/libs/hooks');
+
 import type { GetServerSidePropsContext } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
@@ -24,6 +24,12 @@ const product1Brand = 'Monsoon';
 const product2Brand = 'M&S';
 const product1Price = '£5';
 const product2Price = '£10';
+
+jest.mock('@/libs/hooks', () => ({
+  useCategoryProductSearch: jest.fn(),
+  useRuleSetPreview: jest.fn(),
+  useUpdateRuleSet: jest.fn(),
+}));
 
 describe('Index', () => {
   const mockPreview = {
@@ -114,6 +120,10 @@ describe('Index', () => {
     jest
       .mocked(useCategoryProductSearch)
       .mockImplementation(() => mockCategoryProductSearch);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('displays the category id', () => {
