@@ -5,7 +5,14 @@ import type { ReturnedRuleSet } from '../../libs/api';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import { useRuleSet, useRuleSetDelete } from '@/libs/hooks';
-import { Button, Heading, Dropdown,Pagination, Rules, Search } from '@/libs/components';
+import {
+  Button,
+  Heading,
+  Dropdown,
+  Pagination,
+  Rules,
+  Search,
+} from '@/libs/components';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};

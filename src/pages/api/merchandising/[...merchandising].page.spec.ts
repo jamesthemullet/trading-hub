@@ -51,7 +51,7 @@ type Response = {
 
 const responses: Response[][] = [
   // [{ status: 200, body: { hello: 'world' }, envSettings: {} }],
-  [{ status: 200, body: { hello: 'world' }}],
+  [{ status: 200, body: { hello: 'world' } }],
   // [{ status: 200, body: { hello: 'world' } }],
   // [{ status: 500, body: { hello: 'error' }, envSettings: {} }],
   // [{ status: 500, body: { hello: 'error' } }],
@@ -59,7 +59,7 @@ const responses: Response[][] = [
 
 const performGet = async (
   url: string | undefined,
-  response: Response,
+  response: Response
   // envSettings?: Partial<MerchandisingEnvironment>
 ) => {
   const req = createMockNextApiRequest({
@@ -138,7 +138,7 @@ describe.skip('Merchandising api proxy', () => {
       async (response) => {
         const res = await performGet(
           '/api/merchandising/category/1',
-          response,
+          response
           // response.envSettings
         );
 
