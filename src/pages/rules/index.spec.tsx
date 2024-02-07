@@ -9,12 +9,12 @@ import { default as RuleSets } from './index.page';
 
 process.env.DEBUG_PRINT_LIMIT = '1000000';
 
-jest.mock('../../hooks/use-rule-set', () => ({
+jest.mock('../../libs/hooks/use-rule-set', () => ({
   useRuleSet: jest.fn(),
 }));
 
 const mockRuleSetDelete = jest.fn();
-jest.mock('../../hooks/use-rule-set-delete', () => ({
+jest.mock('../../libs/hooks/use-rule-set-delete', () => ({
   useRuleSetDelete: () => {
     return { handleDelete: mockRuleSetDelete };
   },

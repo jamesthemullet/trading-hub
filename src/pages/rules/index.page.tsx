@@ -2,18 +2,10 @@ import { useState } from 'react';
 
 import styled from '@emotion/styled';
 import type { ReturnedRuleSet } from '../../libs/api';
-// import {
-//   Button,
-//   Dropdown,
-//   Heading,
-//   Pagination,
-//   Rules,
-//   Search,
-// } from '@onyx/trading-hub/components';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import { useRuleSet, useRuleSetDelete } from '@/libs/hooks';
-import { Button, Heading, Pagination, Rules, Search } from '@/libs/components';
+import { Button, Heading, Dropdown,Pagination, Rules, Search } from '@/libs/components';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -147,7 +139,7 @@ const RuleSets = () => {
           />
           <RowsPerPageContainer>
             <RowsPerPageLabel>Rows per page</RowsPerPageLabel>
-            {/* <Dropdown
+            <Dropdown
               label={`${currentPageSize}`}
               isOpen={isPageSizeOpen}
               onOpen={() => {
@@ -174,7 +166,7 @@ const RuleSets = () => {
                   {size}
                 </PageSizeItem>
               ))}
-            </Dropdown> */}
+            </Dropdown>
           </RowsPerPageContainer>
         </NavigationContainer>
       </PageWrapper>
