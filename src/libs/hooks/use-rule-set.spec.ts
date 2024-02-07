@@ -1,18 +1,11 @@
 import { act } from 'react-dom/test-utils';
 import { renderHook, waitFor } from '@testing-library/react';
 
-<<<<<<< Updated upstream
-=======
 import type { RuleSets } from '@/libs/api';
->>>>>>> Stashed changes
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { useRuleSet } from './use-rule-set';
-<<<<<<< Updated upstream
-import type { RuleSets } from '../api';
-=======
->>>>>>> Stashed changes
 
 const baseUrl = 'http://localhost';
 const getRuleSetMock = jest.fn();
@@ -29,11 +22,7 @@ const handlers = [
 
 const server = setupServer(...handlers);
 
-<<<<<<< Updated upstream
-describe.skip('useRuleSet', () => {
-=======
 describe('useRuleSet', () => {
->>>>>>> Stashed changes
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();
