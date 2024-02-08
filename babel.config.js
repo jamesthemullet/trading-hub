@@ -14,6 +14,7 @@ module.exports = {
         regenerator: true,
       },
     ],
+    '@babel/plugin-syntax-jsx',
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-syntax-dynamic-import',
     `@babel/plugin-transform-private-methods`,
