@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import { useEffect, useState } from 'react';
 
 import type { RuleSets } from '@/libs/api';
