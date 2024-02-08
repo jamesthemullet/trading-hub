@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Typography } from '../typography/typography';
 import { colourDictionary } from '../utils/constants';
 import { spacing } from '../utils/spacing';
+import { Breadcrumb } from '../breadcrumb/breadcrumb';
 
 const BreadcrumbText = styled(Typography)`
   color: ${colourDictionary.black};
@@ -10,7 +11,7 @@ const BreadcrumbText = styled(Typography)`
 const HeadingWrapper = styled.div`
   background: ${colourDictionary.white};
   box-shadow: #000 0 0 4px;
-  height: ${spacing(9)};
+  /* height: ${spacing(4)}; */
   padding: 23px;
   display: flex;
   position: fixed;
@@ -32,14 +33,13 @@ export const Heading = ({ breadcrumbs }: Props) => {
     <>
       <HeadingSpacer />
       <HeadingWrapper>
-        {/* TODO: add breadcrumb component */}
-        <div>
+        <Breadcrumb>
           {breadcrumbs.map((breadcrumb) => (
             <BreadcrumbText variant={'small'} as={'span'} key={breadcrumb}>
               {breadcrumb}
             </BreadcrumbText>
           ))}
-        </div>
+        </Breadcrumb>
       </HeadingWrapper>
     </>
   );
