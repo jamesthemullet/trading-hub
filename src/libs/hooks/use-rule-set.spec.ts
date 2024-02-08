@@ -22,7 +22,7 @@ const handlers = [
 
 const server = setupServer(...handlers);
 
-describe.skip('useRuleSet', () => {
+describe('useRuleSet', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();

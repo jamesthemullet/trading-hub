@@ -1,10 +1,4 @@
-const { TextEncoder, TextDecoder, ReadableStream } = require('node:util');
-
-if (!globalThis.TextEncoder) {
-  Object.defineProperties(globalThis, {
-    ReadableStream: { value: ReadableStream },
-  });
-}
+const { TextEncoder, TextDecoder } = require('node:util');
 
 if (!globalThis.TextEncoder) {
   Object.defineProperties(globalThis, {

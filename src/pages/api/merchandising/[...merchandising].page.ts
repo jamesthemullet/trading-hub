@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import type { ProductSearchResponse } from '@/libs/api';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
