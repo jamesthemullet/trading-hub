@@ -26,7 +26,6 @@ const config: Config = {
     '!**/*.config.{js,ts}',
     '!**/constants.{js,ts}',
     '!**/*.styles.{js,ts,tsx}',
-    '!jest.node-fetch-polyfills.js',
     '!**/node_modules/**',
   ],
   coveragePathIgnorePatterns: [
