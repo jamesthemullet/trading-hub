@@ -1,11 +1,11 @@
 import { act } from 'react-dom/test-utils';
 import { renderHook, waitFor } from '@testing-library/react';
 
+import type { RuleSets } from '@/libs/api';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { useRuleSet } from './use-rule-set';
-import type { RuleSets } from '../api';
 
 const baseUrl = 'http://localhost';
 const getRuleSetMock = jest.fn();

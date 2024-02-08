@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { merchandising } from '../api';
+
+import { merchandising } from '@/libs/api';
 
 export const useRuleSetDelete = () => {
   const [error, setError] = useState('');
@@ -8,6 +9,7 @@ export const useRuleSetDelete = () => {
     async ({ rulesetId }: { rulesetId: string }) => {
       setError('');
 
+      // eslint-disable-next-line functional/no-try-statement
       try {
         const response = await merchandising().rulesetDelete(rulesetId);
 

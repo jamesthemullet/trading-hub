@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { merchandising, type RuleSets } from '../api';
+
+import type { RuleSets } from '@/libs/api';
+import { merchandising } from '@/libs/api';
 
 export const useRuleSet = (
   searchQuery: string,
