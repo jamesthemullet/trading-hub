@@ -51,10 +51,10 @@ type Response = {
 
 const responses: Response[][] = [
   // [{ status: 200, body: { hello: 'world' }, envSettings: {} }],
-  [{ status: 200, body: { hello: 'world' } }],
   // [{ status: 200, body: { hello: 'world' } }],
-  // [{ status: 500, body: { hello: 'error' }, envSettings: {} }],
-  // [{ status: 500, body: { hello: 'error' } }],
+  [{ status: 200, body: { hello: 'world' } }],
+  [{ status: 500, body: { hello: 'error' }, envSettings: {} }],
+  [{ status: 500, body: { hello: 'error' } }],
 ];
 
 const performGet = async (
@@ -112,7 +112,7 @@ const performPost = async (
   return res;
 };
 
-describe.skip('Merchandising api proxy', () => {
+describe('Merchandising api proxy', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_API_BASEURL = baseUrl;
     server.listen();
@@ -133,7 +133,7 @@ describe.skip('Merchandising api proxy', () => {
       jest.mocked(getToken).mockResolvedValueOnce({ accessToken: 'token' });
     });
 
-    it.only.each(responses)(
+    it.each(responses)(
       'forwards request to backend with Authorization for GET',
       async (response) => {
         const res = await performGet(
