@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app';
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { Layout, Navigation } from '../libs/components/navigation/navigation';
+import './global.css';
 
 export default function App({
   Component,
