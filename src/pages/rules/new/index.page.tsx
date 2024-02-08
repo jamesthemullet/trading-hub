@@ -4,11 +4,16 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import type { Category, CategoryListData } from '@/libs/api';
 import { useRouter } from 'next/router';
-import { Button, CategorySearch, Heading, PageWrapper, spacing } from '@/libs/components';
+import {
+  Button,
+  CategorySearch,
+  Heading,
+  PageWrapper,
+  spacing,
+} from '@/libs/components';
 import { colourDictionary } from '@/libs/components/utils/constants';
 import { useDebounce, useGetCategories, useRuleSetCreate } from '@/libs/hooks';
 import { Typography } from '@/libs/components/typography/typography';
-
 
 const SEARCH_DEBOUNCE_WAIT = 500;
 
