@@ -20,6 +20,7 @@ import {
   ProductNumber,
   ProductPin,
   ProductWrapper,
+  ProductCard,
 } from './product.styles';
 
 type ChangePositionTypes = {
@@ -243,14 +244,11 @@ export const Product = ({
         )}
       </ProductHeader>
       <div>
-        {/* TODO: refactor me
-        <ProductCard
-          image={
-            <Image
-              src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
-            />
-          }
-        /> */}
+        <ProductCard>
+          <img
+            src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
+          />
+        </ProductCard>
       </div>
       <ProductInfo aria-label="Product details">
         <Typography as="p" variant="small" isStrong={isBrandStrong ?? true}>

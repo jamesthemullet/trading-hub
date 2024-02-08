@@ -25,10 +25,10 @@ export const ProductNumber = styled.div`
   background: #000;
   color: #fff;
   border-radius: 3px;
-  width: '20px';
-  height: '20px';
+  width: 20px;
+  height: 20px;
   text-align: center;
-  padding: 0 '2px' '2px';
+  padding: 0 2px 2px;
 `;
 
 export const ProductPin = styled.div`
@@ -97,7 +97,7 @@ export const ProductMenuButton = styled(Typography)<{ icon: string }>`
   border: none;
   background: #fff;
   width: '100%';
-  min-height: '40px';
+  min-height: 40px;
   text-align: left;
   display: flex;
   padding-top: ${spacing(1.5)};
@@ -145,4 +145,12 @@ export const LockActions = styled.div`
   gap: 10px;
   border-top: solid 1px #999;
   padding-top: ${spacing(1)};
+`;
+
+export const ProductCard = styled.div`
+  img {
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+  }
 `;
