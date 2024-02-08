@@ -14,13 +14,13 @@ const ToggleSwitch = styled.label`
     appearance: none;
     z-index: -1;
     position: absolute;
-    right: '6px';
-    top: '-8px';
+    right: 6px;
+    top: -8px;
     display: block;
     margin: 0;
     border-radius: 50%;
-    width: '40px';
-    height: '40px';
+    width: 40px;
+    height: 40px;
     background-color: rgba(0 0 0 / 38%);
     outline: none;
     opacity: 0;
@@ -34,10 +34,10 @@ const ToggleSwitch = styled.label`
   & > span::before {
     content: '';
     display: inline-block;
-    margin: '5px' 0 '5px' '10px';
+    margin: 5px 0 5px 10px;
     border-radius: 7px;
-    width: '36px';
-    height: '14px';
+    width: 36px;
+    height: 14px;
     background-color: rgba(0 0 0 / 38%);
     vertical-align: top;
     transition:
@@ -48,11 +48,11 @@ const ToggleSwitch = styled.label`
   & > span::after {
     content: '';
     position: absolute;
-    top: '2px';
-    right: '16px';
+    top: 2px;
+    right: 16px;
     border-radius: 50%;
-    width: '20px';
-    height: '20px';
+    width: 20px;
+    height: 20px;
     background-color: #fff;
 
     /* eslint-disable-next-line scale-unlimited/declaration-strict */
@@ -66,7 +66,7 @@ const ToggleSwitch = styled.label`
   }
 
   & > input:checked {
-    right: '-10px';
+    right: -10px;
     background-color: #b2ccc6;
   }
 
