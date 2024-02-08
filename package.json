@@ -17,7 +17,8 @@
     "test": "jest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "ts-check": "tsc --build --force --verbose tsconfig.json"
+    "ts-check": "tsc --build --force --verbose tsconfig.json",
+    "outdated": "ncu"
   },
   "dependencies": {
     "@emotion/react": "11.11.3",
@@ -69,6 +70,7 @@
     "jest-junit": "16.0.0",
     "msw": "2.1.7",
     "node-fetch": "3.3.2",
+    "npm-check-updates": "16.14.14",
     "prettier": "3.2.5",
     "swagger-typescript-api": "13.0.3",
     "ts-jest": "29.1.2",
