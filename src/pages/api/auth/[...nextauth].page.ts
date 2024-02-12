@@ -25,10 +25,16 @@ export const authOptions = (
   providers: [
     ...(envSettings.clientId && envSettings.clientSecret && envSettings.tenantId
       ? [
-          AzureADProvider({
+         AzureADProvider({
             clientId: envSettings.clientId,
             clientSecret: envSettings.clientSecret,
             tenantId: envSettings.tenantId,
+            authorization: {
+              params: {
+                scope: `openid profile email ${envSettings.clientId}/.default`,
+                audience: envSettings.clientId,
+              },
+            },
           }),
         ]
       : []),
