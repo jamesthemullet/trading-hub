@@ -29,6 +29,12 @@ export const authOptions = (
             clientId: envSettings.clientId,
             clientSecret: envSettings.clientSecret,
             tenantId: envSettings.tenantId,
+            authorization: {
+              params: {
+                scope: `openid profile email ${envSettings.clientId}/.default`,
+                audience: envSettings.clientId,
+              },
+            },
           }),
         ]
       : []),
