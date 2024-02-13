@@ -56,8 +56,12 @@ describe('...NextAuth', () => {
       expect(azureConfig?.options?.clientId).toEqual('clientId');
       expect(azureConfig?.options?.clientSecret).toEqual('clientSecret');
       expect(azureConfig?.options?.tenantId).toEqual('tenantId');
-      expect(azureConfig?.options?.authorization.params.audience).toEqual('clientId');
-      expect(azureConfig?.options?.authorization.params.scope).toEqual('openid profile email clientId/.default');
+      expect(azureConfig?.options?.authorization.params.audience).toEqual(
+        'clientId'
+      );
+      expect(azureConfig?.options?.authorization.params.scope).toEqual(
+        'openid profile email clientId/.default'
+      );
     });
 
     it('config should provide default env vars', () => {

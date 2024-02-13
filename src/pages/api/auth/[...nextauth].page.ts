@@ -25,7 +25,7 @@ export const authOptions = (
   providers: [
     ...(envSettings.clientId && envSettings.clientSecret && envSettings.tenantId
       ? [
-         AzureADProvider({
+          AzureADProvider({
             clientId: envSettings.clientId,
             clientSecret: envSettings.clientSecret,
             tenantId: envSettings.tenantId,
