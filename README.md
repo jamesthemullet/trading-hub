@@ -52,6 +52,6 @@ Dependabot is set up for the repo, however to keep our dependencies up to date `
 
 ## Deployments
 
-| Environment | URL |
-| --- | --- |
-| Dev | https://dev-trading-hub-v1-eun-layer3-app.azurewebsites.net/ |
+| Environment | URL                                                          |
+| ----------- | ------------------------------------------------------------ |
+| Dev         | https://dev-trading-hub-v1-eun-layer3-app.azurewebsites.net/ |
