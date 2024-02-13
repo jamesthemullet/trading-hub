@@ -1,14 +1,14 @@
 # Trading Hub
 
-Merchandising UI for trading teams
+Merchandising UI for trading teams.
 
 ## Getting Started
 
 ### App Authentication registration for local development
 
-Please follow this [doc](./docs/auth-local-dev.md) to set up auth
+Please follow this [doc](./docs/auth-local-dev.md) to set up auth.
 
-An example .env file has been provided
+An example .env file has been provided.
 
 ```bash
 cp .env.example .env
@@ -16,7 +16,7 @@ cp .env.example .env
 
 ### Running locally
 
-Trading Hub is a NextJS app
+Trading Hub is a NextJS app.
 
 ```bash
 npm install
@@ -32,7 +32,9 @@ Before you can contribute to this repo, you must be able to sign your commits so
 
 ### Pull requests
 
-There are no precommit hooks, PR checks run against tests, code formatting and dependencies updates
+There are no precommit hooks, PR checks run against tests, code formatting and dependencies updates.
+
+Reviews are not dismissed on new commits, please rerequest a review if subsequent commits make significant code changes.
 
 ### Tests
 
@@ -44,11 +46,11 @@ Tests require 100% coverage for all files, watch mode can be enabled by running 
 
 ### Code formatting
 
-Prettier is used to format files, this can be set up in your IDE or by running `npm run format` before committing
+Prettier is used to format files, this can be set up in your IDE or by running `npm run format` before committing.
 
 ### Dependencies updates
 
-Dependabot is set up for the repo, however to keep our dependencies up to date `npm outdated` is run as part of PR checks so all contributors can help with updates
+Dependabot is set up for the repo, however to keep our dependencies up to date `npm outdated` is run as part of PR checks so all contributors can help with updates.
 
 ## Deployments
 
