@@ -48,6 +48,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
   '/merchandising/category/{categoryId}/preview':
     post:
       summary: Preview Search Response
@@ -89,6 +91,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
   /merchandising/ruleset/:
     get:
       summary: Retrieve the Rule Sets
@@ -136,6 +140,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
     post:
       summary: Create Rule Set
       requestBody:
@@ -156,6 +162,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
   '/merchandising/ruleset/{ruleSetId}':
     put:
       summary: Update Rule Set
@@ -185,6 +193,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
     get:
       summary: Retrieve Rule Set
       description: Returns a rule set and its merchandising rules.
@@ -208,6 +218,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
     delete:
       summary: Delete Rule Set
       description: Deletes a rule set and its merchandising rules.
@@ -221,6 +233,8 @@ paths:
       responses:
         '200':
           description: Rule set was deleted successfully
+        '401':
+          description: Unauthorized e.g. no bearer token specified
 
   '/merchandising/product':
     get:
@@ -266,6 +280,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
 components:
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
