@@ -60,6 +60,8 @@ const StyledButton = styled(Button)<{ iconPosition: IconPosition }>`
   height: ${sizing(4)};
   width: ${sizing(4)};
   position: absolute;
+  background: none;
+  border: none;
   .icon {
     flex-shrink: 1;
   }

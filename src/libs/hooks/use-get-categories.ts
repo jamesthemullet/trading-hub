@@ -17,7 +17,6 @@ export const useGetCategories = () => {
     }) => {
       setGetCategoriesError('');
 
-      // eslint-disable-next-line functional/no-try-statement
       try {
         const response = await merchandising().categoryList({
           q: query,

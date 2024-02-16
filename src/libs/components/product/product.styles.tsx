@@ -96,7 +96,7 @@ export const ProductMenu = styled.div`
 export const ProductMenuButton = styled(Typography)<{ icon: string }>`
   border: none;
   background: #fff;
-  width: '100%';
+  width: 100%;
   min-height: 40px;
   text-align: left;
   display: flex;
