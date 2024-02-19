@@ -1,6 +1,12 @@
-import { act, screen, render } from '@testing-library/react';
+import { act, screen, render, waitFor } from '@testing-library/react';
 
+import { useGetCategories } from '../../hooks/use-get-categories';
 import { CategorySearch } from './category-search';
+import userEvent from '@testing-library/user-event';
+
+jest.mock('../../hooks/use-get-categories', () => ({
+  useGetCategories: jest.fn(),
+}));
 
 const mockProps = {
   categoryResults: {
@@ -21,28 +27,71 @@ const mockCategory = {
   path: 'l/lingerie/thermals',
 };
 
+const mockGetCategories = {
+  categories: [mockCategory],
+  pagination: { totalItems: 20 },
+};
+
+const INPUT_PLACEHOLDER_TEXT = 'Search...';
+
 describe('CategorySearch', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  beforeEach(() => {
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(),
+      getCategoriesError: '',
+    });
+  });
+
   it('should render correctly', () => {
     render(<CategorySearch {...mockProps} />);
 
     expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
   });
 
-  it('should show and select search results', async () => {
-    const mockCategoryResults = {
-      categories: [mockCategory],
-      pagination: {
-        totalItems: 1,
-      },
-    };
+  it('should search while typing', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
 
-    render(
-      <CategorySearch
-        {...mockProps}
-        searchValue="SubCategory_507"
-        categoryResults={mockCategoryResults}
-      />
+    render(<CategorySearch {...mockProps} />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCat'
     );
+
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('SubCat')).toBeVisible()
+    );
+    const resultsButton = await screen.findByText(
+      `${mockCategory.identifier} | ${mockCategory.name} | ${mockCategory.path}`
+    );
+    act(() => {
+      resultsButton.click();
+    });
+  });
+
+  it('should show and select search results', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    render(<CategorySearch {...mockProps} />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507{enter}'
+    );
+
+    expect(screen.getByDisplayValue('SubCategory_507')).toBeVisible();
 
     const resultsButton = await screen.findByText(
       `${mockCategory.identifier} | ${mockCategory.name} | ${mockCategory.path}`
@@ -52,7 +101,7 @@ describe('CategorySearch', () => {
       resultsButton.click();
     });
 
-    expect(mockProps.onSelectCategory).toBeCalledWith(mockCategory);
+    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(mockCategory);
   });
 
   it('should show selected category', () => {

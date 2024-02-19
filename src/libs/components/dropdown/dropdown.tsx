@@ -88,7 +88,7 @@ const Content = styled.div`
   overflow-y: auto;
   overscroll-behavior: contain;
   min-height: ${sizing(14)};
-  height: '100%';
+  height: 100%;
   max-height: ${sizing(38)};
 
   ${mediaQuery('md')} {
