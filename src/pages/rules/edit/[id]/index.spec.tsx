@@ -5,6 +5,7 @@ import {
   useCategoryProductSearch,
   useRuleSetPreview,
   useUpdateRuleSet,
+  useGetCategories,
 } from '@/libs/hooks';
 
 import type { GetServerSidePropsContext } from 'next';
@@ -25,10 +26,17 @@ const product2Brand = 'M&S';
 const product1Price = '£5';
 const product2Price = '£10';
 
-jest.mock('@/libs/hooks', () => ({
+jest.mock('../../../../libs/hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
+}));
+jest.mock('../../../../libs/hooks/use-rule-set-preview', () => ({
   useRuleSetPreview: jest.fn(),
+}));
+jest.mock('../../../../libs/hooks/use-update-rule-set', () => ({
   useUpdateRuleSet: jest.fn(),
+}));
+jest.mock('../../../../libs/hooks/use-get-categories', () => ({
+  useGetCategories: jest.fn(),
 }));
 
 describe('Index', () => {
@@ -120,6 +128,10 @@ describe('Index', () => {
     jest
       .mocked(useCategoryProductSearch)
       .mockImplementation(() => mockCategoryProductSearch);
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(),
+      getCategoriesError: '',
+    });
   });
 
   afterEach(() => {
@@ -131,7 +143,7 @@ describe('Index', () => {
 
     render(<Page id={ruleSetId} />);
 
-    expect(screen.getByText(categoryId + ' | Cat Name')).toBeVisible();
+    expect(screen.getByText(categoryId)).toBeVisible();
   });
 
   it('opens changes tab', async () => {

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import {
   Button,
+  CategorySearch,
   Heading,
   ProductSearch,
   Tabs,
@@ -18,14 +19,17 @@ import {
 } from '@/libs/hooks';
 
 const RuleSetOptions = styled.div`
-  background-color: #005640;
-  color: #fff;
   display: flex;
 
   h1 {
-    /* stylelint-disable-next-line property-disallowed-list */
     font-size: 1.5em;
     padding: ${spacing(3)} ${spacing(2)};
+  }
+
+  a,
+  button {
+    min-width: 110px;
+    text-align: center;
   }
 `;
 
@@ -37,9 +41,8 @@ const Actions = styled.div`
 `;
 
 const CategoryPanel = styled.div`
-  border-top: 2px solid #e8e8e8;
-  color: #fff;
-  background-color: #005640;
+  border-top: 2px solid #005640;
+  padding: 20px;
 `;
 
 const MainContainerPanel = styled.div`
@@ -96,15 +99,12 @@ const Page = ({ id }: PageProps) => {
       isLastChanged: false,
     }));
 
-    // eslint-disable-next-line functional/immutable-data
     const product = updatedList.splice(oldPosition, 1)[0];
     const metadata = { ...product.metadata, isPinned };
     const updatedProduct = { ...product, metadata, isLastChanged: isPinned };
 
-    // eslint-disable-next-line functional/immutable-data
     updatedList.splice(newPosition, 0, updatedProduct);
 
-    // eslint-disable-next-line functional/immutable-data
     updatedList.sort(
       (a, b) => Number(b.metadata.isPinned) - Number(a.metadata.isPinned)
     );
@@ -148,8 +148,22 @@ const Page = ({ id }: PageProps) => {
         </Actions>
       </RuleSetOptions>
 
-      <CategoryPanel style={{ padding: '20px' }}>
-        {ruleSets.categoryId} | {ruleSets.categoryName}
+      <CategoryPanel>
+        <CategorySearch
+          selectedCategory={{
+            identifier: ruleSets.categoryId,
+            name: ruleSets.categoryName,
+            path: '/todo',
+          }}
+          onClearSelection={
+            // istanbul ignore next
+            () => {}
+          }
+          onSelectCategory={
+            // istanbul ignore next
+            () => {}
+          }
+        />
       </CategoryPanel>
       <MainContainerPanel>
         <ProductSearchPanel>

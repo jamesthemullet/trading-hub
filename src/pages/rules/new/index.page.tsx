@@ -1,8 +1,7 @@
-import type { ChangeEvent, FormEvent } from 'react';
 import { useState } from 'react';
 
 import styled from '@emotion/styled';
-import type { Category, CategoryListData } from '@/libs/api';
+import type { Category } from '@/libs/api';
 import { useRouter } from 'next/router';
 import {
   Button,
@@ -12,10 +11,8 @@ import {
   spacing,
 } from '@/libs/components';
 import { colourDictionary } from '@/libs/components/utils/constants';
-import { useDebounce, useGetCategories, useRuleSetCreate } from '@/libs/hooks';
+import { useRuleSetCreate } from '@/libs/hooks';
 import { Typography } from '@/libs/components/typography/typography';
-
-const SEARCH_DEBOUNCE_WAIT = 500;
 
 const Wrapper = styled.div`
   padding: ${spacing(3)} 0;
@@ -44,13 +41,7 @@ const ErrorText = styled.p`
 
 const NewRuleSetPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>();
-  const [searchValue, setSearchValue] = useState('');
   const { handlePost, error } = useRuleSetCreate();
-  const { getCategories, getCategoriesError } = useGetCategories();
-  const [categoryResults, setCategoryResults] = useState<CategoryListData>({
-    categories: [],
-    pagination: {},
-  });
   const router = useRouter();
 
   const onCreateNewCategory = async () => {
@@ -67,39 +58,8 @@ const NewRuleSetPage = () => {
     }
   };
 
-  const searchCategories = async (query: string) => {
-    const resp = await getCategories({
-      query,
-      rows: 5,
-      start: 0,
-    });
-
-    if (resp !== undefined) {
-      setCategoryResults(resp);
-    }
-  };
-
-  const { callback: onSearchRequest, cancel } = useDebounce(
-    async (value: string) => {
-      await searchCategories(value);
-    },
-    SEARCH_DEBOUNCE_WAIT
-  );
-
-  const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setSearchValue(value);
-    cancel();
-    onSearchRequest(value);
-  };
-
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
-  };
-
-  const onSearch = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await searchCategories(searchValue);
   };
 
   return (
@@ -126,29 +86,13 @@ const NewRuleSetPage = () => {
           >
             Choose a category or sub-category
           </Typography>
-          <Typography
-            as="p"
-            variant="small"
-            style={{ marginBottom: spacing(1) }}
-          >
-            Category
-          </Typography>
 
           <CategorySearch
-            categoryResults={categoryResults}
-            searchValue={searchValue}
             selectedCategory={selectedCategory}
             onClearSelection={() => {
-              setSearchValue('');
               setSelectedCategory(undefined);
-              setCategoryResults({
-                categories: [],
-                pagination: {},
-              });
             }}
-            onSearchChange={onSearchChange}
             onSelectCategory={onSelectCategory}
-            onSubmit={onSearch}
           />
 
           <div style={{ display: 'flex' }}>
@@ -167,7 +111,6 @@ const NewRuleSetPage = () => {
           </div>
 
           {error && <ErrorText>Error: {error}</ErrorText>}
-          {getCategoriesError && <ErrorText>{getCategoriesError}</ErrorText>}
         </PageWrapper>
       </Wrapper>
     </>

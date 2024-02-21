@@ -1,4 +1,4 @@
-import type { ChangeEvent, FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 
 import styled from '@emotion/styled';
 import type { Category, CategoryListData } from '@/libs/api';
@@ -7,6 +7,9 @@ import { Search } from '../search/search';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import { Typography } from '../typography/typography';
+import { useDebounce, useGetCategories } from '@/libs/hooks';
+
+const SEARCH_DEBOUNCE_WAIT = 500;
 
 const Wrapper = styled.div`
   margin-bottom: ${spacing(1)};
@@ -59,33 +62,72 @@ const SelectedCategoryClose = styled.button`
 `;
 
 type Props = {
-  categoryResults: CategoryListData;
   onClearSelection: () => void;
-  onSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onSelectCategory: (category: Category) => void;
-  searchValue: string;
   selectedCategory?: Category;
 };
 
 export const CategorySearch = ({
-  categoryResults,
-  searchValue,
   selectedCategory,
   onClearSelection,
-  onSubmit,
-  onSearchChange,
   onSelectCategory,
 }: Props) => {
+  const [searchValue, setSearchValue] = useState('');
+  const { getCategories } = useGetCategories();
+  const [categoryResults, setCategoryResults] = useState<CategoryListData>({
+    categories: [],
+    pagination: {},
+  });
+  const searchCategories = async (query: string) => {
+    const resp = await getCategories({
+      query,
+      rows: 5,
+      start: 0,
+    });
+
+    if (resp !== undefined) {
+      setCategoryResults(resp);
+    }
+  };
+
+  const { callback: onSearchRequest, cancel } = useDebounce(
+    async (value: string) => {
+      await searchCategories(value);
+    },
+    SEARCH_DEBOUNCE_WAIT
+  );
+
+  const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSearchValue(value);
+    cancel();
+    onSearchRequest(value);
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await searchCategories(searchValue);
+  };
+
   if (selectedCategory) {
     return (
       <Wrapper>
+        <Typography as="p" variant="small" style={{ marginBottom: spacing(1) }}>
+          Category
+        </Typography>
         <Categories>
           <SelectedCategory as="p">
             {selectedCategory.identifier}
             <SelectedCategoryClose
               aria-label="Remove selected category"
-              onClick={() => onClearSelection()}
+              onClick={() => {
+                setSearchValue('');
+                setCategoryResults({
+                  categories: [],
+                  pagination: {},
+                });
+                onClearSelection();
+              }}
             />
           </SelectedCategory>
         </Categories>
@@ -95,6 +137,9 @@ export const CategorySearch = ({
 
   return (
     <Wrapper>
+      <Typography as="p" variant="small" style={{ marginBottom: spacing(1) }}>
+        Category
+      </Typography>
       <form onSubmit={onSubmit}>
         <Search value={searchValue} onChange={onSearchChange} />
       </form>

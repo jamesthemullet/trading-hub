@@ -27,7 +27,6 @@ jest.mock('../../../libs/hooks/use-get-categories', () => ({
 const INPUT_PLACEHOLDER_TEXT = 'Search...';
 const NEW_RULE_BUTTON_TEXT = 'Create';
 const REMOVE_SELECTED_CATEGORY_BUTTON = 'Remove selected category';
-const SEARCH_BUTTON_TEXT = 'Search button';
 const MOCK_CATEGORY_ID = '20';
 
 const mockGetCategories = {
@@ -233,23 +232,5 @@ describe('Index', () => {
 
     await screen.findByText(NEW_RULE_BUTTON_TEXT);
     expect(mockRouter.push).not.toHaveBeenCalled();
-  });
-
-  it('renders any errors from category search', async () => {
-    const errorText = 'error getting categories';
-
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(),
-      getCategoriesError: errorText,
-    });
-    render(<RuleSetCreate />);
-
-    const searchCategories = await screen.findByLabelText(SEARCH_BUTTON_TEXT);
-
-    act(() => {
-      searchCategories.click();
-    });
-
-    expect(await screen.findByText(errorText)).toBeVisible();
   });
 });
