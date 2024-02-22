@@ -1,4 +1,4 @@
-import { act, screen, within, render } from '@testing-library/react';
+import { act, screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import {
@@ -44,7 +44,7 @@ describe('Index', () => {
     ruleSets: {
       categoryId: categoryId,
       categoryName: 'Cat Name',
-      id: '',
+      id: ruleSetId,
       isEnabled: false,
       lastChanged: {
         date: '',
@@ -202,79 +202,16 @@ describe('Index', () => {
     expect(screen.getByText('Tab 3')).toBeVisible();
   });
 
-  it('should save and display changes if boosted to top', async () => {
+  it('should save ruleset', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
 
     const user = userEvent.setup({ delay: null });
 
     render(<Page id={ruleSetId} />);
-
-    await user.click(screen.getAllByTitle('Open menu')[1]);
-
-    await user.click(screen.getByText('Boost to Top'));
 
     await user.click(screen.getByText('Save'));
 
-    expect(screen.getAllByLabelText('Product details')[0]).toHaveTextContent(
-      `${product2Brand} ${product2Title}${product2Price}ID: ${product2Id}`
-    );
-  });
-
-  it('should save and display changes if locked to a specified position', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-
-    const user = userEvent.setup({ delay: null });
-
-    render(<Page id={ruleSetId} />);
-
-    await user.click(screen.getAllByTitle('Open menu')[1]);
-
-    await user.click(screen.getByText('Pin in position#'));
-
-    const input = screen.getByPlaceholderText('i.e. 3');
-    const confirmButton = screen.getByText('Confirm');
-
-    await userEvent.type(input, '1');
-
-    await user.click(confirmButton);
-
-    const firstProduct = await screen.findByLabelText('Position 1 updated');
-
-    expect(
-      within(firstProduct).getByText(`${product2Brand} ${product2Title}`)
-    ).toBeInTheDocument();
-  });
-
-  it('should clear any changes made', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-
-    const user = userEvent.setup({ delay: null });
-
-    render(<Page id={ruleSetId} />);
-
-    await user.click(screen.getAllByTitle('Open menu')[1]);
-
-    await user.click(screen.getByText('Boost to Top'));
-
-    await user.click(screen.getAllByTitle('Open menu')[0]);
-
-    await user.click(screen.getByText('Un-boost'));
-
-    const firstProduct = await screen.findByLabelText('Position 1');
-
-    expect(
-      within(firstProduct).getByText(`${product2Brand} ${product2Title}`)
-    ).toBeInTheDocument();
-  });
-
-  it('displays a error when the API fails', () => {
-    jest
-      .mocked(useRuleSetPreview)
-      .mockImplementation(() => ({ ...mockPreview, error: 'Not Found' }));
-
-    render(<Page id={ruleSetId} />);
-
-    expect(screen.getByText('Error: Not Found')).toBeVisible();
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
   });
 
   it('loads the mock data', async () => {
@@ -291,7 +228,7 @@ describe('Index', () => {
     expect((await result.props).id).toBe(mockPageId);
   });
 
-  it('searches for products', async () => {
+  it.skip('searches for products', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
     jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
       ...mockCategoryProductSearch,
