@@ -66,7 +66,6 @@ describe('useCategoryProductSearch', () => {
       });
     });
 
-
     rerender();
 
     expect(result.current.error).toEqual(
