@@ -13,6 +13,10 @@ const SEARCH_DEBOUNCE_WAIT = 500;
 
 const Wrapper = styled.div`
   margin-bottom: ${spacing(1)};
+
+  input {
+    min-height: 58px;
+  }
 `;
 
 const Container = styled.div`
@@ -109,7 +113,7 @@ export const CategorySearch = ({
     await searchCategories(searchValue);
   };
 
-  if (selectedCategory) {
+  if (selectedCategory && selectedCategory.identifier) {
     return (
       <Wrapper>
         <Typography as="p" variant="small" style={{ marginBottom: spacing(1) }}>
@@ -149,6 +153,7 @@ export const CategorySearch = ({
             <Row
               key={`row-${category.identifier}`}
               onClick={() => onSelectCategory(category)}
+              aria-label={`Select category ${category.identifier}`}
             >
               <Typography variant="small" as="p">
                 {category.identifier} | {category.name}{' '}

@@ -84,6 +84,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     req.url?.replace('/api', '') ?? '',
     process.env.MERCHANDISING_API_BASEURL
   );
+
   const response = await fetch(url, {
     method: req.method,
     headers,

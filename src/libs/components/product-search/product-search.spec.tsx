@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event';
 
 import { ProductSearch } from './product-search';
 
+const PLACEHOLDER_TEXT = 'Search for product';
+
 describe('ProductSearch', () => {
   it('should render rules search', () => {
     render(
@@ -17,7 +19,7 @@ describe('ProductSearch', () => {
       />
     );
 
-    expect(screen.getByPlaceholderText(/Search\.\.\./i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(PLACEHOLDER_TEXT)).toBeInTheDocument();
   });
 
   it('should render products', () => {
@@ -75,7 +77,7 @@ describe('ProductSearch', () => {
     );
 
     const search = screen.getByPlaceholderText(
-      /Search\.\.\./i
+      PLACEHOLDER_TEXT
     ) as HTMLInputElement;
 
     search.focus();

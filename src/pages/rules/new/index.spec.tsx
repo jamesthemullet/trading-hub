@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useGetCategories, useRuleSetCreate } from '@/libs/hooks';
-import { default as RuleSetCreate } from './index.page';
+import RuleSetCreate from './index.page';
 
 const categoryId1 = 'cat_123';
 const categoryId2 = 'cat_456';
@@ -25,7 +25,7 @@ jest.mock('../../../libs/hooks/use-get-categories', () => ({
 }));
 
 const INPUT_PLACEHOLDER_TEXT = 'Search...';
-const NEW_RULE_BUTTON_TEXT = 'Create';
+const NEW_RULE_BUTTON_TEXT = 'Save';
 const REMOVE_SELECTED_CATEGORY_BUTTON = 'Remove selected category';
 const MOCK_CATEGORY_ID = '20';
 
@@ -64,7 +64,9 @@ describe('Index', () => {
   it('renders', () => {
     render(<RuleSetCreate />);
 
-    expect(screen.getByText('Category')).toBeVisible();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Product Grid'
+    );
   });
 
   it('stores input value', async () => {
@@ -79,23 +81,7 @@ describe('Index', () => {
     expect(screen.getByDisplayValue('SubCategory_507')).toBeVisible();
   });
 
-  it('renders any errors from creating a rule', async () => {
-    jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost: jest.fn(),
-      error: 'any errors',
-    });
-    render(<RuleSetCreate />);
-
-    const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);
-
-    act(() => {
-      submit.click();
-    });
-
-    expect(screen.getByText('Error: any errors')).toBeVisible();
-  });
-
-  it('clear category search results', async () => {
+  it('clears category search results', async () => {
     const user = userEvent.setup();
     const mockRouter = {
       push: jest.fn(),

@@ -18,6 +18,12 @@ const handlers = [
   }),
 ];
 
+const mockMerchandisingRules = {
+  pinnedProducts: [],
+  boosts: [],
+  blockedProducts: [],
+};
+
 const server = setupServer(...handlers);
 const mockCategoryId = 'catid123';
 
@@ -45,7 +51,10 @@ describe('useRuleSetCreate', () => {
     const {
       result: { current },
     } = renderHook(() => useRuleSetCreate());
-    const resp = await current.handlePost({ categoryId: mockCategoryId });
+    const resp = await current.handlePost({
+      categoryId: mockCategoryId,
+      merchandisingRules: mockMerchandisingRules,
+    });
 
     expect(resp).toEqual(mockResponse);
   });
@@ -59,7 +68,10 @@ describe('useRuleSetCreate', () => {
     const { result } = renderHook(() => useRuleSetCreate());
 
     await act(async () => {
-      await result.current.handlePost({ categoryId: mockCategoryId });
+      await result.current.handlePost({
+        categoryId: mockCategoryId,
+        merchandisingRules: mockMerchandisingRules,
+      });
     });
 
     expect(result.current.error).toBe(
