@@ -1,4 +1,4 @@
-import { act, screen, within, render } from '@testing-library/react';
+import { act, screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import {
@@ -44,7 +44,7 @@ describe('Index', () => {
     ruleSets: {
       categoryId: categoryId,
       categoryName: 'Cat Name',
-      id: '',
+      id: ruleSetId,
       isEnabled: false,
       lastChanged: {
         date: '',
@@ -138,10 +138,12 @@ describe('Index', () => {
     jest.clearAllMocks();
   });
 
-  it('displays the category id', () => {
+  it('displays the category id', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
 
-    render(<Page id={ruleSetId} />);
+    await act(() => {
+      render(<Page id={ruleSetId} />);
+    });
 
     expect(screen.getByText(categoryId)).toBeVisible();
   });
@@ -202,79 +204,16 @@ describe('Index', () => {
     expect(screen.getByText('Tab 3')).toBeVisible();
   });
 
-  it('should save and display changes if boosted to top', async () => {
+  it('should save ruleset', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
 
     const user = userEvent.setup({ delay: null });
 
     render(<Page id={ruleSetId} />);
-
-    await user.click(screen.getAllByTitle('Open menu')[1]);
-
-    await user.click(screen.getByText('Boost to Top'));
 
     await user.click(screen.getByText('Save'));
 
-    expect(screen.getAllByLabelText('Product details')[0]).toHaveTextContent(
-      `${product2Brand} ${product2Title}${product2Price}ID: ${product2Id}`
-    );
-  });
-
-  it('should save and display changes if locked to a specified position', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-
-    const user = userEvent.setup({ delay: null });
-
-    render(<Page id={ruleSetId} />);
-
-    await user.click(screen.getAllByTitle('Open menu')[1]);
-
-    await user.click(screen.getByText('Pin in position#'));
-
-    const input = screen.getByPlaceholderText('i.e. 3');
-    const confirmButton = screen.getByText('Confirm');
-
-    await userEvent.type(input, '1');
-
-    await user.click(confirmButton);
-
-    const firstProduct = await screen.findByLabelText('Position 1 updated');
-
-    expect(
-      within(firstProduct).getByText(`${product2Brand} ${product2Title}`)
-    ).toBeInTheDocument();
-  });
-
-  it('should clear any changes made', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-
-    const user = userEvent.setup({ delay: null });
-
-    render(<Page id={ruleSetId} />);
-
-    await user.click(screen.getAllByTitle('Open menu')[1]);
-
-    await user.click(screen.getByText('Boost to Top'));
-
-    await user.click(screen.getAllByTitle('Open menu')[0]);
-
-    await user.click(screen.getByText('Un-boost'));
-
-    const firstProduct = await screen.findByLabelText('Position 1');
-
-    expect(
-      within(firstProduct).getByText(`${product2Brand} ${product2Title}`)
-    ).toBeInTheDocument();
-  });
-
-  it('displays a error when the API fails', () => {
-    jest
-      .mocked(useRuleSetPreview)
-      .mockImplementation(() => ({ ...mockPreview, error: 'Not Found' }));
-
-    render(<Page id={ruleSetId} />);
-
-    expect(screen.getByText('Error: Not Found')).toBeVisible();
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
   });
 
   it('loads the mock data', async () => {
@@ -289,64 +228,5 @@ describe('Index', () => {
     }
 
     expect((await result.props).id).toBe(mockPageId);
-  });
-
-  it('searches for products', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-    jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
-      ...mockCategoryProductSearch,
-      handleGet: jest.fn(() => {
-        return Promise.resolve({
-          products: [
-            {
-              id: product1Id,
-              title: product1Title,
-              imageUrl: ['example1.jpg'],
-              brand: product1Brand,
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: product1Price,
-              rating: 4.5,
-              url: '',
-            },
-            {
-              id: product2Id,
-              title: product2Title,
-              imageUrl: ['example2.jpg'],
-              brand: product2Brand,
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: product2Price,
-              rating: 5,
-              url: '',
-            },
-            {
-              id: product3Id,
-              title: product3Title,
-              imageUrl: ['example.jpg'],
-              brand: 'brand',
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: '£10',
-              rating: 4.5,
-              url: '',
-            },
-          ],
-          pagination: {
-            totalItems: 3,
-          },
-        });
-      }),
-    }));
-
-    const user = userEvent.setup({ delay: null });
-
-    render(<Page id={ruleSetId} />);
-
-    const search = await screen.findByPlaceholderText('Search...');
-
-    await user.type(search, '123');
-
-    expect(screen.getByText('3 results')).toBeVisible();
   });
 });

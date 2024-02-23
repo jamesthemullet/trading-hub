@@ -21,7 +21,6 @@ export const useUpdateRuleSet = () => {
     }) => {
       setError('');
 
-      // eslint-disable-next-line functional/no-try-statement
       try {
         const body = {
           categoryId,
