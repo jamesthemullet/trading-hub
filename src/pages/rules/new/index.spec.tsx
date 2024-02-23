@@ -74,7 +74,7 @@ describe('Index', () => {
     render(<RuleSetCreate />);
 
     await user.type(
-      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      screen.getAllByPlaceholderText(INPUT_PLACEHOLDER_TEXT)[0],
       'SubCategory_507{enter}'
     );
 
@@ -110,7 +110,7 @@ describe('Index', () => {
     render(<RuleSetCreate />);
 
     await user.type(
-      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      screen.getAllByPlaceholderText(INPUT_PLACEHOLDER_TEXT)[0],
       'SubCategory_507'
     );
 
@@ -128,7 +128,7 @@ describe('Index', () => {
 
     await screen.findByText(NEW_RULE_BUTTON_TEXT);
     expect(
-      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT).textContent
+      screen.getAllByPlaceholderText(INPUT_PLACEHOLDER_TEXT)[0].textContent
     ).toBe('');
   });
 
@@ -161,7 +161,7 @@ describe('Index', () => {
     render(<RuleSetCreate />);
 
     await user.type(
-      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      screen.getAllByPlaceholderText(INPUT_PLACEHOLDER_TEXT)[0],
       'SubCategory_507'
     );
 
@@ -200,7 +200,7 @@ describe('Index', () => {
     render(<RuleSetCreate />);
 
     await user.type(
-      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      screen.getAllByPlaceholderText(INPUT_PLACEHOLDER_TEXT)[0],
       'SubCategory_507'
     );
 

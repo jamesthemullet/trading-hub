@@ -2,13 +2,14 @@ import styled from '@emotion/styled';
 import {
   CategorySearch,
   ProductGridHeader,
+  ProductSearch,
   Tabs,
   VisualEditor,
   spacing,
 } from '../../components';
 import { useEffect, useState } from 'react';
 import type { Category } from '@/libs/api';
-import { useCategoryPreview } from '../../hooks';
+import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
 import { Product, MerchandisingRules } from '@/libs/api';
 
 const CategoryPanel = styled.div`
@@ -78,6 +79,8 @@ export const Ruleset = ({
         boosts: [],
       }
     );
+  const { handleGet } = useCategoryProductSearch();
+  const [searchProducts, setSearchProducts] = useState<Product[]>([]);
 
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
@@ -87,8 +90,6 @@ export const Ruleset = ({
     selectedCategory?.identifier,
     merchandisingRules
   );
-
-  console.log('sort', categoryPreview);
 
   useEffect(() => {
     setSortedProducts(categoryPreview);
@@ -165,7 +166,20 @@ export const Ruleset = ({
             currentTab={currentProductTab}
           />
           {currentProductTab === 0 && (
-            <p style={{ padding: spacing(2) }}>Tab 1</p>
+            <ProductSearch
+              onSearch={async (query) => {
+                if (!selectedCategory.identifier) return;
+                const data = await handleGet({
+                  categoryId: selectedCategory.identifier,
+                  query,
+                  start: 0,
+                  rows: 10,
+                });
+                setSearchProducts(data.products);
+              }}
+              onChangePosition={onChangePosition}
+              products={searchProducts}
+            />
           )}
           {currentProductTab === 1 && (
             <p style={{ padding: spacing(2) }}>Tab 2</p>

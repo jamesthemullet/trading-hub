@@ -24,6 +24,7 @@ export const useCategoryPreview = (
           merchandisingRules
         );
 
+
         const previewData = categoryPreview.data;
 
         setCategoryPreview(previewData.products);

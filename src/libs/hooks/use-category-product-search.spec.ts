@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 
 import type { RuleSets } from '@/libs/api';
 import { http, HttpResponse } from 'msw';
@@ -57,12 +57,16 @@ describe('useCategoryProductSearch', () => {
 
     const { result, rerender } = renderHook(() => useCategoryProductSearch());
 
-    await result.current.handleGet({
-      categoryId: '1',
-      query: '',
-      rows: 10,
-      start: 0,
+    await act(async () => {
+      await result.current.handleGet({
+        categoryId: '1',
+        query: '',
+        rows: 10,
+        start: 0,
+      });
     });
+
+
     rerender();
 
     expect(result.current.error).toEqual(

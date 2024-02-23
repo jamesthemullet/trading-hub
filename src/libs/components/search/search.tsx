@@ -7,6 +7,7 @@ import { Icon } from '../icon/icon';
 export type SearchProps = {
   value?: string | number | readonly string[] | undefined;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  placeholder?: string;
 };
 
 const SearchBoxContainer = styled.div`
@@ -28,7 +29,12 @@ const StyledIcon = styled(Icon)`
   mask-size: 20px;
 `;
 
-export const Search = ({ value, onChange, ...rest }: SearchProps) => {
+export const Search = ({
+  value,
+  onChange,
+  placeholder,
+  ...rest
+}: SearchProps) => {
   return (
     <SearchBoxContainer {...rest}>
       <SearchBox
@@ -39,7 +45,7 @@ export const Search = ({ value, onChange, ...rest }: SearchProps) => {
         inputProps={{
           isLabelHidden: true,
           label: 'Search category identifier or user name',
-          placeholder: 'Search...',
+          placeholder: placeholder || 'Search...',
           required: true,
           id: 'searchId',
           name: 'searchTerm',

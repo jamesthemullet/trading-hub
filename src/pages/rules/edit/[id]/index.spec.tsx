@@ -138,10 +138,12 @@ describe('Index', () => {
     jest.clearAllMocks();
   });
 
-  it('displays the category id', () => {
+  it('displays the category id', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
 
-    render(<Page id={ruleSetId} />);
+    await act(() => {
+      render(<Page id={ruleSetId} />);
+    });
 
     expect(screen.getByText(categoryId)).toBeVisible();
   });
@@ -226,64 +228,5 @@ describe('Index', () => {
     }
 
     expect((await result.props).id).toBe(mockPageId);
-  });
-
-  it.skip('searches for products', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-    jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
-      ...mockCategoryProductSearch,
-      handleGet: jest.fn(() => {
-        return Promise.resolve({
-          products: [
-            {
-              id: product1Id,
-              title: product1Title,
-              imageUrl: ['example1.jpg'],
-              brand: product1Brand,
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: product1Price,
-              rating: 4.5,
-              url: '',
-            },
-            {
-              id: product2Id,
-              title: product2Title,
-              imageUrl: ['example2.jpg'],
-              brand: product2Brand,
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: product2Price,
-              rating: 5,
-              url: '',
-            },
-            {
-              id: product3Id,
-              title: product3Title,
-              imageUrl: ['example.jpg'],
-              brand: 'brand',
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: '£10',
-              rating: 4.5,
-              url: '',
-            },
-          ],
-          pagination: {
-            totalItems: 3,
-          },
-        });
-      }),
-    }));
-
-    const user = userEvent.setup({ delay: null });
-
-    render(<Page id={ruleSetId} />);
-
-    const search = await screen.findByPlaceholderText('Search...');
-
-    await user.type(search, '123');
-
-    expect(screen.getByText('3 results')).toBeVisible();
   });
 });

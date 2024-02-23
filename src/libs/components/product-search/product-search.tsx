@@ -81,6 +81,7 @@ export const ProductSearch = ({
     <ProductSearchRootContainer>
       <TopContainer>
         <StyledSearch
+          placeholder="Search for product"
           onChange={(e) => {
             onSearch(e.target.value);
           }}

@@ -8,17 +8,33 @@ jest.mock('../../hooks/use-get-categories', () => ({
 jest.mock('../../hooks/use-category-preview', () => ({
   useCategoryPreview: jest.fn(),
 }));
+jest.mock('../../hooks/use-category-product-search', () => ({
+  useCategoryProductSearch: jest.fn(),
+}));
 
 import { Ruleset } from './ruleset';
 import { useGetCategories } from '../../hooks/use-get-categories';
 import { useCategoryPreview } from '../../hooks/use-category-preview';
+import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
 
-const INPUT_PLACEHOLDER_TEXT = 'Search...';
+const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
+const PRODUCT_SEARCH_PLACEHOLDER_TEXT = 'Search for product';
 const SAVE_BUTTON = 'Save';
 
 const categoryId1 = 'cat_123';
 const categoryName1 = 'jeans';
 const categoryPath1 = 'l/jeans';
+const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
+const product1Id = 'a1';
+const product2Id = 'b2';
+const product3Id = 'c2';
+const product1Title = 'first product';
+const product2Title = 'second product';
+const product3Title = 'third product';
+const product1Brand = 'Monsoon';
+const product2Brand = 'M&S';
+const product1Price = '£5';
+const product2Price = '£10';
 const mockGetCategories = {
   categories: [
     {
@@ -43,7 +59,7 @@ const mockProduct = {
 
 const selectCategory = async (screen: Screen, user: UserEvent) => {
   await user.type(
-    screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+    screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
     'SubCategory_507{enter}'
   );
 
@@ -62,6 +78,63 @@ describe('Ruleset', () => {
   });
 
   beforeEach(() => {
+    const mockCategoryProductSearch = {
+      handleGet: jest.fn(() => {
+        return Promise.resolve({
+          products: [],
+          pagination: {
+            totalItems: 0,
+          },
+        });
+      }),
+      error: '',
+    };
+    jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
+      ...mockCategoryProductSearch,
+      handleGet: jest.fn(() => {
+        return Promise.resolve({
+          products: [
+            {
+              id: product1Id,
+              title: product1Title,
+              imageUrl: ['example1.jpg'],
+              brand: product1Brand,
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: product1Price,
+              rating: 4.5,
+              url: '',
+            },
+            {
+              id: product2Id,
+              title: product2Title,
+              imageUrl: ['example2.jpg'],
+              brand: product2Brand,
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: product2Price,
+              rating: 5,
+              url: '',
+            },
+            {
+              id: product3Id,
+              title: product3Title,
+              imageUrl: ['example.jpg'],
+              brand: 'brand',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£10',
+              rating: 4.5,
+              url: '',
+            },
+          ],
+          pagination: {
+            totalItems: 3,
+          },
+        });
+      }),
+    }));
+
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(),
       getCategoriesError: '',
@@ -140,7 +213,7 @@ describe('Ruleset', () => {
           blockedProducts: [],
           boosts: [],
         }}
-        rulesetId="asd21214"
+        rulesetId={ruleSetId}
       />
     );
 
@@ -184,5 +257,56 @@ describe('Ruleset', () => {
       saveButton.click();
     });
     expect(mockSave).not.toHaveBeenCalled();
+  });
+
+  it('searches for products', async () => {
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    const user = userEvent.setup({ delay: null });
+
+    render(
+      <Ruleset
+        onSave={jest.fn()}
+        rulesetCategory={{
+          identifier: categoryId1,
+          name: categoryName1,
+          path: categoryPath1,
+        }}
+        rulesetMerchandisingRules={{
+          pinnedProducts: [],
+          blockedProducts: [],
+          boosts: [],
+        }}
+        rulesetId={ruleSetId}
+      />
+    );
+
+    await user.type(
+      screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT),
+      '123'
+    );
+
+    expect(screen.getByText('3 results')).toBeVisible();
+  });
+
+  it('does not searche for products when no category selected', async () => {
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    const user = userEvent.setup({ delay: null });
+
+    render(<Ruleset onSave={jest.fn()} />);
+
+    await user.type(
+      screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT),
+      '123'
+    );
+
+    expect(screen.getByText('0 results')).toBeVisible();
   });
 });
