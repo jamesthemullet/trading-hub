@@ -31,6 +31,8 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const jsonBody = await response.json();
 
+  // test change 1
+
   if (req.url && req.url.startsWith('/api/merchandising/product')) {
     const { products } = jsonBody as ProductSearchResponse;
     products.forEach((product) => {
