@@ -9,7 +9,7 @@ additional_tags = {
   deploy_app_name    = "trading-hub"
 }
 app_name         = "trading-hub" #CHANGEME # Required : Change this as you see appropriate "Preferrably: alphanumberical with hyphens as allowed characters"
-github_repo_name = "trading-hub-release"
+github_repo_name = "trading-hub"
 port             = "4200"
 stack_version    = "1"
 
