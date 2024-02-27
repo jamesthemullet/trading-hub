@@ -58,6 +58,12 @@ jobs:
       - name: Test
         run: npm test
 
+  build:
+    name: Build and upload the app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Build
         run: npm run build
 
@@ -109,7 +115,7 @@ jobs:
   deploy-pr-env:
     name: Deploy PR Environment
     runs-on: ubuntu-latest
-    needs: code-quality
+    needs: build
     environment:
       name: deveun
     steps:
