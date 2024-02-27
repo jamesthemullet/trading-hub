@@ -17,4 +17,5 @@ runs:
         cache: npm
 
     - name: Install dependencies
-      run: npm install
+      shell: bash
+      run: npm install --frozen-lockfile --ignore-scripts
