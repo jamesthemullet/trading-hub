@@ -8,4 +8,10 @@ describe('Search', () => {
 
     expect(screen.getByPlaceholderText(/Search\.\.\./i)).toBeInTheDocument();
   });
+
+  it('should render custom placeholder search', () => {
+    render(<Search placeholder="placeholder" />);
+
+    expect(screen.getByPlaceholderText('placeholder')).toBeInTheDocument();
+  });
 });

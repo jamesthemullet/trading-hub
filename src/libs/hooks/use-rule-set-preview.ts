@@ -24,7 +24,6 @@ export const useRuleSetPreview = (id: string) => {
 
   useEffect(() => {
     const asyncCall = async () => {
-      // eslint-disable-next-line functional/no-try-statement
       try {
         const response = await merchandising().rulesetDetail(id);
 
