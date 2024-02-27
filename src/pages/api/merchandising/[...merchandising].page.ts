@@ -35,7 +35,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     const { products } = jsonBody as ProductSearchResponse;
     products.forEach((product) => {
       product.metadata = {
-        isPinned: false,
+        isPinned: product?.metadata?.isPinned ?? false,
       };
     });
   }
