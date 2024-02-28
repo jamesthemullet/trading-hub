@@ -101,11 +101,13 @@ describe('useRuleSet', () => {
           url: 'petite-round-neck-cardigan/p/clp60275023',
         },
       ],
-      error: ''
+      error: '',
     };
 
     await waitFor(() => {
-      expect(result.current.categoryPreview).toMatchObject(expectedData.categoryPreview);
+      expect(result.current.categoryPreview).toMatchObject(
+        expectedData.categoryPreview
+      );
     });
   });
 
@@ -129,7 +131,6 @@ describe('useRuleSet', () => {
     });
   });
 
-
   it('should refetch data', async () => {
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: mockSearchData,
@@ -137,8 +138,7 @@ describe('useRuleSet', () => {
     });
 
     const newMocks = { ...mockSearchData };
-    newMocks.products.push(mockSearchData.products[0])
-
+    newMocks.products.push(mockSearchData.products[0]);
 
     const { result } = renderHook(() =>
       useCategoryPreview(mockCategoryId, mockMerchandisingRules)

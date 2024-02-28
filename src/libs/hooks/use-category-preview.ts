@@ -42,7 +42,8 @@ export const useCategoryPreview = (
   }, [categoryId, shouldRefetch]);
 
   return {
-    categoryPreview, error,
+    categoryPreview,
+    error,
     refetchRuleSetPreview: () => refetch({}),
   };
 };
