@@ -148,9 +148,14 @@ export const LockActions = styled.div`
 `;
 
 export const ProductCard = styled.div`
+  max-height: 160px;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(245, 245, 245, 1);
+  padding: 8px;
+
   img {
-    height: auto;
-    max-width: 100%;
-    width: 100%;
+    max-height: 160px;
+    width: auto;
   }
 `;

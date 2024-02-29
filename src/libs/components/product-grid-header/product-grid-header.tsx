@@ -24,7 +24,13 @@ const Actions = styled.div`
   padding: 18px;
 `;
 
-export const ProductGridHeader = ({ onSave }: { onSave: () => void }) => (
+type Props = {
+  hasPreview: boolean;
+  onPreview: () => void;
+  onSave: () => void;
+};
+
+export const ProductGridHeader = ({ hasPreview, onPreview, onSave }: Props) => (
   <RuleSetOptions>
     <h1>Product Grid</h1>
 
@@ -32,8 +38,7 @@ export const ProductGridHeader = ({ onSave }: { onSave: () => void }) => (
       <Button as="a" href="/rules">
         Cancel
       </Button>
-      {/* placeholder for preview */}
-      <Button as="a" href="">
+      <Button as="button" onClick={onPreview} isDisabled={!hasPreview}>
         Preview
       </Button>
       <Button theme="primary" onClick={onSave}>

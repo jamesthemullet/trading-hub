@@ -9,6 +9,7 @@ export const useCategoryPreview = (
 ) => {
   const [categoryPreview, setCategoryPreview] = useState<Product[]>([]);
   const [error, setError] = useState('');
+  const [shouldRefetch, refetch] = useState({});
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -38,7 +39,11 @@ export const useCategoryPreview = (
     };
 
     void asyncCall();
-  }, [categoryId]);
+  }, [categoryId, shouldRefetch]);
 
-  return { categoryPreview, error };
+  return {
+    categoryPreview,
+    error,
+    refetchRuleSetPreview: () => refetch({}),
+  };
 };
