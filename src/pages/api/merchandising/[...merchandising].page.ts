@@ -75,7 +75,10 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (token && typeof token.accessToken === 'string') {
     headers.set('Authorization', `Bearer ${token.accessToken}`);
+  } else {
+    console.warn('No token found, did you forget to set the NEXTAUTH_SECRET?');
   }
+
   if (req.body) {
     headers.set('Content-Type', 'application/json');
   }
@@ -91,9 +94,23 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     body: req.body ? JSON.stringify(req.body) : undefined,
   });
 
-  return res
-    .status(response.status)
-    .json(req.method === 'DELETE' ? {} : await response.json());
+  if (!response.ok) {
+    console.error(
+      'Error fetching from merchandising',
+      response.status,
+      response.statusText
+    );
+  }
+
+  const text = await response.text();
+  let json = {};
+  try {
+    json = text ? JSON.parse(text) : {};
+  } catch (e) {
+    console.error('Error parsing JSON', e);
+  }
+
+  return res.status(response.status).json(req.method === 'DELETE' ? {} : json);
 };
 
 export default proxy;
