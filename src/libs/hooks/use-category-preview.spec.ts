@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
@@ -105,7 +105,9 @@ describe('useRuleSet', () => {
     };
 
     await waitFor(() => {
-      expect(result).toEqual({ current: expectedData });
+      expect(result.current.categoryPreview).toMatchObject(
+        expectedData.categoryPreview
+      );
     });
   });
 
@@ -125,7 +127,34 @@ describe('useRuleSet', () => {
     };
 
     await waitFor(() => {
-      expect(result).toEqual({ current: expectedData });
+      expect(result.current.error).toEqual(expectedData.error);
+    });
+  });
+
+  it('should refetch data', async () => {
+    getRuleSetPreviewMock.mockReturnValueOnce({
+      data: mockSearchData,
+      status: { status: 200 },
+    });
+
+    const newMocks = { ...mockSearchData };
+    newMocks.products.push(mockSearchData.products[0]);
+
+    const { result } = renderHook(() =>
+      useCategoryPreview(mockCategoryId, mockMerchandisingRules)
+    );
+
+    getRuleSetPreviewMock.mockReturnValueOnce({
+      data: newMocks,
+      status: { status: 200 },
+    });
+
+    act(() => {
+      result.current.refetchRuleSetPreview();
+    });
+
+    await waitFor(() => {
+      expect(result.current.categoryPreview.length).toEqual(2);
     });
   });
 });

@@ -7,34 +7,75 @@ import {
 
 import styled from '@emotion/styled';
 
-import { color, colourDictionary } from '../utils/constants';
+import { color } from '../utils/constants';
+import { css } from '@emotion/react';
+
+const setColours = ({
+  isDisabled,
+  isPrimary,
+}: {
+  isDisabled?: boolean;
+  isPrimary?: boolean;
+}) => {
+  if (isDisabled) {
+    return css`
+      color: rgba(142, 142, 142, 1);
+      background-color: #f2f2f2;
+      border-color: #f2f2f2;
+    `;
+  }
+  if (isPrimary) {
+    return css`
+      color: #fff;
+      background-color: #1d1d1b;
+      border-color: #1d1d1b;
+
+      &:hover,
+      &:active {
+        color: rgba(29, 29, 27, 1);
+        background-color: #c1e2c9;
+        border-color: #c1e2c9;
+      }
+
+      &:active {
+        background-color: #e1ece3;
+        border-color: #e1ece3;
+      }
+    `;
+  }
+  return css`
+    color: rgba(29, 29, 27, 1);
+    background: #fff;
+    border-color: #e5e5e5;
+
+    &:hover,
+    &:focus {
+      background-color: #f2f2f2;
+      border-color: #c1e2c9;
+      outline: none;
+    }
+
+    &:active {
+      background-color: #c1e2c9;
+      border-color: #c1e2c9;
+    }
+  `;
+};
 
 const StyledButton = styled.button<ButtonProps>`
   border: solid 1px ${color.lightGrey};
   border-radius: 4px;
-  background-color: ${({ isPrimary }) =>
-    isPrimary ? colourDictionary.black : colourDictionary.white};
+  ${({ isDisabled, isPrimary }) => setColours({ isDisabled, isPrimary })};
   font-size: 16px;
-  color: ${({ isPrimary }) =>
-    isPrimary ? colourDictionary.white : colourDictionary.black};
-  transition: background-color 0.1s ease-in;
+  transition: all 0.1s ease-in;
+  transition-property: background-color color border-color;
   text-decoration: none;
   padding: 10px 16px;
   width: 100%;
 
-  &:hover {
-    background-color: ${({ isPrimary }) =>
-      isPrimary ? color.buttonPrimaryHover : color.backgroundGrey};
-  }
-
   &:disabled {
     cursor: default;
     opacity: 0.7;
-
-    &:hover {
-      background-color: ${({ isPrimary }) =>
-        isPrimary ? colourDictionary.black : colourDictionary.white};
-    }
   }
 `;
 
@@ -70,6 +111,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         isPrimary={theme === 'primary'}
         {...(onClick && !isDisabled && { onClick })}
         {...(isDisabled && { disabled: isDisabled })}
+        isDisabled={isDisabled}
         type={type}
         {...rest}
       >
