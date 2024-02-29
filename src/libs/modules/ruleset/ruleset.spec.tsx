@@ -143,6 +143,7 @@ describe('Ruleset', () => {
     jest.mocked(useCategoryPreview).mockReturnValue({
       categoryPreview: [mockProduct, { ...mockProduct, id: 'product2' }],
       error: '',
+      refetchRuleSetPreview: jest.fn(),
     });
   });
 
@@ -292,7 +293,7 @@ describe('Ruleset', () => {
     expect(screen.getByText('3 results')).toBeVisible();
   });
 
-  it('does not searche for products when no category selected', async () => {
+  it('does not search for products when no category selected', async () => {
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
@@ -308,5 +309,38 @@ describe('Ruleset', () => {
     );
 
     expect(screen.getByText('0 results')).toBeVisible();
+  });
+
+  it('should show and close preview', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    render(<Ruleset onSave={jest.fn()} />);
+
+    await selectCategory(screen, user);
+
+    const previewButton = screen.getByText('Preview');
+
+    act(() => {
+      previewButton.click();
+    });
+
+    expect(
+      screen.getByText('Search across the site to preview the rule influence')
+    ).toBeInTheDocument();
+
+    const closeButton = screen.getByLabelText('close modal');
+
+    act(() => {
+      closeButton.click();
+    });
+
+    expect(
+      screen.queryByText('Search across the site to preview the rule influence')
+    ).not.toBeInTheDocument();
   });
 });
