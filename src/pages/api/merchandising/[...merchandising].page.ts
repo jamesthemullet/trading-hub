@@ -105,8 +105,8 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
   const text = await response.text();
   let json = {};
   try {
-    json = text ? JSON.parse(text) : {};
-  } catch (e) {
+    json = JSON.parse(text);
+  } catch (e) /* istanbul ignore next */ {
     console.error('Error parsing JSON', e);
   }
 
