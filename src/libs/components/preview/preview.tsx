@@ -72,7 +72,7 @@ const Item = styled(Typography)`
   cursor: pointer;
   border: none;
   width: 100%;
-  border-bottom: solid 1px #707070;
+  background: none;
 
   &:hover {
     background-color: #f5f5f5;

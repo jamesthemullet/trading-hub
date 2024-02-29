@@ -27,7 +27,6 @@ export type FilterDropdownProps = {
 type ClosingType = 'icon' | 'button' | 'esc' | 'outsideClick';
 
 const FilterDropdownWrapper = styled.div`
-  display: flex;
   position: relative;
   margin-bottom: ${spacing(2)};
   min-width: 125px;
@@ -66,6 +65,9 @@ const ArrowIcon = styled(Icon)`
 const ContentWrapper = styled.div<
   Pick<FilterDropdownProps, 'alignContentTowards' | 'contentWidth' | 'isOpen'>
 >`
+  box-sizing: border-box;
+  flex-direction: column;
+  display: flex;
   position: absolute;
   width: ${({ contentWidth = sizing('100%') }) => contentWidth};
   z-index: 2;
@@ -84,10 +86,8 @@ const ContentWrapper = styled.div<
 `;
 
 const Content = styled.div`
-  display: flex;
   overflow-y: auto;
   overscroll-behavior: contain;
-  min-height: ${sizing(14)};
   height: 100%;
   max-height: ${sizing(38)};
 
