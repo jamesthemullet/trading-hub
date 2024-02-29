@@ -51,6 +51,10 @@ const config: Config = {
   testEnvironmentOptions: {
     customExportConditions: [''],
   },
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
 };
 
 export default config;
