@@ -30,6 +30,38 @@ type ChangePositionTypes = {
   oldPosition: number;
 };
 
+export const ProductDetails = ({
+  imageUrl,
+  brand,
+  isBrandStrong,
+  title,
+  price,
+  id,
+}: Pick<ProductType, 'title' | 'price' | 'brand' | 'id' | 'imageUrl'> & {
+  isBrandStrong?: boolean;
+}) => {
+  return (
+    <>
+      <ProductCard>
+        <img
+          src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
+        />
+      </ProductCard>
+      <ProductInfo aria-label="Product details">
+        <Typography as="p" variant="small" isStrong={isBrandStrong ?? true}>
+          {brand} {title}
+        </Typography>
+        <Typography as="p" variant="small">
+          {price}
+        </Typography>
+        <Typography as="p" variant="small">
+          ID: {id}
+        </Typography>
+      </ProductInfo>
+    </>
+  );
+};
+
 export const Product = ({
   brand,
   id,
@@ -243,24 +275,14 @@ export const Product = ({
           </ProductMenu>
         )}
       </ProductHeader>
-      <div>
-        <ProductCard>
-          <img
-            src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
-          />
-        </ProductCard>
-      </div>
-      <ProductInfo aria-label="Product details">
-        <Typography as="p" variant="small" isStrong={isBrandStrong ?? true}>
-          {brand} {title}
-        </Typography>
-        <Typography as="p" variant="small">
-          {price}
-        </Typography>
-        <Typography as="p" variant="small">
-          ID: {id}
-        </Typography>
-      </ProductInfo>
+      <ProductDetails
+        imageUrl={imageUrl}
+        brand={brand}
+        isBrandStrong={isBrandStrong}
+        title={title}
+        price={price}
+        id={id}
+      />
     </ProductWrapper>
   );
 };

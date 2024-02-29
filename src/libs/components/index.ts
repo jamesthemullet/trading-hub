@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 export * from './button/button';
 export * from './category-search/category-search';
 export * from './dropdown/dropdown';
@@ -7,6 +6,7 @@ export * from './heading/heading';
 export * from './navigation/navigation';
 export * from './page-wrapper/page-wrapper';
 export * from './pagination/pagination';
+export * from './preview/preview';
 export * from './product-grid-header/product-grid-header';
 export * from './product-search/product-search';
 export * from './product/product';

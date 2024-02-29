@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import {
   CategorySearch,
+  Preview,
   ProductGridHeader,
   ProductSearch,
   Tabs,
@@ -81,6 +82,7 @@ export const Ruleset = ({
     );
   const { handleGet } = useCategoryProductSearch();
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
 
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
@@ -146,7 +148,19 @@ export const Ruleset = ({
 
   return (
     <>
-      <ProductGridHeader onSave={onSaveRuleset} />
+      {showPreview && selectedCategory.identifier && (
+        <Preview
+          onClose={() => setShowPreview(!showPreview)}
+          categoryId={selectedCategory.identifier}
+          merchandisingRules={merchandisingRules}
+        />
+      )}
+
+      <ProductGridHeader
+        onSave={onSaveRuleset}
+        hasPreview={!!selectedCategory?.identifier}
+        onPreview={() => setShowPreview(!showPreview)}
+      />
 
       <CategoryPanel>
         <CategorySearch
