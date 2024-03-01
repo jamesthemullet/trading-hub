@@ -71,9 +71,9 @@ export const Navigation = () => {
               src="/trading-hub/asset/menu-category-ranking.svg"
             />
           </Link>
-          <Link href="/status" title="Backend API status">
+          <Link href="/status" title="Check backend API status">
             <Icon
-              title="Category Ranking Rules"
+              title="Backend API status"
               src="/trading-hub/asset/status.svg"
             />
           </Link>
