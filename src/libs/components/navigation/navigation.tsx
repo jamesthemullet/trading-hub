@@ -71,6 +71,12 @@ export const Navigation = () => {
               src="/trading-hub/asset/menu-category-ranking.svg"
             />
           </Link>
+          <Link href="/status" title="Backend API status">
+            <Icon
+              title="Category Ranking Rules"
+              src="/trading-hub/asset/status.svg"
+            />
+          </Link>
         </ListItem>
         <ListItem>
           <Link href="/" onClick={() => (isLoggedIn ? signOut() : signIn())}>
