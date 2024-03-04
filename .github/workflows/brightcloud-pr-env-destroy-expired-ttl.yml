@@ -32,7 +32,7 @@ jobs:
     needs:
       - check-vars
     steps:
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v7
         id: open-prs
         with:
           script: |
