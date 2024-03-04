@@ -63,7 +63,6 @@ describe('Product', () => {
       id: 'id',
       isPinned: true,
       newPosition: 0,
-      oldPosition: 1,
     };
     render(<Product {...productProps} />);
 
@@ -160,7 +159,6 @@ describe('Product', () => {
       id: 'id',
       isPinned: true,
       newPosition: 2,
-      oldPosition: 1,
     };
     render(<Product {...productProps} />);
 
@@ -185,7 +183,6 @@ describe('Product', () => {
       id: 'id',
       isPinned: false,
       newPosition: 1,
-      oldPosition: 1,
     };
     render(<Product {...productProps} metadata={{ isPinned: true }} />);
 

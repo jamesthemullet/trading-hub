@@ -27,7 +27,6 @@ type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
   newPosition: number;
-  oldPosition: number;
 };
 
 export const ProductDetails = ({
@@ -82,7 +81,6 @@ export const Product = ({
   onChangePosition: ({
     id,
     isPinned,
-    oldPosition,
     newPosition,
   }: ChangePositionTypes) => void;
   pinnedProductsCount: number;
@@ -99,7 +97,6 @@ export const Product = ({
   const pin = (positionToPin: number, isPinned: boolean) => {
     onChangePosition({
       id,
-      oldPosition: index,
       newPosition: positionToPin,
       isPinned,
     });

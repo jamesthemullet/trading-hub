@@ -343,4 +343,112 @@ describe('Ruleset', () => {
       screen.queryByText('Search across the site to preview the rule influence')
     ).not.toBeInTheDocument();
   });
+
+  it('should handle position change when product is selected from product search', async () => {
+    const user = userEvent.setup();
+    const productSearchTitle = 'productSearchTitle';
+
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    jest.mocked(useCategoryPreview).mockReturnValue({
+      categoryPreview: [
+        {
+          id: 'product-id-1',
+          title: productSearchTitle,
+          imageUrl: ['example1.jpg'],
+          brand: product1Brand,
+          metadata: { isPinned: false },
+          isInStock: true,
+          price: product1Price,
+          rating: 4.5,
+          url: '',
+        },
+      ],
+      error: '',
+      refetchRuleSetPreview: jest.fn(),
+    });
+
+    jest.mocked(useCategoryProductSearch).mockReturnValue({
+      handleGet: jest.fn(() => {
+        return Promise.resolve({
+          products: [
+            {
+              id: 'product-id-2',
+              title: productSearchTitle,
+              imageUrl: ['example2.jpg'],
+              brand: product1Brand,
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: product1Price,
+              rating: 4.5,
+              url: '',
+            },
+          ],
+          pagination: {
+            totalItems: 1,
+          },
+        });
+      }),
+      error: '',
+    });
+
+    render(
+      <Ruleset
+        onSave={jest.fn()}
+        rulesetCategory={{
+          identifier: categoryId1,
+          name: categoryName1,
+          path: categoryPath1,
+        }}
+        rulesetMerchandisingRules={{
+          pinnedProducts: [],
+          blockedProducts: [],
+          boosts: [],
+        }}
+        rulesetId={ruleSetId}
+      />
+    );
+
+    // expect to see 1 product in the visual editor
+    expect(screen.getByLabelText('Position 1')).toBeVisible();
+    expect(screen.queryByLabelText('Position 2')).toBeNull();
+
+    const searchProduct = screen.getByPlaceholderText('Search for product');
+
+    await user.type(searchProduct, 'productSearchTitle');
+
+    const menuButton = screen
+      .getByLabelText('Product Search Container')
+      .querySelector('button[title="Open menu"]');
+
+    act(() => {
+      if (menuButton) {
+        user.click(menuButton);
+      }
+    });
+
+    const pinToPositionButton = await screen.findByText('Pin in position#');
+
+    act(() => {
+      user.click(pinToPositionButton);
+    });
+
+    const input = await screen.findByPlaceholderText('i.e. 3');
+
+    await user.type(input, '1');
+
+    const confirmButton = screen.getByText('Confirm');
+
+    act(() => {
+      user.click(confirmButton);
+    });
+
+    // expect to see 2 products in the visual editor
+    expect(await screen.findByLabelText('Position 1')).toBeVisible();
+    expect(await screen.findByLabelText('Position 2')).toBeVisible();
+  });
+
 });

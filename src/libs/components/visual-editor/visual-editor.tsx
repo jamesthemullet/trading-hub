@@ -7,7 +7,6 @@ type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
   newPosition: number;
-  oldPosition: number;
 };
 
 type Props = {
@@ -19,7 +18,6 @@ export const VisualEditor = ({ products, onChangePosition }: Props) => {
   const pinnedProductsCount = products.filter(
     (product) => product.metadata.isPinned
   ).length;
-
   return (
     <Layout>
       {products.map((product, index) => (

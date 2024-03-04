@@ -41,7 +41,6 @@ type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
   newPosition: number;
-  oldPosition: number;
 };
 
 type NewRulesetValues = {
@@ -99,15 +98,34 @@ export const Ruleset = ({
 
   const onChangePosition = ({
     isPinned,
-    oldPosition,
     newPosition,
+    id,
   }: ChangePositionTypes) => {
-    const updatedList = sortedProducts.map((product) => ({
-      ...product,
-      isLastChanged: false,
-    }));
+    const oldPosition = sortedProducts.findIndex(
+      (product) => product.id === id
+    );
 
-    const product = updatedList.splice(oldPosition, 1)[0];
+    console.log('onChangePosition', isPinned, oldPosition, newPosition, id);
+
+    const isNewProduct = oldPosition === -1;
+
+    const updatedList = sortedProducts
+      .filter((product) => product.id !== id)
+      .map((product) => ({
+        ...product,
+        isLastChanged: false,
+      }));
+
+    const product = isNewProduct
+      ? searchProducts.find((p) => p.id === id)
+      : sortedProducts[oldPosition];
+
+    /* istanbul ignore next */
+    if (!product) {
+      console.error('Product not found', id);
+      return;
+    }
+
     const metadata = { ...product.metadata, isPinned };
     const updatedProduct = { ...product, metadata, isLastChanged: isPinned };
 
