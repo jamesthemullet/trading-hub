@@ -7,14 +7,15 @@ export type MerchandisingEnvironment = {
 };
 
 const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (!process.env.NEXTAUTH_SECRET) {
+    console.warn('No token found, did you forget to set the NEXTAUTH_SECRET?');
+  }
   const token = await getToken({ req });
 
   const headers = new Headers();
 
   if (token && typeof token.accessToken === 'string') {
     headers.set('Authorization', `Bearer ${token.accessToken}`);
-  } else {
-    console.warn('No token found, did you forget to set the NEXTAUTH_SECRET?');
   }
 
   if (req.body) {
@@ -32,7 +33,15 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     body: req.body ? JSON.stringify(req.body) : undefined,
   });
 
-  const jsonBody = await response.json();
+  let jsonBody = {};
+  let jsonText = '';
+  try {
+    const jsonText = await response.text();
+    jsonBody = JSON.parse(jsonText);
+  } catch (e) {
+    console.error('Error parsing JSON', e);
+    console.error('Response text:', jsonText);
+  }
 
   // test change 1
 
@@ -53,15 +62,9 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     );
   }
 
-  const text = await response.text();
-  let json = {};
-  try {
-    json = JSON.parse(text);
-  } catch (e) /* istanbul ignore next */ {
-    console.error('Error parsing JSON', e);
-  }
-
-  return res.status(response.status).json(req.method === 'DELETE' ? {} : json);
+  return res
+    .status(response.status)
+    .json(req.method === 'DELETE' ? {} : jsonBody);
 };
 
 export default proxy;
