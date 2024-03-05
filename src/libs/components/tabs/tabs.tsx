@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
+import { color } from '../utils/constants';
+import { spacing } from '../utils/spacing';
 
 type Props = {
   currentTab: number;
   onTabChange: (ind: number) => void;
-  tabs: string[];
+  tabs: { title: string; count?: number }[];
 };
 
 const TabsContainerWrapper = styled.div`
@@ -24,9 +26,7 @@ const TabButton = styled.button<{ isActive: boolean }>`
   width: 100%;
   padding-bottom: 0;
   background: none;
-  /* stylelint-disable-next-line property-disallowed-list */
   font-weight: ${({ isActive }) => (isActive ? 'bold' : 400)};
-  /* stylelint-disable-next-line property-disallowed-list */
   font-size: 16px;
 
   &::after {
@@ -40,17 +40,28 @@ const TabButton = styled.button<{ isActive: boolean }>`
   }
 `;
 
+const Count = styled.span`
+  background: ${color.improvedFit};
+  color: #fff;
+  margin-left: ${spacing(1)};
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-weight: normal;
+`;
+
 export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {
   return (
     <TabsContainerWrapper>
       <TabsWrapper>
         {tabs.map((tab, ind) => (
           <TabButton
-            key={tab}
+            key={tab.title}
             onClick={() => currentTab !== ind && onTabChange(ind)}
             isActive={currentTab === ind}
           >
-            {tab}
+            {tab.title}
+
+            {tab.count && <Count>{tab.count}</Count>}
           </TabButton>
         ))}
       </TabsWrapper>

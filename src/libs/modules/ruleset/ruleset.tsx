@@ -4,14 +4,14 @@ import {
   Preview,
   ProductGridHeader,
   ProductSearch,
+  RulesetChanges,
   Tabs,
   VisualEditor,
   spacing,
 } from '../../components';
 import { useEffect, useState } from 'react';
-import type { Category } from '@/libs/api';
+import type { Category, Product, MerchandisingRules } from '@/libs/api';
 import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
-import { Product, MerchandisingRules } from '@/libs/api';
 
 const CategoryPanel = styled.div`
   border-top: 2px solid #005640;
@@ -37,7 +37,7 @@ const RulesPanel = styled.div`
   width: 100%;
 `;
 
-type ChangePositionTypes = {
+export type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
   newPosition: number;
@@ -193,7 +193,11 @@ export const Ruleset = ({
       <MainContainerPanel>
         <ProductSearchPanel>
           <Tabs
-            tabs={['Product', 'Attribute', 'Insights']}
+            tabs={[
+              { title: 'Product' },
+              { title: 'Attribute' },
+              { title: 'Insights' },
+            ]}
             onTabChange={setCurrentProductTab}
             currentTab={currentProductTab}
           />
@@ -222,7 +226,14 @@ export const Ruleset = ({
         </ProductSearchPanel>
         <RulesPanel>
           <Tabs
-            tabs={['Visual Editor', 'Changes', 'External Changes']}
+            tabs={[
+              { title: 'Visual Editor' },
+              {
+                title: 'Changes',
+                count: merchandisingRules.pinnedProducts.length,
+              },
+              { title: 'External Changes' },
+            ]}
             onTabChange={setCurrentEditorTab}
             currentTab={currentEditorTab}
           />
@@ -234,7 +245,10 @@ export const Ruleset = ({
             />
           )}
           {currentEditorTab === 1 && (
-            <p style={{ padding: spacing(2) }}>Tab 2</p>
+            <RulesetChanges
+              merchandisingRules={merchandisingRules}
+              onChangePosition={onChangePosition}
+            />
           )}
           {currentEditorTab === 2 && (
             <p style={{ padding: spacing(2) }}>Tab 3</p>

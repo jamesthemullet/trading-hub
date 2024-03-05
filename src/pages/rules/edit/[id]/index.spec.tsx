@@ -159,7 +159,7 @@ describe('Index', () => {
       tab2.click();
     });
 
-    expect(screen.getByText('Tab 2')).toBeVisible();
+    expect(screen.getByText('Pinned Products (1)')).toBeVisible();
   });
 
   it('opens external changes tab', async () => {
