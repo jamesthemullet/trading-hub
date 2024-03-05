@@ -450,5 +450,4 @@ describe('Ruleset', () => {
     expect(await screen.findByLabelText('Position 1')).toBeVisible();
     expect(await screen.findByLabelText('Position 2')).toBeVisible();
   });
-
 });
