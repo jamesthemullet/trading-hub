@@ -105,8 +105,6 @@ export const Ruleset = ({
       (product) => product.id === id
     );
 
-    console.log('onChangePosition', isPinned, oldPosition, newPosition, id);
-
     const isNewProduct = oldPosition === -1;
 
     const updatedList = sortedProducts
