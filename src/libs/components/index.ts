@@ -11,6 +11,7 @@ export * from './product-grid-header/product-grid-header';
 export * from './product-search/product-search';
 export * from './product/product';
 export * from './rules/rules';
+export * from './ruleset-changes/ruleset-changes';
 export * from './search/search';
 export * from './tabs/tabs';
 export * from './toggle/toggle';

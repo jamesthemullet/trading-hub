@@ -5,7 +5,11 @@ import { Tabs } from './tabs';
 describe('Tabs', () => {
   it('should render correctly', () => {
     render(
-      <Tabs tabs={['Tab 1', 'Tab 2']} currentTab={0} onTabChange={jest.fn()} />
+      <Tabs
+        tabs={[{ title: 'Tab 1' }, { title: 'Tab 2', count: 10 }]}
+        currentTab={0}
+        onTabChange={jest.fn()}
+      />
     );
 
     expect(screen.getByText('Tab 1')).toBeInTheDocument();
@@ -15,7 +19,7 @@ describe('Tabs', () => {
     const mockTabClick = jest.fn();
     render(
       <Tabs
-        tabs={['Tab 1', 'Tab 2']}
+        tabs={[{ title: 'Tab 1' }, { title: 'Tab 2', count: 10 }]}
         currentTab={0}
         onTabChange={mockTabClick}
       />
@@ -34,7 +38,7 @@ describe('Tabs', () => {
     const mockTabClick = jest.fn();
     render(
       <Tabs
-        tabs={['Tab 1', 'Tab 2']}
+        tabs={[{ title: 'Tab 1' }, { title: 'Tab 2', count: 10 }]}
         currentTab={0}
         onTabChange={mockTabClick}
       />
