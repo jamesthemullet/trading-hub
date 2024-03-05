@@ -16,11 +16,7 @@ export const RulesetChanges = ({
   onChangePosition,
 }: {
   merchandisingRules: MerchandisingRules;
-  onChangePosition: ({
-    isPinned,
-    oldPosition,
-    newPosition,
-  }: ChangePositionTypes) => void;
+  onChangePosition: ({ isPinned, newPosition }: ChangePositionTypes) => void;
 }) => (
   <>
     <Heading as="h2" isStrong={true}>

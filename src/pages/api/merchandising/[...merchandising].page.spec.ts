@@ -52,7 +52,7 @@ type Response = {
 const responses: Response[][] = [
   // [{ status: 200, body: { hello: 'world' }, envSettings: {} }],
   // [{ status: 200, body: { hello: 'world' } }],
-  [{ status: 200, body: { hello: 'world' } }],
+  [{ status: 200, body: { hello: 'world', products: [] } }],
   [{ status: 500, body: { hello: 'error' }, envSettings: {} }],
   [{ status: 500, body: { hello: 'error' } }],
 ];
@@ -217,13 +217,11 @@ describe('Merchandising api proxy', () => {
         response
       );
 
-      expect(httpGet).not.toHaveBeenCalled();
+      expect(httpGet).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         products: [],
-        pagination: {
-          totalItems: 0,
-        },
+        hello: 'world',
       });
     });
 

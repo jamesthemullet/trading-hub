@@ -63,7 +63,6 @@ type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
   newPosition: number;
-  oldPosition: number;
 };
 
 export type ProductSearchProps = {
@@ -78,7 +77,7 @@ export const ProductSearch = ({
   onChangePosition,
 }: ProductSearchProps) => {
   return (
-    <ProductSearchRootContainer>
+    <ProductSearchRootContainer aria-label="Product Search Container">
       <TopContainer>
         <StyledSearch
           placeholder="Search for product"
