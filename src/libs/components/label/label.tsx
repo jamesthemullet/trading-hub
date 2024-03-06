@@ -52,7 +52,7 @@ export type LabelProps = BaseLabelProps & {
 };
 
 export const Label = ({ children, isRequired, ...rest }: LabelProps) => (
-  <StyledLabel isStrong theme={dotcomTheme} {...rest} as="label">
+  <StyledLabel isStrong {...rest} as="label">
     {children}
     {isRequired && REQUIRED_FIELD_INDICATOR}
   </StyledLabel>

@@ -6,7 +6,6 @@ import type { Category, CategoryListData } from '@/libs/api';
 import { Search } from '../search/search';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
-// import { Text } from '../typography/typography';
 import { useDebounce, useGetCategories } from '@/libs/hooks';
 import { Label, Text } from '../typography/typography.styles';
 
