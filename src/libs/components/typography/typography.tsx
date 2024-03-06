@@ -1,3 +1,5 @@
+// Note: this will be replaced
+
 import type {
   AnchorHTMLAttributes,
   ComponentProps,

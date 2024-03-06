@@ -1,38 +1,50 @@
 import styled from '@emotion/styled';
-import { Typography } from '../typography/typography';
-import { colourDictionary } from '../utils/constants';
 import { spacing } from '../utils/spacing';
-import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { Modal } from './modal';
+import { Text, Title } from '../typography/typography.styles';
+import { Button } from '../button/button';
 
-const BreadcrumbText = styled(Typography)`
-  color: ${colourDictionary.black};
-`;
-
-const HeadingWrapper = styled.div`
-  background: ${colourDictionary.white};
-  box-shadow: #000 0 0 4px;
-  /* height: ${spacing(4)}; */
-  padding: 23px;
-  display: flex;
-  position: fixed;
-  top: 0;
+const Divider = styled.span`
+  border-bottom: solid 1px #000;
   width: 100%;
-  z-index: 3;
+  display: inline-block;
 `;
 
-const HeadingSpacer = styled.div`
-  height: ${spacing(9)};
+const Buttons = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: right;
+
+  button {
+    width: auto;
+    margin-left: ${spacing(2)};
+  }
+`;
+
+const Heading = styled(Title)`
+  margin-bottom: ${spacing(2)};
 `;
 
 type Props = {
-  breadcrumbs: string[];
+  onClose: () => void;
+  onContinue: () => void;
 };
 
-export const ModalUnsavedChanges = ({ breadcrumbs }: Props) => {
+export const ModalUnsavedChanges = ({ onClose, onContinue }: Props) => {
   return (
-    <Modal>
-      <p>unsaved text</p>
+    <Modal onClose={onContinue}>
+      <Heading>Close without saving edits</Heading>
+      <Text>
+        Are you sure you want to navigate away from this page without saving
+        your edits?
+      </Text>
+      <Divider />
+      <Buttons>
+        <Button onClick={onClose}>Close without saving</Button>
+        <Button onClick={onContinue} theme="primary">
+          Continue editing
+        </Button>
+      </Buttons>
     </Modal>
   );
 };

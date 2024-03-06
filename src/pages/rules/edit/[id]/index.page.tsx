@@ -4,6 +4,7 @@ import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { MerchandisingRules } from '@/libs/api';
 import { useUpdateRuleSet, useRuleSetPreview } from '@/libs/hooks';
 import { Ruleset } from '../../../../libs/modules/ruleset/ruleset';
+import { useRouter } from 'next/router';
 
 type PageProps = {
   id: string;
@@ -12,6 +13,7 @@ type PageProps = {
 const Page = ({ id }: PageProps) => {
   const { ruleSets } = useRuleSetPreview(id);
   const { updateRuleSet } = useUpdateRuleSet();
+  const router = useRouter();
 
   const saveRuleSet = async ({
     rulesetId,
@@ -36,6 +38,7 @@ const Page = ({ id }: PageProps) => {
       {ruleSets.categoryName && (
         <Ruleset
           onSave={saveRuleSet}
+          onCancel={() => router.push('/rules')}
           rulesetCategory={{
             identifier: ruleSets.categoryId,
             name: ruleSets.categoryName,

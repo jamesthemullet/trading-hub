@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react';
 
-import { Heading } from './heading';
+import { ModalUnsavedChanges } from './modal-unsaved-changes';
 
-describe('Heading', () => {
+describe('ModalUnsavedChanges', () => {
   it('should render correctly', () => {
-    render(<Heading breadcrumbs={['Ranking Rules']} />);
+    render(<ModalUnsavedChanges onClose={jest.fn()} onContinue={jest.fn()} />);
 
-    expect(screen.getByText('Ranking Rules')).toBeInTheDocument();
+    expect(screen.getByText('Close without saving edits')).toBeInTheDocument();
   });
 });

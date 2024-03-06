@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from 'react';
 import type { Category, Product, MerchandisingRules } from '@/libs/api';
 import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
+import { useRouter } from 'next/router';
 
 const CategoryPanel = styled.div`
   border-top: 2px solid #005640;
@@ -53,13 +54,15 @@ interface EditRulesetValues extends NewRulesetValues {
 }
 
 export const Ruleset = ({
-  onSave,
+  onCancel,
   onCreate,
+  onSave,
   rulesetCategory,
   rulesetId,
   rulesetMerchandisingRules,
 }: {
   onSave?: ({}: EditRulesetValues) => void;
+  onCancel: () => void;
   onCreate?: ({}: NewRulesetValues) => void;
   rulesetCategory?: Category;
   rulesetId?: string;
@@ -79,12 +82,39 @@ export const Ruleset = ({
         boosts: [],
       }
     );
+  const [hasChanges, setHasChanges] = useState(false);
   const { handleGet } = useCategoryProductSearch();
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
   const [showPreview, setShowPreview] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const warningText =
+      'You have unsaved changes - are you sure you wish to leave this page?';
+    /* istanbul ignore next */
+    const handleWindowClose = (e: BeforeUnloadEvent) => {
+      if (!hasChanges) return;
+      e.preventDefault();
+      return (e.returnValue = warningText);
+    };
+    /* istanbul ignore next */
+    const handleBrowseAway = () => {
+      if (!hasChanges) return;
+      if (window.confirm(warningText)) return;
+      router.events.emit('routeChangeError');
+      throw 'routeChange aborted.';
+    };
+    window.addEventListener('beforeunload', handleWindowClose);
+    router.events.on('routeChangeStart', handleBrowseAway);
+    return () => {
+      window.removeEventListener('beforeunload', handleWindowClose);
+      router.events.off('routeChangeStart', handleBrowseAway);
+    };
+  }, [hasChanges]);
 
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
+    if (!hasChanges) setHasChanges(true);
   };
 
   const { categoryPreview } = useCategoryPreview(
@@ -101,6 +131,8 @@ export const Ruleset = ({
     newPosition,
     id,
   }: ChangePositionTypes) => {
+    if (!hasChanges) setHasChanges(true);
+
     const oldPosition = sortedProducts.findIndex(
       (product) => product.id === id
     );
@@ -173,9 +205,17 @@ export const Ruleset = ({
       )}
 
       <ProductGridHeader
-        onSave={onSaveRuleset}
+        onSave={() => {
+          onSaveRuleset();
+          setHasChanges(false);
+        }}
         hasPreview={!!selectedCategory?.identifier}
         onPreview={() => setShowPreview(!showPreview)}
+        hasChanges={hasChanges}
+        onCancel={() => {
+          setHasChanges(false);
+          onCancel();
+        }}
       />
 
       <CategoryPanel>

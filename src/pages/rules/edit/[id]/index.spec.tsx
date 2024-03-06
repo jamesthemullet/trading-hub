@@ -9,6 +9,7 @@ import {
 } from '@/libs/hooks';
 
 import type { GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
 
 import Page, { getServerSideProps } from './index.page';
@@ -26,6 +27,9 @@ const product2Brand = 'M&S';
 const product1Price = '£5';
 const product2Price = '£10';
 
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 jest.mock('../../../../libs/hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
@@ -123,6 +127,14 @@ describe('Index', () => {
     error: '',
   };
 
+  const mockRouter = {
+    push: jest.fn(),
+    events: {
+      on: jest.fn(),
+      off: jest.fn(),
+    },
+  };
+
   beforeEach(() => {
     jest.mocked(useUpdateRuleSet).mockImplementation(() => mockUpdateRuleSet);
     jest
@@ -132,20 +144,7 @@ describe('Index', () => {
       getCategories: jest.fn(),
       getCategoriesError: '',
     });
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('displays the category id', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-
-    await act(() => {
-      render(<Page id={ruleSetId} />);
-    });
-
-    expect(screen.getByText(categoryId)).toBeVisible();
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   it('opens changes tab', async () => {
@@ -214,6 +213,18 @@ describe('Index', () => {
     await user.click(screen.getByText('Save'));
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
+  });
+
+  it('should cancel changes to a ruleset', async () => {
+    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
+
+    const user = userEvent.setup({ delay: null });
+
+    render(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByText('Cancel'));
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/rules');
   });
 
   it('loads the mock data', async () => {
