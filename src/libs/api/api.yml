@@ -50,6 +50,38 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
+  '/merchandising/category/{categoryId}/attributes':
+    get:
+      summary: Preview Search Response
+      description: Returns a search response with specified rules applied.
+      parameters:
+        - in: path
+          name: categoryId
+          schema:
+            type: string
+          required: true
+          description: The category to retreive the attributes for
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/AttributeType'
+          required: true
+          description: The number type of attributes to retrieve
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
   '/merchandising/category/{categoryId}/preview':
     post:
       summary: Preview Search Response
@@ -406,6 +438,8 @@ components:
       properties:
         isPinned:
           type: boolean
+        isBoosted:
+          type: boolean
       required:
         - isPinned
     MerchandisingRules:
@@ -420,13 +454,14 @@ components:
           items:
             $ref: '#/components/schemas/BlockedProduct'
         boosts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Boost'
+          $ref: '#/components/schemas/BoostsBuries'
+        buries:
+          $ref: '#/components/schemas/BoostsBuries'
       required:
         - pinnedProducts
         - blockedProducts
         - boosts
+        - buries
     PinnedProduct:
       type: object
       properties:
@@ -441,17 +476,59 @@ components:
           type: string
       required:
         - id
-    Boost:
+    BoostsBuries: 
       type: object
       properties:
-        field:
+        numeric: 
+          type: array
+          items: 
+            $ref: '#/components/schemas/NumericBoostBury'
+        alphaNumeric: 
+          type: array
+          items: 
+            $ref: '#/components/schemas/AlphanumericBoostBury'
+        product: 
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBoostBury'
+    ProductBoostBury:
+      type: object
+      properties:
+        id:
           type: string
-        boost:
+        weight:
           type: number
           format: double
       required:
         - field
-        - boost
+        - weight
+    NumericBoostBury:
+      type: object
+      properties:
+        field:
+          type: string
+        weight:
+          type: number
+          format: double
+      required:
+        - field
+        - weight
+    AlphanumericBoostBury:
+      type: object
+      properties:
+        field:
+          type: string
+        weight:
+          type: number
+          format: double
+        values:
+          type: array
+          items: 
+            type: string
+      required: 
+        - field
+        - weight
+        - values
     ErrorResponse:
       type: object
       properties:
@@ -488,5 +565,31 @@ components:
       required:
         - categories
         - pagination
+    AttributesResponse:
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            type: object
+            properties:
+              type: 
+                $ref: '#/components/schemas/AttributeType'
+              name: 
+                type: string
+              values:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    value: 
+                      type: string
+            required:
+              - name
+      required: 
+        - attributes
+    AttributeType: 
+      type: string
+      enum: ["alphanumeric", "numeric"]
 security:
   - bearerAuth: []
