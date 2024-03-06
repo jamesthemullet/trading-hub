@@ -1,4 +1,4 @@
-// Note: this will be replaced
+// Note: this will be replaced in favour of typography.styles.tsx
 
 import type {
   AnchorHTMLAttributes,
