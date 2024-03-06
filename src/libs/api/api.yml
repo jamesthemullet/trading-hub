@@ -476,18 +476,18 @@ components:
           type: string
       required:
         - id
-    BoostsBuries: 
+    BoostsBuries:
       type: object
       properties:
-        numeric: 
+        numeric:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/NumericBoostBury'
-        alphaNumeric: 
+        alphaNumeric:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/AlphanumericBoostBury'
-        product: 
+        product:
           type: array
           items:
             $ref: '#/components/schemas/ProductBoostBury'
@@ -523,9 +523,9 @@ components:
           format: double
         values:
           type: array
-          items: 
+          items:
             type: string
-      required: 
+      required:
         - field
         - weight
         - values
@@ -573,23 +573,23 @@ components:
           items:
             type: object
             properties:
-              type: 
+              type:
                 $ref: '#/components/schemas/AttributeType'
-              name: 
+              name:
                 type: string
               values:
                 type: array
                 items:
                   type: object
                   properties:
-                    value: 
+                    value:
                       type: string
             required:
               - name
-      required: 
+      required:
         - attributes
-    AttributeType: 
+    AttributeType:
       type: string
-      enum: ["alphanumeric", "numeric"]
+      enum: ['alphanumeric', 'numeric']
 security:
   - bearerAuth: []
