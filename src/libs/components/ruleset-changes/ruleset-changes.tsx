@@ -2,11 +2,11 @@ import type { MerchandisingRules } from '@/libs/api';
 import styled from '@emotion/styled';
 import { Product } from '../product/product';
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
-import { Typography } from '../typography/typography';
 import { spacing } from '../utils/spacing';
 import { ChangePositionTypes } from '../../modules/ruleset/ruleset';
+import { Text } from '../typography/typography.styles';
 
-const Heading = styled(Typography)`
+const Heading = styled(Text)`
   font-size: 20px;
   padding: ${spacing(2)} 0 0 ${spacing(2)};
 `;

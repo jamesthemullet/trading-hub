@@ -5,11 +5,11 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
 import { Icon } from '../icon/icon';
-import { Typography } from '../typography/typography';
 import { colourDictionary, dotcomTheme } from '../utils/constants';
 import { mediaQuery } from '../utils/media-query';
 import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
+import { Text } from '../typography/typography.styles';
 
 export type FilterDropdownProps = {
   isOpen: boolean;
@@ -100,7 +100,7 @@ const Content = styled.div`
   }
 `;
 
-const ButtonText = styled(Typography)`
+const ButtonText = styled(Text)`
   text-align: left;
   width: calc(100% - ${sizing(2)});
   white-space: nowrap;
@@ -153,7 +153,7 @@ export const Dropdown = ({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <ButtonText as="span" variant="body" color={colourDictionary.black}>
+        <ButtonText as="span" color={colourDictionary.black}>
           {label}
         </ButtonText>
         <ArrowIcon name="ChevronDownDefault" color={colourDictionary.black} />
