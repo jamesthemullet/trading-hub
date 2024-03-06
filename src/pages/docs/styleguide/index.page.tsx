@@ -1,13 +1,7 @@
 /* istanbul ignore file */
 
 import styled from '@emotion/styled';
-import {
-  Header1,
-  Header2,
-  Header3,
-  Text,
-  Title,
-} from '../../../libs/components';
+import { Header1, Header2, Header3, Text, Title } from '@/libs/components';
 
 const Container = styled.div`
   display: flex;
