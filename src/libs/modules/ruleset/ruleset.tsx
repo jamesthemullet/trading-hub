@@ -76,8 +76,8 @@ export const Ruleset = ({
       rulesetMerchandisingRules || {
         pinnedProducts: [],
         blockedProducts: [],
-        boosts: { numeric: [], alphaNumeric: [], product: [] },
-        buries: { numeric: [], alphaNumeric: [], product: [] },
+        // boosts: { numeric: [], alphaNumeric: [], product: [] },
+        // buries: { numeric: [], alphaNumeric: [], product: [] },
       }
     );
   const { handleGet } = useCategoryProductSearch();
@@ -144,8 +144,8 @@ export const Ruleset = ({
     setMerchandisingRules({
       pinnedProducts,
       blockedProducts: [],
-      boosts: { numeric: [], alphaNumeric: [], product: [] },
-      buries: { numeric: [], alphaNumeric: [], product: [] },
+      // boosts: { numeric: [], alphaNumeric: [], product: [] },
+      // buries: { numeric: [], alphaNumeric: [], product: [] },
     });
   };
 

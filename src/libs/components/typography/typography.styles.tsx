@@ -45,16 +45,14 @@ export const Title = styled.h4`
 
 export const Text = styled.p<{ isStrong?: boolean }>`
   ${commonStyles}
-  font-family: ${fonts.regular};
+  font-family: ${({ isStrong }) => (isStrong ? fonts.bold : fonts.regular)};
   font-size: 0.875rem;
   line-height: 1.5714;
-  font-weight: ${({ isStrong }) => (isStrong ? 'bold' : 'normal')};
 `;
 
 export const Label = styled.p<{ isStrong?: boolean }>`
   ${commonStyles}
-  font-family: ${fonts.regular};
+  font-family: ${({ isStrong }) => (isStrong ? fonts.bold : fonts.regular)};
   font-size: 16px;
   line-height: 1.5714;
-  font-weight: ${({ isStrong }) => (isStrong ? 'bold' : 'normal')};
 `;
