@@ -9,7 +9,8 @@ describe('RulesetChanges', () => {
         merchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-          boosts: [],
+          boosts: { numeric: [], alphaNumeric: [], product: [] },
+          buries: { numeric: [], alphaNumeric: [], product: [] },
         }}
         onChangePosition={jest.fn()}
       />
@@ -24,7 +25,8 @@ describe('RulesetChanges', () => {
         merchandisingRules={{
           pinnedProducts: [{ id: 'abc' }],
           blockedProducts: [],
-          boosts: [],
+          boosts: { numeric: [], alphaNumeric: [], product: [] },
+          buries: { numeric: [], alphaNumeric: [], product: [] },
         }}
         onChangePosition={jest.fn()}
       />

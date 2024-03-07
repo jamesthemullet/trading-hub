@@ -12,7 +12,8 @@ const baseUrl = 'http://localhost';
 const ruleSet = {
   rules: {
     pinnedProducts: pinnedProducts,
-    boosts: [],
+    boosts: { numeric: [], alphaNumeric: [], product: [] },
+    buries: { numeric: [], alphaNumeric: [], product: [] },
   },
   categoryId: categoryId,
   isEnabled: true,
