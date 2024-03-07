@@ -145,8 +145,8 @@ describe('useRuleSet', () => {
           user: '',
         },
         rules: {
-          boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] },
+          // boosts: { numeric: [], alphaNumeric: [], product: [] },
+          // buries: { numeric: [], alphaNumeric: [], product: [] },
           blockedProducts: [],
           pinnedProducts: [],
         },

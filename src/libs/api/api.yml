@@ -459,9 +459,9 @@ components:
           $ref: '#/components/schemas/BoostsBuries'
       required:
         - pinnedProducts
-        - blockedProducts
-        - boosts
-        - buries
+        # - blockedProducts
+        # - boosts
+        # - buries
     PinnedProduct:
       type: object
       properties:
