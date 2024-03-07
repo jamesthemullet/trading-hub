@@ -15,5 +15,6 @@ export * from './ruleset-changes/ruleset-changes';
 export * from './search/search';
 export * from './tabs/tabs';
 export * from './toggle/toggle';
+export * from './typography/typography.styles';
 export * from './utils/spacing';
 export * from './visual-editor/visual-editor';

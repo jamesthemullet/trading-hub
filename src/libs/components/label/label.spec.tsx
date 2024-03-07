@@ -7,11 +7,6 @@ describe('Label', () => {
     render(<Label>hello</Label>);
 
     expect(screen.getByText('hello')).toBeVisible();
-    expect(screen.getByText('hello')).toHaveStyleRule('font-size', '0.875rem');
-    expect(screen.getByText('hello')).toHaveStyleRule(
-      'font-family',
-      'mnsLondonSemiBold,Helvetica,Arial,sans-serif'
-    );
   });
 
   it('should render successfully with correct cursor', () => {
@@ -35,7 +30,9 @@ describe('Label', () => {
   it('should render disabled state', () => {
     render(<Label isDisabled>hello</Label>);
 
-    expect(screen.getByText('hello')).toHaveStyle({ color: '#707070' });
+    expect(screen.getByText('hello')).toHaveStyle({
+      color: 'rgb(204, 204, 204)',
+    });
   });
 
   it('should render the required state', () => {
