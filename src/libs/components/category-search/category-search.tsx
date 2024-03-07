@@ -6,8 +6,9 @@ import type { Category, CategoryListData } from '@/libs/api';
 import { Search } from '../search/search';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
-import { Typography } from '../typography/typography';
+// import { Text } from '../typography/typography';
 import { useDebounce, useGetCategories } from '@/libs/hooks';
+import { Label, Text } from '../typography/typography.styles';
 
 const SEARCH_DEBOUNCE_WAIT = 500;
 
@@ -47,7 +48,7 @@ const Categories = styled.div`
   margin-bottom: ${spacing(1)};
 `;
 
-const SelectedCategory = styled(Typography)`
+const SelectedCategory = styled(Label)`
   margin-bottom: ${spacing(1)};
   color: #fff;
   background-color: ${color.selectionBox};
@@ -116,11 +117,9 @@ export const CategorySearch = ({
   if (selectedCategory && selectedCategory.identifier) {
     return (
       <Wrapper>
-        <Typography as="p" variant="small" style={{ marginBottom: spacing(1) }}>
-          Category
-        </Typography>
+        <Text style={{ marginBottom: spacing(1) }}>Category</Text>
         <Categories>
-          <SelectedCategory as="p">
+          <SelectedCategory>
             {selectedCategory.identifier}
             <SelectedCategoryClose
               aria-label="Remove selected category"
@@ -141,9 +140,7 @@ export const CategorySearch = ({
 
   return (
     <Wrapper>
-      <Typography as="p" variant="small" style={{ marginBottom: spacing(1) }}>
-        Category
-      </Typography>
+      <Text style={{ marginBottom: spacing(1) }}>Category</Text>
       <form onSubmit={onSubmit}>
         <Search value={searchValue} onChange={onSearchChange} />
       </form>
@@ -155,10 +152,10 @@ export const CategorySearch = ({
               onClick={() => onSelectCategory(category)}
               aria-label={`Select category ${category.identifier}`}
             >
-              <Typography variant="small" as="p">
+              <Text>
                 {category.identifier} | {category.name}{' '}
                 {category.path && `| ${category.path}`}
-              </Typography>
+              </Text>
             </Row>
           ))}
         </Container>

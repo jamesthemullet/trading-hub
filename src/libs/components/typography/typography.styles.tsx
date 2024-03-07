@@ -1,7 +1,3 @@
-// Common typography styles from Figma designs
-//
-// this will replace some of the Onyx ported styling and components
-
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
@@ -47,9 +43,18 @@ export const Title = styled.h4`
   line-height: 1.5714;
 `;
 
-export const Text = styled.p`
+export const Text = styled.p<{ isStrong?: boolean }>`
   ${commonStyles}
   font-family: ${fonts.regular};
   font-size: 0.875rem;
   line-height: 1.5714;
+  font-weight: ${({ isStrong }) => (isStrong ? 'bold' : 'normal')};
+`;
+
+export const Label = styled.p<{ isStrong?: boolean }>`
+  ${commonStyles}
+  font-family: ${fonts.regular};
+  font-size: 16px;
+  line-height: 1.5714;
+  font-weight: ${({ isStrong }) => (isStrong ? 'bold' : 'normal')};
 `;

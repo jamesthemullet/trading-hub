@@ -4,11 +4,11 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
-import { Typography } from '../typography/typography';
 import { colourDictionary } from '../utils/constants';
 import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
 import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
+import { Text } from '../typography/typography.styles';
 
 export type TooltipProps = {
   text: string;
@@ -85,7 +85,7 @@ const StyledTooltip = styled.div<
   }};
 `;
 
-const StyledTypography = styled(Typography)`
+const StyledTypography = styled(Text)`
   padding-right: ${spacing(4)};
 `;
 
@@ -111,7 +111,6 @@ export const Tooltip = ({
       <StyledTooltip arrowAlignment={arrowAlignment} isOpen={isOpen}>
         <StyledTypography
           as="p"
-          variant="small"
           color={colourDictionary.white}
           id={`${id}-tooltip`}
         >

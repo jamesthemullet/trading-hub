@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { Toggle } from '../toggle/toggle';
 import type { ReturnedRuleSet } from '@/libs/api';
 import { spacing } from '../utils/spacing';
-import { Typography } from '../typography/typography';
+import { Label } from '../typography/typography.styles';
 
 type Props = {
   columnOrderName: keyof ReturnedRuleSet;
@@ -63,8 +63,9 @@ const Col = styled.div`
   }
 `;
 
-const RuleSetHeading = styled(Typography)`
+const RuleSetHeading = styled(Label)`
   color: #1d1d1b;
+  font-weight: bold;
 `;
 
 const EditButton = styled.a`

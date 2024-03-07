@@ -1,6 +1,5 @@
 import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
 import styled from '@emotion/styled';
-import { Typography } from '../typography/typography';
 import { spacing } from '../utils/spacing';
 import { Dropdown } from '../dropdown/dropdown';
 import { useEffect, useState } from 'react';
@@ -8,6 +7,7 @@ import { useCategoryPreview } from '../../hooks';
 import { ProductBox } from '../visual-editor/visual-editor.styles';
 import { ProductDetails } from '../product/product';
 import { ProductWrapper } from '../product/product.styles';
+import { Text } from '../typography/typography.styles';
 
 type Props = {
   categoryId: string;
@@ -53,7 +53,7 @@ const PreviewTypeSelector = styled.div`
   align-items: baseline;
 `;
 
-const Label = styled(Typography)`
+const Label = styled(Text)`
   margin-right: ${spacing(2)};
   padding-top: ${spacing(1)};
 `;
@@ -67,7 +67,7 @@ const DropdownContent = styled.div`
   flex-wrap: wrap;
 `;
 
-const Item = styled(Typography)`
+const Item = styled(Text)`
   padding: ${spacing(1)};
   cursor: pointer;
   border: none;
@@ -123,9 +123,9 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
     <Wrapper>
       <Header>
         <CloseButton onClick={onClose} aria-label="close modal"></CloseButton>
-        <Typography as="p" style={{ paddingTop: '10px' }}>
+        <Text style={{ paddingTop: '10px' }}>
           Search across the site to preview the rule influence
-        </Typography>
+        </Text>
 
         <PreviewTypeSelector>
           <Label as="p">Preview</Label>
@@ -164,7 +164,7 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
       </Header>
       <Content>
         <Facets>
-          <Typography as="p">TODO Facets</Typography>
+          <Text as="p">TODO Facets</Text>
         </Facets>
         <Products>
           {previewProducts.map((product) => (
