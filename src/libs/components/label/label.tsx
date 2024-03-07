@@ -40,10 +40,10 @@ const StyledLabel = styled(LabelText)<BaseLabelProps>`
       cursor: pointer;
     `};
   ${({ isHidden }) => isHidden && visuallyHide};
-  ${({ isDisabled: disabled, theme }) =>
+  ${({ isDisabled: disabled }) =>
     disabled &&
     css`
-      color: ${theme.colours.text.disabled};
+      color: #cccccc;
     `};
 `;
 

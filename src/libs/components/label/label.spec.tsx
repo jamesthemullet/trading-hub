@@ -30,7 +30,9 @@ describe('Label', () => {
   it('should render disabled state', () => {
     render(<Label isDisabled>hello</Label>);
 
-    expect(screen.getByText('hello')).toHaveStyle({ color: '#707070' });
+    expect(screen.getByText('hello')).toHaveStyle({
+      color: 'rgb(204, 204, 204)',
+    });
   });
 
   it('should render the required state', () => {
