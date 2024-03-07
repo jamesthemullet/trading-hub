@@ -94,7 +94,12 @@ describe('Index', () => {
           categoryName: "Men's shirts",
           categoryId: 'foo',
           isEnabled: true,
-          rules: { pinnedProducts: [], boosts: [], blockedProducts: [] },
+          rules: {
+            pinnedProducts: [],
+            boosts: { numeric: [], alphaNumeric: [], product: [] },
+            buries: { numeric: [], alphaNumeric: [], product: [] },
+            blockedProducts: [],
+          },
           lastChanged: {
             date: '12/12/12',
             user: 'me',
@@ -145,7 +150,12 @@ describe('Index', () => {
           categoryName: "Men's shirts",
           categoryId: 'foo',
           isEnabled: true,
-          rules: { pinnedProducts: [], boosts: [], blockedProducts: [] },
+          rules: {
+            pinnedProducts: [],
+            boosts: { numeric: [], alphaNumeric: [], product: [] },
+            buries: { numeric: [], alphaNumeric: [], product: [] },
+            blockedProducts: [],
+          },
           lastChanged: {
             date: '12/12/12',
             user: 'me',

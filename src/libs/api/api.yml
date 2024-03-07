@@ -52,8 +52,8 @@ paths:
           description: Unauthorized e.g. no bearer token specified
   '/merchandising/category/{categoryId}/attributes':
     get:
-      summary: Preview Search Response
-      description: Returns a search response with specified rules applied.
+      summary: Category Attributes Response
+      description: Returns a response attributes to boost by for category.
       parameters:
         - in: path
           name: categoryId

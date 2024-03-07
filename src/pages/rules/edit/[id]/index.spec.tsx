@@ -53,7 +53,8 @@ describe('Index', () => {
       rules: {
         pinnedProducts: [{ id: product1Id }],
         blockedProducts: [],
-        boosts: [],
+        boosts: { numeric: [], alphaNumeric: [], product: [] },
+        buries: { numeric: [], alphaNumeric: [], product: [] },
       },
     },
     products: [
@@ -99,7 +100,8 @@ describe('Index', () => {
         rules: {
           pinnedProducts: [],
           blockedProducts: [],
-          boosts: [],
+          boosts: { numeric: [], alphaNumeric: [], product: [] },
+          buries: { numeric: [], alphaNumeric: [], product: [] },
         },
         categoryId: categoryId,
         isEnabled: true,

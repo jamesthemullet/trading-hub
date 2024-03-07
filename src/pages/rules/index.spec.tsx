@@ -20,6 +20,13 @@ jest.mock('../../libs/hooks/use-rule-set-delete', () => ({
   },
 }));
 
+const mochMerchangdisingRules = {
+  pinnedProducts: [],
+  blockedProducts: [],
+  boosts: { numeric: [], alphaNumeric: [], product: [] },
+  buries: { numeric: [], alphaNumeric: [], product: [] },
+};
+
 describe('Index', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -117,11 +124,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: [],
-        },
+        rules: mochMerchangdisingRules,
       })),
       pagination: {
         totalItems: 97,
@@ -175,11 +178,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: [],
-        },
+        rules: mochMerchangdisingRules,
       })),
       pagination: {
         totalItems: 13,
@@ -242,11 +241,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: [],
-        },
+        rules: mochMerchangdisingRules,
       })),
       pagination: {
         totalItems: 80,
@@ -312,11 +307,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: [],
-        },
+        rules: mochMerchangdisingRules,
       })
     );
     const oneExtraRankingRuleOutOfOrder: ReturnedRuleSet = {
@@ -328,11 +319,7 @@ describe('Index', () => {
         user: 'user',
         date: '2020-01-01T13:00:00.000Z',
       },
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: [],
-      },
+      rules: mochMerchangdisingRules,
     };
 
     const oneExtraRankingRuleWithSameIdentifier: ReturnedRuleSet = {
@@ -344,11 +331,7 @@ describe('Index', () => {
         user: 'user',
         date: '2020-01-01T13:00:00.000Z',
       },
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: [],
-      },
+      rules: mochMerchangdisingRules,
     };
 
     const ruleSet: ReturnedRuleSet[] = [
@@ -405,11 +388,7 @@ describe('Index', () => {
           user: 'user',
           date: `2021-01-${(i + 1).toString().padStart(2, '0')}T13:00:00.000Z`,
         },
-        rules: {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: [],
-        },
+        rules: mochMerchangdisingRules,
       })
     );
     const oneExtraRankingRuleOutOfOrder: ReturnedRuleSet = {
@@ -421,11 +400,7 @@ describe('Index', () => {
         user: 'user',
         date: '2020-01-01T13:00:00.000Z',
       },
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: [],
-      },
+      rules: mochMerchangdisingRules,
     };
 
     const oneExtraRankingRuleWithSameTime: ReturnedRuleSet = {
@@ -437,11 +412,7 @@ describe('Index', () => {
         user: 'user',
         date: '2020-01-01T13:00:00.000Z',
       },
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: [],
-      },
+      rules: mochMerchangdisingRules,
     };
     const ruleSets: ReturnedRuleSet[] = [
       ...rankingRules,
@@ -513,11 +484,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: [],
-        },
+        rules: mochMerchangdisingRules,
       })),
       pagination: {
         totalItems: undefined,
@@ -581,11 +548,7 @@ describe('Index', () => {
             user: 'user',
             date: '2021-01-01',
           },
-          rules: {
-            pinnedProducts: [],
-            blockedProducts: [],
-            boosts: [],
-          },
+          rules: mochMerchangdisingRules,
         },
       ],
       pagination: {
