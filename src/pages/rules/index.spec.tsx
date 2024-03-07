@@ -20,7 +20,7 @@ jest.mock('../../libs/hooks/use-rule-set-delete', () => ({
   },
 }));
 
-const mochMerchangdisingRules = {
+const mockMerchangdisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
   boosts: { numeric: [], alphaNumeric: [], product: [] },
@@ -124,7 +124,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: mochMerchangdisingRules,
+        rules: mockMerchangdisingRules,
       })),
       pagination: {
         totalItems: 97,
@@ -178,7 +178,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: mochMerchangdisingRules,
+        rules: mockMerchangdisingRules,
       })),
       pagination: {
         totalItems: 13,
@@ -241,7 +241,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: mochMerchangdisingRules,
+        rules: mockMerchangdisingRules,
       })),
       pagination: {
         totalItems: 80,
@@ -307,7 +307,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: mochMerchangdisingRules,
+        rules: mockMerchangdisingRules,
       })
     );
     const oneExtraRankingRuleOutOfOrder: ReturnedRuleSet = {
@@ -319,7 +319,7 @@ describe('Index', () => {
         user: 'user',
         date: '2020-01-01T13:00:00.000Z',
       },
-      rules: mochMerchangdisingRules,
+      rules: mockMerchangdisingRules,
     };
 
     const oneExtraRankingRuleWithSameIdentifier: ReturnedRuleSet = {
@@ -331,7 +331,7 @@ describe('Index', () => {
         user: 'user',
         date: '2020-01-01T13:00:00.000Z',
       },
-      rules: mochMerchangdisingRules,
+      rules: mockMerchangdisingRules,
     };
 
     const ruleSet: ReturnedRuleSet[] = [
@@ -388,7 +388,7 @@ describe('Index', () => {
           user: 'user',
           date: `2021-01-${(i + 1).toString().padStart(2, '0')}T13:00:00.000Z`,
         },
-        rules: mochMerchangdisingRules,
+        rules: mockMerchangdisingRules,
       })
     );
     const oneExtraRankingRuleOutOfOrder: ReturnedRuleSet = {
@@ -400,7 +400,7 @@ describe('Index', () => {
         user: 'user',
         date: '2020-01-01T13:00:00.000Z',
       },
-      rules: mochMerchangdisingRules,
+      rules: mockMerchangdisingRules,
     };
 
     const oneExtraRankingRuleWithSameTime: ReturnedRuleSet = {
@@ -412,7 +412,7 @@ describe('Index', () => {
         user: 'user',
         date: '2020-01-01T13:00:00.000Z',
       },
-      rules: mochMerchangdisingRules,
+      rules: mockMerchangdisingRules,
     };
     const ruleSets: ReturnedRuleSet[] = [
       ...rankingRules,
@@ -484,7 +484,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: mochMerchangdisingRules,
+        rules: mockMerchangdisingRules,
       })),
       pagination: {
         totalItems: undefined,
@@ -548,7 +548,7 @@ describe('Index', () => {
             user: 'user',
             date: '2021-01-01',
           },
-          rules: mochMerchangdisingRules,
+          rules: mockMerchangdisingRules,
         },
       ],
       pagination: {

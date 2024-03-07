@@ -212,7 +212,6 @@ describe('Ruleset', () => {
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-
           boosts: { numeric: [], alphaNumeric: [], product: [] },
           buries: { numeric: [], alphaNumeric: [], product: [] },
         }}
@@ -281,7 +280,6 @@ describe('Ruleset', () => {
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-
           boosts: { numeric: [], alphaNumeric: [], product: [] },
           buries: { numeric: [], alphaNumeric: [], product: [] },
         }}
@@ -410,7 +408,6 @@ describe('Ruleset', () => {
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-
           boosts: { numeric: [], alphaNumeric: [], product: [] },
           buries: { numeric: [], alphaNumeric: [], product: [] },
         }}
