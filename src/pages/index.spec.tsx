@@ -43,9 +43,11 @@ describe('Index', () => {
       <SessionProvider
         session={{
           user: {
+            id: 'userId',
             email: 'kk@mnscorp.net',
           },
           expires: '2024-09-30T14:00:00.000Z',
+          accessTokenExpires: 1709735128265,
         }}
       >
         <Index />
@@ -90,8 +92,10 @@ describe('Index', () => {
       <SessionProvider
         session={{
           user: {
+            id: 'userId',
             email: 'kk@mnscorp.net',
           },
+          accessTokenExpires: 1709735128265,
           expires: '2024-09-30T14:00:00.000Z',
         }}
       >

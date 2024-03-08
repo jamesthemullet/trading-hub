@@ -7,9 +7,6 @@ export type MerchandisingEnvironment = {
 };
 
 const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (!process.env.NEXTAUTH_SECRET) {
-    console.warn('No token found, did you forget to set the NEXTAUTH_SECRET?');
-  }
   const token = await getToken({ req });
 
   const headers = new Headers();

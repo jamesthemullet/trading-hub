@@ -36,7 +36,14 @@ describe('Navigation', () => {
 
   it('should show Login when authenticated', () => {
     jest.mocked(useSession).mockReturnValue({
-      data: { expires: '' },
+      data: {
+        user: {
+          id: 'userId',
+          email: '',
+        },
+        accessTokenExpires: 123,
+        expires: '',
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
@@ -47,7 +54,14 @@ describe('Navigation', () => {
 
   it('should call auth logout when signed in', async () => {
     jest.mocked(useSession).mockReturnValue({
-      data: { expires: '' },
+      data: {
+        user: {
+          id: 'userId',
+          email: '',
+        },
+        accessTokenExpires: 123,
+        expires: '',
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
