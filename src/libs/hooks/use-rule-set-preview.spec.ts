@@ -12,7 +12,8 @@ const mockRuleData = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],
-    boosts: [],
+    boosts: { numeric: [], alphaNumeric: [], product: [] },
+    buries: { numeric: [], alphaNumeric: [], product: [] },
   },
   categoryId: mockCategoryId,
   isEnabled: true,
@@ -144,7 +145,8 @@ describe('useRuleSet', () => {
           user: '',
         },
         rules: {
-          boosts: [],
+          // boosts: { numeric: [], alphaNumeric: [], product: [] },
+          // buries: { numeric: [], alphaNumeric: [], product: [] },
           blockedProducts: [],
           pinnedProducts: [],
         },

@@ -79,7 +79,8 @@ export const Ruleset = ({
       rulesetMerchandisingRules || {
         pinnedProducts: [],
         blockedProducts: [],
-        boosts: [],
+        // boosts: { numeric: [], alphaNumeric: [], product: [] },
+        // buries: { numeric: [], alphaNumeric: [], product: [] },
       }
     );
   const [hasChanges, setHasChanges] = useState(false);
@@ -172,7 +173,12 @@ export const Ruleset = ({
         id: product.id,
       }));
     // TODO: blocked and boosts
-    setMerchandisingRules({ pinnedProducts, blockedProducts: [], boosts: [] });
+    setMerchandisingRules({
+      pinnedProducts,
+      blockedProducts: [],
+      // boosts: { numeric: [], alphaNumeric: [], product: [] },
+      // buries: { numeric: [], alphaNumeric: [], product: [] },
+    });
   };
 
   const onSaveRuleset = () => {
