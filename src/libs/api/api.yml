@@ -381,12 +381,15 @@ components:
             $ref: '#/components/schemas/Product'
         rules:
           $ref: '#/components/schemas/MerchandisingRules'
+        facets:
+          $ref: '#/components/schemas/Facets'
         pagination:
           $ref: '#/components/schemas/Pagination'
       required:
         - products
         - category
         - rules
+        - facets
         - pagination
     ProductSearchResponse:
       type: object
@@ -539,6 +542,27 @@ components:
       required:
         - status
         - message
+    Facets:
+      type: object
+      properties:
+        facets:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              order:
+                type: integer
+                format: int32
+              data:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/PriceFacetData'
+                    - $ref: '#/components/schemas/CommonFacetData'
+                    - $ref: '#/components/schemas/ColourFacetData'
+                    - $ref: '#/components/schemas/CategoryFacetData'
     Pagination:
       type: object
       properties:
@@ -591,5 +615,65 @@ components:
     AttributeType:
       type: string
       enum: ['alphanumeric', 'numeric']
+    CommonFacetData:
+      type: object
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+          format: int32
+        selected:
+          type: boolean
+    CategoryFacetData:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        crumb:
+          type: string
+        parent:
+          type: string
+        cat_id:
+          type: string
+        selected:
+          type: boolean
+        disabled:
+          type: boolean
+        name:
+          type: string
+    ColourFacetData:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        name:
+          type: string
+        colourHexValue:
+          type: string
+        hexColourType:
+          type: boolean
+        hasHexCode:
+          type: boolean
+        disabled:
+          type: boolean
+        iconValue:
+          type: string
+        selected:
+          type: boolean
+    PriceFacetData:
+      type: object
+      properties:
+        minimum:
+          type: integer
+          format: int32
+        maximum:
+          type: integer
+          format: int32
+        selected:
+          type: boolean
+
 security:
   - bearerAuth: []
