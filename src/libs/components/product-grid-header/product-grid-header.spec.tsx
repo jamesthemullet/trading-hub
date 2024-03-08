@@ -9,6 +9,8 @@ describe('ProductGridHeader', () => {
         hasPreview={false}
         onPreview={jest.fn()}
         onSave={jest.fn()}
+        onCancel={jest.fn()}
+        hasChanges={false}
       />
     );
 
@@ -22,6 +24,8 @@ describe('ProductGridHeader', () => {
         hasPreview={false}
         onPreview={jest.fn()}
         onSave={mockSave}
+        onCancel={jest.fn()}
+        hasChanges={false}
       />
     );
 
@@ -41,6 +45,8 @@ describe('ProductGridHeader', () => {
         hasPreview={true}
         onPreview={mockPreview}
         onSave={jest.fn()}
+        onCancel={jest.fn()}
+        hasChanges={false}
       />
     );
 
@@ -51,5 +57,79 @@ describe('ProductGridHeader', () => {
     });
 
     expect(mockPreview).toHaveBeenCalled();
+  });
+
+  it('should show confirmation modal when cancelling', () => {
+    const mockCancel = jest.fn();
+    render(
+      <ProductGridHeader
+        hasPreview={true}
+        onPreview={jest.fn()}
+        onSave={jest.fn()}
+        onCancel={mockCancel}
+        hasChanges={true}
+      />
+    );
+
+    const cancelButton = screen.getByText('Cancel');
+
+    act(() => {
+      cancelButton.click();
+    });
+
+    const confirmCloseButton = screen.getByText('Close without saving');
+
+    act(() => {
+      confirmCloseButton.click();
+    });
+
+    expect(mockCancel).toHaveBeenCalled();
+  });
+
+  it('should not show confirmation modal when cancelling without changes', () => {
+    const mockCancel = jest.fn();
+    render(
+      <ProductGridHeader
+        hasPreview={true}
+        onPreview={jest.fn()}
+        onSave={jest.fn()}
+        onCancel={mockCancel}
+        hasChanges={false}
+      />
+    );
+
+    const cancelButton = screen.getByText('Cancel');
+
+    act(() => {
+      cancelButton.click();
+    });
+    expect(mockCancel).toHaveBeenCalled();
+  });
+
+  it('should cancel confirmation modal when shown', () => {
+    const mockCancel = jest.fn();
+    render(
+      <ProductGridHeader
+        hasPreview={true}
+        onPreview={jest.fn()}
+        onSave={jest.fn()}
+        onCancel={mockCancel}
+        hasChanges={true}
+      />
+    );
+
+    const cancelButton = screen.getByText('Cancel');
+
+    act(() => {
+      cancelButton.click();
+    });
+
+    const continueEditingButton = screen.getByText('Continue editing');
+
+    act(() => {
+      continueEditingButton.click();
+    });
+
+    expect(mockCancel).not.toHaveBeenCalled();
   });
 });

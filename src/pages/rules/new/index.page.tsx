@@ -29,7 +29,10 @@ const NewRuleSetPage = () => {
     <>
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
 
-      <Ruleset onCreate={createNewCategory} />
+      <Ruleset
+        onCreate={createNewCategory}
+        onCancel={() => router.push('/rules')}
+      />
     </>
   );
 };

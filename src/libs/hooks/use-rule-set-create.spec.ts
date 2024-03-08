@@ -20,8 +20,9 @@ const handlers = [
 
 const mockMerchandisingRules = {
   pinnedProducts: [],
-  boosts: [],
   blockedProducts: [],
+  boosts: { numeric: [], alphaNumeric: [], product: [] },
+  buries: { numeric: [], alphaNumeric: [], product: [] },
 };
 
 const server = setupServer(...handlers);

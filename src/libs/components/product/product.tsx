@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import type { Product as ProductType } from '../../api';
 import { spacing } from '../utils/spacing';
-import { Typography } from '../typography/typography';
+import { Text } from '../typography/typography.styles';
 
 import { Button } from '../button/button';
 import {
@@ -47,15 +47,11 @@ export const ProductDetails = ({
         />
       </ProductCard>
       <ProductInfo aria-label="Product details">
-        <Typography as="p" variant="small" isStrong={isBrandStrong ?? true}>
+        <Text isStrong={isBrandStrong ?? true}>
           {brand} {title}
-        </Typography>
-        <Typography as="p" variant="small">
-          {price}
-        </Typography>
-        <Typography as="p" variant="small">
-          ID: {id}
-        </Typography>
+        </Text>
+        <Text>{price}</Text>
+        <Text>ID: {id}</Text>
       </ProductInfo>
     </>
   );
@@ -147,9 +143,7 @@ export const Product = ({
         )}
         {isPinned && (
           <ProductPin>
-            <Typography as="p" variant="extraSmall">
-              Internal
-            </Typography>
+            <Text>Internal</Text>
           </ProductPin>
         )}
         <ProductMenuToggle
@@ -160,9 +154,7 @@ export const Product = ({
         </ProductMenuToggle>
         {isMenuOpen && (
           <ProductMenu>
-            <Typography
-              as="p"
-              variant="small"
+            <Text
               isStrong={true}
               style={{
                 color: '#000',
@@ -178,12 +170,11 @@ export const Product = ({
                   marginBottom: '-4px',
                 }}
               />
-            </Typography>
+            </Text>
             {isPinned && (
               <ProductMenuButton
                 icon="clear"
                 as="button"
-                variant="extraSmall"
                 onClick={() => clearChanges(index)}
               >
                 Un-boost
@@ -194,17 +185,11 @@ export const Product = ({
                 <ProductMenuButton
                   icon="pin"
                   as="button"
-                  variant="extraSmall"
                   onClick={() => setIsLockToPositionMenuOpen(true)}
                 >
                   Pin in position#
                 </ProductMenuButton>
-                <ProductMenuButton
-                  icon="up"
-                  as="button"
-                  variant="extraSmall"
-                  onClick={boostToTop}
-                >
+                <ProductMenuButton icon="up" as="button" onClick={boostToTop}>
                   Boost to Top
                 </ProductMenuButton>
               </>
@@ -216,21 +201,12 @@ export const Product = ({
                   height: error ? '260px' : '215px',
                 }}
               >
-                <Typography
-                  as="p"
-                  variant="small"
-                  isStrong={true}
-                  style={{ marginBottom: spacing(1) }}
-                >
+                <Text isStrong={true} style={{ marginBottom: spacing(1) }}>
                   Slot position
-                </Typography>
-                <Typography
-                  as="p"
-                  variant="extraSmall"
-                  style={{ marginBottom: spacing(1) }}
-                >
+                </Text>
+                <Text style={{ marginBottom: spacing(1) }}>
                   Select the position number you want to set for this product.
-                </Typography>
+                </Text>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -249,11 +225,7 @@ export const Product = ({
                     type="number"
                     hasError={!!error.length}
                   />
-                  {error && (
-                    <ErrorText as="p" variant="extraSmall">
-                      {error}
-                    </ErrorText>
-                  )}
+                  {error && <ErrorText>{error}</ErrorText>}
                   <LockActions>
                     <Button onClick={() => setIsLockToPositionMenuOpen(false)}>
                       Cancel

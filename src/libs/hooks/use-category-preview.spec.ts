@@ -10,7 +10,8 @@ const mockCategoryId = 'abc123';
 
 const mockMerchandisingRules = {
   pinnedProducts: [],
-  boosts: [],
+  boosts: { numeric: [], alphaNumeric: [], product: [] },
+  buries: { numeric: [], alphaNumeric: [], product: [] },
   blockedProducts: [],
 };
 

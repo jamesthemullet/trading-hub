@@ -61,7 +61,7 @@ export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {
           >
             {tab.title}
 
-            {tab.count && <Count>{tab.count}</Count>}
+            {!!tab.count && <Count>{tab.count}</Count>}
           </TabButton>
         ))}
       </TabsWrapper>
