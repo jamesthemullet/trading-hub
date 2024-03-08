@@ -1,7 +1,11 @@
 import { Screen, act, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent, { UserEvent } from '@testing-library/user-event';
+import { useRouter } from 'next/router';
 
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 jest.mock('../../hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
@@ -20,6 +24,8 @@ import { useCategoryProductSearch } from '../../hooks/use-category-product-searc
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const PRODUCT_SEARCH_PLACEHOLDER_TEXT = 'Search for product';
 const SAVE_BUTTON = 'Save';
+const CANCEL_BUTTON = 'Cancel';
+const CONFIRM_BUTTON = 'Close without saving';
 
 const categoryId1 = 'cat_123';
 const categoryName1 = 'jeans';
@@ -145,10 +151,19 @@ describe('Ruleset', () => {
       error: '',
       refetchRuleSetPreview: jest.fn(),
     });
+
+    (useRouter as jest.Mock).mockImplementation(() => {
+      return {
+        events: {
+          on: jest.fn(),
+          off: jest.fn(),
+        },
+      };
+    });
   });
 
   it('should render correctly', () => {
-    render(<Ruleset onSave={jest.fn()} />);
+    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     expect(screen.getByText('Save')).toBeInTheDocument();
   });
@@ -161,7 +176,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onSave={jest.fn()} />);
+    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     await selectCategory(screen, user);
 
@@ -177,7 +192,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onCreate={mockCreate} />);
+    render(<Ruleset onCreate={mockCreate} onCancel={jest.fn()} />);
 
     await selectCategory(screen, user);
 
@@ -204,6 +219,7 @@ describe('Ruleset', () => {
     render(
       <Ruleset
         onSave={mockSave}
+        onCancel={jest.fn()}
         rulesetCategory={{
           identifier: categoryId1,
           name: categoryName1,
@@ -234,6 +250,52 @@ describe('Ruleset', () => {
     );
   });
 
+  it('should cancel changes', async () => {
+    const user = userEvent.setup();
+    const mockSave = jest.fn();
+    const mockCancel = jest.fn();
+
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    render(
+      <Ruleset
+        onSave={mockSave}
+        onCancel={mockCancel}
+        rulesetCategory={{
+          identifier: categoryId1,
+          name: categoryName1,
+          path: categoryPath1,
+        }}
+        rulesetMerchandisingRules={{
+          pinnedProducts: [],
+          blockedProducts: [],
+        }}
+        rulesetId={ruleSetId}
+      />
+    );
+
+    await user.click(screen.getAllByTitle('Open menu')[0]);
+
+    await user.click(screen.getByText('Boost to Top'));
+
+    const cancelButton = await screen.findByText(CANCEL_BUTTON);
+
+    act(() => {
+      cancelButton.click();
+    });
+
+    const confirmCancelButton = await screen.findByText(CONFIRM_BUTTON);
+
+    act(() => {
+      confirmCancelButton.click();
+    });
+
+    expect(mockCancel).toHaveBeenCalled();
+  });
+
   it('should not save changes with no category selected', async () => {
     const user = userEvent.setup();
     const mockSave = jest.fn();
@@ -243,7 +305,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onSave={mockSave} />);
+    render(<Ruleset onSave={mockSave} onCancel={jest.fn()} />);
 
     await selectCategory(screen, user);
 
@@ -272,6 +334,7 @@ describe('Ruleset', () => {
     render(
       <Ruleset
         onSave={jest.fn()}
+        onCancel={jest.fn()}
         rulesetCategory={{
           identifier: categoryId1,
           name: categoryName1,
@@ -303,7 +366,7 @@ describe('Ruleset', () => {
 
     const user = userEvent.setup({ delay: null });
 
-    render(<Ruleset onSave={jest.fn()} />);
+    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     await user.type(
       screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT),
@@ -321,7 +384,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onSave={jest.fn()} />);
+    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     await selectCategory(screen, user);
 
@@ -400,6 +463,7 @@ describe('Ruleset', () => {
     render(
       <Ruleset
         onSave={jest.fn()}
+        onCancel={jest.fn()}
         rulesetCategory={{
           identifier: categoryId1,
           name: categoryName1,
@@ -452,5 +516,53 @@ describe('Ruleset', () => {
     // expect to see 2 products in the visual editor
     expect(await screen.findByLabelText('Position 1')).toBeVisible();
     expect(await screen.findByLabelText('Position 2')).toBeVisible();
+  });
+
+  it('opens changes tab', async () => {
+    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+
+    const tab2 = await screen.findByText('Changes');
+
+    act(() => {
+      tab2.click();
+    });
+
+    expect(screen.getByText('Pinned Products (0)')).toBeVisible();
+  });
+
+  it('opens external changes tab', async () => {
+    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+
+    const tab2 = await screen.findByText('External Changes');
+
+    act(() => {
+      tab2.click();
+    });
+
+    expect(screen.getByText('Tab 3')).toBeVisible();
+  });
+
+  it('opens attributes tab', async () => {
+    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+
+    const tab2 = await screen.findByText('Attribute');
+
+    act(() => {
+      tab2.click();
+    });
+
+    expect(screen.getByText('Tab 2')).toBeVisible();
+  });
+
+  it('opens Insights tab', async () => {
+    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+
+    const tab3 = await screen.findByText('Insights');
+
+    act(() => {
+      tab3.click();
+    });
+
+    expect(screen.getByText('Tab 3')).toBeVisible();
   });
 });

@@ -3,6 +3,7 @@ export * from './category-search/category-search';
 export * from './dropdown/dropdown';
 export * from './filter/filter';
 export * from './heading/heading';
+export * from './modal';
 export * from './navigation/navigation';
 export * from './page-wrapper/page-wrapper';
 export * from './pagination/pagination';
