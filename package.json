@@ -17,7 +17,7 @@
     "test": "jest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "ts-check": "tsc --build --force --verbose tsconfig.json",
+    "ts-check": "tsc  --build --force --verbose tsconfig.json",
     "outdated": "ncu"
   },
   "dependencies": {
