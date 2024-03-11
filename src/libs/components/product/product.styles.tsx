@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
-import { Typography } from '../typography/typography';
 
 import { color, colourPalette } from '../utils/constants';
+import { Text } from '../typography/typography.styles';
 
 export const ProductWrapper = styled.div<{ isLastChanged: boolean }>`
   width: 100%;
@@ -93,7 +93,7 @@ export const ProductMenu = styled.div`
   z-index: 2;
 `;
 
-export const ProductMenuButton = styled(Typography)<{ icon: string }>`
+export const ProductMenuButton = styled(Text)<{ icon: string }>`
   border: none;
   background: #fff;
   width: 100%;
@@ -135,7 +135,7 @@ export const LockInput = styled.input<{ hasError: boolean }>`
   margin-bottom: ${spacing(1)};
 `;
 
-export const ErrorText = styled(Typography)`
+export const ErrorText = styled(Text)`
   margin-bottom: ${spacing(1)};
   color: ${color.errorRed};
 `;

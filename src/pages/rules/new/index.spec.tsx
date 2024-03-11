@@ -44,6 +44,13 @@ const mockGetCategories = {
   ],
   pagination: { totalItems: 20 },
 };
+const mockRouter = {
+  push: jest.fn(),
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+  },
+};
 
 describe('Index', () => {
   afterEach(() => {
@@ -59,6 +66,7 @@ describe('Index', () => {
       getCategories: jest.fn(),
       getCategoriesError: '',
     });
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   it('renders', () => {
@@ -83,10 +91,6 @@ describe('Index', () => {
 
   it('clears category search results', async () => {
     const user = userEvent.setup();
-    const mockRouter = {
-      push: jest.fn(),
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest.mocked(useRuleSetCreate).mockReturnValue({
       handlePost: jest.fn(() =>
         Promise.resolve({
@@ -94,7 +98,12 @@ describe('Index', () => {
           categoryName: "Men's shirts",
           categoryId: 'foo',
           isEnabled: true,
-          rules: { pinnedProducts: [], boosts: [], blockedProducts: [] },
+          rules: {
+            pinnedProducts: [],
+            boosts: { numeric: [], alphaNumeric: [], product: [] },
+            buries: { numeric: [], alphaNumeric: [], product: [] },
+            blockedProducts: [],
+          },
           lastChanged: {
             date: '12/12/12',
             user: 'me',
@@ -134,10 +143,6 @@ describe('Index', () => {
 
   it('creates a new rule set and redirects to the edit page', async () => {
     const user = userEvent.setup();
-    const mockRouter = {
-      push: jest.fn(),
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest.mocked(useRuleSetCreate).mockReturnValue({
       handlePost: jest.fn(() =>
         Promise.resolve({
@@ -145,7 +150,12 @@ describe('Index', () => {
           categoryName: "Men's shirts",
           categoryId: 'foo',
           isEnabled: true,
-          rules: { pinnedProducts: [], boosts: [], blockedProducts: [] },
+          rules: {
+            pinnedProducts: [],
+            boosts: { numeric: [], alphaNumeric: [], product: [] },
+            buries: { numeric: [], alphaNumeric: [], product: [] },
+            blockedProducts: [],
+          },
           lastChanged: {
             date: '12/12/12',
             user: 'me',
@@ -183,12 +193,20 @@ describe('Index', () => {
     );
   });
 
+  it('cancels new ruleset creation', async () => {
+    render(<RuleSetCreate />);
+
+    const cancel = await screen.findByText('Cancel');
+
+    act(() => {
+      cancel.click();
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith(`/rules`);
+  });
+
   it('creates a new rule set and does not redirect if no id given for the edit page', async () => {
     const user = userEvent.setup();
-    const mockRouter = {
-      push: jest.fn(),
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest.mocked(useRuleSetCreate).mockReturnValue({
       handlePost: jest.fn(() => Promise.resolve(undefined)),
       error: '',

@@ -22,7 +22,7 @@ export const useCategoryProductSearch = () => {
       // eslint-disable-next-line functional/no-try-statement
       try {
         const queryData = {
-          query,
+          q: query,
           rows,
           start,
           categoryIds: [categoryId],

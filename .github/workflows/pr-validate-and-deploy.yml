@@ -136,7 +136,7 @@ jobs:
 
       - name: Login via Azure CLI
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        uses: azure/login@v1.6.1
+        uses: azure/login@v2
         with:
           creds: '{"clientId": "${{ secrets.SP_CLIENT_ID }}", "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
 

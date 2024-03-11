@@ -11,11 +11,11 @@ import {
   Tooltip,
   tooltipAriaLabelledBy,
 } from '../tooltip/tooltip';
-import { Typography } from '../typography/typography';
 import { colourDictionary, dotcomTheme } from '../utils/constants';
 import { formActiveStyles, formDefaultStyles } from '../utils/shared.styles';
 import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
+import { Text } from '../typography/typography.styles';
 
 const padding = 1;
 
@@ -168,9 +168,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {!!maxLength && (
           <CharacterLimitWrapper>
-            <Typography as="p" variant="textSmall">
-              {remainingCharactersMessage}
-            </Typography>
+            <Text>{remainingCharactersMessage}</Text>
           </CharacterLimitWrapper>
         )}
       </>

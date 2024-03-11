@@ -11,7 +11,8 @@ jest.mock('../../hooks/use-category-preview', () => ({
 const mockMerchandisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
-  boosts: [],
+  boosts: { numeric: [], alphaNumeric: [], product: [] },
+  buries: { numeric: [], alphaNumeric: [], product: [] },
 };
 const mockCategoryId = 'SubCat_123';
 const mockOnClose = jest.fn();

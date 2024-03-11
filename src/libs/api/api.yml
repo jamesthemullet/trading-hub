@@ -50,6 +50,38 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
+  '/merchandising/category/{categoryId}/attributes':
+    get:
+      summary: Category Attributes Response
+      description: Returns a response attributes to boost by for category.
+      parameters:
+        - in: path
+          name: categoryId
+          schema:
+            type: string
+          required: true
+          description: The category to retreive the attributes for
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/AttributeType'
+          required: true
+          description: The number type of attributes to retrieve
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
   '/merchandising/category/{categoryId}/preview':
     post:
       summary: Preview Search Response
@@ -349,12 +381,15 @@ components:
             $ref: '#/components/schemas/Product'
         rules:
           $ref: '#/components/schemas/MerchandisingRules'
+        facets:
+          $ref: '#/components/schemas/Facets'
         pagination:
           $ref: '#/components/schemas/Pagination'
       required:
         - products
         - category
         - rules
+        - facets
         - pagination
     ProductSearchResponse:
       type: object
@@ -406,6 +441,8 @@ components:
       properties:
         isPinned:
           type: boolean
+        isBoosted:
+          type: boolean
       required:
         - isPinned
     MerchandisingRules:
@@ -420,13 +457,14 @@ components:
           items:
             $ref: '#/components/schemas/BlockedProduct'
         boosts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Boost'
+          $ref: '#/components/schemas/BoostsBuries'
+        buries:
+          $ref: '#/components/schemas/BoostsBuries'
       required:
         - pinnedProducts
-        - blockedProducts
-        - boosts
+        # - blockedProducts
+        # - boosts
+        # - buries
     PinnedProduct:
       type: object
       properties:
@@ -441,17 +479,59 @@ components:
           type: string
       required:
         - id
-    Boost:
+    BoostsBuries:
       type: object
       properties:
-        field:
+        numeric:
+          type: array
+          items:
+            $ref: '#/components/schemas/NumericBoostBury'
+        alphaNumeric:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlphanumericBoostBury'
+        product:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBoostBury'
+    ProductBoostBury:
+      type: object
+      properties:
+        id:
           type: string
-        boost:
+        weight:
           type: number
           format: double
       required:
         - field
-        - boost
+        - weight
+    NumericBoostBury:
+      type: object
+      properties:
+        field:
+          type: string
+        weight:
+          type: number
+          format: double
+      required:
+        - field
+        - weight
+    AlphanumericBoostBury:
+      type: object
+      properties:
+        field:
+          type: string
+        weight:
+          type: number
+          format: double
+        values:
+          type: array
+          items:
+            type: string
+      required:
+        - field
+        - weight
+        - values
     ErrorResponse:
       type: object
       properties:
@@ -462,6 +542,27 @@ components:
       required:
         - status
         - message
+    Facets:
+      type: object
+      properties:
+        facets:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              order:
+                type: integer
+                format: int32
+              data:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/PriceFacetData'
+                    - $ref: '#/components/schemas/CommonFacetData'
+                    - $ref: '#/components/schemas/ColourFacetData'
+                    - $ref: '#/components/schemas/CategoryFacetData'
     Pagination:
       type: object
       properties:
@@ -488,5 +589,91 @@ components:
       required:
         - categories
         - pagination
+    AttributesResponse:
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                $ref: '#/components/schemas/AttributeType'
+              name:
+                type: string
+              values:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    value:
+                      type: string
+            required:
+              - name
+      required:
+        - attributes
+    AttributeType:
+      type: string
+      enum: ['alphanumeric', 'numeric']
+    CommonFacetData:
+      type: object
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+          format: int32
+        selected:
+          type: boolean
+    CategoryFacetData:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        crumb:
+          type: string
+        parent:
+          type: string
+        cat_id:
+          type: string
+        selected:
+          type: boolean
+        disabled:
+          type: boolean
+        name:
+          type: string
+    ColourFacetData:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        name:
+          type: string
+        colourHexValue:
+          type: string
+        hexColourType:
+          type: boolean
+        hasHexCode:
+          type: boolean
+        disabled:
+          type: boolean
+        iconValue:
+          type: string
+        selected:
+          type: boolean
+    PriceFacetData:
+      type: object
+      properties:
+        minimum:
+          type: integer
+          format: int32
+        maximum:
+          type: integer
+          format: int32
+        selected:
+          type: boolean
+
 security:
   - bearerAuth: []
