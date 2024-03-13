@@ -118,14 +118,14 @@ export const Ruleset = ({
     if (!hasChanges) setHasChanges(true);
   };
 
-  const { categoryPreview } = useCategoryPreview(
+  const { categoryProducts } = useCategoryPreview(
     selectedCategory?.identifier,
     merchandisingRules
   );
 
   useEffect(() => {
-    setSortedProducts(categoryPreview);
-  }, [categoryPreview]);
+    setSortedProducts(categoryProducts);
+  }, [categoryProducts]);
 
   const onChangePosition = ({
     isPinned,
