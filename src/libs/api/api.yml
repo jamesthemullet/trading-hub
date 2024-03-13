@@ -380,7 +380,7 @@ components:
           items:
             $ref: '#/components/schemas/Product'
         rules:
-          $ref: '#/components/schemas/MerchandisingRules'
+          $ref: '#/components/schemas/MerchandisingRulesWithInfo'
         facets:
           $ref: '#/components/schemas/Facets'
         pagination:
@@ -445,6 +445,25 @@ components:
           type: boolean
       required:
         - isPinned
+    MerchandisingRulesWithInfo:
+      type: object
+      properties:
+        pinnedProducts:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/PinnedProduct'
+              - $ref: '#/components/schemas/Product'
+        blockedProducts:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/BlockedProduct'
+              - $ref: '#/components/schemas/Product'
+        boosts:
+          $ref: '#/components/schemas/BoostsBuriesWithInfo'
+        buries:
+          $ref: '#/components/schemas/BoostsBuriesWithInfo'
     MerchandisingRules:
       type: object
       properties:
@@ -494,6 +513,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductBoostBury'
+    BoostsBuriesWithInfo:
+      type: object
+      properties:
+        numeric:
+          type: array
+          items:
+            $ref: '#/components/schemas/NumericBoostBury'
+        alphaNumeric:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlphanumericBoostBury'
+        product:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/ProductBoostBury'
+              - $ref: '#/components/schemas/Product'
     ProductBoostBury:
       type: object
       properties:
