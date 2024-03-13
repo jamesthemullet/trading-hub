@@ -19,5 +19,6 @@ if (!globalThis.fetch) {
     FormData: { value: FormData },
     Request: { value: Request },
     Response: { value: Response },
+    setImmediate: { value: window.setTimeout },
   });
 }

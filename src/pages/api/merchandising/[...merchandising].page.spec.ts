@@ -130,7 +130,16 @@ describe('Merchandising api proxy', () => {
 
   describe('when logged in', () => {
     beforeEach(() => {
-      jest.mocked(getToken).mockResolvedValueOnce({ accessToken: 'token' });
+      jest.mocked(getToken).mockResolvedValueOnce({
+        accessTokenExpires: 123,
+        refreshToken: 'refreshToken',
+        accessToken: 'token',
+        user: {
+          id: 'id',
+          name: 'name',
+          email: 'email',
+        },
+      });
     });
 
     it.each(responses)(

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { signIn, signOut, useSession } from 'next-auth/react';
@@ -19,6 +19,46 @@ describe('Navigation', () => {
     expect(screen.getByTitle('Category Ranking Rules')).toBeInTheDocument();
   });
 
+  it('should open and close category sub menu', () => {
+    render(<Navigation />);
+
+    const menuItemOne = screen.getByRole('button', {
+      name: 'Category Ranking Rules',
+    });
+
+    act(() => {
+      menuItemOne.click();
+    });
+
+    expect(screen.getByText('Category Ranking')).toBeVisible();
+
+    act(() => {
+      menuItemOne.click();
+    });
+
+    expect(screen.getByText('Category Ranking')).not.toBeVisible();
+  });
+
+  it('should open and close search sub menu', () => {
+    render(<Navigation />);
+
+    const menuItemTwo = screen.getByRole('button', {
+      name: 'Search Ranking Rules',
+    });
+
+    act(() => {
+      menuItemTwo.click();
+    });
+
+    expect(screen.getByText('Search optimisation')).toBeVisible();
+
+    act(() => {
+      menuItemTwo.click();
+    });
+
+    expect(screen.getByText('Search optimisation')).not.toBeVisible();
+  });
+
   it('should show Login when signed out', () => {
     render(<Navigation />);
 
@@ -36,7 +76,14 @@ describe('Navigation', () => {
 
   it('should show Login when authenticated', () => {
     jest.mocked(useSession).mockReturnValue({
-      data: { expires: '' },
+      data: {
+        user: {
+          id: 'userId',
+          email: '',
+        },
+        accessTokenExpires: 123,
+        expires: '',
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
@@ -47,7 +94,14 @@ describe('Navigation', () => {
 
   it('should call auth logout when signed in', async () => {
     jest.mocked(useSession).mockReturnValue({
-      data: { expires: '' },
+      data: {
+        user: {
+          id: 'userId',
+          email: '',
+        },
+        accessTokenExpires: 123,
+        expires: '',
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
