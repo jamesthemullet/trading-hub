@@ -147,7 +147,8 @@ describe('Ruleset', () => {
     });
 
     jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryPreview: [mockProduct, { ...mockProduct, id: 'product2' }],
+      categoryProducts: [mockProduct, { ...mockProduct, id: 'product2' }],
+      categoryFacets: [],
       error: '',
       refetchRuleSetPreview: jest.fn(),
     });
@@ -414,7 +415,7 @@ describe('Ruleset', () => {
     });
 
     jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryPreview: [
+      categoryProducts: [
         {
           id: 'product-id-1',
           title: productSearchTitle,
@@ -427,6 +428,8 @@ describe('Ruleset', () => {
           url: '',
         },
       ],
+
+      categoryFacets: [],
       error: '',
       refetchRuleSetPreview: jest.fn(),
     });

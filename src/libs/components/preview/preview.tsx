@@ -1,13 +1,13 @@
-import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
+import type { Facet, MerchandisingRules } from '@/libs/api';
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
 import { Dropdown } from '../dropdown/dropdown';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useCategoryPreview } from '../../hooks';
 import { ProductBox } from '../visual-editor/visual-editor.styles';
 import { ProductDetails } from '../product/product';
 import { ProductWrapper } from '../product/product.styles';
-import { Text } from '../typography/typography.styles';
+import { Text, Label, Header3 } from '../typography/typography.styles';
 
 type Props = {
   categoryId: string;
@@ -53,7 +53,7 @@ const PreviewTypeSelector = styled.div`
   align-items: baseline;
 `;
 
-const Label = styled(Text)`
+const LabelText = styled(Label)`
   margin-right: ${spacing(2)};
   padding-top: ${spacing(1)};
 `;
@@ -84,7 +84,26 @@ const Content = styled.div`
 `;
 
 const Facets = styled.div`
-  width: 25%;
+  width: calc(25% - ${spacing(1)});
+  margin-left: ${spacing(1)};
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1);
+  margin-top: ${spacing(2)};
+  padding: ${spacing(2)};
+`;
+
+const FacetName = styled(Label)`
+  margin-left: ${spacing(2)};
+  margin-bottom: ${spacing(1)};
+`;
+
+const ViewMore = styled(Label)`
+  margin-left: ${spacing(2)};
+  margin-bottom: ${spacing(1)};
+  padding-left: 0;
+  border: none;
+  background: none;
+  color: #4273b7;
+  text-decoration: underline;
 `;
 
 const Products = styled.div`
@@ -93,26 +112,63 @@ const Products = styled.div`
   flex-wrap: wrap;
 `;
 
+const FacetInfo = ({ facet }: { facet: Facet }) => {
+  const [facetsToShow, setFacetsToShow] = useState(4);
+  const { data, id } = facet;
+  return (
+    <>
+      <Header3 style={{ marginBottom: spacing(2) }}>{id}</Header3>
+      {data.map(
+        (
+          facet: {
+            minimum?: number;
+            maximum?: number;
+            name?: string;
+            count?: number;
+          },
+          index: number
+        ) => {
+          if (index < facetsToShow) {
+            return (
+              <FacetName key={facet.name || 'price'}>
+                {id === 'Price'
+                  ? `£${facet.minimum} - £${facet.maximum}`
+                  : facet.name}
+                &nbsp;({facet.count})
+              </FacetName>
+            );
+          }
+          if (index === facetsToShow) {
+            return (
+              <ViewMore
+                key="view-more"
+                as="button"
+                onClick={() => setFacetsToShow(data.length)}
+              >
+                View more
+              </ViewMore>
+            );
+          }
+        }
+      )}
+    </>
+  );
+};
+
 export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
   const [withRules, setWithRules] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [previewProducts, setPreviewProducts] = useState<ProductType[]>([]);
 
-  const { categoryPreview, refetchRuleSetPreview } = useCategoryPreview(
-    categoryId,
-    withRules
-      ? merchandisingRules
-      : {
-          pinnedProducts: [],
-          blockedProducts: [],
-          // boosts: { numeric: [], alphaNumeric: [], product: [] },
-          // buries: { numeric: [], alphaNumeric: [], product: [] },
-        }
-  );
-
-  useEffect(() => {
-    setPreviewProducts(categoryPreview);
-  }, [categoryPreview]);
+  const { categoryProducts, categoryFacets, refetchRuleSetPreview } =
+    useCategoryPreview(
+      categoryId,
+      withRules
+        ? merchandisingRules
+        : {
+            pinnedProducts: [],
+            blockedProducts: [],
+          }
+    );
 
   const toggleView = (withMerchandisingRules: boolean) => {
     setIsDropdownOpen(false);
@@ -124,12 +180,12 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
     <Wrapper>
       <Header>
         <CloseButton onClick={onClose} aria-label="close modal"></CloseButton>
-        <Text style={{ paddingTop: '10px' }}>
+        <Text style={{ paddingTop: '10px', fontSize: '16px' }}>
           Search across the site to preview the rule influence
         </Text>
 
         <PreviewTypeSelector>
-          <Label as="p">Preview</Label>
+          <LabelText as="p">Preview</LabelText>
           <DropdownWrapper>
             <Dropdown
               label={`${withRules ? 'with new rule change' : 'current state'}`}
@@ -165,10 +221,13 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
       </Header>
       <Content>
         <Facets>
-          <Text as="p">TODO Facets</Text>
+          {categoryFacets.map((facet: Facet) => (
+            <FacetInfo key={facet.id} facet={facet} />
+          ))}
         </Facets>
+
         <Products>
-          {previewProducts.map((product) => (
+          {categoryProducts.map((product) => (
             <ProductBox key={`product-${product.id}`}>
               <ProductWrapper isLastChanged={false}>
                 <ProductDetails {...product} />
