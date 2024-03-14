@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
 import type { Product as ProductType } from '@/libs/api';
 
-import { Button } from '../button/button';
 import { Product } from '../product/product';
 import { Search } from '../search/search';
-import { UploadFileIcon } from './upload-file-icon';
 
 const ProductSearchRootContainer = styled.div`
   padding-left: 8px;
@@ -20,13 +18,14 @@ const TopContainer = styled.div`
   align-items: stretch;
 `;
 
-const UploadButton = styled(Button)`
-  padding: 5px;
-  width: 39px;
-  height: 53px;
-  padding-left: 5px;
-  padding-top: 10px;
-`;
+// not for 1st phase
+// const UploadButton = styled(Button)`
+//   padding: 5px;
+//   width: 39px;
+//   height: 53px;
+//   padding-left: 5px;
+//   padding-top: 10px;
+// `;
 
 const StyledSearch = styled(Search)`
   & > div {
@@ -85,9 +84,9 @@ export const ProductSearch = ({
             onSearch(e.target.value);
           }}
         />
-        <UploadButton href="#">
+        {/* <UploadButton href="#">
           <UploadFileIcon />
-        </UploadButton>
+        </UploadButton> */}
       </TopContainer>
       <InfoContainer>{products.length} results</InfoContainer>
       <ProductsContainer>

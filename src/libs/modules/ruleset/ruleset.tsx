@@ -237,15 +237,11 @@ export const Ruleset = ({
       <MainContainerPanel>
         <ProductSearchPanel>
           <Tabs
-            tabs={[
-              { title: 'Product' },
-              { title: 'Attribute' },
-              { title: 'Insights' },
-            ]}
+            tabs={[{ title: 'Product' }, { title: 'Attribute' }]}
             onTabChange={setCurrentProductTab}
             currentTab={currentProductTab}
           />
-          {currentProductTab === 0 && (
+          {currentProductTab === 0 && selectedCategory.identifier && (
             <ProductSearch
               onSearch={async (query) => {
                 if (!selectedCategory.identifier) return;
@@ -276,7 +272,6 @@ export const Ruleset = ({
                 title: 'Changes',
                 count: merchandisingRules.pinnedProducts.length,
               },
-              { title: 'External Changes' },
             ]}
             onTabChange={setCurrentEditorTab}
             currentTab={currentEditorTab}
