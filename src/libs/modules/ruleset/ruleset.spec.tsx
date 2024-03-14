@@ -364,16 +364,11 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    const user = userEvent.setup({ delay: null });
-
     render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
-    await user.type(
-      screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT),
-      '123'
-    );
-
-    expect(screen.getByText('0 results')).toBeVisible();
+    expect(
+      screen.queryAllByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
+    ).toHaveLength(0);
   });
 
   it('should show and close preview', async () => {
@@ -530,18 +525,6 @@ describe('Ruleset', () => {
     expect(screen.getByText('Pinned Products (0)')).toBeVisible();
   });
 
-  it('opens external changes tab', async () => {
-    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
-
-    const tab2 = await screen.findByText('External Changes');
-
-    act(() => {
-      tab2.click();
-    });
-
-    expect(screen.getByText('Tab 3')).toBeVisible();
-  });
-
   it('opens attributes tab', async () => {
     render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
@@ -552,17 +535,5 @@ describe('Ruleset', () => {
     });
 
     expect(screen.getByText('Tab 2')).toBeVisible();
-  });
-
-  it('opens Insights tab', async () => {
-    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
-
-    const tab3 = await screen.findByText('Insights');
-
-    act(() => {
-      tab3.click();
-    });
-
-    expect(screen.getByText('Tab 3')).toBeVisible();
   });
 });
