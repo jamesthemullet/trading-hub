@@ -11,8 +11,8 @@ class MyJSDOMEnvironment extends JSDOMEnvironment {
 
     this.global.Request = Request;
     this.global.Response = Response;
-    this.global.TextEncoder = TextEncoder; // Had to add this
-    this.global.TextDecoder = TextDecoder; // Had to add this
+    this.global.TextEncoder = TextEncoder;
+    this.global.TextDecoder = TextDecoder;
     this.global.fetch = fetch;
     this.global.structuredClone = structuredClone;
   }
