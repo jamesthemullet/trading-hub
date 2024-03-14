@@ -2,8 +2,7 @@ import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest',
-  // testEnvironment: 'jest-environment-jsdom',
-  testEnvironment: "<rootDir>js-dom-extended.js",
+  testEnvironment: '<rootDir>js-dom-extended.js',
   clearMocks: true,
   collectCoverage: true,
   coverageDirectory: 'coverage',
