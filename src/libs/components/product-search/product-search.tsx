@@ -18,15 +18,6 @@ const TopContainer = styled.div`
   align-items: stretch;
 `;
 
-// not for 1st phase
-// const UploadButton = styled(Button)`
-//   padding: 5px;
-//   width: 39px;
-//   height: 53px;
-//   padding-left: 5px;
-//   padding-top: 10px;
-// `;
-
 const StyledSearch = styled(Search)`
   & > div {
     & > input {
@@ -84,9 +75,6 @@ export const ProductSearch = ({
             onSearch(e.target.value);
           }}
         />
-        {/* <UploadButton href="#">
-          <UploadFileIcon />
-        </UploadButton> */}
       </TopContainer>
       <InfoContainer>{products.length} results</InfoContainer>
       <ProductsContainer>
