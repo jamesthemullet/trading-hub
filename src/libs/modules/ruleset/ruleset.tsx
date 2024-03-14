@@ -260,9 +260,6 @@ export const Ruleset = ({
           {currentProductTab === 1 && (
             <p style={{ padding: spacing(2) }}>Tab 2</p>
           )}
-          {currentProductTab === 2 && (
-            <p style={{ padding: spacing(2) }}>Tab 3</p>
-          )}
         </ProductSearchPanel>
         <RulesPanel>
           <Tabs
@@ -288,9 +285,6 @@ export const Ruleset = ({
               merchandisingRules={merchandisingRules}
               onChangePosition={onChangePosition}
             />
-          )}
-          {currentEditorTab === 2 && (
-            <p style={{ padding: spacing(2) }}>Tab 3</p>
           )}
         </RulesPanel>
       </MainContainerPanel>
