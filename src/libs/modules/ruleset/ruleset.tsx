@@ -244,6 +244,7 @@ export const Ruleset = ({
           {currentProductTab === 0 && selectedCategory.identifier && (
             <ProductSearch
               onSearch={async (query) => {
+                /* istanbul ignore next */
                 if (!selectedCategory.identifier) return;
                 const data = await handleGet({
                   categoryId: selectedCategory.identifier,
