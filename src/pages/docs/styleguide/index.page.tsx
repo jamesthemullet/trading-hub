@@ -1,8 +1,15 @@
 /* istanbul ignore file */
 
 import styled from '@emotion/styled';
-import { Header1, Header2, Header3, Text, Title } from '@/libs/components';
 import { color } from '../../../libs/components/utils/constants';
+import {
+  Header1,
+  Header2,
+  Header3,
+  Label,
+  Text,
+  Title,
+} from '@/libs/components';
 
 const Container = styled.div`
   display: flex;
@@ -63,6 +70,13 @@ const StyleGuide = () => {
         <Text>Size: 14px</Text>
         <Text>Type: Regular</Text>
         <Text>&lt;Text /&gt;</Text>
+      </Guide>
+      <Guide>
+        <Label>Label</Label>
+        <Text>New MS London</Text>
+        <Text>Size: 16px</Text>
+        <Text>Type: Regular</Text>
+        <Text>&lt;Label /&gt;</Text>
       </Guide>
 
       <Header2 style={{ width: '100%', marginBottom: '8px' }}>Colours</Header2>

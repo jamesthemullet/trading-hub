@@ -29,13 +29,72 @@ const mockProduct = {
   url: '',
 };
 
+const mockFacets = [
+  {
+    id: 'Product Type',
+    order: 0,
+    data: [
+      {
+        name: 'Tops',
+        count: 24,
+      },
+      {
+        name: 'Socks',
+        count: 24,
+      },
+      {
+        name: 'Leggings',
+        count: 9,
+      },
+      {
+        name: 'Tights',
+        count: 6,
+      },
+      {
+        name: 'Vest Tops',
+        count: 2,
+      },
+      {
+        name: 'Bodies',
+        count: 1,
+      },
+      {
+        name: 'Shorts',
+        count: 1,
+      },
+    ],
+  },
+  {
+    id: 'Brand',
+    order: 1,
+    data: [
+      {
+        name: 'M&S Collection',
+        count: 66,
+      },
+    ],
+  },
+  {
+    id: 'Price',
+    order: 2,
+    data: [
+      {
+        minimum: 5,
+        maximum: 30,
+        count: 67,
+      },
+    ],
+  },
+];
+
 const NEW_RULE_CHANGE = 'with new rule change';
 const CURRENT_STATE = 'current state';
 
 describe('Preview', () => {
   beforeEach(() => {
     jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryPreview: [mockProduct, { ...mockProduct, id: 'product2' }],
+      categoryProducts: [mockProduct, { ...mockProduct, id: 'product2' }],
+      categoryFacets: mockFacets,
       error: '',
       refetchRuleSetPreview: jest.fn(),
     });
@@ -123,5 +182,35 @@ describe('Preview', () => {
 
     expect(screen.getAllByText(NEW_RULE_CHANGE)[0]).toBeVisible();
     expect(screen.getAllByText(NEW_RULE_CHANGE)[1]).toBeInTheDocument();
+  });
+
+  it('should show more facets', () => {
+    render(
+      <Preview
+        merchandisingRules={mockMerchandisingRules}
+        categoryId={mockCategoryId}
+        onClose={mockOnClose}
+      />
+    );
+
+    const viewMoreButton = screen.getByText('View more');
+
+    act(() => {
+      viewMoreButton.click();
+    });
+
+    expect(screen.getByText('Vest Tops (2)')).toBeInTheDocument();
+  });
+
+  it('should show price facet info', () => {
+    render(
+      <Preview
+        merchandisingRules={mockMerchandisingRules}
+        categoryId={mockCategoryId}
+        onClose={mockOnClose}
+      />
+    );
+
+    expect(screen.getByText('£5 - £30 (67)')).toBeInTheDocument();
   });
 });

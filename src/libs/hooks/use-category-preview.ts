@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
 
-import type { MerchandisingRules, Product } from '@/libs/api';
+import type { Facet, MerchandisingRules, Product } from '@/libs/api';
 import { merchandising } from '@/libs/api';
 
 export const useCategoryPreview = (
   categoryId: string | undefined,
   merchandisingRules: MerchandisingRules
 ) => {
-  const [categoryPreview, setCategoryPreview] = useState<Product[]>([]);
+  const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
+  const [categoryFacets, setCategoryFacets] = useState<Facet[]>([]);
   const [error, setError] = useState('');
   const [shouldRefetch, refetch] = useState({});
 
   useEffect(() => {
     const asyncCall = async () => {
       if (!categoryId) {
-        setCategoryPreview([]);
+        setCategoryProducts([]);
         return;
       }
 
@@ -27,14 +28,15 @@ export const useCategoryPreview = (
 
         const previewData = categoryPreview.data;
 
-        setCategoryPreview(previewData.products);
-        setError('');
-      } catch (error) {
-        if (error && typeof error === 'object' && 'status' in error) {
-          setError(`POST status ${error.status}`);
-          return;
+        setCategoryProducts(previewData.products);
+
+        if (previewData.facets.facets) {
+          setCategoryFacets(previewData.facets.facets);
         }
-        setError(`Failed to get categories ${error}`);
+
+        setError('');
+      } catch (error: any) {
+        setError(`Failed to get categories ${error.status}`);
       }
     };
 
@@ -42,7 +44,8 @@ export const useCategoryPreview = (
   }, [categoryId, shouldRefetch]);
 
   return {
-    categoryPreview,
+    categoryProducts,
+    categoryFacets,
     error,
     refetchRuleSetPreview: () => refetch({}),
   };

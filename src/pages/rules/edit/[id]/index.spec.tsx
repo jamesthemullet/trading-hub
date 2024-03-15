@@ -163,20 +163,6 @@ describe('Index', () => {
     expect(screen.getByText('Pinned Products (1)')).toBeVisible();
   });
 
-  it('opens external changes tab', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-
-    render(<Page id={ruleSetId} />);
-
-    const tab2 = await screen.findByText('External Changes');
-
-    act(() => {
-      tab2.click();
-    });
-
-    expect(screen.getByText('Tab 3')).toBeVisible();
-  });
-
   it('opens attributes tab', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
 
@@ -189,20 +175,6 @@ describe('Index', () => {
     });
 
     expect(screen.getByText('Tab 2')).toBeVisible();
-  });
-
-  it('opens Insights tab', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-
-    render(<Page id={ruleSetId} />);
-
-    const tab3 = await screen.findByText('Insights');
-
-    act(() => {
-      tab3.click();
-    });
-
-    expect(screen.getByText('Tab 3')).toBeVisible();
   });
 
   it('should save ruleset', async () => {

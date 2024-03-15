@@ -118,14 +118,14 @@ export const Ruleset = ({
     if (!hasChanges) setHasChanges(true);
   };
 
-  const { categoryPreview } = useCategoryPreview(
+  const { categoryProducts } = useCategoryPreview(
     selectedCategory?.identifier,
     merchandisingRules
   );
 
   useEffect(() => {
-    setSortedProducts(categoryPreview);
-  }, [categoryPreview]);
+    setSortedProducts(categoryProducts);
+  }, [categoryProducts]);
 
   const onChangePosition = ({
     isPinned,
@@ -237,17 +237,14 @@ export const Ruleset = ({
       <MainContainerPanel>
         <ProductSearchPanel>
           <Tabs
-            tabs={[
-              { title: 'Product' },
-              { title: 'Attribute' },
-              { title: 'Insights' },
-            ]}
+            tabs={[{ title: 'Product' }, { title: 'Attribute' }]}
             onTabChange={setCurrentProductTab}
             currentTab={currentProductTab}
           />
-          {currentProductTab === 0 && (
+          {currentProductTab === 0 && selectedCategory.identifier && (
             <ProductSearch
               onSearch={async (query) => {
+                /* istanbul ignore next */
                 if (!selectedCategory.identifier) return;
                 const data = await handleGet({
                   categoryId: selectedCategory.identifier,
@@ -264,9 +261,6 @@ export const Ruleset = ({
           {currentProductTab === 1 && (
             <p style={{ padding: spacing(2) }}>Tab 2</p>
           )}
-          {currentProductTab === 2 && (
-            <p style={{ padding: spacing(2) }}>Tab 3</p>
-          )}
         </ProductSearchPanel>
         <RulesPanel>
           <Tabs
@@ -276,7 +270,6 @@ export const Ruleset = ({
                 title: 'Changes',
                 count: merchandisingRules.pinnedProducts.length,
               },
-              { title: 'External Changes' },
             ]}
             onTabChange={setCurrentEditorTab}
             currentTab={currentEditorTab}
@@ -293,9 +286,6 @@ export const Ruleset = ({
               merchandisingRules={merchandisingRules}
               onChangePosition={onChangePosition}
             />
-          )}
-          {currentEditorTab === 2 && (
-            <p style={{ padding: spacing(2) }}>Tab 3</p>
           )}
         </RulesPanel>
       </MainContainerPanel>

@@ -36,6 +36,18 @@ const mockSearchData = {
       },
     },
   ],
+  facets: {
+    facets: [
+      [
+        {
+          name: 'M&S Collection',
+          count: 66,
+          selected: false,
+          disabled: false,
+        },
+      ],
+    ],
+  },
 };
 
 const badResponse = {
@@ -82,7 +94,7 @@ describe('useRuleSet', () => {
     );
 
     const expectedData = {
-      categoryPreview: [
+      categoryProducts: [
         {
           brand: 'M&S Collection',
           id: '60275024',
@@ -106,8 +118,8 @@ describe('useRuleSet', () => {
     };
 
     await waitFor(() => {
-      expect(result.current.categoryPreview).toMatchObject(
-        expectedData.categoryPreview
+      expect(result.current.categoryProducts).toMatchObject(
+        expectedData.categoryProducts
       );
     });
   });
@@ -123,12 +135,34 @@ describe('useRuleSet', () => {
     );
 
     const expectedData = {
-      categoryPreview: [],
-      error: 'POST status 500',
+      categoryProducts: [],
+      error: 'Failed to get categories 500',
     };
 
     await waitFor(() => {
       expect(result.current.error).toEqual(expectedData.error);
+    });
+  });
+
+  it('should return empty with no category id', async () => {
+    getRuleSetPreviewMock.mockReturnValueOnce({
+      data: mockSearchData,
+      status: { status: 200 },
+    });
+
+    const { result } = renderHook(() =>
+      useCategoryPreview(undefined, mockMerchandisingRules)
+    );
+
+    const expectedData = {
+      categoryProducts: [],
+      error: '',
+    };
+
+    await waitFor(() => {
+      expect(result.current.categoryProducts).toMatchObject(
+        expectedData.categoryProducts
+      );
     });
   });
 
@@ -155,7 +189,7 @@ describe('useRuleSet', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.categoryPreview.length).toEqual(2);
+      expect(result.current.categoryProducts.length).toEqual(2);
     });
   });
 });

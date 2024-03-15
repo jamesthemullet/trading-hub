@@ -584,21 +584,33 @@ components:
         facets:
           type: array
           items:
-            type: object
-            properties:
-              id:
-                type: string
-              order:
-                type: integer
-                format: int32
-              data:
-                type: array
-                items:
-                  oneOf:
-                    - $ref: '#/components/schemas/PriceFacetData'
-                    - $ref: '#/components/schemas/CommonFacetData'
-                    - $ref: '#/components/schemas/ColourFacetData'
-                    - $ref: '#/components/schemas/CategoryFacetData'
+            $ref: '#/components/schemas/Facet'
+      required:
+        - facets
+    Facet:
+      type: object
+      properties:
+        id:
+          type: string
+        order:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/FacetData'
+      required:
+        - id
+        - data
+    FacetData:
+      type: array
+      items:
+        $ref: '#/components/schemas/FacetItem'
+    FacetItem:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/PriceFacetData'
+        - $ref: '#/components/schemas/CommonFacetData'
+        - $ref: '#/components/schemas/ColourFacetData'
+        - $ref: '#/components/schemas/CategoryFacetData'
     Pagination:
       type: object
       properties:
@@ -710,6 +722,8 @@ components:
           format: int32
         selected:
           type: boolean
-
+      required:
+        - minimum
+        - maximum
 security:
   - bearerAuth: []
