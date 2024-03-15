@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { merchandising } from '@/libs/api';
+import { merchandising, type MerchandisingRules } from '@/libs/api';
 
 export const useCategoryProductSearch = () => {
   const [error, setError] = useState('');
@@ -11,11 +11,13 @@ export const useCategoryProductSearch = () => {
       query,
       rows,
       start,
+      merchandisingRules,
     }: {
       categoryId: string;
       query: string;
       rows: number;
       start: number;
+      merchandisingRules: MerchandisingRules;
     }) => {
       setError('');
 
@@ -27,10 +29,10 @@ export const useCategoryProductSearch = () => {
           start,
           categoryIds: [categoryId],
         };
-        const response = await merchandising().productList(queryData);
+        const response = await merchandising().productCreate(queryData, merchandisingRules);
         return response.data;
       } catch (error) {
-        setError(`Failed to create ruleset ${error}`);
+        setError(`Failed to search products ${error}`);
       }
 
       return {
