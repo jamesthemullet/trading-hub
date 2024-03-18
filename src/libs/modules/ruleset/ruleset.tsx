@@ -251,6 +251,7 @@ export const Ruleset = ({
                   query,
                   start: 0,
                   rows: 10,
+                  merchandisingRules,
                 });
                 setSearchProducts(data.products);
               }}
