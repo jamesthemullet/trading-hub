@@ -29,7 +29,10 @@ export const useCategoryProductSearch = () => {
           start,
           categoryIds: [categoryId],
         };
-        const response = await merchandising().productCreate(queryData, merchandisingRules);
+        const response = await merchandising().productCreate(
+          queryData,
+          merchandisingRules
+        );
         return response.data;
       } catch (error) {
         setError(`Failed to search products ${error}`);
