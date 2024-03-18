@@ -19,20 +19,20 @@ const httpDelete = jest.fn();
 
 const captureRequest =
   (fn: jest.Mock) =>
-  async ({
-    request,
-  }: ResponseResolverInfo<
-    HttpRequestResolverExtras<PathParams>,
-    DefaultBodyType
-  >) => {
-    const body = await request.text();
-    return fn({
-      url: request.url,
-      method: request.method,
-      headers: request.headers,
-      body: body.length > 0 ? JSON.parse(body) : null,
-    });
-  };
+    async ({
+      request,
+    }: ResponseResolverInfo<
+      HttpRequestResolverExtras<PathParams>,
+      DefaultBodyType
+    >) => {
+      const body = await request.text();
+      return fn({
+        url: request.url,
+        method: request.method,
+        headers: request.headers,
+        body: body.length > 0 ? JSON.parse(body) : null,
+      });
+    };
 
 const baseUrl = 'https://merch';
 const handlers = [
@@ -140,6 +140,7 @@ describe('Merchandising api proxy', () => {
           email: 'email',
         },
       });
+      jest.spyOn(console, 'error').mockImplementation(jest.fn());
     });
 
     it.each(responses)(
