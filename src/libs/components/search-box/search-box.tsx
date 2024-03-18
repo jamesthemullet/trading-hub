@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { type ButtonProps, Button } from '../button/button';
 import { Icon } from '../icon/icon';
 import { type InputProps, Input } from '../input/input';
-import { color } from '../utils/constants';
 import { mediaQuery } from '../utils/media-query';
 import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
