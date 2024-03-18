@@ -5,13 +5,12 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMouseFocus } from '@/libs/hooks/use-mouse-focus';
 import { Label } from '../label/label';
-import { type MessagingProps, Messaging } from '../messaging/messaging';
 import {
   type TooltipProps,
   Tooltip,
   tooltipAriaLabelledBy,
 } from '../tooltip/tooltip';
-import { colourDictionary, dotcomTheme } from '../utils/constants';
+import { color } from '../utils/constants';
 import { formActiveStyles, formDefaultStyles } from '../utils/shared.styles';
 import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
@@ -23,7 +22,6 @@ const StyledInput = styled.input<{
   isMouseFocus?: boolean;
   isEmpty?: boolean;
   isError?: boolean;
-  theme: typeof dotcomTheme;
 }>`
   ${() => formDefaultStyles({ padding })}
   height: ${sizing(6)};
@@ -37,7 +35,7 @@ const StyledInput = styled.input<{
   ${({ isError }) =>
     isError &&
     css`
-      border-color: ${colourDictionary.red[300]};
+      border-color: ${color.errorRed};
       border-width: 2px;
     `};
 `;
@@ -74,7 +72,7 @@ export type InputProps = Omit<
   as?: never;
   defaultValue?: string;
   message?: {
-    variant: MessagingProps['variant'];
+    variant: 'success' | 'info' | 'error' | 'inlineError';
     text: string;
   };
   isRequired?: boolean;
@@ -152,7 +150,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           maxLength={maxLength}
           value={inputVal}
           required={isRequired}
-          theme={dotcomTheme}
           {...(tooltip && tooltipAriaLabelledBy(id))}
           {...(message && { isError })}
           {...mouseFocusProps}
@@ -162,7 +159,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {isError && (
           <StyledError>
-            <Messaging variant="inlineError">{message.text}</Messaging>
+            <Text style={{ color: color.errorRed }}>{message.text}</Text>
           </StyledError>
         )}
 

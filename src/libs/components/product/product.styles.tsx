@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
 
-import { color, colourPalette } from '../utils/constants';
+import { color } from '../utils/constants';
 import { Text } from '../typography/typography.styles';
 
 export const ProductWrapper = styled.div<{ isLastChanged: boolean }>`
@@ -11,7 +11,7 @@ export const ProductWrapper = styled.div<{ isLastChanged: boolean }>`
   margin: ${spacing(1)};
   box-shadow: ${({ isLastChanged }) =>
     isLastChanged
-      ? `0 0 0 0.125rem ${colourPalette.primary.white}, 0 0 0 0.25rem ${colourPalette.functional.focusBlue}, 0 0 0.25rem 0.25rem ${colourPalette.functional.focusBlue}`
+      ? `0 0 0 0.125rem #fff, 0 0 0 0.25rem ${color.infoBlueBackground}, 0 0 0.25rem 0.25rem ${color.infoBlueBackground}`
       : 'none'};
 `;
 

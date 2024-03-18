@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-const fonts = {
+export const fonts = {
   regular: 'mnsLondonRegular, Helvetica, Arial, sans-serif',
   bold: 'mnsLondonBold, Helvetica, Arial, sans-serif',
   semiBold: 'mnsLondonSemiBold, Helvetica, Arial, sans-serif',

@@ -2,7 +2,6 @@ import { type HTMLAttributes, forwardRef } from 'react';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { colourDictionary } from '../utils/constants';
 
 import iconMapping from './svg-mapping.json';
 
@@ -37,7 +36,7 @@ const StyledSvg = styled.span<SvgProps>`
     const iconUrl = `url('${url}?key=v3')`;
     return canBeColoured
       ? css`
-          background: ${color ?? colourDictionary.black};
+          background: ${color ?? '#000'};
           mask-image: ${iconUrl};
           mask-size: ${innerSvgSize
             ? numberToStringPixel(innerSvgSize)

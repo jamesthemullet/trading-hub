@@ -31,17 +31,17 @@ describe('Input', () => {
       width: 100%;
       height: 3rem;
       font-size: 1rem;
-      border-color: #222222;
+      border-color: #999;
       background: rgb(255, 255, 255);
     `);
 
     expect(input).toHaveStyleRule('cursor', 'not-allowed', {
       target: ':disabled',
     });
-    expect(input).toHaveStyleRule('border-color', '#cccccc', {
+    expect(input).toHaveStyleRule('border-color', '#ccc', {
       target: ':disabled',
     });
-    expect(input).toHaveStyleRule('color', '#cccccc', {
+    expect(input).toHaveStyleRule('color', '#ccc', {
       target: ':placeholder',
     });
     expect(input).toHaveStyleRule('box-shadow', 'none', { target: ':focus' });
@@ -50,8 +50,8 @@ describe('Input', () => {
   it('Should set isEmpty state on initial render', () => {
     render(<Input id="id" label="input" />);
     const input = screen.getByLabelText('input');
-    expect(input).toHaveStyleRule('border', '1px solid #707070');
-    expect(input).not.toHaveStyleRule('border-color', '#000000');
+    expect(input).toHaveStyleRule('border', '1px solid #ccc');
+    expect(input).not.toHaveStyleRule('border-color', '#100e0e');
   });
 
   it('Should update the isEmpty state on change', async () => {
@@ -59,7 +59,7 @@ describe('Input', () => {
     render(<Input id="id" label="input" />);
     const input = screen.getByLabelText('input');
     await user.type(input, 'input now contains text');
-    expect(input).toHaveStyleRule('border-color', '#222222');
+    expect(input).toHaveStyleRule('border-color', '#999');
   });
 
   it('Should invoke a provided onChange callback', async () => {
