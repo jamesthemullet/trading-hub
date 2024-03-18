@@ -270,10 +270,10 @@ paths:
 
   '/merchandising/product':
     post:
-      summary: Get products for category
+      summary: Search products for category
       description: >-
-        Returns the products for a category, can be queried by name or category
-        id and metadata (pin/block/boost)
+        Returns the products for a category, can be queried by name/product id or category
+        id and merchandising rules (pin/block/boost) inside request body will be used to set metadata in the response
       parameters:
         - in: query
           name: categoryIds
@@ -288,6 +288,7 @@ paths:
           schema:
             type: string
           required: false
+          description: Search term, currently name/product id are supported
         - in: query
           name: start
           schema:
