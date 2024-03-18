@@ -22,7 +22,7 @@ describe('SearchBox', () => {
     expect(screen.getByLabelText('Search button')).toBeInTheDocument();
     expect(screen.getByRole('button')).toHaveAttribute('id', 'searchIconBtn');
     expect(screen.getByRole('button')).toHaveAttribute('type', 'submit');
-    expect(input).toHaveStyleRule('background-color', '#ccc', {
+    expect(input).toHaveStyleRule('background-color', '#f5f5f5', {
       media: '(min-width: 768px)',
     });
     expect(input).toHaveStyleRule('border-color', 'transparent', {
