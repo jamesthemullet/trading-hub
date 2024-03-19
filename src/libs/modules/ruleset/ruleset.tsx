@@ -4,10 +4,10 @@ import {
   Preview,
   ProductGridHeader,
   ProductSearch,
+  RulesetAttributes,
   RulesetChanges,
   Tabs,
   VisualEditor,
-  spacing,
 } from '../../components';
 import { useEffect, useState } from 'react';
 import type { Category, Product, MerchandisingRules } from '@/libs/api';
@@ -36,6 +36,14 @@ const ProductSearchPanel = styled.div`
 const RulesPanel = styled.div`
   background-color: #fff;
   width: 100%;
+`;
+
+const PanelTop = styled.div`
+  position: sticky;
+  top: 65px;
+  background-color: #fff;
+  padding-top: 1px;
+  z-index: 1;
 `;
 
 export type ChangePositionTypes = {
@@ -236,11 +244,13 @@ export const Ruleset = ({
 
       <MainContainerPanel>
         <ProductSearchPanel>
-          <Tabs
-            tabs={[{ title: 'Product' }, { title: 'Attribute' }]}
-            onTabChange={setCurrentProductTab}
-            currentTab={currentProductTab}
-          />
+          <PanelTop>
+            <Tabs
+              tabs={[{ title: 'Product' }, { title: 'Attribute' }]}
+              onTabChange={setCurrentProductTab}
+              currentTab={currentProductTab}
+            />
+          </PanelTop>
           {currentProductTab === 0 && selectedCategory.identifier && (
             <ProductSearch
               onSearch={async (query) => {
@@ -259,22 +269,22 @@ export const Ruleset = ({
               products={searchProducts}
             />
           )}
-          {currentProductTab === 1 && (
-            <p style={{ padding: spacing(2) }}>Tab 2</p>
-          )}
+          {currentProductTab === 1 && <RulesetAttributes />}
         </ProductSearchPanel>
         <RulesPanel>
-          <Tabs
-            tabs={[
-              { title: 'Visual Editor' },
-              {
-                title: 'Changes',
-                count: merchandisingRules.pinnedProducts.length,
-              },
-            ]}
-            onTabChange={setCurrentEditorTab}
-            currentTab={currentEditorTab}
-          />
+          <PanelTop>
+            <Tabs
+              tabs={[
+                { title: 'Visual Editor' },
+                {
+                  title: 'Changes',
+                  count: merchandisingRules.pinnedProducts.length,
+                },
+              ]}
+              onTabChange={setCurrentEditorTab}
+              currentTab={currentEditorTab}
+            />
+          </PanelTop>
 
           {currentEditorTab === 0 && (
             <VisualEditor
