@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 
-import { RulesetAttributes } from './ruleset-attributes';
+import { RulesetAttributes } from '@/libs/components';
 
 describe('RulesetAttributes', () => {
   it('should render correctly', () => {

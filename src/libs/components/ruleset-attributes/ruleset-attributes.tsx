@@ -30,7 +30,6 @@ const Modal = styled.div<{ isModalOpen: boolean }>`
   position: absolute;
   top: -93px;
   left: 361px;
-  z-index: 2;
   transition: opacity 0.1s ease-in;
   opacity: ${({ isModalOpen }) => (isModalOpen ? 1 : 0)};
   visibility: ${({ isModalOpen }) => (isModalOpen ? 'visible' : 'hidden')};
