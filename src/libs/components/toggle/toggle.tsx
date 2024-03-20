@@ -134,7 +134,7 @@ export const Toggle = ({ isEnabled, onClick }: Props) => {
       <ToggleSwitch title="Toggle">
         <ToggleInput
           type="checkbox"
-          defaultChecked={isEnabled}
+          checked={isEnabled}
           onClick={() => onClick()}
         />
         <span></span>
