@@ -4,7 +4,6 @@ import { screen, render } from '@testing-library/react';
 import dayjs from 'dayjs';
 
 describe('date-picker', () => {
-
   it('should render', () => {
     render(
       <MantineProvider>
