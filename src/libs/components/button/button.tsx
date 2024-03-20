@@ -71,7 +71,7 @@ const StyledButton = styled.button<ButtonProps>`
   transition-property: background-color color border-color;
   text-decoration: none;
   padding: 10px 16px;
-  width: 100%;
+  width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
 
   &:disabled {
     cursor: default;
@@ -84,6 +84,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   as?: ElementType;
   isDisabled?: boolean;
   href?: string;
+  isInline?: boolean;
   onClick?: () => void;
   theme?: string;
   type?: 'submit' | 'reset' | 'button' | undefined;

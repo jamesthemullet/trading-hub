@@ -80,7 +80,7 @@ jobs:
 
       - name: Create comment
         if: steps.find-comment.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v3.0.2
+        uses: peter-evans/create-or-update-comment@v3.1.0
         with:
           token: ${{ env.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -114,7 +114,7 @@ jobs:
 
       - name: Check if PR infra is deployed
         id: check-infra-deployed
-        uses: nick-fields/retry@v2.8.3
+        uses: nick-fields/retry@v2.9.0
         with:
           timeout_seconds: 60
           max_attempts: 10
@@ -181,7 +181,7 @@ jobs:
           && steps.check-if-already-includes.outputs.comment-id == ''
           && github.event_name == 'pull_request'
         continue-on-error: true
-        uses: peter-evans/create-or-update-comment@v3.0.2
+        uses: peter-evans/create-or-update-comment@v3.1.0
         with:
           token: ${{ env.GITHUB_TOKEN }}
           comment-id: ${{ steps.find-deployment-comment.outputs.comment-id }}
@@ -195,4 +195,4 @@ jobs:
 
       - name: Cancel build due to failure
         if: ${{ failure() }}
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4

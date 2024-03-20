@@ -537,6 +537,6 @@ describe('Ruleset', () => {
       tab2.click();
     });
 
-    expect(screen.getByText('Tab 2')).toBeVisible();
+    expect(screen.getByText('Create new attribute rule')).toBeVisible();
   });
 });
