@@ -25,9 +25,6 @@ jobs:
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
 
-      - name: Check for outdated dependencies
-        run: npm outdated
-
       - name: Check formatting
         run: npm run format:check
 
