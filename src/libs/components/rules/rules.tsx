@@ -250,7 +250,7 @@ export const Rules = ({
                 </p>
               </Col>
               <Col>
-                <Toggle isEnabled={isEnabled} onClick={() => {}} />
+                <Toggle checked={isEnabled} onChange={() => {}} />
               </Col>
               <Col>
                 <DateContainer>

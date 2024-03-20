@@ -79,14 +79,13 @@ export const DatePicker = (
   const isToggleEnabled = value
     ? value[0] === null && value[1] === null
     : false;
-  console.log('value', value);
   return (
     <CalendarContainer>
       <Header>
         <OnAllTimeContainer>
           <Toggle
-            isEnabled={isToggleEnabled}
-            onClick={() => {
+            checked={isToggleEnabled}
+            onChange={() => {
               if (!onChange) {
                 return;
               }
