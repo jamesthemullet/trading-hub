@@ -32,9 +32,15 @@ Before you can contribute to this repo, you must be able to sign your commits so
 
 ### Pull requests
 
-There are no precommit hooks, PR checks run against tests, code formatting and dependencies updates.
+There are no precommit hooks, PR checks run against tests, type checking and code formatting.
 
 Reviews are not dismissed on new commits, please rerequest a review if subsequent commits make significant code changes.
+
+### API contract
+
+Our agreed API with the backend team is stored in this repo and used for all requests.
+
+You can check or generate the code by running `npm run codegen` and view our [api.yml](src/libs/api/api.yml)
 
 ### Tests
 
@@ -50,7 +56,7 @@ Prettier is used to format files, this can be set up in your IDE or by running `
 
 ### Dependencies updates
 
-Dependabot is set up for the repo, however to keep our dependencies up to date `npm outdated` is run as part of PR checks so all contributors can help with updates.
+Renovate is set up for the repo, all contributors can help with merging updates. Checks are scheduled outside of working hours.
 
 ## Deployments
 
