@@ -269,11 +269,11 @@ paths:
           description: Unauthorized e.g. no bearer token specified
 
   '/merchandising/product':
-    get:
-      summary: Get products for category
+    post:
+      summary: Search products for category
       description: >-
-        Returns the products for a category, can be queried by name or category
-        id
+        Returns the products for a category, can be queried by name/product id or category
+        id and merchandising rules (pin/block/boost) inside request body will be used to set metadata in the response
       parameters:
         - in: query
           name: categoryIds
@@ -288,6 +288,7 @@ paths:
           schema:
             type: string
           required: false
+          description: Search term, currently name/product id are supported
         - in: query
           name: start
           schema:
@@ -299,6 +300,11 @@ paths:
           schema:
             type: integer
           required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRules'
       responses:
         '200':
           description: A JSON representation of products

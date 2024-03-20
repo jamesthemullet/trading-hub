@@ -174,7 +174,7 @@ describe('Index', () => {
       tab2.click();
     });
 
-    expect(screen.getByText('Tab 2')).toBeVisible();
+    expect(screen.getByText('Create new attribute rule')).toBeVisible();
   });
 
   it('should save ruleset', async () => {

@@ -9,9 +9,16 @@ import { useCategoryProductSearch } from './use-category-product-search';
 const baseUrl = 'http://localhost';
 const server = setupServer();
 
+const mockMerchandisingRules = {
+  pinnedProducts: [],
+  boosts: { numeric: [], alphaNumeric: [], product: [] },
+  buries: { numeric: [], alphaNumeric: [], product: [] },
+  blockedProducts: [],
+};
+
 const createRequestHandler = (response: HttpResponse) => {
   return [
-    http.get(`${baseUrl}/merchandising/product`, () => {
+    http.post(`${baseUrl}/merchandising/product`, () => {
       return response;
     }),
   ];
@@ -48,6 +55,7 @@ describe('useCategoryProductSearch', () => {
       query: '',
       rows: 10,
       start: 0,
+      merchandisingRules: mockMerchandisingRules,
     });
     expect(data?.pagination.totalItems).toEqual(3);
   });
@@ -63,13 +71,14 @@ describe('useCategoryProductSearch', () => {
         query: '',
         rows: 10,
         start: 0,
+        merchandisingRules: mockMerchandisingRules,
       });
     });
 
     rerender();
 
     expect(result.current.error).toEqual(
-      'Failed to create ruleset TypeError: Failed to fetch'
+      'Failed to search products TypeError: Failed to fetch'
     );
   });
 });
