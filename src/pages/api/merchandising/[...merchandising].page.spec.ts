@@ -133,6 +133,7 @@ describe('Merchandising api proxy', () => {
           email: 'email',
         },
       });
+      jest.spyOn(console, 'error').mockImplementation(jest.fn());
     });
 
     it.each(responses)(
