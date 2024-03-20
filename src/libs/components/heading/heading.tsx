@@ -1,15 +1,14 @@
 import styled from '@emotion/styled';
-import { colourDictionary } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { Text } from '../typography/typography.styles';
 
 const BreadcrumbText = styled(Text)`
-  color: ${colourDictionary.black};
+  color: #000;
 `;
 
 const HeadingWrapper = styled.div`
-  background: ${colourDictionary.white};
+  background: #fff;
   box-shadow: #000 0 0 4px;
   padding: 23px;
   display: flex;
