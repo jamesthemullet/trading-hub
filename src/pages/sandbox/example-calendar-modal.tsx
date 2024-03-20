@@ -5,9 +5,8 @@ import {
   formatMonthDayDateRange,
 } from '@/libs/components';
 import styled from '@emotion/styled';
-import { MantineProvider, Modal, Space, createTheme } from '@mantine/core';
+import { MantineProvider, Modal, createTheme } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { set } from 'date-fns';
 import { useState } from 'react';
 
 const theme = createTheme({});
