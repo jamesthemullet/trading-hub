@@ -5,8 +5,10 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-.vscode
+.vscode/*
 !.vscode/launch.json
+!.vscode/settings.json
+!.vscode/extensions.json
 
 # testing
 /coverage
