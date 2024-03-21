@@ -118,7 +118,7 @@ jobs:
         with:
           timeout_seconds: 60
           max_attempts: 10
-          retry_wait_seconds: 10
+          retry_wait_seconds: 30
           command: |
             set +e
             echo "infra_deployed=true" >> "$GITHUB_OUTPUT"

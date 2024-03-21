@@ -3,7 +3,9 @@ import { Button } from '../button/button';
 import { spacing } from '../utils/spacing';
 import { useState } from 'react';
 import { color } from '../utils/constants';
-import { Label } from '../typography/typography.styles';
+import { Label, Text } from '../typography/typography.styles';
+import { Checkboxes } from '../checkboxes/checkboxes';
+import { RadioButtons } from '../radio-buttons/radio-buttons';
 
 const MODAL_WIDTH = 435;
 
@@ -26,10 +28,10 @@ const Modal = styled.div<{ isModalOpen: boolean }>`
   width: ${MODAL_WIDTH}px;
   background-color: #fff;
   z-index: 2;
-  height: calc(100vh - 70px);
-  position: absolute;
-  top: -93px;
-  left: 361px;
+  height: calc(100vh - 80px);
+  position: fixed;
+  top: 75px;
+  left: 430px;
   transition: opacity 0.1s ease-in;
   opacity: ${({ isModalOpen }) => (isModalOpen ? 1 : 0)};
   visibility: ${({ isModalOpen }) => (isModalOpen ? 'visible' : 'hidden')};
@@ -69,6 +71,53 @@ const ModalContent = styled.div`
   transform: translateX(-${MODAL_WIDTH}px);
   position: absolute;
   width: 100%;
+`;
+
+const ModalButton = styled(Label)`
+  border: none;
+  background: none;
+  color: ${color.selectionBox};
+  width: 100%;
+  text-align: left;
+  padding-left: 0;
+`;
+
+const NextStep = styled(Label)`
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  padding-left: 0;
+
+  &::after {
+    content: '';
+    background: url('/trading-hub/asset/chevron-right.svg');
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    right: ${spacing(5)};
+  }
+`;
+
+const PreviousStep = styled(NextStep)`
+  &::after {
+    display: none;
+  }
+  &::before {
+    content: '';
+    background: url('/trading-hub/asset/chevron-left.svg');
+    width: 12px;
+    height: 19px;
+    display: inline-block;
+    margin-right: ${spacing(1)};
+    margin-bottom: -4px;
+  }
+`;
+
+const Count = styled(Text)`
+  position: absolute;
+  right: ${spacing(2)};
+  top: 18px;
 `;
 
 const ModalFooter = styled.div`
@@ -124,21 +173,30 @@ export const RulesetAttributes = ({}) => {
             <SectionLabel
               number={2}
               text="Choose value"
-              isActive={modalStep === 1}
+              isActive={modalStep !== 0}
             />
           </ModalHeader>
         </ModalSection>
+
         <ModalContent
           style={{ transform: `translateX(${modalStep * MODAL_WIDTH * -1}px)` }}
           {...(modalStep !== 0 && { inert: '' })}
         >
           <ModalSection>
-            <button onClick={() => setModalStep(1)}>demo next view</button>
+            <Label isStrong>Choose attribute type</Label>
           </ModalSection>
           <ModalSection>
-            <p>Step 1 content</p>
+            <ModalButton as="button" isStrong onClick={() => setModalStep(1)}>
+              Numeric attributes
+            </ModalButton>
+          </ModalSection>
+          <ModalSection>
+            <ModalButton as="button" isStrong onClick={() => setModalStep(2)}>
+              Product description attributes
+            </ModalButton>
           </ModalSection>
         </ModalContent>
+
         <ModalContent
           style={{
             transform: `translateX(${(modalStep - 1) * MODAL_WIDTH * -1}px)`,
@@ -146,14 +204,81 @@ export const RulesetAttributes = ({}) => {
           {...(modalStep !== 1 && { inert: '' })}
         >
           <ModalSection>
-            <button onClick={() => setModalStep(0)}>demo previous view</button>
+            <PreviousStep as="button" isStrong onClick={() => setModalStep(0)}>
+              back
+            </PreviousStep>
           </ModalSection>
           <ModalSection>
-            <p>Step 2 content</p>
+            <Label isStrong>Numeric Attributes</Label>
+            <Text>
+              Select one numeric attribute below to boost linearly (larger the
+              value, stronger the boost). Attributes are aggregated from the
+              account level
+            </Text>
           </ModalSection>
+          <RadioButtons
+            values={[
+              { name: 'availabilityRating', isSelected: false },
+              { name: 'averageRating', isSelected: false },
+              { name: 'minPrice', isSelected: true },
+            ]}
+          />
         </ModalContent>
+
+        <ModalContent
+          style={{
+            transform: `translateX(${(modalStep - 2) * MODAL_WIDTH * -1}px)`,
+          }}
+          {...(modalStep !== 2 && { inert: '' })}
+        >
+          <ModalSection>
+            <PreviousStep as="button" isStrong onClick={() => setModalStep(0)}>
+              back
+            </PreviousStep>
+          </ModalSection>
+          <ModalSection>
+            <Label isStrong>Product description attributes</Label>
+            <Text>Attributes are aggregated from the account level</Text>
+          </ModalSection>
+          {['brand', 'colour', 'category'].map((productDescription) => (
+            <ModalSection key={productDescription}>
+              <NextStep as="button" onClick={() => setModalStep(3)} isStrong>
+                {productDescription}
+              </NextStep>
+            </ModalSection>
+          ))}
+        </ModalContent>
+
+        <ModalContent
+          style={{
+            transform: `translateX(${(modalStep - 3) * MODAL_WIDTH * -1}px)`,
+          }}
+          {...(modalStep !== 3 && { inert: '' })}
+        >
+          <ModalSection>
+            <PreviousStep as="button" isStrong onClick={() => setModalStep(2)}>
+              back
+            </PreviousStep>
+            <Count>Showing: 4</Count>
+          </ModalSection>
+          <Checkboxes
+            values={[
+              { name: 'Brand name 1', isSelected: false },
+              { name: 'Brand name 2', isSelected: true },
+              { name: 'Brand name 3', isSelected: true },
+              { name: 'Brand name 4', isSelected: false },
+            ]}
+          />
+        </ModalContent>
+
         <ModalFooter>
-          <Button onClick={() => setIsModalOpen(false)} isInline={true}>
+          <Button
+            onClick={() => {
+              setIsModalOpen(false);
+              setModalStep(0);
+            }}
+            isInline={true}
+          >
             Cancel
           </Button>
         </ModalFooter>
