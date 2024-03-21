@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import { List } from './list';
 import { VisuallyHide } from './visually-hide';
 import { spacing } from '../utils/spacing';
-import { colourDictionary } from '../utils/constants';
+import { color } from '../utils/constants';
 import { sizing } from '../utils/sizing';
 import { mediaQuery } from '../utils/media-query.styles';
 
@@ -24,7 +24,7 @@ const StyledList = styled(List)`
     display: inline-block;
     margin: 0 ${spacing(1)};
     transform: rotate(15deg) translateY(4px);
-    border-right: 0.115rem solid ${colourDictionary.grey[600]};
+    border-right: 0.115rem solid ${color.lightGrey};
     height: ${sizing(2)};
     content: '';
   }

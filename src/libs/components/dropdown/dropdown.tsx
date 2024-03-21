@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
 import { Icon } from '../icon/icon';
-import { colourDictionary, dotcomTheme } from '../utils/constants';
+import { color } from '../utils/constants';
 import { mediaQuery } from '../utils/media-query';
 import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
@@ -21,7 +21,6 @@ export type FilterDropdownProps = {
   contentHeight?: string;
   alignContentTowards?: 'left' | 'right';
   footerContent?: ReactElement;
-  theme?: typeof colourDictionary;
 };
 
 type ClosingType = 'icon' | 'button' | 'esc' | 'outsideClick';
@@ -44,7 +43,7 @@ const FilterDropdownButton = styled.button<Pick<FilterDropdownProps, 'isOpen'>>`
   padding: 0 ${spacing(2)};
   width: ${sizing('100%')};
   &:hover {
-    background-color: ${colourDictionary.grey[300]};
+    background-color: ${color.grey};
   }
 
   ${({ isOpen }) =>
@@ -71,7 +70,7 @@ const ContentWrapper = styled.div<
   position: absolute;
   width: ${({ contentWidth = sizing('100%') }) => contentWidth};
   z-index: 2;
-  background: ${colourDictionary.white};
+  background: #fff;
   visibility: hidden;
   ${({ isOpen }) =>
     isOpen &&
@@ -153,10 +152,10 @@ export const Dropdown = ({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <ButtonText as="span" color={colourDictionary.black}>
+        <ButtonText as="span" color={'#000'}>
           {label}
         </ButtonText>
-        <ArrowIcon name="ChevronDownDefault" color={colourDictionary.black} />
+        <ArrowIcon name="ChevronDownDefault" color={'#000'} />
       </FilterDropdownButton>
       <ContentWrapper
         isOpen={isOpen}
@@ -164,9 +163,7 @@ export const Dropdown = ({
         contentWidth={contentWidth}
         tabIndex={-1}
       >
-        <Content tabIndex={-1} theme={dotcomTheme}>
-          {children}
-        </Content>
+        <Content tabIndex={-1}>{children}</Content>
         {footerContent}
       </ContentWrapper>
     </FilterDropdownWrapper>

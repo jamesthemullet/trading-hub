@@ -87,8 +87,6 @@ export const Ruleset = ({
       rulesetMerchandisingRules || {
         pinnedProducts: [],
         blockedProducts: [],
-        // boosts: { numeric: [], alphaNumeric: [], product: [] },
-        // buries: { numeric: [], alphaNumeric: [], product: [] },
       }
     );
   const [hasChanges, setHasChanges] = useState(false);
@@ -184,8 +182,6 @@ export const Ruleset = ({
     setMerchandisingRules({
       pinnedProducts,
       blockedProducts: [],
-      // boosts: { numeric: [], alphaNumeric: [], product: [] },
-      // buries: { numeric: [], alphaNumeric: [], product: [] },
     });
   };
 
