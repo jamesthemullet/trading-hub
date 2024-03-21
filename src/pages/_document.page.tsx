@@ -52,6 +52,7 @@ export const resetStyles = () => css`
   }
   body {
     min-height: 100vh;
+    min-width: 990px;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     font-weight: normal;

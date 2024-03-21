@@ -1,5 +1,6 @@
 export * from './button/button';
 export * from './category-search/category-search';
+export * from './checkboxes/checkboxes';
 export * from './dropdown/dropdown';
 export * from './filter/filter';
 export * from './heading/heading';
@@ -11,6 +12,7 @@ export * from './preview/preview';
 export * from './product-grid-header/product-grid-header';
 export * from './product-search/product-search';
 export * from './product/product';
+export * from './radio-buttons/radio-buttons';
 export * from './rules/rules';
 export * from './ruleset-attributes/ruleset-attributes';
 export * from './ruleset-changes/ruleset-changes';
