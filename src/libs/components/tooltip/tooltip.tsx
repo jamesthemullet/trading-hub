@@ -4,7 +4,6 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button } from '../button/button';
 import { Icon } from '../icon/icon';
-import { colourDictionary } from '../utils/constants';
 import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
 import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
@@ -37,9 +36,9 @@ const StyledTooltip = styled.div<
     isOpen: boolean;
   }
 >`
-  background-color: ${colourDictionary.black};
+  background-color: #000;
   border-radius: 3px;
-  color: ${colourDictionary.white};
+  color: #fff;
   display: ${({ isOpen }) => (isOpen ? 'inline-flex' : 'none')};
   padding: ${spacing(1.5)};
   position: absolute;
@@ -47,7 +46,7 @@ const StyledTooltip = styled.div<
 
   &::after {
     border: ${sizing(arrowWidth)} solid transparent;
-    border-top-color: ${colourDictionary.black};
+    border-top-color: #000;
     bottom: calc(-${spacing(arrowWidth * 2)} + ${offset});
     content: '';
     height: 0;
@@ -90,7 +89,7 @@ const StyledTypography = styled(Text)`
 `;
 
 const StyledCloseButton = styled(Button)`
-  color: ${colourDictionary.white};
+  color: #fff;
   margin: ${spacing(-0.5)};
 `;
 
@@ -109,11 +108,7 @@ export const Tooltip = ({
   return (
     <StyledTooltipContainer ref={tooltipRef} arrowAlignment={arrowAlignment}>
       <StyledTooltip arrowAlignment={arrowAlignment} isOpen={isOpen}>
-        <StyledTypography
-          as="p"
-          color={colourDictionary.white}
-          id={`${id}-tooltip`}
-        >
+        <StyledTypography as="p" color={'#fff'} id={`${id}-tooltip`}>
           {text}
         </StyledTypography>
         <StyledCloseButton onClick={() => setIsOpen(false)}>
@@ -122,7 +117,7 @@ export const Tooltip = ({
             widthDeprecated={28}
             role="img"
             aria-label="Close tooltip"
-            color={colourDictionary.white}
+            color={'#fff'}
           />
         </StyledCloseButton>
       </StyledTooltip>

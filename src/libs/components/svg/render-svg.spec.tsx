@@ -1,7 +1,5 @@
 import { screen, render } from '@testing-library/react';
 
-import { colourDictionary } from '../utils/constants';
-
 import { RenderSvg } from './render-svg';
 
 describe('Render SVG component', () => {
@@ -40,28 +38,22 @@ describe('Render SVG component', () => {
   });
 
   it('should render an coloured svg', () => {
-    render(<RenderSvg name="TickSuccess" color={colourDictionary.white} />);
+    render(<RenderSvg name="TickSuccess" color={'#fff'} />);
     const icon = screen.getByRole('presentation');
 
     expect(icon).toHaveStyleRule('mask-size', 'contain');
-    expect(icon).toHaveStyleRule('background', colourDictionary.white);
+    expect(icon).toHaveStyleRule('background', '#fff');
   });
 
   it('should render an coloured svg with custom mask-size', () => {
-    render(
-      <RenderSvg
-        name="TickSuccess"
-        color={colourDictionary.white}
-        innerSvgSize={4}
-      />
-    );
+    render(<RenderSvg name="TickSuccess" color={'#fff'} innerSvgSize={4} />);
     const icon = screen.getByRole('presentation');
 
     expect(icon).toHaveStyleRule('mask-size', '4px');
   });
 
   it('should not render an coloured svg when colour is passed but svg mapping says we can not', () => {
-    render(<RenderSvg name="PaginationOn" color={colourDictionary.white} />);
+    render(<RenderSvg name="PaginationOn" color={'#fff'} />);
     const icon = screen.getByRole('presentation');
 
     expect(icon).toHaveStyleRule(

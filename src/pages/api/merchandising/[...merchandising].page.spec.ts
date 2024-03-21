@@ -50,18 +50,12 @@ type Response = {
 };
 
 const responses: Response[][] = [
-  // [{ status: 200, body: { hello: 'world' }, envSettings: {} }],
-  // [{ status: 200, body: { hello: 'world' } }],
   [{ status: 200, body: { hello: 'world', products: [] } }],
   [{ status: 500, body: { hello: 'error' }, envSettings: {} }],
   [{ status: 500, body: { hello: 'error' } }],
 ];
 
-const performGet = async (
-  url: string | undefined,
-  response: Response
-  // envSettings?: Partial<MerchandisingEnvironment>
-) => {
+const performGet = async (url: string | undefined, response: Response) => {
   const req = createMockNextApiRequest({
     url,
     method: 'GET',
@@ -72,7 +66,6 @@ const performGet = async (
     HttpResponse.json(response.body, { status: response.status })
   );
 
-  // await (envSettings ? proxy(req, res, envSettings) : proxy(req, res));
   await proxy(req, res);
   return res;
 };
@@ -146,11 +139,7 @@ describe('Merchandising api proxy', () => {
     it.each(responses)(
       'forwards request to backend with Authorization for GET',
       async (response) => {
-        const res = await performGet(
-          '/api/merchandising/category/1',
-          response
-          // response.envSettings
-        );
+        const res = await performGet('/api/merchandising/category/1', response);
 
         expect(httpGet).toHaveBeenCalled();
         expect(httpGet.mock.calls[0][0].url).toBe(
