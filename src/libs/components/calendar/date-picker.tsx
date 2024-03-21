@@ -30,7 +30,6 @@ const CalendarContainer = styled.div`
 
 const Header = styled.div`
   display: flex;
-  // justify-content: space-between;
   justify-content: flex-end;
   margin: 16px;
 `;
