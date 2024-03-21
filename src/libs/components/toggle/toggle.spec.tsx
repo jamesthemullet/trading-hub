@@ -6,19 +6,19 @@ import { Toggle } from './toggle';
 
 describe('Toggle', () => {
   it('should render correctly', () => {
-    render(<Toggle isEnabled onClick={jest.fn()} />);
+    render(<Toggle checked onChange={jest.fn()} />);
 
     expect(screen.getByTitle('Toggle')).toBeInTheDocument();
   });
 
   it('should call an onClick handler', async () => {
-    const mockClick = jest.fn();
+    const mockOnChange = jest.fn();
     const user = userEvent.setup({ delay: null });
 
-    render(<Toggle isEnabled={false} onClick={mockClick} />);
+    render(<Toggle checked={false} onChange={mockOnChange} />);
 
     await user.click(screen.getByTitle('Toggle'));
 
-    expect(mockClick).toHaveBeenCalled();
+    expect(mockOnChange).toHaveBeenCalled();
   });
 });
