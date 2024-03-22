@@ -1,4 +1,4 @@
-import { Screen, act, screen, waitFor } from '@testing-library/react';
+import { Screen, act, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -281,7 +281,7 @@ describe('Ruleset', () => {
 
     const cancelButton = await screen.findByText(CANCEL_BUTTON);
 
-    await waitFor(() => {
+    act(() => {
       cancelButton.click();
     });
 
@@ -530,7 +530,7 @@ describe('Ruleset', () => {
 
     const tab2 = await screen.findByText('Attribute');
 
-    await waitFor(() => {
+    act(() => {
       tab2.click();
     });
 
