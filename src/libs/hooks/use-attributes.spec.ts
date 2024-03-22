@@ -43,7 +43,7 @@ const mockedResponse: AttributesResponse = {
       ],
     },
   ],
-}
+};
 
 const server = setupServer(
   http.get(`${baseUrl}/merchandising/category/TestCategory/attributes`, () => {
@@ -54,7 +54,7 @@ const server = setupServer(
 describe('use-attributes', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
-    server.listen()
+    server.listen();
   });
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());
@@ -64,7 +64,7 @@ describe('use-attributes', () => {
       const category = 'TestCategory';
       const { result } = renderHook(() => useAttributes(category));
       await waitFor(() => {
-        expect(result.current.attributes).toEqual(mockedResponse.attributes)
+        expect(result.current.attributes).toEqual(mockedResponse.attributes);
       });
     });
 
@@ -72,7 +72,7 @@ describe('use-attributes', () => {
       const category = undefined;
       const { result } = renderHook(() => useAttributes(category));
       await waitFor(() => {
-        expect(result.current.attributes).toEqual([])
+        expect(result.current.attributes).toEqual([]);
       });
     });
   });
