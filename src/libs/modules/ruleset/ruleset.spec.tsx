@@ -1,4 +1,4 @@
-import { Screen, act, render, screen } from '@testing-library/react';
+import { Screen, act, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -20,6 +20,7 @@ import { Ruleset } from './ruleset';
 import { useGetCategories } from '../../hooks/use-get-categories';
 import { useCategoryPreview } from '../../hooks/use-category-preview';
 import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
+import { renderWithProviders } from '../../../test/render-with-providers';
 
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const PRODUCT_SEARCH_PLACEHOLDER_TEXT = 'Search for product';
@@ -79,10 +80,6 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
 };
 
 describe('Ruleset', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   beforeEach(() => {
     const mockCategoryProductSearch = {
       handleGet: jest.fn(() => {
@@ -164,7 +161,7 @@ describe('Ruleset', () => {
   });
 
   it('should render correctly', () => {
-    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     expect(screen.getByText('Save')).toBeInTheDocument();
   });
@@ -177,7 +174,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     await selectCategory(screen, user);
 
@@ -193,7 +190,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onCreate={mockCreate} onCancel={jest.fn()} />);
+    renderWithProviders(<Ruleset onCreate={mockCreate} onCancel={jest.fn()} />);
 
     await selectCategory(screen, user);
 
@@ -217,7 +214,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(
+    renderWithProviders(
       <Ruleset
         onSave={mockSave}
         onCancel={jest.fn()}
@@ -261,7 +258,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(
+    renderWithProviders(
       <Ruleset
         onSave={mockSave}
         onCancel={mockCancel}
@@ -284,7 +281,7 @@ describe('Ruleset', () => {
 
     const cancelButton = await screen.findByText(CANCEL_BUTTON);
 
-    act(() => {
+    await waitFor(() => {
       cancelButton.click();
     });
 
@@ -306,7 +303,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onSave={mockSave} onCancel={jest.fn()} />);
+    renderWithProviders(<Ruleset onSave={mockSave} onCancel={jest.fn()} />);
 
     await selectCategory(screen, user);
 
@@ -332,7 +329,7 @@ describe('Ruleset', () => {
 
     const user = userEvent.setup({ delay: null });
 
-    render(
+    renderWithProviders(
       <Ruleset
         onSave={jest.fn()}
         onCancel={jest.fn()}
@@ -365,7 +362,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     expect(
       screen.queryAllByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
@@ -380,7 +377,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     await selectCategory(screen, user);
 
@@ -458,7 +455,7 @@ describe('Ruleset', () => {
       error: '',
     });
 
-    render(
+    renderWithProviders(
       <Ruleset
         onSave={jest.fn()}
         onCancel={jest.fn()}
@@ -517,7 +514,7 @@ describe('Ruleset', () => {
   });
 
   it('opens changes tab', async () => {
-    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     const tab2 = await screen.findByText('Changes');
 
@@ -529,11 +526,11 @@ describe('Ruleset', () => {
   });
 
   it('opens attributes tab', async () => {
-    render(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
     const tab2 = await screen.findByText('Attribute');
 
-    act(() => {
+    await waitFor(() => {
       tab2.click();
     });
 

@@ -1,10 +1,11 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 
 import { ProductGridHeader } from './product-grid-header';
+import { renderWithProviders } from '../../../test/render-with-providers';
 
 describe('ProductGridHeader', () => {
   it('should render correctly', () => {
-    render(
+    renderWithProviders(
       <ProductGridHeader
         hasPreview={false}
         onPreview={jest.fn()}
@@ -19,7 +20,7 @@ describe('ProductGridHeader', () => {
 
   it('should call save callback on click', () => {
     const mockSave = jest.fn();
-    render(
+    renderWithProviders(
       <ProductGridHeader
         hasPreview={false}
         onPreview={jest.fn()}
@@ -40,7 +41,7 @@ describe('ProductGridHeader', () => {
 
   it('should call preview callback on click', () => {
     const mockPreview = jest.fn();
-    render(
+    renderWithProviders(
       <ProductGridHeader
         hasPreview={true}
         onPreview={mockPreview}
@@ -61,7 +62,7 @@ describe('ProductGridHeader', () => {
 
   it('should show confirmation modal when cancelling', () => {
     const mockCancel = jest.fn();
-    render(
+    renderWithProviders(
       <ProductGridHeader
         hasPreview={true}
         onPreview={jest.fn()}
@@ -88,7 +89,7 @@ describe('ProductGridHeader', () => {
 
   it('should not show confirmation modal when cancelling without changes', () => {
     const mockCancel = jest.fn();
-    render(
+    renderWithProviders(
       <ProductGridHeader
         hasPreview={true}
         onPreview={jest.fn()}
@@ -108,7 +109,7 @@ describe('ProductGridHeader', () => {
 
   it('should cancel confirmation modal when shown', () => {
     const mockCancel = jest.fn();
-    render(
+    renderWithProviders(
       <ProductGridHeader
         hasPreview={true}
         onPreview={jest.fn()}

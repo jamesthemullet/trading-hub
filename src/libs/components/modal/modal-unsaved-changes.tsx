@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
-import { Modal } from './modal';
+import { Modal } from '@mantine/core';
 import { Text, Title } from '../typography/typography.styles';
 import { Button } from '../button/button';
 
@@ -32,19 +32,24 @@ type Props = {
 
 export const ModalUnsavedChanges = ({ onClose, onContinue }: Props) => {
   return (
-    <Modal onClose={onContinue}>
-      <Heading>Close without saving edits</Heading>
-      <Text>
-        Are you sure you want to navigate away from this page without saving
-        your edits?
-      </Text>
-      <Divider />
-      <Buttons>
-        <Button onClick={onClose}>Close without saving</Button>
-        <Button onClick={onContinue} theme="primary">
-          Continue editing
-        </Button>
-      </Buttons>
-    </Modal>
+    <Modal.Root opened={true} onClose={onContinue} centered padding={10}>
+      <Modal.Overlay blur={3} />
+      <Modal.Content>
+        <Modal.Body>
+          <Heading>Close without saving edits</Heading>
+          <Text>
+            Are you sure you want to navigate away from this page without saving
+            your edits?
+          </Text>
+          <Divider />
+          <Buttons>
+            <Button onClick={onClose}>Close without saving</Button>
+            <Button onClick={onContinue} theme="primary">
+              Continue editing
+            </Button>
+          </Buttons>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
   );
 };
