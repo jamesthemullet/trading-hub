@@ -33,6 +33,7 @@ const ModalSide = styled.div`
   width: 50%;
   position: relative;
   background-color: #fff;
+  overflow: hidden;
 `;
 
 const ModalSection = styled.div`
