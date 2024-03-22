@@ -13,33 +13,24 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
   /* istanbul ignore next */
   if (match) {
     const categoryId = match[1];
-    console.warn('WARNING: Replying with mocked attributes for category', categoryId);
+    console.warn(
+      'WARNING: Replying with mocked attributes for category',
+      categoryId
+    );
     const mockedResponse: AttributesResponse = {
       attributes: [
         {
           type: 'alphanumeric',
           name: 'Color',
-          values: [
-            { value: 'Red' },
-            { value: 'Blue' },
-            { value: 'Green' },
-          ],
+          values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
         },
         {
           name: 'Size',
-          values: [
-            { value: 'S' },
-            { value: 'M' },
-            { value: 'L' },
-          ],
+          values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
         },
         {
           name: 'Brand',
-          values: [
-            { value: 'Nike' },
-            { value: 'Adidas' },
-            { value: 'Puma' },
-          ],
+          values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
         },
         {
           name: 'Category',
@@ -57,9 +48,9 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
             { value: '100-200' },
             { value: '200+' },
           ],
-        }
+        },
       ],
-    }
+    };
     return res.status(200).json(mockedResponse);
   }
 
