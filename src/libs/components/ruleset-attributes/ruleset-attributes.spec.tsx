@@ -1,16 +1,17 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 
 import { RulesetAttributes } from '@/libs/components';
+import { renderWithProviders } from '../../../test/render-with-providers';
 
 describe('RulesetAttributes', () => {
   it('should render correctly', () => {
-    render(<RulesetAttributes />);
+    renderWithProviders(<RulesetAttributes />);
 
     expect(screen.getByText('Create new attribute rule')).toBeVisible();
   });
 
-  it('opens the modal', () => {
-    render(<RulesetAttributes />);
+  it('opens the modal', async () => {
+    renderWithProviders(<RulesetAttributes />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
@@ -18,17 +19,21 @@ describe('RulesetAttributes', () => {
       newAttributeButton.click();
     });
 
-    expect(screen.getByText('Choose type')).toBeVisible();
+    await waitFor(() => expect(screen.getByText('Choose type')).toBeVisible());
   });
 
-  it('goes to the Numeric Attributes step and back', () => {
-    render(<RulesetAttributes />);
+  it('goes to the Numeric Attributes step and back', async () => {
+    renderWithProviders(<RulesetAttributes />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
     act(() => {
       newAttributeButton.click();
     });
+
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
 
     const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -49,14 +54,17 @@ describe('RulesetAttributes', () => {
     expect(screen.getByText('Choose attribute type')).toBeVisible();
   });
 
-  it('goes to the Product description attributes', () => {
-    render(<RulesetAttributes />);
+  it('goes to the Product description attributes', async () => {
+    renderWithProviders(<RulesetAttributes />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
     act(() => {
       newAttributeButton.click();
     });
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
 
     const nextStepButton = screen.getAllByText(
       'Product description attributes'
@@ -97,21 +105,25 @@ describe('RulesetAttributes', () => {
     expect(screen.getByText('Choose attribute type')).toBeVisible();
   });
 
-  it('cancels changes', () => {
-    render(<RulesetAttributes />);
+  it('cancels changes', async () => {
+    renderWithProviders(<RulesetAttributes />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
     act(() => {
       newAttributeButton.click();
     });
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
 
     const cancelButton = screen.getByText('Cancel');
 
     act(() => {
       cancelButton.click();
     });
-
-    expect(screen.getByText('Choose attribute type')).not.toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByText('Choose attribute type')).not.toBeVisible()
+    );
   });
 });

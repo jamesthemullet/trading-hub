@@ -9,7 +9,6 @@ export const useRuleSetDelete = () => {
     async ({ rulesetId }: { rulesetId: string }) => {
       setError('');
 
-      // eslint-disable-next-line functional/no-try-statement
       try {
         const response = await merchandising().rulesetDelete(rulesetId);
 

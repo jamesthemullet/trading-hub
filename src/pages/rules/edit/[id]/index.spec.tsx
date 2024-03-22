@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
 
 import Page, { getServerSideProps } from './index.page';
+import { renderWithProviders } from '../../../../test/render-with-providers';
 
 const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
 const categoryId = 'SubCategory_428';
@@ -166,7 +167,7 @@ describe('Index', () => {
   it('opens attributes tab', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     const tab2 = await screen.findByText('Attribute');
 

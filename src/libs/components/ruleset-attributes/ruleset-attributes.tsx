@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Modal } from '@mantine/core';
 import { Button } from '../button/button';
 import { spacing } from '../utils/spacing';
 import { useState } from 'react';
@@ -24,18 +25,14 @@ const CreateNew = styled(Button)`
   display: block;
 `;
 
-const Modal = styled.div<{ isModalOpen: boolean }>`
-  width: ${MODAL_WIDTH}px;
+const ModalContainer = styled.div`
+  height: 600px;
+  display: flex;
+`;
+const ModalSide = styled.div`
+  width: 50%;
+  position: relative;
   background-color: #fff;
-  z-index: 2;
-  height: calc(100vh - 80px);
-  position: fixed;
-  top: 75px;
-  left: 430px;
-  transition: opacity 0.1s ease-in;
-  opacity: ${({ isModalOpen }) => (isModalOpen ? 1 : 0)};
-  visibility: ${({ isModalOpen }) => (isModalOpen ? 'visible' : 'hidden')};
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
   overflow: hidden;
 `;
 
@@ -161,128 +158,177 @@ export const RulesetAttributes = ({}) => {
         <Icon alt="" src="/trading-hub/asset/icon-plus-simple.svg" />
         Create new attribute rule
       </CreateNew>
-      <Modal isModalOpen={isModalOpen}>
-        <ModalSection>
-          <ModalHeader>
-            <SectionLabel
-              number={1}
-              text="Choose type"
-              isActive={modalStep === 0}
-            />
-            <Divider />
-            <SectionLabel
-              number={2}
-              text="Choose value"
-              isActive={modalStep !== 0}
-            />
-          </ModalHeader>
-        </ModalSection>
+      <Modal.Root
+        opened={isModalOpen}
+        onClose={
+          // istanbul ignore next
+          () => setIsModalOpen(false)
+        }
+        centered
+        size={`${2 * MODAL_WIDTH}px`}
+        padding={0}
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <Modal.Body>
+            <ModalContainer>
+              <ModalSide style={{ zIndex: 1 }}>
+                <p>TODO: attribute preview content</p>
+              </ModalSide>
+              <ModalSide>
+                <ModalSection>
+                  <ModalHeader>
+                    <SectionLabel
+                      number={1}
+                      text="Choose type"
+                      isActive={modalStep === 0}
+                    />
+                    <Divider />
+                    <SectionLabel
+                      number={2}
+                      text="Choose value"
+                      isActive={modalStep !== 0}
+                    />
+                  </ModalHeader>
+                </ModalSection>
 
-        <ModalContent
-          style={{ transform: `translateX(${modalStep * MODAL_WIDTH * -1}px)` }}
-          {...(modalStep !== 0 && { inert: '' })}
-        >
-          <ModalSection>
-            <Label isStrong>Choose attribute type</Label>
-          </ModalSection>
-          <ModalSection>
-            <ModalButton as="button" isStrong onClick={() => setModalStep(1)}>
-              Numeric attributes
-            </ModalButton>
-          </ModalSection>
-          <ModalSection>
-            <ModalButton as="button" isStrong onClick={() => setModalStep(2)}>
-              Product description attributes
-            </ModalButton>
-          </ModalSection>
-        </ModalContent>
+                <ModalContent
+                  style={{
+                    transform: `translateX(${modalStep * MODAL_WIDTH * -1}px)`,
+                  }}
+                  {...(modalStep !== 0 && { inert: '' })}
+                >
+                  <ModalSection>
+                    <Label isStrong>Choose attribute type</Label>
+                  </ModalSection>
+                  <ModalSection>
+                    <ModalButton
+                      as="button"
+                      isStrong
+                      onClick={() => setModalStep(1)}
+                    >
+                      Numeric attributes
+                    </ModalButton>
+                  </ModalSection>
+                  <ModalSection>
+                    <ModalButton
+                      as="button"
+                      isStrong
+                      onClick={() => setModalStep(2)}
+                    >
+                      Product description attributes
+                    </ModalButton>
+                  </ModalSection>
+                </ModalContent>
 
-        <ModalContent
-          style={{
-            transform: `translateX(${(modalStep - 1) * MODAL_WIDTH * -1}px)`,
-          }}
-          {...(modalStep !== 1 && { inert: '' })}
-        >
-          <ModalSection>
-            <PreviousStep as="button" isStrong onClick={() => setModalStep(0)}>
-              back
-            </PreviousStep>
-          </ModalSection>
-          <ModalSection>
-            <Label isStrong>Numeric Attributes</Label>
-            <Text>
-              Select one numeric attribute below to boost linearly (larger the
-              value, stronger the boost). Attributes are aggregated from the
-              account level
-            </Text>
-          </ModalSection>
-          <RadioButtons
-            values={[
-              { name: 'availabilityRating', isSelected: false },
-              { name: 'averageRating', isSelected: false },
-              { name: 'minPrice', isSelected: true },
-            ]}
-          />
-        </ModalContent>
+                <ModalContent
+                  style={{
+                    transform: `translateX(${(modalStep - 1) * MODAL_WIDTH * -1}px)`,
+                  }}
+                  {...(modalStep !== 1 && { inert: '' })}
+                >
+                  <ModalSection>
+                    <PreviousStep
+                      as="button"
+                      isStrong
+                      onClick={() => setModalStep(0)}
+                    >
+                      back
+                    </PreviousStep>
+                  </ModalSection>
+                  <ModalSection>
+                    <Label isStrong>Numeric Attributes</Label>
+                    <Text>
+                      Select one numeric attribute below to boost linearly
+                      (larger the value, stronger the boost). Attributes are
+                      aggregated from the account level
+                    </Text>
+                  </ModalSection>
+                  <RadioButtons
+                    values={[
+                      { name: 'availabilityRating', isSelected: false },
+                      { name: 'averageRating', isSelected: false },
+                      { name: 'minPrice', isSelected: true },
+                    ]}
+                  />
+                </ModalContent>
 
-        <ModalContent
-          style={{
-            transform: `translateX(${(modalStep - 2) * MODAL_WIDTH * -1}px)`,
-          }}
-          {...(modalStep !== 2 && { inert: '' })}
-        >
-          <ModalSection>
-            <PreviousStep as="button" isStrong onClick={() => setModalStep(0)}>
-              back
-            </PreviousStep>
-          </ModalSection>
-          <ModalSection>
-            <Label isStrong>Product description attributes</Label>
-            <Text>Attributes are aggregated from the account level</Text>
-          </ModalSection>
-          {['brand', 'colour', 'category'].map((productDescription) => (
-            <ModalSection key={productDescription}>
-              <NextStep as="button" onClick={() => setModalStep(3)} isStrong>
-                {productDescription}
-              </NextStep>
-            </ModalSection>
-          ))}
-        </ModalContent>
+                <ModalContent
+                  style={{
+                    transform: `translateX(${(modalStep - 2) * MODAL_WIDTH * -1}px)`,
+                  }}
+                  {...(modalStep !== 2 && { inert: '' })}
+                >
+                  <ModalSection>
+                    <PreviousStep
+                      as="button"
+                      isStrong
+                      onClick={() => setModalStep(0)}
+                    >
+                      back
+                    </PreviousStep>
+                  </ModalSection>
+                  <ModalSection>
+                    <Label isStrong>Product description attributes</Label>
+                    <Text>
+                      Attributes are aggregated from the account level
+                    </Text>
+                  </ModalSection>
+                  {['brand', 'colour', 'category'].map((productDescription) => (
+                    <ModalSection key={productDescription}>
+                      <NextStep
+                        as="button"
+                        onClick={() => setModalStep(3)}
+                        isStrong
+                      >
+                        {productDescription}
+                      </NextStep>
+                    </ModalSection>
+                  ))}
+                </ModalContent>
 
-        <ModalContent
-          style={{
-            transform: `translateX(${(modalStep - 3) * MODAL_WIDTH * -1}px)`,
-          }}
-          {...(modalStep !== 3 && { inert: '' })}
-        >
-          <ModalSection>
-            <PreviousStep as="button" isStrong onClick={() => setModalStep(2)}>
-              back
-            </PreviousStep>
-            <Count>Showing: 4</Count>
-          </ModalSection>
-          <Checkboxes
-            values={[
-              { name: 'Brand name 1', isSelected: false },
-              { name: 'Brand name 2', isSelected: true },
-              { name: 'Brand name 3', isSelected: true },
-              { name: 'Brand name 4', isSelected: false },
-            ]}
-          />
-        </ModalContent>
+                <ModalContent
+                  style={{
+                    transform: `translateX(${(modalStep - 3) * MODAL_WIDTH * -1}px)`,
+                  }}
+                  {...(modalStep !== 3 && { inert: '' })}
+                >
+                  <ModalSection>
+                    <PreviousStep
+                      as="button"
+                      isStrong
+                      onClick={() => setModalStep(2)}
+                    >
+                      back
+                    </PreviousStep>
+                    <Count>Showing: 4</Count>
+                  </ModalSection>
+                  <Checkboxes
+                    values={[
+                      { name: 'Brand name 1', isSelected: false },
+                      { name: 'Brand name 2', isSelected: true },
+                      { name: 'Brand name 3', isSelected: true },
+                      { name: 'Brand name 4', isSelected: false },
+                    ]}
+                  />
+                </ModalContent>
 
-        <ModalFooter>
-          <Button
-            onClick={() => {
-              setIsModalOpen(false);
-              setModalStep(0);
-            }}
-            isInline={true}
-          >
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+                <ModalFooter>
+                  <Button
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setModalStep(0);
+                    }}
+                    isInline={true}
+                  >
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </ModalSide>
+            </ModalContainer>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
     </Wrapper>
   );
 };
