@@ -7,6 +7,8 @@ import { color } from '../utils/constants';
 import { Label, Text } from '../typography/typography.styles';
 import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
+import { useAttributes } from '@/libs/hooks';
+import { AttributesResponse } from '@/libs/api';
 
 const MODAL_WIDTH = 435;
 
@@ -148,9 +150,27 @@ const SectionLabel = ({
   );
 };
 
-export const RulesetAttributes = ({}) => {
+export type Props = {
+  category?: string;
+};
+
+const getNumericAttributes = (attributes: AttributesResponse['attributes']) => {
+  return attributes.filter((attribute) => attribute.type === 'numeric');
+};
+
+const getAlphanumericAttributes = (
+  attributes: AttributesResponse['attributes']
+) => {
+  return attributes.filter((attribute) => attribute.type === 'alphanumeric');
+};
+
+export const RulesetAttributes = ({ category }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
+  const { attributes } = useAttributes(category);
+  const [selectedAttributeValues, setSelectedAttributeValues] = useState<
+    string[]
+  >([]);
 
   return (
     <Wrapper>
@@ -245,11 +265,12 @@ export const RulesetAttributes = ({}) => {
                     </Text>
                   </ModalSection>
                   <RadioButtons
-                    values={[
-                      { name: 'availabilityRating', isSelected: false },
-                      { name: 'averageRating', isSelected: false },
-                      { name: 'minPrice', isSelected: true },
-                    ]}
+                    values={getNumericAttributes(attributes).map(
+                      (attribute) => ({
+                        name: attribute.name,
+                        isSelected: false,
+                      })
+                    )}
                   />
                 </ModalContent>
 
@@ -274,14 +295,19 @@ export const RulesetAttributes = ({}) => {
                       Attributes are aggregated from the account level
                     </Text>
                   </ModalSection>
-                  {['brand', 'colour', 'category'].map((productDescription) => (
-                    <ModalSection key={productDescription}>
+                  {getAlphanumericAttributes(attributes).map((attribute) => (
+                    <ModalSection key={attribute.name}>
                       <NextStep
                         as="button"
-                        onClick={() => setModalStep(3)}
+                        onClick={() => {
+                          setSelectedAttributeValues(
+                            attribute.values.map((value) => value.value)
+                          );
+                          setModalStep(3);
+                        }}
                         isStrong
                       >
-                        {productDescription}
+                        {attribute.name}
                       </NextStep>
                     </ModalSection>
                   ))}
@@ -304,12 +330,10 @@ export const RulesetAttributes = ({}) => {
                     <Count>Showing: 4</Count>
                   </ModalSection>
                   <Checkboxes
-                    values={[
-                      { name: 'Brand name 1', isSelected: false },
-                      { name: 'Brand name 2', isSelected: true },
-                      { name: 'Brand name 3', isSelected: true },
-                      { name: 'Brand name 4', isSelected: false },
-                    ]}
+                    values={selectedAttributeValues.map((value) => ({
+                      name: value,
+                      isSelected: false,
+                    }))}
                   />
                 </ModalContent>
 

@@ -3,6 +3,47 @@ import { act, screen, waitFor } from '@testing-library/react';
 import { RulesetAttributes } from '@/libs/components';
 import { renderWithProviders } from '../../../test/render-with-providers';
 
+jest.mock('@/libs/hooks', () => ({
+  useAttributes: () => ({
+    attributes: [
+      {
+        type: 'alphanumeric',
+        name: 'Color',
+        values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
+      },
+      {
+        type: 'numeric',
+        name: 'Size',
+        values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
+      },
+      {
+        type: 'alphanumeric',
+        name: 'Brand',
+        values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
+      },
+      {
+        type: 'alphanumeric',
+        name: 'Category',
+        values: [
+          { value: 'Shoes' },
+          { value: 'Clothing' },
+          { value: 'Accessories' },
+        ],
+      },
+      {
+        type: 'numeric',
+        name: 'Price',
+        values: [
+          { value: '0-50' },
+          { value: '50-100' },
+          { value: '100-200' },
+          { value: '200+' },
+        ],
+      },
+    ],
+  }),
+}));
+
 describe('RulesetAttributes', () => {
   it('should render correctly', () => {
     renderWithProviders(<RulesetAttributes />);
@@ -11,7 +52,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('opens the modal', async () => {
-    renderWithProviders(<RulesetAttributes />);
+    renderWithProviders(<RulesetAttributes category="TestCategory" />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
@@ -23,7 +64,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('goes to the Numeric Attributes step and back', async () => {
-    renderWithProviders(<RulesetAttributes />);
+    renderWithProviders(<RulesetAttributes category="TestCategory" />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
@@ -78,13 +119,13 @@ describe('RulesetAttributes', () => {
       screen.getByText('Attributes are aggregated from the account level')
     ).toBeVisible();
 
-    const brandStepButton = screen.getByText('brand');
+    const brandStepButton = screen.getByText('Brand');
 
     act(() => {
       brandStepButton.click();
     });
 
-    expect(screen.getByText('Brand name 1')).toBeVisible();
+    expect(screen.getByText('Nike')).toBeVisible();
 
     const prevStepButton = screen.getAllByText('back')[2];
 

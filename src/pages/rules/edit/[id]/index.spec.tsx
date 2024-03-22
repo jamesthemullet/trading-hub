@@ -6,6 +6,7 @@ import {
   useRuleSetPreview,
   useUpdateRuleSet,
   useGetCategories,
+  useAttributes,
 } from '@/libs/hooks';
 
 import type { GetServerSidePropsContext } from 'next';
@@ -42,6 +43,9 @@ jest.mock('../../../../libs/hooks/use-update-rule-set', () => ({
 }));
 jest.mock('../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
+}));
+jest.mock('../../../../libs/hooks/use-attributes', () => ({
+  useAttributes: jest.fn(),
 }));
 
 describe('Index', () => {
@@ -166,6 +170,9 @@ describe('Index', () => {
 
   it('opens attributes tab', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
+    jest.mocked(useAttributes).mockImplementation(() => ({
+      attributes: [],
+    }));
 
     renderWithProviders(<Page id={ruleSetId} />);
 
