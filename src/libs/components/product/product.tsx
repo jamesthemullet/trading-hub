@@ -35,8 +35,8 @@ export const ProductDetails = ({
   isBrandStrong,
   title,
   price,
-  id,
-}: Pick<ProductType, 'title' | 'price' | 'brand' | 'id' | 'imageUrl'> & {
+  productId,
+}: Pick<ProductType, 'title' | 'price' | 'brand' | 'productId' | 'imageUrl'> & {
   isBrandStrong?: boolean;
 }) => {
   return (
@@ -51,7 +51,7 @@ export const ProductDetails = ({
           {brand} {title}
         </Text>
         <Text>{price}</Text>
-        <Text>ID: {id}</Text>
+        <Text>ID: {productId}</Text>
       </ProductInfo>
     </>
   );
@@ -60,6 +60,7 @@ export const ProductDetails = ({
 export const Product = ({
   brand,
   id,
+  productId,
   index,
   isLastChanged,
   metadata: { isPinned },
@@ -250,7 +251,7 @@ export const Product = ({
         isBrandStrong={isBrandStrong}
         title={title}
         price={price}
-        id={id}
+        productId={productId}
       />
     </ProductWrapper>
   );
