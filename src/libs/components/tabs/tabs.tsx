@@ -47,6 +47,8 @@ const Count = styled.span`
   border-radius: 50%;
   padding: 2px 6px;
   font-weight: normal;
+  width: 27px;
+  display: inline-block;
 `;
 
 export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {

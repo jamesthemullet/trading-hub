@@ -265,7 +265,9 @@ export const Ruleset = ({
               products={searchProducts}
             />
           )}
-          {currentProductTab === 1 && <RulesetAttributes />}
+          {currentProductTab === 1 && (
+            <RulesetAttributes category={selectedCategory.identifier} />
+          )}
         </ProductSearchPanel>
         <RulesPanel>
           <PanelTop>

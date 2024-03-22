@@ -1,4 +1,4 @@
-import { ProductSearchResponse } from '@/libs/api';
+import { AttributesResponse, ProductSearchResponse } from '@/libs/api';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
@@ -7,6 +7,57 @@ export type MerchandisingEnvironment = {
 };
 
 const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
+  /* Mocked response for attributes */
+
+  const match = req.url?.match(/\/merchandising\/category\/(\w+)\/attributes/);
+  /* istanbul ignore next */
+  if (match) {
+    const categoryId = match[1];
+    console.warn(
+      'WARNING: Replying with mocked attributes for category',
+      categoryId
+    );
+    const mockedResponse: AttributesResponse = {
+      attributes: [
+        {
+          type: 'alphanumeric',
+          name: 'Color',
+          values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
+        },
+        {
+          type: 'numeric',
+          name: 'Size',
+          values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
+        },
+        {
+          type: 'alphanumeric',
+          name: 'Brand',
+          values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
+        },
+        {
+          type: 'alphanumeric',
+          name: 'Category',
+          values: [
+            { value: 'Shoes' },
+            { value: 'Clothing' },
+            { value: 'Accessories' },
+          ],
+        },
+        {
+          type: 'numeric',
+          name: 'Price',
+          values: [
+            { value: '0-50' },
+            { value: '50-100' },
+            { value: '100-200' },
+            { value: '200+' },
+          ],
+        },
+      ],
+    };
+    return res.status(200).json(mockedResponse);
+  }
+
   const token = await getToken({ req });
 
   const headers = new Headers();

@@ -65,7 +65,7 @@ paths:
           name: type
           schema:
             $ref: '#/components/schemas/AttributeType'
-          required: true
+          required: false
           description: The number type of attributes to retrieve
       responses:
         '200':
@@ -664,7 +664,11 @@ components:
                   properties:
                     value:
                       type: string
+                  required:
+                    - value
             required:
+              - type
+              - values
               - name
       required:
         - attributes

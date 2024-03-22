@@ -21,7 +21,6 @@ export const useCategoryProductSearch = () => {
     }) => {
       setError('');
 
-      // eslint-disable-next-line functional/no-try-statement
       try {
         const queryData = {
           q: query,
