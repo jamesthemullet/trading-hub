@@ -3,7 +3,6 @@ import type { LabelHTMLAttributes, ReactNode } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { BreakPoints } from '../utils/breakpoint-type';
-import { dotcomTheme } from '../utils/constants';
 import { Label as LabelText } from '../typography/typography.styles';
 
 type BaseLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
@@ -14,7 +13,6 @@ type BaseLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
   isStrong?: boolean;
   hiddenOn?: BreakPoints;
   visuallyHiddenOn?: never;
-  theme?: typeof dotcomTheme;
 };
 
 const REQUIRED_FIELD_INDICATOR = '*';

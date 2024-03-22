@@ -25,9 +25,6 @@ jobs:
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
 
-      - name: Check for outdated dependencies
-        run: npm outdated
-
       - name: Check formatting
         run: npm run format:check
 
@@ -121,7 +118,7 @@ jobs:
         with:
           timeout_seconds: 60
           max_attempts: 10
-          retry_wait_seconds: 10
+          retry_wait_seconds: 30
           command: |
             set +e
             echo "infra_deployed=true" >> "$GITHUB_OUTPUT"

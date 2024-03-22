@@ -1,6 +1,7 @@
-import { colourPalette, fonts } from '@/libs/components/utils/constants';
 import { Global, css } from '@emotion/react';
 import { Html, Head, Main, NextScript } from 'next/document';
+import { fonts } from '../libs/components';
+import { color } from '../libs/components/utils/constants';
 
 const fontStyles = css`
   @font-face {
@@ -52,15 +53,16 @@ export const resetStyles = () => css`
   }
   body {
     min-height: 100vh;
+    min-width: 990px;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     font-weight: normal;
-    font-family: ${fonts.primary.regular};
-    color: ${colourPalette.tertiary.darkGrey};
+    font-family: ${fonts.regular};
+    color: #222;
     &:focus,
     .focus-visible {
       outline: 0;
-      box-shadow: ${`0 0 0 0.125rem ${colourPalette.primary.white}, 0 0 0 0.25rem ${colourPalette.functional.focusBlue}, 0 0 0.25rem 0.25rem ${colourPalette.functional.focusBlue}`};
+      box-shadow: ${`0 0 0 0.125rem #fff, 0 0 0 0.25rem ${color.infoBlueBackground}, 0 0 0.25rem 0.25rem ${color.infoBlueBackground}`};
     }
   }
 

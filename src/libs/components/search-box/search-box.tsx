@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { type ButtonProps, Button } from '../button/button';
 import { Icon } from '../icon/icon';
 import { type InputProps, Input } from '../input/input';
-import { colourDictionary, dotcomTheme } from '../utils/constants';
 import { mediaQuery } from '../utils/media-query';
 import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
@@ -29,16 +28,15 @@ type IconPosition = 'left' | 'right';
 
 const StyledInput = styled(Input)<{
   iconPosition: IconPosition;
-  theme: typeof dotcomTheme;
 }>`
   &::placeholder {
-    color: ${({ theme }) => theme.colours.text.main};
+    color: #000;
   }
 
   ${resetSearchInput}
 
   ${mediaQuery('md')} {
-    background-color: ${colourDictionary.grey[100]};
+    background-color: #f5f5f5;
     border-color: transparent;
     height: ${sizing(5)};
   }
@@ -98,12 +96,7 @@ export const SearchBox = ({
   } = iconButtonProps;
   return (
     <Wrapper>
-      <StyledInput
-        type="search"
-        theme={dotcomTheme}
-        {...inputProps}
-        iconPosition={iconPosition}
-      />
+      <StyledInput type="search" {...inputProps} iconPosition={iconPosition} />
       <StyledButton
         type="submit"
         aria-label={buttonAriaLabel}

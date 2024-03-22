@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-const fonts = {
+export const fonts = {
   regular: 'mnsLondonRegular, Helvetica, Arial, sans-serif',
   bold: 'mnsLondonBold, Helvetica, Arial, sans-serif',
   semiBold: 'mnsLondonSemiBold, Helvetica, Arial, sans-serif',
@@ -52,7 +52,8 @@ export const Text = styled.p<{ isStrong?: boolean }>`
 
 export const Label = styled.p<{ isStrong?: boolean }>`
   ${commonStyles}
-  font-family: ${({ isStrong }) => (isStrong ? fonts.bold : fonts.regular)};
+  font-family: ${fonts.regular};
+  font-weight: ${({ isStrong }) => (isStrong ? 600 : 'normal')};
   font-size: 16px;
   line-height: 1.5714;
 `;

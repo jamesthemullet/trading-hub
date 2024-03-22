@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { DetailedHTMLProps, InputHTMLAttributes } from 'react';
 
 const ToggleWrapper = styled.div`
   position: relative;
@@ -123,20 +124,16 @@ const ToggleSwitch = styled.label`
 
 const ToggleInput = styled.input``;
 
-type Props = {
-  isEnabled: boolean;
-  onClick: () => void;
-};
-
-export const Toggle = ({ isEnabled, onClick }: Props) => {
+export const Toggle = (
+  props: DetailedHTMLProps<
+    InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  >
+) => {
   return (
     <ToggleWrapper>
       <ToggleSwitch title="Toggle">
-        <ToggleInput
-          type="checkbox"
-          defaultChecked={isEnabled}
-          onClick={() => onClick()}
-        />
+        <ToggleInput type="checkbox" {...props} />
         <span></span>
       </ToggleSwitch>
     </ToggleWrapper>
