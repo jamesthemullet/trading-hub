@@ -25,14 +25,17 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
           values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
         },
         {
+          type: 'numeric',
           name: 'Size',
           values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
         },
         {
+          type: 'alphanumeric',
           name: 'Brand',
           values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
         },
         {
+          type: 'alphanumeric',
           name: 'Category',
           values: [
             { value: 'Shoes' },
@@ -41,6 +44,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
           ],
         },
         {
+          type: 'numeric',
           name: 'Price',
           values: [
             { value: '0-50' },

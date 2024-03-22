@@ -6,6 +6,7 @@ import {
   useRuleSetPreview,
   useUpdateRuleSet,
   useGetCategories,
+  useAttributes,
 } from '@/libs/hooks';
 
 import type { GetServerSidePropsContext } from 'next';
@@ -13,6 +14,7 @@ import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
 
 import Page, { getServerSideProps } from './index.page';
+import { renderWithProviders } from '../../../../test/render-with-providers';
 
 const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
 const categoryId = 'SubCategory_428';
@@ -41,6 +43,9 @@ jest.mock('../../../../libs/hooks/use-update-rule-set', () => ({
 }));
 jest.mock('../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
+}));
+jest.mock('../../../../libs/hooks/use-attributes', () => ({
+  useAttributes: jest.fn(),
 }));
 
 describe('Index', () => {
@@ -165,8 +170,11 @@ describe('Index', () => {
 
   it('opens attributes tab', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
+    jest.mocked(useAttributes).mockImplementation(() => ({
+      attributes: [],
+    }));
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     const tab2 = await screen.findByText('Attribute');
 

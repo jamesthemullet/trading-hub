@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { Toggle } from '../toggle/toggle';
 import type { ReturnedRuleSet } from '@/libs/api';
 import { spacing } from '../utils/spacing';
-import { Label } from '../typography/typography.styles';
+import { Label, Text } from '../typography/typography.styles';
 
 type Props = {
   columnOrderName: keyof ReturnedRuleSet;
@@ -122,6 +122,10 @@ const ColumnOrder = styled.div<{ order: 'asc' | 'desc' | 'unsorted' }>`
 
 const DateContainer = styled.div`
   margin-top: 0;
+
+  p {
+    line-height: 1;
+  }
 `;
 
 const COLUMNS: {
@@ -245,17 +249,19 @@ export const Rules = ({
           return (
             <Row key={`rule-${id}`}>
               <Col>
-                <p title={categoryName}>
+                <Text title={categoryName}>
                   {categoryId} | {categoryName}
-                </p>
+                </Text>
               </Col>
               <Col>
                 <Toggle checked={isEnabled} onChange={() => {}} />
               </Col>
               <Col>
                 <DateContainer>
-                  <p>{format(new Date(lastChanged.date), 'MMM dd, yyyy')}</p>
-                  <p style={{ fontSize: '0.7em' }}>{lastChanged.user}</p>
+                  <Text>
+                    {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
+                  </Text>
+                  <Text style={{ fontSize: '0.7em' }}>{lastChanged.user}</Text>
                 </DateContainer>
               </Col>
               <Col style={{ padding: '12px 0 16px' }}>

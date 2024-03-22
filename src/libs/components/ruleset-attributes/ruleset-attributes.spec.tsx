@@ -1,16 +1,58 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 
 import { RulesetAttributes } from '@/libs/components';
+import { renderWithProviders } from '../../../test/render-with-providers';
+
+jest.mock('@/libs/hooks', () => ({
+  useAttributes: () => ({
+    attributes: [
+      {
+        type: 'alphanumeric',
+        name: 'Color',
+        values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
+      },
+      {
+        type: 'numeric',
+        name: 'Size',
+        values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
+      },
+      {
+        type: 'alphanumeric',
+        name: 'Brand',
+        values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
+      },
+      {
+        type: 'alphanumeric',
+        name: 'Category',
+        values: [
+          { value: 'Shoes' },
+          { value: 'Clothing' },
+          { value: 'Accessories' },
+        ],
+      },
+      {
+        type: 'numeric',
+        name: 'Price',
+        values: [
+          { value: '0-50' },
+          { value: '50-100' },
+          { value: '100-200' },
+          { value: '200+' },
+        ],
+      },
+    ],
+  }),
+}));
 
 describe('RulesetAttributes', () => {
   it('should render correctly', () => {
-    render(<RulesetAttributes />);
+    renderWithProviders(<RulesetAttributes />);
 
     expect(screen.getByText('Create new attribute rule')).toBeVisible();
   });
 
-  it('opens the modal', () => {
-    render(<RulesetAttributes />);
+  it('opens the modal', async () => {
+    renderWithProviders(<RulesetAttributes category="TestCategory" />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
@@ -18,17 +60,21 @@ describe('RulesetAttributes', () => {
       newAttributeButton.click();
     });
 
-    expect(screen.getByText('Choose type')).toBeVisible();
+    await waitFor(() => expect(screen.getByText('Choose type')).toBeVisible());
   });
 
-  it('goes to the Numeric Attributes step and back', () => {
-    render(<RulesetAttributes />);
+  it('goes to the Numeric Attributes step and back', async () => {
+    renderWithProviders(<RulesetAttributes category="TestCategory" />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
     act(() => {
       newAttributeButton.click();
     });
+
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
 
     const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -49,14 +95,17 @@ describe('RulesetAttributes', () => {
     expect(screen.getByText('Choose attribute type')).toBeVisible();
   });
 
-  it('goes to the Product description attributes', () => {
-    render(<RulesetAttributes />);
+  it('goes to the Product description attributes', async () => {
+    renderWithProviders(<RulesetAttributes />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
     act(() => {
       newAttributeButton.click();
     });
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
 
     const nextStepButton = screen.getAllByText(
       'Product description attributes'
@@ -70,13 +119,13 @@ describe('RulesetAttributes', () => {
       screen.getByText('Attributes are aggregated from the account level')
     ).toBeVisible();
 
-    const brandStepButton = screen.getByText('brand');
+    const brandStepButton = screen.getByText('Brand');
 
     act(() => {
       brandStepButton.click();
     });
 
-    expect(screen.getByText('Brand name 1')).toBeVisible();
+    expect(screen.getByText('Nike')).toBeVisible();
 
     const prevStepButton = screen.getAllByText('back')[2];
 
@@ -97,21 +146,25 @@ describe('RulesetAttributes', () => {
     expect(screen.getByText('Choose attribute type')).toBeVisible();
   });
 
-  it('cancels changes', () => {
-    render(<RulesetAttributes />);
+  it('cancels changes', async () => {
+    renderWithProviders(<RulesetAttributes />);
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
     act(() => {
       newAttributeButton.click();
     });
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
 
     const cancelButton = screen.getByText('Cancel');
 
     act(() => {
       cancelButton.click();
     });
-
-    expect(screen.getByText('Choose attribute type')).not.toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByText('Choose attribute type')).not.toBeVisible()
+    );
   });
 });
