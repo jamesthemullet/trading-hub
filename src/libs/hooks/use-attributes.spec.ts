@@ -10,7 +10,7 @@ const mockedResponse: AttributesResponse = {
   attributes: [
     {
       type: 'alphanumeric',
-      name: 'Color',
+      name: 'Colour',
       values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
     },
     {
