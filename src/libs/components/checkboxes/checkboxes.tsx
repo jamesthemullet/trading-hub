@@ -3,7 +3,7 @@ import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import { Label } from '../typography/typography.styles';
 
-const Row = styled.div`
+const Row = styled.label`
   border-bottom: solid 1px ${color.grey};
   padding: ${spacing(2)};
   display: flex;
@@ -46,15 +46,22 @@ type Value = {
 
 type Props = {
   values: Value[];
+  onSelect: (isChecked: boolean, name: string) => void;
 };
 
-export const Checkboxes = ({ values }: Props) => (
-  <>
-    {values.map(({ name, isSelected }) => (
-      <Row key={name}>
-        <Input type="checkbox" defaultChecked={isSelected} />
-        <Label as="span">{name}</Label>
-      </Row>
-    ))}
-  </>
-);
+export const Checkboxes = ({ values, onSelect }: Props) => {
+  return (
+    <>
+      {values.map(({ name, isSelected }) => (
+        <Row key={name}>
+          <Input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onSelect(!isSelected, name)}
+          />
+          <Label as="span">{name}</Label>
+        </Row>
+      ))}
+    </>
+  );
+};

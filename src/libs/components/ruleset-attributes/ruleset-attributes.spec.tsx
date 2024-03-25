@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 
 import { RulesetAttributes } from '@/libs/components';
 import { renderWithProviders } from '../../../test/render-with-providers';
@@ -8,7 +8,7 @@ jest.mock('@/libs/hooks', () => ({
     attributes: [
       {
         type: 'alphanumeric',
-        name: 'Color',
+        name: 'Colour',
         values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
       },
       {
@@ -45,6 +45,16 @@ jest.mock('@/libs/hooks', () => ({
 }));
 
 describe('RulesetAttributes', () => {
+  const openModal = () => {
+    renderWithProviders(<RulesetAttributes category="TestCategory" />);
+
+    const newAttributeButton = screen.getByText('Create new attribute rule');
+
+    act(() => {
+      newAttributeButton.click();
+    });
+  };
+
   it('should render correctly', () => {
     renderWithProviders(<RulesetAttributes />);
 
@@ -52,25 +62,13 @@ describe('RulesetAttributes', () => {
   });
 
   it('opens the modal', async () => {
-    renderWithProviders(<RulesetAttributes category="TestCategory" />);
-
-    const newAttributeButton = screen.getByText('Create new attribute rule');
-
-    act(() => {
-      newAttributeButton.click();
-    });
+    openModal();
 
     await waitFor(() => expect(screen.getByText('Choose type')).toBeVisible());
   });
 
   it('goes to the Numeric Attributes step and back', async () => {
-    renderWithProviders(<RulesetAttributes category="TestCategory" />);
-
-    const newAttributeButton = screen.getByText('Create new attribute rule');
-
-    act(() => {
-      newAttributeButton.click();
-    });
+    openModal();
 
     await waitFor(() =>
       expect(screen.getByText('Numeric attributes')).toBeVisible()
@@ -96,13 +94,8 @@ describe('RulesetAttributes', () => {
   });
 
   it('goes to the Product description attributes', async () => {
-    renderWithProviders(<RulesetAttributes />);
+    openModal();
 
-    const newAttributeButton = screen.getByText('Create new attribute rule');
-
-    act(() => {
-      newAttributeButton.click();
-    });
     await waitFor(() =>
       expect(screen.getByText('Numeric attributes')).toBeVisible()
     );
@@ -147,13 +140,8 @@ describe('RulesetAttributes', () => {
   });
 
   it('cancels changes', async () => {
-    renderWithProviders(<RulesetAttributes />);
+    openModal();
 
-    const newAttributeButton = screen.getByText('Create new attribute rule');
-
-    act(() => {
-      newAttributeButton.click();
-    });
     await waitFor(() =>
       expect(screen.getByText('Numeric attributes')).toBeVisible()
     );
@@ -165,6 +153,57 @@ describe('RulesetAttributes', () => {
     });
     await waitFor(() =>
       expect(screen.getByText('Choose attribute type')).not.toBeVisible()
+    );
+  });
+
+  it('selects a numeric attribute', async () => {
+    openModal();
+
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
+
+    const sizeButton = screen.getAllByLabelText('Size');
+
+    act(() => {
+      sizeButton[0].click();
+    });
+
+    const attributes = await screen.getByLabelText('Selected Attribute');
+
+    await waitFor(() =>
+      expect(within(attributes).getByText('Size')).toBeVisible()
+    );
+  });
+
+  it('selects an alphanumeric attribute', async () => {
+    openModal();
+
+    await waitFor(() =>
+      expect(
+        screen.getByText('Attributes are aggregated from the account level')
+      ).toBeVisible()
+    );
+
+    const colourButton = screen.getByText('Colour');
+
+    act(() => {
+      colourButton.click();
+    });
+
+    const colourRedButton = screen.getByLabelText('Red');
+    const colourBlueButton = screen.getByLabelText('Blue');
+
+    act(() => {
+      colourRedButton.click();
+      colourBlueButton.click();
+      colourRedButton.click();
+    });
+
+    const attributes = await screen.getByLabelText('Selected Attribute');
+
+    await waitFor(() =>
+      expect(within(attributes).getByText('Blue')).toBeVisible()
     );
   });
 });

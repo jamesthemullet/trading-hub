@@ -129,6 +129,85 @@ const ModalFooter = styled.div`
   justify-content: end;
 `;
 
+const AttributeWrapper = styled.div`
+  border: solid 1px #000;
+`;
+
+const AttributeHeading = styled.div`
+  padding: ${spacing(1)};
+  background: #fff;
+`;
+
+const AttributeRow = styled.div`
+  padding: ${spacing(1)};
+  border-top: solid 1px #000;
+  background-color: ${color.backgroundGrey};
+`;
+
+const AttributeValue = styled.label`
+  background-color: ${color.backgroundGrey};
+  border-radius: 5px;
+  padding: ${spacing(1)};
+  margin: ${spacing(1)};
+  display: inline-block;
+`;
+
+const NumericAttribute = ({
+  name,
+  operation,
+}: {
+  name: string;
+  operation: string;
+}) => (
+  <AttributeWrapper aria-label="Selected Attribute">
+    <AttributeHeading>
+      <Label isStrong>{name}</Label>
+    </AttributeHeading>
+    <AttributeRow>
+      <Text>
+        Operation{' '}
+        <img
+          src="/trading-hub/asset/boost.svg"
+          style={{ marginBottom: '-4px' }}
+        />{' '}
+        {operation}
+      </Text>
+    </AttributeRow>
+    <AttributeRow>
+      <Text>Strength 1.0%</Text>
+    </AttributeRow>
+  </AttributeWrapper>
+);
+
+const AlphanumericAttribute = ({
+  values,
+  operation,
+}: {
+  values: string[];
+  operation: string;
+}) => (
+  <AttributeWrapper aria-label="Selected Attribute">
+    <AttributeHeading>
+      {values.map((value) => (
+        <AttributeValue key={value}>{value}</AttributeValue>
+      ))}
+    </AttributeHeading>
+    <AttributeRow style={{ padding: spacing(1) }}>
+      <Text>
+        Operation{' '}
+        <img
+          src="/trading-hub/asset/boost.svg"
+          style={{ marginBottom: '-4px' }}
+        />{' '}
+        {operation}
+      </Text>
+    </AttributeRow>
+    <AttributeRow>
+      <Text>Strength 1.0%</Text>
+    </AttributeRow>
+  </AttributeWrapper>
+);
+
 const SectionLabel = ({
   number,
   text,
@@ -168,9 +247,15 @@ export const RulesetAttributes = ({ category }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
   const { attributes } = useAttributes(category);
+  const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
+    useState<string[]>([]);
   const [selectedAttributeValues, setSelectedAttributeValues] = useState<
     string[]
   >([]);
+  const [selectedOperation] = useState<'boost' | 'bury'>('boost');
+  const [selectedAttributeType, setSelectedAttributeType] = useState<
+    'numeric' | 'alphanumeric'
+  >();
 
   return (
     <Wrapper>
@@ -192,8 +277,27 @@ export const RulesetAttributes = ({ category }: Props) => {
         <Modal.Content>
           <Modal.Body>
             <ModalContainer>
-              <ModalSide style={{ zIndex: 1 }}>
-                <p>TODO: attribute preview content</p>
+              <ModalSide
+                style={{
+                  zIndex: 1,
+                  padding: `${spacing(10)} ${spacing(2)} ${spacing(2)}`,
+                }}
+              >
+                {selectedAttributeType === 'numeric' &&
+                  !!selectedAttributeValues.length && (
+                    <NumericAttribute
+                      operation={selectedOperation}
+                      name={selectedAttributeValues[0]}
+                    />
+                  )}
+
+                {selectedAttributeType === 'alphanumeric' &&
+                  !!selectedAttributeValues.length && (
+                    <AlphanumericAttribute
+                      operation={selectedOperation}
+                      values={selectedAttributeValues}
+                    />
+                  )}
               </ModalSide>
               <ModalSide>
                 <ModalSection>
@@ -251,7 +355,10 @@ export const RulesetAttributes = ({ category }: Props) => {
                     <PreviousStep
                       as="button"
                       isStrong
-                      onClick={() => setModalStep(0)}
+                      onClick={() => {
+                        setModalStep(0);
+                        setSelectedAttributeValues([]);
+                      }}
                     >
                       back
                     </PreviousStep>
@@ -268,9 +375,14 @@ export const RulesetAttributes = ({ category }: Props) => {
                     values={getNumericAttributes(attributes).map(
                       (attribute) => ({
                         name: attribute.name,
-                        isSelected: false,
+                        isSelected:
+                          selectedAttributeValues.indexOf(attribute.name) > -1,
                       })
                     )}
+                    onSelect={(name) => {
+                      setSelectedAttributeValues([name]);
+                      setSelectedAttributeType('numeric');
+                    }}
                   />
                 </ModalContent>
 
@@ -284,7 +396,10 @@ export const RulesetAttributes = ({ category }: Props) => {
                     <PreviousStep
                       as="button"
                       isStrong
-                      onClick={() => setModalStep(0)}
+                      onClick={() => {
+                        setSelectedAttributeValues([]);
+                        setModalStep(0);
+                      }}
                     >
                       back
                     </PreviousStep>
@@ -300,7 +415,7 @@ export const RulesetAttributes = ({ category }: Props) => {
                       <NextStep
                         as="button"
                         onClick={() => {
-                          setSelectedAttributeValues(
+                          setAlphanumericAttributeValues(
                             attribute.values.map((value) => value.value)
                           );
                           setModalStep(3);
@@ -327,12 +442,20 @@ export const RulesetAttributes = ({ category }: Props) => {
                     >
                       back
                     </PreviousStep>
-                    <Count>Showing: 4</Count>
+                    <Count>Showing: {alphanumericAttributeValues.length}</Count>
                   </ModalSection>
                   <Checkboxes
-                    values={selectedAttributeValues.map((value) => ({
+                    onSelect={(isSelected, name) => {
+                      setSelectedAttributeType('alphanumeric');
+                      setSelectedAttributeValues(
+                        isSelected
+                          ? [...selectedAttributeValues, name]
+                          : selectedAttributeValues.filter((i) => i !== name)
+                      );
+                    }}
+                    values={alphanumericAttributeValues.map((value) => ({
                       name: value,
-                      isSelected: false,
+                      isSelected: selectedAttributeValues.indexOf(value) > -1,
                     }))}
                   />
                 </ModalContent>
@@ -342,6 +465,7 @@ export const RulesetAttributes = ({ category }: Props) => {
                     onClick={() => {
                       setIsModalOpen(false);
                       setModalStep(0);
+                      setSelectedAttributeValues([]);
                     }}
                     isInline={true}
                   >

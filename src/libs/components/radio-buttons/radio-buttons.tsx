@@ -3,7 +3,7 @@ import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import { Label } from '../typography/typography.styles';
 
-const Row = styled.div`
+const Row = styled.label`
   border-bottom: solid 1px ${color.grey};
   padding: ${spacing(2)};
   display: flex;
@@ -49,14 +49,20 @@ type Value = {
 
 type Props = {
   values: Value[];
+  onSelect: (name: string) => void;
 };
 
-export const RadioButtons = ({ values }: Props) => (
+export const RadioButtons = ({ values, onSelect }: Props) => (
   <div>
     {values.map(({ name, isSelected }) => (
       <Row key={name}>
-        <label htmlFor={name}>
-          <Input type="radio" name={name} defaultChecked={isSelected} />
+        <label htmlFor={name} aria-label={name}>
+          <Input
+            type="radio"
+            name={name}
+            checked={isSelected}
+            onChange={() => onSelect(name)}
+          />
           <Label as="span" isStrong={true}>
             {name}
           </Label>
