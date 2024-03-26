@@ -29,6 +29,7 @@ export const RulesetChanges = ({
           <ProductBox key={`product-${product.id}`}>
             <Product
               id={product.id}
+              productId={product.id}
               brand="M&S Collection"
               imageUrl={[
                 'SD_02_T32_9101_Y0_X_EC_0',
