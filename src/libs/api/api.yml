@@ -489,9 +489,9 @@ components:
           $ref: '#/components/schemas/BoostsBuries'
       required:
         - pinnedProducts
-        # - blockedProducts
-        # - boosts
-        # - buries
+        - blockedProducts
+        - boosts
+        - buries
     PinnedProduct:
       type: object
       properties:
@@ -521,6 +521,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductBoostBury'
+      required:
+        - numeric
+        - alphaNumeric
+        - product
     BoostsBuriesWithInfo:
       type: object
       properties:

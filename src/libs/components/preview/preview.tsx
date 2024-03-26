@@ -167,6 +167,8 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
         : {
             pinnedProducts: [],
             blockedProducts: [],
+            boosts: { alphaNumeric: [], numeric: [], product: [] },
+            buries: { alphaNumeric: [], numeric: [], product: [] },
           }
     );
 

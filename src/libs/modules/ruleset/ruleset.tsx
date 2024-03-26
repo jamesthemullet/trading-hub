@@ -87,6 +87,16 @@ export const Ruleset = ({
       rulesetMerchandisingRules || {
         pinnedProducts: [],
         blockedProducts: [],
+        boosts: {
+          alphaNumeric: [],
+          numeric: [],
+          product: [],
+        },
+        buries: {
+          alphaNumeric: [],
+          numeric: [],
+          product: [],
+        },
       }
     );
   const [hasChanges, setHasChanges] = useState(false);
@@ -182,6 +192,16 @@ export const Ruleset = ({
     setMerchandisingRules({
       pinnedProducts,
       blockedProducts: [],
+      boosts: {
+        alphaNumeric: [],
+        numeric: [],
+        product: [],
+      },
+      buries: {
+        alphaNumeric: [],
+        numeric: [],
+        product: [],
+      },
     });
   };
 
@@ -276,7 +296,12 @@ export const Ruleset = ({
                 { title: 'Visual Editor' },
                 {
                   title: 'Changes',
-                  count: merchandisingRules.pinnedProducts.length,
+                  count:
+                    merchandisingRules.pinnedProducts.length +
+                    merchandisingRules.boosts.alphaNumeric.length +
+                    merchandisingRules.boosts.numeric.length +
+                    merchandisingRules.buries.alphaNumeric.length +
+                    merchandisingRules.buries.numeric.length,
                 },
               ]}
               onTabChange={setCurrentEditorTab}

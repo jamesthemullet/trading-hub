@@ -30,6 +30,9 @@ export const useCategoryProductSearch = () => {
         };
         const response = await merchandising().productCreate(queryData, {
           pinnedProducts: merchandisingRules.pinnedProducts,
+          blockedProducts: merchandisingRules.blockedProducts,
+          boosts: merchandisingRules.boosts,
+          buries: merchandisingRules.buries,
         });
         return response.data;
       } catch (error) {
