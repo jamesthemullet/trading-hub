@@ -7,6 +7,7 @@ import { Product } from './product';
 const mockChangePosition = jest.fn();
 const productProps = {
   id: 'id',
+  productId: 'product id',
   title: 'product title',
   imageUrl: ['example1.jpg'],
   brand: 'product brand',
