@@ -280,4 +280,52 @@ describe('RulesetAttributes', () => {
 
     expect(screen.queryByText('Blue')).toBeNull();
   });
+
+  it('buries Product description attributes', async () => {
+    openModal();
+
+    await waitFor(() =>
+      expect(
+        screen.getByText('Attributes are aggregated from the account level')
+      ).toBeVisible()
+    );
+
+    const nextStepButton = screen.getAllByText(
+      'Product description attributes'
+    )[0];
+
+    act(() => {
+      nextStepButton.click();
+    });
+
+    const dropdownButton = screen.getByText('boost');
+
+    act(() => {
+      dropdownButton.click();
+    });
+
+    const buryButton = screen.getByText('Bury');
+
+    act(() => {
+      buryButton.click();
+    });
+
+    const colourButton = screen.getByText('Colour');
+
+    act(() => {
+      colourButton.click();
+    });
+
+    const colourRedButton = screen.getByLabelText('Red');
+
+    act(() => {
+      colourRedButton.click();
+    });
+
+    const attributes = await screen.getByLabelText('Selected Attribute');
+
+    await waitFor(() =>
+      expect(within(attributes).getByText('Operation bury')).toBeVisible()
+    );
+  });
 });

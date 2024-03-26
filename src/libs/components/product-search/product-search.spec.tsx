@@ -31,6 +31,7 @@ describe('ProductSearch', () => {
         products={[
           {
             id: '1',
+            productId: 'id1',
             title: 'title',
             imageUrl: ['example1.jpg'],
             brand: 'brand',
@@ -60,6 +61,7 @@ describe('ProductSearch', () => {
         products={[
           {
             id: '1',
+            productId: 'id1',
             title: 'title',
             imageUrl: ['example1.jpg'],
             brand: 'brand',

@@ -13,6 +13,7 @@ import { Text } from '../typography/typography.styles';
 
 export type FilterDropdownProps = {
   isOpen: boolean;
+  icon?: string;
   label: string;
   onOpen: () => void;
   onClose: (closingType?: ClosingType | 'tab') => void;
@@ -109,9 +110,33 @@ const ButtonText = styled(Text)`
   justify-content: center;
 `;
 
+const LabelIcon = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
+export const DropdownOption = styled.button`
+  background-color: #f5f5f5;
+  width: 100%;
+  padding: ${spacing(2)};
+  z-index: 1;
+  border: none;
+  border-top: solid 1px #999;
+  box-shadow: #000 0 4px 2px -4px;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: left;
+
+  &:hover,
+  &:active {
+    background-color: #e3e3e3;
+  }
+`;
+
 export const Dropdown = ({
   children,
   label,
+  icon,
   onClose,
   onOpen,
   contentWidth,
@@ -153,6 +178,11 @@ export const Dropdown = ({
         aria-expanded={isOpen}
       >
         <ButtonText as="span" color={'#000'}>
+          {icon && (
+            <>
+              <LabelIcon src={`/trading-hub/asset/${icon}.svg`} />{' '}
+            </>
+          )}
           {label}
         </ButtonText>
         <ArrowIcon name="ChevronDownDefault" color={'#000'} />

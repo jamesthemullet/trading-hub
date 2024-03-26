@@ -69,6 +69,7 @@ describe('Index', () => {
     products: [
       {
         id: product1Id,
+        productId: product1Id,
         title: product1Title,
         imageUrl: ['example1.jpg'],
         brand: product1Brand,
@@ -80,6 +81,7 @@ describe('Index', () => {
       },
       {
         id: product2Id,
+        productId: product2Id,
         title: product2Title,
         imageUrl: ['example2.jpg'],
         brand: product2Brand,
@@ -91,6 +93,7 @@ describe('Index', () => {
       },
       {
         id: product3Id,
+        productId: product3Id,
         title: product3Title,
         imageUrl: ['example.jpg'],
         brand: 'brand',

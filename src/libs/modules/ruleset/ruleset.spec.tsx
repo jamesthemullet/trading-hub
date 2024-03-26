@@ -54,6 +54,7 @@ const mockGetCategories = {
 };
 const mockProduct = {
   id: 'productId',
+  productId: 'productId',
   title: 'productTitle',
   imageUrl: ['example.jpg'],
   brand: 'productBrand',
@@ -99,6 +100,7 @@ describe('Ruleset', () => {
           products: [
             {
               id: product1Id,
+              productId: product1Id,
               title: product1Title,
               imageUrl: ['example1.jpg'],
               brand: product1Brand,
@@ -110,6 +112,7 @@ describe('Ruleset', () => {
             },
             {
               id: product2Id,
+              productId: product2Id,
               title: product2Title,
               imageUrl: ['example2.jpg'],
               brand: product2Brand,
@@ -121,6 +124,7 @@ describe('Ruleset', () => {
             },
             {
               id: product3Id,
+              productId: product3Id,
               title: product3Title,
               imageUrl: ['example.jpg'],
               brand: 'brand',
@@ -144,7 +148,10 @@ describe('Ruleset', () => {
     });
 
     jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryProducts: [mockProduct, { ...mockProduct, id: 'product2' }],
+      categoryProducts: [
+        mockProduct,
+        { ...mockProduct, id: 'product2', productId: 'productId2' },
+      ],
       categoryFacets: [],
       error: '',
       refetchRuleSetPreview: jest.fn(),
@@ -415,6 +422,7 @@ describe('Ruleset', () => {
       categoryProducts: [
         {
           id: 'product-id-1',
+          productId: 'product-id-1',
           title: productSearchTitle,
           imageUrl: ['example1.jpg'],
           brand: product1Brand,
@@ -437,6 +445,7 @@ describe('Ruleset', () => {
           products: [
             {
               id: 'product-id-2',
+              productId: 'product-id-2',
               title: productSearchTitle,
               imageUrl: ['example2.jpg'],
               brand: product1Brand,
