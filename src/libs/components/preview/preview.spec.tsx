@@ -18,7 +18,8 @@ const mockCategoryId = 'SubCat_123';
 const mockOnClose = jest.fn();
 
 const mockProduct = {
-  id: 'productId',
+  id: 'id',
+  productId: 'productId',
   title: 'productTitle',
   imageUrl: ['example.jpg'],
   brand: 'productBrand',

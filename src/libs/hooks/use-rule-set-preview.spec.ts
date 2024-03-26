@@ -145,7 +145,6 @@ describe('useRuleSet', () => {
           user: '',
         },
         rules: {
-          blockedProducts: [],
           pinnedProducts: [],
         },
       },

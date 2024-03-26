@@ -586,6 +586,8 @@ components:
       properties:
         id:
           type: string
+        productId:
+          type: string
         metadata:
           $ref: '#/components/schemas/ProductMetadata'
         rating:
