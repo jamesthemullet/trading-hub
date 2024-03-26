@@ -23,7 +23,7 @@ export const useCategoryPreview = (
         const categoryPreview = await merchandising().categoryPreviewCreate(
           categoryId,
           { rows: 12, start: 0 },
-          merchandisingRules
+          { pinnedProducts: merchandisingRules.pinnedProducts }
         );
 
         const previewData = categoryPreview.data;

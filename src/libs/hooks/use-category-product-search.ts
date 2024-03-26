@@ -30,7 +30,7 @@ export const useCategoryProductSearch = () => {
         };
         const response = await merchandising().productCreate(
           queryData,
-          merchandisingRules
+          { pinnedProducts: merchandisingRules.pinnedProducts }
         );
         return response.data;
       } catch (error) {
