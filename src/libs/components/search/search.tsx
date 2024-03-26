@@ -5,6 +5,8 @@ import { SearchBox } from '../search-box/search-box';
 import { Icon } from '../icon/icon';
 
 export type SearchProps = {
+  id?: string;
+  name?: string;
   value?: string | number | readonly string[] | undefined;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
@@ -30,6 +32,8 @@ const StyledIcon = styled(Icon)`
 `;
 
 export const Search = ({
+  name,
+  id,
   value,
   onChange,
   placeholder,
@@ -44,11 +48,11 @@ export const Search = ({
         }}
         inputProps={{
           isLabelHidden: true,
-          label: 'Search category identifier or user name',
+          label: name || 'Search category identifier or user name',
           placeholder: placeholder || 'Search...',
           required: true,
-          id: 'searchId',
-          name: 'searchTerm',
+          id: id || 'searchId',
+          name: name || 'searchTerm',
           onChange,
           autoComplete: 'off',
           autoCapitalize: 'off',

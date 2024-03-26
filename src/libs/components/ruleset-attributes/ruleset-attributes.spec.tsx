@@ -2,6 +2,7 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 
 import { RulesetAttributes } from '@/libs/components';
 import { renderWithProviders } from '../../../test/render-with-providers';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('@/libs/hooks', () => ({
   useAttributes: () => ({
@@ -163,6 +164,12 @@ describe('RulesetAttributes', () => {
       expect(screen.getByText('Numeric attributes')).toBeVisible()
     );
 
+    const nextStepButton = screen.getByText('Numeric attributes');
+
+    act(() => {
+      nextStepButton.click();
+    });
+
     const sizeButton = screen.getAllByLabelText('Size');
 
     act(() => {
@@ -176,7 +183,26 @@ describe('RulesetAttributes', () => {
     );
   });
 
-  it('selects an alphanumeric attribute', async () => {
+  it('filters a numeric attribute', async () => {
+    const user = userEvent.setup();
+    openModal();
+
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
+
+    const nextStepButton = screen.getByText('Numeric attributes');
+
+    act(() => {
+      nextStepButton.click();
+    });
+
+    await user.type(screen.getByLabelText('Filter numeric attributes'), 'Size');
+
+    expect(screen.queryByText('Price')).toBeNull();
+  });
+
+  it('selects Product description attributes', async () => {
     openModal();
 
     await waitFor(() =>
@@ -184,6 +210,14 @@ describe('RulesetAttributes', () => {
         screen.getByText('Attributes are aggregated from the account level')
       ).toBeVisible()
     );
+
+    const nextStepButton = screen.getAllByText(
+      'Product description attributes'
+    )[0];
+
+    act(() => {
+      nextStepButton.click();
+    });
 
     const colourButton = screen.getByText('Colour');
 
@@ -205,5 +239,45 @@ describe('RulesetAttributes', () => {
     await waitFor(() =>
       expect(within(attributes).getByText('Blue')).toBeVisible()
     );
+  });
+
+  it('filters Product description attributes', async () => {
+    const user = userEvent.setup();
+    openModal();
+
+    await waitFor(() =>
+      expect(screen.getByText('Numeric attributes')).toBeVisible()
+    );
+
+    const nextStepButton = screen.getAllByText(
+      'Product description attributes'
+    )[0];
+
+    act(() => {
+      nextStepButton.click();
+    });
+
+    await user.type(
+      screen.getByLabelText('Filter alphanumeric attributes'),
+      'Colour'
+    );
+
+    expect(screen.queryByText('Brand')).toBeNull();
+
+    const colourStepButton = screen.getByText('Colour');
+
+    act(() => {
+      colourStepButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Red')).toBeVisible();
+      expect(screen.getByText('Blue')).toBeVisible();
+      expect(screen.getByText('Green')).toBeVisible();
+    });
+
+    await user.type(screen.getByLabelText('Filter selected attributes'), 'Red');
+
+    expect(screen.queryByText('Blue')).toBeNull();
   });
 });

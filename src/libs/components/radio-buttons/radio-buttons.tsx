@@ -59,7 +59,7 @@ export const RadioButtons = ({ values, onSelect }: Props) => (
         <label htmlFor={name} aria-label={name}>
           <Input
             type="radio"
-            name={name}
+            id={name}
             checked={isSelected}
             onChange={() => onSelect(name)}
           />
