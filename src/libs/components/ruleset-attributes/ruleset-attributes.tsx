@@ -9,6 +9,7 @@ import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { useAttributes } from '@/libs/hooks';
 import { AttributesResponse } from '@/libs/api';
+import { Search } from '../search/search';
 
 const MODAL_WIDTH = 435;
 
@@ -119,6 +120,16 @@ const Count = styled(Text)`
   top: 18px;
 `;
 
+const SearchWrapper = styled.div`
+  padding-top: ${spacing(2)};
+
+  label {
+    visibility: hidden;
+    display: block;
+    height: 0px;
+  }
+`;
+
 const ModalFooter = styled.div`
   position: absolute;
   bottom: 0;
@@ -150,6 +161,10 @@ const AttributeValue = styled.label`
   padding: ${spacing(1)};
   margin: ${spacing(1)};
   display: inline-block;
+`;
+
+const Filters = styled.div`
+  display: flex;
 `;
 
 const NumericAttribute = ({
@@ -249,6 +264,9 @@ export const RulesetAttributes = ({ category }: Props) => {
   const { attributes } = useAttributes(category);
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
     useState<string[]>([]);
+  const [numbericSearchValue, setNumericSearchValue] = useState('');
+  const [alphanumbericSearchValue, setAlphaNumericSearchValue] = useState('');
+  const [alphanumbericFilterValue, setAlphaNumericFilterValue] = useState('');
   const [selectedAttributeValues, setSelectedAttributeValues] = useState<
     string[]
   >([]);
@@ -370,15 +388,31 @@ export const RulesetAttributes = ({ category }: Props) => {
                       (larger the value, stronger the boost). Attributes are
                       aggregated from the account level
                     </Text>
+
+                    <SearchWrapper>
+                      <label htmlFor="filerNumericAttributes">
+                        Filter numeric attributes
+                      </label>
+                      <Search
+                        name="Filter numeric attributes"
+                        id="filerNumericAttributes"
+                        value={numbericSearchValue}
+                        onChange={(e) => setNumericSearchValue(e.target.value)}
+                      />
+                    </SearchWrapper>
                   </ModalSection>
                   <RadioButtons
-                    values={getNumericAttributes(attributes).map(
-                      (attribute) => ({
+                    values={getNumericAttributes(attributes)
+                      .filter((attribute) =>
+                        attribute.name
+                          .toLowerCase()
+                          .includes(numbericSearchValue.toLowerCase())
+                      )
+                      .map((attribute) => ({
                         name: attribute.name,
                         isSelected:
                           selectedAttributeValues.indexOf(attribute.name) > -1,
-                      })
-                    )}
+                      }))}
                     onSelect={(name) => {
                       setSelectedAttributeValues([name]);
                       setSelectedAttributeType('numeric');
@@ -409,23 +443,45 @@ export const RulesetAttributes = ({ category }: Props) => {
                     <Text>
                       Attributes are aggregated from the account level
                     </Text>
+                    <Filters>
+                      <p>TODO: dropdown</p>
+                      <SearchWrapper>
+                        <label htmlFor="filerAlphanumericAttributes">
+                          Filter alphanumeric attributes
+                        </label>
+                        <Search
+                          name="Filter alphanumeric attributes"
+                          id="filerAlphanumericAttributes"
+                          value={alphanumbericSearchValue}
+                          onChange={(e) =>
+                            setAlphaNumericSearchValue(e.target.value)
+                          }
+                        />
+                      </SearchWrapper>
+                    </Filters>
                   </ModalSection>
-                  {getAlphanumericAttributes(attributes).map((attribute) => (
-                    <ModalSection key={attribute.name}>
-                      <NextStep
-                        as="button"
-                        onClick={() => {
-                          setAlphanumericAttributeValues(
-                            attribute.values.map((value) => value.value)
-                          );
-                          setModalStep(3);
-                        }}
-                        isStrong
-                      >
-                        {attribute.name}
-                      </NextStep>
-                    </ModalSection>
-                  ))}
+                  {getAlphanumericAttributes(attributes)
+                    .filter((attribute) =>
+                      attribute.name
+                        .toLowerCase()
+                        .includes(alphanumbericSearchValue.toLowerCase())
+                    )
+                    .map((attribute) => (
+                      <ModalSection key={attribute.name}>
+                        <NextStep
+                          as="button"
+                          onClick={() => {
+                            setAlphanumericAttributeValues(
+                              attribute.values.map((value) => value.value)
+                            );
+                            setModalStep(3);
+                          }}
+                          isStrong
+                        >
+                          {attribute.name}
+                        </NextStep>
+                      </ModalSection>
+                    ))}
                 </ModalContent>
 
                 <ModalContent
@@ -443,6 +499,19 @@ export const RulesetAttributes = ({ category }: Props) => {
                       back
                     </PreviousStep>
                     <Count>Showing: {alphanumericAttributeValues.length}</Count>
+                    <SearchWrapper>
+                      <label htmlFor="filerSelectedAttributes">
+                        Filter selected attributes
+                      </label>
+                      <Search
+                        name="Filter selected attributes"
+                        id="filerSelectedAttributes"
+                        value={alphanumbericFilterValue}
+                        onChange={(e) =>
+                          setAlphaNumericFilterValue(e.target.value)
+                        }
+                      />
+                    </SearchWrapper>
                   </ModalSection>
                   <Checkboxes
                     onSelect={(isSelected, name) => {
@@ -453,10 +522,16 @@ export const RulesetAttributes = ({ category }: Props) => {
                           : selectedAttributeValues.filter((i) => i !== name)
                       );
                     }}
-                    values={alphanumericAttributeValues.map((value) => ({
-                      name: value,
-                      isSelected: selectedAttributeValues.indexOf(value) > -1,
-                    }))}
+                    values={alphanumericAttributeValues
+                      .filter((value) =>
+                        value
+                          .toLowerCase()
+                          .includes(alphanumbericFilterValue.toLowerCase())
+                      )
+                      .map((value) => ({
+                        name: value,
+                        isSelected: selectedAttributeValues.indexOf(value) > -1,
+                      }))}
                   />
                 </ModalContent>
 
