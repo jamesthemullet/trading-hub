@@ -20,7 +20,7 @@ export const useRuleSetCreate = () => {
         const body = {
           categoryId,
           isEnabled: true,
-          rules: merchandisingRules,
+          rules: { pinnedProducts: merchandisingRules.pinnedProducts },
         };
         const response = await merchandising().rulesetCreate(body);
         return response.data;

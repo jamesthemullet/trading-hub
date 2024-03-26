@@ -28,10 +28,9 @@ export const useCategoryProductSearch = () => {
           start,
           categoryIds: [categoryId],
         };
-        const response = await merchandising().productCreate(
-          queryData,
-          merchandisingRules
-        );
+        const response = await merchandising().productCreate(queryData, {
+          pinnedProducts: merchandisingRules.pinnedProducts,
+        });
         return response.data;
       } catch (error) {
         setError(`Failed to search products ${error}`);
