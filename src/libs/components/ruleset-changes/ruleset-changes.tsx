@@ -22,7 +22,10 @@ export const RulesetChanges = ({
 }) => {
   /* istanbul ignore next */
   const countOfAttributeChanges =
-    merchandisingRules.boosts?.numeric?.length ?? 0;
+    (merchandisingRules.boosts?.numeric?.length ?? 0) +
+    (merchandisingRules.boosts?.alphaNumeric?.length ?? 0) +
+    (merchandisingRules.buries?.numeric?.length ?? 0) +
+    (merchandisingRules.buries?.alphaNumeric?.length ?? 0);
   /* istanbul ignore next */
   const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
   /* istanbul ignore next */
