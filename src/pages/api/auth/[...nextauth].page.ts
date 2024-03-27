@@ -40,20 +40,20 @@ export const jwtCallback: (
   envSettings: AuthEnvironment
 ) => Required<Required<AuthOptions>['callbacks']>['jwt'] =
   (envSettings) =>
-    async ({ token, account, user }) => {
-      if (account && user && account.access_token) {
-        return {
-          accessToken: account.access_token,
-          accessTokenExpires: envSettings.dateNow + account.ext_expires_in * 1000,
-          refreshToken: account.refresh_token,
-          user,
-        };
-      }
-      if (envSettings.dateNow < token.accessTokenExpires) {
-        return token;
-      }
-      return refreshAccessToken(token, envSettings);
-    };
+  async ({ token, account, user }) => {
+    if (account && user && account.access_token) {
+      return {
+        accessToken: account.access_token,
+        accessTokenExpires: envSettings.dateNow + account.ext_expires_in * 1000,
+        refreshToken: account.refresh_token,
+        user,
+      };
+    }
+    if (envSettings.dateNow < token.accessTokenExpires) {
+      return token;
+    }
+    return refreshAccessToken(token, envSettings);
+  };
 
 export const sessionCallback: Required<
   Required<AuthOptions>['callbacks']
