@@ -1,0 +1,71 @@
+import { BoostsBuries } from '../../../libs/api';
+
+export const boostMock: BoostsBuries = {
+  numeric: [
+    {
+      field: 'price',
+      weight: 0.5,
+    },
+    {
+      field: 'size',
+      weight: 0.2,
+    },
+  ],
+  alphaNumeric: [
+    {
+      field: 'brand',
+      weight: 0.5,
+      values: ['Nike', 'Adidas'],
+    },
+    {
+      field: 'category',
+      weight: 1,
+      values: ['Shoes', 'Clothing'],
+    },
+  ],
+  product: [
+    {
+      id: '1',
+      weight: 0.5,
+    },
+    {
+      id: '2',
+      weight: 0.5,
+    },
+  ],
+};
+
+export const buriesMock: BoostsBuries = {
+  numeric: [
+    {
+      field: 'price',
+      weight: 0.7,
+    },
+    {
+      field: 'size',
+      weight: 0.2,
+    },
+  ],
+  alphaNumeric: [
+    {
+      field: 'brand',
+      weight: 0.7,
+      values: ['Puma', 'Reebok'],
+    },
+    {
+      field: 'category',
+      weight: 0.7,
+      values: ['Accessories', 'Clothing'],
+    },
+  ],
+  product: [
+    {
+      id: '2',
+      weight: 0.7,
+    },
+    {
+      id: '3',
+      weight: 0.3,
+    },
+  ],
+};

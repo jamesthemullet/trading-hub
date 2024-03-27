@@ -1,6 +1,11 @@
-import { AttributesResponse, ProductSearchResponse } from '@/libs/api';
+import {
+  AttributesResponse,
+  ProductSearchResponse,
+  ReturnedRuleSet,
+} from '@/libs/api';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
+import { boostMock, buriesMock } from './mocks';
 
 export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
@@ -100,6 +105,13 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
         isPinned: product?.metadata?.isPinned ?? false,
       };
     });
+  }
+
+  if (req.url && req.url.startsWith('/api/merchandising/ruleset/')) {
+    console.warn(`Altering response for ruleset ${req.url}`);
+    const ruleSet = jsonBody as ReturnedRuleSet;
+    ruleSet.rules.boosts = boostMock;
+    ruleSet.rules.buries = buriesMock;
   }
 
   if (!response.ok) {
