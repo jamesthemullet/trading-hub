@@ -41,7 +41,7 @@ export const useCategoryPreview = (
     };
 
     void asyncCall();
-  }, [categoryId, shouldRefetch]);
+  }, [categoryId, shouldRefetch, merchandisingRules]);
 
   return {
     categoryProducts,
