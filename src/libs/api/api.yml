@@ -436,6 +436,7 @@ components:
           type: boolean
       required:
         - id
+        - productId
         - metadata
         - rating
         - url
