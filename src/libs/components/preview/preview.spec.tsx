@@ -94,7 +94,10 @@ const CURRENT_STATE = 'current state';
 describe('Preview', () => {
   beforeEach(() => {
     jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryProducts: [mockProduct, { ...mockProduct, id: 'product2' }],
+      categoryProducts: [
+        mockProduct,
+        { ...mockProduct, productId: 'product2' },
+      ],
       categoryFacets: mockFacets,
       error: '',
       refetchRuleSetPreview: jest.fn(),
