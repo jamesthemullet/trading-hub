@@ -82,9 +82,9 @@ describe('Index', () => {
 
     signInButtonElement.click();
 
-    expect(signIn).toBeCalledWith('azure-ad');
-    expect(signOut).not.toBeCalled();
-    expect(signIn).toBeCalledTimes(1);
+    expect(signIn).toHaveBeenCalledWith('azure-ad');
+    expect(signOut).not.toHaveBeenCalled();
+    expect(signIn).toHaveBeenCalledTimes(1);
   });
 
   it('calls sign out when user clicks sign out button', () => {
@@ -111,8 +111,8 @@ describe('Index', () => {
 
     signOutButtonElement?.click();
 
-    expect(signOut).toBeCalledTimes(1);
-    expect(signIn).not.toBeCalled();
+    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(signIn).not.toHaveBeenCalled();
   });
 
   it('loads the home page site stripe in get server side props', async () => {

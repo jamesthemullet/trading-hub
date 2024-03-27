@@ -117,7 +117,7 @@ export const Ruleset = ({
       window.removeEventListener('beforeunload', handleWindowClose);
       router.events.off('routeChangeStart', handleBrowseAway);
     };
-  }, [hasChanges]);
+  }, [hasChanges, router]);
 
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
