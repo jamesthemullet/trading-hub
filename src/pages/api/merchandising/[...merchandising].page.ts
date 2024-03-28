@@ -2,10 +2,16 @@ import {
   AttributesResponse,
   ProductSearchResponse,
   ReturnedRuleSet,
+  SearchPreviewResponse,
 } from '@/libs/api';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { boostMock, buriesMock } from './mocks';
+import {
+  boostMock,
+  boostWithInfoMock,
+  buriesMock,
+  buriesWithInfoMock,
+} from './mocks';
 
 export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
@@ -117,6 +123,13 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     const ruleSet = jsonBody as ReturnedRuleSet;
     ruleSet.rules.boosts = boostMock;
     ruleSet.rules.buries = buriesMock;
+  }
+
+  if (req.url && req.url.match(/\/merchandising\/category\/\w+\/preview/)) {
+    console.warn(`Altering response for ruleset ${req.url}`);
+    const ruleSet = jsonBody as SearchPreviewResponse;
+    ruleSet.rules.boosts = boostWithInfoMock;
+    ruleSet.rules.buries = buriesWithInfoMock;
   }
 
   if (!response.ok) {
