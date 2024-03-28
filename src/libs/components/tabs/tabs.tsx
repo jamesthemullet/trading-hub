@@ -44,11 +44,11 @@ const Count = styled.span`
   background: ${color.improvedFit};
   color: #fff;
   margin-left: ${spacing(1)};
-  border-radius: 50%;
+  border-radius: 15px;
   padding: 2px 6px;
   font-weight: normal;
   width: 27px;
-  display: inline-block;
+  display: inline;
 `;
 
 export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {

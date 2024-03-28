@@ -8,11 +8,13 @@ import { Label, Text } from '../typography/typography.styles';
 import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { useAttributes } from '@/libs/hooks';
-import { AttributesResponse } from '@/libs/api';
+import { AttributesResponse, MerchandisingRules } from '@/libs/api';
 import { Search } from '../search/search';
 import { Dropdown, DropdownOption } from '../dropdown/dropdown';
 import { NumericAttribute } from './numeric-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
+import { AttributeCount, AttributesList } from './ruleset-attributes.styles';
+import { pluralise } from '../utils/pluralise';
 
 const MODAL_WIDTH = 435;
 
@@ -196,6 +198,7 @@ const SectionLabel = ({
 
 export type Props = {
   category?: string;
+  merchandisingRules: MerchandisingRules;
 };
 
 const getNumericAttributes = (attributes: AttributesResponse['attributes']) => {
@@ -208,7 +211,7 @@ const getAlphanumericAttributes = (
   return attributes.filter((attribute) => attribute.type === 'alphanumeric');
 };
 
-export const RulesetAttributes = ({ category }: Props) => {
+export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
@@ -227,6 +230,20 @@ export const RulesetAttributes = ({ category }: Props) => {
   const [selectedAttributeType, setSelectedAttributeType] = useState<
     'numeric' | 'alphanumeric'
   >();
+  /* istanbul ignore next */
+  const countOfAttributeChanges =
+    (merchandisingRules.boosts?.numeric?.length ?? 0) +
+    (merchandisingRules.boosts?.alphaNumeric?.length ?? 0) +
+    (merchandisingRules.buries?.numeric?.length ?? 0) +
+    (merchandisingRules.buries?.alphaNumeric?.length ?? 0);
+  /* istanbul ignore next */
+  const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
+  /* istanbul ignore next */
+  const alphaNumericBoost = merchandisingRules.boosts?.alphaNumeric ?? [];
+  /* istanbul ignore next */
+  const numericBury = merchandisingRules.buries?.numeric ?? [];
+  /* istanbul ignore next */
+  const alphaNumericBuries = merchandisingRules.buries?.alphaNumeric ?? [];
 
   return (
     <Wrapper>
@@ -234,6 +251,66 @@ export const RulesetAttributes = ({ category }: Props) => {
         <Icon alt="" src="/trading-hub/asset/icon-plus-simple.svg" />
         Create new attribute rule
       </CreateNew>
+      {countOfAttributeChanges > 0 && (
+        <AttributesList aria-label="Ruleset attributes">
+          <AttributeCount>
+            {countOfAttributeChanges} attribute{' '}
+            {pluralise('rule', countOfAttributeChanges)}
+          </AttributeCount>
+          {(!!alphaNumericBoost.length || !!alphaNumericBuries.length) && (
+            <Label isStrong withMargin>
+              Product description attribute rules
+            </Label>
+          )}
+          {!!alphaNumericBoost.length &&
+            alphaNumericBoost.map((attribute) => (
+              <AlphanumericAttribute
+                key={attribute.values[0]}
+                isEditable
+                values={attribute.values}
+                operation="boost"
+                weight={attribute.weight}
+              />
+            ))}
+
+          {!!alphaNumericBuries.length &&
+            alphaNumericBuries.map((attribute) => (
+              <AlphanumericAttribute
+                key={attribute.values[0]}
+                isEditable
+                values={attribute.values}
+                operation="bury"
+                weight={attribute.weight}
+              />
+            ))}
+
+          {(!!numericBoosts.length || !!numericBury.length) && (
+            <Label isStrong withMargin>
+              Numeric attribute rules
+            </Label>
+          )}
+          {!!numericBoosts.length &&
+            numericBoosts.map((attribute) => (
+              <NumericAttribute
+                key={attribute.field}
+                isEditable
+                operation="boost"
+                name={attribute.field}
+                weight={attribute.weight}
+              />
+            ))}
+          {!!numericBury.length &&
+            numericBury.map((attribute) => (
+              <NumericAttribute
+                key={attribute.field}
+                isEditable
+                operation="bury"
+                name={attribute.field}
+                weight={attribute.weight}
+              />
+            ))}
+        </AttributesList>
+      )}
       <Modal.Root
         opened={isModalOpen}
         onClose={
@@ -253,6 +330,7 @@ export const RulesetAttributes = ({ category }: Props) => {
                   zIndex: 1,
                   padding: `${spacing(10)} ${spacing(2)} ${spacing(2)}`,
                 }}
+                aria-label="Selected Attribute"
               >
                 {selectedAttributeType === 'numeric' &&
                   !!selectedAttributeValues.length && (
@@ -499,26 +577,29 @@ export const RulesetAttributes = ({ category }: Props) => {
                       />
                     </SearchWrapper>
                   </ModalSection>
-                  <Checkboxes
-                    onSelect={(isSelected, name) => {
-                      setSelectedAttributeType('alphanumeric');
-                      setSelectedAttributeValues(
-                        isSelected
-                          ? [...selectedAttributeValues, name]
-                          : selectedAttributeValues.filter((i) => i !== name)
-                      );
-                    }}
-                    values={alphanumericAttributeValues
-                      .filter((value) =>
-                        value
-                          .toLowerCase()
-                          .includes(alphanumbericFilterValue.toLowerCase())
-                      )
-                      .map((value) => ({
-                        name: value,
-                        isSelected: selectedAttributeValues.indexOf(value) > -1,
-                      }))}
-                  />
+                  <div aria-label="Selected attributes">
+                    <Checkboxes
+                      onSelect={(isSelected, name) => {
+                        setSelectedAttributeType('alphanumeric');
+                        setSelectedAttributeValues(
+                          isSelected
+                            ? [...selectedAttributeValues, name]
+                            : selectedAttributeValues.filter((i) => i !== name)
+                        );
+                      }}
+                      values={alphanumericAttributeValues
+                        .filter((value) =>
+                          value
+                            .toLowerCase()
+                            .includes(alphanumbericFilterValue.toLowerCase())
+                        )
+                        .map((value) => ({
+                          name: value,
+                          isSelected:
+                            selectedAttributeValues.indexOf(value) > -1,
+                        }))}
+                    />
+                  </div>
                 </ModalContent>
 
                 <ModalFooter>
