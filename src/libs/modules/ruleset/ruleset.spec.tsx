@@ -277,6 +277,8 @@ describe('Ruleset', () => {
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
+          boosts: { numeric: [], alphaNumeric: [], product: [] },
+          buries: { numeric: [], alphaNumeric: [], product: [] },
         }}
         rulesetId={ruleSetId}
       />
