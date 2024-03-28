@@ -16,6 +16,7 @@ describe('VisualEditor', () => {
   const products: Product[] = [
     {
       id: product1Id,
+      productId: product1Id,
       title: product1Title,
       imageUrl: ['example1.jpg'],
       brand: product1Brand,
@@ -27,6 +28,7 @@ describe('VisualEditor', () => {
     },
     {
       id: product2Id,
+      productId: product2Id,
       title: product2Title,
       imageUrl: ['example12.jpg'],
       brand: 'brand',
@@ -38,6 +40,7 @@ describe('VisualEditor', () => {
     },
     {
       id: product3Id,
+      productId: product3Id,
       title: product3Title,
       imageUrl: ['example.jpg'],
       brand: 'M$S',

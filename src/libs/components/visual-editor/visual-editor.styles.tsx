@@ -7,6 +7,7 @@ export const Layout = styled.div`
   padding: ${spacing(2)} 0;
   display: flex;
   flex-wrap: wrap;
+  gap: ${spacing(2)};
 `;
 
 export const ProductBox = styled.div`

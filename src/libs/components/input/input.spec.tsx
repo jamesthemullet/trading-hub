@@ -68,7 +68,7 @@ describe('Input', () => {
     render(<Input id="id" label="input" onChange={onChangeHandler} />);
     const input = screen.getByLabelText('input');
     await user.type(input, 'input now contains text');
-    expect(onChangeHandler).toBeCalled();
+    expect(onChangeHandler).toHaveBeenCalled();
   });
 
   it('Should be able to display an error message and change border colour', () => {

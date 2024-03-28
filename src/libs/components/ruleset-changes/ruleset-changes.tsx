@@ -5,6 +5,8 @@ import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
 import { spacing } from '../utils/spacing';
 import { ChangePositionTypes } from '../../modules/ruleset/ruleset';
 import { Text } from '../typography/typography.styles';
+import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
+import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
 
 const Heading = styled(Text)`
   font-size: 20px;
@@ -17,40 +19,107 @@ export const RulesetChanges = ({
 }: {
   merchandisingRules: MerchandisingRules;
   onChangePosition: ({ isPinned, newPosition }: ChangePositionTypes) => void;
-}) => (
-  <>
-    <Heading as="h2" isStrong={true}>
-      Pinned Products ({merchandisingRules.pinnedProducts.length})
-    </Heading>
-
-    <Layout>
-      {merchandisingRules.pinnedProducts.map((product, index) => {
-        return (
-          <ProductBox key={`product-${product.id}`}>
-            <Product
-              id={product.id}
-              productId={product.id}
-              brand="M&S Collection"
-              imageUrl={[
-                'SD_02_T32_9101_Y0_X_EC_0',
-                'SD_02_T32_9101_Y0_X_EC_0',
-                'SD_02_T32_9101_Y0_X_EC_90',
-                'SD_02_T32_9101_Y0_X_EC_90',
-              ]}
-              isInStock={true}
-              metadata={{ isPinned: true }}
-              price="10"
-              rating={4}
-              title="Product title"
-              url="https://www.example/com/foo/bar"
-              index={index}
-              pinnedProductsCount={merchandisingRules.pinnedProducts.length}
-              onChangePosition={onChangePosition}
-              totalProducts={merchandisingRules.pinnedProducts.length}
+}) => {
+  /* istanbul ignore next */
+  const countOfAttributeChanges =
+    (merchandisingRules.boosts?.numeric?.length ?? 0) +
+    (merchandisingRules.boosts?.alphaNumeric?.length ?? 0) +
+    (merchandisingRules.buries?.numeric?.length ?? 0) +
+    (merchandisingRules.buries?.alphaNumeric?.length ?? 0);
+  /* istanbul ignore next */
+  const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
+  /* istanbul ignore next */
+  const alphaNumericBoost = merchandisingRules.boosts?.alphaNumeric ?? [];
+  /* istanbul ignore next */
+  const numericBury = merchandisingRules.buries?.numeric ?? [];
+  /* istanbul ignore next */
+  const alphaNumericBuries = merchandisingRules.buries?.alphaNumeric ?? [];
+  return (
+    <>
+      <Heading as="h2" isStrong={true}>
+        Attribute-level changes ({countOfAttributeChanges})
+      </Heading>
+      <Layout>
+        {numericBoosts.map(({ field, weight }, index) => {
+          return (
+            <NumericAttribute
+              key={`boost-numeric-${index}`}
+              name={field}
+              operation="boost"
+              weight={weight}
             />
-          </ProductBox>
-        );
-      })}
-    </Layout>
-  </>
-);
+          );
+        })}
+      </Layout>
+      <Layout>
+        {alphaNumericBoost.map(({ values, weight }, index) => {
+          return (
+            <AlphanumericAttribute
+              key={`boost-alphanumeric-${index}`}
+              values={values}
+              operation="boost"
+              weight={weight}
+            />
+          );
+        })}
+      </Layout>
+      <Layout>
+        {numericBury.map(({ field, weight }, index) => {
+          return (
+            <NumericAttribute
+              key={`bury-numeric-${index}`}
+              name={field}
+              operation="bury"
+              weight={weight}
+            />
+          );
+        })}
+      </Layout>
+      <Layout>
+        {alphaNumericBuries.map(({ values, weight }, index) => {
+          return (
+            <AlphanumericAttribute
+              key={`bury-alphanumeric-${index}`}
+              values={values}
+              operation="bury"
+              weight={weight}
+            />
+          );
+        })}
+      </Layout>
+      <Heading as="h2" isStrong={true}>
+        Pinned Products ({merchandisingRules.pinnedProducts.length})
+      </Heading>
+
+      <Layout>
+        {merchandisingRules.pinnedProducts.map((product, index) => {
+          return (
+            <ProductBox key={`product-${product.id}`}>
+              <Product
+                id={product.id}
+                productId={product.id}
+                brand="M&S Collection"
+                imageUrl={[
+                  'SD_02_T32_9101_Y0_X_EC_0',
+                  'SD_02_T32_9101_Y0_X_EC_0',
+                  'SD_02_T32_9101_Y0_X_EC_90',
+                  'SD_02_T32_9101_Y0_X_EC_90',
+                ]}
+                isInStock={true}
+                metadata={{ isPinned: true }}
+                price="10"
+                rating={4}
+                title="Product title"
+                url="https://www.example/com/foo/bar"
+                index={index}
+                pinnedProductsCount={merchandisingRules.pinnedProducts.length}
+                onChangePosition={onChangePosition}
+                totalProducts={merchandisingRules.pinnedProducts.length}
+              />
+            </ProductBox>
+          );
+        })}
+      </Layout>
+    </>
+  );
+};

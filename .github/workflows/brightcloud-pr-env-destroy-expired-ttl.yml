@@ -11,8 +11,7 @@ permissions:
 
 on:
   schedule:
-    # Runs "every quarter hour"
-    - cron: '*/15 * * * *'
+    - cron: '0 1 * * *'
 jobs:  
   check-vars:
     runs-on: ubuntu-latest

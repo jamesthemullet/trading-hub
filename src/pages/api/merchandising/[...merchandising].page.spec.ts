@@ -9,6 +9,7 @@ import type { MerchandisingEnvironment } from './[...merchandising].page';
 import proxy from './[...merchandising].page';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 import { createMockNextApiResponse } from '@/test/create-mock-next-api-response';
+import { boostMock, buriesMock } from './mocks';
 jest.mock('next-auth/jwt', () => ({
   getToken: jest.fn(),
 }));
@@ -53,6 +54,7 @@ const responses: Response[][] = [
   [{ status: 200, body: { hello: 'world', products: [] } }],
   [{ status: 500, body: { hello: 'error' }, envSettings: {} }],
   [{ status: 500, body: { hello: 'error' } }],
+  [{ status: 200, body: { rules: {} } }],
 ];
 
 const performGet = async (url: string | undefined, response: Response) => {
@@ -221,6 +223,20 @@ describe('Merchandising api proxy', () => {
       expect(res.json).toHaveBeenCalledWith({
         products: [],
         hello: 'world',
+      });
+    });
+
+    it('when url is equal to /api/merchandising/ruleset/*', async () => {
+      const response = responses[3][0];
+      const res = await performGet('/api/merchandising/ruleset/1', response);
+
+      expect(httpGet).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        rules: {
+          boosts: boostMock,
+          buries: buriesMock,
+        },
       });
     });
 

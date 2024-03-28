@@ -3,6 +3,7 @@ import {
   formatMonthDayDateRange,
   formatMonthYearDateRange,
 } from './format-date-range';
+
 describe('format-date-range', () => {
   describe('formatMonthYearDateRange', () => {
     it('should return formatted date range', () => {

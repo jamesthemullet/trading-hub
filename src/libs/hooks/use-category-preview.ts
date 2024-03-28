@@ -26,8 +26,8 @@ export const useCategoryPreview = (
           {
             pinnedProducts: merchandisingRules.pinnedProducts,
             blockedProducts: merchandisingRules.blockedProducts,
-            boosts: merchandisingRules.boosts,
             buries: merchandisingRules.buries,
+            boosts: merchandisingRules.boosts,
           }
         );
 
@@ -46,7 +46,7 @@ export const useCategoryPreview = (
     };
 
     void asyncCall();
-  }, [categoryId, shouldRefetch]);
+  }, [categoryId, shouldRefetch, merchandisingRules]);
 
   return {
     categoryProducts,

@@ -150,7 +150,7 @@ describe('Ruleset', () => {
     jest.mocked(useCategoryPreview).mockReturnValue({
       categoryProducts: [
         mockProduct,
-        { ...mockProduct, id: 'product2', productId: 'product2' },
+        { ...mockProduct, id: 'product2', productId: 'productId2' },
       ],
       categoryFacets: [],
       error: '',
@@ -424,6 +424,7 @@ describe('Ruleset', () => {
       categoryProducts: [
         {
           id: 'product-id-1',
+          productId: 'product-id-1',
           title: productSearchTitle,
           imageUrl: ['example1.jpg'],
           brand: product1Brand,

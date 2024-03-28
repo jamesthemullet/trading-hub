@@ -73,3 +73,5 @@ export const RenderSvg = forwardRef<HTMLSpanElement, SvgProps>((props, ref) => {
     />
   );
 });
+
+RenderSvg.displayName = 'RenderSvg';

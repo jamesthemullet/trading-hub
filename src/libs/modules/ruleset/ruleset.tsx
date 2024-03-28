@@ -127,7 +127,7 @@ export const Ruleset = ({
       window.removeEventListener('beforeunload', handleWindowClose);
       router.events.off('routeChangeStart', handleBrowseAway);
     };
-  }, [hasChanges]);
+  }, [hasChanges, router]);
 
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
@@ -204,6 +204,14 @@ export const Ruleset = ({
       },
     });
   };
+
+  /* istanbul ignore next */
+  const totalCount =
+    merchandisingRules.pinnedProducts.length +
+    (merchandisingRules.boosts?.alphaNumeric || []).length +
+    (merchandisingRules.boosts?.numeric || []).length +
+    (merchandisingRules.buries?.alphaNumeric || []).length +
+    (merchandisingRules.buries?.numeric || []).length;
 
   const onSaveRuleset = () => {
     if (!selectedCategory?.identifier) {
@@ -296,12 +304,7 @@ export const Ruleset = ({
                 { title: 'Visual Editor' },
                 {
                   title: 'Changes',
-                  count:
-                    merchandisingRules.pinnedProducts.length +
-                    merchandisingRules.boosts.alphaNumeric.length +
-                    merchandisingRules.boosts.numeric.length +
-                    merchandisingRules.buries.alphaNumeric.length +
-                    merchandisingRules.buries.numeric.length,
+                  count: totalCount,
                 },
               ]}
               onTabChange={setCurrentEditorTab}

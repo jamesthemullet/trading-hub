@@ -44,6 +44,7 @@ export const ProductDetails = ({
       <ProductCard>
         <img
           src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
+          alt=""
         />
       </ProductCard>
       <ProductInfo aria-label="Product details">

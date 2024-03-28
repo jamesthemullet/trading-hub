@@ -10,6 +10,9 @@ import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { useAttributes } from '@/libs/hooks';
 import { AttributesResponse } from '@/libs/api';
 import { Search } from '../search/search';
+import { Dropdown, DropdownOption } from '../dropdown/dropdown';
+import { NumericAttribute } from './numeric-attribute';
+import { AlphanumericAttribute } from './alphanumeric-attribute';
 
 const MODAL_WIDTH = 435;
 
@@ -140,88 +143,35 @@ const ModalFooter = styled.div`
   justify-content: end;
 `;
 
-const AttributeWrapper = styled.div`
-  border: solid 1px #000;
-`;
-
-const AttributeHeading = styled.div`
-  padding: ${spacing(1)};
-  background: #fff;
-`;
-
-const AttributeRow = styled.div`
-  padding: ${spacing(1)};
-  border-top: solid 1px #000;
-  background-color: ${color.backgroundGrey};
-`;
-
-const AttributeValue = styled.label`
-  background-color: ${color.backgroundGrey};
-  border-radius: 5px;
-  padding: ${spacing(1)};
-  margin: ${spacing(1)};
-  display: inline-block;
-`;
-
 const Filters = styled.div`
   display: flex;
 `;
 
-const NumericAttribute = ({
-  name,
-  operation,
-}: {
-  name: string;
-  operation: string;
-}) => (
-  <AttributeWrapper aria-label="Selected Attribute">
-    <AttributeHeading>
-      <Label isStrong>{name}</Label>
-    </AttributeHeading>
-    <AttributeRow>
-      <Text>
-        Operation{' '}
-        <img
-          src="/trading-hub/asset/boost.svg"
-          style={{ marginBottom: '-4px' }}
-        />{' '}
-        {operation}
-      </Text>
-    </AttributeRow>
-    <AttributeRow>
-      <Text>Strength 1.0%</Text>
-    </AttributeRow>
-  </AttributeWrapper>
-);
+const DropdownWrapper = styled.div`
+  margin-top: ${spacing(2)};
+  margin-right: ${spacing(1)};
+  margin-left: -${spacing(1)};
+  min-width: 133px;
 
-const AlphanumericAttribute = ({
-  values,
-  operation,
-}: {
-  values: string[];
-  operation: string;
-}) => (
-  <AttributeWrapper aria-label="Selected Attribute">
-    <AttributeHeading>
-      {values.map((value) => (
-        <AttributeValue key={value}>{value}</AttributeValue>
-      ))}
-    </AttributeHeading>
-    <AttributeRow style={{ padding: spacing(1) }}>
-      <Text>
-        Operation{' '}
-        <img
-          src="/trading-hub/asset/boost.svg"
-          style={{ marginBottom: '-4px' }}
-        />{' '}
-        {operation}
-      </Text>
-    </AttributeRow>
-    <AttributeRow>
-      <Text>Strength 1.0%</Text>
-    </AttributeRow>
-  </AttributeWrapper>
-);
+  button {
+    &[aria-haspopup='listbox'] {
+      background: none;
+      border: solid 1px #000;
+      border-radius: 5px;
+      text-transform: capitalize;
+      height: 40px;
+    }
+    span {
+      font-size: 16px;
+    }
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    margin-right: ${spacing(1)};
+  }
+`;
 
 const SectionLabel = ({
   number,
@@ -260,6 +210,7 @@ const getAlphanumericAttributes = (
 
 export const RulesetAttributes = ({ category }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
   const { attributes } = useAttributes(category);
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
@@ -270,7 +221,9 @@ export const RulesetAttributes = ({ category }: Props) => {
   const [selectedAttributeValues, setSelectedAttributeValues] = useState<
     string[]
   >([]);
-  const [selectedOperation] = useState<'boost' | 'bury'>('boost');
+  const [selectedOperation, setSelectedOperation] = useState<'boost' | 'bury'>(
+    'boost'
+  );
   const [selectedAttributeType, setSelectedAttributeType] = useState<
     'numeric' | 'alphanumeric'
   >();
@@ -444,7 +397,40 @@ export const RulesetAttributes = ({ category }: Props) => {
                       Attributes are aggregated from the account level
                     </Text>
                     <Filters>
-                      <p>TODO: dropdown</p>
+                      <DropdownWrapper>
+                        <Dropdown
+                          label={`${selectedOperation}`}
+                          icon={selectedOperation}
+                          isOpen={isOperationDropdownOpen}
+                          onOpen={() => setIsOperationDropdownOpen(true)}
+                          onClose={
+                            // istanbul ignore next
+                            () => setIsOperationDropdownOpen(false)
+                          }
+                        >
+                          <DropdownOption
+                            onClick={
+                              // istanbul ignore next
+                              () => {
+                                setIsOperationDropdownOpen(false);
+                                setSelectedOperation('boost');
+                              }
+                            }
+                          >
+                            <img src="/trading-hub/asset/boost.svg" />
+                            Boost
+                          </DropdownOption>
+                          <DropdownOption
+                            onClick={() => {
+                              setIsOperationDropdownOpen(false);
+                              setSelectedOperation('bury');
+                            }}
+                          >
+                            <img src="/trading-hub/asset/bury.svg" />
+                            Bury
+                          </DropdownOption>
+                        </Dropdown>
+                      </DropdownWrapper>
                       <SearchWrapper>
                         <label htmlFor="filerAlphanumericAttributes">
                           Filter alphanumeric attributes
