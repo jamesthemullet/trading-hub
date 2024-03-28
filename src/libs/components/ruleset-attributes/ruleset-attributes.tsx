@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import { Modal } from '@mantine/core';
+const pluralize = require('pluralize');
+
 import { Button } from '../button/button';
 import { spacing } from '../utils/spacing';
 import { useState } from 'react';
@@ -14,7 +16,6 @@ import { Dropdown, DropdownOption } from '../dropdown/dropdown';
 import { NumericAttribute } from './numeric-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { AttributeCount, AttributesList } from './ruleset-attributes.styles';
-import { pluralise } from '../utils/pluralise';
 
 const MODAL_WIDTH = 435;
 
@@ -255,7 +256,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
         <AttributesList aria-label="Ruleset attributes">
           <AttributeCount>
             {countOfAttributeChanges} attribute{' '}
-            {pluralise('rule', countOfAttributeChanges)}
+            {pluralize('rule', countOfAttributeChanges)}
           </AttributeCount>
           {(!!alphaNumericBoost.length || !!alphaNumericBuries.length) && (
             <Label isStrong withMargin>
