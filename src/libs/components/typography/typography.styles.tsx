@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { spacing } from '../utils/spacing';
 
 export const fonts = {
   regular: 'mnsLondonRegular, Helvetica, Arial, sans-serif',
@@ -51,10 +52,11 @@ export const Text = styled.p<{ isStrong?: boolean }>`
   line-height: 1.5714;
 `;
 
-export const Label = styled.p<{ isStrong?: boolean }>`
+export const Label = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
   ${commonStyles}
   font-family: ${fonts.regular};
   font-weight: ${({ isStrong }) => (isStrong ? 600 : 'normal')};
   font-size: 16px;
   line-height: 1.5714;
+  margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
 `;
