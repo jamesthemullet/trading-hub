@@ -99,6 +99,7 @@ describe('Preview', () => {
         { ...mockProduct, productId: 'product2' },
       ],
       categoryFacets: mockFacets,
+      merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
       refetchRuleSetPreview: jest.fn(),
     });

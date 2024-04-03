@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import type { Facet, MerchandisingRules, Product } from '@/libs/api';
+import type {
+  Facet,
+  MerchandisingRules,
+  MerchandisingRulesWithInfo,
+  Product,
+} from '@/libs/api';
 import { merchandising } from '@/libs/api';
 
 export const useCategoryPreview = (
@@ -11,6 +16,8 @@ export const useCategoryPreview = (
   const [categoryFacets, setCategoryFacets] = useState<Facet[]>([]);
   const [error, setError] = useState('');
   const [shouldRefetch, refetch] = useState({});
+  const [merchandisingRulesWithInfo, setMerchandisingRulesWithInfo] =
+    useState<MerchandisingRulesWithInfo>();
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -34,6 +41,7 @@ export const useCategoryPreview = (
         const previewData = categoryPreview.data;
 
         setCategoryProducts(previewData.products);
+        setMerchandisingRulesWithInfo(previewData.rules);
 
         if (previewData.facets.facets) {
           setCategoryFacets(previewData.facets.facets);
@@ -51,6 +59,7 @@ export const useCategoryPreview = (
   return {
     categoryProducts,
     categoryFacets,
+    merchandisingRulesWithInfo,
     error,
     refetchRuleSetPreview: () => refetch({}),
   };

@@ -473,6 +473,8 @@ components:
           $ref: '#/components/schemas/BoostsBuriesWithInfo'
         buries:
           $ref: '#/components/schemas/BoostsBuriesWithInfo'
+      required:
+        - pinnedProducts
     MerchandisingRules:
       type: object
       properties:

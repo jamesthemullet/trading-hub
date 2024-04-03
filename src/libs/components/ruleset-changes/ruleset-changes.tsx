@@ -7,6 +7,7 @@ import { ChangePositionTypes } from '../../modules/ruleset/ruleset';
 import { Text } from '../typography/typography.styles';
 import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
+import { useCategoryPreview } from '../../hooks';
 
 const Heading = styled(Text)`
   font-size: 20px;
@@ -14,9 +15,11 @@ const Heading = styled(Text)`
 `;
 
 export const RulesetChanges = ({
+  category,
   merchandisingRules,
   onChangePosition,
 }: {
+  category?: string;
   merchandisingRules: MerchandisingRules;
   onChangePosition: ({ isPinned, newPosition }: ChangePositionTypes) => void;
 }) => {
@@ -34,6 +37,12 @@ export const RulesetChanges = ({
   const numericBury = merchandisingRules.buries?.numeric ?? [];
   /* istanbul ignore next */
   const alphaNumericBuries = merchandisingRules.buries?.alphaNumeric ?? [];
+
+  const { merchandisingRulesWithInfo } = useCategoryPreview(
+    category,
+    merchandisingRules
+  );
+
   return (
     <>
       <Heading as="h2" isStrong={true}>
@@ -91,35 +100,32 @@ export const RulesetChanges = ({
         Pinned Products ({merchandisingRules.pinnedProducts.length})
       </Heading>
 
-      <Layout>
-        {merchandisingRules.pinnedProducts.map((product, index) => {
-          return (
-            <ProductBox key={`product-${product.id}`}>
-              <Product
-                id={product.id}
-                productId={product.id}
-                brand="M&S Collection"
-                imageUrl={[
-                  'SD_02_T32_9101_Y0_X_EC_0',
-                  'SD_02_T32_9101_Y0_X_EC_0',
-                  'SD_02_T32_9101_Y0_X_EC_90',
-                  'SD_02_T32_9101_Y0_X_EC_90',
-                ]}
-                isInStock={true}
-                metadata={{ isPinned: true }}
-                price="10"
-                rating={4}
-                title="Product title"
-                url="https://www.example/com/foo/bar"
-                index={index}
-                pinnedProductsCount={merchandisingRules.pinnedProducts.length}
-                onChangePosition={onChangePosition}
-                totalProducts={merchandisingRules.pinnedProducts.length}
-              />
-            </ProductBox>
-          );
-        })}
-      </Layout>
+      {merchandisingRulesWithInfo && (
+        <Layout>
+          {merchandisingRulesWithInfo.pinnedProducts.map((product, index) => {
+            return (
+              <ProductBox key={`product-${product.id}`}>
+                <Product
+                  id={product.id}
+                  productId={product.id}
+                  brand={product.brand}
+                  imageUrl={product.imageUrl}
+                  isInStock={product.isInStock}
+                  metadata={product.metadata}
+                  price={product.price}
+                  rating={product.rating}
+                  title={product.title}
+                  url={product.url}
+                  index={index}
+                  pinnedProductsCount={merchandisingRules.pinnedProducts.length}
+                  onChangePosition={onChangePosition}
+                  totalProducts={merchandisingRules.pinnedProducts.length}
+                />
+              </ProductBox>
+            );
+          })}
+        </Layout>
+      )}
     </>
   );
 };
