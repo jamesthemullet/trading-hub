@@ -364,8 +364,10 @@ describe('Ruleset', () => {
 
     expect(screen.getByText('3 results')).toBeVisible();
 
-    await user.clear(screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT));
-    expect(screen.queryByText('3 results')).not.toBeInTheDocument(); 
+    await user.clear(
+      screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
+    );
+    expect(screen.queryByText('3 results')).not.toBeInTheDocument();
   });
 
   it('does not search for products when no category selected', async () => {
