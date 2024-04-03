@@ -70,3 +70,7 @@ export const extraSmallTypographyStyles = ({
   font-size: 1rem;
   line-height: 1.5;
 `;
+
+export const boxShadow = () => css`
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+`;

@@ -1,8 +1,43 @@
 import { render, screen } from '@testing-library/react';
 
 import { RulesetChanges } from './ruleset-changes';
+import { useCategoryPreview } from '../../hooks';
+
+jest.mock('../../hooks/use-category-preview', () => ({
+  useCategoryPreview: jest.fn(),
+}));
+
+const mockMerchandisingRules = {
+  pinnedProducts: [
+    {
+      id: 'abc',
+      productId: 'productId',
+      title: 'productTitle',
+      imageUrl: ['example.jpg'],
+      brand: 'productBrand',
+      metadata: { isPinned: false },
+      isInStock: true,
+      price: 'productPrice',
+      rating: 4.5,
+      url: '',
+    },
+  ],
+  blockedProducts: [],
+  boosts: { numeric: [], alphaNumeric: [], product: [] },
+  buries: { numeric: [], alphaNumeric: [], product: [] },
+};
 
 describe('RulesetChanges', () => {
+  beforeEach(() => {
+    jest.mocked(useCategoryPreview).mockReturnValue({
+      categoryProducts: [],
+      categoryFacets: [],
+      merchandisingRulesWithInfo: mockMerchandisingRules,
+      error: '',
+      refetchRuleSetPreview: jest.fn(),
+    });
+  });
+
   it('should render correctly', () => {
     render(
       <RulesetChanges
@@ -72,6 +107,6 @@ describe('RulesetChanges', () => {
       />
     );
 
-    expect(screen.getByText('ID: abc')).toBeInTheDocument();
+    expect(screen.getByText('ID: productId')).toBeInTheDocument();
   });
 });

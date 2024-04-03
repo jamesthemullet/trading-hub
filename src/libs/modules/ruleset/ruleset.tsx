@@ -330,6 +330,7 @@ export const Ruleset = ({
           {currentEditorTab === 1 && (
             <RulesetChanges
               merchandisingRules={merchandisingRules}
+              category={selectedCategory.identifier}
               onChangePosition={onChangePosition}
             />
           )}

@@ -31,7 +31,7 @@ const openActionsMenu = (screen: Screen) => {
 };
 
 const openPinningMenu = (screen: Screen) => {
-  const pinMenu = screen.getByText('Pin in position#');
+  const pinMenu = screen.getByText('Pin in position');
 
   act(() => {
     pinMenu.click();
@@ -121,8 +121,33 @@ describe('Product', () => {
   });
 
   it('should not allow pinning in a non sequential order', async () => {
-    const expectedError = 'Please choose a position between 1 and 3';
-    render(<Product {...productProps} />);
+    const expectedError = 'Please choose a position between 1 and 2';
+    render(<Product {...productProps} metadata={{ isPinned: true }} />);
+
+    openActionsMenu(screen);
+
+    const pinMenu = screen.getByText('Edit position');
+
+    act(() => {
+      pinMenu.click();
+    });
+
+    const input = screen.getByPlaceholderText('i.e. 3');
+    const confirmButton = screen.getByText('Confirm');
+
+    await userEvent.type(input, '5');
+
+    act(() => {
+      confirmButton.click();
+    });
+
+    expect(screen.getByText(expectedError)).toBeInTheDocument();
+  });
+
+  it('should only allow pinning from position 1', async () => {
+    const expectedError =
+      'Please choose a position sequentially starting from 1';
+    render(<Product {...productProps} pinnedProductsCount={0} />);
 
     openActionsMenu(screen);
 
@@ -189,7 +214,7 @@ describe('Product', () => {
 
     openActionsMenu(screen);
 
-    const unboostButton = screen.getByText('Un-boost');
+    const unboostButton = screen.getByText('Restore');
 
     act(() => {
       unboostButton.click();
