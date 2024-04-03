@@ -118,7 +118,10 @@ export const Product = ({
 
     const diff = isPinned ? 0 : 1;
 
-    if (value && parseInt(value) > pinnedProductsCount + diff) {
+    if (
+      (value && parseInt(value) > pinnedProductsCount + diff) ||
+      (value && parseInt(value) < 1)
+    ) {
       if (pinnedProductsCount === 0) {
         setError(`Please choose a position sequentially starting from 1`);
       } else {
@@ -223,8 +226,9 @@ export const Product = ({
                   <LockInput
                     placeholder="i.e. 3"
                     onChange={onInputChange}
-                    defaultValue={positionToLockTo}
+                    defaultValue={positionToLockTo || ''}
                     type="number"
+                    autoFocus
                     hasError={!!error.length}
                   />
                   {error && <ErrorText>{error}</ErrorText>}
@@ -235,7 +239,7 @@ export const Product = ({
                     <Button
                       theme="primary"
                       type="submit"
-                      isDisabled={!positionToLockTo}
+                      isDisabled={!!error || !positionToLockTo}
                     >
                       Confirm
                     </Button>

@@ -96,36 +96,43 @@ export const RulesetChanges = ({
           );
         })}
       </Layout>
-      <Heading as="h2" isStrong={true}>
-        Pinned Products ({merchandisingRules.pinnedProducts.length})
-      </Heading>
+      {merchandisingRulesWithInfo &&
+        merchandisingRulesWithInfo.pinnedProducts && (
+          <>
+            <Heading as="h2" isStrong={true}>
+              Pinned Products ({merchandisingRules.pinnedProducts.length})
+            </Heading>
 
-      {merchandisingRulesWithInfo && (
-        <Layout>
-          {merchandisingRulesWithInfo.pinnedProducts.map((product, index) => {
-            return (
-              <ProductBox key={`product-${product.id}`}>
-                <Product
-                  id={product.id}
-                  productId={product.id}
-                  brand={product.brand}
-                  imageUrl={product.imageUrl}
-                  isInStock={product.isInStock}
-                  metadata={product.metadata}
-                  price={product.price}
-                  rating={product.rating}
-                  title={product.title}
-                  url={product.url}
-                  index={index}
-                  pinnedProductsCount={merchandisingRules.pinnedProducts.length}
-                  onChangePosition={onChangePosition}
-                  totalProducts={merchandisingRules.pinnedProducts.length}
-                />
-              </ProductBox>
-            );
-          })}
-        </Layout>
-      )}
+            <Layout>
+              {merchandisingRulesWithInfo.pinnedProducts.map(
+                (product, index) => {
+                  return (
+                    <ProductBox key={`product-${product.id}`}>
+                      <Product
+                        id={product.id}
+                        productId={product.productId}
+                        brand={product.brand}
+                        imageUrl={product.imageUrl}
+                        isInStock={product.isInStock}
+                        metadata={product.metadata}
+                        price={product.price}
+                        rating={product.rating}
+                        title={product.title}
+                        url={product.url}
+                        index={index}
+                        pinnedProductsCount={
+                          merchandisingRules.pinnedProducts.length
+                        }
+                        onChangePosition={onChangePosition}
+                        totalProducts={merchandisingRules.pinnedProducts.length}
+                      />
+                    </ProductBox>
+                  );
+                }
+              )}
+            </Layout>
+          </>
+        )}
     </>
   );
 };

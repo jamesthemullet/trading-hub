@@ -107,6 +107,6 @@ describe('RulesetChanges', () => {
       />
     );
 
-    expect(screen.getByText('ID: abc')).toBeInTheDocument();
+    expect(screen.getByText('ID: productId')).toBeInTheDocument();
   });
 });
