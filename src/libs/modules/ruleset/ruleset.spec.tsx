@@ -330,7 +330,7 @@ describe('Ruleset', () => {
     expect(mockSave).not.toHaveBeenCalled();
   });
 
-  it('searches for products', async () => {
+  it('should search for products when the user enters a query, and clear products when the user clears the query', async () => {
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
@@ -363,6 +363,9 @@ describe('Ruleset', () => {
     );
 
     expect(screen.getByText('3 results')).toBeVisible();
+
+    await user.clear(screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT));
+    expect(screen.queryByText('3 results')).not.toBeInTheDocument(); 
   });
 
   it('does not search for products when no category selected', async () => {
