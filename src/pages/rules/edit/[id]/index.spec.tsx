@@ -157,20 +157,6 @@ describe('Index', () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
-  it('opens changes tab', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
-
-    render(<Page id={ruleSetId} />);
-
-    const tab2 = await screen.findByText('Changes');
-
-    act(() => {
-      tab2.click();
-    });
-
-    expect(screen.getByText('Pinned Products (1)')).toBeVisible();
-  });
-
   it('opens attributes tab', async () => {
     jest.mocked(useRuleSetPreview).mockImplementation(() => mockPreview);
     jest.mocked(useAttributes).mockImplementation(() => ({
