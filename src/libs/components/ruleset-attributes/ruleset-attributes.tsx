@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import { Modal } from '@mantine/core';
+const pluralize = require('pluralize');
+
 import { Button } from '../button/button';
 import { spacing } from '../utils/spacing';
 import { useState } from 'react';
@@ -8,8 +10,12 @@ import { Label, Text } from '../typography/typography.styles';
 import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { useAttributes } from '@/libs/hooks';
-import { AttributesResponse } from '@/libs/api';
+import { AttributesResponse, MerchandisingRules } from '@/libs/api';
 import { Search } from '../search/search';
+import { Dropdown, DropdownOption } from '../dropdown/dropdown';
+import { NumericAttribute } from './numeric-attribute';
+import { AlphanumericAttribute } from './alphanumeric-attribute';
+import { AttributeCount, AttributesList } from './ruleset-attributes.styles';
 
 const MODAL_WIDTH = 435;
 
@@ -140,88 +146,35 @@ const ModalFooter = styled.div`
   justify-content: end;
 `;
 
-const AttributeWrapper = styled.div`
-  border: solid 1px #000;
-`;
-
-const AttributeHeading = styled.div`
-  padding: ${spacing(1)};
-  background: #fff;
-`;
-
-const AttributeRow = styled.div`
-  padding: ${spacing(1)};
-  border-top: solid 1px #000;
-  background-color: ${color.backgroundGrey};
-`;
-
-const AttributeValue = styled.label`
-  background-color: ${color.backgroundGrey};
-  border-radius: 5px;
-  padding: ${spacing(1)};
-  margin: ${spacing(1)};
-  display: inline-block;
-`;
-
 const Filters = styled.div`
   display: flex;
 `;
 
-const NumericAttribute = ({
-  name,
-  operation,
-}: {
-  name: string;
-  operation: string;
-}) => (
-  <AttributeWrapper aria-label="Selected Attribute">
-    <AttributeHeading>
-      <Label isStrong>{name}</Label>
-    </AttributeHeading>
-    <AttributeRow>
-      <Text>
-        Operation{' '}
-        <img
-          src="/trading-hub/asset/boost.svg"
-          style={{ marginBottom: '-4px' }}
-        />{' '}
-        {operation}
-      </Text>
-    </AttributeRow>
-    <AttributeRow>
-      <Text>Strength 1.0%</Text>
-    </AttributeRow>
-  </AttributeWrapper>
-);
+const DropdownWrapper = styled.div`
+  margin-top: ${spacing(2)};
+  margin-right: ${spacing(1)};
+  margin-left: -${spacing(1)};
+  min-width: 133px;
 
-const AlphanumericAttribute = ({
-  values,
-  operation,
-}: {
-  values: string[];
-  operation: string;
-}) => (
-  <AttributeWrapper aria-label="Selected Attribute">
-    <AttributeHeading>
-      {values.map((value) => (
-        <AttributeValue key={value}>{value}</AttributeValue>
-      ))}
-    </AttributeHeading>
-    <AttributeRow style={{ padding: spacing(1) }}>
-      <Text>
-        Operation{' '}
-        <img
-          src="/trading-hub/asset/boost.svg"
-          style={{ marginBottom: '-4px' }}
-        />{' '}
-        {operation}
-      </Text>
-    </AttributeRow>
-    <AttributeRow>
-      <Text>Strength 1.0%</Text>
-    </AttributeRow>
-  </AttributeWrapper>
-);
+  button {
+    &[aria-haspopup='listbox'] {
+      background: none;
+      border: solid 1px #000;
+      border-radius: 5px;
+      text-transform: capitalize;
+      height: 40px;
+    }
+    span {
+      font-size: 16px;
+    }
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    margin-right: ${spacing(1)};
+  }
+`;
 
 const SectionLabel = ({
   number,
@@ -246,6 +199,7 @@ const SectionLabel = ({
 
 export type Props = {
   category?: string;
+  merchandisingRules: MerchandisingRules;
 };
 
 const getNumericAttributes = (attributes: AttributesResponse['attributes']) => {
@@ -258,8 +212,9 @@ const getAlphanumericAttributes = (
   return attributes.filter((attribute) => attribute.type === 'alphanumeric');
 };
 
-export const RulesetAttributes = ({ category }: Props) => {
+export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
   const { attributes } = useAttributes(category);
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
@@ -270,10 +225,26 @@ export const RulesetAttributes = ({ category }: Props) => {
   const [selectedAttributeValues, setSelectedAttributeValues] = useState<
     string[]
   >([]);
-  const [selectedOperation] = useState<'boost' | 'bury'>('boost');
+  const [selectedOperation, setSelectedOperation] = useState<'boost' | 'bury'>(
+    'boost'
+  );
   const [selectedAttributeType, setSelectedAttributeType] = useState<
     'numeric' | 'alphanumeric'
   >();
+  /* istanbul ignore next */
+  const countOfAttributeChanges =
+    (merchandisingRules.boosts?.numeric?.length ?? 0) +
+    (merchandisingRules.boosts?.alphaNumeric?.length ?? 0) +
+    (merchandisingRules.buries?.numeric?.length ?? 0) +
+    (merchandisingRules.buries?.alphaNumeric?.length ?? 0);
+  /* istanbul ignore next */
+  const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
+  /* istanbul ignore next */
+  const alphaNumericBoost = merchandisingRules.boosts?.alphaNumeric ?? [];
+  /* istanbul ignore next */
+  const numericBury = merchandisingRules.buries?.numeric ?? [];
+  /* istanbul ignore next */
+  const alphaNumericBuries = merchandisingRules.buries?.alphaNumeric ?? [];
 
   return (
     <Wrapper>
@@ -281,6 +252,66 @@ export const RulesetAttributes = ({ category }: Props) => {
         <Icon alt="" src="/trading-hub/asset/icon-plus-simple.svg" />
         Create new attribute rule
       </CreateNew>
+      {countOfAttributeChanges > 0 && (
+        <AttributesList aria-label="Ruleset attributes">
+          <AttributeCount>
+            {countOfAttributeChanges} attribute{' '}
+            {pluralize('rule', countOfAttributeChanges)}
+          </AttributeCount>
+          {(!!alphaNumericBoost.length || !!alphaNumericBuries.length) && (
+            <Label isStrong withMargin>
+              Product description attribute rules
+            </Label>
+          )}
+          {!!alphaNumericBoost.length &&
+            alphaNumericBoost.map((attribute) => (
+              <AlphanumericAttribute
+                key={attribute.values[0]}
+                isEditable
+                values={attribute.values}
+                operation="boost"
+                weight={attribute.weight}
+              />
+            ))}
+
+          {!!alphaNumericBuries.length &&
+            alphaNumericBuries.map((attribute) => (
+              <AlphanumericAttribute
+                key={attribute.values[0]}
+                isEditable
+                values={attribute.values}
+                operation="bury"
+                weight={attribute.weight}
+              />
+            ))}
+
+          {(!!numericBoosts.length || !!numericBury.length) && (
+            <Label isStrong withMargin>
+              Numeric attribute rules
+            </Label>
+          )}
+          {!!numericBoosts.length &&
+            numericBoosts.map((attribute) => (
+              <NumericAttribute
+                key={attribute.field}
+                isEditable
+                operation="boost"
+                name={attribute.field}
+                weight={attribute.weight}
+              />
+            ))}
+          {!!numericBury.length &&
+            numericBury.map((attribute) => (
+              <NumericAttribute
+                key={attribute.field}
+                isEditable
+                operation="bury"
+                name={attribute.field}
+                weight={attribute.weight}
+              />
+            ))}
+        </AttributesList>
+      )}
       <Modal.Root
         opened={isModalOpen}
         onClose={
@@ -300,6 +331,7 @@ export const RulesetAttributes = ({ category }: Props) => {
                   zIndex: 1,
                   padding: `${spacing(10)} ${spacing(2)} ${spacing(2)}`,
                 }}
+                aria-label="Selected Attribute"
               >
                 {selectedAttributeType === 'numeric' &&
                   !!selectedAttributeValues.length && (
@@ -444,7 +476,40 @@ export const RulesetAttributes = ({ category }: Props) => {
                       Attributes are aggregated from the account level
                     </Text>
                     <Filters>
-                      <p>TODO: dropdown</p>
+                      <DropdownWrapper>
+                        <Dropdown
+                          label={`${selectedOperation}`}
+                          icon={selectedOperation}
+                          isOpen={isOperationDropdownOpen}
+                          onOpen={() => setIsOperationDropdownOpen(true)}
+                          onClose={
+                            // istanbul ignore next
+                            () => setIsOperationDropdownOpen(false)
+                          }
+                        >
+                          <DropdownOption
+                            onClick={
+                              // istanbul ignore next
+                              () => {
+                                setIsOperationDropdownOpen(false);
+                                setSelectedOperation('boost');
+                              }
+                            }
+                          >
+                            <img src="/trading-hub/asset/boost.svg" />
+                            Boost
+                          </DropdownOption>
+                          <DropdownOption
+                            onClick={() => {
+                              setIsOperationDropdownOpen(false);
+                              setSelectedOperation('bury');
+                            }}
+                          >
+                            <img src="/trading-hub/asset/bury.svg" />
+                            Bury
+                          </DropdownOption>
+                        </Dropdown>
+                      </DropdownWrapper>
                       <SearchWrapper>
                         <label htmlFor="filerAlphanumericAttributes">
                           Filter alphanumeric attributes
@@ -513,26 +578,29 @@ export const RulesetAttributes = ({ category }: Props) => {
                       />
                     </SearchWrapper>
                   </ModalSection>
-                  <Checkboxes
-                    onSelect={(isSelected, name) => {
-                      setSelectedAttributeType('alphanumeric');
-                      setSelectedAttributeValues(
-                        isSelected
-                          ? [...selectedAttributeValues, name]
-                          : selectedAttributeValues.filter((i) => i !== name)
-                      );
-                    }}
-                    values={alphanumericAttributeValues
-                      .filter((value) =>
-                        value
-                          .toLowerCase()
-                          .includes(alphanumbericFilterValue.toLowerCase())
-                      )
-                      .map((value) => ({
-                        name: value,
-                        isSelected: selectedAttributeValues.indexOf(value) > -1,
-                      }))}
-                  />
+                  <div aria-label="Selected attributes">
+                    <Checkboxes
+                      onSelect={(isSelected, name) => {
+                        setSelectedAttributeType('alphanumeric');
+                        setSelectedAttributeValues(
+                          isSelected
+                            ? [...selectedAttributeValues, name]
+                            : selectedAttributeValues.filter((i) => i !== name)
+                        );
+                      }}
+                      values={alphanumericAttributeValues
+                        .filter((value) =>
+                          value
+                            .toLowerCase()
+                            .includes(alphanumbericFilterValue.toLowerCase())
+                        )
+                        .map((value) => ({
+                          name: value,
+                          isSelected:
+                            selectedAttributeValues.indexOf(value) > -1,
+                        }))}
+                    />
+                  </div>
                 </ModalContent>
 
                 <ModalFooter>

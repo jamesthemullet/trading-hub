@@ -35,7 +35,7 @@ describe('Pagination', () => {
       nextPageButton.click();
     });
 
-    expect(onClickCallback).toBeCalledWith(expect.anything(), 3);
+    expect(onClickCallback).toHaveBeenCalledWith(expect.anything(), 3);
 
     const prevPageButton = container.querySelector<HTMLButtonElement>(
       'button[name="prev-button"]'
@@ -49,6 +49,6 @@ describe('Pagination', () => {
       prevPageButton.click();
     });
 
-    expect(onClickCallback).toBeCalledWith(expect.anything(), 1);
+    expect(onClickCallback).toHaveBeenCalledWith(expect.anything(), 1);
   });
 });

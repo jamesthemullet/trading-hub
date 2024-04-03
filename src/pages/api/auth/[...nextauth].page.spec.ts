@@ -122,6 +122,7 @@ describe('...NextAuth', () => {
         },
       });
     });
+
     it('JWT callback should persist Azure AD Token when just token is provided but not expired', async () => {
       const mockAuthEnv = {
         clientId: 'clientId',

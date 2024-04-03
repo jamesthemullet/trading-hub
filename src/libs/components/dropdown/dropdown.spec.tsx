@@ -35,7 +35,7 @@ describe('Filter dropdown', () => {
     );
 
     await user.click(screen.getByRole('button'));
-    expect(defaultProps.onOpen).toBeCalled();
+    expect(defaultProps.onOpen).toHaveBeenCalled();
     rerender(
       <Dropdown {...defaultProps} isOpen>
         <div>Content</div>

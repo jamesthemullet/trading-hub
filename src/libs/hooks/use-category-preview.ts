@@ -23,7 +23,12 @@ export const useCategoryPreview = (
         const categoryPreview = await merchandising().categoryPreviewCreate(
           categoryId,
           { rows: 12, start: 0 },
-          { pinnedProducts: merchandisingRules.pinnedProducts }
+          {
+            pinnedProducts: merchandisingRules.pinnedProducts,
+            blockedProducts: merchandisingRules.blockedProducts,
+            buries: merchandisingRules.buries,
+            boosts: merchandisingRules.boosts,
+          }
         );
 
         const previewData = categoryPreview.data;
@@ -41,7 +46,7 @@ export const useCategoryPreview = (
     };
 
     void asyncCall();
-  }, [categoryId, shouldRefetch]);
+  }, [categoryId, shouldRefetch, merchandisingRules]);
 
   return {
     categoryProducts,

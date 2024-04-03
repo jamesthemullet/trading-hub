@@ -9,8 +9,48 @@ describe('RulesetChanges', () => {
         merchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-          boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] },
+          boosts: {
+            numeric: [
+              {
+                field: 'field',
+                weight: 1,
+              },
+            ],
+            alphaNumeric: [
+              {
+                field: 'field',
+                weight: 1,
+                values: ['value'],
+              },
+            ],
+            product: [
+              {
+                id: '1',
+                weight: 1,
+              },
+            ],
+          },
+          buries: {
+            numeric: [
+              {
+                field: 'field',
+                weight: 1,
+              },
+            ],
+            alphaNumeric: [
+              {
+                field: 'field',
+                weight: 1,
+                values: ['value'],
+              },
+            ],
+            product: [
+              {
+                id: '1',
+                weight: 1,
+              },
+            ],
+          },
         }}
         onChangePosition={jest.fn()}
       />

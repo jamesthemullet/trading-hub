@@ -56,7 +56,9 @@ describe('use-attributes', () => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();
   });
+
   afterEach(() => server.resetHandlers());
+
   afterAll(() => server.close());
 
   describe('useAttributes', () => {
