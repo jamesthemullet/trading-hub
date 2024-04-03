@@ -279,7 +279,13 @@ export const Ruleset = ({
             <ProductSearch
               onSearch={async (query) => {
                 /* istanbul ignore next */
-                if (!selectedCategory.identifier) return;
+                if (!selectedCategory.identifier) {
+                  return;
+                }
+                if (!query) {
+                  setSearchProducts([]);
+                  return;
+                }
                 const data = await handleGet({
                   categoryId: selectedCategory.identifier,
                   query,
