@@ -320,6 +320,115 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
+  '/merchandising/facet':
+    get:
+      summary: Get all facets
+      description: >-
+        Returns the facets for a category
+      parameters:
+        - in: query
+          name: categoryId
+          schema:
+            type: array
+            items:
+              type: string
+          required: true
+          description: When provided will only return facets relevant to these categories
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacetConfigWithId'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+    post:
+      summary: Create a Facet at the global level
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacetConfig'
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacetConfigWithId'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+  '/merchandising/facet/{facetId}':
+    get:
+      summary: Get facet config
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to retrieve
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacetConfigWithId'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+    put:
+      summary: Update a Facet at the global level
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacetConfig'
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacetConfigWithId'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+
 components:
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
@@ -327,6 +436,64 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    RuleSetFacetConfigWithId:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+          required:
+            - id
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+    RuleSetFacetConfig:
+      type: object
+      properties:
+        excludedValues:
+          type: array
+          items:
+            type: string
+          description: Values of this attribute that should not be displayed as filters to the customers
+        boosted:
+          type: array
+          items:
+            type: string
+          description: Array of values (in order) that should appear at the top of the list of filters. Un specified values will appear after these and be in order of most matching documents.
+    GlobalOnlyFacetConfig:
+      type: object
+      properties:
+        indexPropertyName:
+          type: string
+          description: The field of the indexed document
+        displayValue:
+          type: string
+          description: The value displayed to customers
+        merged:
+          type: array
+          items:
+            type: object
+            properties:
+              displayValue:
+                type: string
+              mergedValues:
+                type: array
+                items:
+                  type: string
+                description: The values (case insensitive) that will be mapped to be displayed as the `displayValue`
+          description: Array of objects, each of which describe a set of values that will be merged in to one when displayed to customers.
+    FacetConfig:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
+    FacetConfigWithId:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+          required:
+            - id
+        - $ref: '#/components/schemas/FacetConfig'
     RuleSets:
       type: object
       properties:
@@ -348,6 +515,11 @@ components:
           type: boolean
         rules:
           $ref: '#/components/schemas/MerchandisingRules'
+        facets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleSetFacetConfigWithId'
+          description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
       required:
         - categoryId
         - rules

@@ -279,7 +279,13 @@ export const Ruleset = ({
             <ProductSearch
               onSearch={async (query) => {
                 /* istanbul ignore next */
-                if (!selectedCategory.identifier) return;
+                if (!selectedCategory.identifier) {
+                  return;
+                }
+                if (!query) {
+                  setSearchProducts([]);
+                  return;
+                }
                 const data = await handleGet({
                   categoryId: selectedCategory.identifier,
                   query,
@@ -294,7 +300,10 @@ export const Ruleset = ({
             />
           )}
           {currentProductTab === 1 && (
-            <RulesetAttributes category={selectedCategory.identifier} />
+            <RulesetAttributes
+              merchandisingRules={merchandisingRules}
+              category={selectedCategory.identifier}
+            />
           )}
         </ProductSearchPanel>
         <RulesPanel>

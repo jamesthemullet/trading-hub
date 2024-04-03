@@ -3,6 +3,7 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import { RulesetAttributes } from '@/libs/components';
 import { renderWithProviders } from '../../../test/render-with-providers';
 import userEvent from '@testing-library/user-event';
+import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
 
 jest.mock('@/libs/hooks', () => ({
   useAttributes: () => ({
@@ -45,9 +46,20 @@ jest.mock('@/libs/hooks', () => ({
   }),
 }));
 
+const mockRules = {
+  pinnedProducts: [],
+  boosts: boostMock,
+  buries: buriesMock,
+};
+
 describe('RulesetAttributes', () => {
   const openModal = () => {
-    renderWithProviders(<RulesetAttributes category="TestCategory" />);
+    renderWithProviders(
+      <RulesetAttributes
+        merchandisingRules={mockRules}
+        category="TestCategory"
+      />
+    );
 
     const newAttributeButton = screen.getByText('Create new attribute rule');
 
@@ -57,7 +69,7 @@ describe('RulesetAttributes', () => {
   };
 
   it('should render correctly', () => {
-    renderWithProviders(<RulesetAttributes />);
+    renderWithProviders(<RulesetAttributes merchandisingRules={mockRules} />);
 
     expect(screen.getByText('Create new attribute rule')).toBeVisible();
   });
@@ -119,7 +131,11 @@ describe('RulesetAttributes', () => {
       brandStepButton.click();
     });
 
-    expect(screen.getByText('Nike')).toBeVisible();
+    const attributeSelection = screen.getByLabelText('Selected attributes');
+
+    await waitFor(() =>
+      expect(within(attributeSelection).getByText('Nike')).toBeVisible()
+    );
 
     const prevStepButton = screen.getAllByText('back')[2];
 
@@ -327,5 +343,31 @@ describe('RulesetAttributes', () => {
     await waitFor(() =>
       expect(within(attributes).getByText('Operation bury')).toBeVisible()
     );
+  });
+
+  it('should show headings with only alphanumeric values', () => {
+    renderWithProviders(
+      <RulesetAttributes
+        merchandisingRules={{
+          pinnedProducts: [],
+          boosts: {
+            numeric: [],
+            alphaNumeric: [],
+            product: [],
+          },
+          buries: {
+            numeric: [],
+            alphaNumeric: buriesMock.alphaNumeric,
+            product: [],
+          },
+        }}
+      />
+    );
+
+    const rulsetAttributes = screen.getByLabelText('Ruleset attributes');
+
+    expect(
+      within(rulsetAttributes).getByText('Product description attribute rules')
+    ).toBeVisible();
   });
 });
