@@ -22,7 +22,29 @@ describe('ProductGridHeader', () => {
     const mockSave = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        hasPreview={false}
+        hasPreview={true}
+        onPreview={jest.fn()}
+        onSave={mockSave}
+        onCancel={jest.fn()}
+        hasChanges={false}
+        categoryId="123"
+      />
+    );
+
+    const saveButton = screen.getByText('Save');
+
+    act(() => {
+      saveButton.click();
+    });
+
+    expect(mockSave).toHaveBeenCalled();
+  });
+
+  it('should not call save callback on click if categoryId is empty', () => {
+    const mockSave = jest.fn();
+    renderWithProviders(
+      <ProductGridHeader
+        hasPreview={true}
         onPreview={jest.fn()}
         onSave={mockSave}
         onCancel={jest.fn()}
@@ -36,7 +58,7 @@ describe('ProductGridHeader', () => {
       saveButton.click();
     });
 
-    expect(mockSave).toHaveBeenCalled();
+    expect(mockSave).not.toHaveBeenCalled();
   });
 
   it('should call preview callback on click', () => {
