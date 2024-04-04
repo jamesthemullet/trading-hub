@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
-import { Button } from '../button/button';
+import { Button } from '../buttons/button/button';
 import { useState } from 'react';
 import { ModalUnsavedChanges } from '../modal';
 

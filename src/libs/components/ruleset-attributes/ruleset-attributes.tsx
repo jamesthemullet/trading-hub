@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Modal } from '@mantine/core';
 const pluralize = require('pluralize');
 
-import { Button } from '../button/button';
+import { Button } from '../buttons/button/button';
 import { spacing } from '../utils/spacing';
 import { useState } from 'react';
 import { color } from '../utils/constants';

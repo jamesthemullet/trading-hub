@@ -1,4 +1,4 @@
-export * from './button/button';
+export * from './buttons/button/button';
 export * from './category-search/category-search';
 export * from './checkboxes/checkboxes';
 export * from './dropdown/dropdown';
