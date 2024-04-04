@@ -7,7 +7,7 @@ import {
 
 import styled from '@emotion/styled';
 
-import { color } from '../utils/constants';
+import { color } from '../../utils/constants';
 import { css } from '@emotion/react';
 
 const setColours = ({
