@@ -4,6 +4,7 @@ import { RulesetAttributes } from '@/libs/components';
 import { renderWithProviders } from '../../../test/render-with-providers';
 import userEvent from '@testing-library/user-event';
 import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
+import { MerchandisingRules } from '@/libs/api';
 
 jest.mock('@/libs/hooks', () => ({
   useAttributes: () => ({
@@ -46,10 +47,11 @@ jest.mock('@/libs/hooks', () => ({
   }),
 }));
 
-const mockRules = {
+const mockRules: MerchandisingRules = {
   pinnedProducts: [],
   boosts: boostMock,
   buries: buriesMock,
+  blockedProducts: [],
 };
 
 describe('RulesetAttributes', () => {
@@ -345,23 +347,24 @@ describe('RulesetAttributes', () => {
     );
   });
 
-  it('should show headings with only alphaNumeric values', () => {
+  it('should show headings with only alphanumeric values', () => {
+    const merchandisingRules: MerchandisingRules = {
+      pinnedProducts: [],
+      boosts: {
+        numeric: [],
+        alphaNumeric: [],
+        product: [],
+      },
+      buries: {
+        numeric: [],
+        alphaNumeric: buriesMock.alphaNumeric,
+        product: [],
+      },
+      blockedProducts: [],
+    };
+
     renderWithProviders(
-      <RulesetAttributes
-        merchandisingRules={{
-          pinnedProducts: [],
-          boosts: {
-            numeric: [],
-            alphaNumeric: [],
-            product: [],
-          },
-          buries: {
-            numeric: [],
-            alphaNumeric: buriesMock.alphaNumeric,
-            product: [],
-          },
-        }}
-      />
+      <RulesetAttributes merchandisingRules={merchandisingRules} />
     );
 
     const rulsetAttributes = screen.getByLabelText('Ruleset attributes');
