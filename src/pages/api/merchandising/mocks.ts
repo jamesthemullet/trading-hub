@@ -1,4 +1,8 @@
-import { BoostsBuries, BoostsBuriesWithInfo, ProductBoostBury } from '../../../libs/api';
+import {
+  BoostsBuries,
+  BoostsBuriesWithInfo,
+  ProductBoostBury,
+} from '../../../libs/api';
 
 export const mockProducts: ProductBoostBury[] = [
   {
@@ -9,8 +13,7 @@ export const mockProducts: ProductBoostBury[] = [
     id: '3',
     weight: 0.3,
   },
-]
-
+];
 
 export const boostMock: BoostsBuries = {
   numeric: [
