@@ -11,6 +11,15 @@ describe('ArrowButton', () => {
     expect(screen.queryByText('donotdisplay')).not.toBeInTheDocument();
   });
 
+  it('should render button with up arrow', () => {
+    render(<ArrowButton direction="up"></ArrowButton>);
+
+    expect(screen.getByRole('button')).toBeInTheDocument();
+    expect(screen.getByRole('button')).toHaveStyle(
+      'transform: rotate(180deg);'
+    );
+  });
+
   it('should call an onclick handler', async () => {
     const mockClickHandler = jest.fn();
     render(<ArrowButton onClick={mockClickHandler}></ArrowButton>);

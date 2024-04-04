@@ -3,6 +3,7 @@ import type { Product as ProductType } from '@/libs/api';
 
 import { Product } from '../product/product';
 import { Search } from '../search/search';
+import { ArrowButton } from '../buttons/button/arrow-button';
 
 const ProductSearchRootContainer = styled.div`
   padding-left: 8px;
@@ -77,6 +78,10 @@ export const ProductSearch = ({
         />
       </TopContainer>
       <InfoContainer>{products.length} results</InfoContainer>
+
+      <ArrowButton direction="up"></ArrowButton>
+      <ArrowButton direction="down"></ArrowButton>
+      <ArrowButton isDisabled></ArrowButton>
       <ProductsContainer>
         {products.map((product, index) => {
           const id = `${product.id}-${index}`;
