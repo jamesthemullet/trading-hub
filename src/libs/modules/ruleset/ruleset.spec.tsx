@@ -65,6 +65,13 @@ const mockProduct = {
   url: '',
 };
 
+const mockMerchandisingRules = {
+  pinnedProducts: [],
+  boosts: { numeric: [], alphaNumeric: [], product: [] },
+  buries: { numeric: [], alphaNumeric: [], product: [] },
+  blockedProducts: [],
+};
+
 const selectCategory = async (screen: Screen, user: UserEvent) => {
   await user.type(
     screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
@@ -153,6 +160,7 @@ describe('Ruleset', () => {
         { ...mockProduct, id: 'product2', productId: 'productId2' },
       ],
       categoryFacets: [],
+      merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
       refetchRuleSetPreview: jest.fn(),
     });
@@ -440,8 +448,8 @@ describe('Ruleset', () => {
           url: '',
         },
       ],
-
       categoryFacets: [],
+      merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
       refetchRuleSetPreview: jest.fn(),
     });
@@ -508,7 +516,7 @@ describe('Ruleset', () => {
       }
     });
 
-    const pinToPositionButton = await screen.findByText('Pin in position#');
+    const pinToPositionButton = await screen.findByText('Pin in position');
 
     act(() => {
       user.click(pinToPositionButton);

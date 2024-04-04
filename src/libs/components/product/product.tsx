@@ -101,6 +101,7 @@ export const Product = ({
     setIsMenuOpen(false);
   };
 
+  // @TODO: this should add to product boost
   const boostToTop = () => pin(0, true);
 
   const lockToPosition = (pinTo: number) => {
@@ -115,10 +116,19 @@ export const Product = ({
     const { value } = e.target;
     setPositionToLockTo(parseInt(value));
 
-    if (value && parseInt(value) > pinnedProductsCount + 1) {
-      setError(
-        `Please choose a position between 1 and ${pinnedProductsCount + 1}`
-      );
+    const diff = isPinned ? 0 : 1;
+
+    if (
+      (value && parseInt(value) > pinnedProductsCount + diff) ||
+      (value && parseInt(value) < 1)
+    ) {
+      if (pinnedProductsCount === 0) {
+        setError(`Please choose a position sequentially starting from 1`);
+      } else {
+        setError(
+          `Please choose a position between 1 and ${pinnedProductsCount + diff}`
+        );
+      }
     } else {
       setError('');
     }
@@ -160,26 +170,19 @@ export const Product = ({
               isStrong={true}
               style={{
                 color: '#000',
-                padding: spacing(1.5),
+                padding: `${spacing(1)} ${spacing(1)} 0`,
               }}
             >
               Product actions
-              <img
-                alt=""
-                src="/trading-hub/asset/icon-info.svg"
-                style={{
-                  padding: '0 7px',
-                  marginBottom: '-4px',
-                }}
-              />
             </Text>
             {isPinned && (
               <ProductMenuButton
-                icon="clear"
+                icon="restore"
                 as="button"
+                size="16px 16px"
                 onClick={() => clearChanges(index)}
               >
-                Un-boost
+                Restore
               </ProductMenuButton>
             )}
             {!isLockToPositionMenuOpen && (
@@ -189,7 +192,7 @@ export const Product = ({
                   as="button"
                   onClick={() => setIsLockToPositionMenuOpen(true)}
                 >
-                  Pin in position#
+                  {isPinned ? 'Edit position' : 'Pin in position'}
                 </ProductMenuButton>
                 <ProductMenuButton icon="up" as="button" onClick={boostToTop}>
                   Boost to Top
@@ -200,7 +203,7 @@ export const Product = ({
             {isLockToPositionMenuOpen && (
               <LockMenu
                 style={{
-                  height: error ? '260px' : '215px',
+                  height: error ? '300px' : '245px',
                 }}
               >
                 <Text isStrong={true} style={{ marginBottom: spacing(1) }}>
@@ -223,8 +226,9 @@ export const Product = ({
                   <LockInput
                     placeholder="i.e. 3"
                     onChange={onInputChange}
-                    defaultValue={positionToLockTo}
+                    defaultValue={positionToLockTo || ''}
                     type="number"
+                    autoFocus
                     hasError={!!error.length}
                   />
                   {error && <ErrorText>{error}</ErrorText>}
@@ -235,7 +239,7 @@ export const Product = ({
                     <Button
                       theme="primary"
                       type="submit"
-                      isDisabled={!positionToLockTo}
+                      isDisabled={!!error || !positionToLockTo}
                     >
                       Confirm
                     </Button>

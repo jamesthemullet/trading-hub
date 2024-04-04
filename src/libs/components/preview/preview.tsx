@@ -8,6 +8,7 @@ import { ProductBox } from '../visual-editor/visual-editor.styles';
 import { ProductDetails } from '../product/product';
 import { ProductWrapper } from '../product/product.styles';
 import { Text, Label, Header3 } from '../typography/typography.styles';
+import { boxShadow } from '../utils/shared.styles';
 
 type Props = {
   categoryId: string;
@@ -86,7 +87,7 @@ const Content = styled.div`
 const Facets = styled.div`
   width: calc(25% - ${spacing(1)});
   margin-left: ${spacing(1)};
-  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1);
+  ${boxShadow}
   margin-top: ${spacing(2)};
   padding: ${spacing(2)};
 `;

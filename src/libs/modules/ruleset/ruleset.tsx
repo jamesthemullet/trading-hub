@@ -213,21 +213,17 @@ export const Ruleset = ({
     (merchandisingRules.buries?.alphaNumeric || []).length +
     (merchandisingRules.buries?.numeric || []).length;
 
-  const onSaveRuleset = () => {
-    if (!selectedCategory?.identifier) {
-      return;
-    }
-
+  const onSaveRuleset = (categoryId: string) => {
     if (rulesetId && onSave) {
       onSave({
         rulesetId,
         merchandisingRules,
-        categoryId: selectedCategory.identifier,
+        categoryId,
       });
     } else if (onCreate) {
       onCreate({
         merchandisingRules,
-        categoryId: selectedCategory.identifier,
+        categoryId,
       });
     }
   };
@@ -243,10 +239,11 @@ export const Ruleset = ({
       )}
 
       <ProductGridHeader
-        onSave={() => {
-          onSaveRuleset();
+        onSave={(categoryId) => {
+          onSaveRuleset(categoryId);
           setHasChanges(false);
         }}
+        categoryId={selectedCategory.identifier}
         hasPreview={!!selectedCategory?.identifier}
         onPreview={() => setShowPreview(!showPreview)}
         hasChanges={hasChanges}
@@ -330,6 +327,7 @@ export const Ruleset = ({
           {currentEditorTab === 1 && (
             <RulesetChanges
               merchandisingRules={merchandisingRules}
+              category={selectedCategory.identifier}
               onChangePosition={onChangePosition}
             />
           )}

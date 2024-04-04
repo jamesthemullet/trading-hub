@@ -3,6 +3,7 @@ import { spacing } from '../utils/spacing';
 
 import { color } from '../utils/constants';
 import { Text } from '../typography/typography.styles';
+import { boxShadow } from '../utils/shared.styles';
 
 export const ProductWrapper = styled.div<{ isLastChanged: boolean }>`
   width: 100%;
@@ -83,17 +84,17 @@ export const ProductMenuOverlay = styled.button`
 `;
 
 export const ProductMenu = styled.div`
+  ${boxShadow}
   position: absolute;
   top: 5px;
   right: ${spacing(-2)};
-  width: 200px;
+  width: 220px;
   background: #fff;
   border-radius: 3px;
-  box-shadow: '0 0 0.125rem rgba(0, 0, 0, 0.09), 0 0.25rem 0.563rem rgba(176, 176, 176, 0.5)';
   z-index: 2;
 `;
 
-export const ProductMenuButton = styled(Text)<{ icon: string }>`
+export const ProductMenuButton = styled(Text)<{ icon: string; size?: string }>`
   border: none;
   background: #fff;
   width: 100%;
@@ -114,7 +115,7 @@ export const ProductMenuButton = styled(Text)<{ icon: string }>`
     background: no-repeat 0 0;
     background-image: ${({ icon }) =>
       `url(/trading-hub/asset/icon-${icon}.svg)`};
-    background-size: 20px 20px;
+    background-size: ${({ size }) => (size ? size : `20px 20px`)};
     width: 25px;
     height: 20px;
   }
