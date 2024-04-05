@@ -31,7 +31,7 @@ export const useCategoryProductSearch = () => {
         const response = await merchandising().productCreate(queryData, {
           pinnedProducts: merchandisingRules.pinnedProducts,
           boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] }
+          buries: { numeric: [], alphaNumeric: [], product: [] },
         });
         return response.data;
       } catch (error) {

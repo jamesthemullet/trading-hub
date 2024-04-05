@@ -16,7 +16,7 @@ export const useRuleSetPreview = (id: string) => {
     rules: {
       pinnedProducts: [],
       boosts: { numeric: [], alphaNumeric: [], product: [] },
-      buries: { numeric: [], alphaNumeric: [], product: [] }
+      buries: { numeric: [], alphaNumeric: [], product: [] },
     },
   });
   const [products, setProducts] = useState<Product[]>([]);
@@ -39,7 +39,7 @@ export const useRuleSetPreview = (id: string) => {
           {
             pinnedProducts: data.rules.pinnedProducts,
             boosts: { numeric: [], alphaNumeric: [], product: [] },
-            buries: { numeric: [], alphaNumeric: [], product: [] }
+            buries: { numeric: [], alphaNumeric: [], product: [] },
           }
         );
 

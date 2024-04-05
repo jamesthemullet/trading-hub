@@ -275,6 +275,27 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
               Product description attribute rules
             </Label>
           )}
+          {!!alphaNumericBoost.length &&
+            alphaNumericBoost.map((attribute) => (
+              <AlphanumericAttribute
+                key={attribute.fields[0].field}
+                isEditable
+                fields={attribute.fields}
+                operation="boost"
+                weight={attribute.weight}
+              />
+            ))}
+
+          {!!alphaNumericBuries.length &&
+            alphaNumericBuries.map((attribute) => (
+              <AlphanumericAttribute
+                key={attribute.fields[0].field}
+                isEditable
+                fields={attribute.fields}
+                operation="bury"
+                weight={attribute.weight}
+              />
+            ))}
 
           {(!!numericBoosts.length || !!numericBury.length) && (
             <Label isStrong withMargin>

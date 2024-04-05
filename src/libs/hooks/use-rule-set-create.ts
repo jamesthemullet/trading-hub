@@ -23,7 +23,7 @@ export const useRuleSetCreate = () => {
           rules: {
             pinnedProducts: merchandisingRules.pinnedProducts,
             boosts: { numeric: [], alphaNumeric: [], product: [] },
-            buries: { numeric: [], alphaNumeric: [], product: [] }
+            buries: { numeric: [], alphaNumeric: [], product: [] },
           },
         };
         const response = await merchandising().rulesetCreate(body);
