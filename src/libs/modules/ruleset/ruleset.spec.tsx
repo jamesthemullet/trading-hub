@@ -162,7 +162,7 @@ describe('Ruleset', () => {
       categoryFacets: [],
       merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
-      refetchRuleSetPreview: jest.fn(),
+      setRules: jest.fn(),
     });
 
     (useRouter as jest.Mock).mockImplementation(() => {
@@ -451,7 +451,7 @@ describe('Ruleset', () => {
       categoryFacets: [],
       merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
-      refetchRuleSetPreview: jest.fn(),
+      setRules: jest.fn(),
     });
 
     jest.mocked(useCategoryProductSearch).mockReturnValue({
