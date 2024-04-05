@@ -13,14 +13,17 @@ export const boostMock: BoostsBuries = {
   ],
   alphaNumeric: [
     {
-      field: 'brand',
       weight: 0.5,
-      values: ['Nike', 'Adidas'],
-    },
-    {
-      field: 'category',
-      weight: 1,
-      values: ['Shoes', 'Clothing'],
+      fields: [
+        {
+          field: 'brand',
+          values: ['Nike', 'Adidas'],
+        },
+        {
+          field: 'category',
+          values: ['Shoes', 'Clothing'],
+        },
+      ],
     },
   ],
   product: [
@@ -48,14 +51,17 @@ export const buriesMock: BoostsBuries = {
   ],
   alphaNumeric: [
     {
-      field: 'brand',
       weight: 0.7,
-      values: ['Puma', 'Reebok'],
-    },
-    {
-      field: 'category',
-      weight: 0.7,
-      values: ['Accessories', 'Clothing'],
+      fields: [
+        {
+          field: 'brand',
+          values: ['Puma', 'Reebok'],
+        },
+        {
+          field: 'category',
+          values: ['Accessories', 'Clothing'],
+        },
+      ],
     },
   ],
   product: [

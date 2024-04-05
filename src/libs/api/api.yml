@@ -647,6 +647,8 @@ components:
           $ref: '#/components/schemas/BoostsBuriesWithInfo'
       required:
         - pinnedProducts
+        - boosts
+        - buries
     MerchandisingRules:
       type: object
       properties:
@@ -664,9 +666,8 @@ components:
           $ref: '#/components/schemas/BoostsBuries'
       required:
         - pinnedProducts
-        # - blockedProducts
-        # - boosts
-        # - buries
+        - boosts
+        - buries
     PinnedProduct:
       type: object
       properties:
@@ -696,6 +697,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductBoostBury'
+      required:
+        - numeric
+        - alphaNumeric
+        - product
     BoostsBuriesWithInfo:
       type: object
       properties:
@@ -713,6 +718,10 @@ components:
             allOf:
               - $ref: '#/components/schemas/ProductBoostBury'
               - $ref: '#/components/schemas/Product'
+      required:
+        - numeric
+        - alphaNumeric
+        - product
     ProductBoostBury:
       type: object
       properties:
@@ -738,19 +747,26 @@ components:
     AlphanumericBoostBury:
       type: object
       properties:
-        field:
-          type: string
+        fields:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              values:
+                type: array
+                items:
+                  type: string
+            required:
+              - field
+              - values
         weight:
           type: number
           format: double
-        values:
-          type: array
-          items:
-            type: string
       required:
-        - field
+        - fields
         - weight
-        - values
     ErrorResponse:
       type: object
       properties:
@@ -849,7 +865,7 @@ components:
         - attributes
     AttributeType:
       type: string
-      enum: ['alphanumeric', 'numeric']
+      enum: ['alphaNumeric', 'numeric']
     CommonFacetData:
       type: object
       properties:

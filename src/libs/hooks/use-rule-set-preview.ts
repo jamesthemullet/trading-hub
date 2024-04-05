@@ -15,6 +15,8 @@ export const useRuleSetPreview = (id: string) => {
     },
     rules: {
       pinnedProducts: [],
+      boosts: { numeric: [], alphaNumeric: [], product: [] },
+      buries: { numeric: [], alphaNumeric: [], product: [] }
     },
   });
   const [products, setProducts] = useState<Product[]>([]);
@@ -34,7 +36,11 @@ export const useRuleSetPreview = (id: string) => {
         const categoryPreview = await merchandising().categoryPreviewCreate(
           categoryId,
           { rows: 12, start: 0 },
-          { pinnedProducts: data.rules.pinnedProducts }
+          {
+            pinnedProducts: data.rules.pinnedProducts,
+            boosts: { numeric: [], alphaNumeric: [], product: [] },
+            buries: { numeric: [], alphaNumeric: [], product: [] }
+          }
         );
 
         const previewData = categoryPreview.data;

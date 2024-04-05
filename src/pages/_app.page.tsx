@@ -13,13 +13,13 @@ export default function App({
 }: AppProps<{ session: Session | null }>) {
   const { session } = pageProps;
   return (
-    <SessionProvider session={session}>
-      <MantineProvider>
+    <MantineProvider>
+      <SessionProvider session={session}>
         <Layout>
           <Navigation />
           <Component {...pageProps} />
         </Layout>
-      </MantineProvider>
-    </SessionProvider>
+      </SessionProvider>
+    </MantineProvider>
   );
 }

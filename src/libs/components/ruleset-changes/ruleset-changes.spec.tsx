@@ -53,9 +53,13 @@ describe('RulesetChanges', () => {
             ],
             alphaNumeric: [
               {
-                field: 'field',
                 weight: 1,
-                values: ['value'],
+                fields: [
+                  {
+                    field: 'field',
+                    values: ['value'],
+                  },
+                ],
               },
             ],
             product: [
@@ -74,9 +78,13 @@ describe('RulesetChanges', () => {
             ],
             alphaNumeric: [
               {
-                field: 'field',
                 weight: 1,
-                values: ['value'],
+                fields: [
+                  {
+                    field: 'field',
+                    values: ['value'],
+                  },
+                ],
               },
             ],
             product: [

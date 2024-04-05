@@ -61,11 +61,11 @@ export const RulesetChanges = ({
         })}
       </Layout>
       <Layout>
-        {alphaNumericBoost.map(({ values, weight }, index) => {
+        {alphaNumericBoost.map(({ fields, weight }, index) => {
           return (
             <AlphanumericAttribute
               key={`boost-alphanumeric-${index}`}
-              values={values}
+              fields={fields}
               operation="boost"
               weight={weight}
             />
@@ -85,11 +85,11 @@ export const RulesetChanges = ({
         })}
       </Layout>
       <Layout>
-        {alphaNumericBuries.map(({ values, weight }, index) => {
+        {alphaNumericBuries.map(({ fields, weight }, index) => {
           return (
             <AlphanumericAttribute
               key={`bury-alphanumeric-${index}`}
-              values={values}
+              fields={fields}
               operation="bury"
               weight={weight}
             />
