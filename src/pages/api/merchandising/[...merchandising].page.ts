@@ -118,7 +118,11 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     });
   }
 
-  if (req.method === 'GET' && req.url && req.url.startsWith('/api/merchandising/ruleset/')) {
+  if (
+    req.method === 'GET' &&
+    req.url &&
+    req.url.startsWith('/api/merchandising/ruleset/')
+  ) {
     console.warn(`Altering response for ruleset ${req.url}`);
     const ruleSet = jsonBody as ReturnedRuleSet;
     ruleSet.rules.boosts = boostMock;
