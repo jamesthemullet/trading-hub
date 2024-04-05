@@ -25,20 +25,20 @@ const httpDelete = jest.fn();
 
 const captureRequest =
   (fn: jest.Mock) =>
-  async ({
-    request,
-  }: ResponseResolverInfo<
-    HttpRequestResolverExtras<PathParams>,
-    DefaultBodyType
-  >) => {
-    const body = await request.text();
-    return fn({
-      url: request.url,
-      method: request.method,
-      headers: request.headers,
-      body: body.length > 0 ? JSON.parse(body) : null,
-    });
-  };
+    async ({
+      request,
+    }: ResponseResolverInfo<
+      HttpRequestResolverExtras<PathParams>,
+      DefaultBodyType
+    >) => {
+      const body = await request.text();
+      return fn({
+        url: request.url,
+        method: request.method,
+        headers: request.headers,
+        body: body.length > 0 ? JSON.parse(body) : null,
+      });
+    };
 
 const baseUrl = 'https://merch';
 const handlers = [
@@ -243,6 +243,16 @@ describe('Merchandising api proxy', () => {
           buries: buriesMock,
         },
       });
+    });
+
+    it('when url is equal to /api/merchandising/ruleset/* and method is DELETE', async () => {
+      const response = responses[3][0];
+      const res = await performDelete('/api/merchandising/ruleset/1', response);
+
+      expect(httpDelete).toHaveBeenCalled();
+      expect(httpGet).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({});
     });
 
     it('when url is equal to /api/merchandising/category/1/preview', async () => {
