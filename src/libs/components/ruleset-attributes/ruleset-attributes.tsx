@@ -12,7 +12,7 @@ import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { useAttributes } from '@/libs/hooks';
 import { AttributesResponse, MerchandisingRules } from '@/libs/api';
 import { Search } from '../search/search';
-import { Dropdown, DropdownOption } from '../dropdown/dropdown';
+import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
 import { NumericAttribute } from './numeric-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { AttributeCount, AttributesList } from './ruleset-attributes.styles';
@@ -496,7 +496,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                               }
                             }
                           >
-                            <img src="/trading-hub/asset/boost.svg" />
+                            <img src="/trading-hub/asset/boost.svg" alt="" />
                             Boost
                           </DropdownOption>
                           <DropdownOption
@@ -505,7 +505,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                               setSelectedOperation('bury');
                             }}
                           >
-                            <img src="/trading-hub/asset/bury.svg" />
+                            <img src="/trading-hub/asset/bury.svg" alt="" />
                             Bury
                           </DropdownOption>
                         </Dropdown>
