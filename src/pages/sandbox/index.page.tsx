@@ -32,11 +32,8 @@ const Sandbox = () => {
       </Example>
       <Example>
         <h2>New arrow icons</h2>
-        <img src="/trading-hub/asset/icon-up-arrow-in-grey-circle.svg" alt="" />
-        <img
-          src="/trading-hub/asset/icon-down-arrow-in-grey-circle.svg"
-          alt=""
-        />
+        <img src="/trading-hub/asset/icon-boost-button.svg" alt="" />
+        <img src="/trading-hub/asset/icon-bury-button.svg" alt="" />
       </Example>
       <Example>
         <h2>Facet Order Dropdown</h2>
