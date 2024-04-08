@@ -496,7 +496,10 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                               }
                             }
                           >
-                            <img src="/trading-hub/asset/boost.svg" alt="" />
+                            <img
+                              src="/trading-hub/asset/boost-signifier.svg"
+                              alt=""
+                            />
                             Boost
                           </DropdownOption>
                           <DropdownOption
@@ -505,7 +508,10 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                               setSelectedOperation('bury');
                             }}
                           >
-                            <img src="/trading-hub/asset/bury.svg" alt="" />
+                            <img
+                              src="/trading-hub/asset/bury-signifier.svg"
+                              alt=""
+                            />
                             Bury
                           </DropdownOption>
                         </Dropdown>
