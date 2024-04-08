@@ -55,6 +55,7 @@ const mockGetCategories = {
 const mockProduct = {
   id: 'productId',
   productId: 'productId',
+  productId: 'productId',
   title: 'productTitle',
   imageUrl: ['example.jpg'],
   brand: 'productBrand',
@@ -155,10 +156,7 @@ describe('Ruleset', () => {
     });
 
     jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryProducts: [
-        mockProduct,
-        { ...mockProduct, id: 'product2', productId: 'productId2' },
-      ],
+      categoryProducts: [mockProduct, { ...mockProduct, id: 'product2' }],
       categoryFacets: [],
       merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',

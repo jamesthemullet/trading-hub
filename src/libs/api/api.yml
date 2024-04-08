@@ -666,6 +666,7 @@ components:
           $ref: '#/components/schemas/BoostsBuries'
       required:
         - pinnedProducts
+        - blockedProducts
         - boosts
         - buries
     PinnedProduct:

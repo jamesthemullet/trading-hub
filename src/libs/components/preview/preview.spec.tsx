@@ -96,7 +96,7 @@ describe('Preview', () => {
     jest.mocked(useCategoryPreview).mockReturnValue({
       categoryProducts: [
         mockProduct,
-        { ...mockProduct, productId: 'product2' },
+        { ...mockProduct, id: 'product2', productId: 'product2' },
       ],
       categoryFacets: mockFacets,
       merchandisingRulesWithInfo: mockMerchandisingRules,

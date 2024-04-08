@@ -146,8 +146,13 @@ describe('useRuleSet', () => {
         },
         rules: {
           pinnedProducts: [],
-          boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] },
+          blockedProducts: [],
+          boosts: { alphaNumeric: [], numeric: [], product: [] },
+          buries: {
+            alphaNumeric: [],
+            numeric: [],
+            product: [],
+          },
         },
       },
       error: 'POST status 500',
