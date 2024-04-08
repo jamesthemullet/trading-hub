@@ -15,7 +15,7 @@ export const useCategoryPreview = (
   const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
   const [categoryFacets, setCategoryFacets] = useState<Facet[]>([]);
   const [error, setError] = useState('');
-  const [shouldRefetch, refetch] = useState({});
+  const [rules, setRules] = useState(merchandisingRules);
   const [merchandisingRulesWithInfo, setMerchandisingRulesWithInfo] =
     useState<MerchandisingRulesWithInfo>();
 
@@ -31,10 +31,10 @@ export const useCategoryPreview = (
           categoryId,
           { rows: 12, start: 0 },
           {
-            pinnedProducts: merchandisingRules.pinnedProducts,
-            blockedProducts: merchandisingRules.blockedProducts,
-            buries: merchandisingRules.buries,
-            boosts: merchandisingRules.boosts,
+            pinnedProducts: rules.pinnedProducts,
+            blockedProducts: rules.blockedProducts,
+            buries: rules.buries,
+            boosts: rules.boosts,
           }
         );
 
@@ -54,13 +54,13 @@ export const useCategoryPreview = (
     };
 
     void asyncCall();
-  }, [categoryId, shouldRefetch, merchandisingRules]);
+  }, [categoryId, rules]);
 
   return {
     categoryProducts,
     categoryFacets,
     merchandisingRulesWithInfo,
     error,
-    refetchRuleSetPreview: () => refetch({}),
+    setRules: (rules: MerchandisingRules) => setRules(rules),
   };
 };
