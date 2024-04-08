@@ -34,7 +34,7 @@ describe('RulesetChanges', () => {
       categoryFacets: [],
       merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
-      refetchRuleSetPreview: jest.fn(),
+      setRules: jest.fn(),
     });
   });
 
