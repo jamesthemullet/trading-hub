@@ -1,7 +1,7 @@
 import type { Facet, MerchandisingRules } from '@/libs/api';
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
-import { Dropdown } from '../dropdown/dropdown';
+import { Dropdown } from '../dropdowns/dropdown/dropdown';
 import { useState } from 'react';
 import { useCategoryPreview } from '../../hooks';
 import { ProductBox } from '../visual-editor/visual-editor.styles';
