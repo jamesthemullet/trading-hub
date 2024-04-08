@@ -227,7 +227,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
     useState<string[]>([]);
   const [numbericSearchValue, setNumericSearchValue] = useState('');
-  const [alphanumbericSearchValue, setAlphanumericSearchValue] = useState('');
+  const [alphanumericSearchValue, setAlphanumericSearchValue] = useState('');
   const [alphanumbericFilterValue, setAlphanumericFilterValue] = useState('');
   const [alphanumericField, setAlphanumericField] = useState<string>('');
   const [selectedAlphanumericValues, setSelectedAlphanumericValues] = useState<
@@ -542,7 +542,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                         <Search
                           name="Filter alphanumeric attributes"
                           id="filerAlphanumericAttributes"
-                          value={alphanumbericSearchValue}
+                          value={alphanumericSearchValue}
                           onChange={(e) =>
                             setAlphanumericSearchValue(e.target.value)
                           }
@@ -554,7 +554,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                     .filter((attribute) =>
                       attribute.name
                         .toLowerCase()
-                        .includes(alphanumbericSearchValue.toLowerCase())
+                        .includes(alphanumericSearchValue.toLowerCase())
                     )
                     .map((attribute) => (
                       <ModalSection key={attribute.name}>
