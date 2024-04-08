@@ -153,4 +153,4 @@ export const attributesMock = [
       { value: '200+' },
     ],
   },
-]
+];
