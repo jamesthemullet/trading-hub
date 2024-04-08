@@ -101,7 +101,7 @@ describe('Preview', () => {
       categoryFacets: mockFacets,
       merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
-      refetchRuleSetPreview: jest.fn(),
+      setRules: jest.fn(),
     });
   });
 
