@@ -160,7 +160,7 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
   const [withRules, setWithRules] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const emptyRules = {
+  const emptyRules: MerchandisingRules = {
     pinnedProducts: [],
     blockedProducts: [],
     boosts: { alphaNumeric: [], numeric: [], product: [] },
