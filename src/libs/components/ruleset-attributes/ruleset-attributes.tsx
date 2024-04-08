@@ -512,7 +512,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                             }
                           >
                             <Image
-                              src="/trading-hub/asset/boost.svg"
+                              src="/trading-hub/asset/boost-signifier.svg"
                               alt=""
                               width={20}
                               height={20}
@@ -526,7 +526,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                             }}
                           >
                             <Image
-                              src="/trading-hub/asset/bury.svg"
+                              src="/trading-hub/asset/bury-signifier.svg"
                               alt=""
                               width={20}
                               height={20}
