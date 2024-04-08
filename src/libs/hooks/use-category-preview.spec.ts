@@ -185,7 +185,7 @@ describe('useRuleSet', () => {
     });
 
     act(() => {
-      result.current.refetchRuleSetPreview();
+      result.current.setRules(mockMerchandisingRules);
     });
 
     await waitFor(() => {
