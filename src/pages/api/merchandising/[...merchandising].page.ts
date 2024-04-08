@@ -31,7 +31,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     const mockedResponse: AttributesResponse = {
       attributes: [
         {
-          type: 'alphaNumeric',
+          type: 'alphanumeric',
           name: 'Colour',
           values: [
             { value: 'Red' },
@@ -46,12 +46,12 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
           values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
         },
         {
-          type: 'alphaNumeric',
+          type: 'alphanumeric',
           name: 'Brand',
           values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
         },
         {
-          type: 'alphaNumeric',
+          type: 'alphanumeric',
           name: 'Category',
           values: [
             { value: 'Shoes' },

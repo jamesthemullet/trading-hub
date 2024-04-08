@@ -26,17 +26,17 @@ export const RulesetChanges = ({
   /* istanbul ignore next */
   const countOfAttributeChanges =
     (merchandisingRules.boosts?.numeric?.length ?? 0) +
-    (merchandisingRules.boosts?.alphaNumeric?.length ?? 0) +
+    (merchandisingRules.boosts?.alphanumeric?.length ?? 0) +
     (merchandisingRules.buries?.numeric?.length ?? 0) +
-    (merchandisingRules.buries?.alphaNumeric?.length ?? 0);
+    (merchandisingRules.buries?.alphanumeric?.length ?? 0);
   /* istanbul ignore next */
   const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
   /* istanbul ignore next */
-  const alphaNumericBoost = merchandisingRules.boosts?.alphaNumeric ?? [];
+  const alphanumericBoost = merchandisingRules.boosts?.alphanumeric ?? [];
   /* istanbul ignore next */
   const numericBury = merchandisingRules.buries?.numeric ?? [];
   /* istanbul ignore next */
-  const alphaNumericBuries = merchandisingRules.buries?.alphaNumeric ?? [];
+  const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
 
   const { merchandisingRulesWithInfo } = useCategoryPreview(
     category,
@@ -61,7 +61,7 @@ export const RulesetChanges = ({
         })}
       </Layout>
       <Layout>
-        {alphaNumericBoost.map(({ fields, weight }, index) => {
+        {alphanumericBoost.map(({ fields, weight }, index) => {
           return (
             <AlphanumericAttribute
               key={`boost-alphanumeric-${index}`}
@@ -85,7 +85,7 @@ export const RulesetChanges = ({
         })}
       </Layout>
       <Layout>
-        {alphaNumericBuries.map(({ fields, weight }, index) => {
+        {alphanumericBuries.map(({ fields, weight }, index) => {
           return (
             <AlphanumericAttribute
               key={`bury-alphanumeric-${index}`}

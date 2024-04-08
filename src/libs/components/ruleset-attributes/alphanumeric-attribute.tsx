@@ -8,7 +8,7 @@ import {
   AttributeValue,
 } from './ruleset-attributes.styles';
 import { AttributeWeight } from './weight';
-import { AlphaNumericBoostBury } from '../../api';
+import { AlphanumericBoostBury } from '../../api';
 import Image from 'next/image';
 
 export const AlphanumericAttribute = ({
@@ -16,7 +16,7 @@ export const AlphanumericAttribute = ({
   fields,
   operation,
   weight,
-}: AlphaNumericBoostBury & {
+}: AlphanumericBoostBury & {
   isEditable?: boolean;
   operation: 'bury' | 'boost';
 }) => (
@@ -38,7 +38,7 @@ export const AlphanumericAttribute = ({
         <Image
           width={20}
           height={20}
-          src={`/trading-hub/asset/${operation}.svg`}
+          src={`/trading-hub/asset/${operation}-signifier.svg`}
           style={{ marginBottom: '-4px' }}
           alt=""
         />{' '}

@@ -216,7 +216,7 @@ const getNumericAttributes = (attributes: AttributesResponse['attributes']) => {
 const getAlphanumericAttributes = (
   attributes: AttributesResponse['attributes']
 ) => {
-  return attributes.filter((attribute) => attribute.type === 'alphaNumeric');
+  return attributes.filter((attribute) => attribute.type === 'alphanumeric');
 };
 
 export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
@@ -227,8 +227,8 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
     useState<string[]>([]);
   const [numbericSearchValue, setNumericSearchValue] = useState('');
-  const [alphanumbericSearchValue, setAlphaNumericSearchValue] = useState('');
-  const [alphanumbericFilterValue, setAlphaNumericFilterValue] = useState('');
+  const [alphanumbericSearchValue, setAlphanumericSearchValue] = useState('');
+  const [alphanumbericFilterValue, setAlphanumericFilterValue] = useState('');
   const [alphanumericField, setAlphanumericField] = useState<string>('');
   const [selectedAlphanumericValues, setSelectedAlphanumericValues] = useState<
     Array<{
@@ -241,22 +241,22 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
     'boost'
   );
   const [selectedAttributeType, setSelectedAttributeType] = useState<
-    'numeric' | 'alphaNumeric'
+    'numeric' | 'alphanumeric'
   >('numeric');
   /* istanbul ignore next */
   const countOfAttributeChanges =
     (merchandisingRules.boosts?.numeric?.length ?? 0) +
-    (merchandisingRules.boosts?.alphaNumeric?.length ?? 0) +
+    (merchandisingRules.boosts?.alphanumeric?.length ?? 0) +
     (merchandisingRules.buries?.numeric?.length ?? 0) +
-    (merchandisingRules.buries?.alphaNumeric?.length ?? 0);
+    (merchandisingRules.buries?.alphanumeric?.length ?? 0);
   /* istanbul ignore next */
   const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
   /* istanbul ignore next */
-  const alphaNumericBoost = merchandisingRules.boosts?.alphaNumeric ?? [];
+  const alphanumericBoost = merchandisingRules.boosts?.alphanumeric ?? [];
   /* istanbul ignore next */
   const numericBury = merchandisingRules.buries?.numeric ?? [];
   /* istanbul ignore next */
-  const alphaNumericBuries = merchandisingRules.buries?.alphaNumeric ?? [];
+  const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
 
   return (
     <Wrapper>
@@ -270,13 +270,13 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
             {countOfAttributeChanges} attribute{' '}
             {pluralize('rule', countOfAttributeChanges)}
           </AttributeCount>
-          {(!!alphaNumericBoost.length || !!alphaNumericBuries.length) && (
+          {(!!alphanumericBoost.length || !!alphanumericBuries.length) && (
             <Label isStrong withMargin>
               Product description attribute rules
             </Label>
           )}
-          {!!alphaNumericBoost.length &&
-            alphaNumericBoost.map((attribute) => (
+          {!!alphanumericBoost.length &&
+            alphanumericBoost.map((attribute) => (
               <AlphanumericAttribute
                 key={attribute.fields[0].field}
                 isEditable
@@ -286,8 +286,8 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
               />
             ))}
 
-          {!!alphaNumericBuries.length &&
-            alphaNumericBuries.map((attribute) => (
+          {!!alphanumericBuries.length &&
+            alphanumericBuries.map((attribute) => (
               <AlphanumericAttribute
                 key={attribute.fields[0].field}
                 isEditable
@@ -353,7 +353,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                         name={selectedNumericField}
                       />
                     )}
-                  {selectedAttributeType === 'alphaNumeric' &&
+                  {selectedAttributeType === 'alphanumeric' &&
                     !!selectedAlphanumericValues.length && (
                       <AlphanumericAttribute
                         operation={selectedOperation}
@@ -494,7 +494,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                       <DropdownWrapper>
                         <Dropdown
                           label={`${selectedOperation}`}
-                          icon={selectedOperation}
+                          icon={`${selectedOperation}-signifier`}
                           isOpen={isOperationDropdownOpen}
                           onOpen={() => setIsOperationDropdownOpen(true)}
                           onClose={
@@ -536,15 +536,15 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                         </Dropdown>
                       </DropdownWrapper>
                       <SearchWrapper>
-                        <label htmlFor="filerAlphaNumericAttributes">
-                          Filter alphaNumeric attributes
+                        <label htmlFor="filerAlphanumericAttributes">
+                          Filter alphanumeric attributes
                         </label>
                         <Search
-                          name="Filter alphaNumeric attributes"
-                          id="filerAlphaNumericAttributes"
+                          name="Filter alphanumeric attributes"
+                          id="filerAlphanumericAttributes"
                           value={alphanumbericSearchValue}
                           onChange={(e) =>
-                            setAlphaNumericSearchValue(e.target.value)
+                            setAlphanumericSearchValue(e.target.value)
                           }
                         />
                       </SearchWrapper>
@@ -599,7 +599,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                         id="filerSelectedAttributes"
                         value={alphanumbericFilterValue}
                         onChange={(e) =>
-                          setAlphaNumericFilterValue(e.target.value)
+                          setAlphanumericFilterValue(e.target.value)
                         }
                       />
                     </SearchWrapper>
@@ -607,7 +607,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                   <div aria-label="Selected attributes">
                     <Checkboxes
                       onSelect={(isSelected, name) => {
-                        setSelectedAttributeType('alphaNumeric');
+                        setSelectedAttributeType('alphanumeric');
 
                         const currentValues =
                           selectedAlphanumericValues.find(

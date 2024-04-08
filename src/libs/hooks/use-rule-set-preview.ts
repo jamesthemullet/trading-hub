@@ -16,9 +16,9 @@ export const useRuleSetPreview = (id: string) => {
     rules: {
       pinnedProducts: [],
       blockedProducts: [],
-      boosts: { alphaNumeric: [], numeric: [], product: [] },
+      boosts: { alphanumeric: [], numeric: [], product: [] },
       buries: {
-        alphaNumeric: [],
+        alphanumeric: [],
         numeric: [],
         product: [],
       },

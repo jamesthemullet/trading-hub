@@ -690,17 +690,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NumericBoostBury'
-        alphaNumeric:
+        alphanumeric:
           type: array
           items:
-            $ref: '#/components/schemas/AlphaNumericBoostBury'
+            $ref: '#/components/schemas/AlphanumericBoostBury'
         product:
           type: array
           items:
             $ref: '#/components/schemas/ProductBoostBury'
       required:
         - numeric
-        - alphaNumeric
+        - alphanumeric
         - product
     BoostsBuriesWithInfo:
       type: object
@@ -709,10 +709,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NumericBoostBury'
-        alphaNumeric:
+        alphanumeric:
           type: array
           items:
-            $ref: '#/components/schemas/AlphaNumericBoostBury'
+            $ref: '#/components/schemas/AlphanumericBoostBury'
         product:
           type: array
           items:
@@ -721,7 +721,7 @@ components:
               - $ref: '#/components/schemas/Product'
       required:
         - numeric
-        - alphaNumeric
+        - alphanumeric
         - product
     ProductBoostBury:
       type: object
@@ -745,21 +745,21 @@ components:
       required:
         - field
         - weight
-    AlphaNumericBoostBury:
+    AlphanumericBoostBury:
       type: object
       properties:
         fields:
           type: array
           items:
             type: object
-            $ref: '#/components/schemas/AlphaNumericBoostBuryField'
+            $ref: '#/components/schemas/AlphanumericBoostBuryField'
         weight:
           type: number
           format: double
       required:
         - fields
         - weight
-    AlphaNumericBoostBuryField:
+    AlphanumericBoostBuryField:
       type: object
       properties:
         field:
@@ -869,7 +869,7 @@ components:
         - attributes
     AttributeType:
       type: string
-      enum: ['alphaNumeric', 'numeric']
+      enum: ['alphanumeric', 'numeric']
     CommonFacetData:
       type: object
       properties:

@@ -10,7 +10,7 @@ jest.mock('@/libs/hooks', () => ({
   useAttributes: () => ({
     attributes: [
       {
-        type: 'alphaNumeric',
+        type: 'alphanumeric',
         name: 'Colour',
         values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
       },
@@ -20,12 +20,12 @@ jest.mock('@/libs/hooks', () => ({
         values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
       },
       {
-        type: 'alphaNumeric',
+        type: 'alphanumeric',
         name: 'Brand',
         values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
       },
       {
-        type: 'alphaNumeric',
+        type: 'alphanumeric',
         name: 'Category',
         values: [
           { value: 'Shoes' },
@@ -276,7 +276,7 @@ describe('RulesetAttributes', () => {
     });
 
     await user.type(
-      screen.getByLabelText('Filter alphaNumeric attributes'),
+      screen.getByLabelText('Filter alphanumeric attributes'),
       'Colour'
     );
 
@@ -352,12 +352,12 @@ describe('RulesetAttributes', () => {
       pinnedProducts: [],
       boosts: {
         numeric: [],
-        alphaNumeric: [],
+        alphanumeric: [],
         product: [],
       },
       buries: {
         numeric: [],
-        alphaNumeric: buriesMock.alphaNumeric,
+        alphanumeric: buriesMock.alphanumeric,
         product: [],
       },
       blockedProducts: [],

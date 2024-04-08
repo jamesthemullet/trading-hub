@@ -67,8 +67,8 @@ const mockProduct = {
 
 const mockMerchandisingRules = {
   pinnedProducts: [],
-  boosts: { numeric: [], alphaNumeric: [], product: [] },
-  buries: { numeric: [], alphaNumeric: [], product: [] },
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
   blockedProducts: [],
 };
 
@@ -241,8 +241,8 @@ describe('Ruleset', () => {
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-          boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] },
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
         }}
         rulesetId={ruleSetId}
       />
@@ -285,8 +285,8 @@ describe('Ruleset', () => {
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-          boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] },
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
         }}
         rulesetId={ruleSetId}
       />
@@ -358,8 +358,8 @@ describe('Ruleset', () => {
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-          boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] },
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
         }}
         rulesetId={ruleSetId}
       />
@@ -491,8 +491,8 @@ describe('Ruleset', () => {
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
-          boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] },
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
         }}
         rulesetId={ruleSetId}
       />

@@ -9,7 +9,7 @@ const baseUrl = 'http://localhost';
 const mockedResponse: AttributesResponse = {
   attributes: [
     {
-      type: 'alphaNumeric',
+      type: 'alphanumeric',
       name: 'Colour',
       values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
     },
@@ -19,12 +19,12 @@ const mockedResponse: AttributesResponse = {
       values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
     },
     {
-      type: 'alphaNumeric',
+      type: 'alphanumeric',
       name: 'Brand',
       values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
     },
     {
-      type: 'alphaNumeric',
+      type: 'alphanumeric',
       name: 'Category',
       values: [
         { value: 'Shoes' },
