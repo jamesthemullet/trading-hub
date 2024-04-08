@@ -752,22 +752,25 @@ components:
           type: array
           items:
             type: object
-            properties:
-              field:
-                type: string
-              values:
-                type: array
-                items:
-                  type: string
-            required:
-              - field
-              - values
+            $ref: '#/components/schemas/AlphaNumericBoostBuryField'
         weight:
           type: number
           format: double
       required:
         - fields
         - weight
+    AlphaNumericBoostBuryField:
+      type: object
+      properties:
+        field:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+      required:
+        - field
+        - values
     ErrorResponse:
       type: object
       properties:
