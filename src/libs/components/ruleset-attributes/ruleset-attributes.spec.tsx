@@ -386,9 +386,9 @@ describe('RulesetAttributes', () => {
   });
 
   describe('adding and deleting', () => {
-    it('adds and deletes numeric attributes', async () => {
+    it('adds numeric attributes', async () => {
       const expectedCall = {
-        attribute: { field: 'Size', weight: 1 },
+        attribute: { field: 'Size', weight: 0.01 },
         change: 'add',
         operation: 'boosts',
         type: 'numeric',
@@ -467,7 +467,7 @@ describe('RulesetAttributes', () => {
               values: ['Blue', 'Red'],
             },
           ],
-          weight: 1,
+          weight: 0.01,
         },
         change: 'add',
         operation: 'boosts',
