@@ -163,8 +163,8 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
   const emptyRules = {
     pinnedProducts: [],
     blockedProducts: [],
-    boosts: { numeric: [], alphaNumeric: [], product: [] },
-    buries: { numeric: [], alphaNumeric: [], product: [] },
+    boosts: { alphaNumeric: [], numeric: [], product: [] },
+    buries: { alphaNumeric: [], numeric: [], product: [] },
   };
 
   const { categoryProducts, categoryFacets, setRules } = useCategoryPreview(

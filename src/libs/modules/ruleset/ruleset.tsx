@@ -310,12 +310,7 @@ export const Ruleset = ({
                 { title: 'Visual Editor' },
                 {
                   title: 'Changes',
-                  count:
-                    merchandisingRules.pinnedProducts.length +
-                    merchandisingRules.boosts.alphaNumeric.length +
-                    merchandisingRules.boosts.numeric.length +
-                    merchandisingRules.buries.alphaNumeric.length +
-                    merchandisingRules.buries.numeric.length,
+                  count: totalCount,
                 },
               ]}
               onTabChange={setCurrentEditorTab}

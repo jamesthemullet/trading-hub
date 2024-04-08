@@ -8,7 +8,7 @@ import {
   AttributeValue,
 } from './ruleset-attributes.styles';
 import { AttributeWeight } from './weight';
-import { AlphanumericBoostBury } from '../../api';
+import { AlphaNumericBoostBury } from '../../api';
 import Image from 'next/image';
 
 export const AlphanumericAttribute = ({
@@ -16,7 +16,7 @@ export const AlphanumericAttribute = ({
   fields,
   operation,
   weight,
-}: AlphanumericBoostBury & {
+}: AlphaNumericBoostBury & {
   isEditable?: boolean;
   operation: 'bury' | 'boost';
 }) => (

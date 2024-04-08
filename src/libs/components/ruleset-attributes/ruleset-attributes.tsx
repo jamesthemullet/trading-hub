@@ -536,12 +536,12 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                         </Dropdown>
                       </DropdownWrapper>
                       <SearchWrapper>
-                        <label htmlFor="filerAlphanumericAttributes">
+                        <label htmlFor="filerAlphaNumericAttributes">
                           Filter alphaNumeric attributes
                         </label>
                         <Search
                           name="Filter alphaNumeric attributes"
-                          id="filerAlphanumericAttributes"
+                          id="filerAlphaNumericAttributes"
                           value={alphanumbericSearchValue}
                           onChange={(e) =>
                             setAlphaNumericSearchValue(e.target.value)
