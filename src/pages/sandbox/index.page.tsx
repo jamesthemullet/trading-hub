@@ -27,6 +27,17 @@ const Sandbox = () => {
         <ArrowButton direction="down"></ArrowButton>
         <ArrowButton isDisabled></ArrowButton>
       </Example>
+      <Example>
+        <h2>New arrow icons</h2>
+        <img
+          src="/trading-hub/asset/icon-up-arrow-in-green-circle.svg"
+          alt=""
+        />
+        <img
+          src="/trading-hub/asset/icon-down-arrow-in-orange-circle.svg"
+          alt=""
+        />
+      </Example>
     </div>
   );
 };
