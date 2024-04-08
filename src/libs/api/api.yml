@@ -342,7 +342,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/FacetConfigWithId'
+                  $ref: '#/components/schemas/FacetsList'
         '400':
           description: Bad request
           content:
@@ -365,7 +365,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FacetConfigWithId'
+                $ref: '#/components/schemas/ReturnedFacet'
         '400':
           description: Bad request
           content:
@@ -390,7 +390,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FacetConfigWithId'
+                $ref: '#/components/schemas/ReturnedFacet'
         '400':
           description: Bad request
           content:
@@ -548,6 +548,46 @@ components:
             - id
             - categoryName
             - lastChanged
+    FacetsList:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedFacet'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - ruleSets
+        - pagination
+    ReturnedFacet:
+      type: object
+      properties:
+        id:
+          type: string
+        categoryName:
+          type: string
+        categoryId:
+          type: string
+        influence:
+          type: string
+        isEnabled:
+          type: boolean
+        lastChanged:
+          type: object
+          properties:
+            date:
+              type: string
+              format: date-time
+            user:
+              type: string
+          required:
+            - date
+            - user
+      required:
+        - id
+        - categoryName
+        - lastChanged
     SearchPreviewResponse:
       type: object
       properties:
