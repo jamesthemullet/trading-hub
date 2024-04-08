@@ -1,4 +1,19 @@
-import { BoostsBuries } from '../../../libs/api';
+import {
+  BoostsBuries,
+  BoostsBuriesWithInfo,
+  ProductBoostBury,
+} from '../../../libs/api';
+
+export const mockProducts: ProductBoostBury[] = [
+  {
+    id: '2',
+    weight: 0.7,
+  },
+  {
+    id: '3',
+    weight: 0.3,
+  },
+];
 
 export const boostMock: BoostsBuries = {
   numeric: [
@@ -35,6 +50,24 @@ export const boostMock: BoostsBuries = {
   ],
 };
 
+export const boostWithInfoMock: BoostsBuriesWithInfo = {
+  numeric: boostMock.numeric,
+  alphaNumeric: boostMock.alphaNumeric,
+  product: mockProducts.map((product, index) => ({
+    id: product.id!,
+    weight: product.weight!,
+    productId: `productId-${index + 1}`,
+    title: 'Product title',
+    imageUrl: ['example.jpg'],
+    brand: 'M&S Collection',
+    isInStock: true,
+    metadata: { isPinned: false },
+    price: '10',
+    rating: 4,
+    url: '',
+  })),
+};
+
 export const buriesMock: BoostsBuries = {
   numeric: [
     {
@@ -58,14 +91,23 @@ export const buriesMock: BoostsBuries = {
       values: ['Accessories', 'Clothing'],
     },
   ],
-  product: [
-    {
-      id: '2',
-      weight: 0.7,
-    },
-    {
-      id: '3',
-      weight: 0.3,
-    },
-  ],
+  product: mockProducts,
+};
+
+export const buriesWithInfoMock: BoostsBuriesWithInfo = {
+  numeric: buriesMock.numeric,
+  alphaNumeric: buriesMock.alphaNumeric,
+  product: mockProducts.map((product, index) => ({
+    id: product.id!,
+    weight: product.weight!,
+    productId: `productId-${index + 1}`,
+    title: 'Product title',
+    imageUrl: ['example.jpg'],
+    brand: 'M&S Collection',
+    isInStock: true,
+    metadata: { isPinned: false },
+    price: '10',
+    rating: 4,
+    url: '',
+  })),
 };
