@@ -160,21 +160,20 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
   const [withRules, setWithRules] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const { categoryProducts, categoryFacets, refetchRuleSetPreview } =
-    useCategoryPreview(
-      categoryId,
-      withRules
-        ? merchandisingRules
-        : {
-            pinnedProducts: [],
-            blockedProducts: [],
-          }
-    );
+  const emptyRules = {
+    pinnedProducts: [],
+    blockedProducts: [],
+  };
+
+  const { categoryProducts, categoryFacets, setRules } = useCategoryPreview(
+    categoryId,
+    withRules ? merchandisingRules : emptyRules
+  );
 
   const toggleView = (withMerchandisingRules: boolean) => {
     setIsDropdownOpen(false);
     setWithRules(withMerchandisingRules);
-    refetchRuleSetPreview();
+    setRules(withMerchandisingRules ? merchandisingRules : emptyRules);
   };
 
   return (
