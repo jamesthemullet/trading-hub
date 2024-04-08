@@ -14,7 +14,7 @@ export const NumericAttribute = ({
   name,
   onDelete,
   operation,
-  weight = 1.0,
+  weight = 0.01,
 }: {
   isEditable?: boolean;
   name: string;

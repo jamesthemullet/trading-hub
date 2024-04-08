@@ -401,7 +401,7 @@ export const RulesetAttributes = ({
                       <AlphanumericAttribute
                         operation={selectedOperation}
                         fields={selectedAlphanumericValues}
-                        weight={1}
+                        weight={0.01}
                       />
                     )}
                 </SelectedAttribute>
@@ -711,11 +711,11 @@ export const RulesetAttributes = ({
                           selectedAttributeType === 'alphanumeric'
                             ? {
                                 fields: selectedAlphanumericValues,
-                                weight: 1,
+                                weight: 0.01,
                               }
                             : {
                                 field: selectedNumericField,
-                                weight: 1,
+                                weight: 0.01,
                               };
 
                         onAddAttribute({
