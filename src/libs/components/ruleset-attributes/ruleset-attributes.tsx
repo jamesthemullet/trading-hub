@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Modal } from '@mantine/core';
 const pluralize = require('pluralize');
 
-import { Button } from '../button/button';
+import { Button } from '../buttons/button/button';
 import { spacing } from '../utils/spacing';
 import { useState } from 'react';
 import { color } from '../utils/constants';
@@ -12,7 +12,7 @@ import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { useAttributes } from '@/libs/hooks';
 import { AttributesResponse, MerchandisingRules } from '@/libs/api';
 import { Search } from '../search/search';
-import { Dropdown, DropdownOption } from '../dropdown/dropdown';
+import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
 import { NumericAttribute } from './numeric-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { AttributeCount, AttributesList } from './ruleset-attributes.styles';

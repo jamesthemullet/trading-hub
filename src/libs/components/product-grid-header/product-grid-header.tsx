@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
-import { Button } from '../button/button';
+import { Button } from '../buttons/button/button';
 import { useState } from 'react';
 import { ModalUnsavedChanges } from '../modal';
 
@@ -29,14 +29,16 @@ const Actions = styled.div`
 type Props = {
   hasChanges: boolean;
   hasPreview: boolean;
+  categoryId?: string;
   onCancel: () => void;
   onPreview: () => void;
-  onSave: () => void;
+  onSave: (id: string) => void;
 };
 
 export const ProductGridHeader = ({
   hasChanges,
   hasPreview,
+  categoryId,
   onCancel,
   onPreview,
   onSave,
@@ -50,6 +52,11 @@ export const ProductGridHeader = ({
       onCancel();
     }
   };
+  const handleSave = () => {
+    if (!categoryId) return;
+
+    onSave(categoryId);
+  };
 
   return (
     <>
@@ -61,7 +68,7 @@ export const ProductGridHeader = ({
           <Button onClick={onPreview} isDisabled={!hasPreview}>
             Preview
           </Button>
-          <Button theme="primary" onClick={onSave}>
+          <Button theme="primary" isDisabled={!hasPreview} onClick={handleSave}>
             Save
           </Button>
         </Actions>

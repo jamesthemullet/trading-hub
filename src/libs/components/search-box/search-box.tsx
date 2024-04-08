@@ -2,7 +2,7 @@ import type { ReactElement, RefObject } from 'react';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { type ButtonProps, Button } from '../button/button';
+import { type ButtonProps, Button } from '../buttons/button/button';
 import { Icon } from '../icon/icon';
 import { type InputProps, Input } from '../input/input';
 import { mediaQuery } from '../utils/media-query';

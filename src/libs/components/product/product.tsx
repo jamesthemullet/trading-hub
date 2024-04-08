@@ -5,7 +5,7 @@ import type { Product as ProductType } from '../../api';
 import { spacing } from '../utils/spacing';
 import { Text } from '../typography/typography.styles';
 
-import { Button } from '../button/button';
+import { Button } from '../buttons/button/button';
 import {
   ErrorText,
   LockActions,

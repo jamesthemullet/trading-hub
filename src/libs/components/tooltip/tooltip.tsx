@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Button } from '../button/button';
+import { Button } from '../buttons/button/button';
 import { Icon } from '../icon/icon';
 import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
 import { spacing } from '../utils/spacing';

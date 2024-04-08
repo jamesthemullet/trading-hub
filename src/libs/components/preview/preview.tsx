@@ -1,7 +1,7 @@
 import type { Facet, MerchandisingRules } from '@/libs/api';
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
-import { Dropdown } from '../dropdown/dropdown';
+import { Dropdown } from '../dropdowns/dropdown/dropdown';
 import { useState } from 'react';
 import { useCategoryPreview } from '../../hooks';
 import { ProductBox } from '../visual-editor/visual-editor.styles';
@@ -160,23 +160,22 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
   const [withRules, setWithRules] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const { categoryProducts, categoryFacets, refetchRuleSetPreview } =
-    useCategoryPreview(
-      categoryId,
-      withRules
-        ? merchandisingRules
-        : {
-            pinnedProducts: [],
-            blockedProducts: [],
-            boosts: { numeric: [], alphaNumeric: [], product: [] },
-            buries: { numeric: [], alphaNumeric: [], product: [] },
-          }
-    );
+  const emptyRules = {
+    pinnedProducts: [],
+    blockedProducts: [],
+    boosts: { numeric: [], alphaNumeric: [], product: [] },
+    buries: { numeric: [], alphaNumeric: [], product: [] },
+  };
+
+  const { categoryProducts, categoryFacets, setRules } = useCategoryPreview(
+    categoryId,
+    withRules ? merchandisingRules : emptyRules
+  );
 
   const toggleView = (withMerchandisingRules: boolean) => {
     setIsDropdownOpen(false);
     setWithRules(withMerchandisingRules);
-    refetchRuleSetPreview();
+    setRules(withMerchandisingRules ? merchandisingRules : emptyRules);
   };
 
   return (
