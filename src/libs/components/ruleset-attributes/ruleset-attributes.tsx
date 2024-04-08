@@ -614,7 +614,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                             (attribute) => attribute.field === alphanumericField
                           )?.values || [];
 
-                        const newVales = isSelected
+                        const newValues = isSelected
                           ? [...currentValues, name]
                           : currentValues.filter((i) => i !== name);
 
@@ -624,7 +624,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
 
                         setSelectedAlphanumericValues([
                           ...updatedField,
-                          { field: alphanumericField, values: newVales },
+                          { field: alphanumericField, values: newValues },
                         ]);
                       }}
                       values={alphanumericAttributeValues
