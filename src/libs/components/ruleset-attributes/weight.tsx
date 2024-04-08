@@ -62,10 +62,10 @@ export const AttributeWeight = ({
         <AttributeRow>
           <Buttons>
             <Button onClick={() => setIsEditing(true)} aria-label="Edit weight">
-              <img src="/trading-hub/asset/icon-edit.svg" />
+              <img src="/trading-hub/asset/icon-edit.svg" alt="" />
             </Button>
             <Button aria-label="Delete attribute">
-              <img src="/trading-hub/asset/icon-delete.svg" />
+              <img src="/trading-hub/asset/icon-delete.svg" alt="" />
             </Button>
           </Buttons>
         </AttributeRow>
@@ -77,7 +77,7 @@ export const AttributeWeight = ({
               onClick={() => setIsEditing(false)}
               aria-label="Save weight change"
             >
-              <img src="/trading-hub/asset/icon-tick.svg" />
+              <img src="/trading-hub/asset/icon-tick-in-circle.svg" alt="" />
             </Button>
             <Button
               onClick={
@@ -86,7 +86,7 @@ export const AttributeWeight = ({
               }
               aria-label="Cancel weight change"
             >
-              <img src="/trading-hub/asset/icon-cross.svg" />
+              <img src="/trading-hub/asset/icon-cross-in-circle.svg" alt="" />
             </Button>
           </Buttons>
         </AttributeRow>
