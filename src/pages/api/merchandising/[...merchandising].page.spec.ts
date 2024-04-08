@@ -9,7 +9,12 @@ import type { MerchandisingEnvironment } from './[...merchandising].page';
 import proxy from './[...merchandising].page';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 import { createMockNextApiResponse } from '@/test/create-mock-next-api-response';
-import { boostMock, buriesMock } from './mocks';
+import {
+  boostMock,
+  boostWithInfoMock,
+  buriesMock,
+  buriesWithInfoMock,
+} from './mocks';
 jest.mock('next-auth/jwt', () => ({
   getToken: jest.fn(),
 }));
@@ -236,6 +241,40 @@ describe('Merchandising api proxy', () => {
         rules: {
           boosts: boostMock,
           buries: buriesMock,
+        },
+      });
+    });
+
+    it('when url is equal to /api/merchandising/ruleset/* and method is DELETE', async () => {
+      const response = responses[3][0];
+      const res = await performDelete('/api/merchandising/ruleset/1', response);
+
+      expect(httpDelete).toHaveBeenCalled();
+      expect(httpGet).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({});
+    });
+
+    it('when url is equal to /api/merchandising/category/1/preview', async () => {
+      const response = responses[3][0];
+      const res = await performGet(
+        '/api/merchandising/category/1/preview',
+        response
+      );
+
+      expect(httpGet).toHaveBeenCalled();
+      expect(httpGet.mock.calls[0][0].url).toBe(
+        `${baseUrl}/merchandising/category/1/preview`
+      );
+      expect(httpGet.mock.calls[0][0].method).toBe('GET');
+      expect(httpGet.mock.calls[0][0].body).toBeNull();
+      expect([...httpGet.mock.calls[0][0].headers]).toEqual([]);
+
+      expect(res.status).toHaveBeenCalledWith(response.status);
+      expect(res.json).toHaveBeenCalledWith({
+        rules: {
+          boosts: boostWithInfoMock,
+          buries: buriesWithInfoMock,
         },
       });
     });
