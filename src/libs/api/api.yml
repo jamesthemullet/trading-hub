@@ -340,9 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FacetsList'
+                $ref: '#/components/schemas/FacetsList'
         '400':
           description: Bad request
           content:
@@ -551,7 +549,7 @@ components:
     FacetsList:
       type: object
       properties:
-        ruleSets:
+        Facets:
           type: array
           items:
             $ref: '#/components/schemas/ReturnedFacet'
@@ -587,6 +585,9 @@ components:
       required:
         - id
         - categoryName
+        - categoryId
+        - influence
+        - isEnabled
         - lastChanged
     SearchPreviewResponse:
       type: object
