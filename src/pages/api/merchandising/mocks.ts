@@ -26,16 +26,19 @@ export const boostMock: BoostsBuries = {
       weight: 0.2,
     },
   ],
-  alphaNumeric: [
+  alphanumeric: [
     {
-      field: 'brand',
       weight: 0.5,
-      values: ['Nike', 'Adidas'],
-    },
-    {
-      field: 'category',
-      weight: 1,
-      values: ['Shoes', 'Clothing'],
+      fields: [
+        {
+          field: 'brand',
+          values: ['Nike', 'Adidas'],
+        },
+        {
+          field: 'category',
+          values: ['Shoes', 'Clothing'],
+        },
+      ],
     },
   ],
   product: [
@@ -52,7 +55,7 @@ export const boostMock: BoostsBuries = {
 
 export const boostWithInfoMock: BoostsBuriesWithInfo = {
   numeric: boostMock.numeric,
-  alphaNumeric: boostMock.alphaNumeric,
+  alphanumeric: boostMock.alphanumeric,
   product: mockProducts.map((product, index) => ({
     id: product.id!,
     weight: product.weight!,
@@ -79,16 +82,19 @@ export const buriesMock: BoostsBuries = {
       weight: 0.2,
     },
   ],
-  alphaNumeric: [
+  alphanumeric: [
     {
-      field: 'brand',
       weight: 0.7,
-      values: ['Puma', 'Reebok'],
-    },
-    {
-      field: 'category',
-      weight: 0.7,
-      values: ['Accessories', 'Clothing'],
+      fields: [
+        {
+          field: 'brand',
+          values: ['Puma', 'Reebok'],
+        },
+        {
+          field: 'category',
+          values: ['Accessories', 'Clothing'],
+        },
+      ],
     },
   ],
   product: mockProducts,
@@ -96,7 +102,7 @@ export const buriesMock: BoostsBuries = {
 
 export const buriesWithInfoMock: BoostsBuriesWithInfo = {
   numeric: buriesMock.numeric,
-  alphaNumeric: buriesMock.alphaNumeric,
+  alphanumeric: buriesMock.alphanumeric,
   product: mockProducts.map((product, index) => ({
     id: product.id!,
     weight: product.weight!,

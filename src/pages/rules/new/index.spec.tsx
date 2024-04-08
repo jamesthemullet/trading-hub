@@ -100,8 +100,8 @@ describe('Index', () => {
           isEnabled: true,
           rules: {
             pinnedProducts: [],
-            boosts: { numeric: [], alphaNumeric: [], product: [] },
-            buries: { numeric: [], alphaNumeric: [], product: [] },
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
             blockedProducts: [],
           },
           lastChanged: {
@@ -152,8 +152,8 @@ describe('Index', () => {
           isEnabled: true,
           rules: {
             pinnedProducts: [],
-            boosts: { numeric: [], alphaNumeric: [], product: [] },
-            buries: { numeric: [], alphaNumeric: [], product: [] },
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
             blockedProducts: [],
           },
           lastChanged: {

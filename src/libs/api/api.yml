@@ -647,6 +647,8 @@ components:
           $ref: '#/components/schemas/BoostsBuriesWithInfo'
       required:
         - pinnedProducts
+        - boosts
+        - buries
     MerchandisingRules:
       type: object
       properties:
@@ -688,7 +690,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NumericBoostBury'
-        alphaNumeric:
+        alphanumeric:
           type: array
           items:
             $ref: '#/components/schemas/AlphanumericBoostBury'
@@ -698,7 +700,7 @@ components:
             $ref: '#/components/schemas/ProductBoostBury'
       required:
         - numeric
-        - alphaNumeric
+        - alphanumeric
         - product
     BoostsBuriesWithInfo:
       type: object
@@ -707,7 +709,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NumericBoostBury'
-        alphaNumeric:
+        alphanumeric:
           type: array
           items:
             $ref: '#/components/schemas/AlphanumericBoostBury'
@@ -717,6 +719,10 @@ components:
             allOf:
               - $ref: '#/components/schemas/ProductBoostBury'
               - $ref: '#/components/schemas/Product'
+      required:
+        - numeric
+        - alphanumeric
+        - product
     ProductBoostBury:
       type: object
       properties:
@@ -742,18 +748,28 @@ components:
     AlphanumericBoostBury:
       type: object
       properties:
-        field:
-          type: string
+        fields:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/AlphanumericBoostBuryField'
         weight:
           type: number
           format: double
+      required:
+        - fields
+        - weight
+    AlphanumericBoostBuryField:
+      type: object
+      properties:
+        field:
+          type: string
         values:
           type: array
           items:
             type: string
       required:
         - field
-        - weight
         - values
     ErrorResponse:
       type: object

@@ -99,7 +99,7 @@ describe('RulesetAttributes', () => {
       screen.getByText(/Select one numeric attribute below/i)
     ).toBeVisible();
 
-    const prevStepButton = screen.getAllByText('back')[0];
+    const prevStepButton = screen.getAllByText('Back')[0];
 
     act(() => {
       prevStepButton.click();
@@ -139,7 +139,7 @@ describe('RulesetAttributes', () => {
       expect(within(attributeSelection).getByText('Nike')).toBeVisible()
     );
 
-    const prevStepButton = screen.getAllByText('back')[2];
+    const prevStepButton = screen.getAllByText('Brand')[1];
 
     act(() => {
       prevStepButton.click();
@@ -149,7 +149,7 @@ describe('RulesetAttributes', () => {
       screen.getByText('Attributes are aggregated from the account level')
     ).toBeVisible();
 
-    const firstStepButton = screen.getAllByText('back')[1];
+    const firstStepButton = screen.getAllByText('Back')[1];
 
     act(() => {
       firstStepButton.click();
@@ -352,12 +352,12 @@ describe('RulesetAttributes', () => {
       pinnedProducts: [],
       boosts: {
         numeric: [],
-        alphaNumeric: [],
+        alphanumeric: [],
         product: [],
       },
       buries: {
         numeric: [],
-        alphaNumeric: buriesMock.alphaNumeric,
+        alphanumeric: buriesMock.alphanumeric,
         product: [],
       },
       blockedProducts: [],

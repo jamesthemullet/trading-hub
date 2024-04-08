@@ -33,7 +33,12 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
         {
           type: 'alphanumeric',
           name: 'Colour',
-          values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
+          values: [
+            { value: 'Red' },
+            { value: 'Blue' },
+            { value: 'Green' },
+            { value: 'Yellow' },
+          ],
         },
         {
           type: 'numeric',

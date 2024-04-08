@@ -83,12 +83,30 @@ const StyleGuide = () => {
         </Text>
       </Guide>
       <Guide>
+        <Text isStrong>Text</Text>
+        <Text>New MS London</Text>
+        <Text>Size: 14px</Text>
+        <Text>Type: Regular</Text>
+        <Text>
+          <code>&lt;Text isStrong /&gt;</code>
+        </Text>
+      </Guide>
+      <Guide>
         <Label>Label</Label>
         <Text>New MS London</Text>
         <Text>Size: 16px</Text>
         <Text>Type: Regular</Text>
         <Text>
           <code>&lt;Label /&gt;</code>
+        </Text>
+      </Guide>
+      <Guide>
+        <Label isStrong>Label</Label>
+        <Text>New MS London</Text>
+        <Text>Size: 16px</Text>
+        <Text>Type: Bold</Text>
+        <Text>
+          <code>&lt;Label isStrong /&gt;</code>
         </Text>
       </Guide>
 

@@ -28,8 +28,8 @@ export const useUpdateRuleSet = () => {
           rules: {
             pinnedProducts: pinnedProducts,
             blockedProducts: [],
-            boosts: { alphaNumeric: [], numeric: [], product: [] },
-            buries: { alphaNumeric: [], numeric: [], product: [] },
+            boosts: { alphanumeric: [], numeric: [], product: [] },
+            buries: { alphanumeric: [], numeric: [], product: [] },
           },
         };
         const response = await merchandising().rulesetUpdate(id, body);

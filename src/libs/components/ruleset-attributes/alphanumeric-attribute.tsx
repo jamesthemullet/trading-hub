@@ -1,5 +1,5 @@
 import { spacing } from '../utils/spacing';
-import { Text } from '../typography/typography.styles';
+import { Label, Text } from '../typography/typography.styles';
 
 import {
   AttributeWrapper,
@@ -8,30 +8,39 @@ import {
   AttributeValue,
 } from './ruleset-attributes.styles';
 import { AttributeWeight } from './weight';
+import { AlphanumericBoostBury } from '../../api';
+import Image from 'next/image';
 
 export const AlphanumericAttribute = ({
   isEditable,
-  values,
+  fields,
   operation,
-  weight = 1.0,
-}: {
+  weight,
+}: AlphanumericBoostBury & {
   isEditable?: boolean;
-  values: string[];
   operation: 'bury' | 'boost';
-  weight?: number;
 }) => (
   <AttributeWrapper>
     <AttributeHeading>
-      {values.map((value) => (
-        <AttributeValue key={value}>{value}</AttributeValue>
+      {fields.map(({ field, values }) => (
+        <div key={`field-${field}`}>
+          <Label isStrong>{field}</Label>
+
+          {values.map((value) => (
+            <AttributeValue key={value}>{value}</AttributeValue>
+          ))}
+        </div>
       ))}
     </AttributeHeading>
     <AttributeRow style={{ padding: spacing(1) }}>
       <Text>
         Operation{' '}
-        <img
-          src={`/trading-hub/asset/${operation}.svg`}
+        <Image
+          width={20}
+          height={20}
+          src={`/trading-hub/asset/${operation}-signifier.svg`}
           style={{ marginBottom: '-4px' }}
+          alt=""
         />{' '}
         {operation}
       </Text>

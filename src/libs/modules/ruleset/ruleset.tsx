@@ -88,12 +88,12 @@ export const Ruleset = ({
         pinnedProducts: [],
         blockedProducts: [],
         boosts: {
-          alphaNumeric: [],
+          alphanumeric: [],
           numeric: [],
           product: [],
         },
         buries: {
-          alphaNumeric: [],
+          alphanumeric: [],
           numeric: [],
           product: [],
         },
@@ -193,12 +193,12 @@ export const Ruleset = ({
       pinnedProducts,
       blockedProducts: [],
       boosts: {
-        alphaNumeric: [],
+        alphanumeric: [],
         numeric: [],
         product: [],
       },
       buries: {
-        alphaNumeric: [],
+        alphanumeric: [],
         numeric: [],
         product: [],
       },
@@ -208,9 +208,9 @@ export const Ruleset = ({
   /* istanbul ignore next */
   const totalCount =
     merchandisingRules.pinnedProducts.length +
-    (merchandisingRules.boosts?.alphaNumeric || []).length +
+    (merchandisingRules.boosts?.alphanumeric || []).length +
     (merchandisingRules.boosts?.numeric || []).length +
-    (merchandisingRules.buries?.alphaNumeric || []).length +
+    (merchandisingRules.buries?.alphanumeric || []).length +
     (merchandisingRules.buries?.numeric || []).length;
 
   const onSaveRuleset = (categoryId: string) => {

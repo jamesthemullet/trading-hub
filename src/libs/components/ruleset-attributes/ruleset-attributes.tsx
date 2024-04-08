@@ -16,6 +16,7 @@ import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
 import { NumericAttribute } from './numeric-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { AttributeCount, AttributesList } from './ruleset-attributes.styles';
+import Image from 'next/image';
 
 const MODAL_WIDTH = 435;
 
@@ -43,6 +44,12 @@ const ModalSide = styled.div`
   position: relative;
   background-color: #fff;
   overflow: hidden;
+`;
+
+const SelectedAttribute = styled.div`
+  border-right: solid 1px ${color.lightGrey};
+  height: 100%;
+  padding-right: ${spacing(1)};
 `;
 
 const ModalSection = styled.div`
@@ -220,31 +227,36 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
     useState<string[]>([]);
   const [numbericSearchValue, setNumericSearchValue] = useState('');
-  const [alphanumbericSearchValue, setAlphaNumericSearchValue] = useState('');
-  const [alphanumbericFilterValue, setAlphaNumericFilterValue] = useState('');
-  const [selectedAttributeValues, setSelectedAttributeValues] = useState<
-    string[]
+  const [alphanumericSearchValue, setAlphanumericSearchValue] = useState('');
+  const [alphanumbericFilterValue, setAlphanumericFilterValue] = useState('');
+  const [alphanumericField, setAlphanumericField] = useState<string>('');
+  const [selectedAlphanumericValues, setSelectedAlphanumericValues] = useState<
+    Array<{
+      field: string;
+      values: Array<string>;
+    }>
   >([]);
+  const [selectedNumericField, setSelectedNumericField] = useState<string>('');
   const [selectedOperation, setSelectedOperation] = useState<'boost' | 'bury'>(
     'boost'
   );
   const [selectedAttributeType, setSelectedAttributeType] = useState<
     'numeric' | 'alphanumeric'
-  >();
+  >('numeric');
   /* istanbul ignore next */
   const countOfAttributeChanges =
     (merchandisingRules.boosts?.numeric?.length ?? 0) +
-    (merchandisingRules.boosts?.alphaNumeric?.length ?? 0) +
+    (merchandisingRules.boosts?.alphanumeric?.length ?? 0) +
     (merchandisingRules.buries?.numeric?.length ?? 0) +
-    (merchandisingRules.buries?.alphaNumeric?.length ?? 0);
+    (merchandisingRules.buries?.alphanumeric?.length ?? 0);
   /* istanbul ignore next */
   const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
   /* istanbul ignore next */
-  const alphaNumericBoost = merchandisingRules.boosts?.alphaNumeric ?? [];
+  const alphanumericBoost = merchandisingRules.boosts?.alphanumeric ?? [];
   /* istanbul ignore next */
   const numericBury = merchandisingRules.buries?.numeric ?? [];
   /* istanbul ignore next */
-  const alphaNumericBuries = merchandisingRules.buries?.alphaNumeric ?? [];
+  const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
 
   return (
     <Wrapper>
@@ -258,28 +270,28 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
             {countOfAttributeChanges} attribute{' '}
             {pluralize('rule', countOfAttributeChanges)}
           </AttributeCount>
-          {(!!alphaNumericBoost.length || !!alphaNumericBuries.length) && (
+          {(!!alphanumericBoost.length || !!alphanumericBuries.length) && (
             <Label isStrong withMargin>
               Product description attribute rules
             </Label>
           )}
-          {!!alphaNumericBoost.length &&
-            alphaNumericBoost.map((attribute) => (
+          {!!alphanumericBoost.length &&
+            alphanumericBoost.map((attribute) => (
               <AlphanumericAttribute
-                key={attribute.values[0]}
+                key={attribute.fields[0].field}
                 isEditable
-                values={attribute.values}
+                fields={attribute.fields}
                 operation="boost"
                 weight={attribute.weight}
               />
             ))}
 
-          {!!alphaNumericBuries.length &&
-            alphaNumericBuries.map((attribute) => (
+          {!!alphanumericBuries.length &&
+            alphanumericBuries.map((attribute) => (
               <AlphanumericAttribute
-                key={attribute.values[0]}
+                key={attribute.fields[0].field}
                 isEditable
-                values={attribute.values}
+                fields={attribute.fields}
                 operation="bury"
                 weight={attribute.weight}
               />
@@ -333,21 +345,23 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                 }}
                 aria-label="Selected Attribute"
               >
-                {selectedAttributeType === 'numeric' &&
-                  !!selectedAttributeValues.length && (
-                    <NumericAttribute
-                      operation={selectedOperation}
-                      name={selectedAttributeValues[0]}
-                    />
-                  )}
-
-                {selectedAttributeType === 'alphanumeric' &&
-                  !!selectedAttributeValues.length && (
-                    <AlphanumericAttribute
-                      operation={selectedOperation}
-                      values={selectedAttributeValues}
-                    />
-                  )}
+                <SelectedAttribute>
+                  {selectedAttributeType === 'numeric' &&
+                    !!selectedNumericField && (
+                      <NumericAttribute
+                        operation={selectedOperation}
+                        name={selectedNumericField}
+                      />
+                    )}
+                  {selectedAttributeType === 'alphanumeric' &&
+                    !!selectedAlphanumericValues.length && (
+                      <AlphanumericAttribute
+                        operation={selectedOperation}
+                        fields={selectedAlphanumericValues}
+                        weight={1}
+                      />
+                    )}
+                </SelectedAttribute>
               </ModalSide>
               <ModalSide>
                 <ModalSection>
@@ -407,10 +421,10 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                       isStrong
                       onClick={() => {
                         setModalStep(0);
-                        setSelectedAttributeValues([]);
+                        setSelectedNumericField('');
                       }}
                     >
-                      back
+                      Back
                     </PreviousStep>
                   </ModalSection>
                   <ModalSection>
@@ -442,11 +456,10 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                       )
                       .map((attribute) => ({
                         name: attribute.name,
-                        isSelected:
-                          selectedAttributeValues.indexOf(attribute.name) > -1,
+                        isSelected: selectedNumericField === attribute.name,
                       }))}
                     onSelect={(name) => {
-                      setSelectedAttributeValues([name]);
+                      setSelectedNumericField(name);
                       setSelectedAttributeType('numeric');
                     }}
                   />
@@ -463,11 +476,13 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                       as="button"
                       isStrong
                       onClick={() => {
-                        setSelectedAttributeValues([]);
+                        setSelectedAlphanumericValues([]);
+
+                        setSelectedNumericField('');
                         setModalStep(0);
                       }}
                     >
-                      back
+                      Back
                     </PreviousStep>
                   </ModalSection>
                   <ModalSection>
@@ -479,7 +494,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                       <DropdownWrapper>
                         <Dropdown
                           label={`${selectedOperation}`}
-                          icon={selectedOperation}
+                          icon={`${selectedOperation}-signifier`}
                           isOpen={isOperationDropdownOpen}
                           onOpen={() => setIsOperationDropdownOpen(true)}
                           onClose={
@@ -496,9 +511,11 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                               }
                             }
                           >
-                            <img
+                            <Image
                               src="/trading-hub/asset/boost-signifier.svg"
                               alt=""
+                              width={20}
+                              height={20}
                             />
                             Boost
                           </DropdownOption>
@@ -508,9 +525,11 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                               setSelectedOperation('bury');
                             }}
                           >
-                            <img
+                            <Image
                               src="/trading-hub/asset/bury-signifier.svg"
                               alt=""
+                              width={20}
+                              height={20}
                             />
                             Bury
                           </DropdownOption>
@@ -523,9 +542,9 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                         <Search
                           name="Filter alphanumeric attributes"
                           id="filerAlphanumericAttributes"
-                          value={alphanumbericSearchValue}
+                          value={alphanumericSearchValue}
                           onChange={(e) =>
-                            setAlphaNumericSearchValue(e.target.value)
+                            setAlphanumericSearchValue(e.target.value)
                           }
                         />
                       </SearchWrapper>
@@ -535,7 +554,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                     .filter((attribute) =>
                       attribute.name
                         .toLowerCase()
-                        .includes(alphanumbericSearchValue.toLowerCase())
+                        .includes(alphanumericSearchValue.toLowerCase())
                     )
                     .map((attribute) => (
                       <ModalSection key={attribute.name}>
@@ -545,6 +564,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                             setAlphanumericAttributeValues(
                               attribute.values.map((value) => value.value)
                             );
+                            setAlphanumericField(attribute.name);
                             setModalStep(3);
                           }}
                           isStrong
@@ -567,7 +587,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                       isStrong
                       onClick={() => setModalStep(2)}
                     >
-                      back
+                      {alphanumericField}
                     </PreviousStep>
                     <Count>Showing: {alphanumericAttributeValues.length}</Count>
                     <SearchWrapper>
@@ -579,7 +599,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                         id="filerSelectedAttributes"
                         value={alphanumbericFilterValue}
                         onChange={(e) =>
-                          setAlphaNumericFilterValue(e.target.value)
+                          setAlphanumericFilterValue(e.target.value)
                         }
                       />
                     </SearchWrapper>
@@ -588,11 +608,24 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                     <Checkboxes
                       onSelect={(isSelected, name) => {
                         setSelectedAttributeType('alphanumeric');
-                        setSelectedAttributeValues(
-                          isSelected
-                            ? [...selectedAttributeValues, name]
-                            : selectedAttributeValues.filter((i) => i !== name)
+
+                        const currentValues =
+                          selectedAlphanumericValues.find(
+                            (attribute) => attribute.field === alphanumericField
+                          )?.values || [];
+
+                        const newValues = isSelected
+                          ? [...currentValues, name]
+                          : currentValues.filter((i) => i !== name);
+
+                        const updatedField = selectedAlphanumericValues.filter(
+                          (attr) => attr.field !== alphanumericField
                         );
+
+                        setSelectedAlphanumericValues([
+                          ...updatedField,
+                          { field: alphanumericField, values: newValues },
+                        ]);
                       }}
                       values={alphanumericAttributeValues
                         .filter((value) =>
@@ -603,7 +636,9 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                         .map((value) => ({
                           name: value,
                           isSelected:
-                            selectedAttributeValues.indexOf(value) > -1,
+                            selectedAlphanumericValues
+                              .find((attr) => attr.field === alphanumericField)
+                              ?.values.includes(value) || false,
                         }))}
                     />
                   </div>
@@ -614,7 +649,9 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                     onClick={() => {
                       setIsModalOpen(false);
                       setModalStep(0);
-                      setSelectedAttributeValues([]);
+
+                      setSelectedNumericField('');
+                      setSelectedAlphanumericValues([]);
                     }}
                     isInline={true}
                   >
