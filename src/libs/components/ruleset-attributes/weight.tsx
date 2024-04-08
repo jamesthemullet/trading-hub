@@ -17,9 +17,11 @@ const Button = styled.button`
 
 export const AttributeWeight = ({
   isEditable,
+  onDelete,
   weight,
 }: {
   isEditable?: boolean;
+  onDelete?: () => void;
   weight: number | undefined;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -64,7 +66,7 @@ export const AttributeWeight = ({
             <Button onClick={() => setIsEditing(true)} aria-label="Edit weight">
               <img src="/trading-hub/asset/icon-edit.svg" alt="" />
             </Button>
-            <Button aria-label="Delete attribute">
+            <Button onClick={onDelete} aria-label="Delete attribute">
               <img src="/trading-hub/asset/icon-delete.svg" alt="" />
             </Button>
           </Buttons>

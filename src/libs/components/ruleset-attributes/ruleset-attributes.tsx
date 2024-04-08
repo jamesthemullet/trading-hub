@@ -10,13 +10,19 @@ import { Label, Text } from '../typography/typography.styles';
 import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { useAttributes } from '@/libs/hooks';
-import { AttributesResponse, MerchandisingRules } from '@/libs/api';
+import {
+  AlphanumericBoostBury,
+  AttributesResponse,
+  MerchandisingRules,
+  NumericBoostBury,
+} from '@/libs/api';
 import { Search } from '../search/search';
 import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
 import { NumericAttribute } from './numeric-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { AttributeCount, AttributesList } from './ruleset-attributes.styles';
 import Image from 'next/image';
+import { EditAttribute } from '../../modules/ruleset/ruleset';
 
 const MODAL_WIDTH = 435;
 
@@ -207,6 +213,7 @@ const SectionLabel = ({
 export type Props = {
   category?: string;
   merchandisingRules: MerchandisingRules;
+  onAddAttribute: ({}: EditAttribute) => void;
 };
 
 const getNumericAttributes = (attributes: AttributesResponse['attributes']) => {
@@ -219,7 +226,11 @@ const getAlphanumericAttributes = (
   return attributes.filter((attribute) => attribute.type === 'alphanumeric');
 };
 
-export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
+export const RulesetAttributes = ({
+  category,
+  merchandisingRules,
+  onAddAttribute,
+}: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
@@ -283,6 +294,14 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                 fields={attribute.fields}
                 operation="boost"
                 weight={attribute.weight}
+                onDelete={({ fields, weight }: AlphanumericBoostBury) =>
+                  onAddAttribute({
+                    attribute: { fields, weight },
+                    change: 'remove',
+                    operation: 'boosts',
+                    type: 'alphanumeric',
+                  })
+                }
               />
             ))}
 
@@ -294,6 +313,14 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                 fields={attribute.fields}
                 operation="bury"
                 weight={attribute.weight}
+                onDelete={({ fields, weight }: AlphanumericBoostBury) =>
+                  onAddAttribute({
+                    attribute: { fields, weight },
+                    change: 'remove',
+                    operation: 'buries',
+                    type: 'alphanumeric',
+                  })
+                }
               />
             ))}
 
@@ -310,6 +337,14 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                 operation="boost"
                 name={attribute.field}
                 weight={attribute.weight}
+                onDelete={({ field, weight }: NumericBoostBury) =>
+                  onAddAttribute({
+                    attribute: { field, weight },
+                    change: 'remove',
+                    operation: 'boosts',
+                    type: 'numeric',
+                  })
+                }
               />
             ))}
           {!!numericBury.length &&
@@ -320,6 +355,14 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                 operation="bury"
                 name={attribute.field}
                 weight={attribute.weight}
+                onDelete={({ field, weight }: NumericBoostBury) =>
+                  onAddAttribute({
+                    attribute: { field, weight },
+                    change: 'remove',
+                    operation: 'buries',
+                    type: 'numeric',
+                  })
+                }
               />
             ))}
         </AttributesList>
@@ -477,7 +520,7 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                       isStrong
                       onClick={() => {
                         setSelectedAlphanumericValues([]);
-
+                        setSelectedOperation('boost');
                         setSelectedNumericField('');
                         setModalStep(0);
                       }}
@@ -656,7 +699,44 @@ export const RulesetAttributes = ({ category, merchandisingRules }: Props) => {
                     isInline={true}
                   >
                     Cancel
-                  </Button>
+                  </Button>{' '}
+                  {(!!selectedNumericField.length ||
+                    !!selectedAlphanumericValues.length) && (
+                    <Button
+                      onClick={() => {
+                        setIsModalOpen(false);
+                        setModalStep(0);
+
+                        const attribute =
+                          selectedAttributeType === 'alphanumeric'
+                            ? {
+                                fields: selectedAlphanumericValues,
+                                weight: 1,
+                              }
+                            : {
+                                field: selectedNumericField,
+                                weight: 1,
+                              };
+
+                        onAddAttribute({
+                          attribute,
+                          operation:
+                            selectedOperation === 'boost' ? 'boosts' : 'buries',
+                          change: 'add',
+                          type: selectedAttributeType,
+                        });
+
+                        setSelectedOperation('boost');
+                        setSelectedNumericField('');
+                        setSelectedAlphanumericValues([]);
+                      }}
+                      isInline
+                      isPrimary
+                      style={{ marginLeft: spacing(1) }}
+                    >
+                      Done
+                    </Button>
+                  )}
                 </ModalFooter>
               </ModalSide>
             </ModalContainer>

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import isEqual from 'lodash/isEqual';
 import {
   CategorySearch,
   Preview,
@@ -10,7 +11,14 @@ import {
   VisualEditor,
 } from '../../components';
 import { useEffect, useState } from 'react';
-import type { Category, Product, MerchandisingRules } from '@/libs/api';
+import type {
+  Category,
+  Product,
+  MerchandisingRules,
+  AlphanumericBoostBury,
+  NumericBoostBury,
+  AttributeType,
+} from '@/libs/api';
 import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
 import { useRouter } from 'next/router';
 
@@ -60,6 +68,13 @@ type NewRulesetValues = {
 interface EditRulesetValues extends NewRulesetValues {
   rulesetId: string;
 }
+
+export type EditAttribute = {
+  attribute: AlphanumericBoostBury | NumericBoostBury;
+  change: 'add' | 'remove';
+  operation: 'boosts' | 'buries';
+  type: AttributeType;
+};
 
 export const Ruleset = ({
   onCancel,
@@ -205,6 +220,48 @@ export const Ruleset = ({
     });
   };
 
+  const onAddAttribute = ({
+    attribute,
+    operation,
+    type,
+    change,
+  }: EditAttribute) => {
+    setMerchandisingRules((prevState) => {
+      const newState = prevState;
+      if (type === 'alphanumeric') {
+        newState[operation] = {
+          ...newState[operation],
+          alphanumeric:
+            change === 'add'
+              ? [
+                  ...merchandisingRules[operation][type],
+                  attribute as AlphanumericBoostBury,
+                ]
+              : [
+                  ...merchandisingRules[operation][type].filter(
+                    (attr) => !isEqual(attr, attribute)
+                  ),
+                ],
+        };
+      }
+      if (type === 'numeric') {
+        newState[operation] = {
+          ...newState[operation],
+          numeric:
+            change === 'add'
+              ? [
+                  ...merchandisingRules[operation][type],
+                  attribute as NumericBoostBury,
+                ]
+              : merchandisingRules[operation][type].filter(
+                  (attr) => !isEqual(attr, attribute)
+                ),
+        };
+      }
+      return { ...newState };
+    });
+  };
+
   /* istanbul ignore next */
   const totalCount =
     merchandisingRules.pinnedProducts.length +
@@ -300,6 +357,7 @@ export const Ruleset = ({
             <RulesetAttributes
               merchandisingRules={merchandisingRules}
               category={selectedCategory.identifier}
+              onAddAttribute={onAddAttribute}
             />
           )}
         </ProductSearchPanel>

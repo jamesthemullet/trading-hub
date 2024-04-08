@@ -15,9 +15,11 @@ export const AlphanumericAttribute = ({
   isEditable,
   fields,
   operation,
+  onDelete,
   weight,
 }: AlphanumericBoostBury & {
   isEditable?: boolean;
+  onDelete?: ({ fields, weight }: AlphanumericBoostBury) => void;
   operation: 'bury' | 'boost';
 }) => (
   <AttributeWrapper>
@@ -45,6 +47,10 @@ export const AlphanumericAttribute = ({
         {operation}
       </Text>
     </AttributeRow>
-    <AttributeWeight weight={weight} isEditable={isEditable} />
+    <AttributeWeight
+      weight={weight}
+      isEditable={isEditable}
+      onDelete={() => onDelete && onDelete({ fields, weight })}
+    />
   </AttributeWrapper>
 );
