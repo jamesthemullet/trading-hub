@@ -6,10 +6,10 @@
   "lockFileMaintenance": {
     "enabled": true
   },
-  "assigneesFromCodeOwners": true,
   "ignoreDeps": [
     "actions/checkout",
     "reviewdog/action-actionlint",
+    "reviewdog/action-misspell",
     "peter-evans/create-pull-request",
     "tsuyoshicho/action-redpen",
     "tj-actions/changed-files",
