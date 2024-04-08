@@ -327,13 +327,32 @@ paths:
         Returns the facets for a category
       parameters:
         - in: query
-          name: categoryId
+          name: q
           schema:
-            type: array
-            items:
-              type: string
+            type: string
+          required: false
+          description: either name, category id or most recent editor
+        - in: query
+          name: queryType
+          schema:
+            type: string
+            enum:
+              - category_id
+              - category_name
+              - user_name
+          required: false
+          description: type of query, only used if query specified. default is category_id
+        - in: query
+          name: start
+          schema:
+            type: integer
           required: true
-          description: When provided will only return facets relevant to these categories
+          description: Display facets after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
       responses:
         '200':
           description: A JSON representation of the facet
