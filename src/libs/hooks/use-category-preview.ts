@@ -50,7 +50,9 @@ export const useCategoryPreview = (
         setError('');
       } catch (error: unknown) {
         if (error) {
-          setError(`Failed to get categories ${(error as { status: string })?.status}`);
+          setError(
+            `Failed to get categories ${(error as { status: string })?.status}`
+          );
         }
       }
     };
