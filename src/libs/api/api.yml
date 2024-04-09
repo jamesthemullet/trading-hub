@@ -326,7 +326,8 @@ paths:
       description: >-
         Returns the facets for a category
       parameters:
-        - name: categoryId
+        - in: query
+          name: categoryId
           schema:
             type: array
             items:
