@@ -23,8 +23,8 @@ const mockMerchandisingRules = {
     },
   ],
   blockedProducts: [],
-  boosts: { numeric: [], alphaNumeric: [], product: [] },
-  buries: { numeric: [], alphaNumeric: [], product: [] },
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
 };
 
 describe('RulesetChanges', () => {
@@ -51,11 +51,15 @@ describe('RulesetChanges', () => {
                 weight: 1,
               },
             ],
-            alphaNumeric: [
+            alphanumeric: [
               {
-                field: 'field',
                 weight: 1,
-                values: ['value'],
+                fields: [
+                  {
+                    field: 'field',
+                    values: ['value'],
+                  },
+                ],
               },
             ],
             product: [
@@ -72,11 +76,15 @@ describe('RulesetChanges', () => {
                 weight: 1,
               },
             ],
-            alphaNumeric: [
+            alphanumeric: [
               {
-                field: 'field',
                 weight: 1,
-                values: ['value'],
+                fields: [
+                  {
+                    field: 'field',
+                    values: ['value'],
+                  },
+                ],
               },
             ],
             product: [
@@ -100,8 +108,8 @@ describe('RulesetChanges', () => {
         merchandisingRules={{
           pinnedProducts: [{ id: 'abc' }],
           blockedProducts: [],
-          boosts: { numeric: [], alphaNumeric: [], product: [] },
-          buries: { numeric: [], alphaNumeric: [], product: [] },
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
         }}
         onChangePosition={jest.fn()}
       />

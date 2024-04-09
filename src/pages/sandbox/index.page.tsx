@@ -1,9 +1,12 @@
+/* istanbul ignore file */
+
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import styled from '@emotion/styled';
 import { ExampleCalendarDropdown } from './example-calendar-dropdown';
 import { ExampleCalendarModal } from './example-calendar-modal';
 import { ArrowButton } from '../../libs/components/buttons/button/arrow-button';
+import { FacetOrderDropdown } from '../../libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 
 const Example = styled.div`
   padding: 20px;
@@ -26,6 +29,15 @@ const Sandbox = () => {
         <ArrowButton direction="up"></ArrowButton>
         <ArrowButton direction="down"></ArrowButton>
         <ArrowButton isDisabled></ArrowButton>
+      </Example>
+      <Example>
+        <h2>New arrow icons</h2>
+        <img src="/trading-hub/asset/icon-boost-button.svg" alt="" />
+        <img src="/trading-hub/asset/icon-bury-button.svg" alt="" />
+      </Example>
+      <Example>
+        <h2>Facet Order Dropdown</h2>
+        <FacetOrderDropdown />
       </Example>
     </div>
   );

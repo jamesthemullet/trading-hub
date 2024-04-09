@@ -1,4 +1,19 @@
-import { BoostsBuries } from '../../../libs/api';
+import {
+  BoostsBuries,
+  BoostsBuriesWithInfo,
+  ProductBoostBury,
+} from '../../../libs/api';
+
+export const mockProducts: ProductBoostBury[] = [
+  {
+    id: '2',
+    weight: 0.7,
+  },
+  {
+    id: '3',
+    weight: 0.3,
+  },
+];
 
 export const boostMock: BoostsBuries = {
   numeric: [
@@ -11,16 +26,19 @@ export const boostMock: BoostsBuries = {
       weight: 0.2,
     },
   ],
-  alphaNumeric: [
+  alphanumeric: [
     {
-      field: 'brand',
       weight: 0.5,
-      values: ['Nike', 'Adidas'],
-    },
-    {
-      field: 'category',
-      weight: 1,
-      values: ['Shoes', 'Clothing'],
+      fields: [
+        {
+          field: 'brand',
+          values: ['Nike', 'Adidas'],
+        },
+        {
+          field: 'category',
+          values: ['Shoes', 'Clothing'],
+        },
+      ],
     },
   ],
   product: [
@@ -35,6 +53,24 @@ export const boostMock: BoostsBuries = {
   ],
 };
 
+export const boostWithInfoMock: BoostsBuriesWithInfo = {
+  numeric: boostMock.numeric,
+  alphanumeric: boostMock.alphanumeric,
+  product: mockProducts.map((product, index) => ({
+    id: product.id!,
+    weight: product.weight!,
+    productId: `productId-${index + 1}`,
+    title: 'Product title',
+    imageUrl: ['example.jpg'],
+    brand: 'M&S Collection',
+    isInStock: true,
+    metadata: { isPinned: false },
+    price: '10',
+    rating: 4,
+    url: '',
+  })),
+};
+
 export const buriesMock: BoostsBuries = {
   numeric: [
     {
@@ -46,26 +82,38 @@ export const buriesMock: BoostsBuries = {
       weight: 0.2,
     },
   ],
-  alphaNumeric: [
+  alphanumeric: [
     {
-      field: 'brand',
       weight: 0.7,
-      values: ['Puma', 'Reebok'],
-    },
-    {
-      field: 'category',
-      weight: 0.7,
-      values: ['Accessories', 'Clothing'],
+      fields: [
+        {
+          field: 'brand',
+          values: ['Puma', 'Reebok'],
+        },
+        {
+          field: 'category',
+          values: ['Accessories', 'Clothing'],
+        },
+      ],
     },
   ],
-  product: [
-    {
-      id: '2',
-      weight: 0.7,
-    },
-    {
-      id: '3',
-      weight: 0.3,
-    },
-  ],
+  product: mockProducts,
+};
+
+export const buriesWithInfoMock: BoostsBuriesWithInfo = {
+  numeric: buriesMock.numeric,
+  alphanumeric: buriesMock.alphanumeric,
+  product: mockProducts.map((product, index) => ({
+    id: product.id!,
+    weight: product.weight!,
+    productId: `productId-${index + 1}`,
+    title: 'Product title',
+    imageUrl: ['example.jpg'],
+    brand: 'M&S Collection',
+    isInStock: true,
+    metadata: { isPinned: false },
+    price: '10',
+    rating: 4,
+    url: '',
+  })),
 };

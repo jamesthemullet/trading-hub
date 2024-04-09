@@ -17,8 +17,8 @@ const mockRules: ReturnedRuleSet[] = [
     rules: {
       pinnedProducts: [],
       blockedProducts: [],
-      boosts: { numeric: [], alphaNumeric: [], product: [] },
-      buries: { numeric: [], alphaNumeric: [], product: [] },
+      boosts: { numeric: [], alphanumeric: [], product: [] },
+      buries: { numeric: [], alphanumeric: [], product: [] },
     },
     isEnabled: true,
   },
@@ -33,8 +33,8 @@ const mockRules: ReturnedRuleSet[] = [
     rules: {
       pinnedProducts: [],
       blockedProducts: [],
-      boosts: { numeric: [], alphaNumeric: [], product: [] },
-      buries: { numeric: [], alphaNumeric: [], product: [] },
+      boosts: { numeric: [], alphanumeric: [], product: [] },
+      buries: { numeric: [], alphanumeric: [], product: [] },
     },
     isEnabled: true,
   },

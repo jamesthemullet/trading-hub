@@ -11,8 +11,8 @@ const server = setupServer();
 
 const mockMerchandisingRules = {
   pinnedProducts: [],
-  boosts: { numeric: [], alphaNumeric: [], product: [] },
-  buries: { numeric: [], alphaNumeric: [], product: [] },
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
   blockedProducts: [],
 };
 

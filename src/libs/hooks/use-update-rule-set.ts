@@ -27,6 +27,9 @@ export const useUpdateRuleSet = () => {
           isEnabled: true,
           rules: {
             pinnedProducts: pinnedProducts,
+            blockedProducts: [],
+            boosts: { alphanumeric: [], numeric: [], product: [] },
+            buries: { alphanumeric: [], numeric: [], product: [] },
           },
         };
         const response = await merchandising().rulesetUpdate(id, body);

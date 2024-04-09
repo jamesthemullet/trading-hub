@@ -1,7 +1,7 @@
 import type { Facet, MerchandisingRules } from '@/libs/api';
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
-import { Dropdown } from '../dropdown/dropdown';
+import { Dropdown } from '../dropdowns/dropdown/dropdown';
 import { useState } from 'react';
 import { useCategoryPreview } from '../../hooks';
 import { ProductBox } from '../visual-editor/visual-editor.styles';
@@ -160,9 +160,11 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
   const [withRules, setWithRules] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const emptyRules = {
+  const emptyRules: MerchandisingRules = {
     pinnedProducts: [],
     blockedProducts: [],
+    boosts: { alphanumeric: [], numeric: [], product: [] },
+    buries: { alphanumeric: [], numeric: [], product: [] },
   };
 
   const { categoryProducts, categoryFacets, setRules } = useCategoryPreview(

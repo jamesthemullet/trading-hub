@@ -12,8 +12,8 @@ const mockRuleData = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],
-    boosts: { numeric: [], alphaNumeric: [], product: [] },
-    buries: { numeric: [], alphaNumeric: [], product: [] },
+    boosts: { numeric: [], alphanumeric: [], product: [] },
+    buries: { numeric: [], alphanumeric: [], product: [] },
   },
   categoryId: mockCategoryId,
   isEnabled: true,
@@ -146,6 +146,13 @@ describe('useRuleSet', () => {
         },
         rules: {
           pinnedProducts: [],
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: {
+            alphanumeric: [],
+            numeric: [],
+            product: [],
+          },
         },
       },
       error: 'POST status 500',

@@ -23,8 +23,8 @@ jest.mock('../../libs/hooks/use-rule-set-delete', () => ({
 const mockMerchangdisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
-  boosts: { numeric: [], alphaNumeric: [], product: [] },
-  buries: { numeric: [], alphaNumeric: [], product: [] },
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
 };
 
 describe('Index', () => {
