@@ -332,7 +332,7 @@ paths:
             type: array
             items:
               type: string
-          required: true
+          required: false
           description: When provided will only return facets relevant to these categories
       responses:
         '200':
@@ -417,7 +417,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FacetConfigWithId'
+                $ref: '#/components/schemas/ReturnedFacet'
         '400':
           description: Bad request
           content:
@@ -459,6 +459,9 @@ components:
     GlobalOnlyFacetConfig:
       type: object
       properties:
+        # Will be added later
+        # influence:
+        #   type: string
         indexPropertyName:
           type: string
           description: The field of the indexed document
@@ -478,20 +481,9 @@ components:
                   type: string
                 description: The values (case insensitive) that will be mapped to be displayed as the `displayValue`
           description: Array of objects, each of which describe a set of values that will be merged in to one when displayed to customers.
-    FacetConfig:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/RuleSetFacetConfig'
-        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
-    FacetConfigWithId:
-      allOf:
-        - type: object
-          properties:
-            id:
-              type: string
-          required:
-            - id
-        - $ref: '#/components/schemas/FacetConfig'
+      required:
+        - displayValue
+        - indexPropertyName
     RuleSets:
       type: object
       properties:
@@ -555,17 +547,18 @@ components:
             $ref: '#/components/schemas/ReturnedFacet'
       required:
         - facets
+    FacetConfig:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
     ReturnedFacet:
       allOf:
-        - $ref: '#/components/schemas/FacetConfigWithId'
+        - $ref: '#/components/schemas/FacetConfig'
         - type: object
           properties:
             id:
               type: string
-            influence:
-              type: string
-            isEnabled:
-              type: boolean
             lastChanged:
               type: object
               properties:
@@ -579,10 +572,6 @@ components:
                 - user
           required:
             - id
-            - categoryName
-            - categoryId
-            - influence
-            - isEnabled
             - lastChanged
     SearchPreviewResponse:
       type: object
