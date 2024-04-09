@@ -49,8 +49,8 @@ export const useCategoryPreview = (
 
         setError('');
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(`Failed to get categories ${error}`);
+        if (error) {
+          setError(`Failed to get categories ${(error as { status: string })?.status}`);
         }
       }
     };
