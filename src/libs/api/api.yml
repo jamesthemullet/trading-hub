@@ -558,36 +558,34 @@ components:
         - facets
         - pagination
     ReturnedFacet:
-      type: object
-      properties:
-        id:
-          type: string
-        categoryName:
-          type: string
-        categoryId:
-          type: string
-        influence:
-          type: string
-        isEnabled:
-          type: boolean
-        lastChanged:
-          type: object
+      allOf:
+        - $ref: '#/components/schemas/FacetConfigWithId'
+        - type: object
           properties:
-            date:
+            id:
               type: string
-              format: date-time
-            user:
+            influence:
               type: string
+            isEnabled:
+              type: boolean
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
           required:
-            - date
-            - user
-      required:
-        - id
-        - categoryName
-        - categoryId
-        - influence
-        - isEnabled
-        - lastChanged
+            - id
+            - categoryName
+            - categoryId
+            - influence
+            - isEnabled
+            - lastChanged
     SearchPreviewResponse:
       type: object
       properties:
