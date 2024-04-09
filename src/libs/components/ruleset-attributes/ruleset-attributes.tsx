@@ -213,7 +213,7 @@ const SectionLabel = ({
 export type Props = {
   category?: string;
   merchandisingRules: MerchandisingRules;
-  onAddAttribute: ({}: EditAttribute) => void;
+  onChangeAttribute: ({}: EditAttribute) => void;
 };
 
 const getNumericAttributes = (attributes: AttributesResponse['attributes']) => {
@@ -229,7 +229,7 @@ const getAlphanumericAttributes = (
 export const RulesetAttributes = ({
   category,
   merchandisingRules,
-  onAddAttribute,
+  onChangeAttribute,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
@@ -295,7 +295,7 @@ export const RulesetAttributes = ({
                 operation="boost"
                 weight={attribute.weight}
                 onDelete={({ fields, weight }: AlphanumericBoostBury) =>
-                  onAddAttribute({
+                  onChangeAttribute({
                     attribute: { fields, weight },
                     change: 'remove',
                     operation: 'boosts',
@@ -314,7 +314,7 @@ export const RulesetAttributes = ({
                 operation="bury"
                 weight={attribute.weight}
                 onDelete={({ fields, weight }: AlphanumericBoostBury) =>
-                  onAddAttribute({
+                  onChangeAttribute({
                     attribute: { fields, weight },
                     change: 'remove',
                     operation: 'buries',
@@ -338,7 +338,7 @@ export const RulesetAttributes = ({
                 name={attribute.field}
                 weight={attribute.weight}
                 onDelete={({ field, weight }: NumericBoostBury) =>
-                  onAddAttribute({
+                  onChangeAttribute({
                     attribute: { field, weight },
                     change: 'remove',
                     operation: 'boosts',
@@ -356,7 +356,7 @@ export const RulesetAttributes = ({
                 name={attribute.field}
                 weight={attribute.weight}
                 onDelete={({ field, weight }: NumericBoostBury) =>
-                  onAddAttribute({
+                  onChangeAttribute({
                     attribute: { field, weight },
                     change: 'remove',
                     operation: 'buries',
@@ -718,7 +718,7 @@ export const RulesetAttributes = ({
                                 weight: 0.01,
                               };
 
-                        onAddAttribute({
+                        onChangeAttribute({
                           attribute,
                           operation:
                             selectedOperation === 'boost' ? 'boosts' : 'buries',

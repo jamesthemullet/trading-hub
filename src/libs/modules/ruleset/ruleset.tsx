@@ -220,7 +220,7 @@ export const Ruleset = ({
     });
   };
 
-  const onAddAttribute = ({
+  const onChangeAttribute = ({
     attribute,
     operation,
     type,
@@ -357,7 +357,7 @@ export const Ruleset = ({
             <RulesetAttributes
               merchandisingRules={merchandisingRules}
               category={selectedCategory.identifier}
-              onAddAttribute={onAddAttribute}
+              onChangeAttribute={onChangeAttribute}
             />
           )}
         </ProductSearchPanel>

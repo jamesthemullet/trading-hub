@@ -62,7 +62,7 @@ describe('RulesetAttributes', () => {
       <RulesetAttributes
         merchandisingRules={mockRules}
         category="TestCategory"
-        onAddAttribute={mockAddAttribute}
+        onChangeAttribute={mockAddAttribute}
       />
     );
 
@@ -76,7 +76,7 @@ describe('RulesetAttributes', () => {
   it('should render correctly', () => {
     renderWithProviders(
       <RulesetAttributes
-        onAddAttribute={jest.fn()}
+        onChangeAttribute={jest.fn()}
         merchandisingRules={mockRules}
       />
     );
@@ -373,7 +373,7 @@ describe('RulesetAttributes', () => {
 
     renderWithProviders(
       <RulesetAttributes
-        onAddAttribute={jest.fn()}
+        onChangeAttribute={jest.fn()}
         merchandisingRules={merchandisingRules}
       />
     );
@@ -439,7 +439,7 @@ describe('RulesetAttributes', () => {
         <RulesetAttributes
           merchandisingRules={mockRules}
           category="TestCategory"
-          onAddAttribute={mockAddAttribute}
+          onChangeAttribute={mockAddAttribute}
         />
       );
 
@@ -529,7 +529,7 @@ describe('RulesetAttributes', () => {
         <RulesetAttributes
           merchandisingRules={mockRules}
           category="TestCategory"
-          onAddAttribute={mockAddAttribute}
+          onChangeAttribute={mockAddAttribute}
         />
       );
 
