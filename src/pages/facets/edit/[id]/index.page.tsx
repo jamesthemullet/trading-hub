@@ -3,7 +3,7 @@ import { Button, Heading, spacing } from '@/libs/components';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 
-const RuleSetOptions = styled.div`
+const ActionContainer = styled.div`
   display: flex;
 
   h1 {
@@ -42,7 +42,7 @@ const Page = () => {
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
 
-      <RuleSetOptions>
+      <ActionContainer>
         <h1>Facet Management</h1>
 
         <Actions>
@@ -54,7 +54,7 @@ const Page = () => {
             Save
           </Button>
         </Actions>
-      </RuleSetOptions>
+      </ActionContainer>
     </>
   );
 };
