@@ -392,9 +392,9 @@ describe('Ruleset', () => {
 
       await user.click(screen.getByText('Boost to Top'));
 
-      expect(
-        await screen.getByText('Changes', { exact: false }).textContent
-      ).toEqual('Changes2');
+      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
+        'Changes2'
+      );
     });
 
     it('Should not boost a previously boosted product', async () => {
