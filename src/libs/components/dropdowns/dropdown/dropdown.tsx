@@ -117,6 +117,7 @@ const LabelIcon = styled.img`
 
 export const DropdownOption = styled.button`
   background-color: #f5f5f5;
+  display: flex;
   width: 100%;
   padding: ${spacing(2)};
   z-index: 1;

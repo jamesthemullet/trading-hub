@@ -1,5 +1,7 @@
 /* istanbul ignore file */
 import styled from '@emotion/styled';
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
@@ -467,10 +469,24 @@ const Index = ({ apiBaseUrl }: { apiBaseUrl: string | undefined }) => {
   );
 };
 
-export const getServerSideProps = () => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const baseURl = process.env.MERCHANDISING_API_BASEURL
     ? new URL(process.env.MERCHANDISING_API_BASEURL).origin
     : undefined;
+
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
       apiBaseUrl: baseURl ?? null,
