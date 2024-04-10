@@ -70,9 +70,9 @@ export const Ruleset = ({
   rulesetId,
   rulesetMerchandisingRules,
 }: {
-  onSave?: ({}: EditRulesetValues) => void;
+  onSave?: ({ rulesetId }: EditRulesetValues) => void;
   onCancel: () => void;
-  onCreate?: ({}: NewRulesetValues) => void;
+  onCreate?: ({ categoryId, merchandisingRules }: NewRulesetValues) => void;
   rulesetCategory?: Category;
   rulesetId?: string;
   rulesetMerchandisingRules?: MerchandisingRules;
