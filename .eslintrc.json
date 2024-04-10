@@ -13,7 +13,8 @@
     "plugin:jest/recommended",
     "eslint:recommended",
     "plugin:functional/recommended",
-    "plugin:jest-formatting/recommended"
+    "plugin:jest-formatting/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
@@ -25,14 +26,11 @@
         "project": ["./tsconfig.json"]
       },
       "rules": {
-        "no-empty-pattern": "off",
-        "no-unused-expressions": "off",
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": ["error"],
+        "@typescript-eslint/no-unused-vars": "error",
         "functional/no-mixed-types": "off",
         "functional/no-throw-statements": "off",
         "functional/no-expression-statements": "off",
-        "functional/prefer-readonly-type": "off",
         "functional/no-conditional-statements": "off",
         "functional/no-return-void": "off",
         "functional/immutable-data": "off",
@@ -45,7 +43,8 @@
       "files": ["*.spec.*"],
       "rules": {
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": ["error"],
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-explicit-any": "off",
         "functional/no-return-void": "off",
         "functional/immutable-data": "off",
         "functional/no-throw-statements": "off",

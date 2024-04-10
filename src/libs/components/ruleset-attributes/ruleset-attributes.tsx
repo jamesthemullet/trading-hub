@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Modal } from '@mantine/core';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pluralize = require('pluralize');
 
 import { Button } from '../buttons/button/button';
@@ -78,6 +79,15 @@ const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   gap: ${spacing(1)};
+`;
+
+const ModalAttributeHeader = styled.div`
+  border-bottom: solid 1px ${color.grey};
+  padding: ${spacing(2)};
+  display: flex;
+  align-items: center;
+  background-color: ${color.backgroundGrey};
+  margin: 0;
 `;
 
 const Divider = styled.span`
@@ -179,6 +189,7 @@ const DropdownWrapper = styled.div`
     }
     span {
       font-size: 16px;
+      justify-content: left;
     }
   }
 
@@ -186,6 +197,7 @@ const DropdownWrapper = styled.div`
     width: 20px;
     height: 20px;
     margin-right: ${spacing(1)};
+    margin-top: 3px;
   }
 `;
 
@@ -490,6 +502,9 @@ export const RulesetAttributes = ({
                       />
                     </SearchWrapper>
                   </ModalSection>
+                  <ModalAttributeHeader>
+                    <Label isStrong>Relevant attributes</Label>
+                  </ModalAttributeHeader>
                   <RadioButtons
                     values={getNumericAttributes(attributes)
                       .filter((attribute) =>
@@ -593,6 +608,9 @@ export const RulesetAttributes = ({
                       </SearchWrapper>
                     </Filters>
                   </ModalSection>
+                  <ModalAttributeHeader>
+                    <Label isStrong>Relevant attributes</Label>
+                  </ModalAttributeHeader>
                   {getAlphanumericAttributes(attributes)
                     .filter((attribute) =>
                       attribute.name
@@ -647,6 +665,9 @@ export const RulesetAttributes = ({
                       />
                     </SearchWrapper>
                   </ModalSection>
+                  <ModalAttributeHeader>
+                    <Label isStrong>Current matching attribute values</Label>
+                  </ModalAttributeHeader>
                   <div aria-label="Selected attributes">
                     <Checkboxes
                       onSelect={(isSelected, name) => {
