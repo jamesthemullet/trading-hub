@@ -12,7 +12,7 @@ type ChangePositionTypes = {
 type Props = {
   products: ProductType[];
   onChangePosition: (arg: ChangePositionTypes) => void;
-  onProductBoostBury: ({}: ChangeProductBoostBury) => void;
+  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
 };
 
 export const VisualEditor = ({

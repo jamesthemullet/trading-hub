@@ -59,8 +59,7 @@ export type ProductSearchProps = {
   onSearch: (query: string) => void;
   products: ProductType[];
   onChangePosition: (arg: ChangePositionTypes) => void;
-
-  onProductBoostBury: ({}: ChangeProductBoostBury) => void;
+  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
 };
 
 export const ProductSearch = ({

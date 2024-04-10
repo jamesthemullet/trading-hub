@@ -88,7 +88,7 @@ export const Product = ({
     isPinned,
     newPosition,
   }: ChangePositionTypes) => void;
-  onProductBoostBury: ({}: ChangeProductBoostBury) => void;
+  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
   pinnedProductsCount: number;
   totalProducts: number;
   isBrandStrong?: boolean;

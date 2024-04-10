@@ -23,7 +23,7 @@ export const RulesetChanges = ({
   category?: string;
   merchandisingRules: MerchandisingRules;
   onChangePosition: ({ isPinned, newPosition }: ChangePositionTypes) => void;
-  onProductBoostBury: ({}: ChangeProductBoostBury) => void;
+  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
 }) => {
   /* istanbul ignore next */
   const countOfAttributeChanges =
