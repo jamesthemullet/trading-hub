@@ -672,7 +672,7 @@ describe('Ruleset', () => {
         sizeButton[1].click();
       });
 
-      const doneButton = await screen.getByText('Done');
+      const doneButton = screen.getByText('Done');
 
       act(() => {
         doneButton.click();
@@ -698,7 +698,7 @@ describe('Ruleset', () => {
 
       await selectAlphanumericAttribute(screen, false);
 
-      const doneButton = await screen.getByText('Done');
+      const doneButton = screen.getByText('Done');
 
       act(() => {
         doneButton.click();
@@ -724,7 +724,7 @@ describe('Ruleset', () => {
 
       await selectAlphanumericAttribute(screen, true);
 
-      const doneButton = await screen.getByText('Done');
+      const doneButton = screen.getByText('Done');
 
       act(() => {
         doneButton.click();
@@ -752,7 +752,7 @@ describe('Ruleset', () => {
 
       expect(screen.getByText('Nike')).toBeVisible();
 
-      const deleteButton = await screen.getAllByLabelText('Delete attribute');
+      const deleteButton = screen.getAllByLabelText('Delete attribute');
 
       act(() => {
         deleteButton[0].click();

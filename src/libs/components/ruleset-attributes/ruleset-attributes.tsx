@@ -398,25 +398,27 @@ export const RulesetAttributes = ({
                   zIndex: 1,
                   padding: `${spacing(10)} ${spacing(2)} ${spacing(2)}`,
                 }}
-                aria-label="Selected Attribute"
               >
-                <SelectedAttribute>
-                  {selectedAttributeType === 'numeric' &&
-                    !!selectedNumericField && (
-                      <NumericAttribute
-                        operation={selectedOperation}
-                        name={selectedNumericField}
-                      />
-                    )}
-                  {selectedAttributeType === 'alphanumeric' &&
-                    !!selectedAlphanumericValues.length && (
-                      <AlphanumericAttribute
-                        operation={selectedOperation}
-                        fields={selectedAlphanumericValues}
-                        weight={0.01}
-                      />
-                    )}
-                </SelectedAttribute>
+                {(!!selectedNumericField ||
+                  !!selectedAlphanumericValues.length) && (
+                  <SelectedAttribute aria-label="Selected Attribute">
+                    {selectedAttributeType === 'numeric' &&
+                      !!selectedNumericField && (
+                        <NumericAttribute
+                          operation={selectedOperation}
+                          name={selectedNumericField}
+                        />
+                      )}
+                    {selectedAttributeType === 'alphanumeric' &&
+                      !!selectedAlphanumericValues.length && (
+                        <AlphanumericAttribute
+                          operation={selectedOperation}
+                          fields={selectedAlphanumericValues}
+                          weight={0.01}
+                        />
+                      )}
+                  </SelectedAttribute>
+                )}
               </ModalSide>
               <ModalSide>
                 <ModalSection>

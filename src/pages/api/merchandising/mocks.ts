@@ -1,4 +1,5 @@
 import {
+  AttributeResponseItem,
   BoostsBuries,
   BoostsBuriesWithInfo,
   ProductBoostBury,
@@ -118,7 +119,8 @@ export const buriesWithInfoMock: BoostsBuriesWithInfo = {
   })),
 };
 
-export const attributesMock = [
+
+export const attributesMock: AttributeResponseItem[] = [
   {
     type: 'alphanumeric',
     name: 'Colour',

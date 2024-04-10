@@ -57,7 +57,7 @@ const mockRules: MerchandisingRules = {
 const mockAddAttribute = jest.fn();
 
 describe('RulesetAttributes', () => {
-  const openModal = () => {
+  const openModal = async () => {
     renderWithProviders(
       <RulesetAttributes
         merchandisingRules={mockRules}
@@ -71,6 +71,10 @@ describe('RulesetAttributes', () => {
     act(() => {
       newAttributeButton.click();
     });
+
+    await waitFor(() =>
+      expect(screen.getByText('Choose attribute type')).toBeVisible()
+    );
   };
 
   it('should render correctly', () => {
@@ -85,17 +89,15 @@ describe('RulesetAttributes', () => {
   });
 
   it('opens the modal', async () => {
-    openModal();
+    await openModal();
 
-    await waitFor(() => expect(screen.getByText('Choose type')).toBeVisible());
+    expect(screen.getByText('Choose type')).toBeVisible();
   });
 
   it('goes to the Numeric Attributes step and back', async () => {
-    openModal();
+    await openModal();
 
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    expect(screen.getByText('Numeric attributes')).toBeVisible();
 
     const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -167,11 +169,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('cancels changes', async () => {
-    openModal();
-
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    await openModal();
 
     const cancelButton = screen.getByText('Cancel');
 
@@ -184,11 +182,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('selects a numeric attribute', async () => {
-    openModal();
-
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -202,7 +196,7 @@ describe('RulesetAttributes', () => {
       sizeButton[0].click();
     });
 
-    const attributes = await screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByLabelText('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Size')).toBeVisible()
@@ -211,11 +205,7 @@ describe('RulesetAttributes', () => {
 
   it('filters a numeric attribute', async () => {
     const user = userEvent.setup();
-    openModal();
-
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -229,13 +219,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('selects Product description attributes', async () => {
-    openModal();
-
-    await waitFor(() =>
-      expect(
-        screen.getByText('Attributes are aggregated from the account level')
-      ).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getAllByText(
       'Product description attributes'
@@ -260,7 +244,7 @@ describe('RulesetAttributes', () => {
       colourRedButton.click();
     });
 
-    const attributes = await screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByLabelText('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Blue')).toBeVisible()
@@ -269,11 +253,7 @@ describe('RulesetAttributes', () => {
 
   it('filters Product description attributes', async () => {
     const user = userEvent.setup();
-    openModal();
-
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getAllByText(
       'Product description attributes'
@@ -308,13 +288,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('buries Product description attributes', async () => {
-    openModal();
-
-    await waitFor(() =>
-      expect(
-        screen.getByText('Attributes are aggregated from the account level')
-      ).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getAllByText(
       'Product description attributes'
@@ -348,7 +322,7 @@ describe('RulesetAttributes', () => {
       colourRedButton.click();
     });
 
-    const attributes = await screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByLabelText('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Operation bury')).toBeVisible()
@@ -394,11 +368,7 @@ describe('RulesetAttributes', () => {
         type: 'numeric',
       };
 
-      openModal();
-
-      await waitFor(() =>
-        expect(screen.getByText('Numeric attributes')).toBeVisible()
-      );
+      await openModal();
 
       const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -412,7 +382,9 @@ describe('RulesetAttributes', () => {
         sizeButton[1].click();
       });
 
-      const doneButton = await screen.getByText('Done');
+      const doneButton = screen.getByRole('button', {
+        name: 'Done',
+      });
 
       act(() => {
         doneButton.click();
@@ -443,7 +415,7 @@ describe('RulesetAttributes', () => {
         />
       );
 
-      const deleteButton = await screen.getAllByLabelText('Delete attribute');
+      const deleteButton = screen.getAllByLabelText('Delete attribute');
 
       act(() => {
         deleteButton[3].click();
@@ -474,11 +446,7 @@ describe('RulesetAttributes', () => {
         type: 'alphanumeric',
       };
 
-      openModal();
-
-      await waitFor(() =>
-        expect(screen.getByText('Numeric attributes')).toBeVisible()
-      );
+      await openModal();
 
       const nextStepButton = screen.getAllByText(
         'Product description attributes'
@@ -502,7 +470,7 @@ describe('RulesetAttributes', () => {
         colourRedButton.click();
       });
 
-      const doneButton = await screen.getByText('Done');
+      const doneButton = screen.getByText('Done');
 
       act(() => {
         doneButton.click();
@@ -533,7 +501,7 @@ describe('RulesetAttributes', () => {
         />
       );
 
-      const deleteButton = await screen.getAllByLabelText('Delete attribute');
+      const deleteButton = screen.getAllByLabelText('Delete attribute');
 
       act(() => {
         deleteButton[0].click();
