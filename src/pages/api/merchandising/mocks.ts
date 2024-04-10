@@ -19,11 +19,11 @@ export const mockProducts: ProductBoostBury[] = [
 export const boostMock: BoostsBuries = {
   numeric: [
     {
-      field: 'price',
+      field: 'averageRating',
       weight: 0.5,
     },
     {
-      field: 'size',
+      field: 'minPrice',
       weight: 0.2,
     },
   ],
@@ -79,7 +79,7 @@ export const buriesMock: BoostsBuries = {
       weight: 0.7,
     },
     {
-      field: 'stockQuantity',
+      field: 'maxPrice',
       weight: 0.2,
     },
   ],
