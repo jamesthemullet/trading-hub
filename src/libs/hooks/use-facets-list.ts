@@ -4,19 +4,17 @@ import { ReturnedFacet } from '@/libs/api';
 import { useFacetsListMockData } from './data/mock-use-facets-list';
 
 export type CategoryFacetsList = {
-  facets: ReturnedFacet[]
-}
+  facets: ReturnedFacet[];
+};
 
-export const useFacetsList = (
-  categoryIds?: string[],
-) => {
+export const useFacetsList = (categoryIds?: string[]) => {
   const [facets, setFacets] = useState<CategoryFacetsList>({
-    facets: []
+    facets: [],
   });
 
   useEffect(() => {
     if (!categoryIds) {
-      setFacets(useFacetsListMockData)
+      setFacets(useFacetsListMockData);
     }
   }, [categoryIds]);
 
