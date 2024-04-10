@@ -6,3 +6,5 @@
 
 1. Go to http://localhost:3000/
 2.
+
+## Screenshots
