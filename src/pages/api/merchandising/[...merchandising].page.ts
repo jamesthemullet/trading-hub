@@ -98,13 +98,11 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   let jsonBody = {};
-  let jsonText = '';
   try {
     const jsonText = await response.text();
     jsonBody = JSON.parse(jsonText);
   } catch (e) /* istanbul ignore next */ {
     console.error('Error parsing JSON', e);
-    console.error('Response text:', jsonText);
   }
 
   /* workaround for backend not returning metadata for pinned products */
