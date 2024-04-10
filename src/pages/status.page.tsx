@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 import styled from '@emotion/styled';
-import { useSession } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
+import { getSession, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
@@ -278,210 +279,216 @@ const Index = ({ apiBaseUrl }: { apiBaseUrl: string | undefined }) => {
       <Head>
         <title>{`Backend services status`}</title>
       </Head>
-      {session && session.status === 'authenticated' && (
-        <StatusContainer>
-          <StatusHeader>
-            <StatusLabel>Current Status:</StatusLabel>
-            <ComponentIcon title={details} status={status.status} />
-          </StatusHeader>
-          <ComponentsStatusContainer>
-            <Component>
-              <ComponentHeader>
-                <ComponentName>CommitDetails</ComponentName>
-                <ComponentIcon
-                  title={status.components.CommitDetails.status}
-                  status={status.components.CommitDetails.status}
+      <StatusContainer>
+        <StatusHeader>
+          <StatusLabel>Current Status:</StatusLabel>
+          <ComponentIcon title={details} status={status.status} />
+        </StatusHeader>
+        <ComponentsStatusContainer>
+          <Component>
+            <ComponentHeader>
+              <ComponentName>CommitDetails</ComponentName>
+              <ComponentIcon
+                title={status.components.CommitDetails.status}
+                status={status.components.CommitDetails.status}
+              />
+            </ComponentHeader>
+            <ComponentBody>
+              <ComponentRow>
+                <ComponentKey>APP_COMMIT_SHA:</ComponentKey>
+                <ComponentValue>
+                  "{status.components.CommitDetails.details.APP_COMMIT_SHA}"
+                </ComponentValue>
+              </ComponentRow>
+            </ComponentBody>
+          </Component>
+          <Component>
+            <ComponentHeader>
+              <ComponentName>db</ComponentName>
+              <ComponentIcon
+                title={status.components.db.status}
+                status={status.components.db.status}
+              />
+            </ComponentHeader>
+            <ComponentBody>
+              <ComponentRow>
+                <ComponentKey>database:</ComponentKey>
+                <ComponentValue>
+                  "{status.components.db.details.database}"
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>validationQuery:</ComponentKey>
+                <ComponentValue>
+                  "{status.components.db.details.validationQuery}"
+                </ComponentValue>
+              </ComponentRow>
+            </ComponentBody>
+          </Component>
+          <Component>
+            <ComponentHeader>
+              <ComponentName>diskSpace</ComponentName>
+              <ComponentIcon
+                title={status.components.diskSpace.status}
+                status={status.components.diskSpace.status}
+              />
+            </ComponentHeader>
+            <ComponentBody>
+              {status.components.diskSpace.details.exists ? (
+                <DiskSpaceIndicator
+                  total={status.components.diskSpace.details.total}
+                  free={status.components.diskSpace.details.free}
+                  threshold={status.components.diskSpace.details.threshold}
+                  label={`${status.components.diskSpace.details.path} (${toGigabytes(status.components.diskSpace.details.free)}/${toGigabytes(status.components.diskSpace.details.total)} GB)`}
                 />
-              </ComponentHeader>
-              <ComponentBody>
-                <ComponentRow>
-                  <ComponentKey>APP_COMMIT_SHA:</ComponentKey>
-                  <ComponentValue>
-                    "{status.components.CommitDetails.details.APP_COMMIT_SHA}"
-                  </ComponentValue>
-                </ComponentRow>
-              </ComponentBody>
-            </Component>
-            <Component>
-              <ComponentHeader>
-                <ComponentName>db</ComponentName>
-                <ComponentIcon
-                  title={status.components.db.status}
-                  status={status.components.db.status}
-                />
-              </ComponentHeader>
-              <ComponentBody>
-                <ComponentRow>
-                  <ComponentKey>database:</ComponentKey>
-                  <ComponentValue>
-                    "{status.components.db.details.database}"
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>validationQuery:</ComponentKey>
-                  <ComponentValue>
-                    "{status.components.db.details.validationQuery}"
-                  </ComponentValue>
-                </ComponentRow>
-              </ComponentBody>
-            </Component>
-            <Component>
-              <ComponentHeader>
-                <ComponentName>diskSpace</ComponentName>
-                <ComponentIcon
-                  title={status.components.diskSpace.status}
-                  status={status.components.diskSpace.status}
-                />
-              </ComponentHeader>
-              <ComponentBody>
-                {status.components.diskSpace.details.exists ? (
-                  <DiskSpaceIndicator
-                    total={status.components.diskSpace.details.total}
-                    free={status.components.diskSpace.details.free}
-                    threshold={status.components.diskSpace.details.threshold}
-                    label={`${status.components.diskSpace.details.path} (${toGigabytes(status.components.diskSpace.details.free)}/${toGigabytes(status.components.diskSpace.details.total)} GB)`}
-                  />
-                ) : (
-                  <span>Disk doesn't exist</span>
-                )}
-              </ComponentBody>
-            </Component>
-            <Component>
-              <ComponentHeader>
-                <ComponentName>elasticsearch</ComponentName>
-                <ComponentIcon
-                  title={status.components.elasticsearch.status}
-                  status={status.components.elasticsearch.status}
-                />
-              </ComponentHeader>
-              <ComponentBody>
-                <ComponentRow>
-                  <ComponentKey>cluster_name:</ComponentKey>
-                  <ComponentValue>
-                    "{status.components.elasticsearch.details.cluster_name}"
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>status:</ComponentKey>
-                  <ComponentValue>
-                    "{status.components.elasticsearch.details.status}"
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>timed_out:</ComponentKey>
-                  <ComponentValue>
-                    {status.components.elasticsearch.details.timed_out.toString()}
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>number_of_nodes:</ComponentKey>
-                  <ComponentValue>
-                    {status.components.elasticsearch.details.number_of_nodes}
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>number_of_data_nodes:</ComponentKey>
-                  <ComponentValue>
-                    {
-                      status.components.elasticsearch.details
-                        .number_of_data_nodes
-                    }
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>active_primary_shards:</ComponentKey>
-                  <ComponentValue>
-                    {
-                      status.components.elasticsearch.details
-                        .active_primary_shards
-                    }
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>active_shards:</ComponentKey>
-                  <ComponentValue>
-                    {status.components.elasticsearch.details.active_shards}
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>relocating_shards:</ComponentKey>
-                  <ComponentValue>
-                    {status.components.elasticsearch.details.relocating_shards}
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>initializing_shards:</ComponentKey>
-                  <ComponentValue>
-                    {
-                      status.components.elasticsearch.details
-                        .initializing_shards
-                    }
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>unassigned_shards:</ComponentKey>
-                  <ComponentValue>
-                    {status.components.elasticsearch.details.unassigned_shards}
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>delayed_unassigned_shards:</ComponentKey>
-                  <ComponentValue>
-                    {
-                      status.components.elasticsearch.details
-                        .delayed_unassigned_shards
-                    }
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>number_of_pending_tasks:</ComponentKey>
-                  <ComponentValue>
-                    {
-                      status.components.elasticsearch.details
-                        .number_of_pending_tasks
-                    }
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>number_of_in_flight_fetch:</ComponentKey>
-                  <ComponentValue>
-                    {
-                      status.components.elasticsearch.details
-                        .number_of_in_flight_fetch
-                    }
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>task_max_waiting_in_queue_millis:</ComponentKey>
-                  <ComponentValue>
-                    {
-                      status.components.elasticsearch.details
-                        .task_max_waiting_in_queue_millis
-                    }
-                  </ComponentValue>
-                </ComponentRow>
-                <ComponentRow>
-                  <ComponentKey>active_shards_percent_as_number:</ComponentKey>
-                  <ComponentValue>
-                    {
-                      status.components.elasticsearch.details
-                        .active_shards_percent_as_number
-                    }
-                  </ComponentValue>
-                </ComponentRow>
-              </ComponentBody>
-            </Component>
-          </ComponentsStatusContainer>
-        </StatusContainer>
-      )}
+              ) : (
+                <span>Disk doesn't exist</span>
+              )}
+            </ComponentBody>
+          </Component>
+          <Component>
+            <ComponentHeader>
+              <ComponentName>elasticsearch</ComponentName>
+              <ComponentIcon
+                title={status.components.elasticsearch.status}
+                status={status.components.elasticsearch.status}
+              />
+            </ComponentHeader>
+            <ComponentBody>
+              <ComponentRow>
+                <ComponentKey>cluster_name:</ComponentKey>
+                <ComponentValue>
+                  "{status.components.elasticsearch.details.cluster_name}"
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>status:</ComponentKey>
+                <ComponentValue>
+                  "{status.components.elasticsearch.details.status}"
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>timed_out:</ComponentKey>
+                <ComponentValue>
+                  {status.components.elasticsearch.details.timed_out.toString()}
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>number_of_nodes:</ComponentKey>
+                <ComponentValue>
+                  {status.components.elasticsearch.details.number_of_nodes}
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>number_of_data_nodes:</ComponentKey>
+                <ComponentValue>
+                  {status.components.elasticsearch.details.number_of_data_nodes}
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>active_primary_shards:</ComponentKey>
+                <ComponentValue>
+                  {
+                    status.components.elasticsearch.details
+                      .active_primary_shards
+                  }
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>active_shards:</ComponentKey>
+                <ComponentValue>
+                  {status.components.elasticsearch.details.active_shards}
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>relocating_shards:</ComponentKey>
+                <ComponentValue>
+                  {status.components.elasticsearch.details.relocating_shards}
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>initializing_shards:</ComponentKey>
+                <ComponentValue>
+                  {status.components.elasticsearch.details.initializing_shards}
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>unassigned_shards:</ComponentKey>
+                <ComponentValue>
+                  {status.components.elasticsearch.details.unassigned_shards}
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>delayed_unassigned_shards:</ComponentKey>
+                <ComponentValue>
+                  {
+                    status.components.elasticsearch.details
+                      .delayed_unassigned_shards
+                  }
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>number_of_pending_tasks:</ComponentKey>
+                <ComponentValue>
+                  {
+                    status.components.elasticsearch.details
+                      .number_of_pending_tasks
+                  }
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>number_of_in_flight_fetch:</ComponentKey>
+                <ComponentValue>
+                  {
+                    status.components.elasticsearch.details
+                      .number_of_in_flight_fetch
+                  }
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>task_max_waiting_in_queue_millis:</ComponentKey>
+                <ComponentValue>
+                  {
+                    status.components.elasticsearch.details
+                      .task_max_waiting_in_queue_millis
+                  }
+                </ComponentValue>
+              </ComponentRow>
+              <ComponentRow>
+                <ComponentKey>active_shards_percent_as_number:</ComponentKey>
+                <ComponentValue>
+                  {
+                    status.components.elasticsearch.details
+                      .active_shards_percent_as_number
+                  }
+                </ComponentValue>
+              </ComponentRow>
+            </ComponentBody>
+          </Component>
+        </ComponentsStatusContainer>
+      </StatusContainer>
     </>
   );
 };
 
-export const getServerSideProps = () => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const baseURl = process.env.MERCHANDISING_API_BASEURL
     ? new URL(process.env.MERCHANDISING_API_BASEURL).origin
     : undefined;
+
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
       apiBaseUrl: baseURl ?? null,
