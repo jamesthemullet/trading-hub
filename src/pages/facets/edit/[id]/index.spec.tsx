@@ -10,6 +10,9 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+const logSpy = jest.spyOn(console, 'log');
+logSpy.mockImplementation(jest.fn());
+
 describe('Facet Management Editing', () => {
   const mockRouter = {
     push: jest.fn(),
@@ -21,6 +24,7 @@ describe('Facet Management Editing', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    logSpy.mockClear();
   });
 
   it('should render the facet management editing page', async () => {
@@ -34,7 +38,7 @@ describe('Facet Management Editing', () => {
     ).toBeVisible();
   });
 
-  it('should cancel changes to a ruleset', async () => {
+  it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
     render(<Page />);
@@ -42,5 +46,27 @@ describe('Facet Management Editing', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/facet-management');
+  });
+
+  it('should preview changes to a facet', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    render(<Page />);
+
+    await user.click(screen.getByRole('button', { name: 'Preview' }));
+
+    // TODO: Implement preview functionality
+    expect(logSpy).toHaveBeenCalled();
+  });
+
+  it('should save changes to a facet', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    render(<Page />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    // TODO: Implement save functionality
+    expect(logSpy).toHaveBeenCalled();
   });
 });

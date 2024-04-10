@@ -1,7 +1,7 @@
 import { Button, Heading, spacing } from '@/libs/components';
 
 import styled from '@emotion/styled';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 
 const RuleSetOptions = styled.div`
   display: flex;
@@ -26,15 +26,17 @@ const Actions = styled.div`
 `;
 
 const Page = () => {
+  const router = useRouter();
+
   const handleSave = () => {
+    // TODO: Implement save functionality
     console.log('save');
   };
 
   const onPreview = () => {
+    // TODO: Implement preview functionality
     console.log('preview');
   };
-
-  const hasPreview = false;
 
   return (
     <>
@@ -47,10 +49,8 @@ const Page = () => {
           <Button onClick={() => router.push('/facet-management')}>
             Cancel
           </Button>
-          <Button onClick={onPreview} isDisabled={!hasPreview}>
-            Preview
-          </Button>
-          <Button theme="primary" isDisabled={!hasPreview} onClick={handleSave}>
+          <Button onClick={onPreview}>Preview</Button>
+          <Button theme="primary" onClick={handleSave}>
             Save
           </Button>
         </Actions>
