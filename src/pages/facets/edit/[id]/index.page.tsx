@@ -1,4 +1,10 @@
-import { Button, CategorySearch, Heading, spacing } from '@/libs/components';
+import {
+  Button,
+  CategorySearch,
+  Heading,
+  spacing,
+  Text,
+} from '@/libs/components';
 
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
@@ -46,7 +52,7 @@ const AddFacetPanel = styled.div`
   }
 `;
 
-const LowerHeading = styled.h2`
+const LowerHeading = styled(Text)`
   font-size: 1em;
   margin-bottom: 1em;
 `;
@@ -96,7 +102,7 @@ const Page = () => {
         </Actions>
       </ActionContainer>
       <CategoryPanel>
-        <LowerHeading>Rule scope</LowerHeading>
+        <LowerHeading isStrong>Rule scope</LowerHeading>
         <CategorySearch
           selectedCategory={selectedCategory}
           onClearSelection={
@@ -109,7 +115,7 @@ const Page = () => {
       </CategoryPanel>
       <AddFacetPanel>
         <div>
-          <LowerHeading>Preview and manage facets</LowerHeading>
+          <LowerHeading isStrong>Preview and manage facets</LowerHeading>
           <p>(sort by algo control)</p>
         </div>
         <div>
