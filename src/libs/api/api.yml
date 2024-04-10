@@ -332,7 +332,7 @@ paths:
             type: array
             items:
               type: string
-          required: true
+          required: false
           description: When provided will only return facets relevant to these categories
       responses:
         '200':
@@ -340,9 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FacetConfigWithId'
+                $ref: '#/components/schemas/FacetsList'
         '400':
           description: Bad request
           content:
@@ -365,7 +363,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FacetConfigWithId'
+                $ref: '#/components/schemas/ReturnedFacet'
         '400':
           description: Bad request
           content:
@@ -390,7 +388,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FacetConfigWithId'
+                $ref: '#/components/schemas/ReturnedFacet'
         '400':
           description: Bad request
           content:
@@ -419,7 +417,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FacetConfigWithId'
+                $ref: '#/components/schemas/ReturnedFacet'
         '400':
           description: Bad request
           content:
@@ -461,6 +459,9 @@ components:
     GlobalOnlyFacetConfig:
       type: object
       properties:
+        # Will be added later
+        # influence:
+        #   type: string
         indexPropertyName:
           type: string
           description: The field of the indexed document
@@ -480,20 +481,9 @@ components:
                   type: string
                 description: The values (case insensitive) that will be mapped to be displayed as the `displayValue`
           description: Array of objects, each of which describe a set of values that will be merged in to one when displayed to customers.
-    FacetConfig:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/RuleSetFacetConfig'
-        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
-    FacetConfigWithId:
-      allOf:
-        - type: object
-          properties:
-            id:
-              type: string
-          required:
-            - id
-        - $ref: '#/components/schemas/FacetConfig'
+      required:
+        - displayValue
+        - indexPropertyName
     RuleSets:
       type: object
       properties:
@@ -547,6 +537,41 @@ components:
           required:
             - id
             - categoryName
+            - lastChanged
+    FacetsList:
+      type: object
+      properties:
+        facets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedFacet'
+      required:
+        - facets
+    FacetConfig:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
+    ReturnedFacet:
+      allOf:
+        - $ref: '#/components/schemas/FacetConfig'
+        - type: object
+          properties:
+            id:
+              type: string
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
             - lastChanged
     SearchPreviewResponse:
       type: object
