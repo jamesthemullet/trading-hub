@@ -54,12 +54,15 @@ const mockRules: MerchandisingRules = {
   blockedProducts: [],
 };
 
+const mockAddAttribute = jest.fn();
+
 describe('RulesetAttributes', () => {
-  const openModal = () => {
+  const openModal = async () => {
     renderWithProviders(
       <RulesetAttributes
         merchandisingRules={mockRules}
         category="TestCategory"
+        onChangeAttribute={mockAddAttribute}
       />
     );
 
@@ -68,26 +71,33 @@ describe('RulesetAttributes', () => {
     act(() => {
       newAttributeButton.click();
     });
+
+    await waitFor(() =>
+      expect(screen.getByText('Choose attribute type')).toBeVisible()
+    );
   };
 
   it('should render correctly', () => {
-    renderWithProviders(<RulesetAttributes merchandisingRules={mockRules} />);
+    renderWithProviders(
+      <RulesetAttributes
+        onChangeAttribute={jest.fn()}
+        merchandisingRules={mockRules}
+      />
+    );
 
     expect(screen.getByText('Create new attribute rule')).toBeVisible();
   });
 
   it('opens the modal', async () => {
-    openModal();
+    await openModal();
 
-    await waitFor(() => expect(screen.getByText('Choose type')).toBeVisible());
+    expect(screen.getByText('Choose type')).toBeVisible();
   });
 
   it('goes to the Numeric Attributes step and back', async () => {
-    openModal();
+    await openModal();
 
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    expect(screen.getByText('Numeric attributes')).toBeVisible();
 
     const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -159,11 +169,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('cancels changes', async () => {
-    openModal();
-
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    await openModal();
 
     const cancelButton = screen.getByText('Cancel');
 
@@ -176,11 +182,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('selects a numeric attribute', async () => {
-    openModal();
-
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -194,7 +196,7 @@ describe('RulesetAttributes', () => {
       sizeButton[0].click();
     });
 
-    const attributes = await screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByLabelText('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Size')).toBeVisible()
@@ -203,11 +205,7 @@ describe('RulesetAttributes', () => {
 
   it('filters a numeric attribute', async () => {
     const user = userEvent.setup();
-    openModal();
-
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getByText('Numeric attributes');
 
@@ -221,13 +219,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('selects Product description attributes', async () => {
-    openModal();
-
-    await waitFor(() =>
-      expect(
-        screen.getByText('Attributes are aggregated from the account level')
-      ).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getAllByText(
       'Product description attributes'
@@ -252,7 +244,7 @@ describe('RulesetAttributes', () => {
       colourRedButton.click();
     });
 
-    const attributes = await screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByLabelText('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Blue')).toBeVisible()
@@ -261,11 +253,7 @@ describe('RulesetAttributes', () => {
 
   it('filters Product description attributes', async () => {
     const user = userEvent.setup();
-    openModal();
-
-    await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getAllByText(
       'Product description attributes'
@@ -300,13 +288,7 @@ describe('RulesetAttributes', () => {
   });
 
   it('buries Product description attributes', async () => {
-    openModal();
-
-    await waitFor(() =>
-      expect(
-        screen.getByText('Attributes are aggregated from the account level')
-      ).toBeVisible()
-    );
+    await openModal();
 
     const nextStepButton = screen.getAllByText(
       'Product description attributes'
@@ -340,7 +322,7 @@ describe('RulesetAttributes', () => {
       colourRedButton.click();
     });
 
-    const attributes = await screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByLabelText('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Operation bury')).toBeVisible()
@@ -364,7 +346,10 @@ describe('RulesetAttributes', () => {
     };
 
     renderWithProviders(
-      <RulesetAttributes merchandisingRules={merchandisingRules} />
+      <RulesetAttributes
+        onChangeAttribute={jest.fn()}
+        merchandisingRules={merchandisingRules}
+      />
     );
 
     const rulsetAttributes = screen.getByLabelText('Ruleset attributes');
@@ -372,5 +357,163 @@ describe('RulesetAttributes', () => {
     expect(
       within(rulsetAttributes).getByText('Product description attribute rules')
     ).toBeVisible();
+  });
+
+  describe('adding and deleting', () => {
+    it('adds numeric attributes', async () => {
+      const expectedCall = {
+        attribute: { field: 'Size', weight: 0.01 },
+        change: 'add',
+        operation: 'boosts',
+        type: 'numeric',
+      };
+
+      await openModal();
+
+      const nextStepButton = screen.getByText('Numeric attributes');
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      const sizeButton = screen.getAllByLabelText('Size');
+
+      act(() => {
+        sizeButton[1].click();
+      });
+
+      const doneButton = screen.getByRole('button', {
+        name: 'Done',
+      });
+
+      act(() => {
+        doneButton.click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+    });
+
+    it('deletes numeric attributes', async () => {
+      const expectedCall1 = {
+        attribute: mockRules.boosts.numeric[1],
+        change: 'remove',
+        operation: 'boosts',
+        type: 'numeric',
+      };
+      const expectedCall2 = {
+        attribute: mockRules.buries.numeric[0],
+        change: 'remove',
+        operation: 'buries',
+        type: 'numeric',
+      };
+
+      renderWithProviders(
+        <RulesetAttributes
+          merchandisingRules={mockRules}
+          category="TestCategory"
+          onChangeAttribute={mockAddAttribute}
+        />
+      );
+
+      const deleteButton = screen.getAllByLabelText('Delete attribute');
+
+      act(() => {
+        deleteButton[3].click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall1);
+
+      act(() => {
+        deleteButton[4].click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenLastCalledWith(expectedCall2);
+    });
+
+    it('adds alphanumeric attributes', async () => {
+      const expectedCall = {
+        attribute: {
+          fields: [
+            {
+              field: 'Colour',
+              values: ['Blue', 'Red'],
+            },
+          ],
+          weight: 0.01,
+        },
+        change: 'add',
+        operation: 'boosts',
+        type: 'alphanumeric',
+      };
+
+      await openModal();
+
+      const nextStepButton = screen.getAllByText(
+        'Product description attributes'
+      )[0];
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      const colourButton = screen.getByText('Colour');
+
+      act(() => {
+        colourButton.click();
+      });
+
+      const colourRedButton = screen.getByLabelText('Red');
+      const colourBlueButton = screen.getByLabelText('Blue');
+
+      act(() => {
+        colourBlueButton.click();
+        colourRedButton.click();
+      });
+
+      const doneButton = screen.getByText('Done');
+
+      act(() => {
+        doneButton.click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+    });
+
+    it('deletes alphanumeric attributes', async () => {
+      const expectedCall1 = {
+        attribute: mockRules.boosts.alphanumeric[0],
+        change: 'remove',
+        operation: 'boosts',
+        type: 'alphanumeric',
+      };
+      const expectedCall2 = {
+        attribute: mockRules.buries.alphanumeric[0],
+        change: 'remove',
+        operation: 'buries',
+        type: 'alphanumeric',
+      };
+
+      renderWithProviders(
+        <RulesetAttributes
+          merchandisingRules={mockRules}
+          category="TestCategory"
+          onChangeAttribute={mockAddAttribute}
+        />
+      );
+
+      const deleteButton = screen.getAllByLabelText('Delete attribute');
+
+      act(() => {
+        deleteButton[0].click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall1);
+
+      act(() => {
+        deleteButton[1].click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall2);
+    });
   });
 });

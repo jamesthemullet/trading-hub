@@ -1,4 +1,4 @@
-import { Screen, act, screen } from '@testing-library/react';
+import { Screen, act, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -15,12 +15,23 @@ jest.mock('../../hooks/use-category-preview', () => ({
 jest.mock('../../hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
+jest.mock('../../hooks/use-attributes', () => ({
+  useAttributes: () => ({
+    attributes: attributesMock,
+  }),
+}));
 
 import { Ruleset } from './ruleset';
 import { useGetCategories } from '../../hooks/use-get-categories';
 import { useCategoryPreview } from '../../hooks/use-category-preview';
 import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
 import { renderWithProviders } from '../../../test/render-with-providers';
+import {
+  attributesMock,
+  boostMock,
+  buriesMock,
+} from '../../../pages/api/merchandising/mocks';
+import { BoostsBuries, MerchandisingRules } from '../../api';
 
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const PRODUCT_SEARCH_PLACEHOLDER_TEXT = 'Search for product';
@@ -381,9 +392,9 @@ describe('Ruleset', () => {
 
       await user.click(screen.getByText('Boost to Top'));
 
-      expect(
-        await screen.getByText('Changes', { exact: false }).textContent
-      ).toEqual('Changes2');
+      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
+        'Changes2'
+      );
     });
 
     it('Should not boost a previously boosted product', async () => {
@@ -612,15 +623,207 @@ describe('Ruleset', () => {
     expect(screen.getByText('Pinned Products (0)')).toBeVisible();
   });
 
-  it('opens attributes tab', async () => {
-    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+  describe('attributes', () => {
+    const mockRules: MerchandisingRules = {
+      pinnedProducts: [],
+      boosts: boostMock,
+      buries: buriesMock,
+      blockedProducts: [],
+    };
 
-    const tab2 = await screen.findByText('Attribute');
+    const emptyAttributes: BoostsBuries = {
+      numeric: [],
+      alphanumeric: [],
+      product: [],
+    };
 
-    act(() => {
-      tab2.click();
+    const selectAlphanumericAttribute = async (
+      screen: Screen,
+      withBury: boolean
+    ) => {
+      const tab2 = await screen.findByText('Attribute');
+
+      act(() => {
+        tab2.click();
+      });
+
+      const newAttributeButton = screen.getByText('Create new attribute rule');
+
+      act(() => {
+        newAttributeButton.click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByText('Numeric attributes')).toBeVisible()
+      );
+
+      const nextStepButton = screen.getAllByText(
+        'Product description attributes'
+      )[0];
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      if (withBury) {
+        const dropdownButton = screen.getByText('boost');
+
+        act(() => {
+          dropdownButton.click();
+        });
+
+        const buryButton = screen.getByText('Bury');
+
+        act(() => {
+          buryButton.click();
+        });
+      }
+
+      const colourButton = screen.getByText('Colour');
+
+      act(() => {
+        colourButton.click();
+      });
+
+      const colourRedButton = screen.getByLabelText('Red');
+      const colourBlueButton = screen.getByLabelText('Blue');
+
+      act(() => {
+        colourBlueButton.click();
+        colourRedButton.click();
+      });
+    };
+
+    it('adds a numeric attribute', async () => {
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            ...mockRules,
+            boosts: emptyAttributes,
+            buries: emptyAttributes,
+          }}
+        />
+      );
+
+      const tab2 = await screen.findByText('Attribute');
+
+      act(() => {
+        tab2.click();
+      });
+
+      const newAttributeButton = screen.getByText('Create new attribute rule');
+
+      act(() => {
+        newAttributeButton.click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByText('Numeric attributes')).toBeVisible()
+      );
+
+      const nextStepButton = screen.getByText('Numeric attributes');
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      const sizeButton = screen.getAllByLabelText('Price');
+
+      act(() => {
+        sizeButton[1].click();
+      });
+
+      const doneButton = screen.getByText('Done');
+
+      act(() => {
+        doneButton.click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByText('1 attribute rule')).toBeVisible()
+      );
     });
 
-    expect(screen.getByText('Create new attribute rule')).toBeVisible();
+    it('adds an alphanumeric attribute', async () => {
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            ...mockRules,
+            boosts: emptyAttributes,
+            buries: emptyAttributes,
+          }}
+        />
+      );
+
+      await selectAlphanumericAttribute(screen, false);
+
+      const doneButton = screen.getByText('Done');
+
+      act(() => {
+        doneButton.click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByText('1 attribute rule')).toBeVisible()
+      );
+    });
+
+    it('adds a buried alphanumeric attribute', async () => {
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            ...mockRules,
+            boosts: emptyAttributes,
+            buries: emptyAttributes,
+          }}
+        />
+      );
+
+      await selectAlphanumericAttribute(screen, true);
+
+      const doneButton = screen.getByText('Done');
+
+      act(() => {
+        doneButton.click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByText('1 attribute rule')).toBeVisible()
+      );
+    });
+
+    it('deletes attributes', async () => {
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={mockRules}
+        />
+      );
+
+      const tab2 = await screen.findByText('Attribute');
+
+      act(() => {
+        tab2.click();
+      });
+
+      expect(screen.getByText('Nike')).toBeVisible();
+
+      const deleteButton = screen.getAllByLabelText('Delete attribute');
+
+      act(() => {
+        deleteButton[0].click();
+        deleteButton[3].click();
+      });
+
+      expect(screen.queryByText('Nike')).not.toBeInTheDocument();
+      expect(screen.queryByText('size')).not.toBeInTheDocument();
+    });
   });
 });
