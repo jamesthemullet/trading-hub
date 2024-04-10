@@ -14,6 +14,7 @@ export * from './product-search/product-search';
 export * from './product/product';
 export * from './radio-buttons/radio-buttons';
 export * from './rules/rules';
+export * from './facets/facets';
 export * from './ruleset-attributes/ruleset-attributes';
 export * from './ruleset-changes/ruleset-changes';
 export * from './search/search';

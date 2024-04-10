@@ -1,19 +1,16 @@
-import { useState } from 'react';
-
 import styled from '@emotion/styled';
 import { format } from 'date-fns';
 
 import { Toggle } from '../toggle/toggle';
-import type { ReturnedRuleSet } from '@/libs/api';
+import type { ReturnedFacet } from '@/libs/api';
 import { spacing } from '../utils/spacing';
 import { Label, Text } from '../typography/typography.styles';
 
 type Props = {
-  columnOrderName: keyof ReturnedRuleSet;
+  columnOrderName: keyof ReturnedFacet;
   columnSortOrder: 'asc' | 'desc';
-  onDeleteRuleSet: ({ rulesetId }: { rulesetId: string }) => void;
-  onColumnOrderChange: (columnId: keyof ReturnedRuleSet) => void;
-  rules: ReturnedRuleSet[];
+  onColumnOrderChange: (columnId: keyof ReturnedFacet) => void;
+  facets: (ReturnedFacet & { isEnabled: boolean })[];
 };
 
 const Container = styled.div`
@@ -63,31 +60,17 @@ const Col = styled.div`
   }
 `;
 
-const RuleSetHeading = styled(Label)`
+const FacetHeading = styled(Label)`
   color: #1d1d1b;
   font-weight: bold;
 `;
 
-const LinkButton = styled.a`
+const EditButton = styled.a`
   border: none;
   color: #000;
   background-color: #f5f5f5;
   transition: background-color 0.1s ease-in;
   text-decoration: none;
-  padding: 12px 16px;
-  width: 100%;
-
-  &:hover {
-    background-color: #e3e3e3;
-  }
-`;
-const Button = styled.button`
-  border: none;
-  color: #000;
-  background-color: #f5f5f5;
-  transition: background-color 0.1s ease-in;
-  text-decoration: none;
-  text-align: left;
   padding: 12px 16px;
   width: 100%;
 
@@ -142,13 +125,21 @@ const DateContainer = styled.div`
   }
 `;
 
+const Actions = styled.div`
+  position: relative;
+  display: flex;
+`;
+
 const COLUMNS: {
   label: string;
-  sortBy?: keyof ReturnedRuleSet;
+  sortBy?: keyof ReturnedFacet;
 }[] = [
   {
     label: 'Identifier',
-    sortBy: 'categoryName',
+    sortBy: 'displayValue',
+  },
+  {
+    label: 'Influence',
   },
   {
     label: 'Enable',
@@ -158,68 +149,19 @@ const COLUMNS: {
     sortBy: 'lastChanged',
   },
   {
+    label: 'user',
+  },
+  {
     label: 'Actions',
   },
 ];
 
-const OptionButton = styled.button<{ isOpen: boolean }>`
-  position: relative;
-  width: 50px;
-  border: none;
-  border-radius: 0;
-  background-color: #f5f5f5;
-  transition: background-color 0.1s ease-in;
-  border-left: solid 1px #999;
-
-  &::before {
-    border: 4px solid transparent;
-    border-bottom-color: ${({ isOpen }) => isOpen && '#000'};
-    border-top-color: ${({ isOpen }) => !isOpen && '#000'};
-    content: '';
-    display: block;
-    height: 0;
-    right: 15px;
-    top: ${({ isOpen }) => (isOpen ? '35%' : '23px')};
-    position: absolute;
-    width: 0;
-  }
-
-  &:hover {
-    background-color: #e3e3e3;
-  }
-`;
-
-const Actions = styled.div`
-  position: relative;
-  display: flex;
-`;
-
-const Dropdown = styled.div`
-  position: absolute;
-  top: 47px;
-  background-color: #f5f5f5;
-  width: 100%;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  z-index: 1;
-  border: none;
-  border-top: solid 1px #999;
-  box-shadow: #000 0 4px 2px -4px;
-  font-family: inherit;
-  font-size: inherit;
-  text-align: left;
-`;
-
-export const Rules = ({
-  rules,
+export const Facets = ({
+  facets,
   onColumnOrderChange,
-  onDeleteRuleSet,
   columnOrderName,
   columnSortOrder,
 }: Props) => {
-  const [optionToggle, setOptionToggle] = useState('');
-
   return (
     <Container>
       <Row style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
@@ -234,11 +176,12 @@ export const Rules = ({
               sortBy && onColumnOrderChange(sortBy);
             }}
           >
-            <RuleSetHeading as="p" isStrong={true}>
+            <FacetHeading as="p" isStrong={true}>
               {label}
-            </RuleSetHeading>
+            </FacetHeading>
             {sortBy && (
               <ColumnOrder
+                aria-label={`column-${sortBy}-order-${columnOrderName === sortBy ? columnSortOrder : 'unsorted'}`}
                 order={
                   columnOrderName === sortBy ? columnSortOrder : 'unsorted'
                 }
@@ -247,22 +190,22 @@ export const Rules = ({
           </Col>
         ))}
       </Row>
-      {rules.map(
+      {facets.map(
         ({
-          categoryName,
-          categoryId,
+          displayValue,
+          // influence,
           id,
           lastChanged,
           isEnabled,
-        }: ReturnedRuleSet) => {
-          const isOptionDropdownOpen = optionToggle === id;
-
+        }) => {
           return (
             <Row key={`rule-${id}`}>
               <Col>
-                <Text title={categoryName}>
-                  {categoryId} | {categoryName}
-                </Text>
+                <Text title={displayValue}>{displayValue}</Text>
+              </Col>
+              <Col>
+                {/* <Text title={influence}>{influence}</Text> */}
+                <Text title="influence">Influence</Text>
               </Col>
               <Col>
                 <Toggle checked={isEnabled} onChange={() => {}} />
@@ -272,32 +215,16 @@ export const Rules = ({
                   <Text>
                     {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
                   </Text>
-                  <Text style={{ fontSize: '0.7em' }}>{lastChanged.user}</Text>
                 </DateContainer>
+              </Col>
+              <Col>
+                <Text title={lastChanged.user}>{lastChanged.user}</Text>
               </Col>
               <Col style={{ padding: '12px 0 16px' }}>
                 <Actions>
-                  <LinkButton href={`rules/edit/${id}`}>Edit</LinkButton>
-                  <OptionButton
-                    isOpen={isOptionDropdownOpen}
-                    onClick={() =>
-                      setOptionToggle(isOptionDropdownOpen ? '' : id)
-                    }
-                    title="More options"
-                  />
-                  {isOptionDropdownOpen && (
-                    <Dropdown>
-                      <Button
-                        title="Delete"
-                        onClick={() => onDeleteRuleSet({ rulesetId: id })}
-                      >
-                        Delete
-                      </Button>
-                      <LinkButton href={`rules/edit/${id}/facet-management`}>
-                        Edit Facets
-                      </LinkButton>
-                    </Dropdown>
-                  )}
+                  <EditButton href={`../../../facet-management/${id}`}>
+                    Edit
+                  </EditButton>
                 </Actions>
               </Col>
             </Row>
