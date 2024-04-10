@@ -9,7 +9,7 @@ import {
 } from '@/libs/hooks/data/mock-use-facets-list';
 import { useFacetsList } from '@/libs/hooks';
 
-import { default as FacetManagementPage } from './facet-management.page';
+import { default as FacetManagementPage } from './index.page';
 
 jest.mock('../../../../libs/hooks/use-facets-list', () => ({
   useFacetsList: jest.fn(),

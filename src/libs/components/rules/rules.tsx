@@ -68,26 +68,12 @@ const RuleSetHeading = styled(Label)`
   font-weight: bold;
 `;
 
-const LinkButton = styled.a`
+const EditButton = styled.a`
   border: none;
   color: #000;
   background-color: #f5f5f5;
   transition: background-color 0.1s ease-in;
   text-decoration: none;
-  padding: 12px 16px;
-  width: 100%;
-
-  &:hover {
-    background-color: #e3e3e3;
-  }
-`;
-const Button = styled.button`
-  border: none;
-  color: #000;
-  background-color: #f5f5f5;
-  transition: background-color 0.1s ease-in;
-  text-decoration: none;
-  text-align: left;
   padding: 12px 16px;
   width: 100%;
 
@@ -194,14 +180,12 @@ const Actions = styled.div`
   display: flex;
 `;
 
-const Dropdown = styled.div`
+const Dropdown = styled.button`
   position: absolute;
   top: 47px;
   background-color: #f5f5f5;
   width: 100%;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
+  padding: ${spacing(2)};
   z-index: 1;
   border: none;
   border-top: solid 1px #999;
@@ -209,6 +193,11 @@ const Dropdown = styled.div`
   font-family: inherit;
   font-size: inherit;
   text-align: left;
+
+  &:hover,
+  &:active {
+    background-color: #e3e3e3;
+  }
 `;
 
 export const Rules = ({
@@ -277,7 +266,7 @@ export const Rules = ({
               </Col>
               <Col style={{ padding: '12px 0 16px' }}>
                 <Actions>
-                  <LinkButton href={`rules/edit/${id}`}>Edit</LinkButton>
+                  <EditButton href={`rules/edit/${id}`}>Edit</EditButton>
                   <OptionButton
                     isOpen={isOptionDropdownOpen}
                     onClick={() =>
@@ -286,16 +275,11 @@ export const Rules = ({
                     title="More options"
                   />
                   {isOptionDropdownOpen && (
-                    <Dropdown>
-                      <Button
-                        title="Delete"
-                        onClick={() => onDeleteRuleSet({ rulesetId: id })}
-                      >
-                        Delete
-                      </Button>
-                      <LinkButton href={`rules/edit/${id}/facet-management`}>
-                        Edit Facets
-                      </LinkButton>
+                    <Dropdown
+                      title="Delete"
+                      onClick={() => onDeleteRuleSet({ rulesetId: id })}
+                    >
+                      Delete
                     </Dropdown>
                   )}
                 </Actions>

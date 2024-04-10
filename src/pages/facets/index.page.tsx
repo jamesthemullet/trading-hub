@@ -5,7 +5,7 @@ import type { ReturnedFacet } from '@/libs/api';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import { useFacetsList } from '@/libs/hooks';
-import { Heading, Facets } from '@/libs/components';
+import { Heading, Facets, Button, Search } from '@/libs/components';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -16,6 +16,17 @@ const PageWrapper = styled.div`
   margin: ${spacing(2)};
   padding-top: ${spacing(1)};
   border-radius: 4px;
+`;
+const ToolsContainer = styled.div`
+  display: flex;
+  align-items: left;
+
+  margin: ${spacing(2)};
+`;
+const NewButton = styled.div`
+  margin-left: auto;
+  margin-top: ${spacing(1)};
+  margin-right: ${spacing(2)};
 `;
 
 const FacetManagementPage = () => {
@@ -48,6 +59,15 @@ const FacetManagementPage = () => {
 
       <PageNameLabel>Category facet management</PageNameLabel>
       <PageWrapper>
+        <ToolsContainer>
+          <Search onChange={() => {}} />
+          <NewButton>
+            <Button as="a" href="/facets/new">
+              Add facet
+            </Button>
+          </NewButton>
+        </ToolsContainer>
+
         <Facets
           facets={categoryFacets}
           columnSortOrder={columnSortOrder}
