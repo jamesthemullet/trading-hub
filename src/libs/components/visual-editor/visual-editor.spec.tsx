@@ -57,10 +57,15 @@ describe('VisualEditor', () => {
   });
 
   const onChangePosition = jest.fn();
+  const onProductBoostBury = jest.fn();
 
   it('should render products', () => {
     render(
-      <VisualEditor products={products} onChangePosition={onChangePosition} />
+      <VisualEditor
+        products={products}
+        onChangePosition={onChangePosition}
+        onProductBoostBury={onProductBoostBury}
+      />
     );
 
     expect(

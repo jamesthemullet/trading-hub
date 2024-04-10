@@ -96,6 +96,7 @@ describe('RulesetChanges', () => {
           },
         }}
         onChangePosition={jest.fn()}
+        onProductBoostBury={jest.fn()}
       />
     );
 
@@ -112,6 +113,7 @@ describe('RulesetChanges', () => {
           buries: { numeric: [], alphanumeric: [], product: [] },
         }}
         onChangePosition={jest.fn()}
+        onProductBoostBury={jest.fn()}
       />
     );
 
