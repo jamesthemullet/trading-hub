@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { NumericBoostBury } from '../../api';
 import { Label, Text } from '../typography/typography.styles';
 
 import {
@@ -11,11 +12,13 @@ import { AttributeWeight } from './weight';
 export const NumericAttribute = ({
   isEditable,
   name,
+  onDelete,
   operation,
-  weight = 1.0,
+  weight = 0.01,
 }: {
   isEditable?: boolean;
   name: string;
+  onDelete?: ({ field, weight }: NumericBoostBury) => void;
   operation: 'bury' | 'boost';
   weight?: number;
 }) => (
@@ -36,6 +39,10 @@ export const NumericAttribute = ({
         {operation}
       </Text>
     </AttributeRow>
-    <AttributeWeight weight={weight} isEditable={isEditable} />
+    <AttributeWeight
+      weight={weight}
+      isEditable={isEditable}
+      onDelete={() => onDelete && onDelete({ field: name, weight })}
+    />
   </AttributeWrapper>
 );

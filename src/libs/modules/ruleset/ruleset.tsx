@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import isEqual from 'lodash/isEqual';
 import {
   CategorySearch,
+  ChangeProductBoostBury,
   Preview,
   ProductGridHeader,
   ProductSearch,
@@ -10,7 +12,14 @@ import {
   VisualEditor,
 } from '../../components';
 import { useEffect, useState } from 'react';
-import type { Category, Product, MerchandisingRules } from '@/libs/api';
+import type {
+  Category,
+  Product,
+  MerchandisingRules,
+  AlphanumericBoostBury,
+  NumericBoostBury,
+  AttributeType,
+} from '@/libs/api';
 import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
 import { useRouter } from 'next/router';
 
@@ -60,6 +69,13 @@ type NewRulesetValues = {
 interface EditRulesetValues extends NewRulesetValues {
   rulesetId: string;
 }
+
+export type EditAttribute = {
+  attribute: AlphanumericBoostBury | NumericBoostBury;
+  change: 'add' | 'remove';
+  operation: 'boosts' | 'buries';
+  type: AttributeType;
+};
 
 export const Ruleset = ({
   onCancel,
@@ -163,6 +179,7 @@ export const Ruleset = ({
         isLastChanged: false,
       }));
 
+    /* istanbul ignore next */
     const product = isNewProduct
       ? searchProducts.find((p) => p.id === id)
       : sortedProducts[oldPosition];
@@ -205,13 +222,71 @@ export const Ruleset = ({
     });
   };
 
+  const onChangeAttribute = ({
+    attribute,
+    operation,
+    type,
+    change,
+  }: EditAttribute) => {
+    setMerchandisingRules((prevState) => {
+      const newState = prevState;
+      if (type === 'alphanumeric') {
+        newState[operation] = {
+          ...newState[operation],
+          alphanumeric:
+            change === 'add'
+              ? [
+                  ...merchandisingRules[operation][type],
+                  attribute as AlphanumericBoostBury,
+                ]
+              : [
+                  ...merchandisingRules[operation][type].filter(
+                    (attr) => !isEqual(attr, attribute)
+                  ),
+                ],
+        };
+      }
+      if (type === 'numeric') {
+        newState[operation] = {
+          ...newState[operation],
+          numeric:
+            change === 'add'
+              ? [
+                  ...merchandisingRules[operation][type],
+                  attribute as NumericBoostBury,
+                ]
+              : merchandisingRules[operation][type].filter(
+                  (attr) => !isEqual(attr, attribute)
+                ),
+        };
+      }
+      return { ...newState };
+    });
+  };
+
+  const onProductBoostBury = ({ id, operation }: ChangeProductBoostBury) => {
+    setMerchandisingRules((prevState) => {
+      const newState = prevState;
+
+      newState[operation] = {
+        ...prevState[operation],
+        product: [...prevState[operation].product, { id, weight: 1 }],
+      };
+
+      return { ...newState };
+    });
+    if (!hasChanges) setHasChanges(true);
+  };
+
   /* istanbul ignore next */
   const totalCount =
     merchandisingRules.pinnedProducts.length +
     (merchandisingRules.boosts?.alphanumeric || []).length +
     (merchandisingRules.boosts?.numeric || []).length +
+    (merchandisingRules.boosts?.product || []).length +
     (merchandisingRules.buries?.alphanumeric || []).length +
-    (merchandisingRules.buries?.numeric || []).length;
+    (merchandisingRules.buries?.numeric || []).length +
+    (merchandisingRules.buries?.product || []).length;
 
   const onSaveRuleset = (categoryId: string) => {
     if (rulesetId && onSave) {
@@ -293,6 +368,7 @@ export const Ruleset = ({
                 setSearchProducts(data.products);
               }}
               onChangePosition={onChangePosition}
+              onProductBoostBury={onProductBoostBury}
               products={searchProducts}
             />
           )}
@@ -300,6 +376,7 @@ export const Ruleset = ({
             <RulesetAttributes
               merchandisingRules={merchandisingRules}
               category={selectedCategory.identifier}
+              onChangeAttribute={onChangeAttribute}
             />
           )}
         </ProductSearchPanel>
@@ -322,6 +399,7 @@ export const Ruleset = ({
             <VisualEditor
               products={sortedProducts}
               onChangePosition={onChangePosition}
+              onProductBoostBury={onProductBoostBury}
             />
           )}
           {currentEditorTab === 1 && (
@@ -329,6 +407,7 @@ export const Ruleset = ({
               merchandisingRules={merchandisingRules}
               category={selectedCategory.identifier}
               onChangePosition={onChangePosition}
+              onProductBoostBury={onProductBoostBury}
             />
           )}
         </RulesPanel>

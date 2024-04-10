@@ -1,4 +1,5 @@
 import {
+  AttributeResponseItem,
   BoostsBuries,
   BoostsBuriesWithInfo,
   ProductBoostBury,
@@ -43,8 +44,8 @@ export const boostMock: BoostsBuries = {
   ],
   product: [
     {
-      id: '1',
-      weight: 0.5,
+      id: '60449386',
+      weight: 1,
     },
     {
       id: '2',
@@ -74,11 +75,11 @@ export const boostWithInfoMock: BoostsBuriesWithInfo = {
 export const buriesMock: BoostsBuries = {
   numeric: [
     {
-      field: 'price',
+      field: 'daysSinceLaunch',
       weight: 0.7,
     },
     {
-      field: 'size',
+      field: 'stockQuantity',
       weight: 0.2,
     },
   ],
@@ -117,3 +118,40 @@ export const buriesWithInfoMock: BoostsBuriesWithInfo = {
     url: '',
   })),
 };
+
+export const attributesMock: AttributeResponseItem[] = [
+  {
+    type: 'alphanumeric',
+    name: 'Colour',
+    values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
+  },
+  {
+    type: 'numeric',
+    name: 'Size',
+    values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
+  },
+  {
+    type: 'alphanumeric',
+    name: 'Brand',
+    values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
+  },
+  {
+    type: 'alphanumeric',
+    name: 'Category',
+    values: [
+      { value: 'Shoes' },
+      { value: 'Clothing' },
+      { value: 'Accessories' },
+    ],
+  },
+  {
+    type: 'numeric',
+    name: 'Price',
+    values: [
+      { value: '0-50' },
+      { value: '50-100' },
+      { value: '100-200' },
+      { value: '200+' },
+    ],
+  },
+];
