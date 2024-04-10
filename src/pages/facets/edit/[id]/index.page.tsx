@@ -116,7 +116,7 @@ const Page = () => {
       <AddFacetPanel>
         <div>
           <LowerHeading isStrong>Preview and manage facets</LowerHeading>
-          <p>(sort by algo control)</p>
+          <Text>(sort by algo control)</Text>
         </div>
         <div>
           <Button>Add facet</Button>
