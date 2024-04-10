@@ -146,7 +146,7 @@ describe('Ruleset', () => {
               title: product3Title,
               imageUrl: ['example.jpg'],
               brand: 'brand',
-              metadata: { isPinned: false },
+              metadata: { isPinned: false, isBoosted: true },
               isInStock: true,
               price: '£10',
               rating: 4.5,
@@ -168,7 +168,12 @@ describe('Ruleset', () => {
     jest.mocked(useCategoryPreview).mockReturnValue({
       categoryProducts: [
         mockProduct,
-        { ...mockProduct, id: 'product2', productId: 'productId2' },
+        {
+          ...mockProduct,
+          id: 'product2',
+          productId: 'productId2',
+          metadata: { isPinned: false, isBoosted: true },
+        },
       ],
       categoryFacets: [],
       merchandisingRulesWithInfo: mockMerchandisingRules,
@@ -349,203 +354,261 @@ describe('Ruleset', () => {
     expect(mockSave).not.toHaveBeenCalled();
   });
 
-  it('should search for products when the user enters a query, and clear products when the user clears the query', async () => {
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
-    });
+  describe('Boosting', () => {
+    beforeEach(() => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
 
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(
-      <Ruleset
-        onSave={jest.fn()}
-        onCancel={jest.fn()}
-        rulesetCategory={{
-          identifier: categoryId1,
-          name: categoryName1,
-          path: categoryPath1,
-        }}
-        rulesetMerchandisingRules={{
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: { numeric: [], alphanumeric: [], product: [] },
-          buries: { numeric: [], alphanumeric: [], product: [] },
-        }}
-        rulesetId={ruleSetId}
-      />
-    );
-
-    await user.type(
-      screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT),
-      '123'
-    );
-
-    expect(screen.getByText('3 results')).toBeVisible();
-
-    await user.clear(
-      screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
-    );
-    expect(screen.queryByText('3 results')).not.toBeInTheDocument();
-  });
-
-  it('does not search for products when no category selected', async () => {
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
-    });
-
-    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
-
-    expect(
-      screen.queryAllByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
-    ).toHaveLength(0);
-  });
-
-  it('should show and close preview', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
-    });
-
-    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
-
-    await selectCategory(screen, user);
-
-    const previewButton = screen.getByText('Preview');
-
-    act(() => {
-      previewButton.click();
-    });
-
-    expect(
-      screen.getByText('Search across the site to preview the rule influence')
-    ).toBeInTheDocument();
-
-    const closeButton = screen.getByLabelText('close modal');
-
-    act(() => {
-      closeButton.click();
-    });
-
-    expect(
-      screen.queryByText('Search across the site to preview the rule influence')
-    ).not.toBeInTheDocument();
-  });
-
-  it('should handle position change when product is selected from product search', async () => {
-    const user = userEvent.setup();
-    const productSearchTitle = 'productSearchTitle';
-
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
-    });
-
-    jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryProducts: [
-        {
-          id: 'product-id-1',
-          productId: 'product-id-1',
-          title: productSearchTitle,
-          imageUrl: ['example1.jpg'],
-          brand: product1Brand,
-          metadata: { isPinned: false },
-          isInStock: true,
-          price: product1Price,
-          rating: 4.5,
-          url: '',
-        },
-      ],
-      categoryFacets: [],
-      merchandisingRulesWithInfo: mockMerchandisingRules,
-      error: '',
-      setRules: jest.fn(),
-    });
-
-    jest.mocked(useCategoryProductSearch).mockReturnValue({
-      handleGet: jest.fn(() => {
-        return Promise.resolve({
-          products: [
-            {
-              id: 'product-id-2',
-              productId: 'product-id-2',
-              title: productSearchTitle,
-              imageUrl: ['example2.jpg'],
-              brand: product1Brand,
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: product1Price,
-              rating: 4.5,
-              url: '',
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'a1', weight: 1 }],
             },
-          ],
-          pagination: {
-            totalItems: 1,
+            buries: { numeric: [], alphanumeric: [], product: [] },
+          }}
+          rulesetId={ruleSetId}
+        />
+      );
+    });
+
+    it('Should boost from the Visual Editor', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      await user.click(screen.getAllByTitle('Open menu')[0]);
+
+      await user.click(screen.getByText('Boost to Top'));
+
+      expect(
+        await screen.getByText('Changes', { exact: false }).textContent
+      ).toEqual('Changes2');
+    });
+
+    it('Should not boost a previously boosted product', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      await user.click(screen.getAllByTitle('Open menu')[1]);
+
+      expect(screen.getByText('TODO: unboost')).toBeVisible();
+    });
+  });
+
+  describe('Search', () => {
+    it('should search for products when the user enters a query, and clear products when the user clears the query', async () => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+          }}
+          rulesetId={ruleSetId}
+        />
+      );
+
+      await user.type(
+        screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT),
+        '123'
+      );
+
+      expect(screen.getByText('3 results')).toBeVisible();
+
+      await user.clear(
+        screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
+      );
+      expect(screen.queryByText('3 results')).not.toBeInTheDocument();
+    });
+
+    it('does not search for products when no category selected', async () => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+
+      expect(
+        screen.queryAllByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
+      ).toHaveLength(0);
+    });
+
+    it('should handle position change when product is selected from product search', async () => {
+      const user = userEvent.setup();
+      const productSearchTitle = 'productSearchTitle';
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      jest.mocked(useCategoryPreview).mockReturnValue({
+        categoryProducts: [
+          {
+            id: 'product-id-1',
+            productId: 'product-id-1',
+            title: productSearchTitle,
+            imageUrl: ['example1.jpg'],
+            brand: product1Brand,
+            metadata: { isPinned: false },
+            isInStock: true,
+            price: product1Price,
+            rating: 4.5,
+            url: '',
           },
-        });
-      }),
-      error: '',
+        ],
+        categoryFacets: [],
+        merchandisingRulesWithInfo: mockMerchandisingRules,
+        error: '',
+        setRules: jest.fn(),
+      });
+
+      jest.mocked(useCategoryProductSearch).mockReturnValue({
+        handleGet: jest.fn(() => {
+          return Promise.resolve({
+            products: [
+              {
+                id: 'product-id-2',
+                productId: 'product-id-2',
+                title: productSearchTitle,
+                imageUrl: ['example2.jpg'],
+                brand: product1Brand,
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: product1Price,
+                rating: 4.5,
+                url: '',
+              },
+            ],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+        error: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+          }}
+          rulesetId={ruleSetId}
+        />
+      );
+
+      // expect to see 1 product in the visual editor
+      expect(screen.getByLabelText('Position 1')).toBeVisible();
+      expect(screen.queryByLabelText('Position 2')).toBeNull();
+
+      const searchProduct = screen.getByPlaceholderText('Search for product');
+
+      await user.type(searchProduct, 'productSearchTitle');
+
+      const menuButton = screen
+        .getByLabelText('Product Search Container')
+        .querySelector('button[title="Open menu"]');
+
+      act(() => {
+        if (menuButton) {
+          user.click(menuButton);
+        }
+      });
+
+      const pinToPositionButton = await screen.findByText('Pin in position');
+
+      act(() => {
+        user.click(pinToPositionButton);
+      });
+
+      const input = await screen.findByPlaceholderText('i.e. 3');
+
+      await user.type(input, '1');
+
+      const confirmButton = screen.getByText('Confirm');
+
+      act(() => {
+        user.click(confirmButton);
+      });
+
+      // expect to see 2 products in the visual editor
+      expect(await screen.findByLabelText('Position 1')).toBeVisible();
+      expect(await screen.findByLabelText('Position 2')).toBeVisible();
     });
+  });
 
-    renderWithProviders(
-      <Ruleset
-        onSave={jest.fn()}
-        onCancel={jest.fn()}
-        rulesetCategory={{
-          identifier: categoryId1,
-          name: categoryName1,
-          path: categoryPath1,
-        }}
-        rulesetMerchandisingRules={{
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: { numeric: [], alphanumeric: [], product: [] },
-          buries: { numeric: [], alphanumeric: [], product: [] },
-        }}
-        rulesetId={ruleSetId}
-      />
-    );
+  describe('Preview', () => {
+    it('should show and close preview', async () => {
+      const user = userEvent.setup({ delay: null });
 
-    // expect to see 1 product in the visual editor
-    expect(screen.getByLabelText('Position 1')).toBeVisible();
-    expect(screen.queryByLabelText('Position 2')).toBeNull();
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
 
-    const searchProduct = screen.getByPlaceholderText('Search for product');
+      renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
 
-    await user.type(searchProduct, 'productSearchTitle');
+      await selectCategory(screen, user);
 
-    const menuButton = screen
-      .getByLabelText('Product Search Container')
-      .querySelector('button[title="Open menu"]');
+      const previewButton = screen.getByText('Preview');
 
-    act(() => {
-      if (menuButton) {
-        user.click(menuButton);
-      }
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(
+        screen.getByText('Search across the site to preview the rule influence')
+      ).toBeInTheDocument();
+
+      const closeButton = screen.getByLabelText('close modal');
+
+      act(() => {
+        closeButton.click();
+      });
+
+      expect(
+        screen.queryByText(
+          'Search across the site to preview the rule influence'
+        )
+      ).not.toBeInTheDocument();
     });
-
-    const pinToPositionButton = await screen.findByText('Pin in position');
-
-    act(() => {
-      user.click(pinToPositionButton);
-    });
-
-    const input = await screen.findByPlaceholderText('i.e. 3');
-
-    await user.type(input, '1');
-
-    const confirmButton = screen.getByText('Confirm');
-
-    act(() => {
-      user.click(confirmButton);
-    });
-
-    // expect to see 2 products in the visual editor
-    expect(await screen.findByLabelText('Position 1')).toBeVisible();
-    expect(await screen.findByLabelText('Position 2')).toBeVisible();
   });
 
   it('opens changes tab', async () => {

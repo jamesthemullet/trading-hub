@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { Product as ProductType } from '@/libs/api';
 
-import { Product } from '../product/product';
+import { ChangeProductBoostBury, Product } from '../product/product';
 import { Search } from '../search/search';
 
 const ProductSearchRootContainer = styled.div`
@@ -59,12 +59,15 @@ export type ProductSearchProps = {
   onSearch: (query: string) => void;
   products: ProductType[];
   onChangePosition: (arg: ChangePositionTypes) => void;
+  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
 };
 
 export const ProductSearch = ({
   onSearch,
   products,
   onChangePosition,
+
+  onProductBoostBury,
 }: ProductSearchProps) => {
   return (
     <ProductSearchRootContainer aria-label="Product Search Container">
@@ -86,6 +89,7 @@ export const ProductSearch = ({
               {...product}
               index={index}
               onChangePosition={onChangePosition}
+              onProductBoostBury={onProductBoostBury}
               totalProducts={products.length}
               pinnedProductsCount={0}
               isBrandStrong={false}

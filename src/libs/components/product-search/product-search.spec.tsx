@@ -5,6 +5,9 @@ import { ProductSearch } from './product-search';
 
 const PLACEHOLDER_TEXT = 'Search for product';
 
+const mockChangePosition = jest.fn();
+const mockProductBoostBury = jest.fn();
+
 describe('ProductSearch', () => {
   it('should render rules search', () => {
     render(
@@ -13,9 +16,8 @@ describe('ProductSearch', () => {
           return;
         }}
         products={[]}
-        onChangePosition={() => {
-          return;
-        }}
+        onChangePosition={mockChangePosition}
+        onProductBoostBury={mockProductBoostBury}
       />
     );
 
@@ -42,9 +44,8 @@ describe('ProductSearch', () => {
             url: '',
           },
         ]}
-        onChangePosition={() => {
-          return;
-        }}
+        onChangePosition={mockChangePosition}
+        onProductBoostBury={mockProductBoostBury}
       />
     );
 
@@ -72,9 +73,8 @@ describe('ProductSearch', () => {
             url: '',
           },
         ]}
-        onChangePosition={() => {
-          return;
-        }}
+        onChangePosition={mockChangePosition}
+        onProductBoostBury={mockProductBoostBury}
       />
     );
 

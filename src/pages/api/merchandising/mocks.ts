@@ -44,8 +44,8 @@ export const boostMock: BoostsBuries = {
   ],
   product: [
     {
-      id: '1',
-      weight: 0.5,
+      id: '60449386',
+      weight: 1,
     },
     {
       id: '2',
@@ -118,7 +118,6 @@ export const buriesWithInfoMock: BoostsBuriesWithInfo = {
     url: '',
   })),
 };
-
 
 export const attributesMock: AttributeResponseItem[] = [
   {
