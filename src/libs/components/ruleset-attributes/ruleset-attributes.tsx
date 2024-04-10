@@ -225,7 +225,7 @@ const SectionLabel = ({
 export type Props = {
   category?: string;
   merchandisingRules: MerchandisingRules;
-  onChangeAttribute: ({}: EditAttribute) => void;
+  onChangeAttribute: (args: EditAttribute) => void;
 };
 
 const getNumericAttributes = (attributes: AttributesResponse['attributes']) => {
