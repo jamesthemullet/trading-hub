@@ -208,18 +208,17 @@ export const Ruleset = ({
   };
 
   const onProductBoostBury = ({ id, operation }: ChangeProductBoostBury) => {
-    if (!hasChanges) setHasChanges(true);
-
     setMerchandisingRules((prevState) => {
       const newState = prevState;
 
       newState[operation] = {
-        ...newState[operation],
-        product: [...newState[operation].product, { id, weight: 1 }],
+        ...prevState[operation],
+        product: [...prevState[operation].product, { id, weight: 1 }],
       };
 
       return { ...newState };
     });
+    if (!hasChanges) setHasChanges(true);
   };
 
   /* istanbul ignore next */

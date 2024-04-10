@@ -43,7 +43,7 @@ export const boostMock: BoostsBuries = {
   ],
   product: [
     {
-      id: "60449386",
+      id: '60449386',
       weight: 1,
     },
     {
