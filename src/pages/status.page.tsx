@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 import styled from '@emotion/styled';
 import { GetServerSidePropsContext } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
@@ -249,8 +249,6 @@ const Index = ({ apiBaseUrl }: { apiBaseUrl: string | undefined }) => {
   });
 
   const [details, setDetails] = useState<string>('');
-
-  const session = useSession();
 
   useEffect(() => {
     const fetchStatus = async () => {
