@@ -16,9 +16,13 @@ cp .env.example .env
 
 ### Running locally
 
-Trading Hub is a NextJS app.
+Trading Hub is a NextJS app. You will need [nvm](https://github.com/nvm-sh/nvm/blob/master/README.md#installing-and-updating) and [node](https://nodejs.org/en) installed locally to get started
 
 ```bash
+nvm install
+
+nvm use
+
 npm install
 
 npm run dev

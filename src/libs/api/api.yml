@@ -872,26 +872,29 @@ components:
           type: array
           items:
             type: object
-            properties:
-              type:
-                $ref: '#/components/schemas/AttributeType'
-              name:
-                type: string
-              values:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    value:
-                      type: string
-                  required:
-                    - value
-            required:
-              - type
-              - values
-              - name
+            $ref: '#/components/schemas/AttributeResponseItem'
       required:
         - attributes
+    AttributeResponseItem:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/AttributeType'
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+            required:
+              - value
+      required:
+        - type
+        - values
+        - name
     AttributeType:
       type: string
       enum: ['alphanumeric', 'numeric']
