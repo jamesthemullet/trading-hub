@@ -1,6 +1,6 @@
 import type { MerchandisingRules } from '@/libs/api';
 import styled from '@emotion/styled';
-import { Product } from '../product/product';
+import { ChangeProductBoostBury, Product } from '../product/product';
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
 import { spacing } from '../utils/spacing';
 import { ChangePositionTypes } from '../../modules/ruleset/ruleset';
@@ -18,10 +18,12 @@ export const RulesetChanges = ({
   category,
   merchandisingRules,
   onChangePosition,
+  onProductBoostBury,
 }: {
   category?: string;
   merchandisingRules: MerchandisingRules;
   onChangePosition: ({ isPinned, newPosition }: ChangePositionTypes) => void;
+  onProductBoostBury: ({}: ChangeProductBoostBury) => void;
 }) => {
   /* istanbul ignore next */
   const countOfAttributeChanges =
@@ -124,6 +126,7 @@ export const RulesetChanges = ({
                           merchandisingRules.pinnedProducts.length
                         }
                         onChangePosition={onChangePosition}
+                        onProductBoostBury={onProductBoostBury}
                         totalProducts={merchandisingRules.pinnedProducts.length}
                       />
                     </ProductBox>

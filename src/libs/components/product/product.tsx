@@ -29,6 +29,12 @@ type ChangePositionTypes = {
   newPosition: number;
 };
 
+export type ChangeProductBoostBury = {
+  id: string;
+  change: 'add' | 'remove';
+  operation: 'boosts' | 'buries';
+};
+
 export const ProductDetails = ({
   imageUrl,
   brand,
@@ -64,8 +70,9 @@ export const Product = ({
   productId,
   index,
   isLastChanged,
-  metadata: { isPinned },
+  metadata: { isPinned, isBoosted },
   onChangePosition,
+  onProductBoostBury,
   pinnedProductsCount,
   price,
   imageUrl,
@@ -81,6 +88,7 @@ export const Product = ({
     isPinned,
     newPosition,
   }: ChangePositionTypes) => void;
+  onProductBoostBury: ({}: ChangeProductBoostBury) => void;
   pinnedProductsCount: number;
   totalProducts: number;
   isBrandStrong?: boolean;
@@ -101,8 +109,10 @@ export const Product = ({
     setIsMenuOpen(false);
   };
 
-  // @TODO: this should add to product boost
-  const boostToTop = () => pin(0, true);
+  const boostToTop = () => {
+    onProductBoostBury({ id, change: 'add', operation: 'boosts' });
+    setIsMenuOpen(false);
+  };
 
   const lockToPosition = (pinTo: number) => {
     setIsMenuOpen(false);
@@ -153,7 +163,7 @@ export const Product = ({
         {(isProductNumberEnabled ?? true) && (
           <ProductNumber>{index + 1}</ProductNumber>
         )}
-        {isPinned && (
+        {(isPinned || isBoosted) && (
           <ProductPin>
             <Text>Internal</Text>
           </ProductPin>
@@ -194,9 +204,13 @@ export const Product = ({
                 >
                   {isPinned ? 'Edit position' : 'Pin in position'}
                 </ProductMenuButton>
-                <ProductMenuButton icon="up" as="button" onClick={boostToTop}>
-                  Boost to Top
-                </ProductMenuButton>
+                {isBoosted ? (
+                  <Text>TODO: unboost</Text>
+                ) : (
+                  <ProductMenuButton icon="up" as="button" onClick={boostToTop}>
+                    Boost to Top
+                  </ProductMenuButton>
+                )}
               </>
             )}
 

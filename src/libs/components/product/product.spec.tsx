@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { Product } from './product';
 
 const mockChangePosition = jest.fn();
+const mockProductBoostBury = jest.fn();
 const productProps = {
   id: 'id',
   productId: 'product id',
@@ -18,6 +19,7 @@ const productProps = {
   url: '',
   index: 1,
   onChangePosition: mockChangePosition,
+  onProductBoostBury: mockProductBoostBury,
   totalProducts: 10,
   pinnedProductsCount: 2,
 };
@@ -62,8 +64,8 @@ describe('Product', () => {
   it('should boost to top', () => {
     const expectedCall = {
       id: 'id',
-      isPinned: true,
-      newPosition: 0,
+      change: 'add',
+      operation: 'boosts',
     };
     render(<Product {...productProps} />);
 
@@ -75,7 +77,7 @@ describe('Product', () => {
       boostToTop.click();
     });
 
-    expect(mockChangePosition).toHaveBeenLastCalledWith(expectedCall);
+    expect(mockProductBoostBury).toHaveBeenLastCalledWith(expectedCall);
   });
 
   it('should open pinning menu', () => {
