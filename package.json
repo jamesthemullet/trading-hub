@@ -80,7 +80,7 @@
     "msw": "2.2.13",
     "node-fetch": "3.3.2",
     "postcss": "8.4.38",
-    "postcss-preset-mantine": "1.14.3",
+    "postcss-preset-mantine": "1.14.4",
     "postcss-simple-vars": "7.0.1",
     "prettier": "3.2.5",
     "swagger-typescript-api": "13.0.3",
