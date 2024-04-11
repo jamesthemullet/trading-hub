@@ -89,7 +89,7 @@ const ColumnHeading = styled(Text)`
   font-weight: bold;
 `;
 
-const NoAtttributesBlock = styled.div`
+const NoAttributesBlock = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -193,13 +193,7 @@ const Page = () => {
         <AttributesTable>
           <Row>
             {COLUMNS.map(({ label }) => (
-              <Col
-                key={`column-${label}`}
-                style={{
-                  cursor: 'auto',
-                  userSelect: 'none',
-                }}
-              >
+              <Col key={`column-${label}`}>
                 <ColumnHeading as="p" isStrong={true}>
                   {label}
                 </ColumnHeading>
@@ -209,10 +203,10 @@ const Page = () => {
         </AttributesTable>
       </SectionWrapper>
       {attributes.length === 0 && (
-        <NoAtttributesBlock>
+        <NoAttributesBlock>
           <Text>No, there are no attributes yet.</Text>
           <Text>How about adding a subcategory first?</Text>
-        </NoAtttributesBlock>
+        </NoAttributesBlock>
       )}
     </>
   );

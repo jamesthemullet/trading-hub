@@ -69,4 +69,13 @@ describe('Facet Management Editing', () => {
     // TODO: Implement save functionality
     expect(logSpy).toHaveBeenCalled();
   });
+
+  it('should render column headings', () => {
+    renderWithProviders(<Page />);
+
+    expect(screen.getByText('Attribute')).toBeVisible();
+    expect(screen.getByText('Display name')).toBeVisible();
+    expect(screen.getByText('Order')).toBeVisible();
+    expect(screen.getByText('Value options')).toBeVisible();
+  });
 });
