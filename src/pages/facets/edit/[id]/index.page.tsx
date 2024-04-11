@@ -86,7 +86,6 @@ const Col = styled.div`
 
 const ColumnHeading = styled(Text)`
   color: #1d1d1b;
-  font-weight: bold;
 `;
 
 const NoAttributesBlock = styled.div`
