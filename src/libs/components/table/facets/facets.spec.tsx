@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { useFacetsListMockData } from '../../hooks/data/mock-use-facets-list';
+import { useFacetsListMockData } from '../../../hooks/data/mock-use-facets-list';
 
 import { Facets } from './facets';
 
