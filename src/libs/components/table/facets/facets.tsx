@@ -7,7 +7,6 @@ import {
   TableContainer,
   TableRow,
   TableCol,
-  TableColumnOrder,
   TableActions,
   TableDateContainer,
   TableHeading,
@@ -15,10 +14,7 @@ import {
 } from '../table.styles';
 
 type Props = {
-  columnOrderName: keyof ReturnedFacet;
-  columnSortOrder: 'asc' | 'desc';
-  onColumnOrderChange: (columnId: keyof ReturnedFacet) => void;
-  facets: (ReturnedFacet & { isEnabled: boolean })[];
+  facets: ReturnedFacet[];
 };
 
 const COLUMNS: {
@@ -27,7 +23,6 @@ const COLUMNS: {
 }[] = [
   {
     label: 'Identifier',
-    sortBy: 'displayValue',
   },
   {
     label: 'Influence',
@@ -37,7 +32,6 @@ const COLUMNS: {
   },
   {
     label: 'Last changed',
-    sortBy: 'lastChanged',
   },
   {
     label: 'user',
@@ -47,42 +41,24 @@ const COLUMNS: {
   },
 ];
 
-export const Facets = ({
-  facets,
-  onColumnOrderChange,
-  columnOrderName,
-  columnSortOrder,
-}: Props) => {
+export const Facets = ({ facets }: Props) => {
   return (
     <TableContainer>
       <TableRow style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
-        {COLUMNS.map(({ label, sortBy }) => (
+        {COLUMNS.map(({ label }) => (
           <TableCol
             key={`column-${label}`}
             style={{
-              cursor: sortBy ? 'pointer' : 'auto',
               userSelect: 'none',
-            }}
-            onClick={() => {
-              sortBy && onColumnOrderChange(sortBy);
             }}
           >
             <TableHeading as="p" isStrong={true}>
               {label}
             </TableHeading>
-
-            {sortBy && (
-              <TableColumnOrder
-                aria-label={`column-${sortBy}-order-${columnOrderName === sortBy ? columnSortOrder : 'unsorted'}`}
-                order={
-                  columnOrderName === sortBy ? columnSortOrder : 'unsorted'
-                }
-              />
-            )}
           </TableCol>
         ))}
       </TableRow>
-      {facets.map(({ displayValue, id, lastChanged, isEnabled }) => {
+      {facets.map(({ displayValue, id, lastChanged }) => {
         return (
           <TableRow key={`rule-${id}`}>
             <TableCol>
@@ -92,7 +68,7 @@ export const Facets = ({
               <Text title="influence">Influence</Text>
             </TableCol>
             <TableCol>
-              <Toggle checked={isEnabled} onChange={() => {}} />
+              <Toggle checked={false} onChange={() => {}} />
             </TableCol>
             <TableCol>
               <TableDateContainer>
