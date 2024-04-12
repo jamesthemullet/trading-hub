@@ -1,7 +1,9 @@
 import {
   Button,
   CategorySearch,
+  Header3,
   Heading,
+  Search,
   spacing,
   Text,
 } from '@/libs/components';
@@ -10,6 +12,8 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import { Category } from '../../../../libs/api';
 import { useState } from 'react';
+import { Modal } from '@mantine/core';
+import Image from 'next/image';
 
 const ActionContainer = styled.div`
   display: flex;
@@ -102,6 +106,52 @@ const NoAttributesBlock = styled.div`
   }
 `;
 
+const MODAL_WIDTH = 435;
+
+const ModalContainer = styled.div`
+  height: 492px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const HeadingAndCloseButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: ${spacing(2)};
+  align-items: center;
+
+  h3 {
+    font-size: 1.25em;
+  }
+
+  button {
+    background: none;
+    border: none;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+  }
+`;
+
+const ModalSectionContainer = styled.div`
+  padding: ${spacing(2)};
+`;
+
+const ModalAttributesTable = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  div {
+    border-bottom: none;
+
+    &:first-of-type {
+      flex: 2;
+    }
+  }
+`;
+
 const COLUMNS: {
   label: string;
 }[] = [
@@ -119,8 +169,20 @@ const COLUMNS: {
   },
 ];
 
+const ADDFACETMODALCOLUMNS: {
+  label: string;
+}[] = [
+  {
+    label: 'Attribute',
+  },
+  {
+    label: 'Actions',
+  },
+];
+
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
+  const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
   const attributes = [];
   const router = useRouter();
 
@@ -173,10 +235,72 @@ const Page = () => {
             <Text>(sort by algo control)</Text>
           </div>
           <div>
-            <Button>Add facet</Button>
+            <Button
+              onClick={() => setIsAddFacetModalOpen(!isAddFacetModalOpen)}
+            >
+              Add facet
+            </Button>
           </div>
         </AddFacetPanel>
       </SectionWrapper>
+
+      <Modal.Root
+        opened={isAddFacetModalOpen}
+        onClose={
+          // istanbul ignore next
+          () => setIsAddFacetModalOpen(false)
+        }
+        centered
+        size={`${2 * MODAL_WIDTH}px`}
+        padding={0}
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <Modal.Body>
+            <ModalContainer>
+              <HeadingAndCloseButton>
+                <Text isStrong as={Header3}>
+                  Add facet
+                </Text>
+                <Button
+                  onClick={() => setIsAddFacetModalOpen(false)}
+                  aria-label="Close Modal"
+                >
+                  <Image
+                    src="/trading-hub/asset/icon-close-black.svg"
+                    width={24}
+                    height={24}
+                    alt=""
+                  />
+                </Button>
+              </HeadingAndCloseButton>
+              <ModalSectionContainer>
+                <Search
+                  onChange={
+                    // istanbul ignore next
+                    (e) => {
+                      console.log(e.target.value);
+                    }
+                  }
+                />
+              </ModalSectionContainer>
+              <ModalSectionContainer>
+                <ModalAttributesTable>
+                  <Row>
+                    {ADDFACETMODALCOLUMNS.map(({ label }) => (
+                      <Col key={`add-facet-modal-column-${label}`}>
+                        <ColumnHeading as="p" isStrong={true}>
+                          {label}
+                        </ColumnHeading>
+                      </Col>
+                    ))}
+                  </Row>
+                </ModalAttributesTable>
+              </ModalSectionContainer>
+            </ModalContainer>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
 
       <SectionWrapper>
         <AttributesTable>
