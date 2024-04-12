@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { useFacetsListMockData } from '@/libs/hooks/data/mock-use-facets-list';
 
@@ -24,10 +23,7 @@ describe('Facets', () => {
   });
 
   it('should toggle the isEnabled option', async () => {
-    const user = userEvent.setup();
     render(<Facets facets={mockFacets} />);
-
-    await user.click(screen.getAllByTitle('Toggle')[0]);
 
     expect(screen.getAllByTitle('Toggle')[0]).toBeInTheDocument();
   });

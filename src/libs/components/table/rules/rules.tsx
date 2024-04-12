@@ -18,7 +18,7 @@ import {
   TableActionsButton,
 } from '../table.styles';
 
-type Props = {
+type RulesProps = {
   columnOrderName: keyof ReturnedRuleSet;
   columnSortOrder: 'asc' | 'desc';
   onDeleteRuleSet: ({ rulesetId }: { rulesetId: string }) => void;
@@ -52,7 +52,7 @@ export const Rules = ({
   onDeleteRuleSet,
   columnOrderName,
   columnSortOrder,
-}: Props) => {
+}: RulesProps) => {
   const [optionToggle, setOptionToggle] = useState('');
 
   return (

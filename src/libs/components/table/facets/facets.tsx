@@ -19,7 +19,6 @@ type Props = {
 
 const COLUMNS: {
   label: string;
-  sortBy?: keyof ReturnedFacet;
 }[] = [
   {
     label: 'Identifier',

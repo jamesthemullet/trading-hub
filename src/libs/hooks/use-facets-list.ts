@@ -8,17 +8,17 @@ export type CategoryFacetsList = {
 };
 
 export const useFacetsList = (categoryIds?: string[]) => {
-  const [facets, setFacets] = useState<CategoryFacetsList>({
+  const [facetsList, setFacetsList] = useState<CategoryFacetsList>({
     facets: [],
   });
 
   useEffect(() => {
     if (!categoryIds) {
-      setFacets(useFacetsListMockData);
+      setFacetsList(useFacetsListMockData);
     }
   }, [categoryIds]);
 
   return {
-    facets: facets.facets,
+    facets: facetsList.facets,
   };
 };
