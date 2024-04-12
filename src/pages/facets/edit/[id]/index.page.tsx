@@ -102,12 +102,6 @@ const NoAttributesBlock = styled.div`
   }
 `;
 
-const mockSelectedCategory = {
-  identifier: 'SubCategory_26224926',
-  name: 'Casual Shirts',
-  path: 'path/to/plp',
-};
-
 const COLUMNS: {
   label: string;
 }[] = [
@@ -141,10 +135,8 @@ const Page = () => {
   };
 
   // istanbul ignore next
-  const onSelectCategory = () => {
-    // TODO: Implement category selection
-    console.log('select category');
-    setSelectedCategory(mockSelectedCategory);
+  const onSelectCategory = (category: Category) => {
+    setSelectedCategory(category);
   };
 
   return (
@@ -168,11 +160,9 @@ const Page = () => {
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <CategorySearch
           selectedCategory={selectedCategory}
-          onClearSelection={
-            // istanbul ignore next
-            () => setSelectedCategory({})
-          }
-          // istanbul ignore next
+          onClearSelection={() => {
+            setSelectedCategory({});
+          }}
           onSelectCategory={onSelectCategory}
         />
       </SectionWrapper>
