@@ -280,7 +280,6 @@ const Page = () => {
                     // istanbul ignore next
                     (e) => {
                       console.log(e.target.value);
-                      // setSearchQuery(e.target.value);
                     }
                   }
                 />
@@ -289,7 +288,7 @@ const Page = () => {
                 <ModalAttributesTable>
                   <Row>
                     {ADDFACETMODALCOLUMNS.map(({ label }) => (
-                      <Col key={`column-${label}`}>
+                      <Col key={`add-facet-modal-column-${label}`}>
                         <ColumnHeading as="p" isStrong={true}>
                           {label}
                         </ColumnHeading>
