@@ -137,7 +137,6 @@ const Page = () => {
   // istanbul ignore next
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
-    // if (!hasChanges) setHasChanges(true);
   };
 
   return (
