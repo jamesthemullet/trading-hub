@@ -33,18 +33,8 @@ const Actions = styled.div`
   padding: 18px;
 `;
 
-const CategoryPanel = styled.div`
-  border-top: 2px solid #005640;
-  padding: 20px;
-`;
-
 const AddFacetPanel = styled.div`
-  border-top: 2px solid #005640;
-  padding: 20px;
   display: flex;
-  gap: ${spacing(2)};
-  margin-left: auto;
-  padding: 18px;
   justify-content: space-between;
 
   button {
@@ -57,14 +47,87 @@ const LowerHeading = styled(Text)`
   margin-bottom: 1em;
 `;
 
+const AttributesTable = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const SectionWrapper = styled.div`
+  box-shadow: #000 0 0 10px -5px;
+  margin: ${spacing(2)};
+  margin-bottom: 0;
+  padding-top: ${spacing(1)};
+  border-radius: 4px;
+  padding: ${spacing(2)};
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #b1b1b1;
+  font-size: 1rem;
+
+  &:first-of-type {
+    position: sticky;
+    z-index: 1;
+    top: 70px;
+    background: #fff;
+  }
+`;
+
+const Col = styled.div`
+  text-overflow: ellipsis;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: 1;
+  padding: ${spacing(3)} ${spacing(1)} ${spacing(0.5)};
+`;
+
+const ColumnHeading = styled(Text)`
+  color: #1d1d1b;
+`;
+
+const NoAttributesBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-top: 100px;
+
+  p {
+    font-size: 1.25rem;
+    color: #707070;
+  }
+`;
+
 const mockSelectedCategory = {
   identifier: 'SubCategory_26224926',
   name: 'Casual Shirts',
   path: 'path/to/plp',
 };
 
+const COLUMNS: {
+  label: string;
+}[] = [
+  {
+    label: 'Attribute',
+  },
+  {
+    label: 'Display name',
+  },
+  {
+    label: 'Order',
+  },
+  {
+    label: 'Value options',
+  },
+];
+
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
+  const attributes = [];
   const router = useRouter();
 
   const handleSave = () => {
@@ -101,7 +164,7 @@ const Page = () => {
           </Button>
         </Actions>
       </ActionContainer>
-      <CategoryPanel>
+      <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <CategorySearch
           selectedCategory={selectedCategory}
@@ -112,16 +175,38 @@ const Page = () => {
           // istanbul ignore next
           onSelectCategory={onSelectCategory}
         />
-      </CategoryPanel>
-      <AddFacetPanel>
-        <div>
-          <LowerHeading isStrong>Preview and manage facets</LowerHeading>
-          <Text>(sort by algo control)</Text>
-        </div>
-        <div>
-          <Button>Add facet</Button>
-        </div>
-      </AddFacetPanel>
+      </SectionWrapper>
+      <SectionWrapper>
+        <AddFacetPanel>
+          <div>
+            <LowerHeading isStrong>Preview and manage facets</LowerHeading>
+            <Text>(sort by algo control)</Text>
+          </div>
+          <div>
+            <Button>Add facet</Button>
+          </div>
+        </AddFacetPanel>
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <AttributesTable>
+          <Row>
+            {COLUMNS.map(({ label }) => (
+              <Col key={`column-${label}`}>
+                <ColumnHeading as="p" isStrong={true}>
+                  {label}
+                </ColumnHeading>
+              </Col>
+            ))}
+          </Row>
+        </AttributesTable>
+      </SectionWrapper>
+      {attributes.length === 0 && (
+        <NoAttributesBlock>
+          <Text>No, there are no attributes yet.</Text>
+          <Text>How about adding a subcategory first?</Text>
+        </NoAttributesBlock>
+      )}
     </>
   );
 };
