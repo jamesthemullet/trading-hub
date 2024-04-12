@@ -144,6 +144,9 @@ export const Navigation = () => {
             <SubLink href="/rules">
               <Text>Ranking rules</Text>
             </SubLink>
+            <SubLink href="/facets">
+              <Text>Facets</Text>
+            </SubLink>
           </SubMenu>
           <Link
             as="button"
