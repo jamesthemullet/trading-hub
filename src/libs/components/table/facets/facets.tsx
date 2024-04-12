@@ -67,7 +67,13 @@ export const Facets = ({ facets }: Props) => {
               <Text title="influence">Influence</Text>
             </TableCol>
             <TableCol>
-              <Toggle checked={false} onChange={() => {}} />
+              <Toggle
+                checked={false}
+                onChange={
+                  // istanbul ignore next
+                  () => {}
+                }
+              />
             </TableCol>
             <TableCol>
               <TableDateContainer>
