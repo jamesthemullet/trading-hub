@@ -19,6 +19,7 @@ import {
   ProductMenuToggle,
   ProductNumber,
   ProductPin,
+  BoostPin,
   ProductWrapper,
   ProductCard,
 } from './product.styles';
@@ -146,7 +147,7 @@ export const Product = ({
 
   return (
     <ProductWrapper
-      aria-label={`Position ${index + 1} ${isLastChanged ? 'updated' : ''}`}
+      aria-label={`Position ${index + 1}${isLastChanged ? ' updated' : ''}`}
       isLastChanged={!!isLastChanged}
       {...rest}
     >
@@ -163,8 +164,13 @@ export const Product = ({
         {(isProductNumberEnabled ?? true) && (
           <ProductNumber>{index + 1}</ProductNumber>
         )}
-        {(isPinned || isBoosted) && (
-          <ProductPin>
+        {isBoosted && (
+          <BoostPin aria-label="Boosted product">
+            <Text>Internal</Text>
+          </BoostPin>
+        )}
+        {isPinned && (
+          <ProductPin aria-label="Pinned product">
             <Text>Internal</Text>
           </ProductPin>
         )}

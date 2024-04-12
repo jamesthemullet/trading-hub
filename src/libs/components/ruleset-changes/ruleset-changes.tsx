@@ -8,6 +8,7 @@ import { Text } from '../typography/typography.styles';
 import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
 import { useCategoryPreview } from '../../hooks';
+import { useEffect } from 'react';
 
 const Heading = styled(Text)`
   font-size: 20px;
@@ -40,10 +41,14 @@ export const RulesetChanges = ({
   /* istanbul ignore next */
   const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
 
-  const { merchandisingRulesWithInfo } = useCategoryPreview(
+  const { merchandisingRulesWithInfo, setRules } = useCategoryPreview(
     category,
     merchandisingRules
   );
+
+  useEffect(() => {
+    setRules(merchandisingRules);
+  }, [merchandisingRules, setRules]);
 
   return (
     <>
@@ -99,7 +104,7 @@ export const RulesetChanges = ({
         })}
       </Layout>
       {merchandisingRulesWithInfo &&
-        merchandisingRulesWithInfo.pinnedProducts && (
+        merchandisingRulesWithInfo.pinnedProducts.length > 0 && (
           <>
             <Heading as="h2" isStrong={true}>
               Pinned Products ({merchandisingRules.pinnedProducts.length})
@@ -111,16 +116,7 @@ export const RulesetChanges = ({
                   return (
                     <ProductBox key={`product-${product.id}`}>
                       <Product
-                        id={product.id}
-                        productId={product.productId}
-                        brand={product.brand}
-                        imageUrl={product.imageUrl}
-                        isInStock={product.isInStock}
-                        metadata={product.metadata}
-                        price={product.price}
-                        rating={product.rating}
-                        title={product.title}
-                        url={product.url}
+                        {...product}
                         index={index}
                         pinnedProductsCount={
                           merchandisingRules.pinnedProducts.length

@@ -77,7 +77,7 @@ const mockProduct = {
 };
 
 const mockMerchandisingRules = {
-  pinnedProducts: [],
+  pinnedProducts: [{ id: 'productId' }],
   boosts: { numeric: [], alphanumeric: [], product: [] },
   buries: { numeric: [], alphanumeric: [], product: [] },
   blockedProducts: [],
@@ -176,7 +176,10 @@ describe('Ruleset', () => {
         },
       ],
       categoryFacets: [],
-      merchandisingRulesWithInfo: mockMerchandisingRules,
+      merchandisingRulesWithInfo: {
+        ...mockMerchandisingRules,
+        pinnedProducts: [mockProduct],
+      },
       error: '',
       setRules: jest.fn(),
     });
@@ -354,11 +357,35 @@ describe('Ruleset', () => {
     expect(mockSave).not.toHaveBeenCalled();
   });
 
-  describe('Boosting', () => {
+  describe('Pinning', () => {
     beforeEach(() => {
       jest.mocked(useGetCategories).mockReturnValue({
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
         getCategoriesError: '',
+      });
+      jest.mocked(useCategoryPreview).mockReturnValue({
+        categoryProducts: [
+          mockProduct,
+          {
+            ...mockProduct,
+            id: 'product2',
+            productId: 'productId2',
+            metadata: { isPinned: false, isBoosted: true },
+          },
+          {
+            ...mockProduct,
+            id: 'product3',
+            productId: 'productId3',
+            metadata: { isPinned: true, isBoosted: false },
+          },
+        ],
+        categoryFacets: [],
+        merchandisingRulesWithInfo: {
+          ...mockMerchandisingRules,
+          pinnedProducts: [{ ...mockProduct, id: 'product2' }],
+        },
+        error: '',
+        setRules: jest.fn(),
       });
 
       renderWithProviders(
@@ -371,12 +398,98 @@ describe('Ruleset', () => {
             path: categoryPath1,
           }}
           rulesetMerchandisingRules={{
-            pinnedProducts: [],
+            pinnedProducts: [{ id: 'product3' }],
             blockedProducts: [],
             boosts: {
               numeric: [],
               alphanumeric: [],
-              product: [{ id: 'a1', weight: 1 }],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+          }}
+          rulesetId={ruleSetId}
+        />
+      );
+    });
+
+    it('Should remove boost when pinning product', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      expect(screen.getAllByLabelText('Pinned product').length).toBe(1);
+      expect(screen.getAllByLabelText('Boosted product').length).toBe(1);
+
+      await user.click(screen.getAllByTitle('Open menu')[1]);
+
+      const pinToPositionButton = await screen.findByText('Pin in position');
+
+      act(() => {
+        user.click(pinToPositionButton);
+      });
+
+      const input = await screen.findByPlaceholderText('i.e. 3');
+
+      await user.type(input, '1');
+
+      const confirmButton = screen.getByText('Confirm');
+      expect(confirmButton).not.toBeDisabled();
+
+      act(() => {
+        user.click(confirmButton);
+      });
+
+      waitFor(() =>
+        expect(screen.getAllByLabelText('Pinned product').length).toBe(2)
+      );
+    });
+  });
+
+  describe('Boosting', () => {
+    beforeEach(() => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+      jest.mocked(useCategoryPreview).mockReturnValue({
+        categoryProducts: [
+          mockProduct,
+          {
+            ...mockProduct,
+            id: 'product2',
+            productId: 'productId2',
+            metadata: { isPinned: false, isBoosted: true },
+          },
+          {
+            ...mockProduct,
+            id: 'product3',
+            productId: 'productId3',
+            metadata: { isPinned: true, isBoosted: false },
+          },
+        ],
+        categoryFacets: [],
+        merchandisingRulesWithInfo: {
+          ...mockMerchandisingRules,
+          pinnedProducts: [mockProduct],
+        },
+        error: '',
+        setRules: jest.fn(),
+      });
+
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
             },
             buries: { numeric: [], alphanumeric: [], product: [] },
           }}
@@ -393,7 +506,7 @@ describe('Ruleset', () => {
       await user.click(screen.getByText('Boost to Top'));
 
       expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
-        'Changes2'
+        'Changes3'
       );
     });
 
@@ -403,6 +516,20 @@ describe('Ruleset', () => {
       await user.click(screen.getAllByTitle('Open menu')[1]);
 
       expect(screen.getByText('TODO: unboost')).toBeVisible();
+    });
+
+    it('Should remove pin from a previously pinned product', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      await user.click(screen.getAllByTitle('Open menu')[2]);
+
+      expect(screen.getByLabelText('Pinned product')).toBeInTheDocument();
+
+      expect(screen.getAllByLabelText('Boosted product').length).toBe(1);
+
+      await user.click(screen.getByText('Boost to Top'));
+
+      expect(screen.getAllByLabelText('Boosted product').length).toBe(2);
     });
   });
 
@@ -485,7 +612,10 @@ describe('Ruleset', () => {
           },
         ],
         categoryFacets: [],
-        merchandisingRulesWithInfo: mockMerchandisingRules,
+        merchandisingRulesWithInfo: {
+          ...mockMerchandisingRules,
+          pinnedProducts: [mockProduct],
+        },
         error: '',
         setRules: jest.fn(),
       });
@@ -612,7 +742,13 @@ describe('Ruleset', () => {
   });
 
   it('opens changes tab', async () => {
-    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(
+      <Ruleset
+        onSave={jest.fn()}
+        onCancel={jest.fn()}
+        rulesetMerchandisingRules={mockMerchandisingRules}
+      />
+    );
 
     const tab2 = await screen.findByText('Changes');
 
@@ -620,7 +756,7 @@ describe('Ruleset', () => {
       tab2.click();
     });
 
-    expect(screen.getByText('Pinned Products (0)')).toBeVisible();
+    expect(screen.getByText('Pinned Products (1)')).toBeVisible();
   });
 
   describe('attributes', () => {
@@ -793,9 +929,7 @@ describe('Ruleset', () => {
         doneButton.click();
       });
 
-      await waitFor(() =>
-        expect(screen.getByText('1 attribute rule')).toBeVisible()
-      );
+      waitFor(() => expect(screen.getByText('1 attribute rule')).toBeVisible());
     });
 
     it('deletes attributes', async () => {
