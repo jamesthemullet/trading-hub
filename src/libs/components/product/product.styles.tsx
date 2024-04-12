@@ -43,6 +43,19 @@ export const ProductPin = styled.div`
   }
 `;
 
+export const BoostPin = styled.div`
+  display: flex;
+
+  &::before {
+    content: '';
+    background: url('/trading-hub/asset/boost-signifier.svg');
+    width: 16px;
+    height: 16px;
+    background-size: contain;
+    margin: 3px 5px 0 3px;
+  }
+`;
+
 export const ProductInfo = styled.div`
   margin-top: ${spacing(2)};
   display: grid;
