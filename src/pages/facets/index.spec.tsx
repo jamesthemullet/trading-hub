@@ -1,4 +1,3 @@
-// import { act } from 'react-dom/test-utils';
 import { render, screen } from '@testing-library/react';
 
 import { useFacetsListMockData } from '@/libs/hooks/data/mock-use-facets-list';
@@ -9,8 +8,6 @@ import { default as FacetManagementPage } from './index.page';
 jest.mock('../../libs/hooks/use-facets-list', () => ({
   useFacetsList: jest.fn(),
 }));
-
-process.env.DEBUG_PRINT_LIMIT = '1000000';
 
 describe('Category facet management', () => {
   afterEach(() => {
