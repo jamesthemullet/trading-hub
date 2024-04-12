@@ -117,7 +117,7 @@ describe('Facet Management Editing', () => {
     expect(logSpy).toHaveBeenCalled();
   });
 
-  it('should search for products when the user enters a query, and clear products when the user clears the query', async () => {
+  it('should select a category on user input, and clear category when "remove selected category" button is clicked', async () => {
     const user = userEvent.setup({ delay: null });
 
     render(<Page />);
