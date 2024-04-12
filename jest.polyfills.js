@@ -7,22 +7,6 @@ if (!globalThis.TextEncoder) {
   });
 }
 
-const { Blob, File } = require('node:buffer');
-const { fetch, Headers, FormData, Request, Response } = require('undici');
-
-if (!globalThis.fetch) {
-  Object.defineProperties(globalThis, {
-    fetch: { value: fetch, writable: true },
-    Blob: { value: Blob },
-    File: { value: File },
-    Headers: { value: Headers },
-    FormData: { value: FormData },
-    Request: { value: Request },
-    Response: { value: Response },
-    setImmediate: { value: window.setTimeout },
-  });
-}
-
 if (!globalThis.window.matchMedia) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
