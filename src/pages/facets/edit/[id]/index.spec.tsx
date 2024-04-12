@@ -1,4 +1,4 @@
-import { act, render, screen, Screen } from '@testing-library/react';
+import { act, screen, Screen, waitFor } from '@testing-library/react';
 
 import { useRouter } from 'next/router';
 
@@ -88,7 +88,7 @@ describe('Facet Management Editing', () => {
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    render(<Page />);
+    renderWithProviders(<Page />);
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -98,7 +98,7 @@ describe('Facet Management Editing', () => {
   it('should preview changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    render(<Page />);
+    renderWithProviders(<Page />);
 
     await user.click(screen.getByRole('button', { name: 'Preview' }));
 
@@ -109,7 +109,7 @@ describe('Facet Management Editing', () => {
   it('should save changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    render(<Page />);
+    renderWithProviders(<Page />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -120,7 +120,7 @@ describe('Facet Management Editing', () => {
   it('should select a category on user input, and clear category when "remove selected category" button is clicked', async () => {
     const user = userEvent.setup({ delay: null });
 
-    render(<Page />);
+    renderWithProviders(<Page />);
 
     await selectCategory(screen, user);
 
@@ -133,5 +133,48 @@ describe('Facet Management Editing', () => {
     });
 
     expect(screen.queryByText('cat_123')).not.toBeInTheDocument();
+  });
+
+  describe('Add Facet Modal', () => {
+    const openModal = async () => {
+      renderWithProviders(<Page />);
+
+      const addFacetButton = screen.getByText('Add facet');
+
+      act(() => {
+        addFacetButton.click();
+      });
+    };
+
+    it('should open the modal', async () => {
+      await openModal();
+
+      waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: 'Add facet' })
+        ).toBeVisible();
+      });
+    });
+
+    it('should close the modal on click of the close button', async () => {
+      const user = userEvent.setup({ delay: null });
+      await openModal();
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { level: 3, name: 'Add facet' })
+        ).toBeVisible();
+      });
+
+      const closeButton = screen.getByRole('button', { name: 'Close Modal' });
+
+      user.click(closeButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { level: 3, name: 'Add facet' })
+        ).not.toBeVisible();
+      });
+    });
   });
 });
