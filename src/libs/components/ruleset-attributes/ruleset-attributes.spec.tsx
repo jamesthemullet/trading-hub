@@ -298,16 +298,16 @@ describe('RulesetAttributes', () => {
       nextStepButton.click();
     });
 
-    const dropdownButton = screen.getByText('boost');
+    const dropdownButton = screen.getAllByText('boost');
 
     act(() => {
-      dropdownButton.click();
+      dropdownButton[1].click();
     });
 
-    const buryButton = screen.getByText('Bury');
+    const buryButton = screen.getAllByText('Bury');
 
     act(() => {
-      buryButton.click();
+      buryButton[1].click();
     });
 
     const colourButton = screen.getByText('Colour');

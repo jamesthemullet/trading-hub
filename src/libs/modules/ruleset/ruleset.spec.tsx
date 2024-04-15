@@ -759,7 +759,7 @@ describe('Ruleset', () => {
     expect(screen.getByText('Pinned Products (1)')).toBeVisible();
   });
 
-  describe('attributes', () => {
+  describe('Attribute rules', () => {
     const mockRules: MerchandisingRules = {
       pinnedProducts: [],
       boosts: boostMock,
@@ -802,16 +802,16 @@ describe('Ruleset', () => {
       });
 
       if (withBury) {
-        const dropdownButton = screen.getByText('boost');
+        const dropdownButton = screen.getAllByText('boost');
 
         act(() => {
-          dropdownButton.click();
+          dropdownButton[0].click();
         });
 
-        const buryButton = screen.getByText('Bury');
+        const buryButton = screen.getAllByText('Bury');
 
         act(() => {
-          buryButton.click();
+          buryButton[0].click();
         });
       }
 
