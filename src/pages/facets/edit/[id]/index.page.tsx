@@ -207,6 +207,8 @@ const mockAttributes = [
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
+  const [addFacetModalAttributes, setAddFacetModalAttributes] =
+    useState<Attributes[]>(mockAttributes);
   const attributes = [];
   const router = useRouter();
 
@@ -223,6 +225,15 @@ const Page = () => {
   // istanbul ignore next
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
+  };
+
+  const filterAttributes = (search: string) => {
+    console.log(15, search);
+    setAddFacetModalAttributes(
+      mockAttributes.filter((attr) =>
+        attr.attribute.toLowerCase().includes(search.toLowerCase())
+      )
+    );
   };
 
   return (
@@ -300,12 +311,11 @@ const Page = () => {
               </HeadingAndCloseButton>
               <ModalSectionContainer>
                 <Search
-                  onChange={
-                    // istanbul ignore next
-                    (e) => {
-                      console.log(e.target.value);
-                    }
-                  }
+                  onChange={(e) => {
+                    filterAttributes(e.target.value);
+                    console.log(10, e);
+                  }}
+                  data-testid="attributes-search-input"
                 />
               </ModalSectionContainer>
               <ModalSectionContainer>
@@ -319,7 +329,7 @@ const Page = () => {
                       </Col>
                     ))}
                   </Row>
-                  {mockAttributes.map(({ attribute }) => (
+                  {addFacetModalAttributes.map(({ attribute }) => (
                     <Row key={`attribute-${attribute}`}>
                       <Col>
                         <Text>{attribute}</Text>
