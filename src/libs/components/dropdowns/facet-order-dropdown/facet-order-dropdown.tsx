@@ -74,8 +74,7 @@ const DropdownContainer = styled.div<{ isDropdownOpen: boolean }>`
   border: 1px solid #b1b1b1;
   border-top: none;
   background-color: #fff;
-  box-sizing: border-box;
-  ${({ isDropdownOpen }) => isDropdownOpen && 'display: block; z-index: 12'}
+  ${({ isDropdownOpen }) => isDropdownOpen && 'display: block; z-index: 1'}
 `;
 
 const DropdownOption = styled.button`

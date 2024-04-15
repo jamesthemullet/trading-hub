@@ -148,10 +148,6 @@ const ModalAttributesTable = styled.div`
   }
 `;
 
-const ModalAttributesTableRow = styled(Row)`
-  flex: unset;
-`;
-
 const COLUMNS: {
   label: string;
 }[] = [
@@ -324,14 +320,14 @@ const Page = () => {
                     ))}
                   </Row>
                   {mockAttributes.map(({ attribute }) => (
-                    <ModalAttributesTableRow key={`attribute-${attribute}`}>
+                    <Row key={`attribute-${attribute}`}>
                       <Col>
                         <Text>{attribute}</Text>
                       </Col>
                       <Col>
                         <FacetOrderDropdown />
                       </Col>
-                    </ModalAttributesTableRow>
+                    </Row>
                   ))}
                 </ModalAttributesTable>
               </ModalSectionContainer>
