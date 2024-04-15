@@ -5,10 +5,13 @@ import { useState } from 'react';
 import { sizing } from '../../utils/sizing';
 import { Text } from '../../typography/typography.styles';
 
-const FacetOrderDropdownWrapper = styled.div`
+const FacetOrderDropdownWrapper = styled.div<{ isDropdownOpen: boolean }>`
   border: 1px solid #b1b1b1;
   border-radius: 4px;
   width: 237px;
+  position: relative;
+
+  ${({ isDropdownOpen }) => isDropdownOpen && 'border-radius: 4px 4px 0 0;'}
 
   img {
     width: 16px;
@@ -63,19 +66,26 @@ const Arrow = styled.span<{ isDropdownOpen: boolean }>`
 `;
 
 const DropdownContainer = styled.div<{ isDropdownOpen: boolean }>`
+  position: absolute;
+  top: 100%;
+  left: -1px;
   display: none;
-  ${({ isDropdownOpen }) => isDropdownOpen && 'display: block'}
+  width: inherit;
+  border: 1px solid #b1b1b1;
+  border-top: none;
+  background-color: #fff;
+  flex-direction: column;
+  ${({ isDropdownOpen }) => isDropdownOpen && 'display: flex; z-index: 1'}
 `;
 
 const DropdownOption = styled.button`
   background-color: #fff;
-  width: 100%;
   height: 40px;
   border: none;
   display: flex;
   align-items: center;
   font-size: 14px;
-  padding: ${spacing(1)};
+  padding: 0 ${spacing(1)};
 
   &:hover,
   &:active {
@@ -92,12 +102,18 @@ export const FacetOrderDropdown = () => {
   const [dropdownOptions, setDropdownOptions] = useState([
     {
       index: 0,
-      label: 'Always Show',
-      src: '/trading-hub/asset/icon-tick.svg',
+      label: 'Select an action',
+      src: null,
       selected: true,
     },
     {
       index: 1,
+      label: 'Always Show',
+      src: '/trading-hub/asset/icon-tick.svg',
+      selected: false,
+    },
+    {
+      index: 2,
       label: 'Always Hide',
       src: '/trading-hub/asset/icon-cross.svg',
       selected: false,
@@ -124,7 +140,7 @@ export const FacetOrderDropdown = () => {
 
   return (
     dropdownHeading && (
-      <FacetOrderDropdownWrapper>
+      <FacetOrderDropdownWrapper isDropdownOpen={isDropdownOpen}>
         <DropdownButton
           isDropdownOpen={isDropdownOpen}
           onClick={handleOnClick}
@@ -133,7 +149,9 @@ export const FacetOrderDropdown = () => {
           data-testid="button to open facet order dropdown"
         >
           <DropdownHeading>
-            <Image src={dropdownHeading.src} alt="" width={16} height={16} />
+            {dropdownHeading.src && (
+              <Image src={dropdownHeading.src} alt="" width={16} height={16} />
+            )}
             {dropdownHeading.label}
           </DropdownHeading>
           <ArrowContainer>
@@ -142,15 +160,18 @@ export const FacetOrderDropdown = () => {
         </DropdownButton>
 
         <DropdownContainer isDropdownOpen={isDropdownOpen}>
-          {dropdownOptions.map((option) => (
-            <DropdownOption
-              key={option.label}
-              onClick={() => handleSelectedOption(option.index)}
-            >
-              <Image src={option.src} alt="" width={16} height={16} />
-              {option.label}
-            </DropdownOption>
-          ))}
+          {dropdownOptions.map(
+            (option) =>
+              option.src && (
+                <DropdownOption
+                  key={option.label}
+                  onClick={() => handleSelectedOption(option.index)}
+                >
+                  <Image src={option.src} alt="" width={16} height={16} />
+                  {option.label}
+                </DropdownOption>
+              )
+          )}
         </DropdownContainer>
       </FacetOrderDropdownWrapper>
     )

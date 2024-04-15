@@ -14,6 +14,7 @@ import { Category } from '../../../../libs/api';
 import { useState } from 'react';
 import { Modal } from '@mantine/core';
 import Image from 'next/image';
+import { FacetOrderDropdown } from '../../../../libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 
 const ActionContainer = styled.div`
   display: flex;
@@ -68,8 +69,8 @@ const SectionWrapper = styled.div`
 const Row = styled.div`
   display: flex;
   flex-direction: row;
-  border-bottom: 1px solid #b1b1b1;
   font-size: 1rem;
+  align-items: center;
 
   &:first-of-type {
     position: sticky;
@@ -126,7 +127,6 @@ const HeadingAndCloseButton = styled.div`
 
   button {
     background: none;
-    border: none;
     width: 24px;
     height: 24px;
     justify-content: center;
@@ -143,12 +143,8 @@ const ModalAttributesTable = styled.div`
   display: flex;
   flex-direction: column;
 
-  div {
-    border-bottom: none;
-
-    &:first-of-type {
-      flex: 2;
-    }
+  > div > div:first-of-type {
+    flex: 2;
   }
 `;
 
@@ -179,6 +175,34 @@ const ADDFACETMODALCOLUMNS: {
     label: 'Actions',
   },
 ];
+
+type Attributes = {
+  attribute: string;
+  displayName: string;
+  order: number;
+  actionSelected: 'Always Show' | 'Always Hide' | null;
+};
+
+const mockAttributes = [
+  {
+    attribute: 'Cotton',
+    displayName: 'Cotton',
+    order: 1,
+    actionSelected: null,
+  },
+  {
+    attribute: 'Duck Down',
+    displayName: 'Duck Down',
+    order: 2,
+    actionSelected: null,
+  },
+  {
+    attribute: 'Duck Down And Feather',
+    displayName: 'Duck Down And Feather',
+    order: 3,
+    actionSelected: null,
+  },
+] as Attributes[];
 
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
@@ -295,6 +319,16 @@ const Page = () => {
                       </Col>
                     ))}
                   </Row>
+                  {mockAttributes.map(({ attribute }) => (
+                    <Row key={`attribute-${attribute}`}>
+                      <Col>
+                        <Text>{attribute}</Text>
+                      </Col>
+                      <Col>
+                        <FacetOrderDropdown />
+                      </Col>
+                    </Row>
+                  ))}
                 </ModalAttributesTable>
               </ModalSectionContainer>
             </ModalContainer>
