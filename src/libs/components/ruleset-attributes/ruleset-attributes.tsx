@@ -238,13 +238,68 @@ const getAlphanumericAttributes = (
   return attributes.filter((attribute) => attribute.type === 'alphanumeric');
 };
 
+const BoostBuryDropdown = ({
+  selectedOperation,
+  setSelectedOperation,
+}: {
+  selectedOperation: 'boost' | 'bury';
+  setSelectedOperation: (args: 'boost' | 'bury') => void;
+}) => {
+  const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
+  return (
+    <DropdownWrapper>
+      <Dropdown
+        label={`${selectedOperation}`}
+        icon={`${selectedOperation}-signifier`}
+        isOpen={isOperationDropdownOpen}
+        onOpen={() => setIsOperationDropdownOpen(true)}
+        onClose={
+          // istanbul ignore next
+          () => setIsOperationDropdownOpen(false)
+        }
+      >
+        <DropdownOption
+          onClick={
+            // istanbul ignore next
+            () => {
+              setIsOperationDropdownOpen(false);
+              setSelectedOperation('boost');
+            }
+          }
+        >
+          <Image
+            src="/trading-hub/asset/boost-signifier.svg"
+            alt=""
+            width={20}
+            height={20}
+          />
+          Boost
+        </DropdownOption>
+        <DropdownOption
+          onClick={() => {
+            setIsOperationDropdownOpen(false);
+            setSelectedOperation('bury');
+          }}
+        >
+          <Image
+            src="/trading-hub/asset/bury-signifier.svg"
+            alt=""
+            width={20}
+            height={20}
+          />
+          Bury
+        </DropdownOption>
+      </Dropdown>
+    </DropdownWrapper>
+  );
+};
+
 export const RulesetAttributes = ({
   category,
   merchandisingRules,
   onChangeAttribute,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
   const { attributes } = useAttributes(category);
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
@@ -491,18 +546,25 @@ export const RulesetAttributes = ({
                       (larger the value, stronger the boost). Attributes are
                       aggregated from the account level
                     </Text>
-
-                    <SearchWrapper>
-                      <label htmlFor="filerNumericAttributes">
-                        Filter numeric attributes
-                      </label>
-                      <Search
-                        name="Filter numeric attributes"
-                        id="filerNumericAttributes"
-                        value={numbericSearchValue}
-                        onChange={(e) => setNumericSearchValue(e.target.value)}
+                    <Filters>
+                      <BoostBuryDropdown
+                        selectedOperation={selectedOperation}
+                        setSelectedOperation={setSelectedOperation}
                       />
-                    </SearchWrapper>
+                      <SearchWrapper>
+                        <label htmlFor="filerNumericAttributes">
+                          Filter numeric attributes
+                        </label>
+                        <Search
+                          name="Filter numeric attributes"
+                          id="filerNumericAttributes"
+                          value={numbericSearchValue}
+                          onChange={(e) =>
+                            setNumericSearchValue(e.target.value)
+                          }
+                        />
+                      </SearchWrapper>
+                    </Filters>
                   </ModalSection>
                   <ModalAttributeHeader>
                     <Label isStrong>Relevant attributes</Label>
@@ -537,7 +599,6 @@ export const RulesetAttributes = ({
                       isStrong
                       onClick={() => {
                         setSelectedAlphanumericValues([]);
-                        setSelectedOperation('boost');
                         setSelectedNumericField('');
                         setModalStep(0);
                       }}
@@ -551,50 +612,10 @@ export const RulesetAttributes = ({
                       Attributes are aggregated from the account level
                     </Text>
                     <Filters>
-                      <DropdownWrapper>
-                        <Dropdown
-                          label={`${selectedOperation}`}
-                          icon={`${selectedOperation}-signifier`}
-                          isOpen={isOperationDropdownOpen}
-                          onOpen={() => setIsOperationDropdownOpen(true)}
-                          onClose={
-                            // istanbul ignore next
-                            () => setIsOperationDropdownOpen(false)
-                          }
-                        >
-                          <DropdownOption
-                            onClick={
-                              // istanbul ignore next
-                              () => {
-                                setIsOperationDropdownOpen(false);
-                                setSelectedOperation('boost');
-                              }
-                            }
-                          >
-                            <Image
-                              src="/trading-hub/asset/boost-signifier.svg"
-                              alt=""
-                              width={20}
-                              height={20}
-                            />
-                            Boost
-                          </DropdownOption>
-                          <DropdownOption
-                            onClick={() => {
-                              setIsOperationDropdownOpen(false);
-                              setSelectedOperation('bury');
-                            }}
-                          >
-                            <Image
-                              src="/trading-hub/asset/bury-signifier.svg"
-                              alt=""
-                              width={20}
-                              height={20}
-                            />
-                            Bury
-                          </DropdownOption>
-                        </Dropdown>
-                      </DropdownWrapper>
+                      <BoostBuryDropdown
+                        selectedOperation={selectedOperation}
+                        setSelectedOperation={setSelectedOperation}
+                      />
                       <SearchWrapper>
                         <label htmlFor="filerAlphanumericAttributes">
                           Filter alphanumeric attributes
