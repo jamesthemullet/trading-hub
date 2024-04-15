@@ -162,14 +162,14 @@ export const LockActions = styled.div`
 `;
 
 export const ProductCard = styled.div`
-  max-height: 160px;
+  max-height: 176px;
   display: flex;
   justify-content: center;
   background-color: rgba(245, 245, 245, 1);
   padding: 8px;
 
   img {
-    max-height: 160px;
+    height: 160px;
     width: auto;
   }
 `;
