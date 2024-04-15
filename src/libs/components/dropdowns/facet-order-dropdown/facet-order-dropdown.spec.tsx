@@ -16,8 +16,8 @@ describe('Filter dropdown', () => {
     );
     expect(dropdownHeader.getAttribute('aria-haspopup')).toBe('listbox');
     expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
-    expect(screen.getAllByText('Always Show')[0]).toBeVisible();
-    expect(screen.getAllByText('Always Show')[1]).not.toBeVisible();
+    expect(screen.getByText('Select an action')).toBeVisible();
+    expect(screen.getByText('Always Show')).not.toBeVisible();
     expect(screen.getByText('Always Hide')).not.toBeVisible();
   });
 
@@ -33,7 +33,8 @@ describe('Filter dropdown', () => {
     expect(dropdownHeader.getAttribute('aria-expanded')).toBe('true');
     expect(dropdownHeader).toHaveStyle('border-bottom: 1px solid #b1b1b1;');
     expect(dropdownHeader).toHaveStyle('border-radius: 4px 4px 0 0;');
-    expect(screen.getAllByText('Always Show')[1]).toBeVisible();
+    expect(screen.getByText('Select an action')).toBeVisible();
+    expect(screen.getByText('Always Show')).toBeVisible();
     expect(screen.getByText('Always Hide')).toBeVisible();
   });
 
@@ -68,6 +69,7 @@ describe('Filter dropdown', () => {
     expect(screen.getByText('Always Show')).not.toBeVisible();
     expect(screen.getAllByText('Always Hide')[0]).toBeVisible();
     expect(screen.getAllByText('Always Hide')[1]).not.toBeVisible();
+    expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
     expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
   });
 });
