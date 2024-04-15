@@ -74,7 +74,8 @@ const DropdownContainer = styled.div<{ isDropdownOpen: boolean }>`
   border: 1px solid #b1b1b1;
   border-top: none;
   background-color: #fff;
-  ${({ isDropdownOpen }) => isDropdownOpen && 'display: block; z-index: 1'}
+  flex-direction: column;
+  ${({ isDropdownOpen }) => isDropdownOpen && 'display: flex; z-index: 1'}
 `;
 
 const DropdownOption = styled.button`
@@ -84,8 +85,7 @@ const DropdownOption = styled.button`
   display: flex;
   align-items: center;
   font-size: 14px;
-  padding: 0;
-  margin: 0 ${spacing(1)};
+  padding: 0 ${spacing(1)};
 
   &:hover,
   &:active {
