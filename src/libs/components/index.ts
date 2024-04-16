@@ -4,7 +4,7 @@ export * from './checkboxes/checkboxes';
 export * from './dropdowns/dropdown/dropdown';
 export * from './filter/filter';
 export * from './heading/heading';
-export * from './modal';
+export * from './modals';
 export * from './navigation/navigation';
 export * from './page-wrapper/page-wrapper';
 export * from './pagination/pagination';

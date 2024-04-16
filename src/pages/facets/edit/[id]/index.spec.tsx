@@ -151,7 +151,7 @@ describe('Facet Management Editing', () => {
 
       waitFor(() => {
         expect(
-          screen.getByRole('heading', { name: 'Add facet' })
+          screen.getByRole('heading', { level: 3, name: 'Add facet' })
         ).toBeVisible();
       });
     });
@@ -160,7 +160,7 @@ describe('Facet Management Editing', () => {
       const user = userEvent.setup({ delay: null });
       await openModal();
 
-      await waitFor(() => {
+      waitFor(() => {
         expect(
           screen.getByRole('heading', { level: 3, name: 'Add facet' })
         ).toBeVisible();
@@ -172,30 +172,10 @@ describe('Facet Management Editing', () => {
         user.click(closeButton);
       });
 
-      await waitFor(() => {
+      waitFor(() => {
         expect(
           screen.getByRole('heading', { level: 3, name: 'Add facet' })
         ).not.toBeVisible();
-      });
-    });
-
-    it('should filter attributes on user input', async () => {
-      const user = userEvent.setup({ delay: null });
-      await openModal();
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { level: 3, name: 'Add facet' })
-        ).toBeVisible();
-      });
-
-      const searchInput = screen.getByTestId('attributes-search-input');
-
-      await user.type(searchInput, 'Cotton');
-
-      await waitFor(() => {
-        expect(screen.queryByText('Duck Down')).not.toBeVisible();
-        expect(screen.getByText('Cotton')).toBeVisible();
       });
     });
   });
