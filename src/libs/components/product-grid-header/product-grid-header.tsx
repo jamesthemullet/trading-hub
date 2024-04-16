@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
 import { Button } from '../buttons/button/button';
 import { useState } from 'react';
-import { ModalUnsavedChanges } from '../modal';
+import { ModalUnsavedChanges } from '../modals';
 
 const RuleSetOptions = styled.div`
   display: flex;
