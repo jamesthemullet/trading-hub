@@ -1,9 +1,7 @@
 import {
   Button,
   CategorySearch,
-  Header3,
   Heading,
-  Search,
   spacing,
   Text,
 } from '@/libs/components';
@@ -12,9 +10,7 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import { Category } from '../../../../libs/api';
 import { useState } from 'react';
-import { Modal } from '@mantine/core';
-import Image from 'next/image';
-import { FacetOrderDropdown } from '../../../../libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
+import { ModalAddFacets } from '../../../../libs/components/modals/modal-add-facets';
 
 const ActionContainer = styled.div`
   display: flex;
@@ -107,47 +103,6 @@ const NoAttributesBlock = styled.div`
   }
 `;
 
-const MODAL_WIDTH = 435;
-
-const ModalContainer = styled.div`
-  height: 492px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const HeadingAndCloseButton = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: ${spacing(2)};
-  align-items: center;
-
-  h3 {
-    font-size: 1.25em;
-  }
-
-  button {
-    background: none;
-    width: 24px;
-    height: 24px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-  }
-`;
-
-const ModalSectionContainer = styled.div`
-  padding: ${spacing(2)};
-`;
-
-const ModalAttributesTable = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  > div > div:first-of-type {
-    flex: 2;
-  }
-`;
-
 const COLUMNS: {
   label: string;
 }[] = [
@@ -165,48 +120,10 @@ const COLUMNS: {
   },
 ];
 
-const ADDFACETMODALCOLUMNS: {
-  label: string;
-}[] = [
-  {
-    label: 'Attribute',
-  },
-  {
-    label: 'Actions',
-  },
-];
-
-type Attributes = {
-  attribute: string;
-  displayName: string;
-  order: number;
-  actionSelected: 'Always Show' | 'Always Hide' | null;
-};
-
-const mockAttributes = [
-  {
-    attribute: 'Cotton',
-    displayName: 'Cotton',
-    order: 1,
-    actionSelected: null,
-  },
-  {
-    attribute: 'Duck Down',
-    displayName: 'Duck Down',
-    order: 2,
-    actionSelected: null,
-  },
-  {
-    attribute: 'Duck Down And Feather',
-    displayName: 'Duck Down And Feather',
-    order: 3,
-    actionSelected: null,
-  },
-] as Attributes[];
-
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
+
   const attributes = [];
   const router = useRouter();
 
@@ -223,6 +140,10 @@ const Page = () => {
   // istanbul ignore next
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
+  };
+
+  const onClose = () => {
+    setIsAddFacetModalOpen(false);
   };
 
   return (
@@ -268,73 +189,7 @@ const Page = () => {
         </AddFacetPanel>
       </SectionWrapper>
 
-      <Modal.Root
-        opened={isAddFacetModalOpen}
-        onClose={
-          // istanbul ignore next
-          () => setIsAddFacetModalOpen(false)
-        }
-        centered
-        size={`${2 * MODAL_WIDTH}px`}
-        padding={0}
-      >
-        <Modal.Overlay blur={3} />
-        <Modal.Content>
-          <Modal.Body>
-            <ModalContainer>
-              <HeadingAndCloseButton>
-                <Text isStrong as={Header3}>
-                  Add facet
-                </Text>
-                <Button
-                  onClick={() => setIsAddFacetModalOpen(false)}
-                  aria-label="Close Modal"
-                >
-                  <Image
-                    src="/trading-hub/asset/icon-close-black.svg"
-                    width={24}
-                    height={24}
-                    alt=""
-                  />
-                </Button>
-              </HeadingAndCloseButton>
-              <ModalSectionContainer>
-                <Search
-                  onChange={
-                    // istanbul ignore next
-                    (e) => {
-                      console.log(e.target.value);
-                    }
-                  }
-                />
-              </ModalSectionContainer>
-              <ModalSectionContainer>
-                <ModalAttributesTable>
-                  <Row>
-                    {ADDFACETMODALCOLUMNS.map(({ label }) => (
-                      <Col key={`add-facet-modal-column-${label}`}>
-                        <ColumnHeading as="p" isStrong={true}>
-                          {label}
-                        </ColumnHeading>
-                      </Col>
-                    ))}
-                  </Row>
-                  {mockAttributes.map(({ attribute }) => (
-                    <Row key={`attribute-${attribute}`}>
-                      <Col>
-                        <Text>{attribute}</Text>
-                      </Col>
-                      <Col>
-                        <FacetOrderDropdown />
-                      </Col>
-                    </Row>
-                  ))}
-                </ModalAttributesTable>
-              </ModalSectionContainer>
-            </ModalContainer>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal.Root>
+      {isAddFacetModalOpen && <ModalAddFacets onClose={onClose} />}
 
       <SectionWrapper>
         <AttributesTable>
