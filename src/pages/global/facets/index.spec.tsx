@@ -9,16 +9,16 @@ jest.mock('../../../libs/hooks/use-facets-list', () => ({
   useFacetsList: jest.fn(),
 }));
 
-describe('Global facet management', () => {
+describe('Global Facet Management', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  it('displays the list of rules', () => {
+  it('displays the list of facets', () => {
     jest.mocked(useFacetsList).mockReturnValue(useFacetsListMockData);
     render(<FacetManagementPage />);
 
-    expect(screen.getByText('Global facet management')).toBeVisible();
+    expect(screen.getByText('Global Facet Management')).toBeVisible();
     expect(screen.getByText('Add facet')).toBeVisible();
     expect(
       screen.getByText(useFacetsListMockData.facets[0].displayValue)
