@@ -18,7 +18,8 @@ describe('Global Facet Management', () => {
     jest.mocked(useFacetsList).mockReturnValue(useFacetsListMockData);
     render(<FacetManagementPage />);
 
-    expect(screen.getByText('Global Facet Management')).toBeVisible();
+    // getting second one by text here as we have same text in navigation
+    expect(screen.getAllByText('Global Facet Management')[1]).toBeVisible();
     expect(screen.getByText('Add facet')).toBeVisible();
     expect(
       screen.getByText(useFacetsListMockData.facets[0].displayValue)
