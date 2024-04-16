@@ -59,6 +59,26 @@ describe('Navigation', () => {
     expect(screen.getByText('Search optimisation')).not.toBeVisible();
   });
 
+  it('should open and close setup sub menu', () => {
+    render(<Navigation />);
+
+    const menuItemThree = screen.getByRole('button', {
+      name: 'Setup',
+    });
+
+    act(() => {
+      menuItemThree.click();
+    });
+
+    expect(screen.getByText('Setup Global')).toBeVisible();
+
+    act(() => {
+      menuItemThree.click();
+    });
+
+    expect(screen.getByText('Setup Global')).not.toBeVisible();
+  });
+
   it('should show Login when signed out', () => {
     render(<Navigation />);
 
