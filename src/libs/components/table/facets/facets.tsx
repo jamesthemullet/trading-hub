@@ -40,7 +40,7 @@ export const Facets = ({ facets, canToggle = false }: Props) => {
       label: 'Last changed',
     },
     {
-      label: 'user',
+      label: 'User',
     },
     {
       label: 'Actions',
