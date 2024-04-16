@@ -35,7 +35,7 @@ const ColumnHeading = styled(Text)`
   color: #1d1d1b;
 `;
 
-const MODAL_WIDTH = 435;
+const MODAL_WIDTH = 870;
 
 const ModalContainer = styled.div`
   height: 492px;
@@ -131,7 +131,7 @@ export const ModalAddFacets = ({ onClose }: { onClose: () => void }) => {
       opened={true}
       onClose={onClose}
       centered
-      size={`${2 * MODAL_WIDTH}px`}
+      size={MODAL_WIDTH}
       padding={0}
     >
       <Modal.Overlay blur={3} />
