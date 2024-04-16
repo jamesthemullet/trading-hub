@@ -35,22 +35,21 @@ const FacetManagementPage = () => {
         breadcrumbs={[
           'Search & Merchandising',
           'Categories',
-          'Ranking rules',
-          'facet-management',
+          'Global Facet Management',
         ]}
       />
 
-      <PageNameLabel>Category facet management</PageNameLabel>
+      <PageNameLabel>Global facet management</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>
           <NewButton>
-            <Button as="a" href="/facets/new">
+            <Button as="a" href="/global/facets/new">
               Add facet
             </Button>
           </NewButton>
         </ToolsContainer>
 
-        <Facets facets={facets} canToggle={true} />
+        <Facets facets={facets} />
       </PageWrapper>
     </>
   );

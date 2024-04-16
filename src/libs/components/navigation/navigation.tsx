@@ -148,6 +148,7 @@ export const Navigation = () => {
               <Text>Facets</Text>
             </SubLink>
           </SubMenu>
+
           <Link
             as="button"
             title="Search Ranking Rules"
@@ -161,6 +162,24 @@ export const Navigation = () => {
           <SubMenu isVisible={!!openMenu && openMenu === 2}>
             <Header3>Search optimisation</Header3>
           </SubMenu>
+
+          <Link
+            as="button"
+            title="Setup"
+            onClick={() => {
+              setOpenMenu(openMenu === 3 ? 0 : 3);
+            }}
+            isOpen={!!openMenu && openMenu === 3}
+          >
+            <Icon src="/trading-hub/asset/menu-setup.svg" />
+          </Link>
+          <SubMenu isVisible={!!openMenu && openMenu === 3}>
+            <Header3>Setup Global</Header3>
+            <SubLink href="/global/facets">
+              <Text>Global Facet Management</Text>
+            </SubLink>
+          </SubMenu>
+
           <Link href="/status" title="Check backend API status">
             <Icon
               title="Backend API status"

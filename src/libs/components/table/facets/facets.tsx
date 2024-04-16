@@ -15,36 +15,42 @@ import {
 
 type Props = {
   facets: ReturnedFacet[];
+  canToggle?: boolean;
 };
 
-const COLUMNS: {
-  label: string;
-}[] = [
-  {
-    label: 'Identifier',
-  },
-  {
-    label: 'Influence',
-  },
-  {
-    label: 'Enable',
-  },
-  {
-    label: 'Last changed',
-  },
-  {
-    label: 'user',
-  },
-  {
-    label: 'Actions',
-  },
-];
+export const Facets = ({ facets, canToggle = false }: Props) => {
+  const columns: {
+    label: string;
+  }[] = [
+    {
+      label: 'Identifier',
+    },
+    {
+      label: 'Influence',
+    },
+    ...(() =>
+      canToggle
+        ? [
+            {
+              label: 'Enable',
+            },
+          ]
+        : [])(),
+    {
+      label: 'Last changed',
+    },
+    {
+      label: 'user',
+    },
+    {
+      label: 'Actions',
+    },
+  ];
 
-export const Facets = ({ facets }: Props) => {
   return (
     <TableContainer>
       <TableRow style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
-        {COLUMNS.map(({ label }) => (
+        {columns.map(({ label }) => (
           <TableCol
             key={`column-${label}`}
             style={{
@@ -66,15 +72,17 @@ export const Facets = ({ facets }: Props) => {
             <TableCol>
               <Text title="influence">Influence</Text>
             </TableCol>
-            <TableCol>
-              <Toggle
-                checked={false}
-                onChange={
-                  // istanbul ignore next
-                  () => {}
-                }
-              />
-            </TableCol>
+            {canToggle && (
+              <TableCol>
+                <Toggle
+                  checked={false}
+                  onChange={
+                    // istanbul ignore next
+                    () => {}
+                  }
+                />
+              </TableCol>
+            )}
             <TableCol>
               <TableDateContainer>
                 <Text>
