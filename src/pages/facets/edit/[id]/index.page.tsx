@@ -154,9 +154,7 @@ const Page = () => {
         <h1>Facet Management</h1>
 
         <Actions>
-          <Button onClick={() => router.push('/facet-management')}>
-            Cancel
-          </Button>
+          <Button onClick={() => router.push('/facets')}>Cancel</Button>
           <Button onClick={onPreview}>Preview</Button>
           <Button theme="primary" onClick={handleSave}>
             Save

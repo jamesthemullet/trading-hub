@@ -92,7 +92,7 @@ describe('Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/facet-management');
+    expect(mockRouter.push).toHaveBeenCalledWith('/facets');
   });
 
   it('should preview changes to a facet', async () => {
