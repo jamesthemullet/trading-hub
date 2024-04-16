@@ -12,11 +12,30 @@ import {
   TableHeading,
   TableActionsButton,
 } from '../table.styles';
+import styled from '@emotion/styled';
+import { spacing } from '../../utils/spacing';
 
 type Props = {
   facets: ReturnedFacet[];
   canToggle?: boolean;
 };
+
+const FacetsTableCol = styled(TableCol)`
+  flex: 0 0 150px;
+
+  &:first-of-type {
+    flex: 2 0 240px;
+    padding-left: ${spacing(2)};
+  }
+
+  &:nth-of-type(2) {
+    flex: 0 0 100px;
+  }
+
+  &:nth-of-type(5) {
+    flex: 0 0 180px;
+  }
+`;
 
 export const Facets = ({ facets, canToggle = false }: Props) => {
   const columns: {
@@ -51,7 +70,7 @@ export const Facets = ({ facets, canToggle = false }: Props) => {
     <TableContainer>
       <TableRow style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
         {columns.map(({ label }) => (
-          <TableCol
+          <FacetsTableCol
             key={`column-${label}`}
             style={{
               userSelect: 'none',
@@ -60,20 +79,20 @@ export const Facets = ({ facets, canToggle = false }: Props) => {
             <TableHeading as="p" isStrong={true}>
               {label}
             </TableHeading>
-          </TableCol>
+          </FacetsTableCol>
         ))}
       </TableRow>
       {facets.map(({ displayValue, id, lastChanged }) => {
         return (
           <TableRow key={`rule-${id}`}>
-            <TableCol>
+            <FacetsTableCol>
               <Text title={displayValue}>{displayValue}</Text>
-            </TableCol>
-            <TableCol>
+            </FacetsTableCol>
+            <FacetsTableCol>
               <Text title="influence">Influence</Text>
-            </TableCol>
+            </FacetsTableCol>
             {canToggle && (
-              <TableCol>
+              <FacetsTableCol>
                 <Toggle
                   checked={false}
                   onChange={
@@ -81,25 +100,25 @@ export const Facets = ({ facets, canToggle = false }: Props) => {
                     () => {}
                   }
                 />
-              </TableCol>
+              </FacetsTableCol>
             )}
-            <TableCol>
+            <FacetsTableCol>
               <TableDateContainer>
                 <Text>
                   {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
                 </Text>
               </TableDateContainer>
-            </TableCol>
-            <TableCol>
+            </FacetsTableCol>
+            <FacetsTableCol>
               <Text title={lastChanged.user}>{lastChanged.user}</Text>
-            </TableCol>
-            <TableCol style={{ padding: '12px 0 16px' }}>
+            </FacetsTableCol>
+            <FacetsTableCol style={{ padding: '12px 0 16px' }}>
               <TableActions>
                 <TableActionsButton href={`../../../facet-management/${id}`}>
                   Edit
                 </TableActionsButton>
               </TableActions>
-            </TableCol>
+            </FacetsTableCol>
           </TableRow>
         );
       })}

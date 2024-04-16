@@ -11,6 +11,11 @@ import { useRouter } from 'next/router';
 import { Category } from '../../../../libs/api';
 import { useState } from 'react';
 import { ModalAddFacets } from '../../../../libs/components/modals/modal-add-facets';
+import {
+  TableRow,
+  TableCol,
+  TableHeading,
+} from '../../../../libs/components/table/table.styles';
 
 const ActionContainer = styled.div`
   display: flex;
@@ -62,31 +67,15 @@ const SectionWrapper = styled.div`
   padding: ${spacing(2)};
 `;
 
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
+const Row = styled(TableRow)`
   font-size: 1rem;
   align-items: center;
-
-  &:first-of-type {
-    position: sticky;
-    z-index: 1;
-    top: 70px;
-    background: #fff;
-  }
+  border-bottom: none;
 `;
 
-const Col = styled.div`
-  text-overflow: ellipsis;
-  display: flex;
-  flex-direction: row;
+const Col = styled(TableCol)`
   justify-content: space-between;
   flex: 1;
-  padding: ${spacing(3)} ${spacing(1)} ${spacing(0.5)};
-`;
-
-const ColumnHeading = styled(Text)`
-  color: #1d1d1b;
 `;
 
 const NoAttributesBlock = styled.div`
@@ -194,9 +183,9 @@ const Page = () => {
           <Row>
             {COLUMNS.map(({ label }) => (
               <Col key={`column-${label}`}>
-                <ColumnHeading as="p" isStrong={true}>
+                <TableHeading as="p" isStrong={true}>
                   {label}
-                </ColumnHeading>
+                </TableHeading>
               </Col>
             ))}
           </Row>

@@ -7,32 +7,16 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Search } from '../search/search';
 import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
+import { TableRow, TableCol, TableHeading } from '../table/table.styles';
 
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-  font-size: 1rem;
+const Row = styled(TableRow)`
+  border-bottom: none;
   align-items: center;
-
-  &:first-of-type {
-    position: sticky;
-    z-index: 1;
-    top: 70px;
-    background: #fff;
-  }
 `;
 
-const Col = styled.div`
-  text-overflow: ellipsis;
-  display: flex;
-  flex-direction: row;
+const Col = styled(TableCol)`
   justify-content: space-between;
   flex: 1;
-  padding: ${spacing(3)} ${spacing(1)} ${spacing(0.5)};
-`;
-
-const ColumnHeading = styled(Text)`
-  color: #1d1d1b;
 `;
 
 const MODAL_WIDTH = 870;
@@ -164,9 +148,9 @@ export const ModalAddFacets = ({ onClose }: { onClose: () => void }) => {
                 <Row>
                   {ADDFACETMODALCOLUMNS.map(({ label }) => (
                     <Col key={`add-facet-modal-column-${label}`}>
-                      <ColumnHeading as="p" isStrong={true}>
+                      <TableHeading as="p" isStrong={true}>
                         {label}
-                      </ColumnHeading>
+                      </TableHeading>
                     </Col>
                   ))}
                 </Row>

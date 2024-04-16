@@ -23,23 +23,9 @@ export const TableRow = styled.div`
 
 export const TableCol = styled.div`
   text-overflow: ellipsis;
-  flex: 0 0 150px;
   display: flex;
   flex-direction: row;
   padding: ${spacing(3)} ${spacing(1)} ${spacing(0.5)};
-
-  &:first-of-type {
-    flex: 2 0 240px;
-    padding-left: ${spacing(2)};
-  }
-
-  &:nth-of-type(2) {
-    flex: 0 0 100px;
-  }
-
-  &:nth-of-type(5) {
-    flex: 0 0 180px;
-  }
 
   p {
     overflow: hidden;
