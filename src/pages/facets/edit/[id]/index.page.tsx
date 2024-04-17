@@ -140,7 +140,7 @@ const Page = () => {
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
 
       <ActionContainer>
-        <h1>Facet Management</h1>
+        <h1>Facet Rule Editor</h1>
 
         <Actions>
           <Button onClick={() => router.push('/facets')}>Cancel</Button>

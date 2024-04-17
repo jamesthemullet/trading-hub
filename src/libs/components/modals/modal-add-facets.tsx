@@ -44,6 +44,8 @@ const HeadingAndCloseButton = styled.div`
     justify-content: center;
     align-items: center;
     display: flex;
+    padding: 0;
+    border: none;
   }
 `;
 
@@ -57,6 +59,26 @@ const ModalAttributesTable = styled.div`
 
   > div > div:first-of-type {
     flex: 2;
+  }
+`;
+
+const StyledSearch = styled(Search)`
+  input {
+    min-height: 56px;
+  }
+`;
+
+const NoAttributesBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-top: 100px;
+
+  p {
+    font-size: 1.25rem;
+    color: #707070;
   }
 `;
 
@@ -75,7 +97,7 @@ type Attributes = {
   attribute: string;
   displayName: string;
   order: number;
-  actionSelected: 'Always Show' | 'Always Hide' | null;
+  actionSelected: 'Include only' | 'Exclude only' | null;
 };
 
 const mockAttributes = [
@@ -136,7 +158,7 @@ export const ModalAddFacets = ({ onClose }: { onClose: () => void }) => {
               </Button>
             </HeadingAndCloseButton>
             <ModalSectionContainer>
-              <Search
+              <StyledSearch
                 onChange={(e) => {
                   filterAttributes(e.target.value);
                 }}
@@ -164,6 +186,11 @@ export const ModalAddFacets = ({ onClose }: { onClose: () => void }) => {
                     </Col>
                   </Row>
                 ))}
+                {!addFacetModalAttributes.length && (
+                  <NoAttributesBlock>
+                    <Text>No records found</Text>
+                  </NoAttributesBlock>
+                )}
               </ModalAttributesTable>
             </ModalSectionContainer>
           </ModalContainer>

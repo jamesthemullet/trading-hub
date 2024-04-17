@@ -41,6 +41,12 @@ const DropdownHeading = styled(Text)`
   display: flex;
   align-items: center;
   padding-left: ${spacing(1)};
+  text-align: left;
+
+  p {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const ArrowContainer = styled.div`
@@ -108,13 +114,13 @@ export const FacetOrderDropdown = () => {
     },
     {
       index: 1,
-      label: 'Always Show',
+      label: 'Include only',
       src: '/trading-hub/asset/icon-tick.svg',
       selected: false,
     },
     {
       index: 2,
-      label: 'Always Hide',
+      label: 'Exclude only',
       src: '/trading-hub/asset/icon-cross.svg',
       selected: false,
     },

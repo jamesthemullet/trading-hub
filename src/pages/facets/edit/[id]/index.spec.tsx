@@ -72,7 +72,7 @@ describe('Facet Management Editing', () => {
     expect(screen.getByRole('button', { name: 'Preview' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
     expect(
-      screen.getByRole('heading', { name: 'Facet Management' })
+      screen.getByRole('heading', { level: 1, name: 'Facet Rule Editor' })
     ).toBeVisible();
   });
 
