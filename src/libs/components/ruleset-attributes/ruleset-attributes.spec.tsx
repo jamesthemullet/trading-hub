@@ -355,7 +355,7 @@ describe('RulesetAttributes', () => {
     const rulsetAttributes = screen.getByLabelText('Ruleset attributes');
 
     expect(
-      within(rulsetAttributes).getByText('Product description attribute rules')
+      within(rulsetAttributes).getByText('Product Description Attribute Rules')
     ).toBeVisible();
   });
 

@@ -349,18 +349,29 @@ export const RulesetAttributes = ({
             {pluralize('rule', countOfAttributeChanges)}
           </AttributeCount>
           {(!!alphanumericBoost.length || !!alphanumericBuries.length) && (
-            <Label isStrong withMargin>
-              Product description attribute rules
+            <Label isStrong withMargin as="h3">
+              Product Description Attribute Rules
             </Label>
           )}
           {!!alphanumericBoost.length &&
-            alphanumericBoost.map((attribute) => (
+            alphanumericBoost.map(({ fields, weight }, index) => (
               <AlphanumericAttribute
-                key={attribute.fields[0].field}
+                key={fields[0].field}
                 isEditable
-                fields={attribute.fields}
+                fields={fields}
                 operation="boost"
-                weight={attribute.weight}
+                weight={weight}
+                onChangeAttribute={
+                  // istanbul ignore next
+                  ({ newWeight }: { newWeight: number }) =>
+                    onChangeAttribute({
+                      attribute: { fields, weight: newWeight },
+                      change: 'modify',
+                      index,
+                      operation: 'boosts',
+                      type: 'alphanumeric',
+                    })
+                }
                 onDelete={({ fields, weight }: AlphanumericBoostBury) =>
                   onChangeAttribute({
                     attribute: { fields, weight },
@@ -373,13 +384,24 @@ export const RulesetAttributes = ({
             ))}
 
           {!!alphanumericBuries.length &&
-            alphanumericBuries.map((attribute) => (
+            alphanumericBuries.map(({ fields, weight }, index) => (
               <AlphanumericAttribute
-                key={attribute.fields[0].field}
+                key={fields[0].field}
                 isEditable
-                fields={attribute.fields}
+                fields={fields}
                 operation="bury"
-                weight={attribute.weight}
+                weight={weight}
+                onChangeAttribute={
+                  // istanbul ignore next
+                  ({ newWeight }: { newWeight: number }) =>
+                    onChangeAttribute({
+                      attribute: { fields, weight: newWeight },
+                      change: 'modify',
+                      index,
+                      operation: 'buries',
+                      type: 'alphanumeric',
+                    })
+                }
                 onDelete={({ fields, weight }: AlphanumericBoostBury) =>
                   onChangeAttribute({
                     attribute: { fields, weight },
@@ -392,18 +414,27 @@ export const RulesetAttributes = ({
             ))}
 
           {(!!numericBoosts.length || !!numericBury.length) && (
-            <Label isStrong withMargin>
-              Numeric attribute rules
+            <Label isStrong withMargin as="h3">
+              Numeric Attribute Rules
             </Label>
           )}
           {!!numericBoosts.length &&
-            numericBoosts.map((attribute) => (
+            numericBoosts.map(({ field, weight }, index) => (
               <NumericAttribute
-                key={attribute.field}
+                key={field}
                 isEditable
                 operation="boost"
-                name={attribute.field}
-                weight={attribute.weight}
+                name={field}
+                weight={weight}
+                onChangeAttribute={({ newWeight }: { newWeight: number }) =>
+                  onChangeAttribute({
+                    attribute: { field, weight: newWeight },
+                    change: 'modify',
+                    index,
+                    operation: 'boosts',
+                    type: 'numeric',
+                  })
+                }
                 onDelete={({ field, weight }: NumericBoostBury) =>
                   onChangeAttribute({
                     attribute: { field, weight },
@@ -415,13 +446,24 @@ export const RulesetAttributes = ({
               />
             ))}
           {!!numericBury.length &&
-            numericBury.map((attribute) => (
+            numericBury.map(({ field, weight }, index) => (
               <NumericAttribute
-                key={attribute.field}
+                key={field}
                 isEditable
                 operation="bury"
-                name={attribute.field}
-                weight={attribute.weight}
+                name={field}
+                weight={weight}
+                onChangeAttribute={
+                  // istanbul ignore next
+                  ({ newWeight }: { newWeight: number }) =>
+                    onChangeAttribute({
+                      attribute: { field, weight: newWeight },
+                      change: 'modify',
+                      index,
+                      operation: 'buries',
+                      type: 'numeric',
+                    })
+                }
                 onDelete={({ field, weight }: NumericBoostBury) =>
                   onChangeAttribute({
                     attribute: { field, weight },

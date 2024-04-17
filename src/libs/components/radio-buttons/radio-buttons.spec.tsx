@@ -15,6 +15,12 @@ describe('RadioButtons', () => {
     expect(screen.getAllByText('availabilityRating')[0]).toBeVisible();
   });
 
+  it('should show 0 Results without values', () => {
+    render(<RadioButtons onSelect={() => jest.fn()} values={[]} />);
+
+    expect(screen.getByText('0 Results')).toBeVisible();
+  });
+
   it('call callback on click', async () => {
     const mockOnSelect = jest.fn();
     render(<RadioButtons onSelect={mockOnSelect} values={values} />);

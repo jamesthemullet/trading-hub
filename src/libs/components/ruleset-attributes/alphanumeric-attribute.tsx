@@ -12,17 +12,19 @@ import { AlphanumericBoostBury } from '../../api';
 import Image from 'next/image';
 
 export const AlphanumericAttribute = ({
-  isEditable,
   fields,
+  isEditable,
   operation,
+  onChangeAttribute,
   onDelete,
   weight,
 }: AlphanumericBoostBury & {
   isEditable?: boolean;
-  onDelete?: ({ fields, weight }: AlphanumericBoostBury) => void;
+  onChangeAttribute?: (args: { newWeight: number }) => void;
+  onDelete?: (args: AlphanumericBoostBury) => void;
   operation: 'bury' | 'boost';
 }) => (
-  <AttributeWrapper>
+  <AttributeWrapper aria-label="Product Attribute">
     <AttributeHeading>
       {fields.map(({ field, values }) => (
         <div key={`field-${field}`}>
@@ -50,6 +52,7 @@ export const AlphanumericAttribute = ({
     <AttributeWeight
       weight={weight}
       isEditable={isEditable}
+      onChangeAttribute={onChangeAttribute}
       onDelete={() => onDelete && onDelete({ fields, weight })}
     />
   </AttributeWrapper>

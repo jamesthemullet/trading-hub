@@ -12,17 +12,19 @@ import { AttributeWeight } from './weight';
 export const NumericAttribute = ({
   isEditable,
   name,
+  onChangeAttribute,
   onDelete,
   operation,
   weight = 0.01,
 }: {
   isEditable?: boolean;
   name: string;
+  onChangeAttribute?: (args: { newWeight: number }) => void;
   onDelete?: ({ field, weight }: NumericBoostBury) => void;
   operation: 'bury' | 'boost';
   weight?: number;
 }) => (
-  <AttributeWrapper>
+  <AttributeWrapper aria-label="Product Attribute">
     <AttributeHeading>
       <Label isStrong>{name}</Label>
     </AttributeHeading>
@@ -42,6 +44,7 @@ export const NumericAttribute = ({
     <AttributeWeight
       weight={weight}
       isEditable={isEditable}
+      onChangeAttribute={onChangeAttribute}
       onDelete={() => onDelete && onDelete({ field: name, weight })}
     />
   </AttributeWrapper>

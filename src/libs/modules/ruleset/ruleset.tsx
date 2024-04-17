@@ -72,7 +72,8 @@ interface EditRulesetValues extends NewRulesetValues {
 
 export type EditAttribute = {
   attribute: AlphanumericBoostBury | NumericBoostBury;
-  change: 'add' | 'remove';
+  change: 'add' | 'remove' | 'modify';
+  index?: number;
   operation: 'boosts' | 'buries';
   type: AttributeType;
 };
@@ -229,43 +230,64 @@ export const Ruleset = ({
 
   const onChangeAttribute = ({
     attribute,
+    change,
+    index,
     operation,
     type,
-    change,
   }: EditAttribute) => {
     setMerchandisingRules((prevState) => {
-      const newState = prevState;
+      if (change === 'modify') {
+        return {
+          ...prevState,
+          [operation]: {
+            ...prevState[operation],
+            [type]: prevState[operation][type].map((attr, attributeIndex) => {
+              if (attributeIndex === index) {
+                return attribute;
+              }
+              return attr;
+            }),
+          },
+        };
+      }
       if (type === 'alphanumeric') {
-        newState[operation] = {
-          ...newState[operation],
-          alphanumeric:
-            change === 'add'
-              ? [
-                  ...merchandisingRules[operation][type],
-                  attribute as AlphanumericBoostBury,
-                ]
-              : [
-                  ...merchandisingRules[operation][type].filter(
-                    (attr) => !isEqual(attr, attribute)
-                  ),
-                ],
+        return {
+          ...prevState,
+          [operation]: {
+            ...prevState[operation],
+            alphanumeric:
+              change === 'add'
+                ? [
+                    ...merchandisingRules[operation][type],
+                    attribute as AlphanumericBoostBury,
+                  ]
+                : [
+                    ...merchandisingRules[operation][type].filter(
+                      (attr) => !isEqual(attr, attribute)
+                    ),
+                  ],
+          },
         };
       }
       if (type === 'numeric') {
-        newState[operation] = {
-          ...newState[operation],
-          numeric:
-            change === 'add'
-              ? [
-                  ...merchandisingRules[operation][type],
-                  attribute as NumericBoostBury,
-                ]
-              : merchandisingRules[operation][type].filter(
-                  (attr) => !isEqual(attr, attribute)
-                ),
+        return {
+          ...prevState,
+          [operation]: {
+            ...prevState[operation],
+            numeric:
+              change === 'add'
+                ? [
+                    ...merchandisingRules[operation][type],
+                    attribute as NumericBoostBury,
+                  ]
+                : merchandisingRules[operation][type].filter(
+                    (attr) => !isEqual(attr, attribute)
+                  ),
+          },
         };
       }
-      return { ...newState };
+      /* istanbul ignore next */
+      return { ...prevState };
     });
   };
 

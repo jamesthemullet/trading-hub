@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
-import { Label } from '../typography/typography.styles';
+import { Label, Text } from '../typography/typography.styles';
 
 const Row = styled.label`
   border-bottom: solid 1px ${color.grey};
@@ -54,20 +54,24 @@ type Props = {
 
 export const RadioButtons = ({ values, onSelect }: Props) => (
   <div>
-    {values.map(({ name, isSelected }) => (
-      <Row key={name}>
-        <label htmlFor={name} aria-label={name}>
-          <Input
-            type="radio"
-            id={name}
-            checked={isSelected}
-            onChange={() => onSelect(name)}
-          />
-          <Label as="span" isStrong={true}>
-            {name}
-          </Label>
-        </label>
-      </Row>
-    ))}
+    {values.length ? (
+      values.map(({ name, isSelected }) => (
+        <Row key={name}>
+          <label htmlFor={name} aria-label={name}>
+            <Input
+              type="radio"
+              id={name}
+              checked={isSelected}
+              onChange={() => onSelect(name)}
+            />
+            <Label as="span" isStrong={true}>
+              {name}
+            </Label>
+          </label>
+        </Row>
+      ))
+    ) : (
+      <Text style={{ padding: spacing(2) }}>0 Results</Text>
+    )}
   </div>
 );

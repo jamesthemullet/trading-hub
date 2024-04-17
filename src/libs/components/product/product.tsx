@@ -23,6 +23,7 @@ import {
   ProductWrapper,
   ProductCard,
 } from './product.styles';
+import { EditAttribute } from '../../modules/ruleset/ruleset';
 
 type ChangePositionTypes = {
   isPinned: boolean;
@@ -32,9 +33,7 @@ type ChangePositionTypes = {
 
 export type ChangeProductBoostBury = {
   id: string;
-  change: 'add' | 'remove';
-  operation: 'boosts' | 'buries';
-};
+} & Pick<EditAttribute, 'change' | 'operation'>;
 
 export const ProductDetails = ({
   imageUrl,

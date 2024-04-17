@@ -19,6 +19,12 @@ describe('Checkboxes', () => {
     expect(screen.getByText(brandNames[0])).toBeVisible();
   });
 
+  it('should show 0 Results without values', () => {
+    render(<Checkboxes onSelect={() => jest.fn()} values={[]} />);
+
+    expect(screen.getByText('0 Results')).toBeVisible();
+  });
+
   it('calls callback on click', async () => {
     const mockOnSelect = jest.fn();
     render(

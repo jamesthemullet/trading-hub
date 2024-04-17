@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { AttributeRow } from './ruleset-attributes.styles';
 import { Text } from '../typography/typography.styles';
 import styled from '@emotion/styled';
+import Image from 'next/image';
+import { color } from '../utils/constants';
 
 const Input = styled.input`
   min-width: 60px;
@@ -14,83 +16,124 @@ const Button = styled.button`
   border: none;
   background: none;
 `;
+export const ErrorText = styled(Text)`
+  color: ${color.errorRed};
+`;
 
 export const AttributeWeight = ({
   isEditable,
+  onChangeAttribute,
   onDelete,
   weight,
 }: {
   isEditable?: boolean;
+  onChangeAttribute?: (args: { newWeight: number }) => void;
   onDelete?: () => void;
-  weight: number | undefined;
+  weight: number;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(weight);
+  const [error, setError] = useState('');
+
+  const onSubmit = () => {
+    onChangeAttribute && onChangeAttribute({ newWeight: value });
+    setIsEditing(false);
+  };
 
   return (
     <>
       <AttributeRow>
         {isEditing ? (
           <form
-            onSubmit={
-              /* istanbul ignore next */
-              (e) => {
-                e.preventDefault();
-                setIsEditing(false);
-              }
-            }
+            onSubmit={(e: FormEvent<HTMLFormElement>) => {
+              e.preventDefault();
+              onSubmit();
+            }}
           >
             <Text as="label" aria-label="Edit value">
               Strength{' '}
               <Input
-                value={value ? value * 100 : ''}
+                value={value ? Math.round(value * 100) : ''}
                 onChange={(e) => {
                   const { value } = e.target;
+                  const weight = parseInt(value || '0');
+                  if (weight < 1 || weight > 100) {
+                    setError('Weight must be between 1 and 100');
+                  } else {
+                    setError('');
+                  }
                   /* istanbul ignore next */
                   setValue(parseInt(value || '0') / 100);
                 }}
                 type="number"
-                min="0"
-                max="100"
+                step={1}
+                min={0}
+                max={100}
               />{' '}
               %
             </Text>
           </form>
         ) : (
-          <Text>Strength {value ? (value * 100).toFixed(1) : 0}%</Text>
+          <Text>
+            Strength {Math.round((isEditable ? value : weight) * 100)}%
+          </Text>
         )}
       </AttributeRow>
       {isEditable && !isEditing && (
         <AttributeRow>
           <Buttons>
             <Button onClick={() => setIsEditing(true)} aria-label="Edit weight">
-              <img src="/trading-hub/asset/icon-edit.svg" alt="" />
+              <Image
+                width={20}
+                height={20}
+                src="/trading-hub/asset/icon-edit.svg"
+                alt=""
+              />
             </Button>
             <Button onClick={onDelete} aria-label="Delete attribute">
-              <img src="/trading-hub/asset/icon-delete.svg" alt="" />
+              <Image
+                width={20}
+                height={20}
+                src="/trading-hub/asset/icon-delete.svg"
+                alt=""
+              />
             </Button>
           </Buttons>
         </AttributeRow>
       )}
       {isEditable && isEditing && (
         <AttributeRow>
-          <Buttons style={{ justifyContent: 'end' }}>
-            <Button
-              onClick={() => setIsEditing(false)}
-              aria-label="Save weight change"
-            >
-              <img src="/trading-hub/asset/icon-tick-in-circle.svg" alt="" />
-            </Button>
-            <Button
-              onClick={
-                /* istanbul ignore next */
-                () => setIsEditing(false)
-              }
-              aria-label="Cancel weight change"
-            >
-              <img src="/trading-hub/asset/icon-cross-in-circle.svg" alt="" />
-            </Button>
-          </Buttons>
+          {error ? (
+            <ErrorText>{error}</ErrorText>
+          ) : (
+            <Buttons style={{ justifyContent: 'end' }}>
+              <Button onClick={onSubmit} aria-label="Save weight change">
+                <Image
+                  width={20}
+                  height={20}
+                  src="/trading-hub/asset/icon-tick-in-circle.svg"
+                  alt=""
+                />
+              </Button>
+              <Button
+                onClick={
+                  /* istanbul ignore next */
+                  () => {
+                    setValue(weight);
+                    setIsEditing(false);
+                  }
+                }
+                aria-label="Cancel weight change"
+              >
+                <Image
+                  width={20}
+                  height={20}
+                  src="/trading-hub/asset/icon-cross-in-circle.svg"
+                  alt=""
+                />
+              </Button>
+            </Buttons>
+          )}
         </AttributeRow>
       )}
     </>

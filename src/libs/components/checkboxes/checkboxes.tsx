@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
-import { Label } from '../typography/typography.styles';
+import { Label, Text } from '../typography/typography.styles';
 
 const Row = styled.label`
   border-bottom: solid 1px ${color.grey};
@@ -52,16 +52,20 @@ type Props = {
 export const Checkboxes = ({ values, onSelect }: Props) => {
   return (
     <>
-      {values.map(({ name, isSelected }) => (
-        <Row key={name}>
-          <Input
-            type="checkbox"
-            checked={isSelected}
-            onChange={() => onSelect(!isSelected, name)}
-          />
-          <Label as="span">{name}</Label>
-        </Row>
-      ))}
+      {values.length ? (
+        values.map(({ name, isSelected }) => (
+          <Row key={name}>
+            <Input
+              type="checkbox"
+              checked={isSelected}
+              onChange={() => onSelect(!isSelected, name)}
+            />
+            <Label as="span">{name}</Label>
+          </Row>
+        ))
+      ) : (
+        <Text style={{ padding: spacing(2) }}>0 Results</Text>
+      )}
     </>
   );
 };
