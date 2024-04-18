@@ -3,7 +3,7 @@ export const facetsMockData = [
   {
     displayValue: 'facet1',
     indexPropertyName: 'indexPropertyName',
-    id: 'id1',
+    id: 'test-id',
     influence: 'influence',
     isEnabled: true,
     user: 'test user',

@@ -1,25 +1,22 @@
+import { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import { useFacetsList } from '@/libs/hooks';
-import { Heading, Facets, Button } from '@/libs/components';
+import {
+  Heading,
+  Facets,
+  Button,
+  SectionWrapper,
+  SectionHeader,
+  Search,
+} from '@/libs/components';
+import { ReturnedFacet } from '@/libs/api';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
 `;
 
-const PageWrapper = styled.div`
-  box-shadow: #000 0 0 10px -5px;
-  margin: ${spacing(2)};
-  padding-top: ${spacing(1)};
-  border-radius: 4px;
-`;
-const ToolsContainer = styled.div`
-  display: flex;
-  align-items: left;
-
-  margin: ${spacing(2)};
-`;
 const NewButton = styled.div`
   margin-left: auto;
   margin-top: ${spacing(1)};
@@ -28,6 +25,13 @@ const NewButton = styled.div`
 
 const FacetManagementPage = () => {
   const { facets } = useFacetsList();
+  const [search, setSearch] = useState('');
+
+  const filteredFacets = useMemo<ReturnedFacet[]>(() => {
+    if (search === '') return facets;
+
+    return facets.filter((facet) => facet.displayValue.includes(search));
+  }, [facets, search]);
 
   return (
     <>
@@ -40,17 +44,23 @@ const FacetManagementPage = () => {
       />
 
       <PageNameLabel>Global Facet Management</PageNameLabel>
-      <PageWrapper>
-        <ToolsContainer>
+      <SectionWrapper>
+        <SectionHeader>
+          <Search
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+          />
+
           <NewButton>
             <Button as="a" href="/global/facets/new">
               Add facet
             </Button>
           </NewButton>
-        </ToolsContainer>
+        </SectionHeader>
 
-        <Facets facets={facets} />
-      </PageWrapper>
+        <Facets facets={filteredFacets} />
+      </SectionWrapper>
     </>
   );
 };

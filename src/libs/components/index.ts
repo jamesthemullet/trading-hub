@@ -25,3 +25,4 @@ export * from './utils/spacing';
 export * from './visual-editor/visual-editor';
 export * from './calendar';
 export * from './input/input';
+export * from './section/section';
