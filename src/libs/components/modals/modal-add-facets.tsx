@@ -9,14 +9,19 @@ import { Search } from '../search/search';
 import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { TableRow, TableCol, TableHeading } from '../table/table.styles';
 
-const Row = styled(TableRow)`
+const Row = styled(TableRow)<{ heading?: boolean }>`
   border-bottom: none;
   align-items: center;
+
+  ${({ heading }) =>
+    !heading && 'box-shadow: #000 0 0 10px -5px; margin: 8px 0;'};
 `;
 
-const Col = styled(TableCol)`
+const Col = styled(TableCol)<{ heading?: boolean }>`
   justify-content: space-between;
   flex: 1;
+
+  ${({ heading }) => !heading && 'padding: 16px;'};
 `;
 
 const MODAL_WIDTH = 870;
@@ -25,13 +30,14 @@ const ModalContainer = styled.div`
   height: 492px;
   display: flex;
   flex-direction: column;
+  margin: ${spacing(3)};
 `;
 
 const HeadingAndCloseButton = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: ${spacing(2)};
   align-items: center;
+  margin-bottom: ${spacing(3)};
 
   h3 {
     font-size: 1.25em;
@@ -47,10 +53,6 @@ const HeadingAndCloseButton = styled.div`
     padding: 0;
     border: none;
   }
-`;
-
-const ModalSectionContainer = styled.div`
-  padding: ${spacing(2)};
 `;
 
 const ModalAttributesTable = styled.div`
@@ -157,42 +159,44 @@ export const ModalAddFacets = ({ onClose }: { onClose: () => void }) => {
                 />
               </Button>
             </HeadingAndCloseButton>
-            <ModalSectionContainer>
-              <StyledSearch
-                onChange={(e) => {
-                  filterAttributes(e.target.value);
-                }}
-                data-testid="attributes-search-input"
-              />
-            </ModalSectionContainer>
-            <ModalSectionContainer>
-              <ModalAttributesTable>
-                <Row>
-                  {ADDFACETMODALCOLUMNS.map(({ label }) => (
-                    <Col key={`add-facet-modal-column-${label}`}>
-                      <TableHeading as="p" isStrong={true}>
-                        {label}
-                      </TableHeading>
-                    </Col>
-                  ))}
-                </Row>
-                {addFacetModalAttributes.map(({ attribute }) => (
-                  <Row key={`attribute-${attribute}`} data-testid="rows">
-                    <Col>
-                      <Text>{attribute}</Text>
-                    </Col>
-                    <Col>
-                      <FacetOrderDropdown />
-                    </Col>
-                  </Row>
+
+            <StyledSearch
+              onChange={(e) => {
+                filterAttributes(e.target.value);
+              }}
+              data-testid="attributes-search-input"
+            />
+
+            <ModalAttributesTable>
+              <Row heading={true}>
+                {ADDFACETMODALCOLUMNS.map(({ label }) => (
+                  <Col key={`add-facet-modal-column-${label}`} heading={true}>
+                    <TableHeading as="p" isStrong={true}>
+                      {label}
+                    </TableHeading>
+                  </Col>
                 ))}
-                {!addFacetModalAttributes.length && (
-                  <NoAttributesBlock>
-                    <Text>No records found</Text>
-                  </NoAttributesBlock>
-                )}
-              </ModalAttributesTable>
-            </ModalSectionContainer>
+              </Row>
+              {addFacetModalAttributes.map(({ attribute }) => (
+                <Row
+                  key={`attribute-${attribute}`}
+                  data-testid="rows"
+                  heading={false}
+                >
+                  <Col heading={false}>
+                    <Text>{attribute}</Text>
+                  </Col>
+                  <Col heading={false}>
+                    <FacetOrderDropdown />
+                  </Col>
+                </Row>
+              ))}
+              {!addFacetModalAttributes.length && (
+                <NoAttributesBlock>
+                  <Text>No records found</Text>
+                </NoAttributesBlock>
+              )}
+            </ModalAttributesTable>
           </ModalContainer>
         </Modal.Body>
       </Modal.Content>
