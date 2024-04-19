@@ -10,7 +10,7 @@ const BreadcrumbText = styled(Text)`
 const HeadingWrapper = styled.div`
   background: #fff;
   box-shadow: #000 0 0 4px;
-  padding: 23px;
+  padding: ${spacing(1)};
   display: flex;
   position: fixed;
   top: 0;
@@ -19,7 +19,7 @@ const HeadingWrapper = styled.div`
 `;
 
 const HeadingSpacer = styled.div`
-  height: ${spacing(9)};
+  height: ${spacing(5)};
 `;
 
 type Props = {

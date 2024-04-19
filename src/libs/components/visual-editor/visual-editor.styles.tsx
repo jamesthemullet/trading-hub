@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { spacing } from '../utils/spacing';
+import { mediaQuery } from '../utils/media-query';
 
 export const Layout = styled.div`
   max-width: 1024px;
@@ -7,10 +8,14 @@ export const Layout = styled.div`
   padding: ${spacing(2)} 0;
   display: flex;
   flex-wrap: wrap;
-  gap: ${spacing(2)};
 `;
 
 export const ProductBox = styled.div`
-  width: 240px;
+  max-width: 235px;
+  width: 50%;
   margin: ${spacing(1)};
+
+  ${mediaQuery('lg')} {
+    width: 25%;
+  }
 `;

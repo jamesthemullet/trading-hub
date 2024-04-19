@@ -9,6 +9,7 @@ import styled from '@emotion/styled';
 
 import { color } from '../../utils/constants';
 import { css } from '@emotion/react';
+import { spacing } from '../../utils/spacing';
 
 const setColours = ({
   isDisabled,
@@ -70,7 +71,7 @@ const StyledButton = styled.button<ButtonProps>`
   transition: all 0.1s ease-in;
   transition-property: background-color color border-color;
   text-decoration: none;
-  padding: 10px 16px;
+  padding: ${spacing(1)} ${spacing(2)};
   width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
 
   &:disabled {

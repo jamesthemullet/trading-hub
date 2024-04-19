@@ -7,6 +7,7 @@ import { boxShadow } from '../utils/shared.styles';
 
 export const ProductWrapper = styled.div<{ isLastChanged: boolean }>`
   width: 100%;
+  height: 100%;
   border: solid 1px #cecece;
   padding: ${spacing(1)};
   margin: ${spacing(1)};
@@ -60,7 +61,7 @@ export const ProductInfo = styled.div`
   margin-top: ${spacing(2)};
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
   grid-column-gap: ${spacing(1)};
   grid-row-gap: ${spacing(1)};
 

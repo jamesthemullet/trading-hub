@@ -9,7 +9,7 @@ const RuleSetOptions = styled.div`
 
   h1 {
     font-size: 1.5em;
-    padding: ${spacing(3)} ${spacing(2)};
+    padding: ${spacing(2)} ${spacing(1.5)} ${spacing(1.5)};
   }
 
   a,
@@ -23,7 +23,7 @@ const Actions = styled.div`
   display: flex;
   gap: ${spacing(2)};
   margin-left: auto;
-  padding: 18px;
+  padding: ${spacing(1.5)};
 `;
 
 type Props = {

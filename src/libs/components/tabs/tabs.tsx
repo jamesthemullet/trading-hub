@@ -18,7 +18,7 @@ const TabsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   max-width: 450px;
-  margin-top: 30px;
+  margin-top: ${spacing(1)};
 `;
 
 const TabButton = styled.button<{ isActive: boolean }>`

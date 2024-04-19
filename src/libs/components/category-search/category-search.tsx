@@ -12,15 +12,12 @@ import { Label, Text } from '../typography/typography.styles';
 const SEARCH_DEBOUNCE_WAIT = 500;
 
 const Wrapper = styled.div`
-  margin-bottom: ${spacing(1)};
-
   input {
-    min-height: 58px;
+    min-height: 54px;
   }
 `;
 
 const Container = styled.div`
-  margin-bottom: ${spacing(2)};
   margin-top: -1px;
   position: relative;
   box-shadow: rgb(0 0 0 / 10%) 0 0 5px 2px;
@@ -44,7 +41,6 @@ const Categories = styled.div`
   background-color: ${color.backgroundGrey};
   border-bottom: 1px solid #b1b1b1;
   padding: ${spacing(1)} ${spacing(1)} 0;
-  margin-bottom: ${spacing(1)};
 `;
 
 const SelectedCategory = styled(Label)`

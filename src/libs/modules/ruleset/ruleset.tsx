@@ -8,6 +8,7 @@ import {
   ProductSearch,
   RulesetAttributes,
   RulesetChanges,
+  spacing,
   Tabs,
   VisualEditor,
 } from '../../components';
@@ -25,7 +26,7 @@ import { useRouter } from 'next/router';
 
 const CategoryPanel = styled.div`
   border-top: 2px solid #005640;
-  padding: 20px;
+  padding: ${spacing(1)};
 `;
 
 const MainContainerPanel = styled.div`
@@ -37,8 +38,7 @@ const MainContainerPanel = styled.div`
 const ProductSearchPanel = styled.div`
   background-color: #fff;
   border-right: 1px solid #707070;
-  max-width: 361px;
-  min-width: 361px;
+  min-width: 360px;
   margin: 0;
 `;
 
@@ -48,11 +48,14 @@ const RulesPanel = styled.div`
 `;
 
 const PanelTop = styled.div`
-  position: sticky;
-  top: 65px;
   background-color: #fff;
   padding-top: 1px;
   z-index: 1;
+`;
+
+const TabContent = styled.div`
+  height: calc(100vh - 285px);
+  overflow: auto;
 `;
 
 export type ChangePositionTypes = {
@@ -414,38 +417,40 @@ export const Ruleset = ({
               currentTab={currentProductTab}
             />
           </PanelTop>
-          {currentProductTab === 0 && selectedCategory.identifier && (
-            <ProductSearch
-              onSearch={async (query) => {
-                /* istanbul ignore next */
-                if (!selectedCategory.identifier) {
-                  return;
-                }
-                if (!query) {
-                  setSearchProducts([]);
-                  return;
-                }
-                const data = await handleGet({
-                  categoryId: selectedCategory.identifier,
-                  query,
-                  start: 0,
-                  rows: 10,
-                  merchandisingRules,
-                });
-                setSearchProducts(data.products);
-              }}
-              onChangePosition={onChangePosition}
-              onProductBoostBury={onProductBoostBury}
-              products={searchProducts}
-            />
-          )}
-          {currentProductTab === 1 && (
-            <RulesetAttributes
-              merchandisingRules={merchandisingRules}
-              category={selectedCategory.identifier}
-              onChangeAttribute={onChangeAttribute}
-            />
-          )}
+          <TabContent>
+            {currentProductTab === 0 && selectedCategory.identifier && (
+              <ProductSearch
+                onSearch={async (query) => {
+                  /* istanbul ignore next */
+                  if (!selectedCategory.identifier) {
+                    return;
+                  }
+                  if (!query) {
+                    setSearchProducts([]);
+                    return;
+                  }
+                  const data = await handleGet({
+                    categoryId: selectedCategory.identifier,
+                    query,
+                    start: 0,
+                    rows: 10,
+                    merchandisingRules,
+                  });
+                  setSearchProducts(data.products);
+                }}
+                onChangePosition={onChangePosition}
+                onProductBoostBury={onProductBoostBury}
+                products={searchProducts}
+              />
+            )}
+            {currentProductTab === 1 && (
+              <RulesetAttributes
+                merchandisingRules={merchandisingRules}
+                category={selectedCategory.identifier}
+                onChangeAttribute={onChangeAttribute}
+              />
+            )}
+          </TabContent>
         </ProductSearchPanel>
         <RulesPanel>
           <PanelTop>
@@ -461,22 +466,23 @@ export const Ruleset = ({
               currentTab={currentEditorTab}
             />
           </PanelTop>
-
-          {currentEditorTab === 0 && (
-            <VisualEditor
-              products={sortedProducts}
-              onChangePosition={onChangePosition}
-              onProductBoostBury={onProductBoostBury}
-            />
-          )}
-          {currentEditorTab === 1 && (
-            <RulesetChanges
-              merchandisingRules={merchandisingRules}
-              category={selectedCategory.identifier}
-              onChangePosition={onChangePosition}
-              onProductBoostBury={onProductBoostBury}
-            />
-          )}
+          <TabContent>
+            {currentEditorTab === 0 && (
+              <VisualEditor
+                products={sortedProducts}
+                onChangePosition={onChangePosition}
+                onProductBoostBury={onProductBoostBury}
+              />
+            )}
+            {currentEditorTab === 1 && (
+              <RulesetChanges
+                merchandisingRules={merchandisingRules}
+                category={selectedCategory.identifier}
+                onChangePosition={onChangePosition}
+                onProductBoostBury={onProductBoostBury}
+              />
+            )}
+          </TabContent>
         </RulesPanel>
       </MainContainerPanel>
     </>
