@@ -114,7 +114,7 @@ export const Facets = ({ facets, canToggle = false }: Props) => {
             </FacetsTableCol>
             <FacetsTableCol style={{ padding: '12px 0 16px' }}>
               <TableActions>
-                <TableActionsButton href={`../../../facets/edit/${id}`}>
+                <TableActionsButton href={`../../../global/facets/edit/${id}`}>
                   Edit
                 </TableActionsButton>
               </TableActions>

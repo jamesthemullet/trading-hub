@@ -18,7 +18,7 @@ describe('Category facet management', () => {
     jest.mocked(useFacetsList).mockReturnValue(useFacetsListMockData);
     render(<FacetManagementPage />);
 
-    expect(screen.getByText('Category facet management')).toBeVisible();
+    expect(screen.getByText('Category Facet Management')).toBeVisible();
     expect(screen.getByText('Add facet')).toBeVisible();
     expect(
       screen.getByText(useFacetsListMockData.facets[0].displayValue)

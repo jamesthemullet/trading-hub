@@ -22,7 +22,7 @@ describe('Global Facet Management', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: 'Global Facet Management' })
     ).toBeVisible();
-    expect(screen.getByText('Add facet')).toBeVisible();
+    expect(screen.getByText('Add rule')).toBeVisible();
     expect(
       screen.getByText(useFacetsListMockData.facets[0].displayValue)
     ).toBeVisible();

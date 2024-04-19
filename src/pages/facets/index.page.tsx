@@ -40,7 +40,7 @@ const FacetManagementPage = () => {
         ]}
       />
 
-      <PageNameLabel>Category facet management</PageNameLabel>
+      <PageNameLabel>Category Facet Management</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>
           <NewButton>

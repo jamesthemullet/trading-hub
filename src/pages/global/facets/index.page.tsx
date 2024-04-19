@@ -54,7 +54,7 @@ const FacetManagementPage = () => {
 
           <NewButton>
             <Button as="a" href="/global/facets/new">
-              Add facet
+              Add rule
             </Button>
           </NewButton>
         </SectionHeader>
