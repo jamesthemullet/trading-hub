@@ -1,79 +1,13 @@
-import {
-  AttributesResponse,
-  ProductSearchResponse,
-  ReturnedRuleSet,
-  SearchPreviewResponse,
-} from '@/libs/api';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import {
-  boostMock,
-  boostWithInfoMock,
-  buriesMock,
-  buriesWithInfoMock,
-} from './mocks';
+
+import { validateAndMockResponse as validateOrMockResponse } from './mocks-support';
 
 export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
 };
 
 const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
-  /* Mocked response for attributes */
-
-  const match = req.url?.match(/\/merchandising\/category\/(\w+)\/attributes/);
-  /* istanbul ignore next */
-  if (match) {
-    const categoryId = match[1];
-    console.warn(
-      'WARNING: Replying with mocked attributes for category',
-      categoryId
-    );
-    const mockedResponse: AttributesResponse = {
-      attributes: [
-        {
-          type: 'alphanumeric',
-          name: 'Colour',
-          values: [
-            { value: 'Red' },
-            { value: 'Blue' },
-            { value: 'Green' },
-            { value: 'Yellow' },
-          ],
-        },
-        {
-          type: 'numeric',
-          name: 'Size',
-          values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
-        },
-        {
-          type: 'alphanumeric',
-          name: 'Brand',
-          values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
-        },
-        {
-          type: 'alphanumeric',
-          name: 'Category',
-          values: [
-            { value: 'Shoes' },
-            { value: 'Clothing' },
-            { value: 'Accessories' },
-          ],
-        },
-        {
-          type: 'numeric',
-          name: 'Price',
-          values: [
-            { value: '0-50' },
-            { value: '50-100' },
-            { value: '100-200' },
-            { value: '200+' },
-          ],
-        },
-      ],
-    };
-    return res.status(200).json(mockedResponse);
-  }
-
   const token = await getToken({ req });
 
   const headers = new Headers();
@@ -90,6 +24,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     req.url?.replace('/api', '') ?? '',
     process.env.MERCHANDISING_API_BASEURL
   );
+  url.searchParams.delete('mocks');
 
   const response = await fetch(url, {
     method: req.method,
@@ -98,40 +33,20 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   let jsonBody = {};
+  let status = response.status;
   try {
     const jsonText = await response.text();
     jsonBody = JSON.parse(jsonText);
+
+    const result = validateOrMockResponse(req, response.status, jsonBody);
+    if ('error' in result) {
+      return res.status(500).json({ error: result.error });
+    }
+    jsonBody = result.updatedJsonBody;
+    status = result.updatedStatus;
   } catch (e) /* istanbul ignore next */ {
-    console.error('Error parsing JSON', e);
-  }
-
-  /* workaround for backend not returning metadata for pinned products */
-  /* istanbul ignore next */
-  if (req.url && req.url.startsWith('/api/merchandising/product')) {
-    const { products } = jsonBody as ProductSearchResponse;
-    products.forEach((product) => {
-      product.metadata = {
-        isPinned: product?.metadata?.isPinned ?? false,
-      };
-    });
-  }
-
-  if (
-    req.method === 'GET' &&
-    req.url &&
-    req.url.startsWith('/api/merchandising/ruleset/')
-  ) {
-    console.warn(`Altering response for ruleset ${req.url}`);
-    const ruleSet = jsonBody as ReturnedRuleSet;
-    ruleSet.rules.boosts = boostMock;
-    ruleSet.rules.buries = buriesMock;
-  }
-
-  if (req.url && req.url.match(/\/merchandising\/category\/\w+\/preview/)) {
-    console.warn(`Altering response for ruleset ${req.url}`);
-    const ruleSet = jsonBody as SearchPreviewResponse;
-    ruleSet.rules.boosts = boostWithInfoMock;
-    ruleSet.rules.buries = buriesWithInfoMock;
+    console.error('ERROR: Error parsing JSON', e);
+    return res.status(500).json({ error: 'Error parsing JSON' });
   }
 
   if (!response.ok) {
@@ -142,9 +57,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     );
   }
 
-  return res
-    .status(response.status)
-    .json(req.method === 'DELETE' ? {} : jsonBody);
+  return res.status(status).json(req.method === 'DELETE' ? {} : jsonBody);
 };
 
 export default proxy;

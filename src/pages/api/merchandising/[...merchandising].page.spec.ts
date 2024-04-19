@@ -9,14 +9,14 @@ import type { MerchandisingEnvironment } from './[...merchandising].page';
 import proxy from './[...merchandising].page';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 import { createMockNextApiResponse } from '@/test/create-mock-next-api-response';
-import {
-  boostMock,
-  boostWithInfoMock,
-  buriesMock,
-  buriesWithInfoMock,
-} from './mocks';
+import { validateAndMockResponse } from './mocks-support';
+
 jest.mock('next-auth/jwt', () => ({
   getToken: jest.fn(),
+}));
+
+jest.mock('./mocks-support', () => ({
+  validateAndMockResponse: jest.fn(),
 }));
 
 const httpGet = jest.fn();
@@ -118,6 +118,17 @@ describe('Merchandising api proxy', () => {
     server.listen();
   });
 
+  beforeEach(() => {
+    jest
+      .mocked(validateAndMockResponse)
+      .mockImplementation((_req, status, jsonBody) => {
+        return {
+          updatedJsonBody: jsonBody,
+          updatedStatus: status,
+        };
+      });
+  });
+
   afterEach(() => {
     server.resetHandlers();
     jest.resetAllMocks();
@@ -215,6 +226,14 @@ describe('Merchandising api proxy', () => {
   describe('when not logged in', () => {
     beforeEach(() => {
       jest.mocked(getToken).mockResolvedValueOnce(null);
+      jest
+        .mocked(validateAndMockResponse)
+        .mockImplementation((_req, status, jsonBody) => {
+          return {
+            updatedJsonBody: jsonBody,
+            updatedStatus: status,
+          };
+        });
     });
 
     it('when url is equal to /api/merchandising/product', async () => {
@@ -226,57 +245,31 @@ describe('Merchandising api proxy', () => {
 
       expect(httpGet).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
+      expect(validateAndMockResponse).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'GET',
+          url: '/api/merchandising/product?query=nonexisting',
+        }),
+        200,
+        response.body
+      );
       expect(res.json).toHaveBeenCalledWith({
         products: [],
         hello: 'world',
       });
     });
 
-    it('when url is equal to /api/merchandising/ruleset/*', async () => {
-      const response = responses[3][0];
-      const res = await performGet('/api/merchandising/ruleset/1', response);
-
-      expect(httpGet).toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        rules: {
-          boosts: boostMock,
-          buries: buriesMock,
-        },
+    it('should fail with 500 when validateAndMockResponse fails', async () => {
+      jest.mocked(validateAndMockResponse).mockImplementation(() => {
+        return { error: 'No url or method found in request' };
       });
-    });
-
-    it('when url is equal to /api/merchandising/ruleset/* and method is DELETE', async () => {
-      const response = responses[3][0];
-      const res = await performDelete('/api/merchandising/ruleset/1', response);
-
-      expect(httpDelete).toHaveBeenCalled();
-      expect(httpGet).not.toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({});
-    });
-
-    it('when url is equal to /api/merchandising/category/1/preview', async () => {
-      const response = responses[3][0];
-      const res = await performGet(
-        '/api/merchandising/category/1/preview',
-        response
-      );
+      const response = responses[1][0];
+      const res = await performGet('/api/merchandising/category/1', response);
 
       expect(httpGet).toHaveBeenCalled();
-      expect(httpGet.mock.calls[0][0].url).toBe(
-        `${baseUrl}/merchandising/category/1/preview`
-      );
-      expect(httpGet.mock.calls[0][0].method).toBe('GET');
-      expect(httpGet.mock.calls[0][0].body).toBeNull();
-      expect([...httpGet.mock.calls[0][0].headers]).toEqual([]);
-
-      expect(res.status).toHaveBeenCalledWith(response.status);
+      expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        rules: {
-          boosts: boostWithInfoMock,
-          buries: buriesWithInfoMock,
-        },
+        error: 'No url or method found in request',
       });
     });
 

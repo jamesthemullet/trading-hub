@@ -252,6 +252,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedRuleSetNotFound'
     delete:
       summary: Delete Rule Set
       description: Deletes a rule set and its merchandising rules.
@@ -538,6 +544,16 @@ components:
             - id
             - categoryName
             - lastChanged
+    ReturnedRuleSetNotFound:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      required:
+        - message
+        - status
     FacetsList:
       type: object
       properties:
@@ -908,6 +924,14 @@ components:
           format: int32
         selected:
           type: boolean
+        disabled:
+          type: boolean
+      additionalProperties: false
+      required:
+        - name
+        - count
+        - selected
+        - disabled
     CategoryFacetData:
       type: object
       properties:
@@ -926,6 +950,15 @@ components:
           type: boolean
         name:
           type: string
+      additionalProperties: false
+      required:
+        - count
+        - crumb
+        - parent
+        - cat_id
+        - selected
+        - disabled
+        - name
     ColourFacetData:
       type: object
       properties:
@@ -946,6 +979,16 @@ components:
           type: string
         selected:
           type: boolean
+      additionalProperties: false
+      required:
+        - count
+        - name
+        - colourHexValue
+        - hexColourType
+        - disabled
+        - iconValue
+        - selected
+        - hasHexCode
     PriceFacetData:
       type: object
       properties:
@@ -960,5 +1003,6 @@ components:
       required:
         - minimum
         - maximum
+        - selected
 security:
   - bearerAuth: []

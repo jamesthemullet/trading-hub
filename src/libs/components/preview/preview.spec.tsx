@@ -3,6 +3,7 @@ import { act, render, screen } from '@testing-library/react';
 import { useCategoryPreview } from '../../hooks/use-category-preview';
 
 import { Preview } from './preview';
+import { Facet } from '@/libs/api';
 
 jest.mock('../../hooks/use-category-preview', () => ({
   useCategoryPreview: jest.fn(),
@@ -30,7 +31,7 @@ const mockProduct = {
   url: '',
 };
 
-const mockFacets = [
+const mockFacets: Facet[] = [
   {
     id: 'Product Type',
     order: 0,
@@ -38,30 +39,44 @@ const mockFacets = [
       {
         name: 'Tops',
         count: 24,
+        disabled: false,
+        selected: false,
       },
       {
         name: 'Socks',
         count: 24,
+        disabled: false,
+        selected: false,
       },
       {
         name: 'Leggings',
         count: 9,
+        disabled: false,
+        selected: false,
       },
       {
         name: 'Tights',
         count: 6,
+        disabled: false,
+        selected: false,
       },
       {
         name: 'Vest Tops',
         count: 2,
+        disabled: false,
+        selected: false,
       },
       {
         name: 'Bodies',
         count: 1,
+        disabled: false,
+        selected: false,
       },
       {
         name: 'Shorts',
         count: 1,
+        disabled: false,
+        selected: false,
       },
     ],
   },
@@ -72,6 +87,8 @@ const mockFacets = [
       {
         name: 'M&S Collection',
         count: 66,
+        disabled: false,
+        selected: false,
       },
     ],
   },
@@ -83,6 +100,7 @@ const mockFacets = [
         minimum: 5,
         maximum: 30,
         count: 67,
+        selected: false,
       },
     ],
   },

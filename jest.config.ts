@@ -35,8 +35,9 @@ const config: Config = {
     'test',
   ],
   moduleNameMapper: {
-    '@/(.*)': '<rootDir>/src/$1',
     '^.+\\.(css|less)$': '<rootDir>/config/css-stub.js',
+    '^.+\\.(yml|yaml)$': '<rootDir>/config/css-stub.js',
+    '@/(.*)': '<rootDir>/src/$1',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   transform: {

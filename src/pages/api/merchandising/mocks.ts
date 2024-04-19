@@ -3,7 +3,12 @@ import {
   BoostsBuries,
   BoostsBuriesWithInfo,
   ProductBoostBury,
-} from '../../../libs/api';
+  ProductSearchResponse,
+  SearchPreviewResponse,
+  AttributesResponse,
+  Facet,
+} from '@/libs/api';
+import { NextApiRequest } from 'next';
 
 export const mockProducts: ProductBoostBury[] = [
   {
@@ -155,3 +160,93 @@ export const attributesMock: AttributeResponseItem[] = [
     ],
   },
 ];
+
+export const attributesResponseMock: AttributesResponse = {
+  attributes: attributesMock,
+};
+
+export const getMockMapping: () => Record<
+  string,
+  Partial<
+    Record<
+      'post' | 'get' | 'delete',
+      (
+        req: NextApiRequest,
+        status: number,
+        jsonBody: object
+      ) => { body: object; status: number }
+    >
+  >
+> = () => ({
+  '/merchandising/category/{category}/attributes': {
+    get: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        return { body: attributesResponseMock, status: 200 };
+      }
+      return { body: jsonBody, status };
+    },
+  },
+  '/merchandising/product': {
+    post: (_req, status, jsonBody) => {
+      const productSearchResponse = jsonBody as ProductSearchResponse;
+      return {
+        body: {
+          ...productSearchResponse,
+          products: productSearchResponse.products.map((product) => ({
+            ...product,
+            metadata: { isPinned: false },
+          })),
+        },
+        status: status,
+      };
+    },
+  },
+  '/merchandising/category/{category}/preview': {
+    post: (_req, status, jsonBody) => {
+      const searchPreviewResponse = jsonBody as SearchPreviewResponse;
+      const response: SearchPreviewResponse = {
+        ...searchPreviewResponse,
+        products: searchPreviewResponse.products.map((product) => ({
+          ...product,
+          rating: 1,
+          brand: product.brand || 'M&S',
+        })),
+        facets: {
+          facets: (!searchPreviewResponse.facets
+            ? { facets: { facets: [] as Facet[] } }
+            : searchPreviewResponse
+          ).facets.facets.map((facet) => ({
+            ...facet,
+            data: facet.data.map((data) => {
+              if ('cat_id' in data) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { cat_id: _delete, ...rest } = data;
+                return {
+                  ...rest,
+                  disabled: false,
+                };
+              }
+              return {
+                ...data,
+                disabled: false,
+              };
+            }),
+          })),
+        },
+        rules: {
+          ...searchPreviewResponse.rules,
+          pinnedProducts: searchPreviewResponse.rules.pinnedProducts.map(
+            (product) => ({
+              ...product,
+              rating: 1,
+            })
+          ),
+        },
+        pagination: !searchPreviewResponse.pagination
+          ? {}
+          : searchPreviewResponse.pagination,
+      };
+      return { body: response, status };
+    },
+  },
+});
