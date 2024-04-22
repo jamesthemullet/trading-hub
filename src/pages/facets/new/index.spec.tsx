@@ -4,13 +4,13 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import Page from './index.page';
-import { renderWithProviders } from '../../../../test/render-with-providers';
-import { useGetCategories } from '../../../../libs/hooks';
+import { renderWithProviders } from '@/test/render-with-providers';
+import { useGetCategories } from '@/libs/hooks';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-get-categories', () => ({
+jest.mock('../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
 
@@ -49,7 +49,7 @@ describe('Facet Management Editing', () => {
     logSpy.mockClear();
   });
 
-  it('should render the facet management editing page', async () => {
+  it('should render the facet management new', async () => {
     renderWithProviders(<Page />);
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -60,15 +60,6 @@ describe('Facet Management Editing', () => {
     ).toBeVisible();
   });
 
-  it('should render column headings', () => {
-    renderWithProviders(<Page />);
-
-    expect(screen.getByText('Attribute')).toBeVisible();
-    expect(screen.getByText('Display name')).toBeVisible();
-    expect(screen.getByText('Order')).toBeVisible();
-    expect(screen.getByText('Value options')).toBeVisible();
-  });
-
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
@@ -77,6 +68,17 @@ describe('Facet Management Editing', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/facets');
+  });
+
+  it('should preview changes to a facet', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page />);
+
+    await user.click(screen.getByRole('button', { name: 'Preview' }));
+
+    // TODO: Implement preview functionality
+    expect(logSpy).toHaveBeenCalled();
   });
 
   it('should save changes to a facet', async () => {

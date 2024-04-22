@@ -16,7 +16,7 @@ const Page = () => {
 
   return (
     <>
-      <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
+      <Heading breadcrumbs={['Categories', 'Facet Management', 'New']} />
 
       <Facets onSave={handleSave} onCancel={handleCancel} />
     </>
