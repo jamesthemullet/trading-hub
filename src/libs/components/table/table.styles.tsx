@@ -16,7 +16,7 @@ export const TableRow = styled.div`
   &:first-of-type {
     position: sticky;
     z-index: 1;
-    top: 70px;
+    top: 30px;
     background: #fff;
   }
 `;
