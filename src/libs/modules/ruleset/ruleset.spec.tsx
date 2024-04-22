@@ -515,7 +515,7 @@ describe('Ruleset', () => {
 
       await user.click(screen.getAllByTitle('Open menu')[1]);
 
-      expect(screen.getByText('TODO: unboost')).toBeVisible();
+      expect(screen.getByText('Restore')).toBeVisible();
     });
 
     it('Should remove pin from a previously pinned product', async () => {
@@ -530,6 +530,20 @@ describe('Ruleset', () => {
       await user.click(screen.getByText('Boost to Top'));
 
       expect(screen.getAllByLabelText('Boosted product').length).toBe(2);
+    });
+
+    it('Should unboost a previously boosted product', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      await user.click(screen.getAllByTitle('Open menu')[1]);
+
+      act(() => {
+        screen.getByText('Restore').click();
+      });
+
+      await user.click(screen.getAllByTitle('Open menu')[1]);
+
+      expect(screen.getByText('Boost to Top')).toBeVisible();
     });
   });
 

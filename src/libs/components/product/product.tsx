@@ -114,6 +114,11 @@ export const Product = ({
     setIsMenuOpen(false);
   };
 
+  const removeBoost = () => {
+    onProductBoostBury({ id, change: 'remove', operation: 'boosts' });
+    setIsMenuOpen(false);
+  };
+
   const lockToPosition = (pinTo: number) => {
     setIsMenuOpen(false);
     setIsLockToPositionMenuOpen(false);
@@ -200,6 +205,16 @@ export const Product = ({
                 Restore
               </ProductMenuButton>
             )}
+            {isBoosted && (
+              <ProductMenuButton
+                icon="restore"
+                as="button"
+                size="16px 16px"
+                onClick={() => removeBoost()}
+              >
+                Restore
+              </ProductMenuButton>
+            )}
             {!isLockToPositionMenuOpen && (
               <>
                 <ProductMenuButton
@@ -209,9 +224,7 @@ export const Product = ({
                 >
                   {isPinned ? 'Edit position' : 'Pin in position'}
                 </ProductMenuButton>
-                {isBoosted ? (
-                  <Text>TODO: unboost</Text>
-                ) : (
+                {!isBoosted && (
                   <ProductMenuButton icon="up" as="button" onClick={boostToTop}>
                     Boost to Top
                   </ProductMenuButton>
