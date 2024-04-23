@@ -1,12 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
-import { useFacetsListMockData } from '@/libs/hooks/data/mock-use-facets-list';
 import { useFacetsList } from '@/libs/hooks';
 
 import { default as FacetManagementPage } from './index.page';
 import userEvent from '@testing-library/user-event';
+import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
-jest.mock('../../../libs/hooks/use-facets-list', () => ({
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
   useFacetsList: jest.fn(),
 }));
 
@@ -16,7 +17,9 @@ describe('Global Facet Management', () => {
   });
 
   it('displays the list of facets', () => {
-    jest.mocked(useFacetsList).mockReturnValue(useFacetsListMockData);
+    jest
+      .mocked(useFacetsList)
+      .mockReturnValue({ facets: globalFacetsListMock.facets, error: '' });
     render(<FacetManagementPage />);
 
     expect(
@@ -24,12 +27,14 @@ describe('Global Facet Management', () => {
     ).toBeVisible();
     expect(screen.getByText('Add rule')).toBeVisible();
     expect(
-      screen.getByText(useFacetsListMockData.facets[0].displayValue)
+      screen.getByText(globalFacetsListMock.facets[0].displayValue)
     ).toBeVisible();
   });
 
   it('searches on the facets list', async () => {
-    jest.mocked(useFacetsList).mockReturnValue(useFacetsListMockData);
+    jest
+      .mocked(useFacetsList)
+      .mockReturnValue({ facets: globalFacetsListMock.facets, error: '' });
     render(<FacetManagementPage />);
 
     const search = screen.queryByPlaceholderText(/Search\.\.\./i);
@@ -38,12 +43,13 @@ describe('Global Facet Management', () => {
       throw new Error('Search not found');
     }
 
-    await userEvent.type(search, '1');
+    await act(() => userEvent.type(search, 'col'));
+
     expect(
-      screen.getByText(useFacetsListMockData.facets[0].displayValue)
+      screen.getByText(globalFacetsListMock.facets[0].displayValue)
     ).toBeVisible();
     expect(
-      screen.queryAllByText(useFacetsListMockData.facets[1].displayValue).length
+      screen.queryAllByText(globalFacetsListMock.facets[1].displayValue).length
     ).toBe(0);
   });
 });

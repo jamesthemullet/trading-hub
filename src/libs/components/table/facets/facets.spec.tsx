@@ -1,10 +1,9 @@
 import { render, screen } from '@testing-library/react';
 
-import { useFacetsListMockData } from '@/libs/hooks/data/mock-use-facets-list';
-
 import { Facets } from './facets';
+import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
-const mockFacets = useFacetsListMockData.facets.map((facet) => ({
+const mockFacets = globalFacetsListMock.facets.map((facet) => ({
   ...facet,
   isEnabled: false,
 }));
@@ -19,6 +18,6 @@ describe('Facets', () => {
   it('should render list of facets', () => {
     render(<Facets facets={mockFacets} />);
 
-    expect(screen.getByText('facet1')).toBeInTheDocument();
+    expect(screen.getByText('color')).toBeInTheDocument();
   });
 });

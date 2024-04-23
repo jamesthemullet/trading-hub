@@ -1,24 +1,31 @@
 import { useEffect, useState } from 'react';
 
-import { ReturnedFacet } from '@/libs/api';
-import { useFacetsListMockData } from './data/mock-use-facets-list';
+import { FacetsList, merchandising } from '@/libs/api';
 
-export type CategoryFacetsList = {
-  facets: ReturnedFacet[];
-};
-
-export const useFacetsList = (categoryIds?: string[]) => {
-  const [facetsList, setFacetsList] = useState<CategoryFacetsList>({
+export const useFacetsList = (categoryId?: string[]) => {
+  const [facetsList, setFacetsList] = useState<FacetsList>({
     facets: [],
   });
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!categoryIds) {
-      setFacetsList(useFacetsListMockData);
-    }
-  }, [categoryIds]);
+    const asyncCall = async () => {
+      try {
+        const response = await merchandising().facetList({ categoryId });
+
+        const facetList = response.data;
+
+        setFacetsList(facetList);
+      } catch (error: unknown) {
+        setError('Internal Server Error');
+        return;
+      }
+    };
+    void asyncCall();
+  }, [categoryId]);
 
   return {
     facets: facetsList.facets,
+    error,
   };
 };

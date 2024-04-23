@@ -7,6 +7,7 @@ import {
   SearchPreviewResponse,
   AttributesResponse,
   Facet,
+  FacetsList,
 } from '@/libs/api';
 import { NextApiRequest } from 'next';
 
@@ -165,6 +166,56 @@ export const attributesResponseMock: AttributesResponse = {
   attributes: attributesMock,
 };
 
+export const globalFacetsListMock: FacetsList = {
+  facets: [
+    {
+      displayValue: 'color',
+      indexPropertyName: 'color',
+      id: 'color-id',
+      lastChanged: {
+        date: '2021-01-01T08:34:15Z',
+        user: 'Test User',
+      },
+    },
+    {
+      displayValue: 'size',
+      indexPropertyName: 'size',
+      id: 'size-id',
+      lastChanged: {
+        date: '2021-01-02T08:34:15Z',
+        user: 'Test User',
+      },
+    },
+    {
+      displayValue: 'brand',
+      indexPropertyName: 'brand',
+      id: 'brand-id',
+      lastChanged: {
+        date: '2021-01-03T08:34:15Z',
+        user: 'Test User',
+      },
+    },
+    {
+      displayValue: 'category',
+      indexPropertyName: 'category',
+      id: 'category-id',
+      lastChanged: {
+        date: '2021-01-04T08:34:15Z',
+        user: 'Test User',
+      },
+    },
+    {
+      displayValue: 'price',
+      indexPropertyName: 'price',
+      id: 'price-id',
+      lastChanged: {
+        date: '2021-01-05T08:34:15Z',
+        user: 'Test User',
+      },
+    },
+  ],
+};
+
 export const getMockMapping: () => Record<
   string,
   Partial<
@@ -247,6 +298,14 @@ export const getMockMapping: () => Record<
           : searchPreviewResponse.pagination,
       };
       return { body: response, status };
+    },
+  },
+  '/merchandising/facet': {
+    get: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        return { body: globalFacetsListMock, status: 200 };
+      }
+      return { body: jsonBody, status };
     },
   },
 });
