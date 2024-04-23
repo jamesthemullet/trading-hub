@@ -27,12 +27,15 @@ const config: Config = {
     '!**/constants.{js,ts}',
     '!**/*.styles.{js,ts,tsx}',
     '!**/node_modules/**',
+    '!**/e2e/**',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/.next',
     '/node_modules/',
     'coverage',
     'test',
+    'e2e',
+    'playwright-report',
   ],
   moduleNameMapper: {
     '^.+\\.(css|less)$': '<rootDir>/config/css-stub.js',
@@ -40,6 +43,7 @@ const config: Config = {
     '@/(.*)': '<rootDir>/src/$1',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  modulePathIgnorePatterns: ['<rootDir>/e2e'],
   transform: {
     '^.+\\.(ts|tsx)$': [
       'ts-jest',

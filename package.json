@@ -15,6 +15,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
+    "test:e2e": "playwright test --ui",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "ts-check": "tsc  --build --force --verbose tsconfig.json"
@@ -48,6 +49,7 @@
     "@emotion/jest": "11.11.0",
     "@jest/globals": "29.7.0",
     "@next/eslint-plugin-next": "14.2.2",
+    "@playwright/test": "1.43.1",
     "@testing-library/jest-dom": "6.4.2",
     "@testing-library/react": "15.0.2",
     "@testing-library/user-event": "14.5.2",
@@ -59,6 +61,7 @@
     "@typescript-eslint/eslint-plugin": "7.7.1",
     "@typescript-eslint/parser": "7.7.1",
     "babel-jest": "29.7.0",
+    "dotenv": "16.4.5",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.2",
     "eslint-config-prettier": "9.1.0",

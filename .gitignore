@@ -50,3 +50,7 @@ next-env.d.ts
 
 # Ignore versioning config files
 .tool-versions
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

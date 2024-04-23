@@ -54,6 +54,31 @@ npm run test
 
 Tests require 100% coverage for all files, watch mode can be enabled by running `npm run test -- --watch`
 
+### E2E tests
+
+Playwright is set up for running e2e tests locally, to set up:
+
+Replace the following env variables with your own cookie values
+
+```
+"E2E_SESSION_TOKEN0": "",
+"E2E_SESSION_TOKEN1": "",
+"E2E_CALLBACK_URL": "",
+"E2E_CSRF_TOKEN": ""
+```
+
+You can find these in your browser cookies
+
+![Image showing cookies](docs/img/cookies.png 'App Cookies')
+
+To run the tests use
+
+```
+npm run test:e2e
+```
+
+Click the green run button in the playwright UI
+
 ### Code formatting
 
 Prettier is used to format files, this can be set up in your IDE or by running `npm run format` before committing.
@@ -61,6 +86,10 @@ Prettier is used to format files, this can be set up in your IDE or by running `
 ### Dependencies updates
 
 Renovate is set up for the repo, all contributors can help with merging updates. Checks are scheduled outside of working hours.
+
+### VS Code
+
+An example settings.json file is in the .vscode folder
 
 ## Deployments
 
