@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import { useFacetsList } from '@/libs/hooks';
-import { Heading, Facets, Button } from '@/libs/components';
+import { Heading, Button, FacetsManagementTable } from '@/libs/components';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -50,7 +50,11 @@ const FacetManagementPage = () => {
           </NewButton>
         </ToolsContainer>
 
-        <Facets facets={facets} canToggle={true} />
+        <FacetsManagementTable
+          facets={facets}
+          canToggle={true}
+          editUrl="../../../facets/edit"
+        />
       </PageWrapper>
     </>
   );

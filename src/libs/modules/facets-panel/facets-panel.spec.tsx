@@ -1,6 +1,6 @@
 import { act, screen, Screen, waitFor } from '@testing-library/react';
 
-import { Facets } from './facets';
+import { FacetsPanel } from './facets-panel';
 import { renderWithProviders } from '@/test/render-with-providers';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useGetCategories } from '@/libs/hooks';
@@ -61,7 +61,13 @@ describe('Facet Management Editing', () => {
   it('should render the facet management editing page', async () => {
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();
-    renderWithProviders(<Facets onSave={onSaveSpy} onCancel={onCancelSpy} />);
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+      />
+    );
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Preview' })).toBeVisible();
@@ -74,7 +80,13 @@ describe('Facet Management Editing', () => {
   it('should render column headings', () => {
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();
-    renderWithProviders(<Facets onSave={onSaveSpy} onCancel={onCancelSpy} />);
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+      />
+    );
 
     expect(screen.getByText('Attribute')).toBeVisible();
     expect(screen.getByText('Display name')).toBeVisible();
@@ -87,7 +99,13 @@ describe('Facet Management Editing', () => {
 
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();
-    renderWithProviders(<Facets onSave={onSaveSpy} onCancel={onCancelSpy} />);
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+      />
+    );
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -99,7 +117,13 @@ describe('Facet Management Editing', () => {
 
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();
-    renderWithProviders(<Facets onSave={onSaveSpy} onCancel={onCancelSpy} />);
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+      />
+    );
 
     await user.click(screen.getByRole('button', { name: 'Preview' }));
 
@@ -112,7 +136,13 @@ describe('Facet Management Editing', () => {
 
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();
-    renderWithProviders(<Facets onSave={onSaveSpy} onCancel={onCancelSpy} />);
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+      />
+    );
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -124,7 +154,13 @@ describe('Facet Management Editing', () => {
 
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();
-    renderWithProviders(<Facets onSave={onSaveSpy} onCancel={onCancelSpy} />);
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+      />
+    );
 
     await selectCategory(screen, user);
 
@@ -143,7 +179,13 @@ describe('Facet Management Editing', () => {
     const openModal = async () => {
       const onSaveSpy = jest.fn();
       const onCancelSpy = jest.fn();
-      renderWithProviders(<Facets onSave={onSaveSpy} onCancel={onCancelSpy} />);
+      renderWithProviders(
+        <FacetsPanel
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          title="Facet Rule Editor"
+        />
+      );
 
       const addFacetButton = screen.getByText('Add facet');
 

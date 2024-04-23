@@ -18,6 +18,7 @@ import { spacing } from '../../utils/spacing';
 type Props = {
   facets: ReturnedFacet[];
   canToggle?: boolean;
+  editUrl: string;
 };
 
 const FacetsTableCol = styled(TableCol)`
@@ -37,7 +38,11 @@ const FacetsTableCol = styled(TableCol)`
   }
 `;
 
-export const Facets = ({ facets, canToggle = false }: Props) => {
+export const FacetsManagementTable = ({
+  facets,
+  canToggle = false,
+  editUrl,
+}: Props) => {
   const columns: {
     label: string;
   }[] = [
@@ -114,7 +119,7 @@ export const Facets = ({ facets, canToggle = false }: Props) => {
             </FacetsTableCol>
             <FacetsTableCol style={{ padding: '12px 0 16px' }}>
               <TableActions>
-                <TableActionsButton href={`../../../global/facets/edit/${id}`}>
+                <TableActionsButton href={`${editUrl}/${id}`}>
                   Edit
                 </TableActionsButton>
               </TableActions>

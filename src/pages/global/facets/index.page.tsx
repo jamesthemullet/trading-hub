@@ -5,11 +5,11 @@ import { spacing } from '@/libs/components/utils/spacing';
 import { useFacetsList } from '@/libs/hooks';
 import {
   Heading,
-  Facets,
   Button,
   SectionWrapper,
   SectionHeader,
   Search,
+  FacetsManagementTable,
 } from '@/libs/components';
 import { ReturnedFacet } from '@/libs/api';
 
@@ -59,7 +59,10 @@ const FacetManagementPage = () => {
           </NewButton>
         </SectionHeader>
 
-        <Facets facets={filteredFacets} />
+        <FacetsManagementTable
+          facets={filteredFacets}
+          editUrl="../../../global/facets/edit"
+        />
       </SectionWrapper>
     </>
   );

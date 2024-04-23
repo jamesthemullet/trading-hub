@@ -55,7 +55,6 @@ const SectionWrapper = styled.div`
   box-shadow: #000 0 0 10px -5px;
   margin: ${spacing(2)};
   margin-bottom: 0;
-  padding-top: ${spacing(1)};
   border-radius: 4px;
   padding: ${spacing(2)};
 `;
@@ -102,12 +101,14 @@ const COLUMNS: {
   },
 ];
 
-export const Facets = ({
+export const FacetsPanel = ({
   onSave,
   onCancel,
+  title,
 }: {
   onSave: () => void;
   onCancel: () => void;
+  title: string;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
@@ -131,7 +132,7 @@ export const Facets = ({
   return (
     <>
       <ActionContainer>
-        <h1>Facet Rule Editor</h1>
+        <h1>{title}</h1>
 
         <Actions>
           <Button onClick={onCancel}>Cancel</Button>

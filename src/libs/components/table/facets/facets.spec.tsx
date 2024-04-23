@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
-import { Facets } from './facets';
+import { FacetsManagementTable } from './facets';
+
 import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
 const mockFacets = globalFacetsListMock.facets.map((facet) => ({
@@ -10,13 +11,23 @@ const mockFacets = globalFacetsListMock.facets.map((facet) => ({
 
 describe('Facets', () => {
   it('should render facet headings', () => {
-    render(<Facets facets={mockFacets} />);
+    render(
+      <FacetsManagementTable
+        facets={mockFacets}
+        editUrl="../../../facets/edit"
+      />
+    );
 
     expect(screen.getByText('Identifier')).toBeInTheDocument();
   });
 
   it('should render list of facets', () => {
-    render(<Facets facets={mockFacets} />);
+    render(
+      <FacetsManagementTable
+        facets={mockFacets}
+        editUrl="../../../facets/edit"
+      />
+    );
 
     expect(screen.getByText('color')).toBeInTheDocument();
   });

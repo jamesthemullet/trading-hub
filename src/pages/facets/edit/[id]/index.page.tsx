@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
 import { Heading } from '@/libs/components';
-import { Facets } from '@/libs/modules/facets/facets';
+import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 
 const Page = () => {
   const router = useRouter();
@@ -18,7 +18,11 @@ const Page = () => {
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
 
-      <Facets onSave={handleSave} onCancel={handleCancel} />
+      <FacetsPanel
+        onSave={handleSave}
+        onCancel={handleCancel}
+        title="Facet Rule Editor"
+      />
     </>
   );
 };
