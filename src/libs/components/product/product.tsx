@@ -24,6 +24,7 @@ import {
   ProductCard,
 } from './product.styles';
 import { EditAttribute } from '../../modules/ruleset/ruleset';
+import Image from 'next/image';
 
 type ChangePositionTypes = {
   isPinned: boolean;
@@ -39,11 +40,13 @@ export const ProductDetails = ({
   imageUrl,
   brand,
   isBrandStrong,
+  isSearchResult,
   title,
   price,
   productId,
 }: Pick<ProductType, 'title' | 'price' | 'brand' | 'productId' | 'imageUrl'> & {
   isBrandStrong?: boolean;
+  isSearchResult?: boolean;
 }) => {
   return (
     <>
@@ -53,7 +56,7 @@ export const ProductDetails = ({
           alt=""
         />
       </ProductCard>
-      <ProductInfo aria-label="Product details">
+      <ProductInfo aria-label="Product details" isSearchResult={isSearchResult}>
         <Text isStrong={isBrandStrong ?? true}>
           {brand} {title}
         </Text>
@@ -79,6 +82,7 @@ export const Product = ({
   title,
   isBrandStrong,
   isProductNumberEnabled,
+  isSearchResult = false,
   ...rest
 }: ProductType & {
   index: number;
@@ -93,6 +97,7 @@ export const Product = ({
   totalProducts: number;
   isBrandStrong?: boolean;
   isProductNumberEnabled?: boolean;
+  isSearchResult?: boolean;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLockToPositionMenuOpen, setIsLockToPositionMenuOpen] =
@@ -182,7 +187,12 @@ export const Product = ({
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
         >
-          <img alt="" src="/trading-hub/asset/icon-plus.svg" />
+          <Image
+            alt=""
+            src={`/trading-hub/asset/icon-${isMenuOpen ? 'minus' : 'plus'}.svg`}
+            width={20}
+            height={20}
+          />
         </ProductMenuToggle>
         {isMenuOpen && (
           <ProductMenu>
@@ -235,7 +245,7 @@ export const Product = ({
             {isLockToPositionMenuOpen && (
               <LockMenu
                 style={{
-                  height: error ? '300px' : '245px',
+                  height: error ? '330px' : '245px',
                 }}
               >
                 <Text isStrong={true} style={{ marginBottom: spacing(1) }}>
@@ -264,7 +274,7 @@ export const Product = ({
                     hasError={!!error.length}
                   />
                   {error && <ErrorText>{error}</ErrorText>}
-                  <LockActions>
+                  <LockActions isSearchResult={isSearchResult}>
                     <Button onClick={() => setIsLockToPositionMenuOpen(false)}>
                       Cancel
                     </Button>
@@ -289,6 +299,7 @@ export const Product = ({
         title={title}
         price={price}
         productId={productId}
+        isSearchResult={isSearchResult}
       />
     </ProductWrapper>
   );

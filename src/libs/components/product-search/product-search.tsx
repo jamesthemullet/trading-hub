@@ -94,6 +94,7 @@ export const ProductSearch = ({
               pinnedProductsCount={0}
               isBrandStrong={false}
               isProductNumberEnabled={false}
+              isSearchResult={true}
             />
           );
         })}

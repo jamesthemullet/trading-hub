@@ -4,10 +4,12 @@ import { spacing } from '../utils/spacing';
 import { color } from '../utils/constants';
 import { Text } from '../typography/typography.styles';
 import { boxShadow } from '../utils/shared.styles';
+import { css } from '@emotion/react';
 
-export const ProductWrapper = styled.div<{ isLastChanged: boolean }>`
+export const ProductWrapper = styled.div<{
+  isLastChanged: boolean;
+}>`
   width: 100%;
-  height: 100%;
   border: solid 1px #cecece;
   padding: ${spacing(1)};
   margin: ${spacing(1)};
@@ -57,23 +59,31 @@ export const BoostPin = styled.div`
   }
 `;
 
-export const ProductInfo = styled.div`
+export const ProductInfo = styled.div<{ isSearchResult?: boolean }>`
   margin-top: ${spacing(2)};
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(1, 1fr);
   grid-column-gap: ${spacing(1)};
   grid-row-gap: ${spacing(1)};
 
   & > p:nth-of-type(1) {
-    grid-area: 1 / 1 / 2 / 3;
+    grid-area: 1 / 1 / 2 / 4;
   }
   & > p:nth-of-type(2) {
     grid-area: 2 / 1 / 3 / 2;
   }
   & > p:nth-of-type(3) {
-    grid-area: 2 / 2 / 3 / 3;
+    grid-area: 2 / 2 / 3 / 4;
   }
+
+  ${({ isSearchResult }) =>
+    isSearchResult &&
+    css`
+      p {
+        font-size: 12px;
+      }
+    `}
 `;
 
 export const ProductMenuToggle = styled.button`
@@ -100,9 +110,10 @@ export const ProductMenuOverlay = styled.button`
 export const ProductMenu = styled.div`
   ${boxShadow}
   position: absolute;
-  top: 5px;
-  right: ${spacing(-2)};
-  width: 220px;
+  top: 30px;
+  left: 0;
+  width: 100%;
+  min-width: 160px;
   background: #fff;
   border-radius: 3px;
   z-index: 2;
@@ -155,11 +166,20 @@ export const ErrorText = styled(Text)`
   color: ${color.errorRed};
 `;
 
-export const LockActions = styled.div`
+export const LockActions = styled.div<{ isSearchResult?: boolean }>`
   display: flex;
-  gap: 10px;
+  gap: ${({ isSearchResult }) => (isSearchResult ? spacing(0.5) : spacing(1))};
   border-top: solid 1px #999;
   padding-top: ${spacing(1)};
+
+  ${({ isSearchResult }) =>
+    isSearchResult &&
+    css`
+      button {
+        font-size: 14px;
+        padding: 8px;
+      }
+    `}
 `;
 
 export const ProductCard = styled.div`
