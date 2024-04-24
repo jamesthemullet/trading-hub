@@ -1,4 +1,5 @@
-import { createMockNextApiRequest } from '../../../test/create-mock-next-api-request';
+import { ErrorResponse } from '@/libs/api';
+import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 import {
   attributesResponseMock,
   getMockMapping,
@@ -277,6 +278,92 @@ describe('mocks', () => {
       const result = mockMapping['/merchandising/facet'].get!(
         createMockNextApiRequest({
           url: '/merchandising/facet',
+          method: 'GET',
+        }),
+        200,
+        realResponse
+      );
+      expect(result).toEqual({
+        body: realResponse,
+        status: 200,
+      });
+    });
+  });
+
+  describe('/merchandising/facet/{facetId}', () => {
+    it('should return globalFacet when status is not 200', () => {
+      const id = 'color-id';
+      const mockMapping = getMockMapping();
+      expect(mockMapping['/merchandising/facet/{facetId}'].get).toBeDefined();
+
+      const result = mockMapping['/merchandising/facet/{facetId}'].get!(
+        createMockNextApiRequest({
+          url: `/api/merchandising/facet/${id}`,
+          method: 'GET',
+        }),
+        400,
+        {}
+      );
+      expect(result).toEqual({
+        body: globalFacetsListMock.facets.find((facet) => facet.id === id),
+        status: 200,
+      });
+    });
+
+    it('should not return globalFacet when status is not 200 and url is empty', () => {
+      const mockMapping = getMockMapping();
+      expect(mockMapping['/merchandising/facet/{facetId}'].get).toBeDefined();
+
+      const result = mockMapping['/merchandising/facet/{facetId}'].get!(
+        createMockNextApiRequest({
+          url: '',
+          method: 'GET',
+        }),
+        400,
+        {}
+      );
+      const error: ErrorResponse = {
+        message: 'url is empty',
+        status: '400',
+      };
+      expect(result).toEqual({
+        body: error,
+        status: 400,
+      });
+    });
+
+    it('should not return globalFacet when status is not 200 and id is wrong', () => {
+      const id = 'wrong-id';
+      const mockMapping = getMockMapping();
+      expect(mockMapping['/merchandising/facet/{facetId}'].get).toBeDefined();
+
+      const result = mockMapping['/merchandising/facet/{facetId}'].get!(
+        createMockNextApiRequest({
+          url: `/api/merchandising/facet/${id}`,
+          method: 'GET',
+        }),
+        400,
+        {}
+      );
+      const error: ErrorResponse = {
+        message: `Facet with id: ${id} not found`,
+        status: '404',
+      };
+      expect(result).toEqual({
+        body: error,
+        status: 404,
+      });
+    });
+
+    it('should return jsonBody when status is 200', () => {
+      const id = 'color-id';
+      const mockMapping = getMockMapping();
+      expect(mockMapping['/merchandising/facet/{facetId}'].get).toBeDefined();
+      const realResponse = {};
+
+      const result = mockMapping['/merchandising/facet/{facetId}'].get!(
+        createMockNextApiRequest({
+          url: `/api/merchandising/facet/${id}`,
           method: 'GET',
         }),
         200,

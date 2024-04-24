@@ -106,7 +106,7 @@ export const validateAndMockResponse = (
           methodToMatch
         ]!(req, status, jsonBody);
         const newResult = responseValidator.validateResponse(
-          responseStatusCodeToMatch,
+          newStatus,
           newJsonBody
         );
         if (newResult !== undefined) {

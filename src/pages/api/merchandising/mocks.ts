@@ -8,6 +8,8 @@ import {
   AttributesResponse,
   Facet,
   FacetsList,
+  ReturnedFacet,
+  ErrorResponse,
 } from '@/libs/api';
 import { NextApiRequest } from 'next';
 
@@ -304,6 +306,37 @@ export const getMockMapping: () => Record<
     get: (_req, status, jsonBody) => {
       if (status !== 200) {
         return { body: globalFacetsListMock, status: 200 };
+      }
+      return { body: jsonBody, status };
+    },
+  },
+  '/merchandising/facet/{facetId}': {
+    get: (req, status, jsonBody) => {
+      if (status !== 200) {
+        const { url } = req;
+        if (!url) {
+          const error: ErrorResponse = {
+            message: 'url is empty',
+            status: '400',
+          };
+          return { body: error, status: 400 };
+        }
+
+        const facetId = url.split('/')[4];
+        const facet = globalFacetsListMock.facets.find(
+          (facet) => facet.id === facetId
+        );
+
+        if (!facet) {
+          const error: ErrorResponse = {
+            message: `Facet with id: ${facetId} not found`,
+            status: '404',
+          };
+          return { body: error, status: 404 };
+        }
+
+        const body: ReturnedFacet = facet;
+        return { body, status: 200 };
       }
       return { body: jsonBody, status };
     },
