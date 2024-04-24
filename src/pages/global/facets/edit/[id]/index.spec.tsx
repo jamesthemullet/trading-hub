@@ -2,10 +2,12 @@ import { act, screen, Screen, waitFor } from '@testing-library/react';
 
 import { useRouter } from 'next/router';
 
-import Page from './index.page';
+import Page, { getServerSideProps } from './index.page';
 import { renderWithProviders } from '../../../../../test/render-with-providers';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useGetCategories } from '../../../../../libs/hooks';
+import { ParsedUrlQuery } from 'querystring';
+import { GetServerSidePropsContext } from 'next';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -31,6 +33,7 @@ const mockGetCategories = {
   ],
   pagination: { totalItems: 20 },
 };
+const facetId = 'color-id';
 
 const selectCategory = async (screen: Screen, user: UserEvent) => {
   await user.type(
@@ -66,7 +69,7 @@ describe('Global Facet Management Editing', () => {
   });
 
   it('should render the facet management editing page', async () => {
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={facetId} />);
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Preview' })).toBeVisible();
@@ -80,7 +83,7 @@ describe('Global Facet Management Editing', () => {
   });
 
   it('should render column headings', () => {
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={facetId} />);
 
     expect(screen.getByText('Attribute')).toBeVisible();
     expect(screen.getByText('Display name')).toBeVisible();
@@ -91,7 +94,7 @@ describe('Global Facet Management Editing', () => {
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={facetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -101,7 +104,7 @@ describe('Global Facet Management Editing', () => {
   it('should preview changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={facetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Preview' }));
 
@@ -112,7 +115,7 @@ describe('Global Facet Management Editing', () => {
   it('should save changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={facetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -123,7 +126,7 @@ describe('Global Facet Management Editing', () => {
   it('should select a category on user input, and clear category when "remove selected category" button is clicked', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={facetId} />);
 
     await selectCategory(screen, user);
 
@@ -138,9 +141,23 @@ describe('Global Facet Management Editing', () => {
     expect(screen.queryByText('cat_123')).not.toBeInTheDocument();
   });
 
+  it('loads the mock data', async () => {
+    const mockPageId = 'abc123';
+    const context = { query: { id: mockPageId } as ParsedUrlQuery };
+    const result = await getServerSideProps(
+      context as GetServerSidePropsContext
+    );
+
+    if (!('props' in result) || !result.props) {
+      throw new Error('No props returned');
+    }
+
+    expect((await result.props).id).toBe(mockPageId);
+  });
+
   describe('Add Facet Modal', () => {
     const openModal = async () => {
-      renderWithProviders(<Page />);
+      renderWithProviders(<Page id={facetId} />);
 
       const addFacetButton = screen.getByText('Add facet');
 

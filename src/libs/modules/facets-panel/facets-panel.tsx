@@ -9,6 +9,15 @@ import {
   TableCol,
   TableHeading,
 } from '@/libs/components/table/table.styles';
+import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
+
+type mockAttributes = {
+  id: string;
+  attribute: string;
+  displayName: string;
+  order: null;
+  valueOptions: string[];
+};
 
 const ActionContainer = styled.div`
   display: flex;
@@ -20,7 +29,7 @@ const ActionContainer = styled.div`
 
   a,
   button {
-    min-width: 110px;
+    min-width: 150px;
     text-align: center;
   }
 `;
@@ -36,8 +45,14 @@ const AddFacetPanel = styled.div`
   display: flex;
   justify-content: space-between;
 
-  button {
-    width: 150px;
+  div {
+    &:first-of-type {
+      flex: 6;
+    }
+
+    &:last-of-type {
+      flex: 1;
+    }
   }
 `;
 
@@ -49,6 +64,7 @@ const LowerHeading = styled(Text)`
 const AttributesTable = styled.div`
   display: flex;
   flex-direction: column;
+  margin: ${spacing(2)};
 `;
 
 const SectionWrapper = styled.div`
@@ -63,11 +79,18 @@ const Row = styled(TableRow)`
   font-size: 1rem;
   align-items: center;
   border-bottom: none;
+  box-shadow: #000 0 0 10px -5px;
+  margin-bottom: ${spacing(2)};
+  padding: 0 ${spacing(2)} ${spacing(2)};
 `;
 
 const Col = styled(TableCol)`
   justify-content: space-between;
-  flex: 1;
+  flex: 2;
+
+  &:last-of-type {
+    flex: 1;
+  }
 `;
 
 const NoAttributesBlock = styled.div`
@@ -105,15 +128,17 @@ export const FacetsPanel = ({
   onSave,
   onCancel,
   title,
+  attributesData,
+  defaultToExcludeOnly,
 }: {
   onSave: () => void;
   onCancel: () => void;
   title: string;
+  attributesData?: mockAttributes;
+  defaultToExcludeOnly?: boolean;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
-
-  const attributes = [];
 
   const onPreview = () => {
     // TODO: Implement preview functionality
@@ -170,20 +195,35 @@ export const FacetsPanel = ({
 
       {isAddFacetModalOpen && <ModalAddFacets onClose={onClose} />}
 
-      <SectionWrapper>
-        <AttributesTable>
+      <AttributesTable>
+        <Row>
+          {COLUMNS.map(({ label }) => (
+            <Col key={`column-${label}`}>
+              <TableHeading as="p" isStrong={true}>
+                {label}
+              </TableHeading>
+            </Col>
+          ))}
+        </Row>
+        {attributesData && (
           <Row>
-            {COLUMNS.map(({ label }) => (
-              <Col key={`column-${label}`}>
-                <TableHeading as="p" isStrong={true}>
-                  {label}
-                </TableHeading>
-              </Col>
-            ))}
+            <Col>
+              <Text>{attributesData.attribute}</Text>
+            </Col>
+            <Col>
+              <Text>{attributesData.displayName}</Text>
+            </Col>
+            <Col>
+              <FacetOrderDropdown defaultToExcludeOnly={defaultToExcludeOnly} />
+            </Col>
+            <Col>
+              <Button>Edit values</Button>
+            </Col>
           </Row>
-        </AttributesTable>
-      </SectionWrapper>
-      {attributes.length === 0 && (
+        )}
+      </AttributesTable>
+
+      {!attributesData && (
         <NoAttributesBlock>
           <Text>No, there are no attributes yet.</Text>
           <Text>How about adding a subcategory first?</Text>

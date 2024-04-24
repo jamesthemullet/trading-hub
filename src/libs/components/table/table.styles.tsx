@@ -12,6 +12,7 @@ export const TableRow = styled.div`
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid #b1b1b1;
+  align-items: baseline;
 
   &:first-of-type {
     position: sticky;
@@ -25,12 +26,11 @@ export const TableCol = styled.div`
   text-overflow: ellipsis;
   display: flex;
   flex-direction: row;
-  padding: ${spacing(3)} ${spacing(1)} ${spacing(0.5)};
+  padding: ${spacing(3)} 0 ${spacing(0.5)};
 
   p {
     overflow: hidden;
     text-overflow: ellipsis;
-    display: inline-block;
     text-wrap: nowrap;
     width: 100%;
   }
@@ -82,8 +82,6 @@ export const TableColumnOrder = styled.div<{
 `;
 
 export const TableDateContainer = styled.div`
-  margin-top: 0;
-
   p {
     line-height: 1;
   }

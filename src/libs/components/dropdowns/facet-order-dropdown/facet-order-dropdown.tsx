@@ -103,14 +103,18 @@ const DropdownOption = styled.button`
   }
 `;
 
-export const FacetOrderDropdown = () => {
+export const FacetOrderDropdown = ({
+  defaultToExcludeOnly,
+}: {
+  defaultToExcludeOnly?: boolean;
+}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState([
     {
       index: 0,
       label: 'Select an action',
       src: null,
-      selected: true,
+      selected: defaultToExcludeOnly ? false : true,
     },
     {
       index: 1,
@@ -122,7 +126,7 @@ export const FacetOrderDropdown = () => {
       index: 2,
       label: 'Exclude only',
       src: '/trading-hub/asset/icon-cross.svg',
-      selected: false,
+      selected: defaultToExcludeOnly ? true : false,
     },
   ]);
 
