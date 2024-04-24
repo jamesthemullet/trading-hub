@@ -10,6 +10,7 @@ import {
   TableHeading,
 } from '@/libs/components/table/table.styles';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
+import Image from 'next/image';
 
 type mockAttributes = {
   id: string;
@@ -104,6 +105,24 @@ const NoAttributesBlock = styled.div`
   p {
     font-size: 1.25rem;
     color: #707070;
+  }
+`;
+
+const DisplayName = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const EditButton = styled(Button)`
+  padding: 0;
+  border: none;
+  background: none;
+  width: 20px;
+  display: flex;
+  margin-left: ${spacing(3)};
+
+  &:hover {
+    background: none;
   }
 `;
 
@@ -211,7 +230,17 @@ export const FacetsPanel = ({
               <Text>{attributesData.attribute}</Text>
             </Col>
             <Col>
-              <Text>{attributesData.displayName}</Text>
+              <DisplayName>
+                <Text>{attributesData.displayName}</Text>
+                <EditButton>
+                  <Image
+                    width={20}
+                    height={20}
+                    src="/trading-hub/asset/icon-edit-pencil.svg"
+                    alt=""
+                  />
+                </EditButton>
+              </DisplayName>
             </Col>
             <Col>
               <FacetOrderDropdown defaultToExcludeOnly={defaultToExcludeOnly} />
