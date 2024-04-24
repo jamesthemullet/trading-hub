@@ -8,35 +8,13 @@ import { useRuleSet, useRuleSetDelete } from '@/libs/hooks';
 import {
   Button,
   Heading,
-  Dropdown,
-  Pagination,
   Rules,
   Search,
+  TablePagination,
 } from '@/libs/components';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
-`;
-
-const NavigationContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: ${spacing(4)};
-  margin-left: auto;
-  margin-right: ${spacing(2)};
-  margin-bottom: ${spacing(18)};
-  font-weight: 400;
-  font-size: 14px;
-`;
-
-const PageSizeItem = styled.div`
-  padding: ${spacing(1)};
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
 `;
 
 const ToolsContainer = styled.div`
@@ -59,27 +37,10 @@ const NewButton = styled.div`
   margin-right: ${spacing(2)};
 `;
 
-const TotalResultsLabel = styled.div`
-  font-family: mnsLondonRegular, monospace;
-  margin-left: 31px;
-`;
-
-const RowsPerPageLabel = styled.div``;
-
-const RowsPerPageContainer = styled.div`
-  font-family: mnsLondonRegular, monospace;
-  display: flex;
-  column-gap: 10px;
-  justify-content: center;
-  align-items: baseline;
-  margin-right: 18px;
-`;
-
 const RuleSets = () => {
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isPageSizeOpen, setIsPageSizeOpen] = useState(false);
   const [columnIdToSort, setColumnIdToSort] =
     useState<keyof ReturnedRuleSet>('categoryName');
   const [columnSortOrder, setColumnSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -134,48 +95,15 @@ const RuleSets = () => {
           }}
           onDeleteRuleSet={onDeleteRuleSet}
         />
-        <NavigationContainer>
-          <TotalResultsLabel>{pagination.totalItems} results</TotalResultsLabel>
-          <Pagination
-            current={currentPage}
-            total={Math.ceil((pagination.totalItems ?? 0) / currentPageSize)}
-            onClick={(e, pageNumber) => {
-              e.preventDefault();
-              setCurrentPage(pageNumber);
-            }}
-          />
-          <RowsPerPageContainer>
-            <RowsPerPageLabel>Rows per page</RowsPerPageLabel>
-            <Dropdown
-              label={`${currentPageSize}`}
-              isOpen={isPageSizeOpen}
-              onOpen={() => {
-                setIsPageSizeOpen(true);
-              }}
-              onClose={() => {
-                setIsPageSizeOpen(false);
-              }}
-            >
-              {pageSizes.map((size) => (
-                <PageSizeItem
-                  key={size}
-                  onClick={() => {
-                    setCurrentPageSize(size);
-                    setIsPageSizeOpen(false);
-                    if (
-                      currentPage * size >
-                      Math.ceil(pagination.totalItems ?? 0 / size)
-                    ) {
-                      setCurrentPage(1);
-                    }
-                  }}
-                >
-                  {size}
-                </PageSizeItem>
-              ))}
-            </Dropdown>
-          </RowsPerPageContainer>
-        </NavigationContainer>
+
+        <TablePagination
+          pagination={pagination}
+          pageSizes={pageSizes}
+          currentPage={currentPage}
+          currentPageSize={currentPageSize}
+          setCurrentPage={setCurrentPage}
+          setCurrentPageSize={setCurrentPageSize}
+        />
       </PageWrapper>
     </>
   );

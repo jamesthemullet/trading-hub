@@ -43,7 +43,7 @@ const Categories = styled.div`
   padding: ${spacing(1)} ${spacing(1)} 0;
 `;
 
-const SelectedCategory = styled(Label)`
+export const SelectedCategory = styled(Label)`
   margin-bottom: ${spacing(1)};
   color: #fff;
   background-color: ${color.selectionBox};

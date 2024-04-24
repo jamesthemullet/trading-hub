@@ -1,14 +1,24 @@
+import { GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
+import { ParsedUrlQuery } from 'querystring';
+
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { useRouter } from 'next/router';
-
-import Page from './index.page';
-import { renderWithProviders } from '../../../../test/render-with-providers';
-import { useGetCategories } from '../../../../libs/hooks';
+import Page, { getServerSideProps } from './index.page';
+import { renderWithProviders } from '@/test/render-with-providers';
+import { useGetCategories } from '@/libs/hooks';
+import { useRuleSetPreview } from '@/libs/hooks/use-rule-set-preview';
+import {
+  mockUseRuleSetPreviewData,
+  ruleSetId,
+} from '@/test/data/mock-use-rule-set-preview.data';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
+}));
+jest.mock('../../../../libs/hooks/use-rule-set-preview', () => ({
+  useRuleSetPreview: jest.fn(),
 }));
 jest.mock('../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
@@ -49,8 +59,25 @@ describe('Facet Management Editing', () => {
     logSpy.mockClear();
   });
 
+  it('loads the mock data', async () => {
+    const mockPageId = 'abc123';
+    const context = { query: { id: mockPageId } as ParsedUrlQuery };
+    const result = await getServerSideProps(
+      context as GetServerSidePropsContext
+    );
+
+    if (!('props' in result) || !result.props) {
+      throw new Error('No props returned');
+    }
+
+    expect((await result.props).id).toBe(mockPageId);
+  });
+
   it('should render the facet management editing page', async () => {
-    renderWithProviders(<Page />);
+    jest
+      .mocked(useRuleSetPreview)
+      .mockImplementation(() => mockUseRuleSetPreviewData);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Preview' })).toBeVisible();
@@ -61,7 +88,7 @@ describe('Facet Management Editing', () => {
   });
 
   it('should render column headings', () => {
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByText('Attribute')).toBeVisible();
     expect(screen.getByText('Display name')).toBeVisible();
@@ -72,7 +99,7 @@ describe('Facet Management Editing', () => {
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -82,7 +109,7 @@ describe('Facet Management Editing', () => {
   it('should save changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 

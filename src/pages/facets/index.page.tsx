@@ -1,8 +1,16 @@
+import { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
 
+import type { ReturnedFacet } from '@/libs/api';
+import { useRuleSet } from '@/libs/hooks';
+
 import { spacing } from '@/libs/components/utils/spacing';
-import { useFacetsList } from '@/libs/hooks';
-import { Heading, Button, FacetsManagementTable } from '@/libs/components';
+import {
+  Heading,
+  Button,
+  FacetsManagementTable,
+  TablePagination,
+} from '@/libs/components';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -27,7 +35,27 @@ const NewButton = styled.div`
 `;
 
 const FacetManagementPage = () => {
-  const { facets } = useFacetsList();
+  const pageSizes = [10, 20, 50, 100];
+  const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery] = useState<string>('');
+
+  const currentPageIndex = currentPage - 1;
+
+  const { ruleSets, pagination } = useRuleSet(
+    searchQuery,
+    currentPageIndex * currentPageSize,
+    currentPageSize
+  );
+
+  const facets = useMemo<ReturnedFacet[]>(() => {
+    return ruleSets.map(({ id, categoryId, categoryName, lastChanged }) => ({
+      displayValue: `${categoryId} | ${categoryName}`,
+      indexPropertyName: categoryId,
+      lastChanged,
+      id,
+    }));
+  }, [ruleSets]);
 
   return (
     <>
@@ -54,6 +82,15 @@ const FacetManagementPage = () => {
           facets={facets}
           canToggle={true}
           editUrl="../../../facets/edit"
+        />
+
+        <TablePagination
+          pagination={pagination}
+          pageSizes={pageSizes}
+          currentPage={currentPage}
+          currentPageSize={currentPageSize}
+          setCurrentPage={setCurrentPage}
+          setCurrentPageSize={setCurrentPageSize}
         />
       </PageWrapper>
     </>

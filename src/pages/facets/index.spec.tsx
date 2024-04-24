@@ -1,14 +1,19 @@
 import { render, screen } from '@testing-library/react';
 
-import { useFacetsList } from '@/libs/hooks';
+import { useRuleSet } from '@/libs/hooks';
 
 import { default as FacetManagementPage } from './index.page';
-import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
-jest.mock('@/libs/hooks', () => ({
-  ...jest.requireActual('@/libs/hooks'),
-  useFacetsList: jest.fn(),
+jest.mock('../../libs/hooks/use-rule-set', () => ({
+  useRuleSet: jest.fn(),
 }));
+
+const mockMerchangdisingRules = {
+  pinnedProducts: [],
+  blockedProducts: [],
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
+};
 
 describe('Category facet management', () => {
   afterEach(() => {
@@ -16,15 +21,27 @@ describe('Category facet management', () => {
   });
 
   it('displays the list of rules', () => {
-    jest
-      .mocked(useFacetsList)
-      .mockReturnValue({ facets: globalFacetsListMock.facets, error: '' });
+    jest.mocked(useRuleSet).mockReturnValue({
+      ruleSets: Array.from({ length: 80 }, (_, i) => ({
+        categoryName: `identifier-${i}`,
+        id: `${i}`,
+        categoryId: `${i}`,
+        isEnabled: true,
+        lastChanged: {
+          user: 'user',
+          date: '2021-01-01',
+        },
+        rules: mockMerchangdisingRules,
+      })),
+      pagination: {
+        totalItems: 80,
+      },
+      refetchRuleSetList: () => jest.fn,
+    });
     render(<FacetManagementPage />);
 
     expect(screen.getByText('Category Facet Management')).toBeVisible();
     expect(screen.getByText('Add facet')).toBeVisible();
-    expect(
-      screen.getByText(globalFacetsListMock.facets[0].displayValue)
-    ).toBeVisible();
+    expect(screen.getByText('1 | identifier-1')).toBeVisible();
   });
 });

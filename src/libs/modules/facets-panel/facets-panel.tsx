@@ -3,7 +3,13 @@ import styled from '@emotion/styled';
 
 import { Category } from '@/libs/api';
 import { ModalAddFacets } from '@/libs/components/modals/modal-add-facets';
-import { Button, CategorySearch, spacing, Text } from '@/libs/components';
+import {
+  Button,
+  CategorySearch,
+  SelectedCategory,
+  spacing,
+  Text,
+} from '@/libs/components';
 import {
   TableRow,
   TableCol,
@@ -149,12 +155,14 @@ export const FacetsPanel = ({
   title,
   attributesData,
   defaultToExcludeOnly,
+  categoryName,
 }: {
   onSave: () => void;
   onCancel: () => void;
   title: string;
   attributesData?: mockAttributes;
   defaultToExcludeOnly?: boolean;
+  categoryName?: string;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
@@ -188,13 +196,17 @@ export const FacetsPanel = ({
       </ActionContainer>
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
-        <CategorySearch
-          selectedCategory={selectedCategory}
-          onClearSelection={() => {
-            setSelectedCategory({});
-          }}
-          onSelectCategory={onSelectCategory}
-        />
+        {categoryName ? (
+          <SelectedCategory>{categoryName}</SelectedCategory>
+        ) : (
+          <CategorySearch
+            selectedCategory={selectedCategory}
+            onClearSelection={() => {
+              setSelectedCategory({});
+            }}
+            onSelectCategory={onSelectCategory}
+          />
+        )}
       </SectionWrapper>
       <SectionWrapper>
         <AddFacetPanel>
