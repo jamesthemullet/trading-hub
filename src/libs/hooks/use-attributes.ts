@@ -9,12 +9,10 @@ export const useAttributes = (category?: string, type?: AttributeType) => {
   useEffect(() => {
     if (!category) return;
     const fetchAttributes = async () => {
-      const response = await merchandising().categoryAttributesDetail(
-        category,
-        {
-          type,
-        }
-      );
+      const response = await merchandising().attributesList({
+        categoryId: category,
+        type,
+      });
       setAttributes(response.data.attributes);
     };
 

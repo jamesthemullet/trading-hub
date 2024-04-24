@@ -7,18 +7,14 @@ import {
 } from './mocks';
 
 describe('mocks', () => {
-  describe('/merchandising/category/{category}/attributes', () => {
+  describe('/merchandising/attributes', () => {
     it('should respond with real response for attributes when status is 200', () => {
       const mockMapping = getMockMapping();
-      expect(
-        mockMapping['/merchandising/category/{category}/attributes'].get
-      ).toBeDefined();
+      expect(mockMapping['/merchandising/attributes'].get).toBeDefined();
 
-      const result = mockMapping[
-        '/merchandising/category/{category}/attributes'
-      ].get!(
+      const result = mockMapping['/merchandising/attributes'].get!(
         createMockNextApiRequest({
-          url: '/merchandising/category/1/attributes',
+          url: '/merchandising/attributes',
           method: 'GET',
         }),
         200,
@@ -32,15 +28,11 @@ describe('mocks', () => {
 
     it('should respond with mock for attributes when status is 400', () => {
       const mockMapping = getMockMapping();
-      expect(
-        mockMapping['/merchandising/category/{category}/attributes'].get
-      ).toBeDefined();
+      expect(mockMapping['/merchandising/attributes'].get).toBeDefined();
 
-      const result = mockMapping[
-        '/merchandising/category/{category}/attributes'
-      ].get!(
+      const result = mockMapping['/merchandising/attributes'].get!(
         createMockNextApiRequest({
-          url: '/merchandising/category/1/attributes',
+          url: '/merchandising/attributes',
           method: 'GET',
         }),
         400,

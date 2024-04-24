@@ -50,16 +50,16 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
-  '/merchandising/category/{categoryId}/attributes':
+  /merchandising/attributes:
     get:
       summary: Category Attributes Response
       description: Returns a response attributes to boost by for category.
       parameters:
-        - in: path
+        - in: query
           name: categoryId
           schema:
             type: string
-          required: true
+          required: false
           description: The category to retreive the attributes for
         - in: query
           name: type

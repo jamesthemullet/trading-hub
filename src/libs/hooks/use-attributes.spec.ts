@@ -46,7 +46,7 @@ const mockedResponse: AttributesResponse = {
 };
 
 const server = setupServer(
-  http.get(`${baseUrl}/merchandising/category/TestCategory/attributes`, () => {
+  http.get(`${baseUrl}/merchandising/attributes`, () => {
     return HttpResponse.json(mockedResponse);
   })
 );

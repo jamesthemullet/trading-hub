@@ -231,7 +231,7 @@ export const getMockMapping: () => Record<
     >
   >
 > = () => ({
-  '/merchandising/category/{category}/attributes': {
+  '/merchandising/attributes': {
     get: (_req, status, jsonBody) => {
       if (status !== 200) {
         return { body: attributesResponseMock, status: 200 };
