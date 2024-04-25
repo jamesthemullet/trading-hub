@@ -4,6 +4,7 @@ import { FacetsPanel } from './facets-panel';
 import { renderWithProviders } from '@/test/render-with-providers';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useGetCategories } from '@/libs/hooks';
+import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -66,6 +67,7 @@ describe('Facet Management Editing', () => {
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
       />
     );
 
@@ -85,6 +87,7 @@ describe('Facet Management Editing', () => {
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
       />
     );
 
@@ -104,6 +107,7 @@ describe('Facet Management Editing', () => {
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
+        facetsData={[]}
       />
     );
 
@@ -122,6 +126,7 @@ describe('Facet Management Editing', () => {
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
       />
     );
 
@@ -141,6 +146,7 @@ describe('Facet Management Editing', () => {
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
       />
     );
 
@@ -159,6 +165,7 @@ describe('Facet Management Editing', () => {
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
       />
     );
 
@@ -184,6 +191,7 @@ describe('Facet Management Editing', () => {
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
           title="Facet Rule Editor"
+          facetsData={globalFacetsListMock.facets}
         />
       );
 

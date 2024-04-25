@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
 
-import { Category } from '@/libs/api';
+import { Category, ReturnedFacet } from '@/libs/api';
 import { ModalAddFacets } from '@/libs/components/modals/modal-add-facets';
 import {
   Button,
@@ -17,14 +17,6 @@ import {
 } from '@/libs/components/table/table.styles';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import Image from 'next/image';
-
-type mockAttributes = {
-  id: string;
-  attribute: string;
-  displayName: string;
-  order: null;
-  valueOptions: string[];
-};
 
 const ActionContainer = styled.div`
   display: flex;
@@ -153,14 +145,14 @@ export const FacetsPanel = ({
   onSave,
   onCancel,
   title,
-  attributesData,
+  facetsData,
   defaultToExcludeOnly,
   categoryName,
 }: {
   onSave: () => void;
   onCancel: () => void;
   title: string;
-  attributesData?: mockAttributes;
+  facetsData?: ReturnedFacet[];
   defaultToExcludeOnly?: boolean;
   categoryName?: string;
 }) => {
@@ -236,35 +228,38 @@ export const FacetsPanel = ({
             </Col>
           ))}
         </Row>
-        {attributesData && (
-          <Row>
-            <Col>
-              <Text>{attributesData.attribute}</Text>
-            </Col>
-            <Col>
-              <DisplayName>
-                <Text>{attributesData.displayName}</Text>
-                <EditButton>
-                  <Image
-                    width={20}
-                    height={20}
-                    src="/trading-hub/asset/icon-edit-pencil.svg"
-                    alt=""
-                  />
-                </EditButton>
-              </DisplayName>
-            </Col>
-            <Col>
-              <FacetOrderDropdown defaultToExcludeOnly={defaultToExcludeOnly} />
-            </Col>
-            <Col>
-              <Button>Edit values</Button>
-            </Col>
-          </Row>
-        )}
+        {facetsData &&
+          facetsData.map((facet) => (
+            <Row key={facet.id}>
+              <Col>
+                <Text>{facet.indexPropertyName}</Text>
+              </Col>
+              <Col>
+                <DisplayName>
+                  <Text>{facet.displayValue}</Text>
+                  <EditButton>
+                    <Image
+                      width={20}
+                      height={20}
+                      src="/trading-hub/asset/icon-edit-pencil.svg"
+                      alt=""
+                    />
+                  </EditButton>
+                </DisplayName>
+              </Col>
+              <Col>
+                <FacetOrderDropdown
+                  defaultToExcludeOnly={defaultToExcludeOnly}
+                />
+              </Col>
+              <Col>
+                <Button>Edit values</Button>
+              </Col>
+            </Row>
+          ))}
       </AttributesTable>
 
-      {!attributesData && (
+      {(!facetsData || facetsData.length === 0) && (
         <NoAttributesBlock>
           <Text>No, there are no attributes yet.</Text>
           <Text>How about adding a subcategory first?</Text>

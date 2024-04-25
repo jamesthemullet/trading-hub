@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { spacing } from '@/libs/components/utils/spacing';
-import { useFacetsList } from '@/libs/hooks';
 import {
   Heading,
   Button,
@@ -23,15 +22,26 @@ const NewButton = styled.div`
   margin-right: ${spacing(2)};
 `;
 
+const globalFacet: ReturnedFacet[] = [
+  {
+    lastChanged: {
+      date: '2023-11-15T13:00:00.000Z',
+      user: 'testuser',
+    },
+    displayValue: '*',
+    id: '1',
+    indexPropertyName: '*',
+  },
+];
+
 const FacetManagementPage = () => {
-  const { facets } = useFacetsList();
   const [search, setSearch] = useState('');
 
   const filteredFacets = useMemo<ReturnedFacet[]>(() => {
-    if (search === '') return facets;
+    if (search === '') return globalFacet;
 
-    return facets.filter((facet) => facet.displayValue.includes(search));
-  }, [facets, search]);
+    return globalFacet.filter((facet) => facet.displayValue.includes(search));
+  }, [search]);
 
   return (
     <>
@@ -53,7 +63,7 @@ const FacetManagementPage = () => {
           />
 
           <NewButton>
-            <Button as="a" href="/global/facets/new">
+            <Button as="a" href="#" disabled={true}>
               Add rule
             </Button>
           </NewButton>

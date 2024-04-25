@@ -2,11 +2,9 @@ import { Heading } from '@/libs/components';
 
 import { useRouter } from 'next/router';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-
-type PageProps = {
-  id: string;
-};
+import styled from '@emotion/styled';
+import { spacing } from '../../../../../libs/components';
+import { useFacetsList } from '@/libs/hooks';
 
 type mockAttributes = {
   id: string;
@@ -15,6 +13,23 @@ type mockAttributes = {
   order: null;
   valueOptions: string[];
 }[];
+
+const NavigationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: ${spacing(4)};
+  margin-left: auto;
+  margin-right: ${spacing(2)};
+  margin-bottom: ${spacing(18)};
+  font-weight: 400;
+  font-size: 14px;
+`;
+
+const TotalResultsLabel = styled.div`
+  font-family: mnsLondonRegular, monospace;
+  margin-left: 31px;
+`;
 
 export const mockAttributes = [
   {
@@ -54,7 +69,8 @@ export const mockAttributes = [
   },
 ] as mockAttributes;
 
-const Page = ({ id }: PageProps) => {
+const Page = () => {
+  const { facets } = useFacetsList();
   const router = useRouter();
 
   const handleSave = () => {
@@ -66,8 +82,6 @@ const Page = ({ id }: PageProps) => {
     router.push('/global/facets');
   };
 
-  const attributesData = mockAttributes.find((facet) => facet.id === id);
-
   return (
     <>
       <Heading
@@ -78,19 +92,14 @@ const Page = ({ id }: PageProps) => {
         onSave={handleSave}
         onCancel={handleCancel}
         title="Global Facet Rule Editor"
-        attributesData={attributesData}
+        facetsData={facets}
         defaultToExcludeOnly={true}
       />
+      <NavigationContainer>
+        <TotalResultsLabel>{mockAttributes.length} results</TotalResultsLabel>
+      </NavigationContainer>
     </>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = (
-  context: GetServerSidePropsContext
-) => {
-  return Promise.resolve({
-    props: { id: context.query.id },
-  });
 };
 
 export default Page;

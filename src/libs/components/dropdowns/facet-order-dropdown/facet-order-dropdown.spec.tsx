@@ -72,4 +72,12 @@ describe('Filter dropdown', () => {
     expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
     expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
   });
+
+  it('should set exclude only as the default if defaultToExcludeOnly passed as a prop', () => {
+    render(<FacetOrderDropdown defaultToExcludeOnly />);
+
+    expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
+    expect(screen.getByText('Include only')).not.toBeVisible();
+    expect(screen.getAllByText('Exclude only')[0]).toBeVisible();
+  });
 });
