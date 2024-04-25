@@ -637,8 +637,6 @@ components:
           type: string
         metadata:
           $ref: '#/components/schemas/ProductMetadata'
-        rating:
-          type: number
         url:
           type: string
         price:
@@ -657,7 +655,6 @@ components:
         - id
         - productId
         - metadata
-        - rating
         - url
         - price
         - imageUrl

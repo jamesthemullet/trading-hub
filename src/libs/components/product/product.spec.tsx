@@ -15,7 +15,6 @@ const productProps = {
   metadata: { isPinned: false },
   isInStock: true,
   price: '£10',
-  rating: 4.5,
   url: '',
   index: 1,
   onChangePosition: mockChangePosition,

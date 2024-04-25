@@ -27,7 +27,6 @@ const mockProduct = {
   metadata: { isPinned: false },
   isInStock: true,
   price: 'productPrice',
-  rating: 4.5,
   url: '',
 };
 

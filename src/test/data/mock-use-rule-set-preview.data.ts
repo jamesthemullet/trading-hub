@@ -38,7 +38,6 @@ export const mockUseRuleSetPreviewData = {
       metadata: { isPinned: false },
       isInStock: true,
       price: product1Price,
-      rating: 4.5,
       url: '',
     },
     {
@@ -50,7 +49,6 @@ export const mockUseRuleSetPreviewData = {
       metadata: { isPinned: false },
       isInStock: true,
       price: product2Price,
-      rating: 5,
       url: '',
     },
     {
@@ -62,7 +60,6 @@ export const mockUseRuleSetPreviewData = {
       metadata: { isPinned: false },
       isInStock: true,
       price: '£10',
-      rating: 4.5,
       url: '',
     },
   ],

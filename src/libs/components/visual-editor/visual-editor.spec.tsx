@@ -23,7 +23,6 @@ describe('VisualEditor', () => {
       metadata: { isPinned: false },
       isInStock: true,
       price: '£10',
-      rating: 4.5,
       url: '',
     },
     {
@@ -35,7 +34,6 @@ describe('VisualEditor', () => {
       metadata: { isPinned: false },
       isInStock: true,
       price: '£50',
-      rating: 5.5,
       url: '',
     },
     {
@@ -47,7 +45,6 @@ describe('VisualEditor', () => {
       metadata: { isPinned: true },
       isInStock: true,
       price: '£15',
-      rating: 2.5,
       url: '',
     },
   ];

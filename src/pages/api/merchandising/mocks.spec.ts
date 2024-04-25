@@ -152,7 +152,6 @@ describe('mocks', () => {
           products: [
             {
               id: '1',
-              rating: 1,
               brand: 'M&S',
             },
           ],
@@ -186,7 +185,6 @@ describe('mocks', () => {
             pinnedProducts: [
               {
                 id: '1',
-                rating: 1,
               },
             ],
             blockedProducts: [],

@@ -72,7 +72,6 @@ const mockProduct = {
   metadata: { isPinned: false },
   isInStock: true,
   price: 'productPrice',
-  rating: 4.5,
   url: '',
 };
 
@@ -125,7 +124,6 @@ describe('Ruleset', () => {
               metadata: { isPinned: false },
               isInStock: true,
               price: product1Price,
-              rating: 4.5,
               url: '',
             },
             {
@@ -137,7 +135,6 @@ describe('Ruleset', () => {
               metadata: { isPinned: false },
               isInStock: true,
               price: product2Price,
-              rating: 5,
               url: '',
             },
             {
@@ -149,7 +146,6 @@ describe('Ruleset', () => {
               metadata: { isPinned: false, isBoosted: true },
               isInStock: true,
               price: '£10',
-              rating: 4.5,
               url: '',
             },
           ],
@@ -621,7 +617,6 @@ describe('Ruleset', () => {
             metadata: { isPinned: false },
             isInStock: true,
             price: product1Price,
-            rating: 4.5,
             url: '',
           },
         ],
@@ -647,7 +642,6 @@ describe('Ruleset', () => {
                 metadata: { isPinned: false },
                 isInStock: true,
                 price: product1Price,
-                rating: 4.5,
                 url: '',
               },
             ],

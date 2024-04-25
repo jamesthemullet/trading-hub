@@ -75,7 +75,6 @@ export const boostWithInfoMock: BoostsBuriesWithInfo = {
     isInStock: true,
     metadata: { isPinned: false },
     price: '10',
-    rating: 4,
     url: '',
   })),
 };
@@ -122,7 +121,6 @@ export const buriesWithInfoMock: BoostsBuriesWithInfo = {
     isInStock: true,
     metadata: { isPinned: false },
     price: '10',
-    rating: 4,
     url: '',
   })),
 };
@@ -261,7 +259,6 @@ export const getMockMapping: () => Record<
         ...searchPreviewResponse,
         products: searchPreviewResponse.products.map((product) => ({
           ...product,
-          rating: 1,
           brand: product.brand || 'M&S',
         })),
         facets: {
@@ -291,7 +288,6 @@ export const getMockMapping: () => Record<
           pinnedProducts: searchPreviewResponse.rules.pinnedProducts.map(
             (product) => ({
               ...product,
-              rating: 1,
             })
           ),
         },

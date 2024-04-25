@@ -20,7 +20,6 @@ const mockSearchData = {
     {
       id: '60275024',
       title: 'Mock Product',
-      rating: null,
       url: 'petite-round-neck-cardigan/p/clp60275023',
       price: '£17.50',
       brand: 'M&S Collection',
@@ -109,7 +108,6 @@ describe('useRuleSet', () => {
             isPinned: false,
           },
           price: '£17.50',
-          rating: null,
           title: 'Mock Product',
           url: 'petite-round-neck-cardigan/p/clp60275023',
         },

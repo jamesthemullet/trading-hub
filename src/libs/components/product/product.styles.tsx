@@ -12,7 +12,6 @@ export const ProductWrapper = styled.div<{
   width: 100%;
   border: solid 1px #cecece;
   padding: ${spacing(1)};
-  margin: ${spacing(1)};
   box-shadow: ${({ isLastChanged }) =>
     isLastChanged
       ? `0 0 0 0.125rem #fff, 0 0 0 0.25rem ${color.infoBlueBackground}, 0 0 0.25rem 0.25rem ${color.infoBlueBackground}`

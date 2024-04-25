@@ -31,20 +31,18 @@ const CategoryPanel = styled.div`
 
 const MainContainerPanel = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: stretch;
 `;
 
 const ProductSearchPanel = styled.div`
   background-color: #fff;
   border-right: 1px solid #707070;
-  min-width: 360px;
   margin: 0;
+  width: 360px;
 `;
 
 const RulesPanel = styled.div`
   background-color: #fff;
-  width: 100%;
+  width: calc(100% - 360px);
 `;
 
 const PanelTop = styled.div`

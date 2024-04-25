@@ -40,7 +40,6 @@ describe('ProductSearch', () => {
             metadata: { isPinned: false },
             isInStock: true,
             price: '£5',
-            rating: 4.5,
             url: '',
           },
         ]}
@@ -69,7 +68,6 @@ describe('ProductSearch', () => {
             metadata: { isPinned: false },
             isInStock: true,
             price: '£5',
-            rating: 4.5,
             url: '',
           },
         ]}

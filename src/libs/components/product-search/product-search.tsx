@@ -3,6 +3,7 @@ import type { Product as ProductType } from '@/libs/api';
 
 import { ChangeProductBoostBury, Product } from '../product/product';
 import { Search } from '../search/search';
+import { spacing } from '../utils/spacing';
 
 const ProductSearchRootContainer = styled.div`
   padding-left: 8px;
@@ -19,6 +20,7 @@ const TopContainer = styled.div`
 `;
 
 const StyledSearch = styled(Search)`
+  width: 100%;
   & > div {
     & > input {
       height: 53px;
@@ -30,12 +32,12 @@ const ProductsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 0;
-  gap: 1%;
+  gap: ${spacing(1)};
 
   & > div {
     margin: 0;
-    flex-basis: 49%;
     margin-top: 5px;
+    width: 166px;
   }
 `;
 
