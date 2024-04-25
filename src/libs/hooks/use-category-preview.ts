@@ -29,7 +29,7 @@ export const useCategoryPreview = (
       try {
         const categoryPreview = await merchandising().categoryPreviewCreate(
           categoryId,
-          { rows: 12, start: 0 },
+          { rows: 140, start: 0 },
           {
             pinnedProducts: rules.pinnedProducts,
             blockedProducts: rules.blockedProducts,

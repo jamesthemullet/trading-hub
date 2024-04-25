@@ -1,4 +1,4 @@
-import type { MerchandisingRules } from '@/libs/api';
+import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
 import styled from '@emotion/styled';
 import { ChangeProductBoostBury, Product } from '../product/product';
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
@@ -50,59 +50,78 @@ export const RulesetChanges = ({
     setRules(merchandisingRules);
   }, [merchandisingRules, setRules]);
 
+  const renderChangedProduct = (product: ProductType, index: number) => {
+    return (
+      <ProductBox key={`product-${product.id}`}>
+        <Product
+          {...product}
+          index={index}
+          pinnedProductsCount={merchandisingRules.pinnedProducts.length}
+          onChangePosition={onChangePosition}
+          onProductBoostBury={onProductBoostBury}
+          totalProducts={merchandisingRules.pinnedProducts.length}
+        />
+      </ProductBox>
+    );
+  };
+
   return (
     <>
-      <Heading as="h2" isStrong={true}>
-        Attribute-level changes ({countOfAttributeChanges})
-      </Heading>
-      <Layout>
-        {numericBoosts.map(({ field, weight }, index) => {
-          return (
-            <NumericAttribute
-              key={`boost-numeric-${index}`}
-              name={field}
-              operation="boost"
-              weight={weight}
-            />
-          );
-        })}
-      </Layout>
-      <Layout>
-        {alphanumericBoost.map(({ fields, weight }, index) => {
-          return (
-            <AlphanumericAttribute
-              key={`boost-alphanumeric-${index}`}
-              fields={fields}
-              operation="boost"
-              weight={weight}
-            />
-          );
-        })}
-      </Layout>
-      <Layout>
-        {numericBury.map(({ field, weight }, index) => {
-          return (
-            <NumericAttribute
-              key={`bury-numeric-${index}`}
-              name={field}
-              operation="bury"
-              weight={weight}
-            />
-          );
-        })}
-      </Layout>
-      <Layout>
-        {alphanumericBuries.map(({ fields, weight }, index) => {
-          return (
-            <AlphanumericAttribute
-              key={`bury-alphanumeric-${index}`}
-              fields={fields}
-              operation="bury"
-              weight={weight}
-            />
-          );
-        })}
-      </Layout>
+      {countOfAttributeChanges > 0 && (
+        <>
+          <Heading as="h2" isStrong={true}>
+            Attribute-level changes ({countOfAttributeChanges})
+          </Heading>
+          <Layout>
+            {numericBoosts.map(({ field, weight }, index) => {
+              return (
+                <NumericAttribute
+                  key={`boost-numeric-${index}`}
+                  name={field}
+                  operation="boost"
+                  weight={weight}
+                />
+              );
+            })}
+          </Layout>
+          <Layout>
+            {alphanumericBoost.map(({ fields, weight }, index) => {
+              return (
+                <AlphanumericAttribute
+                  key={`boost-alphanumeric-${index}`}
+                  fields={fields}
+                  operation="boost"
+                  weight={weight}
+                />
+              );
+            })}
+          </Layout>
+          <Layout>
+            {numericBury.map(({ field, weight }, index) => {
+              return (
+                <NumericAttribute
+                  key={`bury-numeric-${index}`}
+                  name={field}
+                  operation="bury"
+                  weight={weight}
+                />
+              );
+            })}
+          </Layout>
+          <Layout>
+            {alphanumericBuries.map(({ fields, weight }, index) => {
+              return (
+                <AlphanumericAttribute
+                  key={`bury-alphanumeric-${index}`}
+                  fields={fields}
+                  operation="bury"
+                  weight={weight}
+                />
+              );
+            })}
+          </Layout>
+        </>
+      )}
       {merchandisingRulesWithInfo &&
         merchandisingRulesWithInfo.pinnedProducts.length > 0 && (
           <>
@@ -112,26 +131,46 @@ export const RulesetChanges = ({
 
             <Layout>
               {merchandisingRulesWithInfo.pinnedProducts.map(
-                (product, index) => {
-                  return (
-                    <ProductBox key={`product-${product.id}`}>
-                      <Product
-                        {...product}
-                        index={index}
-                        pinnedProductsCount={
-                          merchandisingRules.pinnedProducts.length
-                        }
-                        onChangePosition={onChangePosition}
-                        onProductBoostBury={onProductBoostBury}
-                        totalProducts={merchandisingRules.pinnedProducts.length}
-                      />
-                    </ProductBox>
-                  );
-                }
+                renderChangedProduct
               )}
             </Layout>
           </>
         )}
+      {/* TODO: when api is ready we can show products here */}
+      {
+        /* istanbul ignore next */
+        merchandisingRulesWithInfo &&
+          merchandisingRulesWithInfo.boosts.product.length > 0 && (
+            <>
+              <Heading as="h2" isStrong={true}>
+                Boosted Products ({merchandisingRules.boosts.product.length})
+              </Heading>
+
+              <Layout>
+                {merchandisingRulesWithInfo.boosts.product.map(
+                  renderChangedProduct
+                )}
+              </Layout>
+            </>
+          )
+      }
+      {
+        /* istanbul ignore next */
+        merchandisingRulesWithInfo &&
+          merchandisingRulesWithInfo.buries.product.length > 0 && (
+            <>
+              <Heading as="h2" isStrong={true}>
+                Boosted Products ({merchandisingRules.buries.product.length})
+              </Heading>
+
+              <Layout>
+                {merchandisingRulesWithInfo.buries.product.map(
+                  renderChangedProduct
+                )}
+              </Layout>
+            </>
+          )
+      }
     </>
   );
 };

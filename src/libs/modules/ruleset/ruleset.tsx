@@ -297,52 +297,83 @@ export const Ruleset = ({
     operation,
     change,
   }: ChangeProductBoostBury) => {
-    const product = sortedProducts.find((product) => product.id === id);
+    const product =
+      sortedProducts.find((product) => product.id === id) ||
+      searchProducts.find((product) => product.id === id);
 
-    const updatedPinnedProducts = [...merchandisingRules.pinnedProducts];
+    /* istanbul ignore next */
+    if (!product) return;
 
-    if (product) {
-      if (product.metadata.isPinned) {
-        updatedPinnedProducts.filter((product) => product.id === id);
-      }
+    const isBoosted = change === 'add' && operation === 'boosts';
+    const isBuried = change === 'add' && operation === 'buries';
 
-      const isBoosted = change === 'add';
-      const metadata = { ...product.metadata, isPinned: false, isBoosted };
-      const updatedProduct = { ...product, metadata };
+    const productBoosts = isBoosted
+      ? [...merchandisingRules.boosts.product, { id, weight: 1 }]
+      : merchandisingRules.boosts.product.filter(
+          (product) => product.id !== id
+        );
+    const productBuries = isBuried
+      ? [...merchandisingRules.buries.product, { id, weight: 1 }]
+      : merchandisingRules.buries.product.filter(
+          (product) => product.id !== id
+        );
 
-      const updatedList = [
-        updatedProduct,
-        ...sortedProducts.filter((product) => product.id !== id),
-      ];
+    const updatedRules: MerchandisingRules = {
+      ...merchandisingRules,
+      boosts: {
+        ...merchandisingRules.boosts,
+        product: productBoosts,
+      },
+      buries: {
+        ...merchandisingRules.buries,
+        product: productBuries,
+      },
+      pinnedProducts: merchandisingRules.pinnedProducts.filter(
+        (product) => product.id !== id
+      ),
+    };
 
-      // LPN-1653 for BE to send all metadata
-      /* istanbul ignore next */
-      const sortedByBoost = [
-        ...updatedList.sort(
-          (b, a) =>
-            Number(a.metadata.isBoosted || false) -
-            Number(b.metadata.isBoosted || false)
-        ),
-      ];
-      const sortedByPinned = [
-        ...sortedByBoost.sort(
-          (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
-        ),
-      ];
+    setMerchandisingRules(updatedRules);
 
-      setSortedProducts(sortedByPinned);
-    }
+    const metadata = {
+      ...(product && product.metadata),
+      isPinned: false,
+      isBoosted,
+      isBuried,
+    };
+    const updatedProduct = { ...product, metadata };
 
-    setMerchandisingRules((prevState) => {
-      const newState = prevState;
+    const updatedList = [
+      ...(isBoosted ? [updatedProduct] : []),
+      ...sortedProducts.filter((product) => product.id !== id),
+      ...(change === 'remove' || isBuried ? [updatedProduct] : []),
+    ];
 
-      newState[operation] = {
-        ...prevState[operation],
-        product: [...prevState[operation].product, { id, weight: 1 }],
-      };
+    // TODO LPN-1653 for BE to send all metadata
+    /* istanbul ignore next */
+    const sortedByBury = [
+      ...updatedList.sort(
+        (a, b) =>
+          Number(a.metadata.isBuried || false) -
+          Number(b.metadata.isBuried || false)
+      ),
+    ];
+    /* istanbul ignore next */
+    const sortedByBoost = [
+      ...sortedByBury.sort(
+        (b, a) =>
+          Number(a.metadata.isBoosted || false) -
+          Number(b.metadata.isBoosted || false)
+      ),
+    ];
+    const sortedByPinned = [
+      ...sortedByBoost.sort(
+        (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
+      ),
+    ];
 
-      return { ...newState, pinnedProducts: updatedPinnedProducts };
-    });
+    setSortedProducts(sortedByPinned);
+
     if (!hasChanges) setHasChanges(true);
   };
 

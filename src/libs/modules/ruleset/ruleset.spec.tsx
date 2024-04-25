@@ -1,4 +1,4 @@
-import { Screen, act, screen, waitFor } from '@testing-library/react';
+import { Screen, act, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -511,7 +511,7 @@ describe('Ruleset', () => {
 
       await user.click(screen.getAllByTitle('Open menu')[1]);
 
-      expect(screen.getByText('Restore')).toBeVisible();
+      expect(screen.getByText('Unboost')).toBeVisible();
     });
 
     it('Should remove pin from a previously pinned product', async () => {
@@ -534,12 +534,151 @@ describe('Ruleset', () => {
       await user.click(screen.getAllByTitle('Open menu')[1]);
 
       act(() => {
-        screen.getByText('Restore').click();
+        screen.getByText('Unboost').click();
       });
 
       await user.click(screen.getAllByTitle('Open menu')[1]);
 
       expect(screen.getByText('Boost to Top')).toBeVisible();
+    });
+  });
+
+  describe('Burying', () => {
+    beforeEach(() => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+      jest.mocked(useCategoryPreview).mockReturnValue({
+        categoryProducts: [
+          mockProduct,
+          {
+            ...mockProduct,
+            id: 'product2',
+            productId: 'productId2',
+            metadata: { isPinned: false, isBoosted: false, isBuried: true },
+          },
+          {
+            ...mockProduct,
+            id: 'product3',
+            productId: 'productId3',
+            metadata: { isPinned: true, isBoosted: false, isBuried: false },
+          },
+        ],
+        categoryFacets: [],
+        merchandisingRulesWithInfo: {
+          ...mockMerchandisingRules,
+          buries: {
+            ...mockMerchandisingRules.buries,
+            product: [{ ...mockProduct, id: 'product2', weight: 1 }],
+          },
+          pinnedProducts: [mockProduct],
+        },
+        error: '',
+        setRules: jest.fn(),
+      });
+      jest.mocked(useCategoryProductSearch).mockReturnValue({
+        handleGet: jest.fn(() => {
+          return Promise.resolve({
+            products: [
+              {
+                id: 'product-id-2',
+                productId: 'product-id-2',
+                title: 'productSearchTitle',
+                imageUrl: ['example2.jpg'],
+                brand: product1Brand,
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: product1Price,
+                rating: 4.5,
+                url: '',
+              },
+            ],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+        error: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+          }}
+          rulesetId={ruleSetId}
+        />
+      );
+    });
+
+    it('Should bury from the Visual Editor', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      await user.click(screen.getAllByTitle('Open menu')[0]);
+
+      await user.click(screen.getByText('Bury to Bottom'));
+
+      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
+        'Changes3'
+      );
+    });
+
+    it('Should bury from the search results', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      const searchProduct = screen.getByPlaceholderText('Search for product');
+
+      await user.type(searchProduct, 'productSearchTitle');
+
+      expect(screen.getByText('Monsoon productSearchTitle')).toBeVisible();
+
+      const searchContainer = screen.getByLabelText('Product Search Container');
+      const menuButton = within(searchContainer).getByRole('button', {
+        name: 'Open menu',
+      });
+
+      act(() => {
+        menuButton.click();
+      });
+
+      await user.click(screen.getByText('Bury to Bottom'));
+
+      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
+        'Changes3'
+      );
+    });
+
+    it('Should unbury a previously buried product', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      await user.click(screen.getAllByTitle('Open menu')[1]);
+
+      act(() => {
+        screen.getByRole('button', { name: 'Unbury' }).click();
+      });
+
+      await user.click(screen.getAllByTitle('Open menu')[1]);
+
+      expect(screen.getByText('Bury to Bottom')).toBeVisible();
     });
   });
 

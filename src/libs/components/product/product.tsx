@@ -20,6 +20,7 @@ import {
   ProductNumber,
   ProductPin,
   BoostPin,
+  BuriedPin,
   ProductWrapper,
   ProductCard,
 } from './product.styles';
@@ -73,7 +74,7 @@ export const Product = ({
   productId,
   index,
   isLastChanged,
-  metadata: { isPinned, isBoosted },
+  metadata: { isPinned, isBoosted, isBuried },
   onChangePosition,
   onProductBoostBury,
   pinnedProductsCount,
@@ -121,6 +122,16 @@ export const Product = ({
 
   const removeBoost = () => {
     onProductBoostBury({ id, change: 'remove', operation: 'boosts' });
+    setIsMenuOpen(false);
+  };
+
+  const buryToBottom = () => {
+    onProductBoostBury({ id, change: 'add', operation: 'buries' });
+    setIsMenuOpen(false);
+  };
+
+  const removeBury = () => {
+    onProductBoostBury({ id, change: 'remove', operation: 'buries' });
     setIsMenuOpen(false);
   };
 
@@ -178,6 +189,11 @@ export const Product = ({
             <Text>Internal</Text>
           </BoostPin>
         )}
+        {isBuried && (
+          <BuriedPin aria-label="Buried product">
+            <Text>Internal</Text>
+          </BuriedPin>
+        )}
         {isPinned && (
           <ProductPin aria-label="Pinned product">
             <Text>Internal</Text>
@@ -222,7 +238,17 @@ export const Product = ({
                 size="16px 16px"
                 onClick={() => removeBoost()}
               >
-                Restore
+                Unboost
+              </ProductMenuButton>
+            )}
+            {isBuried && (
+              <ProductMenuButton
+                icon="restore"
+                as="button"
+                size="16px 16px"
+                onClick={() => removeBury()}
+              >
+                Unbury
               </ProductMenuButton>
             )}
             {!isLockToPositionMenuOpen && (
@@ -235,8 +261,22 @@ export const Product = ({
                   {isPinned ? 'Edit position' : 'Pin in position'}
                 </ProductMenuButton>
                 {!isBoosted && (
-                  <ProductMenuButton icon="up" as="button" onClick={boostToTop}>
+                  <ProductMenuButton
+                    icon="boost"
+                    as="button"
+                    onClick={boostToTop}
+                  >
                     Boost to Top
+                  </ProductMenuButton>
+                )}
+
+                {!isBuried && (
+                  <ProductMenuButton
+                    icon="bury"
+                    as="button"
+                    onClick={buryToBottom}
+                  >
+                    Bury to Bottom
                   </ProductMenuButton>
                 )}
               </>
