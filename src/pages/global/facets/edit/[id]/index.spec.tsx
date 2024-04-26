@@ -1,10 +1,10 @@
-import { act, screen, Screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 
 import { useRouter } from 'next/router';
 
 import Page from './index.page';
 import { renderWithProviders } from '../../../../../test/render-with-providers';
-import userEvent, { UserEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { useGetCategories } from '../../../../../libs/hooks';
 
 jest.mock('next/router', () => ({
@@ -17,7 +17,6 @@ jest.mock('../../../../../libs/hooks/use-get-categories', () => ({
 const logSpy = jest.spyOn(console, 'log');
 logSpy.mockImplementation(jest.fn());
 
-const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const categoryId1 = 'cat_123';
 const categoryName1 = 'jeans';
 const categoryPath1 = 'l/jeans';
@@ -30,20 +29,6 @@ const mockGetCategories = {
     },
   ],
   pagination: { totalItems: 20 },
-};
-const selectCategory = async (screen: Screen, user: UserEvent) => {
-  await user.type(
-    screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
-    'SubCategory_507{enter}'
-  );
-
-  const categoryToSelect = await screen.findByText(
-    `${categoryId1} | ${categoryName1} | ${categoryPath1}`
-  );
-
-  act(() => {
-    categoryToSelect.click();
-  });
 };
 
 describe('Global Facet Management Editing', () => {
@@ -117,24 +102,6 @@ describe('Global Facet Management Editing', () => {
 
     // TODO: Implement save functionality
     expect(logSpy).toHaveBeenCalled();
-  });
-
-  it('should select a category on user input, and clear category when "remove selected category" button is clicked', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(<Page />);
-
-    await selectCategory(screen, user);
-
-    expect(screen.getByText('cat_123')).toBeVisible();
-
-    const clearButton = screen.getByLabelText('Remove selected category');
-
-    act(() => {
-      clearButton.click();
-    });
-
-    expect(screen.queryByText('cat_123')).not.toBeInTheDocument();
   });
 
   describe('Add Facet Modal', () => {

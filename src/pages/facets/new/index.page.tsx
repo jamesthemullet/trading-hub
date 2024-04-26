@@ -22,6 +22,7 @@ const Page = () => {
         onSave={handleSave}
         onCancel={handleCancel}
         title="Facet Rule Editor"
+        facetsData={[]}
       />
     </>
   );

@@ -34,6 +34,7 @@ const Page = ({ id }: { id: string }) => {
         onCancel={handleCancel}
         title="Facet Rule Editor"
         categoryName={ruleSets.categoryId}
+        facetsData={[]}
       />
     </>
   );

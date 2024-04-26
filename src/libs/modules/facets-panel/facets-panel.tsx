@@ -6,6 +6,7 @@ import { ModalAddFacets } from '@/libs/components/modals/modal-add-facets';
 import {
   Button,
   CategorySearch,
+  Search,
   SelectedCategory,
   spacing,
   Text,
@@ -17,6 +18,8 @@ import {
 } from '@/libs/components/table/table.styles';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import Image from 'next/image';
+import { DefaultCategorySearchBox } from '@/libs/components/default-category-search-box/default-category-search-box';
+import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
 
 const ActionContainer = styled.div`
   display: flex;
@@ -148,16 +151,20 @@ export const FacetsPanel = ({
   facetsData,
   defaultToExcludeOnly,
   categoryName,
+  defaultCategory,
 }: {
   onSave: () => void;
   onCancel: () => void;
   title: string;
-  facetsData?: ReturnedFacet[];
+  facetsData: ReturnedFacet[];
   defaultToExcludeOnly?: boolean;
   categoryName?: string;
+  defaultCategory?: Category;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
+
+  const { setSearch, filteredFacets } = useFacetsFilter(facetsData);
 
   const onPreview = () => {
     // TODO: Implement preview functionality
@@ -188,17 +195,21 @@ export const FacetsPanel = ({
       </ActionContainer>
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
-        {categoryName ? (
-          <SelectedCategory>{categoryName}</SelectedCategory>
-        ) : (
-          <CategorySearch
-            selectedCategory={selectedCategory}
-            onClearSelection={() => {
-              setSelectedCategory({});
-            }}
-            onSelectCategory={onSelectCategory}
-          />
+        {defaultCategory && (
+          <DefaultCategorySearchBox defaultCategory={defaultCategory} />
         )}
+        {!defaultCategory &&
+          (categoryName ? (
+            <SelectedCategory>{categoryName}</SelectedCategory>
+          ) : (
+            <CategorySearch
+              selectedCategory={selectedCategory}
+              onClearSelection={() => {
+                setSelectedCategory({});
+              }}
+              onSelectCategory={onSelectCategory}
+            />
+          ))}
       </SectionWrapper>
       <SectionWrapper>
         <AddFacetPanel>
@@ -218,6 +229,16 @@ export const FacetsPanel = ({
 
       {isAddFacetModalOpen && <ModalAddFacets onClose={onClose} />}
 
+      {defaultCategory && (
+        <SectionWrapper>
+          <Search
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+          />
+        </SectionWrapper>
+      )}
+
       <AttributesTable>
         <Row>
           {COLUMNS.map(({ label }) => (
@@ -228,8 +249,8 @@ export const FacetsPanel = ({
             </Col>
           ))}
         </Row>
-        {facetsData &&
-          facetsData.map((facet) => (
+        {filteredFacets &&
+          filteredFacets.map((facet) => (
             <Row key={facet.id}>
               <Col>
                 <Text>{facet.indexPropertyName}</Text>

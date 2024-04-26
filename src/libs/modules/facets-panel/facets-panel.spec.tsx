@@ -182,6 +182,28 @@ describe('Facet Management Editing', () => {
     expect(screen.queryByText('cat_123')).not.toBeInTheDocument();
   });
 
+  it('should filter on the facet list', async () => {
+    const onSaveSpy = jest.fn();
+    const onCancelSpy = jest.fn();
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+        defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
+      />
+    );
+
+    const search = screen.getByPlaceholderText('Search...');
+
+    await act(() => userEvent.type(search, 'color'));
+
+    expect(screen.getAllByText('color')[0]).toBeVisible();
+    expect(screen.getAllByText('color')[1]).toBeVisible();
+    expect(screen.queryByText('size')).not.toBeInTheDocument();
+  });
+
   describe('Add Facet Modal', () => {
     const openModal = async () => {
       const onSaveSpy = jest.fn();

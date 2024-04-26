@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { spacing } from '@/libs/components/utils/spacing';
@@ -10,6 +9,7 @@ import {
   Search,
   FacetsManagementTable,
 } from '@/libs/components';
+import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
 import { ReturnedFacet } from '@/libs/api';
 
 const PageNameLabel = styled.h2`
@@ -35,13 +35,7 @@ const globalFacet: ReturnedFacet[] = [
 ];
 
 const FacetManagementPage = () => {
-  const [search, setSearch] = useState('');
-
-  const filteredFacets = useMemo<ReturnedFacet[]>(() => {
-    if (search === '') return globalFacet;
-
-    return globalFacet.filter((facet) => facet.displayValue.includes(search));
-  }, [search]);
+  const { setSearch, filteredFacets } = useFacetsFilter(globalFacet);
 
   return (
     <>

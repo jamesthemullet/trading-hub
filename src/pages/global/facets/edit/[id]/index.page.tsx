@@ -69,6 +69,12 @@ export const mockAttributes = [
   },
 ] as mockAttributes;
 
+const defaultCategory = {
+  identifier: 'Applies to all pages in marksandspencer.com',
+  name: 'All products',
+  path: '/',
+};
+
 const Page = () => {
   const { facets } = useFacetsList();
   const router = useRouter();
@@ -94,6 +100,7 @@ const Page = () => {
         title="Global Facet Rule Editor"
         facetsData={facets}
         defaultToExcludeOnly={true}
+        defaultCategory={defaultCategory}
       />
       <NavigationContainer>
         <TotalResultsLabel>{mockAttributes.length} results</TotalResultsLabel>
