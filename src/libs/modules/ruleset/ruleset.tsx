@@ -130,7 +130,7 @@ export const Ruleset = ({
     const handleWindowClose = (e: BeforeUnloadEvent) => {
       if (!hasChanges) return;
       e.preventDefault();
-      return (e.returnValue = warningText);
+      return warningText;
     };
     /* istanbul ignore next */
     const handleBrowseAway = () => {
@@ -193,25 +193,24 @@ export const Ruleset = ({
     const metadata = { ...product.metadata, isPinned, isBoosted: false };
     const updatedProduct = { ...product, metadata, isLastChanged: isPinned };
 
-    updatedList.splice(newPosition, 0, updatedProduct);
+    const repositionedList = [
+      ...updatedList.slice(0, newPosition),
+      updatedProduct,
+      ...updatedList.slice(newPosition),
+    ];
 
     // LPN-1653 for BE to send all metadata
     /* istanbul ignore next */
-    const sortedByBoost = [
-      ...updatedList.sort(
-        (b, a) =>
-          Number(a.metadata.isBoosted || false) -
-          Number(b.metadata.isBoosted || false)
-      ),
-    ];
-    const sortedByPinned = [
-      ...sortedByBoost.sort(
-        (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
-      ),
-    ];
-
+    const sortedByBoost = [...repositionedList].sort(
+      (b, a) =>
+        Number(a.metadata.isBoosted || false) -
+        Number(b.metadata.isBoosted || false)
+    );
+    const sortedByPinned = [...sortedByBoost].sort(
+      (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
+    );
     setSortedProducts(sortedByPinned);
-    const pinnedProducts = sortedByPinned
+    const pinnedProducts = [...sortedByPinned]
       .filter((product) => product.metadata.isPinned)
       .map((product) => ({
         id: product.id,
@@ -361,27 +360,20 @@ export const Ruleset = ({
 
     // TODO LPN-1653 for BE to send all metadata
     /* istanbul ignore next */
-    const sortedByBury = [
-      ...updatedList.sort(
-        (a, b) =>
-          Number(a.metadata.isBuried || false) -
-          Number(b.metadata.isBuried || false)
-      ),
-    ];
+    const sortedByBury = [...updatedList].sort(
+      (a, b) =>
+        Number(a.metadata.isBuried || false) -
+        Number(b.metadata.isBuried || false)
+    );
     /* istanbul ignore next */
-    const sortedByBoost = [
-      ...sortedByBury.sort(
-        (b, a) =>
-          Number(a.metadata.isBoosted || false) -
-          Number(b.metadata.isBoosted || false)
-      ),
-    ];
-    const sortedByPinned = [
-      ...sortedByBoost.sort(
-        (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
-      ),
-    ];
-
+    const sortedByBoost = [...sortedByBury].sort(
+      (b, a) =>
+        Number(a.metadata.isBoosted || false) -
+        Number(b.metadata.isBoosted || false)
+    );
+    const sortedByPinned = [...sortedByBoost].sort(
+      (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
+    );
     setSortedProducts(sortedByPinned);
 
     if (!hasChanges) setHasChanges(true);

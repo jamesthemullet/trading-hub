@@ -34,7 +34,12 @@
         "functional/no-expression-statements": "off",
         "functional/no-conditional-statements": "off",
         "functional/no-return-void": "off",
-        "functional/immutable-data": "off",
+        "functional/immutable-data": [
+          "error",
+          {
+            "ignoreAccessorPattern": ["*.displayName", "session.*", "timeout.*"]
+          }
+        ],
         "functional/no-let": "off",
         "functional/prefer-immutable-types": "off",
         "functional/functional-parameters": "off"
