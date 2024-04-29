@@ -670,6 +670,8 @@ components:
           type: boolean
         isBuried:
           type: boolean
+        isBlocked:
+          type: boolean
       required:
         - isPinned
     MerchandisingRulesWithInfo:

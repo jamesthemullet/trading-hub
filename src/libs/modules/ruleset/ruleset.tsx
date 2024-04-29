@@ -75,7 +75,7 @@ export type EditAttribute = {
   attribute: AlphanumericBoostBury | NumericBoostBury;
   change: 'add' | 'remove' | 'modify';
   index?: number;
-  operation: 'boosts' | 'buries';
+  operation: 'boosts' | 'buries' | 'block';
   type: AttributeType;
 };
 
@@ -236,6 +236,8 @@ export const Ruleset = ({
     operation,
     type,
   }: EditAttribute) => {
+    /* istanbul ignore next */
+    if (operation === 'block') return;
     setMerchandisingRules((prevState) => {
       if (change === 'modify') {
         return {
@@ -306,6 +308,7 @@ export const Ruleset = ({
 
     const isBoosted = change === 'add' && operation === 'boosts';
     const isBuried = change === 'add' && operation === 'buries';
+    const isBlocked = change === 'add' && operation === 'block';
 
     const productBoosts = isBoosted
       ? [...merchandisingRules.boosts.product, { id, weight: 1 }]
@@ -331,6 +334,13 @@ export const Ruleset = ({
       pinnedProducts: merchandisingRules.pinnedProducts.filter(
         (product) => product.id !== id
       ),
+
+      blockedProducts: isBlocked
+        ? [...merchandisingRules.blockedProducts, product]
+        : merchandisingRules.blockedProducts.filter(
+            /* istanbul ignore next - TODO: we can only test this when api returns products on changes tab */
+            (product) => product.id !== id
+          ),
     };
 
     setMerchandisingRules(updatedRules);
@@ -380,6 +390,7 @@ export const Ruleset = ({
   /* istanbul ignore next */
   const totalCount =
     merchandisingRules.pinnedProducts.length +
+    merchandisingRules.blockedProducts.length +
     (merchandisingRules.boosts?.alphanumeric || []).length +
     (merchandisingRules.boosts?.numeric || []).length +
     (merchandisingRules.boosts?.product || []).length +

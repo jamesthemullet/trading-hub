@@ -92,7 +92,6 @@ export const ProductSearch = ({
               index={index}
               onChangePosition={onChangePosition}
               onProductBoostBury={onProductBoostBury}
-              totalProducts={products.length}
               pinnedProductsCount={0}
               isBrandStrong={false}
               isProductNumberEnabled={false}

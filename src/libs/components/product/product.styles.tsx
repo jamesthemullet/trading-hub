@@ -195,7 +195,8 @@ export const LockActions = styled.div<{ isSearchResult?: boolean }>`
 `;
 
 export const ProductCard = styled.div`
-  max-height: 176px;
+  height: 176px;
+  position: relative;
   display: flex;
   justify-content: center;
   background-color: rgba(245, 245, 245, 1);

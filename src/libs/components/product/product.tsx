@@ -52,9 +52,14 @@ export const ProductDetails = ({
   return (
     <>
       <ProductCard>
-        <img
+        <Image
           src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
           alt=""
+          width={100}
+          height={176}
+          style={{ objectFit: 'contain' }}
+          priority
+          sizes="100%"
         />
       </ProductCard>
       <ProductInfo aria-label="Product details" isSearchResult={isSearchResult}>
@@ -74,7 +79,7 @@ export const Product = ({
   productId,
   index,
   isLastChanged,
-  metadata: { isPinned, isBoosted, isBuried },
+  metadata: { isPinned, isBoosted, isBuried, isBlocked },
   onChangePosition,
   onProductBoostBury,
   pinnedProductsCount,
@@ -95,7 +100,6 @@ export const Product = ({
   }: ChangePositionTypes) => void;
   onProductBoostBury: (arg: ChangeProductBoostBury) => void;
   pinnedProductsCount: number;
-  totalProducts: number;
   isBrandStrong?: boolean;
   isProductNumberEnabled?: boolean;
   isSearchResult?: boolean;
@@ -115,23 +119,11 @@ export const Product = ({
     setIsMenuOpen(false);
   };
 
-  const boostToTop = () => {
-    onProductBoostBury({ id, change: 'add', operation: 'boosts' });
-    setIsMenuOpen(false);
-  };
-
-  const removeBoost = () => {
-    onProductBoostBury({ id, change: 'remove', operation: 'boosts' });
-    setIsMenuOpen(false);
-  };
-
-  const buryToBottom = () => {
-    onProductBoostBury({ id, change: 'add', operation: 'buries' });
-    setIsMenuOpen(false);
-  };
-
-  const removeBury = () => {
-    onProductBoostBury({ id, change: 'remove', operation: 'buries' });
+  const onBoostBuryBlock = ({
+    operation,
+    change,
+  }: Pick<EditAttribute, 'change' | 'operation'>) => {
+    onProductBoostBury({ id, change, operation });
     setIsMenuOpen(false);
   };
 
@@ -199,6 +191,11 @@ export const Product = ({
             <Text>Internal</Text>
           </ProductPin>
         )}
+        {isBlocked && (
+          <ProductPin aria-label="Blocked product">
+            <Text>Internal</Text>
+          </ProductPin>
+        )}
         <ProductMenuToggle
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
@@ -236,7 +233,9 @@ export const Product = ({
                 icon="restore"
                 as="button"
                 size="16px 16px"
-                onClick={() => removeBoost()}
+                onClick={() =>
+                  onBoostBuryBlock({ operation: 'boosts', change: 'remove' })
+                }
               >
                 Unboost
               </ProductMenuButton>
@@ -246,11 +245,30 @@ export const Product = ({
                 icon="restore"
                 as="button"
                 size="16px 16px"
-                onClick={() => removeBury()}
+                onClick={() =>
+                  onBoostBuryBlock({ operation: 'buries', change: 'remove' })
+                }
               >
                 Unbury
               </ProductMenuButton>
             )}
+            {
+              /* istanbul ignore next */
+              isBlocked && (
+                <ProductMenuButton
+                  icon="restore"
+                  as="button"
+                  size="16px 16px"
+                  onClick={
+                    /* istanbul ignore next */
+                    () =>
+                      onBoostBuryBlock({ operation: 'block', change: 'remove' })
+                  }
+                >
+                  Restore
+                </ProductMenuButton>
+              )
+            }
             {!isLockToPositionMenuOpen && (
               <>
                 <ProductMenuButton
@@ -264,7 +282,9 @@ export const Product = ({
                   <ProductMenuButton
                     icon="boost"
                     as="button"
-                    onClick={boostToTop}
+                    onClick={() =>
+                      onBoostBuryBlock({ operation: 'boosts', change: 'add' })
+                    }
                   >
                     Boost to Top
                   </ProductMenuButton>
@@ -274,9 +294,23 @@ export const Product = ({
                   <ProductMenuButton
                     icon="bury"
                     as="button"
-                    onClick={buryToBottom}
+                    onClick={() =>
+                      onBoostBuryBlock({ operation: 'buries', change: 'add' })
+                    }
                   >
                     Bury to Bottom
+                  </ProductMenuButton>
+                )}
+
+                {!isBlocked && (
+                  <ProductMenuButton
+                    icon="block"
+                    as="button"
+                    onClick={() =>
+                      onBoostBuryBlock({ operation: 'block', change: 'add' })
+                    }
+                  >
+                    Block Product
                   </ProductMenuButton>
                 )}
               </>

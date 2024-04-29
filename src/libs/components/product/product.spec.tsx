@@ -19,7 +19,6 @@ const productProps = {
   index: 1,
   onChangePosition: mockChangePosition,
   onProductBoostBury: mockProductBoostBury,
-  totalProducts: 10,
   pinnedProductsCount: 2,
 };
 

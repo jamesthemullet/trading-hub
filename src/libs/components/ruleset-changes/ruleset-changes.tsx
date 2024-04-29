@@ -15,6 +15,40 @@ const Heading = styled(Text)`
   padding: ${spacing(2)} 0 0 ${spacing(2)};
 `;
 
+const ChangesRow = ({
+  heading,
+  onChangePosition,
+  onProductBoostBury,
+  pinnedProductsCount,
+  products,
+}: {
+  heading: string;
+  pinnedProductsCount: number;
+  onChangePosition: (arg: ChangePositionTypes) => void;
+  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
+  products: ProductType[];
+}) => (
+  <>
+    <Heading as="h2" isStrong={true}>
+      {heading}
+    </Heading>
+
+    <Layout>
+      {products.map((product: ProductType, index: number) => (
+        <ProductBox key={`product-${product.id}`}>
+          <Product
+            {...product}
+            index={index}
+            pinnedProductsCount={pinnedProductsCount}
+            onChangePosition={onChangePosition}
+            onProductBoostBury={onProductBoostBury}
+          />
+        </ProductBox>
+      ))}
+    </Layout>
+  </>
+);
+
 export const RulesetChanges = ({
   category,
   merchandisingRules,
@@ -23,7 +57,7 @@ export const RulesetChanges = ({
 }: {
   category?: string;
   merchandisingRules: MerchandisingRules;
-  onChangePosition: ({ isPinned, newPosition }: ChangePositionTypes) => void;
+  onChangePosition: (arg: ChangePositionTypes) => void;
   onProductBoostBury: (arg: ChangeProductBoostBury) => void;
 }) => {
   /* istanbul ignore next */
@@ -50,20 +84,7 @@ export const RulesetChanges = ({
     setRules(merchandisingRules);
   }, [merchandisingRules, setRules]);
 
-  const renderChangedProduct = (product: ProductType, index: number) => {
-    return (
-      <ProductBox key={`product-${product.id}`}>
-        <Product
-          {...product}
-          index={index}
-          pinnedProductsCount={merchandisingRules.pinnedProducts.length}
-          onChangePosition={onChangePosition}
-          onProductBoostBury={onProductBoostBury}
-          totalProducts={merchandisingRules.pinnedProducts.length}
-        />
-      </ProductBox>
-    );
-  };
+  const pinnedProductsCount = merchandisingRules.pinnedProducts.length;
 
   return (
     <>
@@ -124,51 +145,53 @@ export const RulesetChanges = ({
       )}
       {merchandisingRulesWithInfo &&
         merchandisingRulesWithInfo.pinnedProducts.length > 0 && (
-          <>
-            <Heading as="h2" isStrong={true}>
-              Pinned Products ({merchandisingRules.pinnedProducts.length})
-            </Heading>
-
-            <Layout>
-              {merchandisingRulesWithInfo.pinnedProducts.map(
-                renderChangedProduct
-              )}
-            </Layout>
-          </>
+          <ChangesRow
+            heading={`Pinned Products (${merchandisingRules.pinnedProducts.length})`}
+            products={merchandisingRulesWithInfo.pinnedProducts}
+            pinnedProductsCount={pinnedProductsCount}
+            onChangePosition={onChangePosition}
+            onProductBoostBury={onProductBoostBury}
+          />
         )}
       {/* TODO: when api is ready we can show products here */}
       {
         /* istanbul ignore next */
         merchandisingRulesWithInfo &&
           merchandisingRulesWithInfo.boosts.product.length > 0 && (
-            <>
-              <Heading as="h2" isStrong={true}>
-                Boosted Products ({merchandisingRules.boosts.product.length})
-              </Heading>
-
-              <Layout>
-                {merchandisingRulesWithInfo.boosts.product.map(
-                  renderChangedProduct
-                )}
-              </Layout>
-            </>
+            <ChangesRow
+              heading={`Boosted Products (${merchandisingRules.boosts.product.length})`}
+              products={merchandisingRulesWithInfo.boosts.product}
+              pinnedProductsCount={pinnedProductsCount}
+              onChangePosition={onChangePosition}
+              onProductBoostBury={onProductBoostBury}
+            />
           )
       }
       {
         /* istanbul ignore next */
         merchandisingRulesWithInfo &&
           merchandisingRulesWithInfo.buries.product.length > 0 && (
-            <>
-              <Heading as="h2" isStrong={true}>
-                Boosted Products ({merchandisingRules.buries.product.length})
-              </Heading>
-
-              <Layout>
-                {merchandisingRulesWithInfo.buries.product.map(
-                  renderChangedProduct
-                )}
-              </Layout>
-            </>
+            <ChangesRow
+              heading={`Buried Products (${merchandisingRules.buries.product.length})`}
+              products={merchandisingRulesWithInfo.buries.product}
+              pinnedProductsCount={pinnedProductsCount}
+              onChangePosition={onChangePosition}
+              onProductBoostBury={onProductBoostBury}
+            />
+          )
+      }
+      {
+        /* istanbul ignore next */
+        merchandisingRulesWithInfo &&
+          merchandisingRulesWithInfo.blockedProducts &&
+          merchandisingRulesWithInfo.blockedProducts.length > 0 && (
+            <ChangesRow
+              heading={`Blocked Products (${merchandisingRules.blockedProducts.length})`}
+              products={merchandisingRulesWithInfo.blockedProducts}
+              pinnedProductsCount={pinnedProductsCount}
+              onChangePosition={onChangePosition}
+              onProductBoostBury={onProductBoostBury}
+            />
           )
       }
     </>

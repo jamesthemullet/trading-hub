@@ -460,6 +460,12 @@ describe('Ruleset', () => {
             productId: 'productId3',
             metadata: { isPinned: true, isBoosted: false },
           },
+          {
+            ...mockProduct,
+            id: 'product4',
+            productId: 'productId4',
+            metadata: { isPinned: false, isBoosted: false, isBlocked: true },
+          },
         ],
         categoryFacets: [],
         merchandisingRulesWithInfo: {
@@ -679,6 +685,113 @@ describe('Ruleset', () => {
       await user.click(screen.getAllByTitle('Open menu')[1]);
 
       expect(screen.getByText('Bury to Bottom')).toBeVisible();
+    });
+  });
+
+  describe('Blocking', () => {
+    beforeEach(() => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+      jest.mocked(useCategoryPreview).mockReturnValue({
+        categoryProducts: [
+          mockProduct,
+          {
+            ...mockProduct,
+            id: 'product2',
+            productId: 'productId2',
+            metadata: {
+              isPinned: false,
+              isBoosted: false,
+              isBuried: false,
+              isBlocked: true,
+            },
+          },
+          {
+            ...mockProduct,
+            id: 'product3',
+            productId: 'productId3',
+            metadata: {
+              isPinned: true,
+              isBoosted: false,
+              isBuried: false,
+              isBlocked: false,
+            },
+          },
+        ],
+        categoryFacets: [],
+        merchandisingRulesWithInfo: {
+          ...mockMerchandisingRules,
+          blockedProducts: [{ ...mockProduct, id: 'productId2' }],
+          pinnedProducts: [],
+        },
+        error: '',
+        setRules: jest.fn(),
+      });
+      jest.mocked(useCategoryProductSearch).mockReturnValue({
+        handleGet: jest.fn(() => {
+          return Promise.resolve({
+            products: [
+              {
+                id: 'product-id-2',
+                productId: 'product-id-2',
+                title: 'productSearchTitle',
+                imageUrl: ['example2.jpg'],
+                brand: product1Brand,
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: product1Price,
+                rating: 4.5,
+                url: '',
+              },
+            ],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+        error: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+          }}
+          rulesetId={ruleSetId}
+        />
+      );
+    });
+
+    it('Should block from the Visual Editor', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      await user.click(screen.getAllByTitle('Open menu')[0]);
+
+      await user.click(screen.getByText('Block Product'));
+
+      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
+        'Changes3'
+      );
     });
   });
 

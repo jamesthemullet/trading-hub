@@ -32,7 +32,6 @@ export const VisualEditor = ({
             index={index}
             onChangePosition={onChangePosition}
             onProductBoostBury={onProductBoostBury}
-            totalProducts={products.length}
             pinnedProductsCount={pinnedProductsCount}
           />
         </ProductBox>
