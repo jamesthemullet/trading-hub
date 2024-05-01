@@ -8,7 +8,7 @@ describe('Filter dropdown', () => {
     jest.clearAllMocks();
   });
 
-  it('should render the button', () => {
+  it('should render the dropdown', () => {
     render(<FacetOrderDropdown />);
 
     const dropdownHeader = screen.getByTestId(

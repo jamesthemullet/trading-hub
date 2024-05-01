@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useState } from 'react';
 import {
   DropdownWrapper,
@@ -10,30 +9,33 @@ import {
   DropdownOption,
 } from '../dropdown.styles';
 
-export const FacetOrderDropdown = ({
-  defaultToExcludeOnly,
-}: {
-  defaultToExcludeOnly?: boolean;
-}) => {
+export const FacetValuesSortDropdown = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState([
     {
       index: 0,
-      label: 'Select an action',
-      src: null,
-      selected: defaultToExcludeOnly ? false : true,
+      label: 'Default',
+      selected: true,
     },
     {
       index: 1,
-      label: 'Include only',
-      src: '/trading-hub/asset/icon-tick.svg',
+      label: 'Alphabetical - Ascending (A to Z)',
       selected: false,
     },
     {
       index: 2,
-      label: 'Exclude only',
-      src: '/trading-hub/asset/icon-cross.svg',
-      selected: defaultToExcludeOnly ? true : false,
+      label: 'Alphabetical - Descending (Z to A)',
+      selected: false,
+    },
+    {
+      index: 3,
+      label: 'Product Count - Ascending (Less to More)',
+      selected: false,
+    },
+    {
+      index: 4,
+      label: 'Product Count - Descending (More to Less)',
+      selected: false,
     },
   ]);
 
@@ -63,15 +65,10 @@ export const FacetOrderDropdown = ({
           onClick={handleOnClick}
           aria-haspopup="listbox"
           aria-expanded={isDropdownOpen}
-          data-testid="button to open facet order dropdown"
+          data-testid="button to open facet values sort dropdown"
         >
-          <DropdownHeading>
-            {dropdownHeading.src && (
-              <Image src={dropdownHeading.src} alt="" width={16} height={16} />
-            )}
-            {dropdownHeading.label}
-          </DropdownHeading>
-          <ArrowContainer borderLeft={true}>
+          <DropdownHeading>{dropdownHeading.label}</DropdownHeading>
+          <ArrowContainer>
             <Arrow isDropdownOpen={isDropdownOpen} />
           </ArrowContainer>
         </DropdownButton>
@@ -79,13 +76,12 @@ export const FacetOrderDropdown = ({
         <DropdownContainer isDropdownOpen={isDropdownOpen}>
           {dropdownOptions.map(
             (option) =>
-              option.src && (
+              option.label && (
                 <DropdownOption
                   key={option.label}
-                  hoverColour="#f5f5f5"
+                  hoverColour="#f4faed"
                   onClick={() => handleSelectedOption(option.index)}
                 >
-                  <Image src={option.src} alt="" width={16} height={16} />
                   {option.label}
                 </DropdownOption>
               )

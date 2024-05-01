@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import { ExampleCalendarDropdown } from './example-calendar-dropdown';
 import { ExampleCalendarModal } from './example-calendar-modal';
 import { ArrowButton } from '../../libs/components/buttons/button/arrow-button';
-import { FacetOrderDropdown } from '../../libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
+import { FacetValuesSortDropdown } from '@/libs/components/dropdowns/facet-values-sort-dropdown/facet-values-sort-dropdown';
 
 const Example = styled.div`
   padding: 20px;
@@ -36,8 +36,8 @@ const Sandbox = () => {
         <img src="/trading-hub/asset/icon-bury-button.svg" alt="" />
       </Example>
       <Example>
-        <h2>Facet Order Dropdown</h2>
-        <FacetOrderDropdown />
+        <h2>Facet Sort Values Dropdown</h2>
+        <FacetValuesSortDropdown />
       </Example>
     </div>
   );
