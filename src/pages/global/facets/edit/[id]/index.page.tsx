@@ -2,6 +2,7 @@ import { Heading } from '@/libs/components';
 
 import { useRouter } from 'next/router';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
+import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 import styled from '@emotion/styled';
 import { spacing } from '../../../../../libs/components';
 import { useFacetsList } from '@/libs/hooks';
@@ -76,7 +77,8 @@ const defaultCategory = {
 };
 
 const Page = () => {
-  const { facets } = useFacetsList();
+  const { facets, isLoading } = useFacetsList();
+
   const router = useRouter();
 
   const handleSave = () => {
@@ -94,14 +96,18 @@ const Page = () => {
         breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
       />
 
-      <FacetsPanel
-        onSave={handleSave}
-        onCancel={handleCancel}
-        title="Global Facet Rule Editor"
-        facetsData={facets}
-        defaultToExcludeOnly={true}
-        defaultCategory={defaultCategory}
-      />
+      {isLoading ? (
+        <FacetsPanelSkeleton title="Global Facet Rule Editor" />
+      ) : (
+        <FacetsPanel
+          onSave={handleSave}
+          onCancel={handleCancel}
+          title="Global Facet Rule Editor"
+          facetsData={facets}
+          defaultToExcludeOnly={true}
+          defaultCategory={defaultCategory}
+        />
+      )}
       <NavigationContainer>
         <TotalResultsLabel>{mockAttributes.length} results</TotalResultsLabel>
       </NavigationContainer>

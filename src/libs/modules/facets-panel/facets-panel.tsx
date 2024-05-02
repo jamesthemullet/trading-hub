@@ -21,7 +21,7 @@ import Image from 'next/image';
 import { DefaultCategorySearchBox } from '@/libs/components/default-category-search-box/default-category-search-box';
 import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
 
-const ActionContainer = styled.div`
+export const ActionContainer = styled.div`
   display: flex;
 
   h1 {
@@ -36,14 +36,14 @@ const ActionContainer = styled.div`
   }
 `;
 
-const Actions = styled.div`
+export const Actions = styled.div`
   display: flex;
   gap: ${spacing(2)};
   margin-left: auto;
   padding: 18px;
 `;
 
-const AddFacetPanel = styled.div`
+export const AddFacetPanel = styled.div`
   display: flex;
   justify-content: space-between;
 
@@ -58,18 +58,18 @@ const AddFacetPanel = styled.div`
   }
 `;
 
-const LowerHeading = styled(Text)`
+export const LowerHeading = styled(Text)`
   font-size: 1em;
   margin-bottom: 1em;
 `;
 
-const AttributesTable = styled.div`
+export const AttributesTable = styled.div`
   display: flex;
   flex-direction: column;
   margin: ${spacing(2)};
 `;
 
-const SectionWrapper = styled.div`
+export const SectionWrapper = styled.div`
   box-shadow: #000 0 0 10px -5px;
   margin: ${spacing(2)};
   margin-bottom: 0;
@@ -77,7 +77,7 @@ const SectionWrapper = styled.div`
   padding: ${spacing(2)};
 `;
 
-const Row = styled(TableRow)`
+export const Row = styled(TableRow)`
   font-size: 1rem;
   align-items: center;
   border-bottom: none;
@@ -86,7 +86,7 @@ const Row = styled(TableRow)`
   padding: 0 ${spacing(2)} ${spacing(2)};
 `;
 
-const Col = styled(TableCol)`
+export const Col = styled(TableCol)`
   justify-content: space-between;
   flex: 2;
 
@@ -127,7 +127,7 @@ const EditButton = styled(Button)`
   }
 `;
 
-const COLUMNS: {
+export const COLUMNS: {
   label: string;
 }[] = [
   {
@@ -163,8 +163,9 @@ export const FacetsPanel = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
+  const [localFacetData] = useState<ReturnedFacet[]>(facetsData);
 
-  const { setSearch, filteredFacets } = useFacetsFilter(facetsData);
+  const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
 
   const onPreview = () => {
     // TODO: Implement preview functionality
@@ -249,38 +250,35 @@ export const FacetsPanel = ({
             </Col>
           ))}
         </Row>
-        {filteredFacets &&
-          filteredFacets.map((facet) => (
-            <Row key={facet.id}>
-              <Col>
-                <Text>{facet.indexPropertyName}</Text>
-              </Col>
-              <Col>
-                <DisplayName>
-                  <Text>{facet.displayValue}</Text>
-                  <EditButton>
-                    <Image
-                      width={20}
-                      height={20}
-                      src="/trading-hub/asset/icon-edit-pencil.svg"
-                      alt=""
-                    />
-                  </EditButton>
-                </DisplayName>
-              </Col>
-              <Col>
-                <FacetOrderDropdown
-                  defaultToExcludeOnly={defaultToExcludeOnly}
-                />
-              </Col>
-              <Col>
-                <Button>Edit values</Button>
-              </Col>
-            </Row>
-          ))}
+        {filteredFacets.map((facet) => (
+          <Row key={facet.id}>
+            <Col>
+              <Text>{facet.indexPropertyName}</Text>
+            </Col>
+            <Col>
+              <DisplayName>
+                <Text>{facet.displayValue}</Text>
+                <EditButton>
+                  <Image
+                    width={20}
+                    height={20}
+                    src="/trading-hub/asset/icon-edit-pencil.svg"
+                    alt=""
+                  />
+                </EditButton>
+              </DisplayName>
+            </Col>
+            <Col>
+              <FacetOrderDropdown defaultToExcludeOnly={defaultToExcludeOnly} />
+            </Col>
+            <Col>
+              <Button>Edit values</Button>
+            </Col>
+          </Row>
+        ))}
       </AttributesTable>
 
-      {(!facetsData || facetsData.length === 0) && (
+      {localFacetData.length === 0 && (
         <NoAttributesBlock>
           <Text>No, there are no attributes yet.</Text>
           <Text>How about adding a subcategory first?</Text>

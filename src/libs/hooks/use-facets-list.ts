@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FacetsList, merchandising } from '@/libs/api';
 
 export const useFacetsList = (categoryId?: string[]) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [facetsList, setFacetsList] = useState<FacetsList>({
     facets: [],
   });
@@ -18,14 +19,17 @@ export const useFacetsList = (categoryId?: string[]) => {
         setFacetsList(facetList);
       } catch (error: unknown) {
         setError('Internal Server Error');
-        return;
+      } finally {
+        setIsLoading(false);
       }
     };
     void asyncCall();
+    setIsLoading(true);
   }, [categoryId]);
 
   return {
     facets: facetsList.facets,
+    isLoading,
     error,
   };
 };
