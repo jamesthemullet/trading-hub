@@ -31,6 +31,14 @@ const mockGetCategories = {
   pagination: { totalItems: 20 },
 };
 
+const mockDefaultOrderData = [
+  { defaultOrder: 'Include only' },
+  { defaultOrder: 'Exclude only' },
+  { defaultOrder: 'Exclude only' },
+  { defaultOrder: 'Include only' },
+  { defaultOrder: 'Include only' },
+];
+
 const selectCategory = async (screen: Screen, user: UserEvent) => {
   await user.type(
     screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
@@ -46,6 +54,9 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
   });
 };
 
+const onSaveSpy = jest.fn();
+const onCancelSpy = jest.fn();
+
 describe('Facet Management Editing', () => {
   beforeEach(() => {
     jest.mocked(useGetCategories).mockReturnValue({
@@ -60,8 +71,6 @@ describe('Facet Management Editing', () => {
   });
 
   it('should render the facet management editing page', async () => {
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -80,8 +89,6 @@ describe('Facet Management Editing', () => {
   });
 
   it('should render column headings', () => {
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -100,8 +107,6 @@ describe('Facet Management Editing', () => {
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -119,8 +124,6 @@ describe('Facet Management Editing', () => {
   it('should preview changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -139,8 +142,6 @@ describe('Facet Management Editing', () => {
   it('should save changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -158,8 +159,6 @@ describe('Facet Management Editing', () => {
   it('should select a category on user input, and clear category when "remove selected category" button is clicked', async () => {
     const user = userEvent.setup({ delay: null });
 
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -182,9 +181,42 @@ describe('Facet Management Editing', () => {
     expect(screen.queryByText('cat_123')).not.toBeInTheDocument();
   });
 
+  it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+        defaultOrderData={mockDefaultOrderData}
+      />
+    );
+
+    const row = screen.getAllByTestId('facets-table-row')[0];
+
+    const dropdown = screen.getAllByTestId(
+      'button to open facet order dropdown'
+    )[0];
+
+    await user.click(dropdown);
+    const includeOnlyOption = screen.getAllByText('Include only')[0];
+
+    await user.click(includeOnlyOption);
+
+    expect(row).toHaveStyle('background-color: #f4faed');
+
+    await user.click(dropdown);
+    const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
+
+    await user.click(excludeOnlyOption);
+    waitFor(() => {
+      expect(row).toHaveStyle('background-color: #fff3f4');
+    });
+  });
+
   it('should filter on the facet list', async () => {
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -242,8 +274,6 @@ describe('Facet Management Editing', () => {
 
   describe('Add Facet Modal', () => {
     const openModal = async () => {
-      const onSaveSpy = jest.fn();
-      const onCancelSpy = jest.fn();
       renderWithProviders(
         <FacetsPanel
           onSave={onSaveSpy}

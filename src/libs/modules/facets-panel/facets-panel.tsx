@@ -20,6 +20,7 @@ import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-drop
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { DefaultCategorySearchBox } from '@/libs/components/default-category-search-box/default-category-search-box';
 import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
+import { color } from '@/libs/components/utils/constants';
 
 export const ActionContainer = styled.div`
   display: flex;
@@ -77,13 +78,25 @@ export const SectionWrapper = styled.div`
   padding: ${spacing(2)};
 `;
 
-export const Row = styled(TableRow)`
+type TableRowProps = {
+  optionSelected?: string;
+};
+
+export const Row = styled(TableRow)<TableRowProps>`
   font-size: 1rem;
   align-items: center;
   border-bottom: none;
   box-shadow: #000 0 0 10px -5px;
   margin-bottom: ${spacing(2)};
   padding: 0 ${spacing(2)} ${spacing(2)};
+
+  ${({ optionSelected }) =>
+    optionSelected === 'Include only' &&
+    `background-color: ${color.successGreenBackground}`}
+
+  ${({ optionSelected }) =>
+    optionSelected === 'Exclude only' &&
+    `background-color: ${color.errorRedBackground}`}
 `;
 
 export const Col = styled(TableCol)`
@@ -126,6 +139,10 @@ export const COLUMNS: {
   },
 ];
 
+type defaultOrderDataType = {
+  defaultOrder: string;
+}[];
+
 export const FacetsPanel = ({
   onSave,
   onCancel,
@@ -133,20 +150,24 @@ export const FacetsPanel = ({
   facetsData,
   categoryName,
   defaultCategory,
-  defaultToExcludeOnly,
+  defaultOrderData,
 }: {
   onSave: () => void;
   onCancel: () => void;
   title: string;
   facetsData: ReturnedFacet[];
-  defaultToExcludeOnly?: boolean;
   categoryName?: string;
   defaultCategory?: Category;
+  defaultOrderData?: defaultOrderDataType;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
   const [localFacetData, setLocalFacetData] =
     useState<ReturnedFacet[]>(facetsData);
+
+  // This will be replaced when we have the defaultOrder field on the get facets endpoint
+  const [localDefaultOrderData, setLocalDefaultOrderData] =
+    useState<defaultOrderDataType>(defaultOrderData || []);
 
   const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
 
@@ -162,6 +183,72 @@ export const FacetsPanel = ({
 
   const onClose = () => {
     setIsAddFacetModalOpen(false);
+  };
+
+  const handleChange = (label: string, index: number) => {
+    setLocalDefaultOrderData((prev) => {
+      const updatedDefaultOrderData = prev.map((order, i) => {
+        if (i === index) {
+          return { defaultOrder: label };
+        }
+        return order;
+      });
+      return updatedDefaultOrderData;
+    });
+  };
+
+  const FacetRow = ({
+    facet,
+    index,
+  }: {
+    facet: ReturnedFacet;
+    index: number;
+  }) => {
+    return (
+      <Row
+        optionSelected={
+          localDefaultOrderData[index]
+            ? localDefaultOrderData[index].defaultOrder
+            : ''
+        }
+        data-testid="facets-table-row"
+      >
+        <Col>
+          <Text>{facet.indexPropertyName}</Text>
+        </Col>
+        <Col>
+          <EditableLabel
+            displayValue={facet.displayValue}
+            onDisplayValueChange={(newValue) => {
+              setLocalFacetData((prev) => {
+                const updatedFacet: ReturnedFacet = {
+                  ...prev[index],
+                  displayValue: newValue,
+                };
+                return [
+                  ...prev.slice(0, index),
+                  updatedFacet,
+                  ...prev.slice(index + 1),
+                ];
+              });
+            }}
+          />
+        </Col>
+        <Col>
+          <FacetOrderDropdown
+            defaultOrderData={
+              localDefaultOrderData[index]
+                ? localDefaultOrderData[index].defaultOrder
+                : undefined
+            }
+            onChange={(label: string): void => handleChange(label, index)}
+          />
+        </Col>
+        <Col>
+          <Button>Edit values</Button>
+        </Col>
+      </Row>
+    );
   };
 
   return (
@@ -233,37 +320,11 @@ export const FacetsPanel = ({
             </Col>
           ))}
         </Row>
-        {filteredFacets.map((facet, index) => (
-          <Row key={facet.id}>
-            <Col>
-              <Text>{facet.indexPropertyName}</Text>
-            </Col>
-            <Col>
-              <EditableLabel
-                displayValue={facet.displayValue}
-                onDisplayValueChange={(newValue) => {
-                  setLocalFacetData((prev) => {
-                    const updatedFacet: ReturnedFacet = {
-                      ...prev[index],
-                      displayValue: newValue,
-                    };
-                    return [
-                      ...prev.slice(0, index),
-                      updatedFacet,
-                      ...prev.slice(index + 1),
-                    ];
-                  });
-                }}
-              />
-            </Col>
-            <Col>
-              <FacetOrderDropdown defaultToExcludeOnly={defaultToExcludeOnly} />
-            </Col>
-            <Col>
-              <Button>Edit values</Button>
-            </Col>
-          </Row>
-        ))}
+
+        {filteredFacets &&
+          filteredFacets.map((facet, index) => (
+            <FacetRow key={facet.id} facet={facet} index={index}></FacetRow>
+          ))}
       </AttributesTable>
 
       {localFacetData.length === 0 && (

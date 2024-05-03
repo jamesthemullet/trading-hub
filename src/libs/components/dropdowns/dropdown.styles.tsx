@@ -3,13 +3,17 @@ import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
 import { Text } from '../typography/typography.styles';
 
-export const DropdownWrapper = styled.div<{ isDropdownOpen: boolean }>`
+export const DropdownWrapper = styled.div<{
+  isDropdownOpen: boolean;
+  width?: number;
+}>`
   border: 1px solid #b1b1b1;
   border-radius: 4px;
   width: 346px;
   position: relative;
 
   ${({ isDropdownOpen }) => isDropdownOpen && 'border-radius: 4px 4px 0 0;'}
+  ${({ width }) => width && `width: ${width}px;`}
 
   img {
     width: 16px;

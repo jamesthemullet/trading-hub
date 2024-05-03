@@ -90,6 +90,14 @@ const Page = () => {
     router.push('/global/facets');
   };
 
+  const mockDefaultOrderData = [
+    { defaultOrder: 'Include only' },
+    { defaultOrder: 'Exclude only' },
+    { defaultOrder: 'Exclude only' },
+    { defaultOrder: 'Include only' },
+    { defaultOrder: 'Include only' },
+  ];
+
   return (
     <>
       <Heading
@@ -104,8 +112,8 @@ const Page = () => {
           onCancel={handleCancel}
           title="Global Facet Rule Editor"
           facetsData={facets}
-          defaultToExcludeOnly={true}
           defaultCategory={defaultCategory}
+          defaultOrderData={mockDefaultOrderData}
         />
       )}
       <NavigationContainer>

@@ -58,6 +58,8 @@ describe('Filter dropdown', () => {
     const user = userEvent.setup();
     render(<FacetOrderDropdown />);
 
+    expect(screen.queryByText('Select an action')).toBeVisible();
+
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown'
     );
@@ -71,13 +73,5 @@ describe('Filter dropdown', () => {
     expect(screen.getAllByText('Exclude only')[1]).not.toBeVisible();
     expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
     expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
-  });
-
-  it('should set exclude only as the default if defaultToExcludeOnly passed as a prop', () => {
-    render(<FacetOrderDropdown defaultToExcludeOnly />);
-
-    expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
-    expect(screen.getByText('Include only')).not.toBeVisible();
-    expect(screen.getAllByText('Exclude only')[0]).toBeVisible();
   });
 });

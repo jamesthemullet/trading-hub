@@ -11,9 +11,11 @@ import {
 } from '../dropdown.styles';
 
 export const FacetOrderDropdown = ({
-  defaultToExcludeOnly,
+  defaultOrderData,
+  onChange,
 }: {
-  defaultToExcludeOnly?: boolean;
+  defaultOrderData?: string;
+  onChange?: (label: string) => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState([
@@ -21,7 +23,7 @@ export const FacetOrderDropdown = ({
       index: 0,
       label: 'Select an action',
       src: null,
-      selected: defaultToExcludeOnly ? false : true,
+      selected: true,
     },
     {
       index: 1,
@@ -33,7 +35,7 @@ export const FacetOrderDropdown = ({
       index: 2,
       label: 'Exclude only',
       src: '/trading-hub/asset/icon-cross.svg',
-      selected: defaultToExcludeOnly ? true : false,
+      selected: false,
     },
   ]);
 
@@ -44,6 +46,7 @@ export const FacetOrderDropdown = ({
   const handleSelectedOption = (index: number) => {
     const updatedDropdownOptions = dropdownOptions.map((option) => {
       if (option.index === index) {
+        onChange && onChange(option.label);
         return { ...option, selected: true };
       }
       return { ...option, selected: false };
@@ -53,45 +56,45 @@ export const FacetOrderDropdown = ({
     setIsDropdownOpen(false);
   };
 
-  const dropdownHeading = dropdownOptions.find((option) => option.selected);
+  const dropdownHeading =
+    dropdownOptions.find((option) => option.label === defaultOrderData) ||
+    dropdownOptions.find((option) => option.selected === true);
 
   return (
-    dropdownHeading && (
-      <DropdownWrapper isDropdownOpen={isDropdownOpen}>
-        <DropdownButton
-          isDropdownOpen={isDropdownOpen}
-          onClick={handleOnClick}
-          aria-haspopup="listbox"
-          aria-expanded={isDropdownOpen}
-          data-testid="button to open facet order dropdown"
-        >
-          <DropdownHeading>
-            {dropdownHeading.src && (
-              <Image src={dropdownHeading.src} alt="" width={16} height={16} />
-            )}
-            {dropdownHeading.label}
-          </DropdownHeading>
-          <ArrowContainer borderLeft={true}>
-            <Arrow isDropdownOpen={isDropdownOpen} />
-          </ArrowContainer>
-        </DropdownButton>
-
-        <DropdownContainer isDropdownOpen={isDropdownOpen}>
-          {dropdownOptions.map(
-            (option) =>
-              option.src && (
-                <DropdownOption
-                  key={option.label}
-                  hoverColour="#f5f5f5"
-                  onClick={() => handleSelectedOption(option.index)}
-                >
-                  <Image src={option.src} alt="" width={16} height={16} />
-                  {option.label}
-                </DropdownOption>
-              )
+    <DropdownWrapper isDropdownOpen={isDropdownOpen} width={237}>
+      <DropdownButton
+        isDropdownOpen={isDropdownOpen}
+        onClick={handleOnClick}
+        aria-haspopup="listbox"
+        aria-expanded={isDropdownOpen}
+        data-testid="button to open facet order dropdown"
+      >
+        <DropdownHeading>
+          {dropdownHeading?.src && (
+            <Image src={dropdownHeading.src} alt="" width={16} height={16} />
           )}
-        </DropdownContainer>
-      </DropdownWrapper>
-    )
+          {dropdownHeading?.label}
+        </DropdownHeading>
+        <ArrowContainer borderLeft={true}>
+          <Arrow isDropdownOpen={isDropdownOpen} />
+        </ArrowContainer>
+      </DropdownButton>
+
+      <DropdownContainer isDropdownOpen={isDropdownOpen}>
+        {dropdownOptions.map(
+          (option) =>
+            option.src && (
+              <DropdownOption
+                key={option.label}
+                hoverColour="#f5f5f5"
+                onClick={() => handleSelectedOption(option.index)}
+              >
+                <Image src={option.src} alt="" width={16} height={16} />
+                {option.label}
+              </DropdownOption>
+            )
+        )}
+      </DropdownContainer>
+    </DropdownWrapper>
   );
 };
