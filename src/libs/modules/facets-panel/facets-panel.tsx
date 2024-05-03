@@ -17,7 +17,7 @@ import {
   TableHeading,
 } from '@/libs/components/table/table.styles';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
-import Image from 'next/image';
+import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { DefaultCategorySearchBox } from '@/libs/components/default-category-search-box/default-category-search-box';
 import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
 
@@ -109,24 +109,6 @@ const NoAttributesBlock = styled.div`
   }
 `;
 
-const DisplayName = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const EditButton = styled(Button)`
-  padding: 0;
-  border: none;
-  background: none;
-  width: 20px;
-  display: flex;
-  margin-left: ${spacing(3)};
-
-  &:hover {
-    background: none;
-  }
-`;
-
 export const COLUMNS: {
   label: string;
 }[] = [
@@ -149,9 +131,9 @@ export const FacetsPanel = ({
   onCancel,
   title,
   facetsData,
-  defaultToExcludeOnly,
   categoryName,
   defaultCategory,
+  defaultToExcludeOnly,
 }: {
   onSave: () => void;
   onCancel: () => void;
@@ -163,7 +145,8 @@ export const FacetsPanel = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
-  const [localFacetData] = useState<ReturnedFacet[]>(facetsData);
+  const [localFacetData, setLocalFacetData] =
+    useState<ReturnedFacet[]>(facetsData);
 
   const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
 
@@ -250,23 +233,28 @@ export const FacetsPanel = ({
             </Col>
           ))}
         </Row>
-        {filteredFacets.map((facet) => (
+        {filteredFacets.map((facet, index) => (
           <Row key={facet.id}>
             <Col>
               <Text>{facet.indexPropertyName}</Text>
             </Col>
             <Col>
-              <DisplayName>
-                <Text>{facet.displayValue}</Text>
-                <EditButton>
-                  <Image
-                    width={20}
-                    height={20}
-                    src="/trading-hub/asset/icon-edit-pencil.svg"
-                    alt=""
-                  />
-                </EditButton>
-              </DisplayName>
+              <EditableLabel
+                displayValue={facet.displayValue}
+                onDisplayValueChange={(newValue) => {
+                  setLocalFacetData((prev) => {
+                    const updatedFacet: ReturnedFacet = {
+                      ...prev[index],
+                      displayValue: newValue,
+                    };
+                    return [
+                      ...prev.slice(0, index),
+                      updatedFacet,
+                      ...prev.slice(index + 1),
+                    ];
+                  });
+                }}
+              />
             </Col>
             <Col>
               <FacetOrderDropdown defaultToExcludeOnly={defaultToExcludeOnly} />

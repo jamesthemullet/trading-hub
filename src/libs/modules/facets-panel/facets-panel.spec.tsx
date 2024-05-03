@@ -204,6 +204,42 @@ describe('Facet Management Editing', () => {
     expect(screen.queryByText('size')).not.toBeInTheDocument();
   });
 
+  it('should edit a display value', async () => {
+    const onSaveSpy = jest.fn();
+    const onCancelSpy = jest.fn();
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+      />
+    );
+
+    const editButton = screen.getByLabelText('Edit display name for color');
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      const editColorInput = screen.getByLabelText('Edit color input field');
+      expect(editColorInput).toBeVisible();
+      expect(editColorInput).toHaveValue('color');
+      userEvent.clear(editColorInput);
+      await userEvent.type(editColorInput, 'colour');
+    });
+
+    const saveButton = screen.getByLabelText('Save color change');
+
+    act(() => {
+      saveButton.click();
+    });
+
+    const newEditButton = screen.getByLabelText('Edit display name for colour');
+    expect(newEditButton).toBeVisible();
+  });
+
   describe('Add Facet Modal', () => {
     const openModal = async () => {
       const onSaveSpy = jest.fn();
