@@ -59,7 +59,7 @@ export const ArrowContainer = styled.div<{ borderLeft?: boolean }>`
   width: ${sizing(5)};
   box-sizing: border-box;
 
-  ${({ borderLeft }) => !borderLeft && 'border-left: 1px solid #b1b1b1;'}
+  ${({ borderLeft }) => borderLeft && 'border-left: 1px solid #b1b1b1;'}
 `;
 
 export const Arrow = styled.span<{ isDropdownOpen: boolean }>`
@@ -84,7 +84,7 @@ export const DropdownContainer = styled.div<{ isDropdownOpen: boolean }>`
   border-top: none;
   background-color: #fff;
   flex-direction: column;
-  ${({ isDropdownOpen }) => isDropdownOpen && 'display: flex; z-index: 1'}
+  ${({ isDropdownOpen }) => isDropdownOpen && 'display: flex; z-index: 10'}
 `;
 
 export const DropdownOption = styled.button<{ hoverColour: string }>`

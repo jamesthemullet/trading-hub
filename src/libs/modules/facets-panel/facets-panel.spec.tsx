@@ -293,22 +293,18 @@ describe('Facet Management Editing', () => {
     it('should open the modal', async () => {
       await openModal();
 
-      waitFor(() => {
-        expect(
-          screen.getByRole('heading', { level: 3, name: 'Add facet' })
-        ).toBeVisible();
-      });
+      expect(
+        screen.getByRole('heading', { level: 3, name: 'Add facet' })
+      ).toBeVisible();
     });
 
     it('should close the modal on click of the close button', async () => {
       const user = userEvent.setup({ delay: null });
       await openModal();
 
-      waitFor(() => {
-        expect(
-          screen.getByRole('heading', { level: 3, name: 'Add facet' })
-        ).toBeVisible();
-      });
+      expect(
+        screen.getByRole('heading', { level: 3, name: 'Add facet' })
+      ).toBeVisible();
 
       const closeButton = screen.getByRole('button', { name: 'Close Modal' });
 
@@ -319,6 +315,63 @@ describe('Facet Management Editing', () => {
       waitFor(() => {
         expect(
           screen.getByRole('heading', { level: 3, name: 'Add facet' })
+        ).not.toBeVisible();
+      });
+    });
+  });
+
+  describe('Edit Facet Values Modal', () => {
+    const openModal = async () => {
+      renderWithProviders(
+        <FacetsPanel
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          title="Facet Rule Editor"
+          facetsData={globalFacetsListMock.facets}
+        />
+      );
+
+      const editFacetValuesButton = screen.getAllByText('Edit values')[0];
+
+      act(() => {
+        editFacetValuesButton.click();
+      });
+    };
+
+    it('should open the modal', async () => {
+      await openModal();
+
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Facet value settings of: color',
+        })
+      ).toBeVisible();
+    });
+
+    it('should close the modal on click of the close button', async () => {
+      const user = userEvent.setup({ delay: null });
+      await openModal();
+
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Facet value settings of: color',
+        })
+      ).toBeVisible();
+
+      const closeButton = screen.getByRole('button', { name: 'Close Modal' });
+
+      act(() => {
+        user.click(closeButton);
+      });
+
+      waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 3,
+            name: 'Facet value settings of: color',
+          })
         ).not.toBeVisible();
       });
     });

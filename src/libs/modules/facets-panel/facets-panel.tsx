@@ -21,6 +21,7 @@ import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { DefaultCategorySearchBox } from '@/libs/components/default-category-search-box/default-category-search-box';
 import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
 import { color } from '@/libs/components/utils/constants';
+import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
 
 export const ActionContainer = styled.div`
   display: flex;
@@ -161,9 +162,13 @@ export const FacetsPanel = ({
   defaultOrderData?: defaultOrderDataType;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>({});
+  const [selectedFacet, setSelectedFacet] = useState<ReturnedFacet | undefined>(
+    undefined
+  );
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
   const [localFacetData, setLocalFacetData] =
     useState<ReturnedFacet[]>(facetsData);
+  const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
 
   // This will be replaced when we have the defaultOrder field on the get facets endpoint
   const [localDefaultOrderData, setLocalDefaultOrderData] =
@@ -183,6 +188,7 @@ export const FacetsPanel = ({
 
   const onClose = () => {
     setIsAddFacetModalOpen(false);
+    setIsEditValuesModalOpen(false);
   };
 
   const handleChange = (label: string, index: number) => {
@@ -195,6 +201,11 @@ export const FacetsPanel = ({
       });
       return updatedDefaultOrderData;
     });
+  };
+
+  const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
+    setIsEditValuesModalOpen(true);
+    setSelectedFacet(facet);
   };
 
   const FacetRow = ({
@@ -245,7 +256,9 @@ export const FacetsPanel = ({
           />
         </Col>
         <Col>
-          <Button>Edit values</Button>
+          <Button onClick={() => handleOpenFacetEditModal(facet)}>
+            Edit values
+          </Button>
         </Col>
       </Row>
     );
@@ -326,6 +339,10 @@ export const FacetsPanel = ({
             <FacetRow key={facet.id} facet={facet} index={index}></FacetRow>
           ))}
       </AttributesTable>
+
+      {isEditValuesModalOpen && selectedFacet && (
+        <ModalEditValues onClose={onClose} facet={selectedFacet} />
+      )}
 
       {localFacetData.length === 0 && (
         <NoAttributesBlock>

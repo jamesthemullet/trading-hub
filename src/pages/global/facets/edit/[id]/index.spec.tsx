@@ -141,22 +141,18 @@ describe('Global Facet Management Editing', () => {
     it('should open the modal', async () => {
       await openModal();
 
-      waitFor(() => {
-        expect(
-          screen.getByRole('heading', { level: 3, name: 'Add facet' })
-        ).toBeVisible();
-      });
+      expect(
+        screen.getByRole('heading', { level: 3, name: 'Add facet' })
+      ).toBeVisible();
     });
 
     it('should close the modal on click of the close button', async () => {
       const user = userEvent.setup({ delay: null });
       await openModal();
 
-      waitFor(() => {
-        expect(
-          screen.getByRole('heading', { level: 3, name: 'Add facet' })
-        ).toBeVisible();
-      });
+      expect(
+        screen.getByRole('heading', { level: 3, name: 'Add facet' })
+      ).toBeVisible();
 
       const closeButton = screen.getByRole('button', { name: 'Close Modal' });
 
