@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
 import styled from '@emotion/styled';
-import type { ReturnedRuleSet } from '../../libs/api';
+import type { MerchandisingRules, ReturnedRuleSet } from '../../libs/api';
 
 import { spacing } from '@/libs/components/utils/spacing';
-import { useRuleSet, useRuleSetDelete } from '@/libs/hooks';
+import { useRuleSet, useRuleSetDelete, useUpdateRuleSet } from '@/libs/hooks';
 import {
   Button,
   Heading,
-  Rules,
+  Rulesets,
   Search,
   TablePagination,
 } from '@/libs/components';
@@ -46,6 +46,8 @@ const RuleSets = () => {
   const [columnSortOrder, setColumnSortOrder] = useState<'asc' | 'desc'>('asc');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  const { updateRuleSet } = useUpdateRuleSet();
+
   const currentPageIndex = currentPage - 1;
 
   const { ruleSets, pagination, refetchRuleSetList } = useRuleSet(
@@ -58,6 +60,26 @@ const RuleSets = () => {
 
   const onDeleteRuleSet = async ({ rulesetId }: { rulesetId: string }) => {
     await handleDelete({ rulesetId });
+    refetchRuleSetList();
+  };
+
+  const onEnableDisableRuleSet = async ({
+    ruleSetId,
+    isEnabled,
+    merchandisingRules,
+    categoryId,
+  }: {
+    categoryId: string;
+    isEnabled: boolean;
+    merchandisingRules: MerchandisingRules;
+    ruleSetId: string;
+  }) => {
+    await updateRuleSet({
+      id: ruleSetId,
+      pinnedProducts: merchandisingRules.pinnedProducts,
+      categoryId,
+      isEnabled,
+    });
     refetchRuleSetList();
   };
 
@@ -81,7 +103,7 @@ const RuleSets = () => {
             </Button>
           </NewButton>
         </ToolsContainer>
-        <Rules
+        <Rulesets
           rules={ruleSets}
           columnSortOrder={columnSortOrder}
           columnOrderName={columnIdToSort}
@@ -94,6 +116,7 @@ const RuleSets = () => {
             setColumnIdToSort(columnId);
           }}
           onDeleteRuleSet={onDeleteRuleSet}
+          onEnableDisableRuleSet={onEnableDisableRuleSet}
         />
 
         <TablePagination

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 
 import { Toggle } from '../../toggle/toggle';
-import type { ReturnedRuleSet } from '@/libs/api';
+import type { MerchandisingRules, ReturnedRuleSet } from '@/libs/api';
 import { Text } from '../../typography/typography.styles';
 import {
   TableContainer,
@@ -20,7 +20,7 @@ import {
 import { spacing } from '../../utils/spacing';
 import styled from '@emotion/styled';
 
-const RulesTableCol = styled(TableCol)`
+const Col = styled(TableCol)`
   flex: 0 0 150px;
 
   &:first-of-type {
@@ -42,6 +42,12 @@ type RulesProps = {
   columnSortOrder: 'asc' | 'desc';
   onDeleteRuleSet: ({ rulesetId }: { rulesetId: string }) => void;
   onColumnOrderChange: (columnId: keyof ReturnedRuleSet) => void;
+  onEnableDisableRuleSet: (args: {
+    categoryId: string;
+    isEnabled: boolean;
+    merchandisingRules: MerchandisingRules;
+    ruleSetId: string;
+  }) => void;
   rules: ReturnedRuleSet[];
 };
 
@@ -65,10 +71,11 @@ const COLUMNS: {
   },
 ];
 
-export const Rules = ({
+export const Rulesets = ({
   rules,
   onColumnOrderChange,
   onDeleteRuleSet,
+  onEnableDisableRuleSet,
   columnOrderName,
   columnSortOrder,
 }: RulesProps) => {
@@ -78,7 +85,7 @@ export const Rules = ({
     <TableContainer>
       <TableRow style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
         {COLUMNS.map(({ label, sortBy }) => (
-          <RulesTableCol
+          <Col
             key={`column-${label}`}
             style={{
               cursor: sortBy ? 'pointer' : 'auto',
@@ -99,7 +106,7 @@ export const Rules = ({
                 }
               />
             )}
-          </RulesTableCol>
+          </Col>
         ))}
       </TableRow>
       {rules.map(
@@ -109,28 +116,39 @@ export const Rules = ({
           id,
           lastChanged,
           isEnabled,
+          rules,
         }: ReturnedRuleSet) => {
           const isOptionDropdownOpen = optionToggle === id;
 
           return (
             <TableRow key={`rule-${id}`}>
-              <RulesTableCol>
+              <Col>
                 <Text title={categoryName}>
                   {categoryId} | {categoryName}
                 </Text>
-              </RulesTableCol>
-              <RulesTableCol>
-                <Toggle checked={isEnabled} onChange={() => {}} />
-              </RulesTableCol>
-              <RulesTableCol>
+              </Col>
+              <Col>
+                <Toggle
+                  checked={isEnabled}
+                  onChange={() => {
+                    onEnableDisableRuleSet({
+                      categoryId,
+                      isEnabled: !isEnabled,
+                      merchandisingRules: rules,
+                      ruleSetId: id,
+                    });
+                  }}
+                />
+              </Col>
+              <Col>
                 <TableDateContainer>
                   <Text>
                     {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
                   </Text>
                   <Text style={{ fontSize: '0.7em' }}>{lastChanged.user}</Text>
                 </TableDateContainer>
-              </RulesTableCol>
-              <RulesTableCol style={{ padding: '12px 0 16px' }}>
+              </Col>
+              <Col style={{ padding: '12px 0 16px' }}>
                 <TableActions>
                   <TableActionsButton href={`rules/edit/${id}`}>
                     Edit
@@ -151,7 +169,7 @@ export const Rules = ({
                     </TableDropdown>
                   )}
                 </TableActions>
-              </RulesTableCol>
+              </Col>
             </TableRow>
           );
         }

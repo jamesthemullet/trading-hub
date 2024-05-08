@@ -16,16 +16,19 @@ const Page = ({ id }: PageProps) => {
   const router = useRouter();
 
   const saveRuleSet = async ({
-    rulesetId,
-    merchandisingRules,
     categoryId,
+    isEnabled,
+    merchandisingRules,
+    rulesetId,
   }: {
-    rulesetId: string;
-    merchandisingRules: MerchandisingRules;
     categoryId: string;
+    isEnabled: boolean;
+    merchandisingRules: MerchandisingRules;
+    rulesetId: string;
   }) => {
     await updateRuleSet({
       id: rulesetId,
+      isEnabled,
       pinnedProducts: merchandisingRules.pinnedProducts,
       categoryId,
     });
@@ -37,6 +40,7 @@ const Page = ({ id }: PageProps) => {
 
       {ruleSets.categoryName && (
         <Ruleset
+          isEnabled={ruleSets.isEnabled}
           onSave={saveRuleSet}
           onCancel={() => router.push('/rules')}
           rulesetCategory={{

@@ -20,6 +20,13 @@ jest.mock('../../libs/hooks/use-rule-set-delete', () => ({
   },
 }));
 
+const mockUpdateRuleSet = jest.fn();
+jest.mock('../../libs/hooks/use-update-rule-set', () => ({
+  useUpdateRuleSet: () => {
+    return { updateRuleSet: mockUpdateRuleSet };
+  },
+}));
+
 const mockMerchangdisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
@@ -318,5 +325,42 @@ describe('Index', () => {
     await userEvent.click(rulesetDelete);
 
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
+  });
+
+  it('should enable or disable a ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockCatId = 'catId';
+    jest.mocked(useRuleSet).mockReturnValue({
+      ruleSets: [
+        {
+          categoryName: 'cat id',
+          id: mockId,
+          categoryId: mockCatId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchangdisingRules,
+        },
+      ],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+    });
+
+    render(<RuleSets />);
+
+    const rulesetToggle = screen.getAllByTitle('Toggle');
+
+    await userEvent.click(rulesetToggle[0]);
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryId: mockCatId,
+      id: mockId,
+      isEnabled: false,
+      pinnedProducts: mockMerchangdisingRules.pinnedProducts,
+    });
   });
 });

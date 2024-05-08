@@ -57,6 +57,7 @@ describe('useUpdateRuleSet', () => {
     } = renderHook(() => useUpdateRuleSet());
     const resp = await current.updateRuleSet({
       id: ruleSetId,
+      isEnabled: true,
       pinnedProducts: pinnedProducts,
       categoryId: categoryId,
     });
@@ -75,6 +76,7 @@ describe('useUpdateRuleSet', () => {
     await act(async () => {
       await result.current.updateRuleSet({
         id: ruleSetId,
+        isEnabled: true,
         pinnedProducts: pinnedProducts,
         categoryId: categoryId,
       });
@@ -92,6 +94,7 @@ describe('useUpdateRuleSet', () => {
     await act(async () => {
       await result.current.updateRuleSet({
         id: ruleSetId,
+        isEnabled: true,
         pinnedProducts: pinnedProducts,
         categoryId: categoryId,
       });

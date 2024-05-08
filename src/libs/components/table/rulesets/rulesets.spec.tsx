@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import type { ReturnedRuleSet } from '@/libs/api';
 
-import { Rules } from './rules';
+import { Rulesets } from './rulesets';
 
 const mockRules: ReturnedRuleSet[] = [
   {
@@ -43,12 +43,13 @@ const mockRules: ReturnedRuleSet[] = [
 describe('Heading', () => {
   it('should render rule headings', () => {
     render(
-      <Rules
+      <Rulesets
         rules={mockRules}
         columnOrderName="categoryName"
         columnSortOrder="asc"
         onColumnOrderChange={jest.fn()}
         onDeleteRuleSet={jest.fn()}
+        onEnableDisableRuleSet={jest.fn()}
       />
     );
 
@@ -57,12 +58,13 @@ describe('Heading', () => {
 
   it('should render list of rules', () => {
     render(
-      <Rules
+      <Rulesets
         rules={mockRules}
         columnOrderName="categoryName"
         columnSortOrder="asc"
         onColumnOrderChange={jest.fn()}
         onDeleteRuleSet={jest.fn()}
+        onEnableDisableRuleSet={jest.fn()}
       />
     );
 
@@ -74,12 +76,13 @@ describe('Heading', () => {
     const user = userEvent.setup();
     const mockCallback = jest.fn();
     render(
-      <Rules
+      <Rulesets
         rules={mockRules}
         columnOrderName="categoryName"
         columnSortOrder="asc"
         onColumnOrderChange={mockCallback}
         onDeleteRuleSet={jest.fn()}
+        onEnableDisableRuleSet={jest.fn()}
       />
     );
 
@@ -90,30 +93,39 @@ describe('Heading', () => {
 
   it('should toggle the isEnabled option', async () => {
     const user = userEvent.setup();
+    const mockEnableDisable = jest.fn();
+
     render(
-      <Rules
+      <Rulesets
         rules={mockRules}
         columnOrderName="categoryName"
         columnSortOrder="asc"
         onColumnOrderChange={jest.fn()}
         onDeleteRuleSet={jest.fn()}
+        onEnableDisableRuleSet={mockEnableDisable}
       />
     );
 
     await user.click(screen.getAllByTitle('Toggle')[0]);
 
-    expect(screen.getAllByTitle('Toggle')[0]).toBeInTheDocument();
+    expect(mockEnableDisable).toHaveBeenCalledWith({
+      categoryId: mockRules[0].categoryId,
+      isEnabled: false,
+      merchandisingRules: mockRules[0].rules,
+      ruleSetId: mockRules[0].id,
+    });
   });
 
   it('should open the options dropdown', async () => {
     const user = userEvent.setup();
     render(
-      <Rules
+      <Rulesets
         rules={mockRules}
         columnOrderName="categoryName"
         columnSortOrder="asc"
         onColumnOrderChange={jest.fn()}
         onDeleteRuleSet={jest.fn()}
+        onEnableDisableRuleSet={jest.fn()}
       />
     );
 
@@ -125,12 +137,13 @@ describe('Heading', () => {
   it('should open and close the options dropdown', async () => {
     const user = userEvent.setup();
     render(
-      <Rules
+      <Rulesets
         rules={mockRules}
         columnOrderName="categoryName"
         columnSortOrder="asc"
         onColumnOrderChange={jest.fn()}
         onDeleteRuleSet={jest.fn()}
+        onEnableDisableRuleSet={jest.fn()}
       />
     );
 
@@ -144,12 +157,13 @@ describe('Heading', () => {
     const user = userEvent.setup();
     const mockDelete = jest.fn();
     render(
-      <Rules
+      <Rulesets
         rules={mockRules}
         columnOrderName="categoryName"
         columnSortOrder="asc"
         onColumnOrderChange={jest.fn()}
         onDeleteRuleSet={mockDelete}
+        onEnableDisableRuleSet={jest.fn()}
       />
     );
 

@@ -63,8 +63,9 @@ export type ChangePositionTypes = {
 };
 
 type NewRulesetValues = {
-  merchandisingRules: MerchandisingRules;
+  isEnabled: boolean;
   categoryId: string;
+  merchandisingRules: MerchandisingRules;
 };
 
 interface EditRulesetValues extends NewRulesetValues {
@@ -80,6 +81,7 @@ export type EditAttribute = {
 };
 
 export const Ruleset = ({
+  isEnabled,
   onCancel,
   onCreate,
   onSave,
@@ -87,6 +89,7 @@ export const Ruleset = ({
   rulesetId,
   rulesetMerchandisingRules,
 }: {
+  isEnabled: boolean;
   onSave?: ({ rulesetId }: EditRulesetValues) => void;
   onCancel: () => void;
   onCreate?: ({ categoryId, merchandisingRules }: NewRulesetValues) => void;
@@ -393,12 +396,14 @@ export const Ruleset = ({
   const onSaveRuleset = (categoryId: string) => {
     if (rulesetId && onSave) {
       onSave({
+        isEnabled,
         rulesetId,
         merchandisingRules,
         categoryId,
       });
     } else if (onCreate) {
       onCreate({
+        isEnabled,
         merchandisingRules,
         categoryId,
       });

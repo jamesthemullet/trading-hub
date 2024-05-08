@@ -12,11 +12,13 @@ export const useUpdateRuleSet = () => {
   const updateRuleSet = useCallback(
     async ({
       categoryId,
-      pinnedProducts,
       id,
+      isEnabled,
+      pinnedProducts,
     }: {
       categoryId: string;
       id: string;
+      isEnabled: boolean;
       pinnedProducts: Product[];
     }) => {
       setError('');
@@ -24,7 +26,7 @@ export const useUpdateRuleSet = () => {
       try {
         const body = {
           categoryId,
-          isEnabled: true,
+          isEnabled,
           rules: {
             pinnedProducts: pinnedProducts,
             blockedProducts: [],

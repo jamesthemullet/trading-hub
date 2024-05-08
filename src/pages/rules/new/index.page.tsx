@@ -30,6 +30,7 @@ const NewRuleSetPage = () => {
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
 
       <Ruleset
+        isEnabled={true}
         onCreate={createNewCategory}
         onCancel={() => router.push('/rules')}
       />

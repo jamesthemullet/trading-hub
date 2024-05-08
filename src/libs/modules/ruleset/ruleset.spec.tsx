@@ -192,7 +192,9 @@ describe('Ruleset', () => {
   });
 
   it('should render correctly', () => {
-    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(
+      <Ruleset isEnabled={true} onSave={jest.fn()} onCancel={jest.fn()} />
+    );
 
     expect(screen.getByText('Save')).toBeInTheDocument();
   });
@@ -205,7 +207,9 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+    renderWithProviders(
+      <Ruleset isEnabled={true} onSave={jest.fn()} onCancel={jest.fn()} />
+    );
 
     await selectCategory(screen, user);
 
@@ -221,7 +225,9 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    renderWithProviders(<Ruleset onCreate={mockCreate} onCancel={jest.fn()} />);
+    renderWithProviders(
+      <Ruleset isEnabled={true} onCreate={mockCreate} onCancel={jest.fn()} />
+    );
 
     await selectCategory(screen, user);
 
@@ -247,6 +253,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
+        isEnabled={true}
         onSave={mockSave}
         onCancel={jest.fn()}
         rulesetCategory={{
@@ -291,6 +298,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
+        isEnabled={true}
         onSave={mockSave}
         onCancel={mockCancel}
         rulesetCategory={{
@@ -336,7 +344,9 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    renderWithProviders(<Ruleset onSave={mockSave} onCancel={jest.fn()} />);
+    renderWithProviders(
+      <Ruleset isEnabled={true} onSave={mockSave} onCancel={jest.fn()} />
+    );
 
     await selectCategory(screen, user);
 
@@ -387,6 +397,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetCategory={{
@@ -479,6 +490,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetCategory={{
@@ -611,6 +623,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetCategory={{
@@ -757,6 +770,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetCategory={{
@@ -807,6 +821,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetCategory={{
@@ -843,7 +858,9 @@ describe('Ruleset', () => {
         getCategoriesError: '',
       });
 
-      renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+      renderWithProviders(
+        <Ruleset isEnabled={true} onSave={jest.fn()} onCancel={jest.fn()} />
+      );
 
       expect(
         screen.queryAllByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
@@ -908,6 +925,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetCategory={{
@@ -974,7 +992,9 @@ describe('Ruleset', () => {
         getCategoriesError: '',
       });
 
-      renderWithProviders(<Ruleset onSave={jest.fn()} onCancel={jest.fn()} />);
+      renderWithProviders(
+        <Ruleset isEnabled={true} onSave={jest.fn()} onCancel={jest.fn()} />
+      );
 
       await selectCategory(screen, user);
 
@@ -1005,6 +1025,7 @@ describe('Ruleset', () => {
   it('opens changes tab', async () => {
     renderWithProviders(
       <Ruleset
+        isEnabled={true}
         onSave={jest.fn()}
         onCancel={jest.fn()}
         rulesetMerchandisingRules={mockMerchandisingRules}
@@ -1094,6 +1115,7 @@ describe('Ruleset', () => {
     it('adds a numeric attribute', async () => {
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -1146,6 +1168,7 @@ describe('Ruleset', () => {
     it('adds an alphanumeric attribute', async () => {
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -1172,6 +1195,7 @@ describe('Ruleset', () => {
     it('adds a buried alphanumeric attribute', async () => {
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -1196,6 +1220,7 @@ describe('Ruleset', () => {
     it('deletes attributes', async () => {
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
@@ -1225,6 +1250,7 @@ describe('Ruleset', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <Ruleset
+          isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
