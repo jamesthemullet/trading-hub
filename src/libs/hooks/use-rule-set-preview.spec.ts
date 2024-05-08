@@ -1,8 +1,8 @@
 import { renderHook, waitFor } from '@testing-library/react';
-
-import type { ReturnedRuleSet } from '@/libs/api';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
+
+import type { ReturnedRuleSet } from '@/libs/api';
 
 import { useRuleSetPreview } from './use-rule-set-preview';
 

@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
-
-import { ModalAddFacets } from './modal-add-facets';
 import userEvent from '@testing-library/user-event';
+
 import { renderWithProviders } from '../../../test/render-with-providers';
+import { ModalAddFacets } from './modal-add-facets';
 
 describe('Add Facet Modal', () => {
   it('should filter attributes on user input', async () => {

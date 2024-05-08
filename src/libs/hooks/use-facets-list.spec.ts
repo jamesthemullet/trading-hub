@@ -1,9 +1,10 @@
 import { renderHook, waitFor } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+
+import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
 import { useFacetsList } from './use-facets-list';
-import { HttpResponse, http } from 'msw';
-import { setupServer } from 'msw/node';
-import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
 const baseUrl = 'http://localhost';
 

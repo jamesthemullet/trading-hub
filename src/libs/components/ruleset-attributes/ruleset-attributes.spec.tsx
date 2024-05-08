@@ -1,10 +1,11 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
-
-import { RulesetAttributes } from '@/libs/components';
-import { renderWithProviders } from '../../../test/render-with-providers';
 import userEvent from '@testing-library/user-event';
-import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
+
 import { MerchandisingRules } from '@/libs/api';
+import { RulesetAttributes } from '@/libs/components';
+
+import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
+import { renderWithProviders } from '../../../test/render-with-providers';
 
 jest.mock('@/libs/hooks', () => ({
   useAttributes: () => ({

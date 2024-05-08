@@ -1,8 +1,10 @@
-import { renderWithProviders } from '@/test/render-with-providers';
-import { EditableLabel } from './editable-label';
 import { screen, waitFor } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
+
+import { renderWithProviders } from '@/test/render-with-providers';
+
+import { EditableLabel } from './editable-label';
 
 describe('editable-label', () => {
   describe('EditableLabel', () => {

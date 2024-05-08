@@ -1,7 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { default as FacetManagementPage } from './index.page';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),

@@ -1,10 +1,11 @@
-import { act, screen, Screen, waitFor } from '@testing-library/react';
-
-import { FacetsPanel } from './facets-panel';
-import { renderWithProviders } from '@/test/render-with-providers';
+import { act, Screen, screen, waitFor } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
+
 import { useGetCategories } from '@/libs/hooks';
 import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
+import { renderWithProviders } from '@/test/render-with-providers';
+
+import { FacetsPanel } from './facets-panel';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),

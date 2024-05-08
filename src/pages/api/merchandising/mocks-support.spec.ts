@@ -1,11 +1,12 @@
+import rawApi from '@/libs/api/api.yml';
+
+import { createMockNextApiRequest } from '../../../test/create-mock-next-api-request';
+import { getMockMapping } from './mocks';
 import {
-  validateAndMockResponse,
   matchPaths,
   printValidationError,
+  validateAndMockResponse,
 } from './mocks-support';
-import { createMockNextApiRequest } from '../../../test/create-mock-next-api-request';
-import rawApi from '@/libs/api/api.yml';
-import { getMockMapping } from './mocks';
 
 const baseUrl = 'https://merch';
 

@@ -1,6 +1,8 @@
 import { screen } from '@testing-library/react';
-import { FacetsPanelSkeleton } from './facets-panel-skeleton';
+
 import { renderWithProviders } from '@/test/render-with-providers';
+
+import { FacetsPanelSkeleton } from './facets-panel-skeleton';
 
 describe('facets-panel-skeleton', () => {
   describe('FacetsPanelSkeleton', () => {

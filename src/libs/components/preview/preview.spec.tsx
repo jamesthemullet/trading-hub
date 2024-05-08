@@ -1,9 +1,9 @@
 import { act, render, screen } from '@testing-library/react';
 
-import { useCategoryPreview } from '../../hooks/use-category-preview';
-
-import { Preview } from './preview';
 import { Facet } from '@/libs/api';
+
+import { useCategoryPreview } from '../../hooks/use-category-preview';
+import { Preview } from './preview';
 
 jest.mock('../../hooks/use-category-preview', () => ({
   useCategoryPreview: jest.fn(),

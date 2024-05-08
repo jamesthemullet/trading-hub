@@ -1,5 +1,5 @@
-import { act } from 'react-dom/test-utils';
 import { render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 
 import { Pagination } from './pagination';
 

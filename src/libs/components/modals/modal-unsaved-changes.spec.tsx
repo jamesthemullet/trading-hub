@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 
-import { ModalUnsavedChanges } from './modal-unsaved-changes';
 import { renderWithProviders } from '../../../test/render-with-providers';
+import { ModalUnsavedChanges } from './modal-unsaved-changes';
 
 describe('ModalUnsavedChanges', () => {
   it('should render correctly', () => {

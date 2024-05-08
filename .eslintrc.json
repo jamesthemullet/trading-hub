@@ -17,7 +17,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "simple-import-sort"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
@@ -57,7 +57,9 @@
         "functional/no-expression-statement": "off",
         "@next/next/no-document-import-in-page": "off",
         "@next/next/no-head-element": "off",
-        "@next/next/no-server-import-in-page": "off"
+        "@next/next/no-server-import-in-page": "off",
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
       }
     }
   ],

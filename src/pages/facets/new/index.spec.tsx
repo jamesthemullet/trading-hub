@@ -1,11 +1,11 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { useRouter } from 'next/router';
 
-import Page from './index.page';
-import { renderWithProviders } from '@/test/render-with-providers';
 import { useGetCategories } from '@/libs/hooks';
+import { renderWithProviders } from '@/test/render-with-providers';
+
+import Page from './index.page';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),

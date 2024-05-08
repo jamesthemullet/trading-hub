@@ -5,10 +5,11 @@ import type { ResponseResolverInfo } from 'msw/lib/core/handlers/RequestHandler'
 import { setupServer } from 'msw/node';
 import { getToken } from 'next-auth/jwt';
 
-import type { MerchandisingEnvironment } from './[...merchandising].page';
-import proxy from './[...merchandising].page';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 import { createMockNextApiResponse } from '@/test/create-mock-next-api-response';
+
+import type { MerchandisingEnvironment } from './[...merchandising].page';
+import proxy from './[...merchandising].page';
 import { validateAndMockResponse } from './mocks-support';
 
 jest.mock('next-auth/jwt', () => ({

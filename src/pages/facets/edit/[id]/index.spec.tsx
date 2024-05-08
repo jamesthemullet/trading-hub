@@ -1,18 +1,18 @@
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
-import Page, { getServerSideProps } from './index.page';
-import { renderWithProviders } from '@/test/render-with-providers';
 import { useGetCategories } from '@/libs/hooks';
 import { useRuleSetPreview } from '@/libs/hooks/use-rule-set-preview';
 import {
   mockUseRuleSetPreviewData,
   ruleSetId,
 } from '@/test/data/mock-use-rule-set-preview.data';
+import { renderWithProviders } from '@/test/render-with-providers';
+
+import Page, { getServerSideProps } from './index.page';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),

@@ -1,7 +1,8 @@
 import { MantineProvider } from '@mantine/core';
-import { DatePicker } from './date-picker';
-import { screen, render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import dayjs from 'dayjs';
+
+import { DatePicker } from './date-picker';
 
 describe('date-picker', () => {
   it('should render', () => {

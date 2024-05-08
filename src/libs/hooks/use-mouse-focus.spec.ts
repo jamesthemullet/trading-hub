@@ -1,5 +1,5 @@
-import type { FocusEvent, MouseEvent } from 'react';
 import { act, renderHook } from '@testing-library/react';
+import type { FocusEvent, MouseEvent } from 'react';
 
 import { useMouseFocus } from './use-mouse-focus';
 

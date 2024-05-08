@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-
 import { SessionProvider, signIn, signOut } from 'next-auth/react';
 
 import Index, { getServerSideProps } from './index.page';

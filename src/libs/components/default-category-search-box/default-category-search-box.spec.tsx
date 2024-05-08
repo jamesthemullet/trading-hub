@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+
 import { DefaultCategorySearchBox } from './default-category-search-box';
 
 const mockProps = {

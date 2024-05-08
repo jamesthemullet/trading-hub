@@ -1,5 +1,6 @@
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 import { createMockNextApiResponse } from '@/test/create-mock-next-api-response';
+
 import healthcheckEndpoint from './healthcheck.page';
 
 describe('Healthcheck endpoint', () => {

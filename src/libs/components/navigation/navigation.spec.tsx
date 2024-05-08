@@ -1,6 +1,5 @@
-import { render, screen, act } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import { Navigation } from './navigation';

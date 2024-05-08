@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
 import type { Product } from '../../api';
-
 import { VisualEditor } from './visual-editor';
 
 describe('VisualEditor', () => {

@@ -1,10 +1,10 @@
-import { act } from 'react-dom/test-utils';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import type { ReturnedRuleSet } from '../../libs/api';
+import { act } from 'react-dom/test-utils';
 
 import { useRuleSet } from '@/libs/hooks';
+
+import type { ReturnedRuleSet } from '../../libs/api';
 import { default as RuleSets } from './index.page';
 
 process.env.DEBUG_PRINT_LIMIT = '1000000';

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
-import { RulesetChanges } from './ruleset-changes';
 import { useCategoryPreview } from '../../hooks';
+import { RulesetChanges } from './ruleset-changes';
 
 jest.mock('../../hooks/use-category-preview', () => ({
   useCategoryPreview: jest.fn(),

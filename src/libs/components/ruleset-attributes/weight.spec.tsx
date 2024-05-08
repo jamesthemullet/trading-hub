@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { AttributeWeight } from './weight';
 import userEvent from '@testing-library/user-event';
+
+import { AttributeWeight } from './weight';
 
 describe('AttributeWeight', () => {
   it('shows the attribute weight', () => {

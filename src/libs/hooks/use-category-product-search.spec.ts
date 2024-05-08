@@ -1,8 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
-
-import type { RuleSets } from '@/libs/api';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
+
+import type { RuleSets } from '@/libs/api';
 
 import { useCategoryProductSearch } from './use-category-product-search';
 

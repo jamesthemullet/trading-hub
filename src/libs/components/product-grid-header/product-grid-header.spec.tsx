@@ -1,7 +1,7 @@
 import { act, screen } from '@testing-library/react';
 
-import { ProductGridHeader } from './product-grid-header';
 import { renderWithProviders } from '../../../test/render-with-providers';
+import { ProductGridHeader } from './product-grid-header';
 
 describe('ProductGridHeader', () => {
   it('should render correctly', () => {

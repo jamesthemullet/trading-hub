@@ -1,10 +1,10 @@
-import { createMockNextApiRequest } from '../../../test/create-mock-next-api-request';
-import { createMockNextApiResponse } from '../../../test/create-mock-next-api-response';
 import NextAuth from 'next-auth';
 
+import { createMockNextApiRequest } from '../../../test/create-mock-next-api-request';
+import { createMockNextApiResponse } from '../../../test/create-mock-next-api-response';
 import auth, { jwtCallback, sessionCallback } from './[...nextauth].page';
 import mocked = jest.mocked;
-import { HttpResponse, http } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 jest.mock('next-auth', () => jest.fn());

@@ -1,5 +1,6 @@
-import { Screen, act, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
+
+import { act, Screen, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -21,17 +22,17 @@ jest.mock('../../hooks/use-attributes', () => ({
   }),
 }));
 
-import { Ruleset } from './ruleset';
-import { useGetCategories } from '../../hooks/use-get-categories';
-import { useCategoryPreview } from '../../hooks/use-category-preview';
-import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
-import { renderWithProviders } from '../../../test/render-with-providers';
 import {
   attributesMock,
   boostMock,
   buriesMock,
 } from '../../../pages/api/merchandising/mocks';
+import { renderWithProviders } from '../../../test/render-with-providers';
 import { BoostsBuries, MerchandisingRules } from '../../api';
+import { useCategoryPreview } from '../../hooks/use-category-preview';
+import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
+import { useGetCategories } from '../../hooks/use-get-categories';
+import { Ruleset } from './ruleset';
 
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const PRODUCT_SEARCH_PLACEHOLDER_TEXT = 'Search for product';

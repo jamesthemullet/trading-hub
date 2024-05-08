@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 
-import { FacetsManagementTable } from './facets';
-
 import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
+
+import { FacetsManagementTable } from './facets';
 
 const mockFacets = globalFacetsListMock.facets.map((facet) => ({
   ...facet,

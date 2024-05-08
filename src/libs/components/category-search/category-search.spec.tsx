@@ -1,8 +1,8 @@
-import { act, screen, render, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { useGetCategories } from '../../hooks/use-get-categories';
 import { CategorySearch } from './category-search';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('../../hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),

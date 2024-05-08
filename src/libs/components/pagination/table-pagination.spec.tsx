@@ -1,5 +1,6 @@
-import { act } from 'react-dom/test-utils';
 import { render, screen, waitFor } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+
 import { TablePagination } from './table-pagination';
 
 const pageSizes = [10, 20, 50, 100];

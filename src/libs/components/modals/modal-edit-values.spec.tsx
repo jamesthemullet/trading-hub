@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 
-import { ModalEditValues } from './modal-edit-values';
 import { renderWithProviders } from '../../../test/render-with-providers';
+import { ModalEditValues } from './modal-edit-values';
 
 describe('Add Facet Modal', () => {
   it('should render edit values modal', async () => {
