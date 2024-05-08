@@ -3,7 +3,8 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 import { Heading } from '@/libs/components';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
-import { useRuleSetPreview } from '@/libs/hooks';
+import { useFacetsList, useRuleSetPreview } from '@/libs/hooks';
+import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
 export const getServerSideProps: GetServerSideProps = (
   context: GetServerSidePropsContext
@@ -16,6 +17,7 @@ export const getServerSideProps: GetServerSideProps = (
 const Page = ({ id }: { id: string }) => {
   const router = useRouter();
   const { ruleSets } = useRuleSetPreview(id);
+  const { facets, isLoading } = useFacetsList([id]);
 
   const handleSave = () => {
     // TODO: Implement save functionality
@@ -29,13 +31,17 @@ const Page = ({ id }: { id: string }) => {
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
 
-      <FacetsPanel
-        onSave={handleSave}
-        onCancel={handleCancel}
-        title="Facet Rule Editor"
-        categoryName={ruleSets.categoryId}
-        facetsData={[]}
-      />
+      {isLoading ? (
+        <FacetsPanelSkeleton title="Global Facet Rule Editor" />
+      ) : (
+        <FacetsPanel
+          onSave={handleSave}
+          onCancel={handleCancel}
+          title="Facet Rule Editor"
+          categoryName={ruleSets.categoryId}
+          facetsData={facets}
+        />
+      )}
     </>
   );
 };

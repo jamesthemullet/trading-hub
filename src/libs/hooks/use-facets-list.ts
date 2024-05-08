@@ -9,10 +9,14 @@ export const useFacetsList = (categoryId?: string[]) => {
   });
   const [error, setError] = useState('');
 
+  // workaround for categoryId being an array and leading to infinite loop
+  const jsonCategoryId = JSON.stringify(categoryId || []);
   useEffect(() => {
     const asyncCall = async () => {
       try {
-        const response = await merchandising().facetList({ categoryId });
+        const response = await merchandising().facetList({
+          ...JSON.parse(jsonCategoryId),
+        });
 
         const facetList = response.data;
 
@@ -25,7 +29,7 @@ export const useFacetsList = (categoryId?: string[]) => {
     };
     void asyncCall();
     setIsLoading(true);
-  }, [categoryId]);
+  }, [jsonCategoryId]);
 
   return {
     facets: facetsList.facets,

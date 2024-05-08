@@ -4,8 +4,12 @@ import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 
-import { useGetCategories } from '@/libs/hooks';
-import { useRuleSetPreview } from '@/libs/hooks/use-rule-set-preview';
+import {
+  useFacetsList,
+  useGetCategories,
+  useRuleSetPreview,
+} from '@/libs/hooks';
+import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 import {
   mockUseRuleSetPreviewData,
   ruleSetId,
@@ -17,11 +21,11 @@ import Page, { getServerSideProps } from './index.page';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-rule-set-preview', () => ({
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
   useRuleSetPreview: jest.fn(),
-}));
-jest.mock('../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
+  useFacetsList: jest.fn(),
 }));
 
 const logSpy = jest.spyOn(console, 'log');
@@ -41,7 +45,7 @@ const mockGetCategories = {
   pagination: { totalItems: 20 },
 };
 
-describe('Facet Management Editing', () => {
+describe('Category Facet Management Editing', () => {
   const mockRouter = {
     push: jest.fn(),
   };
@@ -50,6 +54,11 @@ describe('Facet Management Editing', () => {
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
+    });
+    jest.mocked(useFacetsList).mockReturnValue({
+      isLoading: false,
+      facets: globalFacetsListMock.facets,
+      error: '',
     });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
@@ -115,5 +124,19 @@ describe('Facet Management Editing', () => {
 
     // TODO: Implement save functionality
     expect(logSpy).toHaveBeenCalled();
+  });
+
+  it('should render skeleton when loading', () => {
+    jest.mocked(useFacetsList).mockReturnValue({
+      isLoading: true,
+      facets: [],
+      error: '',
+    });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    expect(() => screen.getByRole('button', { name: 'Save' })).toThrow(
+      'Unable to find an accessible element with the role "button"'
+    );
   });
 });

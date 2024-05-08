@@ -58,7 +58,7 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
 
-describe('Facet Management Editing', () => {
+describe('Facet Panel', () => {
   beforeEach(() => {
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
