@@ -17,7 +17,7 @@ const config: Config = {
   coverageProvider: 'babel',
   setupFiles: ['./jest.polyfills.js'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
-  coverageReporters: ['html', 'text', 'json-summary'],
+  coverageReporters: ['html', 'text', 'json-summary', 'lcov'],
   reporters: ['default', 'jest-junit'],
   collectCoverageFrom: [
     '**/*.{js,jsx,tsx,ts}',
