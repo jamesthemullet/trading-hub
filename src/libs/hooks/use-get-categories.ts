@@ -30,7 +30,6 @@ export const useGetCategories = () => {
           setGetCategoriesError(`GET status ${error.status}`);
           return;
         }
-        setGetCategoriesError(`Failed to get categories ${error}`);
       }
     },
     []

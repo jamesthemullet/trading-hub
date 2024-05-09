@@ -100,8 +100,6 @@ describe('useUpdateRuleSet', () => {
       });
     });
 
-    expect(result.current.error).toEqual(
-      'Failed to update rule set TypeError: Failed to fetch'
-    );
+    expect(result.current.error).toEqual('PUT status 500');
   });
 });

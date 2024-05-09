@@ -42,7 +42,6 @@ export const useUpdateRuleSet = () => {
           setError(`PUT status ${error.status}`);
           return;
         }
-        setError(`Failed to update rule set ${error}`);
       }
     },
     []

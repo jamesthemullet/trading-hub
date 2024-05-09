@@ -194,9 +194,7 @@ describe('useRuleSet', () => {
     const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
 
     await waitFor(() => {
-      expect(result.current.error).toEqual(
-        'Failed to get categories TypeError: Failed to fetch'
-      );
+      expect(result.current.error).toEqual('POST status 500');
     });
   });
 });

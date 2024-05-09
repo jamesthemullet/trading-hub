@@ -58,7 +58,6 @@ export const useRuleSetPreview = (id: string) => {
           setError(`POST status ${error.status}`);
           return;
         }
-        setError(`Failed to get categories ${error}`);
       }
     };
 

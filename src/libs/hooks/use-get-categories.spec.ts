@@ -142,8 +142,6 @@ describe('useGetCategories', () => {
       });
     });
 
-    expect(result.current.getCategoriesError).toEqual(
-      'Failed to get categories TypeError: Failed to fetch'
-    );
+    expect(result.current.getCategoriesError).toEqual('GET status 500');
   });
 });
