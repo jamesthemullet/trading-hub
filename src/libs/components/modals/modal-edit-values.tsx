@@ -10,15 +10,20 @@ import { color } from '../utils/constants';
 import { FacetValuesSortDropdown } from '../dropdowns/facet-values-sort-dropdown/facet-values-sort-dropdown';
 import { Search } from '../search/search';
 import { ModalAttributesTable, HeadingAndCloseButton } from './modal.styles';
+import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
+import { EditableLabel } from '../editable-label/editable-label';
+import { useState } from 'react';
 
 const Row = styled(TableRow)<{ heading?: boolean }>`
   border-bottom: none;
   align-items: center;
+  margin-bottom: ${spacing(3)};
 `;
 
 const Col = styled(TableCol)<{ heading?: boolean }>`
   justify-content: space-between;
-  flex: 1;
+  flex: 20;
+  padding: 0;
 `;
 
 const MODAL_WIDTH = 1000;
@@ -46,21 +51,28 @@ const MergeAndSearchContainer = styled.div`
   padding: ${spacing(2)} 0;
 
   p {
-    flex: 4;
+    flex: 80;
   }
 
   button {
-    flex: 1;
+    flex: 20;
   }
 
   div {
-    flex: 2;
+    flex: 40;
   }
 `;
 
+const AttributeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${spacing(2)};
+`;
+
 const EDITFACETVALUESMODALCOLUMNS: {
-  label: string;
+  label: string | null;
 }[] = [
+  { label: null },
   {
     label: 'Attribute',
   },
@@ -72,6 +84,34 @@ const EDITFACETVALUESMODALCOLUMNS: {
   },
 ];
 
+type Attributes = {
+  index: number;
+  attribute: string;
+  displayValue: string;
+  actionSelected: 'Include only' | 'Exclude only' | null;
+};
+
+const mockAttributes = [
+  {
+    index: 0,
+    attribute: 'Cotton',
+    displayValue: 'Cotton',
+    actionSelected: null,
+  },
+  {
+    index: 1,
+    attribute: 'Duck Down',
+    displayValue: 'Duck Down',
+    actionSelected: null,
+  },
+  {
+    index: 2,
+    attribute: 'Duck Down And Feather',
+    displayValue: 'Duck Down And Feather',
+    actionSelected: null,
+  },
+] as Attributes[];
+
 export const ModalEditValues = ({
   onClose,
   facet,
@@ -79,6 +119,8 @@ export const ModalEditValues = ({
   onClose: () => void;
   facet: ReturnedFacet;
 }) => {
+  const [editFacetValues, setEditFacetValues] =
+    useState<Attributes[]>(mockAttributes);
   return (
     <Modal.Root
       opened={true}
@@ -120,12 +162,61 @@ export const ModalEditValues = ({
               <Row heading={true}>
                 {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                   <Col key={`add-facet-modal-column-${label}`} heading={true}>
-                    <TableHeading as="p" isStrong={true}>
-                      {label}
-                    </TableHeading>
+                    {label ? (
+                      <TableHeading as="p" isStrong={true}>
+                        {label}
+                      </TableHeading>
+                    ) : (
+                      <Col>
+                        <input type="checkbox" />
+                      </Col>
+                    )}
                   </Col>
                 ))}
               </Row>
+              {editFacetValues.map(({ attribute, displayValue, index }) => (
+                <Row
+                  key={`attribute-${attribute}`}
+                  data-testid="rows"
+                  heading={false}
+                >
+                  <Col>
+                    <input type="checkbox" />
+                  </Col>
+                  <Col heading={false}>
+                    <AttributeWrapper>
+                      <Image
+                        width={20}
+                        height={20}
+                        src="/trading-hub/asset/icon-attribute.svg"
+                        alt=""
+                      />
+                      <Text>{attribute}</Text>
+                    </AttributeWrapper>
+                  </Col>
+                  <Col heading={false}>
+                    <EditableLabel
+                      displayValue={displayValue}
+                      onDisplayValueChange={(newValue) => {
+                        setEditFacetValues((prev) => {
+                          const updatedFacet: Attributes = {
+                            ...prev[index],
+                            displayValue: newValue,
+                          };
+                          return [
+                            ...prev.slice(0, index),
+                            updatedFacet,
+                            ...prev.slice(index + 1),
+                          ];
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col heading={false}>
+                    <FacetOrderDropdown />
+                  </Col>
+                </Row>
+              ))}
             </ModalAttributesTable>
           </ModalContainer>
         </Modal.Body>
