@@ -1,7 +1,7 @@
 import { Heading } from '@/libs/components';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-import type { MerchandisingRules } from '@/libs/api';
+import type { MerchandisingRules, RuleSetFacetConfigWithId } from '@/libs/api';
 import { useUpdateRuleSet, useRuleSetPreview } from '@/libs/hooks';
 import { Ruleset } from '../../../../libs/modules/ruleset/ruleset';
 import { useRouter } from 'next/router';
@@ -17,16 +17,19 @@ const Page = ({ id }: PageProps) => {
 
   const saveRuleSet = async ({
     categoryId,
+    facets,
     isEnabled,
     merchandisingRules,
     rulesetId,
   }: {
     categoryId: string;
+    facets?: Array<RuleSetFacetConfigWithId>;
     isEnabled: boolean;
     merchandisingRules: MerchandisingRules;
     rulesetId: string;
   }) => {
     await updateRuleSet({
+      facets,
       id: rulesetId,
       isEnabled,
       pinnedProducts: merchandisingRules.pinnedProducts,

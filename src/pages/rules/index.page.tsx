@@ -1,7 +1,11 @@
 import { useState } from 'react';
 
 import styled from '@emotion/styled';
-import type { MerchandisingRules, ReturnedRuleSet } from '../../libs/api';
+import type {
+  MerchandisingRules,
+  ReturnedRuleSet,
+  RuleSetFacetConfigWithId,
+} from '../../libs/api';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import { useRuleSet, useRuleSetDelete, useUpdateRuleSet } from '@/libs/hooks';
@@ -65,17 +69,20 @@ const RuleSets = () => {
 
   const onEnableDisableRuleSet = async ({
     ruleSetId,
+    facets,
     isEnabled,
     merchandisingRules,
     categoryId,
   }: {
     categoryId: string;
+    facets?: Array<RuleSetFacetConfigWithId>;
     isEnabled: boolean;
     merchandisingRules: MerchandisingRules;
     ruleSetId: string;
   }) => {
     await updateRuleSet({
       id: ruleSetId,
+      facets,
       pinnedProducts: merchandisingRules.pinnedProducts,
       categoryId,
       isEnabled,

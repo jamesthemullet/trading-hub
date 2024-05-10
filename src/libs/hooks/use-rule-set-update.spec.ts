@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { useUpdateRuleSet } from './use-update-rule-set';
+import { useUpdateRuleSet } from './use-rule-set-update';
 
 const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 const categoryId = 'cat_123';

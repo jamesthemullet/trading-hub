@@ -20,6 +20,7 @@ import type {
   AlphanumericBoostBury,
   NumericBoostBury,
   AttributeType,
+  RuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
 import { useRouter } from 'next/router';
@@ -66,6 +67,7 @@ type NewRulesetValues = {
   isEnabled: boolean;
   categoryId: string;
   merchandisingRules: MerchandisingRules;
+  facets?: Array<RuleSetFacetConfigWithId>;
 };
 
 interface EditRulesetValues extends NewRulesetValues {
@@ -396,6 +398,7 @@ export const Ruleset = ({
   const onSaveRuleset = (categoryId: string) => {
     if (rulesetId && onSave) {
       onSave({
+        facets: [], // TODO: send ruleset facet data
         isEnabled,
         rulesetId,
         merchandisingRules,
@@ -403,6 +406,7 @@ export const Ruleset = ({
       });
     } else if (onCreate) {
       onCreate({
+        facets: [], // TODO: send ruleset facet data
         isEnabled,
         merchandisingRules,
         categoryId,

@@ -1,4 +1,4 @@
-import type { MerchandisingRules } from '@/libs/api';
+import type { MerchandisingRules, RuleSetFacetConfigWithId } from '@/libs/api';
 import { useRouter } from 'next/router';
 import { Heading } from '@/libs/components';
 import { useRuleSetCreate } from '@/libs/hooks';
@@ -8,14 +8,17 @@ const NewRuleSetPage = () => {
   const { handlePost } = useRuleSetCreate();
   const router = useRouter();
 
-  const createNewCategory = async ({
+  const createNewCategoryRuleSet = async ({
+    facets,
     merchandisingRules,
     categoryId,
   }: {
+    facets?: Array<RuleSetFacetConfigWithId>;
     merchandisingRules: MerchandisingRules;
     categoryId: string;
   }) => {
     const resp = await handlePost({
+      facets,
       categoryId,
       merchandisingRules,
     });
@@ -31,7 +34,7 @@ const NewRuleSetPage = () => {
 
       <Ruleset
         isEnabled={true}
-        onCreate={createNewCategory}
+        onCreate={createNewCategoryRuleSet}
         onCancel={() => router.push('/rules')}
       />
     </>

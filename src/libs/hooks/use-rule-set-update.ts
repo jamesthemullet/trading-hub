@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { merchandising } from '@/libs/api';
+import { merchandising, RuleSetFacetConfigWithId } from '@/libs/api';
 
 type Product = {
   id: string;
@@ -12,11 +12,13 @@ export const useUpdateRuleSet = () => {
   const updateRuleSet = useCallback(
     async ({
       categoryId,
+      facets,
       id,
       isEnabled,
       pinnedProducts,
     }: {
       categoryId: string;
+      facets?: Array<RuleSetFacetConfigWithId>;
       id: string;
       isEnabled: boolean;
       pinnedProducts: Product[];
@@ -26,6 +28,7 @@ export const useUpdateRuleSet = () => {
       try {
         const body = {
           categoryId,
+          facets,
           isEnabled,
           rules: {
             pinnedProducts: pinnedProducts,

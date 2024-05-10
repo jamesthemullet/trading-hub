@@ -3,7 +3,11 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 
 import { Toggle } from '../../toggle/toggle';
-import type { MerchandisingRules, ReturnedRuleSet } from '@/libs/api';
+import type {
+  MerchandisingRules,
+  ReturnedRuleSet,
+  RuleSetFacetConfigWithId,
+} from '@/libs/api';
 import { Text } from '../../typography/typography.styles';
 import {
   TableContainer,
@@ -44,6 +48,7 @@ type RulesProps = {
   onColumnOrderChange: (columnId: keyof ReturnedRuleSet) => void;
   onEnableDisableRuleSet: (args: {
     categoryId: string;
+    facets?: Array<RuleSetFacetConfigWithId>;
     isEnabled: boolean;
     merchandisingRules: MerchandisingRules;
     ruleSetId: string;
@@ -113,6 +118,7 @@ export const Rulesets = ({
         ({
           categoryName,
           categoryId,
+          facets,
           id,
           lastChanged,
           isEnabled,
@@ -133,6 +139,7 @@ export const Rulesets = ({
                   onChange={() => {
                     onEnableDisableRuleSet({
                       categoryId,
+                      facets,
                       isEnabled: !isEnabled,
                       merchandisingRules: rules,
                       ruleSetId: id,

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { merchandising } from '../api';
-import type { MerchandisingRules } from '../api';
+import type { MerchandisingRules, RuleSetFacetConfigWithId } from '../api';
 
 export const useRuleSetCreate = () => {
   const [error, setError] = useState('');
@@ -9,15 +9,18 @@ export const useRuleSetCreate = () => {
   const handlePost = useCallback(
     async ({
       categoryId,
+      facets,
       merchandisingRules,
     }: {
       categoryId: string;
+      facets?: Array<RuleSetFacetConfigWithId>;
       merchandisingRules: MerchandisingRules;
     }) => {
       setError('');
 
       try {
         const body = {
+          facets,
           categoryId,
           isEnabled: true,
           rules: {

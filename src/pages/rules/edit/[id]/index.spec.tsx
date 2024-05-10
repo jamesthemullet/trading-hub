@@ -29,7 +29,7 @@ jest.mock('../../../../libs/hooks/use-category-product-search', () => ({
 jest.mock('../../../../libs/hooks/use-rule-set-preview', () => ({
   useRuleSetPreview: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-update-rule-set', () => ({
+jest.mock('../../../../libs/hooks/use-rule-set-update', () => ({
   useUpdateRuleSet: jest.fn(),
 }));
 jest.mock('../../../../libs/hooks/use-get-categories', () => ({
