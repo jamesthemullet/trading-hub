@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { RuleSets } from '@/libs/api';
+import type { Pagination, ReturnedRuleSet } from '@/libs/api';
 import { merchandising } from '@/libs/api';
 
 export const useRuleSet = (
@@ -9,12 +9,8 @@ export const useRuleSet = (
   rows: number
 ) => {
   const [shouldRefetch, refetch] = useState({});
-  const [ruleSets, setRuleSets] = useState<RuleSets>({
-    ruleSets: [],
-    pagination: {
-      totalItems: 0,
-    },
-  });
+  const [ruleSets, setRuleSets] = useState<Array<ReturnedRuleSet>>([]);
+  const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -23,15 +19,17 @@ export const useRuleSet = (
         start,
         rows,
       });
-      setRuleSets(result.data);
+      setRuleSets(result.data.ruleSets);
+      setPagination(result.data.pagination);
     };
 
     void asyncCall();
   }, [start, rows, searchQuery, shouldRefetch]);
 
   return {
-    ruleSets: ruleSets.ruleSets,
-    pagination: ruleSets.pagination,
+    ruleSets: ruleSets,
+    pagination: pagination,
     refetchRuleSetList: () => refetch({}),
+    setRuleSets,
   };
 };

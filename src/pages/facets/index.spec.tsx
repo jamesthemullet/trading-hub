@@ -32,11 +32,13 @@ describe('Category facet management', () => {
           date: '2021-01-01',
         },
         rules: mockMerchangdisingRules,
+        setRuleSets: jest.fn(),
       })),
       pagination: {
         totalItems: 80,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
     render(<FacetManagementPage />);
 

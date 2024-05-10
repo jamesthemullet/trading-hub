@@ -5,13 +5,14 @@ import type {
   MerchandisingRules,
   ReturnedRuleSet,
   RuleSetFacetConfigWithId,
-} from '../../libs/api';
+} from '@/libs/api';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import { useRuleSet, useRuleSetDelete, useUpdateRuleSet } from '@/libs/hooks';
 import {
   Button,
   Heading,
+  Loader,
   Rulesets,
   Search,
   TablePagination,
@@ -44,6 +45,7 @@ const NewButton = styled.div`
 const RuleSets = () => {
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [columnIdToSort, setColumnIdToSort] =
     useState<keyof ReturnedRuleSet>('categoryName');
@@ -54,7 +56,7 @@ const RuleSets = () => {
 
   const currentPageIndex = currentPage - 1;
 
-  const { ruleSets, pagination, refetchRuleSetList } = useRuleSet(
+  const { ruleSets, pagination, refetchRuleSetList, setRuleSets } = useRuleSet(
     searchQuery,
     currentPageIndex * currentPageSize,
     currentPageSize
@@ -80,6 +82,7 @@ const RuleSets = () => {
     merchandisingRules: MerchandisingRules;
     ruleSetId: string;
   }) => {
+    setIsUpdating(true);
     await updateRuleSet({
       id: ruleSetId,
       facets,
@@ -87,7 +90,11 @@ const RuleSets = () => {
       categoryId,
       isEnabled,
     });
-    refetchRuleSetList();
+    const updatedRuleSetsList = ruleSets.map((ruleset: ReturnedRuleSet) =>
+      ruleset.id === ruleSetId ? { ...ruleset, isEnabled } : ruleset
+    );
+    setRuleSets(updatedRuleSetsList);
+    setIsUpdating(false);
   };
 
   return (
@@ -134,6 +141,8 @@ const RuleSets = () => {
           setCurrentPage={setCurrentPage}
           setCurrentPageSize={setCurrentPageSize}
         />
+
+        {isUpdating && <Loader />}
       </PageWrapper>
     </>
   );

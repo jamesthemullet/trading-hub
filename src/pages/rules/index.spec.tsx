@@ -46,6 +46,7 @@ describe('Index', () => {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
     render(<RuleSets />);
 
@@ -103,6 +104,7 @@ describe('Index', () => {
         totalItems: 23,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
     render(<RuleSets />);
 
@@ -121,6 +123,7 @@ describe('Index', () => {
         totalItems: 23,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
 
     await act(async () => {
@@ -183,6 +186,7 @@ describe('Index', () => {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
     render(<RuleSets />);
 
@@ -206,6 +210,7 @@ describe('Index', () => {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
 
     act(() => {
@@ -247,6 +252,7 @@ describe('Index', () => {
         totalItems: undefined,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
     const { container } = render(<RuleSets />);
 
@@ -277,6 +283,7 @@ describe('Index', () => {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
 
     render(<RuleSets />);
@@ -312,6 +319,7 @@ describe('Index', () => {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
 
     render(<RuleSets />);
@@ -343,11 +351,23 @@ describe('Index', () => {
           },
           rules: mockMerchangdisingRules,
         },
+        {
+          categoryName: 'cat id 2',
+          id: 'ewfw-e3f23-f23f2-3cwef4',
+          categoryId: 'catId2',
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchangdisingRules,
+        },
       ],
       pagination: {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
     });
 
     render(<RuleSets />);
