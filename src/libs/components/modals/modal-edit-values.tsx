@@ -17,7 +17,9 @@ import { useState } from 'react';
 const Row = styled(TableRow)<{ heading?: boolean }>`
   border-bottom: none;
   align-items: center;
-  margin-bottom: ${spacing(3)};
+  margin-bottom: ${spacing(2)};
+  box-shadow: #000 0 0 10px -5px;
+  padding: ${spacing(2)};
 `;
 
 const Col = styled(TableCol)<{ heading?: boolean }>`
@@ -33,6 +35,7 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: ${spacing(3)};
+  margin-bottom: ${spacing(10)};
 `;
 
 const DefaultSearchContainer = styled.div`
@@ -67,6 +70,22 @@ const AttributeWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: ${spacing(2)};
+`;
+
+const ModalFooter = styled.div`
+  background-color: #fff;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  border-top: solid 1px ${color.grey};
+  padding: ${spacing(1)};
+  display: flex;
+  justify-content: flex-end;
+  gap: ${spacing(2)};
+
+  button {
+    width: 160px;
+  }
 `;
 
 const EDITFACETVALUESMODALCOLUMNS: {
@@ -108,6 +127,18 @@ const mockAttributes = [
     index: 2,
     attribute: 'Duck Down And Feather',
     displayValue: 'Duck Down And Feather',
+    actionSelected: null,
+  },
+  {
+    index: 3,
+    attribute: 'Ducky Downy',
+    displayValue: 'Ducky Downy',
+    actionSelected: null,
+  },
+  {
+    index: 4,
+    attribute: 'Ducky Downy And Feathery',
+    displayValue: 'Ducky Downy And Feathery',
     actionSelected: null,
   },
 ] as Attributes[];
@@ -220,6 +251,10 @@ export const ModalEditValues = ({
             </ModalAttributesTable>
           </ModalContainer>
         </Modal.Body>
+        <ModalFooter>
+          <Button onClick={onClose}>Cancel</Button>{' '}
+          <Button isDisabled={true}>Save</Button>
+        </ModalFooter>
       </Modal.Content>
     </Modal.Root>
   );

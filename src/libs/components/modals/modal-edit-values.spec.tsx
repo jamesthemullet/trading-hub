@@ -4,11 +4,13 @@ import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '../../../test/render-with-providers';
 import { ModalEditValues } from './modal-edit-values';
 
+const onCloseSpy = jest.fn();
+
 describe('Add Facet Modal', () => {
   it('should render edit values modal', async () => {
     renderWithProviders(
       <ModalEditValues
-        onClose={() => {}}
+        onClose={onCloseSpy}
         facet={{
           displayValue: 'color',
           indexPropertyName: 'color',
@@ -24,7 +26,7 @@ describe('Add Facet Modal', () => {
   it('should edit a display value', async () => {
     renderWithProviders(
       <ModalEditValues
-        onClose={() => {}}
+        onClose={onCloseSpy}
         facet={{
           displayValue: 'color',
           indexPropertyName: 'color',
@@ -58,5 +60,25 @@ describe('Add Facet Modal', () => {
       'Edit display name for Cotton Candy'
     );
     expect(newEditButton).toBeVisible();
+  });
+
+  it('should cancel changes to a facet', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <ModalEditValues
+        onClose={onCloseSpy}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+        }}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(onCloseSpy).toHaveBeenCalled();
   });
 });
