@@ -6,6 +6,7 @@ import { MantineProvider } from '@mantine/core';
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import { LoginCheck } from '@/libs/components/login/login-check';
 
 export default function App({
   Component,
@@ -15,6 +16,7 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <MantineProvider>
+        <LoginCheck />
         <Layout>
           <Navigation />
           <Component {...pageProps} />
