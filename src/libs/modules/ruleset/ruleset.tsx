@@ -307,9 +307,6 @@ export const Ruleset = ({
       sortedProducts.find((product) => product.id === id) ||
       searchProducts.find((product) => product.id === id);
 
-    /* istanbul ignore next */
-    if (!product) return;
-
     const isBoosted = change === 'add' && operation === 'boosts';
     const isBuried = change === 'add' && operation === 'buries';
     const isBlocked = change === 'add' && operation === 'block';
@@ -338,13 +335,12 @@ export const Ruleset = ({
       pinnedProducts: merchandisingRules.pinnedProducts.filter(
         (product) => product.id !== id
       ),
-
-      blockedProducts: isBlocked
-        ? [...merchandisingRules.blockedProducts, product]
-        : merchandisingRules.blockedProducts.filter(
-            /* istanbul ignore next - TODO: we can only test this when api returns products on changes tab */
-            (product) => product.id !== id
-          ),
+      blockedProducts:
+        isBlocked && product
+          ? [...merchandisingRules.blockedProducts, product]
+          : merchandisingRules.blockedProducts.filter(
+              (product) => product.id !== id
+            ),
     };
 
     setMerchandisingRules(updatedRules);
@@ -355,31 +351,35 @@ export const Ruleset = ({
       isBoosted,
       isBuried,
     };
-    const updatedProduct = { ...product, metadata };
+    if (product) {
+      const updatedProduct = { ...product, metadata };
 
-    const updatedList = [
-      ...(isBoosted ? [updatedProduct] : []),
-      ...sortedProducts.filter((product) => product.id !== id),
-      ...(change === 'remove' || isBuried ? [updatedProduct] : []),
-    ];
+      const updatedList = [
+        ...(isBoosted && updatedProduct ? [updatedProduct] : []),
+        ...sortedProducts.filter((product) => product.id !== id),
+        ...(change === 'remove' || (isBuried && updatedProduct)
+          ? [updatedProduct]
+          : []),
+      ];
 
-    // TODO LPN-1653 for BE to send all metadata
-    /* istanbul ignore next */
-    const sortedByBury = [...updatedList].sort(
-      (a, b) =>
-        Number(a.metadata.isBuried || false) -
-        Number(b.metadata.isBuried || false)
-    );
-    /* istanbul ignore next */
-    const sortedByBoost = [...sortedByBury].sort(
-      (b, a) =>
-        Number(a.metadata.isBoosted || false) -
-        Number(b.metadata.isBoosted || false)
-    );
-    const sortedByPinned = [...sortedByBoost].sort(
-      (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
-    );
-    setSortedProducts(sortedByPinned);
+      // TODO LPN-1653 for BE to send all metadata
+      /* istanbul ignore next */
+      const sortedByBury = [...updatedList].sort(
+        (a, b) =>
+          Number(a.metadata.isBuried || false) -
+          Number(b.metadata.isBuried || false)
+      );
+      /* istanbul ignore next */
+      const sortedByBoost = [...sortedByBury].sort(
+        (b, a) =>
+          Number(a.metadata.isBoosted || false) -
+          Number(b.metadata.isBoosted || false)
+      );
+      const sortedByPinned = [...sortedByBoost].sort(
+        (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
+      );
+      setSortedProducts(sortedByPinned);
+    }
 
     if (!hasChanges) setHasChanges(true);
   };

@@ -7,6 +7,20 @@ import {
   globalFacetsListMock,
 } from './mocks';
 
+const mockProductData = {
+  brand: 'M&S',
+  id: '1',
+  imageUrl: [''],
+  isInStock: true,
+  metadata: {
+    isPinned: true,
+  },
+  price: '£XX',
+  productId: '0000',
+  title: '(Missing preview data)',
+  url: 'mands.com',
+};
+
 describe('mocks', () => {
   describe('/merchandising/attributes', () => {
     it('should respond with real response for attributes when status is 200', () => {
@@ -85,7 +99,7 @@ describe('mocks', () => {
   });
 
   describe('/merchandising/category/{category}/preview', () => {
-    it('should add missing rating when its missing from server side request when making request to /merchandising/category/{category}/preview', () => {
+    it('should add missing product data when its missing from server side request when making request to /merchandising/category/{category}/preview', () => {
       const mockMapping = getMockMapping();
       expect(
         mockMapping['/merchandising/category/{category}/preview'].post
@@ -141,9 +155,9 @@ describe('mocks', () => {
                 // missing rating
               },
             ],
-            blockedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
+            blockedProducts: [{ id: 'b' }],
+            boosts: { numeric: [], alphanumeric: [], product: [{ id: 'c' }] },
+            buries: { numeric: [], alphanumeric: [], product: [{ id: 'd' }] },
           },
           pagination: {},
         }
@@ -183,14 +197,41 @@ describe('mocks', () => {
             ],
           },
           rules: {
-            pinnedProducts: [
+            pinnedProducts: [mockProductData],
+            blockedProducts: [
               {
-                id: '1',
+                ...mockProductData,
+                id: 'b',
+                productId: 'b',
+                metadata: { isPinned: false, isBlocked: true },
               },
             ],
-            blockedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [
+                {
+                  ...mockProductData,
+                  id: 'c',
+                  productId: 'c',
+                  weight: 0.1,
+                  metadata: { isPinned: false, isBoosted: true },
+                },
+              ],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [
+                {
+                  ...mockProductData,
+                  id: 'd',
+                  productId: 'd',
+                  weight: 0.1,
+                  metadata: { isPinned: false, isBuried: true },
+                },
+              ],
+            },
           },
           pagination: {},
         },

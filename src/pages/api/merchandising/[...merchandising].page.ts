@@ -45,7 +45,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     jsonBody = result.updatedJsonBody;
     status = result.updatedStatus;
   } catch (e) /* istanbul ignore next */ {
-    console.error('ERROR: Error parsing JSON', e);
+    console.error('ERROR: Error parsing JSON', e, jsonBody);
     return res.status(500).json({ error: 'Error parsing JSON' });
   }
 

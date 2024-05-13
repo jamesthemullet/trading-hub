@@ -255,6 +255,7 @@ export const getMockMapping: () => Record<
   '/merchandising/category/{category}/preview': {
     post: (_req, status, jsonBody) => {
       const searchPreviewResponse = jsonBody as SearchPreviewResponse;
+      /* istanbul ignore next */
       const response: SearchPreviewResponse = {
         ...searchPreviewResponse,
         products: searchPreviewResponse.products.map((product) => ({
@@ -287,9 +288,75 @@ export const getMockMapping: () => Record<
           ...searchPreviewResponse.rules,
           pinnedProducts: searchPreviewResponse.rules.pinnedProducts.map(
             (product) => ({
-              ...product,
+              id: product.id,
+              productId: product.productId || '0000',
+              metadata: {
+                isPinned: true,
+              },
+              url: product.url || 'mands.com',
+              price: product.price || '£XX',
+              imageUrl: product.imageUrl || [''],
+              title: product.title || '(Missing preview data)',
+              brand: product.brand || 'M&S',
+              isInStock: true,
             })
           ),
+          boosts: {
+            ...searchPreviewResponse.rules.boosts,
+            product: searchPreviewResponse.rules.boosts.product.map(
+              (product) => ({
+                id: product.id,
+                weight: product.weight || 0.1,
+                productId: product.productId || product.id || '0000',
+                metadata: {
+                  isPinned: false,
+                  isBoosted: true,
+                },
+                url: product.url || 'mands.com',
+                price: product.price || '£XX',
+                imageUrl: product.imageUrl || [''],
+                title: product.title || '(Missing preview data)',
+                brand: product.brand || 'M&S',
+                isInStock: true,
+              })
+            ),
+          },
+          buries: {
+            ...searchPreviewResponse.rules.buries,
+            product: searchPreviewResponse.rules.buries.product.map(
+              (product) => ({
+                id: product.id,
+                weight: product.weight || 0.1,
+                productId: product.productId || product.id || '0000',
+                metadata: {
+                  isPinned: false,
+                  isBuried: true,
+                },
+                url: product.url || 'mands.com',
+                price: product.price || '£XX',
+                imageUrl: product.imageUrl || [''],
+                title: product.title || '(Missing preview data)',
+                brand: product.brand || 'M&S',
+                isInStock: true,
+              })
+            ),
+          },
+          blockedProducts: searchPreviewResponse.rules.blockedProducts
+            ? searchPreviewResponse.rules.blockedProducts.map((product) => ({
+                id: product.id,
+                productId: product.productId || product.id || '0000',
+                metadata: {
+                  isPinned: false,
+                  isBlocked: true,
+                },
+                url: product.url || 'mands.com',
+                price: product.price || '£XX',
+                imageUrl: product.imageUrl || [''],
+                title: product.title || '(Missing preview data)',
+                brand: product.brand || 'M&S',
+                isInStock: true,
+              }))
+            : [],
         },
         pagination: !searchPreviewResponse.pagination
           ? {}

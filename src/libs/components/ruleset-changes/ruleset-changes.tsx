@@ -33,9 +33,9 @@ const ChangesRow = ({
       {heading}
     </Heading>
 
-    <Layout>
+    <Layout aria-label={heading.split('(')[0]}>
       {products.map((product: ProductType, index: number) => (
-        <ProductBox key={`product-${product.id}`}>
+        <ProductBox key={`ruleset-changes-product-${product.id}`}>
           <Product
             {...product}
             index={index}

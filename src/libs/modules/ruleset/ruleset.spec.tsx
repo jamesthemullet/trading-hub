@@ -737,7 +737,13 @@ describe('Ruleset', () => {
         categoryFacets: [],
         merchandisingRulesWithInfo: {
           ...mockMerchandisingRules,
-          blockedProducts: [{ ...mockProduct, id: 'productId2' }],
+          blockedProducts: [
+            {
+              ...mockProduct,
+              id: 'productId2',
+              metadata: { ...mockProduct.metadata, isBlocked: true },
+            },
+          ],
           pinnedProducts: [],
         },
         error: '',
@@ -780,7 +786,7 @@ describe('Ruleset', () => {
           }}
           rulesetMerchandisingRules={{
             pinnedProducts: [{ id: 'product3' }],
-            blockedProducts: [],
+            blockedProducts: [{ id: 'productId2' }],
             boosts: {
               numeric: [],
               alphanumeric: [],
@@ -805,7 +811,27 @@ describe('Ruleset', () => {
       await user.click(screen.getByText('Block Product'));
 
       expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
-        'Changes3'
+        'Changes4'
+      );
+    });
+
+    it('Should unblock from the changes tab', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      const tab2 = await screen.findByText('Changes');
+
+      act(() => {
+        tab2.click();
+      });
+
+      const blockedProducts = await screen.findByLabelText('Blocked Products');
+
+      await user.click(within(blockedProducts).getAllByTitle('Open menu')[0]);
+
+      await user.click(screen.getByText('Restore'));
+
+      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
+        'Changes2'
       );
     });
   });

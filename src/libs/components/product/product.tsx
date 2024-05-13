@@ -21,6 +21,7 @@ import {
   ProductPin,
   BoostPin,
   BuriedPin,
+  BlockedPin,
   ProductWrapper,
   ProductCard,
 } from './product.styles';
@@ -192,9 +193,9 @@ export const Product = ({
           </ProductPin>
         )}
         {isBlocked && (
-          <ProductPin aria-label="Blocked product">
+          <BlockedPin aria-label="Blocked product">
             <Text>Internal</Text>
-          </ProductPin>
+          </BlockedPin>
         )}
         <ProductMenuToggle
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -252,23 +253,21 @@ export const Product = ({
                 Unbury
               </ProductMenuButton>
             )}
-            {
-              /* istanbul ignore next */
-              isBlocked && (
-                <ProductMenuButton
-                  icon="restore"
-                  as="button"
-                  size="16px 16px"
-                  onClick={
-                    /* istanbul ignore next */
-                    () =>
-                      onBoostBuryBlock({ operation: 'block', change: 'remove' })
-                  }
-                >
-                  Restore
-                </ProductMenuButton>
-              )
-            }
+            {isBlocked && (
+              <ProductMenuButton
+                icon="restore"
+                as="button"
+                size="16px 16px"
+                onClick={() => {
+                  onBoostBuryBlock({
+                    operation: 'block',
+                    change: 'remove',
+                  });
+                }}
+              >
+                Restore
+              </ProductMenuButton>
+            )}
             {!isLockToPositionMenuOpen && (
               <>
                 <ProductMenuButton
