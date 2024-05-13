@@ -57,6 +57,8 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
 
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
+const setSearchSpy = jest.fn();
+const onDisplayValueChangeSpy = jest.fn();
 
 describe('Facet Panel', () => {
   beforeEach(() => {
@@ -222,6 +224,7 @@ describe('Facet Panel', () => {
       <FacetsPanel
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
+        setSearch={setSearchSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
@@ -232,18 +235,15 @@ describe('Facet Panel', () => {
 
     await act(() => userEvent.type(search, 'color'));
 
-    expect(screen.getAllByText('color')[0]).toBeVisible();
-    expect(screen.getAllByText('color')[1]).toBeVisible();
-    expect(screen.queryByText('size')).not.toBeInTheDocument();
+    expect(setSearchSpy).toHaveBeenCalledWith('color');
   });
 
   it('should edit a display value', async () => {
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
+        onDisplayValueChange={onDisplayValueChangeSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
       />
@@ -269,8 +269,7 @@ describe('Facet Panel', () => {
       saveButton.click();
     });
 
-    const newEditButton = screen.getByLabelText('Edit display name for colour');
-    expect(newEditButton).toBeVisible();
+    expect(onDisplayValueChangeSpy).toHaveBeenCalledWith('colour', 0);
   });
 
   describe('Add Facet Modal', () => {

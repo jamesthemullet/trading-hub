@@ -3,9 +3,11 @@ import { Heading } from '@/libs/components';
 import { useRouter } from 'next/router';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
-import styled from '@emotion/styled';
-import { spacing } from '../../../../../libs/components';
 import { useFacetsList } from '@/libs/hooks';
+import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
+import { useEffect, useState } from 'react';
+import { ReturnedFacet } from '@/libs/api';
+import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 
 type mockAttributes = {
   id: string;
@@ -14,23 +16,6 @@ type mockAttributes = {
   order: null;
   valueOptions: string[];
 }[];
-
-const NavigationContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: ${spacing(4)};
-  margin-left: auto;
-  margin-right: ${spacing(2)};
-  margin-bottom: ${spacing(18)};
-  font-weight: 400;
-  font-size: 14px;
-`;
-
-const TotalResultsLabel = styled.div`
-  font-family: mnsLondonRegular, monospace;
-  margin-left: 31px;
-`;
 
 export const mockAttributes = [
   {
@@ -90,6 +75,24 @@ const Page = () => {
     router.push('/global/facets');
   };
 
+  const [localFacetData, setLocalFacetData] = useState<ReturnedFacet[]>(facets);
+
+  useEffect(() => {
+    setLocalFacetData(facets);
+  }, [facets]);
+
+  const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
+
+  const onDisplayValueChange = (newValue: string, index: number) => {
+    setLocalFacetData((prev) => {
+      const updatedFacet: ReturnedFacet = {
+        ...prev[index],
+        displayValue: newValue,
+      };
+      return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
+    });
+  };
+
   const mockDefaultOrderData = [
     { defaultOrder: 'Include only' },
     { defaultOrder: 'Exclude only' },
@@ -110,15 +113,15 @@ const Page = () => {
         <FacetsPanel
           onSave={handleSave}
           onCancel={handleCancel}
+          setSearch={setSearch}
+          onDisplayValueChange={onDisplayValueChange}
           title="Global Facet Rule Editor"
-          facetsData={facets}
+          facetsData={filteredFacets}
           defaultCategory={defaultCategory}
           defaultOrderData={mockDefaultOrderData}
         />
       )}
-      <NavigationContainer>
-        <TotalResultsLabel>{mockAttributes.length} results</TotalResultsLabel>
-      </NavigationContainer>
+      <FilteredResultsPanel filteredFacets={filteredFacets.length} />
     </>
   );
 };

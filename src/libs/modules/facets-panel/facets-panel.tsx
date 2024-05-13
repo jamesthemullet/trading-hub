@@ -17,11 +17,12 @@ import {
   TableHeading,
 } from '@/libs/components/table/table.styles';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
-import { EditableLabel } from '@/libs/components/editable-label/editable-label';
+
 import { DefaultCategorySearchBox } from '@/libs/components/default-category-search-box/default-category-search-box';
-import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
+
 import { color } from '@/libs/components/utils/constants';
 import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
+import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 
 export const ActionContainer = styled.div`
   display: flex;
@@ -147,6 +148,8 @@ type defaultOrderDataType = {
 export const FacetsPanel = ({
   onSave,
   onCancel,
+  setSearch,
+  onDisplayValueChange,
   title,
   facetsData,
   categoryName,
@@ -155,6 +158,8 @@ export const FacetsPanel = ({
 }: {
   onSave: () => void;
   onCancel: () => void;
+  setSearch?: (value: string) => void;
+  onDisplayValueChange?: (value: string, index: number) => void;
   title: string;
   facetsData: ReturnedFacet[];
   categoryName?: string;
@@ -166,15 +171,11 @@ export const FacetsPanel = ({
     undefined
   );
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
-  const [localFacetData, setLocalFacetData] =
-    useState<ReturnedFacet[]>(facetsData);
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
 
   // This will be replaced when we have the defaultOrder field on the get facets endpoint
   const [localDefaultOrderData, setLocalDefaultOrderData] =
     useState<defaultOrderDataType>(defaultOrderData || []);
-
-  const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
 
   const onPreview = () => {
     // TODO: Implement preview functionality
@@ -228,22 +229,14 @@ export const FacetsPanel = ({
           <Text>{facet.indexPropertyName}</Text>
         </Col>
         <Col>
-          <EditableLabel
-            displayValue={facet.displayValue}
-            onDisplayValueChange={(newValue) => {
-              setLocalFacetData((prev) => {
-                const updatedFacet: ReturnedFacet = {
-                  ...prev[index],
-                  displayValue: newValue,
-                };
-                return [
-                  ...prev.slice(0, index),
-                  updatedFacet,
-                  ...prev.slice(index + 1),
-                ];
-              });
-            }}
-          />
+          {onDisplayValueChange && (
+            <EditableLabel
+              displayValue={facet.displayValue}
+              onDisplayValueChange={(newValue) =>
+                onDisplayValueChange(newValue, index)
+              }
+            />
+          )}
         </Col>
         <Col>
           <FacetOrderDropdown
@@ -313,7 +306,7 @@ export const FacetsPanel = ({
 
       {isAddFacetModalOpen && <ModalAddFacets onClose={onClose} />}
 
-      {defaultCategory && (
+      {defaultCategory && setSearch && (
         <SectionWrapper>
           <Search
             onChange={(e) => {
@@ -334,8 +327,8 @@ export const FacetsPanel = ({
           ))}
         </Row>
 
-        {filteredFacets &&
-          filteredFacets.map((facet, index) => (
+        {facetsData &&
+          facetsData.map((facet, index) => (
             <FacetRow key={facet.id} facet={facet} index={index}></FacetRow>
           ))}
       </AttributesTable>
@@ -344,7 +337,7 @@ export const FacetsPanel = ({
         <ModalEditValues onClose={onClose} facet={selectedFacet} />
       )}
 
-      {localFacetData.length === 0 && (
+      {facetsData.length === 0 && (
         <NoAttributesBlock>
           <Text>No, there are no attributes yet.</Text>
           <Text>How about adding a subcategory first?</Text>

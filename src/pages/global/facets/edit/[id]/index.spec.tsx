@@ -127,6 +127,45 @@ describe('Global Facet Management Editing', () => {
     );
   });
 
+  it('should filter on the facet list', async () => {
+    renderWithProviders(<Page />);
+
+    const search = screen.getByPlaceholderText('Search...');
+
+    await act(() => userEvent.type(search, 'color'));
+
+    expect(screen.getAllByText('color')[0]).toBeVisible();
+    expect(screen.getAllByText('color')[1]).toBeVisible();
+    expect(screen.queryByText('size')).not.toBeInTheDocument();
+  });
+
+  it('should edit a display value', async () => {
+    renderWithProviders(<Page />);
+
+    const editButton = screen.getByLabelText('Edit display name for color');
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      const editColorInput = screen.getByLabelText('Edit color input field');
+      expect(editColorInput).toBeVisible();
+      expect(editColorInput).toHaveValue('color');
+      userEvent.clear(editColorInput);
+      await userEvent.type(editColorInput, 'colour');
+    });
+
+    const saveButton = screen.getByLabelText('Save color change');
+
+    act(() => {
+      saveButton.click();
+    });
+
+    const newEditButton = screen.getByLabelText('Edit display name for colour');
+    expect(newEditButton).toBeVisible();
+  });
+
   describe('Add Facet Modal', () => {
     const openModal = async () => {
       renderWithProviders(<Page />);

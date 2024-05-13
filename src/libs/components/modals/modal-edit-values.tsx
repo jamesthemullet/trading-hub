@@ -13,6 +13,7 @@ import { ModalAttributesTable, HeadingAndCloseButton } from './modal.styles';
 import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '../editable-label/editable-label';
 import { useState } from 'react';
+import { FilteredResultsPanel } from '../filtered-results-panel/filtered-results-panel';
 
 const Row = styled(TableRow)<{ heading?: boolean }>`
   border-bottom: none;
@@ -250,6 +251,7 @@ export const ModalEditValues = ({
               ))}
             </ModalAttributesTable>
           </ModalContainer>
+          <FilteredResultsPanel filteredFacets={editFacetValues.length} />
         </Modal.Body>
         <ModalFooter>
           <Button onClick={onClose}>Cancel</Button>{' '}
