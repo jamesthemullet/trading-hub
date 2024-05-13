@@ -7,7 +7,11 @@ export const useFacetsFilter = (facets: ReturnedFacet[]) => {
   const filteredFacets = useMemo<ReturnedFacet[]>(() => {
     if (search === '') return facets;
 
-    return facets.filter((facet) => facet.displayValue.includes(search));
+    return facets.filter(
+      (facet) =>
+        facet.displayValue.includes(search) ||
+        facet.indexPropertyName.includes(search)
+    );
   }, [facets, search]);
 
   return { search, setSearch, filteredFacets };
