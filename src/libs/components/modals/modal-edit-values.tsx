@@ -12,7 +12,8 @@ import { Search } from '../search/search';
 import { ModalAttributesTable, HeadingAndCloseButton } from './modal.styles';
 import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '../editable-label/editable-label';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useDebounce } from '@/libs/hooks';
 import { FilteredResultsPanel } from '../filtered-results-panel/filtered-results-panel';
 
 const Row = styled(TableRow)<{ heading?: boolean }>`
@@ -153,6 +154,22 @@ export const ModalEditValues = ({
 }) => {
   const [editFacetValues, setEditFacetValues] =
     useState<Attributes[]>(mockAttributes);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const { callback: handleSearch } = useDebounce((val: string) => {
+    setSearchQuery(val);
+  }, 300);
+
+  const filteredEditFacetValues = useMemo(() => {
+    return !searchQuery
+      ? editFacetValues
+      : editFacetValues.filter(
+          (value) =>
+            value.attribute.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            value.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+  }, [editFacetValues, searchQuery]);
+
   return (
     <Modal.Root
       opened={true}
@@ -187,7 +204,7 @@ export const ModalEditValues = ({
             <MergeAndSearchContainer>
               <Text isStrong>All values listed</Text>
               <Button>Merge (0)</Button>
-              <Search />
+              <Search onChange={(e) => handleSearch(e.target.value)} />
             </MergeAndSearchContainer>
 
             <ModalAttributesTable>
@@ -206,49 +223,51 @@ export const ModalEditValues = ({
                   </Col>
                 ))}
               </Row>
-              {editFacetValues.map(({ attribute, displayValue, index }) => (
-                <Row
-                  key={`attribute-${attribute}`}
-                  data-testid="rows"
-                  heading={false}
-                >
-                  <Col>
-                    <input type="checkbox" />
-                  </Col>
-                  <Col heading={false}>
-                    <AttributeWrapper>
-                      <Image
-                        width={20}
-                        height={20}
-                        src="/trading-hub/asset/icon-attribute.svg"
-                        alt=""
+              {filteredEditFacetValues.map(
+                ({ attribute, displayValue, index }) => (
+                  <Row
+                    key={`attribute-${attribute}`}
+                    data-testid="rows"
+                    heading={false}
+                  >
+                    <Col>
+                      <input type="checkbox" />
+                    </Col>
+                    <Col heading={false}>
+                      <AttributeWrapper>
+                        <Image
+                          width={20}
+                          height={20}
+                          src="/trading-hub/asset/icon-attribute.svg"
+                          alt=""
+                        />
+                        <Text>{attribute}</Text>
+                      </AttributeWrapper>
+                    </Col>
+                    <Col heading={false}>
+                      <EditableLabel
+                        displayValue={displayValue}
+                        onDisplayValueChange={(newValue) => {
+                          setEditFacetValues((prev) => {
+                            const updatedFacet: Attributes = {
+                              ...prev[index],
+                              displayValue: newValue,
+                            };
+                            return [
+                              ...prev.slice(0, index),
+                              updatedFacet,
+                              ...prev.slice(index + 1),
+                            ];
+                          });
+                        }}
                       />
-                      <Text>{attribute}</Text>
-                    </AttributeWrapper>
-                  </Col>
-                  <Col heading={false}>
-                    <EditableLabel
-                      displayValue={displayValue}
-                      onDisplayValueChange={(newValue) => {
-                        setEditFacetValues((prev) => {
-                          const updatedFacet: Attributes = {
-                            ...prev[index],
-                            displayValue: newValue,
-                          };
-                          return [
-                            ...prev.slice(0, index),
-                            updatedFacet,
-                            ...prev.slice(index + 1),
-                          ];
-                        });
-                      }}
-                    />
-                  </Col>
-                  <Col heading={false}>
-                    <FacetOrderDropdown />
-                  </Col>
-                </Row>
-              ))}
+                    </Col>
+                    <Col heading={false}>
+                      <FacetOrderDropdown />
+                    </Col>
+                  </Row>
+                )
+              )}
             </ModalAttributesTable>
           </ModalContainer>
           <FilteredResultsPanel filteredFacets={editFacetValues.length} />
