@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import { act } from 'react-dom/test-utils';
+import { act } from 'react';
 
 import { useGetCategories } from './use-get-categories';
 
