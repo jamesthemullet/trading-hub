@@ -9,34 +9,50 @@ export type ArrowButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   direction?: 'down' | 'up';
 };
 
+const StyledArrowButton = styled.button<ArrowButtonProps>`
+  background: url('/trading-hub/asset/icon-arrow-up.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  outline: solid 1px ${color.grey};
+  width: 40px;
+  height: 40px;
+  padding: 12px;
+  border-radius: 4px;
+  ${({ direction }) => direction === 'down' && 'transform: rotate(180deg);'}
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  &:hover,
+  &:focus {
+    margin-top: -2px;
+    outline: solid 2px ${color.selectionBox};
+  }
+
+  &:active {
+    margin-top: 2px;
+  }
+`;
+
 export const ArrowButton = ({
   as = 'button',
   isDisabled,
   onClick,
   direction,
+  ...rest
 }: ArrowButtonProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { children: _children, ...restWithoutChildren } = rest;
   return (
     <StyledArrowButton
       as={as}
       {...(onClick && !isDisabled && { onClick })}
       {...(isDisabled && { disabled: isDisabled })}
       direction={direction}
+      {...restWithoutChildren}
     ></StyledArrowButton>
   );
 };
-
-const StyledArrowButton = styled.button<ArrowButtonProps>`
-  background: url('/trading-hub/asset/icon-arrow.svg');
-  border: solid 1px ${color.grey};
-  width: 40px;
-  height: 40px;
-  padding: 12px;
-  background-size: contain;
-  border-radius: 4px;
-  ${({ direction }) => direction === 'up' && 'transform: rotate(180deg);'}
-
-  &:disabled {
-    cursor: default;
-    opacity: 0.7;
-  }
-`;

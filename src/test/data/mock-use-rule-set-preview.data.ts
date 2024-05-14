@@ -64,4 +64,6 @@ export const mockUseRuleSetPreviewData = {
     },
   ],
   error: '',
+  facets: [],
+  isLoading: false,
 };

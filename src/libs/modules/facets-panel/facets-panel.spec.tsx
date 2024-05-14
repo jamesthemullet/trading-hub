@@ -142,6 +142,48 @@ describe('Facet Panel', () => {
     expect(logSpy).toHaveBeenCalled();
   });
 
+  it('should handle order change when button down is clicked', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onFacetsDataRowOrderChangeSpy = jest.fn();
+
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetsDataRowOrderChange={onFacetsDataRowOrderChangeSpy}
+        displayRowOrderControls={true}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+      />
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'Move color row down' })
+    );
+
+    expect(onFacetsDataRowOrderChangeSpy).toHaveBeenCalledWith(0, 1);
+  });
+
+  it('should handle order change when button up is clicked', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onFacetsDataRowOrderChangeSpy = jest.fn();
+
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetsDataRowOrderChange={onFacetsDataRowOrderChangeSpy}
+        displayRowOrderControls={true}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Move size row up' }));
+
+    expect(onFacetsDataRowOrderChangeSpy).toHaveBeenCalledWith(1, -1);
+  });
+
   it('should save changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 

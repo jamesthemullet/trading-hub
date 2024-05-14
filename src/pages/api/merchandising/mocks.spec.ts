@@ -1,10 +1,11 @@
-import { ErrorResponse } from '@/libs/api';
+import { ErrorResponse, ReturnedRuleSet } from '@/libs/api';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 
 import {
   attributesResponseMock,
   getMockMapping,
   globalFacetsListMock,
+  ruleSetFacetConfigWithIdMock,
 } from './mocks';
 
 const mockProductData = {
@@ -55,6 +56,88 @@ describe('mocks', () => {
       );
       expect(result).toEqual({
         body: attributesResponseMock,
+        status: 200,
+      });
+    });
+  });
+
+  describe('/merchandising/ruleset/{category}', () => {
+    const mockResponse: ReturnedRuleSet = {
+      id: '1',
+      lastChanged: { date: '', user: '' },
+      categoryId: '',
+      categoryName: '',
+      isEnabled: false,
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+      },
+    };
+
+    it('should respond with real response for ruleset when status is 200 and real response contain facets', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/merchandising/ruleset/{category}'].get
+      ).toBeDefined();
+
+      const result = mockMapping['/merchandising/ruleset/{category}'].get!(
+        createMockNextApiRequest({
+          url: '/merchandising/ruleset/1',
+          method: 'GET',
+        }),
+        200,
+        { mockResponse, facets: [ruleSetFacetConfigWithIdMock[0]] }
+      );
+      expect(result).toEqual({
+        body: { mockResponse, facets: [ruleSetFacetConfigWithIdMock[0]] },
+        status: 200,
+      });
+    });
+
+    it('should add mock facets when response contain facets: undefined', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/merchandising/ruleset/{category}'].get
+      ).toBeDefined();
+
+      const result = mockMapping['/merchandising/ruleset/{category}'].get!(
+        createMockNextApiRequest({
+          url: '/merchandising/ruleset/1',
+          method: 'GET',
+        }),
+        200,
+        mockResponse
+      );
+      expect(result).toEqual({
+        body: {
+          ...mockResponse,
+          facets: ruleSetFacetConfigWithIdMock,
+        },
+        status: 200,
+      });
+    });
+
+    it('should add mock facets when response contain facets: []', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/merchandising/ruleset/{category}'].get
+      ).toBeDefined();
+
+      const result = mockMapping['/merchandising/ruleset/{category}'].get!(
+        createMockNextApiRequest({
+          url: '/merchandising/ruleset/1',
+          method: 'GET',
+        }),
+        200,
+        { ...mockResponse, facets: [] }
+      );
+      expect(result).toEqual({
+        body: {
+          ...mockResponse,
+          facets: ruleSetFacetConfigWithIdMock,
+        },
         status: 200,
       });
     });

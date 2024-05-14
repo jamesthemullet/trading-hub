@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import type { Product, ReturnedRuleSet } from '@/libs/api';
+import type { Product, ReturnedFacet, ReturnedRuleSet } from '@/libs/api';
 import { merchandising } from '@/libs/api';
 
 export const useRuleSetPreview = (id: string) => {
+  const api = useMemo(() => merchandising(), []);
+  const [facets, setFacets] = useState<ReturnedFacet[]>([]);
   const [ruleSets, setRuleSets] = useState<ReturnedRuleSet>({
     categoryId: '',
     categoryName: '',
@@ -26,11 +28,12 @@ export const useRuleSetPreview = (id: string) => {
   });
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const asyncCall = async () => {
       try {
-        const response = await merchandising().rulesetDetail(id);
+        const response = await api.rulesetDetail(id);
 
         const data = response.data;
 
@@ -38,7 +41,7 @@ export const useRuleSetPreview = (id: string) => {
 
         const categoryId = data.categoryId;
 
-        const categoryPreview = await merchandising().categoryPreviewCreate(
+        const categoryPreview = await api.categoryPreviewCreate(
           categoryId,
           { rows: 12, start: 0 },
           {
@@ -56,13 +59,28 @@ export const useRuleSetPreview = (id: string) => {
       } catch (error) {
         if (error && typeof error === 'object' && 'status' in error) {
           setError(`POST status ${error.status}`);
+          setIsLoading(false);
           return;
         }
       }
+      setIsLoading(false);
     };
-
+    setIsLoading(true);
     void asyncCall();
-  }, [id]);
+  }, [id, api]);
 
-  return { ruleSets, products, error };
+  useEffect(() => {
+    if (facets.length === 0) {
+      Promise.all(
+        (ruleSets.facets ?? []).map(async ({ id }) => {
+          const response = await api.facetDetail(id);
+          return response.data;
+        })
+      ).then((facetDetails) => {
+        setFacets(facetDetails);
+      });
+    }
+  }, [ruleSets, facets, api]);
+
+  return { ruleSets, products, error, facets, isLoading };
 };

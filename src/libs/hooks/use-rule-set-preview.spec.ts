@@ -2,12 +2,14 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedRuleSet } from '@/libs/api';
+import type { ReturnedFacet, ReturnedRuleSet } from '@/libs/api';
+import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
 import { useRuleSetPreview } from './use-rule-set-preview';
 
 const baseUrl = 'http://localhost';
 const mockCategoryId = 'abc123';
+const mockFacetId = '123';
 const mockRuleData = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
@@ -49,8 +51,13 @@ const badResponse = {
 };
 
 const getRuleSetPreviewMock = jest.fn();
+const getFacetMock = jest.fn();
 
 const handlers = [
+  http.get(`${baseUrl}/merchandising/facet/${mockFacetId}`, () => {
+    const { data, status } = getFacetMock();
+    return HttpResponse.json(data, status);
+  }),
   http.get(`${baseUrl}/merchandising/ruleset/${mockCategoryId}`, () => {
     const { data, status } = getRuleSetPreviewMock();
     return HttpResponse.json(data, status);
@@ -116,6 +123,8 @@ describe('useRuleSet', () => {
       ],
       ruleSets: mockRuleData,
       error: '',
+      facets: [],
+      isLoading: false,
     };
 
     await waitFor(() => {
@@ -154,6 +163,8 @@ describe('useRuleSet', () => {
         },
       },
       error: 'POST status 500',
+      facets: [],
+      isLoading: false,
     };
 
     await waitFor(() => {
@@ -179,6 +190,8 @@ describe('useRuleSet', () => {
       products: [],
       ruleSets: mockRuleData,
       error: 'POST status 500',
+      facets: [],
+      isLoading: false,
     };
 
     await waitFor(() => {
@@ -195,6 +208,34 @@ describe('useRuleSet', () => {
 
     await waitFor(() => {
       expect(result.current.error).toEqual('POST status 500');
+    });
+  });
+
+  it('should load facets', async () => {
+    const mockResponse: ReturnedRuleSet = mockRuleData;
+    getRuleSetPreviewMock.mockReturnValueOnce({
+      data: {
+        ...mockResponse,
+        facets: [
+          {
+            id: mockFacetId,
+            boosted: [],
+            excludedValues: [],
+          },
+        ],
+      },
+      status: { status: 200 },
+    });
+    const facet: ReturnedFacet = globalFacetsListMock.facets[0];
+    getFacetMock.mockReturnValueOnce({
+      data: facet,
+      status: { status: 200 },
+    });
+
+    const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
+
+    await waitFor(() => {
+      expect(result.current.facets).toEqual([facet]);
     });
   });
 });

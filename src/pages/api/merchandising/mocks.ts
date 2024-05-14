@@ -10,6 +10,8 @@ import {
   FacetsList,
   ReturnedFacet,
   ErrorResponse,
+  ReturnedRuleSet,
+  RuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { NextApiRequest } from 'next';
 
@@ -166,6 +168,34 @@ export const attributesResponseMock: AttributesResponse = {
   attributes: attributesMock,
 };
 
+export const ruleSetFacetConfigWithIdMock: RuleSetFacetConfigWithId[] = [
+  {
+    id: 'color-id',
+    boosted: [],
+    excludedValues: [],
+  },
+  {
+    id: 'size-id',
+    boosted: [],
+    excludedValues: [],
+  },
+  {
+    id: 'brand-id',
+    boosted: [],
+    excludedValues: [],
+  },
+  {
+    id: 'category-id',
+    boosted: [],
+    excludedValues: [],
+  },
+  {
+    id: 'price-id',
+    boosted: [],
+    excludedValues: [],
+  },
+];
+
 export const globalFacetsListMock: FacetsList = {
   facets: [
     {
@@ -250,6 +280,21 @@ export const getMockMapping: () => Record<
         },
         status: status,
       };
+    },
+  },
+  '/merchandising/ruleset/{category}': {
+    get: (_req, status, jsonBody) => {
+      const returnedRuleSet = jsonBody as ReturnedRuleSet;
+      if (!returnedRuleSet.facets || !returnedRuleSet.facets.length) {
+        return {
+          body: {
+            ...returnedRuleSet,
+            facets: ruleSetFacetConfigWithIdMock,
+          },
+          status: status,
+        };
+      }
+      return { body: jsonBody, status };
     },
   },
   '/merchandising/category/{category}/preview': {

@@ -3,12 +3,11 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 import { Heading } from '@/libs/components';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
-import {
-  useFacetsFilter,
-  useFacetsList,
-  useRuleSetPreview,
-} from '@/libs/hooks';
+import { useFacetsFilter, useRuleSetPreview } from '@/libs/hooks';
+
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
+import { useEffect, useState } from 'react';
+import { ReturnedFacet } from '@/libs/api';
 
 export const getServerSideProps: GetServerSideProps = (
   context: GetServerSidePropsContext
@@ -20,8 +19,13 @@ export const getServerSideProps: GetServerSideProps = (
 
 const Page = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { ruleSets } = useRuleSetPreview(id);
-  const { facets, isLoading } = useFacetsList([id]);
+  const { ruleSets, facets, isLoading } = useRuleSetPreview(id);
+  const [localFacets, setLocalFacets] = useState<ReturnedFacet[]>(facets);
+  const { setSearch, filteredFacets } = useFacetsFilter(localFacets);
+
+  useEffect(() => {
+    setLocalFacets(facets);
+  }, [facets]);
 
   const handleSave = () => {
     // TODO: Implement save functionality
@@ -30,8 +34,6 @@ const Page = ({ id }: { id: string }) => {
   const handleCancel = () => {
     router.push('/facets');
   };
-
-  const { setSearch, filteredFacets } = useFacetsFilter(facets);
 
   const category = {
     identifier: ruleSets.categoryId,
@@ -44,7 +46,7 @@ const Page = ({ id }: { id: string }) => {
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
 
       {isLoading ? (
-        <FacetsPanelSkeleton title="Global Facet Rule Editor" />
+        <FacetsPanelSkeleton title="Facet Rule Editor" />
       ) : (
         <FacetsPanel
           onSave={handleSave}
@@ -53,6 +55,15 @@ const Page = ({ id }: { id: string }) => {
           title="Facet Rule Editor"
           categoryName={ruleSets.categoryId}
           facetsData={filteredFacets}
+          displayRowOrderControls={true}
+          onFacetsDataRowOrderChange={(index, direction) => {
+            const updatedFacets = [...localFacets];
+            // eslint-disable-next-line functional/immutable-data
+            const [removed] = updatedFacets.splice(index, 1);
+            // eslint-disable-next-line functional/immutable-data
+            updatedFacets.splice(index + direction, 0, removed);
+            setLocalFacets(updatedFacets);
+          }}
           defaultCategory={category}
         />
       )}

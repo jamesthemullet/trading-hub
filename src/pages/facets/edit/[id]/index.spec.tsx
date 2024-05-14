@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
@@ -61,6 +61,9 @@ describe('Category Facet Management Editing', () => {
       error: '',
     });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    jest
+      .mocked(useRuleSetPreview)
+      .mockImplementation(() => mockUseRuleSetPreviewData);
   });
 
   afterEach(() => {
@@ -126,17 +129,40 @@ describe('Category Facet Management Editing', () => {
     expect(logSpy).toHaveBeenCalled();
   });
 
-  it('should render skeleton when loading', () => {
-    jest.mocked(useFacetsList).mockReturnValue({
+  it('should render the skeleton loader', () => {
+    jest.mocked(useRuleSetPreview).mockImplementation(() => ({
+      ...mockUseRuleSetPreviewData,
       isLoading: true,
-      facets: [],
-      error: '',
-    });
-
+    }));
     renderWithProviders(<Page id={ruleSetId} />);
 
     expect(() => screen.getByRole('button', { name: 'Save' })).toThrow(
       'Unable to find an accessible element with the role "button"'
     );
+  });
+
+  it('should change the order of rows', async () => {
+    jest.mocked(useRuleSetPreview).mockImplementation(() => ({
+      ...mockUseRuleSetPreviewData,
+      facets: globalFacetsListMock.facets,
+      isLoading: false,
+    }));
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    expect(() => {
+      screen.getByRole('button', { name: 'Move color row up' });
+    }).toThrow('Unable to find an accessible element with the role "button"');
+
+    await user.click(
+      screen.getByRole('button', { name: 'Move color row down' })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Move color row up' })
+      ).toBeVisible();
+    });
   });
 });

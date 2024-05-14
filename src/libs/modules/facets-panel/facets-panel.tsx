@@ -22,6 +22,8 @@ import { DefaultCategorySearchBox } from '@/libs/components/default-category-sea
 
 import { color } from '@/libs/components/utils/constants';
 import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
+import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
+import { Box } from '@mantine/core';
 import { useDebounce } from '@/libs/hooks';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 
@@ -79,6 +81,12 @@ export const SectionWrapper = styled.div`
   margin-bottom: 0;
   border-radius: 4px;
   padding: ${spacing(2)};
+`;
+
+const OrderColumn = styled.div`
+  display: flex;
+  gap: ${spacing(1)};
+  padding-right: ${spacing(1)};
 `;
 
 type TableRowProps = {
@@ -151,16 +159,20 @@ export const FacetsPanel = ({
   onCancel,
   setSearch,
   onDisplayValueChange,
+  onFacetsDataRowOrderChange,
   title,
   facetsData,
   categoryName,
   defaultCategory,
   defaultOrderData,
+  displayRowOrderControls = false,
 }: {
   onSave: () => void;
   onCancel: () => void;
   setSearch?: (value: string) => void;
   onDisplayValueChange?: (value: string, index: number) => void;
+  onFacetsDataRowOrderChange?: (index: number, direction: -1 | 1) => void;
+  displayRowOrderControls?: boolean;
   title: string;
   facetsData: ReturnedFacet[];
   categoryName?: string;
@@ -217,9 +229,11 @@ export const FacetsPanel = ({
   const FacetRow = ({
     facet,
     index,
+    totalCount,
   }: {
     facet: ReturnedFacet;
     index: number;
+    totalCount: number;
   }) => {
     return (
       <Row
@@ -244,14 +258,42 @@ export const FacetsPanel = ({
           )}
         </Col>
         <Col>
-          <FacetOrderDropdown
-            defaultOrderData={
-              localDefaultOrderData[index]
-                ? localDefaultOrderData[index].defaultOrder
-                : undefined
-            }
-            onChange={(label: string): void => handleChange(label, index)}
-          />
+          <OrderColumn>
+            <FacetOrderDropdown
+              defaultOrderData={
+                localDefaultOrderData[index]
+                  ? localDefaultOrderData[index].defaultOrder
+                  : undefined
+              }
+              onChange={(label: string): void => handleChange(label, index)}
+            />
+            {index === 0 || !displayRowOrderControls ? (
+              <Box w="40" h="40" />
+            ) : (
+              <ArrowButton
+                direction="up"
+                aria-label={`Move ${facet.displayValue} row up`}
+                onClick={() => {
+                  if (onFacetsDataRowOrderChange) {
+                    onFacetsDataRowOrderChange(index, -1);
+                  }
+                }}
+              ></ArrowButton>
+            )}
+            {index === totalCount - 1 || !displayRowOrderControls ? (
+              <Box w="40" h="40" />
+            ) : (
+              <ArrowButton
+                direction="down"
+                aria-label={`Move ${facet.displayValue} row down`}
+                onClick={() => {
+                  if (onFacetsDataRowOrderChange) {
+                    onFacetsDataRowOrderChange(index, 1);
+                  }
+                }}
+              ></ArrowButton>
+            )}
+          </OrderColumn>
         </Col>
         <Col>
           <Button onClick={() => handleOpenFacetEditModal(facet)}>
@@ -330,7 +372,12 @@ export const FacetsPanel = ({
 
         {facetsData &&
           facetsData.map((facet, index) => (
-            <FacetRow key={facet.id} facet={facet} index={index}></FacetRow>
+            <FacetRow
+              key={facet.id}
+              facet={facet}
+              index={index}
+              totalCount={facetsData.length}
+            ></FacetRow>
           ))}
       </AttributesTable>
 

@@ -12,7 +12,7 @@ describe('ArrowButton', () => {
   });
 
   it('should render button with up arrow', () => {
-    render(<ArrowButton direction="up"></ArrowButton>);
+    render(<ArrowButton direction="down"></ArrowButton>);
 
     expect(screen.getByRole('button')).toBeInTheDocument();
     expect(screen.getByRole('button')).toHaveStyle(
