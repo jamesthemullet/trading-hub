@@ -90,6 +90,20 @@ const ModalFooter = styled.div`
   }
 `;
 
+const MergedValue = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${spacing(1)};
+`;
+
+const RemoveMergedFacet = styled.button`
+  background: url('/trading-hub/asset/icon-close-black.svg');
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  border: none;
+`;
+
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null;
 }[] = [
@@ -109,7 +123,7 @@ type Attributes = {
   index: number;
   attribute: string;
   displayValue: string;
-  actionSelected: 'Include only' | 'Exclude only' | null;
+  mergedValues?: string[];
 };
 
 const mockAttributes = [
@@ -117,31 +131,31 @@ const mockAttributes = [
     index: 0,
     attribute: 'Cotton',
     displayValue: 'Cotton',
-    actionSelected: null,
+    mergedValues: [],
   },
   {
     index: 1,
     attribute: 'Duck Down',
     displayValue: 'Duck Down',
-    actionSelected: null,
+    mergedValues: [],
   },
   {
     index: 2,
     attribute: 'Duck Down And Feather',
     displayValue: 'Duck Down And Feather',
-    actionSelected: null,
+    mergedValues: [],
   },
   {
     index: 3,
     attribute: 'Ducky Downy',
     displayValue: 'Ducky Downy',
-    actionSelected: null,
+    mergedValues: [],
   },
   {
     index: 4,
     attribute: 'Ducky Downy And Feathery',
     displayValue: 'Ducky Downy And Feathery',
-    actionSelected: null,
+    mergedValues: [],
   },
 ] as Attributes[];
 
@@ -154,6 +168,35 @@ export const ModalEditValues = ({
 }) => {
   const [editFacetValues, setEditFacetValues] =
     useState<Attributes[]>(mockAttributes);
+  const [mergeList, setMergeList] = useState<string[]>([]);
+
+  const handleSelect = (attribute: string) => {
+    if (!mergeList.includes(attribute)) {
+      setMergeList([...mergeList, attribute]);
+    } else {
+      setMergeList(mergeList.filter((item) => item !== attribute));
+    }
+  };
+
+  const mergeValues = () => {
+    // TO-DO update attributes endpoint
+
+    setEditFacetValues((prev) => {
+      const updatedFacets = prev.map((facet) => {
+        if (mergeList.includes(facet.attribute)) {
+          return {
+            ...facet,
+            displayValue: `Name your merged value group`,
+            mergedValues: mergeList,
+          };
+        }
+        return facet;
+      });
+      return updatedFacets;
+    });
+    setMergeList([]);
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const { callback: handleSearch } = useDebounce((val: string) => {
@@ -203,7 +246,12 @@ export const ModalEditValues = ({
 
             <MergeAndSearchContainer>
               <Text isStrong>All values listed</Text>
-              <Button>Merge (0)</Button>
+              <Button
+                isDisabled={mergeList.length < 2}
+                onClick={() => mergeValues()}
+              >
+                Merge ({mergeList.length})
+              </Button>
               <Search onChange={(e) => handleSearch(e.target.value)} />
             </MergeAndSearchContainer>
 
@@ -224,14 +272,19 @@ export const ModalEditValues = ({
                 ))}
               </Row>
               {filteredEditFacetValues.map(
-                ({ attribute, displayValue, index }) => (
+                ({ attribute, displayValue, index, mergedValues }) => (
                   <Row
                     key={`attribute-${attribute}`}
                     data-testid="rows"
                     heading={false}
                   >
                     <Col>
-                      <input type="checkbox" />
+                      <input
+                        type="checkbox"
+                        checked={mergeList.includes(attribute)}
+                        onChange={() => handleSelect(attribute)}
+                        aria-label={`Select ${attribute} to merge`}
+                      />
                     </Col>
                     <Col heading={false}>
                       <AttributeWrapper>
@@ -241,7 +294,18 @@ export const ModalEditValues = ({
                           src="/trading-hub/asset/icon-attribute.svg"
                           alt=""
                         />
-                        <Text>{attribute}</Text>
+                        {mergedValues && mergedValues.length > 0 ? (
+                          <div>
+                            <Text isStrong>Merged Value Group</Text>
+                            {mergedValues.map((value, index) => (
+                              <MergedValue key={`${index}-${value}`}>
+                                <Text>{value}</Text> <RemoveMergedFacet />
+                              </MergedValue>
+                            ))}
+                          </div>
+                        ) : (
+                          <Text>{attribute}</Text>
+                        )}
                       </AttributeWrapper>
                     </Col>
                     <Col heading={false}>
