@@ -9,8 +9,8 @@ import {
   Search,
   FacetsManagementTable,
 } from '@/libs/components';
-import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
 import { ReturnedFacet } from '@/libs/api';
+import { useDebounce, useFacetsFilter } from '@/libs/hooks';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -37,6 +37,10 @@ const globalFacet: ReturnedFacet[] = [
 const FacetManagementPage = () => {
   const { setSearch, filteredFacets } = useFacetsFilter(globalFacet);
 
+  const { callback: handleSearch } = useDebounce((val: string) => {
+    setSearch(val);
+  }, 300);
+
   return (
     <>
       <Heading
@@ -50,11 +54,7 @@ const FacetManagementPage = () => {
       <PageNameLabel>Global Facet Management</PageNameLabel>
       <SectionWrapper>
         <SectionHeader>
-          <Search
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
-          />
+          <Search onChange={(e) => handleSearch(e.target.value)} />
 
           <NewButton>
             <Button as="a" href="#" disabled={true}>

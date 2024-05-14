@@ -3,7 +3,11 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 import { Heading } from '@/libs/components';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
-import { useFacetsList, useRuleSetPreview } from '@/libs/hooks';
+import {
+  useFacetsFilter,
+  useFacetsList,
+  useRuleSetPreview,
+} from '@/libs/hooks';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
 export const getServerSideProps: GetServerSideProps = (
@@ -27,6 +31,14 @@ const Page = ({ id }: { id: string }) => {
     router.push('/facets');
   };
 
+  const { setSearch, filteredFacets } = useFacetsFilter(facets);
+
+  const category = {
+    identifier: ruleSets.categoryId,
+    name: ruleSets.categoryName,
+    path: '/',
+  };
+
   return (
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
@@ -37,9 +49,11 @@ const Page = ({ id }: { id: string }) => {
         <FacetsPanel
           onSave={handleSave}
           onCancel={handleCancel}
+          setSearch={setSearch}
           title="Facet Rule Editor"
           categoryName={ruleSets.categoryId}
-          facetsData={facets}
+          facetsData={filteredFacets}
+          defaultCategory={category}
         />
       )}
     </>

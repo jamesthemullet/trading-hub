@@ -11,3 +11,4 @@ export * from './use-rule-set-delete';
 export * from './use-rule-set-preview';
 export * from './use-rule-set-update';
 export * from './use-rule-set';
+export * from './use-facets-filter';

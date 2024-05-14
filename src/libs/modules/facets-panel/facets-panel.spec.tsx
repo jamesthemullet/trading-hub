@@ -197,8 +197,6 @@ describe('Facet Panel', () => {
       />
     );
 
-    const row = screen.getAllByTestId('facets-table-row')[0];
-
     const dropdown = screen.getAllByTestId(
       'button to open facet order dropdown'
     )[0];
@@ -208,14 +206,18 @@ describe('Facet Panel', () => {
 
     await user.click(includeOnlyOption);
 
-    expect(row).toHaveStyle('background-color: #f4faed');
+    expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
+      'background-color: #f4faed'
+    );
 
     await user.click(dropdown);
     const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
 
     await user.click(excludeOnlyOption);
-    waitFor(() => {
-      expect(row).toHaveStyle('background-color: #fff3f4');
+    await waitFor(() => {
+      expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
+        'background-color: #fff3f4'
+      );
     });
   });
 
@@ -235,10 +237,29 @@ describe('Facet Panel', () => {
 
     await act(() => userEvent.type(search, 'color'));
 
-    expect(setSearchSpy).toHaveBeenCalledWith('color');
+    await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('color'));
+  });
+
+  it('should display category select if name is passed', async () => {
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+        categoryName={categoryName1}
+      />
+    );
+
+    expect(screen.queryByPlaceholderText('Search...')).toBe(null);
+    expect(screen.getByText(categoryName1)).toBeInTheDocument();
   });
 
   it('should edit a display value', async () => {
+    const onSaveSpy = jest.fn();
+    const onCancelSpy = jest.fn();
+    const user = userEvent.setup();
+
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -251,9 +272,7 @@ describe('Facet Panel', () => {
 
     const editButton = screen.getByLabelText('Edit display name for color');
 
-    act(() => {
-      editButton.click();
-    });
+    await user.click(editButton);
 
     await waitFor(async () => {
       const editColorInput = screen.getByLabelText('Edit color input field');
@@ -265,9 +284,7 @@ describe('Facet Panel', () => {
 
     const saveButton = screen.getByLabelText('Save color change');
 
-    act(() => {
-      saveButton.click();
-    });
+    await user.click(saveButton);
 
     expect(onDisplayValueChangeSpy).toHaveBeenCalledWith('colour', 0);
   });

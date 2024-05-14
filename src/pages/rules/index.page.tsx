@@ -8,7 +8,12 @@ import type {
 } from '@/libs/api';
 
 import { spacing } from '@/libs/components/utils/spacing';
-import { useRuleSet, useRuleSetDelete, useUpdateRuleSet } from '@/libs/hooks';
+import {
+  useDebounce,
+  useRuleSet,
+  useRuleSetDelete,
+  useUpdateRuleSet,
+} from '@/libs/hooks';
 import {
   Button,
   Heading,
@@ -62,6 +67,10 @@ const RuleSets = () => {
     currentPageSize
   );
 
+  const { callback: handleSearch } = useDebounce((val: string) => {
+    setSearchQuery(val);
+  }, 300);
+
   const { handleDelete } = useRuleSetDelete();
 
   const onDeleteRuleSet = async ({ rulesetId }: { rulesetId: string }) => {
@@ -106,11 +115,7 @@ const RuleSets = () => {
       <PageNameLabel>Category ranking rules</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>
-          <Search
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-            }}
-          />
+          <Search onChange={(e) => handleSearch(e.target.value)} />
           <NewButton>
             <Button as="a" href="/rules/new">
               Add rule

@@ -134,9 +134,11 @@ describe('Global Facet Management Editing', () => {
 
     await act(() => userEvent.type(search, 'color'));
 
-    expect(screen.getAllByText('color')[0]).toBeVisible();
-    expect(screen.getAllByText('color')[1]).toBeVisible();
-    expect(screen.queryByText('size')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getAllByText('color')[0]).toBeVisible();
+      expect(screen.getAllByText('color')[1]).toBeVisible();
+      expect(screen.queryAllByText('size').length).toBe(0);
+    });
   });
 
   it('should edit a display value', async () => {

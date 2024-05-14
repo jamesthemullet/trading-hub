@@ -277,6 +277,7 @@ describe('Index', () => {
   });
 
   it('should search', async () => {
+    const user = userEvent.setup();
     jest.mocked(useRuleSet).mockReturnValue({
       ruleSets: [],
       pagination: {
@@ -294,9 +295,11 @@ describe('Index', () => {
       throw new Error('Search not found');
     }
 
-    await userEvent.type(search, 'test');
+    await user.type(search, 'search-search');
 
-    expect(useRuleSet).toHaveBeenCalledWith('test', 0, 10);
+    await waitFor(() =>
+      expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10)
+    );
   });
 
   it('should delete a ruleset', async () => {

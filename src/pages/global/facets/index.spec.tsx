@@ -1,12 +1,27 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+import { ReturnedFacet } from '@/libs/api';
+import { useFacetsFilter } from '@/libs/hooks';
 
 import { default as FacetManagementPage } from './index.page';
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
-  useFacetsList: jest.fn(),
+  useFacetsFilter: jest.fn(),
 }));
+
+const globalFacet: ReturnedFacet[] = [
+  {
+    lastChanged: {
+      date: '2023-11-15T13:00:00.000Z',
+      user: 'testuser',
+    },
+    displayValue: '*',
+    id: '1',
+    indexPropertyName: '*',
+  },
+];
 
 describe('Global Facet Management', () => {
   afterEach(() => {
@@ -14,6 +29,13 @@ describe('Global Facet Management', () => {
   });
 
   it('displays the list of facets', () => {
+    const setSearchSpy = jest.fn();
+    jest.mocked(useFacetsFilter).mockReturnValue({
+      search: '',
+      setSearch: setSearchSpy,
+      filteredFacets: globalFacet,
+    });
+
     render(<FacetManagementPage />);
 
     expect(
@@ -24,6 +46,14 @@ describe('Global Facet Management', () => {
   });
 
   it('searches on the facets list', async () => {
+    const setSearchSpy = jest.fn();
+    jest.mocked(useFacetsFilter).mockReturnValue({
+      search: '',
+      setSearch: setSearchSpy,
+      filteredFacets: globalFacet,
+    });
+
+    const user = userEvent.setup();
     render(<FacetManagementPage />);
 
     const search = screen.queryByPlaceholderText(/Search\.\.\./i);
@@ -32,8 +62,8 @@ describe('Global Facet Management', () => {
       throw new Error('Search not found');
     }
 
-    await act(() => userEvent.type(search, '*'));
+    await user.type(search, '*');
 
-    expect(screen.getByText('*')).toBeVisible();
+    await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('*'));
   });
 });

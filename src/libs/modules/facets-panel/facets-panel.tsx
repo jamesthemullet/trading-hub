@@ -22,6 +22,7 @@ import { DefaultCategorySearchBox } from '@/libs/components/default-category-sea
 
 import { color } from '@/libs/components/utils/constants';
 import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
+import { useDebounce } from '@/libs/hooks';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 
 export const ActionContainer = styled.div`
@@ -177,6 +178,10 @@ export const FacetsPanel = ({
   const [localDefaultOrderData, setLocalDefaultOrderData] =
     useState<defaultOrderDataType>(defaultOrderData || []);
 
+  const { callback: handleSearch } = useDebounce((val: string) => {
+    setSearch?.(val);
+  }, 300);
+
   const onPreview = () => {
     // TODO: Implement preview functionality
     console.log('preview');
@@ -308,11 +313,7 @@ export const FacetsPanel = ({
 
       {defaultCategory && setSearch && (
         <SectionWrapper>
-          <Search
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
-          />
+          <Search onChange={(e) => handleSearch(e.target.value)} />
         </SectionWrapper>
       )}
 
