@@ -381,9 +381,10 @@ describe('Index', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryId: mockCatId,
+      facets: undefined,
       id: mockId,
       isEnabled: false,
-      pinnedProducts: mockMerchangdisingRules.pinnedProducts,
+      merchandisingRules: mockMerchangdisingRules,
     });
   });
 });

@@ -32,7 +32,7 @@ const Page = ({ id }: PageProps) => {
       facets,
       id: rulesetId,
       isEnabled,
-      pinnedProducts: merchandisingRules.pinnedProducts,
+      merchandisingRules,
       categoryId,
     });
   };

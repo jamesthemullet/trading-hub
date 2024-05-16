@@ -23,12 +23,7 @@ export const useRuleSetCreate = () => {
           facets,
           categoryId,
           isEnabled: true,
-          rules: {
-            pinnedProducts: merchandisingRules.pinnedProducts,
-            blockedProducts: merchandisingRules.blockedProducts,
-            boosts: merchandisingRules.boosts,
-            buries: merchandisingRules.buries,
-          },
+          rules: merchandisingRules,
         };
         const response = await merchandising().rulesetCreate(body);
         return response.data;

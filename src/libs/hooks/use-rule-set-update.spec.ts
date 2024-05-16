@@ -6,14 +6,17 @@ import { useUpdateRuleSet } from './use-rule-set-update';
 
 const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 const categoryId = 'cat_123';
-const pinnedProducts = [{ id: 'xyz0' }];
+
+const mockMerchangdisingRules = {
+  pinnedProducts: [{ id: 'xyz0' }],
+  blockedProducts: [],
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
+};
+
 const baseUrl = 'http://localhost';
 const ruleSet = {
-  rules: {
-    pinnedProducts: pinnedProducts,
-    boosts: { numeric: [], alphanumeric: [], product: [] },
-    buries: { numeric: [], alphanumeric: [], product: [] },
-  },
+  rules: mockMerchangdisingRules,
   categoryId: categoryId,
   isEnabled: true,
   categoryName: 'Jeans',
@@ -58,7 +61,7 @@ describe('useUpdateRuleSet', () => {
     const resp = await current.updateRuleSet({
       id: ruleSetId,
       isEnabled: true,
-      pinnedProducts: pinnedProducts,
+      merchandisingRules: mockMerchangdisingRules,
       categoryId: categoryId,
     });
 
@@ -77,7 +80,7 @@ describe('useUpdateRuleSet', () => {
       await result.current.updateRuleSet({
         id: ruleSetId,
         isEnabled: true,
-        pinnedProducts: pinnedProducts,
+        merchandisingRules: mockMerchangdisingRules,
         categoryId: categoryId,
       });
     });
@@ -95,7 +98,7 @@ describe('useUpdateRuleSet', () => {
       await result.current.updateRuleSet({
         id: ruleSetId,
         isEnabled: true,
-        pinnedProducts: pinnedProducts,
+        merchandisingRules: mockMerchangdisingRules,
         categoryId: categoryId,
       });
     });

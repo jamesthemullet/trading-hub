@@ -95,7 +95,7 @@ const RuleSets = () => {
     await updateRuleSet({
       id: ruleSetId,
       facets,
-      pinnedProducts: merchandisingRules.pinnedProducts,
+      merchandisingRules,
       categoryId,
       isEnabled,
     });

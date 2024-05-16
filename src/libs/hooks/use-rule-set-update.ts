@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 
-import { merchandising, RuleSetFacetConfigWithId } from '@/libs/api';
-
-type Product = {
-  id: string;
-};
+import {
+  merchandising,
+  MerchandisingRules,
+  RuleSetFacetConfigWithId,
+} from '@/libs/api';
 
 export const useUpdateRuleSet = () => {
   const [error, setError] = useState('');
@@ -15,13 +15,13 @@ export const useUpdateRuleSet = () => {
       facets,
       id,
       isEnabled,
-      pinnedProducts,
+      merchandisingRules,
     }: {
       categoryId: string;
       facets?: Array<RuleSetFacetConfigWithId>;
       id: string;
       isEnabled: boolean;
-      pinnedProducts: Product[];
+      merchandisingRules: MerchandisingRules;
     }) => {
       setError('');
 
@@ -30,12 +30,7 @@ export const useUpdateRuleSet = () => {
           categoryId,
           facets,
           isEnabled,
-          rules: {
-            pinnedProducts: pinnedProducts,
-            blockedProducts: [],
-            boosts: { alphanumeric: [], numeric: [], product: [] },
-            buries: { alphanumeric: [], numeric: [], product: [] },
-          },
+          rules: merchandisingRules,
         };
         const response = await merchandising().rulesetUpdate(id, body);
 
