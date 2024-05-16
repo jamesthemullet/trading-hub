@@ -10,7 +10,7 @@ const FilteredResults = styled.div`
   column-gap: ${spacing(4)};
   margin-left: auto;
   margin-right: ${spacing(2)};
-  margin-bottom: ${spacing(18)};
+  margin-bottom: ${spacing(4)};
   font-weight: 400;
   font-size: 14px;
 `;

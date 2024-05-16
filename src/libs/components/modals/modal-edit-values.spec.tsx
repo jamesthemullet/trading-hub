@@ -266,4 +266,117 @@ describe('Add Facet Modal', () => {
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
     });
   });
+
+  it('should de-merge both merged values when there are two attributes merged', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onCloseSpy = jest.fn();
+
+    renderWithProviders(
+      <ModalEditValues
+        onClose={onCloseSpy}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+        }}
+      />
+    );
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Duck Down to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+    });
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+    });
+
+    act(() => {
+      user.click(screen.getByRole('button', { name: 'Merge (2)' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+    });
+
+    act(() => {
+      user.click(
+        screen.getAllByLabelText('Remove merged facet for Duck Down')[0]
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Merged Value Group')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should de-merge only the selected value when there are three attributes merged', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onCloseSpy = jest.fn();
+
+    renderWithProviders(
+      <ModalEditValues
+        onClose={onCloseSpy}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+        }}
+      />
+    );
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Duck Down to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+    });
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+    });
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Cotton to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
+    });
+
+    act(() => {
+      user.click(screen.getByRole('button', { name: 'Merge (3)' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+    });
+
+    act(() => {
+      user.click(
+        screen.getAllByLabelText('Remove merged facet for Ducky Downy')[0]
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      expect(
+        screen.queryByLabelText('Remove merged facet for Ducky Downy')
+      ).not.toBeInTheDocument();
+    });
+  });
 });

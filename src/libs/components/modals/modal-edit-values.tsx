@@ -37,7 +37,7 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: ${spacing(3)};
-  margin-bottom: ${spacing(10)};
+  height: 100%;
 `;
 
 const DefaultSearchContainer = styled.div`
@@ -197,6 +197,46 @@ export const ModalEditValues = ({
     setMergeList([]);
   };
 
+  const handleDemerge = (value: string, mergedValues: string[]) => {
+    // TO-DO update attributes endpoint - which should allow much of the below to be removed
+    if (mergedValues.length === 2) {
+      setEditFacetValues((prev) => {
+        const updatedFacets = prev.map((facet) => {
+          if (mergedValues.includes(facet.attribute)) {
+            return {
+              ...facet,
+              displayValue: facet.attribute,
+              mergedValues: [],
+            };
+          }
+          return facet;
+        });
+        return updatedFacets;
+      });
+    } else {
+      setEditFacetValues((prev) => {
+        const updatedFacets = prev.map((facet) => {
+          if (value === facet.attribute) {
+            return {
+              ...facet,
+              displayValue: facet.attribute,
+              mergedValues: [],
+            };
+          }
+          if (mergedValues.includes(facet.attribute)) {
+            return {
+              ...facet,
+              displayValue: facet.attribute,
+              mergedValues: mergedValues.filter((item) => item !== value),
+            };
+          }
+          return facet;
+        });
+        return updatedFacets;
+      });
+    }
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const { callback: handleSearch } = useDebounce((val: string) => {
@@ -294,12 +334,18 @@ export const ModalEditValues = ({
                           src="/trading-hub/asset/icon-attribute.svg"
                           alt=""
                         />
-                        {mergedValues && mergedValues.length > 0 ? (
+                        {mergedValues && mergedValues.length > 1 ? (
                           <div>
                             <Text isStrong>Merged Value Group</Text>
                             {mergedValues.map((value, index) => (
                               <MergedValue key={`${index}-${value}`}>
-                                <Text>{value}</Text> <RemoveMergedFacet />
+                                <Text>{value}</Text>{' '}
+                                <RemoveMergedFacet
+                                  onClick={() =>
+                                    handleDemerge(value, mergedValues)
+                                  }
+                                  aria-label={`Remove merged facet for ${value}`}
+                                />
                               </MergedValue>
                             ))}
                           </div>
