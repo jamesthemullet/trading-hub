@@ -143,44 +143,6 @@ describe('mocks', () => {
     });
   });
 
-  describe('/merchandising/product', () => {
-    it('should add missing isPinned when its missing from server side request when making request to /merchandising/product', () => {
-      const mockMapping = getMockMapping();
-      expect(mockMapping['/merchandising/product'].post).toBeDefined();
-
-      const result = mockMapping['/merchandising/product'].post!(
-        createMockNextApiRequest({
-          url: '/merchandising/product',
-          method: 'POST',
-        }),
-        200,
-        {
-          products: [
-            {
-              brand: 'M&S',
-              id: '1',
-              metadata: {},
-            },
-          ],
-        }
-      );
-      expect(result).toEqual({
-        body: {
-          products: [
-            {
-              brand: 'M&S',
-              id: '1',
-              metadata: {
-                isPinned: false,
-              },
-            },
-          ],
-        },
-        status: 200,
-      });
-    });
-  });
-
   describe('/merchandising/category/{category}/preview', () => {
     it('should add missing product data when its missing from server side request when making request to /merchandising/category/{category}/preview', () => {
       const mockMapping = getMockMapping();

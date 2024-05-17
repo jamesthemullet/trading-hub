@@ -3,7 +3,6 @@ import {
   BoostsBuries,
   BoostsBuriesWithInfo,
   ProductBoostBury,
-  ProductSearchResponse,
   SearchPreviewResponse,
   AttributesResponse,
   Facet,
@@ -265,21 +264,6 @@ export const getMockMapping: () => Record<
         return { body: attributesResponseMock, status: 200 };
       }
       return { body: jsonBody, status };
-    },
-  },
-  '/merchandising/product': {
-    post: (_req, status, jsonBody) => {
-      const productSearchResponse = jsonBody as ProductSearchResponse;
-      return {
-        body: {
-          ...productSearchResponse,
-          products: productSearchResponse.products.map((product) => ({
-            ...product,
-            metadata: { isPinned: false },
-          })),
-        },
-        status: status,
-      };
     },
   },
   '/merchandising/ruleset/{category}': {
