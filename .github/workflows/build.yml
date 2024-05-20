@@ -5,11 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    types: [opened, synchronize, reopened, edited]
-
-concurrency:
-  cancel-in-progress: true
-  group: '${{ github.workflow }} @ ${{ github.ref }}'
+    types: [opened, synchronize, reopened]
 
 env:
   GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
