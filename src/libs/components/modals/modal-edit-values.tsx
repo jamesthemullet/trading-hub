@@ -170,7 +170,18 @@ export const ModalEditValues = ({
     useState<Attributes[]>(mockAttributes);
   const [mergeList, setMergeList] = useState<string[]>([]);
 
-  const handleSelect = (attribute: string) => {
+  const handleSelect = (
+    attribute: string,
+    mergedValues: string[] | undefined
+  ) => {
+    if (mergedValues && mergedValues.length > 1) {
+      const valuesNotInMergeList = mergedValues.filter(
+        (value) => !mergeList.includes(value)
+      );
+
+      setMergeList([...mergeList, ...valuesNotInMergeList]);
+      return;
+    }
     if (!mergeList.includes(attribute)) {
       setMergeList([...mergeList, attribute]);
     } else {
@@ -322,7 +333,7 @@ export const ModalEditValues = ({
                       <input
                         type="checkbox"
                         checked={mergeList.includes(attribute)}
-                        onChange={() => handleSelect(attribute)}
+                        onChange={() => handleSelect(attribute, mergedValues)}
                         aria-label={`Select ${attribute} to merge`}
                       />
                     </Col>

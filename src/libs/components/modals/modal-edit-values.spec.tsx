@@ -379,4 +379,77 @@ describe('Add Facet Modal', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  it('should merge into an existing merged value group', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onCloseSpy = jest.fn();
+
+    renderWithProviders(
+      <ModalEditValues
+        onClose={onCloseSpy}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+        }}
+      />
+    );
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Duck Down to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+    });
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+    });
+
+    act(() => {
+      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
+      user.click(mergeButton);
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      expect(
+        screen.getAllByText('Name your merged value group')[0]
+      ).toBeVisible();
+    });
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Cotton to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+    });
+
+    act(() => {
+      user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
+    });
+
+    act(() => {
+      const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
+      user.click(mergeButton);
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      expect(
+        screen.getAllByText('Name your merged value group')[0]
+      ).toBeVisible();
+    });
+  });
 });
