@@ -28,7 +28,7 @@ export const ProductNumber = styled.div`
   background: #000;
   color: #fff;
   border-radius: 3px;
-  width: 22px;
+  min-width: 22px;
   height: 22px;
   text-align: center;
   padding: 0 2px 2px;

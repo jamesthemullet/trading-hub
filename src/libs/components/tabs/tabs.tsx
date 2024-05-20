@@ -9,7 +9,6 @@ type Props = {
 };
 
 const TabsContainerWrapper = styled.div`
-  border-bottom: solid 1px #b1b1b1;
   margin-left: 8px;
   margin-right: 8px;
 `;

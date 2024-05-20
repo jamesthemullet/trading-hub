@@ -11,6 +11,7 @@ import {
   spacing,
   Tabs,
   VisualEditor,
+  Text,
 } from '../../components';
 import { useEffect, useState } from 'react';
 import type {
@@ -24,6 +25,8 @@ import type {
 } from '@/libs/api';
 import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
 import { useRouter } from 'next/router';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pluralize = require('pluralize');
 
 const CategoryPanel = styled.div`
   border-top: 2px solid #005640;
@@ -50,6 +53,14 @@ const PanelTop = styled.div`
   background-color: #fff;
   padding-top: 1px;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  margin: 0 ${spacing(1)};
+  border-bottom: solid 1px #b1b1b1;
+
+  div {
+    flex: 1;
+  }
 `;
 
 const TabContent = styled.div`
@@ -125,6 +136,7 @@ export const Ruleset = ({
   const [hasChanges, setHasChanges] = useState(false);
   const { handleGet } = useCategoryProductSearch();
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
+  const [totalProducts, setTotalProducts] = useState<number | undefined>(0);
   const [showPreview, setShowPreview] = useState(false);
   const router = useRouter();
 
@@ -151,6 +163,21 @@ export const Ruleset = ({
       router.events.off('routeChangeStart', handleBrowseAway);
     };
   }, [hasChanges, router]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await handleGet({
+        categoryId: selectedCategory.identifier || '',
+        query: '',
+        start: 0,
+        rows: 0,
+        merchandisingRules,
+      });
+      setTotalProducts(data.pagination.totalItems);
+    };
+
+    fetchData();
+  }, [handleGet, merchandisingRules, selectedCategory.identifier]);
 
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
@@ -506,6 +533,14 @@ export const Ruleset = ({
               onTabChange={setCurrentEditorTab}
               currentTab={currentEditorTab}
             />
+            <Text>
+              {sortedProducts.length}{' '}
+              {pluralize(' product', sortedProducts.length)}{' '}
+              {totalProducts && totalProducts > sortedProducts.length
+                ? `of ${totalProducts}`
+                : ''}
+              {' shown'}
+            </Text>
           </PanelTop>
           <TabContent>
             {currentEditorTab === 0 && (
