@@ -13,7 +13,7 @@ import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { useAttributes } from '@/libs/hooks';
 import {
   AlphanumericBoostBury,
-  AttributesResponse,
+  AttributeResponseItem,
   MerchandisingRules,
   NumericBoostBury,
 } from '@/libs/api';
@@ -21,7 +21,11 @@ import { Search } from '../search/search';
 import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
 import { NumericAttribute } from './numeric-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
-import { AttributeCount, AttributesList } from './ruleset-attributes.styles';
+import {
+  AttributeCount,
+  AttributeSelection,
+  AttributesList,
+} from './ruleset-attributes.styles';
 import Image from 'next/image';
 import { EditAttribute } from '../../modules/ruleset/ruleset';
 
@@ -62,6 +66,7 @@ const SelectedAttribute = styled.div`
 const ModalSection = styled.div`
   border-bottom: solid 1px ${color.grey};
   padding: ${spacing(2)};
+  position: relative;
 `;
 
 const Number = styled.span<{ isActive: boolean }>`
@@ -228,16 +233,6 @@ export type Props = {
   onChangeAttribute: (args: EditAttribute) => void;
 };
 
-const getNumericAttributes = (attributes: AttributesResponse['attributes']) => {
-  return attributes.filter((attribute) => attribute.type === 'numeric');
-};
-
-const getAlphanumericAttributes = (
-  attributes: AttributesResponse['attributes']
-) => {
-  return attributes.filter((attribute) => attribute.type === 'alphanumeric');
-};
-
 const BoostBuryDropdown = ({
   selectedOperation,
   setSelectedOperation,
@@ -301,7 +296,11 @@ export const RulesetAttributes = ({
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
-  const { attributes } = useAttributes(category);
+  const { attributes: numericAttributes } = useAttributes(category, 'numeric');
+  const { attributes: alphanumericAttributes } = useAttributes(
+    category,
+    'alphanumeric'
+  );
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
     useState<string[]>([]);
   const [numbericSearchValue, setNumericSearchValue] = useState('');
@@ -608,25 +607,27 @@ export const RulesetAttributes = ({
                       </SearchWrapper>
                     </Filters>
                   </ModalSection>
-                  <ModalAttributeHeader>
-                    <Label isStrong>Relevant attributes</Label>
-                  </ModalAttributeHeader>
-                  <RadioButtons
-                    values={getNumericAttributes(attributes)
-                      .filter((attribute) =>
-                        attribute.name
-                          .toLowerCase()
-                          .includes(numbericSearchValue.toLowerCase())
-                      )
-                      .map((attribute) => ({
-                        name: attribute.name,
-                        isSelected: selectedNumericField === attribute.name,
-                      }))}
-                    onSelect={(name) => {
-                      setSelectedNumericField(name);
-                      setSelectedAttributeType('numeric');
-                    }}
-                  />
+                  <AttributeSelection>
+                    <ModalAttributeHeader>
+                      <Label isStrong>Relevant attributes</Label>
+                    </ModalAttributeHeader>
+                    <RadioButtons
+                      values={numericAttributes
+                        .filter((attribute: AttributeResponseItem) =>
+                          attribute.name
+                            .toLowerCase()
+                            .includes(numbericSearchValue.toLowerCase())
+                        )
+                        .map((attribute: AttributeResponseItem) => ({
+                          name: attribute.name,
+                          isSelected: selectedNumericField === attribute.name,
+                        }))}
+                      onSelect={(name) => {
+                        setSelectedNumericField(name);
+                        setSelectedAttributeType('numeric');
+                      }}
+                    />
+                  </AttributeSelection>
                 </ModalContent>
 
                 <ModalContent
@@ -673,32 +674,36 @@ export const RulesetAttributes = ({
                       </SearchWrapper>
                     </Filters>
                   </ModalSection>
-                  <ModalAttributeHeader>
-                    <Label isStrong>Relevant attributes</Label>
-                  </ModalAttributeHeader>
-                  {getAlphanumericAttributes(attributes)
-                    .filter((attribute) =>
-                      attribute.name
-                        .toLowerCase()
-                        .includes(alphanumericSearchValue.toLowerCase())
-                    )
-                    .map((attribute) => (
-                      <ModalSection key={attribute.name}>
-                        <NextStep
-                          as="button"
-                          onClick={() => {
-                            setAlphanumericAttributeValues(
-                              attribute.values.map((value) => value.value)
-                            );
-                            setAlphanumericField(attribute.name);
-                            setModalStep(3);
-                          }}
-                          isStrong
-                        >
-                          {attribute.name}
-                        </NextStep>
-                      </ModalSection>
-                    ))}
+                  <AttributeSelection style={{ maxHeight: '250px' }}>
+                    <ModalAttributeHeader>
+                      <Label isStrong>Relevant attributes</Label>
+                    </ModalAttributeHeader>
+                    {alphanumericAttributes
+                      .filter((attribute: AttributeResponseItem) =>
+                        attribute.name
+                          .toLowerCase()
+                          .includes(alphanumericSearchValue.toLowerCase())
+                      )
+                      .map((attribute: AttributeResponseItem) => (
+                        <ModalSection key={attribute.name}>
+                          <NextStep
+                            as="button"
+                            onClick={() => {
+                              // istanbul ignore next
+                              if (!attribute.values) return;
+                              setAlphanumericAttributeValues(
+                                attribute.values.map((value) => value.value)
+                              );
+                              setAlphanumericField(attribute.name);
+                              setModalStep(3);
+                            }}
+                            isStrong
+                          >
+                            {attribute.name}
+                          </NextStep>
+                        </ModalSection>
+                      ))}
+                  </AttributeSelection>
                 </ModalContent>
 
                 <ModalContent
@@ -730,47 +735,53 @@ export const RulesetAttributes = ({
                       />
                     </SearchWrapper>
                   </ModalSection>
-                  <ModalAttributeHeader>
-                    <Label isStrong>Current matching attribute values</Label>
-                  </ModalAttributeHeader>
-                  <div aria-label="Selected attributes">
-                    <Checkboxes
-                      onSelect={(isSelected, name) => {
-                        setSelectedAttributeType('alphanumeric');
+                  <AttributeSelection style={{ maxHeight: '340px' }}>
+                    <ModalAttributeHeader>
+                      <Label isStrong>Current matching attribute values</Label>
+                    </ModalAttributeHeader>
+                    <div aria-label="Selected attributes">
+                      <Checkboxes
+                        onSelect={(isSelected, name) => {
+                          setSelectedAttributeType('alphanumeric');
 
-                        const currentValues =
-                          selectedAlphanumericValues.find(
-                            (attribute) => attribute.field === alphanumericField
-                          )?.values || [];
+                          const currentValues =
+                            selectedAlphanumericValues.find(
+                              (attribute) =>
+                                attribute.field === alphanumericField
+                            )?.values || [];
 
-                        const newValues = isSelected
-                          ? [...currentValues, name]
-                          : currentValues.filter((i) => i !== name);
+                          const newValues = isSelected
+                            ? [...currentValues, name]
+                            : currentValues.filter((i) => i !== name);
 
-                        const updatedField = selectedAlphanumericValues.filter(
-                          (attr) => attr.field !== alphanumericField
-                        );
+                          const updatedField =
+                            selectedAlphanumericValues.filter(
+                              (attr) => attr.field !== alphanumericField
+                            );
 
-                        setSelectedAlphanumericValues([
-                          ...updatedField,
-                          { field: alphanumericField, values: newValues },
-                        ]);
-                      }}
-                      values={alphanumericAttributeValues
-                        .filter((value) =>
-                          value
-                            .toLowerCase()
-                            .includes(alphanumbericFilterValue.toLowerCase())
-                        )
-                        .map((value) => ({
-                          name: value,
-                          isSelected:
-                            selectedAlphanumericValues
-                              .find((attr) => attr.field === alphanumericField)
-                              ?.values.includes(value) || false,
-                        }))}
-                    />
-                  </div>
+                          setSelectedAlphanumericValues([
+                            ...updatedField,
+                            { field: alphanumericField, values: newValues },
+                          ]);
+                        }}
+                        values={alphanumericAttributeValues
+                          .filter((value) =>
+                            value
+                              .toLowerCase()
+                              .includes(alphanumbericFilterValue.toLowerCase())
+                          )
+                          .map((value) => ({
+                            name: value,
+                            isSelected:
+                              selectedAlphanumericValues
+                                .find(
+                                  (attr) => attr.field === alphanumericField
+                                )
+                                ?.values.includes(value) || false,
+                          }))}
+                      />
+                    </div>
+                  </AttributeSelection>
                 </ModalContent>
 
                 <ModalFooter>

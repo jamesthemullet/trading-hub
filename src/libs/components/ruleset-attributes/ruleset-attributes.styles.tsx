@@ -39,3 +39,8 @@ export const AttributeValue = styled.label`
   margin: ${spacing(1)};
   display: inline-block;
 `;
+
+export const AttributeSelection = styled.div`
+  max-height: 210px;
+  overflow: auto;
+`;

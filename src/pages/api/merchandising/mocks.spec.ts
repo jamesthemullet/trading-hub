@@ -2,7 +2,6 @@ import { ErrorResponse, ReturnedRuleSet } from '@/libs/api';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 
 import {
-  attributesResponseMock,
   getMockMapping,
   globalFacetsListMock,
   ruleSetFacetConfigWithIdMock,
@@ -23,44 +22,6 @@ const mockProductData = {
 };
 
 describe('mocks', () => {
-  describe('/merchandising/attributes', () => {
-    it('should respond with real response for attributes when status is 200', () => {
-      const mockMapping = getMockMapping();
-      expect(mockMapping['/merchandising/attributes'].get).toBeDefined();
-
-      const result = mockMapping['/merchandising/attributes'].get!(
-        createMockNextApiRequest({
-          url: '/merchandising/attributes',
-          method: 'GET',
-        }),
-        200,
-        attributesResponseMock
-      );
-      expect(result).toEqual({
-        body: attributesResponseMock,
-        status: 200,
-      });
-    });
-
-    it('should respond with mock for attributes when status is 400', () => {
-      const mockMapping = getMockMapping();
-      expect(mockMapping['/merchandising/attributes'].get).toBeDefined();
-
-      const result = mockMapping['/merchandising/attributes'].get!(
-        createMockNextApiRequest({
-          url: '/merchandising/attributes',
-          method: 'GET',
-        }),
-        400,
-        {}
-      );
-      expect(result).toEqual({
-        body: attributesResponseMock,
-        status: 200,
-      });
-    });
-  });
-
   describe('/merchandising/ruleset/{category}', () => {
     const mockResponse: ReturnedRuleSet = {
       id: '1',

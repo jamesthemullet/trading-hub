@@ -1,10 +1,8 @@
 import {
-  AttributeResponseItem,
   BoostsBuries,
   BoostsBuriesWithInfo,
   ProductBoostBury,
   SearchPreviewResponse,
-  AttributesResponse,
   Facet,
   FacetsList,
   ReturnedFacet,
@@ -126,47 +124,6 @@ export const buriesWithInfoMock: BoostsBuriesWithInfo = {
   })),
 };
 
-export const attributesMock: AttributeResponseItem[] = [
-  {
-    type: 'alphanumeric',
-    name: 'Colour',
-    values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
-  },
-  {
-    type: 'numeric',
-    name: 'Size',
-    values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
-  },
-  {
-    type: 'alphanumeric',
-    name: 'Brand',
-    values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
-  },
-  {
-    type: 'alphanumeric',
-    name: 'Category',
-    values: [
-      { value: 'Shoes' },
-      { value: 'Clothing' },
-      { value: 'Accessories' },
-    ],
-  },
-  {
-    type: 'numeric',
-    name: 'Price',
-    values: [
-      { value: '0-50' },
-      { value: '50-100' },
-      { value: '100-200' },
-      { value: '200+' },
-    ],
-  },
-];
-
-export const attributesResponseMock: AttributesResponse = {
-  attributes: attributesMock,
-};
-
 export const ruleSetFacetConfigWithIdMock: RuleSetFacetConfigWithId[] = [
   {
     id: 'color-id',
@@ -258,14 +215,6 @@ export const getMockMapping: () => Record<
     >
   >
 > = () => ({
-  '/merchandising/attributes': {
-    get: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        return { body: attributesResponseMock, status: 200 };
-      }
-      return { body: jsonBody, status };
-    },
-  },
   '/merchandising/ruleset/{category}': {
     get: (_req, status, jsonBody) => {
       const returnedRuleSet = jsonBody as ReturnedRuleSet;

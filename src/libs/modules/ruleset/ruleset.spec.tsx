@@ -4,6 +4,14 @@ import { act, Screen, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
+import { renderWithProviders } from '../../../test/render-with-providers';
+import { BoostsBuries, MerchandisingRules } from '../../api';
+import { useCategoryPreview } from '../../hooks/use-category-preview';
+import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
+import { useGetCategories } from '../../hooks/use-get-categories';
+import { Ruleset } from './ruleset';
+
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
@@ -17,22 +25,53 @@ jest.mock('../../hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
 jest.mock('../../hooks/use-attributes', () => ({
-  useAttributes: () => ({
-    attributes: attributesMock,
-  }),
+  useAttributes: (_category: string, type: string) => {
+    if (type === 'alphanumeric') {
+      return {
+        attributes: [
+          {
+            type: 'alphanumeric',
+            name: 'Colour',
+            values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
+          },
+          {
+            type: 'alphanumeric',
+            name: 'Brand',
+            values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
+          },
+          {
+            type: 'alphanumeric',
+            name: 'Category',
+            values: [
+              { value: 'Shoes' },
+              { value: 'Clothing' },
+              { value: 'Accessories' },
+            ],
+          },
+        ],
+      };
+    }
+    return {
+      attributes: [
+        {
+          type: 'numeric',
+          name: 'Size',
+          values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
+        },
+        {
+          type: 'numeric',
+          name: 'Price',
+          values: [
+            { value: '0-50' },
+            { value: '50-100' },
+            { value: '100-200' },
+            { value: '200+' },
+          ],
+        },
+      ],
+    };
+  },
 }));
-
-import {
-  attributesMock,
-  boostMock,
-  buriesMock,
-} from '../../../pages/api/merchandising/mocks';
-import { renderWithProviders } from '../../../test/render-with-providers';
-import { BoostsBuries, MerchandisingRules } from '../../api';
-import { useCategoryPreview } from '../../hooks/use-category-preview';
-import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
-import { useGetCategories } from '../../hooks/use-get-categories';
-import { Ruleset } from './ruleset';
 
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const PRODUCT_SEARCH_PLACEHOLDER_TEXT = 'Search for product';
