@@ -6,6 +6,7 @@
   "lockFileMaintenance": {
     "enabled": true
   },
+  "recreateWhen": "never",
   "ignoreDeps": [
     "actions/checkout",
     "reviewdog/action-actionlint",
