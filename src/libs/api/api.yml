@@ -50,10 +50,60 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
+  /merchandising/facet/{facetId}/attributeValues:
+    get:
+      summary: Facet values response
+      description: Returns the available attributes for a specific facet
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to retreive the attributes for
+        - in: query
+          name: ruleSetId
+          schema:
+            type: string
+          required: false
+          description: view the facets in the context of this rule set
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: Search for a value
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display attribute values after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+          description: Number of attribute values to return
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributeValuesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
   /merchandising/category/{categoryId}/attributes:
     get:
       summary: Category Attributes Response
-      description: Returns a response attributes to boost by for category.
+      description: Returns the available attributes for category or all attributes if category not provided.
       parameters:
         - in: path
           name: categoryId
@@ -84,6 +134,7 @@ paths:
           description: Unauthorized e.g. no bearer token specified
   '/merchandising/category/{categoryId}/preview':
     post:
+      deprecated: true
       summary: Preview Search Response
       description: Returns a search response with specified rules applied.
       parameters:
@@ -117,6 +168,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchPreviewResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+  '/search/beta/merchandising/category/{categoryId}/preview':
+    post:
+      summary: Preview Search Response
+      description: Returns a search response with specified rules applied.
+      parameters:
+        - in: path
+          name: categoryId
+          schema:
+            type: string
+          required: true
+          description: The category to preview
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+          description: The number of products to display
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchPreviewResponseBeta'
         '400':
           description: Bad request
           content:
@@ -496,6 +590,33 @@ components:
       required:
         - displayValue
         - indexPropertyName
+    AttributeValuesResponse:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              displayValue:
+                type: string
+              mergedValues:
+                type: array
+                items:
+                  type: string
+              isExcluded:
+                type: boolean
+              isPinned:
+                type: boolean
+            required:
+              - displayValue
+              - isExcluded
+              - isPinned
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - ruleSets
+        - values
     RuleSets:
       type: object
       properties:
@@ -616,6 +737,41 @@ components:
         - rules
         - facets
         - pagination
+    SearchPreviewResponseBeta:
+      allOf:
+        - $ref: '#/components/schemas/Facets'
+        - type: object
+          properties:
+            category:
+              type: string
+            products:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'
+            ruleSet:
+              type: object
+              properties:
+                rules:
+                  $ref: '#/components/schemas/MerchandisingRulesWithInfo'
+                facets:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RuleSetFacetConfigWithId'
+                  description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
+              required:
+                - rules
+                - facets
+            externalChanges:
+              $ref: '#/components/schemas/MerchandisingRulesWithInfo'
+            pagination:
+              $ref: '#/components/schemas/Pagination'
+          required:
+            - products
+            - category
+            - ruleSet
+            - facets
+            - externalChanges
+            - pagination
     ProductSearchResponse:
       type: object
       properties:
