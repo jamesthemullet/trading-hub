@@ -74,7 +74,7 @@ export const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
       tenantId: envSettings.tenantId,
       authorization: {
         params: {
-          scope: `offline_access openid profile email`,
+          scope: `offline_access openid profile email ${envSettings.clientId}/.default`,
           audience: envSettings.clientId,
         },
       },

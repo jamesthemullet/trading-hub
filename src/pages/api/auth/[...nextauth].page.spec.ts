@@ -83,7 +83,7 @@ describe('...NextAuth', () => {
         'clientId'
       );
       expect(azureConfig?.options?.authorization.params.scope).toEqual(
-        'offline_access openid profile email'
+        'offline_access openid profile email clientId/.default'
       );
     });
   });
