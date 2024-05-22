@@ -70,7 +70,7 @@ jobs:
               echo "The URI $new_uri is already in the list"
           else
               echo "Adding the URI $new_uri to the list"
-              az ad app update --id "${{ env.CLIENT_ID }}" --web-redirect-uris "$existing_redirect_uris" "$new_uri"
+              az ad app update --id "${{ env.CLIENT_ID }}" --web-redirect-uris $existing_redirect_uris $new_uri
           fi
 
       - name: Set up environment variables
