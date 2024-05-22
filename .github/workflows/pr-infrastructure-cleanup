@@ -3,8 +3,6 @@ name: PR infrastructure cleanup
 on:
   pull_request:
     types: [closed]
-    branches:
-      - main
 
 concurrency:
   # injecting the uri is subject to race condition so we need to limit the concurrency
