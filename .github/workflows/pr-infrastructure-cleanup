@@ -1,0 +1,66 @@
+name: PR infrastructure cleanup
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+concurrency:
+  # injecting the uri is subject to race condition so we need to limit the concurrency
+  group: 'pr-infrastructure'
+  cancel-in-progress: false
+
+env:
+  ARM_TENANT_ID: bd5c6713-7399-4b31-be79-78f2d078e543
+  CLIENT_ID: 2c640eb1-36ce-4c8a-be67-0559df1722f5
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  cleanup-pr-infrastructure:
+    name: Cleanup PR infrastructure
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    environment:
+      name: deveun
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check composite parameter for the reusable pipeline
+        id: check-composite-vars
+        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
+      - id: dynamic-env-name
+        uses: DigitalInnovation/brightcloud/.github/actions/get-app-name@feat/oidcn
+      - name: Check infra exists
+        continue-on-error: true
+        id: check-pr-infra-exists
+        run: |
+          set +e
+          echo "should_build_env=false" >> "$GITHUB_OUTPUT"
+          curl -I https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net
+          EXITCODE=$?
+          if [ "$EXITCODE" -eq "6" ]; then
+            echo "should_build_env=true" >> "$GITHUB_OUTPUT"
+          fi
+          set -e
+          exit 0
+      - name: Login via Azure CLI
+        uses: azure/login@v1.6.1
+        with:
+          creds: '{"clientId": "${{ env.CLIENT_ID }}" , "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
+
+      - name: Remove URIs from azure app registration
+        run: |
+          set -x
+
+          # this script is adapted from: https://stackoverflow.com/questions/76388274/updating-web-redirect-uri-of-azure-ad-app-registration
+
+          remove_uri="https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net/api/auth/callback/azure-ad"
+
+          # Get list of existing redirect URIs and already remove selected with sed from that list
+          remaining_redirect_uris=$(az ad app show --id "${{ env.CLIENT_ID }}" --query "[web.redirectUris]" --output tsv | sed "s|$remove_uri||g")
+          echo "$remaining_redirect_uris"
+          az ad app update --id "${{ env.CLIENT_ID }}" --web-redirect-uris $remaining_redirect_uris

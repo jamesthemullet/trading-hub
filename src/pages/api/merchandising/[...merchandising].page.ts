@@ -33,9 +33,10 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   let jsonBody = {};
+  let jsonText = '';
   let status = response.status;
   try {
-    const jsonText = await response.text();
+    jsonText = await response.text();
     jsonBody = JSON.parse(jsonText);
 
     const result = validateOrMockResponse(req, response.status, jsonBody);
@@ -46,7 +47,11 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     status = result.updatedStatus;
   } catch (e) /* istanbul ignore next */ {
     console.error('ERROR: Error parsing JSON', e, jsonBody);
-    return res.status(500).json({ error: 'Error parsing JSON' });
+    return res.status(500).json({
+      error: 'Error parsing JSON',
+      jsonText,
+      apiResponseStatus: response.status,
+    });
   }
 
   if (!response.ok) {
