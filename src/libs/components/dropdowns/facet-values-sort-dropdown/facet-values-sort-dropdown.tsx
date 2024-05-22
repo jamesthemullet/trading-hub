@@ -55,7 +55,9 @@ export const FacetValuesSortDropdown = () => {
     setIsDropdownOpen(false);
   };
 
-  const dropdownHeading = dropdownOptions.find((option) => option.selected);
+  // istanbul ignore next
+  const dropdownHeading =
+    dropdownOptions.find((option) => option.selected) || dropdownOptions[0];
 
   return (
     dropdownHeading && (

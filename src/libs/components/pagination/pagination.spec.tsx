@@ -1,5 +1,4 @@
-import { render, screen } from '@testing-library/react';
-import { act } from 'react';
+import { act, render, screen } from '@testing-library/react';
 
 import { Pagination } from './pagination';
 

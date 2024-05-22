@@ -1,5 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { act } from 'react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 
 import { TablePagination } from './table-pagination';
 

@@ -1,6 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { ExampleCalendarModal } from './example-calendar-modal';
-import { act } from 'react';
 
 describe('ExampleCalendarModal', () => {
   beforeAll(() => {
