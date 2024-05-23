@@ -116,8 +116,9 @@ describe('Preview', () => {
         { ...mockProduct, productId: 'product2' },
       ],
       categoryFacets: mockFacets,
-      merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
+      isLoading: false,
+      merchandisingRulesWithInfo: mockMerchandisingRules,
       setRules: jest.fn(),
     });
   });
@@ -234,5 +235,26 @@ describe('Preview', () => {
     );
 
     expect(screen.getByText('£5 - £30 (67)')).toBeInTheDocument();
+  });
+
+  it('should show a loader when making changes', () => {
+    jest.mocked(useCategoryPreview).mockReturnValue({
+      categoryProducts: [mockProduct],
+      categoryFacets: mockFacets,
+      error: '',
+      isLoading: true,
+      merchandisingRulesWithInfo: mockMerchandisingRules,
+      setRules: jest.fn(),
+    });
+
+    render(
+      <Preview
+        merchandisingRules={mockMerchandisingRules}
+        categoryId={mockCategoryId}
+        onClose={mockOnClose}
+      />
+    );
+
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
   });
 });

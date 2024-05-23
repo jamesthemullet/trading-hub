@@ -9,6 +9,7 @@ import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
 import { useCategoryPreview } from '../../hooks';
 import { useEffect } from 'react';
+import { Loader } from '../loader/loader';
 
 const Heading = styled(Text)`
   font-size: 20px;
@@ -75,10 +76,8 @@ export const RulesetChanges = ({
   /* istanbul ignore next */
   const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
 
-  const { merchandisingRulesWithInfo, setRules } = useCategoryPreview(
-    category,
-    merchandisingRules
-  );
+  const { merchandisingRulesWithInfo, setRules, isLoading } =
+    useCategoryPreview(category, merchandisingRules);
 
   useEffect(() => {
     setRules(merchandisingRules);
@@ -194,6 +193,7 @@ export const RulesetChanges = ({
             />
           )
       }
+      {isLoading && <Loader />}
     </>
   );
 };

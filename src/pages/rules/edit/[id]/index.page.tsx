@@ -1,4 +1,4 @@
-import { Heading } from '@/libs/components';
+import { Heading, Loader } from '@/libs/components';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 import type { MerchandisingRules, RuleSetFacetConfigWithId } from '@/libs/api';
@@ -12,7 +12,7 @@ type PageProps = {
 
 const Page = ({ id }: PageProps) => {
   const { ruleSets } = useRuleSetPreview(id);
-  const { updateRuleSet } = useUpdateRuleSet();
+  const { updateRuleSet, isSaving } = useUpdateRuleSet();
   const router = useRouter();
 
   const saveRuleSet = async ({
@@ -34,6 +34,8 @@ const Page = ({ id }: PageProps) => {
       isEnabled,
       merchandisingRules,
       categoryId,
+    }).then(() => {
+      router.push('/rules');
     });
   };
 
@@ -55,6 +57,8 @@ const Page = ({ id }: PageProps) => {
           rulesetMerchandisingRules={ruleSets.rules}
         />
       )}
+
+      {isSaving && <Loader />}
     </>
   );
 };

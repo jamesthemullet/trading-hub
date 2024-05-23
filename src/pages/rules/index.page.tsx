@@ -50,14 +50,13 @@ const NewButton = styled.div`
 const RuleSets = () => {
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [columnIdToSort, setColumnIdToSort] =
     useState<keyof ReturnedRuleSet>('categoryName');
   const [columnSortOrder, setColumnSortOrder] = useState<'asc' | 'desc'>('asc');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const { updateRuleSet } = useUpdateRuleSet();
+  const { isSaving, updateRuleSet } = useUpdateRuleSet();
 
   const currentPageIndex = currentPage - 1;
 
@@ -91,7 +90,6 @@ const RuleSets = () => {
     merchandisingRules: MerchandisingRules;
     ruleSetId: string;
   }) => {
-    setIsUpdating(true);
     await updateRuleSet({
       id: ruleSetId,
       facets,
@@ -103,7 +101,6 @@ const RuleSets = () => {
       ruleset.id === ruleSetId ? { ...ruleset, isEnabled } : ruleset
     );
     setRuleSets(updatedRuleSetsList);
-    setIsUpdating(false);
   };
 
   return (
@@ -147,7 +144,7 @@ const RuleSets = () => {
           setCurrentPageSize={setCurrentPageSize}
         />
 
-        {isUpdating && <Loader />}
+        {isSaving && <Loader />}
       </PageWrapper>
     </>
   );

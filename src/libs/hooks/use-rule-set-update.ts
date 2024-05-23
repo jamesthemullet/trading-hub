@@ -8,6 +8,7 @@ import {
 
 export const useUpdateRuleSet = () => {
   const [error, setError] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const updateRuleSet = useCallback(
     async ({
@@ -24,6 +25,7 @@ export const useUpdateRuleSet = () => {
       merchandisingRules: MerchandisingRules;
     }) => {
       setError('');
+      setIsSaving(true);
 
       try {
         const body = {
@@ -34,6 +36,7 @@ export const useUpdateRuleSet = () => {
         };
         const response = await merchandising().rulesetUpdate(id, body);
 
+        setIsSaving(false);
         return response.data;
       } catch (error) {
         if (error && typeof error === 'object' && 'status' in error) {
@@ -42,8 +45,8 @@ export const useUpdateRuleSet = () => {
         }
       }
     },
-    []
+    [setIsSaving]
   );
 
-  return { updateRuleSet, error };
+  return { isSaving, updateRuleSet, error };
 };

@@ -22,7 +22,7 @@ jest.mock('../../libs/hooks/use-rule-set-delete', () => ({
 const mockUpdateRuleSet = jest.fn();
 jest.mock('../../libs/hooks/use-rule-set-update', () => ({
   useUpdateRuleSet: () => {
-    return { updateRuleSet: mockUpdateRuleSet };
+    return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
   },
 }));
 

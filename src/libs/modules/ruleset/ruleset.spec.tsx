@@ -212,11 +212,12 @@ describe('Ruleset', () => {
         },
       ],
       categoryFacets: [],
+      error: '',
+      isLoading: false,
       merchandisingRulesWithInfo: {
         ...mockMerchandisingRules,
         pinnedProducts: [mockProduct],
       },
-      error: '',
       setRules: jest.fn(),
     });
 
@@ -426,11 +427,12 @@ describe('Ruleset', () => {
           },
         ],
         categoryFacets: [],
+        error: '',
+        isLoading: false,
         merchandisingRulesWithInfo: {
           ...mockMerchandisingRules,
           pinnedProducts: [{ ...mockProduct, id: 'product2' }],
         },
-        error: '',
         setRules: jest.fn(),
       });
 
@@ -519,11 +521,12 @@ describe('Ruleset', () => {
           },
         ],
         categoryFacets: [],
+        error: '',
+        isLoading: false,
         merchandisingRulesWithInfo: {
           ...mockMerchandisingRules,
           pinnedProducts: [mockProduct],
         },
-        error: '',
         setRules: jest.fn(),
       });
 
@@ -624,6 +627,8 @@ describe('Ruleset', () => {
           },
         ],
         categoryFacets: [],
+        error: '',
+        isLoading: false,
         merchandisingRulesWithInfo: {
           ...mockMerchandisingRules,
           buries: {
@@ -632,7 +637,6 @@ describe('Ruleset', () => {
           },
           pinnedProducts: [mockProduct],
         },
-        error: '',
         setRules: jest.fn(),
       });
       jest.mocked(useCategoryProductSearch).mockReturnValue({
@@ -786,6 +790,7 @@ describe('Ruleset', () => {
           pinnedProducts: [],
         },
         error: '',
+        isLoading: false,
         setRules: jest.fn(),
       });
       jest.mocked(useCategoryProductSearch).mockReturnValue({
@@ -956,11 +961,12 @@ describe('Ruleset', () => {
           },
         ],
         categoryFacets: [],
+        error: '',
+        isLoading: false,
         merchandisingRulesWithInfo: {
           ...mockMerchandisingRules,
           pinnedProducts: [mockProduct],
         },
-        error: '',
         setRules: jest.fn(),
       });
 

@@ -16,6 +16,7 @@ export const useCategoryPreview = (
   const [categoryFacets, setCategoryFacets] = useState<Facet[]>([]);
   const [error, setError] = useState('');
   const [rules, setRules] = useState(merchandisingRules);
+  const [isLoading, setIsLoading] = useState(false);
   const [merchandisingRulesWithInfo, setMerchandisingRulesWithInfo] =
     useState<MerchandisingRulesWithInfo>();
 
@@ -26,6 +27,7 @@ export const useCategoryPreview = (
         return;
       }
 
+      setIsLoading(true);
       try {
         const categoryPreview = await merchandising().categoryPreviewCreate(
           categoryId,
@@ -45,6 +47,7 @@ export const useCategoryPreview = (
 
         if (previewData.facets.facets) {
           setCategoryFacets(previewData.facets.facets);
+          setIsLoading(false);
         }
 
         setError('');
@@ -53,6 +56,7 @@ export const useCategoryPreview = (
           setError(
             `Failed to get categories ${(error as { status: string })?.status}`
           );
+          setIsLoading(false);
         }
       }
     };
@@ -63,8 +67,9 @@ export const useCategoryPreview = (
   return {
     categoryProducts,
     categoryFacets,
-    merchandisingRulesWithInfo,
     error,
+    isLoading,
+    merchandisingRulesWithInfo,
     setRules: (rules: MerchandisingRules) => setRules(rules),
   };
 };

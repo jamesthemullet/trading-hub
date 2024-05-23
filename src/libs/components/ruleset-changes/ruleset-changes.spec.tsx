@@ -31,8 +31,9 @@ describe('RulesetChanges', () => {
     jest.mocked(useCategoryPreview).mockReturnValue({
       categoryProducts: [],
       categoryFacets: [],
-      merchandisingRulesWithInfo: mockMerchandisingRules,
       error: '',
+      isLoading: false,
+      merchandisingRulesWithInfo: mockMerchandisingRules,
       setRules: jest.fn(),
     });
   });
@@ -117,5 +118,31 @@ describe('RulesetChanges', () => {
     );
 
     expect(screen.getByText('ID: productId')).toBeInTheDocument();
+  });
+
+  it('should show a loader when updating', () => {
+    jest.mocked(useCategoryPreview).mockReturnValueOnce({
+      categoryProducts: [],
+      categoryFacets: [],
+      error: '',
+      isLoading: true,
+      merchandisingRulesWithInfo: mockMerchandisingRules,
+      setRules: jest.fn(),
+    });
+
+    render(
+      <RulesetChanges
+        merchandisingRules={{
+          pinnedProducts: [{ id: 'abc' }],
+          blockedProducts: [],
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
+        }}
+        onChangePosition={jest.fn()}
+        onProductBoostBury={jest.fn()}
+      />
+    );
+
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
   });
 });

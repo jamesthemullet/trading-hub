@@ -9,6 +9,7 @@ import { ProductDetails } from '../product/product';
 import { ProductWrapper } from '../product/product.styles';
 import { Text, Label, Header3 } from '../typography/typography.styles';
 import { boxShadow } from '../utils/shared.styles';
+import { Loader } from '../loader/loader';
 
 type Props = {
   categoryId: string;
@@ -167,10 +168,8 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
     buries: { alphanumeric: [], numeric: [], product: [] },
   };
 
-  const { categoryProducts, categoryFacets, setRules } = useCategoryPreview(
-    categoryId,
-    withRules ? merchandisingRules : emptyRules
-  );
+  const { categoryProducts, categoryFacets, isLoading, setRules } =
+    useCategoryPreview(categoryId, withRules ? merchandisingRules : emptyRules);
 
   const toggleView = (withMerchandisingRules: boolean) => {
     setIsDropdownOpen(false);
@@ -238,6 +237,8 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
           ))}
         </Products>
       </Content>
+
+      {isLoading && <Loader />}
     </Wrapper>
   );
 };
