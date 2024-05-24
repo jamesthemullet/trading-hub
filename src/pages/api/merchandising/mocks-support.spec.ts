@@ -127,7 +127,8 @@ describe('mocks support', () => {
       expect(consoleWarnSpy).toHaveBeenCalled();
       expect(consoleErrorSpy).toHaveBeenCalled();
       expect(result).toEqual({
-        error: 'Server API non compatible and no mock found.',
+        error:
+          'Server API non compatible and no mock found. in foo: must be string',
       });
     });
 

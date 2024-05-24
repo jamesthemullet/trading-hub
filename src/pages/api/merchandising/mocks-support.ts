@@ -96,7 +96,13 @@ export const validateAndMockResponse = (
         console.error(
           `ERROR: No mock found for ${req.method} ${req.url}. Terminating...`
         );
-        return { error: 'Server API non compatible and no mock found.' };
+        return {
+          error: `Server API non compatible and no mock found. ${result.errors?.map(
+            ({ path, message }: { path: string; message: string }) => {
+              return `in ${path}: ${message}`;
+            }
+          )}`,
+        };
       } else {
         const [path] = mockFound;
         console.warn(
