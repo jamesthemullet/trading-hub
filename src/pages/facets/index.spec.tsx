@@ -33,6 +33,7 @@ describe('Category facet management', () => {
         },
         rules: mockMerchangdisingRules,
         setRuleSets: jest.fn(),
+        facets: [],
       })),
       pagination: {
         totalItems: 80,

@@ -65,6 +65,7 @@ describe('Index', () => {
           date: '2021-01-01',
         },
         rules: mockMerchangdisingRules,
+        facets: [],
       })
     );
     const oneExtraRankingRuleOutOfOrder: ReturnedRuleSet = {
@@ -77,6 +78,7 @@ describe('Index', () => {
         date: '2020-01-01T13:00:00.000Z',
       },
       rules: mockMerchangdisingRules,
+      facets: [],
     };
 
     const oneExtraRankingRuleWithSameIdentifier: ReturnedRuleSet = {
@@ -89,6 +91,7 @@ describe('Index', () => {
         date: '2020-01-01T13:00:00.000Z',
       },
       rules: mockMerchangdisingRules,
+      facets: [],
     };
 
     const ruleSet: ReturnedRuleSet[] = [
@@ -116,7 +119,9 @@ describe('Index', () => {
 
     jest.mocked(useRuleSet).mockReturnValue({
       ruleSets: ruleSet
-        .sort((a, b) => (a.categoryId < b.categoryId ? 1 : -1))
+        .sort((a, b) =>
+          a.categoryId && b.categoryId && a.categoryId < b.categoryId ? 1 : -1
+        )
         .slice(0, 10),
       pagination: {
         totalItems: 23,
@@ -148,6 +153,7 @@ describe('Index', () => {
           date: `2021-01-${(i + 1).toString().padStart(2, '0')}T13:00:00.000Z`,
         },
         rules: mockMerchangdisingRules,
+        facets: [],
       })
     );
     const oneExtraRankingRuleOutOfOrder: ReturnedRuleSet = {
@@ -160,6 +166,7 @@ describe('Index', () => {
         date: '2020-01-01T13:00:00.000Z',
       },
       rules: mockMerchangdisingRules,
+      facets: [],
     };
 
     const oneExtraRankingRuleWithSameTime: ReturnedRuleSet = {
@@ -172,6 +179,7 @@ describe('Index', () => {
         date: '2020-01-01T13:00:00.000Z',
       },
       rules: mockMerchangdisingRules,
+      facets: [],
     };
     const ruleSets: ReturnedRuleSet[] = [
       ...rankingRules,
@@ -246,6 +254,7 @@ describe('Index', () => {
           date: '2021-01-01',
         },
         rules: mockMerchangdisingRules,
+        facets: [],
       })),
       pagination: {
         totalItems: undefined,
@@ -315,6 +324,7 @@ describe('Index', () => {
             date: '2021-01-01',
           },
           rules: mockMerchangdisingRules,
+          facets: [],
         },
       ],
       pagination: {
@@ -352,6 +362,7 @@ describe('Index', () => {
             date: '2021-01-01',
           },
           rules: mockMerchangdisingRules,
+          facets: [],
         },
         {
           categoryName: 'cat id 2',
@@ -363,6 +374,7 @@ describe('Index', () => {
             date: '2021-01-01',
           },
           rules: mockMerchangdisingRules,
+          facets: [],
         },
       ],
       pagination: {
@@ -380,7 +392,7 @@ describe('Index', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryId: mockCatId,
-      facets: undefined,
+      facets: [],
       id: mockId,
       isEnabled: false,
       merchandisingRules: mockMerchangdisingRules,
