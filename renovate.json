@@ -31,6 +31,15 @@
       "matchPackagePatterns": ["*"],
       "matchUpdateTypes": ["major"],
       "labels": ["dependencies", "major", "breaking"]
+    },
+    {
+      "matchCurrentVersion": "<=18.2.0",
+      "matchPackageNames": [
+        "@types/react-dom",
+        "@types/react",
+        "react",
+        "react-dom"
+      ]
     }
   ]
 }
