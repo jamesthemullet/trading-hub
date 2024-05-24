@@ -53,7 +53,7 @@ export const AttributeWeight = ({
             <Text as="label" aria-label="Edit value">
               Strength{' '}
               <Input
-                value={value ? Math.round(value * 100) : ''}
+                value={value ? value : ''}
                 onChange={(e) => {
                   const { value } = e.target;
                   const weight = parseInt(value || '0');
@@ -63,7 +63,7 @@ export const AttributeWeight = ({
                     setError('');
                   }
                   /* istanbul ignore next */
-                  setValue(parseInt(value || '0') / 100);
+                  setValue(parseInt(value || '0'));
                 }}
                 type="number"
                 step={1}
@@ -74,9 +74,7 @@ export const AttributeWeight = ({
             </Text>
           </form>
         ) : (
-          <Text>
-            Strength {Math.round((isEditable ? value : weight) * 100)}%
-          </Text>
+          <Text>Strength {Math.round(isEditable ? value : weight)}%</Text>
         )}
       </AttributeRow>
       {isEditable && !isEditing && (

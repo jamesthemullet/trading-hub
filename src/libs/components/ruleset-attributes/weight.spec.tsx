@@ -7,7 +7,7 @@ describe('AttributeWeight', () => {
   it('shows the attribute weight', () => {
     render(<AttributeWeight weight={1} />);
 
-    expect(screen.getByText('Strength 100%')).toBeInTheDocument();
+    expect(screen.getByText('Strength 1%')).toBeInTheDocument();
   });
 
   it('edits the attribute weight', async () => {
@@ -69,6 +69,6 @@ describe('AttributeWeight', () => {
 
     fireEvent.submit(input);
 
-    expect(mockOnChange).toHaveBeenCalledWith({ newWeight: 0.99 });
+    expect(mockOnChange).toHaveBeenCalledWith({ newWeight: 99 });
   });
 });
