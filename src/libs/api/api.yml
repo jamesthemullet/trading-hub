@@ -695,13 +695,17 @@ components:
       allOf:
         - $ref: '#/components/schemas/RuleSetFacetConfig'
         - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
-    ReturnedFacet:
+    ReturnedGlobalFacet:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/FacetConfig'
+        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
         - type: object
           properties:
             id:
               type: string
+            status:
+              type: string
+              enum: ['included', 'excluded']
             lastChanged:
               type: object
               properties:
@@ -716,6 +720,43 @@ components:
           required:
             - id
             - lastChanged
+    ReturnedRuleSetFacet:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+              enum: ['included', 'excluded']
+            indexPropertyName:
+              type: string
+              description: The field of the indexed document
+            displayValue:
+              type: string
+              description: The value displayed to customers
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
+            - lastChanged
+            - displayValue
+            - indexPropertyName
+    ReturnedFacet:
+      oneOf:
+        - $ref: '#/components/schemas/ReturnedGlobalFacet'
+        - $ref: '#/components/schemas/ReturnedRuleSetFacet'
     SearchPreviewResponse:
       type: object
       properties:
