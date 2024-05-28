@@ -12,13 +12,10 @@ export const AttributeCount = styled(Text)`
   padding-bottom: ${spacing(1)};
 `;
 
-export const AttributesList = styled.div`
-  margin: ${spacing(2)};
-`;
-
 export const AttributeWrapper = styled.div`
   border: solid 1px #999;
   margin-bottom: ${spacing(2)};
+  width: 100%;
 `;
 
 export const AttributeHeading = styled.div`
@@ -38,6 +35,7 @@ export const AttributeValue = styled.label`
   padding: ${spacing(1)};
   margin: ${spacing(1)};
   display: inline-block;
+  font-size: 14px;
 `;
 
 export const AttributeSelection = styled.div`

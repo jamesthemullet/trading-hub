@@ -66,6 +66,7 @@ const PanelTop = styled.div`
 const TabContent = styled.div`
   height: calc(100vh - 285px);
   overflow: auto;
+  margin: 0 ${spacing(1)};
 `;
 
 export type ChangePositionTypes = {

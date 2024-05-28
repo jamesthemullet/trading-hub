@@ -6,9 +6,7 @@ import { Search } from '../search/search';
 import { spacing } from '../utils/spacing';
 
 const ProductSearchRootContainer = styled.div`
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 20px;
+  padding-top: ${spacing(2.5)};
 `;
 
 const TopContainer = styled.div`

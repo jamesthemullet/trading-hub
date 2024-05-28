@@ -24,7 +24,6 @@ import { AlphanumericAttribute } from './alphanumeric-attribute';
 import {
   AttributeCount,
   AttributeSelection,
-  AttributesList,
 } from './ruleset-attributes.styles';
 import Image from 'next/image';
 import { EditAttribute } from '../../modules/ruleset/ruleset';
@@ -146,6 +145,10 @@ const PreviousStep = styled(NextStep)`
     margin-right: ${spacing(1)};
     margin-bottom: -4px;
   }
+`;
+
+const InsetLabel = styled(Label)`
+  margin-left: ${spacing(1)};
 `;
 
 const Count = styled(Text)`
@@ -342,15 +345,15 @@ export const RulesetAttributes = ({
         Create new attribute rule
       </CreateNew>
       {countOfAttributeChanges > 0 && (
-        <AttributesList aria-label="Ruleset attributes">
+        <div aria-label="Ruleset attributes">
           <AttributeCount>
             {countOfAttributeChanges} attribute{' '}
             {pluralize('rule', countOfAttributeChanges)}
           </AttributeCount>
           {(!!alphanumericBoost.length || !!alphanumericBuries.length) && (
-            <Label isStrong withMargin as="h3">
+            <InsetLabel isStrong withMargin as="h3">
               Product Description Attribute Rules
-            </Label>
+            </InsetLabel>
           )}
           {!!alphanumericBoost.length &&
             alphanumericBoost.map(({ fields, weight }, index) => (
@@ -413,9 +416,9 @@ export const RulesetAttributes = ({
             ))}
 
           {(!!numericBoosts.length || !!numericBury.length) && (
-            <Label isStrong withMargin as="h3">
+            <InsetLabel isStrong withMargin as="h3">
               Numeric Attribute Rules
-            </Label>
+            </InsetLabel>
           )}
           {!!numericBoosts.length &&
             numericBoosts.map(({ field, weight }, index) => (
@@ -473,7 +476,7 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
-        </AttributesList>
+        </div>
       )}
       <Modal.Root
         opened={isModalOpen}

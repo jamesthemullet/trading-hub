@@ -33,7 +33,6 @@ const ChangesRow = ({
     <Heading as="h2" isStrong={true}>
       {heading}
     </Heading>
-
     <Layout aria-label={heading.split('(')[0]}>
       {products.map((product: ProductType, index: number) => (
         <ProductBox key={`ruleset-changes-product-${product.id}`}>
@@ -92,54 +91,60 @@ export const RulesetChanges = ({
           <Heading as="h2" isStrong={true}>
             Attribute-level changes ({countOfAttributeChanges})
           </Heading>
-          <Layout>
-            {numericBoosts.map(({ field, weight }, index) => {
-              return (
-                <NumericAttribute
-                  key={`boost-numeric-${index}`}
-                  name={field}
-                  operation="boost"
-                  weight={weight}
-                />
-              );
-            })}
-          </Layout>
-          <Layout>
-            {alphanumericBoost.map(({ fields, weight }, index) => {
-              return (
+          {numericBoosts.length > 0 && (
+            <Layout>
+              {numericBoosts.map(({ field, weight }, index) => {
+                return (
+                  <NumericAttribute
+                    key={`boost-numeric-${index}`}
+                    name={field}
+                    operation="boost"
+                    weight={weight}
+                  />
+                );
+              })}
+            </Layout>
+          )}
+          {alphanumericBoost.length > 0 && (
+            <Layout>
+              {alphanumericBoost.map(({ fields, weight }, index) => (
                 <AlphanumericAttribute
                   key={`boost-alphanumeric-${index}`}
                   fields={fields}
                   operation="boost"
                   weight={weight}
                 />
-              );
-            })}
-          </Layout>
-          <Layout>
-            {numericBury.map(({ field, weight }, index) => {
-              return (
-                <NumericAttribute
-                  key={`bury-numeric-${index}`}
-                  name={field}
-                  operation="bury"
-                  weight={weight}
-                />
-              );
-            })}
-          </Layout>
-          <Layout>
-            {alphanumericBuries.map(({ fields, weight }, index) => {
-              return (
-                <AlphanumericAttribute
-                  key={`bury-alphanumeric-${index}`}
-                  fields={fields}
-                  operation="bury"
-                  weight={weight}
-                />
-              );
-            })}
-          </Layout>
+              ))}
+            </Layout>
+          )}
+          {numericBury.length > 0 && (
+            <Layout>
+              {numericBury.map(({ field, weight }, index) => {
+                return (
+                  <NumericAttribute
+                    key={`bury-numeric-${index}`}
+                    name={field}
+                    operation="bury"
+                    weight={weight}
+                  />
+                );
+              })}
+            </Layout>
+          )}
+          {alphanumericBuries.length > 0 && (
+            <Layout>
+              {alphanumericBuries.map(({ fields, weight }, index) => {
+                return (
+                  <AlphanumericAttribute
+                    key={`bury-alphanumeric-${index}`}
+                    fields={fields}
+                    operation="bury"
+                    weight={weight}
+                  />
+                );
+              })}
+            </Layout>
+          )}
         </>
       )}
       {merchandisingRulesWithInfo &&
