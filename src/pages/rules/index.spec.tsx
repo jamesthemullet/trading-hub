@@ -1,7 +1,8 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useRuleSet } from '@/libs/hooks';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { ReturnedRuleSet } from '../../libs/api';
 import { default as RuleSets } from './index.page';
@@ -34,7 +35,11 @@ const mockMerchangdisingRules = {
 };
 
 describe('Index', () => {
-  afterEach(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(() => {
     jest.resetAllMocks();
   });
 
@@ -47,7 +52,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setRuleSets: jest.fn(),
     });
-    render(<RuleSets />);
+    renderWithProviders(<RuleSets />);
 
     expect(screen.getByText('Category ranking rules')).toBeVisible();
   });
@@ -108,7 +113,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setRuleSets: jest.fn(),
     });
-    render(<RuleSets />);
+    renderWithProviders(<RuleSets />);
 
     expect(await screen.findByText('0 | identifier-00')).toBeVisible();
 
@@ -195,7 +200,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setRuleSets: jest.fn(),
     });
-    render(<RuleSets />);
+    renderWithProviders(<RuleSets />);
 
     await waitFor(() => {
       expect(screen.queryByText('Jan 21, 2021')).toBeNull();
@@ -262,7 +267,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setRuleSets: jest.fn(),
     });
-    const { container } = render(<RuleSets />);
+    const { container } = renderWithProviders(<RuleSets />);
 
     const dropdown = container.querySelector<HTMLElement>(
       'span[name="ChevronDownDefault"]'
@@ -295,7 +300,7 @@ describe('Index', () => {
       setRuleSets: jest.fn(),
     });
 
-    render(<RuleSets />);
+    renderWithProviders(<RuleSets />);
 
     const search = screen.queryByPlaceholderText(/Search\.\.\./i);
 
@@ -334,16 +339,30 @@ describe('Index', () => {
       setRuleSets: jest.fn(),
     });
 
-    render(<RuleSets />);
+    const user = userEvent.setup();
+    renderWithProviders(<RuleSets />);
 
     const rulesetDropdown = screen.getAllByTitle('More options');
 
-    await userEvent.click(rulesetDropdown[0]);
+    await user.click(rulesetDropdown[0]);
 
-    const rulesetDelete = screen.getByText('Delete');
+    const deleteButton = screen.getByText('Delete');
+    await user.click(deleteButton);
+    await waitFor(() => {
+      expect(screen.getByText('Delete rule?')).toBeVisible();
+    });
 
-    await userEvent.click(rulesetDelete);
+    await user.click(screen.getByText('Cancel'));
+    await waitFor(() => {
+      expect(screen.getByText('Delete rule?')).not.toBeVisible();
+    });
 
+    await user.click(deleteButton);
+    await waitFor(() => {
+      expect(screen.getByText('Remove')).toBeVisible();
+    });
+
+    await user.click(screen.getByText('Remove'));
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 
@@ -384,7 +403,7 @@ describe('Index', () => {
       setRuleSets: jest.fn(),
     });
 
-    render(<RuleSets />);
+    renderWithProviders(<RuleSets />);
 
     const rulesetToggle = screen.getAllByTitle('Toggle');
 

@@ -21,7 +21,9 @@ import {
   Rulesets,
   Search,
   TablePagination,
+  Title,
 } from '@/libs/components';
+import { Modal } from '@mantine/core';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -47,9 +49,27 @@ const NewButton = styled.div`
   margin-right: ${spacing(2)};
 `;
 
+const Divider = styled.span`
+  border-bottom: solid 1px #000;
+  width: 100%;
+  display: inline-block;
+`;
+const Buttons = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: right;
+
+  button {
+    width: auto;
+    margin-left: ${spacing(2)};
+  }
+`;
+
 const RuleSets = () => {
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [ruleSetIdToDelete, setRuleSetIdToDelete] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const [columnIdToSort, setColumnIdToSort] =
     useState<keyof ReturnedRuleSet>('categoryName');
@@ -72,8 +92,15 @@ const RuleSets = () => {
 
   const { handleDelete } = useRuleSetDelete();
 
-  const onDeleteRuleSet = async ({ rulesetId }: { rulesetId: string }) => {
-    await handleDelete({ rulesetId });
+  const handleDeleteRuleSet = ({ rulesetId }: { rulesetId: string }) => {
+    setRuleSetIdToDelete(rulesetId);
+    setIsOpen(true);
+  };
+  const onDeleteRuleSet = async () => {
+    await handleDelete({ rulesetId: ruleSetIdToDelete });
+
+    setIsOpen(false);
+    setRuleSetIdToDelete('');
     refetchRuleSetList();
   };
 
@@ -119,6 +146,7 @@ const RuleSets = () => {
             </Button>
           </NewButton>
         </ToolsContainer>
+
         <Rulesets
           rules={ruleSets}
           columnSortOrder={columnSortOrder}
@@ -131,7 +159,7 @@ const RuleSets = () => {
             }
             setColumnIdToSort(columnId);
           }}
-          onDeleteRuleSet={onDeleteRuleSet}
+          onDeleteRuleSet={handleDeleteRuleSet}
           onEnableDisableRuleSet={onEnableDisableRuleSet}
         />
 
@@ -146,6 +174,33 @@ const RuleSets = () => {
 
         {isSaving && <Loader />}
       </PageWrapper>
+
+      <Modal.Root
+        centered
+        opened={isOpen}
+        onClose={
+          // istanbul ignore next
+          () => setIsOpen(false)
+        }
+        padding={10}
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <Modal.Body>
+            <Title>Delete rule?</Title>
+
+            <Divider />
+
+            <Buttons>
+              <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+
+              <Button onClick={onDeleteRuleSet} theme="primary">
+                Remove
+              </Button>
+            </Buttons>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
     </>
   );
 };

@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
 import styled from '@emotion/styled';
+import { Modal } from '@mantine/core';
 
 import type { ReturnedFacet } from '@/libs/api';
-import { useRuleSet } from '@/libs/hooks';
+import { useRuleSet, useRuleSetDelete } from '@/libs/hooks';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import {
@@ -10,6 +11,7 @@ import {
   Button,
   FacetsManagementTable,
   TablePagination,
+  Title,
 } from '@/libs/components';
 
 const PageNameLabel = styled.h2`
@@ -33,20 +35,52 @@ const NewButton = styled.div`
   margin-top: ${spacing(1)};
   margin-right: ${spacing(2)};
 `;
+const Divider = styled.span`
+  border-bottom: solid 1px #000;
+  width: 100%;
+  display: inline-block;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: right;
+
+  button {
+    width: auto;
+    margin-left: ${spacing(2)};
+  }
+`;
 
 const FacetManagementPage = () => {
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery] = useState<string>('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [facetIdToDelete, setFacetIdToDelete] = useState('');
 
   const currentPageIndex = currentPage - 1;
 
-  const { ruleSets, pagination } = useRuleSet(
+  const { ruleSets, pagination, refetchRuleSetList } = useRuleSet(
     searchQuery,
     currentPageIndex * currentPageSize,
     currentPageSize
   );
+
+  const { handleDelete } = useRuleSetDelete();
+
+  const handleDeleteFacet = (facetId: string) => {
+    setFacetIdToDelete(facetId);
+    setIsOpen(true);
+  };
+  const onDeleteFacet = async () => {
+    await handleDelete({ rulesetId: facetIdToDelete });
+
+    setIsOpen(false);
+    setFacetIdToDelete('');
+    refetchRuleSetList();
+  };
 
   const facets = useMemo<ReturnedFacet[]>(() => {
     return ruleSets.map(({ id, categoryId, categoryName, lastChanged }) => ({
@@ -82,6 +116,8 @@ const FacetManagementPage = () => {
           facets={facets}
           canToggle={true}
           editUrl="../../../facets/edit"
+          canDelete
+          onDeleteFacet={handleDeleteFacet}
         />
 
         <TablePagination
@@ -93,6 +129,37 @@ const FacetManagementPage = () => {
           setCurrentPageSize={setCurrentPageSize}
         />
       </PageWrapper>
+
+      <Modal.Root
+        centered
+        opened={isOpen}
+        onClose={
+          // istanbul ignore next
+          () => setIsOpen(false)
+        }
+        padding={10}
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <Modal.Body>
+            <Title>Delete facet rule?</Title>
+
+            <Divider />
+
+            <Buttons>
+              <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+
+              <Button
+                onClick={onDeleteFacet}
+                theme="primary"
+                aria-label="delete-facet"
+              >
+                Delete
+              </Button>
+            </Buttons>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
     </>
   );
 };

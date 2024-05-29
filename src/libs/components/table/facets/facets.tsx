@@ -1,47 +1,26 @@
-import { format } from 'date-fns';
-
-import { Toggle } from '../../toggle/toggle';
 import type { ReturnedFacet } from '@/libs/api';
-import { Text } from '../../typography/typography.styles';
 import {
   TableContainer,
   TableRow,
-  TableCol,
-  TableActions,
-  TableDateContainer,
   TableHeading,
-  TableActionsButton,
+  FacetsTableCol,
 } from '../table.styles';
-import styled from '@emotion/styled';
-import { spacing } from '../../utils/spacing';
+import { FacetsTableRow } from './facets-table-row';
 
 type Props = {
   facets: ReturnedFacet[];
   canToggle?: boolean;
   editUrl: string;
+  canDelete?: boolean;
+  onDeleteFacet?: (id: string) => void;
 };
-
-const FacetsTableCol = styled(TableCol)`
-  flex: 0 0 150px;
-
-  &:first-of-type {
-    flex: 2 0 240px;
-    padding-left: ${spacing(2)};
-  }
-
-  &:nth-of-type(2) {
-    flex: 0 0 100px;
-  }
-
-  &:nth-of-type(5) {
-    flex: 0 0 180px;
-  }
-`;
 
 export const FacetsManagementTable = ({
   facets,
-  canToggle = false,
   editUrl,
+  onDeleteFacet,
+  canToggle = false,
+  canDelete = false,
 }: Props) => {
   const columns: {
     label: string;
@@ -87,46 +66,16 @@ export const FacetsManagementTable = ({
           </FacetsTableCol>
         ))}
       </TableRow>
-      {facets.map(({ displayValue, id, lastChanged }) => {
-        return (
-          <TableRow key={`rule-${id}`}>
-            <FacetsTableCol>
-              <Text title={displayValue}>{displayValue}</Text>
-            </FacetsTableCol>
-            <FacetsTableCol>
-              <Text title="influence">Influence</Text>
-            </FacetsTableCol>
-            {canToggle && (
-              <FacetsTableCol>
-                <Toggle
-                  checked={false}
-                  onChange={
-                    // istanbul ignore next
-                    () => {}
-                  }
-                />
-              </FacetsTableCol>
-            )}
-            <FacetsTableCol>
-              <TableDateContainer>
-                <Text>
-                  {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
-                </Text>
-              </TableDateContainer>
-            </FacetsTableCol>
-            <FacetsTableCol>
-              <Text title={lastChanged.user}>{lastChanged.user}</Text>
-            </FacetsTableCol>
-            <FacetsTableCol style={{ padding: '12px 0 16px' }}>
-              <TableActions>
-                <TableActionsButton href={`${editUrl}/${id}`}>
-                  Edit
-                </TableActionsButton>
-              </TableActions>
-            </FacetsTableCol>
-          </TableRow>
-        );
-      })}
+      {facets.map((facet) => (
+        <FacetsTableRow
+          key={facet.id}
+          facet={facet}
+          canToggle={canToggle}
+          editUrl={editUrl}
+          canDelete={canDelete}
+          onDeleteFacet={onDeleteFacet}
+        />
+      ))}
     </TableContainer>
   );
 };

@@ -36,6 +36,23 @@ export const TableCol = styled.div`
   }
 `;
 
+export const FacetsTableCol = styled(TableCol)`
+  flex: 0 0 150px;
+
+  &:first-of-type {
+    flex: 2 0 240px;
+    padding-left: ${spacing(2)};
+  }
+
+  &:nth-of-type(2) {
+    flex: 0 0 100px;
+  }
+
+  &:nth-of-type(5) {
+    flex: 0 0 180px;
+  }
+`;
+
 export const TableHeading = styled(Label)`
   color: #1d1d1b;
   font-weight: bold;

@@ -114,6 +114,7 @@ export const Rulesets = ({
           </Col>
         ))}
       </TableRow>
+
       {rules.map(
         ({
           categoryName,
