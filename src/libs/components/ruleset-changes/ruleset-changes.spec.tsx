@@ -1,148 +1,34 @@
 import { render, screen } from '@testing-library/react';
 
-import { useCategoryPreview } from '../../hooks';
+import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
+
 import { RulesetChanges } from './ruleset-changes';
 
 jest.mock('../../hooks/use-category-preview', () => ({
   useCategoryPreview: jest.fn(),
 }));
 
-const mockMerchandisingRules = {
-  pinnedProducts: [
-    {
-      id: 'abc',
-      productId: 'productId',
-      title: 'productTitle',
-      imageUrl: ['example.jpg'],
-      brand: 'productBrand',
-      metadata: { isPinned: false },
-      isInStock: true,
-      price: 'productPrice',
-      url: '',
-    },
-  ],
-  blockedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-};
-
 describe('RulesetChanges', () => {
-  beforeEach(() => {
-    jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryProducts: [],
-      categoryFacets: [],
-      error: '',
-      isLoading: false,
-      merchandisingRulesWithInfo: mockMerchandisingRules,
-      setRules: jest.fn(),
-    });
-  });
-
   it('should render correctly', () => {
-    render(
+    const { container } = render(
       <RulesetChanges
-        merchandisingRules={{
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: {
-            numeric: [
-              {
-                field: 'field',
-                weight: 1,
-              },
-            ],
-            alphanumeric: [
-              {
-                weight: 1,
-                fields: [
-                  {
-                    field: 'field',
-                    values: ['value'],
-                  },
-                ],
-              },
-            ],
-            product: [
-              {
-                id: '1',
-                weight: 1,
-              },
-            ],
-          },
-          buries: {
-            numeric: [
-              {
-                field: 'field',
-                weight: 1,
-              },
-            ],
-            alphanumeric: [
-              {
-                weight: 1,
-                fields: [
-                  {
-                    field: 'field',
-                    values: ['value'],
-                  },
-                ],
-              },
-            ],
-            product: [
-              {
-                id: '1',
-                weight: 1,
-              },
-            ],
-          },
-        }}
         onChangePosition={jest.fn()}
         onProductBoostBury={jest.fn()}
       />
     );
 
-    expect(screen.getByText('Pinned Products (0)')).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('should show pinned products', () => {
     render(
       <RulesetChanges
-        merchandisingRules={{
-          pinnedProducts: [{ id: 'abc' }],
-          blockedProducts: [],
-          boosts: { numeric: [], alphanumeric: [], product: [] },
-          buries: { numeric: [], alphanumeric: [], product: [] },
-        }}
+        merchandisingRulesWithInfo={mockMerchandisingRulesWithInfo}
         onChangePosition={jest.fn()}
         onProductBoostBury={jest.fn()}
       />
     );
 
-    expect(screen.getByText('ID: productId')).toBeInTheDocument();
-  });
-
-  it('should show a loader when updating', () => {
-    jest.mocked(useCategoryPreview).mockReturnValueOnce({
-      categoryProducts: [],
-      categoryFacets: [],
-      error: '',
-      isLoading: true,
-      merchandisingRulesWithInfo: mockMerchandisingRules,
-      setRules: jest.fn(),
-    });
-
-    render(
-      <RulesetChanges
-        merchandisingRules={{
-          pinnedProducts: [{ id: 'abc' }],
-          blockedProducts: [],
-          boosts: { numeric: [], alphanumeric: [], product: [] },
-          buries: { numeric: [], alphanumeric: [], product: [] },
-        }}
-        onChangePosition={jest.fn()}
-        onProductBoostBury={jest.fn()}
-      />
-    );
-
-    expect(screen.getByLabelText('loader')).toBeInTheDocument();
+    expect(screen.getByText('ID: 60290408')).toBeInTheDocument();
   });
 });

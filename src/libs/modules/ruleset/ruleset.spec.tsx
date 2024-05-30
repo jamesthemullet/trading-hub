@@ -405,6 +405,8 @@ describe('Ruleset', () => {
   });
 
   describe('Pinning', () => {
+    const mockSetRules = jest.fn();
+
     beforeEach(() => {
       jest.mocked(useGetCategories).mockReturnValue({
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
@@ -433,7 +435,7 @@ describe('Ruleset', () => {
           ...mockMerchandisingRules,
           pinnedProducts: [{ ...mockProduct, id: 'product2' }],
         },
-        setRules: jest.fn(),
+        setRules: mockSetRules,
       });
 
       renderWithProviders(
@@ -463,6 +465,12 @@ describe('Ruleset', () => {
 
     it('Should remove boost when pinning product', async () => {
       const user = userEvent.setup({ delay: null });
+      const mockResponse = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        pinnedProducts: [{ id: 'product2' }, { id: 'product3' }],
+      };
 
       expect(screen.getAllByLabelText('Pinned product').length).toBe(1);
       expect(screen.getAllByLabelText('Boosted product').length).toBe(1);
@@ -483,16 +491,16 @@ describe('Ruleset', () => {
       expect(confirmButton).not.toBeDisabled();
 
       act(() => {
-        user.click(confirmButton);
+        confirmButton.click();
       });
 
-      waitFor(() =>
-        expect(screen.getAllByLabelText('Pinned product').length).toBe(2)
-      );
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
   });
 
   describe('Boosting', () => {
+    const mockSetRules = jest.fn();
+
     beforeEach(() => {
       jest.mocked(useGetCategories).mockReturnValue({
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
@@ -503,21 +511,25 @@ describe('Ruleset', () => {
           mockProduct,
           {
             ...mockProduct,
-            id: 'product2',
-            productId: 'productId2',
-            metadata: { isPinned: false, isBoosted: true },
-          },
-          {
-            ...mockProduct,
             id: 'product3',
             productId: 'productId3',
-            metadata: { isPinned: true, isBoosted: false },
+            metadata: {
+              isPinned: true,
+              isBoosted: false,
+              isBuried: false,
+              isBlocked: false,
+            },
           },
           {
             ...mockProduct,
-            id: 'product4',
-            productId: 'productId4',
-            metadata: { isPinned: false, isBoosted: false, isBlocked: true },
+            id: 'product2',
+            productId: 'productId2',
+            metadata: {
+              isPinned: false,
+              isBoosted: true,
+              isBuried: false,
+              isBlocked: false,
+            },
           },
         ],
         categoryFacets: [],
@@ -527,7 +539,7 @@ describe('Ruleset', () => {
           ...mockMerchandisingRules,
           pinnedProducts: [mockProduct],
         },
-        setRules: jest.fn(),
+        setRules: mockSetRules,
       });
 
       renderWithProviders(
@@ -567,18 +579,23 @@ describe('Ruleset', () => {
       );
     });
 
-    it('Should not boost a previously boosted product', async () => {
-      const user = userEvent.setup({ delay: null });
-
-      await user.click(screen.getAllByTitle('Open menu')[1]);
-
-      expect(screen.getByText('Unboost')).toBeVisible();
-    });
-
     it('Should remove pin from a previously pinned product', async () => {
       const user = userEvent.setup({ delay: null });
+      const mockResponse: MerchandisingRules = {
+        blockedProducts: [],
+        boosts: {
+          alphanumeric: [],
+          numeric: [],
+          product: [
+            { id: 'product2', weight: 1 },
+            { id: 'productId', weight: 100 },
+          ],
+        },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        pinnedProducts: [{ id: 'product3' }],
+      };
 
-      await user.click(screen.getAllByTitle('Open menu')[2]);
+      await user.click(screen.getAllByTitle('Open menu')[0]);
 
       expect(screen.getByLabelText('Pinned product')).toBeInTheDocument();
 
@@ -586,25 +603,31 @@ describe('Ruleset', () => {
 
       await user.click(screen.getByText('Boost to Top'));
 
-      expect(screen.getAllByLabelText('Boosted product').length).toBe(2);
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
 
     it('Should unboost a previously boosted product', async () => {
       const user = userEvent.setup({ delay: null });
+      const mockResponse: MerchandisingRules = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        pinnedProducts: [{ id: 'product3' }],
+      };
 
-      await user.click(screen.getAllByTitle('Open menu')[1]);
+      await user.click(screen.getAllByTitle('Open menu')[2]);
 
       act(() => {
         screen.getByText('Unboost').click();
       });
 
-      await user.click(screen.getAllByTitle('Open menu')[1]);
-
-      expect(screen.getByText('Boost to Top')).toBeVisible();
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
   });
 
   describe('Burying', () => {
+    const mockSetRules = jest.fn();
+
     beforeEach(() => {
       jest.mocked(useGetCategories).mockReturnValue({
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
@@ -612,19 +635,19 @@ describe('Ruleset', () => {
       });
       jest.mocked(useCategoryPreview).mockReturnValue({
         categoryProducts: [
-          mockProduct,
-          {
-            ...mockProduct,
-            id: 'product2',
-            productId: 'productId2',
-            metadata: { isPinned: false, isBoosted: false, isBuried: true },
-          },
           {
             ...mockProduct,
             id: 'product3',
             productId: 'productId3',
             metadata: { isPinned: true, isBoosted: false, isBuried: false },
           },
+          {
+            ...mockProduct,
+            id: 'product2',
+            productId: 'productId2',
+            metadata: { isPinned: false, isBoosted: false, isBuried: true },
+          },
+          mockProduct,
         ],
         categoryFacets: [],
         error: '',
@@ -637,7 +660,7 @@ describe('Ruleset', () => {
           },
           pinnedProducts: [mockProduct],
         },
-        setRules: jest.fn(),
+        setRules: mockSetRules,
       });
       jest.mocked(useCategoryProductSearch).mockReturnValue({
         handleGet: jest.fn(() => {
@@ -695,18 +718,42 @@ describe('Ruleset', () => {
 
     it('Should bury from the Visual Editor', async () => {
       const user = userEvent.setup({ delay: null });
+      const expectedResponse = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [
+            { id: 'product2', weight: 1 },
+            { id: 'product3', weight: 100 },
+          ],
+        },
+        pinnedProducts: [],
+      };
 
       await user.click(screen.getAllByTitle('Open menu')[0]);
 
       await user.click(screen.getByText('Bury to Bottom'));
 
-      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
-        'Changes3'
-      );
+      expect(mockSetRules).toHaveBeenCalledWith(expectedResponse);
     });
 
     it('Should bury from the search results', async () => {
       const user = userEvent.setup({ delay: null });
+      const mockResponse: MerchandisingRules = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [
+            { id: 'product2', weight: 1 },
+            { id: 'product-id-2', weight: 100 },
+          ],
+        },
+        pinnedProducts: [{ id: 'product3' }],
+      };
 
       const searchProduct = screen.getByPlaceholderText('Search for product');
 
@@ -725,13 +772,17 @@ describe('Ruleset', () => {
 
       await user.click(screen.getByText('Bury to Bottom'));
 
-      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
-        'Changes3'
-      );
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
 
     it('Should unbury a previously buried product', async () => {
       const user = userEvent.setup({ delay: null });
+      const mockResponse: MerchandisingRules = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        pinnedProducts: [{ id: 'product3' }],
+      };
 
       await user.click(screen.getAllByTitle('Open menu')[1]);
 
@@ -739,13 +790,13 @@ describe('Ruleset', () => {
         screen.getByRole('button', { name: 'Unbury' }).click();
       });
 
-      await user.click(screen.getAllByTitle('Open menu')[1]);
-
-      expect(screen.getByText('Bury to Bottom')).toBeVisible();
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
   });
 
   describe('Blocking', () => {
+    const mockSetRules = jest.fn();
+
     beforeEach(() => {
       jest.mocked(useGetCategories).mockReturnValue({
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
@@ -791,7 +842,7 @@ describe('Ruleset', () => {
         },
         error: '',
         isLoading: false,
-        setRules: jest.fn(),
+        setRules: mockSetRules,
       });
       jest.mocked(useCategoryProductSearch).mockReturnValue({
         handleGet: jest.fn(() => {
@@ -849,18 +900,36 @@ describe('Ruleset', () => {
 
     it('Should block from the Visual Editor', async () => {
       const user = userEvent.setup({ delay: null });
+      const mockResponse: MerchandisingRules = {
+        blockedProducts: [{ id: 'productId2' }, { id: 'productId' }],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [{ id: 'product2', weight: 1 }],
+        },
+        pinnedProducts: [{ id: 'product3' }],
+      };
 
       await user.click(screen.getAllByTitle('Open menu')[0]);
 
       await user.click(screen.getByText('Block Product'));
 
-      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
-        'Changes4'
-      );
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
 
     it('Should unblock from the changes tab', async () => {
       const user = userEvent.setup({ delay: null });
+      const mockResponse: MerchandisingRules = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [{ id: 'product2', weight: 1 }],
+        },
+        pinnedProducts: [{ id: 'product3' }],
+      };
 
       const tab2 = await screen.findByText('Changes');
 
@@ -874,9 +943,7 @@ describe('Ruleset', () => {
 
       await user.click(screen.getByText('Restore'));
 
-      expect(screen.getByText('Changes', { exact: false }).textContent).toEqual(
-        'Changes2'
-      );
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
   });
 
@@ -939,7 +1006,14 @@ describe('Ruleset', () => {
 
     it('should handle position change when product is selected from product search', async () => {
       const user = userEvent.setup();
+      const mockSetRules = jest.fn();
       const productSearchTitle = 'productSearchTitle';
+      const mockResponse = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        pinnedProducts: [{ id: 'product-id-2' }],
+      };
 
       jest.mocked(useGetCategories).mockReturnValue({
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
@@ -967,7 +1041,7 @@ describe('Ruleset', () => {
           ...mockMerchandisingRules,
           pinnedProducts: [mockProduct],
         },
-        setRules: jest.fn(),
+        setRules: mockSetRules,
       });
 
       jest.mocked(useCategoryProductSearch).mockReturnValue({
@@ -1045,12 +1119,10 @@ describe('Ruleset', () => {
       const confirmButton = screen.getByText('Confirm');
 
       act(() => {
-        user.click(confirmButton);
+        confirmButton.click();
       });
 
-      // expect to see 2 products in the visual editor
-      expect(await screen.findByLabelText('Position 1')).toBeVisible();
-      expect(await screen.findByLabelText('Position 2')).toBeVisible();
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
   });
 

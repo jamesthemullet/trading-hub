@@ -12,6 +12,7 @@ import {
   Tabs,
   VisualEditor,
   Text,
+  Loader,
 } from '../../components';
 import { useEffect, useState } from 'react';
 import type {
@@ -114,7 +115,6 @@ export const Ruleset = ({
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     rulesetCategory || {}
   );
-  const [sortedProducts, setSortedProducts] = useState<Product[]>([]);
   const [currentEditorTab, setCurrentEditorTab] = useState(0);
   const [currentProductTab, setCurrentProductTab] = useState(0);
   const [merchandisingRules, setMerchandisingRules] =
@@ -185,79 +185,53 @@ export const Ruleset = ({
     if (!hasChanges) setHasChanges(true);
   };
 
-  const { categoryProducts } = useCategoryPreview(
-    selectedCategory?.identifier,
-    merchandisingRules
-  );
-
-  useEffect(() => {
-    setSortedProducts(categoryProducts);
-  }, [categoryProducts]);
+  const {
+    categoryProducts: sortedProducts,
+    merchandisingRulesWithInfo,
+    isLoading,
+    setRules: setPreviewRules,
+  } = useCategoryPreview(selectedCategory?.identifier, merchandisingRules);
 
   const onChangePosition = ({
     isPinned,
     newPosition,
     id,
   }: ChangePositionTypes) => {
-    const oldPosition = sortedProducts.findIndex(
-      (product) => product.id === id
+    const pinnedProducts = merchandisingRules.pinnedProducts.filter(
+      (product) => product.id !== id
     );
 
-    const isNewProduct = oldPosition === -1;
-
-    const updatedList = sortedProducts
-      .filter((product) => product.id !== id)
-      .map((product) => ({
-        ...product,
-        isLastChanged: false,
-      }));
-
-    /* istanbul ignore next */
-    const product = isNewProduct
-      ? searchProducts.find((p) => p.id === id)
-      : sortedProducts[oldPosition];
-
-    /* istanbul ignore next */
-    if (!product) {
-      console.error('Product not found', id);
-      return;
-    }
-
-    const metadata = { ...product.metadata, isPinned, isBoosted: false };
-    const updatedProduct = { ...product, metadata, isLastChanged: isPinned };
-
-    const repositionedList = [
-      ...updatedList.slice(0, newPosition),
-      updatedProduct,
-      ...updatedList.slice(newPosition),
-    ];
-
-    // LPN-1653 for BE to send all metadata
-    /* istanbul ignore next */
-    const sortedByBoost = [...repositionedList].sort(
-      (b, a) =>
-        Number(a.metadata.isBoosted || false) -
-        Number(b.metadata.isBoosted || false)
-    );
-    const sortedByPinned = [...sortedByBoost].sort(
-      (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
-    );
-    setSortedProducts(sortedByPinned);
-    const pinnedProducts = [...sortedByPinned]
-      .filter((product) => product.metadata.isPinned)
-      .map((product) => ({
-        id: product.id,
-      }));
-    setMerchandisingRules({
+    // istanbul ignore next
+    const updatedPinnedProducts = isPinned
+      ? [
+          ...pinnedProducts.slice(0, newPosition),
+          { id },
+          ...pinnedProducts.slice(newPosition),
+        ]
+      : pinnedProducts;
+    const updatedMerchRules = {
       ...merchandisingRules,
-      pinnedProducts,
+      pinnedProducts: updatedPinnedProducts,
       boosts: {
         ...merchandisingRules.boosts,
         product: merchandisingRules.boosts.product.filter(
           (product) => product.id !== id
         ),
       },
-    });
+      buries: {
+        ...merchandisingRules.buries,
+        product: merchandisingRules.buries.product.filter(
+          // istanbul ignore next
+          (product) => product.id !== id
+        ),
+      },
+      blockedProducts: merchandisingRules.blockedProducts.filter(
+        // istanbul ignore next
+        (product) => product.id !== id
+      ),
+    };
+    setMerchandisingRules(updatedMerchRules);
+    setPreviewRules(updatedMerchRules);
     if (!hasChanges) setHasChanges(true);
   };
 
@@ -270,9 +244,11 @@ export const Ruleset = ({
   }: EditAttribute) => {
     /* istanbul ignore next */
     if (operation === 'block') return;
+
+    let updatedState = { ...merchandisingRules };
     setMerchandisingRules((prevState) => {
       if (change === 'modify') {
-        return {
+        updatedState = {
           ...prevState,
           [operation]: {
             ...prevState[operation],
@@ -284,9 +260,10 @@ export const Ruleset = ({
             }),
           },
         };
+        return updatedState;
       }
       if (type === 'alphanumeric') {
-        return {
+        updatedState = {
           ...prevState,
           [operation]: {
             ...prevState[operation],
@@ -303,9 +280,10 @@ export const Ruleset = ({
                   ],
           },
         };
+        return updatedState;
       }
       if (type === 'numeric') {
-        return {
+        updatedState = {
           ...prevState,
           [operation]: {
             ...prevState[operation],
@@ -320,10 +298,12 @@ export const Ruleset = ({
                   ),
           },
         };
+        return updatedState;
       }
       /* istanbul ignore next */
-      return { ...prevState };
+      return updatedState;
     });
+    setPreviewRules(updatedState);
   };
 
   const onProductBoostBury = ({
@@ -331,21 +311,17 @@ export const Ruleset = ({
     operation,
     change,
   }: ChangeProductBoostBury) => {
-    const product =
-      sortedProducts.find((product) => product.id === id) ||
-      searchProducts.find((product) => product.id === id);
-
     const isBoosted = change === 'add' && operation === 'boosts';
     const isBuried = change === 'add' && operation === 'buries';
     const isBlocked = change === 'add' && operation === 'block';
 
     const productBoosts = isBoosted
-      ? [...merchandisingRules.boosts.product, { id, weight: 1 }]
+      ? [...merchandisingRules.boosts.product, { id, weight: 100 }]
       : merchandisingRules.boosts.product.filter(
           (product) => product.id !== id
         );
     const productBuries = isBuried
-      ? [...merchandisingRules.buries.product, { id, weight: 1 }]
+      ? [...merchandisingRules.buries.product, { id, weight: 100 }]
       : merchandisingRules.buries.product.filter(
           (product) => product.id !== id
         );
@@ -363,51 +339,15 @@ export const Ruleset = ({
       pinnedProducts: merchandisingRules.pinnedProducts.filter(
         (product) => product.id !== id
       ),
-      blockedProducts:
-        isBlocked && product
-          ? [...merchandisingRules.blockedProducts, product]
-          : merchandisingRules.blockedProducts.filter(
-              (product) => product.id !== id
-            ),
+      blockedProducts: isBlocked
+        ? [...merchandisingRules.blockedProducts, { id }]
+        : merchandisingRules.blockedProducts.filter(
+            (product) => product.id !== id
+          ),
     };
 
     setMerchandisingRules(updatedRules);
-
-    const metadata = {
-      ...(product && product.metadata),
-      isPinned: false,
-      isBoosted,
-      isBuried,
-    };
-    if (product) {
-      const updatedProduct = { ...product, metadata };
-
-      const updatedList = [
-        ...(isBoosted && updatedProduct ? [updatedProduct] : []),
-        ...sortedProducts.filter((product) => product.id !== id),
-        ...(change === 'remove' || (isBuried && updatedProduct)
-          ? [updatedProduct]
-          : []),
-      ];
-
-      // TODO LPN-1653 for BE to send all metadata
-      /* istanbul ignore next */
-      const sortedByBury = [...updatedList].sort(
-        (a, b) =>
-          Number(a.metadata.isBuried || false) -
-          Number(b.metadata.isBuried || false)
-      );
-      /* istanbul ignore next */
-      const sortedByBoost = [...sortedByBury].sort(
-        (b, a) =>
-          Number(a.metadata.isBoosted || false) -
-          Number(b.metadata.isBoosted || false)
-      );
-      const sortedByPinned = [...sortedByBoost].sort(
-        (b, a) => Number(a.metadata.isPinned) - Number(b.metadata.isPinned)
-      );
-      setSortedProducts(sortedByPinned);
-    }
+    setPreviewRules(updatedRules);
 
     if (!hasChanges) setHasChanges(true);
   };
@@ -553,8 +493,7 @@ export const Ruleset = ({
             )}
             {currentEditorTab === 1 && (
               <RulesetChanges
-                merchandisingRules={merchandisingRules}
-                category={selectedCategory.identifier}
+                merchandisingRulesWithInfo={merchandisingRulesWithInfo}
                 onChangePosition={onChangePosition}
                 onProductBoostBury={onProductBoostBury}
               />
@@ -562,6 +501,8 @@ export const Ruleset = ({
           </TabContent>
         </RulesPanel>
       </MainContainerPanel>
+
+      {isLoading && <Loader />}
     </>
   );
 };

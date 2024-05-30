@@ -1,4 +1,7 @@
-import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
+import type {
+  MerchandisingRulesWithInfo,
+  Product as ProductType,
+} from '@/libs/api';
 import styled from '@emotion/styled';
 import { ChangeProductBoostBury, Product } from '../product/product';
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
@@ -7,9 +10,6 @@ import { ChangePositionTypes } from '../../modules/ruleset/ruleset';
 import { Text } from '../typography/typography.styles';
 import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
-import { useCategoryPreview } from '../../hooks';
-import { useEffect } from 'react';
-import { Loader } from '../loader/loader';
 
 const Heading = styled(Text)`
   font-size: 20px;
@@ -50,39 +50,34 @@ const ChangesRow = ({
 );
 
 export const RulesetChanges = ({
-  category,
-  merchandisingRules,
+  merchandisingRulesWithInfo,
   onChangePosition,
   onProductBoostBury,
 }: {
-  category?: string;
-  merchandisingRules: MerchandisingRules;
+  merchandisingRulesWithInfo?: MerchandisingRulesWithInfo;
   onChangePosition: (arg: ChangePositionTypes) => void;
   onProductBoostBury: (arg: ChangeProductBoostBury) => void;
 }) => {
+  if (!merchandisingRulesWithInfo) return null;
+
   /* istanbul ignore next */
   const countOfAttributeChanges =
-    (merchandisingRules.boosts?.numeric?.length ?? 0) +
-    (merchandisingRules.boosts?.alphanumeric?.length ?? 0) +
-    (merchandisingRules.buries?.numeric?.length ?? 0) +
-    (merchandisingRules.buries?.alphanumeric?.length ?? 0);
+    (merchandisingRulesWithInfo.boosts?.numeric?.length ?? 0) +
+    (merchandisingRulesWithInfo.boosts?.alphanumeric?.length ?? 0) +
+    (merchandisingRulesWithInfo.buries?.numeric?.length ?? 0) +
+    (merchandisingRulesWithInfo.buries?.alphanumeric?.length ?? 0);
   /* istanbul ignore next */
-  const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
+  const numericBoosts = merchandisingRulesWithInfo.boosts?.numeric ?? [];
   /* istanbul ignore next */
-  const alphanumericBoost = merchandisingRules.boosts?.alphanumeric ?? [];
+  const alphanumericBoost =
+    merchandisingRulesWithInfo.boosts?.alphanumeric ?? [];
   /* istanbul ignore next */
-  const numericBury = merchandisingRules.buries?.numeric ?? [];
+  const numericBury = merchandisingRulesWithInfo.buries?.numeric ?? [];
   /* istanbul ignore next */
-  const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
+  const alphanumericBuries =
+    merchandisingRulesWithInfo.buries?.alphanumeric ?? [];
 
-  const { merchandisingRulesWithInfo, setRules, isLoading } =
-    useCategoryPreview(category, merchandisingRules);
-
-  useEffect(() => {
-    setRules(merchandisingRules);
-  }, [merchandisingRules, setRules]);
-
-  const pinnedProductsCount = merchandisingRules.pinnedProducts.length;
+  const pinnedProductsCount = merchandisingRulesWithInfo.pinnedProducts.length;
 
   return (
     <>
@@ -150,7 +145,7 @@ export const RulesetChanges = ({
       {merchandisingRulesWithInfo &&
         merchandisingRulesWithInfo.pinnedProducts.length > 0 && (
           <ChangesRow
-            heading={`Pinned Products (${merchandisingRules.pinnedProducts.length})`}
+            heading={`Pinned Products (${merchandisingRulesWithInfo.pinnedProducts.length})`}
             products={merchandisingRulesWithInfo.pinnedProducts}
             pinnedProductsCount={pinnedProductsCount}
             onChangePosition={onChangePosition}
@@ -163,7 +158,7 @@ export const RulesetChanges = ({
         merchandisingRulesWithInfo &&
           merchandisingRulesWithInfo.boosts.product.length > 0 && (
             <ChangesRow
-              heading={`Boosted Products (${merchandisingRules.boosts.product.length})`}
+              heading={`Boosted Products (${merchandisingRulesWithInfo.boosts.product.length})`}
               products={merchandisingRulesWithInfo.boosts.product}
               pinnedProductsCount={pinnedProductsCount}
               onChangePosition={onChangePosition}
@@ -176,7 +171,7 @@ export const RulesetChanges = ({
         merchandisingRulesWithInfo &&
           merchandisingRulesWithInfo.buries.product.length > 0 && (
             <ChangesRow
-              heading={`Buried Products (${merchandisingRules.buries.product.length})`}
+              heading={`Buried Products (${merchandisingRulesWithInfo.buries.product.length})`}
               products={merchandisingRulesWithInfo.buries.product}
               pinnedProductsCount={pinnedProductsCount}
               onChangePosition={onChangePosition}
@@ -190,7 +185,7 @@ export const RulesetChanges = ({
           merchandisingRulesWithInfo.blockedProducts &&
           merchandisingRulesWithInfo.blockedProducts.length > 0 && (
             <ChangesRow
-              heading={`Blocked Products (${merchandisingRules.blockedProducts.length})`}
+              heading={`Blocked Products (${merchandisingRulesWithInfo.blockedProducts.length})`}
               products={merchandisingRulesWithInfo.blockedProducts}
               pinnedProductsCount={pinnedProductsCount}
               onChangePosition={onChangePosition}
@@ -198,7 +193,6 @@ export const RulesetChanges = ({
             />
           )
       }
-      {isLoading && <Loader />}
     </>
   );
 };
