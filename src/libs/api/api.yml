@@ -856,7 +856,6 @@ components:
         - price
         - imageUrl
         - title
-        - brand
         - isInStock
     ProductMetadata:
       type: object
