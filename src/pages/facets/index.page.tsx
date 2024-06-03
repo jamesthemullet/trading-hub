@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Modal } from '@mantine/core';
 
 import type { ReturnedFacet } from '@/libs/api';
-import { useRuleSet, useRuleSetDelete } from '@/libs/hooks';
+import { useDebounce, useRuleSet, useRuleSetDelete } from '@/libs/hooks';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import {
@@ -12,6 +12,7 @@ import {
   FacetsManagementTable,
   TablePagination,
   Title,
+  Search,
 } from '@/libs/components';
 
 const PageNameLabel = styled.h2`
@@ -56,7 +57,7 @@ const FacetManagementPage = () => {
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [facetIdToDelete, setFacetIdToDelete] = useState('');
 
@@ -67,6 +68,10 @@ const FacetManagementPage = () => {
     currentPageIndex * currentPageSize,
     currentPageSize
   );
+
+  const { callback: handleSearch } = useDebounce((val: string) => {
+    setSearchQuery(val);
+  }, 300);
 
   const { handleDelete } = useRuleSetDelete();
 
@@ -105,6 +110,8 @@ const FacetManagementPage = () => {
       <PageNameLabel>Category Facet Management</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>
+          <Search onChange={(e) => handleSearch(e.target.value)} />
+
           <NewButton>
             <Button as="a" href="/facets/new">
               Add facet

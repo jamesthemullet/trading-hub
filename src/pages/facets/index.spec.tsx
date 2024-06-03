@@ -106,4 +106,30 @@ describe('Category facet management', () => {
     await user.click(screen.getByLabelText('delete-facet'));
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
+
+  it('should search', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSet).mockReturnValue({
+      ruleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    const search = screen.queryByPlaceholderText(/Search\.\.\./i);
+
+    if (!search) {
+      throw new Error('Search not found');
+    }
+
+    await user.type(search, 'search-search');
+
+    await waitFor(() =>
+      expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10)
+    );
+  });
 });
