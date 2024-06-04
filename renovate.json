@@ -33,7 +33,8 @@
       "labels": ["dependencies", "major", "breaking"]
     },
     {
-      "matchCurrentVersion": "<=18.2.0",
+      "matchCurrentVersion": "18.2.0",
+      "allowedVersions": "18.2.0",
       "matchPackageNames": [
         "@types/react-dom",
         "@types/react",
