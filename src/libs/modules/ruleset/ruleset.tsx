@@ -401,6 +401,7 @@ export const Ruleset = ({
         hasPreview={!!selectedCategory?.identifier}
         onPreview={() => setShowPreview(!showPreview)}
         hasChanges={hasChanges}
+        isNewRuleSet={!!onCreate}
         onCancel={() => {
           setHasChanges(false);
           onCancel();

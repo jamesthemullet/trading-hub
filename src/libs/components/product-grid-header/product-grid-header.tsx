@@ -29,16 +29,18 @@ const Actions = styled.div`
 type Props = {
   hasChanges: boolean;
   hasPreview: boolean;
-  categoryId?: string;
+  isNewRuleSet: boolean;
   onCancel: () => void;
   onPreview: () => void;
   onSave: (id: string) => void;
+  categoryId?: string;
 };
 
 export const ProductGridHeader = ({
+  categoryId,
   hasChanges,
   hasPreview,
-  categoryId,
+  isNewRuleSet,
   onCancel,
   onPreview,
   onSave,
@@ -69,7 +71,7 @@ export const ProductGridHeader = ({
             Preview
           </Button>
           <Button theme="primary" isDisabled={!hasPreview} onClick={handleSave}>
-            Save
+            {isNewRuleSet ? 'Create' : 'Save'}
           </Button>
         </Actions>
       </RuleSetOptions>

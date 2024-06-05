@@ -24,7 +24,7 @@ jest.mock('../../../libs/hooks/use-get-categories', () => ({
 }));
 
 const INPUT_PLACEHOLDER_TEXT = 'Search...';
-const NEW_RULE_BUTTON_TEXT = 'Save';
+const NEW_RULE_BUTTON_TEXT = 'Create';
 const REMOVE_SELECTED_CATEGORY_BUTTON = 'Remove selected category';
 const MOCK_CATEGORY_ID = '20';
 

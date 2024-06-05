@@ -76,6 +76,7 @@ jest.mock('../../hooks/use-attributes', () => ({
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const PRODUCT_SEARCH_PLACEHOLDER_TEXT = 'Search for product';
 const SAVE_BUTTON = 'Save';
+const CREATE_BUTTON = 'Create';
 const CANCEL_BUTTON = 'Cancel';
 const CONFIRM_BUTTON = 'Close without saving';
 
@@ -271,7 +272,7 @@ describe('Ruleset', () => {
 
     await selectCategory(screen, user);
 
-    const saveButton = await screen.findByText(SAVE_BUTTON);
+    const saveButton = await screen.findByText(CREATE_BUTTON);
 
     act(() => {
       saveButton.click();

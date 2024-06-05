@@ -12,10 +12,27 @@ describe('ProductGridHeader', () => {
         onSave={jest.fn()}
         onCancel={jest.fn()}
         hasChanges={false}
+        isNewRuleSet={false}
       />
     );
 
     expect(screen.getByText('Product Grid')).toBeVisible();
+    expect(screen.getByText('Save')).toBeVisible();
+  });
+
+  it('should show Create for new rulesets', () => {
+    renderWithProviders(
+      <ProductGridHeader
+        hasPreview={false}
+        onPreview={jest.fn()}
+        onSave={jest.fn()}
+        onCancel={jest.fn()}
+        hasChanges={false}
+        isNewRuleSet={true}
+      />
+    );
+
+    expect(screen.getByText('Create')).toBeVisible();
   });
 
   it('should call save callback on click', () => {
@@ -27,6 +44,7 @@ describe('ProductGridHeader', () => {
         onSave={mockSave}
         onCancel={jest.fn()}
         hasChanges={false}
+        isNewRuleSet={false}
         categoryId="123"
       />
     );
@@ -49,6 +67,7 @@ describe('ProductGridHeader', () => {
         onSave={mockSave}
         onCancel={jest.fn()}
         hasChanges={false}
+        isNewRuleSet={false}
       />
     );
 
@@ -70,6 +89,7 @@ describe('ProductGridHeader', () => {
         onSave={jest.fn()}
         onCancel={jest.fn()}
         hasChanges={false}
+        isNewRuleSet={false}
       />
     );
 
@@ -91,6 +111,7 @@ describe('ProductGridHeader', () => {
         onSave={jest.fn()}
         onCancel={mockCancel}
         hasChanges={true}
+        isNewRuleSet={false}
       />
     );
 
@@ -118,6 +139,7 @@ describe('ProductGridHeader', () => {
         onSave={jest.fn()}
         onCancel={mockCancel}
         hasChanges={false}
+        isNewRuleSet={false}
       />
     );
 
@@ -138,6 +160,7 @@ describe('ProductGridHeader', () => {
         onSave={jest.fn()}
         onCancel={mockCancel}
         hasChanges={true}
+        isNewRuleSet={false}
       />
     );
 
