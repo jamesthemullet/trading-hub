@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { FacetsList, merchandising } from '@/libs/api';
+import { FacetsList, search } from '@/libs/api';
 
 export const useFacetsList = (categoryId?: string[]) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +14,7 @@ export const useFacetsList = (categoryId?: string[]) => {
   useEffect(() => {
     const asyncCall = async () => {
       try {
-        const response = await merchandising().facetList({
+        const response = await search().betaMerchandisingFacetList({
           ...JSON.parse(jsonCategoryId),
         });
 

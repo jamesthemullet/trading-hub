@@ -9,7 +9,7 @@ import { useGetFacetsById } from './use-get-facet-by-id';
 const baseUrl = 'http://localhost';
 
 const handlers = [
-  http.get(`${baseUrl}/merchandising/facet/color-id`, () => {
+  http.get(`${baseUrl}/search/beta/merchandising/facet/color-id`, () => {
     return HttpResponse.json(globalFacetsListMock.facets[0], { status: 200 });
   }),
 ];
@@ -52,7 +52,7 @@ describe('useGetFacetsById', () => {
 
   it('should render the hook with error', async () => {
     server.use(
-      http.get(`${baseUrl}/merchandising/facet/color-id`, () => {
+      http.get(`${baseUrl}/search/beta/merchandising/facet/color-id`, () => {
         return HttpResponse.json(
           { message: 'Internal Server Error' },
           { status: 500 }

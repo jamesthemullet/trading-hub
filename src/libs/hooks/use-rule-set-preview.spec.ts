@@ -54,7 +54,7 @@ const getRuleSetPreviewMock = jest.fn();
 const getFacetMock = jest.fn();
 
 const handlers = [
-  http.get(`${baseUrl}/merchandising/facet/${mockFacetId}`, () => {
+  http.get(`${baseUrl}/search/beta/merchandising/facet/${mockFacetId}`, () => {
     const { data, status } = getFacetMock();
     return HttpResponse.json(data, status);
   }),

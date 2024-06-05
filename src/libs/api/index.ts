@@ -11,3 +11,4 @@ export const api = () => {
 };
 
 export const merchandising = () => api().merchandising;
+export const search = () => api().search;

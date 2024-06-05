@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ReturnedFacet, merchandising } from '@/libs/api';
+import { ReturnedFacet, search } from '@/libs/api';
 
 export const useGetFacetsById = (facetId: string) => {
   const [facet, setFacet] = useState<ReturnedFacet>();
@@ -13,11 +13,11 @@ export const useGetFacetsById = (facetId: string) => {
 
     const asyncCall = async () => {
       try {
-        const response = await merchandising().facetDetail(facetId);
+        const response = await search().betaMerchandisingFacetDetail(facetId);
 
-        const facetList = response.data;
+        const facetDetail = response.data;
 
-        setFacet(facetList);
+        setFacet(facetDetail);
       } catch (error: unknown) {
         setError('Internal Server Error');
         return;

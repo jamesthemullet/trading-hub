@@ -9,7 +9,7 @@ import { useFacetsList } from './use-facets-list';
 const baseUrl = 'http://localhost';
 
 const handlers = [
-  http.get(`${baseUrl}/merchandising/facet`, () => {
+  http.get(`${baseUrl}/search/beta/merchandising/facet`, () => {
     return HttpResponse.json(globalFacetsListMock, { status: 200 });
   }),
 ];
@@ -41,7 +41,7 @@ describe('useFacetsList', () => {
 
   it('should render the hook with error', async () => {
     server.use(
-      http.get(`${baseUrl}/merchandising/facet`, () => {
+      http.get(`${baseUrl}/search/beta/merchandising/facet`, () => {
         return HttpResponse.json(
           { message: 'Internal Server Error' },
           { status: 500 }

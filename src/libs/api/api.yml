@@ -50,7 +50,10 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
+
   /merchandising/facet/{facetId}/attributeValues:
+    $ref: '#/paths/~1search~1beta~1merchandising~1facet~1{facetId}~1attributeValues'
+  /search/beta/merchandising/facet/{facetId}/attributeValues:
     get:
       summary: Facet values response
       description: Returns the available attributes for a specific facet
@@ -117,6 +120,25 @@ paths:
             $ref: '#/components/schemas/AttributeType'
           required: false
           description: The number type of attributes to retrieve
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+  /search/beta/merchandising/attributes:
+    get:
+      summary: All available attributes
+      description: Returns the available attributes
       responses:
         '200':
           description: A JSON representation of products
@@ -203,7 +225,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RuleSet'
+              $ref: '#/components/schemas/CategoryRuleSet'
       responses:
         '200':
           description: A JSON representation of products
@@ -219,9 +241,73 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
+
+  /search/beta/merchandising/category/ruleset/:
+    get:
+      summary: Retrieve the Category Rule Sets
+      description: >-
+        All rule sets ordered by most recently changed, can be queried by
+        name, category id or most recent editor
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: either category name, category id or most recent editor
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryRuleSets'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+    post:
+      summary: Create a Category Rule Set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRuleSet'
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
   /merchandising/ruleset/:
+    $ref: '#/paths/~1search~1beta~1merchandising~1category~1ruleset~1'
     get:
       summary: Retrieve the Rule Sets
+      deprecated: true
       description: >-
         All rule sets ordered by most recently changed, can be queried by
         name, category id or most recent editor
@@ -259,7 +345,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RuleSets'
+                $ref: '#/components/schemas/CategoryRuleSets'
         '400':
           description: Bad request
           content:
@@ -270,6 +356,7 @@ paths:
           description: Unauthorized e.g. no bearer token specified
     post:
       summary: Create Rule Set
+      deprecated: true
       requestBody:
         content:
           application/json:
@@ -290,9 +377,11 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
-  '/merchandising/ruleset/{ruleSetId}':
+  /merchandising/ruleset/{ruleSetId}:
+    $ref: '#/paths/~1search~1beta~1merchandising~1category~1ruleset~1{ruleSetId}'
     put:
       summary: Update Rule Set
+      deprecated: true
       description: Persists merchandising rules and takes effect for customers
       requestBody:
         content:
@@ -323,6 +412,7 @@ paths:
           description: Unauthorized e.g. no bearer token specified
     get:
       summary: Retrieve Rule Set
+      deprecated: true
       description: Returns a rule set and its merchandising rules.
       parameters:
         - in: path
@@ -354,6 +444,7 @@ paths:
                 $ref: '#/components/schemas/ReturnedRuleSetNotFound'
     delete:
       summary: Delete Rule Set
+      deprecated: true
       description: Deletes a rule set and its merchandising rules.
       parameters:
         - in: path
@@ -367,8 +458,221 @@ paths:
           description: Rule set was deleted successfully
         '401':
           description: Unauthorized e.g. no bearer token specified
-
-  '/merchandising/product':
+  /search/beta/merchandising/category/ruleset/{ruleSetId}:
+    put:
+      summary: Update Category Rule Set
+      description: Persists merchandising rules and takes effect for customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRuleSet'
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+    get:
+      summary: Retrieve Category Rule Set
+      description: Returns a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedRuleSetNotFound'
+    delete:
+      summary: Delete Category Rule Set
+      description: Deletes a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to delete
+      responses:
+        '200':
+          description: Rule set was deleted successfully
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+  /search/beta/merchandising/global/ruleset/:
+    get:
+      summary: Retrieve the global Rule Sets
+      description: >-
+        All rule sets ordered by most recently changed, can be queried by recent editor
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: search by most recent editor
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display Rule Sets after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalRuleSets'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+    post:
+      summary: Create a Category Rule Set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRuleSet'
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+  /search/beta/merchandising/global/ruleset/{ruleSetId}:
+    put:
+      summary: Update Global Rule Set
+      description: Persists merchandising rules and takes effect for customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+    get:
+      summary: Retrieve Global Rule Set
+      description: Returns a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedRuleSetNotFound'
+    delete:
+      summary: Delete Global Rule Set
+      description: Deletes a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to delete
+      responses:
+        '200':
+          description: Rule set was deleted successfully
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+  /merchandising/product:
     post:
       summary: Search products for category
       description: >-
@@ -421,19 +725,24 @@ paths:
         '401':
           description: Unauthorized e.g. no bearer token specified
   '/merchandising/facet':
+    $ref: '#/paths/~1search~1beta~1merchandising~1facet'
+  '/search/beta/merchandising/facet':
     get:
-      summary: Get all facets
+      summary: Get all Global facets
       description: >-
-        Returns the facets for a category
+        Returns the Global facets, if a rulesSetId is passed includes config data related to that Rule Set, 
+        such as if it is included or not. 
+
+        The included facets are returned first, then everything is ordered alphabetically by "indexPropertyName"
       parameters:
         - in: query
-          name: categoryId
+          name: ruleSetId
           schema:
             type: array
             items:
               type: string
           required: false
-          description: When provided will only return facets relevant to these categories
+          description: When provided will only return facets relevant to the queries related to this Rule Set, as well as configuration related to the provided Rule Set, such as if the facet is included or not
       responses:
         '200':
           description: A JSON representation of the facet
@@ -473,8 +782,10 @@ paths:
         '401':
           description: Unauthorized e.g. no bearer token specified
   '/merchandising/facet/{facetId}':
+    $ref: '#/paths/~1search~1beta~1merchandising~1facet~1{facetId}'
+  '/search/beta/merchandising/facet/{facetId}':
     get:
-      summary: Get facet config
+      summary: Get Global facet config
       parameters:
         - in: path
           name: facetId
@@ -524,6 +835,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReturnedFacet'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+    delete:
+      summary: Delete a facet at the global level
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to update
+      responses:
+        '200':
+          description: The resource was successfully deleted
         '400':
           description: Bad request
           content:
@@ -617,23 +948,43 @@ components:
       required:
         - ruleSets
         - values
-    RuleSets:
+    GlobalRuleSets:
       type: object
       properties:
         ruleSets:
           type: array
           items:
-            $ref: '#/components/schemas/ReturnedRuleSet'
+            $ref: '#/components/schemas/ReturnedGlobalRuleSet'
         pagination:
           $ref: '#/components/schemas/Pagination'
       required:
         - ruleSets
         - pagination
+    CategoryRuleSets:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - ruleSets
+        - pagination
+    CategoryRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/RuleSet'
+        - type: object
+          properties:
+            categoryId:
+              type: string
+          required:
+            - categoryId
+
     RuleSet:
       type: object
       properties:
-        categoryId:
-          type: string
         isEnabled:
           type: boolean
         rules:
@@ -644,17 +995,16 @@ components:
             $ref: '#/components/schemas/RuleSetFacetConfigWithId'
           description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
       required:
-        - categoryId
         - rules
         - isEnabled
-    ReturnedRuleSet:
+    ReturnedCategoryRuleSet:
       allOf:
-        - $ref: '#/components/schemas/RuleSet'
+        - $ref: '#/components/schemas/CategoryRuleSet'
         - type: object
           properties:
-            id:
-              type: string
             categoryName:
+              type: string
+            id:
               type: string
             lastChanged:
               type: object
@@ -670,6 +1020,31 @@ components:
           required:
             - id
             - categoryName
+            - lastChanged
+    ReturnedRuleSet:
+      deprecated: true
+      allOf:
+        - $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+    ReturnedGlobalRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/RuleSet'
+        - type: object
+          properties:
+            id:
+              type: string
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
             - lastChanged
     ReturnedRuleSetNotFound:
       type: object
@@ -687,7 +1062,7 @@ components:
         facets:
           type: array
           items:
-            $ref: '#/components/schemas/ReturnedFacet'
+            $ref: '#/components/schemas/ReturnedGlobalFacet'
       required:
         - facets
     FacetConfig:
@@ -699,6 +1074,7 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
         - type: object
           properties:
             id:
