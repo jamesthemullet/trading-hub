@@ -5,3 +5,7 @@ app_environment = {
   "NODE_OPTIONS" : "--max-http-header-size 32768",
   "BUMP_ME_FOR_SECRETS_UPDATE" : "1",
 }
+
+enable_frontdoor_waf = true
+frontdoor_waf_mode   = "Prevention"
+akamai_enabled       = true

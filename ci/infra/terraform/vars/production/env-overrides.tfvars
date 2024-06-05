@@ -6,6 +6,8 @@ app_environment = {
   "NODE_ENV" : "production",
   "NODE_OPTIONS" : "--max-http-header-size 32768"
 }
-allowed_origins      = ["marksandspencer.com"]
-enable_frontdoor_waf = "true"
-akamai_enabled       = "true"
+allowed_origins = ["marksandspencer.com"]
+
+enable_frontdoor_waf = true
+frontdoor_waf_mode   = "Prevention"
+akamai_enabled       = true
