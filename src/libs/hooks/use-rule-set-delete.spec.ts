@@ -1,48 +1,64 @@
 import { act, renderHook } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 
 import { useRuleSetDelete } from './use-rule-set-delete';
 
-const getRuleSetDeleteMock = jest.fn();
+const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
+const baseUrl = 'http://localhost';
+const deleteRuleSetMock = jest.fn();
 
-const mockRuleSetId = '3ffe0fc6-bef9-40a3-a5f8-a2e6331dbed3';
+const handlers = [
+  http.delete(`${baseUrl}/merchandising/ruleset/${ruleSetId}`, () => {
+    const { data, status } = deleteRuleSetMock();
+    return HttpResponse.json(data, status);
+  }),
+];
+
+const server = setupServer(...handlers);
 
 describe('useRuleSetDelete', () => {
   beforeAll(() => {
-    global.fetch = () => Promise.resolve(getRuleSetDeleteMock());
+    process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
+    server.listen();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    server.resetHandlers();
+  });
+
+  afterAll(() => {
+    server.close();
+    delete process.env.MERCHANDISING_PROXY_BASE_URL;
   });
 
   it('should delete a ruleset', async () => {
-    getRuleSetDeleteMock.mockReturnValueOnce({
-      json: () => Promise.resolve([]),
-      status: 200,
-      ok: true,
+    deleteRuleSetMock.mockReturnValueOnce({
+      data: 'ok',
+      status: { status: 200 },
     });
     const { result } = renderHook(() => useRuleSetDelete());
 
     await act(async () => {
-      await result.current.handleDelete({ rulesetId: mockRuleSetId });
+      await result.current.handleDelete({ rulesetId: ruleSetId });
     });
 
     expect(result.current.error).toEqual('');
   });
 
   it('should return errors', async () => {
-    getRuleSetDeleteMock.mockReturnValueOnce({
-      json: () => Promise.resolve([]),
-      status: 500,
+    deleteRuleSetMock.mockReturnValueOnce({
+      data: 'not ok',
+      status: { status: 500 },
     });
     const { result } = renderHook(() => useRuleSetDelete());
 
     await act(async () => {
-      await result.current.handleDelete({ rulesetId: mockRuleSetId });
+      await result.current.handleDelete({ rulesetId: ruleSetId });
     });
 
     expect(result.current.error).toEqual(
-      'Failed to delete ruleset {"status":500,"data":null,"error":[]}'
+      'Failed to delete ruleset {"data":null,"error":"not ok"}'
     );
   });
 });
