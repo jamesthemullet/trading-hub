@@ -24,7 +24,11 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     req.url?.replace('/api', '') ?? '',
     process.env.MERCHANDISING_API_BASEURL
   );
-  url.searchParams.delete('mocks');
+
+  url.searchParams.set(
+    'apikey',
+    process.env.MERCHANDISING_API_APIGEE_KEY || ''
+  );
 
   const response = await fetch(url, {
     method: req.method,

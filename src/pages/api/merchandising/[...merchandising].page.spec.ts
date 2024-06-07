@@ -115,11 +115,12 @@ const performPost = async (
 
 describe('Merchandising api proxy', () => {
   beforeAll(() => {
-    process.env.MERCHANDISING_API_BASEURL = baseUrl;
     server.listen();
   });
 
   beforeEach(() => {
+    process.env.MERCHANDISING_API_BASEURL = baseUrl;
+    process.env.MERCHANDISING_API_APIGEE_KEY = 'someapikey';
     jest
       .mocked(validateAndMockResponse)
       .mockImplementation((_req, status, jsonBody) => {
@@ -163,7 +164,7 @@ describe('Merchandising api proxy', () => {
 
         expect(httpGet).toHaveBeenCalled();
         expect(httpGet.mock.calls[0][0].url).toBe(
-          `${baseUrl}/merchandising/category/1`
+          `${baseUrl}/merchandising/category/1?apikey=someapikey`
         );
         expect(httpGet.mock.calls[0][0].method).toBe('GET');
         expect(httpGet.mock.calls[0][0].body).toBeNull();
@@ -187,7 +188,7 @@ describe('Merchandising api proxy', () => {
         );
         expect(httpPost).toHaveBeenCalled();
         expect(httpPost.mock.calls[0][0].url).toBe(
-          `${baseUrl}/merchandising/preview/subcategory_429`
+          `${baseUrl}/merchandising/preview/subcategory_429?apikey=someapikey`
         );
         expect(httpPost.mock.calls[0][0].method).toBe('POST');
         expect(await httpPost.mock.calls[0][0].body).toStrictEqual(requestBody);
@@ -202,7 +203,7 @@ describe('Merchandising api proxy', () => {
     );
 
     it.each(responses)(
-      'forwards request to backend with Authorization for DELTE',
+      'forwards request to backend with Authorization for DELETE',
       async (response) => {
         const res = await performDelete(
           '/api/merchandising/category/1',
@@ -211,7 +212,7 @@ describe('Merchandising api proxy', () => {
 
         expect(httpDelete).toHaveBeenCalled();
         expect(httpDelete.mock.calls[0][0].url).toBe(
-          `${baseUrl}/merchandising/category/1`
+          `${baseUrl}/merchandising/category/1?apikey=someapikey`
         );
         expect(httpDelete.mock.calls[0][0].method).toBe('DELETE');
         expect(httpDelete.mock.calls[0][0].body).toBeNull();
@@ -235,6 +236,17 @@ describe('Merchandising api proxy', () => {
             updatedStatus: status,
           };
         });
+    });
+
+    it('should work when process.env.MERCHANDISING_API_BASEURL is not set', async () => {
+      delete process.env.MERCHANDISING_API_APIGEE_KEY;
+      const response = responses[0][0];
+      await performGet('/api/merchandising/category/1', response);
+
+      expect(httpGet).toHaveBeenCalled();
+      expect(httpGet.mock.calls[0][0].url).toBe(
+        'https://merch/merchandising/category/1?apikey='
+      );
     });
 
     it('when url is equal to /api/merchandising/product', async () => {
@@ -279,7 +291,9 @@ describe('Merchandising api proxy', () => {
       const res = await performGet(undefined, response);
 
       expect(httpGet).toHaveBeenCalled();
-      expect(httpGet.mock.calls[0][0].url).toBe(`${baseUrl}/`);
+      expect(httpGet.mock.calls[0][0].url).toBe(
+        `${baseUrl}/?apikey=someapikey`
+      );
       expect(httpGet.mock.calls[0][0].method).toBe('GET');
       expect(httpGet.mock.calls[0][0].body).toBeNull();
       expect([...httpGet.mock.calls[0][0].headers]).toEqual([]);
@@ -295,7 +309,7 @@ describe('Merchandising api proxy', () => {
 
         expect(httpGet).toHaveBeenCalled();
         expect(httpGet.mock.calls[0][0].url).toBe(
-          `${baseUrl}/merchandising/category/2`
+          `${baseUrl}/merchandising/category/2?apikey=someapikey`
         );
         expect(httpGet.mock.calls[0][0].method).toBe('GET');
         expect(httpGet.mock.calls[0][0].body).toBeNull();
@@ -316,7 +330,7 @@ describe('Merchandising api proxy', () => {
 
         expect(httpDelete).toHaveBeenCalled();
         expect(httpDelete.mock.calls[0][0].url).toBe(
-          `${baseUrl}/merchandising/category/2`
+          `${baseUrl}/merchandising/category/2?apikey=someapikey`
         );
         expect(httpDelete.mock.calls[0][0].method).toBe('DELETE');
         expect(httpDelete.mock.calls[0][0].body).toBeNull();
@@ -338,7 +352,7 @@ describe('Merchandising api proxy', () => {
 
         expect(httpPost).toHaveBeenCalled();
         expect(httpPost.mock.calls[0][0].url).toBe(
-          `${baseUrl}/merchandising/preview/subcategory_427`
+          `${baseUrl}/merchandising/preview/subcategory_427?apikey=someapikey`
         );
         expect(httpPost.mock.calls[0][0].method).toBe('POST');
         expect(await httpPost.mock.calls[0][0].body).toStrictEqual(requestBody);
