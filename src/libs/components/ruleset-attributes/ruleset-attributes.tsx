@@ -64,15 +64,15 @@ const SelectedAttribute = styled.div`
 
 const ModalSection = styled.div`
   border-bottom: solid 1px ${color.grey};
-  padding: ${spacing(2)};
+  padding: 12px;
   position: relative;
 `;
 
 const Number = styled.span<{ isActive: boolean }>`
   background-color: ${({ isActive }) =>
     isActive ? color.lightGreen : color.lightGrey};
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -495,29 +495,26 @@ export const RulesetAttributes = ({
               <ModalSide
                 style={{
                   zIndex: 1,
-                  padding: `${spacing(10)} ${spacing(2)} ${spacing(2)}`,
+                  padding: `${spacing(8)} ${spacing(2)} ${spacing(2)}`,
                 }}
               >
-                {(!!selectedNumericField ||
-                  !!selectedAlphanumericValues.length) && (
-                  <SelectedAttribute aria-label="Selected Attribute">
-                    {selectedAttributeType === 'numeric' &&
-                      !!selectedNumericField && (
-                        <NumericAttribute
-                          operation={selectedOperation}
-                          name={selectedNumericField}
-                        />
-                      )}
-                    {selectedAttributeType === 'alphanumeric' &&
-                      !!selectedAlphanumericValues.length && (
-                        <AlphanumericAttribute
-                          operation={selectedOperation}
-                          fields={selectedAlphanumericValues}
-                          weight={100}
-                        />
-                      )}
-                  </SelectedAttribute>
-                )}
+                <SelectedAttribute aria-label="Selected Attribute">
+                  {selectedAttributeType === 'numeric' &&
+                    !!selectedNumericField && (
+                      <NumericAttribute
+                        operation={selectedOperation}
+                        name={selectedNumericField}
+                      />
+                    )}
+                  {selectedAttributeType === 'alphanumeric' &&
+                    !!selectedAlphanumericValues.length && (
+                      <AlphanumericAttribute
+                        operation={selectedOperation}
+                        fields={selectedAlphanumericValues}
+                        weight={100}
+                      />
+                    )}
+                </SelectedAttribute>
               </ModalSide>
               <ModalSide>
                 <ModalSection>
@@ -677,7 +674,7 @@ export const RulesetAttributes = ({
                       </SearchWrapper>
                     </Filters>
                   </ModalSection>
-                  <AttributeSelection style={{ maxHeight: '250px' }}>
+                  <AttributeSelection style={{ maxHeight: '295px' }}>
                     <ModalAttributeHeader>
                       <Label isStrong>Relevant attributes</Label>
                     </ModalAttributeHeader>
@@ -738,7 +735,7 @@ export const RulesetAttributes = ({
                       />
                     </SearchWrapper>
                   </ModalSection>
-                  <AttributeSelection style={{ maxHeight: '340px' }}>
+                  <AttributeSelection style={{ maxHeight: '380px' }}>
                     <ModalAttributeHeader>
                       <Label isStrong>Current matching attribute values</Label>
                     </ModalAttributeHeader>

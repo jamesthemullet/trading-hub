@@ -39,6 +39,6 @@ export const AttributeValue = styled.label`
 `;
 
 export const AttributeSelection = styled.div`
-  max-height: 210px;
+  max-height: 250px;
   overflow: auto;
 `;

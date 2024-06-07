@@ -72,6 +72,7 @@ const StyledButton = styled.button<ButtonProps>`
   transition-property: background-color color border-color;
   text-decoration: none;
   padding: ${spacing(1)} ${spacing(2)};
+  height: 40px;
   width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
 
   &:disabled {

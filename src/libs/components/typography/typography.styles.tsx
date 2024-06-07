@@ -56,7 +56,7 @@ export const Label = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
   ${commonStyles}
   font-family: ${fonts.regular};
   font-weight: ${({ isStrong }) => (isStrong ? 600 : 'normal')};
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5714;
   margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
 `;
