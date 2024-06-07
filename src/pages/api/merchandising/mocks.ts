@@ -8,6 +8,7 @@ import {
   ErrorResponse,
   ReturnedRuleSet,
   RuleSetFacetConfigWithId,
+  ReturnedCategoryRuleSet,
   BetaMerchandisingFacetListData,
 } from '@/libs/api';
 import { NextApiRequest } from 'next';
@@ -212,6 +213,28 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
   ],
 };
 
+export const categoryRuleSetMock: ReturnedCategoryRuleSet = {
+  id: 'abc123',
+  categoryName: 'Mock Category',
+  categoryId: 'foo00',
+  lastChanged: {
+    date: '2021-01-05T08:34:15Z',
+    user: 'Test User',
+  },
+  isEnabled: true,
+  rules: {
+    pinnedProducts: [],
+    boosts: { numeric: [], alphanumeric: [], product: [] },
+    buries: { numeric: [], alphanumeric: [], product: [] },
+    blockedProducts: [],
+  },
+  facets: [
+    {
+      id: 'color-id',
+    },
+  ],
+};
+
 export const getMockMapping: () => Record<
   string,
   Partial<
@@ -240,16 +263,17 @@ export const getMockMapping: () => Record<
       return { body: jsonBody, status };
     },
   },
+  '/search/beta/merchandising/category/ruleset/{ruleSetId}': {
+    get: () => {
+      return { body: categoryRuleSetMock, status: 200 };
+    },
+  },
   '/merchandising/category/{category}/preview': {
     post: (_req, status, jsonBody) => {
       const searchPreviewResponse = jsonBody as SearchPreviewResponse;
       /* istanbul ignore next */
       const response: SearchPreviewResponse = {
         ...searchPreviewResponse,
-        products: searchPreviewResponse.products.map((product) => ({
-          ...product,
-          brand: product.brand || 'M&S',
-        })),
         facets: {
           facets: (!searchPreviewResponse.facets
             ? { facets: { facets: [] as Facet[] } }
@@ -272,80 +296,7 @@ export const getMockMapping: () => Record<
             }),
           })),
         },
-        rules: {
-          ...searchPreviewResponse.rules,
-          pinnedProducts: searchPreviewResponse.rules.pinnedProducts.map(
-            (product) => ({
-              id: product.id,
-              productId: product.productId || '0000',
-              metadata: {
-                isPinned: true,
-              },
-              url: product.url || 'mands.com',
-              price: product.price || '£XX',
-              imageUrl: product.imageUrl || [''],
-              title: product.title || '(Missing preview data)',
-              brand: product.brand || 'M&S',
-              isInStock: true,
-            })
-          ),
-          boosts: {
-            ...searchPreviewResponse.rules.boosts,
-            product: searchPreviewResponse.rules.boosts.product.map(
-              (product) => ({
-                id: product.id,
-                weight: product.weight || 0.1,
-                productId: product.productId || product.id || '0000',
-                metadata: {
-                  isPinned: false,
-                  isBoosted: true,
-                },
-                url: product.url || 'mands.com',
-                price: product.price || '£XX',
-                imageUrl: product.imageUrl || [''],
-                title: product.title || '(Missing preview data)',
-                brand: product.brand || 'M&S',
-                isInStock: true,
-              })
-            ),
-          },
-          buries: {
-            ...searchPreviewResponse.rules.buries,
-            product: searchPreviewResponse.rules.buries.product.map(
-              (product) => ({
-                id: product.id,
-                weight: product.weight || 0.1,
-                productId: product.productId || product.id || '0000',
-                metadata: {
-                  isPinned: false,
-                  isBuried: true,
-                },
-                url: product.url || 'mands.com',
-                price: product.price || '£XX',
-                imageUrl: product.imageUrl || [''],
-                title: product.title || '(Missing preview data)',
-                brand: product.brand || 'M&S',
-                isInStock: true,
-              })
-            ),
-          },
-          blockedProducts: searchPreviewResponse.rules.blockedProducts
-            ? searchPreviewResponse.rules.blockedProducts.map((product) => ({
-                id: product.id,
-                productId: product.productId || product.id || '0000',
-                metadata: {
-                  isPinned: false,
-                  isBlocked: true,
-                },
-                url: product.url || 'mands.com',
-                price: product.price || '£XX',
-                imageUrl: product.imageUrl || [''],
-                title: product.title || '(Missing preview data)',
-                brand: product.brand || 'M&S',
-                isInStock: true,
-              }))
-            : [],
-        },
+        rules: searchPreviewResponse.rules,
         pagination: !searchPreviewResponse.pagination
           ? {}
           : searchPreviewResponse.pagination,

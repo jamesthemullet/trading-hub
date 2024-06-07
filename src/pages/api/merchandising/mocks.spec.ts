@@ -2,26 +2,40 @@ import { ErrorResponse, ReturnedRuleSet } from '@/libs/api';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 
 import {
+  categoryRuleSetMock,
   getMockMapping,
   globalFacetsListMock,
   ruleSetFacetConfigWithIdMock,
 } from './mocks';
 
-const mockProductData = {
-  brand: 'M&S',
-  id: '1',
-  imageUrl: [''],
-  isInStock: true,
-  metadata: {
-    isPinned: true,
-  },
-  price: '£XX',
-  productId: '0000',
-  title: '(Missing preview data)',
-  url: 'mands.com',
-};
-
 describe('mocks', () => {
+  describe('/search/beta/merchandising/category/ruleset/{ruleSetId}', () => {
+    it('should add mock rulesets', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/category/ruleset/{ruleSetId}']
+          .get
+      ).toBeDefined();
+
+      const result = mockMapping[
+        '/search/beta/merchandising/category/ruleset/{ruleSetId}'
+      ].get!(
+        createMockNextApiRequest({
+          url: '/merchandising/ruleset/1',
+          method: 'GET',
+        }),
+        200,
+        categoryRuleSetMock
+      );
+      expect(result).toEqual({
+        body: {
+          ...categoryRuleSetMock,
+        },
+        status: 200,
+      });
+    });
+  });
+
   describe('/merchandising/ruleset/{category}', () => {
     const mockResponse: ReturnedRuleSet = {
       id: '1',
@@ -105,146 +119,6 @@ describe('mocks', () => {
   });
 
   describe('/merchandising/category/{category}/preview', () => {
-    it('should add missing product data when its missing from server side request when making request to /merchandising/category/{category}/preview', () => {
-      const mockMapping = getMockMapping();
-      expect(
-        mockMapping['/merchandising/category/{category}/preview'].post
-      ).toBeDefined();
-
-      const result = mockMapping['/merchandising/category/{category}/preview']
-        .post!(
-        createMockNextApiRequest({
-          url: '/merchandising/category/1/preview',
-          method: 'POST',
-        }),
-        200,
-        {
-          products: [
-            {
-              id: '1',
-              // missing rating
-              // missing brand
-            },
-          ],
-          facets: {
-            facets: [
-              {
-                id: '1',
-                data: [
-                  {
-                    name: '1',
-                    count: 1,
-                    selected: false,
-                    // missing disabled
-                    cat_id: '1', // unexpected property
-                  },
-                ],
-              },
-              {
-                id: '2',
-                data: [
-                  {
-                    name: '2',
-                    count: 1,
-                    // missing disabled
-                    selected: false,
-                    // no cat_id
-                  },
-                ],
-              },
-            ],
-          },
-          rules: {
-            pinnedProducts: [
-              {
-                id: '1',
-                // missing rating
-              },
-            ],
-            blockedProducts: [{ id: 'b' }],
-            boosts: { numeric: [], alphanumeric: [], product: [{ id: 'c' }] },
-            buries: { numeric: [], alphanumeric: [], product: [{ id: 'd' }] },
-          },
-          pagination: {},
-        }
-      );
-      expect(result).toEqual({
-        body: {
-          products: [
-            {
-              id: '1',
-              brand: 'M&S',
-            },
-          ],
-          facets: {
-            facets: [
-              {
-                id: '1',
-                data: [
-                  {
-                    name: '1',
-                    count: 1,
-                    selected: false,
-                    disabled: false,
-                  },
-                ],
-              },
-              {
-                id: '2',
-                data: [
-                  {
-                    name: '2',
-                    count: 1,
-                    selected: false,
-                    disabled: false,
-                  },
-                ],
-              },
-            ],
-          },
-          rules: {
-            pinnedProducts: [mockProductData],
-            blockedProducts: [
-              {
-                ...mockProductData,
-                id: 'b',
-                productId: 'b',
-                metadata: { isPinned: false, isBlocked: true },
-              },
-            ],
-            boosts: {
-              numeric: [],
-              alphanumeric: [],
-              product: [
-                {
-                  ...mockProductData,
-                  id: 'c',
-                  productId: 'c',
-                  weight: 0.1,
-                  metadata: { isPinned: false, isBoosted: true },
-                },
-              ],
-            },
-            buries: {
-              numeric: [],
-              alphanumeric: [],
-              product: [
-                {
-                  ...mockProductData,
-                  id: 'd',
-                  productId: 'd',
-                  weight: 0.1,
-                  metadata: { isPinned: false, isBuried: true },
-                },
-              ],
-            },
-          },
-          pagination: {},
-        },
-        status: 200,
-      });
-    });
-
     it('should work when missing facets and pagination', () => {
       const mockMapping = getMockMapping();
       expect(
