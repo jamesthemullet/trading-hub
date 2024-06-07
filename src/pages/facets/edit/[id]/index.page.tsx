@@ -41,6 +41,20 @@ const Page = ({ id }: { id: string }) => {
     path: '/',
   };
 
+  const onFacetDataChange = (
+    index: number,
+    key: 'displayValue' | 'status',
+    value: string | 'included' | 'excluded'
+  ) => {
+    setLocalFacets((prev) => {
+      const updatedFacet: ReturnedFacet = {
+        ...prev[index],
+        [key]: value,
+      };
+      return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
+    });
+  };
+
   return (
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
@@ -64,6 +78,7 @@ const Page = ({ id }: { id: string }) => {
             updatedFacets.splice(index + direction, 0, removed);
             setLocalFacets(updatedFacets);
           }}
+          onFacetDataChange={onFacetDataChange}
           defaultCategory={category}
         />
       )}

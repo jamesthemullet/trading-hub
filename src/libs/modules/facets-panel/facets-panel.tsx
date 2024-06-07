@@ -102,11 +102,11 @@ export const Row = styled(TableRow)<TableRowProps>`
   padding: 0 ${spacing(2)} ${spacing(2)};
 
   ${({ optionSelected }) =>
-    optionSelected === 'Include only' &&
+    optionSelected === 'included' &&
     `background-color: ${color.successGreenBackground}`}
 
   ${({ optionSelected }) =>
-    optionSelected === 'Exclude only' &&
+    optionSelected === 'excluded' &&
     `background-color: ${color.errorRedBackground}`}
 `;
 
@@ -158,20 +158,27 @@ export const FacetsPanel = ({
   onSave,
   onCancel,
   setSearch,
-  onDisplayValueChange,
+  onFacetDataChange,
   onFacetsDataRowOrderChange,
   title,
   facetsData,
   categoryName,
   defaultCategory,
-  defaultOrderData,
   displayRowOrderControls = false,
 }: {
   onSave: () => void;
   onCancel: () => void;
   setSearch?: (value: string) => void;
-  onDisplayValueChange?: (value: string, index: number) => void;
+  onFacetDataChange?: (
+    index: number,
+    key: 'displayValue' | 'status',
+    value: string | 'included' | 'excluded'
+  ) => void;
   onFacetsDataRowOrderChange?: (index: number, direction: -1 | 1) => void;
+  onHandleStatusChange?: (
+    index: number,
+    status: 'included' | 'excluded'
+  ) => void;
   displayRowOrderControls?: boolean;
   title: string;
   facetsData: ReturnedFacet[];
@@ -185,10 +192,6 @@ export const FacetsPanel = ({
   );
   const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
-
-  // This will be replaced when we have the defaultOrder field on the get facets endpoint
-  const [localDefaultOrderData, setLocalDefaultOrderData] =
-    useState<defaultOrderDataType>(defaultOrderData || []);
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
@@ -209,18 +212,6 @@ export const FacetsPanel = ({
     setIsEditValuesModalOpen(false);
   };
 
-  const handleChange = (label: string, index: number) => {
-    setLocalDefaultOrderData((prev) => {
-      const updatedDefaultOrderData = prev.map((order, i) => {
-        if (i === index) {
-          return { defaultOrder: label };
-        }
-        return order;
-      });
-      return updatedDefaultOrderData;
-    });
-  };
-
   const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
     setIsEditValuesModalOpen(true);
     setSelectedFacet(facet);
@@ -236,23 +227,16 @@ export const FacetsPanel = ({
     totalCount: number;
   }) => {
     return (
-      <Row
-        optionSelected={
-          localDefaultOrderData[index]
-            ? localDefaultOrderData[index].defaultOrder
-            : ''
-        }
-        data-testid="facets-table-row"
-      >
+      <Row optionSelected={facet.status} data-testid="facets-table-row">
         <Col>
           <Text>{facet.indexPropertyName}</Text>
         </Col>
         <Col>
-          {onDisplayValueChange && (
+          {onFacetDataChange && (
             <EditableLabel
               displayValue={facet.displayValue}
               onDisplayValueChange={(newValue) =>
-                onDisplayValueChange(newValue, index)
+                onFacetDataChange(index, 'displayValue', newValue)
               }
             />
           )}
@@ -260,12 +244,12 @@ export const FacetsPanel = ({
         <Col>
           <OrderColumn>
             <FacetOrderDropdown
-              defaultOrderData={
-                localDefaultOrderData[index]
-                  ? localDefaultOrderData[index].defaultOrder
-                  : undefined
-              }
-              onChange={(label: string): void => handleChange(label, index)}
+              status={facet.status}
+              onChange={(status): void => {
+                if (onFacetDataChange) {
+                  onFacetDataChange(index, 'status', status);
+                }
+              }}
             />
             {index === 0 || !displayRowOrderControls ? (
               <Box w="40" h="40" />

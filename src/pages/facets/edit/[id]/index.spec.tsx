@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
@@ -163,6 +163,41 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByRole('button', { name: 'Move color row up' })
       ).toBeVisible();
+    });
+  });
+
+  it('should update the display value of a facet', async () => {
+    jest.mocked(useRuleSetPreview).mockImplementation(() => ({
+      ...mockUseRuleSetPreviewData,
+      facets: globalFacetsListMock.facets,
+      isLoading: false,
+    }));
+    renderWithProviders(<Page id={ruleSetId} />);
+    const editButton = screen.getByLabelText('Edit display name for color');
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      const editColorInput = screen.getByLabelText('Edit color input field');
+      expect(editColorInput).toBeVisible();
+      expect(editColorInput).toHaveValue('color');
+      userEvent.clear(editColorInput);
+      await userEvent.type(editColorInput, 'colour');
+    });
+
+    const saveButton = screen.getByLabelText('Save color change');
+
+    act(() => {
+      saveButton.click();
+    });
+
+    await waitFor(() => {
+      const newEditButton = screen.getByLabelText(
+        'Edit display name for colour'
+      );
+      expect(newEditButton).toBeVisible();
     });
   });
 });

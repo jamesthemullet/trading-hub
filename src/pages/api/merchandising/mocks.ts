@@ -4,11 +4,11 @@ import {
   ProductBoostBury,
   SearchPreviewResponse,
   Facet,
-  FacetsList,
   ReturnedFacet,
   ErrorResponse,
   ReturnedRuleSet,
   RuleSetFacetConfigWithId,
+  BetaMerchandisingFacetListData,
 } from '@/libs/api';
 import { NextApiRequest } from 'next';
 
@@ -152,52 +152,62 @@ export const ruleSetFacetConfigWithIdMock: RuleSetFacetConfigWithId[] = [
   },
 ];
 
-export const globalFacetsListMock: FacetsList = {
+export const globalFacetsListMock: BetaMerchandisingFacetListData = {
   facets: [
     {
       displayValue: 'color',
       indexPropertyName: 'color',
+      status: 'included',
       id: 'color-id',
       lastChanged: {
         date: '2021-01-01T08:34:15Z',
         user: 'Test User',
       },
+      merged: [],
     },
     {
       displayValue: 'size',
       indexPropertyName: 'size',
+      status: 'included',
       id: 'size-id',
       lastChanged: {
         date: '2021-01-02T08:34:15Z',
         user: 'Test User',
       },
+      merged: [],
     },
     {
       displayValue: 'brand',
       indexPropertyName: 'brand',
+      status: 'included',
       id: 'brand-id',
       lastChanged: {
         date: '2021-01-03T08:34:15Z',
         user: 'Test User',
       },
+      merged: [],
     },
     {
       displayValue: 'category',
       indexPropertyName: 'category',
+      status: 'included',
       id: 'category-id',
       lastChanged: {
         date: '2021-01-04T08:34:15Z',
         user: 'Test User',
       },
+      merged: [],
     },
     {
       displayValue: 'price',
       indexPropertyName: 'price',
+      status: 'excluded',
       id: 'price-id',
       lastChanged: {
         date: '2021-01-05T08:34:15Z',
         user: 'Test User',
       },
+      merged: [],
     },
   ],
 };
@@ -343,14 +353,6 @@ export const getMockMapping: () => Record<
       return { body: response, status };
     },
   },
-  '/merchandising/facet': {
-    get: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        return { body: globalFacetsListMock, status: 200 };
-      }
-      return { body: jsonBody, status };
-    },
-  },
   '/merchandising/facet/{facetId}': {
     get: (req, status, jsonBody) => {
       if (status !== 200) {
@@ -378,6 +380,17 @@ export const getMockMapping: () => Record<
 
         const body: ReturnedFacet = facet;
         return { body, status: 200 };
+      }
+      return { body: jsonBody, status };
+    },
+  },
+  '/search/beta/merchandising/facet': {
+    get: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        return {
+          body: globalFacetsListMock,
+          status: 200,
+        };
       }
       return { body: jsonBody, status };
     },

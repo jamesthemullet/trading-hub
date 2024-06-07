@@ -58,7 +58,7 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
 const setSearchSpy = jest.fn();
-const onDisplayValueChangeSpy = jest.fn();
+const onFacetDataChangeSpy = jest.fn();
 
 describe('Facet Panel', () => {
   beforeEach(() => {
@@ -80,6 +80,7 @@ describe('Facet Panel', () => {
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -98,6 +99,7 @@ describe('Facet Panel', () => {
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -116,6 +118,7 @@ describe('Facet Panel', () => {
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
         facetsData={[]}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -133,6 +136,7 @@ describe('Facet Panel', () => {
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -154,6 +158,7 @@ describe('Facet Panel', () => {
         displayRowOrderControls={true}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -176,6 +181,7 @@ describe('Facet Panel', () => {
         displayRowOrderControls={true}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -193,6 +199,7 @@ describe('Facet Panel', () => {
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -210,6 +217,7 @@ describe('Facet Panel', () => {
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -236,6 +244,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         defaultOrderData={mockDefaultOrderData}
+        onFacetDataChange={onFacetDataChangeSpy}
       />
     );
 
@@ -257,8 +266,10 @@ describe('Facet Panel', () => {
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
-        'background-color: #fff3f4'
+      expect(onFacetDataChangeSpy).toHaveBeenCalledWith(
+        0,
+        'status',
+        'excluded'
       );
     });
   });
@@ -272,6 +283,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -290,6 +302,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         categoryName={categoryName1}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -306,9 +319,9 @@ describe('Facet Panel', () => {
       <FacetsPanel
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
-        onDisplayValueChange={onDisplayValueChangeSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={onFacetDataChangeSpy}
       />
     );
 
@@ -328,7 +341,11 @@ describe('Facet Panel', () => {
 
     await user.click(saveButton);
 
-    expect(onDisplayValueChangeSpy).toHaveBeenCalledWith('colour', 0);
+    expect(onFacetDataChangeSpy).toHaveBeenCalledWith(
+      0,
+      'displayValue',
+      'colour'
+    );
   });
 
   describe('Add Facet Modal', () => {
@@ -339,6 +356,7 @@ describe('Facet Panel', () => {
           onCancel={onCancelSpy}
           title="Facet Rule Editor"
           facetsData={globalFacetsListMock.facets}
+          onFacetDataChange={jest.fn()}
         />
       );
 
@@ -387,6 +405,7 @@ describe('Facet Panel', () => {
           onCancel={onCancelSpy}
           title="Facet Rule Editor"
           facetsData={globalFacetsListMock.facets}
+          onFacetDataChange={jest.fn()}
         />
       );
 

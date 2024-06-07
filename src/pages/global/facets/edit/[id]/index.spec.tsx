@@ -2,7 +2,8 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { useFacetsList, useGetCategories } from '@/libs/hooks';
+import { useGetCategories } from '@/libs/hooks';
+import { useGlobalFacetsList } from '@/libs/hooks/use-global-facets-list';
 import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
 import { renderWithProviders } from '../../../../../test/render-with-providers';
@@ -15,7 +16,10 @@ jest.mock('next/router', () => ({
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGetCategories: jest.fn(),
-  useFacetsList: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/use-global-facets-list', () => ({
+  useGlobalFacetsList: jest.fn(),
 }));
 
 const logSpy = jest.spyOn(console, 'log');
@@ -45,7 +49,7 @@ describe('Global Facet Management Editing', () => {
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
     });
-    jest.mocked(useFacetsList).mockReturnValue({
+    jest.mocked(useGlobalFacetsList).mockReturnValue({
       isLoading: false,
       facets: globalFacetsListMock.facets,
       error: '',
@@ -114,7 +118,7 @@ describe('Global Facet Management Editing', () => {
   });
 
   it('should render skeleton when loading', () => {
-    jest.mocked(useFacetsList).mockReturnValue({
+    jest.mocked(useGlobalFacetsList).mockReturnValue({
       isLoading: true,
       facets: [],
       error: '',
