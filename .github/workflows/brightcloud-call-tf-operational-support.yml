@@ -54,6 +54,7 @@ jobs:
       NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
       PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_TOKEN }}
       REMEDY_FUNCTION_CODE: ${{ secrets.REMEDY_FUNCTION_CODE }}
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
 
   call-tf-operational-support-oidc:
     needs:
@@ -72,3 +73,4 @@ jobs:
       NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
       PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_TOKEN }}
       REMEDY_FUNCTION_CODE: ${{ secrets.REMEDY_FUNCTION_CODE }}
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
