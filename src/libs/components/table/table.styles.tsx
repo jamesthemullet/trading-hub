@@ -9,10 +9,11 @@ export const TableContainer = styled.div`
 `;
 
 export const TableRow = styled.div`
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: minmax(240px, 2fr) 100px 150px 150px;
   border-bottom: 1px solid #b1b1b1;
   align-items: baseline;
+  padding-left: ${spacing(2)};
 
   &:first-of-type {
     position: sticky;
@@ -21,11 +22,13 @@ export const TableRow = styled.div`
     background: #fff;
   }
 `;
+export const FacetsTableRow = styled(TableRow)`
+  grid-template-columns: minmax(170px, 2fr) 100px 150px 150px 150px 150px;
+`;
 
 export const TableCol = styled.div`
   text-overflow: ellipsis;
   display: flex;
-  flex-direction: row;
   padding: ${spacing(3)} 0 ${spacing(0.5)};
 
   p {
@@ -33,23 +36,6 @@ export const TableCol = styled.div`
     text-overflow: ellipsis;
     text-wrap: nowrap;
     width: 100%;
-  }
-`;
-
-export const FacetsTableCol = styled(TableCol)`
-  flex: 0 0 150px;
-
-  &:first-of-type {
-    flex: 2 0 240px;
-    padding-left: ${spacing(2)};
-  }
-
-  &:nth-of-type(2) {
-    flex: 0 0 100px;
-  }
-
-  &:nth-of-type(5) {
-    flex: 0 0 180px;
   }
 `;
 

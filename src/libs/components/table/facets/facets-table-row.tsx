@@ -4,13 +4,13 @@ import { Toggle } from '../../toggle/toggle';
 import type { ReturnedFacet } from '@/libs/api';
 import { Text } from '../../typography/typography.styles';
 import {
-  TableRow,
   TableActions,
   TableDateContainer,
   TableActionsButton,
-  FacetsTableCol,
   TableOptionButton,
   TableDropdown,
+  TableCol,
+  FacetsTableRow as TableRow,
 } from '../table.styles';
 import { useState } from 'react';
 
@@ -34,14 +34,14 @@ export const FacetsTableRow = ({
   const { displayValue, id, lastChanged } = facet;
   return (
     <TableRow key={`rule-${id}`}>
-      <FacetsTableCol>
+      <TableCol>
         <Text title={displayValue}>{displayValue}</Text>
-      </FacetsTableCol>
-      <FacetsTableCol>
+      </TableCol>
+      <TableCol>
         <Text title="influence">Influence</Text>
-      </FacetsTableCol>
+      </TableCol>
       {canToggle && (
-        <FacetsTableCol>
+        <TableCol>
           <Toggle
             checked={false}
             onChange={
@@ -49,17 +49,17 @@ export const FacetsTableRow = ({
               () => {}
             }
           />
-        </FacetsTableCol>
+        </TableCol>
       )}
-      <FacetsTableCol>
+      <TableCol>
         <TableDateContainer>
           <Text>{format(new Date(lastChanged.date), 'MMM dd, yyyy')}</Text>
         </TableDateContainer>
-      </FacetsTableCol>
-      <FacetsTableCol>
+      </TableCol>
+      <TableCol>
         <Text title={lastChanged.user}>{lastChanged.user}</Text>
-      </FacetsTableCol>
-      <FacetsTableCol style={{ padding: '12px 0 16px' }}>
+      </TableCol>
+      <TableCol style={{ padding: '12px 0 16px' }}>
         <TableActions>
           <TableActionsButton href={`${editUrl}/${id}`}>
             Edit
@@ -86,7 +86,7 @@ export const FacetsTableRow = ({
             </>
           )}
         </TableActions>
-      </FacetsTableCol>
+      </TableCol>
     </TableRow>
   );
 };

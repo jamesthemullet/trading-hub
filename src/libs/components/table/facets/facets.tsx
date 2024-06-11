@@ -1,9 +1,9 @@
 import type { ReturnedFacet } from '@/libs/api';
 import {
   TableContainer,
-  TableRow,
   TableHeading,
-  FacetsTableCol,
+  TableCol,
+  FacetsTableRow as TableRow,
 } from '../table.styles';
 import { FacetsTableRow } from './facets-table-row';
 
@@ -54,7 +54,7 @@ export const FacetsManagementTable = ({
     <TableContainer>
       <TableRow style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
         {columns.map(({ label }) => (
-          <FacetsTableCol
+          <TableCol
             key={`column-${label}`}
             style={{
               userSelect: 'none',
@@ -63,9 +63,10 @@ export const FacetsManagementTable = ({
             <TableHeading as="p" isStrong={true}>
               {label}
             </TableHeading>
-          </FacetsTableCol>
+          </TableCol>
         ))}
       </TableRow>
+
       {facets.map((facet) => (
         <FacetsTableRow
           key={facet.id}

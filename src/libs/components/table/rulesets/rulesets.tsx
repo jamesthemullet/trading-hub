@@ -21,25 +21,6 @@ import {
   TableHeading,
   TableActionsButton,
 } from '../table.styles';
-import { spacing } from '../../utils/spacing';
-import styled from '@emotion/styled';
-
-const Col = styled(TableCol)`
-  flex: 0 0 150px;
-
-  &:first-of-type {
-    flex: 2 0 240px;
-    padding-left: ${spacing(2)};
-  }
-
-  &:nth-of-type(2) {
-    flex: 0 0 100px;
-  }
-
-  &:nth-of-type(5) {
-    flex: 0 0 180px;
-  }
-`;
 
 type RulesProps = {
   columnOrderName: keyof ReturnedRuleSet;
@@ -90,7 +71,7 @@ export const Rulesets = ({
     <TableContainer>
       <TableRow style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
         {COLUMNS.map(({ label, sortBy }) => (
-          <Col
+          <TableCol
             key={`column-${label}`}
             style={{
               cursor: sortBy ? 'pointer' : 'auto',
@@ -111,7 +92,7 @@ export const Rulesets = ({
                 }
               />
             )}
-          </Col>
+          </TableCol>
         ))}
       </TableRow>
 
@@ -129,12 +110,12 @@ export const Rulesets = ({
 
           return (
             <TableRow key={`rule-${id}`}>
-              <Col>
+              <TableCol>
                 <Text title={categoryName}>
                   {categoryId} | {categoryName}
                 </Text>
-              </Col>
-              <Col>
+              </TableCol>
+              <TableCol>
                 <Toggle
                   checked={isEnabled}
                   onChange={() => {
@@ -147,16 +128,16 @@ export const Rulesets = ({
                     });
                   }}
                 />
-              </Col>
-              <Col>
+              </TableCol>
+              <TableCol>
                 <TableDateContainer>
                   <Text>
                     {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
                   </Text>
                   <Text style={{ fontSize: '0.7em' }}>{lastChanged.user}</Text>
                 </TableDateContainer>
-              </Col>
-              <Col style={{ padding: '12px 0 16px' }}>
+              </TableCol>
+              <TableCol style={{ padding: '12px 0 16px' }}>
                 <TableActions>
                   <TableActionsButton href={`rules/edit/${id}`}>
                     Edit
@@ -177,7 +158,7 @@ export const Rulesets = ({
                     </TableDropdown>
                   )}
                 </TableActions>
-              </Col>
+              </TableCol>
             </TableRow>
           );
         }
