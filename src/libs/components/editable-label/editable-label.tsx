@@ -8,6 +8,16 @@ const DisplayName = styled.div`
   align-items: center;
 `;
 
+const EditConfirmationButtons = styled.div`
+  margin-right: ${spacing(1)};
+  display: flex;
+  align-items: center;
+
+  button {
+    margin-left: ${spacing(1)};
+  }
+`;
+
 const EditButton = styled(Button)`
   padding: 0;
   border: none;
@@ -15,6 +25,8 @@ const EditButton = styled(Button)`
   width: 20px;
   display: flex;
   margin-left: ${spacing(3)};
+  height: 100%;
+  align-items: center;
 
   &:hover {
     background: none;
@@ -22,6 +34,7 @@ const EditButton = styled(Button)`
 `;
 
 const StyledInput = styled(Input)`
+  font-size: 14px;
   max-height: 2.5rem;
 `;
 
@@ -65,34 +78,36 @@ export const EditableLabel = ({
             }}
             aria-label={`Edit ${displayValue} input field`}
           />
-          <EditButton
-            onClick={() => {
-              setIsEditMode(false);
-              onDisplayValueChange(value);
-            }}
-            aria-label={`Save ${displayValue} change`}
-          >
-            <Image
-              width={20}
-              height={20}
-              src="/trading-hub/asset/icon-tick-in-circle.svg"
-              alt=""
-            />
-          </EditButton>
-          <EditButton
-            onClick={() => {
-              setValue(originalValue);
-              setIsEditMode(false);
-            }}
-            aria-label={`Cancel ${displayValue} change`}
-          >
-            <Image
-              width={20}
-              height={20}
-              src="/trading-hub/asset/icon-cross-in-circle.svg"
-              alt=""
-            />
-          </EditButton>
+          <EditConfirmationButtons>
+            <EditButton
+              onClick={() => {
+                setIsEditMode(false);
+                onDisplayValueChange(value);
+              }}
+              aria-label={`Save ${displayValue} change`}
+            >
+              <Image
+                width={20}
+                height={20}
+                src="/trading-hub/asset/icon-tick-in-circle.svg"
+                alt=""
+              />
+            </EditButton>
+            <EditButton
+              onClick={() => {
+                setValue(originalValue);
+                setIsEditMode(false);
+              }}
+              aria-label={`Cancel ${displayValue} change`}
+            >
+              <Image
+                width={20}
+                height={20}
+                src="/trading-hub/asset/icon-cross-in-circle.svg"
+                alt=""
+              />
+            </EditButton>
+          </EditConfirmationButtons>
         </>
       ) : (
         <>

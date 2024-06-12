@@ -112,11 +112,6 @@ export const Row = styled(TableRow)<TableRowProps>`
 
 export const Col = styled(TableCol)`
   justify-content: space-between;
-  flex: 2;
-
-  &:last-of-type {
-    flex: 1;
-  }
 `;
 
 const NoAttributesBlock = styled.div`

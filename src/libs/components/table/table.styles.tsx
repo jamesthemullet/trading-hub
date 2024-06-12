@@ -10,7 +10,7 @@ export const TableContainer = styled.div`
 
 export const TableRow = styled.div`
   display: grid;
-  grid-template-columns: minmax(240px, 2fr) 100px 150px 150px;
+  grid-template-columns: minmax(240px, 2fr) 200px 250px 180px;
   border-bottom: 1px solid #b1b1b1;
   align-items: baseline;
   padding-left: ${spacing(2)};
