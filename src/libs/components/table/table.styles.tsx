@@ -23,7 +23,7 @@ export const TableRow = styled.div`
   }
 `;
 export const FacetsTableRow = styled(TableRow)`
-  grid-template-columns: minmax(170px, 2fr) 100px 150px 150px 150px 150px;
+  grid-template-columns: minmax(170px, 2fr) 120px 150px 150px 150px;
 `;
 
 export const TableCol = styled.div`

@@ -16,6 +16,13 @@ jest.mock('../../libs/hooks/use-rule-set-delete', () => ({
   },
 }));
 
+const mockUpdateRuleSet = jest.fn();
+jest.mock('../../libs/hooks/use-rule-set-update', () => ({
+  useUpdateRuleSet: () => {
+    return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
+  },
+}));
+
 const mockMerchangdisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
@@ -131,5 +138,57 @@ describe('Category facet management', () => {
     await waitFor(() =>
       expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10)
     );
+  });
+
+  it('should enable or disable a ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockCatId = 'catId';
+    jest.mocked(useRuleSet).mockReturnValue({
+      ruleSets: [
+        {
+          categoryName: 'cat id',
+          id: mockId,
+          categoryId: mockCatId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchangdisingRules,
+          facets: [],
+        },
+        {
+          categoryName: 'cat id 2',
+          id: 'ewfw-e3f23-f23f2-3cwef4',
+          categoryId: 'catId2',
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchangdisingRules,
+          facets: [],
+        },
+      ],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    const rulesetToggle = screen.getAllByTitle('Toggle');
+
+    await userEvent.click(rulesetToggle[0]);
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryId: mockCatId,
+      facets: [],
+      id: mockId,
+      isEnabled: false,
+      merchandisingRules: mockMerchangdisingRules,
+    });
   });
 });

@@ -7,7 +7,7 @@ import {
   SectionWrapper,
   SectionHeader,
   Search,
-  FacetsManagementTable,
+  GlobalFacetsManagementTable,
 } from '@/libs/components';
 import { ReturnedFacet } from '@/libs/api';
 import { useDebounce, useFacetsFilter } from '@/libs/hooks';
@@ -63,7 +63,7 @@ const FacetManagementPage = () => {
           </NewButton>
         </SectionHeader>
 
-        <FacetsManagementTable
+        <GlobalFacetsManagementTable
           facets={filteredFacets}
           editUrl="../../../global/facets/edit"
         />

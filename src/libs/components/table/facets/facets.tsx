@@ -1,4 +1,4 @@
-import type { ReturnedFacet } from '@/libs/api';
+import type { MerchandisingRules, RuleSetFacetConfigWithId } from '@/libs/api';
 import {
   TableContainer,
   TableHeading,
@@ -6,21 +6,26 @@ import {
   FacetsTableRow as TableRow,
 } from '../table.styles';
 import { FacetsTableRow } from './facets-table-row';
+import { ReturnedCategoryRuleSet } from '@/libs/api';
 
 type Props = {
-  facets: ReturnedFacet[];
+  ruleSets: Array<ReturnedCategoryRuleSet>;
   canToggle?: boolean;
-  editUrl: string;
   canDelete?: boolean;
   onDeleteFacet?: (id: string) => void;
+  onEnableDisableRuleSet: (args: {
+    categoryId: string;
+    facets?: Array<RuleSetFacetConfigWithId>;
+    isEnabled: boolean;
+    merchandisingRules: MerchandisingRules;
+    ruleSetId: string;
+  }) => void;
 };
 
 export const FacetsManagementTable = ({
-  facets,
-  editUrl,
   onDeleteFacet,
-  canToggle = false,
-  canDelete = false,
+  onEnableDisableRuleSet,
+  ruleSets,
 }: Props) => {
   const columns: {
     label: string;
@@ -29,16 +34,8 @@ export const FacetsManagementTable = ({
       label: 'Identifier',
     },
     {
-      label: 'Influence',
+      label: 'Enable',
     },
-    ...(() =>
-      canToggle
-        ? [
-            {
-              label: 'Enable',
-            },
-          ]
-        : [])(),
     {
       label: 'Last changed',
     },
@@ -67,14 +64,21 @@ export const FacetsManagementTable = ({
         ))}
       </TableRow>
 
-      {facets.map((facet) => (
+      {ruleSets.map((ruleSet) => (
         <FacetsTableRow
-          key={facet.id}
-          facet={facet}
-          canToggle={canToggle}
-          editUrl={editUrl}
-          canDelete={canDelete}
+          key={ruleSet.id}
+          editUrl={`/facets/edit/${ruleSet.id}`}
           onDeleteFacet={onDeleteFacet}
+          onToggle={() => {
+            onEnableDisableRuleSet({
+              ruleSetId: ruleSet.id,
+              facets: ruleSet.facets,
+              isEnabled: !ruleSet.isEnabled,
+              merchandisingRules: ruleSet.rules,
+              categoryId: ruleSet.categoryId,
+            });
+          }}
+          ruleSet={ruleSet}
         />
       ))}
     </TableContainer>

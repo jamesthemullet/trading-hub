@@ -10,11 +10,7 @@ const mockFacets = globalFacetsListMock.facets;
 describe('Facets', () => {
   it('should render facet row', () => {
     render(
-      <FacetsTableRow
-        facet={mockFacets[0]}
-        canToggle
-        editUrl="../../../facets/edit"
-      />
+      <FacetsTableRow facet={mockFacets[0]} editUrl="../../../facets/edit" />
     );
 
     expect(screen.getByText('color')).toBeInTheDocument();
@@ -27,9 +23,7 @@ describe('Facets', () => {
     render(
       <FacetsTableRow
         facet={mockFacets[0]}
-        canToggle
         editUrl="../../../facets/edit"
-        canDelete
         onDeleteFacet={deleteSpy}
       />
     );

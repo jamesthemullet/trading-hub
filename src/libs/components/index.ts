@@ -23,6 +23,7 @@ export * from './ruleset-changes/ruleset-changes';
 export * from './search/search';
 export * from './section/section';
 export * from './table/facets/facets';
+export * from './table/facets/global';
 export * from './table/rulesets/rulesets';
 export * from './tabs/tabs';
 export * from './toggle/toggle';

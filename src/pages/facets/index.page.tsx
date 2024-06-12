@@ -1,9 +1,18 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import styled from '@emotion/styled';
 import { Modal } from '@mantine/core';
 
-import type { ReturnedFacet } from '@/libs/api';
-import { useDebounce, useRuleSet, useRuleSetDelete } from '@/libs/hooks';
+import type {
+  ReturnedRuleSet,
+  MerchandisingRules,
+  RuleSetFacetConfigWithId,
+} from '@/libs/api';
+import {
+  useDebounce,
+  useRuleSet,
+  useRuleSetDelete,
+  useUpdateRuleSet,
+} from '@/libs/hooks';
 
 import { spacing } from '@/libs/components/utils/spacing';
 import {
@@ -63,7 +72,7 @@ const FacetManagementPage = () => {
 
   const currentPageIndex = currentPage - 1;
 
-  const { ruleSets, pagination, refetchRuleSetList } = useRuleSet(
+  const { ruleSets, pagination, refetchRuleSetList, setRuleSets } = useRuleSet(
     searchQuery,
     currentPageIndex * currentPageSize,
     currentPageSize
@@ -74,6 +83,7 @@ const FacetManagementPage = () => {
   }, 300);
 
   const { handleDelete } = useRuleSetDelete();
+  const { updateRuleSet } = useUpdateRuleSet();
 
   const handleDeleteFacet = (facetId: string) => {
     setFacetIdToDelete(facetId);
@@ -87,14 +97,31 @@ const FacetManagementPage = () => {
     refetchRuleSetList();
   };
 
-  const facets = useMemo<ReturnedFacet[]>(() => {
-    return ruleSets.map(({ id, categoryId, categoryName, lastChanged }) => ({
-      displayValue: `${categoryId} | ${categoryName}`,
-      indexPropertyName: categoryId,
-      lastChanged,
-      id,
-    }));
-  }, [ruleSets]);
+  const onEnableDisableRuleSet = async ({
+    ruleSetId,
+    facets,
+    isEnabled,
+    merchandisingRules,
+    categoryId,
+  }: {
+    categoryId: string;
+    facets?: Array<RuleSetFacetConfigWithId>;
+    isEnabled: boolean;
+    merchandisingRules: MerchandisingRules;
+    ruleSetId: string;
+  }) => {
+    await updateRuleSet({
+      id: ruleSetId,
+      facets,
+      merchandisingRules,
+      categoryId,
+      isEnabled,
+    });
+    const updatedRuleSetsList = ruleSets.map((ruleset: ReturnedRuleSet) =>
+      ruleset.id === ruleSetId ? { ...ruleset, isEnabled } : ruleset
+    );
+    setRuleSets(updatedRuleSetsList);
+  };
 
   return (
     <>
@@ -120,11 +147,11 @@ const FacetManagementPage = () => {
         </ToolsContainer>
 
         <FacetsManagementTable
-          facets={facets}
+          ruleSets={ruleSets}
           canToggle={true}
-          editUrl="../../../facets/edit"
           canDelete
           onDeleteFacet={handleDeleteFacet}
+          onEnableDisableRuleSet={onEnableDisableRuleSet}
         />
 
         <TablePagination
