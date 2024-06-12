@@ -195,4 +195,4 @@ jobs:
 
       - name: Cancel build due to failure
         if: ${{ failure() }}
-        uses: andymckay/cancel-action@0.4
+        uses: andymckay/cancel-action@0.5
