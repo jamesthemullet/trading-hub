@@ -245,7 +245,7 @@ describe('Merchandising api proxy', () => {
 
       expect(httpGet).toHaveBeenCalled();
       expect(httpGet.mock.calls[0][0].url).toBe(
-        'https://merch/merchandising/category/1?apikey='
+        `${baseUrl}/merchandising/category/1?apikey=`
       );
     });
 

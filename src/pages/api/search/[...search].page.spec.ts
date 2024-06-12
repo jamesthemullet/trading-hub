@@ -42,6 +42,7 @@ const captureRequest =
   };
 
 const baseUrl = 'https://merch';
+const apiKey = 'someapikey';
 const handlers = [
   http.delete('*', captureRequest(httpDelete)),
   http.get('*', captureRequest(httpGet)),
@@ -116,6 +117,7 @@ const performPost = async (
 describe('Search api proxy', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_API_BASEURL = baseUrl;
+    process.env.MERCHANDISING_API_APIGEE_KEY = apiKey;
     server.listen();
   });
 
@@ -166,7 +168,7 @@ describe('Search api proxy', () => {
 
         expect(httpGet).toHaveBeenCalled();
         expect(httpGet.mock.calls[0][0].url).toBe(
-          `${baseUrl}/search/beta/merchandising/facet`
+          `${baseUrl}/search/beta/merchandising/facet?apikey=${apiKey}`
         );
         expect(httpGet.mock.calls[0][0].method).toBe('GET');
         expect(httpGet.mock.calls[0][0].body).toBeNull();
@@ -190,7 +192,7 @@ describe('Search api proxy', () => {
         );
         expect(httpPost).toHaveBeenCalled();
         expect(httpPost.mock.calls[0][0].url).toBe(
-          `${baseUrl}/search/beta/merchandising/facet/subcategory_429`
+          `${baseUrl}/search/beta/merchandising/facet/subcategory_429?apikey=${apiKey}`
         );
         expect(httpPost.mock.calls[0][0].method).toBe('POST');
         expect(await httpPost.mock.calls[0][0].body).toStrictEqual(requestBody);
@@ -205,7 +207,7 @@ describe('Search api proxy', () => {
     );
 
     it.each(responses)(
-      'forwards request to backend with Authorization for DELTE',
+      'forwards request to backend with Authorization for DELETE',
       async (response) => {
         const res = await performDelete(
           '/search/beta/merchandising/facet/1',
@@ -214,7 +216,7 @@ describe('Search api proxy', () => {
 
         expect(httpDelete).toHaveBeenCalled();
         expect(httpDelete.mock.calls[0][0].url).toBe(
-          `${baseUrl}/search/beta/merchandising/facet/1`
+          `${baseUrl}/search/beta/merchandising/facet/1?apikey=${apiKey}`
         );
         expect(httpDelete.mock.calls[0][0].method).toBe('DELETE');
         expect(httpDelete.mock.calls[0][0].body).toBeNull();
@@ -285,7 +287,7 @@ describe('Search api proxy', () => {
       const res = await performGet(undefined, response);
 
       expect(httpGet).toHaveBeenCalled();
-      expect(httpGet.mock.calls[0][0].url).toBe(`${baseUrl}/`);
+      expect(httpGet.mock.calls[0][0].url).toBe(`${baseUrl}/?apikey=${apiKey}`);
       expect(httpGet.mock.calls[0][0].method).toBe('GET');
       expect(httpGet.mock.calls[0][0].body).toBeNull();
       expect([...httpGet.mock.calls[0][0].headers]).toEqual([]);
@@ -304,7 +306,7 @@ describe('Search api proxy', () => {
 
         expect(httpGet).toHaveBeenCalled();
         expect(httpGet.mock.calls[0][0].url).toBe(
-          `${baseUrl}/search/beta/merchandising/facet/2`
+          `${baseUrl}/search/beta/merchandising/facet/2?apikey=${apiKey}`
         );
         expect(httpGet.mock.calls[0][0].method).toBe('GET');
         expect(httpGet.mock.calls[0][0].body).toBeNull();
@@ -325,7 +327,7 @@ describe('Search api proxy', () => {
 
         expect(httpDelete).toHaveBeenCalled();
         expect(httpDelete.mock.calls[0][0].url).toBe(
-          `${baseUrl}/search/beta/merchandising/facet/2`
+          `${baseUrl}/search/beta/merchandising/facet/2?apikey=${apiKey}`
         );
         expect(httpDelete.mock.calls[0][0].method).toBe('DELETE');
         expect(httpDelete.mock.calls[0][0].body).toBeNull();
@@ -347,7 +349,7 @@ describe('Search api proxy', () => {
 
         expect(httpPost).toHaveBeenCalled();
         expect(httpPost.mock.calls[0][0].url).toBe(
-          `${baseUrl}/search/beta/merchandising/facet/subcategory_427`
+          `${baseUrl}/search/beta/merchandising/facet/subcategory_427?apikey=${apiKey}`
         );
         expect(httpPost.mock.calls[0][0].method).toBe('POST');
         expect(await httpPost.mock.calls[0][0].body).toStrictEqual(requestBody);
@@ -359,5 +361,16 @@ describe('Search api proxy', () => {
         expect(res.json).toHaveBeenCalledWith(response.body);
       }
     );
+
+    it('should work when process.env.MERCHANDISING_API_BASEURL is not set', async () => {
+      delete process.env.MERCHANDISING_API_APIGEE_KEY;
+      const response = responses[0][0];
+      await performGet('/search/beta/merchandising/facet/2', response);
+
+      expect(httpGet).toHaveBeenCalled();
+      expect(httpGet.mock.calls[0][0].url).toBe(
+        `${baseUrl}/search/beta/merchandising/facet/2?apikey=`
+      );
+    });
   });
 });
