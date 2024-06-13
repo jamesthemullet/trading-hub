@@ -30,6 +30,8 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     process.env.MERCHANDISING_API_APIGEE_KEY || ''
   );
 
+  console.log('FETCH', req.method, url);
+
   const response = await fetch(url, {
     method: req.method,
     headers,
@@ -45,12 +47,14 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const result = validateOrMockResponse(req, response.status, jsonBody);
     if ('error' in result) {
+      console.log('Error in result', result.error);
       return res.status(500).json({ error: result.error });
     }
     jsonBody = result.updatedJsonBody;
     status = result.updatedStatus;
   } catch (e) /* istanbul ignore next */ {
     console.error('ERROR: Error parsing JSON', e, jsonBody);
+    console.error('status', response.status);
     return res.status(500).json({
       error: 'Error parsing JSON',
       jsonText,

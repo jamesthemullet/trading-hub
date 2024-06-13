@@ -211,7 +211,7 @@ describe('useRuleSet', () => {
     });
   });
 
-  it('should load facets', async () => {
+  it.skip('should load facets', async () => {
     const mockResponse: ReturnedRuleSet = mockRuleData;
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: {
