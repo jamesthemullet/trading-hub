@@ -1,20 +1,12 @@
 import { useState } from 'react';
 
 import styled from '@emotion/styled';
-import type { ReturnedRuleSet } from '@/libs/api';
-
 import { spacing } from '@/libs/components/utils/spacing';
-import {
-  useDebounce,
-  useRuleSet,
-  useRuleSetDelete,
-  useUpdateRuleSet,
-} from '@/libs/hooks';
+import { useDebounce, useRuleSet } from '@/libs/hooks';
 import {
   Button,
   DataTable,
   Heading,
-  Loader,
   Search,
   TablePagination,
 } from '@/libs/components';
@@ -49,67 +41,39 @@ const RuleSets = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const { isSaving, updateRuleSet } = useUpdateRuleSet();
-
   const currentPageIndex = currentPage - 1;
 
-  const {
-    categoryRuleSets,
-    pagination,
-    refetchRuleSetList,
-    setCategoryRuleSets,
-  } = useRuleSet(
+  const { globalRuleSets, pagination } = useRuleSet(
     searchQuery,
     currentPageIndex * currentPageSize,
     currentPageSize,
-    'category'
+    'global'
   );
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
   }, 300);
 
-  const { handleDelete } = useRuleSetDelete();
-
-  const onDeleteRuleSet = async ({ id }: { id: string }) => {
-    await handleDelete({ rulesetId: id });
-
-    refetchRuleSetList();
+  // istanbul ignore next
+  const onEnableDisableRuleSet = ({ id }: { id: string }) => {
+    console.log('TODO LPN-1833', id);
   };
 
-  const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
-    const ruleSet = categoryRuleSets.find((ruleSet) => ruleSet.id === id);
-
-    // istanbul ignore next
-    if (!ruleSet) return;
-
-    const { facets, isEnabled, rules, categoryId } = ruleSet;
-    await updateRuleSet({
-      id,
-      facets,
-      merchandisingRules: rules,
-      categoryId,
-      isEnabled: !isEnabled,
-    });
-    const updatedRuleSetsList = categoryRuleSets.map(
-      (ruleset: ReturnedRuleSet) =>
-        ruleset.id === id ? { ...ruleset, isEnabled: !isEnabled } : ruleset
-    );
-    setCategoryRuleSets(updatedRuleSetsList);
+  // istanbul ignore next
+  const onDeleteRuleSet = ({ id }: { id: string }) => {
+    console.log('TODO LPN-1833', id);
   };
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 
-  const rows = categoryRuleSets.map(
-    ({ categoryId, categoryName, id, isEnabled, lastChanged }) => ({
-      id: id,
-      identifier: `${categoryId} | ${categoryName}`,
-      isEnabled,
-      lastChanged,
-      onToggle: onEnableDisableRuleSet,
-      url: `/rules/${id}`,
-    })
-  );
+  const rows = globalRuleSets.map(({ id, isEnabled, lastChanged }) => ({
+    id: id,
+    identifier: '*',
+    isEnabled,
+    lastChanged,
+    onToggle: onEnableDisableRuleSet,
+    url: `/global/rulesets/${id}`,
+  }));
 
   return (
     <>
@@ -117,7 +81,7 @@ const RuleSets = () => {
         breadcrumbs={['Search & Merchandising', 'Categories', 'Ranking rules']}
       />
 
-      <PageNameLabel>Category ranking rules</PageNameLabel>
+      <PageNameLabel>Global category ranking rules</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
@@ -142,8 +106,6 @@ const RuleSets = () => {
           setCurrentPage={setCurrentPage}
           setCurrentPageSize={setCurrentPageSize}
         />
-
-        {isSaving && <Loader />}
       </PageWrapper>
     </>
   );

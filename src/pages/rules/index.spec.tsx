@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import { useRuleSet } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { ReturnedRuleSet } from '../../libs/api';
 import { default as RuleSets } from './index.page';
 
 process.env.DEBUG_PRINT_LIMIT = '1000000';
@@ -45,211 +44,23 @@ describe('Index', () => {
 
   it('displays the list of rules', () => {
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: [],
+      categoryRuleSets: [],
+      globalRuleSets: [],
       pagination: {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
     });
     renderWithProviders(<RuleSets />);
 
     expect(screen.getByText('Category ranking rules')).toBeVisible();
   });
 
-  it('should sort the rules by identifier', async () => {
-    const rulrankingRules: ReturnedRuleSet[] = Array.from(
-      { length: 21 },
-      (_, i) => ({
-        categoryName: `identifier-${i.toString().padStart(2, '0')}`,
-        categoryId: `${i}`,
-        id: `${i}`,
-        isEnabled: true,
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
-        rules: mockMerchangdisingRules,
-        facets: [],
-      })
-    );
-    const oneExtraRankingRuleOutOfOrder: ReturnedRuleSet = {
-      categoryName: '_identifier-22',
-      categoryId: '22',
-      id: '22',
-      isEnabled: true,
-      lastChanged: {
-        user: 'user',
-        date: '2020-01-01T13:00:00.000Z',
-      },
-      rules: mockMerchangdisingRules,
-      facets: [],
-    };
-
-    const oneExtraRankingRuleWithSameIdentifier: ReturnedRuleSet = {
-      categoryName: '_identifier-22',
-      categoryId: '23',
-      id: '23',
-      isEnabled: true,
-      lastChanged: {
-        user: 'user',
-        date: '2020-01-01T13:00:00.000Z',
-      },
-      rules: mockMerchangdisingRules,
-      facets: [],
-    };
-
-    const ruleSet: ReturnedRuleSet[] = [
-      ...rulrankingRules,
-      oneExtraRankingRuleOutOfOrder,
-      oneExtraRankingRuleWithSameIdentifier,
-    ];
-
-    jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: ruleSet.slice(0, 10),
-      pagination: {
-        totalItems: 23,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
-    });
-    renderWithProviders(<RuleSets />);
-
-    expect(await screen.findByText('0 | identifier-00')).toBeVisible();
-
-    expect(jest.mocked(useRuleSet)).toHaveBeenCalledWith('', 0, 10);
-    await waitFor(() => {
-      expect(screen.queryByText('identifier-20')).toBeNull();
-    });
-
-    jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: ruleSet
-        .sort((a, b) =>
-          a.categoryId && b.categoryId && a.categoryId < b.categoryId ? 1 : -1
-        )
-        .slice(0, 10),
-      pagination: {
-        totalItems: 23,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
-    });
-
-    await act(async () => {
-      (await screen.findByText('Identifier')).click();
-    });
-
-    expect(await screen.findByText('20 | identifier-20')).toBeVisible();
-    await waitFor(() => {
-      expect(screen.queryByText('0 | identifier-00')).toBeNull();
-    });
-  });
-
-  it('should sort the rules by lastChange', async () => {
-    const rankingRules: ReturnedRuleSet[] = Array.from(
-      { length: 21 },
-      (_, i) => ({
-        categoryName: `identifier-${i.toString().padStart(2, '0')}`,
-        categoryId: `${i}`,
-        id: `${i}`,
-        isEnabled: true,
-        lastChanged: {
-          user: 'user',
-          date: `2021-01-${(i + 1).toString().padStart(2, '0')}T13:00:00.000Z`,
-        },
-        rules: mockMerchangdisingRules,
-        facets: [],
-      })
-    );
-    const oneExtraRankingRuleOutOfOrder: ReturnedRuleSet = {
-      categoryName: 'identifier-22',
-      categoryId: '22',
-      id: '22',
-      isEnabled: true,
-      lastChanged: {
-        user: 'user',
-        date: '2020-01-01T13:00:00.000Z',
-      },
-      rules: mockMerchangdisingRules,
-      facets: [],
-    };
-
-    const oneExtraRankingRuleWithSameTime: ReturnedRuleSet = {
-      categoryName: 'identifier-23',
-      categoryId: '23',
-      id: '23',
-      isEnabled: true,
-      lastChanged: {
-        user: 'user',
-        date: '2020-01-01T13:00:00.000Z',
-      },
-      rules: mockMerchangdisingRules,
-      facets: [],
-    };
-    const ruleSets: ReturnedRuleSet[] = [
-      ...rankingRules,
-      oneExtraRankingRuleOutOfOrder,
-      oneExtraRankingRuleWithSameTime,
-    ];
-
-    jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: ruleSets.slice(0, 10),
-      pagination: {
-        totalItems: 0,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
-    });
-    renderWithProviders(<RuleSets />);
-
-    await waitFor(() => {
-      expect(screen.queryByText('Jan 21, 2021')).toBeNull();
-    });
-    expect(await screen.findAllByText('Jan 01, 2021')).not.toHaveLength(0);
-
-    const lastChangedLabel = await screen.findByText('Last changed');
-
-    jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: ruleSets
-        .sort((a, b) =>
-          new Date(a.lastChanged.date).getTime() <
-          new Date(b.lastChanged.date).getTime()
-            ? 1
-            : -1
-        )
-        .slice(0, 10),
-      pagination: {
-        totalItems: 0,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
-    });
-
-    act(() => {
-      // now it's sorted by asc by identifier
-      lastChangedLabel.click();
-      // now it's sorted by asc by last change
-    });
-
-    act(() => {
-      lastChangedLabel.click();
-      // now it's sorted by desc by last change
-    });
-
-    act(() => {
-      lastChangedLabel.click();
-      // now it's sorted by asc by last change
-    });
-
-    expect(await screen.findAllByText('Jan 21, 2021')).not.toHaveLength(0);
-    await waitFor(() => {
-      expect(screen.queryByText('Jan 32, 2021')).toBeNull();
-    });
-  });
-
   it('should update correctly if the totalItems is undefined', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: Array.from({ length: 80 }, (_, i) => ({
+      categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
         categoryName: `identifier-${i}`,
         id: `${i}`,
         categoryId: `${i}`,
@@ -264,8 +75,10 @@ describe('Index', () => {
       pagination: {
         totalItems: undefined,
       },
+      globalRuleSets: [],
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
     });
     const { container } = renderWithProviders(<RuleSets />);
 
@@ -292,12 +105,14 @@ describe('Index', () => {
   it('should search', async () => {
     const user = userEvent.setup();
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: [],
+      categoryRuleSets: [],
       pagination: {
         totalItems: 0,
       },
+      globalRuleSets: [],
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
     });
 
     renderWithProviders(<RuleSets />);
@@ -311,14 +126,19 @@ describe('Index', () => {
     await user.type(search, 'search-search');
 
     await waitFor(() =>
-      expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10)
+      expect(useRuleSet).toHaveBeenCalledWith(
+        'search-search',
+        0,
+        10,
+        'category'
+      )
     );
   });
 
   it('should delete a ruleset', async () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: [
+      categoryRuleSets: [
         {
           categoryName: 'cat name',
           id: mockId,
@@ -332,11 +152,13 @@ describe('Index', () => {
           facets: [],
         },
       ],
+      globalRuleSets: [],
       pagination: {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
     });
 
     const user = userEvent.setup();
@@ -349,20 +171,19 @@ describe('Index', () => {
     const deleteButton = screen.getByText('Delete');
     await user.click(deleteButton);
     await waitFor(() => {
-      expect(screen.getByText('Delete rule?')).toBeVisible();
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).toBeVisible();
     });
 
     await user.click(screen.getByText('Cancel'));
     await waitFor(() => {
-      expect(screen.getByText('Delete rule?')).not.toBeVisible();
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).not.toBeVisible();
     });
 
-    await user.click(deleteButton);
-    await waitFor(() => {
-      expect(screen.getByText('Remove')).toBeVisible();
-    });
-
-    await user.click(screen.getByText('Remove'));
+    await user.click(screen.getByLabelText('Delete rule'));
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 
@@ -370,7 +191,7 @@ describe('Index', () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockCatId = 'catId';
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: [
+      categoryRuleSets: [
         {
           categoryName: 'cat id',
           id: mockId,
@@ -396,11 +217,13 @@ describe('Index', () => {
           facets: [],
         },
       ],
+      globalRuleSets: [],
       pagination: {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
     });
 
     renderWithProviders(<RuleSets />);

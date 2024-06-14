@@ -1,8 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { ReturnedFacet } from '@/libs/api';
 import { useFacetsFilter } from '@/libs/hooks';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';
 
@@ -24,10 +25,6 @@ const globalFacet: ReturnedFacet[] = [
 ];
 
 describe('Global Facet Management', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   it('displays the list of facets', () => {
     const setSearchSpy = jest.fn();
     jest.mocked(useFacetsFilter).mockReturnValue({
@@ -36,7 +33,7 @@ describe('Global Facet Management', () => {
       filteredFacets: globalFacet,
     });
 
-    render(<FacetManagementPage />);
+    renderWithProviders(<FacetManagementPage />);
 
     expect(
       screen.getByRole('heading', { level: 2, name: 'Global Facet Management' })
@@ -54,7 +51,7 @@ describe('Global Facet Management', () => {
     });
 
     const user = userEvent.setup();
-    render(<FacetManagementPage />);
+    renderWithProviders(<FacetManagementPage />);
 
     const search = screen.queryByPlaceholderText(/Search\.\.\./i);
 

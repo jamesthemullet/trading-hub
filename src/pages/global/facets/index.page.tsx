@@ -7,7 +7,7 @@ import {
   SectionWrapper,
   SectionHeader,
   Search,
-  GlobalFacetsManagementTable,
+  DataTable,
 } from '@/libs/components';
 import { ReturnedFacet } from '@/libs/api';
 import { useDebounce, useFacetsFilter } from '@/libs/hooks';
@@ -35,11 +35,34 @@ const globalFacet: ReturnedFacet[] = [
 ];
 
 const FacetManagementPage = () => {
-  const { setSearch, filteredFacets } = useFacetsFilter(globalFacet);
+  const { setSearch } = useFacetsFilter(globalFacet);
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch(val);
   }, 300);
+
+  // istanbul ignore next
+  const onEnableDisableRuleSet = ({ id }: { id: string }) => {
+    console.log('TODO', id);
+  };
+
+  // istanbul ignore next
+  const onDeleteRuleSet = ({ id }: { id: string }) => {
+    console.log('TODO', id);
+  };
+
+  const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
+
+  const rows = [
+    {
+      id: 'id',
+      identifier: '*',
+      isEnabled: true,
+      lastChanged: { user: 'testuser', date: '2021-10-01' },
+      onToggle: onEnableDisableRuleSet,
+      url: `/global/facets/edit/1`,
+    },
+  ];
 
   return (
     <>
@@ -63,9 +86,10 @@ const FacetManagementPage = () => {
           </NewButton>
         </SectionHeader>
 
-        <GlobalFacetsManagementTable
-          facets={filteredFacets}
-          editUrl="../../../global/facets/edit"
+        <DataTable
+          headings={headings}
+          rows={rows}
+          onDeleteRuleSet={onDeleteRuleSet}
         />
       </SectionWrapper>
     </>

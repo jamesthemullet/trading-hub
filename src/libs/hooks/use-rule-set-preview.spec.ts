@@ -77,6 +77,9 @@ describe('useRuleSet', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();
+
+    const logSpy = jest.spyOn(console, 'log');
+    logSpy.mockImplementation(jest.fn());
   });
 
   afterEach(() => {
@@ -211,7 +214,7 @@ describe('useRuleSet', () => {
     });
   });
 
-  it.skip('should load facets', async () => {
+  it('should load facets', async () => {
     const mockResponse: ReturnedRuleSet = mockRuleData;
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: {

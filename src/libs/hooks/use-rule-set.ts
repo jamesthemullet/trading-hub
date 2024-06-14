@@ -1,35 +1,57 @@
 import { useEffect, useState } from 'react';
 
-import type { Pagination, ReturnedRuleSet } from '@/libs/api';
-import { merchandising } from '@/libs/api';
+import type {
+  Pagination,
+  ReturnedGlobalRuleSet,
+  ReturnedRuleSet,
+} from '@/libs/api';
+import { merchandising, search } from '@/libs/api';
 
 export const useRuleSet = (
   searchQuery: string,
   start: number,
-  rows: number
+  rows: number,
+  ruleSetType: 'category' | 'global'
 ) => {
   const [shouldRefetch, refetch] = useState({});
-  const [ruleSets, setRuleSets] = useState<Array<ReturnedRuleSet>>([]);
+  const [categoryRuleSets, setCategoryRuleSets] = useState<
+    Array<ReturnedRuleSet>
+  >([]);
+  const [globalRuleSets, setGlobalRuleSets] = useState<
+    Array<ReturnedGlobalRuleSet>
+  >([]);
   const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
 
   useEffect(() => {
     const asyncCall = async () => {
-      const result = await merchandising().rulesetList({
+      const apiCall =
+        ruleSetType === 'category'
+          ? merchandising().rulesetList
+          : search().betaMerchandisingGlobalRulesetList;
+      const result = await apiCall({
         q: searchQuery,
         start,
         rows,
       });
-      setRuleSets(result.data.ruleSets);
+
+      if (ruleSetType === 'category') {
+        setCategoryRuleSets(result.data.ruleSets as ReturnedRuleSet[]);
+      }
+      if (ruleSetType === 'global') {
+        setGlobalRuleSets(result.data.ruleSets);
+      }
       setPagination(result.data.pagination);
     };
 
     void asyncCall();
-  }, [start, rows, searchQuery, shouldRefetch]);
+  }, [start, rows, ruleSetType, searchQuery, shouldRefetch]);
 
   return {
-    ruleSets: ruleSets,
+    categoryRuleSets,
+    globalRuleSets,
     pagination: pagination,
     refetchRuleSetList: () => refetch({}),
-    setRuleSets,
+    setCategoryRuleSets,
+    setGlobalRuleSets,
   };
 };

@@ -1,17 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import type { Product, ReturnedFacet, ReturnedRuleSet } from '@/libs/api';
-import {
-  merchandising,
-  // search
-} from '@/libs/api';
+import { merchandising, search } from '@/libs/api';
 
 export const useRuleSetPreview = (id: string) => {
   const api = useMemo(() => merchandising(), []);
-  const [
-    facets,
-    // setFacets
-  ] = useState<ReturnedFacet[]>([]);
+  const [facets, setFacets] = useState<ReturnedFacet[]>([]);
   const [ruleSets, setRuleSets] = useState<ReturnedRuleSet>({
     categoryId: '',
     categoryName: '',
@@ -47,7 +41,6 @@ export const useRuleSetPreview = (id: string) => {
 
         const categoryId = data.categoryId;
 
-        console.log('categoryPreview');
         const categoryPreview = await api.categoryPreviewCreate(
           categoryId,
           { rows: 12, start: 0 },
@@ -60,8 +53,6 @@ export const useRuleSetPreview = (id: string) => {
         );
 
         const previewData = categoryPreview.data;
-
-        console.log('resp', categoryPreview);
 
         setProducts(previewData.products);
         setError('');
@@ -79,18 +70,18 @@ export const useRuleSetPreview = (id: string) => {
     void asyncCall();
   }, [id, api]);
 
-  // useEffect(() => {
-  //   if (facets.length === 0) {
-  //     Promise.all(
-  //       (ruleSets.facets ?? []).map(async ({ id }) => {
-  //         const response = await search().betaMerchandisingFacetDetail(id);
-  //         return response.data;
-  //       })
-  //     ).then((facetDetails) => {
-  //       setFacets(facetDetails);
-  //     });
-  //   }
-  // }, [ruleSets, facets, api]);
+  useEffect(() => {
+    if (facets.length === 0) {
+      Promise.all(
+        (ruleSets.facets ?? []).map(async ({ id }) => {
+          const response = await search().betaMerchandisingFacetDetail(id);
+          return response.data;
+        })
+      ).then((facetDetails) => {
+        setFacets(facetDetails);
+      });
+    }
+  }, [ruleSets, facets, api]);
 
   return { ruleSets, products, error, facets, isLoading };
 };

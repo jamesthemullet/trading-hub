@@ -6,6 +6,7 @@ const ToggleSwitch = styled.label`
   position: relative;
   display: inline-block;
   cursor: pointer;
+  user-select: none;
 
   & > input {
     appearance: none;

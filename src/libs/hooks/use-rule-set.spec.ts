@@ -17,6 +17,13 @@ const handlers = [
     }
     return HttpResponse.json(data, status);
   }),
+  http.get(`${baseUrl}/search/beta/merchandising/global/ruleset`, () => {
+    const { data, status, error } = getRuleSetMock();
+    if (error) {
+      return HttpResponse.error();
+    }
+    return HttpResponse.json(data, status);
+  }),
 ];
 
 const server = setupServer(...handlers);
@@ -48,7 +55,7 @@ describe('useRuleSet', () => {
       status: { status: 200 },
     });
 
-    const { result } = renderHook(() => useRuleSet('', 0, 50));
+    const { result } = renderHook(() => useRuleSet('', 0, 50, 'category'));
 
     await waitFor(() => {
       expect(result.current.pagination.totalItems).toEqual(10);
@@ -73,7 +80,7 @@ describe('useRuleSet', () => {
       status: { status: 200 },
     });
 
-    const { result } = renderHook(() => useRuleSet('', 0, 50));
+    const { result } = renderHook(() => useRuleSet('', 0, 50, 'global'));
 
     act(() => {
       result.current.refetchRuleSetList();

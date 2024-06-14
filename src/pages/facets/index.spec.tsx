@@ -41,7 +41,7 @@ describe('Category facet management', () => {
 
   it('displays the list of rules', () => {
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: Array.from({ length: 80 }, (_, i) => ({
+      categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
         categoryName: `identifier-${i}`,
         id: `${i}`,
         categoryId: `${i}`,
@@ -54,11 +54,13 @@ describe('Category facet management', () => {
         setRuleSets: jest.fn(),
         facets: [],
       })),
+      globalRuleSets: [],
       pagination: {
         totalItems: 80,
       },
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
     });
     renderWithProviders(<FacetManagementPage />);
 
@@ -70,7 +72,7 @@ describe('Category facet management', () => {
   it('should open delete modal and close on cancel', async () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: [
+      categoryRuleSets: [
         {
           categoryName: 'cat name',
           id: mockId,
@@ -87,7 +89,9 @@ describe('Category facet management', () => {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
     });
 
     const user = userEvent.setup();
@@ -96,33 +100,26 @@ describe('Category facet management', () => {
     await user.click(screen.getAllByTitle('More options')[0]);
     await user.click(screen.getAllByText('Delete')[0]);
     await waitFor(() => {
-      expect(screen.getByText('Delete facet rule?')).toBeVisible();
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).toBeVisible();
     });
 
-    await user.click(screen.getByText('Cancel'));
-    await waitFor(() => {
-      expect(screen.getByText('Delete facet rule?')).not.toBeVisible();
-    });
-
-    await user.click(screen.getAllByTitle('More options')[0]);
-    await user.click(screen.getAllByText('Delete')[0]);
-    await waitFor(() => {
-      expect(screen.getByLabelText('delete-facet')).toBeVisible();
-    });
-
-    await user.click(screen.getByLabelText('delete-facet'));
+    await user.click(screen.getByLabelText('Delete rule'));
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 
   it('should search', async () => {
     const user = userEvent.setup();
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: [],
+      categoryRuleSets: [],
       pagination: {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
     });
 
     renderWithProviders(<FacetManagementPage />);
@@ -136,7 +133,12 @@ describe('Category facet management', () => {
     await user.type(search, 'search-search');
 
     await waitFor(() =>
-      expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10)
+      expect(useRuleSet).toHaveBeenCalledWith(
+        'search-search',
+        0,
+        10,
+        'category'
+      )
     );
   });
 
@@ -144,7 +146,7 @@ describe('Category facet management', () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockCatId = 'catId';
     jest.mocked(useRuleSet).mockReturnValue({
-      ruleSets: [
+      categoryRuleSets: [
         {
           categoryName: 'cat id',
           id: mockId,
@@ -173,8 +175,10 @@ describe('Category facet management', () => {
       pagination: {
         totalItems: 0,
       },
+      globalRuleSets: [],
       refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
     });
 
     renderWithProviders(<FacetManagementPage />);

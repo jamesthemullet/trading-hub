@@ -175,6 +175,9 @@ export const Navigation = () => {
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 3}>
             <Header3>Setup Global</Header3>
+            <SubLink href="/global/rulesets">
+              <Text>Global Category Ranking</Text>
+            </SubLink>
             <SubLink href="/global/facets">
               <Text>Global Facet Management</Text>
             </SubLink>
