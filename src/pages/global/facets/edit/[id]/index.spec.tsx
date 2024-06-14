@@ -168,8 +168,12 @@ describe('Global Facet Management Editing', () => {
       saveButton.click();
     });
 
-    const newEditButton = screen.getByLabelText('Edit display name for colour');
-    expect(newEditButton).toBeVisible();
+    await waitFor(() => {
+      const newEditButton = screen.getByLabelText(
+        'Edit display name for colour'
+      );
+      expect(newEditButton).toBeVisible();
+    });
   });
 
   describe('Add Facet Modal', () => {

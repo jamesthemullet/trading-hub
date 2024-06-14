@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { ReturnedFacet } from '@/libs/api';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { useGlobalFacetsList } from '@/libs/hooks/use-global-facets-list';
+import { useGlobalFacetUpdate } from '@/libs/hooks/use-global-facet-update';
 
 const defaultCategory = {
   identifier: 'Applies to all pages in marksandspencer.com',
@@ -38,15 +39,29 @@ const Page = () => {
 
   const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
 
-  const onFacetDataChange = (
+  const { handleUpdate } = useGlobalFacetUpdate();
+
+  const onFacetDataChange = async (
     index: number,
-    key: 'displayValue' | 'status',
-    value: string | 'included' | 'excluded'
+    value: string | 'included' | 'excluded',
+    facet: ReturnedFacet
   ) => {
+    // TO-DO handle key of status - this is in endpoint /search/beta/merchandising/global/ruleset/{ruleSetId}
+    const response = await handleUpdate({
+      facetId: facet.id,
+      data: {
+        // TO-DO when status is handled, displayValue will need to equal key === 'displayValue' ? value : facet.displayValue
+        displayValue: value,
+        indexPropertyName: facet.indexPropertyName,
+        excludedValues: facet.excludedValues,
+        boosted: facet.boosted,
+      },
+    });
+
     setLocalFacetData((prev) => {
       const updatedFacet: ReturnedFacet = {
         ...prev[index],
-        [key]: value,
+        displayValue: response.displayValue,
       };
       return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
     });

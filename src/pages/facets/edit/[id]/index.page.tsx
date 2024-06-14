@@ -41,18 +41,16 @@ const Page = ({ id }: { id: string }) => {
     path: '/',
   };
 
-  const onFacetDataChange = (
-    index: number,
-    key: 'displayValue' | 'status',
-    value: string | 'included' | 'excluded'
-  ) => {
-    setLocalFacets((prev) => {
-      const updatedFacet: ReturnedFacet = {
-        ...prev[index],
-        [key]: value,
-      };
-      return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
-    });
+  const onFacetDataChange = (index: number) => {
+    // TO-DO This will need to be covered in /search/beta/merchandising/category/ruleset/{ruleSetId}
+    console.log(index);
+    // setLocalFacets((prev) => {
+    //   const updatedFacet: ReturnedFacet = {
+    //     ...prev[index],
+    //     [key]: value,
+    //   };
+    //   return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
+    // });
   };
 
   return (

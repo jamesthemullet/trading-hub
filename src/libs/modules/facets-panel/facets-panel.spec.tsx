@@ -31,6 +31,14 @@ const mockGetCategories = {
   ],
   pagination: { totalItems: 20 },
 };
+const mockFacet = {
+  displayValue: 'color',
+  id: 'color-id',
+  indexPropertyName: 'color',
+  lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
+  merged: [],
+  status: 'included',
+};
 
 const mockDefaultOrderData = [
   { defaultOrder: 'Include only' },
@@ -268,8 +276,8 @@ describe('Facet Panel', () => {
     await waitFor(() => {
       expect(onFacetDataChangeSpy).toHaveBeenCalledWith(
         0,
-        'status',
-        'excluded'
+        'excluded',
+        mockFacet
       );
     });
   });
@@ -341,11 +349,7 @@ describe('Facet Panel', () => {
 
     await user.click(saveButton);
 
-    expect(onFacetDataChangeSpy).toHaveBeenCalledWith(
-      0,
-      'displayValue',
-      'colour'
-    );
+    expect(onFacetDataChangeSpy).toHaveBeenCalledWith(0, 'colour', mockFacet);
   });
 
   describe('Add Facet Modal', () => {
