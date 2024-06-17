@@ -217,6 +217,11 @@ export const categoryRuleSetMock: ReturnedCategoryRuleSet = {
   id: 'abc123',
   categoryName: 'Mock Category',
   categoryId: 'foo00',
+  categoriesInfo: [
+    {
+      id: 'foo00',
+    },
+  ],
   lastChanged: {
     date: '2021-01-05T08:34:15Z',
     user: 'Test User',

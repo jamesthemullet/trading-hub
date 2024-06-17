@@ -9,6 +9,11 @@ export const useRuleSetPreview = (id: string) => {
   const [ruleSets, setRuleSets] = useState<ReturnedRuleSet>({
     categoryId: '',
     categoryName: '',
+    categoriesInfo: [
+      {
+        id: '',
+      },
+    ],
     id: '',
     isEnabled: false,
     lastChanged: {

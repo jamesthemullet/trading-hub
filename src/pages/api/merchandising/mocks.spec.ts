@@ -42,6 +42,11 @@ describe('mocks', () => {
       lastChanged: { date: '', user: '' },
       categoryId: '',
       categoryName: '',
+      categoriesInfo: [
+        {
+          id: '',
+        },
+      ],
       isEnabled: false,
       rules: {
         pinnedProducts: [],

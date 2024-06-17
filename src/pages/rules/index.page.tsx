@@ -107,7 +107,7 @@ const RuleSets = () => {
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,
-      url: `/rules/${id}`,
+      url: `/rules/edit/${id}`,
     })
   );
 

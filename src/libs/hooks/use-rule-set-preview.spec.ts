@@ -10,7 +10,7 @@ import { useRuleSetPreview } from './use-rule-set-preview';
 const baseUrl = 'http://localhost';
 const mockCategoryId = 'abc123';
 const mockFacetId = '123';
-const mockRuleData = {
+const mockRuleData: ReturnedRuleSet = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],
@@ -18,6 +18,7 @@ const mockRuleData = {
     buries: { numeric: [], alphanumeric: [], product: [] },
   },
   categoryId: mockCategoryId,
+  categoriesInfo: [{ id: mockCategoryId }],
   isEnabled: true,
   categoryName: 'Dresses',
   id: 'df70401f-f89d-45ad-92e7-6e152930ff86',
@@ -148,6 +149,11 @@ describe('useRuleSet', () => {
       ruleSets: {
         categoryId: '',
         categoryName: '',
+        categoriesInfo: [
+          {
+            id: '',
+          },
+        ],
         id: '',
         isEnabled: false,
         lastChanged: {

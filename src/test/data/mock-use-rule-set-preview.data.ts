@@ -16,6 +16,11 @@ export const mockUseRuleSetPreviewData = {
     categoryId: categoryId,
     categoryName: 'Cat Name',
     id: ruleSetId,
+    categoriesInfo: [
+      {
+        id: categoryId,
+      },
+    ],
     isEnabled: false,
     lastChanged: {
       date: '',

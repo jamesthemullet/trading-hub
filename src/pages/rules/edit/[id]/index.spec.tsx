@@ -53,6 +53,11 @@ describe('Index', () => {
         isEnabled: true,
         categoryName: 'Jeans',
         id: ruleSetId,
+        categoriesInfo: [
+          {
+            id: ruleSetId,
+          },
+        ],
         lastChanged: { date: '2024-01-02T22:10:17Z', user: 'M&S' },
       })
     ),

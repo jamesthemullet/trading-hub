@@ -44,6 +44,11 @@ describe('Category facet management', () => {
       categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
         categoryName: `identifier-${i}`,
         id: `${i}`,
+        categoriesInfo: [
+          {
+            id: 'foo00',
+          },
+        ],
         categoryId: `${i}`,
         isEnabled: true,
         lastChanged: {
@@ -76,6 +81,11 @@ describe('Category facet management', () => {
         {
           categoryName: 'cat name',
           id: mockId,
+          categoriesInfo: [
+            {
+              id: 'foo00',
+            },
+          ],
           categoryId: 'catId',
           isEnabled: true,
           lastChanged: {
@@ -149,6 +159,11 @@ describe('Category facet management', () => {
       categoryRuleSets: [
         {
           categoryName: 'cat id',
+          categoriesInfo: [
+            {
+              id: 'foo00',
+            },
+          ],
           id: mockId,
           categoryId: mockCatId,
           isEnabled: true,
@@ -162,6 +177,11 @@ describe('Category facet management', () => {
         {
           categoryName: 'cat id 2',
           id: 'ewfw-e3f23-f23f2-3cwef4',
+          categoriesInfo: [
+            {
+              id: 'foo00',
+            },
+          ],
           categoryId: 'catId2',
           isEnabled: true,
           lastChanged: {

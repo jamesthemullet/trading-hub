@@ -64,6 +64,11 @@ describe('Index', () => {
         categoryName: `identifier-${i}`,
         id: `${i}`,
         categoryId: `${i}`,
+        categoriesInfo: [
+          {
+            id: `${i}`,
+          },
+        ],
         isEnabled: true,
         lastChanged: {
           user: 'user',
@@ -143,6 +148,11 @@ describe('Index', () => {
           categoryName: 'cat name',
           id: mockId,
           categoryId: 'catId',
+          categoriesInfo: [
+            {
+              id: 'catId',
+            },
+          ],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -196,6 +206,11 @@ describe('Index', () => {
           categoryName: 'cat id',
           id: mockId,
           categoryId: mockCatId,
+          categoriesInfo: [
+            {
+              id: mockCatId,
+            },
+          ],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -208,6 +223,11 @@ describe('Index', () => {
           categoryName: 'cat id 2',
           id: 'ewfw-e3f23-f23f2-3cwef4',
           categoryId: 'catId2',
+          categoriesInfo: [
+            {
+              id: 'catId2',
+            },
+          ],
           isEnabled: true,
           lastChanged: {
             user: 'user',

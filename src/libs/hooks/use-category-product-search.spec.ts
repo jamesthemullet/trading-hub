@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { CategoryRuleSets } from '@/libs/api';
+import type { ReturnedCategoryRuleSets } from '@/libs/api';
 
 import { useCategoryProductSearch } from './use-category-product-search';
 
@@ -40,7 +40,7 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should render the hook', async () => {
-    const mockResponse: CategoryRuleSets = {
+    const mockResponse: ReturnedCategoryRuleSets = {
       ruleSets: [],
       pagination: {
         totalItems: 3,

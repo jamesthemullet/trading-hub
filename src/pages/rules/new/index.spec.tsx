@@ -96,6 +96,11 @@ describe('Index', () => {
           id: MOCK_CATEGORY_ID,
           categoryName: "Men's shirts",
           categoryId: 'foo',
+          categoriesInfo: [
+            {
+              id: 'foo',
+            },
+          ],
           isEnabled: true,
           rules: {
             pinnedProducts: [],
@@ -148,6 +153,11 @@ describe('Index', () => {
           id: MOCK_CATEGORY_ID,
           categoryName: "Men's shirts",
           categoryId: 'foo',
+          categoriesInfo: [
+            {
+              id: 'foo',
+            },
+          ],
           isEnabled: true,
           rules: {
             pinnedProducts: [],
