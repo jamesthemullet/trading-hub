@@ -1,3 +1,5 @@
+name: Action Prepare
+description: Sets up node
 runs:
   using: composite
   steps:
@@ -9,7 +11,8 @@ runs:
         NODE_VERSION=$(jq -r '.engines.node' < package.json)
         echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
 
-    - uses: actions/setup-node@v4.0.2
+    - name: Set up node
+      uses: actions/setup-node@v4.0.2
       env:
         SEGMENT_DOWNLOAD_TIMEOUT_MINS: '10'
       with:
