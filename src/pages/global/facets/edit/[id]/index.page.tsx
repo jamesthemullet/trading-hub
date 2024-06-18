@@ -8,8 +8,7 @@ import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
 import { useEffect, useState } from 'react';
 import { ReturnedFacet } from '@/libs/api';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import { useGlobalFacetsList } from '@/libs/hooks/use-global-facets-list';
-import { useGlobalFacetUpdate } from '@/libs/hooks/use-global-facet-update';
+import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
 
 const defaultCategory = {
   identifier: 'Applies to all pages in marksandspencer.com',

@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import styled from '@emotion/styled';
 import { spacing } from '@/libs/components/utils/spacing';
-import { useDebounce, useRuleSet } from '@/libs/hooks';
+import { useDebounce, useRuleSet, useGlobalRuleSetCreate } from '@/libs/hooks';
+import { useRouter } from 'next/router';
 import {
   Button,
   DataTable,
@@ -50,6 +51,9 @@ const RuleSets = () => {
     'global'
   );
 
+  const { createGlobalRuleSet } = useGlobalRuleSetCreate();
+  const router = useRouter();
+
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
   }, 300);
@@ -75,6 +79,14 @@ const RuleSets = () => {
     url: `/global/rulesets/${id}`,
   }));
 
+  const createNewRuleSet = async () => {
+    const resp = await createGlobalRuleSet();
+
+    if (resp) {
+      return router.push(`/global/rulesets/edit/${resp.id}`);
+    }
+  };
+
   return (
     <>
       <Heading
@@ -86,7 +98,7 @@ const RuleSets = () => {
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
           <NewButton>
-            <Button as="a" href="/rules/new">
+            <Button as="button" onClick={createNewRuleSet}>
               Add rule
             </Button>
           </NewButton>

@@ -1,12 +1,21 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
 
-import { useRuleSet } from '@/libs/hooks';
+import { useGlobalRuleSetCreate, useRuleSet } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
 
 process.env.DEBUG_PRINT_LIMIT = '1000000';
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock('../../../libs/hooks/use-global-rule-set-create', () => ({
+  useGlobalRuleSetCreate: jest.fn(),
+}));
 
 jest.mock('../../../libs/hooks/use-rule-set', () => ({
   useRuleSet: jest.fn(),
@@ -26,6 +35,8 @@ jest.mock('../../../libs/hooks/use-rule-set-update', () => ({
   },
 }));
 
+const NEW_RULE_BUTTON_TEXT = 'Add rule';
+
 const mockMerchangdisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
@@ -33,9 +44,39 @@ const mockMerchangdisingRules = {
   buries: { numeric: [], alphanumeric: [], product: [] },
 };
 
+const MOCK_CATEGORY_ID = 'Cat123';
+
+const mockRouter = {
+  push: jest.fn(),
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+  },
+};
+
 describe('Index', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+  beforeAll(() => {
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    jest.mocked(useGlobalRuleSetCreate).mockReturnValue({
+      createGlobalRuleSet: jest.fn(() =>
+        Promise.resolve({
+          id: MOCK_CATEGORY_ID,
+          isEnabled: false,
+          rules: {
+            pinnedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            blockedProducts: [],
+          },
+          lastChanged: {
+            date: '12/12/12',
+            user: 'me',
+          },
+        })
+      ),
+      error: '',
+    });
   });
 
   afterAll(() => {
@@ -127,6 +168,21 @@ describe('Index', () => {
 
     await waitFor(() =>
       expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10, 'global')
+    );
+  });
+
+  it('creates a new rule set and redirects to the edit page', async () => {
+    renderWithProviders(<RuleSets />);
+
+    const createButton = await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    act(() => {
+      createButton.click();
+    });
+
+    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      `/global/rulesets/edit/${MOCK_CATEGORY_ID}`
     );
   });
 });

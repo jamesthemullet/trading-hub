@@ -1,0 +1,67 @@
+import { act, renderHook } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+
+import { useGlobalRuleSetCreate } from './use-global-rule-set-create';
+
+const getRuleSetCreateMock = jest.fn();
+
+const baseUrl = 'http://localhost';
+const handlers = [
+  http.post(`${baseUrl}/search/beta/merchandising/global/ruleset`, () => {
+    const { data, status, error } = getRuleSetCreateMock();
+    if (error) {
+      return HttpResponse.error();
+    }
+    return HttpResponse.json(data, status);
+  }),
+];
+
+const server = setupServer(...handlers);
+
+describe('useGlobalRuleSetCreate', () => {
+  beforeAll(() => {
+    process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
+    server.listen();
+  });
+
+  afterEach(() => {
+    server.resetHandlers();
+  });
+
+  afterAll(() => {
+    server.close();
+    delete process.env.MERCHANDISING_PROXY_BASE_URL;
+  });
+
+  it('should create a new ruleset', async () => {
+    const mockResponse = { id: 'foo' };
+    getRuleSetCreateMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
+    const {
+      result: { current },
+    } = renderHook(() => useGlobalRuleSetCreate());
+    const resp = await current.createGlobalRuleSet();
+
+    expect(resp).toEqual(mockResponse);
+  });
+
+  it('should return errors', async () => {
+    getRuleSetCreateMock.mockReturnValueOnce({
+      data: {},
+      error: 'error',
+      status: { status: 500 },
+    });
+    const { result } = renderHook(() => useGlobalRuleSetCreate());
+
+    await act(async () => {
+      await result.current.createGlobalRuleSet();
+    });
+
+    expect(result.current.error).toBe(
+      'Failed to create ruleset TypeError: Failed to fetch'
+    );
+  });
+});
