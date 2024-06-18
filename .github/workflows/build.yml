@@ -1,4 +1,4 @@
-name: PR validate and deploy
+name: SonarCloud check
 
 on:
   push:
