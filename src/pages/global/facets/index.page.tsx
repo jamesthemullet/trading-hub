@@ -8,9 +8,11 @@ import {
   SectionHeader,
   Search,
   DataTable,
+  TablePagination,
 } from '@/libs/components';
-import { ReturnedFacet } from '@/libs/api';
-import { useDebounce, useFacetsFilter } from '@/libs/hooks';
+import { useDebounce, useRuleSet, useGlobalRuleSetDelete } from '@/libs/hooks';
+import { useState } from 'react';
+import { useGlobalRuleSetEdit } from '@/libs/hooks/use-global-rule-set-edit';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -22,47 +24,60 @@ const NewButton = styled.div`
   margin-right: ${spacing(2)};
 `;
 
-const globalFacet: ReturnedFacet[] = [
-  {
-    lastChanged: {
-      date: '2023-11-15T13:00:00.000Z',
-      user: 'testuser',
-    },
-    displayValue: '*',
-    id: '1',
-    indexPropertyName: '*',
-  },
-];
-
 const FacetManagementPage = () => {
-  const { setSearch } = useFacetsFilter(globalFacet);
+  const pageSizes = [10, 20, 50, 100];
+  const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { handleDelete } = useGlobalRuleSetDelete();
+  const { handleEdit } = useGlobalRuleSetEdit();
+
+  const currentPageIndex = currentPage - 1;
+
+  const { globalRuleSets, pagination, refetchRuleSetList } = useRuleSet(
+    searchQuery,
+    currentPageIndex * currentPageSize,
+    currentPageSize,
+    'global'
+  );
 
   const { callback: handleSearch } = useDebounce((val: string) => {
-    setSearch(val);
+    setSearchQuery(val);
   }, 300);
 
   // istanbul ignore next
-  const onEnableDisableRuleSet = ({ id }: { id: string }) => {
-    console.log('TODO', id);
+  const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
+    const ruleSet = globalRuleSets.find((ruleset) => ruleset.id === id);
+
+    if (!ruleSet) return null;
+
+    await handleEdit({
+      ruleSetId: id,
+      ruleSet: {
+        ...ruleSet,
+        isEnabled: !ruleSet.isEnabled,
+      },
+    });
+
+    refetchRuleSetList();
   };
 
   // istanbul ignore next
-  const onDeleteRuleSet = ({ id }: { id: string }) => {
-    console.log('TODO', id);
+  const onDeleteRuleSet = async ({ id }: { id: string }) => {
+    await handleDelete({ rulesetId: id });
+    refetchRuleSetList();
   };
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 
-  const rows = [
-    {
-      id: 'id',
-      identifier: '*',
-      isEnabled: true,
-      lastChanged: { user: 'testuser', date: '2021-10-01' },
-      onToggle: onEnableDisableRuleSet,
-      url: `/global/facets/edit/1`,
-    },
-  ];
+  const rows = globalRuleSets.map(({ id, isEnabled, lastChanged }) => ({
+    id,
+    identifier: '*',
+    isEnabled,
+    lastChanged,
+    onToggle: onEnableDisableRuleSet,
+    url: `/global/facets/edit/1`,
+  }));
 
   return (
     <>
@@ -90,6 +105,14 @@ const FacetManagementPage = () => {
           headings={headings}
           rows={rows}
           onDeleteRuleSet={onDeleteRuleSet}
+        />
+        <TablePagination
+          pagination={pagination}
+          pageSizes={pageSizes}
+          currentPage={currentPage}
+          currentPageSize={currentPageSize}
+          setCurrentPage={setCurrentPage}
+          setCurrentPageSize={setCurrentPageSize}
         />
       </SectionWrapper>
     </>

@@ -23,7 +23,7 @@ jest.mock('../../libs/hooks/use-rule-set-update', () => ({
   },
 }));
 
-const mockMerchangdisingRules = {
+const mockMerchandisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
   boosts: { numeric: [], alphanumeric: [], product: [] },
@@ -55,7 +55,7 @@ describe('Category facet management', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: mockMerchangdisingRules,
+        rules: mockMerchandisingRules,
         setRuleSets: jest.fn(),
         facets: [],
       })),
@@ -92,7 +92,7 @@ describe('Category facet management', () => {
             user: 'user',
             date: '2021-01-01',
           },
-          rules: mockMerchangdisingRules,
+          rules: mockMerchandisingRules,
         },
       ],
       pagination: {
@@ -171,7 +171,7 @@ describe('Category facet management', () => {
             user: 'user',
             date: '2021-01-01',
           },
-          rules: mockMerchangdisingRules,
+          rules: mockMerchandisingRules,
           facets: [],
         },
         {
@@ -188,7 +188,7 @@ describe('Category facet management', () => {
             user: 'user',
             date: '2021-01-01',
           },
-          rules: mockMerchangdisingRules,
+          rules: mockMerchandisingRules,
           facets: [],
         },
       ],
@@ -212,7 +212,7 @@ describe('Category facet management', () => {
       facets: [],
       id: mockId,
       isEnabled: false,
-      merchandisingRules: mockMerchangdisingRules,
+      merchandisingRules: mockMerchandisingRules,
     });
   });
 });

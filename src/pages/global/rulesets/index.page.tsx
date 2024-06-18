@@ -71,7 +71,7 @@ const RuleSets = () => {
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 
   const rows = globalRuleSets.map(({ id, isEnabled, lastChanged }) => ({
-    id: id,
+    id,
     identifier: '*',
     isEnabled,
     lastChanged,

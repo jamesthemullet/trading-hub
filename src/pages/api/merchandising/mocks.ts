@@ -216,8 +216,8 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
 
 export const categoryRuleSetMock: ReturnedCategoryRuleSet = {
   id: 'abc123',
-  categoryName: 'Mock Category',
-  categoryId: 'foo00',
+  categoryName: 'color',
+  categoryId: 'color-id',
   categoriesInfo: [
     {
       id: 'foo00',
@@ -270,7 +270,7 @@ export const getMockMapping: () => Record<
   string,
   Partial<
     Record<
-      'post' | 'get' | 'delete',
+      'put' | 'post' | 'get' | 'delete',
       (
         req: NextApiRequest,
         status: number,

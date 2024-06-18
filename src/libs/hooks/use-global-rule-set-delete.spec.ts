@@ -2,15 +2,15 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { useRuleSetDelete } from './use-rule-set-delete';
+import { useGlobalRuleSetDelete } from './use-global-rule-set-delete';
 
 const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 const baseUrl = 'http://localhost';
 const deleteRuleSetMock = jest.fn();
 
-const mockUrl = `${baseUrl}/merchandising/ruleset/${ruleSetId}`;
+const ruleSetUrl = `${baseUrl}/search/beta/merchandising/global/ruleset/${ruleSetId}`;
 const handlers = [
-  http.delete(mockUrl, () => {
+  http.delete(ruleSetUrl, () => {
     const { data, status } = deleteRuleSetMock();
     return HttpResponse.json(data, status);
   }),
@@ -18,7 +18,7 @@ const handlers = [
 
 const server = setupServer(...handlers);
 
-describe('useRuleSetDelete', () => {
+describe('useGlobalRuleSetDelete', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();
@@ -38,12 +38,13 @@ describe('useRuleSetDelete', () => {
       data: 'ok',
       status: { status: 200 },
     });
-    const { result } = renderHook(() => useRuleSetDelete());
+    const { result } = renderHook(() => useGlobalRuleSetDelete());
 
     await act(async () => {
       await result.current.handleDelete({ rulesetId: ruleSetId });
     });
 
+    expect(deleteRuleSetMock).toHaveBeenCalled();
     expect(result.current.error).toEqual('');
   });
 
@@ -52,12 +53,13 @@ describe('useRuleSetDelete', () => {
       data: 'not ok',
       status: { status: 500 },
     });
-    const { result } = renderHook(() => useRuleSetDelete());
+    const { result } = renderHook(() => useGlobalRuleSetDelete());
 
     await act(async () => {
       await result.current.handleDelete({ rulesetId: ruleSetId });
     });
 
+    expect(deleteRuleSetMock).toHaveBeenCalled();
     expect(result.current.error).toEqual(
       `Failed to delete ruleset {"data":null,"error":"not ok"}`
     );

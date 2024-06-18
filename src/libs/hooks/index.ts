@@ -9,6 +9,7 @@ export * from './use-get-facet-by-id';
 export * from './use-global-facet-update';
 export * from './use-global-facets-list';
 export * from './use-global-rule-set-create';
+export * from './use-global-rule-set-delete';
 export * from './use-mouse-focus';
 export * from './use-on-outside-click';
 export * from './use-rule-set-create';

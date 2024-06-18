@@ -67,7 +67,6 @@ export const validateAndMockResponse = (
   if (resultSchema !== undefined) {
     const [, schema] = resultSchema;
     const schemaToMatch = schema![methodToMatch]!;
-
     const responseValidator = new OpenAPIResponseValidator({
       responses: schemaToMatch.responses as unknown as Record<
         string,

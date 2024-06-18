@@ -1,53 +1,85 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ReturnedFacet } from '@/libs/api';
-import { useFacetsFilter } from '@/libs/hooks';
+import { useRuleSet } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';
 
+const mockRuleSetDelete = jest.fn();
+const mockUpdateGlobalRuleSet = jest.fn();
+
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
-  useFacetsFilter: jest.fn(),
+  useRuleSet: jest.fn(),
+  useGlobalRuleSetDelete: () => {
+    return { handleDelete: mockRuleSetDelete };
+  },
 }));
 
-const globalFacet: ReturnedFacet[] = [
-  {
-    lastChanged: {
-      date: '2023-11-15T13:00:00.000Z',
-      user: 'testuser',
-    },
-    displayValue: '*',
-    id: '1',
-    indexPropertyName: '*',
+jest.mock('@/libs/hooks/use-global-rule-set-edit', () => ({
+  useGlobalRuleSetEdit: () => {
+    return { handleEdit: mockUpdateGlobalRuleSet, isSaving: true };
   },
-];
+}));
+
+const mockMerchandisingRules = {
+  pinnedProducts: [],
+  blockedProducts: [],
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
+};
 
 describe('Global Facet Management', () => {
   it('displays the list of facets', () => {
-    const setSearchSpy = jest.fn();
-    jest.mocked(useFacetsFilter).mockReturnValue({
-      search: '',
-      setSearch: setSearchSpy,
-      filteredFacets: globalFacet,
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    jest.mocked(useRuleSet).mockReturnValue({
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+        },
+      ],
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setGlobalRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
     });
 
     renderWithProviders(<FacetManagementPage />);
 
-    expect(
-      screen.getByRole('heading', { level: 2, name: 'Global Facet Management' })
-    ).toBeVisible();
-    expect(screen.getByText('Add rule')).toBeVisible();
-    expect(screen.getByText('testuser')).toBeVisible();
+    expect(screen.getByText('*')).toBeVisible();
   });
 
-  it('searches on the facets list', async () => {
-    const setSearchSpy = jest.fn();
-    jest.mocked(useFacetsFilter).mockReturnValue({
-      search: '',
-      setSearch: setSearchSpy,
-      filteredFacets: globalFacet,
+  it('should open delete modal and close on cancel', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    jest.mocked(useRuleSet).mockReturnValue({
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+        },
+      ],
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setGlobalRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
     });
 
     const user = userEvent.setup();
@@ -59,8 +91,55 @@ describe('Global Facet Management', () => {
       throw new Error('Search not found');
     }
 
-    await user.type(search, '*');
+    await user.type(search, 'search-search');
 
-    await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('*'));
+    await waitFor(() =>
+      expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10, 'global')
+    );
+  });
+
+  it('should enable or disable a global ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    jest.mocked(useRuleSet).mockReturnValue({
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    const rulesetToggle = screen.getAllByTitle('Toggle');
+
+    await userEvent.click(rulesetToggle[0]);
+
+    expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
+      ruleSetId: mockId,
+      ruleSet: {
+        facets: [],
+        id: mockId,
+        isEnabled: false,
+        lastChanged: {
+          user: 'user',
+          date: '2021-01-01',
+        },
+        rules: mockMerchandisingRules,
+      },
+    });
   });
 });

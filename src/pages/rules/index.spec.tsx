@@ -26,7 +26,7 @@ jest.mock('../../libs/hooks/use-rule-set-update', () => ({
   },
 }));
 
-const mockMerchangdisingRules = {
+const mockMerchandisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
   boosts: { numeric: [], alphanumeric: [], product: [] },
@@ -74,7 +74,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: mockMerchangdisingRules,
+        rules: mockMerchandisingRules,
         facets: [],
       })),
       pagination: {
@@ -158,7 +158,7 @@ describe('Index', () => {
             user: 'user',
             date: '2021-01-01',
           },
-          rules: mockMerchangdisingRules,
+          rules: mockMerchandisingRules,
           facets: [],
         },
       ],
@@ -216,7 +216,7 @@ describe('Index', () => {
             user: 'user',
             date: '2021-01-01',
           },
-          rules: mockMerchangdisingRules,
+          rules: mockMerchandisingRules,
           facets: [],
         },
         {
@@ -233,7 +233,7 @@ describe('Index', () => {
             user: 'user',
             date: '2021-01-01',
           },
-          rules: mockMerchangdisingRules,
+          rules: mockMerchandisingRules,
           facets: [],
         },
       ],
@@ -257,7 +257,7 @@ describe('Index', () => {
       facets: [],
       id: mockId,
       isEnabled: false,
-      merchandisingRules: mockMerchangdisingRules,
+      merchandisingRules: mockMerchandisingRules,
     });
   });
 });
