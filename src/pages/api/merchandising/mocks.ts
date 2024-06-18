@@ -10,6 +10,7 @@ import {
   RuleSetFacetConfigWithId,
   ReturnedCategoryRuleSet,
   BetaMerchandisingFacetListData,
+  AttributesResponse,
 } from '@/libs/api';
 import { NextApiRequest } from 'next';
 
@@ -240,6 +241,31 @@ export const categoryRuleSetMock: ReturnedCategoryRuleSet = {
   ],
 };
 
+export const attributesMock: AttributesResponse = {
+  attributes: [
+    {
+      type: 'alphanumeric',
+      name: 'Cotton',
+    },
+    {
+      type: 'alphanumeric',
+      name: 'Duck Down',
+    },
+    {
+      type: 'alphanumeric',
+      name: 'Duck Down And Feather',
+    },
+    {
+      type: 'alphanumeric',
+      name: 'Duck Down And Feathery',
+    },
+    {
+      type: 'alphanumeric',
+      name: 'Duck Down And Very Feathery',
+    },
+  ],
+};
+
 export const getMockMapping: () => Record<
   string,
   Partial<
@@ -345,6 +371,17 @@ export const getMockMapping: () => Record<
       if (status !== 200) {
         return {
           body: globalFacetsListMock,
+          status: 200,
+        };
+      }
+      return { body: jsonBody, status };
+    },
+  },
+  '/search/beta/merchandising/attributes': {
+    get: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        return {
+          body: attributesMock,
           status: 200,
         };
       }

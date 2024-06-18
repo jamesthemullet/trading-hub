@@ -2,6 +2,7 @@ import { ErrorResponse, ReturnedRuleSet } from '@/libs/api';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 
 import {
+  attributesMock,
   categoryRuleSetMock,
   getMockMapping,
   globalFacetsListMock,
@@ -281,6 +282,49 @@ describe('mocks', () => {
       const result = mockMapping['/search/beta/merchandising/facet'].get!(
         createMockNextApiRequest({
           url: `/search/beta/merchandising/facet`,
+          method: 'GET',
+        }),
+        200,
+        realResponse
+      );
+      expect(result).toEqual({
+        body: realResponse,
+        status: 200,
+      });
+    });
+  });
+
+  describe('/search/beta/merchandising/attributes', () => {
+    it('should return facet attributes when status is not 200', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/attributes'].get
+      ).toBeDefined();
+
+      const result = mockMapping['/search/beta/merchandising/attributes'].get!(
+        createMockNextApiRequest({
+          url: `/search/beta/merchandising/attributes`,
+          method: 'GET',
+        }),
+        400,
+        {}
+      );
+      expect(result).toEqual({
+        body: attributesMock,
+        status: 200,
+      });
+    });
+
+    it('should return jsonBody when status is 200', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/attributes'].get
+      ).toBeDefined();
+      const realResponse = {};
+
+      const result = mockMapping['/search/beta/merchandising/attributes'].get!(
+        createMockNextApiRequest({
+          url: `/search/beta/merchandising/attributes`,
           method: 'GET',
         }),
         200,

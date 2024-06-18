@@ -3,12 +3,14 @@ import { spacing } from '../utils/spacing';
 import { Modal } from '@mantine/core';
 import { Header3, Text } from '../typography/typography.styles';
 import { Button } from '../buttons/button/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Search } from '../search/search';
 import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { TableRow, TableCol, TableHeading } from '../table/table.styles';
 import { ModalAttributesTable, HeadingAndCloseButton } from './modal.styles';
+import { useGetFacetAttributes } from '@/libs/hooks/use-get-facet-attributes';
+import { AttributeResponseItem } from '@/libs/api';
 
 const Row = styled(TableRow)<{ heading?: boolean }>`
   border-bottom: none;
@@ -28,10 +30,11 @@ const Col = styled(TableCol)<{ heading?: boolean }>`
 const MODAL_WIDTH = 870;
 
 const ModalContainer = styled.div`
-  height: 492px;
+  max-height: 492px;
   display: flex;
   flex-direction: column;
   margin: ${spacing(3)};
+  overflow-y: auto;
 `;
 
 const StyledSearch = styled(Search)`
@@ -65,43 +68,27 @@ const ADDFACETMODALCOLUMNS: {
   },
 ];
 
-type Attributes = {
-  attribute: string;
-  displayName: string;
-  order: number;
-  actionSelected: 'Include only' | 'Exclude only' | null;
-};
-
-const mockAttributes = [
-  {
-    attribute: 'Cotton',
-    displayName: 'Cotton',
-    order: 1,
-    actionSelected: null,
-  },
-  {
-    attribute: 'Duck Down',
-    displayName: 'Duck Down',
-    order: 2,
-    actionSelected: null,
-  },
-  {
-    attribute: 'Duck Down And Feather',
-    displayName: 'Duck Down And Feather',
-    order: 3,
-    actionSelected: null,
-  },
-] as Attributes[];
-
 export const ModalAddFacets = ({ onClose }: { onClose: () => void }) => {
+  const { attributes } = useGetFacetAttributes();
+
   const [addFacetModalAttributes, setAddFacetModalAttributes] =
-    useState<Attributes[]>(mockAttributes);
+    useState<AttributeResponseItem[]>(attributes);
+
+  useEffect(() => {
+    setAddFacetModalAttributes(attributes);
+  }, [attributes]);
+
   const filterAttributes = (search: string) => {
     setAddFacetModalAttributes(
-      mockAttributes.filter((attr) =>
-        attr.attribute.toLowerCase().includes(search.toLowerCase())
+      attributes.filter((attr) =>
+        attr.name.toLowerCase().includes(search.toLowerCase())
       )
     );
+  };
+
+  // istanbul ignore next
+  const onChange = () => {
+    // TODO: Implement
   };
 
   return (
@@ -147,17 +134,17 @@ export const ModalAddFacets = ({ onClose }: { onClose: () => void }) => {
                   </Col>
                 ))}
               </Row>
-              {addFacetModalAttributes.map(({ attribute }) => (
+              {addFacetModalAttributes.map(({ name }) => (
                 <Row
-                  key={`attribute-${attribute}`}
+                  key={`attribute-${name}`}
                   data-testid="rows"
                   heading={false}
                 >
                   <Col heading={false}>
-                    <Text>{attribute}</Text>
+                    <Text>{name}</Text>
                   </Col>
                   <Col heading={false}>
-                    <FacetOrderDropdown />
+                    <FacetOrderDropdown onChange={onChange} />
                   </Col>
                 </Row>
               ))}
