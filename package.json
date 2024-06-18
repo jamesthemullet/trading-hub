@@ -24,9 +24,9 @@
   "dependencies": {
     "@emotion/react": "11.11.4",
     "@emotion/styled": "11.11.5",
-    "@mantine/core": "7.10.1",
-    "@mantine/dates": "7.10.1",
-    "@mantine/hooks": "7.10.1",
+    "@mantine/core": "7.10.2",
+    "@mantine/dates": "7.10.2",
+    "@mantine/hooks": "7.10.2",
     "date-fns": "3.6.0",
     "dayjs": "1.11.11",
     "lodash": "4.17.21",
@@ -90,8 +90,8 @@
     "postcss-preset-mantine": "1.15.0",
     "postcss-simple-vars": "7.0.1",
     "prettier": "3.3.2",
-    "swagger-typescript-api": "13.0.5",
-    "ts-jest": "29.1.4",
+    "swagger-typescript-api": "13.0.6",
+    "ts-jest": "29.1.5",
     "ts-node": "10.9.2",
     "typescript": "5.4.5"
   }
