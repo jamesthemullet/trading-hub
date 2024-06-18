@@ -30,6 +30,30 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Running with docker compose
+
+You will need docker installed on your laptop. Unfortunately M&S doesn't provide a license, you can either buy your own or use Podman or Rancher which are free alternatives. Docker however being on the market the longest has best developer experience.
+
+### Building image
+
+In terminal cd to root directory and execute:
+
+`docker-compose build merchandising-hub`
+
+### Running
+
+In terminal cd to root directory and execute:
+
+`docker-compose up -d  merchandising-hub`
+
+`-d` runs the container in the background
+
+### Cleaning
+
+When you are done, execute:
+
+`docker-compose down`
+
 ## Contributing
 
 Before you can contribute to this repo, you must be able to sign your commits so they can be verified as a trusted source. See [Onyx docs](https://onyx.engineering.mnscorp.net/contributing/signing-commits.html) for an example of how to set this up.
