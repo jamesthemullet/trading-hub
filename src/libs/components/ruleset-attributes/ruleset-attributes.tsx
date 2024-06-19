@@ -10,7 +10,7 @@ import { color } from '../utils/constants';
 import { Label, Text } from '../typography/typography.styles';
 import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
-import { useAttributes } from '@/libs/hooks';
+import { useCategoryAttributes } from '@/libs/hooks';
 import {
   AlphanumericBoostBury,
   AttributeResponseItem,
@@ -299,8 +299,11 @@ export const RulesetAttributes = ({
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState(0);
-  const { attributes: numericAttributes } = useAttributes(category, 'numeric');
-  const { attributes: alphanumericAttributes } = useAttributes(
+  const { attributes: numericAttributes } = useCategoryAttributes(
+    category,
+    'numeric'
+  );
+  const { attributes: alphanumericAttributes } = useCategoryAttributes(
     category,
     'alphanumeric'
   );

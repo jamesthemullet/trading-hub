@@ -24,8 +24,8 @@ jest.mock('../../hooks/use-category-preview', () => ({
 jest.mock('../../hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
-jest.mock('../../hooks/use-attributes', () => ({
-  useAttributes: (_category: string, type: string) => {
+jest.mock('../../hooks/use-category-attributes', () => ({
+  useCategoryAttributes: (_category: string, type: string) => {
     if (type === 'alphanumeric') {
       return {
         attributes: [
@@ -141,7 +141,7 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
 describe('Ruleset', () => {
   beforeEach(() => {
     const mockCategoryProductSearch = {
-      handleGet: jest.fn(() => {
+      searchForProduct: jest.fn(() => {
         return Promise.resolve({
           products: [],
           pagination: {
@@ -153,7 +153,7 @@ describe('Ruleset', () => {
     };
     jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
       ...mockCategoryProductSearch,
-      handleGet: jest.fn(() => {
+      searchForProduct: jest.fn(() => {
         return Promise.resolve({
           products: [
             {
@@ -234,7 +234,12 @@ describe('Ruleset', () => {
 
   it('should render correctly', () => {
     renderWithProviders(
-      <Ruleset isEnabled={true} onSave={jest.fn()} onCancel={jest.fn()} />
+      <Ruleset
+        isEnabled={true}
+        onSave={jest.fn()}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
     );
 
     expect(screen.getByText('Save')).toBeInTheDocument();
@@ -249,7 +254,12 @@ describe('Ruleset', () => {
     });
 
     renderWithProviders(
-      <Ruleset isEnabled={true} onSave={jest.fn()} onCancel={jest.fn()} />
+      <Ruleset
+        isEnabled={true}
+        onSave={jest.fn()}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
     );
 
     await selectCategory(screen, user);
@@ -267,7 +277,12 @@ describe('Ruleset', () => {
     });
 
     renderWithProviders(
-      <Ruleset isEnabled={true} onCreate={mockCreate} onCancel={jest.fn()} />
+      <Ruleset
+        isEnabled={true}
+        onCreate={mockCreate}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
     );
 
     await selectCategory(screen, user);
@@ -309,6 +324,7 @@ describe('Ruleset', () => {
           buries: { numeric: [], alphanumeric: [], product: [] },
         }}
         rulesetId={ruleSetId}
+        rulesetType="category"
       />
     );
 
@@ -354,6 +370,7 @@ describe('Ruleset', () => {
           buries: { numeric: [], alphanumeric: [], product: [] },
         }}
         rulesetId={ruleSetId}
+        rulesetType="category"
       />
     );
 
@@ -386,7 +403,12 @@ describe('Ruleset', () => {
     });
 
     renderWithProviders(
-      <Ruleset isEnabled={true} onSave={mockSave} onCancel={jest.fn()} />
+      <Ruleset
+        isEnabled={true}
+        onSave={mockSave}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
     );
 
     await selectCategory(screen, user);
@@ -460,6 +482,7 @@ describe('Ruleset', () => {
             buries: { numeric: [], alphanumeric: [], product: [] },
           }}
           rulesetId={ruleSetId}
+          rulesetType="category"
         />
       );
     });
@@ -564,6 +587,7 @@ describe('Ruleset', () => {
             buries: { numeric: [], alphanumeric: [], product: [] },
           }}
           rulesetId={ruleSetId}
+          rulesetType="category"
         />
       );
     });
@@ -664,7 +688,7 @@ describe('Ruleset', () => {
         setRules: mockSetRules,
       });
       jest.mocked(useCategoryProductSearch).mockReturnValue({
-        handleGet: jest.fn(() => {
+        searchForProduct: jest.fn(() => {
           return Promise.resolve({
             products: [
               {
@@ -713,6 +737,7 @@ describe('Ruleset', () => {
             },
           }}
           rulesetId={ruleSetId}
+          rulesetType="category"
         />
       );
     });
@@ -846,7 +871,7 @@ describe('Ruleset', () => {
         setRules: mockSetRules,
       });
       jest.mocked(useCategoryProductSearch).mockReturnValue({
-        handleGet: jest.fn(() => {
+        searchForProduct: jest.fn(() => {
           return Promise.resolve({
             products: [
               {
@@ -895,6 +920,7 @@ describe('Ruleset', () => {
             },
           }}
           rulesetId={ruleSetId}
+          rulesetType="category"
         />
       );
     });
@@ -974,6 +1000,7 @@ describe('Ruleset', () => {
             buries: { numeric: [], alphanumeric: [], product: [] },
           }}
           rulesetId={ruleSetId}
+          rulesetType="category"
         />
       );
 
@@ -997,7 +1024,12 @@ describe('Ruleset', () => {
       });
 
       renderWithProviders(
-        <Ruleset isEnabled={true} onSave={jest.fn()} onCancel={jest.fn()} />
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetType="category"
+        />
       );
 
       expect(
@@ -1046,7 +1078,7 @@ describe('Ruleset', () => {
       });
 
       jest.mocked(useCategoryProductSearch).mockReturnValue({
-        handleGet: jest.fn(() => {
+        searchForProduct: jest.fn(() => {
           return Promise.resolve({
             products: [
               {
@@ -1086,6 +1118,7 @@ describe('Ruleset', () => {
             buries: { numeric: [], alphanumeric: [], product: [] },
           }}
           rulesetId={ruleSetId}
+          rulesetType="category"
         />
       );
 
@@ -1137,7 +1170,12 @@ describe('Ruleset', () => {
       });
 
       renderWithProviders(
-        <Ruleset isEnabled={true} onSave={jest.fn()} onCancel={jest.fn()} />
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetType="category"
+        />
       );
 
       await selectCategory(screen, user);
@@ -1164,6 +1202,18 @@ describe('Ruleset', () => {
         )
       ).not.toBeInTheDocument();
     });
+
+    it('Should not show preview on global rulesets', () => {
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetType="global"
+        />
+      );
+      expect(screen.queryByText('Preview')).not.toBeInTheDocument();
+    });
   });
 
   it('opens changes tab', async () => {
@@ -1173,6 +1223,7 @@ describe('Ruleset', () => {
         onSave={jest.fn()}
         onCancel={jest.fn()}
         rulesetMerchandisingRules={mockMerchandisingRules}
+        rulesetType="category"
       />
     );
 
@@ -1267,6 +1318,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
+          rulesetType="category"
         />
       );
 
@@ -1320,6 +1372,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
+          rulesetType="category"
         />
       );
 
@@ -1347,6 +1400,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
+          rulesetType="category"
         />
       );
 
@@ -1368,6 +1422,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
+          rulesetType="category"
         />
       );
 
@@ -1398,6 +1453,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
+          rulesetType="category"
         />
       );
 

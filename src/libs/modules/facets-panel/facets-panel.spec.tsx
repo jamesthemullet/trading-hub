@@ -302,22 +302,6 @@ describe('Facet Panel', () => {
     await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('color'));
   });
 
-  it('should display category select if name is passed', async () => {
-    renderWithProviders(
-      <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        categoryName={categoryName1}
-        onFacetDataChange={jest.fn()}
-      />
-    );
-
-    expect(screen.queryByPlaceholderText('Search...')).toBe(null);
-    expect(screen.getByText(categoryName1)).toBeInTheDocument();
-  });
-
   it('should edit a display value', async () => {
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();

@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { AttributesResponse } from '../api';
-import { useAttributes } from './use-attributes';
+import { useCategoryAttributes } from './use-category-attributes';
 
 const baseUrl = 'http://localhost';
 
@@ -62,10 +62,10 @@ describe('use-attributes', () => {
 
   afterAll(() => server.close());
 
-  describe('useAttributes', () => {
+  describe('useCategoryAttributes', () => {
     it('should return attributes', async () => {
       const category = 'TestCategory';
-      const { result } = renderHook(() => useAttributes(category));
+      const { result } = renderHook(() => useCategoryAttributes(category));
       await waitFor(() => {
         expect(result.current.attributes).toEqual(mockedResponse.attributes);
       });
@@ -73,7 +73,7 @@ describe('use-attributes', () => {
 
     it('should return empty attributes when category is not provided', async () => {
       const category = undefined;
-      const { result } = renderHook(() => useAttributes(category));
+      const { result } = renderHook(() => useCategoryAttributes(category));
       await waitFor(() => {
         expect(result.current.attributes).toEqual([]);
       });

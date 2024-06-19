@@ -50,7 +50,7 @@ describe('useCategoryProductSearch', () => {
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
-    const data = await result.current.handleGet({
+    const data = await result.current.searchForProduct({
       categoryId: '1',
       query: '',
       rows: 10,
@@ -66,7 +66,7 @@ describe('useCategoryProductSearch', () => {
     const { result, rerender } = renderHook(() => useCategoryProductSearch());
 
     await act(async () => {
-      await result.current.handleGet({
+      await result.current.searchForProduct({
         categoryId: '1',
         query: '',
         rows: 10,

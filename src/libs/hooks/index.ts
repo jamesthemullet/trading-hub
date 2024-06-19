@@ -1,4 +1,4 @@
-export * from './use-attributes';
+export * from './use-category-attributes';
 export * from './use-category-preview';
 export * from './use-category-product-search';
 export * from './use-debounce';
@@ -10,6 +10,7 @@ export * from './use-global-facet-update';
 export * from './use-global-facets-list';
 export * from './use-global-rule-set-create';
 export * from './use-global-rule-set-delete';
+export * from './use-global-rule-set-detail';
 export * from './use-mouse-focus';
 export * from './use-on-outside-click';
 export * from './use-rule-set-create';

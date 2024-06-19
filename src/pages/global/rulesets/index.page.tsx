@@ -76,7 +76,7 @@ const RuleSets = () => {
     isEnabled,
     lastChanged,
     onToggle: onEnableDisableRuleSet,
-    url: `/global/rulesets/${id}`,
+    url: `/global/rulesets/edit/${id}`,
   }));
 
   const createNewRuleSet = async () => {
@@ -90,7 +90,7 @@ const RuleSets = () => {
   return (
     <>
       <Heading
-        breadcrumbs={['Search & Merchandising', 'Categories', 'Ranking rules']}
+        breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
       />
 
       <PageNameLabel>Global category ranking rules</PageNameLabel>

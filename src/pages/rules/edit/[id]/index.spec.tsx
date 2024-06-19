@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
 
 import {
-  useAttributes,
+  useCategoryAttributes,
   useCategoryProductSearch,
   useGetCategories,
   useRuleSetPreview,
@@ -35,8 +35,8 @@ jest.mock('../../../../libs/hooks/use-rule-set-update', () => ({
 jest.mock('../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-attributes', () => ({
-  useAttributes: jest.fn(),
+jest.mock('../../../../libs/hooks/use-category-attributes', () => ({
+  useCategoryAttributes: jest.fn(),
 }));
 
 describe('Index', () => {
@@ -66,7 +66,7 @@ describe('Index', () => {
   };
 
   const mockCategoryProductSearch = {
-    handleGet: jest.fn(() => {
+    searchForProduct: jest.fn(() => {
       return Promise.resolve({
         products: [],
         pagination: {
@@ -101,7 +101,7 @@ describe('Index', () => {
     jest
       .mocked(useRuleSetPreview)
       .mockImplementation(() => mockUseRuleSetPreviewData);
-    jest.mocked(useAttributes).mockImplementation(() => ({
+    jest.mocked(useCategoryAttributes).mockImplementation(() => ({
       attributes: [],
     }));
 

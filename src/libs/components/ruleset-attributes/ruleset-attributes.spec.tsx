@@ -8,7 +8,7 @@ import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
 import { renderWithProviders } from '../../../test/render-with-providers';
 
 jest.mock('@/libs/hooks', () => ({
-  useAttributes: (_category: string, type: string) => {
+  useCategoryAttributes: (_category: string, type: string) => {
     if (type === 'alphanumeric') {
       return {
         attributes: [

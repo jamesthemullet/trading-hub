@@ -36,6 +36,7 @@ const NewRuleSetPage = () => {
         isEnabled={true}
         onCreate={createNewCategoryRuleSet}
         onCancel={() => router.push('/rules')}
+        rulesetType="category"
       />
     </>
   );

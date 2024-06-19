@@ -7,7 +7,6 @@ import {
   Button,
   CategorySearch,
   Search,
-  SelectedCategory,
   spacing,
   Text,
 } from '@/libs/components';
@@ -17,8 +16,6 @@ import {
   TableHeading,
 } from '@/libs/components/table/table.styles';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
-
-import { DefaultCategorySearchBox } from '@/libs/components/default-category-search-box/default-category-search-box';
 
 import { color } from '@/libs/components/utils/constants';
 import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
@@ -157,7 +154,6 @@ export const FacetsPanel = ({
   onFacetsDataRowOrderChange,
   title,
   facetsData,
-  categoryName,
   defaultCategory,
   displayRowOrderControls = false,
 }: {
@@ -177,11 +173,12 @@ export const FacetsPanel = ({
   displayRowOrderControls?: boolean;
   title: string;
   facetsData: ReturnedFacet[];
-  categoryName?: string;
   defaultCategory?: Category;
   defaultOrderData?: defaultOrderDataType;
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<Category>({});
+  const [selectedCategory, setSelectedCategory] = useState<Category>(
+    defaultCategory || {}
+  );
   const [selectedFacet, setSelectedFacet] = useState<ReturnedFacet | undefined>(
     undefined
   );
@@ -298,21 +295,13 @@ export const FacetsPanel = ({
       </ActionContainer>
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
-        {defaultCategory && (
-          <DefaultCategorySearchBox defaultCategory={defaultCategory} />
-        )}
-        {!defaultCategory &&
-          (categoryName ? (
-            <SelectedCategory>{categoryName}</SelectedCategory>
-          ) : (
-            <CategorySearch
-              selectedCategory={selectedCategory}
-              onClearSelection={() => {
-                setSelectedCategory({});
-              }}
-              onSelectCategory={onSelectCategory}
-            />
-          ))}
+        <CategorySearch
+          selectedCategory={selectedCategory}
+          onClearSelection={() => {
+            setSelectedCategory({});
+          }}
+          onSelectCategory={onSelectCategory}
+        />
       </SectionWrapper>
       <SectionWrapper>
         <AddFacetPanel>
@@ -332,7 +321,7 @@ export const FacetsPanel = ({
 
       {isAddFacetModalOpen && <ModalAddFacets onClose={onClose} />}
 
-      {defaultCategory && setSearch && (
+      {selectedCategory && setSearch && (
         <SectionWrapper>
           <Search onChange={(e) => handleSearch(e.target.value)} />
         </SectionWrapper>

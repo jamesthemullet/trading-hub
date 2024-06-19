@@ -33,6 +33,7 @@ type Props = {
   onCancel: () => void;
   onPreview: () => void;
   onSave: (id: string) => void;
+  shouldHidePreview: boolean;
   categoryId?: string;
 };
 
@@ -44,6 +45,7 @@ export const ProductGridHeader = ({
   onCancel,
   onPreview,
   onSave,
+  shouldHidePreview,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -60,6 +62,8 @@ export const ProductGridHeader = ({
     onSave(categoryId);
   };
 
+  const isSaveButtonDisabled = shouldHidePreview ? false : !hasPreview;
+
   return (
     <>
       <RuleSetOptions>
@@ -67,10 +71,16 @@ export const ProductGridHeader = ({
 
         <Actions>
           <Button onClick={onCancelChange}>Cancel</Button>
-          <Button onClick={onPreview} isDisabled={!hasPreview}>
-            Preview
-          </Button>
-          <Button theme="primary" isDisabled={!hasPreview} onClick={handleSave}>
+          {!shouldHidePreview && (
+            <Button onClick={onPreview} isDisabled={!hasPreview}>
+              Preview
+            </Button>
+          )}
+          <Button
+            theme="primary"
+            isDisabled={isSaveButtonDisabled}
+            onClick={handleSave}
+          >
             {isNewRuleSet ? 'Create' : 'Save'}
           </Button>
         </Actions>

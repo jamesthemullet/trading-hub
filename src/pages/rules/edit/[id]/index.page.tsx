@@ -55,6 +55,7 @@ const Page = ({ id }: PageProps) => {
           }}
           rulesetId={ruleSets.id}
           rulesetMerchandisingRules={ruleSets.rules}
+          rulesetType="category"
         />
       )}
 

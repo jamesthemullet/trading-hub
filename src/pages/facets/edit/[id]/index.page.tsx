@@ -44,13 +44,6 @@ const Page = ({ id }: { id: string }) => {
   const onFacetDataChange = (index: number) => {
     // TO-DO This will need to be covered in /search/beta/merchandising/category/ruleset/{ruleSetId}
     console.log(index);
-    // setLocalFacets((prev) => {
-    //   const updatedFacet: ReturnedFacet = {
-    //     ...prev[index],
-    //     [key]: value,
-    //   };
-    //   return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
-    // });
   };
 
   return (
@@ -65,7 +58,6 @@ const Page = ({ id }: { id: string }) => {
           onCancel={handleCancel}
           setSearch={setSearch}
           title="Facet Rule Editor"
-          categoryName={ruleSets.categoryId}
           facetsData={filteredFacets}
           displayRowOrderControls={true}
           onFacetsDataRowOrderChange={(index, direction) => {

@@ -13,6 +13,7 @@ import {
   VisualEditor,
   Text,
   Loader,
+  SelectedCategory,
 } from '../../components';
 import { useEffect, useState } from 'react';
 import type {
@@ -103,6 +104,7 @@ export const Ruleset = ({
   rulesetCategory,
   rulesetId,
   rulesetMerchandisingRules,
+  rulesetType,
 }: {
   isEnabled: boolean;
   onSave?: ({ rulesetId }: EditRulesetValues) => void;
@@ -111,6 +113,7 @@ export const Ruleset = ({
   rulesetCategory?: Category;
   rulesetId?: string;
   rulesetMerchandisingRules?: MerchandisingRules;
+  rulesetType: 'global' | 'category' | 'search';
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     rulesetCategory || {}
@@ -135,7 +138,7 @@ export const Ruleset = ({
       }
     );
   const [hasChanges, setHasChanges] = useState(false);
-  const { handleGet } = useCategoryProductSearch();
+  const { searchForProduct } = useCategoryProductSearch();
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
   const [totalProducts, setTotalProducts] = useState<number | undefined>(0);
   const [showPreview, setShowPreview] = useState(false);
@@ -167,7 +170,7 @@ export const Ruleset = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await handleGet({
+      const data = await searchForProduct({
         categoryId: selectedCategory.identifier || '',
         query: '',
         start: 0,
@@ -178,7 +181,7 @@ export const Ruleset = ({
     };
 
     fetchData();
-  }, [handleGet, merchandisingRules, selectedCategory.identifier]);
+  }, [searchForProduct, merchandisingRules, selectedCategory.identifier]);
 
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
@@ -363,6 +366,14 @@ export const Ruleset = ({
     (merchandisingRules.buries?.numeric || []).length +
     (merchandisingRules.buries?.product || []).length;
 
+  const rulesPanelTabs = [
+    ...(rulesetType === 'category' ? [{ title: 'Visual Editor' }] : []),
+    {
+      title: 'Changes',
+      count: totalCount,
+    },
+  ];
+
   const onSaveRuleset = (categoryId: string) => {
     if (rulesetId && onSave) {
       onSave({
@@ -406,17 +417,26 @@ export const Ruleset = ({
           setHasChanges(false);
           onCancel();
         }}
+        shouldHidePreview={rulesetType === 'global'}
       />
 
-      <CategoryPanel>
-        <CategorySearch
-          selectedCategory={selectedCategory}
-          onClearSelection={() => {
-            setSelectedCategory({});
-          }}
-          onSelectCategory={onSelectCategory}
-        />
-      </CategoryPanel>
+      {rulesetType === 'category' && (
+        <CategoryPanel>
+          <CategorySearch
+            selectedCategory={selectedCategory}
+            onClearSelection={() => {
+              setSelectedCategory({});
+            }}
+            onSelectCategory={onSelectCategory}
+          />
+        </CategoryPanel>
+      )}
+
+      {rulesetType === 'global' && (
+        <CategoryPanel>
+          <SelectedCategory label="All pages" />
+        </CategoryPanel>
+      )}
 
       <MainContainerPanel>
         <ProductSearchPanel>
@@ -439,7 +459,7 @@ export const Ruleset = ({
                     setSearchProducts([]);
                     return;
                   }
-                  const data = await handleGet({
+                  const data = await searchForProduct({
                     categoryId: selectedCategory.identifier,
                     query,
                     start: 0,
@@ -465,13 +485,7 @@ export const Ruleset = ({
         <RulesPanel>
           <PanelTop>
             <Tabs
-              tabs={[
-                { title: 'Visual Editor' },
-                {
-                  title: 'Changes',
-                  count: totalCount,
-                },
-              ]}
+              tabs={rulesPanelTabs}
               onTabChange={setCurrentEditorTab}
               currentTab={currentEditorTab}
             />

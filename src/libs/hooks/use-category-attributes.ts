@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { AttributeType, AttributesResponse, merchandising } from '../api';
 
-export const useAttributes = (category?: string, type?: AttributeType) => {
+export const useCategoryAttributes = (
+  category?: string,
+  type?: AttributeType
+) => {
   const [attributes, setAttributes] = useState<
     AttributesResponse['attributes']
   >([]);

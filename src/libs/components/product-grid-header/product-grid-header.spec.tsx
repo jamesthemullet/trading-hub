@@ -13,6 +13,7 @@ describe('ProductGridHeader', () => {
         onCancel={jest.fn()}
         hasChanges={false}
         isNewRuleSet={false}
+        shouldHidePreview={false}
       />
     );
 
@@ -29,6 +30,7 @@ describe('ProductGridHeader', () => {
         onCancel={jest.fn()}
         hasChanges={false}
         isNewRuleSet={true}
+        shouldHidePreview={false}
       />
     );
 
@@ -46,6 +48,7 @@ describe('ProductGridHeader', () => {
         hasChanges={false}
         isNewRuleSet={false}
         categoryId="123"
+        shouldHidePreview={false}
       />
     );
 
@@ -68,6 +71,7 @@ describe('ProductGridHeader', () => {
         onCancel={jest.fn()}
         hasChanges={false}
         isNewRuleSet={false}
+        shouldHidePreview={false}
       />
     );
 
@@ -90,6 +94,7 @@ describe('ProductGridHeader', () => {
         onCancel={jest.fn()}
         hasChanges={false}
         isNewRuleSet={false}
+        shouldHidePreview={false}
       />
     );
 
@@ -112,6 +117,7 @@ describe('ProductGridHeader', () => {
         onCancel={mockCancel}
         hasChanges={true}
         isNewRuleSet={false}
+        shouldHidePreview={false}
       />
     );
 
@@ -140,6 +146,7 @@ describe('ProductGridHeader', () => {
         onCancel={mockCancel}
         hasChanges={false}
         isNewRuleSet={false}
+        shouldHidePreview={false}
       />
     );
 
@@ -161,6 +168,7 @@ describe('ProductGridHeader', () => {
         onCancel={mockCancel}
         hasChanges={true}
         isNewRuleSet={false}
+        shouldHidePreview={false}
       />
     );
 
@@ -177,5 +185,22 @@ describe('ProductGridHeader', () => {
     });
 
     expect(mockCancel).not.toHaveBeenCalled();
+  });
+
+  it('should not show preview button', () => {
+    const mockCancel = jest.fn();
+    renderWithProviders(
+      <ProductGridHeader
+        hasPreview={true}
+        onPreview={jest.fn()}
+        onSave={jest.fn()}
+        onCancel={mockCancel}
+        hasChanges={true}
+        isNewRuleSet={false}
+        shouldHidePreview={true}
+      />
+    );
+
+    expect(screen.queryByText('Preview')).not.toBeInTheDocument();
   });
 });

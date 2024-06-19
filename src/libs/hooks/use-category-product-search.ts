@@ -5,7 +5,7 @@ import { merchandising, type MerchandisingRules } from '@/libs/api';
 export const useCategoryProductSearch = () => {
   const [error, setError] = useState('');
 
-  const handleGet = useCallback(
+  const searchForProduct = useCallback(
     async ({
       categoryId,
       query,
@@ -49,5 +49,5 @@ export const useCategoryProductSearch = () => {
     []
   );
 
-  return { handleGet, error };
+  return { searchForProduct, error };
 };

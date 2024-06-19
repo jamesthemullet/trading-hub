@@ -22,6 +22,7 @@ const TabsWrapper = styled.div`
 
 const TabButton = styled.button<{ isActive: boolean }>`
   border: none;
+  max-width: 50%;
   width: 100%;
   padding-bottom: 0;
   background: none;
