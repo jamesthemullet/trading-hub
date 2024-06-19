@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import { spacing } from '../utils/spacing';
-import { color } from '../utils/constants';
 import { useState } from 'react';
+
+import { signIn, signOut, useSession } from 'next-auth/react';
+
 import { Header3, Text } from '../typography/typography.styles';
+import { color } from '../utils/constants';
+import { spacing } from '../utils/spacing';
 
 const navigationLightGreen = '#216d58';
 

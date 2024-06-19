@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { DetailedHTMLProps, InputHTMLAttributes } from 'react';
+
 import { color } from '../utils/constants';
 
 const ToggleSwitch = styled.label`

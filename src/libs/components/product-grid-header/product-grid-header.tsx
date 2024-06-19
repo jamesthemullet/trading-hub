@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
-import { spacing } from '../utils/spacing';
-import { Button } from '../buttons/button/button';
 import { useState } from 'react';
+
+import { Button } from '../buttons/button/button';
 import { ModalUnsavedChanges } from '../modals';
+import { spacing } from '../utils/spacing';
 
 const RuleSetOptions = styled.div`
   display: flex;

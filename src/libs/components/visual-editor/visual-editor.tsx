@@ -1,5 +1,4 @@
 import type { Product as ProductType } from '../../api';
-
 import { ChangeProductBoostBury, Product } from '../product/product';
 import { Layout, ProductBox } from './visual-editor.styles';
 

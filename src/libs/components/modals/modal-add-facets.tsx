@@ -1,16 +1,19 @@
 import styled from '@emotion/styled';
-import { spacing } from '../utils/spacing';
-import { Modal } from '@mantine/core';
-import { Header3, Text } from '../typography/typography.styles';
-import { Button } from '../buttons/button/button';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { Search } from '../search/search';
-import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
-import { TableRow, TableCol, TableHeading } from '../table/table.styles';
-import { ModalAttributesTable, HeadingAndCloseButton } from './modal.styles';
-import { useGetFacetAttributes } from '@/libs/hooks/use-get-facet-attributes';
+import { Modal } from '@mantine/core';
+
 import { AttributeResponseItem } from '@/libs/api';
+import { useGetFacetAttributes } from '@/libs/hooks/use-get-facet-attributes';
+
+import Image from 'next/image';
+
+import { Button } from '../buttons/button/button';
+import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
+import { Search } from '../search/search';
+import { TableCol, TableHeading, TableRow } from '../table/table.styles';
+import { Header3, Text } from '../typography/typography.styles';
+import { spacing } from '../utils/spacing';
+import { HeadingAndCloseButton, ModalAttributesTable } from './modal.styles';
 
 const Row = styled(TableRow)<{ heading?: boolean }>`
   border-bottom: none;

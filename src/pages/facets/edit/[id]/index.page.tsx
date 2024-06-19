@@ -1,13 +1,13 @@
-import { useRouter } from 'next/router';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-
-import { Heading } from '@/libs/components';
-import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
-import { useFacetsFilter, useRuleSetPreview } from '@/libs/hooks';
-
-import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
 import { ReturnedFacet } from '@/libs/api';
+import { Heading } from '@/libs/components';
+import { useFacetsFilter, useRuleSetPreview } from '@/libs/hooks';
+import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
+import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
+
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 export const getServerSideProps: GetServerSideProps = (
   context: GetServerSidePropsContext

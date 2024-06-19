@@ -1,11 +1,11 @@
 import Image from 'next/image';
+
 import { NumericBoostBury } from '../../api';
 import { Label, Text } from '../typography/typography.styles';
-
 import {
-  AttributeWrapper,
   AttributeHeading,
   AttributeRow,
+  AttributeWrapper,
 } from './ruleset-attributes.styles';
 import { AttributeWeight } from './weight';
 

@@ -1,7 +1,9 @@
-import { Button, Input, Text, spacing } from '@/libs/components';
 import styled from '@emotion/styled';
-import Image from 'next/image';
 import { useState } from 'react';
+
+import { Button, Input, spacing, Text } from '@/libs/components';
+
+import Image from 'next/image';
 
 const DisplayName = styled.div`
   display: flex;

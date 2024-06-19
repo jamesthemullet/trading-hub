@@ -1,7 +1,6 @@
-import { type HTMLAttributes, forwardRef } from 'react';
-
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { forwardRef, type HTMLAttributes } from 'react';
 
 import iconMapping from './svg-mapping.json';
 

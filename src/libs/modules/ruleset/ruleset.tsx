@@ -1,32 +1,35 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
+import type {
+  AlphanumericBoostBury,
+  AttributeType,
+  Category,
+  MerchandisingRules,
+  NumericBoostBury,
+  Product,
+  RuleSetFacetConfigWithId,
+} from '@/libs/api';
+
 import isEqual from 'lodash/isEqual';
+
 import {
   CategorySearch,
   ChangeProductBoostBury,
+  Loader,
   Preview,
   ProductGridHeader,
   ProductSearch,
   RulesetAttributes,
   RulesetChanges,
+  SelectedCategory,
   spacing,
   Tabs,
-  VisualEditor,
   Text,
-  Loader,
-  SelectedCategory,
+  VisualEditor,
 } from '../../components';
-import { useEffect, useState } from 'react';
-import type {
-  Category,
-  Product,
-  MerchandisingRules,
-  AlphanumericBoostBury,
-  NumericBoostBury,
-  AttributeType,
-  RuleSetFacetConfigWithId,
-} from '@/libs/api';
 import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
-import { useRouter } from 'next/router';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pluralize = require('pluralize');
 

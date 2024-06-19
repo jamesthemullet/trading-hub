@@ -1,14 +1,13 @@
-import { Heading } from '@/libs/components';
-
-import { useRouter } from 'next/router';
-import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
-import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
-
-import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
 import { ReturnedFacet } from '@/libs/api';
+import { Heading } from '@/libs/components';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
+import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
+import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
+import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
 const defaultCategory = {
   identifier: 'Applies to all pages in marksandspencer.com',

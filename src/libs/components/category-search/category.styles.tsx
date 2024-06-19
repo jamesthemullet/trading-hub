@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { spacing } from '../utils/spacing';
-import { color } from '../utils/constants';
+
 import { Label } from '../typography/typography.styles';
+import { color } from '../utils/constants';
+import { spacing } from '../utils/spacing';
 
 export const Wrapper = styled.div`
   input {

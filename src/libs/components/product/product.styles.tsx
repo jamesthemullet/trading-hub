@@ -1,10 +1,10 @@
-import styled from '@emotion/styled';
-import { spacing } from '../utils/spacing';
-
-import { color } from '../utils/constants';
-import { Text } from '../typography/typography.styles';
-import { boxShadow } from '../utils/shared.styles';
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+
+import { Text } from '../typography/typography.styles';
+import { color } from '../utils/constants';
+import { boxShadow } from '../utils/shared.styles';
+import { spacing } from '../utils/spacing';
 
 export const ProductWrapper = styled.div<{
   isLastChanged: boolean;

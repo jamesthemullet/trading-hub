@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 import styled from '@emotion/styled';
-import { color } from '../../../libs/components/utils/constants';
+
 import {
   Button,
   Header1,
@@ -11,6 +11,8 @@ import {
   Text,
   Title,
 } from '@/libs/components';
+
+import { color } from '../../../libs/components/utils/constants';
 
 const Container = styled.div`
   display: flex;

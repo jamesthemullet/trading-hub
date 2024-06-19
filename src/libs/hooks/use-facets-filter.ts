@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+
 import { ReturnedFacet } from '../api';
 
 export const useFacetsFilter = (facets: ReturnedFacet[]) => {

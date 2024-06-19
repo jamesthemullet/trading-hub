@@ -1,16 +1,22 @@
 import type { ChangeEvent, DetailedHTMLProps, HTMLAttributes } from 'react';
 import { useState } from 'react';
 
-import type { Product as ProductType } from '../../api';
-import { spacing } from '../utils/spacing';
-import { Text } from '../typography/typography.styles';
+import Image from 'next/image';
 
+import type { Product as ProductType } from '../../api';
+import { EditAttribute } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
+import { Text } from '../typography/typography.styles';
+import { spacing } from '../utils/spacing';
 import {
+  BlockedPin,
+  BoostPin,
+  BuriedPin,
   ErrorText,
   LockActions,
   LockInput,
   LockMenu,
+  ProductCard,
   ProductHeader,
   ProductInfo,
   ProductMenu,
@@ -19,14 +25,8 @@ import {
   ProductMenuToggle,
   ProductNumber,
   ProductPin,
-  BoostPin,
-  BuriedPin,
-  BlockedPin,
   ProductWrapper,
-  ProductCard,
 } from './product.styles';
-import { EditAttribute } from '../../modules/ruleset/ruleset';
-import Image from 'next/image';
 
 type ChangePositionTypes = {
   isPinned: boolean;

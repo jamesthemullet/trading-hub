@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+
 import type { Product as ProductType } from '@/libs/api';
 
 import { ChangeProductBoostBury, Product } from '../product/product';

@@ -3,30 +3,33 @@ import { Modal } from '@mantine/core';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pluralize = require('pluralize');
 
-import { Button } from '../buttons/button/button';
-import { spacing } from '../utils/spacing';
 import { useState } from 'react';
-import { color } from '../utils/constants';
-import { Label, Text } from '../typography/typography.styles';
-import { Checkboxes } from '../checkboxes/checkboxes';
-import { RadioButtons } from '../radio-buttons/radio-buttons';
-import { useCategoryAttributes } from '@/libs/hooks';
+
 import {
   AlphanumericBoostBury,
   AttributeResponseItem,
   MerchandisingRules,
   NumericBoostBury,
 } from '@/libs/api';
-import { Search } from '../search/search';
+import { useCategoryAttributes } from '@/libs/hooks';
+
+import Image from 'next/image';
+
+import { EditAttribute } from '../../modules/ruleset/ruleset';
+import { Button } from '../buttons/button/button';
+import { Checkboxes } from '../checkboxes/checkboxes';
 import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
-import { NumericAttribute } from './numeric-attribute';
+import { RadioButtons } from '../radio-buttons/radio-buttons';
+import { Search } from '../search/search';
+import { Label, Text } from '../typography/typography.styles';
+import { color } from '../utils/constants';
+import { spacing } from '../utils/spacing';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
+import { NumericAttribute } from './numeric-attribute';
 import {
   AttributeCount,
   AttributeSelection,
 } from './ruleset-attributes.styles';
-import Image from 'next/image';
-import { EditAttribute } from '../../modules/ruleset/ruleset';
 
 const MODAL_WIDTH = 435;
 

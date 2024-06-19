@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { merchandising } from '../api';
 import type { MerchandisingRules, RuleSetFacetConfigWithId } from '../api';
+import { merchandising } from '../api';
 
 export const useRuleSetCreate = () => {
   const [error, setError] = useState('');

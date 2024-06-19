@@ -1,11 +1,10 @@
 import { Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
-
 import {
-  Wrapper,
   Categories,
-  SelectedCategoryPill,
   SelectedCategoryClose,
+  SelectedCategoryPill,
+  Wrapper,
 } from './category.styles';
 
 export const SelectedCategory = ({

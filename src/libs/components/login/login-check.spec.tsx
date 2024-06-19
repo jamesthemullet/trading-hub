@@ -1,6 +1,6 @@
-import { signIn, useSession } from 'next-auth/react';
-
 import { renderWithProviders } from '@/test/render-with-providers';
+
+import { signIn, useSession } from 'next-auth/react';
 
 import { LoginCheck } from './login-check';
 

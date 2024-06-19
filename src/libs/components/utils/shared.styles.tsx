@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
+
+import { fonts } from '../typography/typography.styles';
 import { color } from './constants';
 import { spacing, type SpacingUnit } from './spacing';
-import { fonts } from '../typography/typography.styles';
 
 export const formDefaultStyles = ({ padding }: { padding: SpacingUnit }) => css`
   appearance: none;

@@ -1,15 +1,17 @@
+import styled from '@emotion/styled';
+
 import type {
   MerchandisingRulesWithInfo,
   Product as ProductType,
 } from '@/libs/api';
-import styled from '@emotion/styled';
-import { ChangeProductBoostBury, Product } from '../product/product';
-import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
-import { spacing } from '../utils/spacing';
+
 import { ChangePositionTypes } from '../../modules/ruleset/ruleset';
-import { Text } from '../typography/typography.styles';
-import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
+import { ChangeProductBoostBury, Product } from '../product/product';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
+import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
+import { Text } from '../typography/typography.styles';
+import { spacing } from '../utils/spacing';
+import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
 
 const Heading = styled(Text)`
   font-size: 20px;

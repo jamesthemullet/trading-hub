@@ -1,22 +1,23 @@
+import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Modal } from '@mantine/core';
+
 import { format } from 'date-fns';
 
+import { Button } from '../buttons/button/button';
 import { Toggle } from '../toggle/toggle';
 import { Text, Title } from '../typography/typography.styles';
+import { spacing } from '../utils/spacing';
 import {
-  TableContainer,
-  TableRow,
-  TableCol,
   TableActions,
-  TableOptionButton,
+  TableActionsButton,
+  TableCol,
+  TableContainer,
   TableDropdown,
   TableHeading,
-  TableActionsButton,
+  TableOptionButton,
+  TableRow,
 } from './table.styles';
-import styled from '@emotion/styled';
-import { spacing } from '../utils/spacing';
-import { Button } from '../buttons/button/button';
 
 const Row = styled(TableRow)`
   grid-template-columns: minmax(240px, 2fr) 90px 120px 150px 130px;

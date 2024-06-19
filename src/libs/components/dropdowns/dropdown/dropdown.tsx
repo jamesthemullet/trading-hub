@@ -1,15 +1,15 @@
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { KeyboardEvent, ReactElement, ReactNode } from 'react';
 import { useCallback } from 'react';
 
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import { useOnOutsideClick } from '../../../hooks/use-on-outside-click';
 import { Icon } from '../../icon/icon';
+import { Text } from '../../typography/typography.styles';
 import { color } from '../../utils/constants';
 import { mediaQuery } from '../../utils/media-query';
-import { spacing } from '../../utils/spacing';
 import { sizing } from '../../utils/sizing';
-import { Text } from '../../typography/typography.styles';
+import { spacing } from '../../utils/spacing';
 
 export type FilterDropdownProps = {
   isOpen: boolean;

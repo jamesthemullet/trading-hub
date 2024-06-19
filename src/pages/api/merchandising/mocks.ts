@@ -1,17 +1,18 @@
 import {
+  AttributesResponse,
+  BetaMerchandisingFacetListData,
   BoostsBuries,
   BoostsBuriesWithInfo,
-  ProductBoostBury,
-  SearchPreviewResponse,
-  Facet,
-  ReturnedFacet,
   ErrorResponse,
+  Facet,
+  ProductBoostBury,
+  ReturnedCategoryRuleSet,
+  ReturnedFacet,
   ReturnedRuleSet,
   RuleSetFacetConfigWithId,
-  ReturnedCategoryRuleSet,
-  BetaMerchandisingFacetListData,
-  AttributesResponse,
+  SearchPreviewResponse,
 } from '@/libs/api';
+
 import { NextApiRequest } from 'next';
 
 export const mockProducts: ProductBoostBury[] = [

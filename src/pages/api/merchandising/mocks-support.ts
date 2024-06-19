@@ -1,9 +1,10 @@
-import OpenAPIResponseValidator from 'openapi-response-validator';
-
 import rawApi from '@/libs/api/api.yml';
-import { OpenAPIV3 } from 'openapi-types';
-import { getMockMapping } from './mocks';
+
 import { NextApiRequest } from 'next';
+import OpenAPIResponseValidator from 'openapi-response-validator';
+import { OpenAPIV3 } from 'openapi-types';
+
+import { getMockMapping } from './mocks';
 
 export const matchPaths = (path1: string) => {
   const path1Segments = path1

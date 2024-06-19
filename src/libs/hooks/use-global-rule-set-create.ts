@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { search } from '../api';
 import type { RuleSet } from '../api';
+import { search } from '../api';
 
 export const useGlobalRuleSetCreate = () => {
   const [error, setError] = useState('');

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+
 import { spacing } from '@/libs/components/utils/spacing';
 
 export const SectionWrapper = styled.div`

@@ -1,13 +1,13 @@
-import type { ReactElement, RefObject } from 'react';
-
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { type ButtonProps, Button } from '../buttons/button/button';
+import type { ReactElement, RefObject } from 'react';
+
+import { Button, type ButtonProps } from '../buttons/button/button';
 import { Icon } from '../icon/icon';
-import { type InputProps, Input } from '../input/input';
+import { Input, type InputProps } from '../input/input';
 import { mediaQuery } from '../utils/media-query';
-import { spacing } from '../utils/spacing';
 import { sizing } from '../utils/sizing';
+import { spacing } from '../utils/spacing';
 
 export const resetSearchInput = css`
   &::-webkit-search-decoration,

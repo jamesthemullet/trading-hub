@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { spacing } from '../utils/spacing';
-import { sizing } from '../utils/sizing';
+
 import { Text } from '../typography/typography.styles';
+import { sizing } from '../utils/sizing';
+import { spacing } from '../utils/spacing';
 
 export const DropdownWrapper = styled.div<{
   isDropdownOpen: boolean;

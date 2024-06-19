@@ -1,15 +1,15 @@
-import { spacing } from '../utils/spacing';
-import { Label, Text } from '../typography/typography.styles';
+import Image from 'next/image';
 
+import { AlphanumericBoostBury } from '../../api';
+import { Label, Text } from '../typography/typography.styles';
+import { spacing } from '../utils/spacing';
 import {
-  AttributeWrapper,
   AttributeHeading,
   AttributeRow,
   AttributeValue,
+  AttributeWrapper,
 } from './ruleset-attributes.styles';
 import { AttributeWeight } from './weight';
-import { AlphanumericBoostBury } from '../../api';
-import Image from 'next/image';
 
 export const AlphanumericAttribute = ({
   fields,

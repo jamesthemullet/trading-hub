@@ -42,7 +42,27 @@
         ],
         "functional/no-let": "off",
         "functional/prefer-immutable-types": "off",
-        "functional/functional-parameters": "off"
+        "functional/functional-parameters": "off",
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [
+              ["^\\u0000"],
+              [
+                "^@emotion",
+                "^react",
+                "^@testing",
+                "^@mantine",
+                "next/router",
+                "^msw"
+              ],
+              ["^@/"],
+              ["^[^.]"],
+              ["^\\."]
+            ]
+          }
+        ],
+        "simple-import-sort/exports": "error"
       }
     },
     {

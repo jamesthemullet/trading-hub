@@ -1,13 +1,12 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { type ChangeEvent, type FormEvent, useState } from 'react';
 
 import type { Category, CategoryListData } from '@/libs/api';
+import { useDebounce, useGetCategories } from '@/libs/hooks';
 
 import { Search } from '../search/search';
-import { spacing } from '../utils/spacing';
-import { useDebounce, useGetCategories } from '@/libs/hooks';
 import { Text } from '../typography/typography.styles';
-
-import { Wrapper, Container, Row } from './category.styles';
+import { spacing } from '../utils/spacing';
+import { Container, Row, Wrapper } from './category.styles';
 import { SelectedCategory } from './selected-category';
 
 const SEARCH_DEBOUNCE_WAIT = 500;

@@ -1,9 +1,11 @@
-import { FormEvent, useState } from 'react';
-import { AttributeRow } from './ruleset-attributes.styles';
-import { Text } from '../typography/typography.styles';
 import styled from '@emotion/styled';
+import { FormEvent, useState } from 'react';
+
 import Image from 'next/image';
+
+import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
+import { AttributeRow } from './ruleset-attributes.styles';
 
 const Input = styled.input`
   min-width: 60px;

@@ -1,10 +1,12 @@
-import { Heading, Loader } from '@/libs/components';
-import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
 
 import type { MerchandisingRules, RuleSetFacetConfigWithId } from '@/libs/api';
-import { useUpdateRuleSet, useRuleSetPreview } from '@/libs/hooks';
+import { Heading, Loader } from '@/libs/components';
+import { useRuleSetPreview, useUpdateRuleSet } from '@/libs/hooks';
+
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+
 import { Ruleset } from '../../../../libs/modules/ruleset/ruleset';
-import { useRouter } from 'next/router';
 
 type PageProps = {
   id: string;

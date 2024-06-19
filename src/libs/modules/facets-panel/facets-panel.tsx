@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import styled from '@emotion/styled';
+import { useState } from 'react';
+import { Box } from '@mantine/core';
 
 import { Category, ReturnedFacet } from '@/libs/api';
-import { ModalAddFacets } from '@/libs/components/modals/modal-add-facets';
 import {
   Button,
   CategorySearch,
@@ -10,19 +10,18 @@ import {
   spacing,
   Text,
 } from '@/libs/components';
+import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
+import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
+import { EditableLabel } from '@/libs/components/editable-label/editable-label';
+import { ModalAddFacets } from '@/libs/components/modals/modal-add-facets';
+import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
 import {
-  TableRow,
   TableCol,
   TableHeading,
+  TableRow,
 } from '@/libs/components/table/table.styles';
-import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
-
 import { color } from '@/libs/components/utils/constants';
-import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
-import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
-import { Box } from '@mantine/core';
 import { useDebounce } from '@/libs/hooks';
-import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 
 export const ActionContainer = styled.div`
   display: flex;

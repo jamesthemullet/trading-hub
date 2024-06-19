@@ -1,5 +1,7 @@
-import { Global, css } from '@emotion/react';
-import { Html, Head, Main, NextScript } from 'next/document';
+import { css, Global } from '@emotion/react';
+
+import { Head, Html, Main, NextScript } from 'next/document';
+
 import { fonts } from '../libs/components';
 import { color } from '../libs/components/utils/constants';
 

@@ -1,13 +1,15 @@
-import Image from 'next/image';
 import { useState } from 'react';
+
+import Image from 'next/image';
+
 import {
-  DropdownWrapper,
-  DropdownButton,
-  DropdownHeading,
-  ArrowContainer,
   Arrow,
+  ArrowContainer,
+  DropdownButton,
   DropdownContainer,
+  DropdownHeading,
   DropdownOption,
+  DropdownWrapper,
 } from '../dropdown.styles';
 
 export const FacetOrderDropdown = ({

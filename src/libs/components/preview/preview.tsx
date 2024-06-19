@@ -1,15 +1,17 @@
-import type { Facet, MerchandisingRules } from '@/libs/api';
 import styled from '@emotion/styled';
-import { spacing } from '../utils/spacing';
-import { Dropdown } from '../dropdowns/dropdown/dropdown';
 import { useState } from 'react';
+
+import type { Facet, MerchandisingRules } from '@/libs/api';
+
 import { useCategoryPreview } from '../../hooks';
-import { ProductBox } from '../visual-editor/visual-editor.styles';
+import { Dropdown } from '../dropdowns/dropdown/dropdown';
+import { Loader } from '../loader/loader';
 import { ProductDetails } from '../product/product';
 import { ProductWrapper } from '../product/product.styles';
-import { Text, Label, Header3 } from '../typography/typography.styles';
+import { Header3, Label, Text } from '../typography/typography.styles';
 import { boxShadow } from '../utils/shared.styles';
-import { Loader } from '../loader/loader';
+import { spacing } from '../utils/spacing';
+import { ProductBox } from '../visual-editor/visual-editor.styles';
 
 type Props = {
   categoryId: string;

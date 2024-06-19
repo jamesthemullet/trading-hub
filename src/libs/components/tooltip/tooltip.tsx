@@ -1,13 +1,13 @@
-import { useState } from 'react';
-
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { useState } from 'react';
+
+import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
 import { Button } from '../buttons/button/button';
 import { Icon } from '../icon/icon';
-import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
-import { spacing } from '../utils/spacing';
-import { sizing } from '../utils/sizing';
 import { Text } from '../typography/typography.styles';
+import { sizing } from '../utils/sizing';
+import { spacing } from '../utils/spacing';
 
 export type TooltipProps = {
   text: string;

@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+
 import { RenderSvg, SvgProps } from '../svg/render-svg';
 
 export type IconSizes = 16 | 24 | 32 | 40 | 48 | 56 | 64 | 80;

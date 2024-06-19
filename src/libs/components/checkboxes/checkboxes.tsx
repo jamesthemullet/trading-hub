@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
+
+import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
-import { Label, Text } from '../typography/typography.styles';
 
 const Row = styled.label`
   border-bottom: solid 1px ${color.grey};

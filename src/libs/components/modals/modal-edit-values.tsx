@@ -1,20 +1,23 @@
 import styled from '@emotion/styled';
-import { spacing } from '../utils/spacing';
-import { Modal } from '@mantine/core';
-import { Header3, Text } from '../typography/typography.styles';
-import { Button } from '../buttons/button/button';
-import Image from 'next/image';
-import { TableRow, TableCol, TableHeading } from '../table/table.styles';
-import { ReturnedFacet } from '@/libs/api';
-import { color } from '../utils/constants';
-import { FacetValuesSortDropdown } from '../dropdowns/facet-values-sort-dropdown/facet-values-sort-dropdown';
-import { Search } from '../search/search';
-import { ModalAttributesTable, HeadingAndCloseButton } from './modal.styles';
-import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
-import { EditableLabel } from '../editable-label/editable-label';
 import { useMemo, useState } from 'react';
+import { Modal } from '@mantine/core';
+
+import { ReturnedFacet } from '@/libs/api';
 import { useDebounce } from '@/libs/hooks';
+
+import Image from 'next/image';
+
+import { Button } from '../buttons/button/button';
+import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
+import { FacetValuesSortDropdown } from '../dropdowns/facet-values-sort-dropdown/facet-values-sort-dropdown';
+import { EditableLabel } from '../editable-label/editable-label';
 import { FilteredResultsPanel } from '../filtered-results-panel/filtered-results-panel';
+import { Search } from '../search/search';
+import { TableCol, TableHeading, TableRow } from '../table/table.styles';
+import { Header3, Text } from '../typography/typography.styles';
+import { color } from '../utils/constants';
+import { spacing } from '../utils/spacing';
+import { HeadingAndCloseButton, ModalAttributesTable } from './modal.styles';
 
 const Row = styled(TableRow)<{ heading?: boolean }>`
   border-bottom: none;

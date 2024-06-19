@@ -1,20 +1,21 @@
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { ChangeEvent, ComponentProps } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import { useMouseFocus } from '@/libs/hooks/use-mouse-focus';
+
 import { Label } from '../label/label';
 import {
-  type TooltipProps,
   Tooltip,
   tooltipAriaLabelledBy,
+  type TooltipProps,
 } from '../tooltip/tooltip';
+import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { formActiveStyles, formDefaultStyles } from '../utils/shared.styles';
 import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
-import { Text } from '../typography/typography.styles';
 
 const padding = 1;
 

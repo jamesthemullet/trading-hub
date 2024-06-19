@@ -1,8 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
-import { ParsedUrlQuery } from 'querystring';
 
 import {
   useFacetsList,
@@ -15,6 +13,9 @@ import {
   ruleSetId,
 } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
+
+import { GetServerSidePropsContext } from 'next';
+import { ParsedUrlQuery } from 'querystring';
 
 import Page, { getServerSideProps } from './index.page';
 

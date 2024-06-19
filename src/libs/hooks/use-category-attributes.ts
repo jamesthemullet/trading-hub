@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { AttributeType, AttributesResponse, merchandising } from '../api';
+
+import { AttributesResponse, AttributeType, merchandising } from '../api';
 
 export const useCategoryAttributes = (
   category?: string,

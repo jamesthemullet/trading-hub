@@ -1,4 +1,5 @@
 import { DatesRangeValue } from '@mantine/dates';
+
 import dayjs from 'dayjs';
 
 export const formatMonthYearDateRange = (range: DatesRangeValue) => {

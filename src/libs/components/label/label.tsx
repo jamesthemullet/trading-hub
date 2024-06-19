@@ -1,9 +1,9 @@
-import type { LabelHTMLAttributes, ReactNode } from 'react';
-
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { BreakPoints } from '../utils/breakpoint-type';
+import type { LabelHTMLAttributes, ReactNode } from 'react';
+
 import { Label as LabelText } from '../typography/typography.styles';
+import { BreakPoints } from '../utils/breakpoint-type';
 
 type BaseLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
   isDisabled?: boolean;

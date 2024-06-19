@@ -1,12 +1,13 @@
 import { useState } from 'react';
+
 import {
-  DropdownWrapper,
-  DropdownButton,
-  DropdownHeading,
-  ArrowContainer,
   Arrow,
+  ArrowContainer,
+  DropdownButton,
   DropdownContainer,
+  DropdownHeading,
   DropdownOption,
+  DropdownWrapper,
 } from '../dropdown.styles';
 
 export const FacetValuesSortDropdown = () => {

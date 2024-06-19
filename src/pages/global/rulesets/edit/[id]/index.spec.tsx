@@ -1,10 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
-import type { ParsedUrlQuery } from 'querystring';
 
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
+
+import type { GetServerSidePropsContext } from 'next';
+import type { ParsedUrlQuery } from 'querystring';
 
 import Page, { getServerSideProps } from './index.page';
 

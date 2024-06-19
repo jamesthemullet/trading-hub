@@ -1,17 +1,19 @@
+import { Skeleton } from '@mantine/core';
+
+import { Text } from '@/libs/components';
+import { TableHeading } from '@/libs/components/table/table.styles';
+
 import {
   ActionContainer,
   Actions,
   AddFacetPanel,
   AttributesTable,
-  COLUMNS,
   Col,
+  COLUMNS,
   LowerHeading,
   Row,
   SectionWrapper,
 } from './facets-panel';
-import { Skeleton } from '@mantine/core';
-import { Text } from '@/libs/components';
-import { TableHeading } from '@/libs/components/table/table.styles';
 
 export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
   return (

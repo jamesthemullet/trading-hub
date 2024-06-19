@@ -1,9 +1,10 @@
-import { Heading } from '@/libs/components';
-import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
 
+import { Heading } from '@/libs/components';
 import { useGlobalRuleSetDetail } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
-import { useRouter } from 'next/router';
+
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 type PageProps = {
   id: string;
