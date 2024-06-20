@@ -26,7 +26,7 @@ describe('Login check', () => {
     renderWithProviders(<LoginCheck />);
 
     expect(signIn).toHaveBeenCalledWith('azure-ad', {
-      callbackUrl: '/rules',
+      callbackUrl: '/category/rulesets',
       redirect: false,
     });
   });

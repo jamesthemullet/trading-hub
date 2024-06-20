@@ -4,7 +4,7 @@ import type { MerchandisingRules, RuleSetFacetConfigWithId } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { useRuleSetCreate } from '@/libs/hooks';
 
-import { Ruleset } from '../../../libs/modules/ruleset/ruleset';
+import { Ruleset } from '../../../../libs/modules/ruleset/ruleset';
 
 const NewRuleSetPage = () => {
   const { handlePost } = useRuleSetCreate();
@@ -26,7 +26,7 @@ const NewRuleSetPage = () => {
     });
 
     if (resp) {
-      return router.push(`/rules/edit/${resp.id}`);
+      return router.push(`/category/rulesets/edit/${resp.id}`);
     }
   };
 
@@ -37,7 +37,7 @@ const NewRuleSetPage = () => {
       <Ruleset
         isEnabled={true}
         onCreate={createNewCategoryRuleSet}
-        onCancel={() => router.push('/rules')}
+        onCancel={() => router.push('/category/rulesets')}
         rulesetType="category"
       />
     </>

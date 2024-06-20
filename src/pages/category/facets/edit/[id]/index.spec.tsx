@@ -116,7 +116,7 @@ describe('Category Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
   });
 
   it('should save changes to a facet', async () => {

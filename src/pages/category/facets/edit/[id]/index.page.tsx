@@ -32,7 +32,7 @@ const Page = ({ id }: { id: string }) => {
     console.log('save');
   };
   const handleCancel = () => {
-    router.push('/facets');
+    router.push('/category/facets');
   };
 
   const category = {

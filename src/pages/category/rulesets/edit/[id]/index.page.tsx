@@ -6,7 +6,7 @@ import { useRuleSetPreview, useUpdateRuleSet } from '@/libs/hooks';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-import { Ruleset } from '../../../../libs/modules/ruleset/ruleset';
+import { Ruleset } from '../../../../../libs/modules/ruleset/ruleset';
 
 type PageProps = {
   id: string;
@@ -37,7 +37,7 @@ const Page = ({ id }: PageProps) => {
       merchandisingRules,
       categoryId,
     }).then(() => {
-      router.push('/rules');
+      router.push('/category/rulesets');
     });
   };
 
@@ -49,7 +49,7 @@ const Page = ({ id }: PageProps) => {
         <Ruleset
           isEnabled={ruleSets.isEnabled}
           onSave={saveRuleSet}
-          onCancel={() => router.push('/rules')}
+          onCancel={() => router.push('/category/rulesets')}
           rulesetCategory={{
             identifier: ruleSets.categoryId,
             name: ruleSets.categoryName,

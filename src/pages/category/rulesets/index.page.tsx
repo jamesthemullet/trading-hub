@@ -6,6 +6,7 @@ import {
   Button,
   DataTable,
   Heading,
+  Loader,
   Search,
   TablePagination,
 } from '@/libs/components';
@@ -21,29 +22,33 @@ const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
 `;
 
-const PageWrapper = styled.div`
-  box-shadow: #000 0 0 10px -5px;
-  margin: ${spacing(2)};
-  padding-top: ${spacing(1)};
-  border-radius: 4px;
-`;
 const ToolsContainer = styled.div`
   display: flex;
   align-items: left;
 
   margin: ${spacing(2)};
 `;
+
+const PageWrapper = styled.div`
+  box-shadow: #000 0 0 10px -5px;
+  margin: ${spacing(2)};
+  padding-top: ${spacing(1)};
+  border-radius: 4px;
+`;
+
 const NewButton = styled.div`
   margin-left: auto;
   margin-top: ${spacing(1)};
   margin-right: ${spacing(2)};
 `;
 
-const FacetManagementPage = () => {
+const RuleSets = () => {
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const { isSaving, updateRuleSet } = useUpdateRuleSet();
 
   const currentPageIndex = currentPage - 1;
 
@@ -64,7 +69,6 @@ const FacetManagementPage = () => {
   }, 300);
 
   const { handleDelete } = useRuleSetDelete();
-  const { updateRuleSet } = useUpdateRuleSet();
 
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
     await handleDelete({ rulesetId: id });
@@ -102,29 +106,23 @@ const FacetManagementPage = () => {
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,
-      url: `/facets/edit/${id}`,
+      url: `/category/rulesets/edit/${id}`,
     })
   );
 
   return (
     <>
       <Heading
-        breadcrumbs={[
-          'Search & Merchandising',
-          'Categories',
-          'Ranking rules',
-          'facet-management',
-        ]}
+        breadcrumbs={['Search & Merchandising', 'Categories', 'Ranking rules']}
       />
 
-      <PageNameLabel>Category Facet Management</PageNameLabel>
+      <PageNameLabel>Category ranking rules</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
-
           <NewButton>
-            <Button as="a" href="/facets/new">
-              Add facet
+            <Button as="a" href="/category/rulesets/new">
+              Add rule
             </Button>
           </NewButton>
         </ToolsContainer>
@@ -143,9 +141,11 @@ const FacetManagementPage = () => {
           setCurrentPage={setCurrentPage}
           setCurrentPageSize={setCurrentPageSize}
         />
+
+        {isSaving && <Loader />}
       </PageWrapper>
     </>
   );
 };
 
-export default FacetManagementPage;
+export default RuleSets;

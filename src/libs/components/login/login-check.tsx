@@ -7,7 +7,7 @@ export const LoginCheck = () => {
 
   const login = async () => {
     await signIn('azure-ad', {
-      callbackUrl: '/rules',
+      callbackUrl: '/category/rulesets',
       redirect: false,
     });
   };

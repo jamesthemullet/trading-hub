@@ -16,10 +16,10 @@ const categoryPath2 = 'l/women/dresses';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../libs/hooks/use-rule-set-create', () => ({
+jest.mock('../../../../libs/hooks/use-rule-set-create', () => ({
   useRuleSetCreate: jest.fn(),
 }));
-jest.mock('../../../libs/hooks/use-get-categories', () => ({
+jest.mock('../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
 
@@ -198,7 +198,7 @@ describe('Index', () => {
 
     await screen.findByText(NEW_RULE_BUTTON_TEXT);
     expect(mockRouter.push).toHaveBeenCalledWith(
-      `/rules/edit/${MOCK_CATEGORY_ID}`
+      `/category/rulesets/edit/${MOCK_CATEGORY_ID}`
     );
   });
 
@@ -211,7 +211,7 @@ describe('Index', () => {
       cancel.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(`/rules`);
+    expect(mockRouter.push).toHaveBeenCalledWith(`/category/rulesets`);
   });
 
   it('creates a new rule set and does not redirect if no id given for the edit page', async () => {

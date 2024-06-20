@@ -143,10 +143,10 @@ export const Navigation = () => {
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 1}>
             <Header3>Category Ranking</Header3>
-            <SubLink href="/rules">
+            <SubLink href="/category/rulesets">
               <Text>Ranking rules</Text>
             </SubLink>
-            <SubLink href="/facets">
+            <SubLink href="/category/facets">
               <Text>Facets</Text>
             </SubLink>
           </SubMenu>

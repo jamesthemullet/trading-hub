@@ -14,7 +14,7 @@ test.beforeEach(async ({ page, context }) => {
     await route.fulfill({ response, json });
   });
 
-  await page.goto('http://localhost:3000/rules');
+  await page.goto('http://localhost:3000/category/rulesets');
 });
 
 test('loads the page', async ({ page }) => {

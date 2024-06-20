@@ -10,7 +10,7 @@ import Page from './index.page';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../libs/hooks/use-get-categories', () => ({
+jest.mock('../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
 
@@ -67,7 +67,7 @@ describe('Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
   });
 
   it('should preview changes to a facet', async () => {

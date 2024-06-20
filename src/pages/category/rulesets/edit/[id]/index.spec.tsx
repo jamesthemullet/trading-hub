@@ -24,19 +24,19 @@ import Page, { getServerSideProps } from './index.page';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-category-product-search', () => ({
+jest.mock('../../../../../libs/hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-rule-set-preview', () => ({
+jest.mock('../../../../../libs/hooks/use-rule-set-preview', () => ({
   useRuleSetPreview: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-rule-set-update', () => ({
+jest.mock('../../../../../libs/hooks/use-rule-set-update', () => ({
   useUpdateRuleSet: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-get-categories', () => ({
+jest.mock('../../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-category-attributes', () => ({
+jest.mock('../../../../../libs/hooks/use-category-attributes', () => ({
   useCategoryAttributes: jest.fn(),
 }));
 
@@ -142,7 +142,7 @@ describe('Index', () => {
 
     await user.click(screen.getByText('Cancel'));
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/rules');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets');
   });
 
   it('loads the mock data', async () => {
