@@ -34,7 +34,7 @@ const FacetManagementPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const { handleDelete } = useGlobalRuleSetDelete();
-  const { handleEdit } = useGlobalRuleSetUpdate();
+  const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
 
   const currentPageIndex = currentPage - 1;
 
@@ -55,7 +55,7 @@ const FacetManagementPage = () => {
     // istanbul ignore next
     if (!ruleSet) return null;
 
-    await handleEdit({
+    await saveGlobalRuleset({
       ruleSetId: id,
       ruleSet: {
         facets: ruleSet.facets,

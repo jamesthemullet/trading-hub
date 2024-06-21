@@ -80,11 +80,13 @@ const FacetManagementPage = () => {
 
     const { facets, isEnabled, rules, categoryId } = ruleSet;
     await updateRuleSet({
-      id,
-      facets,
-      merchandisingRules: rules,
+      ruleSetId: id,
+      rules: {
+        facets,
+        rules,
+        isEnabled: !isEnabled,
+      },
       categoryId,
-      isEnabled: !isEnabled,
     });
     const updatedRuleSetsList = categoryRuleSets.map(
       (ruleset: ReturnedRuleSet) =>

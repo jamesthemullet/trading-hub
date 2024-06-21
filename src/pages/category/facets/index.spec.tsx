@@ -209,10 +209,12 @@ describe('Category facet management', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryId: mockCatId,
-      facets: [],
-      id: mockId,
-      isEnabled: false,
-      merchandisingRules: mockMerchandisingRules,
+      ruleSetId: mockId,
+      rules: {
+        facets: [],
+        rules: mockMerchandisingRules,
+        isEnabled: false,
+      },
     });
   });
 });

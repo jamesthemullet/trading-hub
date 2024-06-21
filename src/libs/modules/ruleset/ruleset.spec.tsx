@@ -339,7 +339,42 @@ describe('Ruleset', () => {
     });
 
     expect(mockSave).toHaveBeenCalledWith(
-      expect.objectContaining({ categoryId: categoryId1 })
+      expect.objectContaining({ categoryIds: [categoryId1] })
+    );
+  });
+
+  it('should save a global ruleset', async () => {
+    const mockSave = jest.fn();
+
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    renderWithProviders(
+      <Ruleset
+        isEnabled={true}
+        onSave={mockSave}
+        onCancel={jest.fn()}
+        rulesetMerchandisingRules={{
+          pinnedProducts: [{ id: 'abc123' }],
+          blockedProducts: [],
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
+        }}
+        rulesetId={ruleSetId}
+        rulesetType="global"
+      />
+    );
+
+    const saveButton = await screen.findByText(SAVE_BUTTON);
+
+    act(() => {
+      saveButton.click();
+    });
+
+    expect(mockSave).toHaveBeenCalledWith(
+      expect.objectContaining({ ruleSetId })
     );
   });
 

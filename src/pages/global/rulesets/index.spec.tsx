@@ -31,7 +31,7 @@ jest.mock('../../../libs/hooks/use-global-rule-set-delete', () => ({
 const mockUpdateRuleSet = jest.fn();
 jest.mock('../../../libs/hooks/use-global-rule-set-update', () => ({
   useGlobalRuleSetUpdate: () => {
-    return { handleEdit: mockUpdateRuleSet, isSaving: true };
+    return { saveGlobalRuleset: mockUpdateRuleSet, isSaving: true };
   },
 }));
 

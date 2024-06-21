@@ -47,7 +47,6 @@ describe('ProductGridHeader', () => {
         onCancel={jest.fn()}
         hasChanges={false}
         isNewRuleSet={false}
-        categoryId="123"
         shouldHidePreview={false}
       />
     );
@@ -61,11 +60,11 @@ describe('ProductGridHeader', () => {
     expect(mockSave).toHaveBeenCalled();
   });
 
-  it('should not call save callback on click if categoryId is empty', () => {
+  it('should not call save callback on click if does not have preview', () => {
     const mockSave = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        hasPreview={true}
+        hasPreview={false}
         onPreview={jest.fn()}
         onSave={mockSave}
         onCancel={jest.fn()}

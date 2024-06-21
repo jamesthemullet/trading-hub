@@ -59,9 +59,11 @@ describe('useUpdateRuleSet', () => {
       result: { current },
     } = renderHook(() => useUpdateRuleSet());
     const resp = await current.updateRuleSet({
-      id: ruleSetId,
-      isEnabled: true,
-      merchandisingRules: mockMerchandisingRules,
+      ruleSetId,
+      rules: {
+        isEnabled: true,
+        rules: mockMerchandisingRules,
+      },
       categoryId: categoryId,
     });
 
@@ -78,9 +80,11 @@ describe('useUpdateRuleSet', () => {
 
     await act(async () => {
       await result.current.updateRuleSet({
-        id: ruleSetId,
-        isEnabled: true,
-        merchandisingRules: mockMerchandisingRules,
+        ruleSetId,
+        rules: {
+          isEnabled: true,
+          rules: mockMerchandisingRules,
+        },
         categoryId: categoryId,
       });
     });
@@ -96,9 +100,11 @@ describe('useUpdateRuleSet', () => {
 
     await act(async () => {
       await result.current.updateRuleSet({
-        id: ruleSetId,
-        isEnabled: true,
-        merchandisingRules: mockMerchandisingRules,
+        ruleSetId,
+        rules: {
+          isEnabled: true,
+          rules: mockMerchandisingRules,
+        },
         categoryId: categoryId,
       });
     });

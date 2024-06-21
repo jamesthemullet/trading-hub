@@ -33,13 +33,11 @@ type Props = {
   isNewRuleSet: boolean;
   onCancel: () => void;
   onPreview: () => void;
-  onSave: (id: string) => void;
+  onSave: () => void;
   shouldHidePreview: boolean;
-  categoryId?: string;
 };
 
 export const ProductGridHeader = ({
-  categoryId,
   hasChanges,
   hasPreview,
   isNewRuleSet,
@@ -56,11 +54,6 @@ export const ProductGridHeader = ({
     } else {
       onCancel();
     }
-  };
-  const handleSave = () => {
-    if (!categoryId) return;
-
-    onSave(categoryId);
   };
 
   const isSaveButtonDisabled = shouldHidePreview ? false : !hasPreview;
@@ -80,7 +73,7 @@ export const ProductGridHeader = ({
           <Button
             theme="primary"
             isDisabled={isSaveButtonDisabled}
-            onClick={handleSave}
+            onClick={onSave}
           >
             {isNewRuleSet ? 'Create' : 'Save'}
           </Button>

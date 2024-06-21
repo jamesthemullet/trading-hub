@@ -5,7 +5,7 @@ import { RuleSet, search } from '@/libs/api';
 export const useGlobalRuleSetUpdate = () => {
   const [error, setError] = useState('');
 
-  const handleEdit = useCallback(
+  const saveGlobalRuleset = useCallback(
     async ({ ruleSetId, ruleSet }: { ruleSetId: string; ruleSet: RuleSet }) => {
       setError('');
 
@@ -23,5 +23,5 @@ export const useGlobalRuleSetUpdate = () => {
     []
   );
 
-  return { handleEdit, error };
+  return { saveGlobalRuleset, error };
 };

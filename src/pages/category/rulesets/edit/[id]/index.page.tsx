@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import type { MerchandisingRules, RuleSetFacetConfigWithId } from '@/libs/api';
+import type { RuleSet } from '@/libs/api';
 import { Heading, Loader } from '@/libs/components';
 import { useRuleSetPreview, useUpdateRuleSet } from '@/libs/hooks';
 
@@ -18,24 +18,21 @@ const Page = ({ id }: PageProps) => {
   const router = useRouter();
 
   const saveRuleSet = async ({
-    categoryId,
-    facets,
-    isEnabled,
-    merchandisingRules,
-    rulesetId,
+    categoryIds,
+    ruleSetId,
+    ruleSet,
   }: {
-    categoryId: string;
-    facets?: Array<RuleSetFacetConfigWithId>;
-    isEnabled: boolean;
-    merchandisingRules: MerchandisingRules;
-    rulesetId: string;
+    categoryId?: string;
+    categoryIds?: Array<string>;
+    ruleSetId: string;
+    ruleSet: RuleSet;
   }) => {
+    // istanbul ignore next
+    if (!categoryIds?.[0]) return;
     await updateRuleSet({
-      facets,
-      id: rulesetId,
-      isEnabled,
-      merchandisingRules,
-      categoryId,
+      ruleSetId,
+      rules: ruleSet,
+      categoryId: categoryIds[0],
     }).then(() => {
       router.push('/category/rulesets');
     });

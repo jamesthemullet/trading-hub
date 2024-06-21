@@ -58,7 +58,7 @@ describe('useGlobalRuleSetDelete', () => {
     const { result } = renderHook(() => useGlobalRuleSetUpdate());
 
     await act(async () => {
-      await result.current.handleEdit({ ruleSetId: ruleSetId, ruleSet });
+      await result.current.saveGlobalRuleset({ ruleSetId: ruleSetId, ruleSet });
     });
 
     expect(result.current.error).toEqual('');
@@ -72,7 +72,7 @@ describe('useGlobalRuleSetDelete', () => {
     const { result } = renderHook(() => useGlobalRuleSetUpdate());
 
     await act(async () => {
-      await result.current.handleEdit({ ruleSetId: ruleSetId, ruleSet });
+      await result.current.saveGlobalRuleset({ ruleSetId: ruleSetId, ruleSet });
     });
 
     expect(result.current.error).toEqual(

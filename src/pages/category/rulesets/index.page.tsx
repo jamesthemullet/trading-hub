@@ -82,13 +82,15 @@ const RuleSets = () => {
     // istanbul ignore next
     if (!ruleSet) return;
 
-    const { facets, isEnabled, rules, categoryId } = ruleSet;
+    const { categoryId, facets, rules, isEnabled } = ruleSet;
     await updateRuleSet({
-      id,
-      facets,
-      merchandisingRules: rules,
+      ruleSetId: id,
+      rules: {
+        facets,
+        rules,
+        isEnabled: !isEnabled,
+      },
       categoryId,
-      isEnabled: !isEnabled,
     });
     const updatedRuleSetsList = categoryRuleSets.map(
       (ruleset: ReturnedRuleSet) =>

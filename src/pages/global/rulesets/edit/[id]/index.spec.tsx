@@ -13,6 +13,13 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+const mockUpdateGlobalRuleSet = jest.fn(() => Promise.resolve());
+jest.mock('@/libs/hooks/use-global-rule-set-update', () => ({
+  useGlobalRuleSetUpdate: () => {
+    return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
+  },
+}));
+
 describe('Index', () => {
   const mockRouter = {
     push: jest.fn(),
@@ -24,6 +31,30 @@ describe('Index', () => {
 
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
+  });
+
+  it('should save ruleset', async () => {
+    const expectedRuleSet = {
+      ruleSet: {
+        facets: [],
+        isEnabled: false,
+        rules: {
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: { alphanumeric: [], numeric: [], product: [] },
+          pinnedProducts: [],
+        },
+      },
+      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+    };
+    const user = userEvent.setup({ delay: null });
+
+    render(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByText('Save'));
+
+    expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
+    expect(mockRouter.push).toHaveBeenCalledWith('/global/rulesets');
   });
 
   it('should cancel changes to a ruleset', async () => {

@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 
+import { RuleSet } from '@/libs/api';
 import { Heading } from '@/libs/components';
-import { useGlobalRuleSetDetail } from '@/libs/hooks';
+import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -12,11 +13,22 @@ type PageProps = {
 
 const Page = ({ id }: PageProps) => {
   const { globalRuleSet } = useGlobalRuleSetDetail(id);
+  const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
   const router = useRouter();
 
-  // istanbul ignore next
-  const saveRuleSet = async () => {
-    console.log('TODO');
+  const saveRuleSet = async ({
+    ruleSetId,
+    ruleSet,
+  }: {
+    ruleSetId: string;
+    ruleSet: RuleSet;
+  }) => {
+    await saveGlobalRuleset({
+      ruleSetId,
+      ruleSet,
+    }).then(() => {
+      router.push('/global/rulesets');
+    });
   };
 
   return (
@@ -31,6 +43,7 @@ const Page = ({ id }: PageProps) => {
         onCancel={() => router.push('/global/rulesets')}
         rulesetMerchandisingRules={globalRuleSet.rules}
         rulesetType="global"
+        rulesetId={id}
       />
     </>
   );

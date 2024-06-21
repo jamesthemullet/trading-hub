@@ -254,10 +254,12 @@ describe('Index', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryId: mockCatId,
-      facets: [],
-      id: mockId,
-      isEnabled: false,
-      merchandisingRules: mockMerchandisingRules,
+      ruleSetId: mockId,
+      rules: {
+        facets: [],
+        isEnabled: false,
+        rules: mockMerchandisingRules,
+      },
     });
   });
 });

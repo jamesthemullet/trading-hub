@@ -57,7 +57,7 @@ const RuleSets = () => {
     'global'
   );
   const { handleDelete } = useGlobalRuleSetDelete();
-  const { handleEdit } = useGlobalRuleSetUpdate();
+  const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
   const { createGlobalRuleSet } = useGlobalRuleSetCreate();
   const router = useRouter();
 
@@ -71,7 +71,7 @@ const RuleSets = () => {
     // istanbul ignore next
     if (!ruleSet) return null;
 
-    await handleEdit({
+    await saveGlobalRuleset({
       ruleSetId: id,
       ruleSet: {
         facets: ruleSet.facets,

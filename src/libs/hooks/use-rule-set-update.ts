@@ -1,10 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import {
-  merchandising,
-  MerchandisingRules,
-  RuleSetFacetConfigWithId,
-} from '@/libs/api';
+import { merchandising, RuleSet } from '@/libs/api';
 
 export const useUpdateRuleSet = () => {
   const [error, setError] = useState('');
@@ -13,28 +9,25 @@ export const useUpdateRuleSet = () => {
   const updateRuleSet = useCallback(
     async ({
       categoryId,
-      facets,
-      id,
-      isEnabled,
-      merchandisingRules,
+      ruleSetId,
+      rules,
     }: {
       categoryId: string;
-      facets?: Array<RuleSetFacetConfigWithId>;
-      id: string;
-      isEnabled: boolean;
-      merchandisingRules: MerchandisingRules;
+      ruleSetId: string;
+      rules: RuleSet;
     }) => {
       setError('');
       setIsSaving(true);
 
       try {
+        // TODO: move to search/beta api when ready for use
         const body = {
           categoryId,
-          facets,
-          isEnabled,
-          rules: merchandisingRules,
+          facets: rules.facets,
+          isEnabled: rules.isEnabled,
+          rules: rules.rules,
         };
-        const response = await merchandising().rulesetUpdate(id, body);
+        const response = await merchandising().rulesetUpdate(ruleSetId, body);
 
         setIsSaving(false);
         return response.data;

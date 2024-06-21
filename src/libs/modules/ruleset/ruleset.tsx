@@ -6,10 +6,11 @@ import type {
   AlphanumericBoostBury,
   AttributeType,
   Category,
+  CategoryRuleSet,
   MerchandisingRules,
   NumericBoostBury,
   Product,
-  RuleSetFacetConfigWithId,
+  RuleSet,
 } from '@/libs/api';
 
 import isEqual from 'lodash/isEqual';
@@ -80,17 +81,6 @@ export type ChangePositionTypes = {
   newPosition: number;
 };
 
-type NewRulesetValues = {
-  isEnabled: boolean;
-  categoryId: string;
-  merchandisingRules: MerchandisingRules;
-  facets?: Array<RuleSetFacetConfigWithId>;
-};
-
-interface EditRulesetValues extends NewRulesetValues {
-  rulesetId: string;
-}
-
 export type EditAttribute = {
   attribute: AlphanumericBoostBury | NumericBoostBury;
   change: 'add' | 'remove' | 'modify';
@@ -110,9 +100,18 @@ export const Ruleset = ({
   rulesetType,
 }: {
   isEnabled: boolean;
-  onSave?: ({ rulesetId }: EditRulesetValues) => void;
+  onSave?: ({
+    ruleSetId,
+    ruleSet,
+    categoryIds,
+  }: {
+    ruleSetId: string;
+    ruleSet: RuleSet;
+    categoryIds?: Array<string>;
+  }) => void;
   onCancel: () => void;
-  onCreate?: ({ categoryId, merchandisingRules }: NewRulesetValues) => void;
+  // TODO: update to allow for keyword search
+  onCreate?: ({ categoryId, rules }: CategoryRuleSet) => void;
   rulesetCategory?: Category;
   rulesetId?: string;
   rulesetMerchandisingRules?: MerchandisingRules;
@@ -377,21 +376,25 @@ export const Ruleset = ({
     },
   ];
 
-  const onSaveRuleset = (categoryId: string) => {
-    if (rulesetId && onSave) {
+  const onSaveRuleset = () => {
+    if (onSave && rulesetId) {
       onSave({
-        facets: [], // TODO: send ruleset facet data
-        isEnabled,
-        rulesetId,
-        merchandisingRules,
-        categoryId,
+        ruleSetId: rulesetId,
+        ruleSet: {
+          facets: [], // TODO: send ruleset facet data when API ready
+          isEnabled,
+          rules: merchandisingRules,
+        },
+        ...(selectedCategory.identifier && {
+          categoryIds: [selectedCategory.identifier],
+        }),
       });
-    } else if (onCreate) {
+    } else if (onCreate && selectedCategory.identifier) {
       onCreate({
-        facets: [], // TODO: send ruleset facet data
+        facets: [], // TODO: send ruleset facet data when API ready
         isEnabled,
-        merchandisingRules,
-        categoryId,
+        rules: merchandisingRules,
+        categoryId: selectedCategory.identifier,
       });
     }
   };
@@ -407,11 +410,10 @@ export const Ruleset = ({
       )}
 
       <ProductGridHeader
-        onSave={(categoryId) => {
-          onSaveRuleset(categoryId);
+        onSave={() => {
+          onSaveRuleset();
           setHasChanges(false);
         }}
-        categoryId={selectedCategory.identifier}
         hasPreview={!!selectedCategory?.identifier}
         onPreview={() => setShowPreview(!showPreview)}
         hasChanges={hasChanges}

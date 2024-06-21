@@ -19,7 +19,7 @@ jest.mock('@/libs/hooks', () => ({
 
 jest.mock('@/libs/hooks/use-global-rule-set-update', () => ({
   useGlobalRuleSetUpdate: () => {
-    return { handleEdit: mockUpdateGlobalRuleSet, isSaving: true };
+    return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
   },
 }));
 
