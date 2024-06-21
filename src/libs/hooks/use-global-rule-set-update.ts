@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { RuleSet, search } from '@/libs/api';
 
-export const useGlobalRuleSetEdit = () => {
+export const useGlobalRuleSetUpdate = () => {
   const [error, setError] = useState('');
 
   const handleEdit = useCallback(

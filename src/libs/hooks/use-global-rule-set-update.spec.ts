@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { useGlobalRuleSetEdit } from './use-global-rule-set-edit';
+import { useGlobalRuleSetUpdate } from './use-global-rule-set-update';
 
 const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 const baseUrl = 'http://localhost';
@@ -55,7 +55,7 @@ describe('useGlobalRuleSetDelete', () => {
       data: 'ok',
       status: { status: 200 },
     });
-    const { result } = renderHook(() => useGlobalRuleSetEdit());
+    const { result } = renderHook(() => useGlobalRuleSetUpdate());
 
     await act(async () => {
       await result.current.handleEdit({ ruleSetId: ruleSetId, ruleSet });
@@ -69,7 +69,7 @@ describe('useGlobalRuleSetDelete', () => {
       data: 'not ok',
       status: { status: 500 },
     });
-    const { result } = renderHook(() => useGlobalRuleSetEdit());
+    const { result } = renderHook(() => useGlobalRuleSetUpdate());
 
     await act(async () => {
       await result.current.handleEdit({ ruleSetId: ruleSetId, ruleSet });

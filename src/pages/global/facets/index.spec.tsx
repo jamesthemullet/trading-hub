@@ -17,8 +17,8 @@ jest.mock('@/libs/hooks', () => ({
   },
 }));
 
-jest.mock('@/libs/hooks/use-global-rule-set-edit', () => ({
-  useGlobalRuleSetEdit: () => {
+jest.mock('@/libs/hooks/use-global-rule-set-update', () => ({
+  useGlobalRuleSetUpdate: () => {
     return { handleEdit: mockUpdateGlobalRuleSet, isSaving: true };
   },
 }));
@@ -132,14 +132,65 @@ describe('Global Facet Management', () => {
       ruleSetId: mockId,
       ruleSet: {
         facets: [],
-        id: mockId,
         isEnabled: false,
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
         rules: mockMerchandisingRules,
       },
     });
+  });
+
+  it('should delete a ruleset', async () => {
+    const mockId = 'fdq3r3-123d3-f32f23f-23r2';
+    const user = userEvent.setup();
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    const rulesetDropdown = screen.getAllByTitle('More options');
+
+    await user.click(rulesetDropdown[0]);
+
+    const deleteButton = screen.getByText('Delete');
+    await user.click(deleteButton);
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByText('Cancel'));
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).not.toBeVisible();
+    });
+
+    await user.click(deleteButton);
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).toBeVisible();
+    });
+    await user.click(screen.getByLabelText('Delete rule'));
+    expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 });

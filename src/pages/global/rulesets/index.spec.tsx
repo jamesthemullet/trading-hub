@@ -22,22 +22,22 @@ jest.mock('../../../libs/hooks/use-rule-set', () => ({
 }));
 
 const mockRuleSetDelete = jest.fn();
-jest.mock('../../../libs/hooks/use-rule-set-delete', () => ({
-  useRuleSetDelete: () => {
+jest.mock('../../../libs/hooks/use-global-rule-set-delete', () => ({
+  useGlobalRuleSetDelete: () => {
     return { handleDelete: mockRuleSetDelete };
   },
 }));
 
 const mockUpdateRuleSet = jest.fn();
-jest.mock('../../../libs/hooks/use-rule-set-update', () => ({
-  useUpdateRuleSet: () => {
-    return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
+jest.mock('../../../libs/hooks/use-global-rule-set-update', () => ({
+  useGlobalRuleSetUpdate: () => {
+    return { handleEdit: mockUpdateRuleSet, isSaving: true };
   },
 }));
 
 const NEW_RULE_BUTTON_TEXT = 'Add rule';
 
-const mockMerchangdisingRules = {
+const mockMerchandisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
   boosts: { numeric: [], alphanumeric: [], product: [] },
@@ -110,7 +110,7 @@ describe('Index', () => {
           user: 'user',
           date: '2021-01-01',
         },
-        rules: mockMerchangdisingRules,
+        rules: mockMerchandisingRules,
         facets: [],
       })),
       pagination: {
@@ -184,5 +184,105 @@ describe('Index', () => {
     expect(mockRouter.push).toHaveBeenCalledWith(
       `/global/rulesets/edit/${MOCK_CATEGORY_ID}`
     );
+  });
+
+  it('should enable or disable a ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    const rulesetToggle = screen.getAllByTitle('Toggle');
+
+    await userEvent.click(rulesetToggle[0]);
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      ruleSetId: mockId,
+      ruleSet: {
+        isEnabled: false,
+        facets: [],
+        rules: mockMerchandisingRules,
+      },
+    });
+  });
+
+  it('should delete a ruleset', async () => {
+    const mockId = 'fdq3r3-123d3-f32f23f-23r2';
+    const user = userEvent.setup();
+    const mockRefectRulesList = jest.fn();
+
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      refetchRuleSetList: mockRefectRulesList,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    const rulesetDropdown = screen.getAllByTitle('More options');
+
+    await user.click(rulesetDropdown[0]);
+
+    const deleteButton = screen.getByText('Delete');
+    await user.click(deleteButton);
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByText('Cancel'));
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).not.toBeVisible();
+    });
+
+    await user.click(deleteButton);
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).toBeVisible();
+    });
+    await user.click(screen.getByLabelText('Delete rule'));
+
+    expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
+    expect(mockRefectRulesList).toHaveBeenCalled();
   });
 });

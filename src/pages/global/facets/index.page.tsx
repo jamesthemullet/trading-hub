@@ -11,8 +11,12 @@ import {
   TablePagination,
 } from '@/libs/components';
 import { spacing } from '@/libs/components/utils/spacing';
-import { useDebounce, useGlobalRuleSetDelete, useRuleSet } from '@/libs/hooks';
-import { useGlobalRuleSetEdit } from '@/libs/hooks/use-global-rule-set-edit';
+import {
+  useDebounce,
+  useGlobalRuleSetDelete,
+  useGlobalRuleSetUpdate,
+  useRuleSet,
+} from '@/libs/hooks';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -30,7 +34,7 @@ const FacetManagementPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const { handleDelete } = useGlobalRuleSetDelete();
-  const { handleEdit } = useGlobalRuleSetEdit();
+  const { handleEdit } = useGlobalRuleSetUpdate();
 
   const currentPageIndex = currentPage - 1;
 
@@ -45,16 +49,17 @@ const FacetManagementPage = () => {
     setSearchQuery(val);
   }, 300);
 
-  // istanbul ignore next
   const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
     const ruleSet = globalRuleSets.find((ruleset) => ruleset.id === id);
 
+    // istanbul ignore next
     if (!ruleSet) return null;
 
     await handleEdit({
       ruleSetId: id,
       ruleSet: {
-        ...ruleSet,
+        facets: ruleSet.facets,
+        rules: ruleSet.rules,
         isEnabled: !ruleSet.isEnabled,
       },
     });
@@ -62,7 +67,6 @@ const FacetManagementPage = () => {
     refetchRuleSetList();
   };
 
-  // istanbul ignore next
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
     await handleDelete({ rulesetId: id });
     refetchRuleSetList();

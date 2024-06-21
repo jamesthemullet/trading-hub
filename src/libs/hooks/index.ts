@@ -11,6 +11,7 @@ export * from './use-global-facets-list';
 export * from './use-global-rule-set-create';
 export * from './use-global-rule-set-delete';
 export * from './use-global-rule-set-detail';
+export * from './use-global-rule-set-update';
 export * from './use-mouse-focus';
 export * from './use-on-outside-click';
 export * from './use-rule-set';

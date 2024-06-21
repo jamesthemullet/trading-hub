@@ -10,7 +10,13 @@ import {
   TablePagination,
 } from '@/libs/components';
 import { spacing } from '@/libs/components/utils/spacing';
-import { useDebounce, useGlobalRuleSetCreate, useRuleSet } from '@/libs/hooks';
+import {
+  useDebounce,
+  useGlobalRuleSetCreate,
+  useGlobalRuleSetDelete,
+  useGlobalRuleSetUpdate,
+  useRuleSet,
+} from '@/libs/hooks';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -44,13 +50,14 @@ const RuleSets = () => {
 
   const currentPageIndex = currentPage - 1;
 
-  const { globalRuleSets, pagination } = useRuleSet(
+  const { globalRuleSets, pagination, refetchRuleSetList } = useRuleSet(
     searchQuery,
     currentPageIndex * currentPageSize,
     currentPageSize,
     'global'
   );
-
+  const { handleDelete } = useGlobalRuleSetDelete();
+  const { handleEdit } = useGlobalRuleSetUpdate();
   const { createGlobalRuleSet } = useGlobalRuleSetCreate();
   const router = useRouter();
 
@@ -58,14 +65,27 @@ const RuleSets = () => {
     setSearchQuery(val);
   }, 300);
 
-  // istanbul ignore next
-  const onEnableDisableRuleSet = ({ id }: { id: string }) => {
-    console.log('TODO LPN-1833', id);
+  const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
+    const ruleSet = globalRuleSets.find((ruleset) => ruleset.id === id);
+
+    // istanbul ignore next
+    if (!ruleSet) return null;
+
+    await handleEdit({
+      ruleSetId: id,
+      ruleSet: {
+        facets: ruleSet.facets,
+        rules: ruleSet.rules,
+        isEnabled: !ruleSet.isEnabled,
+      },
+    });
+
+    refetchRuleSetList();
   };
 
-  // istanbul ignore next
-  const onDeleteRuleSet = ({ id }: { id: string }) => {
-    console.log('TODO LPN-1833', id);
+  const onDeleteRuleSet = async ({ id }: { id: string }) => {
+    await handleDelete({ rulesetId: id });
+    refetchRuleSetList();
   };
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
