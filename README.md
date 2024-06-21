@@ -30,17 +30,17 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Running with docker compose
+### Running with docker compose
 
 You will need docker installed on your laptop. Unfortunately M&S doesn't provide a license, you can either buy your own or use Podman or Rancher which are free alternatives. Docker however being on the market the longest has best developer experience.
 
-### Building image
+#### Building image
 
 In terminal cd to root directory and execute:
 
 `docker-compose build merchandising-hub`
 
-### Running
+#### Running
 
 In terminal cd to root directory and execute:
 
@@ -48,7 +48,7 @@ In terminal cd to root directory and execute:
 
 `-d` runs the container in the background
 
-### Cleaning
+#### Cleaning
 
 When you are done, execute:
 
@@ -80,6 +80,8 @@ Tests require 100% coverage for all files, watch mode can be enabled by running 
 
 ### E2E tests
 
+#### Running e2e tests locally
+
 Playwright is set up for running e2e tests locally, to set up:
 
 Replace the following env variables with your own cookie values
@@ -102,6 +104,18 @@ npm run test:e2e
 ```
 
 Click the green run button in the playwright UI
+
+#### Running e2e tests with docker compose
+
+To run tests with all logs from all images just execute
+
+`docker-compose up`
+
+You can execute
+
+`docker-compose up merchandising-hub-e2e`
+
+If you want to see output of just e2e container
 
 ### Code formatting
 

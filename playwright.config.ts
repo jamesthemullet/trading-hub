@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -15,21 +15,13 @@ export default defineConfig({
   reporter: 'html',
   use: {
     trace: 'on-first-retry',
+    channel: 'chrome',
+    baseURL: process.env.E2E_TARGET_URL || 'http://localhost:3000',
   },
   projects: [
     {
       name: 'chromium',
-      use: {
-        browserName: 'chromium',
-        channel: 'chrome',
-      },
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
-
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://127.0.0.1:3000',
-    reuseExistingServer: !process.env.CI,
-  },
 });

@@ -1,4 +1,3 @@
-version: '3'
 services:
   merchandising-hub:
     build:
@@ -6,6 +5,9 @@ services:
       target: runner
     ports:
       - '3000:3000'
+    networks:
+      - frontend
+      - default
     environment:
       MERCHANDISING_API_BASEURL: ${MERCHANDISING_API_BASEURL}
       MERCHANDISING_API_APIGEE_KEY: ${MERCHANDISING_API_APIGEE_KEY}
@@ -14,3 +16,29 @@ services:
       AZURE_AD_CLIENT_ID: ${AZURE_AD_CLIENT_ID}
       AZURE_AD_TENANT_ID: ${AZURE_AD_TENANT_ID}
       AZURE_AD_CLIENT_SECRET: ${AZURE_AD_CLIENT_SECRET}
+    healthcheck:
+      test: curl --fail http://localhost:3000/api/healthcheck | grep ok || exit 1
+      # After this time the check will start and continue every interval seconds
+      interval: 3s
+      # If a single run takes more than timeout seconds then the check will be considered failed
+      timeout: 10s
+      # How many times to retry the check before considering the service as unhealthy
+      retries: 5
+      # Probe failing during this period will be not counted towards unhealthy, but if it succeeds it will mark container as healthy
+      start_period: 5s
+  merchandising-hub-e2e:
+    build:
+      context: .
+      target: e2e
+    networks:
+      - frontend
+      - default
+    depends_on:
+      merchandising-hub:
+        condition: service_healthy
+    environment:
+      E2E_TARGET_URL: http://merchandising-hub:3000
+    entrypoint: npm run test:e2e
+
+networks:
+  frontend:
