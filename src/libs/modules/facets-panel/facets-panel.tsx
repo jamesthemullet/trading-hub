@@ -151,6 +151,7 @@ export const FacetsPanel = ({
   setSearch,
   onFacetDataChange,
   onFacetsDataRowOrderChange,
+  onHandleStatusChange,
   title,
   facetsData,
   defaultCategory,
@@ -237,8 +238,8 @@ export const FacetsPanel = ({
             <FacetOrderDropdown
               status={facet.status}
               onChange={(status): void => {
-                if (onFacetDataChange) {
-                  onFacetDataChange(index, status, facet);
+                if (onHandleStatusChange) {
+                  onHandleStatusChange(index, status);
                 }
               }}
             />

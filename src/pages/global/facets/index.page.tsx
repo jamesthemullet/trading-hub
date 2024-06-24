@@ -80,7 +80,7 @@ const FacetManagementPage = () => {
     isEnabled,
     lastChanged,
     onToggle: onEnableDisableRuleSet,
-    url: `/global/facets/edit/1`,
+    url: `/global/facets/edit/${id}`,
   }));
 
   return (

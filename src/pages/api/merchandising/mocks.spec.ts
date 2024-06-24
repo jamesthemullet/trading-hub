@@ -171,7 +171,7 @@ describe('mocks', () => {
 
   describe('/merchandising/facet/{facetId}', () => {
     it('should return globalFacet when status is not 200', () => {
-      const id = 'color-id';
+      const id = 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84';
       const mockMapping = getMockMapping();
       expect(mockMapping['/merchandising/facet/{facetId}'].get).toBeDefined();
 

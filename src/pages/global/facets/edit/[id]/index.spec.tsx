@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 
 import { useGetCategories } from '@/libs/hooks';
 import { useGlobalFacetsList } from '@/libs/hooks/use-global-facets-list';
+import { useGlobalRuleSetDetail } from '@/libs/hooks/use-global-rule-set-detail';
+import { useRuleSet } from '@/libs/hooks/use-rule-set';
 import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
 import { renderWithProviders } from '../../../../../test/render-with-providers';
@@ -18,8 +20,24 @@ jest.mock('@/libs/hooks', () => ({
   useGetCategories: jest.fn(),
 }));
 
+jest.mock('@/libs/hooks/use-rule-set', () => ({
+  useRuleSet: jest.fn(),
+}));
+
 jest.mock('@/libs/hooks/use-global-facets-list', () => ({
   useGlobalFacetsList: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/use-global-rule-set-detail', () => ({
+  useGlobalRuleSetDetail: jest.fn(),
+}));
+
+const mockUpdateGlobalRuleSet = jest.fn();
+
+jest.mock('@/libs/hooks/use-global-rule-set-update', () => ({
+  useGlobalRuleSetUpdate: () => {
+    return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
+  },
 }));
 
 const logSpy = jest.spyOn(console, 'log');
@@ -38,10 +56,17 @@ const mockGetCategories = {
   ],
   pagination: { totalItems: 20 },
 };
+const mockMerchandisingRules = {
+  pinnedProducts: [],
+  blockedProducts: [],
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
+};
 
 describe('Global Facet Management Editing', () => {
   const mockRouter = {
     push: jest.fn(),
+    query: { id: '123' },
   };
 
   beforeEach(() => {
@@ -53,6 +78,47 @@ describe('Global Facet Management Editing', () => {
       isLoading: false,
       facets: globalFacetsListMock.facets,
       error: '',
+    });
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
+        categoryName: `identifier-${i}`,
+        id: `${i}`,
+        categoriesInfo: [
+          {
+            id: 'foo00',
+          },
+        ],
+        categoryId: `${i}`,
+        isEnabled: true,
+        lastChanged: {
+          user: 'user',
+          date: '2021-01-01',
+        },
+        rules: mockMerchandisingRules,
+        setRuleSets: jest.fn(),
+        facets: [],
+      })),
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 80,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+    });
+    jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
+      globalRuleSet: {
+        id: '123',
+        isEnabled: true,
+        lastChanged: {
+          date: '2021-01-01',
+          user: 'Test user',
+        },
+        rules: mockMerchandisingRules,
+        facets: [],
+      },
+      error: '',
+      isLoading: false,
     });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
@@ -113,8 +179,14 @@ describe('Global Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    // TODO: Implement save functionality
-    expect(logSpy).toHaveBeenCalled();
+    expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
+      ruleSetId: '123',
+      ruleSet: {
+        facets: globalFacetsListMock.facets,
+        rules: mockMerchandisingRules,
+        isEnabled: true,
+      },
+    });
   });
 
   it('should render skeleton when loading', () => {
@@ -173,6 +245,30 @@ describe('Global Facet Management Editing', () => {
         'Edit display name for colour'
       );
       expect(newEditButton).toBeVisible();
+    });
+  });
+
+  it('should update status on dropdown change', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page />);
+
+    const dropdownHeader = screen.getAllByTestId(
+      'button to open facet order dropdown'
+    )[0];
+
+    expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
+      'background-color: #f4faed'
+    );
+
+    await user.click(dropdownHeader);
+
+    const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
+
+    await user.click(excludeOnlyOption);
+    await waitFor(() => {
+      expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
+        'background-color: #FFF3F4'
+      );
     });
   });
 

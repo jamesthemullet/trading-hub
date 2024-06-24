@@ -161,7 +161,7 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
       displayValue: 'color',
       indexPropertyName: 'color',
       status: 'included',
-      id: 'color-id',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
       lastChanged: {
         date: '2021-01-01T08:34:15Z',
         user: 'Test User',
@@ -172,7 +172,7 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
       displayValue: 'size',
       indexPropertyName: 'size',
       status: 'included',
-      id: 'size-id',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
       lastChanged: {
         date: '2021-01-02T08:34:15Z',
         user: 'Test User',
@@ -183,7 +183,7 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
       displayValue: 'brand',
       indexPropertyName: 'brand',
       status: 'included',
-      id: 'brand-id',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
       lastChanged: {
         date: '2021-01-03T08:34:15Z',
         user: 'Test User',
@@ -194,7 +194,7 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
       displayValue: 'category',
       indexPropertyName: 'category',
       status: 'included',
-      id: 'category-id',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
       lastChanged: {
         date: '2021-01-04T08:34:15Z',
         user: 'Test User',
@@ -205,7 +205,7 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
       displayValue: 'price',
       indexPropertyName: 'price',
       status: 'excluded',
-      id: 'price-id',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
       lastChanged: {
         date: '2021-01-05T08:34:15Z',
         user: 'Test User',

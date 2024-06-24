@@ -4,8 +4,13 @@ import { useRouter } from 'next/router';
 import { ReturnedFacet } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
-import { useFacetsFilter } from '@/libs/hooks/use-facets-filter';
+import {
+  useFacetsFilter,
+  useGlobalFacetsList,
+  useGlobalFacetUpdate,
+  useGlobalRuleSetDetail,
+  useGlobalRuleSetUpdate,
+} from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
@@ -19,15 +24,7 @@ const Page = () => {
   const { facets, isLoading } = useGlobalFacetsList();
 
   const router = useRouter();
-
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log('save');
-  };
-
-  const handleCancel = () => {
-    router.push('/global/facets');
-  };
+  const globalId = router.query.id as string;
 
   const [localFacetData, setLocalFacetData] = useState<ReturnedFacet[]>(facets);
 
@@ -38,17 +35,32 @@ const Page = () => {
   const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
 
   const { handleUpdate } = useGlobalFacetUpdate();
+  const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
+  const { globalRuleSet } = useGlobalRuleSetDetail(globalId);
+
+  const handleSave = async () => {
+    await saveGlobalRuleset({
+      ruleSetId: globalRuleSet.id,
+      ruleSet: {
+        facets: filteredFacets,
+        rules: globalRuleSet.rules,
+        isEnabled: globalRuleSet.isEnabled,
+      },
+    });
+  };
+
+  const handleCancel = () => {
+    router.push('/global/facets');
+  };
 
   const onFacetDataChange = async (
     index: number,
     value: string | 'included' | 'excluded',
     facet: ReturnedFacet
   ) => {
-    // TO-DO handle key of status - this is in endpoint /search/beta/merchandising/global/ruleset/{ruleSetId}
     const response = await handleUpdate({
       facetId: facet.id,
       data: {
-        // TO-DO when status is handled, displayValue will need to equal key === 'displayValue' ? value : facet.displayValue
         displayValue: value,
         indexPropertyName: facet.indexPropertyName,
         excludedValues: facet.excludedValues,
@@ -60,6 +72,19 @@ const Page = () => {
       const updatedFacet: ReturnedFacet = {
         ...prev[index],
         displayValue: response.displayValue,
+      };
+      return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
+    });
+  };
+
+  const onHandleStatusChange = async (
+    index: number,
+    value: 'included' | 'excluded'
+  ) => {
+    setLocalFacetData((prev) => {
+      const updatedFacet: ReturnedFacet = {
+        ...prev[index],
+        status: value,
       };
       return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
     });
@@ -79,6 +104,7 @@ const Page = () => {
           onCancel={handleCancel}
           setSearch={setSearch}
           onFacetDataChange={onFacetDataChange}
+          onHandleStatusChange={onHandleStatusChange}
           title="Global Facet Rule Editor"
           facetsData={filteredFacets}
           defaultCategory={defaultCategory}

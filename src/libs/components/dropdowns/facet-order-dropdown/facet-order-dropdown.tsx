@@ -40,14 +40,14 @@ export const FacetOrderDropdown = ({
       index: 1,
       label: 'Include only',
       name: 'included',
-      src: '/trading-hub/asset/icon-tick.svg',
+      src: '/trading-hub/asset/icon-include-only.svg',
       selected: false,
     },
     {
       index: 2,
       label: 'Exclude only',
       name: 'excluded',
-      src: '/trading-hub/asset/icon-cross.svg',
+      src: '/trading-hub/asset/icon-exclude-only.svg',
       selected: false,
     },
   ]);

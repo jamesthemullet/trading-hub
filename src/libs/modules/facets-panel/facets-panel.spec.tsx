@@ -33,7 +33,7 @@ const mockGetCategories = {
 };
 const mockFacet = {
   displayValue: 'color',
-  id: 'color-id',
+  id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
   indexPropertyName: 'color',
   lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
   merged: [],
@@ -67,6 +67,7 @@ const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
 const setSearchSpy = jest.fn();
 const onFacetDataChangeSpy = jest.fn();
+const onHandleStatusChangeSpy = jest.fn();
 
 describe('Facet Panel', () => {
   beforeEach(() => {
@@ -252,7 +253,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         defaultOrderData={mockDefaultOrderData}
-        onFacetDataChange={onFacetDataChangeSpy}
+        onHandleStatusChange={onHandleStatusChangeSpy}
       />
     );
 
@@ -274,11 +275,7 @@ describe('Facet Panel', () => {
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(onFacetDataChangeSpy).toHaveBeenCalledWith(
-        0,
-        'excluded',
-        mockFacet
-      );
+      expect(onHandleStatusChangeSpy).toHaveBeenCalledWith(0, 'excluded');
     });
   });
 
