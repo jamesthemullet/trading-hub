@@ -10,7 +10,8 @@
   },
   "scripts": {
     "dev": "npm run codegen && next dev",
-    "codegen": "swagger-typescript-api --path https://prod-search-service-v1-eun-layer4-frontdoor.azurefd.net/search-merchandising.yml --output src/libs/api/generated --name open-api.ts --extract-response-body  --clean-output --another-array-type --sort-types --union-enums --extract-enums --enum-names-as-values --route-types",
+    "codegen": "npm run copy && swagger-typescript-api --path https://prod-search-service-v1-eun-layer4-frontdoor.azurefd.net/search-merchandising.yml --output src/libs/api/generated --name open-api.ts --extract-response-body  --clean-output --another-array-type --sort-types --union-enums --extract-enums --enum-names-as-values --route-types",
+    "copy": "copy-files-from-to",
     "build": "npm run codegen && next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
     "start": "next start",
     "lint": "next lint",
@@ -63,6 +64,7 @@
     "@typescript-eslint/eslint-plugin": "7.13.1",
     "@typescript-eslint/parser": "7.13.1",
     "babel-jest": "29.7.0",
+    "copy-files-from-to": "3.11.0",
     "dotenv": "16.4.5",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.4",
@@ -95,5 +97,14 @@
     "ts-jest": "29.1.5",
     "ts-node": "10.9.2",
     "typescript": "5.5.2"
+  },
+  "copyFiles": [
+    {
+      "from": "https://prod-search-service-v1-eun-layer4-frontdoor.azurefd.net/search-merchandising.yml",
+      "to": "/src/libs/api/api.yml"
+    }
+  ],
+  "copyFilesSettings": {
+    "whenFileExists": "overwrite"
   }
 }
