@@ -25,6 +25,16 @@ export const TableRow = styled.div`
 export const FacetsTableRow = styled(TableRow)`
   grid-template-columns: minmax(170px, 2fr) 120px 150px 150px 150px;
 `;
+export const FacetAttributeValuesTableRow = styled(TableRow)`
+  grid-template-columns:
+    24px minmax(280px, 1fr) minmax(270px, 1fr) minmax(50px, 1fr)
+    200px;
+  border-bottom: none;
+  align-items: center;
+  margin-bottom: ${spacing(2)};
+  box-shadow: #000 0 0 10px -5px;
+  padding: ${spacing(2)};
+`;
 
 export const TableCol = styled.div`
   text-overflow: ellipsis;

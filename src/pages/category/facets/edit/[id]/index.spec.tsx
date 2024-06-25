@@ -5,9 +5,13 @@ import { useRouter } from 'next/router';
 import {
   useFacetsList,
   useGetCategories,
+  useGetFacetAttributeValues,
   useRuleSetPreview,
 } from '@/libs/hooks';
-import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
+import {
+  attributeValuesMock,
+  globalFacetsListMock,
+} from '@/pages/api/merchandising/mocks';
 import {
   mockUseRuleSetPreviewData,
   ruleSetId,
@@ -27,6 +31,7 @@ jest.mock('@/libs/hooks', () => ({
   useRuleSetPreview: jest.fn(),
   useGetCategories: jest.fn(),
   useFacetsList: jest.fn(),
+  useGetFacetAttributeValues: jest.fn(),
 }));
 
 const logSpy = jest.spyOn(console, 'log');
@@ -65,6 +70,15 @@ describe('Category Facet Management Editing', () => {
     jest
       .mocked(useRuleSetPreview)
       .mockImplementation(() => mockUseRuleSetPreviewData);
+
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      attributeValues: attributeValuesMock,
+      error: '',
+      pagination: {
+        totalItems: 5,
+      },
+      refetch: jest.fn(),
+    });
   });
 
   afterEach(() => {

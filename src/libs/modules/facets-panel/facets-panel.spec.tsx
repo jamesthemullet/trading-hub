@@ -1,11 +1,19 @@
 import { act, Screen, screen, waitFor } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
-import { useGetCategories } from '@/libs/hooks';
-import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
+import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
+import {
+  attributeValuesMock,
+  globalFacetsListMock,
+} from '@/pages/api/merchandising/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { FacetsPanel } from './facets-panel';
+
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useGetFacetAttributeValues: jest.fn(),
+}));
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -74,6 +82,15 @@ describe('Facet Panel', () => {
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
+    });
+
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      attributeValues: attributeValuesMock,
+      error: '',
+      pagination: {
+        totalItems: 5,
+      },
+      refetch: jest.fn(),
     });
   });
 

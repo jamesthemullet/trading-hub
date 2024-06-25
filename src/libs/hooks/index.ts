@@ -5,6 +5,7 @@ export * from './use-debounce';
 export * from './use-facets-filter';
 export * from './use-facets-list';
 export * from './use-get-categories';
+export * from './use-get-facet-attribute-values';
 export * from './use-get-facet-by-id';
 export * from './use-global-facet-update';
 export * from './use-global-facets-list';

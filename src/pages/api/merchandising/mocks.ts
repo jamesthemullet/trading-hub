@@ -1,5 +1,6 @@
 import {
   AttributesResponse,
+  AttributeValuesResponse,
   BetaMerchandisingFacetListData,
   BoostsBuries,
   BoostsBuriesWithInfo,
@@ -267,6 +268,39 @@ export const attributesMock: AttributesResponse = {
   ],
 };
 
+export const attributeValuesMock: AttributeValuesResponse['values'] = [
+  {
+    displayValue: 'Cotton',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Duck Down',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Duck Down And Feather',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Ducky Downy',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Ducky Downy And Feathery',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+];
+
 export const getMockMapping: () => Record<
   string,
   Partial<
@@ -372,6 +406,22 @@ export const getMockMapping: () => Record<
       if (status !== 200) {
         return {
           body: globalFacetsListMock,
+          status: 200,
+        };
+      }
+      return { body: jsonBody, status };
+    },
+  },
+  '/search/beta/merchandising/facet/{facetId}/attributeValues': {
+    get: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        return {
+          body: {
+            values: attributeValuesMock,
+            pagination: {
+              totalItems: 5,
+            },
+          },
           status: 200,
         };
       }

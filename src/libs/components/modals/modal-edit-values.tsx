@@ -1,39 +1,40 @@
 import styled from '@emotion/styled';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import { ReturnedFacet } from '@/libs/api';
+import { AttributeValuesResponse, ReturnedFacet } from '@/libs/api';
 import { useDebounce } from '@/libs/hooks';
+import { useGetFacetAttributeValues } from '@/libs/hooks';
 
 import Image from 'next/image';
 
 import { Button } from '../buttons/button/button';
 import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
-import { FacetValuesSortDropdown } from '../dropdowns/facet-values-sort-dropdown/facet-values-sort-dropdown';
 import { EditableLabel } from '../editable-label/editable-label';
 import { FilteredResultsPanel } from '../filtered-results-panel/filtered-results-panel';
 import { Search } from '../search/search';
-import { TableCol, TableHeading, TableRow } from '../table/table.styles';
+import {
+  FacetAttributeValuesTableRow,
+  TableCol,
+  TableHeading,
+} from '../table/table.styles';
 import { Header3, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import { HeadingAndCloseButton, ModalAttributesTable } from './modal.styles';
 
-const Row = styled(TableRow)<{ heading?: boolean }>`
-  border-bottom: none;
-  align-items: center;
-  margin-bottom: ${spacing(2)};
-  box-shadow: #000 0 0 10px -5px;
-  padding: ${spacing(2)};
-`;
+type AttributeValue = AttributeValuesResponse['values'][number] & {
+  index: number;
+  attribute: string;
+};
 
-const Col = styled(TableCol)<{ heading?: boolean }>`
+const Col = styled(TableCol)`
   justify-content: space-between;
   flex: 20;
   padding: 0;
 `;
 
-const MODAL_WIDTH = 1000;
+const MODAL_WIDTH = 1150;
 
 const ModalContainer = styled.div`
   height: 680px;
@@ -41,14 +42,7 @@ const ModalContainer = styled.div`
   flex-direction: column;
   margin: ${spacing(3)};
   height: 100%;
-`;
-
-const DefaultSearchContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${spacing(2)};
-  padding: ${spacing(2)};
-  background-color: ${color.infoBlueBackground};
+  min-width: 860px;
 `;
 
 const MergeAndSearchContainer = styled.div`
@@ -118,49 +112,12 @@ const EDITFACETVALUESMODALCOLUMNS: {
     label: 'Display name',
   },
   {
+    label: 'Position Set',
+  },
+  {
     label: 'Actions',
   },
 ];
-
-type Attributes = {
-  index: number;
-  attribute: string;
-  displayValue: string;
-  mergedValues?: string[];
-};
-
-const mockAttributes = [
-  {
-    index: 0,
-    attribute: 'Cotton',
-    displayValue: 'Cotton',
-    mergedValues: [],
-  },
-  {
-    index: 1,
-    attribute: 'Duck Down',
-    displayValue: 'Duck Down',
-    mergedValues: [],
-  },
-  {
-    index: 2,
-    attribute: 'Duck Down And Feather',
-    displayValue: 'Duck Down And Feather',
-    mergedValues: [],
-  },
-  {
-    index: 3,
-    attribute: 'Ducky Downy',
-    displayValue: 'Ducky Downy',
-    mergedValues: [],
-  },
-  {
-    index: 4,
-    attribute: 'Ducky Downy And Feathery',
-    displayValue: 'Ducky Downy And Feathery',
-    mergedValues: [],
-  },
-] as Attributes[];
 
 export const ModalEditValues = ({
   onClose,
@@ -169,12 +126,23 @@ export const ModalEditValues = ({
   onClose: () => void;
   facet: ReturnedFacet;
 }) => {
-  const [editFacetValues, setEditFacetValues] =
-    useState<Attributes[]>(mockAttributes);
+  const [editFacetValues, setEditFacetValues] = useState<AttributeValue[]>([]);
   const [mergeList, setMergeList] = useState<string[]>([]);
 
+  const { attributeValues } = useGetFacetAttributeValues(facet.id);
+
+  useEffect(() => {
+    const facetValues = attributeValues.map((value, index) => ({
+      ...value,
+      attribute: value.displayValue,
+      index,
+    }));
+
+    setEditFacetValues(facetValues);
+  }, [attributeValues]);
+
   const handleSelect = (
-    attribute: string,
+    displayValue: string,
     mergedValues: string[] | undefined
   ) => {
     if (mergedValues && mergedValues.length > 1) {
@@ -185,10 +153,10 @@ export const ModalEditValues = ({
       setMergeList([...mergeList, ...valuesNotInMergeList]);
       return;
     }
-    if (!mergeList.includes(attribute)) {
-      setMergeList([...mergeList, attribute]);
+    if (!mergeList.includes(displayValue)) {
+      setMergeList([...mergeList, displayValue]);
     } else {
-      setMergeList(mergeList.filter((item) => item !== attribute));
+      setMergeList(mergeList.filter((item) => item !== displayValue));
     }
   };
 
@@ -260,10 +228,8 @@ export const ModalEditValues = ({
   const filteredEditFacetValues = useMemo(() => {
     return !searchQuery
       ? editFacetValues
-      : editFacetValues.filter(
-          (value) =>
-            value.attribute.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            value.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
+      : editFacetValues.filter((value) =>
+          value.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
         );
   }, [editFacetValues, searchQuery]);
 
@@ -293,11 +259,6 @@ export const ModalEditValues = ({
               </Button>
             </HeadingAndCloseButton>
 
-            <DefaultSearchContainer>
-              <Text>Default sort algorithm of facet values</Text>
-              <FacetValuesSortDropdown />
-            </DefaultSearchContainer>
-
             <MergeAndSearchContainer>
               <Text isStrong>All values listed</Text>
               <Button
@@ -310,9 +271,9 @@ export const ModalEditValues = ({
             </MergeAndSearchContainer>
 
             <ModalAttributesTable>
-              <Row heading={true}>
+              <FacetAttributeValuesTableRow>
                 {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-                  <Col key={`add-facet-modal-column-${label}`} heading={true}>
+                  <Col key={`add-facet-modal-column-${label}`}>
                     {label ? (
                       <TableHeading as="p" isStrong={true}>
                         {label}
@@ -324,13 +285,13 @@ export const ModalEditValues = ({
                     )}
                   </Col>
                 ))}
-              </Row>
+              </FacetAttributeValuesTableRow>
+
               {filteredEditFacetValues.map(
-                ({ attribute, displayValue, index, mergedValues }) => (
-                  <Row
+                ({ displayValue, attribute, mergedValues }) => (
+                  <FacetAttributeValuesTableRow
                     key={`attribute-${attribute}`}
                     data-testid="rows"
-                    heading={false}
                   >
                     <Col>
                       <input
@@ -340,7 +301,8 @@ export const ModalEditValues = ({
                         aria-label={`Select ${attribute} to merge`}
                       />
                     </Col>
-                    <Col heading={false}>
+
+                    <Col>
                       <AttributeWrapper>
                         <Image
                           width={20}
@@ -364,38 +326,45 @@ export const ModalEditValues = ({
                             ))}
                           </div>
                         ) : (
-                          <Text>{attribute}</Text>
+                          <Text>{displayValue}</Text>
                         )}
                       </AttributeWrapper>
                     </Col>
-                    <Col heading={false}>
+
+                    <Col>
                       <EditableLabel
                         displayValue={displayValue}
                         onDisplayValueChange={(newValue) => {
                           setEditFacetValues((prev) => {
-                            const updatedFacet: Attributes = {
-                              ...prev[index],
-                              displayValue: newValue,
-                            };
-                            return [
-                              ...prev.slice(0, index),
-                              updatedFacet,
-                              ...prev.slice(index + 1),
-                            ];
+                            return prev.map((value) => {
+                              if (value.displayValue === displayValue) {
+                                return {
+                                  ...value,
+                                  displayValue: newValue,
+                                };
+                              }
+
+                              return value;
+                            });
                           });
                         }}
                       />
                     </Col>
-                    <Col heading={false}>
+
+                    <Col></Col>
+
+                    <Col>
                       <FacetOrderDropdown />
                     </Col>
-                  </Row>
+                  </FacetAttributeValuesTableRow>
                 )
               )}
             </ModalAttributesTable>
           </ModalContainer>
+
           <FilteredResultsPanel filteredFacets={editFacetValues.length} />
         </Modal.Body>
+
         <ModalFooter>
           <Button onClick={onClose}>Cancel</Button>{' '}
           <Button isDisabled={true}>Save</Button>

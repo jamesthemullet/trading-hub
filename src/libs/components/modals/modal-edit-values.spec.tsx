@@ -1,12 +1,32 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { useGetFacetAttributeValues } from '@/libs/hooks';
+import { attributeValuesMock } from '@/pages/api/merchandising/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { ModalEditValues } from './modal-edit-values';
 
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useGetFacetAttributeValues: jest.fn(),
+}));
+
 describe('Add Facet Modal', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      attributeValues: attributeValuesMock,
+      error: '',
+      pagination: {
+        totalItems: 5,
+      },
+      refetch: jest.fn(),
+    });
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -232,224 +252,226 @@ describe('Add Facet Modal', () => {
         ).toBeDisabled();
       });
     }, 15000);
-  });
 
-  it('should unselect a merged value', async () => {
-    const user = userEvent.setup({ delay: null });
-    const onCloseSpy = jest.fn();
+    it('should unselect a merged value', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCloseSpy = jest.fn();
 
-    renderWithProviders(
-      <ModalEditValues
-        onClose={onCloseSpy}
-        facet={{
-          displayValue: 'color',
-          indexPropertyName: 'color',
-          id: '1',
-          lastChanged: { user: 'Bob', date: '2021-10-01' },
-        }}
-      />
-    );
-
-    act(() => {
-      user.click(screen.getByLabelText('Select Cotton to merge'));
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
-    });
-
-    act(() => {
-      user.click(screen.getByLabelText('Select Cotton to merge'));
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
-    });
-  });
-
-  it('should de-merge both merged values when there are two attributes merged', async () => {
-    const user = userEvent.setup({ delay: null });
-    const onCloseSpy = jest.fn();
-
-    renderWithProviders(
-      <ModalEditValues
-        onClose={onCloseSpy}
-        facet={{
-          displayValue: 'color',
-          indexPropertyName: 'color',
-          id: '1',
-          lastChanged: { user: 'Bob', date: '2021-10-01' },
-        }}
-      />
-    );
-
-    act(() => {
-      user.click(screen.getByLabelText('Select Duck Down to merge'));
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
-    });
-
-    act(() => {
-      user.click(screen.getByLabelText('Select Ducky Downy to merge'));
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
-    });
-
-    act(() => {
-      user.click(screen.getByRole('button', { name: 'Merge (2)' }));
-    });
-
-    await waitFor(() => {
-      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-    });
-
-    act(() => {
-      user.click(
-        screen.getAllByLabelText('Remove merged facet for Duck Down')[0]
+      renderWithProviders(
+        <ModalEditValues
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+        />
       );
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Cotton to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Cotton to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
+      });
     });
 
-    await waitFor(() => {
-      expect(screen.queryByText('Merged Value Group')).not.toBeInTheDocument();
-    });
-  });
+    it('should de-merge both merged values when there are two attributes merged', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCloseSpy = jest.fn();
 
-  it('should de-merge only the selected value when there are three attributes merged', async () => {
-    const user = userEvent.setup({ delay: null });
-    const onCloseSpy = jest.fn();
-
-    renderWithProviders(
-      <ModalEditValues
-        onClose={onCloseSpy}
-        facet={{
-          displayValue: 'color',
-          indexPropertyName: 'color',
-          id: '1',
-          lastChanged: { user: 'Bob', date: '2021-10-01' },
-        }}
-      />
-    );
-
-    act(() => {
-      user.click(screen.getByLabelText('Select Duck Down to merge'));
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
-    });
-
-    act(() => {
-      user.click(screen.getByLabelText('Select Ducky Downy to merge'));
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
-    });
-
-    act(() => {
-      user.click(screen.getByLabelText('Select Cotton to merge'));
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
-    });
-
-    act(() => {
-      user.click(screen.getByRole('button', { name: 'Merge (3)' }));
-    });
-
-    await waitFor(() => {
-      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-    });
-
-    act(() => {
-      user.click(
-        screen.getAllByLabelText('Remove merged facet for Ducky Downy')[0]
+      renderWithProviders(
+        <ModalEditValues
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+        />
       );
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Duck Down to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByRole('button', { name: 'Merge (2)' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      });
+
+      act(() => {
+        user.click(
+          screen.getAllByLabelText('Remove merged facet for Duck Down')[0]
+        );
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText('Merged Value Group')
+        ).not.toBeInTheDocument();
+      });
     });
 
-    await waitFor(() => {
-      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-      expect(
-        screen.queryByLabelText('Remove merged facet for Ducky Downy')
-      ).not.toBeInTheDocument();
-    });
-  });
+    it('should de-merge only the selected value when there are three attributes merged', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCloseSpy = jest.fn();
 
-  it('should merge into an existing merged value group', async () => {
-    const user = userEvent.setup({ delay: null });
-    const onCloseSpy = jest.fn();
+      renderWithProviders(
+        <ModalEditValues
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+        />
+      );
 
-    renderWithProviders(
-      <ModalEditValues
-        onClose={onCloseSpy}
-        facet={{
-          displayValue: 'color',
-          indexPropertyName: 'color',
-          id: '1',
-          lastChanged: { user: 'Bob', date: '2021-10-01' },
-        }}
-      />
-    );
+      act(() => {
+        user.click(screen.getByLabelText('Select Duck Down to merge'));
+      });
 
-    act(() => {
-      user.click(screen.getByLabelText('Select Duck Down to merge'));
-    });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
-    });
+      act(() => {
+        user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+      });
 
-    act(() => {
-      user.click(screen.getByLabelText('Select Ducky Downy to merge'));
-    });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
-    });
+      act(() => {
+        user.click(screen.getByLabelText('Select Cotton to merge'));
+      });
 
-    act(() => {
-      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
-      user.click(mergeButton);
-    });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
+      });
 
-    await waitFor(() => {
-      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-      expect(
-        screen.getAllByText('Name your merged value group')[0]
-      ).toBeVisible();
-    });
+      act(() => {
+        user.click(screen.getByRole('button', { name: 'Merge (3)' }));
+      });
 
-    act(() => {
-      user.click(screen.getByLabelText('Select Cotton to merge'));
-    });
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      });
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
-    });
+      act(() => {
+        user.click(
+          screen.getAllByLabelText('Remove merged facet for Ducky Downy')[0]
+        );
+      });
 
-    act(() => {
-      user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+        expect(
+          screen.queryByLabelText('Remove merged facet for Ducky Downy')
+        ).not.toBeInTheDocument();
+      });
     });
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
-    });
+    it('should merge into an existing merged value group', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCloseSpy = jest.fn();
 
-    act(() => {
-      const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
-      user.click(mergeButton);
-    });
+      renderWithProviders(
+        <ModalEditValues
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+        />
+      );
 
-    await waitFor(() => {
-      expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-      expect(
-        screen.getAllByText('Name your merged value group')[0]
-      ).toBeVisible();
+      act(() => {
+        user.click(screen.getByLabelText('Select Duck Down to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
+
+      act(() => {
+        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
+        user.click(mergeButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+        expect(
+          screen.getAllByText('Name your merged value group')[0]
+        ).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Cotton to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
+      });
+
+      act(() => {
+        const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
+        user.click(mergeButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+        expect(
+          screen.getAllByText('Name your merged value group')[0]
+        ).toBeVisible();
+      });
     });
   });
 });

@@ -1,7 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { useRuleSet } from '@/libs/hooks';
+import { useGetFacetAttributeValues, useRuleSet } from '@/libs/hooks';
+import { attributeValuesMock } from '@/pages/api/merchandising/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';
@@ -12,6 +13,7 @@ const mockUpdateGlobalRuleSet = jest.fn();
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useRuleSet: jest.fn(),
+  useGetFacetAttributeValues: jest.fn(),
   useGlobalRuleSetDelete: () => {
     return { handleDelete: mockRuleSetDelete };
   },
@@ -31,6 +33,17 @@ const mockMerchandisingRules = {
 };
 
 describe('Global Facet Management', () => {
+  beforeEach(() => {
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      attributeValues: attributeValuesMock,
+      error: '',
+      pagination: {
+        totalItems: 5,
+      },
+      refetch: jest.fn(),
+    });
+  });
+
   it('displays the list of facets', () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     jest.mocked(useRuleSet).mockReturnValue({
