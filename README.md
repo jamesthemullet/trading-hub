@@ -125,6 +125,25 @@ Prettier is used to format files, this can be set up in your IDE or by running `
 
 Renovate is set up for the repo, all contributors can help with merging updates. Checks are scheduled outside of working hours.
 
+### Snyk SAST
+
+Snyk is configured trough external integration with github repository. To access the Dashboard navigate to: [app.snyk.io](https://app.snyk.io/org/a2654-trading-hub/project/1b93336f-39d2-42a0-ada4-d9611e54839c)
+
+Trading-Hub needs to follow standard defined here: [technology-standards/security-tooling](https://github.com/DigitalInnovation/technology-standards/blob/main/docs/drafts/security-tooling.md)
+
+Notes:
+
+- Snyk is configured with scanning for dependencies and not code scanning due to the way license is purchased by M&S.
+- Snyk is configured under yAccount owner.
+
+#### Adding new Members
+
+Please follow this doc: [add-members-to-the-existing-organisations](https://devopssec.engineering.mnscorp.net/Products/Snyk-Open-Source/how-to-get-access/#add-members-to-the-existing-organisations)
+
+#### Snyk Support
+
+Please follow this doc: [Support](https://devopssec.engineering.mnscorp.net/Support/)
+
 ### VS Code
 
 An example settings.json file is in the .vscode folder
