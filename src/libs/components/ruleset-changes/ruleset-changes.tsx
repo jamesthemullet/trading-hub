@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 import type {
+  MerchandisingRules,
   MerchandisingRulesWithInfo,
   Product as ProductType,
 } from '@/libs/api';
@@ -53,33 +54,31 @@ const ChangesRow = ({
 
 export const RulesetChanges = ({
   merchandisingRulesWithInfo,
+  merchandisingRules,
   onChangePosition,
   onProductBoostBury,
 }: {
+  merchandisingRules: MerchandisingRules;
   merchandisingRulesWithInfo?: MerchandisingRulesWithInfo;
   onChangePosition: (arg: ChangePositionTypes) => void;
   onProductBoostBury: (arg: ChangeProductBoostBury) => void;
 }) => {
-  if (!merchandisingRulesWithInfo) return null;
-
   /* istanbul ignore next */
   const countOfAttributeChanges =
-    (merchandisingRulesWithInfo.boosts?.numeric?.length ?? 0) +
-    (merchandisingRulesWithInfo.boosts?.alphanumeric?.length ?? 0) +
-    (merchandisingRulesWithInfo.buries?.numeric?.length ?? 0) +
-    (merchandisingRulesWithInfo.buries?.alphanumeric?.length ?? 0);
+    (merchandisingRules.boosts?.numeric?.length ?? 0) +
+    (merchandisingRules.boosts?.alphanumeric?.length ?? 0) +
+    (merchandisingRules.buries?.numeric?.length ?? 0) +
+    (merchandisingRules.buries?.alphanumeric?.length ?? 0);
   /* istanbul ignore next */
-  const numericBoosts = merchandisingRulesWithInfo.boosts?.numeric ?? [];
+  const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
   /* istanbul ignore next */
-  const alphanumericBoost =
-    merchandisingRulesWithInfo.boosts?.alphanumeric ?? [];
+  const alphanumericBoost = merchandisingRules.boosts?.alphanumeric ?? [];
   /* istanbul ignore next */
-  const numericBury = merchandisingRulesWithInfo.buries?.numeric ?? [];
+  const numericBury = merchandisingRules.buries?.numeric ?? [];
   /* istanbul ignore next */
-  const alphanumericBuries =
-    merchandisingRulesWithInfo.buries?.alphanumeric ?? [];
+  const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
 
-  const pinnedProductsCount = merchandisingRulesWithInfo.pinnedProducts.length;
+  const pinnedProductsCount = merchandisingRules.pinnedProducts.length;
 
   return (
     <>

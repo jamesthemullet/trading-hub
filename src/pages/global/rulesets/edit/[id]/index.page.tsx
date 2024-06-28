@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
 import { RuleSet } from '@/libs/api';
-import { Heading } from '@/libs/components';
+import { Heading, Loader } from '@/libs/components';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
@@ -12,7 +12,7 @@ type PageProps = {
 };
 
 const Page = ({ id }: PageProps) => {
-  const { globalRuleSet } = useGlobalRuleSetDetail(id);
+  const { globalRuleSet, isLoading } = useGlobalRuleSetDetail(id);
   const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
   const router = useRouter();
 
@@ -37,14 +37,18 @@ const Page = ({ id }: PageProps) => {
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
       />
 
-      <Ruleset
-        isEnabled={globalRuleSet.isEnabled}
-        onSave={saveRuleSet}
-        onCancel={() => router.push('/global/rulesets')}
-        rulesetMerchandisingRules={globalRuleSet.rules}
-        rulesetType="global"
-        rulesetId={id}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Ruleset
+          isEnabled={globalRuleSet.isEnabled}
+          onSave={saveRuleSet}
+          onCancel={() => router.push('/global/rulesets')}
+          rulesetMerchandisingRules={globalRuleSet.rules}
+          rulesetType="global"
+          rulesetId={id}
+        />
+      )}
     </>
   );
 };

@@ -124,20 +124,22 @@ export const Ruleset = ({
   const [currentProductTab, setCurrentProductTab] = useState(0);
   const [merchandisingRules, setMerchandisingRules] =
     useState<MerchandisingRules>(
-      rulesetMerchandisingRules || {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: {
-          alphanumeric: [],
-          numeric: [],
-          product: [],
-        },
-        buries: {
-          alphanumeric: [],
-          numeric: [],
-          product: [],
-        },
-      }
+      rulesetMerchandisingRules
+        ? rulesetMerchandisingRules
+        : {
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: {
+              alphanumeric: [],
+              numeric: [],
+              product: [],
+            },
+            buries: {
+              alphanumeric: [],
+              numeric: [],
+              product: [],
+            },
+          }
     );
   const [hasChanges, setHasChanges] = useState(false);
   const { searchForProduct } = useCategoryProductSearch();
@@ -494,14 +496,16 @@ export const Ruleset = ({
               onTabChange={setCurrentEditorTab}
               currentTab={currentEditorTab}
             />
-            <Text>
-              {sortedProducts.length}{' '}
-              {pluralize(' product', sortedProducts.length)}{' '}
-              {totalProducts && totalProducts > sortedProducts.length
-                ? `of ${totalProducts}`
-                : ''}
-              {' shown'}
-            </Text>
+            {rulesetType === 'category' && (
+              <Text>
+                {sortedProducts.length}{' '}
+                {pluralize(' product', sortedProducts.length)}{' '}
+                {totalProducts && totalProducts > sortedProducts.length
+                  ? `of ${totalProducts}`
+                  : ''}
+                {' shown'}
+              </Text>
+            )}
           </PanelTop>
           <TabContent>
             {currentEditorTab === 0 && (
@@ -511,8 +515,9 @@ export const Ruleset = ({
                 onProductBoostBury={onProductBoostBury}
               />
             )}
-            {currentEditorTab === 1 && (
+            {(currentEditorTab === 1 || rulesetType === 'global') && (
               <RulesetChanges
+                merchandisingRules={merchandisingRules}
                 merchandisingRulesWithInfo={merchandisingRulesWithInfo}
                 onChangePosition={onChangePosition}
                 onProductBoostBury={onProductBoostBury}

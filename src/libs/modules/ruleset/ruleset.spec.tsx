@@ -245,6 +245,38 @@ describe('Ruleset', () => {
     expect(screen.getByText('Save')).toBeInTheDocument();
   });
 
+  it('should render a loading when updating data', () => {
+    jest.mocked(useCategoryPreview).mockReturnValueOnce({
+      categoryProducts: [
+        mockProduct,
+        {
+          ...mockProduct,
+          id: 'product2',
+          productId: 'productId2',
+          metadata: { isPinned: false, isBoosted: true },
+        },
+      ],
+      categoryFacets: [],
+      error: '',
+      isLoading: true,
+      merchandisingRulesWithInfo: {
+        ...mockMerchandisingRules,
+        pinnedProducts: [mockProduct],
+      },
+      setRules: jest.fn(),
+    });
+    renderWithProviders(
+      <Ruleset
+        isEnabled={true}
+        onSave={jest.fn()}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
+    );
+
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
+  });
+
   it('should select a category', async () => {
     const user = userEvent.setup();
 
