@@ -5,6 +5,7 @@ import type {
   MerchandisingRules,
   MerchandisingRulesWithInfo,
   Product,
+  SearchPreviewResponse,
 } from '@/libs/api';
 import { merchandising } from '@/libs/api';
 
@@ -13,6 +14,7 @@ export const useCategoryPreview = (
   merchandisingRules: MerchandisingRules
 ) => {
   const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
+  const [totalCategoryProducts, setTotalCategoryProducts] = useState(0);
   const [categoryFacets, setCategoryFacets] = useState<Facet[]>([]);
   const [error, setError] = useState('');
   const [rules, setRules] = useState(merchandisingRules);
@@ -40,9 +42,12 @@ export const useCategoryPreview = (
           }
         );
 
-        const previewData = categoryPreview.data;
+        const previewData: SearchPreviewResponse = categoryPreview.data;
 
         setCategoryProducts(previewData.products);
+        if (previewData.pagination.totalItems) {
+          setTotalCategoryProducts(previewData.pagination.totalItems);
+        }
         setMerchandisingRulesWithInfo(previewData.rules);
 
         if (previewData.facets.facets) {
@@ -64,11 +69,12 @@ export const useCategoryPreview = (
   }, [categoryId, rules]);
 
   return {
-    categoryProducts,
     categoryFacets,
-    merchandisingRulesWithInfo,
-    isLoading,
+    categoryProducts,
     error,
+    isLoading,
+    merchandisingRulesWithInfo,
     setRules: (rules: MerchandisingRules) => setRules(rules),
+    totalCategoryProducts,
   };
 };

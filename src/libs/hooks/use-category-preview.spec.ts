@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
+import { SearchPreviewResponse } from '../api';
 import { useCategoryPreview } from './use-category-preview';
 
 const baseUrl = 'http://localhost';
@@ -14,10 +15,11 @@ const mockMerchandisingRules = {
   blockedProducts: [],
 };
 
-const mockSearchData = {
+const mockSearchData: SearchPreviewResponse = {
   products: [
     {
       id: '60275024',
+      productId: 'P60275024',
       title: 'Mock Product',
       url: 'petite-round-neck-cardigan/p/clp60275023',
       price: '£17.50',
@@ -35,16 +37,12 @@ const mockSearchData = {
     },
   ],
   facets: {
-    facets: [
-      [
-        {
-          name: 'M&S Collection',
-          count: 66,
-          selected: false,
-          disabled: false,
-        },
-      ],
-    ],
+    facets: [],
+  },
+  category: '123',
+  rules: mockMerchandisingRules,
+  pagination: {
+    totalItems: 1,
   },
 };
 
@@ -118,6 +116,7 @@ describe('useRuleSet', () => {
       expect(result.current.categoryProducts).toMatchObject(
         expectedData.categoryProducts
       );
+      expect(result.current.totalCategoryProducts).toBe(1);
     });
   });
 

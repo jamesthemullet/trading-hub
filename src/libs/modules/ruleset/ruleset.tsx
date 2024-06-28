@@ -144,7 +144,6 @@ export const Ruleset = ({
   const [hasChanges, setHasChanges] = useState(false);
   const { searchForProduct } = useCategoryProductSearch();
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
-  const [totalProducts, setTotalProducts] = useState<number | undefined>(0);
   const [showPreview, setShowPreview] = useState(false);
   const router = useRouter();
 
@@ -172,21 +171,6 @@ export const Ruleset = ({
     };
   }, [hasChanges, router]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await searchForProduct({
-        categoryId: selectedCategory.identifier || '',
-        query: '',
-        start: 0,
-        rows: 0,
-        merchandisingRules,
-      });
-      setTotalProducts(data.pagination.totalItems);
-    };
-
-    fetchData();
-  }, [searchForProduct, merchandisingRules, selectedCategory.identifier]);
-
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
     if (!hasChanges) setHasChanges(true);
@@ -194,9 +178,10 @@ export const Ruleset = ({
 
   const {
     categoryProducts: sortedProducts,
-    merchandisingRulesWithInfo,
     isLoading,
+    merchandisingRulesWithInfo,
     setRules: setPreviewRules,
+    totalCategoryProducts,
   } = useCategoryPreview(selectedCategory?.identifier, merchandisingRules);
 
   const onChangePosition = ({
@@ -500,8 +485,9 @@ export const Ruleset = ({
               <Text>
                 {sortedProducts.length}{' '}
                 {pluralize(' product', sortedProducts.length)}{' '}
-                {totalProducts && totalProducts > sortedProducts.length
-                  ? `of ${totalProducts}`
+                {totalCategoryProducts &&
+                totalCategoryProducts > sortedProducts.length
+                  ? `of ${totalCategoryProducts}`
                   : ''}
                 {' shown'}
               </Text>

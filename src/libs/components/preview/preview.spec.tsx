@@ -116,6 +116,7 @@ describe('Preview', () => {
         { ...mockProduct, productId: 'product2' },
       ],
       categoryFacets: mockFacets,
+      totalCategoryProducts: 2,
       error: '',
       isLoading: false,
       merchandisingRulesWithInfo: mockMerchandisingRules,
@@ -241,6 +242,7 @@ describe('Preview', () => {
     jest.mocked(useCategoryPreview).mockReturnValue({
       categoryProducts: [mockProduct],
       categoryFacets: mockFacets,
+      totalCategoryProducts: 1,
       error: '',
       isLoading: true,
       merchandisingRulesWithInfo: mockMerchandisingRules,
