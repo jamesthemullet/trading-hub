@@ -90,14 +90,74 @@ jobs:
           EUW_WAF_POLICY_NAME="${APP_NAME}v${STACK_VERSION}euwlayer4policywafpolicy"
           EUW_WAF_POLICY_NAME="${EUW_WAF_POLICY_NAME//"-"/""}"
           EUW_APP_ALIAS="${APP_NAME}-v${STACK_VERSION}-euw-layer3-app"
-          echo "eun-resource-group-alias-layer3=${EUN_RESOURCE_GROUP_ALIAS_LAYER3}" >> "$GITHUB_OUTPUT"
-          echo "eun-resource-group-alias-layer4=${EUN_RESOURCE_GROUP_ALIAS_LAYER4}" >> "$GITHUB_OUTPUT"
-          echo "eun-waf-policy-name=${EUN_WAF_POLICY_NAME}" >> "$GITHUB_OUTPUT"
-          echo "eun-app-alias=${EUN_APP_ALIAS}" >> "$GITHUB_OUTPUT"
-          echo "euw-resource-group-alias-layer3=${EUW_RESOURCE_GROUP_ALIAS_LAYER3}" >> "$GITHUB_OUTPUT"
-          echo "euw-resource-group-alias-layer4=${EUW_RESOURCE_GROUP_ALIAS_LAYER4}" >> "$GITHUB_OUTPUT"
-          echo "euw-waf-policy-name=${EUW_WAF_POLICY_NAME}" >> "$GITHUB_OUTPUT"
-          echo "euw-app-alias=${EUW_APP_ALIAS}" >> "$GITHUB_OUTPUT"
+          {
+            echo "eun-resource-group-alias-layer3=${EUN_RESOURCE_GROUP_ALIAS_LAYER3}"
+            echo "eun-resource-group-alias-layer4=${EUN_RESOURCE_GROUP_ALIAS_LAYER4}"
+            echo "eun-waf-policy-name=${EUN_WAF_POLICY_NAME}"
+            echo "eun-app-alias=${EUN_APP_ALIAS}"
+            echo "euw-resource-group-alias-layer3=${EUW_RESOURCE_GROUP_ALIAS_LAYER3}"
+            echo "euw-resource-group-alias-layer4=${EUW_RESOURCE_GROUP_ALIAS_LAYER4}"
+            echo "euw-waf-policy-name=${EUW_WAF_POLICY_NAME}"
+            echo "euw-app-alias=${EUW_APP_ALIAS}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Login via Azure CLI
+        uses: azure/login@v2
+        with:
+          creds: '{"clientId": "${{ secrets.SP_CLIENT_ID }}", "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
+
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: node-app
+
+      - name: Deploy to Azure Web Apps
+        shell: bash
+        run: |
+          set -x
+          az webapp deployment source config-zip \
+            --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
+            --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
+            --src ./next.zip --timeout 360
+
+      - name: Delete zip file
+        run: rm next.zip
+
+  deploy-stage:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Deploy to Azure Web App (stage)
+    environment:
+      name: prodeun
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get terraform settings
+        id: get-tf-settings
+        shell: bash
+        run: |
+          set -x
+          STACK_VERSION="$(grep stack_version ./ci/infra/terraform/vars/common.tfvars | sed 's/[^0-9]*//g')"
+          APP_NAME="trading-hub"
+          EUN_RESOURCE_GROUP_ALIAS_LAYER3="${APP_NAME}-v${STACK_VERSION}-eun-layer3-rg"
+          EUN_RESOURCE_GROUP_ALIAS_LAYER4="${APP_NAME}-v${STACK_VERSION}-eun-layer4-rg"
+          EUN_WAF_POLICY_NAME="${APP_NAME}v${STACK_VERSION}eunlayer4policywafpolicy"
+          EUN_WAF_POLICY_NAME="${EUN_WAF_POLICY_NAME//"-"/""}"
+          EUN_APP_ALIAS="${APP_NAME}-v${STACK_VERSION}-eun-layer3-app"
+          EUW_RESOURCE_GROUP_ALIAS_LAYER3="${APP_NAME}-v${STACK_VERSION}-euw-layer3-rg"
+          EUW_RESOURCE_GROUP_ALIAS_LAYER4="${APP_NAME}-v${STACK_VERSION}-euw-layer4-rg"
+          EUW_WAF_POLICY_NAME="${APP_NAME}v${STACK_VERSION}euwlayer4policywafpolicy"
+          EUW_WAF_POLICY_NAME="${EUW_WAF_POLICY_NAME//"-"/""}"
+          EUW_APP_ALIAS="${APP_NAME}-v${STACK_VERSION}-euw-layer3-app"
+          {
+            echo "eun-resource-group-alias-layer3=${EUN_RESOURCE_GROUP_ALIAS_LAYER3}"
+            echo "eun-resource-group-alias-layer4=${EUN_RESOURCE_GROUP_ALIAS_LAYER4}"
+            echo "eun-waf-policy-name=${EUN_WAF_POLICY_NAME}"
+            echo "eun-app-alias=${EUN_APP_ALIAS}"
+            echo "euw-resource-group-alias-layer3=${EUW_RESOURCE_GROUP_ALIAS_LAYER3}"
+            echo "euw-resource-group-alias-layer4=${EUW_RESOURCE_GROUP_ALIAS_LAYER4}"
+            echo "euw-waf-policy-name=${EUW_WAF_POLICY_NAME}"
+            echo "euw-app-alias=${EUW_APP_ALIAS}"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Login via Azure CLI
         uses: azure/login@v2
