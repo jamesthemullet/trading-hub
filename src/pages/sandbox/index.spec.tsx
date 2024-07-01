@@ -5,7 +5,7 @@ import { screen } from '@testing-library/react';
 describe('Index', () => {
   it('should render', () => {
     render(<Index />);
-    screen.getByText('Sandbox');
+    screen.getByText('Sandbox examples');
   });
 
   it('should return props', async () => {

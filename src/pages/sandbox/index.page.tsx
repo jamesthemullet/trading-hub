@@ -14,7 +14,7 @@ const Example = styled.div`
 const Sandbox = () => {
   return (
     <div>
-      <h1>Sandbox</h1>
+      <h1>Sandbox examples</h1>
       <Example>
         <h2>Calendar Component(Dropdown)</h2>
         <ExampleCalendarDropdown />
