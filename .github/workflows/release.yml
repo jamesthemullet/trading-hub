@@ -177,7 +177,7 @@ jobs:
             --type zip \
             --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
             --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
-            --src ./next.zip \
+            --src-path ./next.zip \
             --slot preprod \
             --async true \
             --timeout 360
