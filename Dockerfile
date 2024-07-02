@@ -42,7 +42,7 @@ ENV PORT 3000
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 CMD HOSTNAME="0.0.0.0" node server.js
 
-FROM mcr.microsoft.com/playwright:v1.45.0-jammy AS e2e
+FROM mcr.microsoft.com/playwright:v1.45.1-jammy AS e2e
 WORKDIR /app
 COPY --from=builder /app/package.json /app/package-lock.json ./
 RUN npm ci
