@@ -9,10 +9,12 @@ import {
   ProductBoostBury,
   ReturnedCategoryRuleSet,
   ReturnedFacet,
+  ReturnedKeywordRuleSets,
   ReturnedRuleSet,
   RuleSetFacetConfigWithId,
   SearchPreviewResponse,
 } from '@/libs/api';
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
 import { NextApiRequest } from 'next';
 
@@ -301,6 +303,54 @@ export const attributeValuesMock: AttributeValuesResponse['values'] = [
   },
 ];
 
+export const keywordRulesetMock: ReturnedKeywordRuleSets = {
+  ruleSets: [
+    {
+      id: 'abcdcae5-c3c4-455b-aeff-b7d2af65b702',
+      rules: mockMerchandisingRules,
+      isEnabled: true,
+      searchTerms: ['sock', 'socks', 'sockz'],
+      lastChanged: {
+        date: '2021-01-05T08:34:15Z',
+        user: 'Test User',
+      },
+    },
+    {
+      id: 'efghcae5-c3c4-455b-aeff-b7d2af65b702',
+      rules: mockMerchandisingRules,
+      isEnabled: true,
+      searchTerms: [
+        'Lorem',
+        'ipsum',
+        'dolor',
+        'sit',
+        'amet',
+        'consectetur',
+        'adipiscing',
+        'elit,',
+        'sed',
+        'do',
+        'eiusmod',
+        'tempor',
+        'incididunt',
+        'ut',
+        'labore',
+        'et',
+        'dolore',
+        'magna',
+        'aliqua',
+      ],
+      lastChanged: {
+        date: '2021-07-05T08:34:15Z',
+        user: 'Test User',
+      },
+    },
+  ],
+  pagination: {
+    totalItems: 2,
+  },
+};
+
 export const getMockMapping: () => Record<
   string,
   Partial<
@@ -437,6 +487,25 @@ export const getMockMapping: () => Record<
         };
       }
       return { body: jsonBody, status };
+    },
+  },
+  '/search/beta/merchandising/keyword/ruleset': {
+    get: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        return {
+          body: keywordRulesetMock,
+          status: 200,
+        };
+      }
+      return { body: jsonBody, status };
+    },
+  },
+  '/search/beta/merchandising/keyword/ruleset/{ruleSetId}': {
+    put: () => {
+      return {
+        body: keywordRulesetMock.ruleSets[0],
+        status: 200,
+      };
     },
   },
 });

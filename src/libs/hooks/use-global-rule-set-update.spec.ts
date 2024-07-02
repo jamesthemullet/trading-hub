@@ -50,7 +50,7 @@ describe('useGlobalRuleSetDelete', () => {
     delete process.env.MERCHANDISING_PROXY_BASE_URL;
   });
 
-  it('should delete a ruleset', async () => {
+  it('should update a ruleset', async () => {
     deleteRuleSetMock.mockReturnValueOnce({
       data: 'ok',
       status: { status: 200 },

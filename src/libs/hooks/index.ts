@@ -1,3 +1,5 @@
+export * from './search/use-search-ruleset-list';
+export * from './search/use-search-ruleset-update';
 export * from './use-category-attributes';
 export * from './use-category-preview';
 export * from './use-category-product-search';

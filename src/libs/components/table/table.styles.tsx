@@ -12,7 +12,7 @@ export const TableRow = styled.div`
   display: grid;
   grid-template-columns: minmax(240px, 2fr) 200px 250px 180px;
   border-bottom: 1px solid #b1b1b1;
-  align-items: baseline;
+  align-items: center;
   padding-left: ${spacing(2)};
 
   &:first-of-type {
@@ -39,12 +39,9 @@ export const FacetAttributeValuesTableRow = styled(TableRow)`
 export const TableCol = styled.div`
   text-overflow: ellipsis;
   display: flex;
-  padding: ${spacing(3)} 0 ${spacing(0.5)};
+  padding: ${spacing(1)} ${spacing(1)} ${spacing(1)} 0;
 
   p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-wrap: nowrap;
     width: 100%;
   }
 `;

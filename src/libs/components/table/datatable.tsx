@@ -83,7 +83,10 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
             return (
               <Row key={id}>
                 <TableCol>
-                  <Text title={identifier}>{identifier}</Text>
+                  <Text
+                    title={identifier}
+                    dangerouslySetInnerHTML={{ __html: identifier }}
+                  />
                 </TableCol>
                 <TableCol>
                   <Toggle

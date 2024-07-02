@@ -14,4 +14,5 @@ export const color = {
   selectionBox: '#4273b7',
   successGreen: '#2db236',
   improvedFit: '#e86c25',
+  focusBlue: '#4273B7',
 };

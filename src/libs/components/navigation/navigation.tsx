@@ -163,6 +163,9 @@ export const Navigation = () => {
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 2}>
             <Header3>Search optimisation</Header3>
+            <SubLink href="/search/rulesets">
+              <Text>Ranking rules</Text>
+            </SubLink>
           </SubMenu>
 
           <Link

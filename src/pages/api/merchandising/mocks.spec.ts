@@ -7,6 +7,7 @@ import {
   categoryRuleSetMock,
   getMockMapping,
   globalFacetsListMock,
+  keywordRulesetMock,
   ruleSetFacetConfigWithIdMock,
 } from './mocks';
 
@@ -389,6 +390,76 @@ describe('mocks', () => {
       );
       expect(result).toEqual({
         body: realResponse,
+        status: 200,
+      });
+    });
+  });
+
+  describe('/search/beta/merchandising/keyword/ruleset', () => {
+    it('should return keyword rulesets when status is not 200', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/keyword/ruleset'].get
+      ).toBeDefined();
+
+      const result = mockMapping['/search/beta/merchandising/keyword/ruleset']
+        .get!(
+        createMockNextApiRequest({
+          url: `/search/beta/merchandising/keyword/ruleset`,
+          method: 'GET',
+        }),
+        400,
+        {}
+      );
+      expect(result).toEqual({
+        body: keywordRulesetMock,
+        status: 200,
+      });
+    });
+
+    it('should return jsonBody when status is 200', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/keyword/ruleset'].get
+      ).toBeDefined();
+      const realResponse = {};
+
+      const result = mockMapping['/search/beta/merchandising/keyword/ruleset']
+        .get!(
+        createMockNextApiRequest({
+          url: `/search/beta/merchandising/keyword/ruleset`,
+          method: 'GET',
+        }),
+        200,
+        realResponse
+      );
+      expect(result).toEqual({
+        body: realResponse,
+        status: 200,
+      });
+    });
+  });
+
+  describe('/search/beta/merchandising/keyword/ruleset/{ruleSetId}', () => {
+    it('should add mock rulesets', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/keyword/ruleset/{ruleSetId}']
+          .put
+      ).toBeDefined();
+
+      const result = mockMapping[
+        '/search/beta/merchandising/keyword/ruleset/{ruleSetId}'
+      ].put!(
+        createMockNextApiRequest({
+          url: '/search/beta/merchandising/keyword/ruleset/1',
+          method: 'GET',
+        }),
+        200,
+        categoryRuleSetMock
+      );
+      expect(result).toEqual({
+        body: keywordRulesetMock.ruleSets[0],
         status: 200,
       });
     });
