@@ -144,6 +144,10 @@ Please follow this doc: [add-members-to-the-existing-organisations](https://devo
 
 Please follow this doc: [Support](https://devopssec.engineering.mnscorp.net/Support/)
 
+### Azure oAuth app registration permissions
+
+Take a look at [azure-oauth-app-registration](docs/azure-oauth-app-registration.md)
+
 ### VS Code
 
 An example settings.json file is in the .vscode folder
