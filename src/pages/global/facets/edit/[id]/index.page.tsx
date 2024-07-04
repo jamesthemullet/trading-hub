@@ -108,6 +108,7 @@ const Page = () => {
           title="Global Facet Rule Editor"
           facetsData={filteredFacets}
           defaultCategory={defaultCategory}
+          canMergeValueAttributes
         />
       )}
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />

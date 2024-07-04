@@ -155,6 +155,7 @@ export const FacetsPanel = ({
   title,
   facetsData,
   defaultCategory,
+  canMergeValueAttributes,
   displayRowOrderControls = false,
 }: {
   onSave: () => void;
@@ -174,6 +175,7 @@ export const FacetsPanel = ({
   title: string;
   facetsData: ReturnedFacet[];
   defaultCategory?: Category;
+  canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
@@ -350,7 +352,11 @@ export const FacetsPanel = ({
       </AttributesTable>
 
       {isEditValuesModalOpen && selectedFacet && (
-        <ModalEditValues onClose={onClose} facet={selectedFacet} />
+        <ModalEditValues
+          onClose={onClose}
+          facet={selectedFacet}
+          canMerge={canMergeValueAttributes}
+        />
       )}
 
       {facetsData.length === 0 && (

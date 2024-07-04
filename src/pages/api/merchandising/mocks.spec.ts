@@ -432,7 +432,7 @@ describe('mocks', () => {
       expect(result.status).toEqual(404);
     });
 
-    it('should return 40', () => {
+    it('should return 400', () => {
       const mockMapping = getMockMapping();
       expect(
         mockMapping['/search/beta/merchandising/facet/{facetId}'].put

@@ -142,10 +142,32 @@ describe('ModalEditValues', () => {
   });
 
   describe('Merge functionality', () => {
+    it('should not show merge options if not enabled', async () => {
+      const onCloseSpy = jest.fn();
+      renderWithProviders(
+        <ModalEditValues
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+        />
+      );
+
+      const mergeButton = screen.queryByRole('button', { name: 'Merge (0)' });
+      const mergeCheckBoxes = screen.queryAllByRole('checkbox');
+
+      expect(mergeButton).toBeNull();
+      expect(mergeCheckBoxes.length).toBe(0);
+    });
+
     it('should disable the merge button if less than two attributes selected', () => {
       const onCloseSpy = jest.fn();
       renderWithProviders(
         <ModalEditValues
+          canMerge
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -166,6 +188,7 @@ describe('ModalEditValues', () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <ModalEditValues
+          canMerge
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -206,6 +229,7 @@ describe('ModalEditValues', () => {
 
       renderWithProviders(
         <ModalEditValues
+          canMerge
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -264,6 +288,7 @@ describe('ModalEditValues', () => {
 
       renderWithProviders(
         <ModalEditValues
+          canMerge
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -297,6 +322,7 @@ describe('ModalEditValues', () => {
 
       renderWithProviders(
         <ModalEditValues
+          canMerge
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -350,6 +376,7 @@ describe('ModalEditValues', () => {
 
       renderWithProviders(
         <ModalEditValues
+          canMerge
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -412,6 +439,7 @@ describe('ModalEditValues', () => {
 
       renderWithProviders(
         <ModalEditValues
+          canMerge
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -520,6 +548,7 @@ describe('ModalEditValues', () => {
 
       renderWithProviders(
         <ModalEditValues
+          canMerge
           onClose={() => {}}
           facet={{
             displayValue: 'color',

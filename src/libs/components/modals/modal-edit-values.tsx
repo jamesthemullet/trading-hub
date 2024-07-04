@@ -131,9 +131,11 @@ const EDITFACETVALUESMODALCOLUMNS: {
 export const ModalEditValues = ({
   onClose,
   facet,
+  canMerge = false,
 }: {
   onClose: () => void;
   facet: ReturnedFacet;
+  canMerge?: boolean;
 }) => {
   const [editFacetValues, setEditFacetValues] = useState<AttributeValue[]>([]);
   const [mergeList, setMergeList] = useState<string[]>([]);
@@ -317,12 +319,14 @@ export const ModalEditValues = ({
 
             <MergeAndSearchContainer>
               <Text isStrong>All values listed</Text>
-              <Button
-                isDisabled={mergeList.length < 2}
-                onClick={() => mergeValues()}
-              >
-                Merge ({mergeList.length})
-              </Button>
+              {canMerge && (
+                <Button
+                  isDisabled={mergeList.length < 2}
+                  onClick={() => mergeValues()}
+                >
+                  Merge ({mergeList.length})
+                </Button>
+              )}
               <Search onChange={(e) => handleSearch(e.target.value)} />
             </MergeAndSearchContainer>
 
@@ -335,9 +339,7 @@ export const ModalEditValues = ({
                         {label}
                       </TableHeading>
                     ) : (
-                      <Col>
-                        <input type="checkbox" />
-                      </Col>
+                      <Col>{canMerge && <input type="checkbox" />}</Col>
                     )}
                   </Col>
                 ))}
@@ -362,12 +364,14 @@ export const ModalEditValues = ({
                     aria-label={`attribute ${index} ${attribute}`}
                   >
                     <Col>
-                      <input
-                        type="checkbox"
-                        checked={mergeList.includes(attribute)}
-                        onChange={() => handleSelect(attribute, mergedValues)}
-                        aria-label={`Select ${attribute} to merge`}
-                      />
+                      {canMerge && (
+                        <input
+                          type="checkbox"
+                          checked={mergeList.includes(attribute)}
+                          onChange={() => handleSelect(attribute, mergedValues)}
+                          aria-label={`Select ${attribute} to merge`}
+                        />
+                      )}
                     </Col>
 
                     <Col>
