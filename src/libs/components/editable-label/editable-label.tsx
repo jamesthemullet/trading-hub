@@ -5,7 +5,7 @@ import { Button, Input, spacing, Text } from '@/libs/components';
 
 import Image from 'next/image';
 
-const DisplayName = styled.div`
+export const DisplayName = styled.div`
   display: flex;
   align-items: center;
 `;

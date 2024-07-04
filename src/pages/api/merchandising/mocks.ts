@@ -9,6 +9,7 @@ import {
   ProductBoostBury,
   ReturnedCategoryRuleSet,
   ReturnedFacet,
+  ReturnedGlobalFacet,
   ReturnedKeywordRuleSets,
   ReturnedRuleSet,
   RuleSetFacetConfigWithId,
@@ -274,29 +275,41 @@ export const attributeValuesMock: AttributeValuesResponse['values'] = [
   {
     displayValue: 'Cotton',
     mergedValues: [],
-    isExcluded: false,
+    isExcluded: true,
     isPinned: false,
   },
   {
     displayValue: 'Duck Down',
     mergedValues: [],
     isExcluded: false,
-    isPinned: false,
+    isPinned: true,
   },
   {
     displayValue: 'Duck Down And Feather',
     mergedValues: [],
     isExcluded: false,
-    isPinned: false,
+    isPinned: true,
   },
   {
     displayValue: 'Ducky Downy',
     mergedValues: [],
     isExcluded: false,
-    isPinned: false,
+    isPinned: true,
   },
   {
     displayValue: 'Ducky Downy And Feathery',
+    mergedValues: [],
+    isExcluded: true,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Silk',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'More Silk',
     mergedValues: [],
     isExcluded: false,
     isPinned: false,
@@ -459,6 +472,44 @@ export const getMockMapping: () => Record<
           status: 200,
         };
       }
+      return { body: jsonBody, status };
+    },
+  },
+  '/search/beta/merchandising/facet/{facetId}': {
+    put: (req, status, jsonBody) => {
+      const { url } = req;
+      if (!url) {
+        const error: ErrorResponse = {
+          message: 'url is empty',
+          status: '400',
+        };
+        return { body: error, status: 400 };
+      }
+
+      const facetId = url.split('/')[7] || url.split('/')[5];
+
+      const facet = globalFacetsListMock.facets.find(
+        (facet) => facet.id === facetId
+      );
+
+      if (!facet) {
+        const error: ErrorResponse = {
+          message: `Facet with id: ${facetId} not found`,
+          status: '404',
+        };
+        return { body: error, status: 404 };
+      }
+
+      if (!jsonBody || status !== 200) {
+        /* istanbul ignore next */
+        const response: ReturnedGlobalFacet = {
+          ...facet,
+          ...req.body,
+        };
+
+        return { body: response, status: 200 };
+      }
+
       return { body: jsonBody, status };
     },
   },

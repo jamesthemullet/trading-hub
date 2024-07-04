@@ -12,6 +12,7 @@ export type ArrowButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const StyledArrowButton = styled.button<ArrowButtonProps>`
   background: url('/trading-hub/asset/icon-arrow-up.svg');
+  background-color: #fff;
   background-repeat: no-repeat;
   background-position: center;
   border: none;
@@ -22,15 +23,18 @@ const StyledArrowButton = styled.button<ArrowButtonProps>`
   border-radius: 4px;
   ${({ direction }) => direction === 'down' && 'transform: rotate(180deg);'}
 
-  &:disabled {
-    cursor: default;
-    opacity: 0.7;
-  }
-
   &:hover,
   &:focus {
     margin-top: -2px;
     outline: solid 2px ${color.selectionBox};
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+    background-color: ${color.lightGrey};
+    margin-top: 0;
+    outline: solid 1px ${color.grey};
   }
 
   &:active {

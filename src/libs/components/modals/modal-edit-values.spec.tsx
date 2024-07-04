@@ -12,7 +12,7 @@ jest.mock('@/libs/hooks', () => ({
   useGetFacetAttributeValues: jest.fn(),
 }));
 
-describe('Add Facet Modal', () => {
+describe('ModalEditValues', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -85,6 +85,11 @@ describe('Add Facet Modal', () => {
       'Edit display name for Cotton Candy'
     );
     expect(newEditButton).toBeVisible();
+
+    act(() => {
+      screen.getByText('Save').click();
+    });
+    await waitFor(async () => expect(onCloseSpy).toHaveBeenCalled());
   }, 15000);
 
   it('should search', async () => {
@@ -472,6 +477,72 @@ describe('Add Facet Modal', () => {
           screen.getAllByText('Name your merged value group')[0]
         ).toBeVisible();
       });
+    }, 15000);
+  });
+
+  describe('Reorder', () => {
+    it('should move up from second to first place', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <ModalEditValues
+          onClose={() => {}}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+        />
+      );
+
+      expect(screen.getByLabelText('attribute 5 Cotton')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText('attribute 6 Ducky Downy And Feathery')
+      ).toBeInTheDocument();
+      await waitFor(() =>
+        expect(
+          screen.getByLabelText('attribute 1 Duck Down And Feather')
+        ).toBeInTheDocument()
+      );
+
+      user.click(screen.getByLabelText('Move Duck Down And Feather row up'));
+
+      await waitFor(() =>
+        expect(
+          screen.getByLabelText('attribute 0 Duck Down And Feather')
+        ).toBeInTheDocument()
+      );
+    }, 10000);
+
+    it('should move down from second to third place', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <ModalEditValues
+          onClose={() => {}}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+        />
+      );
+
+      await waitFor(() =>
+        expect(
+          screen.getByLabelText('attribute 1 Duck Down And Feather')
+        ).toBeInTheDocument()
+      );
+
+      user.click(screen.getByLabelText('Move Duck Down And Feather row down'));
+
+      await waitFor(() =>
+        expect(
+          screen.getByLabelText('attribute 2 Duck Down And Feather')
+        ).toBeInTheDocument()
+      );
     });
   });
 });

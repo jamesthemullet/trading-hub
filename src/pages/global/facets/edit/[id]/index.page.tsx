@@ -71,7 +71,7 @@ const Page = () => {
     setLocalFacetData((prev) => {
       const updatedFacet: ReturnedFacet = {
         ...prev[index],
-        displayValue: response.displayValue,
+        displayValue: response?.displayValue as string,
       };
       return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
     });

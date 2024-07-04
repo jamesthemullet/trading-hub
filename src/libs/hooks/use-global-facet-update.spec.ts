@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -6,17 +6,17 @@ import { useGlobalFacetUpdate } from './use-global-facet-update';
 
 const baseUrl = 'http://localhost';
 
+const facetId = 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84';
 const facet = {
   displayValue: 'color',
   indexPropertyName: 'color',
-  id: 'color-id',
+  id: facetId,
   lastChanged: {
     date: '2024-07-01T00:00:00.000Z',
     user: 'Test User',
   },
   merged: [],
 };
-const facetId = 'color-id';
 const updateGlobalFacetMock = jest.fn();
 
 const handlers = [
@@ -29,13 +29,6 @@ const handlers = [
 const server = setupServer(...handlers);
 
 describe('useGlobalFacetUpdate', () => {
-  beforeEach(() => {
-    const DATE_TO_USE = new Date('2024-07-01T00:00:00.000Z');
-    const _Date = Date;
-    global.Date = jest.fn(() => DATE_TO_USE) as unknown as DateConstructor;
-    global.Date.UTC = _Date.UTC;
-  });
-
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();
@@ -56,32 +49,36 @@ describe('useGlobalFacetUpdate', () => {
       data: facet,
       status: { status: 200 },
     });
-    const {
-      result: { current },
-    } = renderHook(() => useGlobalFacetUpdate());
+    const { result } = renderHook(() => useGlobalFacetUpdate());
 
-    const response = await current.handleUpdate({
-      facetId: 'color-id',
+    await act(async () => {
+      await result.current.handleUpdate({
+        facetId: facetId,
+        data: {
+          displayValue: 'colour',
+          indexPropertyName: 'color',
+        },
+      });
+    });
+
+    expect(result.current.error).toEqual('');
+  });
+
+  it('should render the hook with error', async () => {
+    updateGlobalFacetMock.mockReturnValueOnce({
+      data: null,
+      status: { status: 500 },
+    });
+
+    const { result } = renderHook(() => useGlobalFacetUpdate());
+
+    await result.current.handleUpdate({
+      facetId: facetId,
       data: facet,
     });
 
-    expect(response).toEqual(facet);
+    await waitFor(() => {
+      expect(result.current.error).toEqual('Internal Server Error');
+    });
   });
-
-  //   it('should render the hook with error', async () => {
-  //     server.use(
-  //       http.put(`${baseUrl}/search/beta/merchandising/facet/${facetId}`, () => {
-  //         return HttpResponse.json(
-  //           { message: 'Internal Server Error' },
-  //           { status: 500 }
-  //         );
-  //       })
-  //     );
-
-  //     const { result } = renderHook(() => useGlobalFacetUpdate());
-
-  //     await waitFor(() => {
-  //       expect(result.current.error).toEqual('Internal Server Error');
-  //     });
-  //   });
 });

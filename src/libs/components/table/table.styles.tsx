@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 import { Label } from '@/libs/components/typography/typography.styles';
+import { color } from '@/libs/components/utils/constants';
 import { spacing } from '@/libs/components/utils/spacing';
 
 export const TableContainer = styled.div`
@@ -25,7 +26,14 @@ export const TableRow = styled.div`
 export const FacetsTableRow = styled(TableRow)`
   grid-template-columns: minmax(170px, 2fr) 120px 150px 150px 150px;
 `;
-export const FacetAttributeValuesTableRow = styled(TableRow)`
+
+type FacetAttributeValuesTableRowProps = {
+  isPinned?: boolean;
+  isExcluded?: boolean;
+};
+export const FacetAttributeValuesTableRow = styled(
+  TableRow
+)<FacetAttributeValuesTableRowProps>`
   grid-template-columns:
     24px minmax(280px, 1fr) minmax(270px, 1fr) minmax(50px, 1fr)
     200px;
@@ -34,6 +42,12 @@ export const FacetAttributeValuesTableRow = styled(TableRow)`
   margin-bottom: ${spacing(2)};
   box-shadow: #000 0 0 10px -5px;
   padding: ${spacing(2)};
+
+  ${({ isPinned }) =>
+    isPinned && `background-color: ${color.successGreenBackground}`}
+
+  ${({ isExcluded }) =>
+    isExcluded && `background-color: ${color.errorRedBackground}`}
 `;
 
 export const TableCol = styled.div`

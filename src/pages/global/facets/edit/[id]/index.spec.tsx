@@ -2,10 +2,12 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { useGetCategories } from '@/libs/hooks';
-import { useGlobalFacetsList } from '@/libs/hooks/use-global-facets-list';
-import { useGlobalRuleSetDetail } from '@/libs/hooks/use-global-rule-set-detail';
-import { useRuleSet } from '@/libs/hooks/use-rule-set';
+import {
+  useGetCategories,
+  useGlobalFacetsList,
+  useGlobalRuleSetDetail,
+  useRuleSet,
+} from '@/libs/hooks';
 import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
 
 import { renderWithProviders } from '../../../../../test/render-with-providers';
@@ -15,26 +17,18 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+const mockUpdateGlobalFacet = jest.fn();
+const mockUpdateGlobalRuleSet = jest.fn();
+
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGetCategories: jest.fn(),
-}));
-
-jest.mock('@/libs/hooks/use-rule-set', () => ({
   useRuleSet: jest.fn(),
-}));
-
-jest.mock('@/libs/hooks/use-global-facets-list', () => ({
   useGlobalFacetsList: jest.fn(),
-}));
-
-jest.mock('@/libs/hooks/use-global-rule-set-detail', () => ({
   useGlobalRuleSetDetail: jest.fn(),
-}));
-
-const mockUpdateGlobalRuleSet = jest.fn();
-
-jest.mock('@/libs/hooks/use-global-rule-set-update', () => ({
+  useGlobalFacetUpdate: () => {
+    return { handleUpdate: mockUpdateGlobalFacet };
+  },
   useGlobalRuleSetUpdate: () => {
     return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
   },
@@ -241,10 +235,15 @@ describe('Global Facet Management Editing', () => {
     });
 
     await waitFor(() => {
-      const newEditButton = screen.getByLabelText(
-        'Edit display name for colour'
-      );
-      expect(newEditButton).toBeVisible();
+      expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
+        data: {
+          boosted: undefined,
+          displayValue: 'colour',
+          excludedValues: undefined,
+          indexPropertyName: 'color',
+        },
+        facetId: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+      });
     });
   });
 

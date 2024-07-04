@@ -3,14 +3,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import { AttributeValuesResponse, ReturnedFacet } from '@/libs/api';
-import { useDebounce } from '@/libs/hooks';
+import { useDebounce, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
 
 import Image from 'next/image';
 
+import { ArrowButton } from '../buttons/button/arrow-button';
 import { Button } from '../buttons/button/button';
 import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
-import { EditableLabel } from '../editable-label/editable-label';
+import { DisplayName, EditableLabel } from '../editable-label/editable-label';
 import { FilteredResultsPanel } from '../filtered-results-panel/filtered-results-panel';
 import { Search } from '../search/search';
 import {
@@ -45,6 +46,14 @@ const ModalContainer = styled.div`
   min-width: 860px;
 `;
 
+const OrderArrowsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: ${spacing(12)};
+  margin-right: ${spacing(2)};
+`;
 const MergeAndSearchContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -128,8 +137,51 @@ export const ModalEditValues = ({
 }) => {
   const [editFacetValues, setEditFacetValues] = useState<AttributeValue[]>([]);
   const [mergeList, setMergeList] = useState<string[]>([]);
+  const [orderedPinnedValues, setOrderedPinnedValues] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredEditFacetValues = useMemo(() => {
+    const filteredValues = !searchQuery
+      ? editFacetValues
+      : editFacetValues.filter((value) =>
+          value.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+    // Array.toSorted does not work in test env
+    // eslint-disable-next-line functional/immutable-data
+    return filteredValues.sort((a, b) => {
+      // pinned
+      if (a.isPinned && !b.isPinned) {
+        return -1;
+      }
+      if (!a.isPinned && b.isPinned) {
+        return 1;
+      }
+      if (a.isPinned && b.isPinned) {
+        return (
+          orderedPinnedValues.indexOf(a.attribute) -
+          orderedPinnedValues.indexOf(b.attribute)
+        );
+      }
+
+      // excluded
+      if (a.isExcluded && !b.isExcluded) {
+        return 1;
+      }
+      if (!a.isExcluded && b.isExcluded) {
+        return -1;
+      }
+
+      return 0;
+    });
+  }, [editFacetValues, orderedPinnedValues, searchQuery]);
 
   const { attributeValues } = useGetFacetAttributeValues(facet.id);
+  const { handleUpdate } = useGlobalFacetUpdate();
+
+  const { callback: handleSearch } = useDebounce((val: string) => {
+    setSearchQuery(val);
+  }, 300);
 
   useEffect(() => {
     const facetValues = attributeValues.map((value, index) => ({
@@ -139,6 +191,11 @@ export const ModalEditValues = ({
     }));
 
     setEditFacetValues(facetValues);
+    setOrderedPinnedValues(
+      facetValues
+        .filter((value) => value.isPinned)
+        .map((value) => value.attribute)
+    );
   }, [attributeValues]);
 
   const handleSelect = (
@@ -219,19 +276,18 @@ export const ModalEditValues = ({
     }
   };
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const handleSave = async () => {
+    /* istanbul ignore next */
+    await handleUpdate({
+      facetId: facet.id,
+      data: {
+        ...facet,
+        boosted: orderedPinnedValues,
+      },
+    });
 
-  const { callback: handleSearch } = useDebounce((val: string) => {
-    setSearchQuery(val);
-  }, 300);
-
-  const filteredEditFacetValues = useMemo(() => {
-    return !searchQuery
-      ? editFacetValues
-      : editFacetValues.filter((value) =>
-          value.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-  }, [editFacetValues, searchQuery]);
+    onClose();
+  };
 
   return (
     <Modal.Root
@@ -288,10 +344,22 @@ export const ModalEditValues = ({
               </FacetAttributeValuesTableRow>
 
               {filteredEditFacetValues.map(
-                ({ displayValue, attribute, mergedValues }) => (
+                (
+                  {
+                    displayValue,
+                    attribute,
+                    mergedValues,
+                    isPinned,
+                    isExcluded,
+                  },
+                  index
+                ) => (
                   <FacetAttributeValuesTableRow
                     key={`attribute-${attribute}`}
+                    isPinned={isPinned}
+                    isExcluded={isExcluded}
                     data-testid="rows"
+                    aria-label={`attribute ${index} ${attribute}`}
                   >
                     <Col>
                       <input
@@ -351,10 +419,71 @@ export const ModalEditValues = ({
                       />
                     </Col>
 
-                    <Col></Col>
+                    <Col>
+                      {isPinned && (
+                        <>
+                          <DisplayName>
+                            {/* TODO: need to update that if changed */}
+                            default
+                          </DisplayName>
+
+                          <OrderArrowsContainer>
+                            <ArrowButton
+                              direction="up"
+                              aria-label={`Move ${attribute} row up`}
+                              onClick={() => {
+                                setOrderedPinnedValues((prev) => {
+                                  const i = prev.indexOf(attribute);
+
+                                  const newOrdered = [...prev];
+
+                                  return [
+                                    ...newOrdered.slice(0, i - 1),
+                                    attribute,
+                                    newOrdered[i - 1],
+                                    ...newOrdered.slice(i + 1),
+                                  ];
+                                });
+                              }}
+                              isDisabled={index === 0}
+                            />
+
+                            <ArrowButton
+                              direction="down"
+                              aria-label={`Move ${attribute} row down`}
+                              onClick={() => {
+                                setOrderedPinnedValues((prev) => {
+                                  const i = prev.indexOf(attribute);
+
+                                  const newOrdered = [...prev];
+
+                                  return [
+                                    ...newOrdered.slice(0, i),
+                                    newOrdered[i + 1],
+                                    attribute,
+                                    ...newOrdered.slice(i + 2),
+                                  ];
+                                });
+                              }}
+                              isDisabled={
+                                index === orderedPinnedValues.length - 1
+                              }
+                            />
+                          </OrderArrowsContainer>
+                        </>
+                      )}
+                    </Col>
 
                     <Col>
-                      <FacetOrderDropdown />
+                      <FacetOrderDropdown
+                        status={
+                          isPinned
+                            ? 'included'
+                            : isExcluded
+                              ? 'excluded'
+                              : undefined
+                        }
+                      />
                     </Col>
                   </FacetAttributeValuesTableRow>
                 )
@@ -367,7 +496,7 @@ export const ModalEditValues = ({
 
         <ModalFooter>
           <Button onClick={onClose}>Cancel</Button>{' '}
-          <Button isDisabled={true}>Save</Button>
+          <Button onClick={handleSave}>Save</Button>
         </ModalFooter>
       </Modal.Content>
     </Modal.Root>
