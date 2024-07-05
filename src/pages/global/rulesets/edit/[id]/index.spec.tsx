@@ -16,7 +16,7 @@ jest.mock('next/router', () => ({
 }));
 
 const mockUpdateGlobalRuleSet = jest.fn(() => Promise.resolve());
-jest.mock('@/libs/hooks/use-global-rule-set-update', () => ({
+jest.mock('@/libs/hooks/global/rulesets/use-global-rule-set-update', () => ({
   useGlobalRuleSetUpdate: () => {
     return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
   },
@@ -34,7 +34,7 @@ const mockRuleData: ReturnedGlobalRuleSet = {
   lastChanged: { date: '2023-12-06T14:24:17Z', user: 'Mark Spencer' },
 };
 
-jest.mock('@/libs/hooks/use-global-rule-set-detail', () => ({
+jest.mock('@/libs/hooks/global/rulesets/use-global-rule-set-detail', () => ({
   useGlobalRuleSetDetail: jest.fn(),
 }));
 

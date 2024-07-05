@@ -13,27 +13,36 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('../../../libs/hooks/use-global-rule-set-create', () => ({
-  useGlobalRuleSetCreate: jest.fn(),
-}));
+jest.mock(
+  '../../../libs/hooks/global/rulesets/use-global-rule-set-create',
+  () => ({
+    useGlobalRuleSetCreate: jest.fn(),
+  })
+);
 
 jest.mock('../../../libs/hooks/use-rule-set', () => ({
   useRuleSet: jest.fn(),
 }));
 
 const mockRuleSetDelete = jest.fn();
-jest.mock('../../../libs/hooks/use-global-rule-set-delete', () => ({
-  useGlobalRuleSetDelete: () => {
-    return { handleDelete: mockRuleSetDelete };
-  },
-}));
+jest.mock(
+  '../../../libs/hooks/global/rulesets/use-global-rule-set-delete',
+  () => ({
+    useGlobalRuleSetDelete: () => {
+      return { handleDelete: mockRuleSetDelete };
+    },
+  })
+);
 
 const mockUpdateRuleSet = jest.fn();
-jest.mock('../../../libs/hooks/use-global-rule-set-update', () => ({
-  useGlobalRuleSetUpdate: () => {
-    return { saveGlobalRuleset: mockUpdateRuleSet, isSaving: true };
-  },
-}));
+jest.mock(
+  '../../../libs/hooks/global/rulesets/use-global-rule-set-update',
+  () => ({
+    useGlobalRuleSetUpdate: () => {
+      return { saveGlobalRuleset: mockUpdateRuleSet, isSaving: true };
+    },
+  })
+);
 
 const NEW_RULE_BUTTON_TEXT = 'Add rule';
 
