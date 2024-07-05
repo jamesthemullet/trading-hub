@@ -79,5 +79,23 @@ describe('SearchBox', () => {
       'right',
       '0.5rem'
     );
+    expect(screen.queryByLabelText('Some button')).toBeVisible();
+  });
+
+  it('should not render a search icon if hideIcon is true', () => {
+    render(
+      <SearchBox
+        inputProps={{
+          id: 'searchId',
+          label: 'search products',
+        }}
+        hideIcon
+        iconButtonProps={{
+          buttonAriaLabel: 'Some button',
+        }}
+      />
+    );
+
+    expect(screen.queryByLabelText('Some button')).not.toBeInTheDocument();
   });
 });

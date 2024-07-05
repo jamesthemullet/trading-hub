@@ -75,6 +75,7 @@ const StyledButton = styled(Button)<{ iconPosition: IconPosition }>`
 
 export type SearchBoxProps = {
   iconPosition?: IconPosition;
+  hideIcon?: boolean;
   inputProps: {
     ref?: RefObject<HTMLInputElement>;
   } & InputProps;
@@ -86,25 +87,28 @@ export type SearchBoxProps = {
 
 export const SearchBox = ({
   iconPosition = 'right',
+  hideIcon = false,
   inputProps,
   iconButtonProps,
 }: SearchBoxProps) => {
   const {
-    icon = <Icon name="Search" size={32} />,
+    icon = !hideIcon && <Icon name="Search" size={32} />,
     buttonAriaLabel = 'Search button',
     ...iconButtonPropsRest
   } = iconButtonProps;
   return (
     <Wrapper>
       <StyledInput type="search" {...inputProps} iconPosition={iconPosition} />
-      <StyledButton
-        type="submit"
-        aria-label={buttonAriaLabel}
-        iconPosition={iconPosition}
-        {...iconButtonPropsRest}
-      >
-        {icon}
-      </StyledButton>
+      {icon && (
+        <StyledButton
+          type="submit"
+          aria-label={buttonAriaLabel}
+          iconPosition={iconPosition}
+          {...iconButtonPropsRest}
+        >
+          {icon}
+        </StyledButton>
+      )}
     </Wrapper>
   );
 };
