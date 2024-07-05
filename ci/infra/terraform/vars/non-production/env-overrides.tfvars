@@ -4,7 +4,7 @@ app_environment = {
   "MERCHANDISING_API_BASEURL" : "https://api-dev.marksandspencer.com/merchandising",
   "NODE_OPTIONS" : "--max-http-header-size 32768",
   "BUMP_ME_FOR_SECRETS_UPDATE" : "2",
-  "NEXTAUTH_URL": "https://dev-trading-hub-v1-eun-layer3-app.azurewebsites.net/api/auth/"
+  "NEXTAUTH_URL": "https://dev-merchandising-hub.search.marksandspencer.app/api/auth/"
 }
 
 enable_frontdoor_waf = true
