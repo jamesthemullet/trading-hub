@@ -53,6 +53,14 @@ jobs:
           npm install
           NEXT_TELEMETRY_DISABLED=1 npm run build
 
+      - name: add version.txt
+        run: |
+          set -x
+          SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)
+          APP_VERSION=${SHORT_COMMIT_SHA}-${{ github.run_number }}
+          echo "${APP_VERSION}" > ./public/version.txt
+          ls -lA
+
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
         run: |
@@ -169,18 +177,36 @@ jobs:
         with:
           name: node-app
 
-      - name: Deploy to Azure Web Apps
-        shell: bash
-        run: |
-          set -x
-          az webapp deploy \
-            --type zip \
+      - name: Deploy to Azure Web Apps slot
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.53.1
+          inlineScript: |
+            az webapp deploy \
             --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
             --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
-            --src-path ./next.zip \
             --slot preprod \
-            --async true \
-            --timeout 360
+            --src-path ./next.zip \
+            --type zip \
+            --async true
+
+      - name: Validate version number
+        uses: nick-fields/retry@v3.0.0
+        with:
+          timeout_seconds: 20
+          max_attempts: 10
+          retry_wait_seconds: 10
+          command: |
+            set -x
+            SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)
+            VERSION_CHECK_URL="https://stage-merchandising-hub.search.marksandspencer.app/version.txt"
+            VERSION=$(curl "${VERSION_CHECK_URL}")
+            APP_COMMIT_SHA=${SHORT_COMMIT_SHA}
+            echo ${VERSION} | grep ${APP_COMMIT_SHA}
+
+      - name: Swap slots (TODO)
+        run: |
+          echo "TODO: Swap slots"
 
       - name: Delete zip file
         run: rm next.zip

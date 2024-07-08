@@ -4,7 +4,7 @@ app_environment = {
   "APP_NAME" : "trading-hub",
   "MERCHANDISING_API_BASEURL" : "https://mns-prod-prod.apigee.net/merchandising",
   "NODE_OPTIONS" : "--max-http-header-size 32768",
-  "NEXTAUTH_URL" : "https://stage-merchandising-hub.search.marksandspencer.app", # testing staging
+  "NEXTAUTH_URL" : "https://merchandising-hub.search.marksandspencer.app",
   "BUMP_ME_FOR_SECRETS_UPDATE" : "1",
   "NODE_ENV" : "production",
   "NODE_OPTIONS" : "--max-http-header-size 32768"
