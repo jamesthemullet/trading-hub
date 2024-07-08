@@ -74,6 +74,13 @@ jobs:
       BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
       ALL_SECRETS: ('${{ toJSON(secrets) }}')
 
+  debug-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug secrets
+        run: |
+          echo "ALL_SECRETS: ${{ toJSON(secrets) }}"
+
   call-tf-webapp-container-stack:
     needs:
       - check-vars

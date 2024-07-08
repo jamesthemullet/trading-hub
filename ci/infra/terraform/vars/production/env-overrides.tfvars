@@ -2,7 +2,7 @@
 
 app_environment = {
   "APP_NAME" : "trading-hub",
-  "MERCHANDISING_API_BASEURL" : "https://api-dev.marksandspencer.com/merchandising",
+  "MERCHANDISING_API_BASEURL" : "https://api.marksandspencer.com/merchandising",
   "NODE_OPTIONS" : "--max-http-header-size 32768",
   "NEXTAUTH_URL" : "https://merchandising-hub.search.marksandspencer.app/api/auth",
   "BUMP_ME_FOR_SECRETS_UPDATE" : "1",
