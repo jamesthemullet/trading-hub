@@ -119,6 +119,23 @@ jobs:
         with:
           name: node-app
 
+      - name: Set up environment variables
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.53.1
+          inlineScript: |
+            az webapp config appsettings set \
+              --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
+              --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
+              --settings \
+              "MERCHANDISING_API_BASEURL=https://api-dev.marksandspencer.com/merchandising" \
+              "MERCHANDISING_API_APIGEE_KEY=${{ secrets._MERCHANDISING_API_APIGEE_KEY }}" \
+              "NEXTAUTH_SECRET=${{ secrets._NEXTAUTH_SECRET }}" \
+              "NEXTAUTH_URL=https://dev-merchandising-hub.search.marksandspencer.app/api/auth" \
+              "AZURE_AD_CLIENT_ID=${{ secrets._AZURE_AD_CLIENT_ID }}" \
+              "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
+              "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}"
+
       - name: Deploy to Azure Web Apps
         shell: bash
         run: |
@@ -176,6 +193,23 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+
+      - name: Set up environment variables
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.53.1
+          inlineScript: |
+            az webapp config appsettings set \
+              --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
+              --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
+              --settings \
+              "MERCHANDISING_API_BASEURL=https://api.marksandspencer.com/merchandising" \
+              "MERCHANDISING_API_APIGEE_KEY=${{ secrets._MERCHANDISING_API_APIGEE_KEY }}" \
+              "NEXTAUTH_SECRET=${{ secrets._NEXTAUTH_SECRET }}" \
+              "NEXTAUTH_URL=https://merchandising-hub.search.marksandspencer.app/api/auth" \
+              "AZURE_AD_CLIENT_ID=${{ secrets._AZURE_AD_CLIENT_ID }}" \
+              "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
+              "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}"
 
       - name: Deploy to Azure Web Apps slot
         uses: azure/cli@v2
