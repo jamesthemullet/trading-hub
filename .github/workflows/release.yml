@@ -45,14 +45,6 @@ jobs:
           node-version: ${{ steps.get-versions-from-package-json.outputs.node-version }}
           cache: npm
 
-      - name: npm install and build
-        run: |
-          set -x
-          echo "npm version: $(npm --version)"
-          echo "node version: $(node --version)"
-          npm install
-          NEXT_TELEMETRY_DISABLED=1 npm run build
-
       - name: add version.txt
         run: |
           set -x
@@ -60,6 +52,14 @@ jobs:
           APP_VERSION=${SHORT_COMMIT_SHA}-${{ github.run_number }}
           echo "${APP_VERSION}" > ./public/version.txt
           ls -lA
+
+      - name: npm install and build
+        run: |
+          set -x
+          echo "npm version: $(npm --version)"
+          echo "node version: $(node --version)"
+          npm install
+          NEXT_TELEMETRY_DISABLED=1 npm run build
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
