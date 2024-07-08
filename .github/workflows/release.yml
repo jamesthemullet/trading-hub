@@ -204,9 +204,17 @@ jobs:
             APP_COMMIT_SHA=${SHORT_COMMIT_SHA}
             echo ${VERSION} | grep ${APP_COMMIT_SHA}
 
-      - name: Swap slots (TODO)
-        run: |
-          echo "TODO: Swap slots"
+      - name: Swap EUN from pre prod to prod
+        uses: azure/cli@v2.0.0
+        with:
+          azcliversion: 2.53.1
+          inlineScript: |
+            set -x
+            az 'webapp' deployment slot swap \
+              --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
+              --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
+              --slot preprod \
+              --target-slot production
 
       - name: Delete zip file
         run: rm next.zip
