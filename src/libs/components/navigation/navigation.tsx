@@ -187,13 +187,6 @@ export const Navigation = () => {
               <Text>Global Facet Management</Text>
             </SubLink>
           </SubMenu>
-
-          <Link href="/status" title="Check backend API status">
-            <Icon
-              title="Backend API status"
-              src="/trading-hub/asset/status.svg"
-            />
-          </Link>
         </ListItem>
         <ListItem>
           <Link href="/" onClick={() => (isLoggedIn ? signOut() : signIn())}>
