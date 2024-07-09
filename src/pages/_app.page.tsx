@@ -19,7 +19,9 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <MantineProvider>
-        <LoginCheck />
+        <LoginCheck
+          autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
+        />
         <Layout>
           <Navigation />
           <Component {...pageProps} />

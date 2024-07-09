@@ -23,11 +23,23 @@ describe('Login check', () => {
       update: jest.fn(),
     });
 
-    renderWithProviders(<LoginCheck />);
+    renderWithProviders(<LoginCheck autoLogin />);
 
     expect(signIn).toHaveBeenCalledWith('azure-ad', {
       callbackUrl: '/category/rulesets',
       redirect: false,
     });
+  });
+
+  it('should not redirect when autoLogin is missing', () => {
+    jest.mocked(useSession).mockReturnValue({
+      data: null,
+      status: 'unauthenticated',
+      update: jest.fn(),
+    });
+
+    renderWithProviders(<LoginCheck />);
+
+    expect(signIn).not.toHaveBeenCalled();
   });
 });

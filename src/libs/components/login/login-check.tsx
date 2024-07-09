@@ -2,7 +2,11 @@ import { useEffect } from 'react';
 
 import { signIn, useSession } from 'next-auth/react';
 
-export const LoginCheck = () => {
+export const LoginCheck = ({
+  autoLogin: autoLoginEnabled = false,
+}: {
+  autoLogin?: boolean;
+}) => {
   const { data: session, status } = useSession();
 
   const login = async () => {
@@ -13,10 +17,10 @@ export const LoginCheck = () => {
   };
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (autoLoginEnabled && status === 'unauthenticated') {
       login();
     }
-  }, [status, session]);
+  }, [status, session, autoLoginEnabled]);
 
   return <div></div>;
 };
