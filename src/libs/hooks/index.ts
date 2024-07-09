@@ -1,3 +1,4 @@
+export * from './category/facets/use-facets-list';
 export * from './global/facets/use-global-facet-update';
 export * from './global/facets/use-global-facets-list';
 export * from './global/rulesets/use-global-rule-set-create';
@@ -12,7 +13,6 @@ export * from './use-category-preview';
 export * from './use-category-product-search';
 export * from './use-debounce';
 export * from './use-facets-filter';
-export * from './use-facets-list';
 export * from './use-get-categories';
 export * from './use-get-facet-attribute-values';
 export * from './use-get-facet-by-id';

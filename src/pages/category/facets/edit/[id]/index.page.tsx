@@ -3,7 +3,11 @@ import { useRouter } from 'next/router';
 
 import { ReturnedFacet } from '@/libs/api';
 import { Heading } from '@/libs/components';
-import { useFacetsFilter, useRuleSetPreview } from '@/libs/hooks';
+import {
+  useFacetsFilter,
+  useFacetsList,
+  useRuleSetPreview,
+} from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
@@ -19,7 +23,9 @@ export const getServerSideProps: GetServerSideProps = (
 
 const Page = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { ruleSets, facets, isLoading } = useRuleSetPreview(id);
+  const { ruleSets, isLoading } = useRuleSetPreview(id);
+
+  const { facets } = useFacetsList([id]);
   const [localFacets, setLocalFacets] = useState<ReturnedFacet[]>(facets);
   const { setSearch, filteredFacets } = useFacetsFilter(localFacets);
 

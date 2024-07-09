@@ -2,8 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedFacet, ReturnedRuleSet } from '@/libs/api';
-import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
+import type { ReturnedRuleSet } from '@/libs/api';
 
 import { useRuleSetPreview } from './use-rule-set-preview';
 
@@ -127,7 +126,6 @@ describe('useRuleSet', () => {
       ],
       ruleSets: mockRuleData,
       error: '',
-      facets: [],
       isLoading: false,
     };
 
@@ -172,7 +170,6 @@ describe('useRuleSet', () => {
         },
       },
       error: 'POST status 500',
-      facets: [],
       isLoading: false,
     };
 
@@ -199,7 +196,6 @@ describe('useRuleSet', () => {
       products: [],
       ruleSets: mockRuleData,
       error: 'POST status 500',
-      facets: [],
       isLoading: false,
     };
 
@@ -217,34 +213,6 @@ describe('useRuleSet', () => {
 
     await waitFor(() => {
       expect(result.current.error).toEqual('POST status 500');
-    });
-  });
-
-  it('should load facets', async () => {
-    const mockResponse: ReturnedRuleSet = mockRuleData;
-    getRuleSetPreviewMock.mockReturnValueOnce({
-      data: {
-        ...mockResponse,
-        facets: [
-          {
-            id: mockFacetId,
-            boosted: [],
-            excludedValues: [],
-          },
-        ],
-      },
-      status: { status: 200 },
-    });
-    const facet: ReturnedFacet = globalFacetsListMock.facets[0];
-    getFacetMock.mockReturnValueOnce({
-      data: facet,
-      status: { status: 200 },
-    });
-
-    const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
-
-    await waitFor(() => {
-      expect(result.current.facets).toEqual([facet]);
     });
   });
 });

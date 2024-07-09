@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import type { Product, ReturnedFacet, ReturnedRuleSet } from '@/libs/api';
-import { merchandising, search } from '@/libs/api';
+import type { Product, ReturnedRuleSet } from '@/libs/api';
+import { merchandising } from '@/libs/api';
 
 export const useRuleSetPreview = (id: string) => {
   const api = useMemo(() => merchandising(), []);
-  const [facets, setFacets] = useState<ReturnedFacet[]>([]);
   const [ruleSets, setRuleSets] = useState<ReturnedRuleSet>({
     categoryId: '',
     categoryName: '',
@@ -75,18 +74,5 @@ export const useRuleSetPreview = (id: string) => {
     void asyncCall();
   }, [id, api]);
 
-  useEffect(() => {
-    if (facets.length === 0) {
-      Promise.all(
-        (ruleSets.facets ?? []).map(async ({ id }) => {
-          const response = await search().betaMerchandisingFacetDetail(id);
-          return response.data;
-        })
-      ).then((facetDetails) => {
-        setFacets(facetDetails);
-      });
-    }
-  }, [ruleSets, facets, api]);
-
-  return { ruleSets, products, error, facets, isLoading };
+  return { ruleSets, products, error, isLoading };
 };
