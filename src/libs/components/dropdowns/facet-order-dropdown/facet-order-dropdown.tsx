@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useOnOutsideClick } from '@/libs/hooks';
+
 import Image from 'next/image';
 
 import {
@@ -73,8 +75,27 @@ export const FacetOrderDropdown = ({
     dropdownOptions.find((option) => option.name === status) ||
     dropdownOptions.find((option) => option.selected === true);
 
+  const onClose = () => {
+    setIsDropdownOpen(false);
+  };
+
+  const dropdownWrapperRef = useOnOutsideClick<HTMLDivElement>({
+    handler: onClose,
+  });
+
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape' && isDropdownOpen) {
+      return onClose();
+    }
+  };
+
   return (
-    <DropdownWrapper isDropdownOpen={isDropdownOpen} width={237}>
+    <DropdownWrapper
+      isDropdownOpen={isDropdownOpen}
+      width={237}
+      ref={dropdownWrapperRef}
+      onKeyDown={handleOnKeyDown}
+    >
       <DropdownButton
         isDropdownOpen={isDropdownOpen}
         onClick={handleOnClick}

@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -29,6 +29,10 @@ const rows = [
 ];
 
 describe('DataTable', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render correctly', () => {
     renderWithProviders(
       <DataTable headings={headings} rows={rows} onDeleteRuleSet={jest.fn()} />
@@ -55,6 +59,41 @@ describe('DataTable', () => {
 
     expect(mockDelete).toHaveBeenCalledWith({
       id: 'id',
+    });
+    await waitFor(() => {
+      expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should delete a rule set using keyboard navigation', async () => {
+    const user = userEvent.setup();
+    const mockDelete = jest.fn();
+    renderWithProviders(
+      <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
+    );
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Delete')).toBeVisible();
+    });
+
+    await user.tab();
+    await user.keyboard('{Enter}');
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).toBeVisible();
+    });
+
+    const confirmDeleteButton = screen.getByLabelText('Delete rule');
+    await user.type(confirmDeleteButton, '{Enter}');
+
+    expect(mockDelete).toHaveBeenCalledWith({
+      id: 'id',
+    });
+    await waitFor(() => {
+      expect(screen.queryByText('Delete')).not.toBeInTheDocument();
     });
   });
 
@@ -87,10 +126,62 @@ describe('DataTable', () => {
       <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
     );
 
-    await user.click(screen.getAllByTitle('Toggle')[0]);
+    user.click(screen.getAllByTitle('Toggle')[0]);
 
-    expect(mockToggle).toHaveBeenCalledWith({
-      id: 'id',
+    await waitFor(() => {
+      expect(mockToggle).toHaveBeenCalledWith({
+        id: 'id',
+      });
+    });
+  });
+
+  it('should toggle a rule set using keyboard navigation', async () => {
+    const mockDelete = jest.fn();
+    renderWithProviders(
+      <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
+    );
+
+    const dropDown = screen.queryAllByTitle('More options')[0];
+    fireEvent.keyDown(dropDown, { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Delete')).toBeVisible();
+    });
+  });
+
+  it('should close the dropdown if already open when clicked', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <DataTable headings={headings} rows={rows} onDeleteRuleSet={jest.fn()} />
+    );
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+    await waitFor(() => {
+      expect(screen.getByText('Delete')).toBeVisible();
+    });
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should close dropdown when Esc key is pressed', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <DataTable headings={headings} rows={rows} onDeleteRuleSet={jest.fn()} />
+    );
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+    await waitFor(() => {
+      expect(screen.getByText('Delete')).toBeVisible();
+    });
+
+    await userEvent.keyboard('{Escape}');
+
+    await waitFor(() => {
+      expect(screen.queryByText('Delete')).not.toBeInTheDocument();
     });
   });
 });

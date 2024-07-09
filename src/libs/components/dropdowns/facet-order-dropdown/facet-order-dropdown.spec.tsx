@@ -74,4 +74,20 @@ describe('Filter dropdown', () => {
     expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
     expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
   });
+
+  it('should close the dropdown when Escape key is pressed', async () => {
+    const user = userEvent.setup();
+    render(<FacetOrderDropdown />);
+
+    const dropdownHeader = screen.getByTestId(
+      'button to open facet order dropdown'
+    );
+    await user.click(dropdownHeader);
+
+    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('true');
+
+    await user.keyboard('{Escape}');
+
+    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
+  });
 });

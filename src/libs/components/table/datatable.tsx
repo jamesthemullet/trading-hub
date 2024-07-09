@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Modal } from '@mantine/core';
 
+import { useOnOutsideClick } from '@/libs/hooks';
+
 import { format } from 'date-fns';
 
 import { Button } from '../buttons/button/button';
@@ -64,6 +66,24 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
   const [ruleSetIdToDelete, setRuleSetIdToDelete] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const onClose = () => {
+    setOptionToggle('');
+  };
+
+  const dropdownWrapperRef = useOnOutsideClick<HTMLDivElement>({
+    handler: onClose,
+  });
+
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape' && optionToggle !== '') {
+      setOptionToggle('');
+    }
+  };
+
+  const handleOptionToggle = (id: string) => {
+    setOptionToggle(optionToggle === id ? '' : id);
+  };
+
   return (
     <>
       <TableContainer>
@@ -105,21 +125,37 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
                   <Text>{lastChanged.user}</Text>
                 </TableCol>
                 <TableCol style={{ padding: '12px 0 16px' }}>
-                  <TableActions>
+                  <TableActions
+                    onKeyDown={handleOnKeyDown}
+                    ref={dropdownWrapperRef}
+                  >
                     <TableActionsButton href={url}>Edit</TableActionsButton>
                     <TableOptionButton
                       isOpen={isOptionDropdownOpen}
-                      onClick={() =>
-                        setOptionToggle(isOptionDropdownOpen ? '' : id)
-                      }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.stopPropagation();
+                          handleOptionToggle(id);
+                        }
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        handleOptionToggle(id);
+                      }}
                       title="More options"
                     />
                     {isOptionDropdownOpen && (
                       <TableDropdown
                         title="Delete"
-                        onClick={() => {
+                        onMouseDown={() => {
                           setRuleSetIdToDelete(id);
                           setIsModalOpen(true);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            setRuleSetIdToDelete(id);
+                            setIsModalOpen(true);
+                          }
                         }}
                       >
                         Delete

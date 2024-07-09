@@ -238,7 +238,7 @@ describe('Index', () => {
   it('should delete a ruleset', async () => {
     const mockId = 'fdq3r3-123d3-f32f23f-23r2';
     const user = userEvent.setup();
-    const mockRefectRulesList = jest.fn();
+    const mockRefetchRulesList = jest.fn();
 
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [],
@@ -257,7 +257,7 @@ describe('Index', () => {
           facets: [],
         },
       ],
-      refetchRuleSetList: mockRefectRulesList,
+      refetchRuleSetList: mockRefetchRulesList,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
     });
@@ -268,7 +268,7 @@ describe('Index', () => {
 
     await user.click(rulesetDropdown[0]);
 
-    const deleteButton = screen.getByText('Delete');
+    const deleteButton = screen.getByRole('button', { name: 'Delete' });
     await user.click(deleteButton);
     await waitFor(() => {
       expect(
@@ -276,14 +276,18 @@ describe('Index', () => {
       ).toBeVisible();
     });
 
-    await user.click(screen.getByText('Cancel'));
+    await user.click(screen.getByRole('button', { name: 'Cancel delete' }));
     await waitFor(() => {
       expect(
         screen.getByText('Do you want to delete this rule?')
       ).not.toBeVisible();
     });
 
-    await user.click(deleteButton);
+    await user.click(rulesetDropdown[0]);
+    const reRenderedDeleteButton = screen.getByRole('button', {
+      name: 'Delete',
+    });
+    await user.click(reRenderedDeleteButton);
     await waitFor(() => {
       expect(
         screen.getByText('Do you want to delete this rule?')
@@ -292,6 +296,6 @@ describe('Index', () => {
     await user.click(screen.getByLabelText('Delete rule'));
 
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
-    expect(mockRefectRulesList).toHaveBeenCalled();
+    expect(mockRefetchRulesList).toHaveBeenCalled();
   });
 });

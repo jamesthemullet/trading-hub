@@ -95,7 +95,7 @@ export const Row = styled(TableRow)<TableRowProps>`
   border-bottom: none;
   box-shadow: #000 0 0 10px -5px;
   margin-bottom: ${spacing(2)};
-  padding: 0 ${spacing(2)} ${spacing(2)};
+  padding: ${spacing(2)};
 
   ${({ optionSelected }) =>
     optionSelected === 'included' &&
