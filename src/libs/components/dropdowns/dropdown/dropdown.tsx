@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import type { KeyboardEvent, ReactElement, ReactNode } from 'react';
 import { useCallback } from 'react';
 
-import { useOnOutsideClick } from '../../../hooks/use-on-outside-click';
+import { useOnOutsideClick } from '../../../hooks/utils/use-on-outside-click';
 import { Icon } from '../../icon/icon';
 import { Text } from '../../typography/typography.styles';
 import { color } from '../../utils/constants';

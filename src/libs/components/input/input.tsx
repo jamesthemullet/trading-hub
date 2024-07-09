@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import type { ChangeEvent, ComponentProps } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 
-import { useMouseFocus } from '@/libs/hooks/use-mouse-focus';
+import { useMouseFocus } from '@/libs/hooks/utils/use-mouse-focus';
 
 import { Label } from '../label/label';
 import {

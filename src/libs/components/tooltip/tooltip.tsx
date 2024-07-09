@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { useOnOutsideClick } from '../../hooks/use-on-outside-click';
+import { useOnOutsideClick } from '../../hooks/utils/use-on-outside-click';
 import { Button } from '../buttons/button/button';
 import { Icon } from '../icon/icon';
 import { Text } from '../typography/typography.styles';
