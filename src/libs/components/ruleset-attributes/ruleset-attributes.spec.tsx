@@ -54,6 +54,17 @@ jest.mock('@/libs/hooks', () => ({
       ],
     };
   },
+  useGlobalAttributes: () => {
+    return {
+      attributes: [
+        {
+          type: 'numeric',
+          name: 'Size',
+          values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
+        },
+      ],
+    };
+  },
 }));
 
 const mockRules: MerchandisingRules = {
@@ -523,6 +534,97 @@ describe('RulesetAttributes', () => {
       });
 
       expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall2);
+    });
+  });
+
+  describe('global attributes', () => {
+    it('can add numeric attributes globally', async () => {
+      const expectedCall = {
+        attribute: { field: 'Size', weight: 100 },
+        change: 'add',
+        operation: 'boosts',
+        type: 'numeric',
+      };
+
+      renderWithProviders(
+        <RulesetAttributes
+          merchandisingRules={mockRules}
+          onChangeAttribute={mockAddAttribute}
+        />
+      );
+
+      const newAttributeButton = screen.getByText('Create new attribute rule');
+
+      act(() => {
+        newAttributeButton.click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByText('Choose attribute type')).toBeVisible()
+      );
+
+      const nextStepButton = screen.getByText('Numeric attributes');
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      const sizeButton = screen.getAllByLabelText('Size');
+
+      act(() => {
+        sizeButton[1].click();
+      });
+
+      const doneButton = screen.getByRole('button', {
+        name: 'Done',
+      });
+
+      act(() => {
+        doneButton.click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+    });
+
+    it('can cancel editing', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          merchandisingRules={mockRules}
+          onChangeAttribute={mockAddAttribute}
+        />
+      );
+
+      const newAttributeButton = screen.getByText('Create new attribute rule');
+
+      act(() => {
+        newAttributeButton.click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByText('Choose attribute type')).toBeVisible()
+      );
+
+      const nextStepButton = screen.getByText('Numeric attributes');
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      const sizeButton = screen.getAllByLabelText('Size');
+
+      act(() => {
+        sizeButton[1].click();
+      });
+
+      const cancelButton = screen.getByRole('button', {
+        name: 'Cancel',
+      });
+
+      act(() => {
+        cancelButton.click();
+      });
+
+      expect(mockAddAttribute).not.toHaveBeenCalled();
     });
   });
 });
