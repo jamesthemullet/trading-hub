@@ -79,7 +79,6 @@ export const Product = ({
   id,
   productId,
   index,
-  isLastChanged,
   metadata: { isPinned, isBoosted, isBuried, isBlocked },
   onChangePosition,
   onProductBoostBury,
@@ -93,7 +92,6 @@ export const Product = ({
   ...rest
 }: ProductType & {
   index: number;
-  isLastChanged?: boolean;
   onChangePosition: ({
     id,
     isPinned,
@@ -159,11 +157,7 @@ export const Product = ({
   };
 
   return (
-    <ProductWrapper
-      aria-label={`Position ${index + 1}${isLastChanged ? ' updated' : ''}`}
-      isLastChanged={!!isLastChanged}
-      {...rest}
-    >
+    <ProductWrapper aria-label={`Position ${index + 1}`} {...rest}>
       {isMenuOpen && (
         <ProductMenuOverlay
           aria-label="menu overlay"

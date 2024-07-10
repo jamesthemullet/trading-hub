@@ -222,16 +222,4 @@ describe('Product', () => {
 
     expect(mockChangePosition).toHaveBeenLastCalledWith(expectedCall);
   });
-
-  it('should show updated label', () => {
-    render(
-      <Product
-        {...productProps}
-        metadata={{ isPinned: true }}
-        isLastChanged={true}
-      />
-    );
-
-    expect(screen.getByLabelText('Position 2 updated')).toBeInTheDocument();
-  });
 });

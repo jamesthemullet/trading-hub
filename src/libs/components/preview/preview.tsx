@@ -232,7 +232,7 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
         <Products>
           {categoryProducts.map((product) => (
             <ProductBox key={`product-${product.productId}`}>
-              <ProductWrapper isLastChanged={false}>
+              <ProductWrapper>
                 <ProductDetails {...product} />
               </ProductWrapper>
             </ProductBox>
