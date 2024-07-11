@@ -11,6 +11,7 @@ const productProps = {
   productId: 'product id',
   title: 'product title',
   imageUrl: ['example1.jpg'],
+  isPinnable: true,
   brand: 'product brand',
   metadata: { isPinned: false },
   isInStock: true,
@@ -202,6 +203,14 @@ describe('Product', () => {
     });
 
     expect(mockChangePosition).toHaveBeenLastCalledWith(expectedCall);
+  });
+
+  it('should not pin when disallowed', async () => {
+    render(<Product {...productProps} isPinnable={false} />);
+
+    openActionsMenu(screen);
+
+    expect(screen.queryByText('Pin in position')).toBeNull();
   });
 
   it('should un-boost', () => {

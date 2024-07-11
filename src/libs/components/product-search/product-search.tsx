@@ -89,6 +89,7 @@ export const ProductSearch = ({
               key={id}
               {...product}
               index={index}
+              isPinnable={true}
               onChangePosition={onChangePosition}
               onProductBoostBury={onProductBoostBury}
               pinnedProductsCount={0}

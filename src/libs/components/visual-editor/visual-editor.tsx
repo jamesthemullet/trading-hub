@@ -29,6 +29,7 @@ export const VisualEditor = ({
           <Product
             {...product}
             index={index}
+            isPinnable={true}
             onChangePosition={onChangePosition}
             onProductBoostBury={onProductBoostBury}
             pinnedProductsCount={pinnedProductsCount}

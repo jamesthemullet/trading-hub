@@ -8,6 +8,7 @@ import { ExampleCalendarModal } from './example-calendar-modal';
 import { ArrowButton } from '../../libs/components/buttons/button/arrow-button';
 import { SearchKeywords } from '@/libs/components/keywords/search-keywords/search-keywords';
 import { useState } from 'react';
+import { Product } from '@/libs/components';
 
 const Example = styled.div`
   padding: 20px;
@@ -92,6 +93,47 @@ const Sandbox = () => {
       <Example>
         <h2>Search keywords Mock With Values</h2>
         <KeywordMockWithValues />
+      </Example>
+      <Example>
+        <h2>Product component</h2>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ width: '250px' }}>
+            <p>has pinning</p>
+            <Product
+              id="id123"
+              imageUrl={['SD_03_T25_2379L_WU_X_EC_0']}
+              index={1}
+              isInStock={true}
+              isPinnable={true}
+              metadata={{
+                isPinned: true,
+              }}
+              onChangePosition={() => {}}
+              onProductBoostBury={() => {}}
+              price="10"
+              productId="p123"
+              title="Title"
+              pinnedProductsCount={2}
+            />
+          </div>
+          <div style={{ width: '250px' }}>
+            <p>no pinning</p>
+            <Product
+              id="id123"
+              imageUrl={['SD_03_T25_2379L_WU_X_EC_0']}
+              index={1}
+              isInStock={true}
+              isPinnable={false}
+              metadata={{
+                isPinned: false,
+              }}
+              onProductBoostBury={() => {}}
+              price="10"
+              productId="p123"
+              title="Title"
+            />
+          </div>
+        </div>
       </Example>
     </div>
   );

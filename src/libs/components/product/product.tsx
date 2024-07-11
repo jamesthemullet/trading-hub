@@ -79,10 +79,11 @@ export const Product = ({
   id,
   productId,
   index,
+  isPinnable,
   metadata: { isPinned, isBoosted, isBuried, isBlocked },
   onChangePosition,
   onProductBoostBury,
-  pinnedProductsCount,
+  pinnedProductsCount = 0,
   price,
   imageUrl,
   title,
@@ -92,13 +93,14 @@ export const Product = ({
   ...rest
 }: ProductType & {
   index: number;
-  onChangePosition: ({
+  isPinnable: boolean;
+  onChangePosition?: ({
     id,
     isPinned,
     newPosition,
   }: ChangePositionTypes) => void;
   onProductBoostBury: (arg: ChangeProductBoostBury) => void;
-  pinnedProductsCount: number;
+  pinnedProductsCount?: number;
   isBrandStrong?: boolean;
   isProductNumberEnabled?: boolean;
   isSearchResult?: boolean;
@@ -110,11 +112,13 @@ export const Product = ({
   const [error, setError] = useState('');
 
   const pin = (positionToPin: number, isPinned: boolean) => {
-    onChangePosition({
-      id,
-      newPosition: positionToPin,
-      isPinned,
-    });
+    if (isPinnable && onChangePosition) {
+      onChangePosition({
+        id,
+        newPosition: positionToPin,
+        isPinned,
+      });
+    }
     setIsMenuOpen(false);
   };
 
@@ -136,6 +140,7 @@ export const Product = ({
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
+
     setPositionToLockTo(parseInt(value));
 
     const diff = isPinned ? 0 : 1;
@@ -213,7 +218,7 @@ export const Product = ({
             >
               Product actions
             </Text>
-            {isPinned && (
+            {isPinned && isPinnable && (
               <ProductMenuButton
                 icon="restore"
                 as="button"
@@ -264,13 +269,15 @@ export const Product = ({
             )}
             {!isLockToPositionMenuOpen && (
               <>
-                <ProductMenuButton
-                  icon="pin"
-                  as="button"
-                  onClick={() => setIsLockToPositionMenuOpen(true)}
-                >
-                  {isPinned ? 'Edit position' : 'Pin in position'}
-                </ProductMenuButton>
+                {isPinnable && (
+                  <ProductMenuButton
+                    icon="pin"
+                    as="button"
+                    onClick={() => setIsLockToPositionMenuOpen(true)}
+                  >
+                    {isPinned ? 'Edit position' : 'Pin in position'}
+                  </ProductMenuButton>
+                )}
                 {!isBoosted && (
                   <ProductMenuButton
                     icon="boost"

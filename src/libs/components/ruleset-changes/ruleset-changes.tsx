@@ -42,6 +42,7 @@ const ChangesRow = ({
           <Product
             {...product}
             index={index}
+            isPinnable={true}
             pinnedProductsCount={pinnedProductsCount}
             onChangePosition={onChangePosition}
             onProductBoostBury={onProductBoostBury}
