@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 import type { Product as ProductType } from '@/libs/api';
+import { useDebounce } from '@/libs/hooks/';
 
 import { ChangeProductBoostBury, Product } from '../product/product';
 import { Search } from '../search/search';
@@ -67,16 +68,19 @@ export const ProductSearch = ({
   onSearch,
   products,
   onChangePosition,
-
   onProductBoostBury,
 }: ProductSearchProps) => {
+  const { callback: handleSearch } = useDebounce((val: string) => {
+    onSearch(val);
+  }, 300);
+
   return (
     <ProductSearchRootContainer aria-label="Product Search Container">
       <TopContainer>
         <StyledSearch
           placeholder="Search for product"
           onChange={(e) => {
-            onSearch(e.target.value);
+            handleSearch(e.target.value);
           }}
         />
       </TopContainer>

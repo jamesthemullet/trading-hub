@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { ProductSearch } from './product-search';
@@ -84,6 +84,8 @@ describe('ProductSearch', () => {
 
     await userEvent.type(search, '123');
 
-    expect(callback).toHaveBeenCalledWith('123');
+    await waitFor(() => {
+      expect(callback).toHaveBeenCalledWith('123');
+    });
   });
 });

@@ -857,7 +857,9 @@ describe('Ruleset', () => {
 
       await user.type(searchProduct, 'productSearchTitle');
 
-      expect(screen.getByText('Monsoon productSearchTitle')).toBeVisible();
+      await waitFor(() => {
+        expect(screen.getByText('Monsoon productSearchTitle')).toBeVisible();
+      });
 
       const searchContainer = screen.getByLabelText('Product Search Container');
       const menuButton = within(searchContainer).getByRole('button', {
@@ -1082,12 +1084,17 @@ describe('Ruleset', () => {
         '123'
       );
 
-      expect(screen.getByText('3 results')).toBeVisible();
+      await waitFor(() => {
+        expect(screen.getByText('3 results')).toBeVisible();
+      });
 
       await user.clear(
         screen.getByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
       );
-      expect(screen.queryByText('3 results')).not.toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(screen.queryByText('3 results')).not.toBeInTheDocument();
+      });
     });
 
     it('does not search for products when no category selected', async () => {
@@ -1204,6 +1211,14 @@ describe('Ruleset', () => {
 
       await user.type(searchProduct, 'productSearchTitle');
 
+      await waitFor(() => {
+        expect(
+          screen
+            .getByLabelText('Product Search Container')
+            .querySelector('button[title="Open menu"]')
+        ).toBeVisible();
+      });
+
       const menuButton = screen
         .getByLabelText('Product Search Container')
         .querySelector('button[title="Open menu"]');
@@ -1214,7 +1229,9 @@ describe('Ruleset', () => {
         }
       });
 
-      const pinToPositionButton = await screen.findByText('Pin in position');
+      const pinToPositionButton = await waitFor(() =>
+        screen.getByText('Pin in position')
+      );
 
       act(() => {
         user.click(pinToPositionButton);
