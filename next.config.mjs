@@ -5,6 +5,7 @@ const nextConfig = {
   poweredByHeader: false,
   pageExtensions: ['page.tsx', 'page.ts'],
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
