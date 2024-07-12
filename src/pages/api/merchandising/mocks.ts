@@ -170,7 +170,12 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
         date: '2021-01-01T08:34:15Z',
         user: 'Test User',
       },
-      merged: [],
+      merged: [
+        {
+          displayValue: 'test merged group',
+          mergedValues: ['merged 1', 'merged 2'],
+        },
+      ],
     },
     {
       displayValue: 'size',
@@ -275,7 +280,7 @@ export const attributeValuesMock: AttributeValuesResponse['values'] = [
   {
     displayValue: 'Cotton',
     mergedValues: [],
-    isExcluded: true,
+    isExcluded: false,
     isPinned: false,
   },
   {
@@ -304,6 +309,30 @@ export const attributeValuesMock: AttributeValuesResponse['values'] = [
   },
   {
     displayValue: 'Silk',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Merged 1',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Merged 2',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Other Merged 1',
+    mergedValues: [],
+    isExcluded: false,
+    isPinned: false,
+  },
+  {
+    displayValue: 'Other Merged 2',
     mergedValues: [],
     isExcluded: false,
     isPinned: false,

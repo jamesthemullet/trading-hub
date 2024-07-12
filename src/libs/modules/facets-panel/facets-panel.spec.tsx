@@ -347,7 +347,15 @@ describe('Facet Panel', () => {
 
     await user.click(saveButton);
 
-    expect(onFacetDataChangeSpy).toHaveBeenCalledWith(0, 'colour', mockFacet);
+    expect(onFacetDataChangeSpy).toHaveBeenCalledWith(0, 'colour', {
+      ...mockFacet,
+      merged: [
+        {
+          displayValue: 'test merged group',
+          mergedValues: ['merged 1', 'merged 2'],
+        },
+      ],
+    });
   });
 
   describe('Add Facet Modal', () => {

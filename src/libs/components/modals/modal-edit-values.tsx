@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useMemo, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import { AttributeValuesResponse, ReturnedFacet } from '@/libs/api';
+import { AttributeValuesResponse, ReturnedGlobalFacet } from '@/libs/api';
 import { useDebounce, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
 
@@ -110,6 +110,8 @@ const RemoveMergedFacet = styled.button`
   border: none;
 `;
 
+const defaultMergedDisplayValue = 'Name your merged value group';
+
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null;
 }[] = [
@@ -134,13 +136,14 @@ export const ModalEditValues = ({
   canMerge = false,
 }: {
   onClose: () => void;
-  facet: ReturnedFacet;
+  facet: ReturnedGlobalFacet;
   canMerge?: boolean;
 }) => {
   const [editFacetValues, setEditFacetValues] = useState<AttributeValue[]>([]);
   const [mergeList, setMergeList] = useState<string[]>([]);
   const [orderedPinnedValues, setOrderedPinnedValues] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [facetMergedValues, setFacetMergedValues] = useState(facet.merged);
 
   const filteredEditFacetValues = useMemo(() => {
     const filteredValues = !searchQuery
@@ -188,7 +191,7 @@ export const ModalEditValues = ({
   useEffect(() => {
     const facetValues = attributeValues.map((value, index) => ({
       ...value,
-      attribute: value.displayValue,
+      attribute: value.displayValue.toLowerCase(),
       index,
     }));
 
@@ -198,84 +201,213 @@ export const ModalEditValues = ({
         .filter((value) => value.isPinned)
         .map((value) => value.attribute)
     );
-  }, [attributeValues]);
+
+    facet.merged?.forEach((merged) => {
+      if (merged.mergedValues) {
+        mergeValues(merged.mergedValues, merged.displayValue);
+      }
+    });
+  }, [attributeValues, facet.merged]);
 
   const handleSelect = (
-    displayValue: string,
+    attribute: string,
     mergedValues: string[] | undefined
   ) => {
     if (mergedValues && mergedValues.length > 1) {
+      if (mergeList.includes(mergedValues[0])) {
+        setMergeList((prev) =>
+          prev.filter((value) => !mergedValues.includes(value.toLowerCase()))
+        );
+        return;
+      }
       const valuesNotInMergeList = mergedValues.filter(
-        (value) => !mergeList.includes(value)
+        (value) => !mergeList.includes(value.toLowerCase())
       );
 
       setMergeList([...mergeList, ...valuesNotInMergeList]);
       return;
     }
-    if (!mergeList.includes(displayValue)) {
-      setMergeList([...mergeList, displayValue]);
+
+    if (!mergeList.includes(attribute.toLowerCase())) {
+      setMergeList([...mergeList, attribute.toLowerCase()]);
     } else {
-      setMergeList(mergeList.filter((item) => item !== displayValue));
+      setMergeList(
+        mergeList.filter((item) => item !== attribute.toLowerCase())
+      );
     }
   };
 
-  const mergeValues = () => {
-    // TO-DO update attributes endpoint
-
+  const mergeValues = (facetsToMerge: string[], displayValue?: string) => {
     setEditFacetValues((prev) => {
-      const updatedFacets = prev.map((facet) => {
-        if (mergeList.includes(facet.attribute)) {
-          return {
-            ...facet,
-            displayValue: `Name your merged value group`,
-            mergedValues: mergeList,
-          };
-        }
-        return facet;
-      });
-      return updatedFacets;
+      const firstValue = prev.find((value) =>
+        facetsToMerge.includes(value.attribute.toLowerCase())
+      );
+
+      // this is here since find returns type | undefined
+      /* istanbul ignore next */
+      if (!firstValue) return prev;
+
+      const pinnedValues = prev.filter((value) => value.isPinned);
+      const restOfValues = prev.filter(
+        (value) => !facetsToMerge.includes(value.attribute.toLowerCase())
+      );
+
+      const newValues = [
+        {
+          ...firstValue,
+          displayValue: displayValue || defaultMergedDisplayValue,
+          mergedValues: facetsToMerge,
+          index: pinnedValues.length,
+        },
+        ...restOfValues,
+      ];
+
+      return newValues;
     });
+  };
+
+  const handleMerge = () => {
+    mergeValues(mergeList);
+    setFacetMergedValues((prev) =>
+      prev?.some((values) =>
+        values.mergedValues?.some((v) => mergeList.includes(v))
+      )
+        ? prev?.map((values) => {
+            if (values.mergedValues?.some((v) => mergeList.includes(v))) {
+              return {
+                ...values,
+                mergedValues: mergeList,
+              };
+            }
+            return values;
+          })
+        : [
+            ...(prev || []),
+            {
+              mergedValues: mergeList,
+              displayValue: defaultMergedDisplayValue,
+            },
+          ]
+    );
     setMergeList([]);
   };
 
-  const handleDemerge = (value: string, mergedValues: string[]) => {
-    // TO-DO update attributes endpoint - which should allow much of the below to be removed
-    if (mergedValues.length === 2) {
-      setEditFacetValues((prev) => {
-        const updatedFacets = prev.map((facet) => {
-          if (mergedValues.includes(facet.attribute)) {
-            return {
-              ...facet,
-              displayValue: facet.attribute,
-              mergedValues: [],
+  const handleDemerge = (
+    valueToDemerge: string,
+    mergedValues: string[],
+    displayValue: string
+  ) => {
+    setEditFacetValues((prev) => {
+      let demergedValue: AttributeValue | undefined;
+
+      const updatedFacets = prev.map((value, index) => {
+        const { mergedValues } = value;
+
+        if (mergedValues?.length && mergedValues.includes(value.attribute)) {
+          const initialDemergedValue = attributeValues.find(
+            (attribute) =>
+              attribute.displayValue.toLowerCase() === valueToDemerge
+          );
+
+          if (initialDemergedValue) {
+            demergedValue = {
+              ...initialDemergedValue,
+              index: index + 1,
+              attribute: valueToDemerge,
             };
           }
-          return facet;
-        });
-        return updatedFacets;
+
+          const newMergedValues = mergedValues.filter(
+            (item) => item !== valueToDemerge
+          );
+
+          if (newMergedValues.length <= 1) {
+            const initialValue = attributeValues.find(
+              (attribute) =>
+                attribute.displayValue.toLowerCase() === newMergedValues[0]
+            );
+
+            if (initialValue) {
+              return {
+                ...initialValue,
+                index: index,
+                attribute: initialValue?.displayValue.toLowerCase(),
+              };
+            }
+          }
+
+          return {
+            ...value,
+            mergedValues: newMergedValues,
+          };
+        }
+
+        return value;
       });
-    } else {
-      setEditFacetValues((prev) => {
-        const updatedFacets = prev.map((facet) => {
-          if (value === facet.attribute) {
+
+      if (demergedValue) {
+        return [...updatedFacets, demergedValue].sort(
+          (a, b) => a.index - b.index
+        );
+      }
+
+      // again type safety, demerged value will be found but initialised as undefined so this is here as a fallback
+      /* istanbul ignore next */
+      return updatedFacets;
+    });
+    setFacetMergedValues((prev) => {
+      const mergedListWithoutValue = mergedValues.filter(
+        (value) => value !== valueToDemerge
+      );
+
+      if (mergedListWithoutValue.length > 1) {
+        return prev?.map((merged) => {
+          if (merged.displayValue === displayValue) {
             return {
-              ...facet,
-              displayValue: facet.attribute,
-              mergedValues: [],
+              ...merged,
+              mergedValues: mergedListWithoutValue,
             };
           }
-          if (mergedValues.includes(facet.attribute)) {
-            return {
-              ...facet,
-              displayValue: facet.attribute,
-              mergedValues: mergedValues.filter((item) => item !== value),
-            };
-          }
-          return facet;
+
+          return merged;
         });
-        return updatedFacets;
-      });
-    }
+      }
+
+      return prev?.filter((merged) => merged.displayValue !== displayValue);
+    });
+  };
+
+  const handleStatusChange = (
+    attribute: string,
+    status: 'included' | 'excluded'
+  ) => {
+    setEditFacetValues((prev) =>
+      prev.map((value) => {
+        if (value.attribute === attribute) {
+          let { isExcluded, isPinned } = value;
+
+          if (status === 'included') {
+            isPinned = true;
+            isExcluded = false;
+            setOrderedPinnedValues((prev) => [...prev, attribute]);
+          } else {
+            isPinned = false;
+            isExcluded = true;
+            setOrderedPinnedValues((prev) =>
+              prev.filter((value) => value !== attribute)
+            );
+          }
+
+          return {
+            ...value,
+            isPinned,
+            isExcluded,
+          };
+        }
+
+        return value;
+      })
+    );
   };
 
   const handleSave = async () => {
@@ -285,6 +417,10 @@ export const ModalEditValues = ({
       data: {
         ...facet,
         boosted: orderedPinnedValues,
+        excludedValues: editFacetValues
+          .filter((value) => value.isExcluded)
+          .map((value) => value.displayValue),
+        merged: facetMergedValues,
       },
     });
 
@@ -320,10 +456,7 @@ export const ModalEditValues = ({
             <MergeAndSearchContainer>
               <Text isStrong>All values listed</Text>
               {canMerge && (
-                <Button
-                  isDisabled={mergeList.length < 2}
-                  onClick={() => mergeValues()}
-                >
+                <Button isDisabled={mergeList.length < 2} onClick={handleMerge}>
                   Merge ({mergeList.length})
                 </Button>
               )}
@@ -367,7 +500,7 @@ export const ModalEditValues = ({
                       {canMerge && (
                         <input
                           type="checkbox"
-                          checked={mergeList.includes(attribute)}
+                          checked={mergeList.includes(attribute.toLowerCase())}
                           onChange={() => handleSelect(attribute, mergedValues)}
                           aria-label={`Select ${attribute} to merge`}
                         />
@@ -390,7 +523,11 @@ export const ModalEditValues = ({
                                 <Text>{value}</Text>{' '}
                                 <RemoveMergedFacet
                                   onClick={() =>
-                                    handleDemerge(value, mergedValues)
+                                    handleDemerge(
+                                      value,
+                                      mergedValues,
+                                      displayValue
+                                    )
                                   }
                                   aria-label={`Remove merged facet for ${value}`}
                                 />
@@ -419,6 +556,25 @@ export const ModalEditValues = ({
                               return value;
                             });
                           });
+
+                          if (mergedValues && mergedValues.length > 1) {
+                            setFacetMergedValues((prev) =>
+                              prev?.map((values) => {
+                                if (
+                                  values.mergedValues?.includes(
+                                    attribute.toLocaleLowerCase()
+                                  )
+                                ) {
+                                  return {
+                                    ...values,
+                                    displayValue: newValue,
+                                  };
+                                }
+
+                                return values;
+                              })
+                            );
+                          }
                         }}
                       />
                     </Col>
@@ -487,6 +643,10 @@ export const ModalEditValues = ({
                               ? 'excluded'
                               : undefined
                         }
+                        onChange={(status) =>
+                          handleStatusChange(attribute, status)
+                        }
+                        attribute={attribute}
                       />
                     </Col>
                   </FacetAttributeValuesTableRow>

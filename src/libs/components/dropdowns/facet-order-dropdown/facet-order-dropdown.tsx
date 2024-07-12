@@ -16,9 +16,11 @@ import {
 
 export const FacetOrderDropdown = ({
   status,
+  attribute,
   onChange,
 }: {
   status?: 'included' | 'excluded';
+  attribute?: string;
   onChange?: (status: 'included' | 'excluded') => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -29,6 +31,7 @@ export const FacetOrderDropdown = ({
       name: 'included' | 'excluded' | 'select';
       src: string | null;
       selected: boolean;
+      ariaLabel: string;
     }[]
   >([
     {
@@ -37,6 +40,7 @@ export const FacetOrderDropdown = ({
       name: 'select',
       src: null,
       selected: true,
+      ariaLabel: `select${attribute ? ` ${attribute}` : ''}`,
     },
     {
       index: 1,
@@ -44,6 +48,7 @@ export const FacetOrderDropdown = ({
       name: 'included',
       src: '/trading-hub/asset/icon-include-only.svg',
       selected: false,
+      ariaLabel: `include${attribute ? ` ${attribute}` : ''}`,
     },
     {
       index: 2,
@@ -51,6 +56,7 @@ export const FacetOrderDropdown = ({
       name: 'excluded',
       src: '/trading-hub/asset/icon-exclude-only.svg',
       selected: false,
+      ariaLabel: `exclude${attribute ? ` ${attribute}` : ''}`,
     },
   ]);
 
@@ -101,7 +107,7 @@ export const FacetOrderDropdown = ({
         onClick={handleOnClick}
         aria-haspopup="listbox"
         aria-expanded={isDropdownOpen}
-        data-testid="button to open facet order dropdown"
+        data-testid={`button to open facet order dropdown${attribute ? ` for ${attribute}` : ''}`}
       >
         <DropdownHeading>
           {dropdownHeading?.src && (
@@ -122,6 +128,7 @@ export const FacetOrderDropdown = ({
                 key={option.label}
                 hoverColour="#f5f5f5"
                 onClick={() => handleSelectedOption(option.index)}
+                aria-label={option.ariaLabel}
               >
                 <Image src={option.src} alt="" width={16} height={16} />
                 {option.label}
