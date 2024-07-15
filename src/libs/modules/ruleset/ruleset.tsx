@@ -12,9 +12,6 @@ import type {
   Product,
   RuleSet,
 } from '@/libs/api';
-
-import isEqual from 'lodash/isEqual';
-
 import {
   CategorySearch,
   ChangeProductBoostBury,
@@ -24,12 +21,16 @@ import {
   ProductSearch,
   RulesetAttributes,
   RulesetChanges,
+  SearchKeywords,
   SelectedCategory,
   spacing,
   Tabs,
   Text,
   VisualEditor,
-} from '../../components';
+} from '@/libs/components';
+
+import isEqual from 'lodash/isEqual';
+
 import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pluralize = require('pluralize');
@@ -98,6 +99,7 @@ export const Ruleset = ({
   rulesetId,
   rulesetMerchandisingRules,
   rulesetType,
+  searchTerms,
 }: {
   isEnabled: boolean;
   onSave?: ({
@@ -116,9 +118,13 @@ export const Ruleset = ({
   rulesetId?: string;
   rulesetMerchandisingRules?: MerchandisingRules;
   rulesetType: 'global' | 'category' | 'search';
+  searchTerms?: string[];
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     rulesetCategory || {}
+  );
+  const [rulesetSearchTerms, setRulesetSearchTerms] = useState(
+    searchTerms || []
   );
   const [currentEditorTab, setCurrentEditorTab] = useState(0);
   const [currentProductTab, setCurrentProductTab] = useState(0);
@@ -183,6 +189,15 @@ export const Ruleset = ({
     setRules: setPreviewRules,
     totalCategoryProducts,
   } = useCategoryPreview(selectedCategory?.identifier, merchandisingRules);
+
+  const onAddSearchTerm = (keyword: string) => {
+    setRulesetSearchTerms([...rulesetSearchTerms, keyword]);
+  };
+  const onRemoveSearchTerm = (keyword: string) => {
+    setRulesetSearchTerms(
+      rulesetSearchTerms.filter((term) => term !== keyword)
+    );
+  };
 
   const onChangePosition = ({
     isPinned,
@@ -356,7 +371,7 @@ export const Ruleset = ({
     (merchandisingRules.buries?.product || []).length;
 
   const rulesPanelTabs = [
-    ...(rulesetType === 'category' ? [{ title: 'Visual Editor' }] : []),
+    ...(rulesetType !== 'global' ? [{ title: 'Visual Editor' }] : []),
     {
       title: 'Changes',
       count: totalCount,
@@ -420,6 +435,16 @@ export const Ruleset = ({
               setSelectedCategory({});
             }}
             onSelectCategory={onSelectCategory}
+          />
+        </CategoryPanel>
+      )}
+
+      {rulesetType === 'search' && (
+        <CategoryPanel>
+          <SearchKeywords
+            searchTerms={rulesetSearchTerms}
+            addSearchTerm={onAddSearchTerm}
+            removeSearchTerm={onRemoveSearchTerm}
           />
         </CategoryPanel>
       )}

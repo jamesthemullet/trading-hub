@@ -412,6 +412,64 @@ describe('Ruleset', () => {
     );
   });
 
+  describe('keyword search', () => {
+    it('should remove a search term', async () => {
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={['foo']}
+        />
+      );
+
+      const fooKeyword = await screen.findByLabelText('Remove keyword: foo');
+      const numberOfKeywords =
+        await screen.findByLabelText('number of keywords');
+
+      act(() => {
+        fooKeyword.click();
+      });
+
+      expect(numberOfKeywords).toHaveTextContent('0');
+    });
+
+    it('should add a search term', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={['foo']}
+        />
+      );
+
+      const keywordInput = await screen.findByLabelText('Add keyword');
+      const numberOfKeywords =
+        await screen.findByLabelText('number of keywords');
+
+      await user.type(keywordInput, 'bar{Enter}');
+
+      expect(numberOfKeywords).toHaveTextContent('2');
+      expect(await screen.findByLabelText('Remove keyword: bar')).toBeVisible();
+    });
+  });
+
   it('should cancel changes', async () => {
     const user = userEvent.setup();
     const mockSave = jest.fn();

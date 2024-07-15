@@ -10,10 +10,12 @@ import {
   ReturnedCategoryRuleSet,
   ReturnedFacet,
   ReturnedGlobalFacet,
+  ReturnedKeywordRuleSet,
   ReturnedKeywordRuleSets,
   ReturnedRuleSet,
   RuleSetFacetConfigWithId,
   SearchPreviewResponse,
+  SearchPreviewResponseBeta,
 } from '@/libs/api';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
@@ -387,7 +389,7 @@ export const keywordRulesetMock: ReturnedKeywordRuleSets = {
         user: 'Test User',
       },
     },
-  ],
+  ] as Array<ReturnedKeywordRuleSet>,
   pagination: {
     totalItems: 2,
   },
@@ -569,6 +571,51 @@ export const getMockMapping: () => Record<
       return { body: jsonBody, status };
     },
   },
+  '/search/beta/merchandising/preview': {
+    post: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        const preview: SearchPreviewResponseBeta = {
+          products: [
+            {
+              id: 'id',
+              productId: `productId`,
+              title: 'Product title',
+              imageUrl: ['example.jpg'],
+              brand: 'M&S Collection',
+              isInStock: true,
+              metadata: { isPinned: false },
+              price: '10',
+              url: '',
+            },
+          ],
+          facets: [],
+          category: 'should be optional in api',
+          ruleSet: {
+            facets: [],
+            rules: {
+              boosts: { product: [], alphanumeric: [], numeric: [] },
+              buries: { product: [], alphanumeric: [], numeric: [] },
+              pinnedProducts: [],
+            },
+          },
+          pagination: {
+            totalItems: 1,
+          },
+          externalChanges: {
+            boosts: { product: [], alphanumeric: [], numeric: [] },
+            buries: { product: [], alphanumeric: [], numeric: [] },
+            pinnedProducts: [],
+          },
+        };
+
+        return {
+          body: preview,
+          status: 200,
+        };
+      }
+      return { body: jsonBody, status };
+    },
+  },
   '/search/beta/merchandising/keyword/ruleset': {
     get: (_req, status, jsonBody) => {
       if (status !== 200) {
@@ -584,6 +631,29 @@ export const getMockMapping: () => Record<
     put: () => {
       return {
         body: keywordRulesetMock.ruleSets[0],
+        status: 200,
+      };
+    },
+    get: (req) => {
+      const { url } = req;
+
+      // istanbul ignore next
+      if (!url) {
+        const error: ErrorResponse = {
+          message: 'url is empty',
+          status: '400',
+        };
+        return { body: error, status: 400 };
+      }
+
+      const rulsetId = url.split('/')[7];
+
+      const ruleSet = keywordRulesetMock.ruleSets.find(
+        (ruleset) => ruleset.id === rulsetId
+      );
+
+      return {
+        body: ruleSet || keywordRulesetMock.ruleSets[0],
         status: 200,
       };
     },

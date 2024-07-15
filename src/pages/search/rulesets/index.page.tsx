@@ -98,7 +98,7 @@ const SearchRuleSets = () => {
     isEnabled,
     lastChanged,
     onToggle: onEnableDisableRuleSet,
-    url: `/category/rulesets/edit/${id}`,
+    url: `/search/rulesets/edit/${id}`,
   }));
 
   return (

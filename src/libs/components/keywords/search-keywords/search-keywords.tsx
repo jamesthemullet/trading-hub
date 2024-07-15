@@ -89,6 +89,10 @@ const KeyWordInput = styled.input`
   height: 40px;
   width: 100%;
   text-overflow: ellipsis;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 type Props = {
@@ -171,7 +175,7 @@ export const SearchKeywords = ({
       <SearchKeywordsContainer>
         <LabelContainer>
           <label htmlFor="searchId">Search Keywords</label>
-          <Count>{searchTerms.length}</Count>
+          <Count aria-label="number of keywords">{searchTerms.length}</Count>
         </LabelContainer>
         <SearchBoxContainer>
           <InputBoxWrapper>

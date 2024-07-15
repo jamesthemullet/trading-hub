@@ -7,6 +7,7 @@ export * from './global/rulesets/use-global-rule-set-detail';
 export * from './global/rulesets/use-global-rule-set-update';
 export * from './global/use-global-attributes';
 export * from './search/use-search-ruleset-list';
+export * from './search/use-search-ruleset-preview';
 export * from './search/use-search-ruleset-update';
 export * from './use-category-attributes';
 export * from './use-category-preview';

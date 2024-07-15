@@ -7,6 +7,7 @@ export * from './dropdowns/dropdown/dropdown';
 export * from './filter/filter';
 export * from './heading/heading';
 export * from './input/input';
+export * from './keywords/search-keywords/search-keywords';
 export * from './loader/loader';
 export * from './login/login-check';
 export * from './modals';
