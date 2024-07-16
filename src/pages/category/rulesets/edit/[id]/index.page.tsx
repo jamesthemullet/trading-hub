@@ -3,10 +3,9 @@ import { useRouter } from 'next/router';
 import type { RuleSet } from '@/libs/api';
 import { Heading, Loader } from '@/libs/components';
 import { useRuleSetPreview, useUpdateRuleSet } from '@/libs/hooks';
+import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
-
-import { Ruleset } from '../../../../../libs/modules/ruleset/ruleset';
 
 type PageProps = {
   id: string;

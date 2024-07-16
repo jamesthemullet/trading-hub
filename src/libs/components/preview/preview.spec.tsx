@@ -105,28 +105,48 @@ const mockFacets: Facet[] = [
   },
 ];
 
+const mockCategoryReturnValue = {
+  data: {
+    category: 'categoryId1',
+    externalChanges: mockMerchandisingRules,
+    facets: mockFacets,
+    pagination: {
+      totalItems: 1,
+    },
+    products: [
+      mockProduct,
+      {
+        ...mockProduct,
+        id: 'product2',
+        productId: 'productId2',
+        metadata: { isPinned: false, isBoosted: true },
+      },
+    ],
+    ruleSet: {
+      facets: mockFacets,
+      rules: mockMerchandisingRules,
+    },
+  },
+  error: '',
+  isLoading: false,
+  setRules: jest.fn(),
+  setFacetConfigRules: jest.fn(),
+};
+
 const NEW_RULE_CHANGE = 'with new rule change';
 const CURRENT_STATE = 'current state';
 
 describe('Preview', () => {
   beforeEach(() => {
     jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryProducts: [
-        mockProduct,
-        { ...mockProduct, productId: 'product2' },
-      ],
-      categoryFacets: mockFacets,
-      totalCategoryProducts: 2,
-      error: '',
-      isLoading: false,
-      merchandisingRulesWithInfo: mockMerchandisingRules,
-      setRules: jest.fn(),
+      ...mockCategoryReturnValue,
     });
   });
 
   it('should render correctly', () => {
     render(
       <Preview
+        facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
         categoryId={mockCategoryId}
         onClose={mockOnClose}
@@ -136,9 +156,26 @@ describe('Preview', () => {
     expect(screen.getByText('Preview')).toBeInTheDocument();
   });
 
+  it('calls the api with the supplied facet config', () => {
+    const mockFacetConfig = [{ id: 'mockId', boosted: ['Red', 'Yellow'] }];
+    render(
+      <Preview
+        facetConfig={mockFacetConfig}
+        merchandisingRules={mockMerchandisingRules}
+        categoryId={mockCategoryId}
+        onClose={mockOnClose}
+      />
+    );
+
+    expect(useCategoryPreview).toHaveBeenCalledWith(
+      expect.objectContaining({ facetConfig: mockFacetConfig })
+    );
+  });
+
   it('open and close dropdown', () => {
     render(
       <Preview
+        facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
         categoryId={mockCategoryId}
         onClose={mockOnClose}
@@ -161,6 +198,7 @@ describe('Preview', () => {
   it('should show current state', () => {
     render(
       <Preview
+        facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
         categoryId={mockCategoryId}
         onClose={mockOnClose}
@@ -186,6 +224,7 @@ describe('Preview', () => {
   it('should select current state', () => {
     render(
       <Preview
+        facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
         categoryId={mockCategoryId}
         onClose={mockOnClose}
@@ -211,6 +250,7 @@ describe('Preview', () => {
   it('should show more facets', () => {
     render(
       <Preview
+        facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
         categoryId={mockCategoryId}
         onClose={mockOnClose}
@@ -229,6 +269,7 @@ describe('Preview', () => {
   it('should show price facet info', () => {
     render(
       <Preview
+        facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
         categoryId={mockCategoryId}
         onClose={mockOnClose}
@@ -240,17 +281,13 @@ describe('Preview', () => {
 
   it('should show a loader when making changes', () => {
     jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryProducts: [mockProduct],
-      categoryFacets: mockFacets,
-      totalCategoryProducts: 1,
-      error: '',
+      ...mockCategoryReturnValue,
       isLoading: true,
-      merchandisingRulesWithInfo: mockMerchandisingRules,
-      setRules: jest.fn(),
     });
 
     render(
       <Preview
+        facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
         categoryId={mockCategoryId}
         onClose={mockOnClose}

@@ -4,9 +4,15 @@ import { act, Screen, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import {
+  BoostsBuries,
+  MerchandisingRules,
+  SearchPreviewResponseBeta,
+} from '@/libs/api';
+import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
+
 import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
 import { renderWithProviders } from '../../../test/render-with-providers';
-import { BoostsBuries, MerchandisingRules } from '../../api';
 import { useCategoryPreview } from '../../hooks/use-category-preview';
 import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
 import { useGetCategories } from '../../hooks/use-get-categories';
@@ -123,6 +129,46 @@ const mockMerchandisingRules = {
   blockedProducts: [],
 };
 
+const mockData: SearchPreviewResponseBeta = {
+  category: categoryId1,
+  externalChanges: mockMerchandisingRulesWithInfo,
+  facets: [],
+  pagination: {
+    totalItems: 1,
+  },
+  ruleSet: {
+    facets: [],
+    rules: mockMerchandisingRulesWithInfo,
+  },
+  products: [],
+};
+
+const mockCategoryReturnValue = {
+  data: {
+    ...mockData,
+    products: [
+      mockProduct,
+      {
+        ...mockProduct,
+        id: 'product2',
+        productId: 'productId2',
+        metadata: { isPinned: false, isBoosted: true },
+      },
+    ],
+    ruleSet: {
+      ...mockData.ruleSet,
+      rules: {
+        ...mockMerchandisingRules,
+        pinnedProducts: [mockProduct],
+      },
+    },
+  },
+  error: '',
+  isLoading: false,
+  setRules: jest.fn(),
+  setFacetConfigRules: jest.fn(),
+};
+
 const selectCategory = async (screen: Screen, user: UserEvent) => {
   await user.type(
     screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
@@ -202,26 +248,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    jest.mocked(useCategoryPreview).mockReturnValue({
-      categoryProducts: [
-        mockProduct,
-        {
-          ...mockProduct,
-          id: 'product2',
-          productId: 'productId2',
-          metadata: { isPinned: false, isBoosted: true },
-        },
-      ],
-      totalCategoryProducts: 2,
-      categoryFacets: [],
-      error: '',
-      isLoading: false,
-      merchandisingRulesWithInfo: {
-        ...mockMerchandisingRules,
-        pinnedProducts: [mockProduct],
-      },
-      setRules: jest.fn(),
-    });
+    jest.mocked(useCategoryPreview).mockReturnValue(mockCategoryReturnValue);
 
     (useRouter as jest.Mock).mockImplementation(() => {
       return {
@@ -248,24 +275,8 @@ describe('Ruleset', () => {
 
   it('should render a loading when updating data', () => {
     jest.mocked(useCategoryPreview).mockReturnValueOnce({
-      categoryProducts: [
-        mockProduct,
-        {
-          ...mockProduct,
-          id: 'product2',
-          productId: 'productId2',
-          metadata: { isPinned: false, isBoosted: true },
-        },
-      ],
-      categoryFacets: [],
-      totalCategoryProducts: 2,
-      error: '',
+      ...mockCategoryReturnValue,
       isLoading: true,
-      merchandisingRulesWithInfo: {
-        ...mockMerchandisingRules,
-        pinnedProducts: [mockProduct],
-      },
-      setRules: jest.fn(),
     });
     renderWithProviders(
       <Ruleset
@@ -563,28 +574,34 @@ describe('Ruleset', () => {
         getCategoriesError: '',
       });
       jest.mocked(useCategoryPreview).mockReturnValue({
-        categoryProducts: [
-          mockProduct,
-          {
-            ...mockProduct,
-            id: 'product2',
-            productId: 'productId2',
-            metadata: { isPinned: false, isBoosted: true },
+        ...mockCategoryReturnValue,
+        data: {
+          ...mockCategoryReturnValue.data,
+          pagination: {
+            totalItems: 3,
           },
-          {
-            ...mockProduct,
-            id: 'product3',
-            productId: 'productId3',
-            metadata: { isPinned: true, isBoosted: false },
+          products: [
+            mockProduct,
+            {
+              ...mockProduct,
+              id: 'product2',
+              productId: 'productId2',
+              metadata: { isPinned: false, isBoosted: true },
+            },
+            {
+              ...mockProduct,
+              id: 'product3',
+              productId: 'productId3',
+              metadata: { isPinned: true, isBoosted: false },
+            },
+          ],
+          ruleSet: {
+            ...mockCategoryReturnValue.data.ruleSet,
+            rules: {
+              ...mockCategoryReturnValue.data.ruleSet.rules,
+              pinnedProducts: [{ ...mockProduct, id: 'product2' }],
+            },
           },
-        ],
-        totalCategoryProducts: 3,
-        categoryFacets: [],
-        error: '',
-        isLoading: false,
-        merchandisingRulesWithInfo: {
-          ...mockMerchandisingRules,
-          pinnedProducts: [{ ...mockProduct, id: 'product2' }],
         },
         setRules: mockSetRules,
       });
@@ -659,38 +676,56 @@ describe('Ruleset', () => {
         getCategoriesError: '',
       });
       jest.mocked(useCategoryPreview).mockReturnValue({
-        categoryProducts: [
-          mockProduct,
-          {
-            ...mockProduct,
-            id: 'product3',
-            productId: 'productId3',
-            metadata: {
-              isPinned: true,
-              isBoosted: false,
-              isBuried: false,
-              isBlocked: false,
+        ...mockCategoryReturnValue,
+        data: {
+          ...mockCategoryReturnValue.data,
+          pagination: {
+            totalItems: 3,
+          },
+          products: [
+            mockProduct,
+            {
+              ...mockProduct,
+              id: 'product3',
+              productId: 'productId3',
+              metadata: {
+                isPinned: true,
+                isBoosted: false,
+                isBuried: false,
+                isBlocked: false,
+              },
+            },
+            {
+              ...mockProduct,
+              id: 'product2',
+              productId: 'productId2',
+              metadata: {
+                isPinned: false,
+                isBoosted: true,
+                isBuried: false,
+                isBlocked: false,
+              },
+            },
+            {
+              ...mockProduct,
+              id: 'product3',
+              productId: 'productId3',
+              metadata: {
+                isPinned: false,
+                isBoosted: false,
+                isBuried: false,
+                isBlocked: true,
+              },
+            },
+          ],
+          ruleSet: {
+            ...mockCategoryReturnValue.data.ruleSet,
+            rules: {
+              ...mockCategoryReturnValue.data.ruleSet.rules,
+              pinnedProducts: [mockProduct],
+              blockedProducts: [{ ...mockProduct, id: 'product3' }],
             },
           },
-          {
-            ...mockProduct,
-            id: 'product2',
-            productId: 'productId2',
-            metadata: {
-              isPinned: false,
-              isBoosted: true,
-              isBuried: false,
-              isBlocked: false,
-            },
-          },
-        ],
-        totalCategoryProducts: 3,
-        categoryFacets: [],
-        error: '',
-        isLoading: false,
-        merchandisingRulesWithInfo: {
-          ...mockMerchandisingRules,
-          pinnedProducts: [mockProduct],
         },
         setRules: mockSetRules,
       });
@@ -777,6 +812,33 @@ describe('Ruleset', () => {
 
       expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
     });
+
+    it('Should boost from a previously blocked product', async () => {
+      const user = userEvent.setup({ delay: null });
+      const mockResponse: MerchandisingRules = {
+        blockedProducts: [],
+        boosts: {
+          alphanumeric: [],
+          numeric: [],
+          product: [
+            { id: 'product2', weight: 1 },
+            { id: 'product3', weight: 100 },
+          ],
+        },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        pinnedProducts: [],
+      };
+
+      await user.click(screen.getAllByTitle('Open menu')[3]);
+
+      expect(screen.getByLabelText('Pinned product')).toBeInTheDocument();
+
+      expect(screen.getAllByLabelText('Boosted product').length).toBe(1);
+
+      await user.click(screen.getByText('Boost to Top'));
+
+      expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
+    });
   });
 
   describe('Burying', () => {
@@ -788,32 +850,37 @@ describe('Ruleset', () => {
         getCategoriesError: '',
       });
       jest.mocked(useCategoryPreview).mockReturnValue({
-        categoryProducts: [
-          {
-            ...mockProduct,
-            id: 'product3',
-            productId: 'productId3',
-            metadata: { isPinned: true, isBoosted: false, isBuried: false },
+        ...mockCategoryReturnValue,
+        data: {
+          ...mockCategoryReturnValue.data,
+          pagination: {
+            totalItems: 3,
           },
-          {
-            ...mockProduct,
-            id: 'product2',
-            productId: 'productId2',
-            metadata: { isPinned: false, isBoosted: false, isBuried: true },
+          products: [
+            {
+              ...mockProduct,
+              id: 'product3',
+              productId: 'productId3',
+              metadata: { isPinned: true, isBoosted: false, isBuried: false },
+            },
+            {
+              ...mockProduct,
+              id: 'product2',
+              productId: 'productId2',
+              metadata: { isPinned: false, isBoosted: false, isBuried: true },
+            },
+          ],
+          ruleSet: {
+            ...mockCategoryReturnValue.data.ruleSet,
+            rules: {
+              ...mockCategoryReturnValue.data.ruleSet.rules,
+              buries: {
+                ...mockMerchandisingRules.buries,
+                product: [{ ...mockProduct, id: 'product2', weight: 1 }],
+              },
+              pinnedProducts: [mockProduct],
+            },
           },
-          mockProduct,
-        ],
-        totalCategoryProducts: 3,
-        categoryFacets: [],
-        error: '',
-        isLoading: false,
-        merchandisingRulesWithInfo: {
-          ...mockMerchandisingRules,
-          buries: {
-            ...mockMerchandisingRules.buries,
-            product: [{ ...mockProduct, id: 'product2', weight: 1 }],
-          },
-          pinnedProducts: [mockProduct],
         },
         setRules: mockSetRules,
       });
@@ -961,46 +1028,52 @@ describe('Ruleset', () => {
         getCategoriesError: '',
       });
       jest.mocked(useCategoryPreview).mockReturnValue({
-        categoryProducts: [
-          mockProduct,
-          {
-            ...mockProduct,
-            id: 'product2',
-            productId: 'productId2',
-            metadata: {
-              isPinned: false,
-              isBoosted: false,
-              isBuried: false,
-              isBlocked: true,
-            },
+        ...mockCategoryReturnValue,
+        data: {
+          ...mockCategoryReturnValue.data,
+          pagination: {
+            totalItems: 3,
           },
-          {
-            ...mockProduct,
-            id: 'product3',
-            productId: 'productId3',
-            metadata: {
-              isPinned: true,
-              isBoosted: false,
-              isBuried: false,
-              isBlocked: false,
-            },
-          },
-        ],
-        totalCategoryProducts: 3,
-        categoryFacets: [],
-        merchandisingRulesWithInfo: {
-          ...mockMerchandisingRules,
-          blockedProducts: [
+          products: [
+            mockProduct,
             {
               ...mockProduct,
-              id: 'productId2',
-              metadata: { ...mockProduct.metadata, isBlocked: true },
+              id: 'product2',
+              productId: 'productId2',
+              metadata: {
+                isPinned: false,
+                isBoosted: false,
+                isBuried: false,
+                isBlocked: true,
+              },
+            },
+            {
+              ...mockProduct,
+              id: 'product3',
+              productId: 'productId3',
+              metadata: {
+                isPinned: true,
+                isBoosted: false,
+                isBuried: false,
+                isBlocked: false,
+              },
             },
           ],
-          pinnedProducts: [],
+          ruleSet: {
+            ...mockCategoryReturnValue.data.ruleSet,
+            rules: {
+              ...mockCategoryReturnValue.data.ruleSet.rules,
+              blockedProducts: [
+                {
+                  ...mockProduct,
+                  id: 'productId2',
+                  metadata: { ...mockProduct.metadata, isBlocked: true },
+                },
+              ],
+              pinnedProducts: [],
+            },
+          },
         },
-        error: '',
-        isLoading: false,
         setRules: mockSetRules,
       });
       jest.mocked(useCategoryProductSearch).mockReturnValue({
@@ -1192,26 +1265,32 @@ describe('Ruleset', () => {
       });
 
       jest.mocked(useCategoryPreview).mockReturnValue({
-        categoryProducts: [
-          {
-            id: 'product-id-1',
-            productId: 'product-id-1',
-            title: productSearchTitle,
-            imageUrl: ['example1.jpg'],
-            brand: product1Brand,
-            metadata: { isPinned: false },
-            isInStock: true,
-            price: product1Price,
-            url: '',
+        ...mockCategoryReturnValue,
+        data: {
+          ...mockCategoryReturnValue.data,
+          pagination: {
+            totalItems: 145,
           },
-        ],
-        totalCategoryProducts: 3,
-        categoryFacets: [],
-        error: '',
-        isLoading: false,
-        merchandisingRulesWithInfo: {
-          ...mockMerchandisingRules,
-          pinnedProducts: [mockProduct],
+          products: [
+            {
+              id: 'product-id-1',
+              productId: 'product-id-1',
+              title: productSearchTitle,
+              imageUrl: ['example1.jpg'],
+              brand: product1Brand,
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: product1Price,
+              url: '',
+            },
+          ],
+          ruleSet: {
+            ...mockCategoryReturnValue.data.ruleSet,
+            rules: {
+              ...mockCategoryReturnValue.data.ruleSet.rules,
+              pinnedProducts: [{ ...mockProduct, id: 'product2' }],
+            },
+          },
         },
         setRules: mockSetRules,
       });

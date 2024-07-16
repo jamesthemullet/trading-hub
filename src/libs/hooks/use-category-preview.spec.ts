@@ -2,7 +2,8 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { SearchPreviewResponse } from '../api';
+import { SearchPreviewResponseBeta } from '@/libs/api';
+
 import { useCategoryPreview } from './use-category-preview';
 
 const baseUrl = 'http://localhost';
@@ -15,7 +16,7 @@ const mockMerchandisingRules = {
   blockedProducts: [],
 };
 
-const mockSearchData: SearchPreviewResponse = {
+const mockSearchData: SearchPreviewResponseBeta = {
   products: [
     {
       id: '60275024',
@@ -36,11 +37,25 @@ const mockSearchData: SearchPreviewResponse = {
       },
     },
   ],
-  facets: {
-    facets: [],
-  },
+  facets: [],
   category: '123',
-  rules: mockMerchandisingRules,
+  ruleSet: {
+    facets: [],
+    rules: mockMerchandisingRules,
+  },
+  externalChanges: {
+    pinnedProducts: [],
+    boosts: {
+      alphanumeric: [],
+      numeric: [],
+      product: [],
+    },
+    buries: {
+      alphanumeric: [],
+      numeric: [],
+      product: [],
+    },
+  },
   pagination: {
     totalItems: 1,
   },
@@ -54,7 +69,7 @@ const getRuleSetPreviewMock = jest.fn();
 
 const handlers = [
   http.post(
-    `${baseUrl}/merchandising/category/${mockCategoryId}/preview`,
+    `${baseUrl}/search/beta/merchandising/category/${mockCategoryId}/preview`,
     () => {
       const { data, status } = getRuleSetPreviewMock();
       return HttpResponse.json(data, status);
@@ -70,10 +85,6 @@ describe('useRuleSet', () => {
     server.listen();
   });
 
-  afterEach(() => {
-    server.resetHandlers();
-  });
-
   afterAll(() => {
     server.close();
     delete process.env.MERCHANDISING_PROXY_BASE_URL;
@@ -86,7 +97,11 @@ describe('useRuleSet', () => {
     });
 
     const { result } = renderHook(() =>
-      useCategoryPreview(mockCategoryId, mockMerchandisingRules)
+      useCategoryPreview({
+        categoryId: mockCategoryId,
+        merchandisingRules: mockMerchandisingRules,
+        facetConfig: [],
+      })
     );
 
     const expectedData = {
@@ -113,10 +128,10 @@ describe('useRuleSet', () => {
     };
 
     await waitFor(() => {
-      expect(result.current.categoryProducts).toMatchObject(
+      expect(result.current.data.products).toMatchObject(
         expectedData.categoryProducts
       );
-      expect(result.current.totalCategoryProducts).toBe(1);
+      expect(result.current.data.pagination.totalItems).toBe(1);
     });
   });
 
@@ -127,7 +142,11 @@ describe('useRuleSet', () => {
     });
 
     const { result } = renderHook(() =>
-      useCategoryPreview(mockCategoryId, mockMerchandisingRules)
+      useCategoryPreview({
+        categoryId: mockCategoryId,
+        merchandisingRules: mockMerchandisingRules,
+        facetConfig: [],
+      })
     );
 
     const expectedData = {
@@ -147,7 +166,11 @@ describe('useRuleSet', () => {
     });
 
     const { result } = renderHook(() =>
-      useCategoryPreview(undefined, mockMerchandisingRules)
+      useCategoryPreview({
+        categoryId: undefined,
+        merchandisingRules: mockMerchandisingRules,
+        facetConfig: [],
+      })
     );
 
     const expectedData = {
@@ -156,24 +179,40 @@ describe('useRuleSet', () => {
     };
 
     await waitFor(() => {
-      expect(result.current.categoryProducts).toMatchObject(
+      expect(result.current.data.products).toMatchObject(
         expectedData.categoryProducts
       );
     });
   });
 
   it('should refetch data', async () => {
-    getRuleSetPreviewMock.mockReturnValueOnce({
+    getRuleSetPreviewMock.mockReturnValue({
       data: mockSearchData,
       status: { status: 200 },
     });
 
-    const newMocks = { ...mockSearchData };
-    newMocks.products.push(mockSearchData.products[0]);
+    const newMocks: SearchPreviewResponseBeta = {
+      ...mockSearchData,
+      products: [...mockSearchData.products, mockSearchData.products[0]],
+      pagination: {
+        totalItems: 2,
+      },
+    };
 
     const { result } = renderHook(() =>
-      useCategoryPreview(mockCategoryId, mockMerchandisingRules)
+      useCategoryPreview({
+        categoryId: mockCategoryId,
+        merchandisingRules: mockMerchandisingRules,
+        facetConfig: [],
+      })
     );
+
+    await waitFor(() => {
+      expect(result.current.data.products.length).toEqual(1);
+    });
+    act(() => {
+      result.current.setRules(mockMerchandisingRules);
+    });
 
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: newMocks,
@@ -181,11 +220,11 @@ describe('useRuleSet', () => {
     });
 
     act(() => {
-      result.current.setRules(mockMerchandisingRules);
+      result.current.setFacetConfigRules([{ id: 'foo', boosted: ['Red'] }]);
     });
 
     await waitFor(() => {
-      expect(result.current.categoryProducts.length).toEqual(2);
+      expect(result.current.data.products.length).toEqual(2);
     });
   });
 });

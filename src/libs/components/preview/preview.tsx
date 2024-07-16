@@ -1,12 +1,14 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import type { Facet, MerchandisingRules } from '@/libs/api';
+import type {
+  Facet,
+  MerchandisingRules,
+  RuleSetFacetConfigWithId,
+} from '@/libs/api';
+import { Dropdown, Loader, ProductDetails } from '@/libs/components';
+import { useCategoryPreview } from '@/libs/hooks';
 
-import { useCategoryPreview } from '../../hooks';
-import { Dropdown } from '../dropdowns/dropdown/dropdown';
-import { Loader } from '../loader/loader';
-import { ProductDetails } from '../product/product';
 import { ProductWrapper } from '../product/product.styles';
 import { Header3, Label, Text } from '../typography/typography.styles';
 import { boxShadow } from '../utils/shared.styles';
@@ -15,6 +17,7 @@ import { ProductBox } from '../visual-editor/visual-editor.styles';
 
 type Props = {
   categoryId: string;
+  facetConfig: RuleSetFacetConfigWithId[];
   merchandisingRules: MerchandisingRules;
   onClose: () => void;
 };
@@ -159,7 +162,12 @@ const FacetInfo = ({ facet }: { facet: Facet }) => {
   );
 };
 
-export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
+export const Preview = ({
+  categoryId,
+  facetConfig,
+  merchandisingRules,
+  onClose,
+}: Props) => {
   const [withRules, setWithRules] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -170,8 +178,11 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
     buries: { alphanumeric: [], numeric: [], product: [] },
   };
 
-  const { categoryProducts, categoryFacets, isLoading, setRules } =
-    useCategoryPreview(categoryId, withRules ? merchandisingRules : emptyRules);
+  const { data, isLoading, setRules } = useCategoryPreview({
+    categoryId,
+    merchandisingRules: withRules ? merchandisingRules : emptyRules,
+    facetConfig,
+  });
 
   const toggleView = (withMerchandisingRules: boolean) => {
     setIsDropdownOpen(false);
@@ -224,13 +235,13 @@ export const Preview = ({ categoryId, merchandisingRules, onClose }: Props) => {
       </Header>
       <Content>
         <Facets>
-          {categoryFacets.map((facet: Facet) => (
+          {data.facets.map((facet: Facet) => (
             <FacetInfo key={facet.id} facet={facet} />
           ))}
         </Facets>
 
         <Products>
-          {categoryProducts.map((product) => (
+          {data.products.map((product) => (
             <ProductBox key={`product-${product.productId}`}>
               <ProductWrapper>
                 <ProductDetails {...product} />

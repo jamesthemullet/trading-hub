@@ -1,58 +1,89 @@
 import { useEffect, useState } from 'react';
 
 import type {
-  Facet,
   MerchandisingRules,
-  MerchandisingRulesWithInfo,
-  Product,
-  SearchPreviewResponse,
+  RuleSetFacetConfigWithId,
+  SearchPreviewResponseBeta,
 } from '@/libs/api';
-import { merchandising } from '@/libs/api';
+import { search } from '@/libs/api';
 
-export const useCategoryPreview = (
-  categoryId: string | undefined,
-  merchandisingRules: MerchandisingRules
-) => {
-  const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
-  const [totalCategoryProducts, setTotalCategoryProducts] = useState(0);
-  const [categoryFacets, setCategoryFacets] = useState<Facet[]>([]);
+export const useCategoryPreview = ({
+  categoryId,
+  merchandisingRules,
+  facetConfig,
+}: {
+  categoryId: string | undefined;
+  merchandisingRules: MerchandisingRules;
+  facetConfig: Array<RuleSetFacetConfigWithId>;
+}) => {
   const [error, setError] = useState('');
   const [rules, setRules] = useState(merchandisingRules);
-  const [merchandisingRulesWithInfo, setMerchandisingRulesWithInfo] =
-    useState<MerchandisingRulesWithInfo>();
   const [isLoading, setIsLoading] = useState(false);
 
+  const [facetConfigRules, setFacetConfigRules] =
+    useState<Array<RuleSetFacetConfigWithId>>(facetConfig);
+  const [data, setData] = useState<SearchPreviewResponseBeta>({
+    category: '',
+    products: [],
+    ruleSet: {
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+        buries: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+      },
+      facets: [],
+    },
+    externalChanges: {
+      pinnedProducts: [],
+      blockedProducts: [],
+      boosts: {
+        numeric: [],
+        alphanumeric: [],
+        product: [],
+      },
+      buries: {
+        numeric: [],
+        alphanumeric: [],
+        product: [],
+      },
+    },
+    facets: [],
+    pagination: {
+      totalItems: 0,
+    },
+  });
+
   useEffect(() => {
-    const asyncCall = async () => {
+    const fetchData = async () => {
       if (!categoryId) {
-        setCategoryProducts([]);
         return;
       }
       setIsLoading(true);
 
       try {
-        const categoryPreview = await merchandising().categoryPreviewCreate(
-          categoryId,
-          { rows: 140, start: 0 },
-          {
-            pinnedProducts: rules.pinnedProducts,
-            blockedProducts: rules.blockedProducts,
-            buries: rules.buries,
-            boosts: rules.boosts,
-          }
-        );
+        const categoryPreview =
+          await search().betaMerchandisingCategoryPreviewCreate(
+            categoryId,
+            { rows: 140, start: 0 },
+            {
+              rules,
+              facets: facetConfigRules,
+              isEnabled: true,
+            }
+          );
 
-        const previewData: SearchPreviewResponse = categoryPreview.data;
+        const previewData: SearchPreviewResponseBeta = categoryPreview.data;
 
-        setCategoryProducts(previewData.products);
-        if (previewData.pagination.totalItems) {
-          setTotalCategoryProducts(previewData.pagination.totalItems);
-        }
-        setMerchandisingRulesWithInfo(previewData.rules);
-
-        if (previewData.facets.facets) {
-          setCategoryFacets(previewData.facets.facets);
-        }
+        setData(previewData);
 
         setError('');
         setIsLoading(false);
@@ -65,16 +96,15 @@ export const useCategoryPreview = (
       }
     };
 
-    void asyncCall();
-  }, [categoryId, rules]);
+    fetchData();
+  }, [facetConfigRules, categoryId, rules]);
 
   return {
-    categoryFacets,
-    categoryProducts,
+    data,
     error,
     isLoading,
-    merchandisingRulesWithInfo,
+    setFacetConfigRules: (facets: RuleSetFacetConfigWithId[]) =>
+      setFacetConfigRules(facets),
     setRules: (rules: MerchandisingRules) => setRules(rules),
-    totalCategoryProducts,
   };
 };

@@ -183,12 +183,14 @@ export const Ruleset = ({
   };
 
   const {
-    categoryProducts: sortedProducts,
+    data,
     isLoading,
-    merchandisingRulesWithInfo,
     setRules: setPreviewRules,
-    totalCategoryProducts,
-  } = useCategoryPreview(selectedCategory?.identifier, merchandisingRules);
+  } = useCategoryPreview({
+    categoryId: selectedCategory?.identifier,
+    merchandisingRules,
+    facetConfig: [],
+  });
 
   const onAddSearchTerm = (keyword: string) => {
     setRulesetSearchTerms([...rulesetSearchTerms, keyword]);
@@ -408,6 +410,7 @@ export const Ruleset = ({
           onClose={() => setShowPreview(!showPreview)}
           categoryId={selectedCategory.identifier}
           merchandisingRules={merchandisingRules}
+          facetConfig={[]}
         />
       )}
 
@@ -508,11 +511,11 @@ export const Ruleset = ({
             />
             {rulesetType === 'category' && (
               <Text>
-                {sortedProducts.length}{' '}
-                {pluralize(' product', sortedProducts.length)}{' '}
-                {totalCategoryProducts &&
-                totalCategoryProducts > sortedProducts.length
-                  ? `of ${totalCategoryProducts}`
+                {data.products.length}{' '}
+                {pluralize(' product', data.products.length)}{' '}
+                {data.pagination.totalItems &&
+                data.pagination.totalItems > data.products.length
+                  ? `of ${data.pagination.totalItems}`
                   : ''}
                 {' shown'}
               </Text>
@@ -521,7 +524,7 @@ export const Ruleset = ({
           <TabContent>
             {currentEditorTab === 0 && (
               <VisualEditor
-                products={sortedProducts}
+                products={data.products}
                 onChangePosition={onChangePosition}
                 onProductBoostBury={onProductBoostBury}
               />
@@ -529,7 +532,7 @@ export const Ruleset = ({
             {(currentEditorTab === 1 || rulesetType === 'global') && (
               <RulesetChanges
                 merchandisingRules={merchandisingRules}
-                merchandisingRulesWithInfo={merchandisingRulesWithInfo}
+                merchandisingRulesWithInfo={data.ruleSet.rules}
                 onChangePosition={onChangePosition}
                 onProductBoostBury={onProductBoostBury}
               />
