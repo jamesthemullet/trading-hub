@@ -17,8 +17,8 @@ export const DropdownWrapper = styled.div<{
   ${({ width }) => width && `width: ${width}px;`}
 
   img {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     margin-right: ${spacing(1)};
   }
 `;

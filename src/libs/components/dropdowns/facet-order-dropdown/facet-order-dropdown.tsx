@@ -111,7 +111,7 @@ export const FacetOrderDropdown = ({
       >
         <DropdownHeading>
           {dropdownHeading?.src && (
-            <Image src={dropdownHeading.src} alt="" width={16} height={16} />
+            <Image src={dropdownHeading.src} alt="" width={24} height={24} />
           )}
           {dropdownHeading?.label}
         </DropdownHeading>
@@ -130,7 +130,7 @@ export const FacetOrderDropdown = ({
                 onClick={() => handleSelectedOption(option.index)}
                 aria-label={option.ariaLabel}
               >
-                <Image src={option.src} alt="" width={16} height={16} />
+                <Image src={option.src} alt="" width={24} height={24} />
                 {option.label}
               </DropdownOption>
             )

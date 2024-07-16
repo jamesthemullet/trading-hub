@@ -35,13 +35,22 @@ export const FacetAttributeValuesTableRow = styled(
   TableRow
 )<FacetAttributeValuesTableRowProps>`
   grid-template-columns:
-    24px minmax(280px, 1fr) minmax(270px, 1fr) minmax(50px, 1fr)
+    24px minmax(auto, 340px) minmax(auto, 340px) minmax(50px, auto)
     200px;
   border-bottom: none;
   align-items: center;
   margin-bottom: ${spacing(2)};
   box-shadow: #000 0 0 10px -5px;
   padding: ${spacing(2)};
+
+  &:first-of-type {
+    position: static;
+    ${({ isPinned }) =>
+      isPinned && `background-color: ${color.successGreenBackground}`}
+
+    ${({ isExcluded }) =>
+      isExcluded && `background-color: ${color.errorRedBackground}`}
+  }
 
   ${({ isPinned }) =>
     isPinned && `background-color: ${color.successGreenBackground}`}

@@ -466,7 +466,7 @@ describe('Facet Panel', () => {
         })
       ).toBeVisible();
 
-      const closeButton = screen.getByRole('button', { name: 'Close Modal' });
+      const closeButton = screen.getByLabelText('Close attributes modal');
 
       act(() => {
         user.click(closeButton);

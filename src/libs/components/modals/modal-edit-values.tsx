@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { ArrowButton } from '../buttons/button/arrow-button';
 import { Button } from '../buttons/button/button';
 import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
-import { DisplayName, EditableLabel } from '../editable-label/editable-label';
+import { EditableLabel } from '../editable-label/editable-label';
 import { FilteredResultsPanel } from '../filtered-results-panel/filtered-results-panel';
 import { Search } from '../search/search';
 import {
@@ -22,7 +22,11 @@ import {
 import { Header3, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
-import { HeadingAndCloseButton, ModalAttributesTable } from './modal.styles';
+import {
+  HeadingContainer,
+  ModalAttributesTable,
+  ModalStickyHeader,
+} from './modal.styles';
 
 type AttributeValue = AttributeValuesResponse['values'][number] & {
   index: number;
@@ -38,12 +42,19 @@ const Col = styled(TableCol)`
 const MODAL_WIDTH = 1150;
 
 const ModalContainer = styled.div`
-  height: 680px;
-  display: flex;
-  flex-direction: column;
-  margin: ${spacing(3)};
   height: 100%;
   min-width: 860px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const AttributesModalHeader = styled(ModalStickyHeader)`
+  padding: ${spacing(3)};
+  padding-bottom: 0;
+`;
+
+const BodyContainer = styled.div`
+  margin: 0 ${spacing(3)};
 `;
 
 const OrderArrowsContainer = styled.div`
@@ -439,154 +450,151 @@ export const ModalEditValues = ({
       <Modal.Content>
         <Modal.Body>
           <ModalContainer>
-            <HeadingAndCloseButton>
-              <Text isStrong as={Header3}>
-                Facet value settings of: {facet.displayValue}
-              </Text>
-              <Button onClick={onClose} aria-label="Close Modal">
-                <Image
-                  src="/trading-hub/asset/icon-close-black.svg"
-                  width={24}
-                  height={24}
-                  alt=""
-                />
-              </Button>
-            </HeadingAndCloseButton>
+            <AttributesModalHeader>
+              <HeadingContainer>
+                <Text isStrong as={Header3}>
+                  Facet value settings of: {facet.displayValue}
+                </Text>
+              </HeadingContainer>
 
-            <MergeAndSearchContainer>
-              <Text isStrong>All values listed</Text>
-              {canMerge && (
-                <Button isDisabled={mergeList.length < 2} onClick={handleMerge}>
-                  Merge ({mergeList.length})
-                </Button>
-              )}
-              <Search onChange={(e) => handleSearch(e.target.value)} />
-            </MergeAndSearchContainer>
-
-            <ModalAttributesTable>
-              <FacetAttributeValuesTableRow>
-                {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-                  <Col key={`add-facet-modal-column-${label}`}>
-                    {label ? (
-                      <TableHeading as="p" isStrong={true}>
-                        {label}
-                      </TableHeading>
-                    ) : (
-                      <Col>{canMerge && <input type="checkbox" />}</Col>
-                    )}
-                  </Col>
-                ))}
-              </FacetAttributeValuesTableRow>
-
-              {filteredEditFacetValues.map(
-                (
-                  {
-                    displayValue,
-                    attribute,
-                    mergedValues,
-                    isPinned,
-                    isExcluded,
-                  },
-                  index
-                ) => (
-                  <FacetAttributeValuesTableRow
-                    key={`attribute-${attribute}`}
-                    isPinned={isPinned}
-                    isExcluded={isExcluded}
-                    data-testid="rows"
-                    aria-label={`attribute ${index} ${attribute}`}
+              <MergeAndSearchContainer>
+                <Text isStrong>All values listed</Text>
+                {canMerge && (
+                  <Button
+                    isDisabled={mergeList.length < 2}
+                    onClick={handleMerge}
                   >
-                    <Col>
-                      {canMerge && (
-                        <input
-                          type="checkbox"
-                          checked={mergeList.includes(attribute.toLowerCase())}
-                          onChange={() => handleSelect(attribute, mergedValues)}
-                          aria-label={`Select ${attribute} to merge`}
-                        />
+                    Merge ({mergeList.length})
+                  </Button>
+                )}
+                <Search onChange={(e) => handleSearch(e.target.value)} />
+              </MergeAndSearchContainer>
+
+              <ModalAttributesTable>
+                <FacetAttributeValuesTableRow>
+                  {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
+                    <Col key={`add-facet-modal-column-${label}`}>
+                      {label ? (
+                        <TableHeading as="p" isStrong={true}>
+                          {label}
+                        </TableHeading>
+                      ) : (
+                        <Col>{canMerge && <input type="checkbox" />}</Col>
                       )}
                     </Col>
+                  ))}
+                </FacetAttributeValuesTableRow>
+              </ModalAttributesTable>
+            </AttributesModalHeader>
 
-                    <Col>
-                      <AttributeWrapper>
-                        <Image
-                          width={20}
-                          height={20}
-                          src="/trading-hub/asset/icon-attribute.svg"
-                          alt=""
-                        />
-                        {mergedValues && mergedValues.length > 1 ? (
-                          <div>
-                            <Text isStrong>Merged Value Group</Text>
-                            {mergedValues.map((value, index) => (
-                              <MergedValue key={`${index}-${value}`}>
-                                <Text>{value}</Text>{' '}
-                                <RemoveMergedFacet
-                                  onClick={() =>
-                                    handleDemerge(
-                                      value,
-                                      mergedValues,
-                                      displayValue
-                                    )
-                                  }
-                                  aria-label={`Remove merged facet for ${value}`}
-                                />
-                              </MergedValue>
-                            ))}
-                          </div>
-                        ) : (
-                          <Text>{displayValue}</Text>
+            <BodyContainer>
+              <ModalAttributesTable>
+                {filteredEditFacetValues.map(
+                  (
+                    {
+                      displayValue,
+                      attribute,
+                      mergedValues,
+                      isPinned,
+                      isExcluded,
+                    },
+                    index
+                  ) => (
+                    <FacetAttributeValuesTableRow
+                      key={`attribute-${attribute}`}
+                      isPinned={isPinned}
+                      isExcluded={isExcluded}
+                      data-testid="rows"
+                      aria-label={`attribute ${index} ${attribute}`}
+                    >
+                      <Col>
+                        {canMerge && (
+                          <input
+                            type="checkbox"
+                            checked={mergeList.includes(
+                              attribute.toLowerCase()
+                            )}
+                            onChange={() =>
+                              handleSelect(attribute, mergedValues)
+                            }
+                            aria-label={`Select ${attribute} to merge`}
+                          />
                         )}
-                      </AttributeWrapper>
-                    </Col>
+                      </Col>
+                      <Col>
+                        <AttributeWrapper>
+                          <Image
+                            width={20}
+                            height={20}
+                            src="/trading-hub/asset/icon-attribute.svg"
+                            alt=""
+                          />
+                          {mergedValues && mergedValues.length > 1 ? (
+                            <div>
+                              <Text isStrong>Merged Value Group</Text>
+                              {mergedValues.map((value, index) => (
+                                <MergedValue key={`${index}-${value}`}>
+                                  <Text>{value}</Text>{' '}
+                                  <RemoveMergedFacet
+                                    onClick={() =>
+                                      handleDemerge(
+                                        value,
+                                        mergedValues,
+                                        displayValue
+                                      )
+                                    }
+                                    aria-label={`Remove merged facet for ${value}`}
+                                  />
+                                </MergedValue>
+                              ))}
+                            </div>
+                          ) : (
+                            <Text>{displayValue}</Text>
+                          )}
+                        </AttributeWrapper>
+                      </Col>
 
-                    <Col>
-                      <EditableLabel
-                        displayValue={displayValue}
-                        onDisplayValueChange={(newValue) => {
-                          setEditFacetValues((prev) => {
-                            return prev.map((value) => {
-                              if (value.displayValue === displayValue) {
-                                return {
-                                  ...value,
-                                  displayValue: newValue,
-                                };
-                              }
-
-                              return value;
-                            });
-                          });
-
-                          if (mergedValues && mergedValues.length > 1) {
-                            setFacetMergedValues((prev) =>
-                              prev?.map((values) => {
-                                if (
-                                  values.mergedValues?.includes(
-                                    attribute.toLocaleLowerCase()
-                                  )
-                                ) {
+                      <Col>
+                        <EditableLabel
+                          displayValue={displayValue}
+                          onDisplayValueChange={(newValue) => {
+                            setEditFacetValues((prev) => {
+                              return prev.map((value) => {
+                                if (value.displayValue === displayValue) {
                                   return {
-                                    ...values,
+                                    ...value,
                                     displayValue: newValue,
                                   };
                                 }
 
-                                return values;
-                              })
-                            );
-                          }
-                        }}
-                      />
-                    </Col>
+                                return value;
+                              });
+                            });
 
-                    <Col>
-                      {isPinned && (
-                        <>
-                          <DisplayName>
-                            {/* TODO: need to update that if changed */}
-                            default
-                          </DisplayName>
+                            if (mergedValues && mergedValues.length > 1) {
+                              setFacetMergedValues((prev) =>
+                                prev?.map((values) => {
+                                  if (
+                                    values.mergedValues?.includes(
+                                      attribute.toLocaleLowerCase()
+                                    )
+                                  ) {
+                                    return {
+                                      ...values,
+                                      displayValue: newValue,
+                                    };
+                                  }
 
+                                  return values;
+                                })
+                              );
+                            }
+                          }}
+                        />
+                      </Col>
+
+                      <Col>
+                        {isPinned && (
                           <OrderArrowsContainer>
                             <ArrowButton
                               direction="up"
@@ -630,36 +638,38 @@ export const ModalEditValues = ({
                               }
                             />
                           </OrderArrowsContainer>
-                        </>
-                      )}
-                    </Col>
+                        )}
+                      </Col>
 
-                    <Col>
-                      <FacetOrderDropdown
-                        status={
-                          isPinned
-                            ? 'included'
-                            : isExcluded
-                              ? 'excluded'
-                              : undefined
-                        }
-                        onChange={(status) =>
-                          handleStatusChange(attribute, status)
-                        }
-                        attribute={attribute}
-                      />
-                    </Col>
-                  </FacetAttributeValuesTableRow>
-                )
-              )}
-            </ModalAttributesTable>
+                      <Col>
+                        <FacetOrderDropdown
+                          status={
+                            isPinned
+                              ? 'included'
+                              : isExcluded
+                                ? 'excluded'
+                                : undefined
+                          }
+                          onChange={(status) =>
+                            handleStatusChange(attribute, status)
+                          }
+                          attribute={attribute}
+                        />
+                      </Col>
+                    </FacetAttributeValuesTableRow>
+                  )
+                )}
+              </ModalAttributesTable>
+
+              <FilteredResultsPanel filteredFacets={editFacetValues.length} />
+            </BodyContainer>
           </ModalContainer>
-
-          <FilteredResultsPanel filteredFacets={editFacetValues.length} />
         </Modal.Body>
 
         <ModalFooter>
-          <Button onClick={onClose}>Cancel</Button>{' '}
+          <Button onClick={onClose} aria-label="Close attributes modal">
+            Cancel
+          </Button>{' '}
           <Button onClick={handleSave}>Save</Button>
         </ModalFooter>
       </Modal.Content>

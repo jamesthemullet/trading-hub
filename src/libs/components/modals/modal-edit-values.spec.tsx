@@ -141,7 +141,7 @@ describe('ModalEditValues', () => {
       />
     );
 
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByLabelText('Close attributes modal'));
 
     expect(onCloseSpy).toHaveBeenCalled();
   });
