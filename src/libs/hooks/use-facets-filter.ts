@@ -10,7 +10,7 @@ export const useFacetsFilter = (facets: ReturnedFacet[]) => {
 
     return facets.filter(
       (facet) =>
-        facet.displayValue.includes(search) ||
+        (facet.displayValue && facet.displayValue.includes(search)) ||
         facet.indexPropertyName.includes(search)
     );
   }, [facets, search]);
