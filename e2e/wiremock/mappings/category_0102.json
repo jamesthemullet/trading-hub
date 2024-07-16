@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/navigation/v1/category/SubCategory_10102?apikey=dev"
+  },
+
+  "response": {
+    "status": 200,
+    "bodyFileName": "category_0102.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

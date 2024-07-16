@@ -156,6 +156,7 @@ describe('Merchandising api proxy', () => {
       });
       jest.spyOn(console, 'error').mockImplementation(jest.fn());
       jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+      delete process.env.E2E_TEST_USER_TOKEN;
     });
 
     it.each(responses)(
@@ -237,6 +238,19 @@ describe('Merchandising api proxy', () => {
             updatedStatus: status,
           };
         });
+      delete process.env.E2E_TEST_USER_TOKEN;
+    });
+
+    it('should work when process.env.E2E_TEST_USER_TOKEN is set', async () => {
+      process.env.E2E_TEST_USER_TOKEN = 'token';
+      const response = responses[0][0];
+      await performGet('/api/merchandising/category/1', response);
+
+      expect(httpGet).toHaveBeenCalled();
+      expect(httpGet.mock.calls[0][0].url).toBe(
+        `${baseUrl}/merchandising/category/1?apikey=someapikey`
+      );
+      delete process.env.E2E_TEST_USER_TOKEN;
     });
 
     it('should work when process.env.MERCHANDISING_API_BASEURL is not set', async () => {

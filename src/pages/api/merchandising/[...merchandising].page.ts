@@ -14,6 +14,8 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (token && typeof token.accessToken === 'string') {
     headers.set('Authorization', `Bearer ${token.accessToken}`);
+  } else if (process.env.E2E_TEST_USER_TOKEN) {
+    headers.set('Authorization', `Bearer ${process.env.E2E_TEST_USER_TOKEN}`);
   }
 
   if (req.body) {

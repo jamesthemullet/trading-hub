@@ -15,7 +15,7 @@ export default defineConfig({
   reporter: 'html',
   use: {
     trace: 'on-first-retry',
-    channel: 'chrome',
+    channel: 'chromium',
     baseURL: process.env.E2E_TARGET_URL || 'http://localhost:3000',
   },
   projects: [

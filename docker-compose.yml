@@ -8,14 +8,19 @@ services:
     networks:
       - frontend
       - default
+      - backend
+    depends_on:
+      application-dev:
+        condition: service_healthy
     environment:
-      MERCHANDISING_API_BASEURL: ${MERCHANDISING_API_BASEURL}
+      MERCHANDISING_API_BASEURL: http://application-dev:8081
       MERCHANDISING_API_APIGEE_KEY: ${MERCHANDISING_API_APIGEE_KEY}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       AZURE_AD_CLIENT_ID: ${AZURE_AD_CLIENT_ID}
       AZURE_AD_TENANT_ID: ${AZURE_AD_TENANT_ID}
       AZURE_AD_CLIENT_SECRET: ${AZURE_AD_CLIENT_SECRET}
+      NEXT_PUBLIC_AUTO_LOGIN: false
     healthcheck:
       test: curl --fail http://localhost:3000/api/healthcheck | grep ok || exit 1
       # After this time the check will start and continue every interval seconds
@@ -32,13 +37,109 @@ services:
       target: e2e
     networks:
       - frontend
+      - backend
       - default
     depends_on:
       merchandising-hub:
         condition: service_healthy
     environment:
       E2E_TARGET_URL: http://merchandising-hub:3000
+      ELASTIC_URL: http://elastic-dev:9200
     entrypoint: npm run test:e2e
-
+  application-dev:
+    image: search-service-application-dev:latest
+    ports:
+      - '8081:8081'
+    networks:
+      - backend
+    depends_on:
+      elastic-dev:
+        condition: service_healthy
+      postgres-dev:
+        condition: service_started
+    environment:
+      - SERVER_PORT=8081
+      - ELASTIC_URL=http://elastic-dev:9200
+      - SEARCH_BASE_PATH_V3=/search/v3
+      - SEARCH_BASE_PATH=/search/v1
+      - MERCHANDISING_BASE_PATH=/merchandising
+      - BUILDKIT_PROGRESS=plain
+      - KAFKA_BOOTSTRAP_SERVERS=broker-dev:29092
+      - KAKFA_TOPIC_MERCHANDISING=cust-shop-searchandsort-a2613-search_service_merchandising-search_service_merchandising_audit_log
+      - MERCHANDISING_CONNECTION_STRING=jdbc:postgresql://postgres-dev:5432/merchandising?user=search&password=ysCHnx9JAw
+      - ENABLE_MERCHANDISING=true
+      - ENABLE_MERCHANDISING_JWT_AUTH=true
+      - JWKS_ENDPOINT=http://external-apis-dev:8080/jwks
+      - CATEGORY_LOOKUP_API_ENDPOINT=http://external-apis-dev:8080/navigation/v1/category/
+      - CATEGORY_LOOKUP_API_KEY=dev
+      - MERCHANDISING_ALLOWED_USER_EMAIL_LIST=Valid.Access@mnscorp.net
+    healthcheck:
+      test: 'curl --fail --silent localhost:8081/health | grep UP || exit 1'
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+  postgres-dev:
+    image: postgres:11.16
+    restart: always
+    networks:
+      - backend
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: search
+      POSTGRES_PASSWORD: ysCHnx9JAw
+      POSTGRES_DB: merchandising
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  elastic-dev:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    restart: always
+    environment:
+      - ELASTIC_PASSWORD=changeme
+      - cluster.name=elasticsearch
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - xpack.security.http.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx2g
+    networks:
+      - backend
+    ports:
+      - '9200:9200'
+    healthcheck:
+      test: curl --fail --silent http://localhost:9200/_cluster/health | grep "green"
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.14.3
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic-dev:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=changeme
+      - TELEMETRY_ENABLED=false
+    ports:
+      - 5601:5601
+    networks:
+      - backend
+      - default
+    depends_on:
+      elastic-dev:
+        condition: service_healthy
+  external-apis-dev:
+    build:
+      context: .
+      target: external-apis-dev
+    networks:
+      - backend
+    ports:
+      - '8080:8080'
 networks:
   frontend:
+  backend:
+volumes:
+  pg_data:

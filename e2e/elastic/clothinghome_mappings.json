@@ -1,0 +1,981 @@
+{
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "categoryId": {
+        "type": "keyword"
+      },
+      "totalReviewCount": {
+        "type": "integer"
+      },
+      "brand": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "important-text": {
+            "type": "text"
+          }
+        }
+      },
+      "productDefinition": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "important-text": {
+            "type": "text"
+          }
+        }
+      },
+      "productType": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "important-text": {
+            "type": "text"
+          }
+        }
+      },
+      "title": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "important-text": {
+            "type": "text"
+          }
+        }
+      },
+      "averageRating": {
+        "type": "float"
+      },
+      "productAwards": {
+        "type": "keyword"
+      },
+      "priceFlag": {
+        "type": "integer"
+      },
+      "gender": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "important-text": {
+            "type": "text"
+          }
+        }
+      },
+      "pricePerUnit": {
+        "type": "keyword"
+      },
+      "wineAwardUrl": {
+        "type": "keyword"
+      },
+      "originalPrice": {
+        "type": "keyword"
+      },
+      "productLevelStock": {
+        "type": "keyword"
+      },
+      "productCatchWeight": {
+        "type": "keyword"
+      },
+      "swatchColour": {
+        "type": "keyword"
+      },
+      "colourGroup": {
+        "type": "keyword",
+        "fields": {
+          "important-text": {
+            "type": "text"
+          }
+        }
+      },
+      "headingStyle": {
+        "type": "keyword"
+      },
+      "personalisedIndicator": {
+        "type": "keyword"
+      },
+      "hfssFlag": {
+        "type": "boolean"
+      },
+      "drsFlag": {
+        "type": "boolean"
+      },
+      "saleFlag": {
+        "type": "boolean"
+      },
+      "documentId": {
+        "type": "keyword",
+        "fields": {
+          "text-exact": {
+            "type": "text"
+          }
+        }
+      },
+      "productId": {
+        "type": "keyword",
+        "fields": {
+          "text-exact": {
+            "type": "text"
+          }
+        }
+      },
+      "parentPid": {
+        "type": "keyword",
+        "fields": {
+          "text-exact": {
+            "type": "text"
+          }
+        }
+      },
+      "multiUpcFurniture": {
+        "type": "boolean"
+      },
+      "niFlag": {
+        "type": "boolean"
+      },
+      "niExclusive": {
+        "type": "boolean"
+      },
+      "onlineOnly": {
+        "type": "boolean"
+      },
+      "currency": {
+        "type": "keyword"
+      },
+      "awardPresent": {
+        "type": "boolean"
+      },
+      "colorWaySplit": {
+        "type": "boolean"
+      },
+      "promotionDescription": {
+        "type": "keyword"
+      },
+      "displayAvailableInMoreColours": {
+        "type": "boolean"
+      },
+      "productCollectInXdays": {
+        "type": "keyword"
+      },
+      "sparksOffer": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "offerFlag": {
+        "type": "keyword"
+      },
+      "dietaryInformation": {
+        "type": "keyword"
+      },
+      "servings": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "inStock": {
+        "type": "boolean"
+      },
+      "isLandscapeImage": {
+        "type": "boolean"
+      },
+      "onModel": {
+        "type": "boolean"
+      },
+      "variants": {
+        "type": "object",
+        "dynamic": false,
+        "properties": {
+          "skuSize": {
+            "type": "keyword"
+          },
+          "partNumber": {
+            "type": "keyword",
+            "fields": {
+              "text-exact": {
+                "type": "text"
+              }
+            }
+          },
+          "upc": {
+            "type": "keyword",
+            "fields": {
+              "text-exact": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      },
+      "skuVariants": {
+        "type": "nested",
+        "dynamic": false,
+        "properties": {
+          "skuSize": {
+            "type": "keyword",
+            "fields": {
+              "important-text": {
+                "type": "text"
+              }
+            }
+          },
+          "skuPrice": {
+            "type": "double"
+          },
+          "inStock": {
+            "type": "boolean"
+          },
+          "shoeSize": {
+            "type": "keyword"
+          }
+        }
+      },
+      "listPriceText": {
+        "type": "keyword"
+      },
+      "daysSinceLaunch": {
+        "type": "integer"
+      },
+      "newIndicatorFlag": {
+        "type": "keyword"
+      },
+      "newInFreshNess": {
+        "type": "integer"
+      },
+      "newInDescriptive": {
+        "type": "keyword"
+      },
+      "productSeoUrl": {
+        "type": "keyword"
+      },
+      "colourCountInStock": {
+        "type": "integer"
+      },
+      "strokeId": {
+        "type": "keyword",
+        "fields": {
+          "text-exact": {
+            "type": "text"
+          }
+        }
+      },
+      "colourSwatches": {
+        "type": "object",
+        "enabled": false
+      },
+      "addonProducts": {
+        "type": "keyword"
+      },
+      "subMessage": {
+        "type": "keyword"
+      },
+      "badges": {
+        "type": "object",
+        "enabled": false
+      },
+      "recordGrouping": {
+        "type": "keyword"
+      },
+      "colour": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "important-text": {
+            "type": "text"
+          }
+        }
+      },
+      "salesCount": {
+        "type": "integer"
+      },
+      "minPrice": {
+        "type": "double"
+      },
+      "maxPrice": {
+        "type": "double"
+      },
+      "salePrice": {
+        "type": "boolean"
+      },
+      "productLength": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "multipacks": {
+        "type": "keyword"
+      },
+      "fastening": {
+        "type": "keyword"
+      },
+      "bodyFit": {
+        "type": "keyword"
+      },
+      "aspirationalText": {
+        "type": "text"
+      },
+      "sleeveLength": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "cuffs": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "collarType": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "productKeywords": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "denier": {
+        "type": "keyword"
+      },
+      "homeFeature1": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "waistbandType": {
+        "type": "keyword"
+      },
+      "paddedOrNonPadded": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "heelType": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "heelHeightGroup": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "predictions": {
+        "properties": {
+          "searchClicksIn1Day": {
+            "properties": {
+              "value": {
+                "type": "double"
+              },
+              "normalisedValue": {
+                "type": "double"
+              }
+            }
+          },
+          "salesIn1Day": {
+            "properties": {
+              "value": {
+                "type": "double"
+              },
+              "normalisedValue": {
+                "type": "double"
+              }
+            }
+          },
+          "revenueIn1Day": {
+            "properties": {
+              "value": {
+                "type": "double"
+              },
+              "normalisedValue": {
+                "type": "double"
+              }
+            }
+          }
+        }
+      },
+      "category": {
+        "type": "nested",
+        "properties": {
+          "name": {
+            "type": "keyword"
+          },
+          "id": {
+            "type": "keyword"
+          },
+          "seoURL": {
+            "type": "keyword",
+            "fields": {
+              "merchandisingText": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      },
+      "categoryFacet": {
+        "type": "keyword"
+      },
+      "furnitureAssemblyType": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "drinkStyle": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "fit": {
+        "type": "keyword"
+      },
+      "range": {
+        "type": "keyword"
+      },
+      "fabric": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "fabricType": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "wiredOrNonWired": {
+        "type": "keyword"
+      },
+      "wineTaste": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "wineCountryOfOrigin": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "grapeVariety": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "goesWell": {
+        "type": "keyword"
+      },
+      "crueltyFree": {
+        "type": "keyword"
+      },
+      "occasion": {
+        "type": "keyword"
+      },
+      "preparationRequired": {
+        "type": "keyword"
+      },
+      "mainIngredient": {
+        "type": "keyword"
+      },
+      "sunProtectionFactor": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "beautyProductFinish": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "careInstruction": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "cookingType": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "dietSuitability": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "fillingType": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "foodIngredient": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "region": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "furnitureCollection": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "homeFeature2": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "homeFeature3": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "homeFeatureMerged": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "neckStyle": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "homeOccasion": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "onOrOffWaist": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "multiPackQuantity": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "productTheme": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "room": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "roomEcomMerged": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "specialOccasions": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "styles": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "surgeryTypeMerged": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "toyCharacterName": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "homeProductShape": {
+        "type": "keyword"
+      },
+      "occasionClothingMerged": {
+        "type": "keyword"
+      },
+      "activityTypeMerged": {
+        "type": "keyword"
+      },
+      "flowerColour": {
+        "type": "keyword"
+      },
+      "flowerType": {
+        "type": "keyword"
+      },
+      "recommendedAgeRange": {
+        "type": "keyword"
+      },
+      "personalCareBenefit": {
+        "type": "keyword"
+      },
+      "beautyFragranceType": {
+        "type": "keyword"
+      },
+      "homeSize": {
+        "type": "keyword"
+      },
+      "braShape": {
+        "type": "keyword"
+      },
+      "availableSizes": {
+        "type": "keyword"
+      },
+      "recipient": {
+        "type": "keyword"
+      },
+      "lingerieConcernArea": {
+        "type": "keyword"
+      },
+      "homeScentFragrance": {
+        "type": "keyword"
+      },
+      "homeColourStory": {
+        "type": "keyword"
+      },
+      "homeFirmnessRating": {
+        "type": "keyword"
+      },
+      "productShape": {
+        "type": "keyword"
+      },
+      "skinType": {
+        "type": "keyword"
+      },
+      "homeProductBenefit": {
+        "type": "keyword"
+      },
+      "beautySkinTone": {
+        "type": "keyword"
+      },
+      "homeFillingType": {
+        "type": "keyword"
+      },
+      "homeLongevity": {
+        "type": "keyword"
+      },
+      "alcoholContent": {
+        "type": "keyword"
+      },
+      "giftType": {
+        "type": "keyword"
+      },
+      "heatRating": {
+        "type": "keyword"
+      },
+      "homeCollection": {
+        "type": "keyword"
+      },
+      "seasonalBedding": {
+        "type": "keyword"
+      },
+      "productSize": {
+        "type": "keyword"
+      },
+      "threadCount": {
+        "type": "keyword"
+      },
+      "hairTypeLookup": {
+        "type": "keyword"
+      },
+      "togValue": {
+        "type": "keyword"
+      },
+      "plantBenefit": {
+        "type": "keyword"
+      },
+      "plantType": {
+        "type": "keyword"
+      },
+      "technicalFeatures": {
+        "type": "keyword"
+      },
+      "plantHeight": {
+        "type": "keyword"
+      },
+      "beautyKeyIngredients": {
+        "type": "keyword"
+      },
+      "partSet": {
+        "type": "keyword"
+      },
+      "beautyFragranceFlavour": {
+        "type": "keyword"
+      },
+      "footwearWidth": {
+        "type": "keyword"
+      },
+      "absorbencyLevel": {
+        "type": "keyword"
+      },
+      "productFeature": {
+        "type": "keyword"
+      },
+      "sleepingStyle": {
+        "type": "keyword"
+      },
+      "toeStyle": {
+        "type": "keyword"
+      },
+      "plantCareLevel": {
+        "type": "keyword"
+      },
+      "department": {
+        "type": "keyword"
+      },
+      "departmentId": {
+        "type": "keyword"
+      },
+      "impactLevel": {
+        "type": "keyword"
+      },
+      "patternType": {
+        "type": "keyword"
+      },
+      "use": {
+        "type": "keyword"
+      },
+      "fuzzySearch": {
+        "type": "text"
+      },
+      "clothingControl": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "homeFeature": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "waistToHemLength": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "olderYounger": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "treeHeight": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "litOrNonLit": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "powerSupply": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "bulbColour": {
+        "type": "keyword",
+        "copy_to": "fuzzySearch",
+        "fields": {
+          "text": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  }
+}

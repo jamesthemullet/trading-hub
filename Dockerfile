@@ -43,15 +43,15 @@ ENV PORT 3000
 CMD HOSTNAME="0.0.0.0" node server.js
 
 FROM mcr.microsoft.com/playwright:v1.45.1-jammy AS e2e
+RUN apt-get update
 WORKDIR /app
-COPY --from=builder /app/package.json /app/package-lock.json ./
+COPY /package.json ./package-lock.json ./
 RUN npm ci
-COPY --from=builder /app/e2e ./e2e
-COPY --from=builder /app/playwright.config.ts ./
-# Our test looks for chrome in /opt/google/chrome/chrome where its not found, this is a workaround,
-# otherwise you will get following error:
-#   Error: browserType.launch: Chromium distribution 'chrome' is not found at /opt/google/chrome/chrome
-#   Run "npx playwright install chrome"
-RUN mkdir -p /opt/google/chrome \
-  && ln -s /usr/bin/chromium /opt/google/chrome/chrome
+COPY /e2e ./e2e
+COPY /playwright.config.ts ./
 CMD npm run test:e2e
+
+# External APIs Rest endpoints for local and pipeline use with automated tests
+FROM wiremock/wiremock:3.8.0 AS external-apis-dev
+COPY e2e/wiremock/ /home/wiremock
+ENTRYPOINT ["/docker-entrypoint.sh", "--global-response-templating", "--disable-gzip", "--verbose"]

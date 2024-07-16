@@ -82,30 +82,30 @@ Tests require 100% coverage for all files, watch mode can be enabled by running 
 
 #### Running e2e tests locally
 
-Playwright is set up for running e2e tests locally, to set up:
+Playwright is set up for running e2e tests locally, to run it execute:
 
-Replace the following env variables with your own cookie values
-
-```
-"E2E_SESSION_TOKEN0": "",
-"E2E_SESSION_TOKEN1": "",
-"E2E_CALLBACK_URL": "",
-"E2E_CSRF_TOKEN": ""
+```bash
+npm run test:e2e:ui
 ```
 
-You can find these in your browser cookies
+Click the green run button in the playwright UI, to run it without UI, execute:
 
-![Image showing cookies](docs/img/cookies.png 'App Cookies')
-
-To run the tests use
-
-```
+```bash
 npm run test:e2e
 ```
 
-Click the green run button in the playwright UI
-
 #### Running e2e tests with docker compose
+
+First we need to disable autologin, it is useful for customers but e2e needs to mock the token, in your `.env`:
+
+```bash
+NEXT_PUBLIC_AUTO_LOGIN=false
+E2E_TEST_USER_TOKEN="<ask one of the UI devs for a value>"
+```
+
+Build all images with:
+
+`docker-compose build`
 
 To run tests with all logs from all images just execute
 
