@@ -76,6 +76,8 @@ const Page = ({ id }: { id: string }) => {
           }}
           onFacetDataChange={onFacetDataChange}
           defaultCategory={category}
+          canPreviewChanges={true}
+          canAddFacet={true}
         />
       )}
     </>

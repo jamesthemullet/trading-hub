@@ -157,6 +157,8 @@ export const FacetsPanel = ({
   defaultCategory,
   canMergeValueAttributes,
   displayRowOrderControls = false,
+  canPreviewChanges,
+  canAddFacet,
 }: {
   onSave: () => void;
   onCancel: () => void;
@@ -177,6 +179,8 @@ export const FacetsPanel = ({
   defaultCategory?: Category;
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
+  canPreviewChanges?: boolean;
+  canAddFacet?: boolean;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
@@ -289,7 +293,7 @@ export const FacetsPanel = ({
 
         <Actions>
           <Button onClick={onCancel}>Cancel</Button>
-          <Button onClick={onPreview}>Preview</Button>
+          {canPreviewChanges && <Button onClick={onPreview}>Preview</Button>}
           <Button theme="primary" onClick={onSave}>
             Save
           </Button>
@@ -311,13 +315,15 @@ export const FacetsPanel = ({
             <LowerHeading isStrong>Preview and manage facets</LowerHeading>
             <Text>(sort by algo control)</Text>
           </div>
-          <div>
-            <Button
-              onClick={() => setIsAddFacetModalOpen(!isAddFacetModalOpen)}
-            >
-              Add facet
-            </Button>
-          </div>
+          {canAddFacet && (
+            <div>
+              <Button
+                onClick={() => setIsAddFacetModalOpen(!isAddFacetModalOpen)}
+              >
+                Add facet
+              </Button>
+            </div>
+          )}
         </AddFacetPanel>
       </SectionWrapper>
 

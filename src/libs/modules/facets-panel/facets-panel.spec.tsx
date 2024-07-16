@@ -107,6 +107,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
+        canPreviewChanges={true}
       />
     );
 
@@ -116,6 +117,21 @@ describe('Facet Panel', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'Facet Rule Editor' })
     ).toBeVisible();
+  });
+
+  it('should not render preview button or add facets button, if global facets page', async () => {
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: 'Preview' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Add facet' })).toBeNull();
   });
 
   it('should render column headings', () => {
@@ -163,6 +179,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
+        canPreviewChanges={true}
       />
     );
 
@@ -367,6 +384,7 @@ describe('Facet Panel', () => {
           title="Facet Rule Editor"
           facetsData={globalFacetsListMock.facets}
           onFacetDataChange={jest.fn()}
+          canAddFacet={true}
         />
       );
 

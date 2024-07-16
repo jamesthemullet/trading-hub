@@ -126,7 +126,7 @@ describe('Global Facet Management Editing', () => {
     renderWithProviders(<Page />);
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
-    expect(screen.getByRole('button', { name: 'Preview' })).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Preview' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
     expect(
       screen.getByRole('heading', {
@@ -153,17 +153,6 @@ describe('Global Facet Management Editing', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global/facets');
-  });
-
-  it('should preview changes to a facet', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(<Page />);
-
-    await user.click(screen.getByRole('button', { name: 'Preview' }));
-
-    // TODO: Implement preview functionality
-    expect(logSpy).toHaveBeenCalled();
   });
 
   it('should save changes to a facet', async () => {
@@ -268,47 +257,6 @@ describe('Global Facet Management Editing', () => {
       expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
         'background-color: #FFF3F4'
       );
-    });
-  });
-
-  describe('Add Facet Modal', () => {
-    const openModal = async () => {
-      renderWithProviders(<Page />);
-
-      const addFacetButton = screen.getByText('Add facet');
-
-      act(() => {
-        addFacetButton.click();
-      });
-    };
-
-    it('should open the modal', async () => {
-      await openModal();
-
-      expect(
-        screen.getByRole('heading', { level: 3, name: 'Add facet' })
-      ).toBeVisible();
-    });
-
-    it('should close the modal on click of the close button', async () => {
-      const user = userEvent.setup({ delay: null });
-      await openModal();
-
-      expect(
-        screen.getByRole('heading', { level: 3, name: 'Add facet' })
-      ).toBeVisible();
-
-      const closeButton = screen.getByRole('button', { name: 'Close Modal' });
-
-      act(() => {
-        user.click(closeButton);
-      });
-
-      waitFor(() => {
-        expect(
-          screen.getByRole('heading', { level: 3, name: 'Add facet' })
-        ).not.toBeVisible();
-      });
     });
   });
 });

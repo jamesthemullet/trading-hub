@@ -23,6 +23,8 @@ const Page = () => {
         onCancel={handleCancel}
         title="Facet Rule Editor"
         facetsData={[]}
+        canPreviewChanges={true}
+        canAddFacet={true}
       />
     </>
   );
