@@ -25,10 +25,7 @@ describe('Login check', () => {
 
     renderWithProviders(<LoginCheck autoLogin />);
 
-    expect(signIn).toHaveBeenCalledWith('azure-ad', {
-      callbackUrl: '/category/rulesets',
-      redirect: false,
-    });
+    expect(signIn).toHaveBeenCalledWith('azure-ad');
   });
 
   it('should not redirect when autoLogin is missing', () => {

@@ -10,10 +10,7 @@ export const LoginCheck = ({
   const { data: session, status } = useSession();
 
   const login = async () => {
-    await signIn('azure-ad', {
-      callbackUrl: '/category/rulesets',
-      redirect: false,
-    });
+    await signIn('azure-ad');
   };
 
   useEffect(() => {
