@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { merchandising, type MerchandisingRules } from '@/libs/api';
+import { type MerchandisingRules, search } from '@/libs/api';
 
 export const useCategoryProductSearch = () => {
   const [error, setError] = useState('');
@@ -8,16 +8,18 @@ export const useCategoryProductSearch = () => {
   const searchForProduct = useCallback(
     async ({
       categoryId,
+      productIds,
       query,
       rows,
       start,
       merchandisingRules,
     }: {
-      categoryId: string;
+      categoryId?: string;
       query: string;
       rows: number;
       start: number;
       merchandisingRules: MerchandisingRules;
+      productIds?: string[];
     }) => {
       setError('');
 
@@ -26,14 +28,14 @@ export const useCategoryProductSearch = () => {
           q: query,
           rows,
           start,
-          categoryIds: [categoryId],
+          ...(categoryId && { categoryId }),
+          ...(productIds && { productIds }),
         };
-        const response = await merchandising().productCreate(queryData, {
-          pinnedProducts: merchandisingRules.pinnedProducts,
-          blockedProducts: merchandisingRules.blockedProducts,
-          boosts: merchandisingRules.boosts,
-          buries: merchandisingRules.buries,
-        });
+
+        const response = await search().betaMerchandisingProductCreate(
+          merchandisingRules,
+          queryData
+        );
         return response.data;
       } catch (error) {
         setError(`Failed to search products ${error}`);

@@ -468,19 +468,18 @@ export const Ruleset = ({
             />
           </PanelTop>
           <TabContent>
-            {currentProductTab === 0 && selectedCategory.identifier && (
+            {currentProductTab === 0 && (
               <ProductSearch
+                isPinnable={rulesetType !== 'global'}
                 onSearch={async (query) => {
-                  /* istanbul ignore next */
-                  if (!selectedCategory.identifier) {
-                    return;
-                  }
                   if (!query) {
                     setSearchProducts([]);
                     return;
                   }
                   const data = await searchForProduct({
-                    categoryId: selectedCategory.identifier,
+                    ...(selectedCategory.identifier && {
+                      categoryId: selectedCategory.identifier,
+                    }),
                     query,
                     start: 0,
                     rows: 10,

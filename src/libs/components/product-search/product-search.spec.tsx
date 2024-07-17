@@ -12,6 +12,7 @@ describe('ProductSearch', () => {
   it('should render rules search', () => {
     render(
       <ProductSearch
+        isPinnable
         onSearch={() => {
           return;
         }}
@@ -27,6 +28,7 @@ describe('ProductSearch', () => {
   it('should render products', () => {
     render(
       <ProductSearch
+        isPinnable
         onSearch={() => {
           return;
         }}
@@ -57,6 +59,7 @@ describe('ProductSearch', () => {
     const callback = jest.fn();
     render(
       <ProductSearch
+        isPinnable
         onSearch={callback}
         products={[
           {

@@ -708,8 +708,8 @@ describe('Ruleset', () => {
             },
             {
               ...mockProduct,
-              id: 'product3',
-              productId: 'productId3',
+              id: 'product4',
+              productId: 'productId4',
               metadata: {
                 isPinned: false,
                 isBoosted: false,
@@ -822,11 +822,11 @@ describe('Ruleset', () => {
           numeric: [],
           product: [
             { id: 'product2', weight: 1 },
-            { id: 'product3', weight: 100 },
+            { id: 'product4', weight: 100 },
           ],
         },
         buries: { alphanumeric: [], numeric: [], product: [] },
-        pinnedProducts: [],
+        pinnedProducts: [{ id: 'product3' }],
       };
 
       await user.click(screen.getAllByTitle('Open menu')[3]);
@@ -1226,26 +1226,6 @@ describe('Ruleset', () => {
       await waitFor(() => {
         expect(screen.queryByText('3 results')).not.toBeInTheDocument();
       });
-    });
-
-    it('does not search for products when no category selected', async () => {
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      renderWithProviders(
-        <Ruleset
-          isEnabled={true}
-          onSave={jest.fn()}
-          onCancel={jest.fn()}
-          rulesetType="category"
-        />
-      );
-
-      expect(
-        screen.queryAllByPlaceholderText(PRODUCT_SEARCH_PLACEHOLDER_TEXT)
-      ).toHaveLength(0);
     });
 
     it('should handle position change when product is selected from product search', async () => {
