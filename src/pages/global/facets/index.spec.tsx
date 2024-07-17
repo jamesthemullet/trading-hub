@@ -1,11 +1,27 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
 
-import { useGetFacetAttributeValues, useRuleSet } from '@/libs/hooks';
+import {
+  useGetFacetAttributeValues,
+  useGlobalRuleSetCreate,
+  useRuleSet,
+} from '@/libs/hooks';
 import { attributeValuesMock } from '@/pages/api/merchandising/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock(
+  '../../../libs/hooks/global/rulesets/use-global-rule-set-create',
+  () => ({
+    useGlobalRuleSetCreate: jest.fn(),
+  })
+);
 
 const mockRuleSetDelete = jest.fn();
 const mockUpdateGlobalRuleSet = jest.fn();
@@ -32,7 +48,64 @@ const mockMerchandisingRules = {
   buries: { numeric: [], alphanumeric: [], product: [] },
 };
 
+const MOCK_CATEGORY_ID = 'Cat123';
+const NEW_RULE_BUTTON_TEXT = 'Add rule';
+const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+
+const mockRouter = {
+  push: jest.fn(),
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+  },
+};
+
 describe('Global Facet Management', () => {
+  beforeAll(() => {
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    jest.mocked(useGlobalRuleSetCreate).mockReturnValue({
+      createGlobalRuleSet: jest.fn(() =>
+        Promise.resolve({
+          id: MOCK_CATEGORY_ID,
+          isEnabled: false,
+          rules: {
+            pinnedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            blockedProducts: [],
+          },
+          lastChanged: {
+            date: '12/12/12',
+            user: 'me',
+          },
+        })
+      ),
+      error: '',
+    });
+
+    jest.mocked(useRuleSet).mockReturnValue({
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+        },
+      ],
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setGlobalRuleSets: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+    });
+  });
+
   beforeEach(() => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
@@ -45,35 +118,12 @@ describe('Global Facet Management', () => {
   });
 
   it('displays the list of facets', () => {
-    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    jest.mocked(useRuleSet).mockReturnValue({
-      globalRuleSets: [
-        {
-          id: mockId,
-          isEnabled: true,
-          lastChanged: {
-            user: 'user',
-            date: '2021-01-01',
-          },
-          rules: mockMerchandisingRules,
-        },
-      ],
-      categoryRuleSets: [],
-      pagination: {
-        totalItems: 0,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setGlobalRuleSets: jest.fn(),
-      setCategoryRuleSets: jest.fn(),
-    });
-
     renderWithProviders(<FacetManagementPage />);
 
     expect(screen.getByText('*')).toBeVisible();
   });
 
-  it('should open delete modal and close on cancel', async () => {
-    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+  it('creates a new rule set and redirects to the edit page', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       globalRuleSets: [
         {
@@ -91,10 +141,25 @@ describe('Global Facet Management', () => {
         totalItems: 0,
       },
       refetchRuleSetList: () => jest.fn,
-      setGlobalRuleSets: jest.fn(),
       setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
     });
 
+    renderWithProviders(<FacetManagementPage />);
+
+    const createButton = await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    act(() => {
+      createButton.click();
+    });
+
+    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      `/global/facets/edit/${MOCK_CATEGORY_ID}`
+    );
+  });
+
+  it('should open delete modal and close on cancel', async () => {
     const user = userEvent.setup();
     renderWithProviders(<FacetManagementPage />);
 
@@ -112,29 +177,6 @@ describe('Global Facet Management', () => {
   });
 
   it('should enable or disable a global ruleset', async () => {
-    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    jest.mocked(useRuleSet).mockReturnValue({
-      globalRuleSets: [
-        {
-          id: mockId,
-          isEnabled: true,
-          lastChanged: {
-            user: 'user',
-            date: '2021-01-01',
-          },
-          rules: mockMerchandisingRules,
-          facets: [],
-        },
-      ],
-      categoryRuleSets: [],
-      pagination: {
-        totalItems: 0,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-    });
-
     renderWithProviders(<FacetManagementPage />);
 
     const rulesetToggle = screen.getAllByTitle('Toggle');
@@ -144,7 +186,6 @@ describe('Global Facet Management', () => {
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
       ruleSetId: mockId,
       ruleSet: {
-        facets: [],
         isEnabled: false,
         rules: mockMerchandisingRules,
       },
@@ -152,29 +193,7 @@ describe('Global Facet Management', () => {
   });
 
   it('should delete a ruleset', async () => {
-    const mockId = 'fdq3r3-123d3-f32f23f-23r2';
     const user = userEvent.setup();
-    jest.mocked(useRuleSet).mockReturnValue({
-      categoryRuleSets: [],
-      pagination: {
-        totalItems: 0,
-      },
-      globalRuleSets: [
-        {
-          id: mockId,
-          isEnabled: true,
-          lastChanged: {
-            user: 'user',
-            date: '2021-01-01',
-          },
-          rules: mockMerchandisingRules,
-          facets: [],
-        },
-      ],
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-    });
 
     renderWithProviders(<FacetManagementPage />);
 

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import {
   Button,
@@ -13,6 +14,7 @@ import {
 import { spacing } from '@/libs/components/utils/spacing';
 import {
   useDebounce,
+  useGlobalRuleSetCreate,
   useGlobalRuleSetDelete,
   useGlobalRuleSetUpdate,
   useRuleSet,
@@ -35,6 +37,8 @@ const FacetManagementPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { handleDelete } = useGlobalRuleSetDelete();
   const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
+  const { createGlobalRuleSet } = useGlobalRuleSetCreate();
+  const router = useRouter();
 
   const currentPageIndex = currentPage - 1;
 
@@ -83,6 +87,14 @@ const FacetManagementPage = () => {
     url: `/global/facets/edit/${id}`,
   }));
 
+  const createNewRuleSet = async () => {
+    const resp = await createGlobalRuleSet();
+
+    if (resp) {
+      return router.push(`/global/facets/edit/${resp.id}`);
+    }
+  };
+
   return (
     <>
       <Heading
@@ -99,7 +111,7 @@ const FacetManagementPage = () => {
           <Search onChange={(e) => handleSearch(e.target.value)} />
 
           <NewButton>
-            <Button as="a" href="#" disabled={true}>
+            <Button as="button" onClick={createNewRuleSet}>
               Add rule
             </Button>
           </NewButton>
