@@ -126,51 +126,6 @@ describe('mocks', () => {
     });
   });
 
-  describe('/merchandising/category/{category}/preview', () => {
-    it('should work when missing facets and pagination', () => {
-      const mockMapping = getMockMapping();
-      expect(
-        mockMapping['/merchandising/category/{category}/preview'].post
-      ).toBeDefined();
-
-      const result = mockMapping['/merchandising/category/{category}/preview']
-        .post!(
-        createMockNextApiRequest({
-          url: '/merchandising/category/1/preview',
-          method: 'POST',
-        }),
-        200,
-        {
-          products: [],
-          rules: {
-            pinnedProducts: [],
-            blockedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
-          },
-          // missing facets
-          // missing pagination
-        }
-      );
-      expect(result).toEqual({
-        body: {
-          products: [],
-          rules: {
-            pinnedProducts: [],
-            blockedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
-          },
-          pagination: {},
-          facets: {
-            facets: [],
-          },
-        },
-        status: 200,
-      });
-    });
-  });
-
   describe('/merchandising/facet/{facetId}', () => {
     it('should return globalFacet when status is not 200', () => {
       const id = 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84';

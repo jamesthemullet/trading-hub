@@ -5,7 +5,6 @@ import {
   BoostsBuries,
   BoostsBuriesWithInfo,
   ErrorResponse,
-  Facet,
   ProductBoostBury,
   ReturnedCategoryRuleSet,
   ReturnedFacet,
@@ -14,7 +13,6 @@ import {
   ReturnedKeywordRuleSets,
   ReturnedRuleSet,
   RuleSetFacetConfigWithId,
-  SearchPreviewResponse,
   SearchPreviewResponseBeta,
 } from '@/libs/api';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
@@ -426,42 +424,6 @@ export const getMockMapping: () => Record<
   '/search/beta/merchandising/category/ruleset/{ruleSetId}': {
     get: () => {
       return { body: categoryRuleSetMock, status: 200 };
-    },
-  },
-  '/merchandising/category/{category}/preview': {
-    post: (_req, status, jsonBody) => {
-      const searchPreviewResponse = jsonBody as SearchPreviewResponse;
-      /* istanbul ignore next */
-      const response: SearchPreviewResponse = {
-        ...searchPreviewResponse,
-        facets: {
-          facets: (!searchPreviewResponse.facets
-            ? { facets: { facets: [] as Facet[] } }
-            : searchPreviewResponse
-          ).facets.facets.map((facet) => ({
-            ...facet,
-            data: facet.data.map((data) => {
-              if ('cat_id' in data) {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { cat_id: _delete, ...rest } = data;
-                return {
-                  ...rest,
-                  disabled: false,
-                };
-              }
-              return {
-                ...data,
-                disabled: false,
-              };
-            }),
-          })),
-        },
-        rules: searchPreviewResponse.rules,
-        pagination: !searchPreviewResponse.pagination
-          ? {}
-          : searchPreviewResponse.pagination,
-      };
-      return { body: response, status };
     },
   },
   '/merchandising/facet/{facetId}': {
