@@ -1,3 +1,5 @@
 .github/workflows/brightcloud*
 .next
 **/generated
+README.md
+.all-contributorsrc

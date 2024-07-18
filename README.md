@@ -2,6 +2,12 @@
 
 Merchandising UI for trading teams.
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+![Continuous Deployment](https://github.com/DigitalInnovation/trading-hub/actions/workflows/release.yml/badge.svg?branch=main)
+
 ## Getting Started
 
 ### App Authentication registration for local development
@@ -154,6 +160,48 @@ An example settings.json file is in the .vscode folder
 
 ## Deployments
 
-| Environment | URL                                                          |
-| ----------- | ------------------------------------------------------------ |
-| Dev         | https://dev-trading-hub-v1-eun-layer3-app.azurewebsites.net/ |
+| Environment | URL                                                         |
+| ----------- | ----------------------------------------------------------- |
+| Dev         | https://dev-merchandising-hub.search.marksandspencer.app/   |
+| Stage       | https://stage-merchandising-hub.search.marksandspencer.app/ |
+| Prod        | https://merchandising-hub.search.marksandspencer.app/       |
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/grahamlicence"><img src="https://avatars.githubusercontent.com/u/1006709?v=4?s=100" width="100px;" alt="Graham Licence"/><br /><sub><b>Graham Licence</b></sub></a><br /><a href="https://github.com/krzysztof-kabat-mns/trading-hub/commits?author=grahamlicence" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Niko-guus"><img src="https://avatars.githubusercontent.com/u/112879607?v=4?s=100" width="100px;" alt="Nikolay"/><br /><sub><b>Nikolay</b></sub></a><br /><a href="https://github.com/krzysztof-kabat-mns/trading-hub/commits?author=Niko-guus" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.jameswinfield.co.uk/"><img src="https://avatars.githubusercontent.com/u/25197817?v=4?s=100" width="100px;" alt="James Winfield"/><br /><sub><b>James Winfield</b></sub></a><br /><a href="https://github.com/krzysztof-kabat-mns/trading-hub/commits?author=jamesthemullet" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/krzysztof-kabat-mns"><img src="https://avatars.githubusercontent.com/u/90202184?v=4?s=100" width="100px;" alt="Krzysztof Kabat"/><br /><sub><b>Krzysztof Kabat</b></sub></a><br /><a href="https://github.com/krzysztof-kabat-mns/trading-hub/commits?author=krzysztof-kabat-mns" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rob-h-mns"><img src="https://avatars.githubusercontent.com/u/117646514?v=4?s=100" width="100px;" alt="Rob Haley"/><br /><sub><b>Rob Haley</b></sub></a><br /><a href="https://github.com/krzysztof-kabat-mns/trading-hub/commits?author=rob-h-mns" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/iyildiz-mns"><img src="https://avatars.githubusercontent.com/u/161332644?v=4?s=100" width="100px;" alt="Idris Yildiz"/><br /><sub><b>Idris Yildiz</b></sub></a><br /><a href="https://github.com/krzysztof-kabat-mns/trading-hub/commits?author=iyildiz-mns" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/nicwaters823"><img src="https://avatars.githubusercontent.com/u/143523074?v=4?s=100" width="100px;" alt="Nicola Waters"/><br /><sub><b>Nicola Waters</b></sub></a><br /><a href="https://github.com/krzysztof-kabat-mns/trading-hub/commits?author=nicwaters823" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td align="center" size="13px" colspan="7">
+        <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg">
+          <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
+        </img>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->

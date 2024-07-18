@@ -1,0 +1,64 @@
+{
+  "projectName": "trading-hub",
+  "projectOwner": "krzysztof-kabat-mns",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": ["README.md"],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "grahamlicence",
+      "name": "Graham Licence",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1006709?v=4",
+      "profile": "https://github.com/grahamlicence",
+      "contributions": ["code"]
+    },
+    {
+      "login": "Niko-guus",
+      "name": "Nikolay",
+      "avatar_url": "https://avatars.githubusercontent.com/u/112879607?v=4",
+      "profile": "https://github.com/Niko-guus",
+      "contributions": ["code"]
+    },
+    {
+      "login": "jamesthemullet",
+      "name": "James Winfield",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25197817?v=4",
+      "profile": "http://www.jameswinfield.co.uk/",
+      "contributions": ["code"]
+    },
+    {
+      "login": "krzysztof-kabat-mns",
+      "name": "Krzysztof Kabat",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90202184?v=4",
+      "profile": "https://github.com/krzysztof-kabat-mns",
+      "contributions": ["code"]
+    },
+    {
+      "login": "rob-h-mns",
+      "name": "Rob Haley",
+      "avatar_url": "https://avatars.githubusercontent.com/u/117646514?v=4",
+      "profile": "https://github.com/rob-h-mns",
+      "contributions": ["code"]
+    },
+    {
+      "login": "iyildiz-mns",
+      "name": "Idris Yildiz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/161332644?v=4",
+      "profile": "https://github.com/iyildiz-mns",
+      "contributions": ["code"]
+    },
+    {
+      "login": "nicwaters823",
+      "name": "Nicola Waters",
+      "avatar_url": "https://avatars.githubusercontent.com/u/143523074?v=4",
+      "profile": "https://github.com/nicwaters823",
+      "contributions": ["code"]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": true
+}
+
