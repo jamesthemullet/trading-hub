@@ -25,6 +25,7 @@ describe('editable-label', () => {
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
+          canCancelEdit={true}
         />
       );
 
@@ -124,12 +125,34 @@ describe('editable-label', () => {
       expect(onDisplayValueChange).toHaveBeenCalledWith('colour');
     });
 
+    it('should display error state and not allow save if error state is true', async () => {
+      const onDisplayValueChange = jest.fn();
+      renderWithProviders(
+        <EditableLabel
+          onDisplayValueChange={onDisplayValueChange}
+          displayValue="color"
+          shouldOpenFromParent={true}
+          error="Invalid input"
+        />
+      );
+
+      await waitFor(async () => {
+        userEvent.keyboard('{enter}');
+      });
+
+      const saveButton = screen.getByLabelText('Save color change');
+
+      expect(saveButton).toBeDisabled();
+      expect(onDisplayValueChange).not.toHaveBeenCalled();
+    });
+
     it('should not call onDisplayValueChange when escape key is pressed', async () => {
       const onDisplayValueChange = jest.fn();
       renderWithProviders(
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
+          canCancelEdit={true}
         />
       );
 

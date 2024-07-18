@@ -236,6 +236,7 @@ export const FacetsPanel = ({
               onDisplayValueChange={(newValue) =>
                 onFacetDataChange(index, newValue, facet)
               }
+              canCancelEdit={true}
             />
           )}
         </Col>

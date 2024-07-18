@@ -34,9 +34,12 @@ type AttributeValue = AttributeValuesResponse['values'][number] & {
 };
 
 const Col = styled(TableCol)`
-  justify-content: space-between;
-  flex: 20;
   padding: 0;
+`;
+
+const FlexColumnCol = styled(Col)`
+  display: flex;
+  flex-direction: column;
 `;
 
 const MODAL_WIDTH = 1150;
@@ -121,7 +124,12 @@ const RemoveMergedFacet = styled.button`
   border: none;
 `;
 
-const defaultMergedDisplayValue = 'Name your merged value group';
+const StyledError = styled(Text)`
+  color: ${color.saleRed};
+  margin-top: ${spacing(0.5)};
+`;
+
+const defaultMergedDisplayValue = 'Name your merge';
 
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null;
@@ -155,6 +163,8 @@ export const ModalEditValues = ({
   const [orderedPinnedValues, setOrderedPinnedValues] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [facetMergedValues, setFacetMergedValues] = useState(facet.merged);
+  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+  const [error, setError] = useState('');
 
   const filteredEditFacetValues = useMemo(() => {
     const filteredValues = !searchQuery
@@ -279,27 +289,34 @@ export const ModalEditValues = ({
 
   const handleMerge = () => {
     mergeValues(mergeList);
-    setFacetMergedValues((prev) =>
-      prev?.some((values) =>
-        values.mergedValues?.some((v) => mergeList.includes(v))
-      )
-        ? prev?.map((values) => {
-            if (values.mergedValues?.some((v) => mergeList.includes(v))) {
-              return {
-                ...values,
-                mergedValues: mergeList,
-              };
-            }
-            return values;
-          })
-        : [
-            ...(prev || []),
-            {
-              mergedValues: mergeList,
-              displayValue: defaultMergedDisplayValue,
-            },
-          ]
-    );
+    setFacetMergedValues((prev) => {
+      const updatedValues = prev?.map((values) => {
+        const shouldMerge = values.mergedValues?.some((value) =>
+          mergeList.includes(value)
+        );
+        if (shouldMerge) {
+          return {
+            ...values,
+            mergedValues: mergeList,
+            displayValue: defaultMergedDisplayValue,
+          };
+        }
+        return values;
+      });
+
+      if (updatedValues?.some((values) => values.mergedValues === mergeList)) {
+        return updatedValues;
+      }
+
+      return [
+        ...(updatedValues || []),
+        {
+          mergedValues: mergeList,
+          displayValue: defaultMergedDisplayValue,
+        },
+      ];
+    });
+    setIsSaveDisabled(true);
     setMergeList([]);
   };
 
@@ -366,6 +383,7 @@ export const ModalEditValues = ({
       /* istanbul ignore next */
       return updatedFacets;
     });
+    setIsSaveDisabled(false);
     setFacetMergedValues((prev) => {
       const mergedListWithoutValue = mergedValues.filter(
         (value) => value !== valueToDemerge
@@ -419,6 +437,7 @@ export const ModalEditValues = ({
         return value;
       })
     );
+    setIsSaveDisabled(false);
   };
 
   const handleSave = async () => {
@@ -554,7 +573,7 @@ export const ModalEditValues = ({
                         </AttributeWrapper>
                       </Col>
 
-                      <Col>
+                      <FlexColumnCol>
                         <EditableLabel
                           displayValue={displayValue}
                           onDisplayValueChange={(newValue) => {
@@ -566,10 +585,20 @@ export const ModalEditValues = ({
                                     displayValue: newValue,
                                   };
                                 }
-
+                                setIsSaveDisabled(false);
                                 return value;
                               });
                             });
+
+                            if (
+                              mergedValues &&
+                              mergedValues.length > 1 &&
+                              newValue === defaultMergedDisplayValue
+                            ) {
+                              setIsSaveDisabled(true);
+                              setError('Please name your merge to continue');
+                              return;
+                            }
 
                             if (mergedValues && mergedValues.length > 1) {
                               setFacetMergedValues((prev) =>
@@ -588,10 +617,24 @@ export const ModalEditValues = ({
                                   return values;
                                 })
                               );
+                              setIsSaveDisabled(false);
+                              setError('');
                             }
                           }}
+                          shouldOpenFromParent={
+                            displayValue === defaultMergedDisplayValue
+                          }
+                          error={
+                            displayValue === defaultMergedDisplayValue
+                              ? error
+                              : undefined
+                          }
                         />
-                      </Col>
+                        {error &&
+                          displayValue === defaultMergedDisplayValue && (
+                            <StyledError>{error}</StyledError>
+                          )}
+                      </FlexColumnCol>
 
                       <Col>
                         {isPinned && (
@@ -612,6 +655,7 @@ export const ModalEditValues = ({
                                     ...newOrdered.slice(i + 1),
                                   ];
                                 });
+                                setIsSaveDisabled(false);
                               }}
                               isDisabled={index === 0}
                             />
@@ -632,6 +676,7 @@ export const ModalEditValues = ({
                                     ...newOrdered.slice(i + 2),
                                   ];
                                 });
+                                setIsSaveDisabled(false);
                               }}
                               isDisabled={
                                 index === orderedPinnedValues.length - 1
@@ -670,7 +715,9 @@ export const ModalEditValues = ({
           <Button onClick={onClose} aria-label="Close attributes modal">
             Cancel
           </Button>{' '}
-          <Button onClick={handleSave}>Save</Button>
+          <Button onClick={handleSave} isDisabled={isSaveDisabled}>
+            Save
+          </Button>
         </ModalFooter>
       </Modal.Content>
     </Modal.Root>

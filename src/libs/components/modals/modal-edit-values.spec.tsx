@@ -260,9 +260,7 @@ describe('ModalEditValues', () => {
       });
 
       expect(screen.queryByText('Merged Value Group')).not.toBeInTheDocument();
-      expect(
-        screen.queryByText('Name your merged value group')
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('Name your merge')).not.toBeInTheDocument();
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
@@ -276,7 +274,7 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
         expect(
-          screen.getAllByText('Name your merged value group')[0]
+          screen.getByLabelText('Edit Name your merge input field')
         ).toBeVisible();
         expect(
           screen.queryByRole('button', { name: 'Merge (2)' })
@@ -319,6 +317,61 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
       });
+    });
+
+    it('should not save a merge if the name is the default merge name', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCloseSpy = jest.fn();
+
+      renderWithProviders(
+        <ModalEditValues
+          canMerge
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+        />
+      );
+
+      act(() => {
+        user.click(screen.getByLabelText('Select duck down to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByLabelText('Select ducky downy to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByRole('button', { name: 'Merge (2)' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      });
+
+      await waitFor(async () => {
+        const editColorInput = screen.getByLabelText(
+          'Edit Name your merge input field'
+        );
+        expect(editColorInput).toBeVisible();
+        expect(editColorInput).toHaveValue('Name your merge');
+        await userEvent.keyboard('{enter}');
+      });
+
+      const saveButton = screen.getByLabelText('Save Name your merge change');
+
+      expect(saveButton).toBeDisabled();
     });
 
     it('should de-merge both merged values when there are two attributes merged', async () => {
@@ -485,7 +538,7 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
         expect(
-          screen.getAllByText('Name your merged value group')[0]
+          screen.getByLabelText('Edit Name your merge input field')
         ).toBeVisible();
       });
 
@@ -513,7 +566,7 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
         expect(
-          screen.getAllByText('Name your merged value group')[0]
+          screen.getByLabelText('Edit Name your merge input field')
         ).toBeVisible();
       });
 
@@ -718,7 +771,7 @@ describe('ModalEditValues', () => {
                 mergedValues: ['merged 1', 'merged 2'],
               },
               {
-                displayValue: 'Name your merged value group',
+                displayValue: 'Name your merge',
                 mergedValues: ['other merged 1', 'other merged 2'],
               },
             ],

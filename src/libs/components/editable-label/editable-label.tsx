@@ -1,13 +1,16 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button, Input, spacing, Text } from '@/libs/components';
 
 import Image from 'next/image';
 
+import { color } from '../utils/constants';
+
 export const DisplayName = styled.div`
   display: flex;
   align-items: center;
+  width: max-content;
 `;
 
 const EditConfirmationButtons = styled.div`
@@ -35,58 +38,114 @@ const EditButton = styled(Button)`
   }
 `;
 
-const StyledInput = styled(Input)`
+const InputContainer = styled.div`
+  position: relative;
+`;
+
+const StyledInput = styled(Input)<{ showErrorState: boolean }>`
   font-size: 14px;
   max-height: 2.5rem;
+  border-radius: 4px;
+  padding-right: 30px;
+
+  ${({ showErrorState }) =>
+    showErrorState && `border: 1px solid ${color.saleRed}`};
+`;
+
+const StyledIcon = styled(Image)`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 export type EditableLabelProps = {
   displayValue: string;
   onDisplayValueChange: (newValue: string) => void;
+  shouldOpenFromParent?: boolean;
+  canCancelEdit?: boolean;
+  error?: string | null;
 };
 
 export const EditableLabel = ({
   displayValue,
   onDisplayValueChange,
+  shouldOpenFromParent,
+  canCancelEdit,
+  error,
 }: EditableLabelProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalValue] = useState(displayValue);
   const [value, setValue] = useState(displayValue);
+  const [showErrorState, setShowErrorState] = useState(false);
+
+  useEffect(() => {
+    if (shouldOpenFromParent) {
+      setIsEditMode(true);
+      setValue(displayValue);
+    } else {
+      setIsEditMode(false);
+    }
+  }, [shouldOpenFromParent, displayValue]);
+
+  useEffect(() => {
+    if (error) {
+      setShowErrorState(true);
+      setIsEditMode(true);
+    } else {
+      setShowErrorState(false);
+    }
+  }, [error]);
 
   return (
     <DisplayName>
       {isEditMode ? (
         <>
-          <StyledInput
-            id={'input'}
-            ref={(inputRef) => {
-              inputRef?.focus();
-            }}
-            onChange={(event) => {
-              event.stopPropagation();
-              setValue(event.target.value);
-            }}
-            label=""
-            value={value}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                setIsEditMode(false);
-                onDisplayValueChange(value);
-              }
-              if (event.key === 'Escape') {
-                setValue(originalValue);
-                setIsEditMode(false);
-              }
-            }}
-            aria-label={`Edit ${displayValue} input field`}
-          />
+          <InputContainer>
+            <StyledInput
+              id={'input'}
+              ref={(inputRef) => {
+                inputRef?.focus();
+              }}
+              onChange={(event) => {
+                event.stopPropagation();
+                setValue(event.target.value);
+              }}
+              label=""
+              value={value}
+              onKeyDown={(event) => {
+                if (
+                  event.key === 'Enter' &&
+                  (!showErrorState || value !== displayValue)
+                ) {
+                  setIsEditMode(false);
+                  onDisplayValueChange(value);
+                }
+                if (event.key === 'Escape' && canCancelEdit) {
+                  setValue(originalValue);
+                  setIsEditMode(false);
+                }
+              }}
+              aria-label={`Edit ${displayValue} input field`}
+              showErrorState={showErrorState}
+            />
+            {showErrorState && (
+              <StyledIcon
+                width={20}
+                height={20}
+                src="/trading-hub/asset/icon-warning.svg"
+                alt=""
+              />
+            )}
+          </InputContainer>
           <EditConfirmationButtons>
             <EditButton
               onClick={() => {
-                setIsEditMode(false);
                 onDisplayValueChange(value);
+                setIsEditMode(false);
               }}
               aria-label={`Save ${displayValue} change`}
+              isDisabled={showErrorState && value === displayValue}
             >
               <Image
                 width={20}
@@ -95,20 +154,22 @@ export const EditableLabel = ({
                 alt=""
               />
             </EditButton>
-            <EditButton
-              onClick={() => {
-                setValue(originalValue);
-                setIsEditMode(false);
-              }}
-              aria-label={`Cancel ${displayValue} change`}
-            >
-              <Image
-                width={20}
-                height={20}
-                src="/trading-hub/asset/icon-cross-in-circle.svg"
-                alt=""
-              />
-            </EditButton>
+            {canCancelEdit && (
+              <EditButton
+                onClick={() => {
+                  setValue(originalValue);
+                  setIsEditMode(false);
+                }}
+                aria-label={`Cancel ${displayValue} change`}
+              >
+                <Image
+                  width={20}
+                  height={20}
+                  src="/trading-hub/asset/icon-cross-in-circle.svg"
+                  alt=""
+                />
+              </EditButton>
+            )}
           </EditConfirmationButtons>
         </>
       ) : (
