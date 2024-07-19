@@ -152,6 +152,53 @@ describe('Category facet management', () => {
     );
   });
 
+  it('should go back to the first page after the user has searched', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 80,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+    });
+
+    const user = userEvent.setup();
+    renderWithProviders(<FacetManagementPage />);
+
+    expect(screen.getByText('Page 1 of 8')).toBeVisible();
+
+    const nextPageButton = screen.getByLabelText('Next page');
+
+    await user.click(nextPageButton);
+    await user.click(nextPageButton);
+    await user.click(nextPageButton);
+
+    expect(screen.getByText('Page 4 of 8')).toBeVisible();
+
+    const search = screen.queryByPlaceholderText(/Search\.\.\./i);
+
+    if (!search) {
+      throw new Error('Search not found');
+    }
+
+    await user.type(search, 'search-search');
+
+    await waitFor(() =>
+      expect(useRuleSet).toHaveBeenCalledWith(
+        'search-search',
+        0,
+        10,
+        'category'
+      )
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Page 1 of 8')).toBeVisible();
+    });
+  });
+
   it('should enable or disable a ruleset', async () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockCatId = 'catId';

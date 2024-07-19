@@ -62,7 +62,10 @@ export const TablePagination = ({
       <TotalResultsLabel>{pagination.totalItems} results</TotalResultsLabel>
       <Pagination
         current={currentPage}
-        total={Math.ceil((pagination.totalItems ?? 0) / currentPageSize)}
+        total={Math.max(
+          1,
+          Math.ceil((pagination.totalItems ?? 0) / currentPageSize)
+        )}
         onClick={(e, pageNumber) => {
           e.preventDefault();
           setCurrentPage(pageNumber);

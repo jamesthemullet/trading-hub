@@ -61,6 +61,7 @@ const FacetManagementPage = () => {
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
+    setCurrentPage(1);
   }, 300);
 
   const { handleDelete } = useRuleSetDelete();
