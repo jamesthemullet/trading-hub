@@ -32,7 +32,7 @@ describe('useFacetsList', () => {
   });
 
   it('should render the hook', async () => {
-    const { result } = renderHook(() => useFacetsList());
+    const { result } = renderHook(() => useFacetsList([]));
 
     await waitFor(() => {
       expect(result.current.facets.length).toEqual(5);
@@ -49,7 +49,7 @@ describe('useFacetsList', () => {
       })
     );
 
-    const { result } = renderHook(() => useFacetsList());
+    const { result } = renderHook(() => useFacetsList([]));
 
     await waitFor(() => {
       expect(result.current.error).toEqual('Internal Server Error');

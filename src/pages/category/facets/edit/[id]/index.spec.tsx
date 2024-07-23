@@ -184,6 +184,12 @@ describe('Category Facet Management Editing', () => {
         screen.getByRole('button', { name: 'Move color row up' })
       ).toBeVisible();
     });
+
+    await user.click(screen.getByRole('button', { name: 'Move color row up' }));
+
+    expect(() => {
+      screen.getByRole('button', { name: 'Move color row up' });
+    }).toThrow('Unable to find an accessible element with the role "button"');
   });
 
   it('should update the display value of a facet', async () => {
@@ -223,5 +229,32 @@ describe('Category Facet Management Editing', () => {
     //   );
     //   expect(newEditButton).toBeVisible();
     // });
+  });
+
+  it('should update status on dropdown change', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    const dropdownHeader = screen.getAllByTestId(
+      'button to open facet order dropdown'
+    )[0];
+
+    expect(screen.getAllByTestId('facets-table-row')[2]).toHaveStyle(
+      'background-color: #f4faed'
+    );
+    expect(screen.getAllByTestId('facets-table-row')[3]).toHaveStyle(
+      'background-color: #FFF3F4'
+    );
+
+    await user.click(dropdownHeader);
+
+    const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
+
+    await user.click(excludeOnlyOption);
+    await waitFor(() => {
+      expect(screen.getAllByTestId('facets-table-row')[2]).toHaveStyle(
+        'background-color: #FFF3F4'
+      );
+    });
   });
 });

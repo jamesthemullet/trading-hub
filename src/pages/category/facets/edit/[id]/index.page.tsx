@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { ReturnedFacet } from '@/libs/api';
@@ -25,12 +25,18 @@ const Page = ({ id }: { id: string }) => {
   const router = useRouter();
   const { ruleSetDetail, isLoading } = useRuleSetPreview(id);
 
-  const { facets } = useFacetsList([id]);
-  const [localFacets, setLocalFacets] = useState<ReturnedFacet[]>(facets);
-  const { setSearch, filteredFacets } = useFacetsFilter(localFacets);
+  const categoryId = useMemo(
+    () => [ruleSetDetail.categoryId],
+    [ruleSetDetail.categoryId]
+  );
+
+  const { facets } = useFacetsList(categoryId, !isLoading);
+  const [localFacetData, setLocalFacetData] = useState<ReturnedFacet[]>(facets);
+
+  const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
 
   useEffect(() => {
-    setLocalFacets(facets);
+    setLocalFacetData(orderByStatus(facets));
   }, [facets]);
 
   const handleSave = () => {
@@ -52,6 +58,27 @@ const Page = ({ id }: { id: string }) => {
     console.log(index);
   };
 
+  const onHandleStatusChange = async (
+    index: number,
+    value: 'included' | 'excluded'
+  ) => {
+    setLocalFacetData((prev) => {
+      const updatedFacet: ReturnedFacet = {
+        ...prev[index],
+        status: value,
+      };
+      return orderByStatus(
+        prev.map((facet, i) => (i === index ? updatedFacet : facet))
+      );
+    });
+  };
+
+  const orderByStatus = (facets: ReturnedFacet[]) => {
+    const included = facets.filter((facet) => facet.status === 'included');
+    const excluded = facets.filter((facet) => facet.status === 'excluded');
+    return [...included, ...excluded];
+  };
+
   return (
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
@@ -67,14 +94,22 @@ const Page = ({ id }: { id: string }) => {
           facetsData={filteredFacets}
           displayRowOrderControls={true}
           onFacetsDataRowOrderChange={(index, direction) => {
-            const updatedFacets = [...localFacets];
-            // eslint-disable-next-line functional/immutable-data
-            const [removed] = updatedFacets.splice(index, 1);
-            // eslint-disable-next-line functional/immutable-data
-            updatedFacets.splice(index + direction, 0, removed);
-            setLocalFacets(updatedFacets);
+            const item = localFacetData[index];
+            const firstPart = localFacetData.slice(0, index);
+            const secondPart = localFacetData.slice(index + 1);
+            const updatedFacets =
+              direction === -1
+                ? [
+                    ...firstPart.slice(0, -1),
+                    item,
+                    firstPart[firstPart.length - 1],
+                    ...secondPart,
+                  ]
+                : [...firstPart, secondPart[0], item, ...secondPart.slice(1)];
+            setLocalFacetData(updatedFacets);
           }}
           onFacetDataChange={onFacetDataChange}
+          onHandleStatusChange={onHandleStatusChange}
           defaultCategory={category}
           canPreviewChanges={true}
           canAddFacet={true}

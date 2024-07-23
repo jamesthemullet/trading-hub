@@ -218,11 +218,11 @@ export const FacetsPanel = ({
   const FacetRow = ({
     facet,
     index,
-    totalCount,
+    totalIncludedFacets,
   }: {
     facet: ReturnedFacet;
     index: number;
-    totalCount: number;
+    totalIncludedFacets: number;
   }) => {
     return (
       <Row optionSelected={facet.status} data-testid="facets-table-row">
@@ -250,31 +250,36 @@ export const FacetsPanel = ({
                 }
               }}
             />
-            {index === 0 || !displayRowOrderControls ? (
-              <Box w="40" h="40" />
-            ) : (
-              <ArrowButton
-                direction="up"
-                aria-label={`Move ${facet.displayValue} row up`}
-                onClick={() => {
-                  if (onFacetsDataRowOrderChange) {
-                    onFacetsDataRowOrderChange(index, -1);
-                  }
-                }}
-              ></ArrowButton>
-            )}
-            {index === totalCount - 1 || !displayRowOrderControls ? (
-              <Box w="40" h="40" />
-            ) : (
-              <ArrowButton
-                direction="down"
-                aria-label={`Move ${facet.displayValue} row down`}
-                onClick={() => {
-                  if (onFacetsDataRowOrderChange) {
-                    onFacetsDataRowOrderChange(index, 1);
-                  }
-                }}
-              ></ArrowButton>
+            {index < totalIncludedFacets && (
+              <>
+                {index === 0 || !displayRowOrderControls ? (
+                  <Box w="40" h="40" />
+                ) : (
+                  <ArrowButton
+                    direction="up"
+                    aria-label={`Move ${facet.displayValue} row up`}
+                    onClick={() => {
+                      if (onFacetsDataRowOrderChange) {
+                        onFacetsDataRowOrderChange(index, -1);
+                      }
+                    }}
+                  ></ArrowButton>
+                )}
+                {index === totalIncludedFacets - 1 ||
+                !displayRowOrderControls ? (
+                  <Box w="40" h="40" />
+                ) : (
+                  <ArrowButton
+                    direction="down"
+                    aria-label={`Move ${facet.displayValue} row down`}
+                    onClick={() => {
+                      if (onFacetsDataRowOrderChange) {
+                        onFacetsDataRowOrderChange(index, 1);
+                      }
+                    }}
+                  ></ArrowButton>
+                )}
+              </>
             )}
           </OrderColumn>
         </Col>
@@ -353,7 +358,9 @@ export const FacetsPanel = ({
               key={facet.id}
               facet={facet}
               index={index}
-              totalCount={facetsData.length}
+              totalIncludedFacets={
+                facetsData.filter((facet) => facet.status === 'included').length
+              }
             ></FacetRow>
           ))}
       </AttributesTable>

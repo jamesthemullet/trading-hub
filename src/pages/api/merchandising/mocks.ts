@@ -180,7 +180,7 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
     {
       displayValue: 'size',
       indexPropertyName: 'size',
-      status: 'included',
+      status: 'excluded',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
       lastChanged: {
         date: '2021-01-02T08:34:15Z',
@@ -453,17 +453,6 @@ export const getMockMapping: () => Record<
 
         const body: ReturnedFacet = facet;
         return { body, status: 200 };
-      }
-      return { body: jsonBody, status };
-    },
-  },
-  '/search/beta/merchandising/facet': {
-    get: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        return {
-          body: globalFacetsListMock,
-          status: 200,
-        };
       }
       return { body: jsonBody, status };
     },
