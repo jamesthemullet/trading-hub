@@ -88,10 +88,10 @@ const FacetManagementPage = () => {
   }));
 
   const createNewRuleSet = async () => {
-    const resp = await createGlobalRuleSet();
+    const response = await createGlobalRuleSet();
 
-    if (resp) {
-      return router.push(`/global/facets/edit/${resp.id}`);
+    if (response) {
+      return router.push(`/global/facets/edit/${response.id}`);
     }
   };
 

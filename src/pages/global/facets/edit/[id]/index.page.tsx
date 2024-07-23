@@ -39,7 +39,7 @@ const Page = () => {
   const { globalRuleSet } = useGlobalRuleSetDetail(globalId);
 
   const handleSave = async () => {
-    await saveGlobalRuleset({
+    const response = await saveGlobalRuleset({
       ruleSetId: globalRuleSet.id,
       ruleSet: {
         facets: filteredFacets,
@@ -47,6 +47,10 @@ const Page = () => {
         isEnabled: globalRuleSet.isEnabled,
       },
     });
+
+    if (response) {
+      return router.push(`/global/facets/`);
+    }
   };
 
   const handleCancel = () => {

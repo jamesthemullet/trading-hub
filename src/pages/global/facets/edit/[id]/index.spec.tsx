@@ -18,7 +18,7 @@ jest.mock('next/router', () => ({
 }));
 
 const mockUpdateGlobalFacet = jest.fn();
-const mockUpdateGlobalRuleSet = jest.fn();
+const mockUpdateGlobalRuleSet = jest.fn().mockReturnValue(true);
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
@@ -170,6 +170,8 @@ describe('Global Facet Management Editing', () => {
         isEnabled: true,
       },
     });
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/global/facets/');
   });
 
   it('should render skeleton when loading', () => {
