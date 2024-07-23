@@ -24,28 +24,6 @@ const mockRuleData: ReturnedRuleSet = {
   lastChanged: { date: '2023-12-06T14:24:17Z', user: 'Mark Spencer' },
 };
 
-const mockSearchData = {
-  products: [
-    {
-      id: '60275024',
-      title: 'Mock Product',
-      url: 'petite-round-neck-cardigan/p/clp60275023',
-      price: '£17.50',
-      brand: 'M&S Collection',
-      isInStock: true,
-      imageUrl: [
-        'SD_01_T38_5762P_F0_X_EC_0',
-        'SD_01_T38_5762P_F0_X_EC_0',
-        'SD_01_T38_5762P_F0_X_EC_90',
-        'SD_01_T38_5762P_F0_X_EC_90',
-      ],
-      metadata: {
-        isPinned: false,
-      },
-    },
-  ],
-};
-
 const badResponse = {
   status: 'Bad error',
 };
@@ -62,13 +40,6 @@ const handlers = [
     const { data, status } = getRuleSetPreviewMock();
     return HttpResponse.json(data, status);
   }),
-  http.post(
-    `${baseUrl}/merchandising/category/${mockCategoryId}/preview`,
-    () => {
-      const { data, status } = getRuleSetPreviewMock();
-      return HttpResponse.json(data, status);
-    }
-  ),
 ];
 
 const server = setupServer(...handlers);
@@ -97,34 +68,11 @@ describe('useRuleSet', () => {
       data: mockResponse,
       status: { status: 200 },
     });
-    getRuleSetPreviewMock.mockReturnValueOnce({
-      data: mockSearchData,
-      status: { status: 200 },
-    });
 
     const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
 
     const expectedData = {
-      products: [
-        {
-          brand: 'M&S Collection',
-          id: '60275024',
-          imageUrl: [
-            'SD_01_T38_5762P_F0_X_EC_0',
-            'SD_01_T38_5762P_F0_X_EC_0',
-            'SD_01_T38_5762P_F0_X_EC_90',
-            'SD_01_T38_5762P_F0_X_EC_90',
-          ],
-          isInStock: true,
-          metadata: {
-            isPinned: false,
-          },
-          price: '£17.50',
-          title: 'Mock Product',
-          url: 'petite-round-neck-cardigan/p/clp60275023',
-        },
-      ],
-      ruleSets: mockRuleData,
+      ruleSetDetail: mockRuleData,
       error: '',
       isLoading: false,
     };
@@ -143,8 +91,7 @@ describe('useRuleSet', () => {
     const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
 
     const expectedData = {
-      products: [],
-      ruleSets: {
+      ruleSetDetail: {
         categoryId: '',
         categoryName: '',
         categoriesInfo: [
@@ -169,32 +116,6 @@ describe('useRuleSet', () => {
           },
         },
       },
-      error: 'POST status 500',
-      isLoading: false,
-    };
-
-    await waitFor(() => {
-      expect(result).toEqual({ current: expectedData });
-    });
-  });
-
-  it('should return an error when the search api call fails', async () => {
-    const mockResponse: ReturnedRuleSet = mockRuleData;
-
-    getRuleSetPreviewMock.mockReturnValueOnce({
-      data: mockResponse,
-      status: { status: 200 },
-    });
-    getRuleSetPreviewMock.mockReturnValueOnce({
-      data: badResponse,
-      status: { status: 500 },
-    });
-
-    const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
-
-    const expectedData = {
-      products: [],
-      ruleSets: mockRuleData,
       error: 'POST status 500',
       isLoading: false,
     };

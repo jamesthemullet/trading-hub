@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = (
 
 const Page = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { ruleSets, isLoading } = useRuleSetPreview(id);
+  const { ruleSetDetail, isLoading } = useRuleSetPreview(id);
 
   const { facets } = useFacetsList([id]);
   const [localFacets, setLocalFacets] = useState<ReturnedFacet[]>(facets);
@@ -42,8 +42,8 @@ const Page = ({ id }: { id: string }) => {
   };
 
   const category = {
-    identifier: ruleSets.categoryId,
-    name: ruleSets.categoryName,
+    identifier: ruleSetDetail.categoryId,
+    name: ruleSetDetail.categoryName,
     path: '/',
   };
 

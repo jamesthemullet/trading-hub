@@ -12,7 +12,7 @@ type PageProps = {
 };
 
 const Page = ({ id }: PageProps) => {
-  const { ruleSets } = useRuleSetPreview(id);
+  const { ruleSetDetail } = useRuleSetPreview(id);
   const { updateRuleSet, isSaving } = useUpdateRuleSet();
   const router = useRouter();
 
@@ -41,18 +41,18 @@ const Page = ({ id }: PageProps) => {
     <>
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
 
-      {ruleSets.categoryName && (
+      {ruleSetDetail.categoryName && (
         <Ruleset
-          isEnabled={ruleSets.isEnabled}
+          isEnabled={ruleSetDetail.isEnabled}
           onSave={saveRuleSet}
           onCancel={() => router.push('/category/rulesets')}
           rulesetCategory={{
-            identifier: ruleSets.categoryId,
-            name: ruleSets.categoryName,
+            identifier: ruleSetDetail.categoryId,
+            name: ruleSetDetail.categoryName,
             path: 'path/to/plp',
           }}
-          rulesetId={ruleSets.id}
-          rulesetMerchandisingRules={ruleSets.rules}
+          rulesetId={ruleSetDetail.id}
+          rulesetMerchandisingRules={ruleSetDetail.rules}
           rulesetType="category"
         />
       )}
