@@ -7,6 +7,7 @@ import type { Product as ProductType } from '../../api';
 import { EditAttribute } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
 import { Text } from '../typography/typography.styles';
+import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import {
   BlockedPin,
@@ -375,6 +376,169 @@ export const Product = ({
         productId={productId}
         isSearchResult={isSearchResult}
       />
+    </ProductWrapper>
+  );
+};
+
+export const MissingProduct = ({
+  id,
+  index,
+  onChangePosition,
+  onProductBoostBury,
+  isProductNumberEnabled,
+  isPinned,
+  isBoosted,
+  isBuried,
+  isBlocked,
+  ...rest
+}: {
+  index: number;
+  id: string;
+  onChangePosition?: ({
+    id,
+    isPinned,
+    newPosition,
+  }: ChangePositionTypes) => void;
+  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
+  isProductNumberEnabled?: boolean;
+  isPinned?: boolean;
+  isBoosted?: boolean;
+  isBuried?: boolean;
+  isBlocked?: boolean;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const pin = (positionToPin: number, isPinned: boolean) => {
+    if (onChangePosition) {
+      onChangePosition({
+        id,
+        newPosition: positionToPin,
+        isPinned,
+      });
+    }
+    setIsMenuOpen(false);
+  };
+
+  const onBoostBuryBlock = ({
+    operation,
+    change,
+  }: Pick<EditAttribute, 'change' | 'operation'>) => {
+    onProductBoostBury({ id, change, operation });
+    setIsMenuOpen(false);
+  };
+
+  const clearChanges = (position: number) => pin(position, false);
+
+  return (
+    <ProductWrapper aria-label={`Position ${index + 1}`} {...rest}>
+      {isMenuOpen && (
+        <ProductMenuOverlay
+          aria-label="menu overlay"
+          onClick={() => {
+            setIsMenuOpen(!isMenuOpen);
+          }}
+        />
+      )}
+      <ProductHeader>
+        {(isProductNumberEnabled ?? true) && (
+          <ProductNumber>{index + 1}</ProductNumber>
+        )}
+        {isBoosted && (
+          <BoostPin aria-label="Boosted product">
+            <Text>Internal</Text>
+          </BoostPin>
+        )}
+        {isBuried && (
+          <BuriedPin aria-label="Buried product">
+            <Text>Internal</Text>
+          </BuriedPin>
+        )}
+        {isPinned && (
+          <ProductPin aria-label="Pinned product">
+            <Text>Internal</Text>
+          </ProductPin>
+        )}
+        {isBlocked && (
+          <BlockedPin aria-label="Blocked product">
+            <Text>Internal</Text>
+          </BlockedPin>
+        )}
+        <ProductMenuToggle
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
+        >
+          <Image
+            alt=""
+            src={`/trading-hub/asset/icon-${isMenuOpen ? 'minus' : 'plus'}.svg`}
+            width={20}
+            height={20}
+          />
+        </ProductMenuToggle>
+        {isMenuOpen && (
+          <ProductMenu>
+            <Text
+              isStrong={true}
+              style={{
+                color: '#000',
+                padding: `${spacing(1)} ${spacing(1)} 0`,
+              }}
+            >
+              Product actions
+            </Text>
+            {isPinned && (
+              <ProductMenuButton
+                icon="restore"
+                as="button"
+                size="16px 16px"
+                onClick={() => clearChanges(index)}
+              >
+                Restore
+              </ProductMenuButton>
+            )}
+            {isBoosted && (
+              <ProductMenuButton
+                icon="restore"
+                as="button"
+                size="16px 16px"
+                onClick={() =>
+                  onBoostBuryBlock({ operation: 'boosts', change: 'remove' })
+                }
+              >
+                Unboost
+              </ProductMenuButton>
+            )}
+            {isBuried && (
+              <ProductMenuButton
+                icon="restore"
+                as="button"
+                size="16px 16px"
+                onClick={() =>
+                  onBoostBuryBlock({ operation: 'buries', change: 'remove' })
+                }
+              >
+                Unbury
+              </ProductMenuButton>
+            )}
+            {isBlocked && (
+              <ProductMenuButton
+                icon="restore"
+                as="button"
+                size="16px 16px"
+                onClick={() => {
+                  onBoostBuryBlock({
+                    operation: 'block',
+                    change: 'remove',
+                  });
+                }}
+              >
+                Restore
+              </ProductMenuButton>
+            )}
+          </ProductMenu>
+        )}
+      </ProductHeader>
+      <p style={{ color: color.errorRed }}>Error</p>
+      <p>Product {id} not found</p>
     </ProductWrapper>
   );
 };

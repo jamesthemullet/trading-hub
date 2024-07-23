@@ -531,9 +531,9 @@ export const Ruleset = ({
             {(currentEditorTab === 1 || rulesetType === 'global') && (
               <RulesetChanges
                 merchandisingRules={merchandisingRules}
-                merchandisingRulesWithInfo={data.ruleSet.rules}
                 onChangePosition={onChangePosition}
                 onProductBoostBury={onProductBoostBury}
+                isPinnable={rulesetType !== 'global'}
               />
             )}
           </TabContent>

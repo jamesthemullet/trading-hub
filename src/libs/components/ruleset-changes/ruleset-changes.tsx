@@ -1,13 +1,16 @@
 import styled from '@emotion/styled';
+import { useCallback, useEffect, useState } from 'react';
 
-import type {
-  MerchandisingRules,
-  MerchandisingRulesWithInfo,
-  Product as ProductType,
-} from '@/libs/api';
+import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
+import { useCategoryProductSearch } from '@/libs/hooks';
 
 import { ChangePositionTypes } from '../../modules/ruleset/ruleset';
-import { ChangeProductBoostBury, Product } from '../product/product';
+import { Button } from '../buttons/button/button';
+import {
+  ChangeProductBoostBury,
+  MissingProduct,
+  Product,
+} from '../product/product';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
 import { Text } from '../typography/typography.styles';
@@ -19,48 +22,134 @@ const Heading = styled(Text)`
   padding: ${spacing(2)} 0 0 ${spacing(2)};
 `;
 
-const ChangesRow = ({
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const PRODUCTS_TO_LOAD = 8;
+
+type ProductRule = { id: string };
+
+const ProductsLoader = ({
+  changeType,
   heading,
+  isPinnable,
+  merchandisingRules,
   onChangePosition,
   onProductBoostBury,
   pinnedProductsCount,
   products,
 }: {
+  changeType: 'boost' | 'bury' | 'pin' | 'block';
   heading: string;
-  pinnedProductsCount: number;
+  isPinnable: boolean;
+  merchandisingRules: MerchandisingRules;
   onChangePosition: (arg: ChangePositionTypes) => void;
   onProductBoostBury: (arg: ChangeProductBoostBury) => void;
-  products: ProductType[];
-}) => (
-  <>
-    <Heading as="h2" isStrong={true}>
-      {heading}
-    </Heading>
-    <Layout aria-label={heading.split('(')[0]}>
-      {products.map((product: ProductType, index: number) => (
-        <ProductBox key={`ruleset-changes-product-${product.id}`}>
-          <Product
-            {...product}
-            index={index}
-            isPinnable={true}
-            pinnedProductsCount={pinnedProductsCount}
-            onChangePosition={onChangePosition}
-            onProductBoostBury={onProductBoostBury}
-          />
-        </ProductBox>
-      ))}
-    </Layout>
-  </>
-);
+  pinnedProductsCount: number;
+  products: ProductRule[];
+}) => {
+  const [productDetails, setProductDetails] = useState<ProductType[]>([]);
+  const [productsShown, setProductsShown] = useState(PRODUCTS_TO_LOAD);
+
+  const { searchForProduct } = useCategoryProductSearch();
+
+  const fetch = useCallback(
+    async (productIds: string[]) => {
+      const data = await searchForProduct({
+        productIds,
+        merchandisingRules,
+      });
+      return data.products;
+    },
+    [searchForProduct, merchandisingRules]
+  );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const productsToGet = [...products]
+        .splice(0, productsShown)
+        .map((product) => product.id);
+
+      const data = await fetch(productsToGet);
+
+      setProductDetails(data);
+    };
+
+    fetchData();
+  }, [products, productsShown, fetch]);
+
+  return (
+    <>
+      <Heading as="h2" isStrong={true}>
+        {`${heading} (${products.length})`}
+      </Heading>
+      <Layout aria-label={heading.split('(')[0]}>
+        {products.map(({ id }, index) => {
+          if (index + 1 > productsShown) {
+            return null;
+          }
+          const product = productDetails.find(
+            ({ id: productId }) => id === productId
+          );
+
+          if (!product) {
+            return (
+              <ProductBox key={`ruleset-changes-product-${id}`}>
+                <MissingProduct
+                  index={index}
+                  id={id}
+                  onChangePosition={onChangePosition}
+                  onProductBoostBury={onProductBoostBury}
+                  isProductNumberEnabled={true}
+                  isBlocked={changeType === 'block'}
+                  isBuried={changeType === 'bury'}
+                  isPinned={changeType === 'pin'}
+                  isBoosted={changeType === 'boost'}
+                />
+              </ProductBox>
+            );
+          }
+
+          return (
+            <ProductBox key={`ruleset-changes-product-${id}`}>
+              <Product
+                {...product}
+                index={index}
+                isPinnable={isPinnable}
+                pinnedProductsCount={pinnedProductsCount}
+                onChangePosition={onChangePosition}
+                onProductBoostBury={onProductBoostBury}
+              />
+            </ProductBox>
+          );
+        })}
+      </Layout>
+      {productsShown < products.length && products.length > 4 && (
+        <ButtonWrapper>
+          <Button
+            style={{ width: 'auto' }}
+            onClick={() => {
+              setProductsShown(productsShown + 4);
+            }}
+          >
+            Load more products
+          </Button>
+        </ButtonWrapper>
+      )}
+    </>
+  );
+};
 
 export const RulesetChanges = ({
-  merchandisingRulesWithInfo,
+  isPinnable,
   merchandisingRules,
   onChangePosition,
   onProductBoostBury,
 }: {
+  isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
-  merchandisingRulesWithInfo?: MerchandisingRulesWithInfo;
   onChangePosition: (arg: ChangePositionTypes) => void;
   onProductBoostBury: (arg: ChangeProductBoostBury) => void;
 }) => {
@@ -80,6 +169,9 @@ export const RulesetChanges = ({
   const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
 
   const pinnedProductsCount = merchandisingRules.pinnedProducts.length;
+  const blockedProductsCount = merchandisingRules.blockedProducts.length;
+  const boostedProductsCount = merchandisingRules.boosts.product.length;
+  const buriedProductsCount = merchandisingRules.buries.product.length;
 
   return (
     <>
@@ -144,57 +236,58 @@ export const RulesetChanges = ({
           )}
         </>
       )}
-      {merchandisingRulesWithInfo &&
-        merchandisingRulesWithInfo.pinnedProducts.length > 0 && (
-          <ChangesRow
-            heading={`Pinned Products (${merchandisingRulesWithInfo.pinnedProducts.length})`}
-            products={merchandisingRulesWithInfo.pinnedProducts}
-            pinnedProductsCount={pinnedProductsCount}
-            onChangePosition={onChangePosition}
-            onProductBoostBury={onProductBoostBury}
-          />
-        )}
-      {/* TODO: when api is ready we can show products here */}
-      {
-        /* istanbul ignore next */
-        merchandisingRulesWithInfo &&
-          merchandisingRulesWithInfo.boosts.product.length > 0 && (
-            <ChangesRow
-              heading={`Boosted Products (${merchandisingRulesWithInfo.boosts.product.length})`}
-              products={merchandisingRulesWithInfo.boosts.product}
-              pinnedProductsCount={pinnedProductsCount}
-              onChangePosition={onChangePosition}
-              onProductBoostBury={onProductBoostBury}
-            />
-          )
-      }
-      {
-        /* istanbul ignore next */
-        merchandisingRulesWithInfo &&
-          merchandisingRulesWithInfo.buries.product.length > 0 && (
-            <ChangesRow
-              heading={`Buried Products (${merchandisingRulesWithInfo.buries.product.length})`}
-              products={merchandisingRulesWithInfo.buries.product}
-              pinnedProductsCount={pinnedProductsCount}
-              onChangePosition={onChangePosition}
-              onProductBoostBury={onProductBoostBury}
-            />
-          )
-      }
-      {
-        /* istanbul ignore next */
-        merchandisingRulesWithInfo &&
-          merchandisingRulesWithInfo.blockedProducts &&
-          merchandisingRulesWithInfo.blockedProducts.length > 0 && (
-            <ChangesRow
-              heading={`Blocked Products (${merchandisingRulesWithInfo.blockedProducts.length})`}
-              products={merchandisingRulesWithInfo.blockedProducts}
-              pinnedProductsCount={pinnedProductsCount}
-              onChangePosition={onChangePosition}
-              onProductBoostBury={onProductBoostBury}
-            />
-          )
-      }
+
+      {blockedProductsCount > 0 && (
+        <ProductsLoader
+          heading="Blocked Products"
+          isPinnable={isPinnable}
+          changeType="block"
+          merchandisingRules={merchandisingRules}
+          onChangePosition={onChangePosition}
+          onProductBoostBury={onProductBoostBury}
+          pinnedProductsCount={pinnedProductsCount}
+          products={merchandisingRules.blockedProducts}
+        />
+      )}
+
+      {pinnedProductsCount > 0 && (
+        <ProductsLoader
+          heading="Pinned Products"
+          isPinnable={isPinnable}
+          changeType="pin"
+          merchandisingRules={merchandisingRules}
+          onChangePosition={onChangePosition}
+          onProductBoostBury={onProductBoostBury}
+          pinnedProductsCount={pinnedProductsCount}
+          products={merchandisingRules.pinnedProducts}
+        />
+      )}
+
+      {boostedProductsCount > 0 && (
+        <ProductsLoader
+          heading="Boosted Products"
+          isPinnable={isPinnable}
+          changeType="boost"
+          merchandisingRules={merchandisingRules}
+          onChangePosition={onChangePosition}
+          onProductBoostBury={onProductBoostBury}
+          pinnedProductsCount={pinnedProductsCount}
+          products={merchandisingRules.boosts.product}
+        />
+      )}
+
+      {buriedProductsCount > 0 && (
+        <ProductsLoader
+          heading="Buried Products"
+          isPinnable={isPinnable}
+          changeType="bury"
+          merchandisingRules={merchandisingRules}
+          onChangePosition={onChangePosition}
+          onProductBoostBury={onProductBoostBury}
+          pinnedProductsCount={pinnedProductsCount}
+          products={merchandisingRules.buries.product}
+        />
+      )}
     </>
   );
 };

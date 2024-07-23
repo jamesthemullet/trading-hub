@@ -14,22 +14,22 @@ export const useCategoryProductSearch = () => {
       start,
       merchandisingRules,
     }: {
-      categoryId?: string;
-      query: string;
-      rows: number;
-      start: number;
       merchandisingRules: MerchandisingRules;
+      categoryId?: string;
       productIds?: string[];
+      query?: string;
+      rows?: number;
+      start?: number;
     }) => {
       setError('');
 
       try {
         const queryData = {
-          q: query,
-          rows,
-          start,
+          ...(query && { q: query }),
+          ...(!productIds && { rows }),
+          ...(!productIds && { start }),
           ...(categoryId && { categoryId }),
-          ...(productIds && { productIds }),
+          ...(productIds && { productId: productIds }),
         };
 
         const response = await search().betaMerchandisingProductCreate(

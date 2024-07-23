@@ -1,21 +1,26 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 
 import {
   mockMerchandisingRules,
   mockMerchandisingRulesWithData,
 } from '@/test/data/mock-merchandising-rules';
-import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
+import { renderWithProviders } from '@/test/render-with-providers';
 
+import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
 import { RulesetChanges } from './ruleset-changes';
 
 jest.mock('../../hooks/use-category-preview', () => ({
   useCategoryPreview: jest.fn(),
+}));
+jest.mock('../../hooks/use-category-product-search', () => ({
+  useCategoryProductSearch: jest.fn(),
 }));
 
 describe('RulesetChanges', () => {
   it('should render correctly', () => {
     const { container } = render(
       <RulesetChanges
+        isPinnable={false}
         merchandisingRules={mockMerchandisingRules}
         onChangePosition={jest.fn()}
         onProductBoostBury={jest.fn()}
@@ -25,16 +30,173 @@ describe('RulesetChanges', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('should show pinned products', () => {
-    render(
+  it('should show pinned products', async () => {
+    jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
+      error: '',
+      searchForProduct: jest.fn(() => {
+        return Promise.resolve({
+          products: [
+            {
+              id: '60183702',
+              productId: '60183702',
+              title: 'Product Title',
+              imageUrl: ['example1.jpg'],
+              brand: 'Product Brand',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£1',
+              url: '',
+            },
+          ],
+          pagination: {
+            totalItems: 1,
+          },
+        });
+      }),
+    }));
+
+    renderWithProviders(
       <RulesetChanges
-        merchandisingRules={mockMerchandisingRulesWithData}
-        merchandisingRulesWithInfo={mockMerchandisingRulesWithInfo}
+        isPinnable={true}
+        merchandisingRules={{
+          ...mockMerchandisingRulesWithData,
+          pinnedProducts: [
+            {
+              id: '60183702',
+            },
+            {
+              id: '60290408',
+            },
+            {
+              id: '60169259',
+            },
+            {
+              id: '60169250',
+            },
+            {
+              id: '60169251',
+            },
+            {
+              id: '60169252',
+            },
+          ],
+          boosts: {
+            ...mockMerchandisingRulesWithData.boosts,
+            product: [{ id: '3523522', weight: 100 }],
+          },
+          buries: {
+            ...mockMerchandisingRulesWithData.buries,
+            product: [{ id: '3523522', weight: 100 }],
+          },
+          blockedProducts: [{ id: '124124' }],
+        }}
         onChangePosition={jest.fn()}
         onProductBoostBury={jest.fn()}
       />
     );
 
-    expect(screen.getByText('ID: 60290408')).toBeInTheDocument();
+    const attributeTitle = await waitFor(() =>
+      screen.getByText('Attribute-level changes (4)')
+    );
+    const shownProduct = await waitFor(() => screen.getByText('ID: 60183702'));
+    const errorProduct = await waitFor(() =>
+      screen.getByText('Product 60290408 not found')
+    );
+
+    expect(attributeTitle).toBeInTheDocument();
+    expect(shownProduct).toBeInTheDocument();
+    expect(errorProduct).toBeInTheDocument();
+  });
+
+  it('should show load more button', async () => {
+    jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
+      error: '',
+      searchForProduct: jest.fn(() => {
+        return Promise.resolve({
+          products: [
+            {
+              id: '60183702',
+              productId: '60183702',
+              title: 'Product Title',
+              imageUrl: ['example1.jpg'],
+              brand: 'Product Brand',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£1',
+              url: '',
+            },
+          ],
+          pagination: {
+            totalItems: 9,
+          },
+        });
+      }),
+    }));
+
+    renderWithProviders(
+      <RulesetChanges
+        isPinnable={true}
+        merchandisingRules={{
+          ...mockMerchandisingRulesWithData,
+          pinnedProducts: [
+            {
+              id: '60183702',
+            },
+            {
+              id: '60290408',
+            },
+            {
+              id: '60169259',
+            },
+            {
+              id: '60169250',
+            },
+            {
+              id: '60169251',
+            },
+            {
+              id: '60169252',
+            },
+            {
+              id: '60169253',
+            },
+            {
+              id: '60169254',
+            },
+            {
+              id: '60169255',
+            },
+          ],
+          boosts: {
+            ...mockMerchandisingRulesWithData.boosts,
+            product: [{ id: '3523522', weight: 100 }],
+          },
+          buries: {
+            ...mockMerchandisingRulesWithData.buries,
+            product: [{ id: '3523522', weight: 100 }],
+          },
+          blockedProducts: [{ id: '124124' }],
+        }}
+        onChangePosition={jest.fn()}
+        onProductBoostBury={jest.fn()}
+      />
+    );
+
+    const loadMoreButton = await waitFor(() =>
+      screen.getByText('Load more products')
+    );
+
+    expect(loadMoreButton).toBeInTheDocument();
+
+    act(() => {
+      loadMoreButton.click();
+    });
+
+    const pinnedProducts = screen.getByLabelText('Pinned Products');
+    const product9 = await waitFor(() =>
+      within(pinnedProducts).getByLabelText('Position 9')
+    );
+
+    expect(product9).toBeInTheDocument();
   });
 });

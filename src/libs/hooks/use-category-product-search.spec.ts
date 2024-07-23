@@ -72,7 +72,7 @@ describe('useCategoryProductSearch', () => {
 
     const data = await result.current.searchForProduct({
       categoryId: '1',
-      query: '',
+      query: 'Socks',
       rows: 10,
       start: 0,
       merchandisingRules: mockMerchandisingRules,

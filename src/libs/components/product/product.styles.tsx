@@ -10,6 +10,7 @@ export const ProductWrapper = styled.div`
   width: 100%;
   border: solid 1px #cecece;
   padding: ${spacing(1)};
+  min-height: 100%;
 `;
 
 export const ProductHeader = styled.div`
