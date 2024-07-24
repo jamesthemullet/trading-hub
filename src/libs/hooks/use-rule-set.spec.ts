@@ -10,7 +10,7 @@ const baseUrl = 'http://localhost';
 const getRuleSetMock = jest.fn();
 
 const handlers = [
-  http.get(`${baseUrl}/merchandising/ruleset`, () => {
+  http.get(`${baseUrl}/search/beta/merchandising/category/ruleset`, () => {
     const { data, status, error } = getRuleSetMock();
     if (error) {
       return HttpResponse.error();

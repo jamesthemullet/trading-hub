@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 import type {
   Pagination,
+  ReturnedCategoryRuleSet,
   ReturnedGlobalRuleSet,
-  ReturnedRuleSet,
 } from '@/libs/api';
-import { merchandising, search } from '@/libs/api';
+import { search } from '@/libs/api';
 
 export const useRuleSet = (
   searchQuery: string,
@@ -15,7 +15,7 @@ export const useRuleSet = (
 ) => {
   const [shouldRefetch, refetch] = useState({});
   const [categoryRuleSets, setCategoryRuleSets] = useState<
-    Array<ReturnedRuleSet>
+    Array<ReturnedCategoryRuleSet>
   >([]);
   const [globalRuleSets, setGlobalRuleSets] = useState<
     Array<ReturnedGlobalRuleSet>
@@ -26,7 +26,7 @@ export const useRuleSet = (
     const asyncCall = async () => {
       const apiCall =
         ruleSetType === 'category'
-          ? merchandising().rulesetList
+          ? search().betaMerchandisingCategoryRulesetList
           : search().betaMerchandisingGlobalRulesetList;
       const result = await apiCall({
         q: searchQuery,
@@ -35,7 +35,7 @@ export const useRuleSet = (
       });
 
       if (ruleSetType === 'category') {
-        setCategoryRuleSets(result.data.ruleSets as ReturnedRuleSet[]);
+        setCategoryRuleSets(result.data.ruleSets as ReturnedCategoryRuleSet[]);
       }
       if (ruleSetType === 'global') {
         setGlobalRuleSets(result.data.ruleSets);
