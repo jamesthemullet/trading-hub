@@ -3,8 +3,7 @@ import { useRouter } from 'next/router';
 import type { CategoryRuleSet } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { useRuleSetCreate } from '@/libs/hooks';
-
-import { Ruleset } from '../../../../libs/modules/ruleset/ruleset';
+import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 const NewRuleSetPage = () => {
   const { handlePost } = useRuleSetCreate();
@@ -22,7 +21,7 @@ const NewRuleSetPage = () => {
     });
 
     if (resp) {
-      return router.push(`/category/rulesets/edit/${resp.id}`);
+      return router.push('/category/rulesets');
     }
   };
 

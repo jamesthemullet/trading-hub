@@ -197,9 +197,7 @@ describe('Index', () => {
     });
 
     await screen.findByText(NEW_RULE_BUTTON_TEXT);
-    expect(mockRouter.push).toHaveBeenCalledWith(
-      `/category/rulesets/edit/${MOCK_CATEGORY_ID}`
-    );
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets');
   });
 
   it('cancels new ruleset creation', async () => {

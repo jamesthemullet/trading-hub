@@ -113,7 +113,7 @@ export const Ruleset = ({
   }) => void;
   onCancel: () => void;
   // TODO: update to allow for keyword search
-  onCreate?: ({ categoryId, rules }: CategoryRuleSet) => void;
+  onCreate?: (args: CategoryRuleSet) => void;
   rulesetCategory?: Category;
   rulesetId?: string;
   rulesetMerchandisingRules?: MerchandisingRules;
