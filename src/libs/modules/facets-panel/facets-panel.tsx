@@ -157,6 +157,7 @@ export const FacetsPanel = ({
   canMergeValueAttributes,
   displayRowOrderControls = false,
   canPreviewChanges,
+  canEditDisplayName = false,
 }: {
   onSave: () => void;
   onCancel: () => void;
@@ -178,6 +179,7 @@ export const FacetsPanel = ({
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   canPreviewChanges?: boolean;
+  canEditDisplayName?: boolean;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
@@ -225,7 +227,7 @@ export const FacetsPanel = ({
           <Text>{facet.indexPropertyName}</Text>
         </Col>
         <Col>
-          {onFacetDataChange && (
+          {onFacetDataChange && canEditDisplayName ? (
             <EditableLabel
               displayValue={facet.displayValue}
               onDisplayValueChange={(newValue) =>
@@ -233,6 +235,8 @@ export const FacetsPanel = ({
               }
               canCancelEdit={true}
             />
+          ) : (
+            <Text>{facet.displayValue}</Text>
           )}
         </Col>
         <Col>
@@ -354,6 +358,7 @@ export const FacetsPanel = ({
           onClose={onClose}
           facet={selectedFacet}
           canMerge={canMergeValueAttributes}
+          canEditDisplayName={canEditDisplayName}
         />
       )}
 

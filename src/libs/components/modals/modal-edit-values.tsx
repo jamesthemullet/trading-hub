@@ -153,10 +153,12 @@ export const ModalEditValues = ({
   onClose,
   facet,
   canMerge = false,
+  canEditDisplayName = false,
 }: {
   onClose: () => void;
   facet: ReturnedGlobalFacet;
   canMerge?: boolean;
+  canEditDisplayName?: boolean;
 }) => {
   const [editFacetValues, setEditFacetValues] = useState<AttributeValue[]>([]);
   const [mergeList, setMergeList] = useState<string[]>([]);
@@ -574,62 +576,66 @@ export const ModalEditValues = ({
                       </Col>
 
                       <FlexColumnCol>
-                        <EditableLabel
-                          displayValue={displayValue}
-                          onDisplayValueChange={(newValue) => {
-                            setEditFacetValues((prev) => {
-                              return prev.map((value) => {
-                                if (value.displayValue === displayValue) {
-                                  return {
-                                    ...value,
-                                    displayValue: newValue,
-                                  };
-                                }
-                                setIsSaveDisabled(false);
-                                return value;
-                              });
-                            });
-
-                            if (
-                              mergedValues &&
-                              mergedValues.length > 1 &&
-                              newValue === defaultMergedDisplayValue
-                            ) {
-                              setIsSaveDisabled(true);
-                              setError('Please name your merge to continue');
-                              return;
-                            }
-
-                            if (mergedValues && mergedValues.length > 1) {
-                              setFacetMergedValues((prev) =>
-                                prev?.map((values) => {
-                                  if (
-                                    values.mergedValues?.includes(
-                                      attribute.toLocaleLowerCase()
-                                    )
-                                  ) {
+                        {canEditDisplayName ? (
+                          <EditableLabel
+                            displayValue={displayValue}
+                            onDisplayValueChange={(newValue) => {
+                              setEditFacetValues((prev) => {
+                                return prev.map((value) => {
+                                  if (value.displayValue === displayValue) {
                                     return {
-                                      ...values,
+                                      ...value,
                                       displayValue: newValue,
                                     };
                                   }
+                                  setIsSaveDisabled(false);
+                                  return value;
+                                });
+                              });
 
-                                  return values;
-                                })
-                              );
-                              setIsSaveDisabled(false);
-                              setError('');
+                              if (
+                                mergedValues &&
+                                mergedValues.length > 1 &&
+                                newValue === defaultMergedDisplayValue
+                              ) {
+                                setIsSaveDisabled(true);
+                                setError('Please name your merge to continue');
+                                return;
+                              }
+
+                              if (mergedValues && mergedValues.length > 1) {
+                                setFacetMergedValues((prev) =>
+                                  prev?.map((values) => {
+                                    if (
+                                      values.mergedValues?.includes(
+                                        attribute.toLocaleLowerCase()
+                                      )
+                                    ) {
+                                      return {
+                                        ...values,
+                                        displayValue: newValue,
+                                      };
+                                    }
+
+                                    return values;
+                                  })
+                                );
+                                setIsSaveDisabled(false);
+                                setError('');
+                              }
+                            }}
+                            shouldOpenFromParent={
+                              displayValue === defaultMergedDisplayValue
                             }
-                          }}
-                          shouldOpenFromParent={
-                            displayValue === defaultMergedDisplayValue
-                          }
-                          error={
-                            displayValue === defaultMergedDisplayValue
-                              ? error
-                              : undefined
-                          }
-                        />
+                            error={
+                              displayValue === defaultMergedDisplayValue
+                                ? error
+                                : undefined
+                            }
+                          />
+                        ) : (
+                          <Text>{displayValue}</Text>
+                        )}
                         {error &&
                           displayValue === defaultMergedDisplayValue && (
                             <StyledError>{error}</StyledError>

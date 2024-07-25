@@ -333,7 +333,7 @@ describe('Facet Panel', () => {
     await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('color'));
   });
 
-  it('should edit a display value', async () => {
+  it('should edit a display value if canEditDisplayName field passed', async () => {
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();
     const user = userEvent.setup();
@@ -345,6 +345,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={onFacetDataChangeSpy}
+        canEditDisplayName={true}
       />
     );
 

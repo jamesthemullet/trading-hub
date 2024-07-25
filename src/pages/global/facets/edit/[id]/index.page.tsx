@@ -113,6 +113,7 @@ const Page = () => {
           facetsData={filteredFacets}
           defaultCategory={defaultCategory}
           canMergeValueAttributes
+          canEditDisplayName={true}
         />
       )}
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />

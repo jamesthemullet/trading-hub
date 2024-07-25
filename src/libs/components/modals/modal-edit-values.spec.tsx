@@ -63,6 +63,7 @@ describe('ModalEditValues', () => {
           id: '1',
           lastChanged: { user: 'Bob', date: '2021-10-01' },
         }}
+        canEditDisplayName={true}
       />
     );
 
@@ -158,6 +159,7 @@ describe('ModalEditValues', () => {
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -180,6 +182,7 @@ describe('ModalEditValues', () => {
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -201,6 +204,7 @@ describe('ModalEditValues', () => {
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -242,6 +246,7 @@ describe('ModalEditValues', () => {
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -299,6 +304,7 @@ describe('ModalEditValues', () => {
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -333,6 +339,7 @@ describe('ModalEditValues', () => {
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -388,6 +395,7 @@ describe('ModalEditValues', () => {
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -442,6 +450,7 @@ describe('ModalEditValues', () => {
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -511,6 +520,7 @@ describe('ModalEditValues', () => {
               },
             ],
           }}
+          canEditDisplayName={true}
         />
       );
 
@@ -681,6 +691,7 @@ describe('ModalEditValues', () => {
               },
             ],
           }}
+          canEditDisplayName={true}
         />
       );
 

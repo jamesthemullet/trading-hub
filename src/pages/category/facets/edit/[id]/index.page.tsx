@@ -53,12 +53,6 @@ const Page = ({ id }: { id: string }) => {
     path: '/',
   };
 
-  const onFacetDataChange = (index: number) => {
-    // TO-DO This will need to be covered in /search/beta/merchandising/category/ruleset/{ruleSetId}
-    /* istanbul ignore next */
-    console.log(index);
-  };
-
   const onHandleStatusChange = async (
     index: number,
     value: 'included' | 'excluded'
@@ -109,7 +103,6 @@ const Page = ({ id }: { id: string }) => {
                 : [...firstPart, secondPart[0], item, ...secondPart.slice(1)];
             setLocalFacetData(updatedFacets);
           }}
-          onFacetDataChange={onFacetDataChange}
           onHandleStatusChange={onHandleStatusChange}
           defaultCategory={category}
           canPreviewChanges
