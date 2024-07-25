@@ -13,7 +13,6 @@ import {
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
-import { ModalAddFacets } from '@/libs/components/modals/modal-add-facets';
 import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
 import {
   TableCol,
@@ -158,7 +157,6 @@ export const FacetsPanel = ({
   canMergeValueAttributes,
   displayRowOrderControls = false,
   canPreviewChanges,
-  canAddFacet,
 }: {
   onSave: () => void;
   onCancel: () => void;
@@ -180,7 +178,6 @@ export const FacetsPanel = ({
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   canPreviewChanges?: boolean;
-  canAddFacet?: boolean;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
@@ -188,7 +185,6 @@ export const FacetsPanel = ({
   const [selectedFacet, setSelectedFacet] = useState<ReturnedFacet | undefined>(
     undefined
   );
-  const [isAddFacetModalOpen, setIsAddFacetModalOpen] = useState(false);
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
 
   const { callback: handleSearch } = useDebounce((val: string) => {
@@ -206,7 +202,6 @@ export const FacetsPanel = ({
   };
 
   const onClose = () => {
-    setIsAddFacetModalOpen(false);
     setIsEditValuesModalOpen(false);
   };
 
@@ -321,19 +316,8 @@ export const FacetsPanel = ({
             <LowerHeading isStrong>Preview and manage facets</LowerHeading>
             <Text>(sort by algo control)</Text>
           </div>
-          {canAddFacet && (
-            <div>
-              <Button
-                onClick={() => setIsAddFacetModalOpen(!isAddFacetModalOpen)}
-              >
-                Add facet
-              </Button>
-            </div>
-          )}
         </AddFacetPanel>
       </SectionWrapper>
-
-      {isAddFacetModalOpen && <ModalAddFacets onClose={onClose} />}
 
       {selectedCategory && setSearch && (
         <SectionWrapper>

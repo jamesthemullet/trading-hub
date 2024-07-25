@@ -24,6 +24,7 @@ import { ParsedUrlQuery } from 'querystring';
 import Page, { getServerSideProps } from './index.page';
 
 const mockUpdateGlobalFacet = jest.fn();
+const mockUpdateRuleSet = jest.fn();
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -37,6 +38,12 @@ jest.mock('@/libs/hooks', () => ({
   useGlobalFacetUpdate: () => {
     return { handleUpdate: mockUpdateGlobalFacet };
   },
+  useCategoryRuleSetUpdate: () => {
+    return { updateRuleSet: mockUpdateRuleSet };
+  },
+}));
+jest.mock('@/libs/hooks/use-get-facet-attributes', () => ({
+  useGetFacetAttributes: jest.fn(),
 }));
 
 const logSpy = jest.spyOn(console, 'log');

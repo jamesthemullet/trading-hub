@@ -375,56 +375,6 @@ describe('Facet Panel', () => {
     });
   });
 
-  describe('Add Facet Modal', () => {
-    const openModal = async () => {
-      renderWithProviders(
-        <FacetsPanel
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          title="Facet Rule Editor"
-          facetsData={globalFacetsListMock.facets}
-          onFacetDataChange={jest.fn()}
-          canAddFacet={true}
-        />
-      );
-
-      const addFacetButton = screen.getByText('Add facet');
-
-      act(() => {
-        addFacetButton.click();
-      });
-    };
-
-    it('should open the modal', async () => {
-      await openModal();
-
-      expect(
-        screen.getByRole('heading', { level: 3, name: 'Add facet' })
-      ).toBeVisible();
-    });
-
-    it('should close the modal on click of the close button', async () => {
-      const user = userEvent.setup({ delay: null });
-      await openModal();
-
-      expect(
-        screen.getByRole('heading', { level: 3, name: 'Add facet' })
-      ).toBeVisible();
-
-      const closeButton = screen.getByRole('button', { name: 'Close Modal' });
-
-      act(() => {
-        user.click(closeButton);
-      });
-
-      waitFor(() => {
-        expect(
-          screen.getByRole('heading', { level: 3, name: 'Add facet' })
-        ).not.toBeVisible();
-      });
-    });
-  });
-
   describe('Edit Facet Values Modal', () => {
     const openModal = async () => {
       renderWithProviders(

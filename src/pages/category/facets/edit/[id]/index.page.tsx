@@ -55,6 +55,7 @@ const Page = ({ id }: { id: string }) => {
 
   const onFacetDataChange = (index: number) => {
     // TO-DO This will need to be covered in /search/beta/merchandising/category/ruleset/{ruleSetId}
+    /* istanbul ignore next */
     console.log(index);
   };
 
@@ -111,8 +112,7 @@ const Page = ({ id }: { id: string }) => {
           onFacetDataChange={onFacetDataChange}
           onHandleStatusChange={onHandleStatusChange}
           defaultCategory={category}
-          canPreviewChanges={true}
-          canAddFacet={true}
+          canPreviewChanges
         />
       )}
     </>
