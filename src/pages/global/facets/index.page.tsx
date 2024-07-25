@@ -51,6 +51,7 @@ const FacetManagementPage = () => {
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
+    setCurrentPage(1);
   }, 300);
 
   const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
