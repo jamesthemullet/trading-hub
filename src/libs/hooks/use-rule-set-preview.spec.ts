@@ -2,14 +2,13 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedRuleSet } from '@/libs/api';
+import type { ReturnedCategoryRuleSet } from '@/libs/api';
 
 import { useRuleSetPreview } from './use-rule-set-preview';
 
 const baseUrl = 'http://localhost';
 const mockCategoryId = 'abc123';
-const mockFacetId = '123';
-const mockRuleData: ReturnedRuleSet = {
+const mockRuleData: ReturnedCategoryRuleSet = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],
@@ -29,17 +28,15 @@ const badResponse = {
 };
 
 const getRuleSetPreviewMock = jest.fn();
-const getFacetMock = jest.fn();
 
 const handlers = [
-  http.get(`${baseUrl}/search/beta/merchandising/facet/${mockFacetId}`, () => {
-    const { data, status } = getFacetMock();
-    return HttpResponse.json(data, status);
-  }),
-  http.get(`${baseUrl}/merchandising/ruleset/${mockCategoryId}`, () => {
-    const { data, status } = getRuleSetPreviewMock();
-    return HttpResponse.json(data, status);
-  }),
+  http.get(
+    `${baseUrl}/search/beta/merchandising/category/ruleset/${mockCategoryId}`,
+    () => {
+      const { data, status } = getRuleSetPreviewMock();
+      return HttpResponse.json(data, status);
+    }
+  ),
 ];
 
 const server = setupServer(...handlers);
@@ -63,7 +60,7 @@ describe('useRuleSet', () => {
   });
 
   it('should render the hook', async () => {
-    const mockResponse: ReturnedRuleSet = mockRuleData;
+    const mockResponse: ReturnedCategoryRuleSet = mockRuleData;
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: mockResponse,
       status: { status: 200 },

@@ -27,10 +27,13 @@ const ruleSet = {
 const updateRuleSetMock = jest.fn();
 
 const handlers = [
-  http.put(`${baseUrl}/merchandising/ruleset/${ruleSetId}`, () => {
-    const { data, status } = updateRuleSetMock();
-    return HttpResponse.json(data, status);
-  }),
+  http.put(
+    `${baseUrl}/search/beta/merchandising/category/ruleset/${ruleSetId}`,
+    () => {
+      const { data, status } = updateRuleSetMock();
+      return HttpResponse.json(data, status);
+    }
+  ),
 ];
 
 const server = setupServer(...handlers);

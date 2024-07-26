@@ -391,11 +391,6 @@ export const getMockMapping: () => Record<
       return { body: jsonBody, status };
     },
   },
-  '/search/beta/merchandising/category/ruleset/{ruleSetId}': {
-    get: () => {
-      return { body: categoryRuleSetMock, status: 200 };
-    },
-  },
   '/merchandising/facet/{facetId}': {
     get: (req, status, jsonBody) => {
       if (status !== 200) {

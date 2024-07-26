@@ -8,7 +8,7 @@ const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 const baseUrl = 'http://localhost';
 const deleteRuleSetMock = jest.fn();
 
-const mockUrl = `${baseUrl}/merchandising/ruleset/${ruleSetId}`;
+const mockUrl = `${baseUrl}/search/beta/merchandising/category/ruleset/${ruleSetId}`;
 const handlers = [
   http.delete(mockUrl, () => {
     const { data, status } = deleteRuleSetMock();

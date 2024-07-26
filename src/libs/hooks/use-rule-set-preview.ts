@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import type { ReturnedRuleSet } from '@/libs/api';
-import { merchandising } from '@/libs/api';
+import type { ReturnedCategoryRuleSet } from '@/libs/api';
+import { search } from '@/libs/api';
 
 export const useRuleSetPreview = (id: string) => {
-  const api = useMemo(() => merchandising(), []);
-  const [ruleSetDetail, setRuleSetDetail] = useState<ReturnedRuleSet>({
+  const api = useMemo(() => search(), []);
+  const [ruleSetDetail, setRuleSetDetail] = useState<ReturnedCategoryRuleSet>({
     categoryId: '',
     categoryName: '',
     categoriesInfo: [
@@ -37,7 +37,7 @@ export const useRuleSetPreview = (id: string) => {
   useEffect(() => {
     const asyncCall = async () => {
       try {
-        const response = await api.rulesetDetail(id);
+        const response = await api.betaMerchandisingCategoryRulesetDetail(id);
 
         const data = response.data;
 

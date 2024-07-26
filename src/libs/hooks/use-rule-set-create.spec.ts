@@ -8,7 +8,7 @@ const getRuleSetCreateMock = jest.fn();
 
 const baseUrl = 'http://localhost';
 const handlers = [
-  http.post(`${baseUrl}/merchandising/ruleset`, () => {
+  http.post(`${baseUrl}/search/beta/merchandising/category/ruleset`, () => {
     const { data, status, error } = getRuleSetCreateMock();
     if (error) {
       return HttpResponse.error();

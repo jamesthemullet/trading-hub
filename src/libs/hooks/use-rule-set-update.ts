@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { merchandising, RuleSet } from '@/libs/api';
+import type { RuleSet } from '@/libs/api';
+import { search } from '@/libs/api';
 
 export const useUpdateRuleSet = () => {
   const [error, setError] = useState('');
@@ -20,14 +21,16 @@ export const useUpdateRuleSet = () => {
       setIsSaving(true);
 
       try {
-        // TODO: move to search/beta api when ready for use
         const body = {
           categoryId,
           facets: rules.facets,
           isEnabled: rules.isEnabled,
           rules: rules.rules,
         };
-        const response = await merchandising().rulesetUpdate(ruleSetId, body);
+        const response = await search().betaMerchandisingCategoryRulesetUpdate(
+          ruleSetId,
+          body
+        );
 
         setIsSaving(false);
         return response.data;

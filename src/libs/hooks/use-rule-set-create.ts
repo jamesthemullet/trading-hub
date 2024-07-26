@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import type { MerchandisingRules, RuleSetFacetConfigWithId } from '../api';
-import { merchandising } from '../api';
+import type { MerchandisingRules, RuleSetFacetConfigWithId } from '@/libs/api';
+import { search } from '@/libs/api';
 
 export const useRuleSetCreate = () => {
   const [error, setError] = useState('');
@@ -25,7 +25,8 @@ export const useRuleSetCreate = () => {
           isEnabled: true,
           rules: merchandisingRules,
         };
-        const response = await merchandising().rulesetCreate(body);
+        const response =
+          await search().betaMerchandisingCategoryRulesetCreate(body);
         return response.data;
       } catch (error) {
         setError(`Failed to create ruleset ${error}`);

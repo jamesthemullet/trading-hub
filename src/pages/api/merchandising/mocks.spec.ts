@@ -12,33 +12,6 @@ import {
 } from './mocks';
 
 describe('mocks', () => {
-  describe('/search/beta/merchandising/category/ruleset/{ruleSetId}', () => {
-    it('should add mock rulesets', () => {
-      const mockMapping = getMockMapping();
-      expect(
-        mockMapping['/search/beta/merchandising/category/ruleset/{ruleSetId}']
-          .get
-      ).toBeDefined();
-
-      const result = mockMapping[
-        '/search/beta/merchandising/category/ruleset/{ruleSetId}'
-      ].get!(
-        createMockNextApiRequest({
-          url: '/merchandising/ruleset/1',
-          method: 'GET',
-        }),
-        200,
-        categoryRuleSetMock
-      );
-      expect(result).toEqual({
-        body: {
-          ...categoryRuleSetMock,
-        },
-        status: 200,
-      });
-    });
-  });
-
   describe('/merchandising/ruleset/{category}', () => {
     const mockResponse: ReturnedRuleSet = {
       id: '1',

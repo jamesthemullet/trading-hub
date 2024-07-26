@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { merchandising } from '@/libs/api';
+import { search } from '@/libs/api';
 
 export const useRuleSetDelete = () => {
   const [error, setError] = useState('');
@@ -10,7 +10,8 @@ export const useRuleSetDelete = () => {
       setError('');
 
       try {
-        const response = await merchandising().rulesetDelete(rulesetId);
+        const response =
+          await search().betaMerchandisingCategoryRulesetDelete(rulesetId);
 
         return response.data;
       } catch (error) {
