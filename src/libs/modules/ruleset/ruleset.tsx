@@ -15,6 +15,7 @@ import type {
 import {
   CategorySearch,
   ChangeProductBoostBury,
+  ErrorMessage,
   Loader,
   Preview,
   ProductGridHeader,
@@ -184,6 +185,7 @@ export const Ruleset = ({
 
   const {
     data,
+    error: previewError,
     isLoading,
     setRules: setPreviewRules,
   } = useCategoryPreview({
@@ -521,6 +523,8 @@ export const Ruleset = ({
             )}
           </PanelTop>
           <TabContent>
+            {previewError && <ErrorMessage>Error: {previewError}</ErrorMessage>}
+
             {currentEditorTab === 0 && (
               <VisualEditor
                 products={data.products}

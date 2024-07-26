@@ -5,6 +5,7 @@ import type { ReturnedRuleSet } from '@/libs/api';
 import {
   Button,
   DataTable,
+  ErrorMessage,
   Heading,
   Loader,
   Search,
@@ -54,6 +55,7 @@ const RuleSets = () => {
 
   const {
     categoryRuleSets,
+    error,
     pagination,
     refetchRuleSetList,
     setCategoryRuleSets,
@@ -134,6 +136,8 @@ const RuleSets = () => {
           rows={rows}
           onDeleteRuleSet={onDeleteRuleSet}
         />
+
+        {error && <ErrorMessage>Error: {error}</ErrorMessage>}
 
         <TablePagination
           pagination={pagination}

@@ -63,13 +63,19 @@ export const Label = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
   margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
 `;
 
+export const ErrorMessage = styled.p`
+  ${commonStyles}
+  color: ${color.saleRed};
+  padding: ${spacing(4)};
+`;
+
 export const CentredError = styled.p`
   ${commonStyles}
   display: grid;
   height: 100vh;
   justify-items: center;
   align-items: center;
-  color: ${color.errorRed};
+  color: ${color.saleRed};
   text-align: center;
   padding: ${spacing(4)};
 `;

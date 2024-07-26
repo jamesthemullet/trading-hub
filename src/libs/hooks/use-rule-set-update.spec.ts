@@ -61,23 +61,27 @@ describe('useUpdateRuleSet', () => {
     const {
       result: { current },
     } = renderHook(() => useUpdateRuleSet());
-    const resp = await current.updateRuleSet({
-      ruleSetId,
-      rules: {
-        isEnabled: true,
-        rules: mockMerchandisingRules,
-      },
-      categoryId: categoryId,
-    });
+    await act(async () => {
+      const resp = await current.updateRuleSet({
+        ruleSetId,
+        rules: {
+          isEnabled: true,
+          rules: mockMerchandisingRules,
+        },
+        categoryId: categoryId,
+      });
 
-    expect(resp).toEqual(ruleSet);
+      expect(resp).toEqual({ status: 'success' });
+    });
   });
 
   it('should return error if API returns non 200', async () => {
     updateRuleSetMock.mockReturnValueOnce({
-      data: {},
-      error: 'api error',
       status: { status: 500 },
+      data: {
+        message: 'JSON parse error',
+        status: 'Bad Request',
+      },
     });
     const { result } = renderHook(() => useUpdateRuleSet());
 
@@ -92,7 +96,7 @@ describe('useUpdateRuleSet', () => {
       });
     });
 
-    expect(result.current.error).toBe('PUT status 500');
+    expect(result.current.error).toBe('Error JSON parse error Bad Request');
   });
 
   it('should error if API fails to fetch', async () => {
@@ -112,6 +116,6 @@ describe('useUpdateRuleSet', () => {
       });
     });
 
-    expect(result.current.error).toEqual('PUT status 500');
+    expect(result.current.error).toEqual('Error No data undefined');
   });
 });

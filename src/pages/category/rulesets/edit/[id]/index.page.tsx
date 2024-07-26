@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
 import type { RuleSet } from '@/libs/api';
-import { Heading, Loader } from '@/libs/components';
+import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { useRuleSetPreview, useUpdateRuleSet } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
@@ -13,7 +13,7 @@ type PageProps = {
 
 const Page = ({ id }: PageProps) => {
   const { ruleSetDetail } = useRuleSetPreview(id);
-  const { updateRuleSet, isSaving } = useUpdateRuleSet();
+  const { updateRuleSet, isSaving, error } = useUpdateRuleSet();
   const router = useRouter();
 
   const saveRuleSet = async ({
@@ -28,18 +28,21 @@ const Page = ({ id }: PageProps) => {
   }) => {
     // istanbul ignore next
     if (!categoryIds?.[0]) return;
-    await updateRuleSet({
+    const response = await updateRuleSet({
       ruleSetId,
       rules: ruleSet,
       categoryId: categoryIds[0],
-    }).then(() => {
-      router.push('/category/rulesets');
     });
+    if (response.status === 'success') {
+      router.push('/category/rulesets');
+    }
   };
 
   return (
     <>
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
+
+      {error && <ErrorMessage>{error}</ErrorMessage>}
 
       {ruleSetDetail.categoryName && (
         <Ruleset

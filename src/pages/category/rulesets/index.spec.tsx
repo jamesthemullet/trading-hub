@@ -52,6 +52,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
+      error: '',
     });
     renderWithProviders(<RuleSets />);
 
@@ -84,6 +85,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
+      error: '',
     });
     const { container } = renderWithProviders(<RuleSets />);
 
@@ -118,6 +120,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
+      error: '',
     });
 
     renderWithProviders(<RuleSets />);
@@ -169,6 +172,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
+      error: '',
     });
 
     const user = userEvent.setup();
@@ -244,6 +248,7 @@ describe('Index', () => {
       refetchRuleSetList: () => jest.fn,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
+      error: '',
     });
 
     renderWithProviders(<RuleSets />);
@@ -261,5 +266,23 @@ describe('Index', () => {
         rules: mockMerchandisingRules,
       },
     });
+  });
+
+  it('should show errors', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: 'Failed to fetch',
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    expect(await screen.findByText('Error: Failed to fetch')).toBeVisible();
   });
 });

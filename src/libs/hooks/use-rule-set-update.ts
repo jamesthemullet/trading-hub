@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react';
 import type { RuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { validateErrorResponse } from './utils/error';
+
 export const useUpdateRuleSet = () => {
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -27,18 +29,15 @@ export const useUpdateRuleSet = () => {
           isEnabled: rules.isEnabled,
           rules: rules.rules,
         };
-        const response = await search().betaMerchandisingCategoryRulesetUpdate(
-          ruleSetId,
-          body
-        );
+
+        await search().betaMerchandisingCategoryRulesetUpdate(ruleSetId, body);
 
         setIsSaving(false);
-        return response.data;
+        return { status: 'success' };
       } catch (error) {
-        if (error && typeof error === 'object' && 'status' in error) {
-          setError(`PUT status ${error.status}`);
-          return;
-        }
+        setIsSaving(false);
+        setError(validateErrorResponse(error));
+        return { status: 'error' };
       }
     },
     [setIsSaving]

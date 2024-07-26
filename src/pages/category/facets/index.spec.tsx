@@ -66,6 +66,7 @@ describe('Category facet management', () => {
       refetchRuleSetList: () => jest.fn,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
+      error: '',
     });
     renderWithProviders(<FacetManagementPage />);
 
@@ -102,6 +103,7 @@ describe('Category facet management', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       globalRuleSets: [],
+      error: '',
     });
 
     const user = userEvent.setup();
@@ -130,6 +132,7 @@ describe('Category facet management', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       globalRuleSets: [],
+      error: '',
     });
 
     renderWithProviders(<FacetManagementPage />);
@@ -162,6 +165,7 @@ describe('Category facet management', () => {
       refetchRuleSetList: () => jest.fn,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
+      error: '',
     });
 
     const user = userEvent.setup();
@@ -246,6 +250,7 @@ describe('Category facet management', () => {
       refetchRuleSetList: () => jest.fn,
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
+      error: '',
     });
 
     renderWithProviders(<FacetManagementPage />);

@@ -62,7 +62,8 @@ const mockSearchData: SearchPreviewResponseBeta = {
 };
 
 const badResponse = {
-  status: 'Bad error',
+  message: 'JSON parse error',
+  status: 'Bad Request',
 };
 
 const getRuleSetPreviewMock = jest.fn();
@@ -151,7 +152,7 @@ describe('useRuleSet', () => {
 
     const expectedData = {
       categoryProducts: [],
-      error: 'Failed to get categories 500',
+      error: 'Error JSON parse error Bad Request',
     };
 
     await waitFor(() => {

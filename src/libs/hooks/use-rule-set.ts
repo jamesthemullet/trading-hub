@@ -7,6 +7,8 @@ import type {
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { validateErrorResponse } from './utils/error';
+
 export const useRuleSet = (
   searchQuery: string,
   start: number,
@@ -21,33 +23,42 @@ export const useRuleSet = (
     Array<ReturnedGlobalRuleSet>
   >([]);
   const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const asyncCall = async () => {
-      const apiCall =
-        ruleSetType === 'category'
-          ? search().betaMerchandisingCategoryRulesetList
-          : search().betaMerchandisingGlobalRulesetList;
-      const result = await apiCall({
-        q: searchQuery,
-        start,
-        rows,
-      });
+      try {
+        const apiCall =
+          ruleSetType === 'category'
+            ? search().betaMerchandisingCategoryRulesetList
+            : search().betaMerchandisingGlobalRulesetList;
+        const result = await apiCall({
+          q: searchQuery,
+          start,
+          rows,
+        });
 
-      if (ruleSetType === 'category') {
-        setCategoryRuleSets(result.data.ruleSets as ReturnedCategoryRuleSet[]);
+        if (ruleSetType === 'category') {
+          setCategoryRuleSets(
+            result.data.ruleSets as ReturnedCategoryRuleSet[]
+          );
+        }
+        if (ruleSetType === 'global') {
+          setGlobalRuleSets(result.data.ruleSets);
+        }
+        setPagination(result.data.pagination);
+      } catch (error) {
+        // istanbul ignore next
+        setError(validateErrorResponse(error));
       }
-      if (ruleSetType === 'global') {
-        setGlobalRuleSets(result.data.ruleSets);
-      }
-      setPagination(result.data.pagination);
     };
 
     void asyncCall();
-  }, [start, rows, ruleSetType, searchQuery, shouldRefetch]);
+  }, [start, rows, ruleSetType, searchQuery, shouldRefetch, setError]);
 
   return {
     categoryRuleSets,
+    error,
     globalRuleSets,
     pagination: pagination,
     refetchRuleSetList: () => refetch({}),

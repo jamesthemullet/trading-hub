@@ -10,7 +10,6 @@ import {
   useUpdateRuleSet,
 } from '@/libs/hooks';
 import {
-  categoryId,
   mockUseRuleSetPreviewData,
   ruleSetId,
 } from '@/test/data/mock-use-rule-set-preview.data';
@@ -44,22 +43,7 @@ describe('Index', () => {
   const mockUpdateRuleSet = {
     updateRuleSet: jest.fn(() =>
       Promise.resolve({
-        rules: {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: { numeric: [], alphanumeric: [], product: [] },
-          buries: { numeric: [], alphanumeric: [], product: [] },
-        },
-        categoryId: categoryId,
-        isEnabled: true,
-        categoryName: 'Jeans',
-        id: ruleSetId,
-        categoriesInfo: [
-          {
-            id: ruleSetId,
-          },
-        ],
-        lastChanged: { date: '2024-01-02T22:10:17Z', user: 'M&S' },
+        status: 'success',
       })
     ),
     isSaving: true,
@@ -157,5 +141,22 @@ describe('Index', () => {
     }
 
     expect((await result.props).id).toBe(mockPageId);
+  });
+
+  it('should show errors', async () => {
+    const mockUpdateRuleSet = {
+      updateRuleSet: jest.fn(() =>
+        Promise.resolve({
+          status: 'fail',
+        })
+      ),
+      isSaving: true,
+      error: 'Failed to fetch',
+    };
+    jest.mocked(useUpdateRuleSet).mockImplementation(() => mockUpdateRuleSet);
+
+    render(<Page id={ruleSetId} />);
+
+    expect(await screen.findByText('Error: Unknown error')).toBeVisible();
   });
 });

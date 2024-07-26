@@ -7,6 +7,8 @@ import type {
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { validateErrorResponse } from './utils/error';
+
 export const useCategoryPreview = ({
   categoryId,
   merchandisingRules,
@@ -89,9 +91,8 @@ export const useCategoryPreview = ({
         setIsLoading(false);
       } catch (error: unknown) {
         if (error) {
-          setError(
-            `Failed to get categories ${(error as { status: string })?.status}`
-          );
+          setError(validateErrorResponse(error));
+          setIsLoading(false);
         }
       }
     };
