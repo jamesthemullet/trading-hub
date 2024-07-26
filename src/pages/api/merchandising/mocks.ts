@@ -276,74 +276,44 @@ export const attributesMock: AttributesResponse = {
   ],
 };
 
-export const attributeValuesMock: AttributeValuesResponse['values'] = [
-  {
-    displayValue: 'Cotton',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: false,
-  },
-  {
-    displayValue: 'Duck Down',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: true,
-  },
-  {
-    displayValue: 'Duck Down And Feather',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: true,
-  },
-  {
-    displayValue: 'Ducky Downy',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: true,
-  },
-  {
-    displayValue: 'Ducky Downy And Feathery',
-    mergedValues: [],
-    isExcluded: true,
-    isPinned: false,
-  },
-  {
-    displayValue: 'Silk',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: false,
-  },
-  {
-    displayValue: 'Merged 1',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: false,
-  },
-  {
-    displayValue: 'Merged 2',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: false,
-  },
-  {
-    displayValue: 'Other Merged 1',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: false,
-  },
-  {
-    displayValue: 'Other Merged 2',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: false,
-  },
-  {
-    displayValue: 'More Silk',
-    mergedValues: [],
-    isExcluded: false,
-    isPinned: false,
-  },
-];
+export const attributeValuesMock: AttributeValuesResponse = {
+  pagination: {},
+  values: [
+    {
+      displayValue: 'Cotton',
+    },
+    {
+      displayValue: 'Duck Down',
+    },
+    {
+      displayValue: 'Duck Down And Feather',
+    },
+    {
+      displayValue: 'Ducky Downy',
+    },
+    {
+      displayValue: 'Ducky Downy And Feathery',
+    },
+    {
+      displayValue: 'Silk',
+    },
+    {
+      displayValue: 'Merged 1',
+    },
+    {
+      displayValue: 'Merged 2',
+    },
+    {
+      displayValue: 'Other Merged 1',
+    },
+    {
+      displayValue: 'Other Merged 2',
+    },
+    {
+      displayValue: 'More Silk',
+    },
+  ],
+};
 
 export const keywordRulesetMock: ReturnedKeywordRuleSets = {
   ruleSets: [

@@ -13,7 +13,6 @@ import {
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
-import { ModalEditValues } from '@/libs/components/modals/modal-edit-values';
 import {
   TableCol,
   TableHeading,
@@ -154,7 +153,6 @@ export const FacetsPanel = ({
   title,
   facetsData,
   defaultCategory,
-  canMergeValueAttributes,
   displayRowOrderControls = false,
   canPreviewChanges,
   canEditDisplayName = false,
@@ -184,10 +182,6 @@ export const FacetsPanel = ({
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
   );
-  const [selectedFacet, setSelectedFacet] = useState<ReturnedFacet | undefined>(
-    undefined
-  );
-  const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
@@ -201,15 +195,6 @@ export const FacetsPanel = ({
   // istanbul ignore next
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
-  };
-
-  const onClose = () => {
-    setIsEditValuesModalOpen(false);
-  };
-
-  const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
-    setIsEditValuesModalOpen(true);
-    setSelectedFacet(facet);
   };
 
   const FacetRow = ({
@@ -283,9 +268,7 @@ export const FacetsPanel = ({
           </OrderColumn>
         </Col>
         <Col>
-          <Button onClick={() => handleOpenFacetEditModal(facet)}>
-            Edit values
-          </Button>
+          <Button>Edit values</Button>
         </Col>
       </Row>
     );
@@ -352,15 +335,6 @@ export const FacetsPanel = ({
             ></FacetRow>
           ))}
       </AttributesTable>
-
-      {isEditValuesModalOpen && selectedFacet && (
-        <ModalEditValues
-          onClose={onClose}
-          facet={selectedFacet}
-          canMerge={canMergeValueAttributes}
-          canEditDisplayName={canEditDisplayName}
-        />
-      )}
 
       {facetsData.length === 0 && (
         <NoAttributesBlock>

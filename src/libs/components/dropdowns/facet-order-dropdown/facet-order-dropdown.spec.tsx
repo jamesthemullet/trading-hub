@@ -23,10 +23,10 @@ describe('Filter dropdown', () => {
 
   it('should open the dropdown and display the options when button is clicked', async () => {
     const user = userEvent.setup();
-    render(<FacetOrderDropdown />);
+    render(<FacetOrderDropdown attribute="color" />);
 
     const dropdownHeader = screen.getByTestId(
-      'button to open facet order dropdown'
+      'button to open facet order dropdown for color'
     );
     await user.click(screen.getByRole('button'));
 

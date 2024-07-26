@@ -108,7 +108,7 @@ describe('Global Facet Management', () => {
 
   beforeEach(() => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
-      attributeValues: attributeValuesMock,
+      attributeValues: attributeValuesMock['values'],
       error: '',
       pagination: {
         totalItems: 5,
