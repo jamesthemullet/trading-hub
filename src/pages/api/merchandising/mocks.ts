@@ -8,7 +8,6 @@ import {
   ProductBoostBury,
   ReturnedCategoryRuleSet,
   ReturnedFacet,
-  ReturnedGlobalFacet,
   ReturnedKeywordRuleSet,
   ReturnedKeywordRuleSets,
   ReturnedRuleSet,
@@ -419,44 +418,6 @@ export const getMockMapping: () => Record<
         const body: ReturnedFacet = facet;
         return { body, status: 200 };
       }
-      return { body: jsonBody, status };
-    },
-  },
-  '/search/beta/merchandising/facet/{facetId}': {
-    put: (req, status, jsonBody) => {
-      const { url } = req;
-      if (!url) {
-        const error: ErrorResponse = {
-          message: 'url is empty',
-          status: '400',
-        };
-        return { body: error, status: 400 };
-      }
-
-      const facetId = url.split('/')[7] || url.split('/')[5];
-
-      const facet = globalFacetsListMock.facets.find(
-        (facet) => facet.id === facetId
-      );
-
-      if (!facet) {
-        const error: ErrorResponse = {
-          message: `Facet with id: ${facetId} not found`,
-          status: '404',
-        };
-        return { body: error, status: 404 };
-      }
-
-      if (!jsonBody || status !== 200) {
-        /* istanbul ignore next */
-        const response: ReturnedGlobalFacet = {
-          ...facet,
-          ...req.body,
-        };
-
-        return { body: response, status: 200 };
-      }
-
       return { body: jsonBody, status };
     },
   },

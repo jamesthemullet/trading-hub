@@ -14,18 +14,23 @@ import {
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+
 const defaultCategory = {
   identifier: 'Applies to all pages in marksandspencer.com',
   name: 'All products',
   path: '/',
 };
 
-const Page = () => {
-  const { facets, isLoading } = useGlobalFacetsList();
+type PageProps = {
+  id: string;
+};
 
+const Page = ({ id }: PageProps) => {
+  const { facets, isLoading } = useGlobalFacetsList();
   const router = useRouter();
-  const globalId = router.query.id as string;
-  const { globalRuleSet } = useGlobalRuleSetDetail(globalId);
+
+  const { globalRuleSet } = useGlobalRuleSetDetail(id);
 
   const [globalFacetsList, setGlobalFacetsList] =
     useState<ReturnedFacet[]>(facets);
@@ -146,6 +151,14 @@ const Page = () => {
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = (
+  context: GetServerSidePropsContext
+) => {
+  return Promise.resolve({
+    props: { id: context.query.id },
+  });
 };
 
 export default Page;

@@ -9,9 +9,13 @@ import {
   useRuleSet,
 } from '@/libs/hooks';
 import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
+import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
+
+import { GetServerSidePropsContext } from 'next';
+import { ParsedUrlQuery } from 'querystring';
 
 import { renderWithProviders } from '../../../../../test/render-with-providers';
-import Page from './index.page';
+import Page, { getServerSideProps } from './index.page';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -130,7 +134,7 @@ describe('Global Facet Management Editing', () => {
   });
 
   it('should render the facet management editing page', async () => {
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
     expect(screen.queryByRole('button', { name: 'Preview' })).toBeNull();
@@ -144,7 +148,7 @@ describe('Global Facet Management Editing', () => {
   });
 
   it('should render column headings', () => {
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByText('Attribute')).toBeVisible();
     expect(screen.getByText('Display name')).toBeVisible();
@@ -155,7 +159,7 @@ describe('Global Facet Management Editing', () => {
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -165,7 +169,7 @@ describe('Global Facet Management Editing', () => {
   it('should save changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -198,7 +202,7 @@ describe('Global Facet Management Editing', () => {
       error: '',
     });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(() => screen.getByRole('button', { name: 'Save' })).toThrow(
       'Unable to find an accessible element with the role "button"'
@@ -206,7 +210,7 @@ describe('Global Facet Management Editing', () => {
   });
 
   it('should filter on the facet list', async () => {
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     const search = screen.getByPlaceholderText('Search...');
 
@@ -220,7 +224,7 @@ describe('Global Facet Management Editing', () => {
   });
 
   it('should edit a display value', async () => {
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     const editButton = screen.getByLabelText('Edit display name for color');
 
@@ -257,7 +261,7 @@ describe('Global Facet Management Editing', () => {
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await waitFor(() => {
       expect(
@@ -283,7 +287,7 @@ describe('Global Facet Management Editing', () => {
 
   it('should update status on dropdown change to include only, and re-order by status', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await waitFor(() => {
       expect(
@@ -312,7 +316,7 @@ describe('Global Facet Management Editing', () => {
 
   it('should not update status if the same status is selected', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(
       screen.getByLabelText('Row showing color as included')
@@ -335,5 +339,19 @@ describe('Global Facet Management Editing', () => {
         screen.queryByLabelText('Row showing color as excluded')
       ).not.toBeInTheDocument();
     });
+  });
+
+  it('loads the mock data', async () => {
+    const mockPageId = 'abc123';
+    const context = { query: { id: mockPageId } as ParsedUrlQuery };
+    const result = await getServerSideProps(
+      context as GetServerSidePropsContext
+    );
+
+    if (!('props' in result) || !result.props) {
+      throw new Error('No props returned');
+    }
+
+    expect((await result.props).id).toBe(mockPageId);
   });
 });
