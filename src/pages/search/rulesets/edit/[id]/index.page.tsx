@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 
-import { CentredError, Heading } from '@/libs/components';
-import { useSearchRuleSetPreview } from '@/libs/hooks';
+import { RuleSet } from '@/libs/api';
+import { CentredError, Heading, Loader } from '@/libs/components';
+import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -13,6 +14,27 @@ type PageProps = {
 const Page = ({ id }: PageProps) => {
   const { ruleSet, error, isLoading } = useSearchRuleSetPreview(id);
   const router = useRouter();
+  const { updateRuleSet, isSaving } = useSearchRuleSetUpdate();
+
+  const saveRuleSet = async ({
+    searchTerms,
+    ruleSetId,
+    ruleSet,
+  }: {
+    searchTerms?: Array<string>;
+    ruleSetId: string;
+    ruleSet: RuleSet;
+  }) => {
+    // istanbul ignore next
+    if (!searchTerms?.[0]) return;
+    await updateRuleSet({
+      ruleSetId,
+      rules: ruleSet,
+      searchTerms,
+    }).then(() => {
+      router.push('/search/rulesets');
+    });
+  };
 
   return (
     <>
@@ -26,12 +48,15 @@ const Page = ({ id }: PageProps) => {
         <Ruleset
           isEnabled={ruleSet.isEnabled}
           onCancel={() => router.push('/search/rulesets')}
+          onSave={saveRuleSet}
           rulesetId={ruleSet.id}
           rulesetMerchandisingRules={ruleSet.rules}
           rulesetType="search"
           searchTerms={ruleSet.searchTerms}
         />
       )}
+
+      {isSaving && <Loader />}
     </>
   );
 };

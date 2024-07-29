@@ -394,6 +394,9 @@ export const Ruleset = ({
         ...(selectedCategory.identifier && {
           categoryIds: [selectedCategory.identifier],
         }),
+        ...(searchTerms && {
+          searchTerms: searchTerms,
+        }),
       });
     } else if (onCreate && selectedCategory.identifier) {
       onCreate({
@@ -421,7 +424,7 @@ export const Ruleset = ({
           onSaveRuleset();
           setHasChanges(false);
         }}
-        hasPreview={!!selectedCategory?.identifier}
+        hasPreview={!!selectedCategory?.identifier || !!searchTerms?.length}
         onPreview={() => setShowPreview(!showPreview)}
         hasChanges={hasChanges}
         isNewRuleSet={!!onCreate}

@@ -479,6 +479,43 @@ describe('Ruleset', () => {
       expect(numberOfKeywords).toHaveTextContent('2');
       expect(await screen.findByLabelText('Remove keyword: bar')).toBeVisible();
     });
+
+    it('should save a keyword ruleset', async () => {
+      const mockSave = jest.fn();
+      const mockSearchTerms = ['foo', 'bar'];
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={mockSearchTerms}
+        />
+      );
+
+      const saveButton = await screen.findByText(SAVE_BUTTON);
+
+      act(() => {
+        saveButton.click();
+      });
+
+      expect(mockSave).toHaveBeenCalledWith(
+        expect.objectContaining({ searchTerms: mockSearchTerms })
+      );
+    });
   });
 
   it('should cancel changes', async () => {

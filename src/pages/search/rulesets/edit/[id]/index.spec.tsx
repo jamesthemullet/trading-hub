@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useSearchRuleSetPreview } from '@/libs/hooks/search/use-search-ruleset-preview';
+import { useSearchRuleSetUpdate } from '@/libs/hooks/search/use-search-ruleset-update';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { mockUseSearchRuleSetPreviewData } from '@/test/data/mock-use-search-ruleset-preview';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -18,8 +19,36 @@ jest.mock('next/router', () => ({
 jest.mock('@/libs/hooks/search/use-search-ruleset-preview', () => ({
   useSearchRuleSetPreview: jest.fn(),
 }));
+jest.mock('@/libs/hooks/search/use-search-ruleset-update', () => ({
+  useSearchRuleSetUpdate: jest.fn(),
+}));
 
 describe('Search ranking rules', () => {
+  const mockUpdateRuleSet = {
+    updateRuleSet: jest.fn(() =>
+      Promise.resolve({
+        rules: {
+          pinnedProducts: [],
+          blockedProducts: [],
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
+        },
+        searchTerms: ['foo', 'bar'],
+        isEnabled: true,
+        categoryName: 'Jeans',
+        id: ruleSetId,
+        categoriesInfo: [
+          {
+            id: ruleSetId,
+          },
+        ],
+        lastChanged: { date: '2024-01-02T22:10:17Z', user: 'M&S' },
+      })
+    ),
+    isSaving: true,
+    error: '',
+  };
+
   const mockRouter = {
     push: jest.fn(),
     events: {
@@ -29,6 +58,9 @@ describe('Search ranking rules', () => {
   };
 
   beforeAll(() => {
+    jest
+      .mocked(useSearchRuleSetUpdate)
+      .mockImplementation(() => mockUpdateRuleSet);
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
@@ -80,5 +112,19 @@ describe('Search ranking rules', () => {
     }
 
     expect((await result.props).id).toBe(mockPageId);
+  });
+
+  it('should save ruleset', async () => {
+    jest
+      .mocked(useSearchRuleSetPreview)
+      .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByText('Save'));
+
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
   });
 });
