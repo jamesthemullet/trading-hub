@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Box } from '@mantine/core';
 
-import { Category, ReturnedFacet } from '@/libs/api';
+import { Category, ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
 import {
   Button,
   CategorySearch,
@@ -155,6 +155,7 @@ export const FacetsPanel = ({
   defaultCategory,
   displayRowOrderControls = false,
   canPreviewChanges,
+  includedFacets,
   canEditDisplayName = false,
 }: {
   onSave: () => void;
@@ -167,8 +168,9 @@ export const FacetsPanel = ({
   ) => void;
   onFacetsDataRowOrderChange?: (index: number, direction: -1 | 1) => void;
   onHandleStatusChange?: (
-    index: number,
-    status: 'included' | 'excluded'
+    status: 'included' | 'excluded',
+    id?: string,
+    index?: number
   ) => void;
   displayRowOrderControls?: boolean;
   title: string;
@@ -177,6 +179,7 @@ export const FacetsPanel = ({
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   canPreviewChanges?: boolean;
+  includedFacets?: RuleSetFacetConfigWithId[] | [];
   canEditDisplayName?: boolean;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
@@ -206,8 +209,17 @@ export const FacetsPanel = ({
     index: number;
     totalIncludedFacets: number;
   }) => {
+    const facetIncluded = includedFacets?.find(
+      (includedFacet) => includedFacet.id === facet.id
+    )
+      ? 'included'
+      : 'excluded';
     return (
-      <Row optionSelected={facet.status} data-testid="facets-table-row">
+      <Row
+        optionSelected={facetIncluded}
+        data-testid="facets-table-row"
+        aria-label={`Row showing ${facet.displayValue} as ${facetIncluded}`}
+      >
         <Col>
           <Text>{facet.indexPropertyName}</Text>
         </Col>
@@ -227,10 +239,10 @@ export const FacetsPanel = ({
         <Col>
           <OrderColumn>
             <FacetOrderDropdown
-              status={facet.status}
+              status={facetIncluded}
               onChange={(status): void => {
                 if (onHandleStatusChange) {
-                  onHandleStatusChange(index, status);
+                  onHandleStatusChange(status, facet.id);
                 }
               }}
             />
@@ -273,6 +285,27 @@ export const FacetsPanel = ({
       </Row>
     );
   };
+
+  const sortedFacets = useMemo(() => {
+    return [...facetsData].sort(
+      (a, b) =>
+        (includedFacets?.some((facet) => facet.id === b.id) ? 1 : 0) -
+        (includedFacets?.some((facet) => facet.id === a.id) ? 1 : 0)
+    );
+  }, [facetsData, includedFacets]);
+
+  const sortedAndMappedFacets = sortedFacets?.map(
+    (facet: ReturnedFacet, index: number) => (
+      <FacetRow
+        key={facet.id}
+        facet={facet}
+        index={index}
+        totalIncludedFacets={
+          facetsData.filter((facet) => facet.status === 'included').length
+        }
+      />
+    )
+  );
 
   return (
     <>
@@ -323,17 +356,7 @@ export const FacetsPanel = ({
           ))}
         </Row>
 
-        {facetsData &&
-          facetsData.map((facet, index) => (
-            <FacetRow
-              key={facet.id}
-              facet={facet}
-              index={index}
-              totalIncludedFacets={
-                facetsData.filter((facet) => facet.status === 'included').length
-              }
-            ></FacetRow>
-          ))}
+        {sortedAndMappedFacets}
       </AttributesTable>
 
       {facetsData.length === 0 && (

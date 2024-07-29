@@ -279,6 +279,11 @@ describe('Facet Panel', () => {
 
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
     const user = userEvent.setup({ delay: null });
+    const includedFacetsMock = [
+      { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' },
+      { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86' },
+      { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87' },
+    ];
 
     renderWithProviders(
       <FacetsPanel
@@ -288,6 +293,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         defaultOrderData={mockDefaultOrderData}
         onHandleStatusChange={onHandleStatusChangeSpy}
+        includedFacets={includedFacetsMock}
       />
     );
 
@@ -309,7 +315,10 @@ describe('Facet Panel', () => {
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(onHandleStatusChangeSpy).toHaveBeenCalledWith(0, 'excluded');
+      expect(onHandleStatusChangeSpy).toHaveBeenCalledWith(
+        'excluded',
+        'b04eaac3-f4ea-4f21-9459-0b4302dc2a84'
+      );
     });
   });
 

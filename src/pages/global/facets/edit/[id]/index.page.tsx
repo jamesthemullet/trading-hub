@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { ReturnedFacet } from '@/libs/api';
+import { ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import {
@@ -25,24 +25,34 @@ const Page = () => {
 
   const router = useRouter();
   const globalId = router.query.id as string;
+  const { globalRuleSet } = useGlobalRuleSetDetail(globalId);
 
-  const [localFacetData, setLocalFacetData] = useState<ReturnedFacet[]>(facets);
+  const [globalFacetsList, setGlobalFacetsList] =
+    useState<ReturnedFacet[]>(facets);
+  const [facetsFromGlobalRuleSet, setFacetsFromGlobalRuleSet] = useState<
+    RuleSetFacetConfigWithId[] | []
+  >([]);
 
   useEffect(() => {
-    setLocalFacetData(facets);
+    setGlobalFacetsList(facets);
   }, [facets]);
 
-  const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
+  useEffect(() => {
+    if (globalRuleSet.facets) {
+      setFacetsFromGlobalRuleSet(globalRuleSet.facets);
+    }
+  }, [globalRuleSet]);
+
+  const { setSearch, filteredFacets } = useFacetsFilter(globalFacetsList);
 
   const { handleUpdate } = useGlobalFacetUpdate();
   const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
-  const { globalRuleSet } = useGlobalRuleSetDetail(globalId);
 
   const handleSave = async () => {
     const response = await saveGlobalRuleset({
       ruleSetId: globalRuleSet.id,
       ruleSet: {
-        facets: filteredFacets,
+        facets: facetsFromGlobalRuleSet,
         rules: globalRuleSet.rules,
         isEnabled: globalRuleSet.isEnabled,
       },
@@ -72,7 +82,7 @@ const Page = () => {
       },
     });
 
-    setLocalFacetData((prev) => {
+    setGlobalFacetsList((prev) => {
       const updatedFacet: ReturnedFacet = {
         ...prev[index],
         displayValue: response?.displayValue as string,
@@ -82,15 +92,31 @@ const Page = () => {
   };
 
   const onHandleStatusChange = async (
-    index: number,
-    value: 'included' | 'excluded'
+    value: 'included' | 'excluded',
+    id?: string
   ) => {
-    setLocalFacetData((prev) => {
-      const updatedFacet: ReturnedFacet = {
-        ...prev[index],
-        status: value,
-      };
-      return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
+    setFacetsFromGlobalRuleSet((prev) => {
+      if (value === 'excluded') {
+        return prev.filter((item) => item.id !== id);
+      } else {
+        const existingFacet = globalFacetsList.find((facet) => facet.id === id);
+        // istanbul ignore next
+        if (!existingFacet) {
+          return prev;
+        }
+
+        const facetToAdd = {
+          id: existingFacet.id,
+          boosted: existingFacet.boosted,
+          excludedValues: existingFacet.excludedValues,
+        };
+
+        if (!prev.find((facet) => facet.id === facetToAdd.id)) {
+          return [...prev, facetToAdd];
+        } else {
+          return prev;
+        }
+      }
     });
   };
 
@@ -113,6 +139,7 @@ const Page = () => {
           facetsData={filteredFacets}
           defaultCategory={defaultCategory}
           canMergeValueAttributes
+          includedFacets={facetsFromGlobalRuleSet}
           canEditDisplayName={true}
         />
       )}

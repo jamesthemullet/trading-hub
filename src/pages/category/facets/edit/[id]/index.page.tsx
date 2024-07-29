@@ -53,21 +53,6 @@ const Page = ({ id }: { id: string }) => {
     path: '/',
   };
 
-  const onHandleStatusChange = async (
-    index: number,
-    value: 'included' | 'excluded'
-  ) => {
-    setLocalFacetData((prev) => {
-      const updatedFacet: ReturnedFacet = {
-        ...prev[index],
-        status: value,
-      };
-      return orderByStatus(
-        prev.map((facet, i) => (i === index ? updatedFacet : facet))
-      );
-    });
-  };
-
   const orderByStatus = (facets: ReturnedFacet[]) => {
     const included = facets.filter((facet) => facet.status === 'included');
     const excluded = facets.filter((facet) => facet.status === 'excluded');
@@ -103,7 +88,6 @@ const Page = ({ id }: { id: string }) => {
                 : [...firstPart, secondPart[0], item, ...secondPart.slice(1)];
             setLocalFacetData(updatedFacets);
           }}
-          onHandleStatusChange={onHandleStatusChange}
           defaultCategory={category}
           canPreviewChanges
         />

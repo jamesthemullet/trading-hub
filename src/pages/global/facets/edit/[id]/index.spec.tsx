@@ -110,7 +110,13 @@ describe('Global Facet Management Editing', () => {
           user: 'Test user',
         },
         rules: mockMerchandisingRules,
-        facets: [],
+        facets: [
+          { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' },
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          },
+          { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87' },
+        ],
       },
       error: '',
       isLoading: false,
@@ -166,7 +172,17 @@ describe('Global Facet Management Editing', () => {
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
       ruleSetId: '123',
       ruleSet: {
-        facets: globalFacetsListMock.facets,
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          },
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          },
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+          },
+        ],
         rules: mockMerchandisingRules,
         isEnabled: true,
       },
@@ -239,27 +255,85 @@ describe('Global Facet Management Editing', () => {
     });
   });
 
-  it('should update status on dropdown change', async () => {
+  it('should update status on dropdown change to exclude only, and re-order by status', async () => {
     const user = userEvent.setup();
     renderWithProviders(<Page />);
 
-    const dropdownHeader = screen.getAllByTestId(
-      'button to open facet order dropdown'
-    )[0];
-
-    expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
-      'background-color: #f4faed'
-    );
-
-    await user.click(dropdownHeader);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
 
     const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
-        'background-color: #FFF3F4'
-      );
+      expect(
+        screen.getByLabelText('Row showing color as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to include only, and re-order by status', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing size as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing size as included')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Include only')[6];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing size as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing size as excluded')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should not update status if the same status is selected', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page />);
+
+    expect(
+      screen.getByLabelText('Row showing color as included')
+    ).toBeVisible();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Include only')[1];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
     });
   });
 });
