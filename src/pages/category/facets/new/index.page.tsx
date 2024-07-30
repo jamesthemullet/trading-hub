@@ -14,6 +14,17 @@ const Page = () => {
     router.push('/category/facets');
   };
 
+  const defaultMerchandisingRules = {
+    pinnedProducts: [],
+    blockedProducts: [],
+    boosts: { alphanumeric: [], numeric: [], product: [] },
+    buries: {
+      alphanumeric: [],
+      numeric: [],
+      product: [],
+    },
+  };
+
   return (
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'New']} />
@@ -21,9 +32,11 @@ const Page = () => {
       <FacetsPanel
         onSave={handleSave}
         onCancel={handleCancel}
+        isNewRuleset
         title="Facet Rule Editor"
         facetsData={[]}
-        canPreviewChanges={true}
+        facetType="category"
+        rulesetMerchandisingRules={defaultMerchandisingRules}
       />
     </>
   );

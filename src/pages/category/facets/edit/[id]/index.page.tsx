@@ -131,7 +131,8 @@ const Page = ({ id }: { id: string }) => {
           onHandleStatusChange={onHandleStatusChange}
           defaultCategory={category}
           includedFacets={facetsFromCategoryRuleSet}
-          canPreviewChanges
+          facetType="category"
+          rulesetMerchandisingRules={ruleSetDetail.rules}
         />
       )}
     </>

@@ -35,6 +35,7 @@ type Props = {
   onPreview: () => void;
   onSave: () => void;
   shouldHidePreview: boolean;
+  title: string;
 };
 
 export const ProductGridHeader = ({
@@ -45,6 +46,7 @@ export const ProductGridHeader = ({
   onPreview,
   onSave,
   shouldHidePreview,
+  title,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -61,7 +63,7 @@ export const ProductGridHeader = ({
   return (
     <>
       <RuleSetOptions>
-        <h1>Product Grid</h1>
+        <h1>{title}</h1>
 
         <Actions>
           <Button onClick={onCancelChange}>Cancel</Button>

@@ -146,6 +146,7 @@ const Page = ({ id }: PageProps) => {
           canMergeValueAttributes
           includedFacets={facetsFromGlobalRuleSet}
           canEditDisplayName={true}
+          facetType="global"
         />
       )}
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />

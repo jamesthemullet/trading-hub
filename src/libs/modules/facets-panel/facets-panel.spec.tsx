@@ -22,9 +22,6 @@ jest.mock('../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
 
-const logSpy = jest.spyOn(console, 'log');
-logSpy.mockImplementation(jest.fn());
-
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const categoryId1 = 'cat_123';
 const categoryName1 = 'jeans';
@@ -46,6 +43,13 @@ const mockFacet = {
   lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
   merged: [],
   status: 'included',
+};
+
+const mockMerchandisingRules = {
+  pinnedProducts: [{ id: 'productId' }],
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
+  blockedProducts: [],
 };
 
 const mockDefaultOrderData = [
@@ -96,7 +100,6 @@ describe('Facet Panel', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    logSpy.mockClear();
   });
 
   it('should render the facet management editing page', async () => {
@@ -107,7 +110,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        canPreviewChanges={true}
+        facetType="category"
       />
     );
 
@@ -127,6 +130,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
+        facetType="global"
       />
     );
 
@@ -142,6 +146,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
+        facetType="category"
       />
     );
 
@@ -161,17 +166,22 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={[]}
         onFacetDataChange={jest.fn()}
+        facetType="category"
       />
     );
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
+    const confirmCancelButton = await screen.findByText('Close without saving');
+
+    act(() => {
+      confirmCancelButton.click();
+    });
+
     expect(onCancelSpy).toHaveBeenCalled();
   });
 
   it('should preview changes to a facet', async () => {
-    const user = userEvent.setup({ delay: null });
-
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -179,14 +189,32 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        canPreviewChanges={true}
+        defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
+        facetType="category"
       />
     );
 
-    await user.click(screen.getByRole('button', { name: 'Preview' }));
+    const previewButton = screen.getByRole('button', { name: 'Preview' });
 
-    // TODO: Implement preview functionality
-    expect(logSpy).toHaveBeenCalled();
+    act(() => {
+      previewButton.click();
+    });
+
+    const previewText = await screen.findByText(
+      'Search across the site to preview the rule influence'
+    );
+
+    expect(previewText).toBeInTheDocument();
+
+    const closeButton = screen.getByLabelText('close modal');
+
+    act(() => {
+      closeButton.click();
+    });
+
+    expect(
+      screen.queryByText('Search across the site to preview the rule influence')
+    ).not.toBeInTheDocument();
   });
 
   it('should handle order change when button down is clicked', async () => {
@@ -202,6 +230,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
+        facetType="category"
       />
     );
 
@@ -225,6 +254,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
+        facetType="category"
       />
     );
 
@@ -243,6 +273,9 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
+        defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
+        rulesetMerchandisingRules={mockMerchandisingRules}
+        facetType="category"
       />
     );
 
@@ -261,6 +294,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
+        facetType="category"
       />
     );
 
@@ -294,6 +328,7 @@ describe('Facet Panel', () => {
         defaultOrderData={mockDefaultOrderData}
         onHandleStatusChange={onHandleStatusChangeSpy}
         includedFacets={includedFacetsMock}
+        facetType="category"
       />
     );
 
@@ -332,6 +367,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
         onFacetDataChange={jest.fn()}
+        facetType="category"
       />
     );
 
@@ -355,6 +391,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={onFacetDataChangeSpy}
         canEditDisplayName={true}
+        facetType="category"
       />
     );
 

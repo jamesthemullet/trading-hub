@@ -178,16 +178,19 @@ export const Preview = ({
     buries: { alphanumeric: [], numeric: [], product: [] },
   };
 
-  const { data, isLoading, setRules } = useCategoryPreview({
-    categoryId,
-    merchandisingRules: withRules ? merchandisingRules : emptyRules,
-    facetConfig,
-  });
+  const { data, isLoading, setRules, setFacetConfigRules } = useCategoryPreview(
+    {
+      categoryId,
+      merchandisingRules,
+      facetConfig,
+    }
+  );
 
   const toggleView = (withMerchandisingRules: boolean) => {
     setIsDropdownOpen(false);
     setWithRules(withMerchandisingRules);
     setRules(withMerchandisingRules ? merchandisingRules : emptyRules);
+    setFacetConfigRules(withMerchandisingRules ? facetConfig : []);
   };
 
   return (

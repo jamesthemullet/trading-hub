@@ -163,6 +163,12 @@ describe('Global Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
+    const confirmCancelButton = await screen.findByText('Close without saving');
+
+    act(() => {
+      confirmCancelButton.click();
+    });
+
     expect(mockRouter.push).toHaveBeenCalledWith('/global/facets');
   });
 

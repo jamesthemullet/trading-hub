@@ -2,10 +2,17 @@ import styled from '@emotion/styled';
 import { useMemo, useState } from 'react';
 import { Box } from '@mantine/core';
 
-import { Category, ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
+import {
+  Category,
+  MerchandisingRules,
+  ReturnedFacet,
+  RuleSetFacetConfigWithId,
+} from '@/libs/api';
 import {
   Button,
   CategorySearch,
+  Preview,
+  ProductGridHeader,
   Search,
   spacing,
   Text,
@@ -152,11 +159,13 @@ export const FacetsPanel = ({
   onHandleStatusChange,
   title,
   facetsData,
+  facetType,
+  isNewRuleset,
   defaultCategory,
   displayRowOrderControls = false,
-  canPreviewChanges,
   includedFacets,
   canEditDisplayName = false,
+  rulesetMerchandisingRules,
 }: {
   onSave: () => void;
   onCancel: () => void;
@@ -175,25 +184,41 @@ export const FacetsPanel = ({
   displayRowOrderControls?: boolean;
   title: string;
   facetsData: ReturnedFacet[];
+  facetType: 'global' | 'category' | 'search';
+  isNewRuleset?: boolean;
+  rulesetMerchandisingRules?: MerchandisingRules;
   defaultCategory?: Category;
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
-  canPreviewChanges?: boolean;
   includedFacets?: RuleSetFacetConfigWithId[] | [];
   canEditDisplayName?: boolean;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
   );
+  const [showPreview, setShowPreview] = useState(false);
+  const [merchandisingRules] = useState<MerchandisingRules>(
+    rulesetMerchandisingRules
+      ? rulesetMerchandisingRules
+      : {
+          pinnedProducts: [],
+          blockedProducts: [],
+          boosts: {
+            alphanumeric: [],
+            numeric: [],
+            product: [],
+          },
+          buries: {
+            alphanumeric: [],
+            numeric: [],
+            product: [],
+          },
+        }
+  );
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
   }, 300);
-
-  const onPreview = () => {
-    // TODO: Implement preview functionality
-    console.log('preview');
-  };
 
   // istanbul ignore next
   const onSelectCategory = (category: Category) => {
@@ -309,17 +334,26 @@ export const FacetsPanel = ({
 
   return (
     <>
-      <ActionContainer>
-        <h1>{title}</h1>
+      {showPreview && selectedCategory.identifier && merchandisingRules && (
+        <Preview
+          onClose={() => setShowPreview(!showPreview)}
+          categoryId={selectedCategory.identifier}
+          merchandisingRules={merchandisingRules}
+          facetConfig={includedFacets || []}
+        />
+      )}
 
-        <Actions>
-          <Button onClick={onCancel}>Cancel</Button>
-          {canPreviewChanges && <Button onClick={onPreview}>Preview</Button>}
-          <Button theme="primary" onClick={onSave}>
-            Save
-          </Button>
-        </Actions>
-      </ActionContainer>
+      <ProductGridHeader
+        onSave={onSave}
+        hasPreview={!!selectedCategory?.identifier}
+        onPreview={() => setShowPreview(!showPreview)}
+        isNewRuleSet={!!isNewRuleset}
+        hasChanges
+        onCancel={onCancel}
+        shouldHidePreview={facetType === 'global'}
+        title={title}
+      />
+
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <CategorySearch

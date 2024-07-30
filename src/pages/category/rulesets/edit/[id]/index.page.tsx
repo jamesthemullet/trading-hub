@@ -54,6 +54,7 @@ const Page = ({ id }: PageProps) => {
             name: ruleSetDetail.categoryName,
             path: 'path/to/plp',
           }}
+          rulesetFacets={ruleSetDetail.facets}
           rulesetId={ruleSetDetail.id}
           rulesetMerchandisingRules={ruleSetDetail.rules}
           rulesetType="category"

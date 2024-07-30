@@ -11,6 +11,7 @@ import type {
   NumericBoostBury,
   Product,
   RuleSet,
+  RuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
   CategorySearch,
@@ -97,6 +98,7 @@ export const Ruleset = ({
   onCreate,
   onSave,
   rulesetCategory,
+  rulesetFacets,
   rulesetId,
   rulesetMerchandisingRules,
   rulesetType,
@@ -116,6 +118,7 @@ export const Ruleset = ({
   // TODO: update to allow for keyword search
   onCreate?: (args: CategoryRuleSet) => void;
   rulesetCategory?: Category;
+  rulesetFacets?: Array<RuleSetFacetConfigWithId>;
   rulesetId?: string;
   rulesetMerchandisingRules?: MerchandisingRules;
   rulesetType: 'global' | 'category' | 'search';
@@ -387,7 +390,7 @@ export const Ruleset = ({
       onSave({
         ruleSetId: rulesetId,
         ruleSet: {
-          facets: [], // TODO: send ruleset facet data when API ready
+          facets: rulesetFacets || [],
           isEnabled,
           rules: merchandisingRules,
         },
@@ -400,7 +403,7 @@ export const Ruleset = ({
       });
     } else if (onCreate && selectedCategory.identifier) {
       onCreate({
-        facets: [], // TODO: send ruleset facet data when API ready
+        facets: [],
         isEnabled,
         rules: merchandisingRules,
         categoryId: selectedCategory.identifier,
@@ -415,7 +418,7 @@ export const Ruleset = ({
           onClose={() => setShowPreview(!showPreview)}
           categoryId={selectedCategory.identifier}
           merchandisingRules={merchandisingRules}
-          facetConfig={[]}
+          facetConfig={rulesetFacets || []}
         />
       )}
 
@@ -433,6 +436,7 @@ export const Ruleset = ({
           onCancel();
         }}
         shouldHidePreview={rulesetType === 'global'}
+        title="Product Grid"
       />
 
       {rulesetType === 'category' && (

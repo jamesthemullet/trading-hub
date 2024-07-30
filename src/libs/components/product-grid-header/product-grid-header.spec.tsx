@@ -14,10 +14,11 @@ describe('ProductGridHeader', () => {
         hasChanges={false}
         isNewRuleSet={false}
         shouldHidePreview={false}
+        title="Title"
       />
     );
 
-    expect(screen.getByText('Product Grid')).toBeVisible();
+    expect(screen.getByText('Title')).toBeVisible();
     expect(screen.getByText('Save')).toBeVisible();
   });
 
@@ -31,6 +32,7 @@ describe('ProductGridHeader', () => {
         hasChanges={false}
         isNewRuleSet={true}
         shouldHidePreview={false}
+        title="Title"
       />
     );
 
@@ -48,6 +50,7 @@ describe('ProductGridHeader', () => {
         hasChanges={false}
         isNewRuleSet={false}
         shouldHidePreview={false}
+        title="Title"
       />
     );
 
@@ -71,6 +74,7 @@ describe('ProductGridHeader', () => {
         hasChanges={false}
         isNewRuleSet={false}
         shouldHidePreview={false}
+        title="Title"
       />
     );
 
@@ -94,6 +98,7 @@ describe('ProductGridHeader', () => {
         hasChanges={false}
         isNewRuleSet={false}
         shouldHidePreview={false}
+        title="Title"
       />
     );
 
@@ -117,6 +122,7 @@ describe('ProductGridHeader', () => {
         hasChanges={true}
         isNewRuleSet={false}
         shouldHidePreview={false}
+        title="Title"
       />
     );
 
@@ -146,6 +152,7 @@ describe('ProductGridHeader', () => {
         hasChanges={false}
         isNewRuleSet={false}
         shouldHidePreview={false}
+        title="Title"
       />
     );
 
@@ -168,6 +175,7 @@ describe('ProductGridHeader', () => {
         hasChanges={true}
         isNewRuleSet={false}
         shouldHidePreview={false}
+        title="Title"
       />
     );
 
@@ -197,6 +205,7 @@ describe('ProductGridHeader', () => {
         hasChanges={true}
         isNewRuleSet={false}
         shouldHidePreview={true}
+        title="Title"
       />
     );
 

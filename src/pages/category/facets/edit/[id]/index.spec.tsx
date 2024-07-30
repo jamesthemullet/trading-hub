@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -141,6 +141,12 @@ describe('Category Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    const confirmCancelButton = await screen.findByText('Close without saving');
+
+    act(() => {
+      confirmCancelButton.click();
+    });
 
     expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
   });
