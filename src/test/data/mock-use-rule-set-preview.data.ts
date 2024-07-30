@@ -32,6 +32,23 @@ export const mockUseRuleSetPreviewData = {
       boosts: { numeric: [], alphanumeric: [], product: [] },
       buries: { numeric: [], alphanumeric: [], product: [] },
     },
+    facets: [
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+        boosted: [],
+        excludedValues: [],
+      },
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+        boosted: [],
+        excludedValues: [],
+      },
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+        boosted: [],
+        excludedValues: [],
+      },
+    ],
   },
   products: [
     {

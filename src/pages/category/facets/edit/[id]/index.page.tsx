@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { ReturnedFacet } from '@/libs/api';
+import { ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import {
   useFacetsFilter,
@@ -30,10 +30,20 @@ const Page = ({ id }: { id: string }) => {
     [ruleSetDetail.categoryId]
   );
 
+  const [facetsFromCategoryRuleSet, setFacetsFromCategoryRuleSet] = useState<
+    RuleSetFacetConfigWithId[] | []
+  >([]);
+
   const { facets } = useFacetsList(categoryId, !isLoading);
   const [localFacetData, setLocalFacetData] = useState<ReturnedFacet[]>(facets);
 
   const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
+
+  useEffect(() => {
+    if (ruleSetDetail.facets) {
+      setFacetsFromCategoryRuleSet(ruleSetDetail.facets);
+    }
+  }, [ruleSetDetail]);
 
   useEffect(() => {
     setLocalFacetData(orderByStatus(facets));
@@ -43,6 +53,7 @@ const Page = ({ id }: { id: string }) => {
     // TODO: Implement save functionality
     console.log('save');
   };
+
   const handleCancel = () => {
     router.push('/category/facets');
   };
@@ -57,6 +68,35 @@ const Page = ({ id }: { id: string }) => {
     const included = facets.filter((facet) => facet.status === 'included');
     const excluded = facets.filter((facet) => facet.status === 'excluded');
     return [...included, ...excluded];
+  };
+
+  const onHandleStatusChange = async (
+    value: 'included' | 'excluded',
+    id?: string
+  ) => {
+    setFacetsFromCategoryRuleSet((prev) => {
+      if (value === 'excluded') {
+        return prev.filter((item) => item.id !== id);
+      } else {
+        const existingFacet = localFacetData.find((facet) => facet.id === id);
+        // istanbul ignore next
+        if (!existingFacet) {
+          return prev;
+        }
+
+        const facetToAdd = {
+          id: existingFacet.id,
+          boosted: existingFacet.boosted,
+          excludedValues: existingFacet.excludedValues,
+        };
+
+        if (!prev.find((facet) => facet.id === facetToAdd.id)) {
+          return [...prev, facetToAdd];
+        } else {
+          return prev;
+        }
+      }
+    });
   };
 
   return (
@@ -88,7 +128,9 @@ const Page = ({ id }: { id: string }) => {
                 : [...firstPart, secondPart[0], item, ...secondPart.slice(1)];
             setLocalFacetData(updatedFacets);
           }}
+          onHandleStatusChange={onHandleStatusChange}
           defaultCategory={category}
+          includedFacets={facetsFromCategoryRuleSet}
           canPreviewChanges
         />
       )}

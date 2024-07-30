@@ -198,4 +198,86 @@ describe('Category Facet Management Editing', () => {
       screen.getByRole('button', { name: 'Move color row up' });
     }).toThrow('Unable to find an accessible element with the role "button"');
   });
+
+  it('should update status on dropdown change to exclude only, and re-order by status', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
+
+    const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
+
+    await user.click(excludeOnlyOption);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to include only, and re-order by status', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing category as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing category as included')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Include only')[6];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing category as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing category as excluded')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should not update status if the same status is selected', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    expect(
+      screen.getByLabelText('Row showing color as included')
+    ).toBeVisible();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Include only')[1];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
+  });
 });
