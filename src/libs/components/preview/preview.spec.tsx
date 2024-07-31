@@ -1,6 +1,7 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 
 import { Facet } from '@/libs/api';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import { usePreview } from '../../hooks/use-preview';
 import { Preview } from './preview';
@@ -144,7 +145,7 @@ describe('Preview', () => {
   });
 
   it('should render correctly', () => {
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
@@ -158,7 +159,7 @@ describe('Preview', () => {
 
   it('calls the api with the supplied facet config', () => {
     const mockFacetConfig = [{ id: 'mockId', boosted: ['Red', 'Yellow'] }];
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={mockFacetConfig}
         merchandisingRules={mockMerchandisingRules}
@@ -173,7 +174,7 @@ describe('Preview', () => {
   });
 
   it('calls the api with the supplied search term config', () => {
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
@@ -188,7 +189,7 @@ describe('Preview', () => {
   });
 
   it('open and close dropdown', () => {
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
@@ -211,7 +212,7 @@ describe('Preview', () => {
   });
 
   it('should show current state', () => {
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
@@ -237,7 +238,7 @@ describe('Preview', () => {
   });
 
   it('should select current state', () => {
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
@@ -263,7 +264,7 @@ describe('Preview', () => {
   });
 
   it('should show more facets', () => {
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
@@ -282,7 +283,7 @@ describe('Preview', () => {
   });
 
   it('should show price facet info', () => {
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}
@@ -300,7 +301,7 @@ describe('Preview', () => {
       isLoading: true,
     });
 
-    render(
+    renderWithProviders(
       <Preview
         facetConfig={[]}
         merchandisingRules={mockMerchandisingRules}

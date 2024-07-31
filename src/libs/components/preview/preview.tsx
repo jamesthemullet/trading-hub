@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { Modal } from '@mantine/core';
 
 import type {
   Facet,
@@ -24,23 +25,25 @@ type Props = {
 };
 
 const Wrapper = styled.div`
-  position: fixed;
-  top: 80px;
-  right: 8px;
-  left: 72px;
   background: #fff;
-  width: calc(100% - 80px);
   z-index: 10;
   height: calc(100vh - 84px);
   overflow: scroll;
-  box-shadow: #000 0 0 10px -5px;
   max-height: calc(100vh - 90px);
+  min-width: 700px;
+  position: relative;
+  padding-top: 140px;
 `;
 
 const Header = styled.div`
   padding: ${spacing(8)} ${spacing(2)} ${spacing(2)};
   display: flex;
   border-bottom: solid 1px #707070;
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  top: 0;
+  background: #fff;
 `;
 
 const CloseButton = styled.button`
@@ -89,13 +92,15 @@ const Item = styled(Text)`
 
 const Content = styled.div`
   display: flex;
+  overflow: auto;
 `;
 
 const Facets = styled.div`
-  width: calc(25% - ${spacing(1)});
+  width: calc(25% - ${spacing(3)});
   margin-left: ${spacing(1)};
   ${boxShadow}
   margin-top: ${spacing(2)};
+  margin-right: ${spacing(2)};
   padding: ${spacing(2)};
 `;
 
@@ -118,6 +123,8 @@ const Products = styled.div`
   width: 75%;
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
+  padding-top: ${spacing(2)};
 `;
 
 const FacetInfo = ({ facet }: { facet: Facet }) => {
@@ -196,67 +203,83 @@ export const Preview = ({
   };
 
   return (
-    <Wrapper>
-      <Header>
-        <CloseButton onClick={onClose} aria-label="close modal"></CloseButton>
-        <Text style={{ paddingTop: '10px', fontSize: '16px' }}>
-          Search across the site to preview the rule influence
-        </Text>
+    <Modal.Root
+      opened={true}
+      onClose={onClose}
+      centered
+      padding={0}
+      size="90vw"
+    >
+      <Modal.Overlay blur={3} />
+      <Modal.Content>
+        <Modal.Body>
+          <Wrapper>
+            <Header>
+              <CloseButton
+                onClick={onClose}
+                aria-label="close modal"
+              ></CloseButton>
+              <Text style={{ paddingTop: '10px', fontSize: '16px' }}>
+                Search across the site to preview the rule influence
+              </Text>
 
-        <PreviewTypeSelector>
-          <LabelText as="p">Preview</LabelText>
-          <DropdownWrapper>
-            <Dropdown
-              label={`${withRules ? 'with new rule change' : 'current state'}`}
-              isOpen={isDropdownOpen}
-              onOpen={() => {
-                setIsDropdownOpen(true);
-              }}
-              onClose={() => {
-                setIsDropdownOpen(false);
-              }}
-            >
-              <DropdownContent>
-                <Item
-                  as="button"
-                  onClick={() => {
-                    toggleView(true);
-                  }}
-                >
-                  with new rule change
-                </Item>
-                <Item
-                  as="button"
-                  onClick={() => {
-                    toggleView(false);
-                  }}
-                >
-                  current state
-                </Item>
-              </DropdownContent>
-            </Dropdown>
-          </DropdownWrapper>
-        </PreviewTypeSelector>
-      </Header>
-      <Content>
-        <Facets>
-          {data.facets.map((facet: Facet) => (
-            <FacetInfo key={facet.id} facet={facet} />
-          ))}
-        </Facets>
+              <PreviewTypeSelector>
+                <LabelText as="p">Preview</LabelText>
+                <DropdownWrapper>
+                  <Dropdown
+                    label={`${withRules ? 'with new rule change' : 'current state'}`}
+                    isOpen={isDropdownOpen}
+                    onOpen={() => {
+                      setIsDropdownOpen(true);
+                    }}
+                    onClose={() => {
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    <DropdownContent>
+                      <Item
+                        as="button"
+                        onClick={() => {
+                          toggleView(true);
+                        }}
+                      >
+                        with new rule change
+                      </Item>
+                      <Item
+                        as="button"
+                        onClick={() => {
+                          toggleView(false);
+                        }}
+                      >
+                        current state
+                      </Item>
+                    </DropdownContent>
+                  </Dropdown>
+                </DropdownWrapper>
+              </PreviewTypeSelector>
+            </Header>
+            <Content>
+              <Facets>
+                {data.facets.map((facet: Facet) => (
+                  <FacetInfo key={facet.id} facet={facet} />
+                ))}
+              </Facets>
 
-        <Products>
-          {data.products.map((product) => (
-            <ProductBox key={`product-${product.productId}`}>
-              <ProductWrapper>
-                <ProductDetails {...product} />
-              </ProductWrapper>
-            </ProductBox>
-          ))}
-        </Products>
-      </Content>
+              <Products>
+                {data.products.map((product) => (
+                  <ProductBox key={`product-${product.productId}`}>
+                    <ProductWrapper>
+                      <ProductDetails {...product} />
+                    </ProductWrapper>
+                  </ProductBox>
+                ))}
+              </Products>
+            </Content>
 
-      {isLoading && <Loader />}
-    </Wrapper>
+            {isLoading && <Loader />}
+          </Wrapper>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
   );
 };
