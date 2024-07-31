@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ReturnedCategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
-export const useRuleSetPreview = (id: string) => {
+export const useRuleSetDetail = (id: string) => {
   const api = useMemo(() => search(), []);
   const [ruleSetDetail, setRuleSetDetail] = useState<ReturnedCategoryRuleSet>({
     categoryId: '',

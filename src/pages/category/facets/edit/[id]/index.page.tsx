@@ -3,11 +3,7 @@ import { useRouter } from 'next/router';
 
 import { ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
 import { Heading } from '@/libs/components';
-import {
-  useFacetsFilter,
-  useFacetsList,
-  useRuleSetPreview,
-} from '@/libs/hooks';
+import { useFacetsFilter, useFacetsList, useRuleSetDetail } from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
@@ -23,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = (
 
 const Page = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { ruleSetDetail, isLoading } = useRuleSetPreview(id);
+  const { ruleSetDetail, isLoading } = useRuleSetDetail(id);
 
   const categoryId = useMemo(
     () => [ruleSetDetail.categoryId],

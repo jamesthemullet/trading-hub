@@ -1,4 +1,5 @@
 export * from './category/facets/use-facets-list';
+export * from './category/rulesets/use-rule-set-detail';
 export * from './global/facets/use-global-facet-update';
 export * from './global/facets/use-global-facets-list';
 export * from './global/rulesets/use-global-rule-set-create';
@@ -19,7 +20,6 @@ export * from './use-preview';
 export * from './use-rule-set';
 export * from './use-rule-set-create';
 export * from './use-rule-set-delete';
-export * from './use-rule-set-preview';
 export * from './use-rule-set-update';
 export * from './utils/use-debounce';
 export * from './utils/use-mouse-focus';

@@ -6,7 +6,7 @@ import {
   useFacetsList,
   useGetCategories,
   useGetFacetAttributeValues,
-  useRuleSetPreview,
+  useRuleSetDetail,
 } from '@/libs/hooks';
 import {
   attributeValuesMock,
@@ -31,7 +31,7 @@ jest.mock('next/router', () => ({
 }));
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
-  useRuleSetPreview: jest.fn(),
+  useRuleSetDetail: jest.fn(),
   useGetCategories: jest.fn(),
   useFacetsList: jest.fn(),
   useGetFacetAttributeValues: jest.fn(),
@@ -80,7 +80,7 @@ describe('Category Facet Management Editing', () => {
     });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest
-      .mocked(useRuleSetPreview)
+      .mocked(useRuleSetDetail)
       .mockImplementation(() => mockUseRuleSetPreviewData);
 
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
@@ -114,7 +114,7 @@ describe('Category Facet Management Editing', () => {
 
   it('should render the facet management editing page', async () => {
     jest
-      .mocked(useRuleSetPreview)
+      .mocked(useRuleSetDetail)
       .mockImplementation(() => mockUseRuleSetPreviewData);
     renderWithProviders(<Page id={ruleSetId} />);
 
@@ -163,7 +163,7 @@ describe('Category Facet Management Editing', () => {
   });
 
   it('should render the skeleton loader', () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => ({
+    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
       ...mockUseRuleSetPreviewData,
       isLoading: true,
     }));
@@ -175,7 +175,7 @@ describe('Category Facet Management Editing', () => {
   });
 
   it('should change the order of rows', async () => {
-    jest.mocked(useRuleSetPreview).mockImplementation(() => ({
+    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
       ...mockUseRuleSetPreviewData,
       facets: globalFacetsListMock.facets,
       isLoading: false,

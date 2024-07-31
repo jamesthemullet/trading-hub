@@ -6,7 +6,7 @@ import {
   useCategoryAttributes,
   useCategoryProductSearch,
   useGetCategories,
-  useRuleSetPreview,
+  useRuleSetDetail,
   useUpdateRuleSet,
 } from '@/libs/hooks';
 import {
@@ -26,9 +26,12 @@ jest.mock('next/router', () => ({
 jest.mock('../../../../../libs/hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
-jest.mock('../../../../../libs/hooks/use-rule-set-preview', () => ({
-  useRuleSetPreview: jest.fn(),
-}));
+jest.mock(
+  '../../../../../libs/hooks/category/rulesets/use-rule-set-detail',
+  () => ({
+    useRuleSetDetail: jest.fn(),
+  })
+);
 jest.mock('../../../../../libs/hooks/use-rule-set-update', () => ({
   useUpdateRuleSet: jest.fn(),
 }));
@@ -84,7 +87,7 @@ describe('Index', () => {
 
   it('opens attributes tab', async () => {
     jest
-      .mocked(useRuleSetPreview)
+      .mocked(useRuleSetDetail)
       .mockImplementation(() => mockUseRuleSetPreviewData);
     jest.mocked(useCategoryAttributes).mockImplementation(() => ({
       attributes: [],
@@ -103,7 +106,7 @@ describe('Index', () => {
 
   it('should save ruleset', async () => {
     jest
-      .mocked(useRuleSetPreview)
+      .mocked(useRuleSetDetail)
       .mockImplementation(() => mockUseRuleSetPreviewData);
 
     const user = userEvent.setup({ delay: null });
@@ -117,7 +120,7 @@ describe('Index', () => {
 
   it('should cancel changes to a ruleset', async () => {
     jest
-      .mocked(useRuleSetPreview)
+      .mocked(useRuleSetDetail)
       .mockImplementation(() => mockUseRuleSetPreviewData);
 
     const user = userEvent.setup({ delay: null });

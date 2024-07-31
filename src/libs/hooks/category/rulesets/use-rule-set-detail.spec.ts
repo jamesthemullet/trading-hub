@@ -4,7 +4,7 @@ import { setupServer } from 'msw/node';
 
 import type { ReturnedCategoryRuleSet } from '@/libs/api';
 
-import { useRuleSetPreview } from './use-rule-set-preview';
+import { useRuleSetDetail } from './use-rule-set-detail';
 
 const baseUrl = 'http://localhost';
 const mockCategoryId = 'abc123';
@@ -41,7 +41,7 @@ const handlers = [
 
 const server = setupServer(...handlers);
 
-describe('useRuleSet', () => {
+describe('useRuleSetDetail', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();
@@ -66,7 +66,7 @@ describe('useRuleSet', () => {
       status: { status: 200 },
     });
 
-    const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
+    const { result } = renderHook(() => useRuleSetDetail(mockCategoryId));
 
     const expectedData = {
       ruleSetDetail: mockRuleData,
@@ -85,7 +85,7 @@ describe('useRuleSet', () => {
       status: { status: 500 },
     });
 
-    const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
+    const { result } = renderHook(() => useRuleSetDetail(mockCategoryId));
 
     const expectedData = {
       ruleSetDetail: {
@@ -127,7 +127,7 @@ describe('useRuleSet', () => {
       throw new Error('No data');
     });
 
-    const { result } = renderHook(() => useRuleSetPreview(mockCategoryId));
+    const { result } = renderHook(() => useRuleSetDetail(mockCategoryId));
 
     await waitFor(() => {
       expect(result.current.error).toEqual('POST status 500');
