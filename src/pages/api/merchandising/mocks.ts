@@ -18,6 +18,8 @@ import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
 import { NextApiRequest } from 'next';
 
+import { mockSocks } from './mock-socks';
+
 export const mockProducts: ProductBoostBury[] = [
   {
     id: '2',
@@ -452,19 +454,7 @@ export const getMockMapping: () => Record<
     post: (_req, status, jsonBody) => {
       if (status !== 200) {
         const preview: SearchPreviewResponseBeta = {
-          products: [
-            {
-              id: 'id',
-              productId: `productId`,
-              title: 'Product title',
-              imageUrl: ['example.jpg'],
-              brand: 'M&S Collection',
-              isInStock: true,
-              metadata: { isPinned: false },
-              price: '10',
-              url: '',
-            },
-          ],
+          products: mockSocks,
           facets: [],
           category: 'should be optional in api',
           ruleSet: {

@@ -4,7 +4,7 @@ import { setupServer } from 'msw/node';
 
 import { SearchPreviewResponseBeta } from '@/libs/api';
 
-import { useCategoryPreview } from './use-category-preview';
+import { usePreview } from './use-preview';
 
 const baseUrl = 'http://localhost';
 const mockCategoryId = 'abc123';
@@ -67,15 +67,20 @@ const badResponse = {
 };
 
 const getRuleSetPreviewMock = jest.fn();
+const getRuleSetCategoryPreviewMock = jest.fn();
 
 const handlers = [
   http.post(
     `${baseUrl}/search/beta/merchandising/category/${mockCategoryId}/preview`,
     () => {
-      const { data, status } = getRuleSetPreviewMock();
+      const { data, status } = getRuleSetCategoryPreviewMock();
       return HttpResponse.json(data, status);
     }
   ),
+  http.post(`${baseUrl}/search/beta/merchandising/preview`, () => {
+    const { data, status } = getRuleSetPreviewMock();
+    return HttpResponse.json(data, status);
+  }),
 ];
 
 const server = setupServer(...handlers);
@@ -92,16 +97,17 @@ describe('useRuleSet', () => {
   });
 
   it('should render the hook', async () => {
-    getRuleSetPreviewMock.mockReturnValueOnce({
+    getRuleSetCategoryPreviewMock.mockReturnValueOnce({
       data: mockSearchData,
       status: { status: 200 },
     });
 
     const { result } = renderHook(() =>
-      useCategoryPreview({
+      usePreview({
         categoryId: mockCategoryId,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
+        previewType: 'category',
       })
     );
 
@@ -143,10 +149,11 @@ describe('useRuleSet', () => {
     });
 
     const { result } = renderHook(() =>
-      useCategoryPreview({
-        categoryId: mockCategoryId,
+      usePreview({
+        searchTerm: 'foo',
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
+        previewType: 'all',
       })
     );
 
@@ -160,17 +167,110 @@ describe('useRuleSet', () => {
     });
   });
 
-  it('should return empty with no category id', async () => {
+  it('should return data for search preview', async () => {
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: mockSearchData,
       status: { status: 200 },
     });
 
     const { result } = renderHook(() =>
-      useCategoryPreview({
+      usePreview({
+        searchTerm: 'foo',
+        merchandisingRules: mockMerchandisingRules,
+        facetConfig: [],
+        previewType: 'all',
+      })
+    );
+
+    const expectedData = {
+      categoryProducts: [
+        {
+          brand: 'M&S Collection',
+          id: '60275024',
+          imageUrl: [
+            'SD_01_T38_5762P_F0_X_EC_0',
+            'SD_01_T38_5762P_F0_X_EC_0',
+            'SD_01_T38_5762P_F0_X_EC_90',
+            'SD_01_T38_5762P_F0_X_EC_90',
+          ],
+          isInStock: true,
+          metadata: {
+            isPinned: false,
+          },
+          price: '£17.50',
+          title: 'Mock Product',
+          url: 'petite-round-neck-cardigan/p/clp60275023',
+        },
+      ],
+      error: '',
+    };
+
+    await waitFor(() => {
+      expect(result.current.data.products).toMatchObject(
+        expectedData.categoryProducts
+      );
+      expect(result.current.data.pagination.totalItems).toBe(1);
+    });
+  });
+
+  it('should return category data for beta preview', async () => {
+    getRuleSetPreviewMock.mockReturnValueOnce({
+      data: mockSearchData,
+      status: { status: 200 },
+    });
+
+    const { result } = renderHook(() =>
+      usePreview({
+        categoryId: mockCategoryId,
+        merchandisingRules: mockMerchandisingRules,
+        facetConfig: [],
+        previewType: 'all',
+      })
+    );
+
+    const expectedData = {
+      categoryProducts: [
+        {
+          brand: 'M&S Collection',
+          id: '60275024',
+          imageUrl: [
+            'SD_01_T38_5762P_F0_X_EC_0',
+            'SD_01_T38_5762P_F0_X_EC_0',
+            'SD_01_T38_5762P_F0_X_EC_90',
+            'SD_01_T38_5762P_F0_X_EC_90',
+          ],
+          isInStock: true,
+          metadata: {
+            isPinned: false,
+          },
+          price: '£17.50',
+          title: 'Mock Product',
+          url: 'petite-round-neck-cardigan/p/clp60275023',
+        },
+      ],
+      error: '',
+    };
+
+    await waitFor(() => {
+      expect(result.current.data.products).toMatchObject(
+        expectedData.categoryProducts
+      );
+      expect(result.current.data.pagination.totalItems).toBe(1);
+    });
+  });
+
+  it('should return empty with no category id', async () => {
+    getRuleSetCategoryPreviewMock.mockReturnValueOnce({
+      data: mockSearchData,
+      status: { status: 200 },
+    });
+
+    const { result } = renderHook(() =>
+      usePreview({
         categoryId: undefined,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
+        previewType: 'category',
       })
     );
 
@@ -187,7 +287,7 @@ describe('useRuleSet', () => {
   });
 
   it('should refetch data', async () => {
-    getRuleSetPreviewMock.mockReturnValue({
+    getRuleSetCategoryPreviewMock.mockReturnValue({
       data: mockSearchData,
       status: { status: 200 },
     });
@@ -201,10 +301,11 @@ describe('useRuleSet', () => {
     };
 
     const { result } = renderHook(() =>
-      useCategoryPreview({
+      usePreview({
         categoryId: mockCategoryId,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
+        previewType: 'category',
       })
     );
 
@@ -215,7 +316,7 @@ describe('useRuleSet', () => {
       result.current.setRules(mockMerchandisingRules);
     });
 
-    getRuleSetPreviewMock.mockReturnValueOnce({
+    getRuleSetCategoryPreviewMock.mockReturnValueOnce({
       data: newMocks,
       status: { status: 200 },
     });

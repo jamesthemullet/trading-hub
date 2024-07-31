@@ -9,8 +9,8 @@ import { renderWithProviders } from '@/test/render-with-providers';
 import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
 import { RulesetChanges } from './ruleset-changes';
 
-jest.mock('../../hooks/use-category-preview', () => ({
-  useCategoryPreview: jest.fn(),
+jest.mock('../../hooks/use-preview', () => ({
+  usePreview: jest.fn(),
 }));
 jest.mock('../../hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),

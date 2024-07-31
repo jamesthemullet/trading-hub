@@ -9,14 +9,18 @@ import { search } from '@/libs/api';
 
 import { validateErrorResponse } from './utils/error';
 
-export const useCategoryPreview = ({
+export const usePreview = ({
   categoryId,
-  merchandisingRules,
   facetConfig,
+  merchandisingRules,
+  previewType,
+  searchTerm,
 }: {
-  categoryId: string | undefined;
-  merchandisingRules: MerchandisingRules;
   facetConfig: Array<RuleSetFacetConfigWithId>;
+  merchandisingRules: MerchandisingRules;
+  previewType: 'category' | 'all';
+  categoryId?: string;
+  searchTerm?: string;
 }) => {
   const [error, setError] = useState('');
   const [rules, setRules] = useState(merchandisingRules);
@@ -66,16 +70,38 @@ export const useCategoryPreview = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!categoryId) {
-        return;
-      }
       setIsLoading(true);
 
       try {
-        const categoryPreview =
-          await search().betaMerchandisingCategoryPreviewCreate(
-            categoryId,
-            { rows: 140, start: 0 },
+        if (previewType === 'category') {
+          if (!categoryId) {
+            return;
+          }
+          const categoryPreview =
+            await search().betaMerchandisingCategoryPreviewCreate(
+              categoryId,
+              {
+                rows: 140,
+                start: 0,
+              },
+              {
+                rules,
+                facets: facetConfigRules,
+                isEnabled: true,
+              }
+            );
+
+          const previewData: SearchPreviewResponseBeta = categoryPreview.data;
+
+          setData(previewData);
+        } else {
+          const searchPreview = await search().betaMerchandisingPreviewCreate(
+            {
+              ...(categoryId && { categoryId }),
+              ...(searchTerm && { searchTerm }),
+              rows: 140,
+              start: 0,
+            },
             {
               rules,
               facets: facetConfigRules,
@@ -83,9 +109,10 @@ export const useCategoryPreview = ({
             }
           );
 
-        const previewData: SearchPreviewResponseBeta = categoryPreview.data;
+          const previewData: SearchPreviewResponseBeta = searchPreview.data;
 
-        setData(previewData);
+          setData(previewData);
+        }
 
         setError('');
         setIsLoading(false);
@@ -98,7 +125,7 @@ export const useCategoryPreview = ({
     };
 
     fetchData();
-  }, [facetConfigRules, categoryId, rules]);
+  }, [facetConfigRules, categoryId, rules, previewType, searchTerm]);
 
   return {
     data,

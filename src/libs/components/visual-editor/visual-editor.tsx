@@ -22,6 +22,7 @@ export const VisualEditor = ({
   const pinnedProductsCount = products.filter(
     (product) => product.metadata.isPinned
   ).length;
+
   return (
     <Layout aria-label="Visual Editor">
       {products.map((product, index) => (

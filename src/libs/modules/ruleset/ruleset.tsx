@@ -30,10 +30,9 @@ import {
   Text,
   VisualEditor,
 } from '@/libs/components';
+import { useCategoryProductSearch, usePreview } from '@/libs/hooks';
 
 import isEqual from 'lodash/isEqual';
-
-import { useCategoryPreview, useCategoryProductSearch } from '../../hooks';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pluralize = require('pluralize');
 
@@ -191,10 +190,12 @@ export const Ruleset = ({
     error: previewError,
     isLoading,
     setRules: setPreviewRules,
-  } = useCategoryPreview({
-    categoryId: selectedCategory?.identifier,
+  } = usePreview({
+    ...(selectedCategory && { categoryId: selectedCategory.identifier }),
+    ...(searchTerms && { searchTerm: searchTerms[0] }),
     merchandisingRules,
     facetConfig: [],
+    previewType: rulesetType === 'category' ? 'category' : 'all',
   });
 
   const onAddSearchTerm = (keyword: string) => {
@@ -413,10 +414,11 @@ export const Ruleset = ({
 
   return (
     <>
-      {showPreview && selectedCategory.identifier && (
+      {showPreview && (
         <Preview
           onClose={() => setShowPreview(!showPreview)}
-          categoryId={selectedCategory.identifier}
+          categoryId={selectedCategory?.identifier}
+          searchTerm={searchTerms?.[0]}
           merchandisingRules={merchandisingRules}
           facetConfig={rulesetFacets || []}
         />

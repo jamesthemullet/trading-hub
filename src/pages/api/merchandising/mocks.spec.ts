@@ -1,6 +1,7 @@
 import { ErrorResponse, ReturnedRuleSet } from '@/libs/api';
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 
+import { mockSocks } from './mock-socks';
 import {
   attributesMock,
   attributeValuesMock,
@@ -404,19 +405,7 @@ describe('mocks', () => {
       );
       expect(result).toEqual({
         body: {
-          products: [
-            {
-              id: 'id',
-              productId: `productId`,
-              title: 'Product title',
-              imageUrl: ['example.jpg'],
-              brand: 'M&S Collection',
-              isInStock: true,
-              metadata: { isPinned: false },
-              price: '10',
-              url: '',
-            },
-          ],
+          products: mockSocks,
           facets: [],
           category: 'should be optional in api',
           ruleSet: {

@@ -13,9 +13,9 @@ import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-r
 
 import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
 import { renderWithProviders } from '../../../test/render-with-providers';
-import { useCategoryPreview } from '../../hooks/use-category-preview';
 import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
 import { useGetCategories } from '../../hooks/use-get-categories';
+import { usePreview } from '../../hooks/use-preview';
 import { Ruleset } from './ruleset';
 
 jest.mock('next/router', () => ({
@@ -24,8 +24,8 @@ jest.mock('next/router', () => ({
 jest.mock('../../hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
-jest.mock('../../hooks/use-category-preview', () => ({
-  useCategoryPreview: jest.fn(),
+jest.mock('../../hooks/use-preview', () => ({
+  usePreview: jest.fn(),
 }));
 jest.mock('../../hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
@@ -248,7 +248,7 @@ describe('Ruleset', () => {
       getCategoriesError: '',
     });
 
-    jest.mocked(useCategoryPreview).mockReturnValue(mockCategoryReturnValue);
+    jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
 
     (useRouter as jest.Mock).mockImplementation(() => {
       return {
@@ -274,7 +274,7 @@ describe('Ruleset', () => {
   });
 
   it('should render a loading when updating data', () => {
-    jest.mocked(useCategoryPreview).mockReturnValueOnce({
+    jest.mocked(usePreview).mockReturnValueOnce({
       ...mockCategoryReturnValue,
       isLoading: true,
     });
@@ -610,7 +610,7 @@ describe('Ruleset', () => {
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
         getCategoriesError: '',
       });
-      jest.mocked(useCategoryPreview).mockReturnValue({
+      jest.mocked(usePreview).mockReturnValue({
         ...mockCategoryReturnValue,
         data: {
           ...mockCategoryReturnValue.data,
@@ -712,7 +712,7 @@ describe('Ruleset', () => {
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
         getCategoriesError: '',
       });
-      jest.mocked(useCategoryPreview).mockReturnValue({
+      jest.mocked(usePreview).mockReturnValue({
         ...mockCategoryReturnValue,
         data: {
           ...mockCategoryReturnValue.data,
@@ -886,7 +886,7 @@ describe('Ruleset', () => {
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
         getCategoriesError: '',
       });
-      jest.mocked(useCategoryPreview).mockReturnValue({
+      jest.mocked(usePreview).mockReturnValue({
         ...mockCategoryReturnValue,
         data: {
           ...mockCategoryReturnValue.data,
@@ -1064,7 +1064,7 @@ describe('Ruleset', () => {
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
         getCategoriesError: '',
       });
-      jest.mocked(useCategoryPreview).mockReturnValue({
+      jest.mocked(usePreview).mockReturnValue({
         ...mockCategoryReturnValue,
         data: {
           ...mockCategoryReturnValue.data,
@@ -1281,7 +1281,7 @@ describe('Ruleset', () => {
         getCategoriesError: '',
       });
 
-      jest.mocked(useCategoryPreview).mockReturnValue({
+      jest.mocked(usePreview).mockReturnValue({
         ...mockCategoryReturnValue,
         data: {
           ...mockCategoryReturnValue.data,

@@ -7,7 +7,7 @@ import type {
   RuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { Dropdown, Loader, ProductDetails } from '@/libs/components';
-import { useCategoryPreview } from '@/libs/hooks';
+import { usePreview } from '@/libs/hooks';
 
 import { ProductWrapper } from '../product/product.styles';
 import { Header3, Label, Text } from '../typography/typography.styles';
@@ -16,10 +16,11 @@ import { spacing } from '../utils/spacing';
 import { ProductBox } from '../visual-editor/visual-editor.styles';
 
 type Props = {
-  categoryId: string;
   facetConfig: RuleSetFacetConfigWithId[];
   merchandisingRules: MerchandisingRules;
   onClose: () => void;
+  categoryId?: string;
+  searchTerm?: string;
 };
 
 const Wrapper = styled.div`
@@ -167,6 +168,7 @@ export const Preview = ({
   facetConfig,
   merchandisingRules,
   onClose,
+  searchTerm,
 }: Props) => {
   const [withRules, setWithRules] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -178,13 +180,13 @@ export const Preview = ({
     buries: { alphanumeric: [], numeric: [], product: [] },
   };
 
-  const { data, isLoading, setRules, setFacetConfigRules } = useCategoryPreview(
-    {
-      categoryId,
-      merchandisingRules,
-      facetConfig,
-    }
-  );
+  const { data, isLoading, setRules, setFacetConfigRules } = usePreview({
+    ...(categoryId && { categoryId }),
+    ...(searchTerm && { searchTerm }),
+    merchandisingRules,
+    facetConfig,
+    previewType: searchTerm ? 'all' : 'category',
+  });
 
   const toggleView = (withMerchandisingRules: boolean) => {
     setIsDropdownOpen(false);

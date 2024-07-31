@@ -2,11 +2,11 @@ import { act, render, screen } from '@testing-library/react';
 
 import { Facet } from '@/libs/api';
 
-import { useCategoryPreview } from '../../hooks/use-category-preview';
+import { usePreview } from '../../hooks/use-preview';
 import { Preview } from './preview';
 
-jest.mock('../../hooks/use-category-preview', () => ({
-  useCategoryPreview: jest.fn(),
+jest.mock('../../hooks/use-preview', () => ({
+  usePreview: jest.fn(),
 }));
 
 const mockMerchandisingRules = {
@@ -138,7 +138,7 @@ const CURRENT_STATE = 'current state';
 
 describe('Preview', () => {
   beforeEach(() => {
-    jest.mocked(useCategoryPreview).mockReturnValue({
+    jest.mocked(usePreview).mockReturnValue({
       ...mockCategoryReturnValue,
     });
   });
@@ -167,8 +167,23 @@ describe('Preview', () => {
       />
     );
 
-    expect(useCategoryPreview).toHaveBeenCalledWith(
+    expect(usePreview).toHaveBeenCalledWith(
       expect.objectContaining({ facetConfig: mockFacetConfig })
+    );
+  });
+
+  it('calls the api with the supplied search term config', () => {
+    render(
+      <Preview
+        facetConfig={[]}
+        merchandisingRules={mockMerchandisingRules}
+        searchTerm="foo"
+        onClose={mockOnClose}
+      />
+    );
+
+    expect(usePreview).toHaveBeenCalledWith(
+      expect.objectContaining({ searchTerm: 'foo' })
     );
   });
 
@@ -280,7 +295,7 @@ describe('Preview', () => {
   });
 
   it('should show a loader when making changes', () => {
-    jest.mocked(useCategoryPreview).mockReturnValue({
+    jest.mocked(usePreview).mockReturnValue({
       ...mockCategoryReturnValue,
       isLoading: true,
     });
