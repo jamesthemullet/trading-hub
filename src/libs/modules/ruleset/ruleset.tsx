@@ -447,6 +447,7 @@ export const Ruleset = ({
               setSelectedCategory({});
             }}
             onSelectCategory={onSelectCategory}
+            canRemoveCategory={true}
           />
         </CategoryPanel>
       )}

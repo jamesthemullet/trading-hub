@@ -165,6 +165,7 @@ export const FacetsPanel = ({
   displayRowOrderControls = false,
   includedFacets,
   canEditDisplayName = false,
+  canRemoveCategory = true,
   rulesetMerchandisingRules,
 }: {
   onSave: () => void;
@@ -192,6 +193,7 @@ export const FacetsPanel = ({
   defaultOrderData?: defaultOrderDataType;
   includedFacets?: RuleSetFacetConfigWithId[] | [];
   canEditDisplayName?: boolean;
+  canRemoveCategory?: boolean;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
@@ -362,6 +364,7 @@ export const FacetsPanel = ({
             setSelectedCategory({});
           }}
           onSelectCategory={onSelectCategory}
+          canRemoveCategory={canRemoveCategory}
         />
       </SectionWrapper>
       <SectionWrapper>

@@ -10,16 +10,18 @@ import {
 export const SelectedCategory = ({
   label,
   onClick,
+  canRemoveCategory,
 }: {
   label: string;
   onClick?: () => void;
+  canRemoveCategory?: boolean;
 }) => (
   <Wrapper>
     <Text style={{ marginBottom: spacing(1) }}>Category</Text>
     <Categories>
       <SelectedCategoryPill>
         {label}
-        {onClick && (
+        {onClick && canRemoveCategory && (
           <SelectedCategoryClose
             aria-label="Remove selected category"
             onClick={onClick}

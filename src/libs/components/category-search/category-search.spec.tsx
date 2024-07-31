@@ -111,7 +111,13 @@ describe('CategorySearch', () => {
   });
 
   it('should clear a selected category', async () => {
-    render(<CategorySearch {...mockProps} selectedCategory={mockCategory} />);
+    render(
+      <CategorySearch
+        {...mockProps}
+        selectedCategory={mockCategory}
+        canRemoveCategory={true}
+      />
+    );
 
     const clearButton = await screen.findByLabelText(
       'Remove selected category'

@@ -146,6 +146,7 @@ const Page = ({ id }: PageProps) => {
           canMergeValueAttributes
           includedFacets={facetsFromGlobalRuleSet}
           canEditDisplayName={true}
+          canRemoveCategory={false}
           facetType="global"
         />
       )}

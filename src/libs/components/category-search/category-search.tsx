@@ -15,12 +15,14 @@ type Props = {
   onClearSelection: () => void;
   onSelectCategory: (category: Category) => void;
   selectedCategory?: Category;
+  canRemoveCategory?: boolean;
 };
 
 export const CategorySearch = ({
   selectedCategory,
   onClearSelection,
   onSelectCategory,
+  canRemoveCategory,
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
   const { getCategories } = useGetCategories();
@@ -71,6 +73,7 @@ export const CategorySearch = ({
           });
           onClearSelection();
         }}
+        canRemoveCategory={canRemoveCategory}
       />
     );
   }
