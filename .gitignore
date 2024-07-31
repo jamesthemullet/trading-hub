@@ -57,3 +57,7 @@ next-env.d.ts
 
 # Project generated files
 src/libs/api/api.yml
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
