@@ -1,13 +1,8 @@
 import styled from '@emotion/styled';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Box } from '@mantine/core';
 
-import {
-  Category,
-  MerchandisingRules,
-  ReturnedFacet,
-  RuleSetFacetConfigWithId,
-} from '@/libs/api';
+import { Category, MerchandisingRules, ReturnedFacet } from '@/libs/api';
 import {
   Button,
   CategorySearch,
@@ -164,8 +159,6 @@ export const FacetsPanel = ({
   defaultCategory,
   displayRowOrderControls = false,
   includedFacets,
-  canEditDisplayName = false,
-  canRemoveCategory = true,
   rulesetMerchandisingRules,
 }: {
   onSave: () => void;
@@ -176,7 +169,11 @@ export const FacetsPanel = ({
     value: string | 'included' | 'excluded',
     facet: ReturnedFacet
   ) => void;
-  onFacetsDataRowOrderChange?: (index: number, direction: -1 | 1) => void;
+  onFacetsDataRowOrderChange?: (
+    index: number,
+    direction: -1 | 1,
+    id: string
+  ) => void;
   onHandleStatusChange?: (
     status: 'included' | 'excluded',
     id?: string,
@@ -191,9 +188,7 @@ export const FacetsPanel = ({
   defaultCategory?: Category;
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
-  includedFacets?: RuleSetFacetConfigWithId[] | [];
-  canEditDisplayName?: boolean;
-  canRemoveCategory?: boolean;
+  includedFacets: ReturnedFacet[];
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
@@ -234,7 +229,7 @@ export const FacetsPanel = ({
   }: {
     facet: ReturnedFacet;
     index: number;
-    totalIncludedFacets: number;
+    totalIncludedFacets?: number;
   }) => {
     const facetIncluded = includedFacets?.find(
       (includedFacet) => includedFacet.id === facet.id
@@ -251,7 +246,7 @@ export const FacetsPanel = ({
           <Text>{facet.indexPropertyName}</Text>
         </Col>
         <Col>
-          {onFacetDataChange && canEditDisplayName ? (
+          {onFacetDataChange && facetType === 'global' ? (
             <EditableLabel
               displayValue={facet.displayValue}
               onDisplayValueChange={(newValue) =>
@@ -273,7 +268,7 @@ export const FacetsPanel = ({
                 }
               }}
             />
-            {index < totalIncludedFacets && (
+            {!!totalIncludedFacets && index < totalIncludedFacets && (
               <>
                 {index === 0 || !displayRowOrderControls ? (
                   <Box w="40" h="40" />
@@ -283,7 +278,7 @@ export const FacetsPanel = ({
                     aria-label={`Move ${facet.displayValue} row up`}
                     onClick={() => {
                       if (onFacetsDataRowOrderChange) {
-                        onFacetsDataRowOrderChange(index, -1);
+                        onFacetsDataRowOrderChange(index, -1, facet.id);
                       }
                     }}
                   ></ArrowButton>
@@ -297,7 +292,7 @@ export const FacetsPanel = ({
                     aria-label={`Move ${facet.displayValue} row down`}
                     onClick={() => {
                       if (onFacetsDataRowOrderChange) {
-                        onFacetsDataRowOrderChange(index, 1);
+                        onFacetsDataRowOrderChange(index, 1, facet.id);
                       }
                     }}
                   ></ArrowButton>
@@ -313,23 +308,13 @@ export const FacetsPanel = ({
     );
   };
 
-  const sortedFacets = useMemo(() => {
-    return [...facetsData].sort(
-      (a, b) =>
-        (includedFacets?.some((facet) => facet.id === b.id) ? 1 : 0) -
-        (includedFacets?.some((facet) => facet.id === a.id) ? 1 : 0)
-    );
-  }, [facetsData, includedFacets]);
-
-  const sortedAndMappedFacets = sortedFacets?.map(
+  const sortedAndMappedFacets = facetsData?.map(
     (facet: ReturnedFacet, index: number) => (
       <FacetRow
         key={facet.id}
         facet={facet}
         index={index}
-        totalIncludedFacets={
-          facetsData.filter((facet) => facet.status === 'included').length
-        }
+        totalIncludedFacets={includedFacets.length}
       />
     )
   );
@@ -341,7 +326,7 @@ export const FacetsPanel = ({
           onClose={() => setShowPreview(!showPreview)}
           categoryId={selectedCategory.identifier}
           merchandisingRules={merchandisingRules}
-          facetConfig={includedFacets || []}
+          facetConfig={includedFacets}
         />
       )}
 
@@ -364,7 +349,7 @@ export const FacetsPanel = ({
             setSelectedCategory({});
           }}
           onSelectCategory={onSelectCategory}
-          canRemoveCategory={canRemoveCategory}
+          canRemoveCategory={facetType === 'category'}
         />
       </SectionWrapper>
       <SectionWrapper>

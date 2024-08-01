@@ -24,7 +24,7 @@ import { ParsedUrlQuery } from 'querystring';
 import Page, { getServerSideProps } from './index.page';
 
 const mockUpdateGlobalFacet = jest.fn();
-const mockUpdateRuleSet = jest.fn();
+const mockUpdateRuleSet = jest.fn().mockReturnValue(true);
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -38,16 +38,13 @@ jest.mock('@/libs/hooks', () => ({
   useGlobalFacetUpdate: () => {
     return { handleUpdate: mockUpdateGlobalFacet };
   },
-  useCategoryRuleSetUpdate: () => {
+  useUpdateRuleSet: () => {
     return { updateRuleSet: mockUpdateRuleSet };
   },
 }));
 jest.mock('@/libs/hooks/use-get-facet-attributes', () => ({
   useGetFacetAttributes: jest.fn(),
 }));
-
-const logSpy = jest.spyOn(console, 'log');
-logSpy.mockImplementation(jest.fn());
 
 const categoryId1 = 'cat_123';
 const categoryName1 = 'jeans';
@@ -95,7 +92,6 @@ describe('Category Facet Management Editing', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    logSpy.mockClear();
   });
 
   it('loads the mock data', async () => {
@@ -158,8 +154,69 @@ describe('Category Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    // TODO: Implement save functionality
-    expect(logSpy).toHaveBeenCalled();
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryId: 'SubCategory_428',
+      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      rules: {
+        rules: {
+          pinnedProducts: [{ id: 'a1' }],
+          blockedProducts: [],
+          boosts: {
+            numeric: [],
+            alphanumeric: [],
+            product: [],
+          },
+          buries: {
+            numeric: [],
+            alphanumeric: [],
+            product: [],
+          },
+        },
+        isEnabled: false,
+        facets: [
+          {
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            status: 'included',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+            lastChanged: {
+              date: '2021-01-01T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [
+              {
+                displayValue: 'test merged group',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
+          },
+          {
+            displayValue: 'size',
+            indexPropertyName: 'size',
+            status: 'excluded',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+            lastChanged: {
+              date: '2021-01-02T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [],
+          },
+          {
+            displayValue: 'brand',
+            indexPropertyName: 'brand',
+            status: 'included',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+            lastChanged: {
+              date: '2021-01-03T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [],
+          },
+        ],
+      },
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets/');
   });
 
   it('should render the skeleton loader', () => {

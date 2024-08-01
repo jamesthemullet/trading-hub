@@ -35,6 +35,7 @@ const Page = () => {
         isNewRuleset
         title="Facet Rule Editor"
         facetsData={[]}
+        includedFacets={[]}
         facetType="category"
         rulesetMerchandisingRules={defaultMerchandisingRules}
       />

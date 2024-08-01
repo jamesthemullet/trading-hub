@@ -3,7 +3,12 @@ import { useRouter } from 'next/router';
 
 import { ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
 import { Heading } from '@/libs/components';
-import { useFacetsFilter, useFacetsList, useRuleSetDetail } from '@/libs/hooks';
+import {
+  useFacetsFilter,
+  useFacetsList,
+  useRuleSetDetail,
+  useUpdateRuleSet,
+} from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
@@ -31,9 +36,12 @@ const Page = ({ id }: { id: string }) => {
   >([]);
 
   const { facets } = useFacetsList(categoryId, !isLoading);
-  const [localFacetData, setLocalFacetData] = useState<ReturnedFacet[]>(facets);
+  const [facetList, setFacetList] = useState<ReturnedFacet[]>([]);
+  const [includedFacets, setIncludedFacets] = useState<ReturnedFacet[]>([]);
+  const [orderedFacetList, setOrderedFacetList] = useState<ReturnedFacet[]>([]);
 
-  const { setSearch, filteredFacets } = useFacetsFilter(localFacetData);
+  const { setSearch, filteredFacets } = useFacetsFilter(orderedFacetList);
+  const { updateRuleSet } = useUpdateRuleSet();
 
   useEffect(() => {
     if (ruleSetDetail.facets) {
@@ -42,12 +50,43 @@ const Page = ({ id }: { id: string }) => {
   }, [ruleSetDetail]);
 
   useEffect(() => {
-    setLocalFacetData(orderByStatus(facets));
+    const includedFacets = facetsFromCategoryRuleSet
+      .map((facet) => {
+        const localFacet = facetList.find(
+          (localFacet) => localFacet.id === facet.id
+        );
+        return localFacet;
+      })
+      .filter((facet): facet is ReturnedFacet => Boolean(facet));
+    setIncludedFacets(includedFacets);
+    const excludedFacets = facetList.filter(
+      (facet) =>
+        !facetsFromCategoryRuleSet.some(
+          (ruleFacet) => ruleFacet.id === facet.id
+        )
+    );
+    setOrderedFacetList([...includedFacets, ...excludedFacets]);
+  }, [facetList, facetsFromCategoryRuleSet]);
+
+  useEffect(() => {
+    setFacetList(facets);
   }, [facets]);
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log('save');
+  const handleSave = async () => {
+    const response = await updateRuleSet({
+      categoryId: categoryId[0],
+      rules: {
+        facets: orderedFacetList.filter((facet) =>
+          includedFacets.some((includedFacet) => includedFacet.id === facet.id)
+        ),
+        isEnabled: ruleSetDetail.isEnabled,
+        rules: ruleSetDetail.rules,
+      },
+      ruleSetId: id,
+    });
+    if (response) {
+      return router.push(`/category/facets/`);
+    }
   };
 
   const handleCancel = () => {
@@ -60,39 +99,40 @@ const Page = ({ id }: { id: string }) => {
     path: '/',
   };
 
-  const orderByStatus = (facets: ReturnedFacet[]) => {
-    const included = facets.filter((facet) => facet.status === 'included');
-    const excluded = facets.filter((facet) => facet.status === 'excluded');
-    return [...included, ...excluded];
-  };
-
   const onHandleStatusChange = async (
     value: 'included' | 'excluded',
     id?: string
   ) => {
-    setFacetsFromCategoryRuleSet((prev) => {
-      if (value === 'excluded') {
-        return prev.filter((item) => item.id !== id);
-      } else {
-        const existingFacet = localFacetData.find((facet) => facet.id === id);
-        // istanbul ignore next
-        if (!existingFacet) {
-          return prev;
-        }
+    const facetToChange = orderedFacetList.find((facet) => facet.id === id);
+    // istanbul ignore next
+    if (!facetToChange) {
+      return;
+    }
 
-        const facetToAdd = {
-          id: existingFacet.id,
-          boosted: existingFacet.boosted,
-          excludedValues: existingFacet.excludedValues,
-        };
+    const currentlyIncludedFacets = orderedFacetList.filter((facet) =>
+      includedFacets.includes(facet)
+    );
+    const currentlyExcludedFacets = orderedFacetList.filter(
+      (facet) => !includedFacets.includes(facet)
+    );
 
-        if (!prev.find((facet) => facet.id === facetToAdd.id)) {
-          return [...prev, facetToAdd];
-        } else {
-          return prev;
-        }
-      }
-    });
+    if (value === 'included') {
+      setOrderedFacetList([
+        ...currentlyIncludedFacets,
+        facetToChange,
+        ...currentlyExcludedFacets.filter((facet) => facet !== facetToChange),
+      ]);
+      setIncludedFacets([...includedFacets, facetToChange]);
+    } else {
+      setOrderedFacetList([
+        ...currentlyIncludedFacets.filter((facet) => facet !== facetToChange),
+        facetToChange,
+        ...currentlyExcludedFacets,
+      ]);
+      setIncludedFacets(
+        includedFacets.filter((facet) => facet.id !== facetToChange.id)
+      );
+    }
   };
 
   return (
@@ -110,9 +150,9 @@ const Page = ({ id }: { id: string }) => {
           facetsData={filteredFacets}
           displayRowOrderControls={true}
           onFacetsDataRowOrderChange={(index, direction) => {
-            const item = localFacetData[index];
-            const firstPart = localFacetData.slice(0, index);
-            const secondPart = localFacetData.slice(index + 1);
+            const item = orderedFacetList[index];
+            const firstPart = orderedFacetList.slice(0, index);
+            const secondPart = orderedFacetList.slice(index + 1);
             const updatedFacets =
               direction === -1
                 ? [
@@ -122,11 +162,11 @@ const Page = ({ id }: { id: string }) => {
                     ...secondPart,
                   ]
                 : [...firstPart, secondPart[0], item, ...secondPart.slice(1)];
-            setLocalFacetData(updatedFacets);
+            setOrderedFacetList(updatedFacets);
           }}
           onHandleStatusChange={onHandleStatusChange}
           defaultCategory={category}
-          includedFacets={facetsFromCategoryRuleSet}
+          includedFacets={includedFacets}
           facetType="category"
           rulesetMerchandisingRules={ruleSetDetail.rules}
         />

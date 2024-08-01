@@ -37,10 +37,31 @@ const Page = ({ id }: PageProps) => {
   const [facetsFromGlobalRuleSet, setFacetsFromGlobalRuleSet] = useState<
     RuleSetFacetConfigWithId[] | []
   >([]);
+  const [includedFacets, setIncludedFacets] = useState<ReturnedFacet[]>([]);
+  const [orderedLocalFacetData, setOrderedLocalFacetData] = useState<
+    ReturnedFacet[]
+  >([]);
 
   useEffect(() => {
     setGlobalFacetsList(facets);
   }, [facets]);
+
+  useEffect(() => {
+    const includedFacets = facetsFromGlobalRuleSet
+      .map((facet) => {
+        const localFacet = globalFacetsList.find(
+          (localFacet) => localFacet.id === facet.id
+        );
+        return localFacet;
+      })
+      .filter((facet): facet is ReturnedFacet => Boolean(facet));
+    setIncludedFacets(includedFacets);
+    const excludedFacets = globalFacetsList.filter(
+      (facet) =>
+        !facetsFromGlobalRuleSet.some((ruleFacet) => ruleFacet.id === facet.id)
+    );
+    setOrderedLocalFacetData([...includedFacets, ...excludedFacets]);
+  }, [globalFacetsList, facetsFromGlobalRuleSet]);
 
   useEffect(() => {
     if (globalRuleSet.facets) {
@@ -48,7 +69,7 @@ const Page = ({ id }: PageProps) => {
     }
   }, [globalRuleSet]);
 
-  const { setSearch, filteredFacets } = useFacetsFilter(globalFacetsList);
+  const { setSearch, filteredFacets } = useFacetsFilter(orderedLocalFacetData);
 
   const { handleUpdate } = useGlobalFacetUpdate();
   const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
@@ -144,9 +165,7 @@ const Page = ({ id }: PageProps) => {
           facetsData={filteredFacets}
           defaultCategory={defaultCategory}
           canMergeValueAttributes
-          includedFacets={facetsFromGlobalRuleSet}
-          canEditDisplayName={true}
-          canRemoveCategory={false}
+          includedFacets={includedFacets}
           facetType="global"
         />
       )}
