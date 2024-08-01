@@ -70,13 +70,14 @@ export const usePreview = ({
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!categoryId && !searchTerm) {
+        return;
+      }
+
       setIsLoading(true);
 
       try {
-        if (previewType === 'category') {
-          if (!categoryId) {
-            return;
-          }
+        if (previewType === 'category' && categoryId) {
           const categoryPreview =
             await search().betaMerchandisingCategoryPreviewCreate(
               categoryId,
