@@ -40,7 +40,8 @@ const Page = ({ id }: { id: string }) => {
   const [includedFacets, setIncludedFacets] = useState<ReturnedFacet[]>([]);
   const [orderedFacetList, setOrderedFacetList] = useState<ReturnedFacet[]>([]);
 
-  const { setSearch, filteredFacets } = useFacetsFilter(orderedFacetList);
+  const { search, setSearch, filteredFacets } =
+    useFacetsFilter(orderedFacetList);
   const { updateRuleSet } = useUpdateRuleSet();
 
   useEffect(() => {
@@ -169,6 +170,7 @@ const Page = ({ id }: { id: string }) => {
           includedFacets={includedFacets}
           facetType="category"
           rulesetMerchandisingRules={ruleSetDetail.rules}
+          searchTerm={search}
         />
       )}
     </>

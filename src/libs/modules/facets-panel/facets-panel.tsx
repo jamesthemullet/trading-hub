@@ -160,6 +160,7 @@ export const FacetsPanel = ({
   displayRowOrderControls = false,
   includedFacets,
   rulesetMerchandisingRules,
+  searchTerm,
 }: {
   onSave: () => void;
   onCancel: () => void;
@@ -189,6 +190,7 @@ export const FacetsPanel = ({
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   includedFacets: ReturnedFacet[];
+  searchTerm?: string;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
@@ -276,6 +278,7 @@ export const FacetsPanel = ({
                   <ArrowButton
                     direction="up"
                     aria-label={`Move ${facet.displayValue} row up`}
+                    isDisabled={Boolean(searchTerm)}
                     onClick={() => {
                       if (onFacetsDataRowOrderChange) {
                         onFacetsDataRowOrderChange(index, -1, facet.id);
@@ -290,6 +293,7 @@ export const FacetsPanel = ({
                   <ArrowButton
                     direction="down"
                     aria-label={`Move ${facet.displayValue} row down`}
+                    isDisabled={Boolean(searchTerm)}
                     onClick={() => {
                       if (onFacetsDataRowOrderChange) {
                         onFacetsDataRowOrderChange(index, 1, facet.id);

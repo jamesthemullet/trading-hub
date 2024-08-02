@@ -308,6 +308,32 @@ describe('Facet Panel', () => {
     );
   });
 
+  it('should block order change when search is present', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onFacetsDataRowOrderChangeSpy = jest.fn();
+
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetsDataRowOrderChange={onFacetsDataRowOrderChangeSpy}
+        displayRowOrderControls={true}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={jest.fn()}
+        includedFacets={includedFacetsMock}
+        facetType="category"
+        searchTerm="color"
+      />
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'Move color row down' })
+    );
+
+    expect(onFacetsDataRowOrderChangeSpy).not.toHaveBeenCalled();
+  });
+
   it('should save changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
