@@ -1,13 +1,19 @@
 import { test, expect } from '@playwright/test';
 import { setupElastic } from '../../elastic/elastic';
+import { create500ErrorsCollector } from '../utils';
 
 test('creates and deletes new ruleset', async ({ page }) => {
   await setupElastic();
+
+  const get500Errors = create500ErrorsCollector(page);
 
   await page.goto('/category/rulesets');
   await expect(
     page.getByRole('heading', { name: 'Category ranking rules' })
   ).toBeVisible();
+
+  await page.waitForLoadState('networkidle');
+  expect(get500Errors()).toEqual([]);
 
   await page.getByRole('link', { name: 'Add rule' }).click();
 

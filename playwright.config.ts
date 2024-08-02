@@ -12,11 +12,16 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 4 : 2,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [
+    ['html', { open: 'never' }],
+    ['json', { outputFile: 'test-results.json' }],
+  ],
   use: {
     trace: 'on-first-retry',
     channel: 'chromium',
     baseURL: process.env.E2E_TARGET_URL || 'http://localhost:3000',
+    screenshot: 'only-on-failure',
+    video: 'on-first-retry',
   },
   projects: [
     {
