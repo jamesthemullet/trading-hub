@@ -14,7 +14,7 @@ export const useGlobalFacetUpdate = () => {
         );
 
         return response.data;
-      } catch (error) {
+      } catch {
         setError('Internal Server Error');
       }
     },

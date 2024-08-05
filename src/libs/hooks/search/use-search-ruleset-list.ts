@@ -26,7 +26,7 @@ export const useSearchRulesetList = (
 
         setRuleSets(result.data.ruleSets);
         setPagination(result.data.pagination);
-      } catch (error: unknown) {
+      } catch {
         setError('Internal Server Error');
       }
     };

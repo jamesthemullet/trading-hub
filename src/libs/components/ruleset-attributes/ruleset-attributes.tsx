@@ -1,15 +1,14 @@
 import styled from '@emotion/styled';
-import { Modal } from '@mantine/core';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pluralize = require('pluralize');
-
 import { useState } from 'react';
+import { Modal } from '@mantine/core';
 
 import {
   AlphanumericBoostBury,
   MerchandisingRules,
   NumericBoostBury,
 } from '@/libs/api';
+
+import pluralize from 'pluralize';
 
 import { EditAttribute } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';

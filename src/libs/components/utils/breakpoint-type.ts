@@ -1,11 +1,11 @@
 /* istanbul ignore file */
-const breakpoints = {
-  md: 768,
-  lg: 1024,
-  xl: 1280,
+type breakpoints = {
+  md: 768;
+  lg: 1024;
+  xl: 1280;
 };
 
-export type BreakPoint = keyof typeof breakpoints;
+export type BreakPoint = keyof breakpoints;
 type Sm = 'sm';
 type Md = Extract<BreakPoint, 'md'>;
 type Lg = Extract<BreakPoint, 'lg'>;

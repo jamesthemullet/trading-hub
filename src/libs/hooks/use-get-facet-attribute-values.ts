@@ -25,8 +25,10 @@ export const useGetFacetAttributeValues = (
           });
 
         setAttributeValues(result.data.values);
-        result.data.pagination && setPagination(result.data.pagination);
-      } catch (error) {
+        if (result.data.pagination) {
+          setPagination(result.data.pagination);
+        }
+      } catch {
         setError(`Failed to get Facet Attribute Values`);
       }
     };

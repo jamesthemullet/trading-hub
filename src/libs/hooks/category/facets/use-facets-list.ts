@@ -22,7 +22,7 @@ export const useFacetsList = (
         const facetList = response.data;
 
         setFacetsList(facetList);
-      } catch (error: unknown) {
+      } catch {
         setError('Internal Server Error');
       } finally {
         setIsLoading(false);

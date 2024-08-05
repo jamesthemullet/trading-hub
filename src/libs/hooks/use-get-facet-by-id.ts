@@ -18,7 +18,7 @@ export const useGetFacetsById = (facetId: string) => {
         const facetDetail = response.data;
 
         setFacet(facetDetail);
-      } catch (error: unknown) {
+      } catch {
         setError('Internal Server Error');
         return;
       }

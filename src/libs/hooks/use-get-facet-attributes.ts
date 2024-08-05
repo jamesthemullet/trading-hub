@@ -17,7 +17,7 @@ export const useGetFacetAttributes = () => {
         const attributesList = response.data;
 
         setAttributesList(attributesList);
-      } catch (error: unknown) {
+      } catch {
         setError('Internal Server Error');
       } finally {
         setIsLoading(false);

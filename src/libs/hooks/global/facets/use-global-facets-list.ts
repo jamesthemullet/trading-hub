@@ -17,7 +17,7 @@ export const useGlobalFacetsList = () => {
         const facetList = response.data;
 
         setFacetsList(facetList);
-      } catch (error: unknown) {
+      } catch {
         setError('Internal Server Error');
       } finally {
         setIsLoading(false);

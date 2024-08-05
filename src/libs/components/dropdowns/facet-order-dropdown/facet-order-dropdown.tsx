@@ -67,7 +67,9 @@ export const FacetOrderDropdown = ({
   const handleSelectedOption = (index: number) => {
     const updatedDropdownOptions = dropdownOptions.map((option) => {
       if (option.index === index && option.name !== 'select') {
-        onChange && onChange(option.name);
+        if (onChange) {
+          onChange(option.name);
+        }
         return { ...option, selected: true };
       }
       return { ...option, selected: false };

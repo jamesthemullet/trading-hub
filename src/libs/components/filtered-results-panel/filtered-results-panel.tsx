@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
+import pluralize from 'pluralize';
+
 import { spacing } from '../utils/spacing';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pluralize = require('pluralize');
 
 const FilteredResults = styled.div`
   display: flex;

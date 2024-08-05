@@ -18,7 +18,7 @@ export const useGlobalAttributes = (type?: AttributeType) => {
         });
 
         setAttributes(response.data.attributes);
-      } catch (error: unknown) {
+      } catch {
         setError('Error fetching attributes');
       } finally {
         setIsLoading(false);

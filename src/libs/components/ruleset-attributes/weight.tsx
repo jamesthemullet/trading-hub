@@ -38,7 +38,9 @@ export const AttributeWeight = ({
   const [error, setError] = useState('');
 
   const onSubmit = () => {
-    onChangeAttribute && onChangeAttribute({ newWeight: value });
+    if (onChangeAttribute) {
+      onChangeAttribute({ newWeight: value });
+    }
     setIsEditing(false);
   };
 

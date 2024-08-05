@@ -33,8 +33,7 @@ import {
 import { useCategoryProductSearch, usePreview } from '@/libs/hooks';
 
 import isEqual from 'lodash/isEqual';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pluralize = require('pluralize');
+import pluralize from 'pluralize';
 
 const CategoryPanel = styled.div`
   border-top: 2px solid #005640;
