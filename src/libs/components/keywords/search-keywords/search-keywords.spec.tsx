@@ -1,5 +1,5 @@
 import { act } from 'react-dom/test-utils';
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -56,6 +56,36 @@ describe('Search Keywords', () => {
         screen.getByLabelText('Add keyword'),
         'new keyword{enter}'
       );
+    });
+
+    await waitFor(() => {
+      expect(addSearchTermStub).toHaveBeenCalledWith('new keyword');
+    });
+  });
+
+  it('should add a new keyword to the list after typing and clicking elsewhere', async () => {
+    const addSearchTermStub = jest.fn();
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <SearchKeywords
+        title="Search Keywords"
+        searchTerms={[]}
+        addSearchTerm={addSearchTermStub}
+        removeSearchTerm={jest.fn()}
+      />
+    );
+
+    const input = screen.getByLabelText('Add keyword');
+
+    act(() => {
+      user.type(input, 'new keyword');
+    });
+
+    await screen.findAllByDisplayValue('new keyword');
+
+    act(() => {
+      fireEvent.blur(input);
     });
 
     await waitFor(() => {

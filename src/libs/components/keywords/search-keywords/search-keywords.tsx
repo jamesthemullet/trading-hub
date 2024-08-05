@@ -204,6 +204,12 @@ export const SearchKeywords = ({
                 aria-label="Add keyword"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
+                onBlur={() => {
+                  if (inputText) {
+                    addSearchTerm(inputText);
+                    setInputText('');
+                  }
+                }}
               />
             </StyledForm>
           </InputBoxWrapper>
