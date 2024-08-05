@@ -39,6 +39,12 @@ export const Header3 = styled.h3`
   font-size: 20px;
 `;
 
+export const SubHeader3 = styled.h3`
+  ${commonStyles}
+  font-family: ${fonts.regular};
+  font-size: 20px;
+`;
+
 export const Title = styled.h4`
   ${commonStyles}
   font-family: ${fonts.bold};

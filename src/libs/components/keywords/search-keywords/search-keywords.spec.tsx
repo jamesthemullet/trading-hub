@@ -26,6 +26,7 @@ describe('Search Keywords', () => {
   it('should render successfully', () => {
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={shorterSearchTermsList}
         addSearchTerm={() => {}}
         removeSearchTerm={() => {}}
@@ -43,6 +44,7 @@ describe('Search Keywords', () => {
     const addSearchTermStub = jest.fn();
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={shorterSearchTermsList}
         addSearchTerm={addSearchTermStub}
         removeSearchTerm={() => {}}
@@ -65,6 +67,7 @@ describe('Search Keywords', () => {
     const removeSearchTermStub = jest.fn();
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={shorterSearchTermsList}
         addSearchTerm={() => {}}
         removeSearchTerm={removeSearchTermStub}
@@ -84,6 +87,7 @@ describe('Search Keywords', () => {
     const addSearchTermStub = jest.fn();
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={longerSearchTermsList}
         addSearchTerm={addSearchTermStub}
         removeSearchTerm={() => {}}
@@ -110,6 +114,7 @@ describe('Search Keywords', () => {
     const removeSearchTermStub = jest.fn();
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={longerSearchTermsList}
         addSearchTerm={() => {}}
         removeSearchTerm={removeSearchTermStub}
@@ -129,6 +134,7 @@ describe('Search Keywords', () => {
   it('should not show the view all button when there are less keywords than the max to display', () => {
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={shorterSearchTermsList}
         addSearchTerm={() => {}}
         removeSearchTerm={() => {}}
@@ -143,6 +149,7 @@ describe('Search Keywords', () => {
   it('should show the view all button when there are more keywords than the max to display', () => {
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={longerSearchTermsList}
         addSearchTerm={() => {}}
         removeSearchTerm={() => {}}
@@ -155,6 +162,7 @@ describe('Search Keywords', () => {
   it('should close the modal', async () => {
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={longerSearchTermsList}
         addSearchTerm={() => {}}
         removeSearchTerm={() => {}}
@@ -187,6 +195,7 @@ describe('Search Keywords', () => {
   it('should not close the modal if the user tries to close it with an unfinished keyword', async () => {
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={longerSearchTermsList}
         addSearchTerm={() => {}}
         removeSearchTerm={() => {}}
@@ -223,6 +232,7 @@ describe('Search Keywords', () => {
   it('should filter attributes on user input', async () => {
     renderWithProviders(
       <SearchKeywords
+        title="Search Keywords"
         searchTerms={longerSearchTermsList}
         addSearchTerm={() => {}}
         removeSearchTerm={() => {}}

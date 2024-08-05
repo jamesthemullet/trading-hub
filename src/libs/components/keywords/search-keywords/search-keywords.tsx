@@ -97,6 +97,7 @@ const KeyWordInput = styled.input`
 
 type Props = {
   searchTerms: string[];
+  title: string;
   addSearchTerm: (keyword: string) => void;
   removeSearchTerm: (keyword: string) => void;
 };
@@ -122,6 +123,7 @@ const calculateWordsToDisplay = (searchTerms: string[], MAX_CHARS: number) => {
 
 export const SearchKeywords = ({
   searchTerms,
+  title,
   addSearchTerm,
   removeSearchTerm,
 }: Props) => {
@@ -174,7 +176,7 @@ export const SearchKeywords = ({
     <>
       <SearchKeywordsContainer>
         <LabelContainer>
-          <label htmlFor="searchId">Search Keywords</label>
+          <label htmlFor="searchId">{title}</label>
           <Count aria-label="number of keywords">{searchTerms.length}</Count>
         </LabelContainer>
         <SearchBoxContainer>

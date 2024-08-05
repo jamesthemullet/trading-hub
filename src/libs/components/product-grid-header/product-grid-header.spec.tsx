@@ -7,6 +7,7 @@ describe('ProductGridHeader', () => {
   it('should render correctly', () => {
     renderWithProviders(
       <ProductGridHeader
+        canSave={false}
         hasPreview={false}
         onPreview={jest.fn()}
         onSave={jest.fn()}
@@ -25,6 +26,7 @@ describe('ProductGridHeader', () => {
   it('should show Create for new rulesets', () => {
     renderWithProviders(
       <ProductGridHeader
+        canSave
         hasPreview={false}
         onPreview={jest.fn()}
         onSave={jest.fn()}
@@ -43,6 +45,7 @@ describe('ProductGridHeader', () => {
     const mockSave = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        canSave={true}
         hasPreview={true}
         onPreview={jest.fn()}
         onSave={mockSave}
@@ -63,10 +66,11 @@ describe('ProductGridHeader', () => {
     expect(mockSave).toHaveBeenCalled();
   });
 
-  it('should not call save callback on click if does not have preview', () => {
+  it('should not call save callback on click if does not have save enabled', () => {
     const mockSave = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        canSave={false}
         hasPreview={false}
         onPreview={jest.fn()}
         onSave={mockSave}
@@ -91,6 +95,7 @@ describe('ProductGridHeader', () => {
     const mockPreview = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        canSave={true}
         hasPreview={true}
         onPreview={mockPreview}
         onSave={jest.fn()}
@@ -115,6 +120,7 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        canSave={true}
         hasPreview={true}
         onPreview={jest.fn()}
         onSave={jest.fn()}
@@ -145,6 +151,7 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        canSave={true}
         hasPreview={true}
         onPreview={jest.fn()}
         onSave={jest.fn()}
@@ -168,6 +175,7 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        canSave={true}
         hasPreview={true}
         onPreview={jest.fn()}
         onSave={jest.fn()}
@@ -198,6 +206,7 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        canSave={true}
         hasPreview={true}
         onPreview={jest.fn()}
         onSave={jest.fn()}

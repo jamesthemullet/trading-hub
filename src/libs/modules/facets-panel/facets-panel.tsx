@@ -335,6 +335,7 @@ export const FacetsPanel = ({
       )}
 
       <ProductGridHeader
+        canSave={!!selectedCategory?.identifier}
         onSave={onSave}
         hasPreview={!!selectedCategory?.identifier}
         onPreview={() => setShowPreview(!showPreview)}

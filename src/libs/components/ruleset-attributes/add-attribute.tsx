@@ -401,6 +401,8 @@ export const AddAttribute = ({
               <Label isStrong>Relevant attributes</Label>
             </ModalAttributeHeader>
             <RadioButtons
+              hasDivider
+              isBold
               values={numericAttributes
                 .filter((attribute: AttributeResponseItem) =>
                   attribute.name

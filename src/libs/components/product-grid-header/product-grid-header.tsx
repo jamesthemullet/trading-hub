@@ -28,17 +28,19 @@ const Actions = styled.div`
 `;
 
 type Props = {
+  canSave: boolean;
   hasChanges: boolean;
   hasPreview: boolean;
   isNewRuleSet: boolean;
   onCancel: () => void;
-  onPreview: () => void;
+  onPreview?: () => void;
   onSave: () => void;
   shouldHidePreview: boolean;
   title: string;
 };
 
 export const ProductGridHeader = ({
+  canSave,
   hasChanges,
   hasPreview,
   isNewRuleSet,
@@ -58,7 +60,7 @@ export const ProductGridHeader = ({
     }
   };
 
-  const isSaveButtonDisabled = shouldHidePreview ? false : !hasPreview;
+  const isSaveButtonDisabled = !canSave;
 
   return (
     <>

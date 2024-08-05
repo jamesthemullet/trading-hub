@@ -10,20 +10,36 @@ describe('RadioButtons', () => {
   ];
 
   it('should render correctly', () => {
-    render(<RadioButtons onSelect={() => jest.fn()} values={values} />);
+    render(
+      <RadioButtons
+        hasDivider
+        isBold
+        onSelect={() => jest.fn()}
+        values={values}
+      />
+    );
 
     expect(screen.getAllByText('availabilityRating')[0]).toBeVisible();
   });
 
   it('should show 0 Results without values', () => {
-    render(<RadioButtons onSelect={() => jest.fn()} values={[]} />);
+    render(
+      <RadioButtons hasDivider isBold onSelect={() => jest.fn()} values={[]} />
+    );
 
     expect(screen.getByText('0 Results')).toBeVisible();
   });
 
   it('call callback on click', async () => {
     const mockOnSelect = jest.fn();
-    render(<RadioButtons onSelect={mockOnSelect} values={values} />);
+    render(
+      <RadioButtons
+        hasDivider={false}
+        isBold={false}
+        onSelect={mockOnSelect}
+        values={values}
+      />
+    );
 
     const input1 = await screen.findAllByLabelText(values[0].name);
 

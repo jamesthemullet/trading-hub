@@ -4,8 +4,9 @@ import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
-const Row = styled.label`
-  border-bottom: solid 1px ${color.grey};
+const Row = styled.label<{ hasDivider: boolean }>`
+  border-bottom: ${({ hasDivider }) =>
+    hasDivider ? `solid 1px ${color.grey}` : 'none'};
   padding: ${spacing(2)};
   display: flex;
   align-items: center;
@@ -49,23 +50,30 @@ type Value = {
 };
 
 type Props = {
+  hasDivider: boolean;
+  isBold: boolean;
   values: Value[];
   onSelect: (name: string) => void;
 };
 
-export const RadioButtons = ({ values, onSelect }: Props) => (
+export const RadioButtons = ({
+  hasDivider,
+  isBold,
+  values,
+  onSelect,
+}: Props) => (
   <div>
     {values.length ? (
       values.map(({ name, isSelected }) => (
-        <Row key={name}>
-          <label htmlFor={name} aria-label={name}>
+        <Row key={name} hasDivider={hasDivider}>
+          <label htmlFor={name} aria-label={name} style={{ cursor: 'pointer' }}>
             <Input
               type="radio"
               id={name}
               checked={isSelected}
               onChange={() => onSelect(name)}
             />
-            <Label as="span" isStrong={true}>
+            <Label as="span" isStrong={isBold}>
               {name}
             </Label>
           </label>

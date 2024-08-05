@@ -9,6 +9,8 @@ import {
   getMockMapping,
   globalFacetsListMock,
   keywordRulesetMock,
+  redirectMock,
+  returnedRedirectMock,
   ruleSetFacetConfigWithIdMock,
 } from './mocks';
 
@@ -461,6 +463,29 @@ describe('mocks', () => {
             buries: { numeric: [], alphanumeric: [], product: [] },
           },
         },
+        status: 200,
+      });
+    });
+  });
+
+  describe('/search/beta/merchandising/keyword/redirect', () => {
+    it('should mock creating a redirect', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/keyword/redirect'].post
+      ).toBeDefined();
+
+      const result = mockMapping['/search/beta/merchandising/keyword/redirect']
+        .post!(
+        createMockNextApiRequest({
+          url: '/search/beta/merchandising/keyword/redirect',
+          method: 'POST',
+        }),
+        500,
+        redirectMock
+      );
+      expect(result).toEqual({
+        body: returnedRedirectMock,
         status: 200,
       });
     });

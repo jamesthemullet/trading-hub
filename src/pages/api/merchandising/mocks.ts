@@ -5,9 +5,11 @@ import {
   BoostsBuries,
   BoostsBuriesWithInfo,
   ErrorResponse,
+  KeywordRedirect,
   ProductBoostBury,
   ReturnedCategoryRuleSet,
   ReturnedFacet,
+  ReturnedKeywordRedirect,
   ReturnedKeywordRuleSet,
   ReturnedKeywordRuleSets,
   ReturnedRuleSet,
@@ -364,6 +366,25 @@ export const keywordRulesetMock: ReturnedKeywordRuleSets = {
   },
 };
 
+export const redirectMock: KeywordRedirect = {
+  destinationUrl: 'string',
+  endDate: '2024-08-01T09:37:06.109Z',
+  isEnabled: true,
+  keywords: ['string'],
+  ruleTitle: 'string',
+  startDate: '2024-08-01T09:37:06.109Z',
+  type: 'redirectTerm',
+};
+
+export const returnedRedirectMock: ReturnedKeywordRedirect = {
+  ...redirectMock,
+  id: '9a32d206-6b7f-47a2-8f83-578429d2a024',
+  lastChanged: {
+    date: '2024-08-01T09:37:06.109Z',
+    user: 'string',
+  },
+};
+
 export const getMockMapping: () => Record<
   string,
   Partial<
@@ -492,6 +513,14 @@ export const getMockMapping: () => Record<
         };
       }
       return { body: jsonBody, status };
+    },
+  },
+  '/search/beta/merchandising/keyword/redirect': {
+    post: () => {
+      return {
+        body: returnedRedirectMock,
+        status: 200,
+      };
     },
   },
   '/search/beta/merchandising/keyword/ruleset/{ruleSetId}': {

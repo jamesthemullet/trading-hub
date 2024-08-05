@@ -428,6 +428,11 @@ export const Ruleset = ({
       )}
 
       <ProductGridHeader
+        canSave={
+          !!selectedCategory?.identifier ||
+          !!searchTerms?.length ||
+          rulesetType === 'global'
+        }
         onSave={() => {
           onSaveRuleset();
           setHasChanges(false);
@@ -460,6 +465,7 @@ export const Ruleset = ({
       {rulesetType === 'search' && (
         <CategoryPanel>
           <SearchKeywords
+            title="Search Keywords"
             searchTerms={rulesetSearchTerms}
             addSearchTerm={onAddSearchTerm}
             removeSearchTerm={onRemoveSearchTerm}

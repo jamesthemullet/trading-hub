@@ -25,6 +25,7 @@ const KeywordMock = () => {
 
   return (
     <SearchKeywords
+      title="Search Keywords"
       searchTerms={searchTerms}
       addSearchTerm={onAddSearchTerm}
       removeSearchTerm={onRemoveSearchTerm}
@@ -56,6 +57,7 @@ const KeywordMockWithValues = () => {
 
   return (
     <SearchKeywords
+      title="Search Keywords"
       searchTerms={searchTerms}
       addSearchTerm={onAddSearchTerm}
       removeSearchTerm={onRemoveSearchTerm}

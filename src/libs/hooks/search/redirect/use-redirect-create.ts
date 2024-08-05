@@ -1,0 +1,33 @@
+import { useCallback, useState } from 'react';
+
+import type { KeywordRedirect } from '@/libs/api';
+import { search } from '@/libs/api';
+
+import { validateErrorResponse } from '../../utils/error';
+
+export const useRedirectCreate = () => {
+  const [error, setError] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const createRedirect = useCallback(
+    async ({ redirect }: { redirect: KeywordRedirect }) => {
+      setError('');
+      setIsSaving(true);
+
+      try {
+        const response =
+          await search().betaMerchandisingKeywordRedirectCreate(redirect);
+        setIsSaving(false);
+        return response.data;
+      } catch (error: unknown) {
+        if (error) {
+          setError(validateErrorResponse(error));
+          setIsSaving(false);
+        }
+      }
+    },
+    []
+  );
+
+  return { createRedirect, isSaving, error };
+};
