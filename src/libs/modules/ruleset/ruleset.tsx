@@ -76,6 +76,10 @@ const TabContent = styled.div`
   margin: 0 ${spacing(1)};
 `;
 
+const ProductSearchTabContent = styled(TabContent)`
+  overflow: hidden;
+`;
+
 export type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
@@ -478,7 +482,7 @@ export const Ruleset = ({
               currentTab={currentProductTab}
             />
           </PanelTop>
-          <TabContent>
+          <ProductSearchTabContent>
             {currentProductTab === 0 && (
               <ProductSearch
                 isPinnable={rulesetType !== 'global'}
@@ -510,7 +514,7 @@ export const Ruleset = ({
                 onChangeAttribute={onChangeAttribute}
               />
             )}
-          </TabContent>
+          </ProductSearchTabContent>
         </ProductSearchPanel>
         <RulesPanel>
           <PanelTop>

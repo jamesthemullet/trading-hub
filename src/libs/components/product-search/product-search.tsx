@@ -32,12 +32,14 @@ const ProductsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 0;
-  gap: ${spacing(1)};
+  height: calc(100vh - 395px);
+  overflow: auto;
+  gap: 5px;
 
   & > div {
     margin: 0;
-    margin-top: 5px;
-    width: 166px;
+    flex: calc(50% - 10px);
+    min-height: auto;
   }
 `;
 
