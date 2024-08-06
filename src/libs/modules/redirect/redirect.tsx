@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { KeywordRedirect } from '@/libs/api';
+import { KeywordRedirect, ReturnedKeywordRedirect } from '@/libs/api';
 import {
   ProductGridHeader,
   RadioButtons,
@@ -38,21 +38,42 @@ const Input = styled.input`
 
 type Props = {
   onCreate?: (args: KeywordRedirect) => void;
+  onSave?: (args: KeywordRedirect) => void;
   onCancel: () => void;
+  redirect?: ReturnedKeywordRedirect;
+  title: string;
 };
 
-export const Redirect = ({ onCancel, onCreate }: Props) => {
-  const [redirect, setRedirect] = useState<KeywordRedirect>({
-    destinationUrl: '',
-    isEnabled: true,
-    keywords: [],
-    ruleTitle: '',
-    type: 'redirectTerm',
-  });
+export const Redirect = ({
+  onCancel,
+  onCreate,
+  onSave,
+  redirect: savedRedirect,
+  title,
+}: Props) => {
+  const [redirect, setRedirect] = useState<KeywordRedirect>(
+    savedRedirect
+      ? {
+          destinationUrl: savedRedirect.destinationUrl,
+          isEnabled: savedRedirect.isEnabled,
+          keywords: savedRedirect.keywords,
+          type: savedRedirect.type,
+        }
+      : {
+          destinationUrl: '',
+          isEnabled: true,
+          keywords: [],
+          ruleTitle: '',
+          type: 'redirectTerm',
+        }
+  );
 
-  const onSave = () => {
+  const onSaveRedirect = () => {
     if (onCreate) {
       onCreate(redirect);
+    }
+    if (onSave) {
+      onSave(redirect);
     }
   };
 
@@ -84,9 +105,9 @@ export const Redirect = ({ onCancel, onCreate }: Props) => {
     <>
       <ProductGridHeader
         canSave={!!redirect.destinationUrl && redirect.keywords.length > 0}
-        title="Add Keyword Redirect rule"
+        title={title}
         onCancel={onCancel}
-        onSave={onSave}
+        onSave={onSaveRedirect}
         hasPreview={false}
         shouldHidePreview={true}
         isNewRuleSet={!!onCreate}

@@ -32,6 +32,7 @@ const CreateRedirect = () => {
       <Redirect
         onCreate={createNewRedirect}
         onCancel={() => router.push('/search/redirects')}
+        title="Add Keyword Redirect rule"
       />
 
       {isSaving && <Loader />}

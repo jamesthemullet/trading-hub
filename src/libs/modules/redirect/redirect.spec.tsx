@@ -1,6 +1,7 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { ReturnedKeywordRedirect } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { Redirect } from './redirect';
@@ -11,7 +12,11 @@ describe('Redirect', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(
-      <Redirect onCancel={() => jest.fn()} onCreate={mockCreate} />
+      <Redirect
+        onCancel={() => jest.fn()}
+        onCreate={mockCreate}
+        title="Add Keyword Redirect rule"
+      />
     );
 
     await act(() => {
@@ -53,6 +58,48 @@ describe('Redirect', () => {
       keywords: ['new keyword'],
       ruleTitle: 'title',
       type: 'redirectPhrase',
+    });
+  });
+
+  it('Saves a redriect', async () => {
+    const mockSave = jest.fn();
+
+    const existingRedirect: ReturnedKeywordRedirect = {
+      destinationUrl: 'l/womens/dresses',
+      type: 'redirectTerm',
+      keywords: ['keyword'],
+      id: 'abc123',
+      lastChanged: {
+        date: '',
+        user: '',
+      },
+      isEnabled: true,
+    };
+
+    renderWithProviders(
+      <Redirect
+        onCancel={() => jest.fn()}
+        onSave={mockSave}
+        title="Edit Keyword Redirect rule"
+        redirect={existingRedirect}
+      />
+    );
+
+    expect(
+      screen.getByRole('heading', { name: 'Edit Keyword Redirect rule' })
+    ).toBeVisible();
+
+    const saveButton = await screen.findByRole('button', { name: 'Save' });
+
+    await act(() => {
+      saveButton.click();
+    });
+
+    expect(mockSave).toHaveBeenCalledWith({
+      destinationUrl: 'l/womens/dresses',
+      isEnabled: true,
+      keywords: ['keyword'],
+      type: 'redirectTerm',
     });
   });
 });

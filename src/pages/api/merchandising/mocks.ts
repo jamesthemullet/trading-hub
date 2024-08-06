@@ -367,11 +367,11 @@ export const keywordRulesetMock: ReturnedKeywordRuleSets = {
 };
 
 export const redirectMock: KeywordRedirect = {
-  destinationUrl: 'string',
+  destinationUrl: 'l/women/dresses',
   endDate: '2024-08-01T09:37:06.109Z',
   isEnabled: true,
-  keywords: ['string'],
-  ruleTitle: 'string',
+  keywords: ['keyword'],
+  ruleTitle: 'title of redirect',
   startDate: '2024-08-01T09:37:06.109Z',
   type: 'redirectTerm',
 };
@@ -517,6 +517,20 @@ export const getMockMapping: () => Record<
   },
   '/search/beta/merchandising/keyword/redirect': {
     post: () => {
+      return {
+        body: returnedRedirectMock,
+        status: 200,
+      };
+    },
+  },
+  '/search/beta/merchandising/keyword/redirect/{redirectId}': {
+    get: () => {
+      return {
+        body: returnedRedirectMock,
+        status: 200,
+      };
+    },
+    put: () => {
       return {
         body: returnedRedirectMock,
         status: 200,
