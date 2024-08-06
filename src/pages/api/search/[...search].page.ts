@@ -54,10 +54,15 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     status = result.updatedStatus;
   } catch (e) /* istanbul ignore next */ {
     console.error('ERROR: Error parsing JSON', e, jsonBody);
-    return res.status(500).json({
+    return res.status(response.status).json({
       error: 'Error parsing JSON',
       jsonText,
       apiResponseStatus: response.status,
+      message:
+        response.status === 401
+          ? 'Permission denied, please contact your administrator'
+          : 'Failed to fetch',
+      status: response.status,
     });
   }
 
