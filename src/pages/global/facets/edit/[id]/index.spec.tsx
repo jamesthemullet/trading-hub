@@ -38,9 +38,6 @@ jest.mock('@/libs/hooks', () => ({
   },
 }));
 
-const logSpy = jest.spyOn(console, 'log');
-logSpy.mockImplementation(jest.fn());
-
 const categoryId1 = 'cat_123';
 const categoryName1 = 'jeans';
 const categoryPath1 = 'l/jeans';
@@ -130,7 +127,6 @@ describe('Global Facet Management Editing', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    logSpy.mockClear();
   });
 
   it('should render the facet management editing page', async () => {
@@ -232,6 +228,10 @@ describe('Global Facet Management Editing', () => {
   it('should edit a display value', async () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
+    mockUpdateGlobalFacet.mockReturnValueOnce({
+      status: 200,
+    });
+
     const editButton = screen.getByLabelText('Edit display name for color');
 
     act(() => {
@@ -263,6 +263,31 @@ describe('Global Facet Management Editing', () => {
         facetId: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
       });
     });
+  });
+
+  it('should show an error if failing to edit a display value', async () => {
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    const editButton = screen.getByLabelText('Edit display name for color');
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      const editColorInput = screen.getByLabelText('Edit color input field');
+      await userEvent.type(editColorInput, 'colour edit');
+    });
+
+    const saveButton = screen.getByLabelText('Save color change');
+
+    act(() => {
+      saveButton.click();
+    });
+
+    expect(
+      await screen.findByText('Error: failed to update facet')
+    ).toBeVisible();
   });
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {

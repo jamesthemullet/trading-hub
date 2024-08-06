@@ -165,11 +165,13 @@ export const FacetsPanel = ({
   onSave: () => void;
   onCancel: () => void;
   setSearch?: (value: string) => void;
-  onFacetDataChange?: (
-    index: number,
-    value: string | 'included' | 'excluded',
-    facet: ReturnedFacet
-  ) => void;
+  onFacetDataChange?: ({
+    value,
+    facet,
+  }: {
+    value: string | 'included' | 'excluded';
+    facet: ReturnedFacet;
+  }) => void;
   onFacetsDataRowOrderChange?: (
     index: number,
     direction: -1 | 1,
@@ -252,7 +254,7 @@ export const FacetsPanel = ({
             <EditableLabel
               displayValue={facet.displayValue}
               onDisplayValueChange={(newValue) =>
-                onFacetDataChange(index, newValue, facet)
+                onFacetDataChange({ value: newValue, facet })
               }
               canCancelEdit={true}
             />

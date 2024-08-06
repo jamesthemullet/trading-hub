@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
-import { Heading } from '@/libs/components';
+import { ErrorMessage, Heading } from '@/libs/components';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import {
   useFacetsFilter,
@@ -29,6 +29,7 @@ type PageProps = {
 const Page = ({ id }: PageProps) => {
   const { facets, isLoading } = useGlobalFacetsList();
   const router = useRouter();
+  const [error, setError] = useState<string | undefined>();
 
   const { globalRuleSet } = useGlobalRuleSetDetail(id);
 
@@ -93,11 +94,13 @@ const Page = ({ id }: PageProps) => {
     router.push('/global/facets');
   };
 
-  const onFacetDataChange = async (
-    index: number,
-    value: string | 'included' | 'excluded',
-    facet: ReturnedFacet
-  ) => {
+  const onFacetDataChange = async ({
+    value,
+    facet,
+  }: {
+    value: string | 'included' | 'excluded';
+    facet: ReturnedFacet;
+  }) => {
     const response = await handleUpdate({
       facetId: facet.id,
       data: {
@@ -108,13 +111,19 @@ const Page = ({ id }: PageProps) => {
       },
     });
 
-    setGlobalFacetsList((prev) => {
-      const updatedFacet: ReturnedFacet = {
-        ...prev[index],
-        displayValue: response?.displayValue as string,
-      };
-      return [...prev.slice(0, index), updatedFacet, ...prev.slice(index + 1)];
+    if (!response) {
+      setError('Error: failed to update facet');
+      return;
+    }
+
+    const updatedGlobalFacets = globalFacetsList.map((globalFacet) => {
+      if (globalFacet.id === facet.id) {
+        return { ...globalFacet, displayValue: response?.displayValue };
+      }
+      return globalFacet;
     });
+
+    setGlobalFacetsList(updatedGlobalFacets);
   };
 
   const onHandleStatusChange = async (
@@ -170,6 +179,8 @@ const Page = ({ id }: PageProps) => {
         />
       )}
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />
+
+      {error && <ErrorMessage>{error}</ErrorMessage>}
     </>
   );
 };

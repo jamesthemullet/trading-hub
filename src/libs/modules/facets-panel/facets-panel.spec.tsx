@@ -447,7 +447,7 @@ describe('Facet Panel', () => {
     await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('color'));
   });
 
-  it('should edit a display value if global facets', async () => {
+  it('should edit a display value of global facets', async () => {
     const onSaveSpy = jest.fn();
     const onCancelSpy = jest.fn();
     const user = userEvent.setup();
@@ -473,21 +473,24 @@ describe('Facet Panel', () => {
       expect(editColorInput).toBeVisible();
       expect(editColorInput).toHaveValue('color');
       userEvent.clear(editColorInput);
-      await userEvent.type(editColorInput, 'colour');
+      await userEvent.type(editColorInput, 'colour 2');
     });
 
     const saveButton = screen.getByLabelText('Save color change');
 
     await user.click(saveButton);
 
-    expect(onFacetDataChangeSpy).toHaveBeenCalledWith(0, 'colour', {
-      ...mockFacet,
-      merged: [
-        {
-          displayValue: 'test merged group',
-          mergedValues: ['merged 1', 'merged 2'],
-        },
-      ],
+    expect(onFacetDataChangeSpy).toHaveBeenCalledWith({
+      value: 'colour 2',
+      facet: {
+        ...mockFacet,
+        merged: [
+          {
+            displayValue: 'test merged group',
+            mergedValues: ['merged 1', 'merged 2'],
+          },
+        ],
+      },
     });
   });
 });
