@@ -61,6 +61,7 @@ type ChangePositionTypes = {
 
 export type ProductSearchProps = {
   isPinnable: boolean;
+  pinnedProductsCount: number;
   onSearch: (query: string) => void;
   products: ProductType[];
   onChangePosition: (arg: ChangePositionTypes) => void;
@@ -69,6 +70,7 @@ export type ProductSearchProps = {
 
 export const ProductSearch = ({
   isPinnable,
+  pinnedProductsCount,
   onSearch,
   products,
   onChangePosition,
@@ -100,7 +102,7 @@ export const ProductSearch = ({
               isPinnable={isPinnable}
               onChangePosition={onChangePosition}
               onProductBoostBury={onProductBoostBury}
-              pinnedProductsCount={0}
+              pinnedProductsCount={pinnedProductsCount}
               isBrandStrong={false}
               isProductNumberEnabled={false}
               isSearchResult={true}

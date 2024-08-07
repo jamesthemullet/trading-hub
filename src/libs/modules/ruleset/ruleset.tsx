@@ -508,6 +508,7 @@ export const Ruleset = ({
                   });
                   setSearchProducts(data.products);
                 }}
+                pinnedProductsCount={merchandisingRules.pinnedProducts.length}
                 onChangePosition={onChangePosition}
                 onProductBoostBury={onProductBoostBury}
                 products={searchProducts}
