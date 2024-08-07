@@ -22,7 +22,7 @@ import {
 } from './table.styles';
 
 const Row = styled(TableRow)`
-  grid-template-columns: minmax(240px, 2fr) 90px 120px 150px 130px;
+  grid-template-columns: minmax(140px, 2fr) 90px 120px 150px 130px;
 `;
 
 const Divider = styled.span`
