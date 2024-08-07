@@ -41,6 +41,12 @@ const InsetLabel = styled(Label)`
   margin-left: ${spacing(1)};
 `;
 
+const RuleSetAttributesContainer = styled.div`
+  height: calc(100vh - 375px);
+  overflow-y: auto;
+  padding-right: ${spacing(1)};
+`;
+
 export type Props = {
   category?: string;
   merchandisingRules: MerchandisingRules;
@@ -75,7 +81,7 @@ export const RulesetAttributes = ({
         Create new attribute rule
       </CreateNew>
       {countOfAttributeChanges > 0 && (
-        <div aria-label="Ruleset attributes">
+        <RuleSetAttributesContainer aria-label="Ruleset attributes">
           <AttributeCount>
             {countOfAttributeChanges} attribute{' '}
             {pluralize('rule', countOfAttributeChanges)}
@@ -206,7 +212,7 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
-        </div>
+        </RuleSetAttributesContainer>
       )}
       <Modal.Root
         opened={isModalOpen}
