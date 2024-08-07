@@ -119,7 +119,7 @@ describe('Facet Panel', () => {
     });
 
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
-      attributeValues: attributeValuesMock['values'],
+      attributeValues: attributeValuesMock,
       error: '',
       pagination: {
         totalItems: 5,
@@ -491,6 +491,66 @@ describe('Facet Panel', () => {
           },
         ],
       },
+    });
+  });
+
+  describe('Edit Facet Values Modal', () => {
+    const openModal = async () => {
+      renderWithProviders(
+        <FacetsPanel
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          title="Facet Rule Editor"
+          facetsData={globalFacetsListMock.facets}
+          onFacetDataChange={onFacetDataChangeSpy}
+          includedFacets={[]}
+          facetType="global"
+        />
+      );
+
+      const editFacetValuesButton = screen.getAllByText('Edit values')[0];
+
+      act(() => {
+        editFacetValuesButton.click();
+      });
+    };
+
+    it('should open the modal', async () => {
+      await openModal();
+
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Facet value settings of: color',
+        })
+      ).toBeVisible();
+    });
+
+    it('should close the modal on click of the close button', async () => {
+      const user = userEvent.setup({ delay: null });
+      await openModal();
+
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Facet value settings of: color',
+        })
+      ).toBeVisible();
+
+      const closeButton = screen.getByLabelText('Close attributes modal');
+
+      act(() => {
+        user.click(closeButton);
+      });
+
+      waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 3,
+            name: 'Facet value settings of: color',
+          })
+        ).not.toBeVisible();
+      });
     });
   });
 });

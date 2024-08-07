@@ -15,6 +15,7 @@ import {
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
+import { ModalEditValues } from '@/libs/components/modals/modal-edit-facets';
 import {
   TableCol,
   TableHeading,
@@ -217,6 +218,11 @@ export const FacetsPanel = ({
         }
   );
 
+  const [selectedFacet, setSelectedFacet] = useState<ReturnedFacet | undefined>(
+    undefined
+  );
+  const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
+
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
   }, 300);
@@ -224,6 +230,15 @@ export const FacetsPanel = ({
   // istanbul ignore next
   const onSelectCategory = (category: Category) => {
     setSelectedCategory(category);
+  };
+
+  const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
+    setIsEditValuesModalOpen(true);
+    setSelectedFacet(facet);
+  };
+
+  const onClose = () => {
+    setIsEditValuesModalOpen(false);
   };
 
   const FacetRow = ({
@@ -308,7 +323,9 @@ export const FacetsPanel = ({
           </OrderColumn>
         </Col>
         <Col>
-          <Button>Edit values</Button>
+          <Button onClick={() => handleOpenFacetEditModal(facet)}>
+            Edit values
+          </Button>
         </Col>
       </Row>
     );
@@ -387,6 +404,14 @@ export const FacetsPanel = ({
 
         {sortedAndMappedFacets}
       </AttributesTable>
+
+      {isEditValuesModalOpen && selectedFacet && (
+        <ModalEditValues
+          onClose={onClose}
+          facet={selectedFacet}
+          facetType={facetType}
+        />
+      )}
 
       {facetsData.length === 0 && (
         <NoAttributesBlock>

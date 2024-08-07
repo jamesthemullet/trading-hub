@@ -81,7 +81,7 @@ describe('Category Facet Management Editing', () => {
       .mockImplementation(() => mockUseRuleSetPreviewData);
 
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
-      attributeValues: attributeValuesMock['values'],
+      attributeValues: attributeValuesMock,
       error: '',
       pagination: {
         totalItems: 5,

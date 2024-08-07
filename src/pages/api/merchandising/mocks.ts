@@ -279,44 +279,41 @@ export const attributesMock: AttributesResponse = {
   ],
 };
 
-export const attributeValuesMock: AttributeValuesResponse = {
-  pagination: {},
-  values: [
-    {
-      displayValue: 'Cotton',
-    },
-    {
-      displayValue: 'Duck Down',
-    },
-    {
-      displayValue: 'Duck Down And Feather',
-    },
-    {
-      displayValue: 'Ducky Downy',
-    },
-    {
-      displayValue: 'Ducky Downy And Feathery',
-    },
-    {
-      displayValue: 'Silk',
-    },
-    {
-      displayValue: 'Merged 1',
-    },
-    {
-      displayValue: 'Merged 2',
-    },
-    {
-      displayValue: 'Other Merged 1',
-    },
-    {
-      displayValue: 'Other Merged 2',
-    },
-    {
-      displayValue: 'More Silk',
-    },
-  ],
-};
+export const attributeValuesMock: AttributeValuesResponse['values'] = [
+  {
+    displayValue: 'Cotton',
+  },
+  {
+    displayValue: 'Duck Down',
+  },
+  {
+    displayValue: 'Duck Down And Feather',
+  },
+  {
+    displayValue: 'Ducky Downy',
+  },
+  {
+    displayValue: 'Ducky Downy And Feathery',
+  },
+  {
+    displayValue: 'Silk',
+  },
+  {
+    displayValue: 'Merged 1',
+  },
+  {
+    displayValue: 'Merged 2',
+  },
+  {
+    displayValue: 'Other Merged 1',
+  },
+  {
+    displayValue: 'Other Merged 2',
+  },
+  {
+    displayValue: 'More Silk',
+  },
+];
 
 export const keywordRulesetMock: ReturnedKeywordRuleSets = {
   ruleSets: [
