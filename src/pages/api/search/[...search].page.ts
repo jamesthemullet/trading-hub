@@ -60,8 +60,8 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
       apiResponseStatus: response.status,
       message:
         response.status === 401
-          ? 'Permission denied, please contact your administrator'
-          : 'Failed to fetch',
+          ? `Permission denied, please contact your administrator. ${jsonText}`
+          : `Failed to fetch ${jsonText}`,
       status: response.status,
     });
   }
