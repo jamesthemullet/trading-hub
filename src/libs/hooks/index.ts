@@ -10,6 +10,7 @@ export * from './global/use-global-attributes';
 export * from './search/redirect/use-redirect-create';
 export * from './search/redirect/use-redirect-detail';
 export * from './search/redirect/use-redirect-update';
+export * from './search/use-search-ruleset-delete';
 export * from './search/use-search-ruleset-list';
 export * from './search/use-search-ruleset-preview';
 export * from './search/use-search-ruleset-update';

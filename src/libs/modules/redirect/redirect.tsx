@@ -161,7 +161,7 @@ export const Redirect = ({
           />
         </Row>
         <Row>
-          <Text>Detination URL*</Text>
+          <Text>Destination URL*</Text>
           <Input
             placeholder="c/"
             value={redirect.destinationUrl}

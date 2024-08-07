@@ -541,6 +541,12 @@ export const getMockMapping: () => Record<
         status: 200,
       };
     },
+    delete: () => {
+      return {
+        body: {},
+        status: 200,
+      };
+    },
     get: (req) => {
       const { url } = req;
 

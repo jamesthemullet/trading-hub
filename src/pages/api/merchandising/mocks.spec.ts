@@ -380,6 +380,29 @@ describe('mocks', () => {
         status: 200,
       });
     });
+
+    it('should mock delete rulesets', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/keyword/ruleset/{ruleSetId}']
+          .delete
+      ).toBeDefined();
+
+      const result = mockMapping[
+        '/search/beta/merchandising/keyword/ruleset/{ruleSetId}'
+      ].delete!(
+        createMockNextApiRequest({
+          url: '/merchandising/keyword/1',
+          method: 'GET',
+        }),
+        200,
+        keywordRulesetMock
+      );
+      expect(result).toEqual({
+        body: {},
+        status: 200,
+      });
+    });
   });
 
   describe('/search/beta/merchandising/preview', () => {

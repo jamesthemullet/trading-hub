@@ -18,6 +18,13 @@ jest.mock('../../../libs/hooks/search/use-search-ruleset-update', () => ({
   },
 }));
 
+const mockRuleSetDelete = jest.fn();
+jest.mock('../../../libs/hooks/search/use-search-ruleset-delete', () => ({
+  useSearchRuleSetDelete: () => {
+    return { deleteRuleset: mockRuleSetDelete };
+  },
+}));
+
 describe('Search Rulesets', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -129,5 +136,58 @@ describe('Search Rulesets', () => {
         rules: mockMerchandisingRules,
       },
     });
+  });
+
+  it('should delete a ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockSearchTerms = ['search', 'terms'];
+
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [
+        {
+          searchTerms: mockSearchTerms,
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      error: '',
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    const user = userEvent.setup();
+
+    const rulesetDropdown = screen.getAllByTitle('More options');
+
+    await user.click(rulesetDropdown[0]);
+
+    const deleteButton = screen.getByText('Delete');
+    await user.click(deleteButton);
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByText('Cancel'));
+    await waitFor(() => {
+      expect(
+        screen.getByText('Do you want to delete this rule?')
+      ).not.toBeVisible();
+    });
+
+    await user.click(screen.getByLabelText('Delete rule'));
+    expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 });

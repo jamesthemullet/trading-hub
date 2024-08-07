@@ -7,6 +7,7 @@ import { color } from '@/libs/components/utils/constants';
 import { spacing } from '@/libs/components/utils/spacing';
 import {
   useDebounce,
+  useSearchRuleSetDelete,
   useSearchRulesetList,
   useSearchRuleSetUpdate,
 } from '@/libs/hooks';
@@ -49,11 +50,12 @@ const SearchRuleSets = () => {
 
   const currentPageIndex = currentPage - 1;
 
-  const { pagination, ruleSets, setRuleSets } = useSearchRulesetList(
-    searchQuery,
-    currentPageIndex * currentPageSize,
-    currentPageSize
-  );
+  const { pagination, ruleSets, setRuleSets, refetchRuleSetList } =
+    useSearchRulesetList(
+      searchQuery,
+      currentPageIndex * currentPageSize,
+      currentPageSize
+    );
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
@@ -81,6 +83,14 @@ const SearchRuleSets = () => {
         ruleset.id === id ? { ...ruleset, isEnabled: !isEnabled } : ruleset
     );
     setRuleSets(updatedRuleSetsList);
+  };
+
+  const { deleteRuleset } = useSearchRuleSetDelete();
+
+  const onDeleteRuleSet = async ({ id }: { id: string }) => {
+    await deleteRuleset({ rulesetId: id });
+
+    refetchRuleSetList();
   };
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
@@ -123,10 +133,7 @@ const SearchRuleSets = () => {
         <DataTable
           headings={headings}
           rows={rows}
-          onDeleteRuleSet={
-            // istanbul ignore next
-            () => {}
-          }
+          onDeleteRuleSet={onDeleteRuleSet}
         />
 
         <TablePagination
