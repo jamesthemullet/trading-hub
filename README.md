@@ -166,6 +166,10 @@ An example settings.json file is in the .vscode folder
 | Stage       | https://stage-merchandising-hub.search.marksandspencer.app/ |
 | Prod        | https://merchandising-hub.search.marksandspencer.app/       |
 
+## Run book
+
+Please follow this [doc](./docs/run-book.md) for production issues.
+
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
