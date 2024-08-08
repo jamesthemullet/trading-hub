@@ -166,6 +166,9 @@ export const Navigation = () => {
             <SubLink href="/search/rulesets">
               <Text>Ranking rules</Text>
             </SubLink>
+            <SubLink href="/search/redirects">
+              <Text>Redirect</Text>
+            </SubLink>
           </SubMenu>
 
           <Link
