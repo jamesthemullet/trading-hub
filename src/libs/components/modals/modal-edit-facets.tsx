@@ -255,11 +255,30 @@ export const ModalEditValues = ({
   }, 300);
 
   useEffect(() => {
-    const facetValues = attributeValues.map((value, index) => ({
+    let facetValues = attributeValues.map((value, index) => ({
       ...value,
       attribute: value.displayValue,
       index,
     }));
+
+    if (facet.merged) {
+      facet.merged.forEach((mergeGroup) => {
+        if (mergeGroup.displayValue && mergeGroup.mergedValues?.length) {
+          facetValues = facetValues.filter(
+            (val) => !mergeGroup.mergedValues?.includes(val.attribute)
+          );
+          facetValues = [
+            ...facetValues,
+            {
+              displayValue: mergeGroup.displayValue,
+              attribute: mergeGroup.mergedValues[0],
+              mergedValues: mergeGroup.mergedValues,
+              index: 0,
+            } as AttributeValue,
+          ].sort((a, b) => a.index - b.index);
+        }
+      });
+    }
 
     setEditFacetValues(facetValues);
     setOriginalFacetValues(facetValues);

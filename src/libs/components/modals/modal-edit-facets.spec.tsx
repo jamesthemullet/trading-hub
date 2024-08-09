@@ -651,6 +651,30 @@ describe('ModalEditValues', () => {
         expect(selectAll.checked).toEqual(false);
       });
     });
+
+    it('should show previously saved merge values', async () => {
+      renderWithProviders(
+        <ModalEditValues
+          onClose={jest.fn()}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            merged: [
+              {
+                displayValue: 'foo',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
+          }}
+          facetType="global"
+        />
+      );
+
+      expect(screen.getByText('Merged Value Group')).toBeVisible();
+      expect(screen.getByLabelText('Label for foo')).toBeVisible();
+    });
   });
 
   describe('Reorder', () => {
