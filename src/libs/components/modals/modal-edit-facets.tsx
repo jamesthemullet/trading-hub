@@ -478,7 +478,7 @@ export const ModalEditValues = ({
                     <FacetAttributeValuesTableRow
                       key={`attribute-${displayValue}-${index}`}
                       isPinned={orderedPinnedValues.includes(attribute)}
-                      isExcluded={orderedExcludedValues?.includes(displayValue)}
+                      isExcluded={orderedExcludedValues?.includes(attribute)}
                       data-testid="rows"
                       aria-label={`attribute ${index} ${attribute}`}
                     >
@@ -590,7 +590,7 @@ export const ModalEditValues = ({
                       </FlexColumnCol>
 
                       <Col>
-                        {orderedPinnedValues.includes(displayValue) && (
+                        {orderedPinnedValues.includes(attribute) && (
                           <OrderArrowsContainer>
                             <ArrowButton
                               direction="up"
@@ -642,9 +642,9 @@ export const ModalEditValues = ({
                       <Col>
                         <FacetOrderDropdown
                           status={
-                            orderedPinnedValues.includes(displayValue)
+                            orderedPinnedValues.includes(attribute)
                               ? 'included'
-                              : orderedExcludedValues.includes(displayValue)
+                              : orderedExcludedValues.includes(attribute)
                                 ? 'excluded'
                                 : undefined
                           }
