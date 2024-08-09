@@ -158,8 +158,12 @@ export const ModalEditValues = ({
   const [originalFacetValues, setOriginalFacetValues] = useState<
     AttributeValue[]
   >([]);
-  const [itemsToMerge, setItemsToMerge] = useState<string[]>([]);
   const [isSettingName, setIsSettingName] = useState(false);
+
+  const [selectedFacetAttributes, setSelectedFacetAttributes] = useState<
+    AttributeValue[]
+  >([]);
+  const [hasSelectedAllRows, setHasSelectedAllRows] = useState<boolean>(false);
 
   const [orderedPinnedValues, setOrderedPinnedValues] = useState<string[]>([]);
 
@@ -170,6 +174,25 @@ export const ModalEditValues = ({
 
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [error, setError] = useState('');
+
+  const addToSelectedRow = (attribute: AttributeValue) => {
+    const updatedSelectedFacetAttributess = [
+      ...selectedFacetAttributes,
+      attribute,
+    ];
+    setSelectedFacetAttributes(updatedSelectedFacetAttributess);
+  };
+
+  const removeFromSelectedRow = (attribute: AttributeValue) => {
+    const updatedSelectedFacetAttributess = selectedFacetAttributes.filter(
+      (value) => value.attribute !== attribute.attribute
+    );
+    setSelectedFacetAttributes(updatedSelectedFacetAttributess);
+
+    if (hasSelectedAllRows) {
+      setHasSelectedAllRows(false);
+    }
+  };
 
   const filteredEditFacetValues = useMemo(() => {
     const filteredValues = !searchQuery
@@ -249,23 +272,7 @@ export const ModalEditValues = ({
 
     setOrderedPinnedValues([...pinned.map((value) => value.displayValue)]);
     setOrderedExcludedValues([...excluded.map((value) => value.displayValue)]);
-  }, [attributeValues, facet.boosted, facet.excludedValues]);
-
-  const handleSelect = (displayValue: string, mergedValues?: string[]) => {
-    if (mergedValues) {
-      setItemsToMerge((prev) =>
-        Array.from(new Set([...prev, ...mergedValues]))
-      );
-    } else {
-      if (itemsToMerge.includes(displayValue)) {
-        setItemsToMerge((prev) =>
-          prev.filter((value) => value !== displayValue)
-        );
-        return;
-      }
-      setItemsToMerge((prev) => [...prev, displayValue]);
-    }
-  };
+  }, [attributeValues, facet.boosted, facet.excludedValues, facet.merged]);
 
   const handleEditName = (displayValue: string, newValue: string) => {
     setEditFacetValues((prev) => {
@@ -308,9 +315,16 @@ export const ModalEditValues = ({
   };
 
   const handleMerge = () => {
-    mergeValues(itemsToMerge);
+    const valuesToMerge = selectedFacetAttributes
+      .map((facet) =>
+        facet.mergedValues ? facet.mergedValues : facet.attribute
+      )
+      .flat();
+    mergeValues(valuesToMerge);
     setIsSaveDisabled(true);
     setIsSettingName(true);
+    setIsSaveDisabled(true);
+    setSelectedFacetAttributes([]);
   };
 
   const handleDemerge = (
@@ -404,19 +418,6 @@ export const ModalEditValues = ({
   };
 
   const handleSave = async () => {
-    //     /* istanbul ignore next */
-    //     await handleUpdate({
-    //       facetId: facet.id,
-    //       data: {
-    //         ...facet,
-    //         boosted: orderedPinnedValues,
-    //         excludedValues: editFacetValues
-    //           .filter((value) => value.isExcluded)
-    //           .map((value) => value.displayValue),
-    //         merged: facetMergedValues,
-    //       },
-    //     });
-
     onClose();
   };
 
@@ -443,10 +444,10 @@ export const ModalEditValues = ({
                 <Text isStrong>All values listed</Text>
                 {facetType === 'global' && (
                   <Button
-                    isDisabled={itemsToMerge.length < 2}
+                    isDisabled={selectedFacetAttributes.length < 2}
                     onClick={handleMerge}
                   >
-                    Merge ({itemsToMerge.length})
+                    Merge ({selectedFacetAttributes.length})
                   </Button>
                 )}
                 <Search onChange={(e) => handleSearch(e.target.value)} />
@@ -462,7 +463,23 @@ export const ModalEditValues = ({
                         </TableHeading>
                       ) : (
                         <Col>
-                          {facetType === 'global' && <input type="checkbox" />}
+                          {facetType === 'global' && (
+                            <input
+                              type="checkbox"
+                              aria-label="Select all facet attributes"
+                              checked={hasSelectedAllRows}
+                              onChange={() => {
+                                setHasSelectedAllRows(!hasSelectedAllRows);
+                                if (hasSelectedAllRows) {
+                                  setSelectedFacetAttributes([]);
+                                } else {
+                                  setSelectedFacetAttributes(
+                                    filteredEditFacetValues
+                                  );
+                                }
+                              }}
+                            />
+                          )}
                         </Col>
                       )}
                     </Col>
@@ -473,8 +490,17 @@ export const ModalEditValues = ({
 
             <BodyContainer>
               <ModalAttributesTable>
-                {filteredEditFacetValues.map(
-                  ({ displayValue, attribute, mergedValues }, index) => (
+                {filteredEditFacetValues.map((facet, index) => {
+                  const { displayValue, attribute, mergedValues } = facet;
+                  const isSelected = selectedFacetAttributes.includes(facet);
+                  const shouldNotMerge = !!selectedFacetAttributes.find(
+                    (selectedFacet) =>
+                      selectedFacet !== facet &&
+                      selectedFacet.mergedValues?.length &&
+                      facet.mergedValues?.length
+                  );
+
+                  return (
                     <FacetAttributeValuesTableRow
                       key={`attribute-${displayValue}-${index}`}
                       isPinned={orderedPinnedValues.includes(attribute)}
@@ -486,15 +512,12 @@ export const ModalEditValues = ({
                         {facetType === 'global' && (
                           <input
                             type="checkbox"
-                            checked={
-                              itemsToMerge.includes(displayValue) ||
-                              itemsToMerge.some((value) =>
-                                mergedValues?.includes(value)
-                              )
-                            }
+                            disabled={shouldNotMerge}
+                            checked={isSelected}
                             onChange={() =>
-                              !isSettingName &&
-                              handleSelect(displayValue, mergedValues)
+                              isSelected
+                                ? removeFromSelectedRow(facet)
+                                : addToSelectedRow(facet)
                             }
                             aria-label={`Select ${displayValue} to merge`}
                           />
@@ -543,32 +566,13 @@ export const ModalEditValues = ({
                           <EditableLabel
                             displayValue={displayValue}
                             onDisplayValueChange={(newValue) => {
-                              if (
-                                itemsToMerge &&
-                                itemsToMerge.length > 1 &&
-                                newValue === defaultMergedDisplayValue
-                              ) {
+                              if (newValue === defaultMergedDisplayValue) {
                                 setIsSaveDisabled(true);
                                 setError('Please name your merge to continue');
                                 return;
                               }
 
                               handleEditName(displayValue, newValue);
-
-                              //   setEditFacetValues((prev) => {
-                              //     return prev.map((value) => {
-                              //       if (value.displayValue === displayValue) {
-                              //         return {
-                              //           ...value,
-                              //           displayValue: newValue,
-                              //         };
-                              //       }
-                              //       setIsSaveDisabled(false);
-                              //       return value;
-                              //     });
-                              //   });
-
-                              setItemsToMerge([]);
                               setIsSettingName(false);
                             }}
                             shouldOpenFromParent={
@@ -655,8 +659,8 @@ export const ModalEditValues = ({
                         />
                       </Col>
                     </FacetAttributeValuesTableRow>
-                  )
-                )}
+                  );
+                })}
               </ModalAttributesTable>
 
               <FilteredResultsPanel filteredFacets={editFacetValues.length} />

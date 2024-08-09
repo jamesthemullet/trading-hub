@@ -550,10 +550,10 @@ describe('ModalEditValues', () => {
         user.click(screen.getByLabelText('Select New merge name to merge'));
       });
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
       });
       act(() => {
-        const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
+        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
         user.click(mergeButton);
       });
       await waitFor(() => {
@@ -577,6 +577,80 @@ describe('ModalEditValues', () => {
         expect(mergeInputField2).toHaveValue('Newer merge name');
       });
     }, 15000);
+
+    it('should select and deselect all facet attributes', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <ModalEditValues
+          onClose={jest.fn()}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+          facetType="global"
+        />
+      );
+      const selectAll = screen.getByLabelText('Select all facet attributes');
+
+      act(() => {
+        user.click(selectAll);
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'Merge (11)' })
+        ).toBeVisible();
+      });
+
+      act(() => {
+        user.click(selectAll);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
+      });
+    });
+
+    it('should deselect all facet attributes toggle when unchecking a value', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <ModalEditValues
+          onClose={jest.fn()}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+          facetType="global"
+        />
+      );
+      const selectAll = screen.getByLabelText(
+        'Select all facet attributes'
+      ) as HTMLInputElement;
+
+      act(() => {
+        user.click(selectAll);
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'Merge (11)' })
+        ).toBeVisible();
+      });
+
+      const cottonCheckbox = screen.getByLabelText('Select Cotton to merge');
+
+      act(() => {
+        user.click(cottonCheckbox);
+      });
+
+      await waitFor(() => {
+        expect(selectAll.checked).toEqual(false);
+      });
+    });
   });
 
   describe('Reorder', () => {
