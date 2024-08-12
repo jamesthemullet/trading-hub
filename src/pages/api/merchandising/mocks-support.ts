@@ -1,4 +1,4 @@
-import rawApi from '@/libs/api/api-temp.yml';
+import rawApi from '@/libs/api/api.yml';
 
 import { NextApiRequest } from 'next';
 import OpenAPIResponseValidator from 'openapi-response-validator';
