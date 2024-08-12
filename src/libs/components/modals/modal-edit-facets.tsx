@@ -197,8 +197,12 @@ export const ModalEditValues = ({
   const filteredEditFacetValues = useMemo(() => {
     const filteredValues = !searchQuery
       ? editFacetValues
-      : editFacetValues.filter((value) =>
-          value.displayValue.includes(searchQuery)
+      : editFacetValues.filter(
+          (value) =>
+            value.displayValue
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            value.attribute.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
     const sortedValues = [...filteredValues].sort((a, b) => {
