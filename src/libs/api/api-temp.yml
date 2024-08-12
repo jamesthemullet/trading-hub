@@ -1,0 +1,2207 @@
+openapi: 3.0.3
+info:
+  title: Trading Hub API
+  description: |
+    The Trading Hub API
+  version: 0.0.1
+servers:
+  - url: 'https://api.tradinghub.azurewebsites.com/v1'
+    description: Main (production) server
+  - url: 'https://api.dev.tradinghub.azurewebsites.com/v1'
+    description: Main (dev) server
+  - url: 'http://localhost:4000/v1'
+    description: Local dev server
+paths:
+  /search/beta/merchandising/category:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API
+      summary: Get categories available for merchandising
+      description: >-
+        Returns the categories available for merchandising, can be queried by
+        name or category id
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON representation of available categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categories'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /merchandising/category:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API
+      summary: Get categories available for merchandising
+      deprecated: true
+      description: >-
+        Returns the categories available for merchandising, can be queried by
+        name or category id
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON representation of available categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categories'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /merchandising/category/{categoryId}/attributes:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API
+      summary: Category Attributes Response
+      description: Returns the available attributes for category or all attributes if category not provided.
+      deprecated: true
+      parameters:
+        - in: path
+          name: categoryId
+          schema:
+            type: string
+          required: true
+          description: The category to retrieve the attributes for
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/AttributeType'
+          required: false
+          description: The number type of attributes to retrieve
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributesResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/attributes:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API
+      summary: Get merchandising attributes
+      description: Returns the merchandising attributes
+      parameters:
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/AttributeType'
+          required: false
+          description: The type of attributes to retrieve
+        - in: query
+          name: categoryId
+          schema:
+            type: string
+          description: The category to retrieve attributes for
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributesResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  '/search/beta/merchandising/category/{categoryId}/preview':
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Preview Search Response
+      description: Returns a search response with specified rules applied.
+      parameters:
+        - in: path
+          name: categoryId
+          schema:
+            type: string
+          required: true
+          description: The category to preview
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+          description: The number of products to display
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchPreviewResponseBeta'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/category/ruleset:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Retrieve the Category Rule Sets
+      description: >-
+        Returns all category rule sets ordered by the most recently changed. Can be queried by
+        name, category id or most recent editor.  Searches are case-insensitve and partial matches are sufficient.
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: either category name, category id or most recent editor (or any partial match)
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedCategoryRuleSets'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Create a Category Rule Set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRuleSet'
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/category/ruleset/{ruleSetId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Update Category Rule Set
+      description: Persists merchandising rules and takes effect for customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRuleSet'
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Retrieve Category Rule Set
+      description: Returns a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedNotFound'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Delete Category Rule Set
+      description: Deletes a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to delete
+      responses:
+        '200':
+          description: Rule set was deleted successfully
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+
+  '/search/beta/merchandising/preview':
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API
+      summary: Preview Search Response
+      description: Returns a search response with specified rules applied, can be either keyword, or category - not both.
+      parameters:
+        - in: query
+          name: searchTerm
+          schema:
+            type: string
+          description: The search term to preview, must be supplied if categoryId not supplied
+        - in: query
+          name: categoryId
+          schema:
+            type: string
+          description: The category to preview, must be supplied if searchTerm not supplied
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+          description: The number of products to display
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchPreviewResponseBeta'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/keyword/ruleset:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Keyword
+      summary: Retrieve the keyword Rule Sets
+      description: >-
+        All rule sets ordered by most recently changed, can be queried by
+        name, search term or most recent editor
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: either category name, category id or most recent editor
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedKeywordRuleSets'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Keyword
+      summary: Create a Keyword Rule Set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeywordRuleSet'
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedKeywordRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/keyword/ruleset/{ruleSetId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Keyword
+      summary: Update Keyword Rule Set
+      description: Persists merchandising rules and takes effect for customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeywordRuleSet'
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedKeywordRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Keyword
+      summary: Retrieve Keyword Rule Set
+      description: Returns a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedKeywordRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedNotFound'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Keyword
+      summary: Delete Keyword Rule Set
+      description: Deletes a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to delete
+      responses:
+        '200':
+          description: Rule set was deleted successfully
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/global/ruleset:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Retrieve the global Rule Sets
+      description: >-
+        All rule sets ordered by most recently changed, can be queried by recent editor
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: search by most recent editor
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display Rule Sets after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalRuleSets'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Create a Global Rule Set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/global/ruleset/{ruleSetId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Update Global Rule Set
+      description: Persists merchandising rules and takes effect for customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Retrieve Global Rule Set
+      description: Returns a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedNotFound'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Delete Global Rule Set
+      description: Deletes a rule set and its merchandising rules.
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to delete
+      responses:
+        '200':
+          description: Rule set was deleted successfully
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  '/search/beta/merchandising/facet':
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Facets
+      summary: Get all Global facets
+      description: >-
+        Returns the Global facets, if a categoryId is passed includes facets related to that category,
+      parameters:
+        - in: query
+          name: categoryId
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+          description: When provided will only return facets relevant to the queries related to this Rule Set, as well as configuration related to the provided Rule Set, such as if the facet is included or not
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacetsList'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Facets
+      summary: Create a Facet at the global level
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacetConfig'
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalFacet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  '/search/beta/merchandising/facet/{facetId}':
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Facets
+      summary: Get Global facet config
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to retrieve
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalFacet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Search Merchandising API - Facets
+      summary: Update a Facet at the global level
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacetConfig'
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedGlobalFacet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/facet/{facetId}/attributeValues:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Facets
+      summary: Facet values response
+      description: Returns the available attributes for a specific facet
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to retrieve the attributes for
+        - in: query
+          name: categoryId
+          schema:
+            type: string
+          required: false
+          description: view the facets in the context of this rule set
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: Search for a value
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display attribute values after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+          description: Number of attribute values to return
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributeValuesResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found (invalid facetId)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/product:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API
+      summary: Search products for category
+      description: >-
+        Returns the products for an (optional) category, can be queried by name, product ids or category
+        id. Merchandising rules (pin/block/boost) inside the request body will be used to set metadata in the response.
+      parameters:
+        - in: query
+          name: productId
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+          description: The IDs of products which are to be retrieved. Document IDs of grouped products (where the documentId differs from the productId) are supported
+        - in: query
+          name: categoryId
+          schema:
+            type: string
+          required: false
+          description: The category id to retrieve products for
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: Search term, currently name/product id are supported
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: false
+          description: >-
+            Display products after this position.
+            Required for category, global or text search. Not allowed for specific products.
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: false
+          description: >-
+            Maximum number of products to be returned.
+            Required for category, global or text search. Not allowed for specific products.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRules'
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSearchResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/keyword/redirect:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Keyword Redirect
+      summary: Retrieve all the redirects
+      description: >-
+        All redirects ordered by most recently changed, can be queried by recent editor or redirect term/phrase
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: Search by most recent editor or keyword
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display redirects after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: A JSON array with representations of redirects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedKeywordRedirects'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Keyword Redirect
+      summary: Create a redirect
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeywordRedirect'
+      responses:
+        '200':
+          description: A JSON representation of redirect rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedKeywordRedirect'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+  /search/beta/merchandising/keyword/redirect/{redirectId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Keyword Redirect
+      summary: Retrieve a redirect
+      description: Returns a redirect
+      parameters:
+        - in: path
+          name: redirectId
+          schema:
+            type: string
+          required: true
+          description: The redirect to retrieve
+      responses:
+        '200':
+          description: A JSON representation of a redirect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedKeywordRedirect'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '404':
+          description: Redirect was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedNotFound'
+        '403':
+          description: Insufficient privileges
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Keyword Redirect
+      summary: Update a redirect
+      description: Persists a redirect and takes effect for customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeywordRedirect'
+      parameters:
+        - in: path
+          name: redirectId
+          schema:
+            type: string
+          required: true
+          description: The redirect to update
+      responses:
+        '200':
+          description: A JSON representation of a redirect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnedKeywordRedirect'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Keyword Redirect
+      summary: Delete a redirect
+      description: Deletes a redirect.
+      parameters:
+        - in: path
+          name: redirectId
+          schema:
+            type: string
+          required: true
+          description: The redirect to delete
+      responses:
+        '200':
+          description: The redirect was successfully deleted
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RuleSetFacetConfigWithId:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+          required:
+            - id
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+    RuleSetFacetConfig:
+      type: object
+      properties:
+        excludedValues:
+          type: array
+          items:
+            type: string
+          description: Values of this attribute that should not be displayed as filters to the customers
+        boosted:
+          type: array
+          items:
+            type: string
+          description: Array of values (in order) that should appear at the top of the list of filters. Un specified values will appear after these and be in order of most matching documents.
+    GlobalOnlyFacetConfig:
+      type: object
+      properties:
+        indexPropertyName:
+          type: string
+          description: The field of the indexed document
+        displayValue:
+          type: string
+          description: The value displayed to customers
+        merged:
+          type: array
+          items:
+            type: object
+            properties:
+              displayValue:
+                type: string
+              mergedValues:
+                type: array
+                items:
+                  type: string
+                description: The values (case insensitive) that will be mapped to be displayed as the `displayValue`
+          description: Array of objects, each of which describe a set of values that will be merged in to one when displayed to customers.
+      required:
+        - displayValue
+        - indexPropertyName
+    AttributeValuesResponse:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              displayValue:
+                type: string
+            required:
+              - displayValue
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - values
+        - pagination
+    ReturnedGlobalRuleSets:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - ruleSets
+        - pagination
+    ReturnedCategoryRuleSets:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - ruleSets
+        - pagination
+    ReturnedKeywordRedirects:
+      type: object
+      properties:
+        redirects:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedKeywordRedirect'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - redirects
+        - pagination
+    ReturnedKeywordRedirect:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/KeywordRedirect'
+      properties:
+        id:
+          type: string
+        lastChanged:
+          type: object
+          properties:
+            date:
+              type: string
+              format: date-time
+            user:
+              type: string
+          required:
+            - date
+            - user
+      required:
+        - id
+        - lastChanged
+    KeywordRedirect:
+      type: object
+      properties:
+        isEnabled:
+          type: boolean
+        keywords:
+          type: array
+          items:
+            type: string
+        destinationUrl:
+          type: string
+        ruleTitle:
+          type: string
+        type:
+          type: string
+          enum: ['redirectTerm', 'redirectPhrase']
+          description: A redirect term is a partial match, a redirect phrase is an exact match, both are case insensisitve.
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+      required:
+        - isEnabled
+        - keywords
+        - destinationUrl
+        - type
+    CategorySpecification:
+      allOf:
+        - $ref: '#/components/schemas/SingleCategorySpecification'
+        - $ref: '#/components/schemas/MultipleCategorySpecification'
+    SingleCategorySpecification:
+      type: object
+      properties:
+        categoryId:
+          deprecated: true
+          type: string
+      required:
+        - categoryId
+    MultipleCategorySpecification:
+      type: object
+      properties:
+        categoryIds:
+          type: array
+          items:
+            type: string
+    CategoryRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/RuleSet'
+        - $ref: '#/components/schemas/CategorySpecification'
+    ReturnedKeywordRuleSets:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedKeywordRuleSet'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - ruleSets
+        - pagination
+    KeywordRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/RuleSet'
+        - type: object
+          properties:
+            searchTerms:
+              type: array
+              items:
+                type: string
+          required:
+            - searchTerms
+    RuleSet:
+      type: object
+      properties:
+        isEnabled:
+          type: boolean
+        rules:
+          $ref: '#/components/schemas/MerchandisingRules'
+        facets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleSetFacetConfigWithId'
+          description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
+      required:
+        - rules
+        - isEnabled
+    ReturnedCategoryRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/CategoryRuleSet'
+        - type: object
+          properties:
+            categoryName:
+              deprecated: true
+              type: string
+            categoryPlpUrl:
+              deprecated: true
+              type: string
+              nullable: true
+            categoriesInfo:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  plpUrl:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+            id:
+              type: string
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
+            - categoryName
+            - categoriesInfo
+            - lastChanged
+    ReturnedKeywordRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/KeywordRuleSet'
+        - type: object
+          properties:
+            id:
+              type: string
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
+            - lastChanged
+    ReturnedRuleSet:
+      deprecated: true
+      allOf:
+        - $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+    ReturnedGlobalRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/RuleSet'
+        - type: object
+          properties:
+            id:
+              type: string
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
+            - lastChanged
+    ReturnedNotFound:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      required:
+        - message
+        - status
+    FacetsList:
+      type: object
+      properties:
+        facets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnedGlobalFacet'
+      required:
+        - facets
+    FacetConfig:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
+    ReturnedGlobalFacet:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+              enum: ['included', 'excluded']
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
+            - lastChanged
+    ReturnedRuleSetFacet:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+              enum: ['included', 'excluded']
+            indexPropertyName:
+              type: string
+              description: The field of the indexed document
+            displayValue:
+              type: string
+              description: The value displayed to customers
+            lastChanged:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                user:
+                  type: string
+              required:
+                - date
+                - user
+          required:
+            - id
+            - lastChanged
+            - displayValue
+            - indexPropertyName
+    ReturnedFacet:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/ReturnedGlobalFacet'
+        - $ref: '#/components/schemas/ReturnedRuleSetFacet'
+    SearchPreviewResponseBeta:
+      allOf:
+        - $ref: '#/components/schemas/Facets'
+        - type: object
+          properties:
+            category:
+              type: string
+            products:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'
+            ruleSet:
+              type: object
+              properties:
+                rules:
+                  $ref: '#/components/schemas/MerchandisingRulesWithInfo'
+                facets:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RuleSetFacetConfigWithId'
+                  description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
+              required:
+                - rules
+                - facets
+            externalChanges:
+              $ref: '#/components/schemas/MerchandisingRulesWithInfo'
+            pagination:
+              $ref: '#/components/schemas/Pagination'
+          required:
+            - products
+            - category
+            - ruleSet
+            - facets
+            - externalChanges
+            - pagination
+    ProductSearchResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - products
+        - pagination
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        productId:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/ProductMetadata'
+        url:
+          type: string
+        price:
+          type: string
+        imageUrl:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+        brand:
+          type: string
+        isInStock:
+          type: boolean
+      required:
+        - id
+        - productId
+        - metadata
+        - price
+        - imageUrl
+        - title
+        - isInStock
+    ProductMetadata:
+      type: object
+      properties:
+        isPinned:
+          type: boolean
+        isBoosted:
+          type: boolean
+        isBuried:
+          type: boolean
+        isBlocked:
+          type: boolean
+      required:
+        - isPinned
+    MerchandisingRulesWithInfo:
+      type: object
+      properties:
+        pinnedProducts:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/PinnedProduct'
+              - $ref: '#/components/schemas/Product'
+        blockedProducts:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/BlockedProduct'
+              - $ref: '#/components/schemas/Product'
+        boosts:
+          $ref: '#/components/schemas/BoostsBuriesWithInfo'
+        buries:
+          $ref: '#/components/schemas/BoostsBuriesWithInfo'
+      required:
+        - pinnedProducts
+        - boosts
+        - buries
+    MerchandisingRules:
+      type: object
+      properties:
+        pinnedProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PinnedProduct'
+        blockedProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlockedProduct'
+        boosts:
+          $ref: '#/components/schemas/BoostsBuries'
+        buries:
+          $ref: '#/components/schemas/BoostsBuries'
+      required:
+        - pinnedProducts
+        - blockedProducts
+        - boosts
+        - buries
+    PinnedProduct:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+    BlockedProduct:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+    BoostsBuries:
+      type: object
+      properties:
+        numeric:
+          type: array
+          items:
+            $ref: '#/components/schemas/NumericBoostBury'
+        alphanumeric:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlphanumericBoostBury'
+        product:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBoostBury'
+      required:
+        - numeric
+        - alphanumeric
+        - product
+    BoostsBuriesWithInfo:
+      type: object
+      properties:
+        numeric:
+          type: array
+          items:
+            $ref: '#/components/schemas/NumericBoostBury'
+        alphanumeric:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlphanumericBoostBury'
+        product:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/ProductBoostBury'
+              - $ref: '#/components/schemas/Product'
+      required:
+        - numeric
+        - alphanumeric
+        - product
+    ProductBoostBury:
+      type: object
+      properties:
+        id:
+          type: string
+        weight:
+          type: number
+          format: double
+      required:
+        - id
+        - weight
+    NumericBoostBury:
+      type: object
+      properties:
+        field:
+          type: string
+        weight:
+          type: number
+          format: double
+      required:
+        - field
+        - weight
+    AlphanumericBoostBury:
+      type: object
+      properties:
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlphanumericBoostBuryField'
+        weight:
+          type: number
+          format: double
+      required:
+        - fields
+        - weight
+    AlphanumericBoostBuryField:
+      type: object
+      properties:
+        field:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+      required:
+        - field
+        - values
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+      required:
+        - status
+        - message
+    Facets:
+      type: object
+      properties:
+        facets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Facet'
+      required:
+        - facets
+    Facet:
+      type: object
+      properties:
+        id:
+          type: string
+        order:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/FacetData'
+      required:
+        - id
+        - data
+    FacetData:
+      type: array
+      items:
+        $ref: '#/components/schemas/FacetItem'
+    FacetItem:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/PriceFacetData'
+        - $ref: '#/components/schemas/CommonFacetData'
+        - $ref: '#/components/schemas/ColourFacetData'
+        - $ref: '#/components/schemas/CategoryFacetData'
+    Pagination:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+    Category:
+      type: object
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+        path:
+          type: string
+    Categories:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - categories
+        - pagination
+    AttributesResponse:
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttributeResponseItem'
+      required:
+        - attributes
+    AttributeResponseItem:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/AttributeType'
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+            required:
+              - value
+      required:
+        - type
+        - name
+    AttributeType:
+      type: string
+      enum: ['alphanumeric', 'numeric']
+    CommonFacetData:
+      type: object
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+          format: int32
+        selected:
+          type: boolean
+        disabled:
+          type: boolean
+      additionalProperties: false
+      required:
+        - name
+        - count
+        - selected
+        - disabled
+    CategoryFacetData:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        cat_id:
+          type: string
+        selected:
+          type: boolean
+        name:
+          type: string
+      required:
+        - name
+        - cat_id
+        - count
+        - selected
+    ColourFacetData:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        name:
+          type: string
+        colourHexValue:
+          type: string
+        hexColourType:
+          type: boolean
+        hasHexCode:
+          type: boolean
+        disabled:
+          type: boolean
+        iconValue:
+          type: string
+        selected:
+          type: boolean
+      additionalProperties: false
+      required:
+        - count
+        - name
+        - colourHexValue
+        - hexColourType
+        - disabled
+        - iconValue
+        - selected
+        - hasHexCode
+    PriceFacetData:
+      type: object
+      properties:
+        minimum:
+          type: integer
+          format: int32
+        maximum:
+          type: integer
+          format: int32
+        selected:
+          type: boolean
+      required:
+        - minimum
+        - maximum
+        - selected
