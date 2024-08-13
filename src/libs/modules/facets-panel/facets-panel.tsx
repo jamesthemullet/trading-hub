@@ -153,6 +153,7 @@ export const FacetsPanel = ({
   onFacetDataChange,
   onFacetsDataRowOrderChange,
   onHandleStatusChange,
+  refreshData,
   title,
   facetsData,
   facetType,
@@ -162,6 +163,7 @@ export const FacetsPanel = ({
   includedFacets,
   rulesetMerchandisingRules,
   searchTerm,
+  updatedValues,
 }: {
   onSave: () => void;
   onCancel: () => void;
@@ -173,6 +175,15 @@ export const FacetsPanel = ({
     value: string | 'included' | 'excluded';
     facet: ReturnedFacet;
   }) => void;
+  onFacetValuesChange?: ({
+    facet,
+    orderedPinnedValues,
+    orderedExcludedValues,
+  }: {
+    facet: ReturnedFacet;
+    orderedPinnedValues: string[];
+    orderedExcludedValues: string[];
+  }) => void;
   onFacetsDataRowOrderChange?: (
     index: number,
     direction: -1 | 1,
@@ -183,6 +194,7 @@ export const FacetsPanel = ({
     id?: string,
     index?: number
   ) => void;
+  refreshData?: () => void;
   displayRowOrderControls?: boolean;
   title: string;
   facetsData: ReturnedFacet[];
@@ -194,6 +206,11 @@ export const FacetsPanel = ({
   defaultOrderData?: defaultOrderDataType;
   includedFacets: ReturnedFacet[];
   searchTerm?: string;
+  updatedValues?: (
+    orderedPinnedValues: string[],
+    orderedExcludedValues: string[],
+    id: string
+  ) => void;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
@@ -255,6 +272,7 @@ export const FacetsPanel = ({
     )
       ? 'included'
       : 'excluded';
+
     return (
       <Row
         optionSelected={facetIncluded}
@@ -323,9 +341,11 @@ export const FacetsPanel = ({
           </OrderColumn>
         </Col>
         <Col>
-          <Button onClick={() => handleOpenFacetEditModal(facet)}>
-            Edit values
-          </Button>
+          {(facetType === 'global' || facetIncluded === 'included') && (
+            <Button onClick={() => handleOpenFacetEditModal(facet)}>
+              Edit values
+            </Button>
+          )}
         </Col>
       </Row>
     );
@@ -410,6 +430,8 @@ export const FacetsPanel = ({
           onClose={onClose}
           facet={selectedFacet}
           facetType={facetType}
+          refreshData={refreshData}
+          updatedValues={updatedValues}
         />
       )}
 

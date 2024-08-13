@@ -52,7 +52,7 @@ describe('useGlobalFacetUpdate', () => {
     const { result } = renderHook(() => useGlobalFacetUpdate());
 
     await act(async () => {
-      await result.current.handleUpdate({
+      await result.current.handleGlobalFacetUpdate({
         facetId: facetId,
         data: {
           displayValue: 'colour',
@@ -72,7 +72,7 @@ describe('useGlobalFacetUpdate', () => {
 
     const { result } = renderHook(() => useGlobalFacetUpdate());
 
-    await result.current.handleUpdate({
+    await result.current.handleGlobalFacetUpdate({
       facetId: facetId,
       data: facet,
     });

@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = (
 
 const Page = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { ruleSetDetail, isLoading } = useRuleSetDetail(id);
+  const { ruleSetDetail, isLoading, refreshRuleset } = useRuleSetDetail(id);
 
   const categoryId = useMemo(
     () => [ruleSetDetail.categoryId],
@@ -56,10 +56,31 @@ const Page = ({ id }: { id: string }) => {
         const localFacet = facetList.find(
           (localFacet) => localFacet.id === facet.id
         );
-        return localFacet;
+
+        // istanbul ignore next
+        if (!localFacet) {
+          return facet;
+        }
+
+        const ruleSetFacet = ruleSetDetail.facets?.find(
+          (facet) => facet.id === localFacet.id
+        );
+
+        // istanbul ignore next
+        if (!ruleSetFacet) {
+          return localFacet;
+        }
+
+        return {
+          ...localFacet,
+          boosted: ruleSetFacet.boosted,
+          excludedValues: ruleSetFacet.excludedValues,
+        };
       })
       .filter((facet): facet is ReturnedFacet => Boolean(facet));
+
     setIncludedFacets(includedFacets);
+
     const excludedFacets = facetList.filter(
       (facet) =>
         !facetsFromCategoryRuleSet.some(
@@ -67,7 +88,7 @@ const Page = ({ id }: { id: string }) => {
         )
     );
     setOrderedFacetList([...includedFacets, ...excludedFacets]);
-  }, [facetList, facetsFromCategoryRuleSet]);
+  }, [facetList, facetsFromCategoryRuleSet, ruleSetDetail.facets]);
 
   useEffect(() => {
     setFacetList(facets);
@@ -113,6 +134,7 @@ const Page = ({ id }: { id: string }) => {
     const currentlyIncludedFacets = orderedFacetList.filter((facet) =>
       includedFacets.includes(facet)
     );
+
     const currentlyExcludedFacets = orderedFacetList.filter(
       (facet) => !includedFacets.includes(facet)
     );
@@ -134,6 +156,42 @@ const Page = ({ id }: { id: string }) => {
         includedFacets.filter((facet) => facet.id !== facetToChange.id)
       );
     }
+  };
+
+  const handleUpdatedValues = (
+    included: string[],
+    excluded: string[],
+    id: string
+  ) => {
+    setOrderedFacetList((prev) => {
+      const updatedFacets = prev.map((facet) => {
+        if (facet.id === id) {
+          return {
+            ...facet,
+            boosted: included,
+            excludedValues: excluded,
+          };
+        } else {
+          return facet;
+        }
+      });
+      return updatedFacets;
+    });
+
+    setIncludedFacets((prev) => {
+      const updatedFacets = prev.map((facet) => {
+        if (facet.id === id) {
+          return {
+            ...facet,
+            boosted: included,
+            excludedValues: excluded,
+          };
+        } else {
+          return facet;
+        }
+      });
+      return updatedFacets;
+    });
   };
 
   return (
@@ -166,11 +224,13 @@ const Page = ({ id }: { id: string }) => {
             setOrderedFacetList(updatedFacets);
           }}
           onHandleStatusChange={onHandleStatusChange}
+          refreshData={refreshRuleset}
           defaultCategory={category}
           includedFacets={includedFacets}
           facetType="category"
           rulesetMerchandisingRules={ruleSetDetail.rules}
           searchTerm={search}
+          updatedValues={handleUpdatedValues}
         />
       )}
     </>

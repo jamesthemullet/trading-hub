@@ -3,7 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import { AttributeValuesResponse, ReturnedGlobalFacet } from '@/libs/api';
-import { useDebounce, useGetFacetAttributeValues } from '@/libs/hooks';
+import {
+  useDebounce,
+  useGetFacetAttributeValues,
+  useGlobalFacetUpdate,
+} from '@/libs/hooks';
 
 import Image from 'next/image';
 
@@ -149,10 +153,22 @@ export const ModalEditValues = ({
   onClose,
   facet,
   facetType,
+  refreshData,
+  updatedValues,
 }: {
   onClose: () => void;
   facet: ReturnedGlobalFacet;
   facetType: 'global' | 'category' | 'search';
+  refreshData?: () => void;
+  onHandleSave?: (
+    orderedPinnedValues: string[],
+    orderedExcludedValues: string[]
+  ) => void;
+  updatedValues?: (
+    orderedPinnedValues: string[],
+    orderedExcludedValues: string[],
+    id: string
+  ) => void;
 }) => {
   const [editFacetValues, setEditFacetValues] = useState<AttributeValue[]>([]);
   const [originalFacetValues, setOriginalFacetValues] = useState<
@@ -174,6 +190,8 @@ export const ModalEditValues = ({
 
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [error, setError] = useState('');
+
+  const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
 
   const addToSelectedRow = (attribute: AttributeValue) => {
     const updatedSelectedFacetAttributess = [
@@ -346,7 +364,6 @@ export const ModalEditValues = ({
     mergeValues(valuesToMerge);
     setIsSaveDisabled(true);
     setIsSettingName(true);
-    setIsSaveDisabled(true);
     setSelectedFacetAttributes([]);
   };
 
@@ -441,6 +458,40 @@ export const ModalEditValues = ({
   };
 
   const handleSave = async () => {
+    const mergeGroups = editFacetValues.filter((value) => value.mergedValues);
+
+    const mergedValues = mergeGroups.map((group) => ({
+      displayValue: group.displayValue,
+      mergedValues: group.mergedValues,
+    }));
+
+    switch (facetType) {
+      case 'global':
+        await handleGlobalFacetUpdate({
+          facetId: facet.id,
+          data: {
+            ...facet,
+            boosted: orderedPinnedValues,
+            excludedValues: orderedExcludedValues,
+            merged: mergedValues,
+          },
+        }).then(() => {
+          if (refreshData) {
+            refreshData();
+          }
+        });
+        break;
+
+      case 'category':
+        // there will always be updatedValues for category
+        // istanbul ignore next
+        if (!updatedValues) {
+          return;
+        }
+        updatedValues(orderedPinnedValues, orderedExcludedValues, facet.id);
+        break;
+    }
+
     onClose();
   };
 
@@ -596,6 +647,7 @@ export const ModalEditValues = ({
                               }
 
                               handleEditName(displayValue, newValue);
+
                               setIsSettingName(false);
                             }}
                             shouldOpenFromParent={
@@ -700,7 +752,7 @@ export const ModalEditValues = ({
             isDisabled={isSaveDisabled}
             aria-label="Save changes to attributes"
           >
-            Save
+            {facetType === 'global' ? 'Save' : 'Done'}
           </Button>
         </ModalFooter>
       </Modal.Content>

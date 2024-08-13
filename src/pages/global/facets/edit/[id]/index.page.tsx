@@ -27,7 +27,8 @@ type PageProps = {
 };
 
 const Page = ({ id }: PageProps) => {
-  const { facets, isLoading } = useGlobalFacetsList();
+  const { facets, isLoading, onRefreshFacetList } = useGlobalFacetsList();
+
   const router = useRouter();
   const [error, setError] = useState<string | undefined>();
 
@@ -72,7 +73,7 @@ const Page = ({ id }: PageProps) => {
 
   const { setSearch, filteredFacets } = useFacetsFilter(orderedLocalFacetData);
 
-  const { handleUpdate } = useGlobalFacetUpdate();
+  const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
   const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
 
   const handleSave = async () => {
@@ -101,7 +102,7 @@ const Page = ({ id }: PageProps) => {
     value: string | 'included' | 'excluded';
     facet: ReturnedFacet;
   }) => {
-    const response = await handleUpdate({
+    const response = await handleGlobalFacetUpdate({
       facetId: facet.id,
       data: {
         displayValue: value,
@@ -170,6 +171,7 @@ const Page = ({ id }: PageProps) => {
           setSearch={setSearch}
           onFacetDataChange={onFacetDataChange}
           onHandleStatusChange={onHandleStatusChange}
+          refreshData={onRefreshFacetList}
           title="Global Facet Rule Editor"
           facetsData={filteredFacets}
           defaultCategory={defaultCategory}

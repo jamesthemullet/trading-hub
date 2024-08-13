@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -53,6 +53,22 @@ describe('useFacetsList', () => {
 
     await waitFor(() => {
       expect(result.current.error).toEqual('Internal Server Error');
+    });
+  });
+
+  it('should refetch data', async () => {
+    const { result } = renderHook(() => useGlobalFacetsList());
+
+    await waitFor(() => {
+      expect(result.current.facets.length).toEqual(5);
+    });
+
+    act(() => {
+      result.current.onRefreshFacetList();
+    });
+
+    await waitFor(() => {
+      expect(result.current.facets.length).toEqual(5);
     });
   });
 });

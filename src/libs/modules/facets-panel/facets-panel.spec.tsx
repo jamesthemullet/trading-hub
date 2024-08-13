@@ -494,6 +494,22 @@ describe('Facet Panel', () => {
     });
   });
 
+  it('should not show Edit Values button if facet is category and the facet is not included', async () => {
+    renderWithProviders(
+      <FacetsPanel
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        title="Facet Rule Editor"
+        facetsData={globalFacetsListMock.facets}
+        onFacetDataChange={onFacetDataChangeSpy}
+        includedFacets={[]}
+        facetType="category"
+      />
+    );
+
+    expect(screen.queryByText('Edit values')).toBeNull();
+  });
+
   describe('Edit Facet Values Modal', () => {
     const openModal = async () => {
       renderWithProviders(

@@ -176,6 +176,8 @@ describe('Category Facet Management Editing', () => {
         facets: [
           {
             displayValue: 'color',
+            boosted: ['test include'],
+            excludedValues: ['test exclude'],
             indexPropertyName: 'color',
             status: 'included',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
@@ -192,6 +194,8 @@ describe('Category Facet Management Editing', () => {
           },
           {
             displayValue: 'size',
+            boosted: [],
+            excludedValues: [],
             indexPropertyName: 'size',
             status: 'excluded',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
@@ -203,6 +207,8 @@ describe('Category Facet Management Editing', () => {
           },
           {
             displayValue: 'brand',
+            boosted: [],
+            excludedValues: [],
             indexPropertyName: 'brand',
             status: 'included',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
@@ -341,6 +347,183 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.queryByLabelText('Row showing color as excluded')
       ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should save changes to category facet values', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryId: 'SubCategory_428',
+      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      rules: {
+        rules: {
+          pinnedProducts: [{ id: 'a1' }],
+          blockedProducts: [],
+          boosts: {
+            numeric: [],
+            alphanumeric: [],
+            product: [],
+          },
+          buries: {
+            numeric: [],
+            alphanumeric: [],
+            product: [],
+          },
+        },
+        isEnabled: false,
+        facets: [
+          {
+            displayValue: 'color',
+            boosted: ['test include'],
+            excludedValues: ['test exclude'],
+            indexPropertyName: 'color',
+            status: 'included',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+            lastChanged: {
+              date: '2021-01-01T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [
+              {
+                displayValue: 'test merged group',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
+          },
+          {
+            displayValue: 'size',
+            boosted: [],
+            excludedValues: [],
+            indexPropertyName: 'size',
+            status: 'excluded',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+            lastChanged: {
+              date: '2021-01-02T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [],
+          },
+          {
+            displayValue: 'brand',
+            boosted: [],
+            excludedValues: [],
+            indexPropertyName: 'brand',
+            status: 'included',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+            lastChanged: {
+              date: '2021-01-03T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [],
+          },
+        ],
+      },
+    });
+  });
+
+  it('should update facet values', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getAllByRole('button', { name: 'Edit values' })[0]);
+    expect(screen.getAllByText('More Silk')[0]).toBeVisible();
+
+    await user.click(screen.getByLabelText('include More Silk'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Save changes to attributes' })
+      ).not.toBeDisabled();
+    });
+
+    act(() => {
+      screen
+        .getByRole('button', { name: 'Save changes to attributes' })
+        .click();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('More Silk')).not.toBeInTheDocument();
+    });
+
+    act(() => {
+      screen.getByRole('button', { name: 'Save' }).click();
+    });
+
+    await waitFor(() => {
+      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+        categoryId: 'SubCategory_428',
+        ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+        rules: {
+          rules: {
+            pinnedProducts: [{ id: 'a1' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+          },
+          isEnabled: false,
+          facets: [
+            {
+              displayValue: 'color',
+              boosted: ['More Silk'],
+              excludedValues: [],
+              indexPropertyName: 'color',
+              status: 'included',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              lastChanged: {
+                date: '2021-01-01T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [
+                {
+                  displayValue: 'test merged group',
+                  mergedValues: ['merged 1', 'merged 2'],
+                },
+              ],
+            },
+            {
+              displayValue: 'size',
+              boosted: [],
+              excludedValues: [],
+              indexPropertyName: 'size',
+              status: 'excluded',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+              lastChanged: {
+                date: '2021-01-02T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [],
+            },
+            {
+              displayValue: 'brand',
+              boosted: [],
+              excludedValues: [],
+              indexPropertyName: 'brand',
+              status: 'included',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+              lastChanged: {
+                date: '2021-01-03T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [],
+            },
+          ],
+        },
+      });
     });
   });
 });

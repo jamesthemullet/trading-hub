@@ -35,8 +35,8 @@ export const mockUseRuleSetPreviewData = {
     facets: [
       {
         id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-        boosted: [],
-        excludedValues: [],
+        boosted: ['test include'],
+        excludedValues: ['test exclude'],
       },
       {
         id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
@@ -88,4 +88,5 @@ export const mockUseRuleSetPreviewData = {
   error: '',
   facets: [],
   isLoading: false,
+  refreshRuleset: jest.fn(),
 };

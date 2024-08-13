@@ -31,7 +31,7 @@ jest.mock('@/libs/hooks', () => ({
   useGlobalFacetsList: jest.fn(),
   useGlobalRuleSetDetail: jest.fn(),
   useGlobalFacetUpdate: () => {
-    return { handleUpdate: mockUpdateGlobalFacet };
+    return { handleGlobalFacetUpdate: mockUpdateGlobalFacet };
   },
   useGlobalRuleSetUpdate: () => {
     return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
@@ -73,6 +73,7 @@ describe('Global Facet Management Editing', () => {
       isLoading: false,
       facets: globalFacetsListMock.facets,
       error: '',
+      onRefreshFacetList: jest.fn(),
     });
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
@@ -202,6 +203,7 @@ describe('Global Facet Management Editing', () => {
       isLoading: true,
       facets: [],
       error: '',
+      onRefreshFacetList: jest.fn(),
     });
 
     renderWithProviders(<Page id={ruleSetId} />);

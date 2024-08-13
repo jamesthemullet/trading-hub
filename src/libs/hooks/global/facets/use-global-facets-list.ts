@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FacetsList, search } from '@/libs/api';
 
 export const useGlobalFacetsList = () => {
+  const [shouldRefetch, refetch] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [facetsList, setFacetsList] = useState<FacetsList>({
     facets: [],
@@ -25,11 +26,12 @@ export const useGlobalFacetsList = () => {
     };
     void asyncCall();
     setIsLoading(true);
-  }, []);
+  }, [shouldRefetch]);
 
   return {
     facets: facetsList.facets,
     isLoading,
     error,
+    onRefreshFacetList: () => refetch({}),
   };
 };

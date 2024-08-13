@@ -4,6 +4,7 @@ import type { ReturnedCategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
 export const useRuleSetDetail = (id: string) => {
+  const [shouldRefetch, refetch] = useState({});
   const api = useMemo(() => search(), []);
   const [ruleSetDetail, setRuleSetDetail] = useState<ReturnedCategoryRuleSet>({
     categoryId: '',
@@ -55,7 +56,7 @@ export const useRuleSetDetail = (id: string) => {
     };
     setIsLoading(true);
     void asyncCall();
-  }, [id, api]);
+  }, [id, api, shouldRefetch]);
 
-  return { ruleSetDetail, error, isLoading };
+  return { ruleSetDetail, error, isLoading, refreshRuleset: () => refetch({}) };
 };

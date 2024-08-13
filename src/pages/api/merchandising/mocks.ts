@@ -441,22 +441,6 @@ export const getMockMapping: () => Record<
       return { body: jsonBody, status };
     },
   },
-  '/search/beta/merchandising/facet/{facetId}/attributeValues': {
-    get: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        return {
-          body: {
-            values: attributeValuesMock,
-            pagination: {
-              totalItems: 5,
-            },
-          },
-          status: 200,
-        };
-      }
-      return { body: jsonBody, status };
-    },
-  },
   '/search/beta/merchandising/attributes': {
     get: (_req, status, jsonBody) => {
       if (status !== 200) {

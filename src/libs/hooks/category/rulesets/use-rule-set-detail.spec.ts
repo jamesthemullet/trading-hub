@@ -72,10 +72,14 @@ describe('useRuleSetDetail', () => {
       ruleSetDetail: mockRuleData,
       error: '',
       isLoading: false,
+      refreshRuleset: jest.fn(),
     };
 
     await waitFor(() => {
-      expect(result).toEqual({ current: expectedData });
+      expect(result.current.error).toEqual(expectedData.error);
+      expect(result.current.isLoading).toEqual(expectedData.isLoading);
+      expect(result.current.ruleSetDetail).toEqual(expectedData.ruleSetDetail);
+      expect(typeof result.current.refreshRuleset).toBe('function');
     });
   });
 
@@ -115,10 +119,14 @@ describe('useRuleSetDetail', () => {
       },
       error: 'POST status 500',
       isLoading: false,
+      refreshRuleset: jest.fn(),
     };
 
     await waitFor(() => {
-      expect(result).toEqual({ current: expectedData });
+      expect(result.current.error).toEqual(expectedData.error);
+      expect(result.current.isLoading).toEqual(expectedData.isLoading);
+      expect(result.current.ruleSetDetail).toEqual(expectedData.ruleSetDetail);
+      expect(typeof result.current.refreshRuleset).toBe('function');
     });
   });
 
@@ -131,6 +139,31 @@ describe('useRuleSetDetail', () => {
 
     await waitFor(() => {
       expect(result.current.error).toEqual('POST status 500');
+    });
+  });
+
+  it('should refresh the ruleset', async () => {
+    const mockResponse: ReturnedCategoryRuleSet = mockRuleData;
+    getRuleSetPreviewMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
+
+    const { result } = renderHook(() => useRuleSetDetail(mockCategoryId));
+
+    await waitFor(() => {
+      expect(result.current.ruleSetDetail).toEqual(mockRuleData);
+    });
+
+    getRuleSetPreviewMock.mockReturnValueOnce({
+      data: { ...mockRuleData, isEnabled: false },
+      status: { status: 200 },
+    });
+
+    result.current.refreshRuleset();
+
+    await waitFor(() => {
+      expect(result.current.ruleSetDetail).toEqual(mockRuleData);
     });
   });
 });
