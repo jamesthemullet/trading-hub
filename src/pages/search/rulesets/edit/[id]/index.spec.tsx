@@ -2,8 +2,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { useSearchRuleSetPreview } from '@/libs/hooks/search/use-search-ruleset-preview';
-import { useSearchRuleSetUpdate } from '@/libs/hooks/search/use-search-ruleset-update';
+import { useSearchRuleSetPreview } from '@/libs/hooks/search/ruleset/use-search-ruleset-preview';
+import { useSearchRuleSetUpdate } from '@/libs/hooks/search/ruleset/use-search-ruleset-update';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { mockUseSearchRuleSetPreviewData } from '@/test/data/mock-use-search-ruleset-preview';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -16,10 +16,10 @@ import Page, { getServerSideProps } from './index.page';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('@/libs/hooks/search/use-search-ruleset-preview', () => ({
+jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-preview', () => ({
   useSearchRuleSetPreview: jest.fn(),
 }));
-jest.mock('@/libs/hooks/search/use-search-ruleset-update', () => ({
+jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-update', () => ({
   useSearchRuleSetUpdate: jest.fn(),
 }));
 

@@ -511,6 +511,9 @@ export const getMockMapping: () => Record<
       }
       return { body: jsonBody, status };
     },
+    post: () => {
+      return { body: keywordRulesetMock.ruleSets[0], status: 200 };
+    },
   },
   '/search/beta/merchandising/keyword/redirect': {
     post: () => {

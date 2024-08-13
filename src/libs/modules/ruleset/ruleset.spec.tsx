@@ -518,6 +518,46 @@ describe('Ruleset', () => {
     });
   });
 
+  it('should create a keyword ruleset', async () => {
+    const mockCreate = jest.fn();
+    const user = userEvent.setup();
+
+    const expectedData = {
+      isEnabled: true,
+      rules: {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        pinnedProducts: [],
+      },
+      searchTerms: ['new keyword'],
+    };
+
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    renderWithProviders(
+      <Ruleset
+        isEnabled={true}
+        onCreateKeywordSearchRuleset={mockCreate}
+        onCancel={jest.fn()}
+        rulesetType="search"
+      />
+    );
+
+    await user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+
+    const createButton = await screen.findByText(CREATE_BUTTON);
+
+    act(() => {
+      createButton.click();
+    });
+
+    expect(mockCreate).toHaveBeenCalledWith(expectedData);
+  });
+
   it('should cancel changes', async () => {
     const user = userEvent.setup();
     const mockSave = jest.fn();

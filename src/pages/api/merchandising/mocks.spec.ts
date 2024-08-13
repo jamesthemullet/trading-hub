@@ -330,6 +330,27 @@ describe('mocks', () => {
         status: 200,
       });
     });
+
+    it('should return keyword rulesets when posting to endpoint', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/keyword/ruleset'].get
+      ).toBeDefined();
+
+      const result = mockMapping['/search/beta/merchandising/keyword/ruleset']
+        .post!(
+        createMockNextApiRequest({
+          url: `/search/beta/merchandising/keyword/ruleset`,
+          method: 'GET',
+        }),
+        400,
+        {}
+      );
+      expect(result).toEqual({
+        body: keywordRulesetMock.ruleSets[0],
+        status: 200,
+      });
+    });
   });
 
   describe('/search/beta/merchandising/keyword/ruleset/{ruleSetId}', () => {

@@ -7,19 +7,19 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
 
-jest.mock('../../../libs/hooks/search/use-search-ruleset-list', () => ({
+jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-list', () => ({
   useSearchRulesetList: jest.fn(),
 }));
 
 const mockUpdateRuleSet = jest.fn();
-jest.mock('../../../libs/hooks/search/use-search-ruleset-update', () => ({
+jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-update', () => ({
   useSearchRuleSetUpdate: () => {
     return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
   },
 }));
 
 const mockRuleSetDelete = jest.fn();
-jest.mock('../../../libs/hooks/search/use-search-ruleset-delete', () => ({
+jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-delete', () => ({
   useSearchRuleSetDelete: () => {
     return { deleteRuleset: mockRuleSetDelete };
   },

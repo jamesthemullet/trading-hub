@@ -7,6 +7,7 @@ import type {
   AttributeType,
   Category,
   CategoryRuleSet,
+  KeywordRuleSet,
   MerchandisingRules,
   NumericBoostBury,
   Product,
@@ -98,6 +99,7 @@ export const Ruleset = ({
   isEnabled,
   onCancel,
   onCreate,
+  onCreateKeywordSearchRuleset,
   onSave,
   rulesetCategory,
   rulesetFacets,
@@ -111,14 +113,16 @@ export const Ruleset = ({
     ruleSetId,
     ruleSet,
     categoryIds,
+    searchTerms,
   }: {
     ruleSetId: string;
     ruleSet: RuleSet;
     categoryIds?: Array<string>;
+    searchTerms?: Array<string>;
   }) => void;
   onCancel: () => void;
-  // TODO: update to allow for keyword search
   onCreate?: (args: CategoryRuleSet) => void;
+  onCreateKeywordSearchRuleset?: (args: KeywordRuleSet) => void;
   rulesetCategory?: Category;
   rulesetFacets?: Array<RuleSetFacetConfigWithId>;
   rulesetId?: string;
@@ -195,7 +199,7 @@ export const Ruleset = ({
     setRules: setPreviewRules,
   } = usePreview({
     ...(selectedCategory && { categoryId: selectedCategory.identifier }),
-    ...(searchTerms && { searchTerm: searchTerms[0] }),
+    ...(rulesetSearchTerms && { searchTerm: rulesetSearchTerms[0] }),
     merchandisingRules,
     facetConfig: [],
     previewType: rulesetType === 'category' ? 'category' : 'all',
@@ -412,6 +416,12 @@ export const Ruleset = ({
         rules: merchandisingRules,
         categoryId: selectedCategory.identifier,
       });
+    } else if (onCreateKeywordSearchRuleset && rulesetSearchTerms.length) {
+      onCreateKeywordSearchRuleset({
+        isEnabled,
+        rules: merchandisingRules,
+        searchTerms: rulesetSearchTerms,
+      });
     }
   };
 
@@ -421,7 +431,7 @@ export const Ruleset = ({
         <Preview
           onClose={() => setShowPreview(!showPreview)}
           categoryId={selectedCategory?.identifier}
-          searchTerm={searchTerms?.[0]}
+          searchTerm={rulesetSearchTerms[0]}
           merchandisingRules={merchandisingRules}
           facetConfig={rulesetFacets || []}
         />
@@ -430,17 +440,19 @@ export const Ruleset = ({
       <ProductGridHeader
         canSave={
           !!selectedCategory?.identifier ||
-          !!searchTerms?.length ||
+          !!rulesetSearchTerms.length ||
           rulesetType === 'global'
         }
         onSave={() => {
           onSaveRuleset();
           setHasChanges(false);
         }}
-        hasPreview={!!selectedCategory?.identifier || !!searchTerms?.length}
+        hasPreview={
+          !!selectedCategory?.identifier || !!rulesetSearchTerms.length
+        }
         onPreview={() => setShowPreview(!showPreview)}
         hasChanges={hasChanges}
-        isNewRuleSet={!!onCreate}
+        isNewRuleSet={!!onCreate || !!onCreateKeywordSearchRuleset}
         onCancel={() => {
           setHasChanges(false);
           onCancel();
