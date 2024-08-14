@@ -485,6 +485,37 @@ describe('ModalEditValues', () => {
       });
     }, 10000);
 
+    it('should not demerge a value if it is a category facet', async () => {
+      const onCloseSpy = jest.fn();
+      renderWithProviders(
+        <ModalEditValues
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            merged: [
+              {
+                displayValue: 'test merged group',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
+          }}
+          facetType="category"
+          refreshData={() => jest.fn()}
+        />
+      );
+
+      expect(screen.getByText('Merged Value Group')).toBeVisible();
+      expect(screen.getByText('merged 1')).toBeVisible();
+      expect(
+        screen.queryByRole('button', {
+          name: 'Remove merged facet for merged 1',
+        })
+      ).not.toBeInTheDocument();
+    });
+
     it('should merge into an existing merged value group', async () => {
       const user = userEvent.setup({ delay: null });
       const onCloseSpy = jest.fn();

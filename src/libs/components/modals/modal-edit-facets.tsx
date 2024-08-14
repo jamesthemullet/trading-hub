@@ -611,21 +611,23 @@ export const ModalEditValues = ({
                               {mergedValues.map((value, index) => (
                                 <MergedValue key={`${index}-${value}`}>
                                   <Text>{value}</Text>{' '}
-                                  <RemoveMergedFacet
-                                    onClick={() =>
-                                      !isSettingName &&
-                                      handleDemerge(
-                                        value,
-                                        filteredEditFacetValues.find(
-                                          (attribute) =>
-                                            attribute.mergedValues?.includes(
-                                              value
-                                            )
+                                  {facetType === 'global' && (
+                                    <RemoveMergedFacet
+                                      onClick={() =>
+                                        !isSettingName &&
+                                        handleDemerge(
+                                          value,
+                                          filteredEditFacetValues.find(
+                                            (attribute) =>
+                                              attribute.mergedValues?.includes(
+                                                value
+                                              )
+                                          )
                                         )
-                                      )
-                                    }
-                                    aria-label={`Remove merged facet for ${value}`}
-                                  />
+                                      }
+                                      aria-label={`Remove merged facet for ${value}`}
+                                    />
+                                  )}
                                 </MergedValue>
                               ))}
                             </div>
