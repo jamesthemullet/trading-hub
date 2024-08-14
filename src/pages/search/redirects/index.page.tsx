@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 
-import { Pagination } from '@/libs/api';
 import {
   DataTable,
   Heading,
@@ -10,6 +9,7 @@ import {
   TablePagination,
 } from '@/libs/components';
 import { color } from '@/libs/components/utils/constants';
+import { useDebounce, useSearchRedirectList } from '@/libs/hooks';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -43,11 +43,18 @@ const RedirectRuleSets = () => {
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const currentPageIndex = currentPage - 1;
 
-  /* istanbul ignore next */
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e);
-  };
+  const { pagination, redirects } = useSearchRedirectList(
+    searchQuery,
+    currentPageIndex * currentPageSize,
+    currentPageSize
+  );
+
+  const { callback: handleSearch } = useDebounce((val: string) => {
+    setSearchQuery(val);
+  }, 300);
 
   /* istanbul ignore next */
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
@@ -58,22 +65,21 @@ const RedirectRuleSets = () => {
   const onToggle = () => {};
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
-  const rows = [
-    {
-      id: '1',
-      identifier: 'mens summer shirts | mens summer shirt',
-      isEnabled: true,
-      lastChanged: {
-        date: '2024-08-01',
-        user: 'John Doe',
-      },
-      onToggle,
-      url: '/search/redirects/edit/1',
-    },
-  ];
-  const pagination: Pagination = {
-    totalItems: 1,
-  };
+  const rows = redirects.map(({ id, keywords, isEnabled, lastChanged }) => ({
+    id: id,
+    identifier: keywords
+      .map((term) =>
+        !!searchQuery.length &&
+        term.toLowerCase().startsWith(searchQuery.toLowerCase())
+          ? `<b>${term}</b>`
+          : term
+      )
+      .join(' | '),
+    isEnabled,
+    lastChanged,
+    onToggle,
+    url: `/search/redirects/edit/${id}`,
+  }));
 
   return (
     <>
@@ -85,7 +91,7 @@ const RedirectRuleSets = () => {
 
       <PageWrapper>
         <ToolsContainer>
-          <Search onChange={handleSearch} />
+          <Search onChange={(e) => handleSearch(e.target.value)} />
           <NewButton>
             <a href="/search/redirects/new">Add new rule</a>
           </NewButton>

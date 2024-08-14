@@ -10,6 +10,7 @@ import {
   ReturnedCategoryRuleSet,
   ReturnedFacet,
   ReturnedKeywordRedirect,
+  ReturnedKeywordRedirects,
   ReturnedKeywordRuleSet,
   ReturnedKeywordRuleSets,
   ReturnedRuleSet,
@@ -367,7 +368,7 @@ export const redirectMock: KeywordRedirect = {
   destinationUrl: 'l/women/dresses',
   endDate: '2024-08-01T09:37:06.109Z',
   isEnabled: true,
-  keywords: ['keyword'],
+  keywords: ['dress', 'dresses'],
   ruleTitle: 'title of redirect',
   startDate: '2024-08-01T09:37:06.109Z',
   type: 'redirectTerm',
@@ -378,7 +379,7 @@ export const returnedRedirectMock: ReturnedKeywordRedirect = {
   id: '9a32d206-6b7f-47a2-8f83-578429d2a024',
   lastChanged: {
     date: '2024-08-01T09:37:06.109Z',
-    user: 'string',
+    user: 'Jo Smith',
   },
 };
 
@@ -500,11 +501,32 @@ export const getMockMapping: () => Record<
     },
   },
   '/search/beta/merchandising/keyword/redirect': {
-    post: () => {
-      return {
-        body: returnedRedirectMock,
-        status: 200,
-      };
+    get: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        const body: ReturnedKeywordRedirects = {
+          redirects: [returnedRedirectMock],
+          pagination: {
+            totalItems: 1,
+          },
+        };
+
+        return {
+          body,
+          status: 200,
+        };
+      }
+      // istanbul ignore next
+      return { body: jsonBody, status };
+    },
+    post: (_req, status, jsonBody) => {
+      if (status !== 200) {
+        return {
+          body: returnedRedirectMock,
+          status: 200,
+        };
+      }
+      // istanbul ignore next
+      return { body: jsonBody, status };
     },
   },
   '/search/beta/merchandising/keyword/redirect/{redirectId}': {

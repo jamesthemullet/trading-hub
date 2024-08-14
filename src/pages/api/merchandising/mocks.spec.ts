@@ -476,6 +476,32 @@ describe('mocks', () => {
         status: 200,
       });
     });
+
+    it('should mock getting redirects', () => {
+      const mockMapping = getMockMapping();
+      expect(
+        mockMapping['/search/beta/merchandising/keyword/redirect'].post
+      ).toBeDefined();
+
+      const result = mockMapping['/search/beta/merchandising/keyword/redirect']
+        .get!(
+        createMockNextApiRequest({
+          url: '/search/beta/merchandising/keyword/redirect',
+          method: 'GET',
+        }),
+        500,
+        redirectMock
+      );
+      expect(result).toEqual({
+        body: {
+          pagination: {
+            totalItems: 1,
+          },
+          redirects: [returnedRedirectMock],
+        },
+        status: 200,
+      });
+    });
   });
 
   describe('/search/beta/merchandising/keyword/redirect/{redirectid}', () => {
