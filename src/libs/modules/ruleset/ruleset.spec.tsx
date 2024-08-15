@@ -196,6 +196,7 @@ describe('Ruleset', () => {
         });
       }),
       error: '',
+      isLoading: false,
     };
     jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
       ...mockCategoryProductSearch,
@@ -984,6 +985,7 @@ describe('Ruleset', () => {
           });
         }),
         error: '',
+        isLoading: false,
       });
 
       renderWithProviders(
@@ -1176,6 +1178,7 @@ describe('Ruleset', () => {
           });
         }),
         error: '',
+        isLoading: false,
       });
 
       renderWithProviders(
@@ -1374,6 +1377,7 @@ describe('Ruleset', () => {
           });
         }),
         error: '',
+        isLoading: false,
       });
 
       renderWithProviders(

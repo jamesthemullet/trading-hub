@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useCallback, useEffect, useState } from 'react';
+import { Skeleton } from '@mantine/core';
 
 import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
@@ -53,7 +54,7 @@ const ProductsLoader = ({
   const [productDetails, setProductDetails] = useState<ProductType[]>([]);
   const [productsShown, setProductsShown] = useState(PRODUCTS_TO_LOAD);
 
-  const { searchForProduct } = useCategoryProductSearch();
+  const { searchForProduct, isLoading } = useCategoryProductSearch();
 
   const fetch = useCallback(
     async (productIds: string[]) => {
@@ -86,45 +87,50 @@ const ProductsLoader = ({
         {`${heading} (${products.length})`}
       </Heading>
       <Layout aria-label={heading.split('(')[0]}>
-        {products.map(({ id }, index) => {
-          if (index + 1 > productsShown) {
-            return null;
-          }
-          const product = productDetails.find(
-            ({ id: productId }) => id === productId
-          );
-
-          if (!product) {
-            return (
-              <ProductBox key={`ruleset-changes-product-${id}`}>
-                <MissingProduct
-                  index={index}
-                  id={id}
-                  onChangePosition={onChangePosition}
-                  onProductBoostBury={onProductBoostBury}
-                  isProductNumberEnabled={true}
-                  isBlocked={changeType === 'block'}
-                  isBuried={changeType === 'bury'}
-                  isPinned={changeType === 'pin'}
-                  isBoosted={changeType === 'boost'}
-                />
-              </ProductBox>
-            );
-          }
-
-          return (
-            <ProductBox key={`ruleset-changes-product-${id}`}>
-              <Product
-                {...product}
-                index={index}
-                isPinnable={isPinnable}
-                pinnedProductsCount={pinnedProductsCount}
-                onChangePosition={onChangePosition}
-                onProductBoostBury={onProductBoostBury}
+        {isLoading
+          ? products.map((_product, index) => (
+              <Skeleton
+                key={index}
+                aria-label="Product loader"
+                width={235}
+                height={320}
               />
-            </ProductBox>
-          );
-        })}
+            ))
+          : products.map(({ id }, index) => {
+              if (index + 1 > productsShown) {
+                return null;
+              }
+              const product = productDetails.find(
+                ({ id: productId }) => id === productId
+              );
+
+              return (
+                <ProductBox key={`ruleset-changes-product-${id}`}>
+                  {!product ? (
+                    <MissingProduct
+                      index={index}
+                      id={id}
+                      onChangePosition={onChangePosition}
+                      onProductBoostBury={onProductBoostBury}
+                      isProductNumberEnabled={true}
+                      isBlocked={changeType === 'block'}
+                      isBuried={changeType === 'bury'}
+                      isPinned={changeType === 'pin'}
+                      isBoosted={changeType === 'boost'}
+                    />
+                  ) : (
+                    <Product
+                      {...product}
+                      index={index}
+                      isPinnable={isPinnable}
+                      pinnedProductsCount={pinnedProductsCount}
+                      onChangePosition={onChangePosition}
+                      onProductBoostBury={onProductBoostBury}
+                    />
+                  )}
+                </ProductBox>
+              );
+            })}
       </Layout>
       {productsShown < products.length && products.length > 4 && (
         <ButtonWrapper>

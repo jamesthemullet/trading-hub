@@ -63,6 +63,7 @@ describe('Index', () => {
       });
     }),
     error: '',
+    isLoading: false,
   };
 
   const mockRouter = {

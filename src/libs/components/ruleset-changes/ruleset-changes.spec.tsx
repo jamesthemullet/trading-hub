@@ -33,6 +33,7 @@ describe('RulesetChanges', () => {
   it('should show pinned products', async () => {
     jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
       error: '',
+      isLoading: false,
       searchForProduct: jest.fn(() => {
         return Promise.resolve({
           products: [
@@ -108,9 +109,84 @@ describe('RulesetChanges', () => {
     expect(errorProduct).toBeInTheDocument();
   });
 
+  it('should show loader for products', async () => {
+    jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
+      error: '',
+      isLoading: true,
+      searchForProduct: jest.fn(() => {
+        return Promise.resolve({
+          products: [
+            {
+              id: '60183702',
+              productId: '60183702',
+              title: 'Product Title',
+              imageUrl: ['example1.jpg'],
+              brand: 'Product Brand',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£1',
+              url: '',
+            },
+          ],
+          pagination: {
+            totalItems: 1,
+          },
+        });
+      }),
+    }));
+
+    renderWithProviders(
+      <RulesetChanges
+        isPinnable={true}
+        merchandisingRules={{
+          ...mockMerchandisingRulesWithData,
+          pinnedProducts: [
+            {
+              id: '60183702',
+            },
+            {
+              id: '60169259',
+            },
+            {
+              id: '60169250',
+            },
+            {
+              id: '60169251',
+            },
+            {
+              id: '60169252',
+            },
+          ],
+          boosts: {
+            ...mockMerchandisingRulesWithData.boosts,
+            product: [{ id: '3523522', weight: 100 }],
+          },
+          buries: {
+            ...mockMerchandisingRulesWithData.buries,
+            product: [{ id: '3523522', weight: 100 }],
+          },
+          blockedProducts: [{ id: '124124' }],
+        }}
+        onChangePosition={jest.fn()}
+        onProductBoostBury={jest.fn()}
+      />
+    );
+
+    const attributeTitle = await waitFor(() =>
+      screen.getByText('Attribute-level changes (4)')
+    );
+    const productLoader = await waitFor(() =>
+      screen.getAllByLabelText('Product loader')
+    );
+
+    expect(attributeTitle).toBeInTheDocument();
+    expect(productLoader).toHaveLength(8);
+  });
+
   it('should show load more button', async () => {
     jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
       error: '',
+      isLoading: false,
       searchForProduct: jest.fn(() => {
         return Promise.resolve({
           products: [

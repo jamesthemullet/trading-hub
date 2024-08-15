@@ -4,6 +4,7 @@ import { type MerchandisingRules, search } from '@/libs/api';
 
 export const useCategoryProductSearch = () => {
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const searchForProduct = useCallback(
     async ({
@@ -22,6 +23,7 @@ export const useCategoryProductSearch = () => {
       start?: number;
     }) => {
       setError('');
+      setIsLoading(true);
 
       try {
         const queryData = {
@@ -36,9 +38,11 @@ export const useCategoryProductSearch = () => {
           merchandisingRules,
           queryData
         );
+        setIsLoading(false);
         return response.data;
       } catch (error) {
         setError(`Failed to search products ${error}`);
+        setIsLoading(false);
       }
 
       return {
@@ -51,5 +55,5 @@ export const useCategoryProductSearch = () => {
     []
   );
 
-  return { searchForProduct, error };
+  return { searchForProduct, error, isLoading };
 };
