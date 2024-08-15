@@ -8,6 +8,7 @@ export * from './global/rulesets/use-global-rule-set-detail';
 export * from './global/rulesets/use-global-rule-set-update';
 export * from './global/use-global-attributes';
 export * from './search/redirect/use-redirect-create';
+export * from './search/redirect/use-redirect-delete';
 export * from './search/redirect/use-redirect-detail';
 export * from './search/redirect/use-redirect-list';
 export * from './search/redirect/use-redirect-update';

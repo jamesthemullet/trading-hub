@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import { ReturnedKeywordRedirect, ReturnedKeywordRedirects } from '@/libs/api';
 import {
   DataTable,
   Heading,
@@ -9,7 +10,12 @@ import {
   TablePagination,
 } from '@/libs/components';
 import { color } from '@/libs/components/utils/constants';
-import { useDebounce, useSearchRedirectList } from '@/libs/hooks';
+import {
+  useDebounce,
+  useRedirectDelete,
+  useRedirectUpdate,
+  useSearchRedirectList,
+} from '@/libs/hooks';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -45,24 +51,49 @@ const RedirectRuleSets = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const currentPageIndex = currentPage - 1;
+  const { deleteRedirect } = useRedirectDelete();
+  const { updateRedirect } = useRedirectUpdate();
 
-  const { pagination, redirects } = useSearchRedirectList(
-    searchQuery,
-    currentPageIndex * currentPageSize,
-    currentPageSize
-  );
+  const { pagination, redirects, refetchRedirectList, setKeywordList } =
+    useSearchRedirectList(
+      searchQuery,
+      currentPageIndex * currentPageSize,
+      currentPageSize
+    );
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
   }, 300);
 
-  /* istanbul ignore next */
-  const onDeleteRuleSet = async ({ id }: { id: string }) => {
-    console.log(id);
+  const onEnableDisableRedirect = async ({ id }: { id: string }) => {
+    const redirect = redirects.find((redirect) => redirect.id === id);
+
+    // istanbul ignore next
+    if (!redirect) return;
+
+    const { isEnabled } = redirect;
+    await updateRedirect({
+      redirect: {
+        ...redirect,
+        isEnabled: !isEnabled,
+      },
+      redirectId: id,
+    });
+    const updatedRedirectsList: ReturnedKeywordRedirects = {
+      redirects: redirects.map((redriect: ReturnedKeywordRedirect) =>
+        // istanbul ignore next
+        redriect.id === id ? { ...redriect, isEnabled: !isEnabled } : redriect
+      ),
+      pagination,
+    };
+    setKeywordList(updatedRedirectsList);
   };
 
-  /* istanbul ignore next */
-  const onToggle = () => {};
+  const onDeleteRedirect = async ({ id }: { id: string }) => {
+    await deleteRedirect({ redirectId: id });
+
+    refetchRedirectList();
+  };
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
   const rows = redirects.map(({ id, keywords, isEnabled, lastChanged }) => ({
@@ -77,7 +108,7 @@ const RedirectRuleSets = () => {
       .join(' | '),
     isEnabled,
     lastChanged,
-    onToggle,
+    onToggle: onEnableDisableRedirect,
     url: `/search/redirects/edit/${id}`,
   }));
 
@@ -100,7 +131,7 @@ const RedirectRuleSets = () => {
         <DataTable
           headings={headings}
           rows={rows}
-          onDeleteRuleSet={onDeleteRuleSet}
+          onDeleteRuleSet={onDeleteRedirect}
         />
 
         <TablePagination

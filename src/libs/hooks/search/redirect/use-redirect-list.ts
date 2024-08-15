@@ -38,5 +38,6 @@ export const useSearchRedirectList = (
     pagination: keywordList.pagination,
     refetchRedirectList: () => refetch({}),
     redirects: keywordList.redirects,
+    setKeywordList,
   };
 };
