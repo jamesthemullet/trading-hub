@@ -190,6 +190,7 @@ export const ModalEditValues = ({
 
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [error, setError] = useState('');
+  const [displayValueWithError, setDisplayValueWithError] = useState('');
 
   const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
 
@@ -638,36 +639,36 @@ export const ModalEditValues = ({
                       </Col>
 
                       <FlexColumnCol>
-                        {facetType === 'global' ? (
+                        {facetType === 'global' && mergedValues ? (
                           <EditableLabel
                             displayValue={displayValue}
                             onDisplayValueChange={(newValue) => {
-                              if (newValue === defaultMergedDisplayValue) {
+                              if (
+                                newValue === defaultMergedDisplayValue ||
+                                newValue.trim() === ''
+                              ) {
                                 setIsSaveDisabled(true);
                                 setError('Please name your merge to continue');
+                                setDisplayValueWithError(displayValue);
                                 return;
                               }
-
                               handleEditName(displayValue, newValue);
 
                               setIsSettingName(false);
+                              setError('');
                             }}
                             shouldOpenFromParent={
                               displayValue === defaultMergedDisplayValue
                             }
-                            error={
-                              displayValue === defaultMergedDisplayValue
-                                ? error
-                                : undefined
-                            }
+                            error={error}
+                            disallowedValues={[defaultMergedDisplayValue]}
                           />
                         ) : (
                           <Text>{displayValue}</Text>
                         )}
-                        {error &&
-                          displayValue === defaultMergedDisplayValue && (
-                            <StyledError>{error}</StyledError>
-                          )}
+                        {error && displayValueWithError === displayValue && (
+                          <StyledError>{error}</StyledError>
+                        )}
                       </FlexColumnCol>
 
                       <Col>

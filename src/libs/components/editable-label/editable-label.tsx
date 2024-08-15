@@ -65,6 +65,7 @@ export type EditableLabelProps = {
   shouldOpenFromParent?: boolean;
   canCancelEdit?: boolean;
   error?: string | null;
+  disallowedValues?: string[];
 };
 
 export const EditableLabel = ({
@@ -73,6 +74,7 @@ export const EditableLabel = ({
   shouldOpenFromParent,
   canCancelEdit,
   error,
+  disallowedValues,
 }: EditableLabelProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalValue] = useState(displayValue);
@@ -109,15 +111,21 @@ export const EditableLabel = ({
               }}
               onChange={(event) => {
                 event.stopPropagation();
+                if (
+                  value &&
+                  (event.target.value === '' ||
+                    disallowedValues?.includes(event.target.value))
+                ) {
+                  setShowErrorState(true);
+                } else {
+                  setShowErrorState(false);
+                }
                 setValue(event.target.value);
               }}
               label=""
               value={value}
               onKeyDown={(event) => {
-                if (
-                  event.key === 'Enter' &&
-                  (!showErrorState || value !== displayValue)
-                ) {
+                if (event.key === 'Enter' && !showErrorState) {
                   setIsEditMode(false);
                   onDisplayValueChange(value);
                 }
@@ -145,7 +153,7 @@ export const EditableLabel = ({
                 setIsEditMode(false);
               }}
               aria-label={`Save ${displayValue} change`}
-              isDisabled={showErrorState && value === displayValue}
+              isDisabled={showErrorState}
             >
               <Image
                 width={20}

@@ -55,7 +55,7 @@ describe('ModalEditValues', () => {
     expect(screen.getByText('Facet value settings of: color')).toBeVisible();
   });
 
-  it('should edit a display value', async () => {
+  it('should be able to edit a display value of a merged group', async () => {
     const onCloseSpy = jest.fn();
     renderWithProviders(
       <ModalEditValues
@@ -66,6 +66,12 @@ describe('ModalEditValues', () => {
           id: '1',
           lastChanged: { user: 'Bob', date: '2021-10-01' },
           boosted: ['Merged 1'],
+          merged: [
+            {
+              displayValue: 'Merged 1',
+              mergedValues: ['Cotton', 'Duck Down'],
+            },
+          ],
         }}
         facetType="global"
         refreshData={() => jest.fn()}
@@ -73,7 +79,7 @@ describe('ModalEditValues', () => {
     );
 
     const editButton = screen.getByRole('button', {
-      name: 'Edit display name for Cotton',
+      name: 'Edit display name for Merged 1',
     });
 
     act(() => {
@@ -81,15 +87,15 @@ describe('ModalEditValues', () => {
     });
 
     await waitFor(async () => {
-      const editColorInput = screen.getByLabelText('Edit Cotton input field');
+      const editColorInput = screen.getByLabelText('Edit Merged 1 input field');
       expect(editColorInput).toBeVisible();
-      expect(editColorInput).toHaveValue('Cotton');
+      expect(editColorInput).toHaveValue('Merged 1');
       userEvent.clear(editColorInput);
-      await userEvent.type(editColorInput, 'Cotton Candy');
+      await userEvent.type(editColorInput, 'Merged 1 Candy');
     });
 
     const saveButton = screen.getByRole('button', {
-      name: 'Save Cotton change',
+      name: 'Save Merged 1 change',
     });
 
     act(() => {
@@ -97,10 +103,82 @@ describe('ModalEditValues', () => {
     });
 
     const newEditButton = screen.getByRole('button', {
-      name: 'Edit display name for Cotton Candy',
+      name: 'Edit display name for Merged 1 Candy',
     });
     expect(newEditButton).toBeVisible();
   }, 15000);
+
+  it('should not be able to edit a display value of a merged group to be an empty string', async () => {
+    const onCloseSpy = jest.fn();
+    renderWithProviders(
+      <ModalEditValues
+        onClose={onCloseSpy}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+          boosted: ['Merged 1'],
+          merged: [
+            {
+              displayValue: 'Merged 1',
+              mergedValues: ['Cotton', 'Duck Down'],
+            },
+          ],
+        }}
+        facetType="global"
+        refreshData={() => jest.fn()}
+      />
+    );
+
+    const editButton = screen.getByRole('button', {
+      name: 'Edit display name for Merged 1',
+    });
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      const editColorInput = screen.getByLabelText('Edit Merged 1 input field');
+      expect(editColorInput).toBeVisible();
+      expect(editColorInput).toHaveValue('Merged 1');
+      userEvent.clear(editColorInput);
+      expect(editColorInput).toHaveValue('');
+    });
+
+    const saveButton = screen.getByRole('button', {
+      name: 'Save Merged 1 change',
+    });
+
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('should not be able to edit a display value, if not in a merge group', async () => {
+    const onCloseSpy = jest.fn();
+    renderWithProviders(
+      <ModalEditValues
+        onClose={onCloseSpy}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+          boosted: ['Cotton'],
+        }}
+        facetType="global"
+        refreshData={() => jest.fn()}
+      />
+    );
+
+    expect(screen.getAllByText('Cotton')[0]).toBeVisible();
+
+    const editButton = screen.queryByRole('button', {
+      name: 'Edit display name for Cotton',
+    });
+
+    expect(editButton).toBeNull();
+  });
 
   it('should search', async () => {
     renderWithProviders(
