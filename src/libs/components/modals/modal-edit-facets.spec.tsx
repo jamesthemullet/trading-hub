@@ -49,6 +49,7 @@ describe('ModalEditValues', () => {
         }}
         facetType="category"
         refreshData={() => jest.fn()}
+        category="SubCategory_507"
       />
     );
 
@@ -75,6 +76,7 @@ describe('ModalEditValues', () => {
         }}
         facetType="global"
         refreshData={() => jest.fn()}
+        category={undefined}
       />
     );
 
@@ -128,6 +130,7 @@ describe('ModalEditValues', () => {
         }}
         facetType="global"
         refreshData={() => jest.fn()}
+        category={undefined}
       />
     );
 
@@ -168,6 +171,7 @@ describe('ModalEditValues', () => {
         }}
         facetType="global"
         refreshData={() => jest.fn()}
+        category={undefined}
       />
     );
 
@@ -194,6 +198,7 @@ describe('ModalEditValues', () => {
         }}
         facetType="global"
         refreshData={() => jest.fn()}
+        category={undefined}
       />
     );
 
@@ -207,9 +212,13 @@ describe('ModalEditValues', () => {
     }
 
     await userEvent.type(search, 'cotton');
-
-    expect(screen.getAllByText('Cotton')[0]).toBeInTheDocument();
-    await waitFor(() => expect(screen.queryByText('Duck Down')).toBe(null));
+    await waitFor<void>(() =>
+      expect(useGetFacetAttributeValues).toHaveBeenCalledWith(
+        '1',
+        'cotton',
+        undefined
+      )
+    );
   });
 
   it('should cancel changes to a facet', async () => {
@@ -229,6 +238,7 @@ describe('ModalEditValues', () => {
         }}
         facetType="global"
         refreshData={() => jest.fn()}
+        category={undefined}
       />
     );
 
@@ -252,6 +262,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="category"
           refreshData={() => jest.fn()}
+          category="SubCategory_507"
         />
       );
       const mergeButton = screen.queryByRole('button', { name: 'Merge (0)' });
@@ -273,6 +284,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       const mergeButton = screen.getByRole('button', { name: 'Merge (0)' });
@@ -293,6 +305,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       const cottonCheckbox = screen.getByLabelText('Select Cotton to merge');
@@ -330,6 +343,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
@@ -374,6 +388,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       act(() => {
@@ -404,6 +419,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       act(() => {
@@ -450,6 +466,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       act(() => {
@@ -510,6 +527,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       act(() => {
@@ -582,6 +600,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="category"
           refreshData={() => jest.fn()}
+          category="SubCategory_507"
         />
       );
 
@@ -614,6 +633,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       act(() => {
@@ -703,6 +723,7 @@ describe('ModalEditValues', () => {
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
           facetType="global"
+          category={undefined}
         />
       );
       const selectAll = screen.getByLabelText('Select all facet attributes');
@@ -738,6 +759,7 @@ describe('ModalEditValues', () => {
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
           facetType="global"
+          category={undefined}
         />
       );
       const selectAll = screen.getByLabelText(
@@ -782,6 +804,7 @@ describe('ModalEditValues', () => {
             ],
           }}
           facetType="global"
+          category={undefined}
         />
       );
 
@@ -816,6 +839,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="category"
           refreshData={() => jest.fn()}
+          category="SubCategory_507"
         />
       );
       await waitFor(() => {
@@ -854,6 +878,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="category"
           refreshData={() => jest.fn()}
+          category="SubCategory_507"
         />
       );
       await waitFor(() =>
@@ -890,6 +915,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       // create new
@@ -998,6 +1024,7 @@ describe('ModalEditValues', () => {
           }}
           facetType="global"
           refreshData={() => jest.fn()}
+          category={undefined}
         />
       );
       // neutral to excluded
@@ -1074,6 +1101,7 @@ describe('ModalEditValues', () => {
           facetType="category"
           refreshData={() => jest.fn()}
           updatedValues={updatedValuesMock}
+          category="SubCategory_507"
         />
       );
       // neutral to excluded

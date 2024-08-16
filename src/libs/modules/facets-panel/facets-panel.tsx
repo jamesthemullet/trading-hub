@@ -215,6 +215,7 @@ export const FacetsPanel = ({
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     defaultCategory || {}
   );
+
   const [showPreview, setShowPreview] = useState(false);
   const [merchandisingRules] = useState<MerchandisingRules>(
     rulesetMerchandisingRules
@@ -432,6 +433,9 @@ export const FacetsPanel = ({
           facetType={facetType}
           refreshData={refreshData}
           updatedValues={updatedValues}
+          category={
+            facetType === 'category' ? selectedCategory.identifier : undefined
+          }
         />
       )}
 

@@ -155,6 +155,7 @@ export const ModalEditValues = ({
   facetType,
   refreshData,
   updatedValues,
+  category,
 }: {
   onClose: () => void;
   facet: ReturnedGlobalFacet;
@@ -169,6 +170,7 @@ export const ModalEditValues = ({
     orderedExcludedValues: string[],
     id: string
   ) => void;
+  category: string | undefined;
 }) => {
   const [editFacetValues, setEditFacetValues] = useState<AttributeValue[]>([]);
   const [originalFacetValues, setOriginalFacetValues] = useState<
@@ -214,17 +216,7 @@ export const ModalEditValues = ({
   };
 
   const filteredEditFacetValues = useMemo(() => {
-    const filteredValues = !searchQuery
-      ? editFacetValues
-      : editFacetValues.filter(
-          (value) =>
-            value.displayValue
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            value.attribute.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-    const sortedValues = [...filteredValues].sort((a, b) => {
+    const sortedValues = [...editFacetValues].sort((a, b) => {
       if (
         orderedPinnedValues.includes(a.attribute) &&
         !orderedPinnedValues.includes(b.attribute)
@@ -264,14 +256,13 @@ export const ModalEditValues = ({
     });
 
     return sortedValues;
-  }, [
-    editFacetValues,
-    searchQuery,
-    orderedPinnedValues,
-    orderedExcludedValues,
-  ]);
+  }, [editFacetValues, orderedPinnedValues, orderedExcludedValues]);
 
-  const { attributeValues } = useGetFacetAttributeValues(facet.id);
+  const { attributeValues } = useGetFacetAttributeValues(
+    facet.id,
+    searchQuery,
+    category
+  );
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);

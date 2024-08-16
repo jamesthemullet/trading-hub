@@ -5,6 +5,7 @@ import { search } from '@/libs/api';
 
 export const useGetFacetAttributeValues = (
   facetId: string,
+  searchQuery?: string,
   categoryId?: string
 ) => {
   const [shouldRefetch, refetch] = useState({});
@@ -20,6 +21,7 @@ export const useGetFacetAttributeValues = (
         const result =
           await search().betaMerchandisingFacetAttributeValuesDetail(facetId, {
             categoryId,
+            q: searchQuery,
             start: 1,
             rows: 100,
           });
@@ -33,7 +35,7 @@ export const useGetFacetAttributeValues = (
       }
     };
     void asyncCall();
-  }, [facetId, categoryId, shouldRefetch]);
+  }, [facetId, categoryId, shouldRefetch, searchQuery]);
 
   return {
     attributeValues,
