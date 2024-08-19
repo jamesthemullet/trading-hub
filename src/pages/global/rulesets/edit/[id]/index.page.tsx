@@ -13,6 +13,7 @@ type PageProps = {
 
 const Page = ({ id }: PageProps) => {
   const { globalRuleSet, isLoading } = useGlobalRuleSetDetail(id);
+
   const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
   const router = useRouter();
 
@@ -45,6 +46,7 @@ const Page = ({ id }: PageProps) => {
           onSave={saveRuleSet}
           onCancel={() => router.push('/global/rulesets')}
           rulesetMerchandisingRules={globalRuleSet.rules}
+          rulesetFacets={globalRuleSet.facets}
           rulesetType="global"
           rulesetId={id}
         />
