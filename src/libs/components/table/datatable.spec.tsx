@@ -22,9 +22,10 @@ const rows = [
     id: '123',
     identifier: 'SubCategory_123',
     isEnabled: false,
-    lastChanged: { user: 'Bob', date: '2021-10-01' },
+    lastChanged: { user: 'Bobby', date: '2022-10-01' },
     onToggle: mockToggle,
     url: 'path/to/ruleset',
+    categoryPlpUrl: 'path/to/SubCategory_123',
   },
 ];
 
@@ -39,6 +40,8 @@ describe('DataTable', () => {
     );
 
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+    expect(screen.getByText('path/to/SubCategory_123')).toBeInTheDocument();
   });
 
   it('should delete a rule set', async () => {

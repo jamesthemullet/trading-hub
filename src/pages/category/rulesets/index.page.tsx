@@ -104,13 +104,23 @@ const RuleSets = () => {
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 
   const rows = categoryRuleSets.map(
-    ({ categoryId, categoryName, id, isEnabled, lastChanged }) => ({
+    ({
+      categoryId,
+      categoryName,
+      id,
+      isEnabled,
+      lastChanged,
+      categoriesInfo,
+    }) => ({
       id: id,
       identifier: `${categoryId} | ${categoryName}`,
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,
       url: `/category/rulesets/edit/${id}`,
+      categoryPlpUrl: categoriesInfo.find(
+        (category) => category.id === categoryId
+      )?.plpUrl,
     })
   );
 

@@ -42,6 +42,16 @@ const Buttons = styled.div`
   }
 `;
 
+const FirstColumn = styled(TableCol)`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledUrlText = styled(Text)`
+  padding-top: ${spacing(1)};
+  font-style: italic;
+`;
+
 type Row = {
   id: string;
   identifier: string;
@@ -53,6 +63,7 @@ type Row = {
   };
   onToggle: ({ id }: { id: string }) => void;
   url: string;
+  categoryPlpUrl?: string | undefined;
 };
 
 type Props = {
@@ -98,16 +109,30 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
         </Row>
 
         {rows.map(
-          ({ id, identifier, isEnabled, lastChanged, onToggle, url }: Row) => {
+          ({
+            id,
+            identifier,
+            isEnabled,
+            lastChanged,
+            onToggle,
+            url,
+            categoryPlpUrl,
+          }: Row) => {
             const isOptionDropdownOpen = optionToggle === id;
             return (
               <Row key={id}>
-                <TableCol>
+                <FirstColumn>
                   <Text
                     title={identifier}
                     dangerouslySetInnerHTML={{ __html: identifier }}
                   />
-                </TableCol>
+                  {categoryPlpUrl && (
+                    <StyledUrlText
+                      title={categoryPlpUrl}
+                      dangerouslySetInnerHTML={{ __html: categoryPlpUrl }}
+                    />
+                  )}
+                </FirstColumn>
                 <TableCol>
                   <Toggle
                     checked={isEnabled}
