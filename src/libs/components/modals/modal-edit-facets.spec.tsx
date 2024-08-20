@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useGetFacetAttributeValues } from '@/libs/hooks';
@@ -462,6 +462,7 @@ describe('ModalEditValues', () => {
             displayValue: 'color',
             indexPropertyName: 'color',
             id: '1',
+            boosted: ['Duck Down'],
             lastChanged: { user: 'Bob', date: '2021-10-01' },
           }}
           facetType="global"
@@ -510,6 +511,86 @@ describe('ModalEditValues', () => {
         expect(
           screen.queryByText('Merged Value Group')
         ).not.toBeInTheDocument();
+      });
+
+      const firstDropdown = screen.getByTestId(
+        'button to open facet order dropdown for Duck Down'
+      );
+      await waitFor(() => {
+        expect(
+          within(firstDropdown).getByText('Select an action')
+        ).toBeVisible();
+      });
+    }, 10000);
+
+    it('should de-merge both merged values when there are two attributes merged and remove from excluded', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCloseSpy = jest.fn();
+      renderWithProviders(
+        <ModalEditValues
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            excludedValues: ['Duck Down', 'Silk'],
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+          facetType="global"
+          refreshData={() => jest.fn()}
+          category={undefined}
+        />
+      );
+      act(() => {
+        user.click(screen.getByLabelText('Select Duck Down to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+      act(() => {
+        user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
+      act(() => {
+        user.click(screen.getByRole('button', { name: 'Merge (2)' }));
+      });
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      });
+
+      const mergeInputField = screen.getByLabelText(
+        'Edit Name your merge input field'
+      );
+      await waitFor(async () => {
+        userEvent.clear(mergeInputField);
+        await userEvent.type(mergeInputField, 'New merge name');
+        userEvent.keyboard('{enter}');
+      });
+
+      await waitFor(() => {
+        expect(mergeInputField).toHaveValue('New merge name');
+      });
+
+      act(() => {
+        user.click(
+          screen.getAllByLabelText('Remove merged facet for Duck Down')[0]
+        );
+      });
+      await waitFor(() => {
+        expect(
+          screen.queryByText('Merged Value Group')
+        ).not.toBeInTheDocument();
+      });
+
+      const firstDropdown = screen.getByTestId(
+        'button to open facet order dropdown for Duck Down'
+      );
+      await waitFor(() => {
+        expect(
+          within(firstDropdown).getByText('Select an action')
+        ).toBeVisible();
       });
     }, 10000);
 
@@ -594,7 +675,7 @@ describe('ModalEditValues', () => {
             merged: [
               {
                 displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
+                mergedValues: ['Merged 1', 'Merged 2'],
               },
             ],
           }}
@@ -605,10 +686,10 @@ describe('ModalEditValues', () => {
       );
 
       expect(screen.getByText('Merged Value Group')).toBeVisible();
-      expect(screen.getByText('merged 1')).toBeVisible();
+      expect(screen.getByText('Merged 1')).toBeVisible();
       expect(
         screen.queryByRole('button', {
-          name: 'Remove merged facet for merged 1',
+          name: 'Remove merged facet for Merged 1',
         })
       ).not.toBeInTheDocument();
     });
@@ -906,10 +987,12 @@ describe('ModalEditValues', () => {
             indexPropertyName: 'color',
             id: '1',
             lastChanged: { user: 'Bob', date: '2021-10-01' },
+            boosted: ['Silk'],
+            excludedValues: ['Merged 1', 'Merged 2'],
             merged: [
               {
                 displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
+                mergedValues: ['Merged 1', 'Merged 2'],
               },
             ],
           }}
@@ -921,19 +1004,19 @@ describe('ModalEditValues', () => {
       // create new
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
       act(() => {
-        user.click(screen.getByLabelText('Select Other Merged 1 to merge'));
+        user.click(screen.getByLabelText('Select Silk to merge'));
       });
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
       });
       act(() => {
-        user.click(screen.getByLabelText('Select Other Merged 2 to merge'));
+        user.click(screen.getByLabelText('Select Other Merged 1 to merge'));
       });
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
       });
       act(() => {
-        user.click(screen.getByLabelText('Select Silk to merge'));
+        user.click(screen.getByLabelText('Select Other Merged 2 to merge'));
       });
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
@@ -974,15 +1057,16 @@ describe('ModalEditValues', () => {
           screen.getByLabelText('Edit display name for test test')
         ).toBeVisible();
       });
+
       act(() => {
         screen.getByText('Save').click();
       });
       await waitFor(async () =>
         expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
           data: {
-            boosted: [],
+            boosted: ['Silk', 'Other Merged 1', 'Other Merged 2'],
             displayValue: 'color',
-            excludedValues: [],
+            excludedValues: ['Merged 1', 'Merged 2'],
             id: '1',
             indexPropertyName: 'color',
             lastChanged: {
@@ -992,11 +1076,11 @@ describe('ModalEditValues', () => {
             merged: [
               {
                 displayValue: 'test test',
-                mergedValues: ['merged 1', 'merged 2'],
+                mergedValues: ['Merged 1', 'Merged 2'],
               },
               {
                 displayValue: 'Name your merge',
-                mergedValues: ['Other Merged 1', 'Other Merged 2', 'Silk'],
+                mergedValues: ['Silk', 'Other Merged 1', 'Other Merged 2'],
               },
             ],
           },
@@ -1004,6 +1088,139 @@ describe('ModalEditValues', () => {
         })
       );
     }, 10000);
+
+    it('should save initial and newly created merged values with included/excluded', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <ModalEditValues
+          onClose={() => {}}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            boosted: ['Merged 1', 'Merged 2'],
+            merged: [
+              {
+                displayValue: 'test merged group',
+                mergedValues: ['Merged 1', 'Merged 2'],
+              },
+            ],
+          }}
+          facetType="global"
+          refreshData={() => jest.fn()}
+          category={undefined}
+        />
+      );
+      // create new
+      expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
+      act(() => {
+        user.click(screen.getByLabelText('Select Silk to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+      act(() => {
+        user.click(screen.getByLabelText('Select Other Merged 1 to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
+      act(() => {
+        user.click(screen.getByLabelText('Select Other Merged 2 to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
+      });
+      act(() => {
+        const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
+        user.click(mergeButton);
+      });
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      });
+      const mergeInputField = screen.getByLabelText(
+        'Edit Name your merge input field'
+      );
+      await waitFor(async () => {
+        userEvent.clear(mergeInputField);
+        await userEvent.type(mergeInputField, 'New merge name');
+        userEvent.keyboard('{enter}');
+      });
+      await waitFor(() => {
+        expect(mergeInputField).toHaveValue('New merge name');
+      });
+      // neutral to excluded
+      await user.click(
+        screen.getByTestId('button to open facet order dropdown for Silk')
+      );
+      await user.click(screen.getByLabelText('exclude Silk'));
+      const newGroupDropdown = screen.getByTestId(
+        'button to open facet order dropdown for Silk'
+      );
+      await waitFor(() => {
+        expect(
+          within(newGroupDropdown).getByText('Exclude only')
+        ).toBeVisible();
+      });
+      // change name for initial
+      const testGroupDropdown = screen.getByTestId(
+        'button to open facet order dropdown for Merged 1'
+      );
+      expect(within(testGroupDropdown).getByText('Include only')).toBeVisible();
+      act(() => {
+        screen
+          .getByLabelText('Edit display name for test merged group')
+          .click();
+      });
+      await waitFor(async () => {
+        const editMergedValue = screen.getByLabelText(
+          'Edit test merged group input field'
+        );
+        expect(editMergedValue).toBeVisible();
+        expect(editMergedValue).toHaveValue('test merged group');
+        user.clear(editMergedValue);
+        await user.type(editMergedValue, 'test test');
+      });
+      act(() => {
+        screen.getByLabelText('Save test merged group change').click();
+      });
+      await waitFor(() => {
+        expect(
+          screen.getByLabelText('Edit display name for test test')
+        ).toBeVisible();
+      });
+      // save
+      act(() => {
+        screen.getByText('Save').click();
+      });
+      await waitFor(async () =>
+        expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
+          data: {
+            boosted: ['Merged 1', 'Merged 2'],
+            displayValue: 'color',
+            excludedValues: ['Silk', 'Other Merged 1', 'Other Merged 2'],
+            id: '1',
+            indexPropertyName: 'color',
+            lastChanged: {
+              date: '2021-10-01',
+              user: 'Bob',
+            },
+            merged: [
+              {
+                displayValue: 'test test',
+                mergedValues: ['Merged 1', 'Merged 2'],
+              },
+              {
+                displayValue: 'New merge name',
+                mergedValues: ['Silk', 'Other Merged 1', 'Other Merged 2'],
+              },
+            ],
+          },
+          facetId: '1',
+        })
+      );
+    }, 15000);
 
     it('should update included/excluded values for global facets', async () => {
       const user = userEvent.setup({ delay: null });
@@ -1018,7 +1235,7 @@ describe('ModalEditValues', () => {
             merged: [
               {
                 displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
+                mergedValues: ['Merged 1', 'Merged 2'],
               },
             ],
           }}
@@ -1069,7 +1286,7 @@ describe('ModalEditValues', () => {
             merged: [
               {
                 displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
+                mergedValues: ['Merged 1', 'Merged 2'],
               },
             ],
           },

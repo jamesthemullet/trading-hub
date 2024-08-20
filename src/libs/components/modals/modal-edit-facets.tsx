@@ -34,6 +34,7 @@ import {
 type AttributeValue = AttributeValuesResponse['values'][number] & {
   index: number;
   attribute: string;
+  id: string;
   mergedValues?: string[];
 };
 
@@ -173,7 +174,7 @@ export const ModalEditValues = ({
   category: string | undefined;
 }) => {
   const [editFacetValues, setEditFacetValues] = useState<AttributeValue[]>([]);
-  const [originalFacetValues, setOriginalFacetValues] = useState<
+  const [unmergedFacetValues, setUnmergedFacetValues] = useState<
     AttributeValue[]
   >([]);
   const [isSettingName, setIsSettingName] = useState(false);
@@ -183,8 +184,9 @@ export const ModalEditValues = ({
   >([]);
   const [hasSelectedAllRows, setHasSelectedAllRows] = useState<boolean>(false);
 
-  const [orderedPinnedValues, setOrderedPinnedValues] = useState<string[]>([]);
-
+  const [mergedOrderedBoostedValues, setMergedOrderedBoostedValues] = useState<
+    string[]
+  >([]);
   const [orderedExcludedValues, setOrderedExcludedValues] = useState<string[]>(
     []
   );
@@ -197,18 +199,18 @@ export const ModalEditValues = ({
   const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
 
   const addToSelectedRow = (attribute: AttributeValue) => {
-    const updatedSelectedFacetAttributess = [
+    const updatedSelectedFacetAttributes = [
       ...selectedFacetAttributes,
       attribute,
     ];
-    setSelectedFacetAttributes(updatedSelectedFacetAttributess);
+    setSelectedFacetAttributes(updatedSelectedFacetAttributes);
   };
 
   const removeFromSelectedRow = (attribute: AttributeValue) => {
-    const updatedSelectedFacetAttributess = selectedFacetAttributes.filter(
-      (value) => value.attribute !== attribute.attribute
+    const updatedSelectedFacetAttributes = selectedFacetAttributes.filter(
+      (value) => value.id !== attribute.id
     );
-    setSelectedFacetAttributes(updatedSelectedFacetAttributess);
+    setSelectedFacetAttributes(updatedSelectedFacetAttributes);
 
     if (hasSelectedAllRows) {
       setHasSelectedAllRows(false);
@@ -218,36 +220,36 @@ export const ModalEditValues = ({
   const filteredEditFacetValues = useMemo(() => {
     const sortedValues = [...editFacetValues].sort((a, b) => {
       if (
-        orderedPinnedValues.includes(a.attribute) &&
-        !orderedPinnedValues.includes(b.attribute)
+        mergedOrderedBoostedValues.includes(a.id) &&
+        !mergedOrderedBoostedValues.includes(b.id)
       ) {
         return -1;
       }
       if (
-        !orderedPinnedValues.includes(a.attribute) &&
-        orderedPinnedValues.includes(b.attribute)
+        !mergedOrderedBoostedValues.includes(a.id) &&
+        mergedOrderedBoostedValues.includes(b.id)
       ) {
         return 1;
       }
       if (
-        orderedPinnedValues.includes(a.attribute) &&
-        orderedPinnedValues.includes(b.attribute)
+        mergedOrderedBoostedValues.includes(a.id) &&
+        mergedOrderedBoostedValues.includes(b.id)
       ) {
         return (
-          orderedPinnedValues.indexOf(a.attribute) -
-          orderedPinnedValues.indexOf(b.attribute)
+          mergedOrderedBoostedValues.indexOf(a.id) -
+          mergedOrderedBoostedValues.indexOf(b.id)
         );
       }
 
       if (
-        orderedExcludedValues.includes(a.attribute) &&
-        !orderedExcludedValues?.includes(b.attribute)
+        orderedExcludedValues.includes(a.id) &&
+        !orderedExcludedValues?.includes(b.id)
       ) {
         return 1;
       }
       if (
-        !orderedExcludedValues?.includes(a.attribute) &&
-        orderedExcludedValues?.includes(b.attribute)
+        !orderedExcludedValues?.includes(a.id) &&
+        orderedExcludedValues?.includes(b.id)
       ) {
         return -1;
       }
@@ -256,37 +258,92 @@ export const ModalEditValues = ({
     });
 
     return sortedValues;
-  }, [editFacetValues, orderedPinnedValues, orderedExcludedValues]);
+  }, [editFacetValues, mergedOrderedBoostedValues, orderedExcludedValues]);
 
   const { attributeValues } = useGetFacetAttributeValues(
     facet.id,
     searchQuery,
     category
   );
+  const attributeValuesWithIds = useMemo(() => {
+    return attributeValues.map((value) => ({
+      id: value.displayValue,
+      ...value,
+    }));
+  }, [attributeValues]);
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
   }, 300);
 
   useEffect(() => {
-    let facetValues = attributeValues.map((value, index) => ({
+    let facetValues = attributeValuesWithIds.map((value, index) => ({
       ...value,
       attribute: value.displayValue,
       index,
     }));
+    setUnmergedFacetValues([...facetValues]);
+
+    const mappedBoosted = facet.boosted?.map(
+      (value) =>
+        attributeValuesWithIds.find((val) => val.displayValue === value)?.id
+    );
+    const boosted = attributeValuesWithIds.filter((value) =>
+      mappedBoosted?.includes(value.id)
+    );
+    let mergedBoosted = [...boosted.map((value) => value.id)];
+
+    const mappedExcluded = facet.excludedValues?.map(
+      (value) =>
+        attributeValuesWithIds.find((val) => val.displayValue === value)?.id
+    );
+    const excluded = attributeValuesWithIds.filter((value) =>
+      mappedExcluded?.includes(value.displayValue)
+    );
+    let mergedExcluded = [...excluded.map((value) => value.id)];
 
     if (facet.merged) {
       facet.merged.forEach((mergeGroup) => {
         if (mergeGroup.displayValue && mergeGroup.mergedValues?.length) {
-          facetValues = facetValues.filter(
-            (val) => !mergeGroup.mergedValues?.includes(val.attribute)
+          const mappedMergeGroupValues = mergeGroup.mergedValues.map(
+            (value) => {
+              const id = facetValues.find(
+                (val) => val.displayValue === value
+              )?.id;
+
+              return id;
+            }
           );
+          const mappedMergedGroup = {
+            ...mergeGroup,
+            mergedValues: mappedMergeGroupValues,
+          };
+
+          const [firstId, restOfIds] = mappedMergeGroupValues;
+          const newId = `merged-${firstId}`;
+
+          mergedBoosted = mergedBoosted
+            .filter((id) => !restOfIds?.includes(id))
+            .map((id) => (id === firstId ? newId : id));
+          mergedExcluded = mergedExcluded
+            .filter((id) => !restOfIds?.includes(id))
+            .map((id) => {
+              // not sure why it is not covered even though there are tests for it
+              // istanbul ignore next
+              return id === firstId ? newId : id;
+            });
+
+          facetValues = facetValues.filter(
+            (val) => !mappedMergeGroupValues.includes(val.id)
+          );
+
           facetValues = [
             ...facetValues,
             {
-              displayValue: mergeGroup.displayValue,
+              id: `merged-${firstId}`,
               attribute: mergeGroup.mergedValues[0],
-              mergedValues: mergeGroup.mergedValues,
+              displayValue: mappedMergedGroup.displayValue,
+              mergedValues: mappedMergedGroup.mergedValues,
               index: 0,
             } as AttributeValue,
           ].sort((a, b) => a.index - b.index);
@@ -295,22 +352,19 @@ export const ModalEditValues = ({
     }
 
     setEditFacetValues(facetValues);
-    setOriginalFacetValues(facetValues);
-    const pinned = attributeValues.filter((value) =>
-      facet.boosted?.includes(value.displayValue)
-    );
-    const excluded = attributeValues.filter((value) =>
-      facet.excludedValues?.includes(value.displayValue)
-    );
+    setMergedOrderedBoostedValues(mergedBoosted);
+    setOrderedExcludedValues(mergedExcluded);
+  }, [
+    attributeValuesWithIds,
+    facet.boosted,
+    facet.excludedValues,
+    facet.merged,
+  ]);
 
-    setOrderedPinnedValues([...pinned.map((value) => value.displayValue)]);
-    setOrderedExcludedValues([...excluded.map((value) => value.displayValue)]);
-  }, [attributeValues, facet.boosted, facet.excludedValues, facet.merged]);
-
-  const handleEditName = (displayValue: string, newValue: string) => {
+  const handleEditName = (id: string, newValue: string) => {
     setEditFacetValues((prev) => {
       return prev.map((value) => {
-        if (value.displayValue === displayValue) {
+        if (value.id === id) {
           return {
             ...value,
             displayValue: newValue,
@@ -323,127 +377,138 @@ export const ModalEditValues = ({
     setIsSaveDisabled(false);
   };
 
-  const mergeValues = (facetsToMerge: string[], displayValue?: string) => {
-    setEditFacetValues((prev) => {
-      const firstValue = prev.find((value) =>
-        facetsToMerge.includes(value.displayValue)
+  const mergeValues = (facetIdsToMerge: string[], displayValue?: string) => {
+    let mergedBoosted = [...mergedOrderedBoostedValues];
+    let mergedExcluded = [...orderedExcludedValues];
+
+    const facetsToMerge = editFacetValues.filter((value) =>
+      facetIdsToMerge.includes(value.id)
+    );
+    const mergedValues = facetsToMerge
+      .map((value) => {
+        if (value.mergedValues?.length) {
+          return value.mergedValues;
+        }
+
+        return value.id;
+      })
+      .flat();
+    const [firstValue] = facetsToMerge;
+
+    const restOfValues = editFacetValues.filter(
+      (value) => !facetIdsToMerge.includes(value.id)
+    );
+
+    const newId = `merged-${firstValue.id}`;
+
+    const newValues = [
+      {
+        ...firstValue,
+        id: newId,
+        displayValue: displayValue || defaultMergedDisplayValue,
+        index: firstValue.index,
+        mergedValues,
+      },
+      ...restOfValues,
+    ].sort((a, b) => a.index - b.index);
+
+    const firstBoostedIndex = mergedBoosted.findIndex((value) =>
+      facetIdsToMerge.includes(value)
+    );
+    if (firstBoostedIndex >= 0) {
+      mergedBoosted = mergedBoosted.filter(
+        (value) => !facetIdsToMerge.includes(value)
       );
-      // this is here since find returns type | undefined
-      /* istanbul ignore next */
-      if (!firstValue) return prev;
-      const restOfValues = prev.filter(
-        (value) => !facetsToMerge.includes(value.attribute)
-      );
-      const newValues = [
-        {
-          ...firstValue,
-          displayValue: displayValue || defaultMergedDisplayValue,
-          mergedValues: facetsToMerge,
-          index: firstValue.index,
-        },
-        ...restOfValues,
-      ].sort((a, b) => a.index - b.index);
-      return newValues;
-    });
+      mergedBoosted = [
+        ...mergedBoosted.slice(0, firstBoostedIndex),
+        newId,
+        ...mergedBoosted.slice(firstBoostedIndex),
+      ];
+    }
+
+    mergedExcluded = mergedExcluded.filter(
+      (value) => !facetIdsToMerge.includes(value)
+    );
+
+    setEditFacetValues(newValues);
+    setMergedOrderedBoostedValues(mergedBoosted);
+    setOrderedExcludedValues(mergedExcluded);
   };
 
   const handleMerge = () => {
-    const valuesToMerge = selectedFacetAttributes
-      .map((facet) =>
-        facet.mergedValues ? facet.mergedValues : facet.attribute
-      )
-      .flat();
+    const valuesToMerge = selectedFacetAttributes.map((facet) => facet.id);
     mergeValues(valuesToMerge);
     setIsSaveDisabled(true);
     setIsSettingName(true);
     setSelectedFacetAttributes([]);
   };
 
-  const handleDemerge = (
-    valueToDemerge: string,
-    mergeGroupToAmend?: AttributeValue
-  ) => {
-    setEditFacetValues((prev) => {
-      if (
-        mergeGroupToAmend?.mergedValues &&
-        mergeGroupToAmend.mergedValues.length > 2
-      ) {
-        const originalAttribute = originalFacetValues.find(
-          (attribute) => attribute.displayValue === valueToDemerge
-        );
+  const handleDemerge = (idToDemerge: string, mergeGroupId: string) => {
+    const newValues = editFacetValues
+      .map((value) => {
+        if (value.id === mergeGroupId) {
+          const newMergedValues = value.mergedValues?.filter(
+            (id) => id !== idToDemerge
+          );
 
-        // There will always be an original attribute since we are demerging
-        // istanbul ignore next
-        if (!originalAttribute) return prev;
+          const demergedValue = unmergedFacetValues.find(
+            (val) => val.id === idToDemerge
+          );
 
-        const mergeGroupWithAttributeRemoved = {
-          displayValue: mergeGroupToAmend.displayValue,
-          mergedValues: mergeGroupToAmend.mergedValues.filter(
-            (value) => value !== valueToDemerge
-          ),
-          attribute: originalAttribute.attribute,
-          index: originalAttribute.index,
-        };
+          // istanbul ignore next
+          if (!demergedValue) {
+            return value;
+          }
 
-        const newValues = [
-          ...prev.filter(
-            (attribute) =>
-              attribute.displayValue !== mergeGroupToAmend.displayValue
-          ),
-          mergeGroupWithAttributeRemoved,
-          {
-            ...originalAttribute,
-            index: originalAttribute.index,
-          },
-        ].sort((a, b) => a.index - b.index);
-        return newValues;
-      } else if (
-        mergeGroupToAmend?.mergedValues &&
-        mergeGroupToAmend.mergedValues.length === 2
-      ) {
-        const originalAttributes = [
-          ...mergeGroupToAmend.mergedValues.map((value) => {
-            const attribute = originalFacetValues.find(
-              (attribute) => attribute.displayValue === value
+          let updatedMergeGroup: AttributeValue | undefined = {
+            ...value,
+            mergedValues: newMergedValues,
+          };
+          if (newMergedValues?.length === 1) {
+            updatedMergeGroup = unmergedFacetValues.find(
+              (val) => val.id === newMergedValues[0]
             );
-            return { ...attribute! };
-          }),
-        ];
-        const newValues = [
-          ...prev.filter(
-            (item) => !item.mergedValues?.includes(valueToDemerge)
-          ),
-          ...originalAttributes,
-        ].sort((a, b) => a.index! - b.index!);
 
-        return newValues;
-      }
-      // There will always be a merge group, otherwise the demerge button would not be visible
-      // istanbul ignore next
-      return prev;
-    });
-  };
-
-  const handleStatusChange = (
-    attribute: string,
-    status: 'included' | 'excluded'
-  ) => {
-    setEditFacetValues((prev) =>
-      prev.map((value) => {
-        if (value.attribute === attribute) {
-          if (status === 'included') {
-            setOrderedPinnedValues((prev) =>
-              Array.from(new Set([...prev, attribute]))
+            // istanbul ignore next
+            if (!updatedMergeGroup) {
+              return value;
+            }
+            setMergedOrderedBoostedValues((prev) =>
+              prev.filter((id) => id !== value.id)
             );
             setOrderedExcludedValues((prev) =>
-              prev.filter((value) => value !== attribute)
+              prev.filter((id) => id !== value.id)
+            );
+          }
+
+          return [updatedMergeGroup, demergedValue];
+        }
+
+        return value;
+      })
+      .flat();
+
+    setEditFacetValues(newValues);
+    setIsSaveDisabled(false);
+  };
+
+  const handleStatusChange = (id: string, status: 'included' | 'excluded') => {
+    setEditFacetValues((prev) =>
+      prev.map((value) => {
+        if (value.id === id) {
+          if (status === 'included') {
+            setMergedOrderedBoostedValues((prev) =>
+              Array.from(new Set([...prev, id]))
+            );
+            setOrderedExcludedValues((prev) =>
+              prev.filter((value) => value !== id)
             );
           } else {
             setOrderedExcludedValues((prev) =>
-              Array.from(new Set([...prev, attribute]))
+              Array.from(new Set([...prev, id]))
             );
-            setOrderedPinnedValues((prev) =>
-              prev.filter((value) => value !== attribute)
+            setMergedOrderedBoostedValues((prev) =>
+              prev.filter((value) => value !== id)
             );
           }
         }
@@ -458,8 +523,48 @@ export const ModalEditValues = ({
 
     const mergedValues = mergeGroups.map((group) => ({
       displayValue: group.displayValue,
-      mergedValues: group.mergedValues,
+      mergedValues: group.mergedValues?.map((id) => {
+        const foundValue = unmergedFacetValues.find((val) => val.id === id);
+        return foundValue ? foundValue.displayValue : '';
+      }),
     }));
+
+    // unwrap merged ids into array of displayValues and map rest of ids to displayValues
+    const unmergedOrderedBoostedValues = mergedOrderedBoostedValues
+      .map((id) => {
+        const value = editFacetValues.find((val) => val.id === id);
+
+        if (value?.mergedValues?.length) {
+          return value.mergedValues.map((valueId) => {
+            const foundValue = unmergedFacetValues.find(
+              (value) => value.id === valueId
+            );
+            // istanbul ignore next
+            return foundValue ? foundValue.displayValue : '';
+          });
+        }
+        // istanbul ignore next
+        return value ? value.displayValue : '';
+      })
+      .flat();
+    const unmergedOrderedExcludedValues = orderedExcludedValues
+      .map((id) => {
+        const value = editFacetValues.find((val) => val.id === id);
+
+        if (value?.mergedValues?.length) {
+          return value.mergedValues.map((valueId) => {
+            const foundValue = unmergedFacetValues.find(
+              (value) => value.id === valueId
+            );
+            // istanbul ignore next
+            return foundValue ? foundValue.displayValue : '';
+          });
+        }
+
+        // istanbul ignore next
+        return value ? value.displayValue : '';
+      })
+      .flat();
 
     switch (facetType) {
       case 'global':
@@ -467,8 +572,8 @@ export const ModalEditValues = ({
           facetId: facet.id,
           data: {
             ...facet,
-            boosted: orderedPinnedValues,
-            excludedValues: orderedExcludedValues,
+            boosted: unmergedOrderedBoostedValues,
+            excludedValues: unmergedOrderedExcludedValues,
             merged: mergedValues,
           },
         }).then(() => {
@@ -484,7 +589,11 @@ export const ModalEditValues = ({
         if (!updatedValues) {
           return;
         }
-        updatedValues(orderedPinnedValues, orderedExcludedValues, facet.id);
+        updatedValues(
+          unmergedOrderedBoostedValues,
+          unmergedOrderedExcludedValues,
+          facet.id
+        );
         break;
     }
 
@@ -561,7 +670,7 @@ export const ModalEditValues = ({
             <BodyContainer>
               <ModalAttributesTable>
                 {filteredEditFacetValues.map((facet, index) => {
-                  const { displayValue, attribute, mergedValues } = facet;
+                  const { displayValue, attribute, mergedValues, id } = facet;
                   const isSelected = selectedFacetAttributes.includes(facet);
                   const shouldNotMerge = !!selectedFacetAttributes.find(
                     (selectedFacet) =>
@@ -572,9 +681,9 @@ export const ModalEditValues = ({
 
                   return (
                     <FacetAttributeValuesTableRow
-                      key={`attribute-${displayValue}-${index}`}
-                      isPinned={orderedPinnedValues.includes(attribute)}
-                      isExcluded={orderedExcludedValues?.includes(attribute)}
+                      key={`attribute-${displayValue}-${id}`}
+                      isPinned={mergedOrderedBoostedValues.includes(id)}
+                      isExcluded={orderedExcludedValues?.includes(id)}
                       data-testid="rows"
                       aria-label={`attribute ${index} ${attribute}`}
                     >
@@ -604,28 +713,30 @@ export const ModalEditValues = ({
                           {mergedValues && mergedValues.length > 1 ? (
                             <div>
                               <Text isStrong>Merged Value Group</Text>
-                              {mergedValues.map((value, index) => (
-                                <MergedValue key={`${index}-${value}`}>
-                                  <Text>{value}</Text>{' '}
-                                  {facetType === 'global' && (
-                                    <RemoveMergedFacet
-                                      onClick={() =>
-                                        !isSettingName &&
-                                        handleDemerge(
-                                          value,
-                                          filteredEditFacetValues.find(
-                                            (attribute) =>
-                                              attribute.mergedValues?.includes(
-                                                value
-                                              )
-                                          )
-                                        )
-                                      }
-                                      aria-label={`Remove merged facet for ${value}`}
-                                    />
-                                  )}
-                                </MergedValue>
-                              ))}
+
+                              {mergedValues.map((mergedId, index) => {
+                                const mergedDisplayValue =
+                                  unmergedFacetValues.find(
+                                    (val) => val.id === mergedId
+                                  )?.displayValue;
+
+                                return (
+                                  <MergedValue
+                                    key={`${index}-${mergedDisplayValue}`}
+                                  >
+                                    <Text>{mergedDisplayValue}</Text>{' '}
+                                    {facetType === 'global' && (
+                                      <RemoveMergedFacet
+                                        onClick={() =>
+                                          !isSettingName &&
+                                          handleDemerge(mergedId, id)
+                                        }
+                                        aria-label={`Remove merged facet for ${mergedDisplayValue}`}
+                                      />
+                                    )}
+                                  </MergedValue>
+                                );
+                              })}
                             </div>
                           ) : (
                             <Text>{attribute}</Text>
@@ -647,7 +758,8 @@ export const ModalEditValues = ({
                                 setDisplayValueWithError(displayValue);
                                 return;
                               }
-                              handleEditName(displayValue, newValue);
+
+                              handleEditName(id, newValue);
 
                               setIsSettingName(false);
                               setError('');
@@ -667,20 +779,20 @@ export const ModalEditValues = ({
                       </FlexColumnCol>
 
                       <Col>
-                        {orderedPinnedValues.includes(attribute) && (
+                        {mergedOrderedBoostedValues.includes(id) && (
                           <OrderArrowsContainer>
                             <ArrowButton
                               direction="up"
                               aria-label={`Move ${attribute} row up`}
                               onClick={() => {
-                                setOrderedPinnedValues((prev) => {
-                                  const i = prev.indexOf(attribute);
+                                setMergedOrderedBoostedValues((prev) => {
+                                  const i = prev.indexOf(id);
 
                                   const newOrdered = [...prev];
 
                                   return [
                                     ...newOrdered.slice(0, i - 1),
-                                    attribute,
+                                    id,
                                     newOrdered[i - 1],
                                     ...newOrdered.slice(i + 1),
                                   ];
@@ -694,22 +806,22 @@ export const ModalEditValues = ({
                               direction="down"
                               aria-label={`Move ${attribute} row down`}
                               onClick={() => {
-                                setOrderedPinnedValues((prev) => {
-                                  const i = prev.indexOf(attribute);
+                                setMergedOrderedBoostedValues((prev) => {
+                                  const i = prev.indexOf(id);
 
                                   const newOrdered = [...prev];
 
                                   return [
                                     ...newOrdered.slice(0, i),
                                     newOrdered[i + 1],
-                                    attribute,
+                                    id,
                                     ...newOrdered.slice(i + 2),
                                   ];
                                 });
                                 setIsSaveDisabled(false);
                               }}
                               isDisabled={
-                                index === orderedPinnedValues.length - 1
+                                index === mergedOrderedBoostedValues.length - 1
                               }
                             />
                           </OrderArrowsContainer>
@@ -719,15 +831,13 @@ export const ModalEditValues = ({
                       <Col>
                         <FacetOrderDropdown
                           status={
-                            orderedPinnedValues.includes(attribute)
+                            mergedOrderedBoostedValues.includes(id)
                               ? 'included'
-                              : orderedExcludedValues.includes(attribute)
+                              : orderedExcludedValues.includes(id)
                                 ? 'excluded'
                                 : undefined
                           }
-                          onChange={(status) =>
-                            handleStatusChange(attribute, status)
-                          }
+                          onChange={(status) => handleStatusChange(id, status)}
                           attribute={attribute}
                         />
                       </Col>
