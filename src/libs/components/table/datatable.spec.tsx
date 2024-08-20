@@ -44,7 +44,7 @@ describe('DataTable', () => {
     expect(screen.getByText('path/to/SubCategory_123')).toBeInTheDocument();
   });
 
-  it('should delete a rule set', async () => {
+  it('should delete rule set', async () => {
     const user = userEvent.setup();
     const mockDelete = jest.fn();
     renderWithProviders(

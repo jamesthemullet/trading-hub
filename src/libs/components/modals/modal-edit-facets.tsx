@@ -432,12 +432,16 @@ export const ModalEditValues = ({
       prev.map((value) => {
         if (value.attribute === attribute) {
           if (status === 'included') {
-            setOrderedPinnedValues((prev) => [...prev, attribute]);
+            setOrderedPinnedValues((prev) =>
+              Array.from(new Set([...prev, attribute]))
+            );
             setOrderedExcludedValues((prev) =>
               prev.filter((value) => value !== attribute)
             );
           } else {
-            setOrderedExcludedValues((prev) => [...prev, attribute]);
+            setOrderedExcludedValues((prev) =>
+              Array.from(new Set([...prev, attribute]))
+            );
             setOrderedPinnedValues((prev) =>
               prev.filter((value) => value !== attribute)
             );
