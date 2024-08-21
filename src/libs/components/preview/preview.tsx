@@ -185,6 +185,12 @@ export const Preview = ({
     blockedProducts: [],
     boosts: { alphanumeric: [], numeric: [], product: [] },
     buries: { alphanumeric: [], numeric: [], product: [] },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
   };
 
   const { data, isLoading, setRules, setFacetConfigRules } = usePreview({

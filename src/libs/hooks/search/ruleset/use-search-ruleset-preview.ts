@@ -22,6 +22,12 @@ export const useSearchRuleSetPreview = (id: string) => {
         numeric: [],
         product: [],
       },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
     },
     facets: [],
   });
@@ -51,6 +57,12 @@ export const useSearchRuleSetPreview = (id: string) => {
               blockedProducts: data.rules.blockedProducts,
               boosts: data.rules.boosts,
               buries: data.rules.buries,
+              includes: {
+                alphanumeric: [],
+              },
+              excludes: {
+                alphanumeric: [],
+              },
             },
           }
         );

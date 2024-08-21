@@ -171,6 +171,12 @@ describe('Category Facet Management Editing', () => {
             alphanumeric: [],
             product: [],
           },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         },
         isEnabled: false,
         facets: [
@@ -374,6 +380,12 @@ describe('Category Facet Management Editing', () => {
             alphanumeric: [],
             product: [],
           },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         },
         isEnabled: false,
         facets: [
@@ -473,6 +485,12 @@ describe('Category Facet Management Editing', () => {
               numeric: [],
               alphanumeric: [],
               product: [],
+            },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
             },
           },
           isEnabled: false,

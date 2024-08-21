@@ -28,6 +28,12 @@ const mockMerchandisingRules = {
   blockedProducts: [],
   boosts: { numeric: [], alphanumeric: [], product: [] },
   buries: { numeric: [], alphanumeric: [], product: [] },
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
 };
 
 describe('Category facet management', () => {

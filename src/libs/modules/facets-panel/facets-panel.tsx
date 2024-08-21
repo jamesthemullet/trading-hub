@@ -233,6 +233,12 @@ export const FacetsPanel = ({
             numeric: [],
             product: [],
           },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         }
   );
 

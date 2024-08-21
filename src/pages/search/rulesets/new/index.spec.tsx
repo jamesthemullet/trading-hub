@@ -59,6 +59,12 @@ describe('Index', () => {
             boosts: { numeric: [], alphanumeric: [], product: [] },
             buries: { numeric: [], alphanumeric: [], product: [] },
             blockedProducts: [],
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           },
           lastChanged: {
             date: '12/12/12',

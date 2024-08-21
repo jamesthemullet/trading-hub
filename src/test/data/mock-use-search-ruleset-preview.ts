@@ -24,6 +24,12 @@ export const mockUseSearchRuleSetPreviewData = {
       blockedProducts: [],
       boosts: { numeric: [], alphanumeric: [], product: [] },
       buries: { numeric: [], alphanumeric: [], product: [] },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
     },
   },
   products: [

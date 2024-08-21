@@ -29,6 +29,12 @@ export const useRuleSetDetail = (id: string) => {
         numeric: [],
         product: [],
       },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
     },
   });
 

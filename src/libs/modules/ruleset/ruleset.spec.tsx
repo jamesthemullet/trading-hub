@@ -127,6 +127,12 @@ const mockMerchandisingRules = {
   boosts: { numeric: [], alphanumeric: [], product: [] },
   buries: { numeric: [], alphanumeric: [], product: [] },
   blockedProducts: [],
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
 };
 
 const mockData: SearchPreviewResponseBeta = {
@@ -368,6 +374,12 @@ describe('Ruleset', () => {
           blockedProducts: [],
           boosts: { numeric: [], alphanumeric: [], product: [] },
           buries: { numeric: [], alphanumeric: [], product: [] },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         }}
         rulesetId={ruleSetId}
         rulesetType="category"
@@ -407,6 +419,12 @@ describe('Ruleset', () => {
           blockedProducts: [],
           boosts: { numeric: [], alphanumeric: [], product: [] },
           buries: { numeric: [], alphanumeric: [], product: [] },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         }}
         rulesetId={ruleSetId}
         rulesetType="global"
@@ -435,6 +453,12 @@ describe('Ruleset', () => {
             blockedProducts: [],
             boosts: { numeric: [], alphanumeric: [], product: [] },
             buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="search"
@@ -464,6 +488,12 @@ describe('Ruleset', () => {
             blockedProducts: [],
             boosts: { numeric: [], alphanumeric: [], product: [] },
             buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="search"
@@ -500,6 +530,12 @@ describe('Ruleset', () => {
             blockedProducts: [],
             boosts: { numeric: [], alphanumeric: [], product: [] },
             buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="search"
@@ -530,6 +566,12 @@ describe('Ruleset', () => {
         boosts: { alphanumeric: [], numeric: [], product: [] },
         buries: { alphanumeric: [], numeric: [], product: [] },
         pinnedProducts: [],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       },
       searchTerms: ['new keyword'],
     };
@@ -584,6 +626,12 @@ describe('Ruleset', () => {
           blockedProducts: [],
           boosts: { numeric: [], alphanumeric: [], product: [] },
           buries: { numeric: [], alphanumeric: [], product: [] },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         }}
         rulesetId={ruleSetId}
         rulesetType="category"
@@ -703,6 +751,12 @@ describe('Ruleset', () => {
               product: [{ id: 'product2', weight: 1 }],
             },
             buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="category"
@@ -717,6 +771,12 @@ describe('Ruleset', () => {
         boosts: { alphanumeric: [], numeric: [], product: [] },
         buries: { alphanumeric: [], numeric: [], product: [] },
         pinnedProducts: [{ id: 'product2' }, { id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       expect(screen.getAllByLabelText('Pinned product').length).toBe(1);
@@ -827,6 +887,12 @@ describe('Ruleset', () => {
               product: [{ id: 'product2', weight: 1 }],
             },
             buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="category"
@@ -860,6 +926,12 @@ describe('Ruleset', () => {
         },
         buries: { alphanumeric: [], numeric: [], product: [] },
         pinnedProducts: [{ id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       await user.click(screen.getAllByTitle('Open menu')[0]);
@@ -880,6 +952,12 @@ describe('Ruleset', () => {
         boosts: { alphanumeric: [], numeric: [], product: [] },
         buries: { alphanumeric: [], numeric: [], product: [] },
         pinnedProducts: [{ id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       await user.click(screen.getAllByTitle('Open menu')[2]);
@@ -905,6 +983,12 @@ describe('Ruleset', () => {
         },
         buries: { alphanumeric: [], numeric: [], product: [] },
         pinnedProducts: [{ id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       await user.click(screen.getAllByTitle('Open menu')[3]);
@@ -1011,6 +1095,12 @@ describe('Ruleset', () => {
               alphanumeric: [],
               product: [{ id: 'product2', weight: 1 }],
             },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="category"
@@ -1032,6 +1122,12 @@ describe('Ruleset', () => {
           ],
         },
         pinnedProducts: [],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       await user.click(screen.getAllByTitle('Open menu')[0]);
@@ -1055,6 +1151,12 @@ describe('Ruleset', () => {
           ],
         },
         pinnedProducts: [{ id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       const searchProduct = screen.getByPlaceholderText('Search for product');
@@ -1086,6 +1188,12 @@ describe('Ruleset', () => {
         boosts: { alphanumeric: [], numeric: [], product: [] },
         buries: { alphanumeric: [], numeric: [], product: [] },
         pinnedProducts: [{ id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       await user.click(screen.getAllByTitle('Open menu')[1]);
@@ -1204,6 +1312,12 @@ describe('Ruleset', () => {
               alphanumeric: [],
               product: [{ id: 'product2', weight: 1 }],
             },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="category"
@@ -1222,6 +1336,12 @@ describe('Ruleset', () => {
           product: [{ id: 'product2', weight: 1 }],
         },
         pinnedProducts: [{ id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       await user.click(screen.getAllByTitle('Open menu')[0]);
@@ -1242,6 +1362,12 @@ describe('Ruleset', () => {
           product: [{ id: 'product2', weight: 1 }],
         },
         pinnedProducts: [{ id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       const tab2 = await screen.findByText('Changes');
@@ -1284,6 +1410,12 @@ describe('Ruleset', () => {
             blockedProducts: [],
             boosts: { numeric: [], alphanumeric: [], product: [] },
             buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="category"
@@ -1317,6 +1449,12 @@ describe('Ruleset', () => {
         boosts: { alphanumeric: [], numeric: [], product: [] },
         buries: { alphanumeric: [], numeric: [], product: [] },
         pinnedProducts: [{ id: 'product-id-2' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       };
 
       jest.mocked(useGetCategories).mockReturnValue({
@@ -1395,6 +1533,12 @@ describe('Ruleset', () => {
             blockedProducts: [],
             boosts: { numeric: [], alphanumeric: [], product: [] },
             buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }}
           rulesetId={ruleSetId}
           rulesetType="category"
@@ -1531,6 +1675,12 @@ describe('Ruleset', () => {
       boosts: boostMock,
       buries: buriesMock,
       blockedProducts: [],
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
     };
 
     const emptyAttributes: BoostsBuries = {

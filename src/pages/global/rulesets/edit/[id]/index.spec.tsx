@@ -28,6 +28,12 @@ const mockRuleData: ReturnedGlobalRuleSet = {
     blockedProducts: [],
     boosts: { numeric: [], alphanumeric: [], product: [] },
     buries: { numeric: [], alphanumeric: [], product: [] },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
   },
   isEnabled: false,
   id: 'df70401f-f89d-45ad-92e7-6e152930ff86',
@@ -78,6 +84,12 @@ describe('Index', () => {
           boosts: { alphanumeric: [], numeric: [], product: [] },
           buries: { alphanumeric: [], numeric: [], product: [] },
           pinnedProducts: [],
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         },
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',

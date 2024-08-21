@@ -21,6 +21,12 @@ export const useGlobalRuleSetDetail = (id: string) => {
         numeric: [],
         product: [],
       },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
     },
     facets: [],
   });

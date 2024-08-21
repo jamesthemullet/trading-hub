@@ -53,6 +53,12 @@ export const mockMerchandisingRulesWithData: MerchandisingRules = {
     ],
     product: [],
   },
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
 };
 
 export const mockMerchandisingRules: MerchandisingRules = {
@@ -67,5 +73,11 @@ export const mockMerchandisingRules: MerchandisingRules = {
     numeric: [],
     alphanumeric: [],
     product: [],
+  },
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
   },
 };

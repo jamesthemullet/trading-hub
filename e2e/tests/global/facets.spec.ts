@@ -10,7 +10,10 @@ test('creates and deletes new global facet ruleset', async ({ page }) => {
   ).toBeVisible();
 
   await page.getByRole('button', { name: 'Add rule' }).click();
-  await expect(page.getByText('Applies to all pages in')).toBeVisible();
+
+  await expect(
+    page.getByText('Applies to all pages in marksandspencer.com')
+  ).toBeVisible();
 
   await page
     .getByLabel('Row showing Categories as')

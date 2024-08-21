@@ -26,6 +26,12 @@ export const useGlobalRuleSetCreate = () => {
             numeric: [],
             product: [],
           },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         },
       };
       const response =

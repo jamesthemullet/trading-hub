@@ -23,6 +23,12 @@ const Page = () => {
       numeric: [],
       product: [],
     },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
   };
 
   return (

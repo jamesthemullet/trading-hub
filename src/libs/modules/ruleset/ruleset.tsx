@@ -155,6 +155,12 @@ export const Ruleset = ({
               numeric: [],
               product: [],
             },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           }
     );
   const [hasChanges, setHasChanges] = useState(false);

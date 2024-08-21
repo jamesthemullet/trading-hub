@@ -14,6 +14,12 @@ const mockRuleData: ReturnedGlobalRuleSet = {
     blockedProducts: [],
     boosts: { numeric: [], alphanumeric: [], product: [] },
     buries: { numeric: [], alphanumeric: [], product: [] },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
   },
   isEnabled: true,
   id: 'df70401f-f89d-45ad-92e7-6e152930ff86',
@@ -101,6 +107,12 @@ describe('useGlobalRuleSetDetail', () => {
             alphanumeric: [],
             numeric: [],
             product: [],
+          },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
           },
         },
       },

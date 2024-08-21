@@ -46,6 +46,12 @@ const mockMerchandisingRules = {
   blockedProducts: [],
   boosts: { numeric: [], alphanumeric: [], product: [] },
   buries: { numeric: [], alphanumeric: [], product: [] },
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
 };
 
 const MOCK_CATEGORY_ID = 'Cat123';
@@ -74,6 +80,12 @@ describe('Global Facet Management', () => {
             boosts: { numeric: [], alphanumeric: [], product: [] },
             buries: { numeric: [], alphanumeric: [], product: [] },
             blockedProducts: [],
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
           },
           lastChanged: {
             date: '12/12/12',

@@ -72,6 +72,12 @@ const mockRules: MerchandisingRules = {
   boosts: boostMock,
   buries: buriesMock,
   blockedProducts: [],
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
 };
 
 const mockAddAttribute = jest.fn();
@@ -363,6 +369,12 @@ describe('RulesetAttributes', () => {
         product: [],
       },
       blockedProducts: [],
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
     };
 
     renderWithProviders(

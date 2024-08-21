@@ -14,6 +14,12 @@ const mockMerchandisingRules = {
   boosts: { numeric: [], alphanumeric: [], product: [] },
   buries: { numeric: [], alphanumeric: [], product: [] },
   blockedProducts: [],
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
 };
 
 const mockSearchData: SearchPreviewResponseBeta = {

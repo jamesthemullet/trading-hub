@@ -32,6 +32,12 @@ describe('Search ranking rules', () => {
           blockedProducts: [],
           boosts: { numeric: [], alphanumeric: [], product: [] },
           buries: { numeric: [], alphanumeric: [], product: [] },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         },
         searchTerms: ['foo', 'bar'],
         isEnabled: true,

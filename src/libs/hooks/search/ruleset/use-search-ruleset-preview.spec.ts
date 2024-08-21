@@ -15,6 +15,12 @@ const mockRuleData: ReturnedKeywordRuleSet = {
     blockedProducts: [],
     boosts: { numeric: [], alphanumeric: [], product: [] },
     buries: { numeric: [], alphanumeric: [], product: [] },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
   },
   isEnabled: true,
   searchTerms: ['sock', 'socks', 'sockz'],

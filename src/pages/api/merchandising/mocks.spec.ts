@@ -31,6 +31,12 @@ describe('mocks', () => {
         blockedProducts: [],
         boosts: { alphanumeric: [], numeric: [], product: [] },
         buries: { alphanumeric: [], numeric: [], product: [] },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       },
     };
 

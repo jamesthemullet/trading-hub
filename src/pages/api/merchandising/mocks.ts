@@ -247,6 +247,12 @@ export const categoryRuleSetMock: ReturnedCategoryRuleSet = {
     boosts: { numeric: [], alphanumeric: [], product: [] },
     buries: { numeric: [], alphanumeric: [], product: [] },
     blockedProducts: [],
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
   },
   facets: [
     {

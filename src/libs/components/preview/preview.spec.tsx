@@ -15,6 +15,12 @@ const mockMerchandisingRules = {
   blockedProducts: [],
   boosts: { numeric: [], alphanumeric: [], product: [] },
   buries: { numeric: [], alphanumeric: [], product: [] },
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
 };
 const mockCategoryId = 'SubCat_123';
 const mockOnClose = jest.fn();

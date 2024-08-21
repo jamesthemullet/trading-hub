@@ -14,6 +14,12 @@ const mockRuleData: ReturnedCategoryRuleSet = {
     blockedProducts: [],
     boosts: { numeric: [], alphanumeric: [], product: [] },
     buries: { numeric: [], alphanumeric: [], product: [] },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
   },
   categoryId: mockCategoryId,
   categoriesInfo: [{ id: mockCategoryId }],
@@ -114,6 +120,12 @@ describe('useRuleSetDetail', () => {
             alphanumeric: [],
             numeric: [],
             product: [],
+          },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
           },
         },
       },

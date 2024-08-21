@@ -31,6 +31,12 @@ export const mockUseRuleSetPreviewData = {
       blockedProducts: [],
       boosts: { numeric: [], alphanumeric: [], product: [] },
       buries: { numeric: [], alphanumeric: [], product: [] },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
     },
     facets: [
       {
