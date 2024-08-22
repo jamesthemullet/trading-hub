@@ -111,17 +111,37 @@ E2E_TEST_USER_TOKEN="<ask one of the UI devs for a value>"
 
 Build all images with:
 
-`docker-compose build`
+`docker compose build`
 
 To run tests with all logs from all images just execute
 
-`docker-compose up`
+`docker compose up`
 
 You can execute
 
-`docker-compose up merchandising-hub-e2e`
+`docker compose up merchandising-hub-e2e`
 
 If you want to see output of just e2e container
+
+
+#### E2E test failing, common problems and solutions
+
+If e2e tests are failing and your PR is not containing any changes that might have caused that, it may be caused by a stale backend docker image. This image needs to be updated whenever there is a contract change between frontend and backend to keep it in sync with generated code that comes from schema located at prod instance.
+
+To update the backend api docker image:
+
+1. Find what is the latest version, unfortunately search-service is not producing that version number in a visible place so we need to do some digging, you can do it by:
+  - navigate to [java-app-deploy.yml](https://github.com/DigitalInnovation/search-service/actions/workflows/java-app-deploy.yml)
+  - Click on the most up to date run. 
+  - Click on "Building Jar" tab on the left
+  - Click on "========== Build and push Build Artifacts to artifact Store ==========" task
+  - Scroll to the bottom
+  - There should be log that says something like "#13 naming to docker.io/library/search-service-webapp:713 done"
+  - In my case version is 713, but it might be different one in your case
+  - Copy that version number
+2. In `docker-compose.yml` find line that says `image: ghcr.io/digitalinnovation/search-service/search-service-webapp:712`
+  - The number at the end will be different, just replace it with new version
+3. Save, commit, push.
 
 ### Code formatting
 
