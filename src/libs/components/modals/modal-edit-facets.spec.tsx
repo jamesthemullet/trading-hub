@@ -1035,22 +1035,18 @@ describe('ModalEditValues', () => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
       });
       // change name for initial
-      act(() => {
-        screen
-          .getByLabelText('Edit display name for test merged group')
-          .click();
-      });
+
       await waitFor(async () => {
         const editMergedValue = screen.getByLabelText(
-          'Edit test merged group input field'
+          'Edit Name your merge input field'
         );
         expect(editMergedValue).toBeVisible();
-        expect(editMergedValue).toHaveValue('test merged group');
+        expect(editMergedValue).toHaveValue('Name your merge');
         user.clear(editMergedValue);
         await user.type(editMergedValue, 'test test');
       });
       act(() => {
-        screen.getByLabelText('Save test merged group change').click();
+        screen.getByLabelText('Save Name your merge change').click();
       });
       await waitFor(() => {
         expect(
@@ -1075,11 +1071,11 @@ describe('ModalEditValues', () => {
             },
             merged: [
               {
-                displayValue: 'test test',
+                displayValue: 'test merged group',
                 mergedValues: ['Merged 1', 'Merged 2'],
               },
               {
-                displayValue: 'Name your merge',
+                displayValue: 'test test',
                 mergedValues: ['Silk', 'Other Merged 1', 'Other Merged 2'],
               },
             ],
@@ -1355,6 +1351,65 @@ describe('ModalEditValues', () => {
           '1'
         )
       );
+    });
+
+    it('should not allow any other action during the process creating a merge group (ie when writing the name of the merge group)', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <ModalEditValues
+          onClose={() => {}}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            merged: [
+              {
+                displayValue: 'test merged group',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
+          }}
+          facetType="global"
+          refreshData={() => jest.fn()}
+          category={undefined}
+        />
+      );
+      act(() => {
+        user.click(screen.getByLabelText('Select Duck Down to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+      act(() => {
+        user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
+      act(() => {
+        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
+        user.click(mergeButton);
+      });
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      });
+      expect(
+        screen.queryByLabelText('Remove merged facet for Duck Down')
+      ).toBeDisabled();
+      expect(screen.queryByLabelText('Select Cotton to merge')).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeDisabled();
+      expect(
+        screen.getByRole('checkbox', { name: 'Select all facet attributes' })
+      ).toBeDisabled();
+      expect(
+        screen.getByRole('checkbox', {
+          name: 'Select test merged group to merge',
+        })
+      ).toBeDisabled();
+      expect(
+        screen.getByRole('button', { name: 'Save changes to attributes' })
+      ).toBeDisabled();
     });
   });
 });

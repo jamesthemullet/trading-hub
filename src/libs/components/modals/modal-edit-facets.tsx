@@ -177,7 +177,9 @@ export const ModalEditValues = ({
   const [unmergedFacetValues, setUnmergedFacetValues] = useState<
     AttributeValue[]
   >([]);
-  const [isSettingName, setIsSettingName] = useState(false);
+  const [attributesBeingMerged, setAttributesBeingMerged] = useState<string[]>(
+    []
+  );
 
   const [selectedFacetAttributes, setSelectedFacetAttributes] = useState<
     AttributeValue[]
@@ -437,9 +439,10 @@ export const ModalEditValues = ({
 
   const handleMerge = () => {
     const valuesToMerge = selectedFacetAttributes.map((facet) => facet.id);
+
     mergeValues(valuesToMerge);
     setIsSaveDisabled(true);
-    setIsSettingName(true);
+    setAttributesBeingMerged(valuesToMerge);
     setSelectedFacetAttributes([]);
   };
 
@@ -629,7 +632,12 @@ export const ModalEditValues = ({
                     Merge ({selectedFacetAttributes.length})
                   </Button>
                 )}
-                <Search onChange={(e) => handleSearch(e.target.value)} />
+                <Search
+                  onChange={(e) =>
+                    attributesBeingMerged.length === 0 &&
+                    handleSearch(e.target.value)
+                  }
+                />
               </MergeAndSearchContainer>
 
               <ModalAttributesTable>
@@ -657,6 +665,7 @@ export const ModalEditValues = ({
                                   );
                                 }
                               }}
+                              disabled={attributesBeingMerged.length > 0}
                             />
                           )}
                         </Col>
@@ -691,7 +700,9 @@ export const ModalEditValues = ({
                         {facetType === 'global' && (
                           <input
                             type="checkbox"
-                            disabled={shouldNotMerge}
+                            disabled={
+                              shouldNotMerge || attributesBeingMerged.length > 0
+                            }
                             checked={isSelected}
                             onChange={() =>
                               isSelected
@@ -728,10 +739,12 @@ export const ModalEditValues = ({
                                     {facetType === 'global' && (
                                       <RemoveMergedFacet
                                         onClick={() =>
-                                          !isSettingName &&
                                           handleDemerge(mergedId, id)
                                         }
                                         aria-label={`Remove merged facet for ${mergedDisplayValue}`}
+                                        disabled={
+                                          attributesBeingMerged.length > 0
+                                        }
                                       />
                                     )}
                                   </MergedValue>
@@ -745,7 +758,12 @@ export const ModalEditValues = ({
                       </Col>
 
                       <FlexColumnCol>
-                        {facetType === 'global' && mergedValues ? (
+                        {facetType === 'global' &&
+                        mergedValues &&
+                        (attributesBeingMerged.length === 0 ||
+                          attributesBeingMerged.includes(
+                            id.replace('merged-', '')
+                          )) ? (
                           <EditableLabel
                             displayValue={displayValue}
                             onDisplayValueChange={(newValue) => {
@@ -761,7 +779,7 @@ export const ModalEditValues = ({
 
                               handleEditName(id, newValue);
 
-                              setIsSettingName(false);
+                              setAttributesBeingMerged([]);
                               setError('');
                             }}
                             shouldOpenFromParent={
@@ -799,7 +817,9 @@ export const ModalEditValues = ({
                                 });
                                 setIsSaveDisabled(false);
                               }}
-                              isDisabled={index === 0}
+                              isDisabled={
+                                index === 0 || attributesBeingMerged.length > 0
+                              }
                             />
 
                             <ArrowButton
@@ -821,7 +841,9 @@ export const ModalEditValues = ({
                                 setIsSaveDisabled(false);
                               }}
                               isDisabled={
-                                index === mergedOrderedBoostedValues.length - 1
+                                index ===
+                                  mergedOrderedBoostedValues.length - 1 ||
+                                attributesBeingMerged.length > 0
                               }
                             />
                           </OrderArrowsContainer>
@@ -857,7 +879,7 @@ export const ModalEditValues = ({
           </Button>{' '}
           <Button
             onClick={handleSave}
-            isDisabled={isSaveDisabled}
+            isDisabled={isSaveDisabled || attributesBeingMerged.length > 0}
             aria-label="Save changes to attributes"
           >
             {facetType === 'global' ? 'Save' : 'Done'}
