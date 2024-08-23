@@ -1,15 +1,44 @@
 import { useRouter } from 'next/router';
 
 import { Heading } from '@/libs/components';
+import { useRuleSetCreate } from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 
 const Page = () => {
+  const { handlePost } = useRuleSetCreate();
   const router = useRouter();
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log('save');
+  const createNewCategoryRuleSet = async (categoryId: string) => {
+    const resp = await handlePost({
+      facets: [],
+      categoryId,
+      merchandisingRules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: {
+          alphanumeric: [],
+          numeric: [],
+          product: [],
+        },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [],
+        },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      },
+    });
+
+    if (resp) {
+      return router.push('/category/facets');
+    }
   };
+
   const handleCancel = () => {
     router.push('/category/facets');
   };
@@ -36,9 +65,9 @@ const Page = () => {
       <Heading breadcrumbs={['Categories', 'Facet Management', 'New']} />
 
       <FacetsPanel
-        onSave={handleSave}
+        onSave={createNewCategoryRuleSet}
         onCancel={handleCancel}
-        isNewRuleset
+        isNewRuleset={true}
         title="Facet Rule Editor"
         facetsData={[]}
         includedFacets={[]}

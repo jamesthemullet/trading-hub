@@ -17,10 +17,9 @@ const categoryPath2 = 'l/women/dresses';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-rule-set-create', () => ({
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
   useRuleSetCreate: jest.fn(),
-}));
-jest.mock('../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
 
@@ -29,7 +28,6 @@ logSpy.mockImplementation(jest.fn());
 
 const INPUT_PLACEHOLDER_TEXT = 'Search...';
 const NEW_RULE_BUTTON_TEXT = 'Create';
-const MOCK_CATEGORY_ID = '20';
 
 const mockGetCategories = {
   categories: [
@@ -65,6 +63,10 @@ describe('Facet Management Editing', () => {
   });
 
   it('should render category ruleset facet editor', async () => {
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      handlePost: jest.fn(),
+      error: '',
+    });
     renderWithProviders(<NewFacetRuleset />);
 
     expect(
@@ -90,36 +92,9 @@ describe('Facet Management Editing', () => {
 
   it('should save changes to a facet', async () => {
     const user = userEvent.setup();
+    const handlePost = jest.fn().mockResolvedValue({});
     jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost: jest.fn(() =>
-        Promise.resolve({
-          id: MOCK_CATEGORY_ID,
-          categoryName: "Men's shirts",
-          categoryId: 'foo',
-          categoriesInfo: [
-            {
-              id: 'foo',
-            },
-          ],
-          isEnabled: true,
-          rules: {
-            pinnedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
-            blockedProducts: [],
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
-          },
-          lastChanged: {
-            date: '12/12/12',
-            user: 'me',
-          },
-        })
-      ),
+      handlePost,
       error: '',
     });
     jest.mocked(useGetCategories).mockReturnValue({
@@ -146,6 +121,18 @@ describe('Facet Management Editing', () => {
     });
 
     await screen.findByText(NEW_RULE_BUTTON_TEXT);
-    expect(logSpy).toHaveBeenCalledWith('save');
+    expect(handlePost).toHaveBeenCalledWith({
+      categoryId: 'cat_123',
+      facets: [],
+      merchandisingRules: {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        excludes: { alphanumeric: [] },
+        includes: { alphanumeric: [] },
+        pinnedProducts: [],
+      },
+    });
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
   });
 });

@@ -165,7 +165,7 @@ export const FacetsPanel = ({
   searchTerm,
   updatedValues,
 }: {
-  onSave: () => void;
+  onSave: (categoryId: string) => void;
   onCancel: () => void;
   setSearch?: (value: string) => void;
   onFacetDataChange?: ({
@@ -382,7 +382,11 @@ export const FacetsPanel = ({
 
       <ProductGridHeader
         canSave={!!selectedCategory?.identifier}
-        onSave={onSave}
+        onSave={() => {
+          if (onSave && selectedCategory?.identifier) {
+            onSave(selectedCategory?.identifier);
+          }
+        }}
         hasPreview={!!selectedCategory?.identifier}
         onPreview={() => setShowPreview(!showPreview)}
         isNewRuleSet={!!isNewRuleset}
