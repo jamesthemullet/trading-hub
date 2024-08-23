@@ -97,7 +97,7 @@ export const EditableLabel = ({
     } else {
       setShowErrorState(false);
     }
-  }, [error]);
+  }, [error, disallowedValues]);
 
   return (
     <DisplayName>

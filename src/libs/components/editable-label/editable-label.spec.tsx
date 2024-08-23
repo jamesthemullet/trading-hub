@@ -5,6 +5,11 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import { EditableLabel } from './editable-label';
 
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useCheckMergeNameUnique: jest.fn(),
+}));
+
 describe('editable-label', () => {
   describe('EditableLabel', () => {
     it('should render the EditableLabel component', () => {
@@ -82,9 +87,9 @@ describe('editable-label', () => {
       });
 
       await waitFor(() => {
-        const newEditButton = screen.getByLabelText(
-          'Edit display name for color'
-        );
+        const newEditButton = screen.getByRole('button', {
+          name: 'Edit display name for color',
+        });
         expect(newEditButton).toBeVisible();
       });
 
@@ -116,9 +121,9 @@ describe('editable-label', () => {
       });
 
       await waitFor(() => {
-        const newEditButton = screen.getByLabelText(
-          'Edit display name for color'
-        );
+        const newEditButton = screen.getByRole('button', {
+          name: 'Edit display name for color',
+        });
         expect(newEditButton).toBeVisible();
       });
 

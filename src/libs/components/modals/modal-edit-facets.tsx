@@ -8,6 +8,7 @@ import {
   useGetFacetAttributeValues,
   useGlobalFacetUpdate,
 } from '@/libs/hooks';
+import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 
 import Image from 'next/image';
 
@@ -197,6 +198,11 @@ export const ModalEditValues = ({
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [error, setError] = useState('');
   const [displayValueWithError, setDisplayValueWithError] = useState('');
+  const [disallowedValues, setDisallowedValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    setDisallowedValues([defaultMergedDisplayValue]);
+  }, []);
 
   const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
 
@@ -267,12 +273,32 @@ export const ModalEditValues = ({
     searchQuery,
     category
   );
+
   const attributeValuesWithIds = useMemo(() => {
     return attributeValues.map((value) => ({
       id: value.displayValue,
       ...value,
     }));
   }, [attributeValues]);
+
+  const { checkMergeNameUnique } = useCheckMergeNameUnique();
+
+  const checkNameUnique = async (newValue: string, id: string) => {
+    await checkMergeNameUnique(facet.id, newValue, category).then((data) => {
+      if (data?.isUniqueValue) {
+        handleEditName(id, newValue);
+        setAttributesBeingMerged([]);
+        setError('');
+      } else {
+        setIsSaveDisabled(true);
+        setError('The name above already exists. Please choose another one.');
+        setDisplayValueWithError(
+          'The name above already exists. Please choose another one.'
+        );
+        setDisallowedValues([...disallowedValues, newValue]);
+      }
+    });
+  };
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
@@ -777,23 +803,25 @@ export const ModalEditValues = ({
                                 return;
                               }
 
-                              handleEditName(id, newValue);
-
-                              setAttributesBeingMerged([]);
-                              setError('');
+                              checkNameUnique(newValue, id);
                             }}
                             shouldOpenFromParent={
                               displayValue === defaultMergedDisplayValue
                             }
                             error={error}
-                            disallowedValues={[defaultMergedDisplayValue]}
+                            disallowedValues={disallowedValues}
                           />
                         ) : (
                           <Text>{displayValue}</Text>
                         )}
-                        {error && displayValueWithError === displayValue && (
-                          <StyledError>{error}</StyledError>
-                        )}
+                        {error &&
+                          attributesBeingMerged.includes(
+                            id.replace('merged-', '')
+                          ) &&
+                          (displayValueWithError === displayValue ||
+                            disallowedValues.includes(displayValue)) && (
+                            <StyledError>{error}</StyledError>
+                          )}
                       </FlexColumnCol>
 
                       <Col>

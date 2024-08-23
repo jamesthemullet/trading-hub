@@ -19,6 +19,7 @@ export * from './search/ruleset/use-search-ruleset-preview';
 export * from './search/ruleset/use-search-ruleset-update';
 export * from './use-category-attributes';
 export * from './use-category-product-search';
+export * from './use-check-merge-name-unique';
 export * from './use-facets-filter';
 export * from './use-get-categories';
 export * from './use-get-facet-attribute-values';

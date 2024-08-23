@@ -9,13 +9,21 @@ import { ModalEditValues } from './modal-edit-facets';
 
 const mockUpdateGlobalFacet = jest.fn(() => Promise.resolve());
 const mockUpdateRuleSet = jest.fn();
+const mockUseCheckMergeNameUnique = {
+  error: '',
+  checkMergeNameUnique: jest.fn(() => Promise.resolve({ isUniqueValue: true })),
+};
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
-  useGetFacetAttributeValues: jest.fn(),
+  useGetFacetAttributeValues: jest.fn().mockReturnValue(null),
   useGlobalFacetUpdate: () => {
     return { handleGlobalFacetUpdate: mockUpdateGlobalFacet };
   },
+}));
+
+jest.mock('../../hooks/use-check-merge-name-unique', () => ({
+  useCheckMergeNameUnique: () => mockUseCheckMergeNameUnique,
 }));
 
 describe('ModalEditValues', () => {
@@ -104,10 +112,12 @@ describe('ModalEditValues', () => {
       saveButton.click();
     });
 
-    const newEditButton = screen.getByRole('button', {
-      name: 'Edit display name for Merged 1 Candy',
+    await waitFor(() => {
+      const newEditButton = screen.getByRole('button', {
+        name: 'Edit display name for Merged 1 Candy',
+      });
+      expect(newEditButton).toBeVisible();
     });
-    expect(newEditButton).toBeVisible();
   }, 15000);
 
   it('should not be able to edit a display value of a merged group to be an empty string', async () => {
@@ -557,12 +567,13 @@ describe('ModalEditValues', () => {
         user.click(screen.getByRole('button', { name: 'Merge (2)' }));
       });
       await waitFor(() => {
-        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+        expect(screen.getByText('Merged Value Group')).toBeVisible();
       });
 
       const mergeInputField = screen.getByLabelText(
         'Edit Name your merge input field'
       );
+
       await waitFor(async () => {
         userEvent.clear(mergeInputField);
         await userEvent.type(mergeInputField, 'New merge name');
@@ -570,7 +581,9 @@ describe('ModalEditValues', () => {
       });
 
       await waitFor(() => {
-        expect(mergeInputField).toHaveValue('New merge name');
+        expect(
+          screen.getAllByLabelText('Remove merged facet for Duck Down')[0]
+        ).not.toBeDisabled();
       });
 
       act(() => {
@@ -892,6 +905,75 @@ describe('ModalEditValues', () => {
       expect(screen.getByText('Merged Value Group')).toBeVisible();
       expect(screen.getByLabelText('Label for foo')).toBeVisible();
     });
+
+    it('should show error if user attempts to save a merge with a duplicate name', async () => {
+      mockUseCheckMergeNameUnique.checkMergeNameUnique = jest.fn(() =>
+        Promise.resolve({ isUniqueValue: false })
+      );
+
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <ModalEditValues
+          onClose={jest.fn()}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            merged: [
+              {
+                displayValue: 'merged 1',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
+          }}
+          facetType="global"
+          category={undefined}
+        />
+      );
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Duck Down to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Ducky Downy to merge'));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
+
+      act(() => {
+        user.click(screen.getByRole('button', { name: 'Merge (2)' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Merged Value Group')).toBeVisible();
+      });
+
+      const mergeInputField = screen.getByLabelText(
+        'Edit Name your merge input field'
+      );
+
+      await waitFor(async () => {
+        userEvent.clear(mergeInputField);
+        await userEvent.type(mergeInputField, 'Cotton');
+        userEvent.keyboard('{enter}');
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getAllByText(
+            'The name above already exists. Please choose another one.'
+          )[0]
+        ).toBeVisible();
+      });
+    });
   });
 
   describe('Reorder', () => {
@@ -978,6 +1060,9 @@ describe('ModalEditValues', () => {
 
   describe('Saving', () => {
     it('should save initial and newly created merged values', async () => {
+      mockUseCheckMergeNameUnique.checkMergeNameUnique = jest.fn(() =>
+        Promise.resolve({ isUniqueValue: true })
+      );
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <ModalEditValues
