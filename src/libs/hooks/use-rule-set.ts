@@ -24,10 +24,12 @@ export const useRuleSet = (
   >([]);
   const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const asyncCall = async () => {
       try {
+        setIsLoading(true);
         const apiCall =
           ruleSetType === 'category'
             ? search().betaMerchandisingCategoryRulesetList
@@ -50,11 +52,21 @@ export const useRuleSet = (
       } catch (error) {
         // istanbul ignore next
         setError(validateErrorResponse(error));
+      } finally {
+        setIsLoading(false);
       }
     };
 
     void asyncCall();
-  }, [start, rows, ruleSetType, searchQuery, shouldRefetch, setError]);
+  }, [
+    start,
+    rows,
+    ruleSetType,
+    searchQuery,
+    shouldRefetch,
+    setError,
+    setIsLoading,
+  ]);
 
   return {
     categoryRuleSets,
@@ -64,5 +76,6 @@ export const useRuleSet = (
     refetchRuleSetList: () => refetch({}),
     setCategoryRuleSets,
     setGlobalRuleSets,
+    isLoading,
   };
 };

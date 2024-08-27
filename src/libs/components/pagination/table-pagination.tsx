@@ -7,7 +7,7 @@ import { Dropdown } from '../dropdowns/dropdown/dropdown';
 import { spacing } from '../utils/spacing';
 import { Pagination } from './pagination';
 
-const NavigationContainer = styled.div`
+export const NavigationContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -18,12 +18,12 @@ const NavigationContainer = styled.div`
   font-weight: 400;
   font-size: 14px;
 `;
-const TotalResultsLabel = styled.div`
+export const TotalResultsLabel = styled.div`
   font-family: mnsLondonRegular, monospace;
   margin-left: 31px;
 `;
 const RowsPerPageLabel = styled.div``;
-const RowsPerPageContainer = styled.div`
+export const RowsPerPageContainer = styled.div`
   font-family: mnsLondonRegular, monospace;
   display: flex;
   column-gap: 10px;

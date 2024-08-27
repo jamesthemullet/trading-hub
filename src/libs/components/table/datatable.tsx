@@ -21,8 +21,9 @@ import {
   TableRow,
 } from './table.styles';
 
-const Row = styled(TableRow)`
+export const Row = styled(TableRow)`
   grid-template-columns: minmax(140px, 2fr) 90px 120px 150px 130px;
+  min-height: 83px;
 `;
 
 const Divider = styled.span`
@@ -42,7 +43,7 @@ const Buttons = styled.div`
   }
 `;
 
-const FirstColumn = styled(TableCol)`
+export const FirstColumn = styled(TableCol)`
   display: flex;
   flex-direction: column;
 `;

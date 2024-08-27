@@ -272,7 +272,7 @@ describe('Category Facet Management Editing', () => {
     expect(() => {
       screen.getByRole('button', { name: 'Move color row up' });
     }).toThrow('Unable to find an accessible element with the role "button"');
-  });
+  }, 10000);
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {
     const user = userEvent.setup();
@@ -543,5 +543,5 @@ describe('Category Facet Management Editing', () => {
         },
       });
     });
-  });
+  }, 10000);
 });

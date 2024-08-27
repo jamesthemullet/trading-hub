@@ -116,6 +116,7 @@ describe('Global Facet Management', () => {
       setGlobalRuleSets: jest.fn(),
       setCategoryRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
   });
 
@@ -157,6 +158,7 @@ describe('Global Facet Management', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     renderWithProviders(<FacetManagementPage />);

@@ -59,6 +59,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
     renderWithProviders(<RuleSets />);
 
@@ -92,6 +93,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
     const { container } = renderWithProviders(<RuleSets />);
 
@@ -127,6 +129,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     renderWithProviders(<RuleSets />);
@@ -179,6 +182,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     const user = userEvent.setup();
@@ -255,6 +259,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     renderWithProviders(<RuleSets />);
@@ -285,10 +290,32 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: 'Failed to fetch',
+      isLoading: false,
     });
 
     renderWithProviders(<RuleSets />);
 
     expect(await screen.findByText('Error: Failed to fetch')).toBeVisible();
+  });
+
+  it('should have loading state', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: true,
+    });
+    renderWithProviders(<RuleSets />);
+
+    expect(screen.queryAllByText('Add Rule')).toHaveLength(0);
+
+    expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
+    expect(screen.getByLabelText('table-pagination-skeleton')).toBeVisible();
   });
 });

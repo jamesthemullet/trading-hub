@@ -1,13 +1,16 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { Skeleton } from '@mantine/core';
 
 import type { ReturnedRuleSet } from '@/libs/api';
 import {
   Button,
   DataTable,
+  DataTableSkeleton,
   Heading,
   Search,
   TablePagination,
+  TablePaginationSkeleton,
 } from '@/libs/components';
 import { spacing } from '@/libs/components/utils/spacing';
 import {
@@ -52,12 +55,15 @@ const FacetManagementPage = () => {
     pagination,
     refetchRuleSetList,
     setCategoryRuleSets,
+    isLoading,
   } = useRuleSet(
     searchQuery,
     currentPageIndex * currentPageSize,
     currentPageSize,
     'category'
   );
+
+  const sizeIsUnknownYet = pagination.totalItems === 0;
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
@@ -133,29 +139,45 @@ const FacetManagementPage = () => {
       <PageNameLabel>Category Facet Management</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>
-          <Search onChange={(e) => handleSearch(e.target.value)} />
+          {isLoading ? (
+            <Skeleton height={38} width={336} />
+          ) : (
+            <Search onChange={(e) => handleSearch(e.target.value)} />
+          )}
 
           <NewButton>
-            <Button as="a" href="/category/facets/new">
-              Add facet
-            </Button>
+            {isLoading ? (
+              <Skeleton height={33} width={110} />
+            ) : (
+              <Button as="a" href="/category/facets/new">
+                Add facet
+              </Button>
+            )}
           </NewButton>
         </ToolsContainer>
 
-        <DataTable
-          headings={headings}
-          rows={rows}
-          onDeleteRuleSet={onDeleteRuleSet}
-        />
+        {isLoading ? (
+          <DataTableSkeleton headings={headings} rowsCount={10} />
+        ) : (
+          <DataTable
+            headings={headings}
+            rows={rows}
+            onDeleteRuleSet={onDeleteRuleSet}
+          />
+        )}
 
-        <TablePagination
-          pagination={pagination}
-          pageSizes={pageSizes}
-          currentPage={currentPage}
-          currentPageSize={currentPageSize}
-          setCurrentPage={setCurrentPage}
-          setCurrentPageSize={setCurrentPageSize}
-        />
+        {isLoading && sizeIsUnknownYet ? (
+          <TablePaginationSkeleton />
+        ) : (
+          <TablePagination
+            pagination={pagination}
+            pageSizes={pageSizes}
+            currentPage={currentPage}
+            currentPageSize={currentPageSize}
+            setCurrentPage={setCurrentPage}
+            setCurrentPageSize={setCurrentPageSize}
+          />
+        )}
       </PageWrapper>
     </>
   );

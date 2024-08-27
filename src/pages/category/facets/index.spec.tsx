@@ -73,6 +73,7 @@ describe('Category facet management', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
     renderWithProviders(<FacetManagementPage />);
 
@@ -110,6 +111,7 @@ describe('Category facet management', () => {
       setGlobalRuleSets: jest.fn(),
       globalRuleSets: [],
       error: '',
+      isLoading: false,
     });
 
     const user = userEvent.setup();
@@ -139,6 +141,7 @@ describe('Category facet management', () => {
       setGlobalRuleSets: jest.fn(),
       globalRuleSets: [],
       error: '',
+      isLoading: false,
     });
 
     renderWithProviders(<FacetManagementPage />);
@@ -172,6 +175,7 @@ describe('Category facet management', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     const user = userEvent.setup();
@@ -257,6 +261,7 @@ describe('Category facet management', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     renderWithProviders(<FacetManagementPage />);
@@ -274,5 +279,45 @@ describe('Category facet management', () => {
         isEnabled: false,
       },
     });
+  });
+
+  it('should have loading state', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
+        categoryName: `identifier-${i}`,
+        id: `${i}`,
+        categoriesInfo: [
+          {
+            id: 'foo00',
+          },
+        ],
+        categoryId: `${i}`,
+        isEnabled: true,
+        lastChanged: {
+          user: 'user',
+          date: '2021-01-01',
+        },
+        rules: mockMerchandisingRules,
+        setRuleSets: jest.fn(),
+        facets: [],
+      })),
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: true,
+    });
+    renderWithProviders(<FacetManagementPage />);
+
+    expect(screen.queryAllByText('Add Facet')).toHaveLength(0);
+
+    expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
+    expect(
+      screen.getByLabelText('table-pagination-skeleton')
+    ).toBeInTheDocument();
   });
 });

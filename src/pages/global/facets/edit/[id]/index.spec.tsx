@@ -108,6 +108,7 @@ describe('Global Facet Management Editing', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
     jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
       globalRuleSet: {

@@ -115,6 +115,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
     renderWithProviders(<RuleSets />);
 
@@ -143,6 +144,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
     const { container } = renderWithProviders(<RuleSets />);
 
@@ -178,6 +180,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     renderWithProviders(<RuleSets />);
@@ -233,6 +236,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     renderWithProviders(<RuleSets />);
@@ -277,6 +281,7 @@ describe('Index', () => {
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
 
     renderWithProviders(<RuleSets />);
