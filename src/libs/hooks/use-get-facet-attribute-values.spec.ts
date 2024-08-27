@@ -78,7 +78,7 @@ describe('useGetFacetAttributeValues', () => {
         pagination: {
           totalItems: 0,
         },
-        error: 'Failed to get Facet Attribute Values',
+        error: 'Unknown error',
         refetch: expect.any(Function),
       });
     });

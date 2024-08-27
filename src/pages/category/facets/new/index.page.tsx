@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 
-import { Heading } from '@/libs/components';
+import { ErrorMessage, Heading } from '@/libs/components';
 import { useRuleSetCreate } from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 
 const Page = () => {
-  const { handlePost } = useRuleSetCreate();
+  const { handlePost, error } = useRuleSetCreate();
   const router = useRouter();
 
   const createNewCategoryRuleSet = async (categoryId: string) => {
@@ -63,6 +63,8 @@ const Page = () => {
   return (
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'New']} />
+
+      <ErrorMessage>{error}</ErrorMessage>
 
       <FacetsPanel
         onSave={createNewCategoryRuleSet}

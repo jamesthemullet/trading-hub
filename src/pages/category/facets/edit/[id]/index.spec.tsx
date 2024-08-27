@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import {
-  useFacetsList,
   useGetCategories,
   useGetFacetAttributeValues,
   useRuleSetDetail,
@@ -25,6 +24,15 @@ import Page, { getServerSideProps } from './index.page';
 
 const mockUpdateGlobalFacet = jest.fn();
 const mockUpdateRuleSet = jest.fn().mockReturnValue(true);
+const updateRuleSet = {
+  updateRuleSet: mockUpdateRuleSet,
+  error: '',
+};
+const mockUseFacetsList = {
+  isLoading: false,
+  facets: globalFacetsListMock.facets,
+  error: '',
+};
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -33,13 +41,15 @@ jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useRuleSetDetail: jest.fn(),
   useGetCategories: jest.fn(),
-  useFacetsList: jest.fn(),
+  useFacetsList: () => {
+    return mockUseFacetsList;
+  },
   useGetFacetAttributeValues: jest.fn(),
   useGlobalFacetUpdate: () => {
     return { handleUpdate: mockUpdateGlobalFacet };
   },
   useUpdateRuleSet: () => {
-    return { updateRuleSet: mockUpdateRuleSet };
+    return updateRuleSet;
   },
 }));
 jest.mock('@/libs/hooks/use-get-facet-attributes', () => ({
@@ -69,11 +79,6 @@ describe('Category Facet Management Editing', () => {
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
-    });
-    jest.mocked(useFacetsList).mockReturnValue({
-      isLoading: false,
-      facets: globalFacetsListMock.facets,
-      error: '',
     });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest
@@ -544,4 +549,42 @@ describe('Category Facet Management Editing', () => {
       });
     });
   }, 10000);
+
+  describe('Display Error Messaging', () => {
+    it('should display error message when fetching ruleset fails', async () => {
+      mockUseRuleSetPreviewData.error = 'Error fetching ruleset';
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        screen.getByText(
+          'Error whilst retrieving ruleset: Error fetching ruleset'
+        )
+      ).toBeVisible();
+    });
+
+    it('should display error message when updating ruleset fails', async () => {
+      updateRuleSet.error = 'Failed to update';
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+      expect(
+        screen.getByText('Error whilst updating ruleset: Failed to update')
+      ).toBeVisible();
+    });
+
+    it('should display error message when fetching facet list fails', async () => {
+      mockUseFacetsList.error = 'Error fetching facet list';
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        screen.getByText(
+          'Error whilst retrieving facet list: Error fetching facet list'
+        )
+      ).toBeVisible();
+    });
+  });
 });

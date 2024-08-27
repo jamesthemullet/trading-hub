@@ -7,6 +7,7 @@ import {
   Button,
   DataTable,
   DataTableSkeleton,
+  ErrorMessage,
   Heading,
   Search,
   TablePagination,
@@ -55,6 +56,7 @@ const FacetManagementPage = () => {
     pagination,
     refetchRuleSetList,
     setCategoryRuleSets,
+    error: getRulesetError,
     isLoading,
   } = useRuleSet(
     searchQuery,
@@ -70,8 +72,9 @@ const FacetManagementPage = () => {
     setCurrentPage(1);
   }, 300);
 
-  const { handleDelete } = useRuleSetDelete();
-  const { updateRuleSet } = useUpdateRuleSet();
+  const { handleDelete, error: deleteRulesetError } = useRuleSetDelete();
+
+  const { updateRuleSet, error: updateRulesetError } = useUpdateRuleSet();
 
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
     await handleDelete({ rulesetId: id });
@@ -135,6 +138,22 @@ const FacetManagementPage = () => {
           'facet-management',
         ]}
       />
+
+      {getRulesetError && (
+        <ErrorMessage>
+          Error whilst retrieving ruleset: {getRulesetError}
+        </ErrorMessage>
+      )}
+      {deleteRulesetError && (
+        <ErrorMessage>
+          Error whilst deleting ruleset: {deleteRulesetError}
+        </ErrorMessage>
+      )}
+      {updateRulesetError && (
+        <ErrorMessage>
+          Error whilst updating ruleset: {updateRulesetError}
+        </ErrorMessage>
+      )}
 
       <PageNameLabel>Category Facet Management</PageNameLabel>
       <PageWrapper>

@@ -9,17 +9,27 @@ import { default as FacetManagementPage } from './index.page';
 jest.mock('../../../libs/hooks/use-rule-set', () => ({
   useRuleSet: jest.fn(),
 }));
-const mockRuleSetDelete = jest.fn();
+const handleDeleteMock = jest.fn();
+const mockRuleSetDelete = {
+  handleDelete: handleDeleteMock,
+  error: '',
+};
 jest.mock('../../../libs/hooks/use-rule-set-delete', () => ({
   useRuleSetDelete: () => {
-    return { handleDelete: mockRuleSetDelete };
+    return mockRuleSetDelete;
   },
 }));
 
-const mockUpdateRuleSet = jest.fn();
+const handleUpdateMock = jest.fn();
+const mockUpdateRuleSet = {
+  updateRuleSet: handleUpdateMock,
+  isSaving: false,
+  error: '',
+};
+
 jest.mock('../../../libs/hooks/use-rule-set-update', () => ({
   useUpdateRuleSet: () => {
-    return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
+    return mockUpdateRuleSet;
   },
 }));
 
@@ -126,7 +136,7 @@ describe('Category facet management', () => {
     });
 
     await user.click(screen.getByLabelText('Delete rule'));
-    expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
+    expect(handleDeleteMock).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 
   it('should search', async () => {
@@ -270,7 +280,7 @@ describe('Category facet management', () => {
 
     await userEvent.click(rulesetToggle[0]);
 
-    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+    expect(handleUpdateMock).toHaveBeenCalledWith({
       categoryId: mockCatId,
       ruleSetId: mockId,
       rules: {
@@ -319,5 +329,121 @@ describe('Category facet management', () => {
     expect(
       screen.getByLabelText('table-pagination-skeleton')
     ).toBeInTheDocument();
+  });
+
+  describe('Error messaging', () => {
+    it('should display an error message when fetching rulesets fails', () => {
+      jest.mocked(useRuleSet).mockReturnValue({
+        categoryRuleSets: [],
+        globalRuleSets: [],
+        pagination: {
+          totalItems: 0,
+        },
+        refetchRuleSetList: () => jest.fn,
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        error: 'Error fetching ruleset',
+        isLoading: false,
+      });
+
+      renderWithProviders(<FacetManagementPage />);
+
+      expect(
+        screen.getByText(
+          'Error whilst retrieving ruleset: Error fetching ruleset'
+        )
+      ).toBeVisible();
+    });
+
+    it('should display an error message when deleting a ruleset fails', async () => {
+      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+      jest.mocked(useRuleSet).mockReturnValue({
+        categoryRuleSets: [
+          {
+            categoryName: 'cat name',
+            id: mockId,
+            categoriesInfo: [
+              {
+                id: 'foo00',
+              },
+            ],
+            categoryId: 'catId',
+            isEnabled: true,
+            lastChanged: {
+              user: 'user',
+              date: '2021-01-01',
+            },
+            rules: mockMerchandisingRules,
+          },
+        ],
+        pagination: {
+          totalItems: 0,
+        },
+        refetchRuleSetList: () => jest.fn,
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        globalRuleSets: [],
+        error: '',
+        isLoading: false,
+      });
+      mockRuleSetDelete.error = 'Error deleting ruleset';
+
+      renderWithProviders(<FacetManagementPage />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Error whilst deleting ruleset: Error deleting ruleset'
+          )
+        ).toBeVisible();
+      });
+    });
+
+    it('should display an error when updating a ruleset fails', async () => {
+      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+      const mockCatId = 'catId';
+      jest.mocked(useRuleSet).mockReturnValue({
+        categoryRuleSets: [
+          {
+            categoryName: 'cat id',
+            categoriesInfo: [
+              {
+                id: 'foo00',
+              },
+            ],
+            id: mockId,
+            categoryId: mockCatId,
+            isEnabled: true,
+            lastChanged: {
+              user: 'user',
+              date: '2021-01-01',
+            },
+            rules: mockMerchandisingRules,
+            facets: [],
+          },
+        ],
+        pagination: {
+          totalItems: 0,
+        },
+        globalRuleSets: [],
+        refetchRuleSetList: () => jest.fn,
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        error: '',
+        isLoading: false,
+      });
+
+      mockUpdateRuleSet.error = 'Error updating ruleset';
+
+      renderWithProviders(<FacetManagementPage />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Error whilst updating ruleset: Error updating ruleset'
+          )
+        ).toBeVisible();
+      });
+    });
   });
 });

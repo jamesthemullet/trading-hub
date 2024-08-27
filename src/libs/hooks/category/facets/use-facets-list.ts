@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { FacetsList, search } from '@/libs/api';
 
+import { validateErrorResponse } from '../../utils/error';
+
 export const useFacetsList = (
   categoryId: string[],
   enabled: boolean = true
@@ -22,8 +24,8 @@ export const useFacetsList = (
         const facetList = response.data;
 
         setFacetsList(facetList);
-      } catch {
-        setError('Internal Server Error');
+      } catch (error) {
+        setError(validateErrorResponse(error));
       } finally {
         setIsLoading(false);
       }

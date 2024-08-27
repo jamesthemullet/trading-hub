@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
-import { Heading } from '@/libs/components';
+import { ErrorMessage, Heading } from '@/libs/components';
 import {
   useFacetsFilter,
   useFacetsList,
@@ -24,7 +24,12 @@ export const getServerSideProps: GetServerSideProps = (
 
 const Page = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { ruleSetDetail, isLoading, refreshRuleset } = useRuleSetDetail(id);
+  const {
+    ruleSetDetail,
+    isLoading,
+    refreshRuleset,
+    error: getRulesetDetailError,
+  } = useRuleSetDetail(id);
 
   const categoryId = useMemo(
     () => [ruleSetDetail.categoryId],
@@ -35,14 +40,18 @@ const Page = ({ id }: { id: string }) => {
     RuleSetFacetConfigWithId[] | []
   >([]);
 
-  const { facets } = useFacetsList(categoryId, !isLoading);
+  const { facets, error: getFacetListError } = useFacetsList(
+    categoryId,
+    !isLoading
+  );
+
   const [facetList, setFacetList] = useState<ReturnedFacet[]>([]);
   const [includedFacets, setIncludedFacets] = useState<ReturnedFacet[]>([]);
   const [orderedFacetList, setOrderedFacetList] = useState<ReturnedFacet[]>([]);
 
   const { search, setSearch, filteredFacets } =
     useFacetsFilter(orderedFacetList);
-  const { updateRuleSet } = useUpdateRuleSet();
+  const { updateRuleSet, error: updateRulesetError } = useUpdateRuleSet();
 
   useEffect(() => {
     if (ruleSetDetail.facets) {
@@ -106,7 +115,7 @@ const Page = ({ id }: { id: string }) => {
       },
       ruleSetId: id,
     });
-    if (response) {
+    if (response && response.status !== 'error') {
       return router.push(`/category/facets/`);
     }
   };
@@ -197,6 +206,22 @@ const Page = ({ id }: { id: string }) => {
   return (
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
+
+      {getRulesetDetailError && (
+        <ErrorMessage>
+          Error whilst retrieving ruleset: {getRulesetDetailError}
+        </ErrorMessage>
+      )}
+      {updateRulesetError && (
+        <ErrorMessage>
+          Error whilst updating ruleset: {updateRulesetError}
+        </ErrorMessage>
+      )}
+      {getFacetListError && (
+        <ErrorMessage>
+          Error whilst retrieving facet list: {getFacetListError}
+        </ErrorMessage>
+      )}
 
       {isLoading ? (
         <FacetsPanelSkeleton title="Facet Rule Editor" />

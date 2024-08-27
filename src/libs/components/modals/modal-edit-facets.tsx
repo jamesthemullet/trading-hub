@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import { AttributeValuesResponse, ReturnedGlobalFacet } from '@/libs/api';
+import { ErrorMessage } from '@/libs/components';
 import {
   useDebounce,
   useGetFacetAttributeValues,
@@ -268,11 +269,8 @@ export const ModalEditValues = ({
     return sortedValues;
   }, [editFacetValues, mergedOrderedBoostedValues, orderedExcludedValues]);
 
-  const { attributeValues } = useGetFacetAttributeValues(
-    facet.id,
-    searchQuery,
-    category
-  );
+  const { attributeValues, error: attributeValuesError } =
+    useGetFacetAttributeValues(facet.id, searchQuery, category);
 
   const attributeValuesWithIds = useMemo(() => {
     return attributeValues.map((value) => ({
@@ -647,6 +645,12 @@ export const ModalEditValues = ({
                   Facet value settings of: {facet.displayValue}
                 </Text>
               </HeadingContainer>
+
+              {attributeValuesError && (
+                <ErrorMessage>
+                  Error whilst retrieving values: {attributeValuesError}
+                </ErrorMessage>
+              )}
 
               <MergeAndSearchContainer>
                 <Text isStrong>All values listed</Text>

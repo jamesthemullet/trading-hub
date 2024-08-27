@@ -129,7 +129,7 @@ describe('useRuleSetDetail', () => {
           },
         },
       },
-      error: 'POST status 500',
+      error: 'Error undefined Bad error',
       isLoading: false,
       refreshRuleset: jest.fn(),
     };
@@ -150,7 +150,7 @@ describe('useRuleSetDetail', () => {
     const { result } = renderHook(() => useRuleSetDetail(mockCategoryId));
 
     await waitFor(() => {
-      expect(result.current.error).toEqual('POST status 500');
+      expect(result.current.error).toEqual('Error No data undefined');
     });
   });
 

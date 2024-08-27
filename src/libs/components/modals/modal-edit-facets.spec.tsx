@@ -231,6 +231,40 @@ describe('ModalEditValues', () => {
     );
   });
 
+  it('should display error message when retrieving attributes fails', async () => {
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      attributeValues: [],
+      error: 'Unknown error',
+      pagination: {
+        totalItems: 5,
+      },
+      refetch: jest.fn(),
+    });
+
+    await act(async () => {
+      renderWithProviders(
+        <ModalEditValues
+          onClose={() => {}}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            boosted: ['Silk', 'More Silk'],
+            excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
+          }}
+          facetType="global"
+          refreshData={() => jest.fn()}
+          category={undefined}
+        />
+      );
+    });
+
+    expect(
+      screen.getByText('Error whilst retrieving values: Unknown error')
+    ).toBeInTheDocument();
+  });
+
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
     const onCloseSpy = jest.fn();

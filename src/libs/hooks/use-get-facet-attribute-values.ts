@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import type { AttributeValuesResponse, Pagination } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { validateErrorResponse } from './utils/error';
+
 export const useGetFacetAttributeValues = (
   facetId: string,
   searchQuery?: string,
@@ -31,11 +33,11 @@ export const useGetFacetAttributeValues = (
           setPagination(result.data.pagination);
         }
       } catch {
-        setError(`Failed to get Facet Attribute Values`);
+        setError(validateErrorResponse(error));
       }
     };
     void asyncCall();
-  }, [facetId, categoryId, shouldRefetch, searchQuery]);
+  }, [facetId, categoryId, shouldRefetch, searchQuery, error]);
 
   return {
     attributeValues,

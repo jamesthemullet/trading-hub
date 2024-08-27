@@ -52,7 +52,9 @@ describe('useFacetsList', () => {
     const { result } = renderHook(() => useFacetsList([]));
 
     await waitFor(() => {
-      expect(result.current.error).toEqual('Internal Server Error');
+      expect(result.current.error).toEqual(
+        'Error Internal Server Error undefined'
+      );
     });
   });
 });
