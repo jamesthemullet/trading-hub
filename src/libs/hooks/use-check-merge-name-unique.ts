@@ -23,7 +23,7 @@ export const useCheckMergeNameUnique = () => {
 
       return {
         isUniqueValue: Boolean(
-          result.data.values.some(
+          !result.data.values.some(
             (item) => item.displayValue.trim() === searchQuery.trim()
           )
         ),
