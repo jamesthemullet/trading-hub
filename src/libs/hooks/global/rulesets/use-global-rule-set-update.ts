@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { RuleSet, search } from '@/libs/api';
 
+import { validateErrorResponse } from '../../utils/error';
+
 export const useGlobalRuleSetUpdate = () => {
   const [error, setError] = useState('');
 
@@ -17,7 +19,7 @@ export const useGlobalRuleSetUpdate = () => {
 
         return response.data;
       } catch (error) {
-        setError(`Failed to edit ruleset ${JSON.stringify(error)}`);
+        setError(validateErrorResponse(error));
       }
     },
     []

@@ -60,8 +60,6 @@ describe('useGlobalRuleSetDelete', () => {
     });
 
     expect(deleteRuleSetMock).toHaveBeenCalled();
-    expect(result.current.error).toEqual(
-      `Failed to delete ruleset {"data":null,"error":"not ok"}`
-    );
+    expect(result.current.error).toEqual(`Error undefined undefined`);
   });
 });

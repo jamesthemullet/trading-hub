@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { search } from '@/libs/api';
 
+import { validateErrorResponse } from '../../utils/error';
+
 export const useGlobalRuleSetDelete = () => {
   const [error, setError] = useState('');
 
@@ -15,7 +17,7 @@ export const useGlobalRuleSetDelete = () => {
 
         return response.data;
       } catch (error) {
-        setError(`Failed to delete ruleset ${JSON.stringify(error)}`);
+        setError(validateErrorResponse(error));
       }
     },
     []

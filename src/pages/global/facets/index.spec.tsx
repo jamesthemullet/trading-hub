@@ -25,19 +25,28 @@ jest.mock(
 
 const mockRuleSetDelete = jest.fn();
 const mockUpdateGlobalRuleSet = jest.fn();
+const updateGlobalRuleSet = {
+  saveGlobalRuleset: mockUpdateGlobalRuleSet,
+  error: '',
+  isSaving: true,
+};
+const deleteGlobalRuleSet = {
+  handleDelete: mockRuleSetDelete,
+  error: '',
+};
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useRuleSet: jest.fn(),
   useGetFacetAttributeValues: jest.fn(),
   useGlobalRuleSetDelete: () => {
-    return { handleDelete: mockRuleSetDelete };
+    return deleteGlobalRuleSet;
   },
 }));
 
 jest.mock('@/libs/hooks/global/rulesets/use-global-rule-set-update', () => ({
   useGlobalRuleSetUpdate: () => {
-    return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
+    return updateGlobalRuleSet;
   },
 }));
 
@@ -244,5 +253,92 @@ describe('Global Facet Management', () => {
     });
     await user.click(screen.getByLabelText('Delete rule'));
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
+  });
+
+  describe('Error display', () => {
+    it('should display an error message when fetching the global ruleset fails', async () => {
+      jest.mocked(useRuleSet).mockReturnValue({
+        globalRuleSets: [],
+        categoryRuleSets: [],
+        pagination: {
+          totalItems: 0,
+        },
+        refetchRuleSetList: () => jest.fn,
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        error: 'An error occurred',
+        isLoading: false,
+      });
+
+      renderWithProviders(<FacetManagementPage />);
+
+      expect(
+        screen.getByText('Error whilst retrieving ruleset: An error occurred')
+      ).toBeVisible();
+    });
+
+    it('should display an error message when updating a global ruleset fails', async () => {
+      updateGlobalRuleSet.error = 'An error occurred';
+      jest.mocked(useRuleSet).mockReturnValue({
+        globalRuleSets: [
+          {
+            id: mockId,
+            isEnabled: true,
+            lastChanged: {
+              user: 'user',
+              date: '2021-01-01',
+            },
+            rules: mockMerchandisingRules,
+          },
+        ],
+        categoryRuleSets: [],
+        pagination: {
+          totalItems: 0,
+        },
+        refetchRuleSetList: () => jest.fn,
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        error: '',
+        isLoading: false,
+      });
+
+      renderWithProviders(<FacetManagementPage />);
+
+      expect(
+        screen.getByText('Error whilst updating ruleset: An error occurred')
+      ).toBeVisible();
+    });
+
+    it('should display an error message when deleting a global ruleset fails', async () => {
+      deleteGlobalRuleSet.error = 'An error occurred';
+      jest.mocked(useRuleSet).mockReturnValue({
+        globalRuleSets: [
+          {
+            id: mockId,
+            isEnabled: true,
+            lastChanged: {
+              user: 'user',
+              date: '2021-01-01',
+            },
+            rules: mockMerchandisingRules,
+          },
+        ],
+        categoryRuleSets: [],
+        pagination: {
+          totalItems: 0,
+        },
+        refetchRuleSetList: () => jest.fn,
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        error: '',
+        isLoading: false,
+      });
+
+      renderWithProviders(<FacetManagementPage />);
+
+      expect(
+        screen.getByText('Error whilst deleting ruleset: An error occurred')
+      ).toBeVisible();
+    });
   });
 });

@@ -81,8 +81,6 @@ describe('useGlobalRuleSetDelete', () => {
       await result.current.saveGlobalRuleset({ ruleSetId, ruleSet });
     });
 
-    expect(result.current.error).toEqual(
-      `Failed to edit ruleset {"data":null,"error":"not ok"}`
-    );
+    expect(result.current.error).toEqual('Error undefined undefined');
   });
 });

@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import {
   Button,
   DataTable,
+  ErrorMessage,
   Heading,
   Search,
   SectionHeader,
@@ -35,14 +36,20 @@ const FacetManagementPage = () => {
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const { handleDelete } = useGlobalRuleSetDelete();
-  const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
+  const { handleDelete, error: deleteRulesetError } = useGlobalRuleSetDelete();
+  const { saveGlobalRuleset, error: updateRulesetError } =
+    useGlobalRuleSetUpdate();
   const { createGlobalRuleSet } = useGlobalRuleSetCreate();
   const router = useRouter();
 
   const currentPageIndex = currentPage - 1;
 
-  const { globalRuleSets, pagination, refetchRuleSetList } = useRuleSet(
+  const {
+    globalRuleSets,
+    pagination,
+    refetchRuleSetList,
+    error: getRulesetError,
+  } = useRuleSet(
     searchQuery,
     currentPageIndex * currentPageSize,
     currentPageSize,
@@ -105,6 +112,24 @@ const FacetManagementPage = () => {
           'Global Facet Management',
         ]}
       />
+
+      {getRulesetError && (
+        <ErrorMessage>
+          Error whilst retrieving ruleset: {getRulesetError}
+        </ErrorMessage>
+      )}
+
+      {updateRulesetError && (
+        <ErrorMessage>
+          Error whilst updating ruleset: {updateRulesetError}
+        </ErrorMessage>
+      )}
+
+      {deleteRulesetError && (
+        <ErrorMessage>
+          Error whilst deleting ruleset: {deleteRulesetError}
+        </ErrorMessage>
+      )}
 
       <PageNameLabel>Global Facet Management</PageNameLabel>
       <SectionWrapper>
