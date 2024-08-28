@@ -116,7 +116,7 @@ describe('useGlobalRuleSetDetail', () => {
           },
         },
       },
-      error: 'POST status 500',
+      error: 'Error undefined Bad error',
       isLoading: false,
     };
 

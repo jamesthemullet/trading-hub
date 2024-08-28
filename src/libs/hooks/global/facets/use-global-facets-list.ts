@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { FacetsList, search } from '@/libs/api';
 
+import { validateErrorResponse } from '../../utils/error';
+
 export const useGlobalFacetsList = () => {
   const [shouldRefetch, refetch] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -19,14 +21,14 @@ export const useGlobalFacetsList = () => {
 
         setFacetsList(facetList);
       } catch {
-        setError('Internal Server Error');
+        setError(validateErrorResponse(error));
       } finally {
         setIsLoading(false);
       }
     };
     void asyncCall();
     setIsLoading(true);
-  }, [shouldRefetch]);
+  }, [shouldRefetch, error]);
 
   return {
     facets: facetsList.facets,

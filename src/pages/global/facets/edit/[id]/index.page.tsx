@@ -27,12 +27,18 @@ type PageProps = {
 };
 
 const Page = ({ id }: PageProps) => {
-  const { facets, isLoading, onRefreshFacetList } = useGlobalFacetsList();
+  const {
+    facets,
+    isLoading,
+    onRefreshFacetList,
+    error: globalFacetsListError,
+  } = useGlobalFacetsList();
 
   const router = useRouter();
   const [error, setError] = useState<string | undefined>();
 
-  const { globalRuleSet } = useGlobalRuleSetDetail(id);
+  const { globalRuleSet, error: globalRulesetError } =
+    useGlobalRuleSetDetail(id);
 
   const [globalFacetsList, setGlobalFacetsList] =
     useState<ReturnedFacet[]>(facets);
@@ -49,6 +55,9 @@ const Page = ({ id }: PageProps) => {
   }, [facets]);
 
   useEffect(() => {
+    if (globalRulesetError !== '') {
+      return;
+    }
     const includedFacets = facetsFromGlobalRuleSet
       .map((facet) => {
         const localFacet = globalFacetsList.find(
@@ -63,7 +72,7 @@ const Page = ({ id }: PageProps) => {
         !facetsFromGlobalRuleSet.some((ruleFacet) => ruleFacet.id === facet.id)
     );
     setOrderedLocalFacetData([...includedFacets, ...excludedFacets]);
-  }, [globalFacetsList, facetsFromGlobalRuleSet]);
+  }, [globalFacetsList, facetsFromGlobalRuleSet, globalRulesetError]);
 
   useEffect(() => {
     if (globalRuleSet.facets) {
@@ -74,7 +83,8 @@ const Page = ({ id }: PageProps) => {
   const { setSearch, filteredFacets } = useFacetsFilter(orderedLocalFacetData);
 
   const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
-  const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
+  const { saveGlobalRuleset, error: savingGlobalRulesetError } =
+    useGlobalRuleSetUpdate();
 
   const handleSave = async () => {
     const response = await saveGlobalRuleset({
@@ -161,6 +171,24 @@ const Page = ({ id }: PageProps) => {
       <Heading
         breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
       />
+
+      {globalFacetsListError && (
+        <ErrorMessage>
+          Error whilst retrieving global facet list: {globalFacetsListError}
+        </ErrorMessage>
+      )}
+
+      {globalRulesetError && (
+        <ErrorMessage>
+          Error whilst retrieving global ruleset: {globalRulesetError}
+        </ErrorMessage>
+      )}
+
+      {savingGlobalRulesetError && (
+        <ErrorMessage>
+          Error whilst saving global ruleset: {savingGlobalRulesetError}
+        </ErrorMessage>
+      )}
 
       {isLoading ? (
         <FacetsPanelSkeleton title="Global Facet Rule Editor" />

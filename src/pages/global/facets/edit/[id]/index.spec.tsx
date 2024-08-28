@@ -24,6 +24,12 @@ jest.mock('next/router', () => ({
 const mockUpdateGlobalFacet = jest.fn();
 const mockUpdateGlobalRuleSet = jest.fn().mockReturnValue(true);
 
+const saveGlobalRuleset = {
+  saveGlobalRuleset: mockUpdateGlobalRuleSet,
+  isSaving: true,
+  error: '',
+};
+
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGetCategories: jest.fn(),
@@ -34,7 +40,7 @@ jest.mock('@/libs/hooks', () => ({
     return { handleGlobalFacetUpdate: mockUpdateGlobalFacet };
   },
   useGlobalRuleSetUpdate: () => {
-    return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
+    return saveGlobalRuleset;
   },
 }));
 
@@ -393,5 +399,71 @@ describe('Global Facet Management Editing', () => {
     }
 
     expect((await result.props).id).toBe(mockPageId);
+  });
+
+  describe('Error display', () => {
+    it('should display an error if the facet list fails to load, and also not show the facet list', async () => {
+      jest.mocked(useGlobalFacetsList).mockReturnValue({
+        isLoading: false,
+        facets: [],
+        error: 'Failed to load facets',
+        onRefreshFacetList: jest.fn(),
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        await screen.findByText(
+          'Error whilst retrieving global facet list: Failed to load facets'
+        )
+      ).toBeVisible();
+
+      expect(screen.queryByText('color')).not.toBeInTheDocument();
+    });
+
+    it('should display an error if the rule set fails to load', async () => {
+      jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
+        globalRuleSet: {
+          id: '123',
+          isEnabled: true,
+          lastChanged: {
+            date: '2021-01-01',
+            user: 'Test user',
+          },
+          rules: mockMerchandisingRules,
+          facets: [
+            { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' },
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+            },
+            { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87' },
+          ],
+        },
+        error: 'Failed to load rule set',
+        isLoading: false,
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        await screen.findByText(
+          'Error whilst retrieving global ruleset: Failed to load rule set'
+        )
+      ).toBeVisible();
+    });
+
+    it('should display an error if the rule set fails to update', async () => {
+      saveGlobalRuleset.error = 'Failed to update rule set';
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+      expect(
+        await screen.findByText(
+          'Error whilst saving global ruleset: Failed to update rule set'
+        )
+      ).toBeVisible();
+    });
   });
 });

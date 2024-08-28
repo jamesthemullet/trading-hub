@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ReturnedGlobalRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { validateErrorResponse } from '../../utils/error';
+
 export const useGlobalRuleSetDetail = (id: string) => {
   const api = useMemo(() => search(), []);
   const [globalRuleSet, setGlobalRuleSet] = useState<ReturnedGlobalRuleSet>({
@@ -43,12 +45,7 @@ export const useGlobalRuleSetDetail = (id: string) => {
         setGlobalRuleSet(data);
         setError('');
       } catch (error) {
-        console.log('error', error);
-        if (error && typeof error === 'object' && 'status' in error) {
-          setError(`POST status ${error.status}`);
-          setIsLoading(false);
-          return;
-        }
+        setError(validateErrorResponse(error));
       }
       setIsLoading(false);
     };
