@@ -139,11 +139,7 @@ const RuleSets = () => {
       <PageNameLabel>Category ranking rules</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>
-          {isLoading ? (
-            <Skeleton height={38} width={336} />
-          ) : (
-            <Search onChange={(e) => handleSearch(e.target.value)} />
-          )}
+          <Search onChange={(e) => handleSearch(e.target.value)} />
           <NewButton>
             {isLoading ? (
               <Skeleton height={33} width={110} />
