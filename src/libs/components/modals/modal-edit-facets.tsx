@@ -190,9 +190,9 @@ export const ModalEditValues = ({
 
   const [mergedOrderedBoostedValues, setMergedOrderedBoostedValues] = useState<
     string[]
-  >([]);
+  >(facet.boosted || []);
   const [orderedExcludedValues, setOrderedExcludedValues] = useState<string[]>(
-    []
+    facet.excludedValues || []
   );
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -225,49 +225,6 @@ export const ModalEditValues = ({
       setHasSelectedAllRows(false);
     }
   };
-
-  const filteredEditFacetValues = useMemo(() => {
-    const sortedValues = [...editFacetValues].sort((a, b) => {
-      if (
-        mergedOrderedBoostedValues.includes(a.id) &&
-        !mergedOrderedBoostedValues.includes(b.id)
-      ) {
-        return -1;
-      }
-      if (
-        !mergedOrderedBoostedValues.includes(a.id) &&
-        mergedOrderedBoostedValues.includes(b.id)
-      ) {
-        return 1;
-      }
-      if (
-        mergedOrderedBoostedValues.includes(a.id) &&
-        mergedOrderedBoostedValues.includes(b.id)
-      ) {
-        return (
-          mergedOrderedBoostedValues.indexOf(a.id) -
-          mergedOrderedBoostedValues.indexOf(b.id)
-        );
-      }
-
-      if (
-        orderedExcludedValues.includes(a.id) &&
-        !orderedExcludedValues?.includes(b.id)
-      ) {
-        return 1;
-      }
-      if (
-        !orderedExcludedValues?.includes(a.id) &&
-        orderedExcludedValues?.includes(b.id)
-      ) {
-        return -1;
-      }
-
-      return 0;
-    });
-
-    return sortedValues;
-  }, [editFacetValues, mergedOrderedBoostedValues, orderedExcludedValues]);
 
   const { attributeValues, error: attributeValuesError } =
     useGetFacetAttributeValues(facet.id, searchQuery, category);
@@ -314,10 +271,13 @@ export const ModalEditValues = ({
       (value) =>
         attributeValuesWithIds.find((val) => val.displayValue === value)?.id
     );
-    const boosted = attributeValuesWithIds.filter((value) =>
-      mappedBoosted?.includes(value.id)
-    );
-    let mergedBoosted = [...boosted.map((value) => value.id)];
+
+    const boosted = mappedBoosted
+      ? mappedBoosted.map((val) =>
+          attributeValuesWithIds.find((attr) => attr.displayValue === val)
+        )
+      : [];
+    let mergedBoosted = boosted.filter((val) => !!val).map((value) => value.id);
 
     const mappedExcluded = facet.excludedValues?.map(
       (value) =>
@@ -351,6 +311,7 @@ export const ModalEditValues = ({
           mergedBoosted = mergedBoosted
             .filter((id) => !restOfIds?.includes(id))
             .map((id) => (id === firstId ? newId : id));
+
           mergedExcluded = mergedExcluded
             .filter((id) => !restOfIds?.includes(id))
             .map((id) => {
@@ -627,6 +588,197 @@ export const ModalEditValues = ({
     onClose();
   };
 
+  const includedFacetValues = editFacetValues
+    .filter((val) => mergedOrderedBoostedValues.includes(val.id))
+    .sort(
+      (a, b) =>
+        mergedOrderedBoostedValues.indexOf(a.id) -
+        mergedOrderedBoostedValues.indexOf(b.id)
+    );
+
+  const defaultFacetValues = editFacetValues.filter(
+    (val) =>
+      !orderedExcludedValues.includes(val.id) &&
+      !mergedOrderedBoostedValues.includes(val.id)
+  );
+
+  const excludedFacetValues = editFacetValues.filter((val) =>
+    orderedExcludedValues.includes(val.id)
+  );
+
+  const Row = (facet: AttributeValue, index: number) => {
+    const { displayValue, attribute, mergedValues, id } = facet;
+    const isSelected = selectedFacetAttributes.includes(facet);
+    const shouldNotMerge = !!selectedFacetAttributes.find(
+      (selectedFacet) =>
+        selectedFacet !== facet &&
+        selectedFacet.mergedValues?.length &&
+        facet.mergedValues?.length
+    );
+
+    return (
+      <FacetAttributeValuesTableRow
+        key={`attribute-${displayValue}-${id}`}
+        isPinned={mergedOrderedBoostedValues.includes(id)}
+        isExcluded={orderedExcludedValues?.includes(id)}
+        data-testid="rows"
+        aria-label={`attribute ${index} ${attribute}`}
+      >
+        <Col>
+          {facetType === 'global' && (
+            <input
+              type="checkbox"
+              disabled={shouldNotMerge || attributesBeingMerged.length > 0}
+              checked={isSelected}
+              onChange={() =>
+                isSelected
+                  ? removeFromSelectedRow(facet)
+                  : addToSelectedRow(facet)
+              }
+              aria-label={`Select ${displayValue} to merge`}
+            />
+          )}
+        </Col>
+        <Col>
+          <AttributeWrapper>
+            <Image
+              width={20}
+              height={20}
+              src="/trading-hub/asset/icon-attribute.svg"
+              alt=""
+            />
+            {mergedValues && mergedValues.length > 1 ? (
+              <div>
+                <Text isStrong>Merged Value Group</Text>
+
+                {mergedValues.map((mergedId, index) => {
+                  const mergedDisplayValue = unmergedFacetValues.find(
+                    (val) => val.id === mergedId
+                  )?.displayValue;
+
+                  return (
+                    <MergedValue key={`${index}-${mergedDisplayValue}`}>
+                      <Text>{mergedDisplayValue}</Text>{' '}
+                      {facetType === 'global' && (
+                        <RemoveMergedFacet
+                          onClick={() => handleDemerge(mergedId, id)}
+                          aria-label={`Remove merged facet for ${mergedDisplayValue}`}
+                          disabled={attributesBeingMerged.length > 0}
+                        />
+                      )}
+                    </MergedValue>
+                  );
+                })}
+              </div>
+            ) : (
+              <Text>{attribute}</Text>
+            )}
+          </AttributeWrapper>
+        </Col>
+
+        <FlexColumnCol>
+          {facetType === 'global' &&
+          mergedValues &&
+          (attributesBeingMerged.length === 0 ||
+            attributesBeingMerged.includes(id.replace('merged-', ''))) ? (
+            <EditableLabel
+              displayValue={displayValue}
+              onDisplayValueChange={(newValue) => {
+                if (
+                  newValue === defaultMergedDisplayValue ||
+                  newValue.trim() === ''
+                ) {
+                  setIsSaveDisabled(true);
+                  setError('Please name your merge to continue');
+                  setDisplayValueWithError(displayValue);
+                  return;
+                }
+
+                checkNameUnique(newValue, id);
+              }}
+              shouldOpenFromParent={displayValue === defaultMergedDisplayValue}
+              error={error}
+              disallowedValues={disallowedValues}
+            />
+          ) : (
+            <Text>{displayValue}</Text>
+          )}
+          {error &&
+            attributesBeingMerged.includes(id.replace('merged-', '')) &&
+            (displayValueWithError === displayValue ||
+              disallowedValues.includes(displayValue)) && (
+              <StyledError>{error}</StyledError>
+            )}
+        </FlexColumnCol>
+
+        <Col>
+          {mergedOrderedBoostedValues.includes(id) && (
+            <OrderArrowsContainer>
+              <ArrowButton
+                direction="up"
+                aria-label={`Move ${attribute} row up`}
+                onClick={() => {
+                  setMergedOrderedBoostedValues((prev) => {
+                    const i = prev.indexOf(id);
+
+                    const newOrdered = [...prev];
+
+                    return [
+                      ...newOrdered.slice(0, i - 1),
+                      id,
+                      newOrdered[i - 1],
+                      ...newOrdered.slice(i + 1),
+                    ];
+                  });
+                  setIsSaveDisabled(false);
+                }}
+                isDisabled={index === 0 || attributesBeingMerged.length > 0}
+              />
+
+              <ArrowButton
+                direction="down"
+                aria-label={`Move ${attribute} row down`}
+                onClick={() => {
+                  setMergedOrderedBoostedValues((prev) => {
+                    const i = prev.indexOf(id);
+
+                    const newOrdered = [...prev];
+
+                    return [
+                      ...newOrdered.slice(0, i),
+                      newOrdered[i + 1],
+                      id,
+                      ...newOrdered.slice(i + 2),
+                    ];
+                  });
+                  setIsSaveDisabled(false);
+                }}
+                isDisabled={
+                  index === includedFacetValues.length - 1 ||
+                  attributesBeingMerged.length > 0
+                }
+              />
+            </OrderArrowsContainer>
+          )}
+        </Col>
+
+        <Col>
+          <FacetOrderDropdown
+            status={
+              mergedOrderedBoostedValues.includes(id)
+                ? 'included'
+                : orderedExcludedValues.includes(id)
+                  ? 'excluded'
+                  : undefined
+            }
+            onChange={(status) => handleStatusChange(id, status)}
+            attribute={attribute}
+          />
+        </Col>
+      </FacetAttributeValuesTableRow>
+    );
+  };
+
   return (
     <Modal.Root
       opened={true}
@@ -690,9 +842,7 @@ export const ModalEditValues = ({
                                 if (hasSelectedAllRows) {
                                   setSelectedFacetAttributes([]);
                                 } else {
-                                  setSelectedFacetAttributes(
-                                    filteredEditFacetValues
-                                  );
+                                  setSelectedFacetAttributes(editFacetValues);
                                 }
                               }}
                               disabled={attributesBeingMerged.length > 0}
@@ -708,196 +858,9 @@ export const ModalEditValues = ({
 
             <BodyContainer>
               <ModalAttributesTable>
-                {filteredEditFacetValues.map((facet, index) => {
-                  const { displayValue, attribute, mergedValues, id } = facet;
-                  const isSelected = selectedFacetAttributes.includes(facet);
-                  const shouldNotMerge = !!selectedFacetAttributes.find(
-                    (selectedFacet) =>
-                      selectedFacet !== facet &&
-                      selectedFacet.mergedValues?.length &&
-                      facet.mergedValues?.length
-                  );
-
-                  return (
-                    <FacetAttributeValuesTableRow
-                      key={`attribute-${displayValue}-${id}`}
-                      isPinned={mergedOrderedBoostedValues.includes(id)}
-                      isExcluded={orderedExcludedValues?.includes(id)}
-                      data-testid="rows"
-                      aria-label={`attribute ${index} ${attribute}`}
-                    >
-                      <Col>
-                        {facetType === 'global' && (
-                          <input
-                            type="checkbox"
-                            disabled={
-                              shouldNotMerge || attributesBeingMerged.length > 0
-                            }
-                            checked={isSelected}
-                            onChange={() =>
-                              isSelected
-                                ? removeFromSelectedRow(facet)
-                                : addToSelectedRow(facet)
-                            }
-                            aria-label={`Select ${displayValue} to merge`}
-                          />
-                        )}
-                      </Col>
-                      <Col>
-                        <AttributeWrapper>
-                          <Image
-                            width={20}
-                            height={20}
-                            src="/trading-hub/asset/icon-attribute.svg"
-                            alt=""
-                          />
-                          {mergedValues && mergedValues.length > 1 ? (
-                            <div>
-                              <Text isStrong>Merged Value Group</Text>
-
-                              {mergedValues.map((mergedId, index) => {
-                                const mergedDisplayValue =
-                                  unmergedFacetValues.find(
-                                    (val) => val.id === mergedId
-                                  )?.displayValue;
-
-                                return (
-                                  <MergedValue
-                                    key={`${index}-${mergedDisplayValue}`}
-                                  >
-                                    <Text>{mergedDisplayValue}</Text>{' '}
-                                    {facetType === 'global' && (
-                                      <RemoveMergedFacet
-                                        onClick={() =>
-                                          handleDemerge(mergedId, id)
-                                        }
-                                        aria-label={`Remove merged facet for ${mergedDisplayValue}`}
-                                        disabled={
-                                          attributesBeingMerged.length > 0
-                                        }
-                                      />
-                                    )}
-                                  </MergedValue>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <Text>{attribute}</Text>
-                          )}
-                        </AttributeWrapper>
-                      </Col>
-
-                      <FlexColumnCol>
-                        {facetType === 'global' &&
-                        mergedValues &&
-                        (attributesBeingMerged.length === 0 ||
-                          attributesBeingMerged.includes(
-                            id.replace('merged-', '')
-                          )) ? (
-                          <EditableLabel
-                            displayValue={displayValue}
-                            onDisplayValueChange={(newValue) => {
-                              if (
-                                newValue === defaultMergedDisplayValue ||
-                                newValue.trim() === ''
-                              ) {
-                                setIsSaveDisabled(true);
-                                setError('Please name your merge to continue');
-                                setDisplayValueWithError(displayValue);
-                                return;
-                              }
-
-                              checkNameUnique(newValue, id);
-                            }}
-                            shouldOpenFromParent={
-                              displayValue === defaultMergedDisplayValue
-                            }
-                            error={error}
-                            disallowedValues={disallowedValues}
-                          />
-                        ) : (
-                          <Text>{displayValue}</Text>
-                        )}
-                        {error &&
-                          attributesBeingMerged.includes(
-                            id.replace('merged-', '')
-                          ) &&
-                          (displayValueWithError === displayValue ||
-                            disallowedValues.includes(displayValue)) && (
-                            <StyledError>{error}</StyledError>
-                          )}
-                      </FlexColumnCol>
-
-                      <Col>
-                        {mergedOrderedBoostedValues.includes(id) && (
-                          <OrderArrowsContainer>
-                            <ArrowButton
-                              direction="up"
-                              aria-label={`Move ${attribute} row up`}
-                              onClick={() => {
-                                setMergedOrderedBoostedValues((prev) => {
-                                  const i = prev.indexOf(id);
-
-                                  const newOrdered = [...prev];
-
-                                  return [
-                                    ...newOrdered.slice(0, i - 1),
-                                    id,
-                                    newOrdered[i - 1],
-                                    ...newOrdered.slice(i + 1),
-                                  ];
-                                });
-                                setIsSaveDisabled(false);
-                              }}
-                              isDisabled={
-                                index === 0 || attributesBeingMerged.length > 0
-                              }
-                            />
-
-                            <ArrowButton
-                              direction="down"
-                              aria-label={`Move ${attribute} row down`}
-                              onClick={() => {
-                                setMergedOrderedBoostedValues((prev) => {
-                                  const i = prev.indexOf(id);
-
-                                  const newOrdered = [...prev];
-
-                                  return [
-                                    ...newOrdered.slice(0, i),
-                                    newOrdered[i + 1],
-                                    id,
-                                    ...newOrdered.slice(i + 2),
-                                  ];
-                                });
-                                setIsSaveDisabled(false);
-                              }}
-                              isDisabled={
-                                index ===
-                                  mergedOrderedBoostedValues.length - 1 ||
-                                attributesBeingMerged.length > 0
-                              }
-                            />
-                          </OrderArrowsContainer>
-                        )}
-                      </Col>
-
-                      <Col>
-                        <FacetOrderDropdown
-                          status={
-                            mergedOrderedBoostedValues.includes(id)
-                              ? 'included'
-                              : orderedExcludedValues.includes(id)
-                                ? 'excluded'
-                                : undefined
-                          }
-                          onChange={(status) => handleStatusChange(id, status)}
-                          attribute={attribute}
-                        />
-                      </Col>
-                    </FacetAttributeValuesTableRow>
-                  );
-                })}
+                {includedFacetValues.map(Row)}
+                {defaultFacetValues.map(Row)}
+                {excludedFacetValues.map(Row)}
               </ModalAttributesTable>
 
               <FilteredResultsPanel filteredFacets={editFacetValues.length} />
