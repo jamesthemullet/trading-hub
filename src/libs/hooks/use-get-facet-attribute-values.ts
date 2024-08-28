@@ -24,7 +24,7 @@ export const useGetFacetAttributeValues = (
           await search().betaMerchandisingFacetAttributeValuesDetail(facetId, {
             categoryId,
             q: searchQuery,
-            start: 1,
+            start: 0,
             rows: 100,
           });
 

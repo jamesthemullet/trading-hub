@@ -16,7 +16,7 @@ export const useCheckMergeNameUnique = () => {
         {
           categoryId,
           q: searchQuery,
-          start: 1,
+          start: 0,
           rows: 100,
         }
       );
