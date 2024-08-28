@@ -60,8 +60,8 @@ type Response = {
 
 const responses: Response[][] = [
   [{ status: 200, body: { hello: 'world', products: [] } }],
-  [{ status: 500, body: { hello: 'error' }, envSettings: {} }],
-  [{ status: 500, body: { hello: 'error' } }],
+  [{ status: 500, body: { message: 'error', status: '500' }, envSettings: {} }],
+  [{ status: 500, body: { message: 'error', status: '500' } }],
   [{ status: 200, body: { rules: {} } }],
 ];
 
@@ -270,7 +270,10 @@ describe('Search api proxy', () => {
       jest.mocked(validateAndMockResponse).mockImplementation(() => {
         return { error: 'No url or method found in request' };
       });
-      const response = responses[1][0];
+      const response = {
+        status: 200,
+        body: { someNonExistingSchema: 123 },
+      };
       const res = await performGet(
         '/search/beta/merchandising/facet/1',
         response
@@ -279,7 +282,26 @@ describe('Search api proxy', () => {
       expect(httpGet).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'No url or method found in request',
+        message: 'No url or method found in request',
+        status: '500',
+      });
+    });
+
+    it('if 500 is not conformant to schema error should be translated to schema', async () => {
+      const response = {
+        status: 500,
+        body: { someNonStandardProperty: 'error' },
+      };
+      const res = await performGet(
+        '/search/beta/merchandising/facet/1',
+        response
+      );
+
+      expect(httpGet).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        message: '{"someNonStandardProperty":"error"}',
+        status: '500',
       });
     });
 

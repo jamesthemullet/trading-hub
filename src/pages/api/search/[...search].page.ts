@@ -1,3 +1,5 @@
+import { ErrorResponse } from '@/libs/api';
+
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
@@ -5,6 +7,21 @@ import { validateAndMockResponse as validateOrMockResponse } from '../merchandis
 
 export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
+};
+
+export const isErrorSchemaCompatible = (err: unknown): err is ErrorResponse => {
+  if (
+    err &&
+    typeof err === 'object' &&
+    err &&
+    'message' in err &&
+    'status' in err &&
+    typeof err.message === 'string' &&
+    typeof err.status === 'string'
+  ) {
+    return true;
+  }
+  return false;
 };
 
 const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -46,9 +63,28 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     jsonText = await response.text();
     jsonBody = JSON.parse(jsonText);
 
+    if (!response.ok) {
+      console.error(
+        'Error fetching from search beta',
+        response.status,
+        response.statusText
+      );
+    }
+
+    if (response.status === 500) {
+      if (isErrorSchemaCompatible(jsonBody)) {
+        return res.status(500).json(jsonBody);
+      }
+      // 500 can come from ApiGee or other sources, so we need to translate it to our error schema
+      return res.status(500).json({
+        message: jsonText,
+        status: `${response.status}`,
+      });
+    }
+
     const result = validateOrMockResponse(req, response.status, jsonBody);
     if ('error' in result) {
-      return res.status(500).json({ error: result.error });
+      return res.status(500).json({ message: result.error, status: '500' });
     }
     jsonBody = result.updatedJsonBody;
     status = result.updatedStatus;
@@ -64,14 +100,6 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
           : `Failed to fetch ${jsonText}`,
       status: response.status,
     });
-  }
-
-  if (!response.ok) {
-    console.error(
-      'Error fetching from search beta',
-      response.status,
-      response.statusText
-    );
   }
 
   return res.status(status).json(req.method === 'DELETE' ? {} : jsonBody);
