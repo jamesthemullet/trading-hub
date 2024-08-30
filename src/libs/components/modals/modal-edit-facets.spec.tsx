@@ -7,7 +7,11 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import { ModalEditValues } from './modal-edit-facets';
 
-const mockUpdateGlobalFacet = jest.fn(() => Promise.resolve());
+const mockUpdateGlobalFacet = jest.fn(() => Promise.resolve({}));
+const updateGlobalFacet = {
+  handleGlobalFacetUpdate: mockUpdateGlobalFacet,
+  error: '',
+};
 const mockUpdateRuleSet = jest.fn();
 const mockUseCheckMergeNameUnique = {
   error: '',
@@ -18,7 +22,7 @@ jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGetFacetAttributeValues: jest.fn().mockReturnValue(null),
   useGlobalFacetUpdate: () => {
-    return { handleGlobalFacetUpdate: mockUpdateGlobalFacet };
+    return updateGlobalFacet;
   },
 }));
 
@@ -1530,5 +1534,33 @@ describe('ModalEditValues', () => {
         screen.getByRole('button', { name: 'Save changes to attributes' })
       ).toBeDisabled();
     });
+  });
+
+  it('should display error message when updating facet fails', async () => {
+    updateGlobalFacet.error = 'Failed to update facet';
+    renderWithProviders(
+      <ModalEditValues
+        onClose={() => {}}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        }}
+        facetType="global"
+        refreshData={() => jest.fn()}
+        category={undefined}
+      />
+    );
+
+    expect(
+      screen.getByText('Error whilst updating facet: Failed to update facet')
+    ).toBeVisible();
   });
 });

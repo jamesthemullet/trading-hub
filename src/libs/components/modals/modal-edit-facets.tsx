@@ -205,7 +205,8 @@ export const ModalEditValues = ({
     setDisallowedValues([defaultMergedDisplayValue]);
   }, []);
 
-  const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
+  const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
+    useGlobalFacetUpdate();
 
   const addToSelectedRow = (attribute: AttributeValue) => {
     const updatedSelectedFacetAttributes = [
@@ -554,38 +555,32 @@ export const ModalEditValues = ({
       })
       .flat();
 
-    switch (facetType) {
-      case 'global':
-        await handleGlobalFacetUpdate({
-          facetId: facet.id,
-          data: {
-            ...facet,
-            boosted: unmergedOrderedBoostedValues,
-            excludedValues: unmergedOrderedExcludedValues,
-            merged: mergedValues,
-          },
-        }).then(() => {
-          if (refreshData) {
-            refreshData();
-          }
-        });
-        break;
+    if (facetType === 'global') {
+      const response = await handleGlobalFacetUpdate({
+        facetId: facet.id,
+        data: {
+          ...facet,
+          boosted: unmergedOrderedBoostedValues,
+          excludedValues: unmergedOrderedExcludedValues,
+          merged: mergedValues,
+        },
+      });
 
-      case 'category':
-        // there will always be updatedValues for category
-        // istanbul ignore next
-        if (!updatedValues) {
-          return;
-        }
-        updatedValues(
-          unmergedOrderedBoostedValues,
-          unmergedOrderedExcludedValues,
-          facet.id
-        );
-        break;
+      if (response && response.status !== 'error' && refreshData) {
+        refreshData();
+      }
+    } else if (facetType === 'category') {
+      // istanbul ignore next
+      if (!updatedValues) {
+        return;
+      }
+      updatedValues(
+        unmergedOrderedBoostedValues,
+        unmergedOrderedExcludedValues,
+        facet.id
+      );
+      onClose();
     }
-
-    onClose();
   };
 
   const includedFacetValues = editFacetValues
@@ -801,6 +796,12 @@ export const ModalEditValues = ({
               {attributeValuesError && (
                 <ErrorMessage>
                   Error whilst retrieving values: {attributeValuesError}
+                </ErrorMessage>
+              )}
+
+              {updateGlobalFacetError && (
+                <ErrorMessage>
+                  Error whilst updating facet: {updateGlobalFacetError}
                 </ErrorMessage>
               )}
 

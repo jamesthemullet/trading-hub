@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { FacetConfig, search } from '@/libs/api';
 
+import { validateErrorResponse } from '../../utils/error';
+
 export const useGlobalFacetUpdate = () => {
   const [error, setError] = useState('');
 
@@ -12,10 +14,10 @@ export const useGlobalFacetUpdate = () => {
           facetId,
           data
         );
-
         return response.data;
-      } catch {
-        setError('Internal Server Error');
+      } catch (error) {
+        setError(validateErrorResponse(error));
+        return { status: 'error' };
       }
     },
     []

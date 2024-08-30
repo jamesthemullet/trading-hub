@@ -35,7 +35,6 @@ const Page = ({ id }: PageProps) => {
   } = useGlobalFacetsList();
 
   const router = useRouter();
-  const [error, setError] = useState<string | undefined>();
 
   const { globalRuleSet, error: globalRulesetError } =
     useGlobalRuleSetDetail(id);
@@ -82,7 +81,8 @@ const Page = ({ id }: PageProps) => {
 
   const { setSearch, filteredFacets } = useFacetsFilter(orderedLocalFacetData);
 
-  const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
+  const { handleGlobalFacetUpdate, error: updatingGlobalFacetError } =
+    useGlobalFacetUpdate();
   const { saveGlobalRuleset, error: savingGlobalRulesetError } =
     useGlobalRuleSetUpdate();
 
@@ -122,8 +122,7 @@ const Page = ({ id }: PageProps) => {
       },
     });
 
-    if (!response) {
-      setError('Error: failed to update facet');
+    if (!response || !('displayValue' in response)) {
       return;
     }
 
@@ -190,6 +189,12 @@ const Page = ({ id }: PageProps) => {
         </ErrorMessage>
       )}
 
+      {updatingGlobalFacetError && (
+        <ErrorMessage>
+          Error whilst updating global facet: {updatingGlobalFacetError}
+        </ErrorMessage>
+      )}
+
       {isLoading ? (
         <FacetsPanelSkeleton title="Global Facet Rule Editor" />
       ) : (
@@ -209,8 +214,6 @@ const Page = ({ id }: PageProps) => {
         />
       )}
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />
-
-      {error && <ErrorMessage>{error}</ErrorMessage>}
     </>
   );
 };

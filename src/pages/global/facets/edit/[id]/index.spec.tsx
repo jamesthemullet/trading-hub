@@ -21,7 +21,14 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-const mockUpdateGlobalFacet = jest.fn();
+const mockUpdateGlobalFacet = jest
+  .fn()
+  .mockResolvedValue({ displayValue: 'colour' });
+const updateGlobalFacet = {
+  handleGlobalFacetUpdate: mockUpdateGlobalFacet,
+  error: '',
+};
+
 const mockUpdateGlobalRuleSet = jest.fn().mockReturnValue(true);
 
 const saveGlobalRuleset = {
@@ -37,7 +44,7 @@ jest.mock('@/libs/hooks', () => ({
   useGlobalFacetsList: jest.fn(),
   useGlobalRuleSetDetail: jest.fn(),
   useGlobalFacetUpdate: () => {
-    return { handleGlobalFacetUpdate: mockUpdateGlobalFacet };
+    return updateGlobalFacet;
   },
   useGlobalRuleSetUpdate: () => {
     return saveGlobalRuleset;
@@ -243,10 +250,6 @@ describe('Global Facet Management Editing', () => {
   it('should edit a display value', async () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
-    mockUpdateGlobalFacet.mockReturnValueOnce({
-      status: 200,
-    });
-
     const editButton = screen.getByLabelText('Edit display name for color');
 
     act(() => {
@@ -281,6 +284,8 @@ describe('Global Facet Management Editing', () => {
   });
 
   it('should show an error if failing to edit a display value', async () => {
+    updateGlobalFacet.error = 'Failed to update facet';
+    mockUpdateGlobalFacet.mockResolvedValue({ status: 'error' });
     renderWithProviders(<Page id={ruleSetId} />);
 
     const editButton = screen.getByLabelText('Edit display name for color');
@@ -301,7 +306,9 @@ describe('Global Facet Management Editing', () => {
     });
 
     expect(
-      await screen.findByText('Error: failed to update facet')
+      await screen.findByText(
+        'Error whilst updating global facet: Failed to update facet'
+      )
     ).toBeVisible();
   });
 
