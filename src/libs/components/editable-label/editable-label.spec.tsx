@@ -11,6 +11,14 @@ jest.mock('@/libs/hooks', () => ({
 }));
 
 describe('editable-label', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('EditableLabel', () => {
     it('should render the EditableLabel component', () => {
       const onDisplayValueChange = jest.fn();

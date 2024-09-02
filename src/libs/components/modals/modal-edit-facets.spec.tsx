@@ -101,20 +101,24 @@ describe('ModalEditValues', () => {
     });
 
     await waitFor(async () => {
-      const editColorInput = screen.getByLabelText('Edit Merged 1 input field');
-      expect(editColorInput).toBeVisible();
-      expect(editColorInput).toHaveValue('Merged 1');
-      userEvent.clear(editColorInput);
-      await userEvent.type(editColorInput, 'Merged 1 Candy');
+      expect(screen.getByLabelText('Edit Merged 1 input field')).toBeVisible();
+    });
+
+    const editColorInput = screen.getByLabelText('Edit Merged 1 input field');
+    expect(editColorInput).toBeVisible();
+    expect(editColorInput).toHaveValue('Merged 1');
+    userEvent.clear(editColorInput);
+    await userEvent.type(editColorInput, 'Merged 1 Candy');
+
+    await waitFor(() => {
+      expect(editColorInput).toHaveValue('Merged 1 Candy');
     });
 
     const saveButton = screen.getByRole('button', {
       name: 'Save Merged 1 change',
     });
 
-    act(() => {
-      saveButton.click();
-    });
+    await userEvent.click(saveButton);
 
     await waitFor(() => {
       const newEditButton = screen.getByRole('button', {
@@ -122,7 +126,7 @@ describe('ModalEditValues', () => {
       });
       expect(newEditButton).toBeVisible();
     });
-  }, 15000);
+  }, 10000);
 
   it('should not be able to edit a display value of a merged group to be an empty string', async () => {
     const onCloseSpy = jest.fn();
