@@ -4,12 +4,9 @@ import { Modal } from '@mantine/core';
 
 import { AttributeValuesResponse, ReturnedGlobalFacet } from '@/libs/api';
 import { ErrorMessage } from '@/libs/components';
-import {
-  useDebounce,
-  useGetFacetAttributeValues,
-  useGlobalFacetUpdate,
-} from '@/libs/hooks';
+import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Image from 'next/image';
 

@@ -5,7 +5,6 @@ import { Skeleton } from '@mantine/core';
 import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 
-import { ChangePositionTypes } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
 import {
   ChangeProductBoostBury,
@@ -17,6 +16,12 @@ import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
 import { Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
+
+export type ChangePositionTypes = {
+  isPinned: boolean;
+  id: string;
+  newPosition: number;
+};
 
 const Heading = styled(Text)`
   font-size: 20px;

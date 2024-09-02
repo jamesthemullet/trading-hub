@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 import type { Product as ProductType } from '../../api';
-import { EditProduct } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
+import { EditProduct } from '../types';
 import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';

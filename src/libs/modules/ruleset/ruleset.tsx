@@ -4,11 +4,8 @@ import { useRouter } from 'next/router';
 
 import type {
   AlphanumericBoostBury,
-  AlphanumericBoostBuryField,
-  AttributeType,
   Category,
   CategoryRuleSet,
-  IncludeExclude,
   KeywordRuleSet,
   MerchandisingRules,
   NumericBoostBury,
@@ -18,21 +15,22 @@ import type {
 } from '@/libs/api';
 import {
   CategorySearch,
-  ChangeProductBoostBury,
   ErrorMessage,
   Loader,
-  Preview,
   ProductGridHeader,
-  ProductSearch,
-  RulesetAttributes,
-  RulesetChanges,
   SearchKeywords,
   SelectedCategory,
   spacing,
   Tabs,
   Text,
-  VisualEditor,
 } from '@/libs/components';
+import { Preview } from '@/libs/components/preview/preview';
+import { ChangeProductBoostBury } from '@/libs/components/product/product';
+import { ProductSearch } from '@/libs/components/product-search/product-search';
+import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
+import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
+import { RulesetAttribute } from '@/libs/components/types';
+import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
 import { useCategoryProductSearch, usePreview } from '@/libs/hooks';
 
 import isEqual from 'lodash/isEqual';
@@ -87,38 +85,6 @@ export type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
   newPosition: number;
-};
-
-export type EditProduct = {
-  change: 'add' | 'remove' | 'modify';
-  operation: 'boosts' | 'buries' | 'block';
-};
-
-export type RulesetAttribute = {
-  attribute: {
-    fields?: Array<AlphanumericBoostBuryField>;
-    weight?: number;
-    field?: string;
-  };
-  change: 'add' | 'remove' | 'modify';
-  operation: 'boosts' | 'buries' | 'includes' | 'excludes';
-  type: AttributeType;
-  index?: number;
-};
-
-export type EditAttribute = {
-  attribute: AlphanumericBoostBury | NumericBoostBury;
-  change: 'add' | 'remove' | 'modify';
-  operation: 'boosts' | 'buries';
-  type: AttributeType;
-  index?: number;
-};
-
-export type EditIncludeExcludeAttribute = {
-  attribute: IncludeExclude;
-  change: 'add' | 'remove' | 'modify';
-  operation: 'includes' | 'excludes';
-  index?: number;
 };
 
 export const Ruleset = ({

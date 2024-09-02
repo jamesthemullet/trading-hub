@@ -15,12 +15,8 @@ import {
   TablePaginationSkeleton,
 } from '@/libs/components';
 import { spacing } from '@/libs/components/utils/spacing';
-import {
-  useDebounce,
-  useRuleSet,
-  useRuleSetDelete,
-  useUpdateRuleSet,
-} from '@/libs/hooks';
+import { useRuleSet, useRuleSetDelete, useUpdateRuleSet } from '@/libs/hooks';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};

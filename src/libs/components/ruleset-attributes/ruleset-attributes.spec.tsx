@@ -2,7 +2,7 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { MerchandisingRules } from '@/libs/api';
-import { RulesetAttributes } from '@/libs/components';
+import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 
 import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
 import { renderWithProviders } from '../../../test/render-with-providers';

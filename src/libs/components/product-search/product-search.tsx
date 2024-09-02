@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 import type { Product as ProductType } from '@/libs/api';
-import { useDebounce } from '@/libs/hooks/';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import { ChangeProductBoostBury, Product } from '../product/product';
 import { Search } from '../search/search';

@@ -7,9 +7,10 @@ import type {
   MerchandisingRules,
   RuleSetFacetConfigWithId,
 } from '@/libs/api';
-import { Dropdown, Loader, ProductDetails } from '@/libs/components';
+import { Dropdown, Loader } from '@/libs/components';
 import { usePreview } from '@/libs/hooks';
 
+import { ProductDetails } from '../product/product';
 import { ProductWrapper } from '../product/product.styles';
 import { Header3, Label, Text } from '../typography/typography.styles';
 import { boxShadow } from '../utils/shared.styles';

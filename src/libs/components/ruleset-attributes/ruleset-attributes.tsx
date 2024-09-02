@@ -11,8 +11,8 @@ import {
 
 import pluralize from 'pluralize';
 
-import { RulesetAttribute } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
+import { RulesetAttribute } from '../types';
 import { Label } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { AddCategoryAttribute } from './add-category-attribute';

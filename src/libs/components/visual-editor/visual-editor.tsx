@@ -1,6 +1,11 @@
 import type { Product as ProductType } from '../../api';
-import { ChangeProductBoostBury, Product } from '../product/product';
+import { Product } from '../product/product';
+import { EditProduct } from '../types';
 import { Layout, ProductBox } from './visual-editor.styles';
+
+export type ChangeProductBoostBury = {
+  id: string;
+} & Pick<EditProduct, 'change' | 'operation'>;
 
 type ChangePositionTypes = {
   isPinned: boolean;

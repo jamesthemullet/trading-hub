@@ -11,11 +11,11 @@ import {
 } from '@/libs/components';
 import { color } from '@/libs/components/utils/constants';
 import {
-  useDebounce,
   useRedirectDelete,
   useRedirectUpdate,
   useSearchRedirectList,
 } from '@/libs/hooks';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};

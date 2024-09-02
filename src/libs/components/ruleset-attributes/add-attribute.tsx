@@ -3,11 +3,11 @@ import { useState } from 'react';
 
 import { AttributeResponseItem, AttributesResponse } from '@/libs/api';
 
-import { RulesetAttribute } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
 import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { Search } from '../search/search';
+import { RulesetAttribute } from '../types';
 import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';

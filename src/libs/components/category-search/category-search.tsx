@@ -1,7 +1,8 @@
 import { type ChangeEvent, type FormEvent, useState } from 'react';
 
 import type { Category, CategoryListData } from '@/libs/api';
-import { useDebounce, useGetCategories } from '@/libs/hooks';
+import { useGetCategories } from '@/libs/hooks';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import { Search } from '../search/search';
 import { Text } from '../typography/typography.styles';

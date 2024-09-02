@@ -1,6 +1,6 @@
 import { useGlobalAttributes } from '@/libs/hooks';
-import { RulesetAttribute } from '@/libs/modules/ruleset/ruleset';
 
+import { RulesetAttribute } from '../types';
 import { AddAttribute } from './add-attribute';
 
 type Props = {

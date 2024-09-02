@@ -8,7 +8,7 @@ import { ExampleCalendarModal } from './example-calendar-modal';
 import { ArrowButton } from '../../libs/components/buttons/button/arrow-button';
 import { SearchKeywords } from '@/libs/components/keywords/search-keywords/search-keywords';
 import { useState } from 'react';
-import { Product } from '@/libs/components';
+import { Product } from '@/libs/components/product/product';
 
 const Example = styled.div`
   padding: 20px;

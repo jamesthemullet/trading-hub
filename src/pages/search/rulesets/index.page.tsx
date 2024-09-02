@@ -6,11 +6,11 @@ import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
 import { color } from '@/libs/components/utils/constants';
 import { spacing } from '@/libs/components/utils/spacing';
 import {
-  useDebounce,
   useSearchRuleSetDelete,
   useSearchRulesetList,
   useSearchRuleSetUpdate,
 } from '@/libs/hooks';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};

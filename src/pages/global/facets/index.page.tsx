@@ -14,12 +14,12 @@ import {
 } from '@/libs/components';
 import { spacing } from '@/libs/components/utils/spacing';
 import {
-  useDebounce,
   useGlobalRuleSetCreate,
   useGlobalRuleSetDelete,
   useGlobalRuleSetUpdate,
   useRuleSet,
 } from '@/libs/hooks';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};

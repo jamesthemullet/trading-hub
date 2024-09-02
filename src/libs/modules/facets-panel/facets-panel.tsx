@@ -6,7 +6,6 @@ import { Category, MerchandisingRules, ReturnedFacet } from '@/libs/api';
 import {
   Button,
   CategorySearch,
-  Preview,
   ProductGridHeader,
   Search,
   spacing,
@@ -16,13 +15,14 @@ import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { ModalEditValues } from '@/libs/components/modals/modal-edit-facets';
+import { Preview } from '@/libs/components/preview/preview';
 import {
   TableCol,
   TableHeading,
   TableRow,
 } from '@/libs/components/table/table.styles';
 import { color } from '@/libs/components/utils/constants';
-import { useDebounce } from '@/libs/hooks';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 export const ActionContainer = styled.div`
   display: flex;
