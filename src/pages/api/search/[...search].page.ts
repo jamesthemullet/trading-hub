@@ -61,7 +61,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
   let status = response.status;
   try {
     jsonText = await response.text();
-    jsonBody = JSON.parse(jsonText);
+    jsonBody = jsonText ? JSON.parse(jsonText) : null;
 
     if (!response.ok) {
       console.error(

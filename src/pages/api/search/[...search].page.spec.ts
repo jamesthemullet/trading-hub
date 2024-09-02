@@ -228,6 +228,39 @@ describe('Search api proxy', () => {
         expect(res.status).toHaveBeenCalledWith(response.status);
       }
     );
+
+    it('should return the correct body', async () => {
+      const response = { status: 200 };
+      const mockCall = async () => {
+        const req = createMockNextApiRequest({
+          url: '/search/beta/merchandising/facet/1',
+          method: 'DELETE',
+        });
+
+        const res = createMockNextApiResponse(req);
+        httpDelete.mockReturnValue(
+          HttpResponse.json(undefined, { status: response.status })
+        );
+
+        await proxy(req, res);
+        return res;
+      };
+
+      const res = await mockCall();
+
+      expect(httpDelete).toHaveBeenCalled();
+      expect(httpDelete.mock.calls[0][0].url).toBe(
+        `${baseUrl}/search/beta/merchandising/facet/1?apikey=${apiKey}`
+      );
+      expect(httpDelete.mock.calls[0][0].method).toBe('DELETE');
+      expect(httpDelete.mock.calls[0][0].body).toBeNull();
+      expect([...httpDelete.mock.calls[0][0].headers]).toEqual([
+        ['authorization', 'Bearer token'],
+      ]);
+
+      expect(res.status).toHaveBeenCalledWith(response.status);
+      expect(res.json).toHaveBeenCalledWith({});
+    });
   });
 
   describe('when not logged in', () => {
