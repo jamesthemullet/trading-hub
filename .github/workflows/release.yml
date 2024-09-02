@@ -239,7 +239,7 @@ jobs:
             echo ${VERSION} | grep ${APP_COMMIT_SHA}
 
       - name: Swap EUN from pre prod to prod
-        uses: azure/cli@v2.0.0
+        uses: azure/cli@v2.1.0
         with:
           azcliversion: 2.53.1
           inlineScript: |
