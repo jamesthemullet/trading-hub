@@ -109,6 +109,114 @@ describe('RulesetChanges', () => {
     expect(errorProduct).toBeInTheDocument();
   });
 
+  it('should show attribute changes', async () => {
+    jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
+      error: '',
+      isLoading: false,
+      searchForProduct: jest.fn(() => {
+        return Promise.resolve({
+          products: [
+            {
+              id: '60183702',
+              productId: '60183702',
+              title: 'Product Title',
+              imageUrl: ['example1.jpg'],
+              brand: 'Product Brand',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£1',
+              url: '',
+            },
+          ],
+          pagination: {
+            totalItems: 1,
+          },
+        });
+      }),
+    }));
+
+    renderWithProviders(
+      <RulesetChanges
+        isPinnable={true}
+        merchandisingRules={{
+          ...mockMerchandisingRules,
+          boosts: {
+            product: [],
+            numeric: [
+              {
+                field: 'field1',
+                weight: 100,
+              },
+            ],
+            alphanumeric: [
+              {
+                fields: [
+                  {
+                    field: 'field2',
+                    values: ['Thermals'],
+                  },
+                ],
+                weight: 100,
+              },
+            ],
+          },
+          buries: {
+            product: [],
+            numeric: [
+              {
+                field: 'field3',
+                weight: 100,
+              },
+            ],
+            alphanumeric: [
+              {
+                fields: [
+                  {
+                    field: 'field4',
+                    values: ['Socks'],
+                  },
+                ],
+                weight: 100,
+              },
+            ],
+          },
+          includes: {
+            alphanumeric: [
+              {
+                fields: [
+                  {
+                    field: 'field5',
+                    values: ['Sandles'],
+                  },
+                ],
+              },
+            ],
+          },
+          excludes: {
+            alphanumeric: [
+              {
+                fields: [
+                  {
+                    field: 'field6',
+                    values: ['Dresses'],
+                  },
+                ],
+              },
+            ],
+          },
+        }}
+        onChangePosition={jest.fn()}
+        onProductBoostBury={jest.fn()}
+      />
+    );
+
+    const attributeTitle = await waitFor(() =>
+      screen.getByText('Attribute-level changes (6)')
+    );
+
+    expect(attributeTitle).toBeInTheDocument();
+  });
+
   it('should show loader for products', async () => {
     jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
       error: '',

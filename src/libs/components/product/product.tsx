@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 import type { Product as ProductType } from '../../api';
-import { EditAttribute } from '../../modules/ruleset/ruleset';
+import { EditProduct } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
 import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
@@ -37,7 +37,7 @@ type ChangePositionTypes = {
 
 export type ChangeProductBoostBury = {
   id: string;
-} & Pick<EditAttribute, 'change' | 'operation'>;
+} & Pick<EditProduct, 'change' | 'operation'>;
 
 export const ProductDetails = ({
   imageUrl,
@@ -126,7 +126,7 @@ export const Product = ({
   const onBoostBuryBlock = ({
     operation,
     change,
-  }: Pick<EditAttribute, 'change' | 'operation'>) => {
+  }: Pick<EditProduct, 'change' | 'operation'>) => {
     onProductBoostBury({ id, change, operation });
     setIsMenuOpen(false);
   };
@@ -422,7 +422,7 @@ export const MissingProduct = ({
   const onBoostBuryBlock = ({
     operation,
     change,
-  }: Pick<EditAttribute, 'change' | 'operation'>) => {
+  }: Pick<EditProduct, 'change' | 'operation'>) => {
     onProductBoostBury({ id, change, operation });
     setIsMenuOpen(false);
   };

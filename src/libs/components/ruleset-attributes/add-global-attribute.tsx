@@ -1,11 +1,11 @@
 import { useGlobalAttributes } from '@/libs/hooks';
-import { EditAttribute } from '@/libs/modules/ruleset/ruleset';
+import { RulesetAttribute } from '@/libs/modules/ruleset/ruleset';
 
 import { AddAttribute } from './add-attribute';
 
 type Props = {
   onCancel: () => void;
-  onSelect: (attribute: EditAttribute) => void;
+  onSelect: (attribute: RulesetAttribute) => void;
 };
 export const AddGlobalAttribute = ({ onCancel, onSelect }: Props) => {
   const { attributes: numericAttributes } = useGlobalAttributes('numeric');

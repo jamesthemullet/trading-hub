@@ -324,7 +324,7 @@ describe('RulesetAttributes', () => {
       nextStepButton.click();
     });
 
-    const dropdownButton = screen.getAllByText('boost');
+    const dropdownButton = screen.getAllByText('Boost');
 
     act(() => {
       dropdownButton[1].click();
@@ -351,7 +351,7 @@ describe('RulesetAttributes', () => {
     const attributes = screen.getByLabelText('Selected Attribute');
 
     await waitFor(() =>
-      expect(within(attributes).getByText('Operation bury')).toBeVisible()
+      expect(within(attributes).getByText('Operation Bury')).toBeVisible()
     );
   });
 
@@ -420,6 +420,36 @@ describe('RulesetAttributes', () => {
 
       act(() => {
         doneButton.click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+    });
+
+    it('modifies numeric attributes', async () => {
+      const user = userEvent.setup();
+      const expectedCall = {
+        attribute: { field: 'averageRating', weight: 20 },
+        change: 'modify',
+        operation: 'boosts',
+        index: 0,
+        type: 'numeric',
+      };
+
+      await openModal();
+
+      const editButton = screen.getAllByLabelText('Edit weight');
+
+      act(() => {
+        editButton[2].click();
+      });
+
+      const input = screen.getByLabelText('Edit value');
+      await user.type(input, '{Delete}{Delete}{Delete}20');
+
+      const saveButton = screen.getByLabelText('Save weight change');
+
+      act(() => {
+        saveButton.click();
       });
 
       expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
@@ -637,6 +667,202 @@ describe('RulesetAttributes', () => {
       });
 
       expect(mockAddAttribute).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('include exclude', () => {
+    it('includes alphanumeric attributes', async () => {
+      const expectedCall = {
+        attribute: {
+          fields: [
+            {
+              field: 'Colour',
+              values: ['Blue', 'Red'],
+            },
+          ],
+          weight: 100,
+        },
+        change: 'add',
+        operation: 'includes',
+        type: 'alphanumeric',
+      };
+
+      await openModal();
+
+      const nextStepButton = screen.getAllByText(
+        'Product description attributes'
+      )[0];
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      const dropdownButton = screen.getAllByText('Boost');
+
+      act(() => {
+        dropdownButton[1].click();
+      });
+
+      const includeButton = screen.getAllByText('Include only');
+
+      act(() => {
+        includeButton[0].click();
+      });
+
+      const colourButton = screen.getByText('Colour');
+
+      act(() => {
+        colourButton.click();
+      });
+
+      const colourRedButton = screen.getByLabelText('Red');
+      const colourBlueButton = screen.getByLabelText('Blue');
+
+      act(() => {
+        colourBlueButton.click();
+        colourRedButton.click();
+      });
+
+      const doneButton = screen.getByText('Done');
+
+      act(() => {
+        doneButton.click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+    });
+
+    it('excludes alphanumeric attributes', async () => {
+      const expectedCall = {
+        attribute: {
+          fields: [
+            {
+              field: 'Colour',
+              values: ['Blue', 'Red'],
+            },
+          ],
+          weight: 100,
+        },
+        change: 'add',
+        operation: 'excludes',
+        type: 'alphanumeric',
+      };
+
+      await openModal();
+
+      const nextStepButton = screen.getAllByText(
+        'Product description attributes'
+      )[0];
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      const dropdownButton = screen.getAllByText('Boost');
+
+      act(() => {
+        dropdownButton[1].click();
+      });
+
+      const includeButton = screen.getAllByText('Exclude only');
+
+      act(() => {
+        includeButton[0].click();
+      });
+
+      const colourButton = screen.getByText('Colour');
+
+      act(() => {
+        colourButton.click();
+      });
+
+      const colourRedButton = screen.getByLabelText('Red');
+      const colourBlueButton = screen.getByLabelText('Blue');
+
+      act(() => {
+        colourBlueButton.click();
+        colourRedButton.click();
+      });
+
+      const doneButton = screen.getByText('Done');
+
+      act(() => {
+        doneButton.click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+    });
+
+    it('deletes included attributes', async () => {
+      const mock = {
+        fields: [
+          {
+            field: 'category',
+            values: ['Accessories', 'Clothing'],
+          },
+        ],
+      };
+      const expectedCall = {
+        attribute: mock,
+        change: 'remove',
+        operation: 'includes',
+        type: 'alphanumeric',
+      };
+
+      renderWithProviders(
+        <RulesetAttributes
+          merchandisingRules={{
+            ...mockRules,
+            includes: { alphanumeric: [mock] },
+          }}
+          category="TestCategory"
+          onChangeAttribute={mockAddAttribute}
+        />
+      );
+
+      const deleteButton = screen.getAllByLabelText('Delete attribute');
+
+      act(() => {
+        deleteButton[2].click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+    });
+
+    it('deletes excludes attributes', async () => {
+      const mock = {
+        fields: [
+          {
+            field: 'category',
+            values: ['Accessories', 'Clothing'],
+          },
+        ],
+      };
+      const expectedCall = {
+        attribute: mock,
+        change: 'remove',
+        operation: 'excludes',
+        type: 'alphanumeric',
+      };
+
+      renderWithProviders(
+        <RulesetAttributes
+          merchandisingRules={{
+            ...mockRules,
+            excludes: { alphanumeric: [mock] },
+          }}
+          category="TestCategory"
+          onChangeAttribute={mockAddAttribute}
+        />
+      );
+
+      const deleteButton = screen.getAllByLabelText('Delete attribute');
+
+      act(() => {
+        deleteButton[2].click();
+      });
+
+      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
     });
   });
 });

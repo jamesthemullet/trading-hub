@@ -43,3 +43,11 @@ export const AttributeSelection = styled.div`
   max-height: 250px;
   overflow: auto;
 `;
+
+export const Buttons = styled.div`
+  display: flex;
+`;
+export const Button = styled.button`
+  border: none;
+  background: none;
+`;

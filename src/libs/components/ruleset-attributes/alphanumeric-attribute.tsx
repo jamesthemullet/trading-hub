@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { AlphanumericBoostBury } from '../../api';
+import { AlphanumericBoostBury, AlphanumericBoostBuryField } from '../../api';
 import { Label, Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import {
@@ -8,7 +8,10 @@ import {
   AttributeRow,
   AttributeValue,
   AttributeWrapper,
+  Button,
+  Buttons,
 } from './ruleset-attributes.styles';
+import { labels } from './utils';
 import { AttributeWeight } from './weight';
 
 export const AlphanumericAttribute = ({
@@ -18,11 +21,13 @@ export const AlphanumericAttribute = ({
   onChangeAttribute,
   onDelete,
   weight,
-}: AlphanumericBoostBury & {
+}: {
+  fields: Array<AlphanumericBoostBuryField>;
+  operation: 'boosts' | 'buries' | 'includes' | 'excludes';
+  weight?: number;
   isEditable?: boolean;
   onChangeAttribute?: (args: { newWeight: number }) => void;
   onDelete?: (args: AlphanumericBoostBury) => void;
-  operation: 'bury' | 'boost';
 }) => (
   <AttributeWrapper aria-label="Product Attribute">
     <AttributeHeading>
@@ -42,18 +47,37 @@ export const AlphanumericAttribute = ({
         <Image
           width={20}
           height={20}
-          src={`/trading-hub/asset/${operation}-signifier.svg`}
-          style={{ marginBottom: '-4px' }}
           alt=""
+          src={`/trading-hub/asset/${labels[operation].icon}.svg`}
+          style={{ marginBottom: '-4px' }}
         />{' '}
-        {operation}
+        {labels[operation].text}
       </Text>
     </AttributeRow>
-    <AttributeWeight
-      weight={weight}
-      isEditable={isEditable}
-      onChangeAttribute={onChangeAttribute}
-      onDelete={() => onDelete && onDelete({ fields, weight })}
-    />
+    {weight && (
+      <AttributeWeight
+        weight={weight}
+        isEditable={isEditable}
+        onChangeAttribute={onChangeAttribute}
+        onDelete={() => onDelete && onDelete({ fields, weight })}
+      />
+    )}
+    {!weight && isEditable && (
+      <AttributeRow>
+        <Buttons>
+          <Button
+            onClick={() => onDelete && onDelete({ fields, weight: 0 })}
+            aria-label="Delete attribute"
+          >
+            <Image
+              width={20}
+              height={20}
+              src="/trading-hub/asset/icon-delete.svg"
+              alt=""
+            />
+          </Button>
+        </Buttons>
+      </AttributeRow>
+    )}
   </AttributeWrapper>
 );

@@ -1675,11 +1675,18 @@ describe('Ruleset', () => {
       boosts: boostMock,
       buries: buriesMock,
       blockedProducts: [],
-      includes: {
-        alphanumeric: [],
-      },
+      includes: {},
       excludes: {
-        alphanumeric: [],
+        alphanumeric: [
+          {
+            fields: [
+              {
+                field: 'example',
+                values: ['One', 'Two'],
+              },
+            ],
+          },
+        ],
       },
     };
 
@@ -1691,7 +1698,8 @@ describe('Ruleset', () => {
 
     const selectAlphanumericAttribute = async (
       screen: Screen,
-      withBury: boolean
+      withBury: boolean,
+      withInclude?: boolean
     ) => {
       const tab2 = await screen.findByText('Attribute');
 
@@ -1718,13 +1726,27 @@ describe('Ruleset', () => {
       });
 
       if (withBury) {
-        const dropdownButton = screen.getAllByText('boost');
+        const dropdownButton = screen.getAllByText('Boost');
 
         act(() => {
           dropdownButton[0].click();
         });
 
         const buryButton = screen.getAllByText('Bury');
+
+        act(() => {
+          buryButton[0].click();
+        });
+      }
+
+      if (withInclude) {
+        const dropdownButton = screen.getAllByText('Boost');
+
+        act(() => {
+          dropdownButton[0].click();
+        });
+
+        const buryButton = screen.getAllByText('Include only');
 
         act(() => {
           buryButton[0].click();
@@ -1797,7 +1819,7 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() =>
-        expect(screen.getByText('1 attribute rule')).toBeVisible()
+        expect(screen.getByText('2 attribute rules')).toBeVisible()
       );
     });
 
@@ -1826,7 +1848,7 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() =>
-        expect(screen.getByText('1 attribute rule')).toBeVisible()
+        expect(screen.getByText('2 attribute rules')).toBeVisible()
       );
     });
 
@@ -1857,6 +1879,35 @@ describe('Ruleset', () => {
       waitFor(() => expect(screen.getByText('1 attribute rule')).toBeVisible());
     });
 
+    it('adds an included alphanumeric attribute', async () => {
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            ...mockRules,
+            boosts: emptyAttributes,
+            buries: emptyAttributes,
+          }}
+          rulesetCategory={{ identifier: 'SubCategory_507' }}
+          rulesetType="category"
+        />
+      );
+
+      await selectAlphanumericAttribute(screen, false, true);
+
+      const doneButton = screen.getByText('Done');
+
+      act(() => {
+        doneButton.click();
+      });
+
+      waitFor(() =>
+        expect(screen.getByText('2 attribute rules')).toBeVisible()
+      );
+    });
+
     it('deletes attributes', async () => {
       renderWithProviders(
         <Ruleset
@@ -1876,15 +1927,22 @@ describe('Ruleset', () => {
       });
 
       expect(screen.getByText('Nike')).toBeVisible();
+      expect(screen.queryByText('minPrice')).toBeVisible();
 
       const deleteButton = screen.getAllByLabelText('Delete attribute');
 
       act(() => {
         deleteButton[0].click();
-        deleteButton[3].click();
+      });
+      act(() => {
+        deleteButton[4].click();
+      });
+      act(() => {
+        deleteButton[2].click();
       });
 
       expect(screen.queryByText('Nike')).not.toBeInTheDocument();
+      expect(screen.queryByText('minPrice')).not.toBeInTheDocument();
       expect(screen.queryByText('size')).not.toBeInTheDocument();
     });
 

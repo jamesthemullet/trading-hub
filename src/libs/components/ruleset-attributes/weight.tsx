@@ -5,19 +5,12 @@ import Image from 'next/image';
 
 import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
-import { AttributeRow } from './ruleset-attributes.styles';
+import { AttributeRow, Button, Buttons } from './ruleset-attributes.styles';
 
 const Input = styled.input`
   min-width: 60px;
 `;
 
-const Buttons = styled.div`
-  display: flex;
-`;
-const Button = styled.button`
-  border: none;
-  background: none;
-`;
 export const ErrorText = styled(Text)`
   color: ${color.errorRed};
 `;

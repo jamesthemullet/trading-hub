@@ -4,13 +4,14 @@ import { Modal } from '@mantine/core';
 
 import {
   AlphanumericBoostBury,
+  IncludeExclude,
   MerchandisingRules,
   NumericBoostBury,
 } from '@/libs/api';
 
 import pluralize from 'pluralize';
 
-import { EditAttribute } from '../../modules/ruleset/ruleset';
+import { RulesetAttribute } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
 import { Label } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
@@ -50,7 +51,7 @@ const RuleSetAttributesContainer = styled.div`
 export type Props = {
   category?: string;
   merchandisingRules: MerchandisingRules;
-  onChangeAttribute: (args: EditAttribute) => void;
+  onChangeAttribute: (args: RulesetAttribute) => void;
 };
 
 export const RulesetAttributes = ({
@@ -61,18 +62,24 @@ export const RulesetAttributes = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   /* istanbul ignore next */
   const countOfAttributeChanges =
-    (merchandisingRules.boosts?.numeric?.length ?? 0) +
-    (merchandisingRules.boosts?.alphanumeric?.length ?? 0) +
-    (merchandisingRules.buries?.numeric?.length ?? 0) +
-    (merchandisingRules.buries?.alphanumeric?.length ?? 0);
+    (merchandisingRules.boosts.numeric.length ?? 0) +
+    (merchandisingRules.boosts.alphanumeric.length ?? 0) +
+    (merchandisingRules.buries.numeric.length ?? 0) +
+    (merchandisingRules.buries.alphanumeric.length ?? 0) +
+    (merchandisingRules.includes.alphanumeric?.length ?? 0) +
+    (merchandisingRules.excludes.alphanumeric?.length ?? 0);
   /* istanbul ignore next */
-  const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
+  const numericBoosts = merchandisingRules.boosts.numeric ?? [];
   /* istanbul ignore next */
-  const alphanumericBoost = merchandisingRules.boosts?.alphanumeric ?? [];
+  const alphanumericBoost = merchandisingRules.boosts.alphanumeric ?? [];
   /* istanbul ignore next */
-  const numericBury = merchandisingRules.buries?.numeric ?? [];
+  const numericBury = merchandisingRules.buries.numeric ?? [];
   /* istanbul ignore next */
-  const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
+  const alphanumericBuries = merchandisingRules.buries.alphanumeric ?? [];
+  /* istanbul ignore next */
+  const alphanumericIncludes = merchandisingRules.includes.alphanumeric ?? [];
+  /* istanbul ignore next */
+  const alphanumericExcludes = merchandisingRules.excludes.alphanumeric ?? [];
 
   return (
     <Wrapper>
@@ -97,7 +104,7 @@ export const RulesetAttributes = ({
                 key={fields[0].field}
                 isEditable
                 fields={fields}
-                operation="boost"
+                operation="boosts"
                 weight={weight}
                 onChangeAttribute={
                   // istanbul ignore next
@@ -127,7 +134,7 @@ export const RulesetAttributes = ({
                 key={fields[0].field}
                 isEditable
                 fields={fields}
-                operation="bury"
+                operation="buries"
                 weight={weight}
                 onChangeAttribute={
                   // istanbul ignore next
@@ -151,6 +158,42 @@ export const RulesetAttributes = ({
               />
             ))}
 
+          {!!alphanumericIncludes.length &&
+            alphanumericIncludes.map(({ fields }) => (
+              <AlphanumericAttribute
+                key={fields[0].field}
+                isEditable
+                fields={fields}
+                operation="includes"
+                onDelete={({ fields }: IncludeExclude) =>
+                  onChangeAttribute({
+                    attribute: { fields },
+                    change: 'remove',
+                    operation: 'includes',
+                    type: 'alphanumeric',
+                  })
+                }
+              />
+            ))}
+
+          {!!alphanumericExcludes.length &&
+            alphanumericExcludes.map(({ fields }) => (
+              <AlphanumericAttribute
+                key={fields[0].field}
+                isEditable
+                fields={fields}
+                operation="excludes"
+                onDelete={({ fields }: IncludeExclude) =>
+                  onChangeAttribute({
+                    attribute: { fields },
+                    change: 'remove',
+                    operation: 'excludes',
+                    type: 'alphanumeric',
+                  })
+                }
+              />
+            ))}
+
           {(!!numericBoosts.length || !!numericBury.length) && (
             <InsetLabel isStrong withMargin as="h3">
               Numeric Attribute Rules
@@ -161,7 +204,7 @@ export const RulesetAttributes = ({
               <NumericAttribute
                 key={field}
                 isEditable
-                operation="boost"
+                operation="boosts"
                 name={field}
                 weight={weight}
                 onChangeAttribute={({ newWeight }: { newWeight: number }) =>
@@ -188,7 +231,7 @@ export const RulesetAttributes = ({
               <NumericAttribute
                 key={field}
                 isEditable
-                operation="bury"
+                operation="buries"
                 name={field}
                 weight={weight}
                 onChangeAttribute={
@@ -233,7 +276,7 @@ export const RulesetAttributes = ({
                 onCancel={() => {
                   setIsModalOpen(false);
                 }}
-                onSelect={(attribute: EditAttribute) => {
+                onSelect={(attribute: RulesetAttribute) => {
                   onChangeAttribute(attribute);
                   setIsModalOpen(false);
                 }}
@@ -243,7 +286,7 @@ export const RulesetAttributes = ({
                 onCancel={() => {
                   setIsModalOpen(false);
                 }}
-                onSelect={(attribute: EditAttribute) => {
+                onSelect={(attribute: RulesetAttribute) => {
                   onChangeAttribute(attribute);
                   setIsModalOpen(false);
                 }}

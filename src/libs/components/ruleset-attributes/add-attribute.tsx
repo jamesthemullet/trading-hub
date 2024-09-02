@@ -3,12 +3,9 @@ import { useState } from 'react';
 
 import { AttributeResponseItem, AttributesResponse } from '@/libs/api';
 
-import Image from 'next/image';
-
-import { EditAttribute } from '../../modules/ruleset/ruleset';
+import { RulesetAttribute } from '../../modules/ruleset/ruleset';
 import { Button } from '../buttons/button/button';
 import { Checkboxes } from '../checkboxes/checkboxes';
-import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { Search } from '../search/search';
 import { Label, Text } from '../typography/typography.styles';
@@ -16,19 +13,22 @@ import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { NumericAttribute } from './numeric-attribute';
+import { OperationSelector } from './operation-selector';
 import { AttributeSelection } from './ruleset-attributes.styles';
 
-const MODAL_WIDTH = 435;
+const MODAL_WIDTH = 522;
 
 const ModalContainer = styled.div`
   height: 600px;
   display: flex;
 `;
 const ModalSide = styled.div`
-  width: 50%;
   position: relative;
   background-color: #fff;
   overflow: hidden;
+`;
+const ModalRightSide = styled(ModalSide)`
+  width: 60%;
 `;
 
 const SelectedAttribute = styled.div`
@@ -152,34 +152,6 @@ const Filters = styled.div`
   display: flex;
 `;
 
-const DropdownWrapper = styled.div`
-  margin-top: ${spacing(2)};
-  margin-right: ${spacing(1)};
-  margin-left: -${spacing(1)};
-  min-width: 133px;
-
-  button {
-    &[aria-haspopup='listbox'] {
-      background: none;
-      border: solid 1px #000;
-      border-radius: 5px;
-      text-transform: capitalize;
-      height: 40px;
-    }
-    span {
-      font-size: 16px;
-      justify-content: left;
-    }
-  }
-
-  img {
-    width: 20px;
-    height: 20px;
-    margin-right: ${spacing(1)};
-    margin-top: 3px;
-  }
-`;
-
 const SectionLabel = ({
   number,
   text,
@@ -201,65 +173,9 @@ const SectionLabel = ({
   );
 };
 
-const BoostBuryDropdown = ({
-  selectedOperation,
-  setSelectedOperation,
-}: {
-  selectedOperation: 'boost' | 'bury';
-  setSelectedOperation: (args: 'boost' | 'bury') => void;
-}) => {
-  const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
-  return (
-    <DropdownWrapper>
-      <Dropdown
-        label={`${selectedOperation}`}
-        icon={`${selectedOperation}-signifier`}
-        isOpen={isOperationDropdownOpen}
-        onOpen={() => setIsOperationDropdownOpen(true)}
-        onClose={
-          // istanbul ignore next
-          () => setIsOperationDropdownOpen(false)
-        }
-      >
-        <DropdownOption
-          onClick={
-            // istanbul ignore next
-            () => {
-              setIsOperationDropdownOpen(false);
-              setSelectedOperation('boost');
-            }
-          }
-        >
-          <Image
-            src="/trading-hub/asset/boost-signifier.svg"
-            alt=""
-            width={20}
-            height={20}
-          />
-          Boost
-        </DropdownOption>
-        <DropdownOption
-          onClick={() => {
-            setIsOperationDropdownOpen(false);
-            setSelectedOperation('bury');
-          }}
-        >
-          <Image
-            src="/trading-hub/asset/bury-signifier.svg"
-            alt=""
-            width={20}
-            height={20}
-          />
-          Bury
-        </DropdownOption>
-      </Dropdown>
-    </DropdownWrapper>
-  );
-};
-
 type Props = {
   onCancel: () => void;
-  onSelect: (attribute: EditAttribute) => void;
+  onSelect: (attribute: RulesetAttribute) => void;
   numericAttributes: AttributesResponse['attributes'];
   alphanumericAttributes: AttributesResponse['attributes'];
 };
@@ -284,9 +200,9 @@ export const AddAttribute = ({
     }>
   >([]);
   const [selectedNumericField, setSelectedNumericField] = useState<string>('');
-  const [selectedOperation, setSelectedOperation] = useState<'boost' | 'bury'>(
-    'boost'
-  );
+  const [selectedOperation, setSelectedOperation] = useState<
+    'boosts' | 'buries' | 'includes' | 'excludes'
+  >('boosts');
   const [selectedAttributeType, setSelectedAttributeType] = useState<
     'numeric' | 'alphanumeric'
   >('numeric');
@@ -296,6 +212,7 @@ export const AddAttribute = ({
         style={{
           zIndex: 1,
           padding: `${spacing(8)} ${spacing(2)} ${spacing(2)}`,
+          width: '40%',
         }}
       >
         <SelectedAttribute aria-label="Selected Attribute">
@@ -315,7 +232,7 @@ export const AddAttribute = ({
             )}
         </SelectedAttribute>
       </ModalSide>
-      <ModalSide>
+      <ModalRightSide>
         <ModalSection>
           <ModalHeader>
             <SectionLabel
@@ -379,7 +296,8 @@ export const AddAttribute = ({
               account level
             </Text>
             <Filters>
-              <BoostBuryDropdown
+              <OperationSelector
+                hasIncludeExclude={false}
                 selectedOperation={selectedOperation}
                 setSelectedOperation={setSelectedOperation}
               />
@@ -435,6 +353,7 @@ export const AddAttribute = ({
                 setSelectedAlphanumericValues([]);
                 setSelectedNumericField('');
                 setModalStep(0);
+                setSelectedOperation('boosts');
               }}
             >
               Back
@@ -444,7 +363,8 @@ export const AddAttribute = ({
             <Label isStrong>Product description attributes</Label>
             <Text>Attributes are aggregated from the account level</Text>
             <Filters>
-              <BoostBuryDropdown
+              <OperationSelector
+                hasIncludeExclude={true}
                 selectedOperation={selectedOperation}
                 setSelectedOperation={setSelectedOperation}
               />
@@ -587,8 +507,7 @@ export const AddAttribute = ({
 
                 onSelect({
                   attribute,
-                  operation:
-                    selectedOperation === 'boost' ? 'boosts' : 'buries',
+                  operation: selectedOperation,
                   change: 'add',
                   type: selectedAttributeType,
                 });
@@ -601,7 +520,7 @@ export const AddAttribute = ({
             </Button>
           )}
         </ModalFooter>
-      </ModalSide>
+      </ModalRightSide>
     </ModalContainer>
   );
 };

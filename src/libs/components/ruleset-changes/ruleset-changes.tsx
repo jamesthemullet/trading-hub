@@ -42,7 +42,7 @@ const ProductsLoader = ({
   pinnedProductsCount,
   products,
 }: {
-  changeType: 'boost' | 'bury' | 'pin' | 'block';
+  changeType: 'boosts' | 'buries' | 'pin' | 'block';
   heading: string;
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
@@ -114,9 +114,9 @@ const ProductsLoader = ({
                       onProductBoostBury={onProductBoostBury}
                       isProductNumberEnabled={true}
                       isBlocked={changeType === 'block'}
-                      isBuried={changeType === 'bury'}
+                      isBuried={changeType === 'buries'}
                       isPinned={changeType === 'pin'}
-                      isBoosted={changeType === 'boost'}
+                      isBoosted={changeType === 'boosts'}
                     />
                   ) : (
                     <Product
@@ -164,7 +164,9 @@ export const RulesetChanges = ({
     (merchandisingRules.boosts?.numeric?.length ?? 0) +
     (merchandisingRules.boosts?.alphanumeric?.length ?? 0) +
     (merchandisingRules.buries?.numeric?.length ?? 0) +
-    (merchandisingRules.buries?.alphanumeric?.length ?? 0);
+    (merchandisingRules.buries.alphanumeric.length ?? 0) +
+    (merchandisingRules.includes.alphanumeric?.length ?? 0) +
+    (merchandisingRules.excludes.alphanumeric?.length ?? 0);
   /* istanbul ignore next */
   const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
   /* istanbul ignore next */
@@ -173,6 +175,10 @@ export const RulesetChanges = ({
   const numericBury = merchandisingRules.buries?.numeric ?? [];
   /* istanbul ignore next */
   const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
+  /* istanbul ignore next */
+  const alphanumericIncludes = merchandisingRules.includes.alphanumeric ?? [];
+  /* istanbul ignore next */
+  const alphanumericExcludes = merchandisingRules.excludes.alphanumeric ?? [];
 
   const pinnedProductsCount = merchandisingRules.pinnedProducts.length;
   const blockedProductsCount = merchandisingRules.blockedProducts.length;
@@ -193,7 +199,7 @@ export const RulesetChanges = ({
                   <NumericAttribute
                     key={`boost-numeric-${index}`}
                     name={field}
-                    operation="boost"
+                    operation="boosts"
                     weight={weight}
                   />
                 );
@@ -206,7 +212,7 @@ export const RulesetChanges = ({
                 <AlphanumericAttribute
                   key={`boost-alphanumeric-${index}`}
                   fields={fields}
-                  operation="boost"
+                  operation="boosts"
                   weight={weight}
                 />
               ))}
@@ -219,7 +225,7 @@ export const RulesetChanges = ({
                   <NumericAttribute
                     key={`bury-numeric-${index}`}
                     name={field}
-                    operation="bury"
+                    operation="buries"
                     weight={weight}
                   />
                 );
@@ -233,8 +239,34 @@ export const RulesetChanges = ({
                   <AlphanumericAttribute
                     key={`bury-alphanumeric-${index}`}
                     fields={fields}
-                    operation="bury"
+                    operation="buries"
                     weight={weight}
+                  />
+                );
+              })}
+            </Layout>
+          )}
+          {alphanumericIncludes.length > 0 && (
+            <Layout>
+              {alphanumericIncludes.map(({ fields }, index) => {
+                return (
+                  <AlphanumericAttribute
+                    key={`include-alphanumeric-${index}`}
+                    fields={fields}
+                    operation="includes"
+                  />
+                );
+              })}
+            </Layout>
+          )}
+          {alphanumericExcludes.length > 0 && (
+            <Layout>
+              {alphanumericExcludes.map(({ fields }, index) => {
+                return (
+                  <AlphanumericAttribute
+                    key={`exclude-alphanumeric-${index}`}
+                    fields={fields}
+                    operation="excludes"
                   />
                 );
               })}
@@ -273,7 +305,7 @@ export const RulesetChanges = ({
         <ProductsLoader
           heading="Boosted Products"
           isPinnable={isPinnable}
-          changeType="boost"
+          changeType="boosts"
           merchandisingRules={merchandisingRules}
           onChangePosition={onChangePosition}
           onProductBoostBury={onProductBoostBury}
@@ -286,7 +318,7 @@ export const RulesetChanges = ({
         <ProductsLoader
           heading="Buried Products"
           isPinnable={isPinnable}
-          changeType="bury"
+          changeType="buries"
           merchandisingRules={merchandisingRules}
           onChangePosition={onChangePosition}
           onProductBoostBury={onProductBoostBury}

@@ -7,6 +7,7 @@ import {
   AttributeRow,
   AttributeWrapper,
 } from './ruleset-attributes.styles';
+import { labels } from './utils';
 import { AttributeWeight } from './weight';
 
 export const NumericAttribute = ({
@@ -21,7 +22,7 @@ export const NumericAttribute = ({
   name: string;
   onChangeAttribute?: (args: { newWeight: number }) => void;
   onDelete?: ({ field, weight }: NumericBoostBury) => void;
-  operation: 'bury' | 'boost';
+  operation: 'boosts' | 'buries' | 'includes' | 'excludes';
   weight?: number;
 }) => (
   <AttributeWrapper aria-label="Product Attribute">
@@ -35,10 +36,10 @@ export const NumericAttribute = ({
           width={20}
           height={20}
           alt=""
-          src={`/trading-hub/asset/${operation}-signifier.svg`}
+          src={`/trading-hub/asset/${labels[operation].icon}.svg`}
           style={{ marginBottom: '-4px' }}
         />{' '}
-        {operation}
+        {labels[operation].text}
       </Text>
     </AttributeRow>
     <AttributeWeight

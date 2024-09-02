@@ -1,11 +1,11 @@
 import { useCategoryAttributes } from '@/libs/hooks';
-import { EditAttribute } from '@/libs/modules/ruleset/ruleset';
+import { RulesetAttribute } from '@/libs/modules/ruleset/ruleset';
 
 import { AddAttribute } from './add-attribute';
 
 type Props = {
   onCancel: () => void;
-  onSelect: (attribute: EditAttribute) => void;
+  onSelect: (attribute: RulesetAttribute) => void;
   category: string;
 };
 

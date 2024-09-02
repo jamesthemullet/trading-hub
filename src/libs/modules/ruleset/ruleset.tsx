@@ -4,9 +4,11 @@ import { useRouter } from 'next/router';
 
 import type {
   AlphanumericBoostBury,
+  AlphanumericBoostBuryField,
   AttributeType,
   Category,
   CategoryRuleSet,
+  IncludeExclude,
   KeywordRuleSet,
   MerchandisingRules,
   NumericBoostBury,
@@ -87,12 +89,36 @@ export type ChangePositionTypes = {
   newPosition: number;
 };
 
+export type EditProduct = {
+  change: 'add' | 'remove' | 'modify';
+  operation: 'boosts' | 'buries' | 'block';
+};
+
+export type RulesetAttribute = {
+  attribute: {
+    fields?: Array<AlphanumericBoostBuryField>;
+    weight?: number;
+    field?: string;
+  };
+  change: 'add' | 'remove' | 'modify';
+  operation: 'boosts' | 'buries' | 'includes' | 'excludes';
+  type: AttributeType;
+  index?: number;
+};
+
 export type EditAttribute = {
   attribute: AlphanumericBoostBury | NumericBoostBury;
   change: 'add' | 'remove' | 'modify';
-  index?: number;
-  operation: 'boosts' | 'buries' | 'block';
+  operation: 'boosts' | 'buries';
   type: AttributeType;
+  index?: number;
+};
+
+export type EditIncludeExcludeAttribute = {
+  attribute: IncludeExclude;
+  change: 'add' | 'remove' | 'modify';
+  operation: 'includes' | 'excludes';
+  index?: number;
 };
 
 export const Ruleset = ({
@@ -269,68 +295,90 @@ export const Ruleset = ({
     index,
     operation,
     type,
-  }: EditAttribute) => {
-    /* istanbul ignore next */
-    if (operation === 'block') return;
-
+  }: RulesetAttribute) => {
     let updatedState = { ...merchandisingRules };
-    setMerchandisingRules((prevState) => {
-      if (change === 'modify') {
-        updatedState = {
-          ...prevState,
-          [operation]: {
-            ...prevState[operation],
-            [type]: prevState[operation][type].map((attr, attributeIndex) => {
-              if (attributeIndex === index) {
-                return attribute;
-              }
-              return attr;
-            }),
-          },
-        };
-        return updatedState;
-      }
-      if (type === 'alphanumeric') {
-        updatedState = {
-          ...prevState,
-          [operation]: {
-            ...prevState[operation],
-            alphanumeric:
-              change === 'add'
-                ? [
-                    ...merchandisingRules[operation][type],
-                    attribute as AlphanumericBoostBury,
-                  ]
-                : [
-                    ...merchandisingRules[operation][type].filter(
+
+    if (operation === 'boosts' || operation === 'buries') {
+      setMerchandisingRules((prevState) => {
+        if (change === 'modify') {
+          updatedState = {
+            ...prevState,
+            [operation]: {
+              ...prevState[operation],
+              [type]: prevState[operation][type].map((attr, attributeIndex) => {
+                if (attributeIndex === index) {
+                  return attribute;
+                }
+                return attr;
+              }),
+            },
+          };
+          return updatedState;
+        }
+        if (type === 'alphanumeric') {
+          updatedState = {
+            ...prevState,
+            [operation]: {
+              ...prevState[operation],
+              alphanumeric:
+                change === 'add'
+                  ? [
+                      ...merchandisingRules[operation][type],
+                      attribute as AlphanumericBoostBury,
+                    ]
+                  : [
+                      ...merchandisingRules[operation][type].filter(
+                        (attr) => !isEqual(attr, attribute)
+                      ),
+                    ],
+            },
+          };
+          return updatedState;
+        }
+        if (type === 'numeric') {
+          updatedState = {
+            ...prevState,
+            [operation]: {
+              ...prevState[operation],
+              numeric:
+                change === 'add'
+                  ? [
+                      ...merchandisingRules[operation][type],
+                      attribute as NumericBoostBury,
+                    ]
+                  : merchandisingRules[operation][type].filter(
                       (attr) => !isEqual(attr, attribute)
                     ),
+            },
+          };
+          return updatedState;
+        }
+        /* istanbul ignore next */
+        return updatedState;
+      });
+    }
+
+    if (operation === 'includes' || operation === 'excludes') {
+      setMerchandisingRules((prevState) => {
+        updatedState = {
+          ...prevState,
+          [operation]: {
+            alphanumeric:
+              change === 'add'
+                ? [...(prevState[operation].alphanumeric || []), attribute]
+                : [
+                    ...(
+                      prevState[operation].alphanumeric ||
+                      // istanbul ignore next
+                      []
+                    ).filter((attr) => !isEqual(attr, attribute)),
                   ],
           },
         };
         return updatedState;
-      }
-      if (type === 'numeric') {
-        updatedState = {
-          ...prevState,
-          [operation]: {
-            ...prevState[operation],
-            numeric:
-              change === 'add'
-                ? [
-                    ...merchandisingRules[operation][type],
-                    attribute as NumericBoostBury,
-                  ]
-                : merchandisingRules[operation][type].filter(
-                    (attr) => !isEqual(attr, attribute)
-                  ),
-          },
-        };
-        return updatedState;
-      }
-      /* istanbul ignore next */
-      return updatedState;
-    });
+      });
+    }
+
     setPreviewRules(updatedState);
   };
 
@@ -389,7 +437,9 @@ export const Ruleset = ({
     (merchandisingRules.boosts?.product || []).length +
     (merchandisingRules.buries?.alphanumeric || []).length +
     (merchandisingRules.buries?.numeric || []).length +
-    (merchandisingRules.buries?.product || []).length;
+    (merchandisingRules.buries?.product || []).length +
+    (merchandisingRules.includes?.alphanumeric || []).length +
+    (merchandisingRules.excludes?.alphanumeric || []).length;
 
   const rulesPanelTabs = [
     ...(rulesetType !== 'global' ? [{ title: 'Visual Editor' }] : []),
