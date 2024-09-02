@@ -48,7 +48,7 @@ services:
       ELASTIC_URL: http://elastic-dev:9200
     entrypoint: npm run test:e2e
   application-dev:
-    image: ghcr.io/digitalinnovation/search-service/search-service-webapp:713
+    image: ghcr.io/digitalinnovation/search-service/search-service-webapp:738
     ports:
       - '8081:8081'
     networks:
