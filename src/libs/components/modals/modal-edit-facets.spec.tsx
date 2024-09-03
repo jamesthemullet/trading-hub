@@ -1480,6 +1480,88 @@ describe('ModalEditValues', () => {
       );
     });
 
+    it('should not refresh data if calling update global facet fails', async () => {
+      const refreshDataMock = jest.fn();
+      mockUpdateGlobalFacet.mockResolvedValueOnce({
+        status: 'error',
+      });
+      updateGlobalFacet.error = 'Failed to update facet';
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <ModalEditValues
+          onClose={() => {}}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            merged: [
+              {
+                displayValue: 'test merged group',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
+          }}
+          facetType="global"
+          refreshData={refreshDataMock}
+          category={undefined}
+        />
+      );
+
+      act(() => {
+        user.click(screen.getByLabelText('Select Silk to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+      });
+      act(() => {
+        user.click(screen.getByLabelText('Select More Silk to merge'));
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+      });
+      act(() => {
+        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
+        user.click(mergeButton);
+      });
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
+        expect(
+          screen.getByLabelText('Edit Name your merge input field')
+        ).toBeVisible();
+      });
+
+      const mergeInputField = screen.getByLabelText(
+        'Edit Name your merge input field'
+      );
+      await waitFor(async () => {
+        userEvent.clear(mergeInputField);
+        await userEvent.type(mergeInputField, 'New merge name');
+        userEvent.keyboard('{enter}');
+      });
+
+      await waitFor(() => {
+        expect(mergeInputField).toHaveValue('New merge name');
+      });
+
+      act(() => {
+        user.click(screen.getByText('Save'));
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Error whilst updating facet: Failed to update facet'
+          )
+        ).toBeVisible();
+        expect(refreshDataMock).not.toHaveBeenCalled();
+      });
+    });
+
     it('should not allow any other action during the process creating a merge group (ie when writing the name of the merge group)', async () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(

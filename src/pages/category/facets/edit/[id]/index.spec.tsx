@@ -190,7 +190,6 @@ describe('Category Facet Management Editing', () => {
             boosted: ['test include'],
             excludedValues: ['test exclude'],
             indexPropertyName: 'color',
-            status: 'included',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
             lastChanged: {
               date: '2021-01-01T08:34:15Z',
@@ -208,7 +207,6 @@ describe('Category Facet Management Editing', () => {
             boosted: [],
             excludedValues: [],
             indexPropertyName: 'size',
-            status: 'excluded',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
             lastChanged: {
               date: '2021-01-02T08:34:15Z',
@@ -221,7 +219,6 @@ describe('Category Facet Management Editing', () => {
             boosted: [],
             excludedValues: [],
             indexPropertyName: 'brand',
-            status: 'included',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
             lastChanged: {
               date: '2021-01-03T08:34:15Z',
@@ -399,7 +396,6 @@ describe('Category Facet Management Editing', () => {
             boosted: ['test include'],
             excludedValues: ['test exclude'],
             indexPropertyName: 'color',
-            status: 'included',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
             lastChanged: {
               date: '2021-01-01T08:34:15Z',
@@ -417,7 +413,6 @@ describe('Category Facet Management Editing', () => {
             boosted: [],
             excludedValues: [],
             indexPropertyName: 'size',
-            status: 'excluded',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
             lastChanged: {
               date: '2021-01-02T08:34:15Z',
@@ -430,7 +425,6 @@ describe('Category Facet Management Editing', () => {
             boosted: [],
             excludedValues: [],
             indexPropertyName: 'brand',
-            status: 'included',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
             lastChanged: {
               date: '2021-01-03T08:34:15Z',
@@ -505,7 +499,6 @@ describe('Category Facet Management Editing', () => {
               boosted: ['More Silk'],
               excludedValues: [],
               indexPropertyName: 'color',
-              status: 'included',
               id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
               lastChanged: {
                 date: '2021-01-01T08:34:15Z',
@@ -523,7 +516,6 @@ describe('Category Facet Management Editing', () => {
               boosted: [],
               excludedValues: [],
               indexPropertyName: 'size',
-              status: 'excluded',
               id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
               lastChanged: {
                 date: '2021-01-02T08:34:15Z',
@@ -536,7 +528,6 @@ describe('Category Facet Management Editing', () => {
               boosted: [],
               excludedValues: [],
               indexPropertyName: 'brand',
-              status: 'included',
               id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
               lastChanged: {
                 date: '2021-01-03T08:34:15Z',

@@ -563,7 +563,11 @@ export const ModalEditValues = ({
         },
       });
 
-      if (response && response.status !== 'error' && refreshData) {
+      if ('status' in response && response.status === 'error') {
+        return;
+      }
+
+      if (response && refreshData) {
         refreshData();
       }
     } else if (facetType === 'category') {

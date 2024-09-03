@@ -8,12 +8,10 @@ import {
   KeywordRedirect,
   ProductBoostBury,
   ReturnedCategoryRuleSet,
-  ReturnedFacet,
   ReturnedKeywordRedirect,
   ReturnedKeywordRedirects,
   ReturnedKeywordRuleSet,
   ReturnedKeywordRuleSets,
-  ReturnedRuleSet,
   RuleSetFacetConfigWithId,
   SearchPreviewResponseBeta,
 } from '@/libs/api';
@@ -168,7 +166,6 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
     {
       displayValue: 'color',
       indexPropertyName: 'color',
-      status: 'included',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
       lastChanged: {
         date: '2021-01-01T08:34:15Z',
@@ -184,7 +181,6 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
     {
       displayValue: 'size',
       indexPropertyName: 'size',
-      status: 'excluded',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
       lastChanged: {
         date: '2021-01-02T08:34:15Z',
@@ -195,7 +191,6 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
     {
       displayValue: 'brand',
       indexPropertyName: 'brand',
-      status: 'included',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
       lastChanged: {
         date: '2021-01-03T08:34:15Z',
@@ -206,7 +201,6 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
     {
       displayValue: 'category',
       indexPropertyName: 'category',
-      status: 'included',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
       lastChanged: {
         date: '2021-01-04T08:34:15Z',
@@ -217,7 +211,6 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
     {
       displayValue: 'price',
       indexPropertyName: 'price',
-      status: 'excluded',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
       lastChanged: {
         date: '2021-01-05T08:34:15Z',
@@ -402,63 +395,6 @@ export const getMockMapping: () => Record<
     >
   >
 > = () => ({
-  '/merchandising/ruleset/{category}': {
-    get: (_req, status, jsonBody) => {
-      const returnedRuleSet = jsonBody as ReturnedRuleSet;
-      if (!returnedRuleSet.facets || !returnedRuleSet.facets.length) {
-        return {
-          body: {
-            ...returnedRuleSet,
-            facets: ruleSetFacetConfigWithIdMock,
-          },
-          status: status,
-        };
-      }
-      return { body: jsonBody, status };
-    },
-  },
-  '/merchandising/facet/{facetId}': {
-    get: (req, status, jsonBody) => {
-      if (status !== 200) {
-        const { url } = req;
-        if (!url) {
-          const error: ErrorResponse = {
-            message: 'url is empty',
-            status: '400',
-          };
-          return { body: error, status: 400 };
-        }
-
-        const facetId = url.split('/')[4];
-        const facet = globalFacetsListMock.facets.find(
-          (facet) => facet.id === facetId
-        );
-
-        if (!facet) {
-          const error: ErrorResponse = {
-            message: `Facet with id: ${facetId} not found`,
-            status: '404',
-          };
-          return { body: error, status: 404 };
-        }
-
-        const body: ReturnedFacet = facet;
-        return { body, status: 200 };
-      }
-      return { body: jsonBody, status };
-    },
-  },
-  '/search/beta/merchandising/attributes': {
-    get: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        return {
-          body: attributesMock,
-          status: 200,
-        };
-      }
-      return { body: jsonBody, status };
-    },
-  },
   '/search/beta/merchandising/preview': {
     post: (_req, status, jsonBody) => {
       if (status !== 200) {

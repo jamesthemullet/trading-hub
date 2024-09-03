@@ -42,7 +42,6 @@ const mockFacet = {
   indexPropertyName: 'color',
   lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
   merged: [],
-  status: 'included',
 };
 
 const mockMerchandisingRules = {
