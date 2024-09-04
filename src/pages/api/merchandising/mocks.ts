@@ -4,18 +4,14 @@ import {
   BetaMerchandisingFacetListData,
   BoostsBuries,
   BoostsBuriesWithInfo,
-  ErrorResponse,
   KeywordRedirect,
   ProductBoostBury,
   ReturnedCategoryRuleSet,
   ReturnedKeywordRedirect,
   ReturnedKeywordRedirects,
-  ReturnedKeywordRuleSet,
-  ReturnedKeywordRuleSets,
   RuleSetFacetConfigWithId,
   SearchPreviewResponseBeta,
 } from '@/libs/api';
-import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
 import { NextApiRequest } from 'next';
 
@@ -315,54 +311,6 @@ export const attributeValuesMock: AttributeValuesResponse['values'] = [
   },
 ];
 
-export const keywordRulesetMock: ReturnedKeywordRuleSets = {
-  ruleSets: [
-    {
-      id: 'abcdcae5-c3c4-455b-aeff-b7d2af65b702',
-      rules: mockMerchandisingRules,
-      isEnabled: true,
-      searchTerms: ['sock', 'socks', 'sockz'],
-      lastChanged: {
-        date: '2021-01-05T08:34:15Z',
-        user: 'Test User',
-      },
-    },
-    {
-      id: 'efghcae5-c3c4-455b-aeff-b7d2af65b702',
-      rules: mockMerchandisingRules,
-      isEnabled: true,
-      searchTerms: [
-        'Lorem',
-        'ipsum',
-        'dolor',
-        'sit',
-        'amet',
-        'consectetur',
-        'adipiscing',
-        'elit,',
-        'sed',
-        'do',
-        'eiusmod',
-        'tempor',
-        'incididunt',
-        'ut',
-        'labore',
-        'et',
-        'dolore',
-        'magna',
-        'aliqua',
-      ],
-      lastChanged: {
-        date: '2021-07-05T08:34:15Z',
-        user: 'Test User',
-      },
-    },
-  ] as Array<ReturnedKeywordRuleSet>,
-  pagination: {
-    totalItems: 2,
-  },
-};
-
 export const redirectMock: KeywordRedirect = {
   destinationUrl: 'l/women/dresses',
   endDate: '2024-08-01T09:37:06.109Z',
@@ -428,20 +376,6 @@ export const getMockMapping: () => Record<
       return { body: jsonBody, status };
     },
   },
-  '/search/beta/merchandising/keyword/ruleset': {
-    get: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        return {
-          body: keywordRulesetMock,
-          status: 200,
-        };
-      }
-      return { body: jsonBody, status };
-    },
-    post: () => {
-      return { body: keywordRulesetMock.ruleSets[0], status: 200 };
-    },
-  },
   '/search/beta/merchandising/keyword/redirect': {
     get: (_req, status, jsonBody) => {
       if (status !== 200) {
@@ -481,43 +415,6 @@ export const getMockMapping: () => Record<
     put: () => {
       return {
         body: returnedRedirectMock,
-        status: 200,
-      };
-    },
-  },
-  '/search/beta/merchandising/keyword/ruleset/{ruleSetId}': {
-    put: () => {
-      return {
-        body: keywordRulesetMock.ruleSets[0],
-        status: 200,
-      };
-    },
-    delete: () => {
-      return {
-        body: {},
-        status: 200,
-      };
-    },
-    get: (req) => {
-      const { url } = req;
-
-      // istanbul ignore next
-      if (!url) {
-        const error: ErrorResponse = {
-          message: 'url is empty',
-          status: '400',
-        };
-        return { body: error, status: 400 };
-      }
-
-      const rulsetId = url.split('/')[7];
-
-      const ruleSet = keywordRulesetMock.ruleSets.find(
-        (ruleset) => ruleset.id === rulsetId
-      );
-
-      return {
-        body: ruleSet || keywordRulesetMock.ruleSets[0],
         status: 200,
       };
     },
