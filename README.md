@@ -72,9 +72,9 @@ Reviews are not dismissed on new commits, please rerequest a review if subsequen
 
 ### API contract
 
-Our agreed API with the backend team is stored in this repo and used for all requests.
+Our agreed API contract with the backend team is stored in the [search-service](https://github.com/DigitalInnovation/search-service/blob/main/search-service-app/src/main/resources/static/search-merchandising.yml) repo and used for all requests.
 
-You can check or generate the code by running `npm run codegen` and view our [api.yml](src/libs/api/api.yml)
+You can check or generate the code by running `npm run codegen` which copies the file locally to [api.yml](src/libs/api/api.yml)
 
 ### Tests
 
