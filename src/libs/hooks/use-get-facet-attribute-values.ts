@@ -16,9 +16,11 @@ export const useGetFacetAttributeValues = (
   >([]);
   const [error, setError] = useState('');
   const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const asyncCall = async () => {
+      setIsLoading(true);
       try {
         const result =
           await search().betaMerchandisingFacetAttributeValuesDetail(facetId, {
@@ -32,8 +34,10 @@ export const useGetFacetAttributeValues = (
         if (result.data.pagination) {
           setPagination(result.data.pagination);
         }
+        setIsLoading(false);
       } catch {
         setError(validateErrorResponse(error));
+        setIsLoading(false);
       }
     };
     void asyncCall();
@@ -44,5 +48,6 @@ export const useGetFacetAttributeValues = (
     error,
     pagination: pagination,
     refetch: () => refetch({}),
+    isLoading,
   };
 };

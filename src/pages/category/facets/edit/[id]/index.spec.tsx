@@ -92,6 +92,7 @@ describe('Category Facet Management Editing', () => {
         totalItems: 5,
       },
       refetch: jest.fn(),
+      isLoading: false,
     });
   });
 

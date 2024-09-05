@@ -137,6 +137,7 @@ describe('Global Facet Management', () => {
         totalItems: 5,
       },
       refetch: jest.fn(),
+      isLoading: false,
     });
   });
 

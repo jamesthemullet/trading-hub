@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useEffect, useMemo, useState } from 'react';
-import { Modal } from '@mantine/core';
+import { Modal, Skeleton } from '@mantine/core';
 
 import { AttributeValuesResponse, ReturnedGlobalFacet } from '@/libs/api';
 import { ErrorMessage } from '@/libs/components';
@@ -129,6 +129,12 @@ const StyledError = styled(Text)`
   margin-top: ${spacing(0.5)};
 `;
 
+const SkeletonRow = styled(Skeleton)`
+  width: 100%;
+  height: 75px;
+  margin-bottom: ${spacing(1)};
+`;
+
 const defaultMergedDisplayValue = 'Name your merge';
 
 const EDITFACETVALUESMODALCOLUMNS: {
@@ -224,8 +230,11 @@ export const ModalEditValues = ({
     }
   };
 
-  const { attributeValues, error: attributeValuesError } =
-    useGetFacetAttributeValues(facet.id, searchQuery, category);
+  const {
+    attributeValues,
+    error: attributeValuesError,
+    isLoading,
+  } = useGetFacetAttributeValues(facet.id, searchQuery, category);
 
   const attributeValuesWithIds = useMemo(() => {
     return attributeValues.map((value) => ({
@@ -859,11 +868,22 @@ export const ModalEditValues = ({
             </AttributesModalHeader>
 
             <BodyContainer>
-              <ModalAttributesTable>
-                {includedFacetValues.map(Row)}
-                {defaultFacetValues.map(Row)}
-                {excludedFacetValues.map(Row)}
-              </ModalAttributesTable>
+              {isLoading ? (
+                <>
+                  {editFacetValues.map((val) => (
+                    <SkeletonRow
+                      key={val.id}
+                      aria-label="attribute-value-skeleton"
+                    />
+                  ))}
+                </>
+              ) : (
+                <ModalAttributesTable>
+                  {includedFacetValues.map(Row)}
+                  {defaultFacetValues.map(Row)}
+                  {excludedFacetValues.map(Row)}
+                </ModalAttributesTable>
+              )}
 
               <FilteredResultsPanel filteredFacets={editFacetValues.length} />
             </BodyContainer>

@@ -130,6 +130,7 @@ describe('Facet Panel', () => {
         totalItems: 5,
       },
       refetch: jest.fn(),
+      isLoading: false,
     });
   });
 

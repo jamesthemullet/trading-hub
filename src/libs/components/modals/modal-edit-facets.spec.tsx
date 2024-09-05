@@ -41,6 +41,7 @@ describe('ModalEditValues', () => {
         totalItems: 5,
       },
       refetch: jest.fn(),
+      isLoading: false,
     });
   });
 
@@ -239,6 +240,41 @@ describe('ModalEditValues', () => {
     );
   });
 
+  it('should display loader components when retrieving attributes', async () => {
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      attributeValues: attributeValuesMock,
+      error: '',
+      pagination: {
+        totalItems: 5,
+      },
+      refetch: jest.fn(),
+      isLoading: true,
+    });
+
+    await act(async () => {
+      renderWithProviders(
+        <ModalEditValues
+          onClose={() => {}}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            boosted: ['Silk', 'More Silk'],
+            excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
+          }}
+          facetType="global"
+          refreshData={() => jest.fn()}
+          category={undefined}
+        />
+      );
+    });
+
+    expect(screen.getAllByLabelText('attribute-value-skeleton')).toHaveLength(
+      11
+    );
+  });
+
   it('should display error message when retrieving attributes fails', async () => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: [],
@@ -247,6 +283,7 @@ describe('ModalEditValues', () => {
         totalItems: 5,
       },
       refetch: jest.fn(),
+      isLoading: false,
     });
 
     await act(async () => {

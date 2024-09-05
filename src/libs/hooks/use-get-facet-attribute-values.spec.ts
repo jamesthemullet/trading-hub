@@ -53,6 +53,7 @@ describe('useGetFacetAttributeValues', () => {
           totalItems: 5,
         },
         refetch: expect.any(Function),
+        isLoading: false,
       });
     });
   });
@@ -80,6 +81,7 @@ describe('useGetFacetAttributeValues', () => {
         },
         error: 'Unknown error',
         refetch: expect.any(Function),
+        isLoading: false,
       });
     });
   });
