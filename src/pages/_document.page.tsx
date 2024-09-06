@@ -1,4 +1,5 @@
 import { css, Global } from '@emotion/react';
+import { ColorSchemeScript } from '@mantine/core';
 
 import { Head, Html, Main, NextScript } from 'next/document';
 
@@ -113,7 +114,9 @@ export const resetStyles = () => css`
 export default function Document() {
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        <ColorSchemeScript defaultColorScheme="light" />
+      </Head>
       <Global
         styles={css`
           ${resetStyles()}
