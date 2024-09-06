@@ -297,19 +297,17 @@ describe('RulesetChanges', () => {
       isLoading: false,
       searchForProduct: jest.fn(() => {
         return Promise.resolve({
-          products: [
-            {
-              id: '60183702',
-              productId: '60183702',
-              title: 'Product Title',
-              imageUrl: ['example1.jpg'],
-              brand: 'Product Brand',
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: '£1',
-              url: '',
-            },
-          ],
+          products: Array.from({ length: 9 }).map((_, index) => ({
+            id: `6018370${index}`,
+            productId: `6018370${index}`,
+            title: 'Product Title',
+            imageUrl: ['example1.jpg'],
+            brand: 'Product Brand',
+            metadata: { isPinned: false },
+            isInStock: true,
+            price: '£1',
+            url: '',
+          })),
           pagination: {
             totalItems: 9,
           },
@@ -322,35 +320,9 @@ describe('RulesetChanges', () => {
         isPinnable={true}
         merchandisingRules={{
           ...mockMerchandisingRulesWithData,
-          pinnedProducts: [
-            {
-              id: '60183702',
-            },
-            {
-              id: '60290408',
-            },
-            {
-              id: '60169259',
-            },
-            {
-              id: '60169250',
-            },
-            {
-              id: '60169251',
-            },
-            {
-              id: '60169252',
-            },
-            {
-              id: '60169253',
-            },
-            {
-              id: '60169254',
-            },
-            {
-              id: '60169255',
-            },
-          ],
+          pinnedProducts: Array.from({ length: 9 }).map((_, index) => ({
+            id: `6018370${index}`,
+          })),
           boosts: {
             ...mockMerchandisingRulesWithData.boosts,
             product: [{ id: '3523522', weight: 100 }],
@@ -382,5 +354,13 @@ describe('RulesetChanges', () => {
     );
 
     expect(product9).toBeInTheDocument();
+
+    act(() => {
+      loadMoreButton.click();
+    });
+
+    expect(
+      within(pinnedProducts).queryByLabelText('Position 10')
+    ).not.toBeInTheDocument();
   });
 });

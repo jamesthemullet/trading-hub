@@ -34,6 +34,8 @@ const ButtonWrapper = styled.div`
 `;
 
 const PRODUCTS_TO_LOAD = 8;
+const PRODUCTS_TO_LOAD_INCREMENT = 4;
+const MAXIMUM_PRODUCTS_TO_LOAD_BACKEND_SUPPORTS = 10;
 
 type ProductRule = { id: string };
 
@@ -76,15 +78,29 @@ const ProductsLoader = ({
     const fetchData = async () => {
       const productsToGet = [...products]
         .splice(0, productsShown)
+        .filter(
+          (product) => !productDetails.find(({ id }) => id === product.id)
+        )
         .map((product) => product.id);
 
-      const data = await fetch(productsToGet);
+      if (productsToGet.length === 0) {
+        return;
+      }
 
-      setProductDetails(data);
+      const productsToFetch = productsToGet.slice(
+        0,
+        MAXIMUM_PRODUCTS_TO_LOAD_BACKEND_SUPPORTS
+      );
+      const data = await fetch(productsToFetch);
+      const newProductDetails = data.filter(
+        (product) => !productDetails.find(({ id }) => id === product.id)
+      );
+
+      setProductDetails([...productDetails, ...newProductDetails]);
     };
 
     fetchData();
-  }, [products, productsShown, fetch]);
+  }, [products, productsShown, fetch, productDetails]);
 
   return (
     <>
@@ -92,63 +108,64 @@ const ProductsLoader = ({
         {`${heading} (${products.length})`}
       </Heading>
       <Layout aria-label={heading.split('(')[0]}>
-        {isLoading
-          ? products.map((_product, index) => (
-              <Skeleton
-                key={index}
-                aria-label="Product loader"
-                width={235}
-                height={320}
-              />
-            ))
-          : products.map(({ id }, index) => {
-              if (index + 1 > productsShown) {
-                return null;
-              }
-              const product = productDetails.find(
-                ({ id: productId }) => id === productId
-              );
+        {products.map(({ id }, index) => {
+          if (index + 1 > productsShown) {
+            return null;
+          }
+          const product = productDetails.find(
+            ({ id: productId }) => id === productId
+          );
 
-              return (
-                <ProductBox key={`ruleset-changes-product-${id}`}>
-                  {!product ? (
-                    <MissingProduct
-                      index={index}
-                      id={id}
-                      onChangePosition={onChangePosition}
-                      onProductBoostBury={onProductBoostBury}
-                      isProductNumberEnabled={true}
-                      isBlocked={changeType === 'block'}
-                      isBuried={changeType === 'buries'}
-                      isPinned={changeType === 'pin'}
-                      isBoosted={changeType === 'boosts'}
-                    />
-                  ) : (
-                    <Product
-                      {...product}
-                      index={index}
-                      isPinnable={isPinnable}
-                      pinnedProductsCount={pinnedProductsCount}
-                      onChangePosition={onChangePosition}
-                      onProductBoostBury={onProductBoostBury}
-                    />
-                  )}
-                </ProductBox>
-              );
-            })}
+          return (
+            <ProductBox key={`ruleset-changes-product-${id}`}>
+              {!product ? (
+                isLoading ? (
+                  <Skeleton
+                    key={index}
+                    aria-label="Product loader"
+                    width={235}
+                    height={320}
+                  />
+                ) : (
+                  <MissingProduct
+                    index={index}
+                    id={id}
+                    onChangePosition={onChangePosition}
+                    onProductBoostBury={onProductBoostBury}
+                    isProductNumberEnabled={true}
+                    isBlocked={changeType === 'block'}
+                    isBuried={changeType === 'buries'}
+                    isPinned={changeType === 'pin'}
+                    isBoosted={changeType === 'boosts'}
+                  />
+                )
+              ) : (
+                <Product
+                  {...product}
+                  index={index}
+                  isPinnable={isPinnable}
+                  pinnedProductsCount={pinnedProductsCount}
+                  onChangePosition={onChangePosition}
+                  onProductBoostBury={onProductBoostBury}
+                />
+              )}
+            </ProductBox>
+          );
+        })}
       </Layout>
-      {productsShown < products.length && products.length > 4 && (
-        <ButtonWrapper>
-          <Button
-            style={{ width: 'auto' }}
-            onClick={() => {
-              setProductsShown(productsShown + 4);
-            }}
-          >
-            Load more products
-          </Button>
-        </ButtonWrapper>
-      )}
+      {productsShown < products.length &&
+        products.length > PRODUCTS_TO_LOAD_INCREMENT && (
+          <ButtonWrapper>
+            <Button
+              style={{ width: 'auto' }}
+              onClick={() => {
+                setProductsShown(productsShown + PRODUCTS_TO_LOAD_INCREMENT);
+              }}
+            >
+              Load more products
+            </Button>
+          </ButtonWrapper>
+        )}
     </>
   );
 };
