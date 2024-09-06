@@ -11,7 +11,7 @@ export const useFacetsFilter = (facets: ReturnedFacet[]) => {
     return facets.filter(
       (facet) =>
         (facet.displayValue && facet.displayValue.includes(search)) ||
-        facet.indexPropertyName.includes(search)
+        search.includes(facet.indexPropertyName)
     );
   }, [facets, search]);
 
