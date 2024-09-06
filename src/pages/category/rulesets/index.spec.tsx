@@ -313,7 +313,7 @@ describe('Index', () => {
     });
     renderWithProviders(<RuleSets />);
 
-    expect(screen.queryAllByText('Add Rule')).toHaveLength(0);
+    expect(screen.queryAllByText('Add new rule')).toHaveLength(0);
 
     expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
     expect(screen.getByLabelText('table-pagination-skeleton')).toBeVisible();

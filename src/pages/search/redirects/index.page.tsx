@@ -17,6 +17,8 @@ import {
 } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import Link from 'next/link';
+
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
 `;
@@ -124,7 +126,7 @@ const RedirectRuleSets = () => {
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
           <NewButton>
-            <a href="/search/redirects/new">Add new rule</a>
+            <Link href="/search/redirects/new">Add new rule</Link>
           </NewButton>
         </ToolsContainer>
 

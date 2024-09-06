@@ -44,7 +44,7 @@ jest.mock(
   })
 );
 
-const NEW_RULE_BUTTON_TEXT = 'Add rule';
+const NEW_RULE_BUTTON_TEXT = 'Add new rule';
 
 const mockMerchandisingRules = {
   pinnedProducts: [],

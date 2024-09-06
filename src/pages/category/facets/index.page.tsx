@@ -4,7 +4,6 @@ import { Skeleton } from '@mantine/core';
 
 import type { ReturnedRuleSet } from '@/libs/api';
 import {
-  Button,
   DataTable,
   DataTableSkeleton,
   ErrorMessage,
@@ -13,9 +12,12 @@ import {
   TablePagination,
   TablePaginationSkeleton,
 } from '@/libs/components';
+import { color } from '@/libs/components/utils/constants';
 import { spacing } from '@/libs/components/utils/spacing';
 import { useRuleSet, useRuleSetDelete, useUpdateRuleSet } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+
+import Link from 'next/link';
 
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
@@ -37,6 +39,10 @@ const NewButton = styled.div`
   margin-left: auto;
   margin-top: ${spacing(1)};
   margin-right: ${spacing(2)};
+
+  & a {
+    color: ${color.focusBlue};
+  }
 `;
 
 const FacetManagementPage = () => {
@@ -159,9 +165,9 @@ const FacetManagementPage = () => {
             {isLoading ? (
               <Skeleton height={33} width={110} />
             ) : (
-              <Button as="a" href="/category/facets/new">
-                Add facet
-              </Button>
+              <NewButton>
+                <Link href="/category/facets/new">Add new facet</Link>
+              </NewButton>
             )}
           </NewButton>
         </ToolsContainer>

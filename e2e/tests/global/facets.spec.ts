@@ -9,7 +9,7 @@ test('creates and deletes new global facet ruleset', async ({ page }) => {
     page.getByRole('heading', { name: 'Global Facet Management' })
   ).toBeVisible();
 
-  await page.getByRole('button', { name: 'Add rule' }).click();
+  await page.getByRole('link', { name: 'Add new rule' }).click();
 
   await expect(
     page.getByText('Applies to all pages in marksandspencer.com')

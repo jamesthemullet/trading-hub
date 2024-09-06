@@ -88,7 +88,7 @@ describe('Category facet management', () => {
     renderWithProviders(<FacetManagementPage />);
 
     expect(screen.getByText('Category Facet Management')).toBeVisible();
-    expect(screen.getByText('Add facet')).toBeVisible();
+    expect(screen.getByText('Add new facet')).toBeVisible();
     expect(screen.getByText('1 | identifier-1')).toBeVisible();
   });
 
@@ -323,7 +323,7 @@ describe('Category facet management', () => {
     });
     renderWithProviders(<FacetManagementPage />);
 
-    expect(screen.queryAllByText('Add Facet')).toHaveLength(0);
+    expect(screen.queryAllByText('Add new facet')).toHaveLength(0);
 
     expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
     expect(

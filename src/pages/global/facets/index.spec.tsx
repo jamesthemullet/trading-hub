@@ -64,7 +64,7 @@ const mockMerchandisingRules = {
 };
 
 const MOCK_CATEGORY_ID = 'Cat123';
-const NEW_RULE_BUTTON_TEXT = 'Add rule';
+const NEW_RULE_BUTTON_TEXT = 'Add new rule';
 const mockId = 'ewfw-e3f23-f23f2-3cwef3';
 
 const mockRouter = {

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import {
-  Button,
   DataTable,
   ErrorMessage,
   Heading,
@@ -12,6 +11,7 @@ import {
   SectionWrapper,
   TablePagination,
 } from '@/libs/components';
+import { color } from '@/libs/components/utils/constants';
 import { spacing } from '@/libs/components/utils/spacing';
 import {
   useGlobalRuleSetCreate,
@@ -21,6 +21,8 @@ import {
 } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import Link from 'next/link';
+
 const PageNameLabel = styled.h2`
   margin: ${spacing(3)} ${spacing(2)};
 `;
@@ -29,6 +31,10 @@ const NewButton = styled.div`
   margin-left: auto;
   margin-top: ${spacing(1)};
   margin-right: ${spacing(2)};
+
+  & a {
+    color: ${color.focusBlue};
+  }
 `;
 
 const FacetManagementPage = () => {
@@ -136,10 +142,8 @@ const FacetManagementPage = () => {
         <SectionHeader>
           <Search onChange={(e) => handleSearch(e.target.value)} />
 
-          <NewButton>
-            <Button as="button" onClick={createNewRuleSet}>
-              Add rule
-            </Button>
+          <NewButton onClick={createNewRuleSet}>
+            <Link href={''}>Add new rule</Link>
           </NewButton>
         </SectionHeader>
 

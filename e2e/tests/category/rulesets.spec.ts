@@ -15,7 +15,7 @@ test('creates and deletes new ruleset', async ({ page }) => {
   await page.waitForLoadState('networkidle');
   expect(get500Errors()).toEqual([]);
 
-  await page.getByRole('link', { name: 'Add rule' }).click();
+  await page.getByRole('link', { name: 'Add new rule' }).click();
 
   await page.waitForLoadState();
 

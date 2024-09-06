@@ -159,7 +159,7 @@ describe('Facet Panel', () => {
     ).toBeVisible();
   });
 
-  it('should not render preview button or add facets button, if global facets page', async () => {
+  it('should not render preview button or add new facets button, if global facets page', async () => {
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -173,7 +173,7 @@ describe('Facet Panel', () => {
     );
 
     expect(screen.queryByRole('button', { name: 'Preview' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Add facet' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Add new facet' })).toBeNull();
   });
 
   it('should render column headings', () => {
