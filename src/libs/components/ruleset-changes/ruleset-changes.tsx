@@ -92,15 +92,17 @@ const ProductsLoader = ({
         MAXIMUM_PRODUCTS_TO_LOAD_BACKEND_SUPPORTS
       );
       const data = await fetch(productsToFetch);
-      const newProductDetails = data.filter(
-        (product) => !productDetails.find(({ id }) => id === product.id)
-      );
 
-      setProductDetails([...productDetails, ...newProductDetails]);
+      setProductDetails((prev) => {
+        const newProductDetails = data.filter(
+          (product) => !prev.find(({ id }) => id === product.id)
+        );
+        return [...prev, ...newProductDetails];
+      });
     };
 
     fetchData();
-  }, [products, productsShown, fetch, productDetails]);
+  }, [products, productsShown, fetch]);
 
   return (
     <>
