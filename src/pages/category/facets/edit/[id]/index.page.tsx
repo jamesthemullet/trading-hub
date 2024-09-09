@@ -47,6 +47,7 @@ const Page = ({ id }: { id: string }) => {
 
   const [facetList, setFacetList] = useState<ReturnedFacet[]>([]);
   const [includedFacets, setIncludedFacets] = useState<ReturnedFacet[]>([]);
+  const [excludedFacets, setExcludedFacets] = useState<ReturnedFacet[]>([]);
   const [orderedFacetList, setOrderedFacetList] = useState<ReturnedFacet[]>([]);
 
   const { search, setSearch, filteredFacets } =
@@ -90,14 +91,30 @@ const Page = ({ id }: { id: string }) => {
 
     setIncludedFacets(includedFacets);
 
-    const excludedFacets = facetList.filter(
-      (facet) =>
-        !facetsFromCategoryRuleSet.some(
-          (ruleFacet) => ruleFacet.id === facet.id
-        )
+    const excludedFacets = facetList.filter((facet) =>
+      ruleSetDetail.excludedFacets?.facets?.some(
+        (excludedFacet) => excludedFacet?.facet?.id === facet.id
+      )
     );
-    setOrderedFacetList([...includedFacets, ...excludedFacets]);
-  }, [facetList, facetsFromCategoryRuleSet, ruleSetDetail.facets]);
+
+    const restOfFacets = facetList.filter(
+      (facet) =>
+        !includedFacets.some((ruleFacet) => ruleFacet.id === facet.id) &&
+        !excludedFacets.some((ruleFacet) => ruleFacet.id === facet.id)
+    );
+
+    setExcludedFacets(excludedFacets);
+    setOrderedFacetList([
+      ...includedFacets,
+      ...restOfFacets,
+      ...excludedFacets,
+    ]);
+  }, [
+    facetList,
+    facetsFromCategoryRuleSet,
+    ruleSetDetail.facets,
+    ruleSetDetail.excludedFacets?.facets,
+  ]);
 
   useEffect(() => {
     setFacetList(facets);
@@ -131,7 +148,7 @@ const Page = ({ id }: { id: string }) => {
   };
 
   const onHandleStatusChange = async (
-    value: 'included' | 'excluded',
+    value: 'included' | 'excluded' | 'algoControl',
     id?: string
   ) => {
     const facetToChange = orderedFacetList.find((facet) => facet.id === id);
@@ -143,27 +160,55 @@ const Page = ({ id }: { id: string }) => {
     const currentlyIncludedFacets = orderedFacetList.filter((facet) =>
       includedFacets.includes(facet)
     );
-
-    const currentlyExcludedFacets = orderedFacetList.filter(
-      (facet) => !includedFacets.includes(facet)
+    const currentlyExcludedFacets = orderedFacetList.filter((facet) =>
+      excludedFacets.includes(facet)
+    );
+    const restOfFacets = orderedFacetList.filter(
+      (facet) =>
+        !includedFacets.includes(facet) &&
+        !excludedFacets.includes(facet) &&
+        facet.id !== facetToChange.id
     );
 
-    if (value === 'included') {
-      setOrderedFacetList([
-        ...currentlyIncludedFacets,
-        facetToChange,
-        ...currentlyExcludedFacets.filter((facet) => facet !== facetToChange),
-      ]);
-      setIncludedFacets([...includedFacets, facetToChange]);
-    } else {
-      setOrderedFacetList([
-        ...currentlyIncludedFacets.filter((facet) => facet !== facetToChange),
-        facetToChange,
-        ...currentlyExcludedFacets,
-      ]);
-      setIncludedFacets(
-        includedFacets.filter((facet) => facet.id !== facetToChange.id)
-      );
+    switch (value) {
+      case 'included':
+        setOrderedFacetList([
+          ...currentlyIncludedFacets,
+          facetToChange,
+          ...restOfFacets,
+          ...currentlyExcludedFacets.filter((facet) => facet !== facetToChange),
+        ]);
+        setIncludedFacets([...includedFacets, facetToChange]);
+        setExcludedFacets(
+          excludedFacets.filter((facet) => facet.id !== facetToChange.id)
+        );
+        break;
+      case 'excluded':
+        setOrderedFacetList([
+          ...currentlyIncludedFacets.filter((facet) => facet !== facetToChange),
+          ...restOfFacets,
+          facetToChange,
+          ...currentlyExcludedFacets,
+        ]);
+        setIncludedFacets(
+          includedFacets.filter((facet) => facet.id !== facetToChange.id)
+        );
+        setExcludedFacets([...excludedFacets, facetToChange]);
+        break;
+      case 'algoControl':
+        setOrderedFacetList([
+          ...currentlyIncludedFacets.filter((facet) => facet !== facetToChange),
+          facetToChange,
+          ...restOfFacets,
+          ...currentlyExcludedFacets.filter((facet) => facet !== facetToChange),
+        ]);
+        setIncludedFacets(
+          includedFacets.filter((facet) => facet.id !== facetToChange.id)
+        );
+        setExcludedFacets(
+          excludedFacets.filter((facet) => facet.id !== facetToChange.id)
+        );
+        break;
     }
   };
 
@@ -252,6 +297,7 @@ const Page = ({ id }: { id: string }) => {
           refreshData={refreshRuleset}
           defaultCategory={category}
           includedFacets={includedFacets}
+          excludedFacets={excludedFacets}
           facetType="category"
           rulesetMerchandisingRules={ruleSetDetail.rules}
           searchTerm={search}

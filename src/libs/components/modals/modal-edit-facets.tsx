@@ -487,7 +487,10 @@ export const ModalEditValues = ({
     setIsSaveDisabled(false);
   };
 
-  const handleStatusChange = (id: string, status: 'included' | 'excluded') => {
+  const handleStatusChange = (
+    id: string,
+    status: 'included' | 'excluded' | 'algoControl'
+  ) => {
     setEditFacetValues((prev) =>
       prev.map((value) => {
         if (value.id === id) {

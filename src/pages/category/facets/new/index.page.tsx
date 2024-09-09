@@ -73,6 +73,7 @@ const Page = () => {
         title="Facet Rule Editor"
         facetsData={[]}
         includedFacets={[]}
+        excludedFacets={[]}
         facetType="category"
         rulesetMerchandisingRules={defaultMerchandisingRules}
       />

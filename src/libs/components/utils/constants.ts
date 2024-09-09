@@ -6,6 +6,7 @@ export const color = {
   lightGrey: '#ccc',
   grey: '#999',
   backgroundGrey: '#f5f5f5',
+  backgroundDarkGrey: '#f0f0f0',
   backgroundPink: '#fbf6f4',
   successGreenBackground: '#f4faed',
   errorRedBackground: '#fff3f4',

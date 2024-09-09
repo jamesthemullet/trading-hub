@@ -139,7 +139,17 @@ describe('Global Facet Management Editing', () => {
           },
           { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87' },
         ],
+        excludedFacets: {
+          facets: [
+            {
+              facet: {
+                id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+              },
+            },
+          ],
+        },
       },
+
       error: '',
       isLoading: false,
     });
@@ -335,6 +345,9 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.queryByLabelText('Row showing color as included')
       ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -344,7 +357,7 @@ describe('Global Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing size as excluded')
+        screen.queryByLabelText('Row showing size as algoControl')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing size as included')
@@ -363,6 +376,73 @@ describe('Global Facet Management Editing', () => {
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing size as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing size as algoControl')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to include only from exclude only', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing price as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing price as included')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Include only')[7];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing price as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing price as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing price as algoControl')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to algoControl only from include only', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Algo control')[0];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
       ).not.toBeInTheDocument();
     });
   });

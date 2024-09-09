@@ -105,6 +105,10 @@ export const Row = styled(TableRow)<TableRowProps>`
   ${({ optionSelected }) =>
     optionSelected === 'excluded' &&
     `background-color: ${color.errorRedBackground}`}
+
+  ${({ optionSelected }) =>
+    optionSelected === 'algoControl' &&
+    `background-color: ${color.backgroundDarkGrey}`}
 `;
 
 export const Col = styled(TableCol)`
@@ -161,6 +165,7 @@ export const FacetsPanel = ({
   defaultCategory,
   displayRowOrderControls = false,
   includedFacets,
+  excludedFacets,
   rulesetMerchandisingRules,
   searchTerm,
   updatedValues,
@@ -172,7 +177,7 @@ export const FacetsPanel = ({
     value,
     facet,
   }: {
-    value: string | 'included' | 'excluded';
+    value: string | 'included' | 'excluded' | 'algoControl';
     facet: ReturnedFacet;
   }) => void;
   onFacetValuesChange?: ({
@@ -190,7 +195,7 @@ export const FacetsPanel = ({
     id: string
   ) => void;
   onHandleStatusChange?: (
-    status: 'included' | 'excluded',
+    status: 'included' | 'excluded' | 'algoControl',
     id?: string,
     index?: number
   ) => void;
@@ -205,6 +210,7 @@ export const FacetsPanel = ({
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   includedFacets: ReturnedFacet[];
+  excludedFacets: ReturnedFacet[];
   searchTerm?: string;
   updatedValues?: (
     orderedPinnedValues: string[],
@@ -278,7 +284,9 @@ export const FacetsPanel = ({
       (includedFacet) => includedFacet.id === facet.id
     )
       ? 'included'
-      : 'excluded';
+      : excludedFacets?.find((excludedFacet) => excludedFacet.id === facet.id)
+        ? 'excluded'
+        : 'algoControl';
 
     return (
       <Row
@@ -306,6 +314,7 @@ export const FacetsPanel = ({
           <OrderColumn>
             <FacetOrderDropdown
               status={facetIncluded}
+              hasAlgoControl
               onChange={(status): void => {
                 if (onHandleStatusChange) {
                   onHandleStatusChange(status, facet.id);

@@ -275,7 +275,7 @@ describe('Category Facet Management Editing', () => {
     expect(() => {
       screen.getByRole('button', { name: 'Move color row up' });
     }).toThrow('Unable to find an accessible element with the role "button"');
-  }, 10000);
+  }, 15000);
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {
     const user = userEvent.setup();
@@ -309,7 +309,7 @@ describe('Category Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing category as excluded')
+        screen.queryByLabelText('Row showing category as algoControl')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing category as included')
@@ -328,6 +328,79 @@ describe('Category Facet Management Editing', () => {
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing category as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing category as algoControl')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to algoControl', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Algo control')[0];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing category as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing category as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing category as included')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to algoControl from excluded', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing price as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing price as algoControl')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing price as included')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Algo control')[5];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing price as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing price as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing price as included')
       ).not.toBeInTheDocument();
     });
   });

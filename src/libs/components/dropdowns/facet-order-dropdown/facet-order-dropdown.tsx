@@ -17,18 +17,20 @@ import {
 export const FacetOrderDropdown = ({
   status,
   attribute,
+  hasAlgoControl = false,
   onChange,
 }: {
-  status?: 'included' | 'excluded';
+  status?: 'included' | 'excluded' | 'algoControl';
   attribute?: string;
-  onChange?: (status: 'included' | 'excluded') => void;
+  hasAlgoControl?: boolean;
+  onChange?: (status: 'included' | 'excluded' | 'algoControl') => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState<
     {
       index: number;
       label: string;
-      name: 'included' | 'excluded' | 'select';
+      name: 'included' | 'excluded' | 'algoControl' | 'select';
       src: string | null;
       selected: boolean;
       ariaLabel: string;
@@ -52,6 +54,14 @@ export const FacetOrderDropdown = ({
     },
     {
       index: 2,
+      label: 'Algo control',
+      name: 'algoControl',
+      src: hasAlgoControl ? '/trading-hub/asset/icon-attribute.svg' : null,
+      selected: false,
+      ariaLabel: `algoControl${attribute ? ` ${attribute}` : ''}`,
+    },
+    {
+      index: 3,
       label: 'Exclude only',
       name: 'excluded',
       src: '/trading-hub/asset/icon-exclude-only.svg',

@@ -26,7 +26,9 @@ test('creates and deletes new global facet ruleset', async ({ page }) => {
   await page.getByLabel('Save Colour change').click();
 
   await expect(page.getByLabel('Row showing Categories as')).toBeVisible();
-  await expect(page.getByLabel('Row showing Color as excluded')).toBeVisible();
+  await expect(
+    page.getByLabel('Row showing Color as algoControl')
+  ).toBeVisible();
   await expect(page.getByLabel('Label for Color')).toBeVisible();
 
   await page.getByRole('button', { name: 'Save' }).click();
@@ -34,7 +36,9 @@ test('creates and deletes new global facet ruleset', async ({ page }) => {
   await page.getByRole('link', { name: 'Edit' }).click();
 
   await expect(page.getByLabel('Row showing Categories as')).toBeVisible();
-  await expect(page.getByLabel('Row showing Color as excluded')).toBeVisible();
+  await expect(
+    page.getByLabel('Row showing Color as algoControl')
+  ).toBeVisible();
   await expect(page.getByLabel('Label for Color')).toBeVisible();
 
   await page.getByRole('button', { name: 'Cancel' }).click();
