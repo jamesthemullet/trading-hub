@@ -43,7 +43,9 @@ describe('useGetFacetAttributeValues', () => {
   });
 
   it('should render the hook', async () => {
-    const { result } = renderHook(() => useGetFacetAttributeValues('color-id'));
+    const { result } = renderHook(() =>
+      useGetFacetAttributeValues('color-id', 'query', 'category')
+    );
 
     await waitFor(() => {
       expect(result.current).toEqual({
