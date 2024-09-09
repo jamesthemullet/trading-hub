@@ -64,7 +64,7 @@ describe('useGetFacetAttributeValues', () => {
         `${baseUrl}/search/beta/merchandising/facet/color-id/attributeValues`,
         () => {
           return HttpResponse.json(
-            { message: 'Internal Server Error' },
+            { message: 'Internal Server Error', status: 'Bad Request' },
             { status: 500 }
           );
         }
@@ -79,7 +79,7 @@ describe('useGetFacetAttributeValues', () => {
         pagination: {
           totalItems: 0,
         },
-        error: 'Unknown error',
+        error: 'Error Internal Server Error Bad Request',
         refetch: expect.any(Function),
         isLoading: false,
       });

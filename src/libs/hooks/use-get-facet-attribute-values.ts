@@ -35,7 +35,7 @@ export const useGetFacetAttributeValues = (
           setPagination(result.data.pagination);
         }
         setIsLoading(false);
-      } catch {
+      } catch (error) {
         setError(validateErrorResponse(error));
         setIsLoading(false);
       }
