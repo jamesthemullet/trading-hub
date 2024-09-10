@@ -143,6 +143,17 @@ To update the backend api docker image:
   - The number at the end will be different, just replace it with new version
 3. Save, commit, push.
 
+##### Docker failure locally
+
+Some machines will not be able to run the docker image locally and will get the following error 
+
+`application-dev The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested`
+
+1. Checkout search-service repo
+2. Run `docker-compose build application-dev `
+3. In trading hub docker, change application-dev image to `search-service-application-dev:latest` (commented out in code)
+4. Build and run docker as per above steps
+
 ### Code formatting
 
 Prettier is used to format files, this can be set up in your IDE or by running `npm run format` before committing.

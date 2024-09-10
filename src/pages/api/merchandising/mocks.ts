@@ -10,12 +10,9 @@ import {
   ReturnedKeywordRedirect,
   ReturnedKeywordRedirects,
   RuleSetFacetConfigWithId,
-  SearchPreviewResponseBeta,
 } from '@/libs/api';
 
 import { NextApiRequest } from 'next';
-
-import { mockSocks } from './mock-socks';
 
 export const mockProducts: ProductBoostBury[] = [
   {
@@ -343,39 +340,6 @@ export const getMockMapping: () => Record<
     >
   >
 > = () => ({
-  '/search/beta/merchandising/preview': {
-    post: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        const preview: SearchPreviewResponseBeta = {
-          products: mockSocks,
-          facets: [],
-          category: 'should be optional in api',
-          ruleSet: {
-            facets: [],
-            rules: {
-              boosts: { product: [], alphanumeric: [], numeric: [] },
-              buries: { product: [], alphanumeric: [], numeric: [] },
-              pinnedProducts: [],
-            },
-          },
-          pagination: {
-            totalItems: 1,
-          },
-          externalChanges: {
-            boosts: { product: [], alphanumeric: [], numeric: [] },
-            buries: { product: [], alphanumeric: [], numeric: [] },
-            pinnedProducts: [],
-          },
-        };
-
-        return {
-          body: preview,
-          status: 200,
-        };
-      }
-      return { body: jsonBody, status };
-    },
-  },
   '/search/beta/merchandising/keyword/redirect': {
     get: (_req, status, jsonBody) => {
       if (status !== 200) {

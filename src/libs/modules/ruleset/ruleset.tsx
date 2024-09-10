@@ -427,8 +427,8 @@ export const Ruleset = ({
         ...(selectedCategory.identifier && {
           categoryIds: [selectedCategory.identifier],
         }),
-        ...(searchTerms && {
-          searchTerms: searchTerms,
+        ...(rulesetSearchTerms && {
+          searchTerms: rulesetSearchTerms,
         }),
       });
     } else if (onCreate && selectedCategory.identifier) {

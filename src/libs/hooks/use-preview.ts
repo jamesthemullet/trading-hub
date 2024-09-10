@@ -77,43 +77,23 @@ export const usePreview = ({
       setIsLoading(true);
 
       try {
-        if (previewType === 'category' && categoryId) {
-          const categoryPreview =
-            await search().betaMerchandisingCategoryPreviewCreate(
-              categoryId,
-              {
-                rows: 140,
-                start: 0,
-              },
-              {
-                rules,
-                facets: facetConfigRules,
-                isEnabled: true,
-              }
-            );
+        const searchPreview = await search().betaMerchandisingPreviewCreate(
+          {
+            ...(categoryId && { categoryId }),
+            ...(searchTerm && { searchTerm }),
+            rows: 140,
+            start: 0,
+          },
+          {
+            rules,
+            facets: facetConfigRules,
+            isEnabled: true,
+          }
+        );
 
-          const previewData: SearchPreviewResponseBeta = categoryPreview.data;
+        const previewData: SearchPreviewResponseBeta = searchPreview.data;
 
-          setData(previewData);
-        } else {
-          const searchPreview = await search().betaMerchandisingPreviewCreate(
-            {
-              ...(categoryId && { categoryId }),
-              ...(searchTerm && { searchTerm }),
-              rows: 140,
-              start: 0,
-            },
-            {
-              rules,
-              facets: facetConfigRules,
-              isEnabled: true,
-            }
-          );
-
-          const previewData: SearchPreviewResponseBeta = searchPreview.data;
-
-          setData(previewData);
-        }
+        setData(previewData);
 
         setError('');
         setIsLoading(false);

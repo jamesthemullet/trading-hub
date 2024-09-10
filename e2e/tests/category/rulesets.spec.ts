@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+
 import { setupElastic } from '../../elastic/elastic';
 import { create500ErrorsCollector } from '../utils';
 

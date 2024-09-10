@@ -73,16 +73,8 @@ const badResponse = {
 };
 
 const getRuleSetPreviewMock = jest.fn();
-const getRuleSetCategoryPreviewMock = jest.fn();
 
 const handlers = [
-  http.post(
-    `${baseUrl}/search/beta/merchandising/category/${mockCategoryId}/preview`,
-    () => {
-      const { data, status } = getRuleSetCategoryPreviewMock();
-      return HttpResponse.json(data, status);
-    }
-  ),
   http.post(`${baseUrl}/search/beta/merchandising/preview`, () => {
     const { data, status } = getRuleSetPreviewMock();
     return HttpResponse.json(data, status);
@@ -103,7 +95,7 @@ describe('useRuleSet', () => {
   });
 
   it('should render the hook', async () => {
-    getRuleSetCategoryPreviewMock.mockReturnValueOnce({
+    getRuleSetPreviewMock.mockReturnValueOnce({
       data: mockSearchData,
       status: { status: 200 },
     });
@@ -266,7 +258,7 @@ describe('useRuleSet', () => {
   });
 
   it('should return empty with no category id', async () => {
-    getRuleSetCategoryPreviewMock.mockReturnValueOnce({
+    getRuleSetPreviewMock.mockReturnValueOnce({
       data: mockSearchData,
       status: { status: 200 },
     });
@@ -293,7 +285,7 @@ describe('useRuleSet', () => {
   });
 
   it('should refetch data', async () => {
-    getRuleSetCategoryPreviewMock.mockReturnValue({
+    getRuleSetPreviewMock.mockReturnValue({
       data: mockSearchData,
       status: { status: 200 },
     });
@@ -322,7 +314,7 @@ describe('useRuleSet', () => {
       result.current.setRules(mockMerchandisingRules);
     });
 
-    getRuleSetCategoryPreviewMock.mockReturnValueOnce({
+    getRuleSetPreviewMock.mockReturnValueOnce({
       data: newMocks,
       status: { status: 200 },
     });
