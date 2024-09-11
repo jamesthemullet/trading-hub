@@ -79,6 +79,7 @@ const FacetManagementPage = () => {
         facets: ruleSet.facets,
         rules: ruleSet.rules,
         isEnabled: !ruleSet.isEnabled,
+        excludedFacets: ruleSet.excludedFacets,
       },
     });
 

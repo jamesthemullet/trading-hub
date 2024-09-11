@@ -142,9 +142,7 @@ describe('Global Facet Management Editing', () => {
         excludedFacets: {
           facets: [
             {
-              facet: {
-                id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-              },
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
             },
           ],
         },
@@ -212,15 +210,28 @@ describe('Global Facet Management Editing', () => {
         facets: [
           {
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+            boosted: undefined,
+            excludedValues: undefined,
           },
           {
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+            boosted: undefined,
+            excludedValues: undefined,
           },
           {
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+            boosted: undefined,
+            excludedValues: undefined,
           },
         ],
         rules: mockMerchandisingRules,
+        excludedFacets: {
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+            },
+          ],
+        },
         isEnabled: true,
       },
     });

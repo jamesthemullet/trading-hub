@@ -101,6 +101,7 @@ const RuleSets = () => {
     const { categoryId, facets, rules, isEnabled } = ruleSet;
     await updateRuleSet({
       ruleSetId: id,
+      excludedFacets: ruleSet.excludedFacets,
       rules: {
         facets,
         rules,

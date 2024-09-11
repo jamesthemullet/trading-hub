@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { RuleSet } from '@/libs/api';
+import type { ExcludedFacets, RuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { validateErrorResponse } from './utils/error';
@@ -14,10 +14,12 @@ export const useUpdateRuleSet = () => {
       categoryId,
       ruleSetId,
       rules,
+      excludedFacets,
     }: {
       categoryId: string;
       ruleSetId: string;
       rules: RuleSet;
+      excludedFacets?: ExcludedFacets;
     }) => {
       setError('');
       setIsSaving(true);
@@ -28,6 +30,7 @@ export const useUpdateRuleSet = () => {
           facets: rules.facets,
           isEnabled: rules.isEnabled,
           rules: rules.rules,
+          excludedFacets: excludedFacets,
         };
 
         await search().betaMerchandisingCategoryRulesetUpdate(ruleSetId, body);

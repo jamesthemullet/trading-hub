@@ -29,6 +29,9 @@ const ruleSet = {
   categoryName: 'Jeans',
   id: ruleSetId,
   lastChanged: { date: '2023-12-28T14:24:17Z', user: 'M&S' },
+  excludedFacets: {
+    facets: [],
+  },
 };
 
 const ruleSetUrl = `${baseUrl}/search/beta/merchandising/global/ruleset/${ruleSetId}`;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import type {
+  ExcludedFacets,
   MerchandisingRules,
   RuleSetFacetConfigWithId,
   SearchPreviewResponseBeta,
@@ -15,12 +16,14 @@ export const usePreview = ({
   merchandisingRules,
   previewType,
   searchTerm,
+  excludedFacets,
 }: {
   facetConfig: Array<RuleSetFacetConfigWithId>;
   merchandisingRules: MerchandisingRules;
   previewType: 'category' | 'all';
   categoryId?: string;
   searchTerm?: string;
+  excludedFacets?: ExcludedFacets;
 }) => {
   const [error, setError] = useState('');
   const [rules, setRules] = useState(merchandisingRules);
@@ -86,6 +89,7 @@ export const usePreview = ({
           },
           {
             rules,
+            excludedFacets,
             facets: facetConfigRules,
             isEnabled: true,
           }
@@ -106,7 +110,14 @@ export const usePreview = ({
     };
 
     fetchData();
-  }, [facetConfigRules, categoryId, rules, previewType, searchTerm]);
+  }, [
+    facetConfigRules,
+    categoryId,
+    rules,
+    previewType,
+    searchTerm,
+    excludedFacets,
+  ]);
 
   return {
     data,

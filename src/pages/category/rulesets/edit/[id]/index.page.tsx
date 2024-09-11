@@ -32,6 +32,7 @@ const Page = ({ id }: PageProps) => {
       ruleSetId,
       rules: ruleSet,
       categoryId: categoryIds[0],
+      excludedFacets: ruleSet.excludedFacets,
     });
     if (response.status === 'success') {
       router.push('/category/rulesets');
@@ -55,6 +56,7 @@ const Page = ({ id }: PageProps) => {
             path: 'path/to/plp',
           }}
           rulesetFacets={ruleSetDetail.facets}
+          rulesetExcludedFacets={ruleSetDetail.excludedFacets}
           rulesetId={ruleSetDetail.id}
           rulesetMerchandisingRules={ruleSetDetail.rules}
           rulesetType="category"

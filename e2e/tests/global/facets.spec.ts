@@ -4,6 +4,8 @@ import { setupElastic } from '../../elastic/elastic';
 import { create500ErrorsCollector } from '../utils';
 
 test.describe('global facets', () => {
+  test.describe.configure({ mode: 'serial' });
+
   test.beforeAll(async () => {
     await setupElastic();
   });

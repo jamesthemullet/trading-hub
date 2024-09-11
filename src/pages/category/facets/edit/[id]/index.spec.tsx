@@ -163,6 +163,13 @@ describe('Category Facet Management Editing', () => {
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryId: 'SubCategory_428',
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      excludedFacets: {
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+          },
+        ],
+      },
       rules: {
         rules: {
           pinnedProducts: [{ id: 'a1' }],
@@ -441,6 +448,13 @@ describe('Category Facet Management Editing', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryId: 'SubCategory_428',
+      excludedFacets: {
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+          },
+        ],
+      },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
       rules: {
         rules: {
@@ -544,6 +558,13 @@ describe('Category Facet Management Editing', () => {
     await waitFor(() => {
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
         categoryId: 'SubCategory_428',
+        excludedFacets: {
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+            },
+          ],
+        },
         ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
         rules: {
           rules: {

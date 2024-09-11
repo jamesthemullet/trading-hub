@@ -47,6 +47,7 @@ const Page = ({ id }: PageProps) => {
           onCancel={() => router.push('/global/rulesets')}
           rulesetMerchandisingRules={globalRuleSet.rules}
           rulesetFacets={globalRuleSet.facets}
+          rulesetExcludedFacets={globalRuleSet.excludedFacets}
           rulesetType="global"
           rulesetId={id}
         />

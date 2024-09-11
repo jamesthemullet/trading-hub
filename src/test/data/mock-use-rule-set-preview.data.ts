@@ -58,9 +58,7 @@ export const mockUseRuleSetPreviewData = {
     excludedFacets: {
       facets: [
         {
-          facet: {
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-          },
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
         },
       ],
     },

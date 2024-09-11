@@ -70,7 +70,7 @@ const Page = ({ id }: PageProps) => {
 
     const excludedFacets = globalFacetsList.filter((facet) =>
       globalRuleSet.excludedFacets?.facets?.some(
-        (excludedFacet) => excludedFacet?.facet?.id === facet.id
+        (excludedFacet) => excludedFacet?.id === facet.id
       )
     );
 
@@ -139,6 +139,11 @@ const Page = ({ id }: PageProps) => {
         })),
         rules: globalRuleSet.rules,
         isEnabled: globalRuleSet.isEnabled,
+        excludedFacets: {
+          facets: excludedFacets.map((excludedFacet) => ({
+            id: excludedFacet.id,
+          })),
+        },
       },
     });
 

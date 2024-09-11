@@ -93,7 +93,7 @@ const Page = ({ id }: { id: string }) => {
 
     const excludedFacets = facetList.filter((facet) =>
       ruleSetDetail.excludedFacets?.facets?.some(
-        (excludedFacet) => excludedFacet?.facet?.id === facet.id
+        (excludedFacet) => excludedFacet?.id === facet.id
       )
     );
 
@@ -131,6 +131,11 @@ const Page = ({ id }: { id: string }) => {
         rules: ruleSetDetail.rules,
       },
       ruleSetId: id,
+      excludedFacets: {
+        facets: excludedFacets.map((excludedFacet) => ({
+          id: excludedFacet.id,
+        })),
+      },
     });
     if (response && response.status !== 'error') {
       return router.push(`/category/facets/`);

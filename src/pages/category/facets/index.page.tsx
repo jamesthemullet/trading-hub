@@ -90,7 +90,7 @@ const FacetManagementPage = () => {
     // istanbul ignore next
     if (!ruleSet) return;
 
-    const { facets, isEnabled, rules, categoryId } = ruleSet;
+    const { facets, isEnabled, rules, categoryId, excludedFacets } = ruleSet;
     await updateRuleSet({
       ruleSetId: id,
       rules: {
@@ -98,6 +98,7 @@ const FacetManagementPage = () => {
         rules,
         isEnabled: !isEnabled,
       },
+      excludedFacets,
       categoryId,
     });
     const updatedRuleSetsList = categoryRuleSets.map(

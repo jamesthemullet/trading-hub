@@ -6,6 +6,7 @@ import type {
   AlphanumericBoostBury,
   Category,
   CategoryRuleSet,
+  ExcludedFacets,
   KeywordRuleSet,
   MerchandisingRules,
   NumericBoostBury,
@@ -95,6 +96,7 @@ export const Ruleset = ({
   onSave,
   rulesetCategory,
   rulesetFacets,
+  rulesetExcludedFacets,
   rulesetId,
   rulesetMerchandisingRules,
   rulesetType,
@@ -117,6 +119,7 @@ export const Ruleset = ({
   onCreateKeywordSearchRuleset?: (args: KeywordRuleSet) => void;
   rulesetCategory?: Category;
   rulesetFacets?: Array<RuleSetFacetConfigWithId>;
+  rulesetExcludedFacets?: ExcludedFacets;
   rulesetId?: string;
   rulesetMerchandisingRules?: MerchandisingRules;
   rulesetType: 'global' | 'category' | 'search';
@@ -423,6 +426,7 @@ export const Ruleset = ({
           facets: rulesetFacets || [],
           isEnabled,
           rules: merchandisingRules,
+          excludedFacets: rulesetExcludedFacets,
         },
         ...(selectedCategory.identifier && {
           categoryIds: [selectedCategory.identifier],
