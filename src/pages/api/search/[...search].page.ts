@@ -71,6 +71,13 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
       );
     }
 
+    if (response.status === 401) {
+      return res.status(401).json({
+        message: `${response.status} ${response.statusText}. Please login or try again`,
+        status: `${response.status}`,
+      });
+    }
+
     if (response.status === 500) {
       if (isErrorSchemaCompatible(jsonBody)) {
         return res.status(500).json(jsonBody);

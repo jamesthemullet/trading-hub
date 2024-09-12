@@ -338,6 +338,24 @@ describe('Search api proxy', () => {
       });
     });
 
+    it('if unauthorised should return with an appropirate error', async () => {
+      const response = {
+        status: 401,
+        body: { someNonStandardProperty: 'unauthorised' },
+      };
+      const res = await performGet(
+        '/search/beta/merchandising/facet/1',
+        response
+      );
+
+      expect(httpGet).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({
+        message: '401 Unauthorized. Please login or try again',
+        status: '401',
+      });
+    });
+
     it('when url is undefined', async () => {
       const response = responses[0][0];
       const res = await performGet(undefined, response);
