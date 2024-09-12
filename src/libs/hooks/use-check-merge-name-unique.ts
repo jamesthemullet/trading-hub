@@ -30,6 +30,9 @@ export const useCheckMergeNameUnique = () => {
       };
     } catch {
       setError(`Failed to get Facet Attribute Values`);
+      return {
+        isUniqueValue: false,
+      };
     }
   };
 

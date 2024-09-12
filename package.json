@@ -16,6 +16,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "tdd": "jest --watchAll --coverage",
     "test": "jest",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e": "playwright test",

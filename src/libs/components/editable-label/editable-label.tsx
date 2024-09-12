@@ -11,6 +11,7 @@ export const DisplayName = styled.div`
   display: flex;
   align-items: center;
   width: max-content;
+  flex-wrap: wrap;
 `;
 
 const EditConfirmationButtons = styled.div`
@@ -59,6 +60,11 @@ const StyledIcon = styled(Image)`
   transform: translateY(-50%);
 `;
 
+const StyledError = styled(Text)`
+  color: ${color.saleRed};
+  margin-top: ${spacing(0.5)};
+`;
+
 export type EditableLabelProps = {
   displayValue: string;
   onDisplayValueChange: (newValue: string) => void;
@@ -80,6 +86,7 @@ export const EditableLabel = ({
   const [originalValue] = useState(displayValue);
   const [value, setValue] = useState(displayValue);
   const [showErrorState, setShowErrorState] = useState(false);
+  const [disallowedErrorMessage, setDisallowedErrorMessage] = useState('');
 
   useEffect(() => {
     if (shouldOpenFromParent) {
@@ -117,8 +124,12 @@ export const EditableLabel = ({
                     disallowedValues?.includes(event.target.value))
                 ) {
                   setShowErrorState(true);
+                  setDisallowedErrorMessage(
+                    `${event.target.value} is not a unique value`
+                  );
                 } else {
                   setShowErrorState(false);
+                  setDisallowedErrorMessage('');
                 }
                 setValue(event.target.value);
               }}
@@ -197,6 +208,9 @@ export const EditableLabel = ({
             />
           </EditButton>
         </>
+      )}
+      {showErrorState && !error && (
+        <StyledError>{disallowedErrorMessage}</StyledError>
       )}
     </DisplayName>
   );

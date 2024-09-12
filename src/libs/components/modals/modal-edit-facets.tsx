@@ -202,11 +202,13 @@ export const ModalEditValues = ({
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [error, setError] = useState('');
   const [displayValueWithError, setDisplayValueWithError] = useState('');
-  const [disallowedValues, setDisallowedValues] = useState<string[]>([]);
-
-  useEffect(() => {
-    setDisallowedValues([defaultMergedDisplayValue]);
-  }, []);
+  const mergedValuesNames = facet.merged
+    ? facet.merged.map((val) => val.displayValue!)
+    : [];
+  const [disallowedValues, setDisallowedValues] = useState<string[]>([
+    ...mergedValuesNames,
+    defaultMergedDisplayValue,
+  ]);
 
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
     useGlobalFacetUpdate();
@@ -247,7 +249,7 @@ export const ModalEditValues = ({
 
   const checkNameUnique = async (newValue: string, id: string) => {
     await checkMergeNameUnique(facet.id, newValue, category).then((data) => {
-      if (data?.isUniqueValue) {
+      if (data.isUniqueValue) {
         handleEditName(id, newValue);
         setAttributesBeingMerged([]);
         setError('');
@@ -298,15 +300,15 @@ export const ModalEditValues = ({
     if (facet.merged) {
       facet.merged.forEach((mergeGroup) => {
         if (mergeGroup.displayValue && mergeGroup.mergedValues?.length) {
-          const mappedMergeGroupValues = mergeGroup.mergedValues.map(
-            (value) => {
+          const mappedMergeGroupValues = mergeGroup.mergedValues
+            .map((value) => {
               const id = facetValues.find(
                 (val) => val.displayValue === value
               )?.id;
 
               return id;
-            }
-          );
+            })
+            .filter(Boolean);
           const mappedMergedGroup = {
             ...mergeGroup,
             mergedValues: mappedMergeGroupValues,
@@ -334,7 +336,7 @@ export const ModalEditValues = ({
           facetValues = [
             ...facetValues,
             {
-              id: `merged-${firstId}`,
+              id: firstId ? `merged-${firstId}` : mergeGroup.mergedValues[0],
               attribute: mergeGroup.mergedValues[0],
               displayValue: mappedMergedGroup.displayValue,
               mergedValues: mappedMergedGroup.mergedValues,
@@ -523,7 +525,10 @@ export const ModalEditValues = ({
       displayValue: group.displayValue,
       mergedValues: group.mergedValues?.map((id) => {
         const foundValue = unmergedFacetValues.find((val) => val.id === id);
-        return foundValue ? foundValue.displayValue : '';
+        return foundValue
+          ? foundValue.displayValue
+          : // istanbul ignore next
+            '';
       }),
     }));
 
@@ -596,6 +601,63 @@ export const ModalEditValues = ({
     }
   };
 
+  const [valueNameError, setValueNameError] = useState<{
+    value?: string;
+    error?: string;
+  }>({});
+
+  const updateFacetValueName = async (
+    attributeValue: AttributeValue,
+    name: string
+  ) => {
+    const isResettingName = name === attributeValue.attribute;
+
+    if (isResettingName) {
+      const newEditFacetValue = editFacetValues.map((val) =>
+        val.attribute === attributeValue.attribute
+          ? {
+              id: val.id,
+              displayValue: name,
+              index: val.index,
+              attribute: val.attribute,
+            }
+          : val
+      );
+
+      setEditFacetValues(newEditFacetValue);
+      setIsSaveDisabled(false);
+      setValueNameError({});
+
+      return;
+    }
+
+    const { isUniqueValue } = await checkMergeNameUnique(facet.id, name);
+
+    if (isUniqueValue) {
+      const newEditFacetValue = editFacetValues.map((val) =>
+        val.attribute === attributeValue.attribute
+          ? {
+              ...val,
+              displayValue: name,
+              mergedValues: [attributeValue.attribute],
+            }
+          : val
+      );
+
+      setEditFacetValues(newEditFacetValue);
+      setIsSaveDisabled(false);
+      setValueNameError({});
+      setDisallowedValues([...disallowedValues, name]);
+      return;
+    }
+
+    setValueNameError({
+      value: attributeValue.attribute,
+      error: `${name} is not a unique value`,
+    });
+    setIsSaveDisabled(true);
+  };
+
   const includedFacetValues = editFacetValues
     .filter((val) => mergedOrderedBoostedValues.includes(val.id))
     .sort(
@@ -623,6 +685,16 @@ export const ModalEditValues = ({
         selectedFacet.mergedValues?.length &&
         facet.mergedValues?.length
     );
+
+    const isMergedGlobalGroupFacetValue =
+      facetType === 'global' &&
+      mergedValues &&
+      mergedValues.length > 1 &&
+      (attributesBeingMerged.length === 0 ||
+        attributesBeingMerged.includes(id.replace('merged-', '')));
+    const isGlobalFacetValue =
+      facetType === 'global' && !isMergedGlobalGroupFacetValue;
+    const isCategoryFacetValue = facetType === 'category';
 
     return (
       <FacetAttributeValuesTableRow
@@ -685,10 +757,7 @@ export const ModalEditValues = ({
         </Col>
 
         <FlexColumnCol>
-          {facetType === 'global' &&
-          mergedValues &&
-          (attributesBeingMerged.length === 0 ||
-            attributesBeingMerged.includes(id.replace('merged-', ''))) ? (
+          {isMergedGlobalGroupFacetValue && (
             <EditableLabel
               displayValue={displayValue}
               onDisplayValueChange={(newValue) => {
@@ -708,9 +777,27 @@ export const ModalEditValues = ({
               error={error}
               disallowedValues={disallowedValues}
             />
-          ) : (
-            <Text>{displayValue}</Text>
           )}
+          {isGlobalFacetValue && (
+            <>
+              <EditableLabel
+                displayValue={displayValue}
+                onDisplayValueChange={(displayValue) => {
+                  updateFacetValueName(facet, displayValue);
+                }}
+                error={
+                  valueNameError.value === facet.attribute
+                    ? valueNameError.error
+                    : ''
+                }
+                disallowedValues={disallowedValues}
+              />
+              {valueNameError.value === facet.attribute && (
+                <StyledError>{valueNameError.error}</StyledError>
+              )}
+            </>
+          )}
+          {isCategoryFacetValue && <Text>{displayValue}</Text>}
           {error &&
             attributesBeingMerged.includes(id.replace('merged-', '')) &&
             (displayValueWithError === displayValue ||

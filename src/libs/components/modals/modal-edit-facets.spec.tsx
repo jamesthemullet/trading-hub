@@ -82,7 +82,7 @@ describe('ModalEditValues', () => {
           boosted: ['Merged 1'],
           merged: [
             {
-              displayValue: 'Merged 1',
+              displayValue: 'Merged group 1',
               mergedValues: ['Cotton', 'Duck Down'],
             },
           ],
@@ -94,7 +94,7 @@ describe('ModalEditValues', () => {
     );
 
     const editButton = screen.getByRole('button', {
-      name: 'Edit display name for Merged 1',
+      name: 'Edit display name for Merged group 1',
     });
 
     act(() => {
@@ -102,12 +102,16 @@ describe('ModalEditValues', () => {
     });
 
     await waitFor(async () => {
-      expect(screen.getByLabelText('Edit Merged 1 input field')).toBeVisible();
+      expect(
+        screen.getByLabelText('Edit Merged group 1 input field')
+      ).toBeVisible();
     });
 
-    const editColorInput = screen.getByLabelText('Edit Merged 1 input field');
+    const editColorInput = screen.getByLabelText(
+      'Edit Merged group 1 input field'
+    );
     expect(editColorInput).toBeVisible();
-    expect(editColorInput).toHaveValue('Merged 1');
+    expect(editColorInput).toHaveValue('Merged group 1');
     userEvent.clear(editColorInput);
     await userEvent.type(editColorInput, 'Merged 1 Candy');
 
@@ -116,7 +120,7 @@ describe('ModalEditValues', () => {
     });
 
     const saveButton = screen.getByRole('button', {
-      name: 'Save Merged 1 change',
+      name: 'Save Merged group 1 change',
     });
 
     await userEvent.click(saveButton);
@@ -127,7 +131,7 @@ describe('ModalEditValues', () => {
       });
       expect(newEditButton).toBeVisible();
     });
-  }, 10000);
+  });
 
   it('should not be able to edit a display value of a merged group to be an empty string', async () => {
     const onCloseSpy = jest.fn();
@@ -139,10 +143,10 @@ describe('ModalEditValues', () => {
           indexPropertyName: 'color',
           id: '1',
           lastChanged: { user: 'Bob', date: '2021-10-01' },
-          boosted: ['Merged 1'],
+          boosted: ['Merged group 1'],
           merged: [
             {
-              displayValue: 'Merged 1',
+              displayValue: 'Merged group 1',
               mergedValues: ['Cotton', 'Duck Down'],
             },
           ],
@@ -154,7 +158,7 @@ describe('ModalEditValues', () => {
     );
 
     const editButton = screen.getByRole('button', {
-      name: 'Edit display name for Merged 1',
+      name: 'Edit display name for Merged group 1',
     });
 
     act(() => {
@@ -162,21 +166,23 @@ describe('ModalEditValues', () => {
     });
 
     await waitFor(async () => {
-      const editColorInput = screen.getByLabelText('Edit Merged 1 input field');
+      const editColorInput = screen.getByLabelText(
+        'Edit Merged group 1 input field'
+      );
       expect(editColorInput).toBeVisible();
-      expect(editColorInput).toHaveValue('Merged 1');
+      expect(editColorInput).toHaveValue('Merged group 1');
       userEvent.clear(editColorInput);
       expect(editColorInput).toHaveValue('');
     });
 
     const saveButton = screen.getByRole('button', {
-      name: 'Save Merged 1 change',
+      name: 'Save Merged group 1 change',
     });
 
     expect(saveButton).toBeDisabled();
   });
 
-  it('should not be able to edit a display value, if not in a merge group', async () => {
+  it('should be able to edit a display value if not in a merge group', async () => {
     const onCloseSpy = jest.fn();
     renderWithProviders(
       <ModalEditValues
@@ -200,10 +206,208 @@ describe('ModalEditValues', () => {
       name: 'Edit display name for Cotton',
     });
 
-    expect(editButton).toBeNull();
+    if (!editButton) {
+      throw new Error('Edit button for cotton not found');
+    }
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      expect(screen.getByLabelText('Edit Cotton input field')).toBeVisible();
+    });
+
+    const editCottonInput = screen.getByLabelText('Edit Cotton input field');
+    userEvent.clear(editCottonInput);
+    await userEvent.type(editCottonInput, 'Foo');
+
+    const saveButton = screen.getByRole('button', {
+      name: 'Save Cotton change',
+    });
+
+    await userEvent.click(saveButton);
+
+    await waitFor(() => {
+      const newEditButton = screen.getByRole('button', {
+        name: 'Edit display name for Foo',
+      });
+      expect(newEditButton).toBeVisible();
+    });
+  });
+
+  it('should be able to edit a display value back to the origininal name', async () => {
+    const onCloseSpy = jest.fn();
+    renderWithProviders(
+      <ModalEditValues
+        onClose={onCloseSpy}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+          merged: [
+            {
+              displayValue: 'Cottonnn',
+              mergedValues: ['Cotton'],
+            },
+          ],
+        }}
+        facetType="global"
+        refreshData={() => jest.fn()}
+        category={undefined}
+      />
+    );
+
+    expect(screen.getAllByText('Cottonnn')[0]).toBeVisible();
+
+    const editButton = screen.queryByRole('button', {
+      name: 'Edit display name for Cottonnn',
+    });
+
+    if (!editButton) {
+      throw new Error('Edit button for cottonnn not found');
+    }
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      expect(screen.getByLabelText('Edit Cottonnn input field')).toBeVisible();
+    });
+
+    const editCottonInput = screen.getByLabelText('Edit Cottonnn input field');
+    userEvent.clear(editCottonInput);
+    await userEvent.type(editCottonInput, 'Cotton');
+
+    const saveButton = screen.getByRole('button', {
+      name: 'Save Cottonnn change',
+    });
+
+    await userEvent.click(saveButton);
+
+    await waitFor(() => {
+      const newEditButton = screen.getByRole('button', {
+        name: 'Edit display name for Cotton',
+      });
+      expect(newEditButton).toBeVisible();
+    });
+  });
+
+  it('should not be able to edit a display value to the same name as another edited value', async () => {
+    renderWithProviders(
+      <ModalEditValues
+        onClose={jest.fn()}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+          boosted: ['Cotton'],
+          merged: [
+            {
+              displayValue: 'McDuck',
+              mergedValues: ['Duck Down', 'Silk'],
+            },
+          ],
+        }}
+        facetType="global"
+        refreshData={() => jest.fn()}
+        category={undefined}
+      />
+    );
+
+    expect(screen.getAllByText('Cotton')[0]).toBeVisible();
+
+    const editButton = screen.queryByRole('button', {
+      name: 'Edit display name for Cotton',
+    });
+
+    if (!editButton) {
+      throw new Error('Edit button for cotton not found');
+    }
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      expect(screen.getByLabelText('Edit Cotton input field')).toBeVisible();
+    });
+
+    const editCottonInput = screen.getByLabelText('Edit Cotton input field');
+    userEvent.clear(editCottonInput);
+    await userEvent.type(editCottonInput, 'McDuck');
+
+    const saveButton = screen.getByRole('button', {
+      name: 'Save Cotton change',
+    });
+
+    await userEvent.click(saveButton);
+
+    expect(
+      await screen.findByText('McDuck is not a unique value')
+    ).toBeVisible();
+  });
+
+  it('should not be able to edit a display value to the same name as another attribute value', async () => {
+    mockUseCheckMergeNameUnique.checkMergeNameUnique = jest.fn(() =>
+      Promise.resolve({ isUniqueValue: false })
+    );
+    renderWithProviders(
+      <ModalEditValues
+        onClose={jest.fn()}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+          boosted: ['Cotton'],
+        }}
+        facetType="global"
+        refreshData={() => jest.fn()}
+        category={undefined}
+      />
+    );
+
+    expect(screen.getAllByText('Cotton')[0]).toBeVisible();
+
+    const editButton = screen.queryByRole('button', {
+      name: 'Edit display name for Cotton',
+    });
+
+    if (!editButton) {
+      throw new Error('Edit button for cotton not found');
+    }
+
+    act(() => {
+      editButton.click();
+    });
+
+    await waitFor(async () => {
+      expect(screen.getByLabelText('Edit Cotton input field')).toBeVisible();
+    });
+
+    const editCottonInput = screen.getByLabelText('Edit Cotton input field');
+    userEvent.clear(editCottonInput);
+    await userEvent.type(editCottonInput, 'Duck Down');
+
+    const saveButton = screen.getByRole('button', {
+      name: 'Save Cotton change',
+    });
+
+    await userEvent.click(saveButton);
+
+    expect(
+      await screen.findByText('Duck Down is not a unique value')
+    ).toBeVisible();
   });
 
   it('should search', async () => {
+    mockUseCheckMergeNameUnique.checkMergeNameUnique = jest.fn(() =>
+      Promise.resolve({ isUniqueValue: true })
+    );
     renderWithProviders(
       <ModalEditValues
         onClose={() => {}}
@@ -972,7 +1176,7 @@ describe('ModalEditValues', () => {
             merged: [
               {
                 displayValue: 'foo',
-                mergedValues: ['merged 1', 'merged 2'],
+                mergedValues: ['Merged 1', 'Merged 2'],
               },
             ],
           }}
