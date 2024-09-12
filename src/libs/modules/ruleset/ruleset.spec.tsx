@@ -1779,7 +1779,11 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          rulesetCategory={{ identifier: 'SubCategory_507' }}
+          rulesetCategory={{
+            identifier: 'SubCategory_507',
+            name: 'SubCategory',
+            path: 'SubCategory',
+          }}
           rulesetType="category"
         />
       );
@@ -1834,7 +1838,11 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          rulesetCategory={{ identifier: 'SubCategory_507' }}
+          rulesetCategory={{
+            identifier: 'SubCategory_507',
+            name: 'SubCategory',
+            path: 'SubCategory',
+          }}
           rulesetType="category"
         />
       );
@@ -1863,7 +1871,11 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          rulesetCategory={{ identifier: 'SubCategory_507' }}
+          rulesetCategory={{
+            identifier: 'SubCategory_507',
+            name: 'SubCategory',
+            path: 'SubCategory',
+          }}
           rulesetType="category"
         />
       );
@@ -1890,7 +1902,11 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          rulesetCategory={{ identifier: 'SubCategory_507' }}
+          rulesetCategory={{
+            identifier: 'SubCategory_507',
+            name: 'SubCategory',
+            path: 'SubCategory',
+          }}
           rulesetType="category"
         />
       );
@@ -1915,7 +1931,11 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          rulesetCategory={{ identifier: 'SubCategory_507' }}
+          rulesetCategory={{
+            identifier: 'SubCategory_507',
+            name: 'SubCategory',
+            path: 'SubCategory',
+          }}
           rulesetType="category"
         />
       );
@@ -1954,7 +1974,11 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          rulesetCategory={{ identifier: 'SubCategory_507' }}
+          rulesetCategory={{
+            identifier: 'SubCategory_507',
+            name: 'SubCategory',
+            path: 'SubCategory',
+          }}
           rulesetType="category"
         />
       );

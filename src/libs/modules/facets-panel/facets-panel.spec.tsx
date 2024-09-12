@@ -233,7 +233,11 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
+        defaultCategory={{
+          identifier: categoryId1,
+          name: categoryName1,
+          path: categoryPath1,
+        }}
         includedFacets={[]}
         excludedFacets={[]}
         facetType="category"
@@ -358,7 +362,11 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
+        defaultCategory={{
+          identifier: categoryId1,
+          name: categoryName1,
+          path: categoryPath1,
+        }}
         rulesetMerchandisingRules={mockMerchandisingRules}
         includedFacets={[]}
         excludedFacets={[]}
@@ -450,7 +458,11 @@ describe('Facet Panel', () => {
         setSearch={setSearchSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
-        defaultCategory={{ identifier: categoryId1, name: categoryName1 }}
+        defaultCategory={{
+          identifier: categoryId1,
+          name: categoryName1,
+          path: categoryPath1,
+        }}
         onFacetDataChange={jest.fn()}
         includedFacets={[]}
         excludedFacets={[]}

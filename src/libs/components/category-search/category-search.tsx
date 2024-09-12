@@ -1,6 +1,6 @@
 import { type ChangeEvent, type FormEvent, useState } from 'react';
 
-import type { Category, CategoryListData } from '@/libs/api';
+import type { Category, Pagination } from '@/libs/api';
 import { useGetCategories } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -14,8 +14,8 @@ const SEARCH_DEBOUNCE_WAIT = 500;
 
 type Props = {
   onClearSelection: () => void;
-  onSelectCategory: (category: Category) => void;
-  selectedCategory?: Category;
+  onSelectCategory: (category: Required<Category>) => void;
+  selectedCategory?: Required<Category>;
   canRemoveCategory?: boolean;
 };
 
@@ -27,7 +27,25 @@ export const CategorySearch = ({
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
   const { getCategories } = useGetCategories();
-  const [categoryResults, setCategoryResults] = useState<CategoryListData>({
+  const [categoryResults, setCategoryResults] = useState<{
+    /**
+     * Category type contains all fields that are optional, this is a bad design and should be fixed in future in API: https://jira.marksandspencer.app/browse/LPN-2687
+     * For now we will do following conversion:
+     * {} -> undefined
+     * {
+     *    name: string | undefined,
+     *    identifier: string | undefined,
+     *    path: string | undefined
+     * } -> {
+     *    identifier: string,
+     *    name: string,
+     *    path: string
+     * }
+     * where undefined is replaced with empty string
+     */
+    categories: Array<Required<Category>>;
+    pagination: Pagination;
+  }>({
     categories: [],
     pagination: {},
   });
@@ -39,7 +57,20 @@ export const CategorySearch = ({
     });
 
     if (resp !== undefined) {
-      setCategoryResults(resp);
+      setCategoryResults({
+        categories: resp.categories
+          .filter(
+            (category) => category.identifier || category.name || category.path
+          )
+          .map((category) => {
+            return {
+              identifier: category.identifier || '',
+              name: category.name || '',
+              path: category.path || '',
+            };
+          }),
+        pagination: resp.pagination,
+      });
     }
   };
 

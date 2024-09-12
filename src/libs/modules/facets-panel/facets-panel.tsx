@@ -206,7 +206,7 @@ export const FacetsPanel = ({
   facetType: 'global' | 'category' | 'search';
   isNewRuleset?: boolean;
   rulesetMerchandisingRules?: MerchandisingRules;
-  defaultCategory?: Category;
+  defaultCategory?: Required<Category>;
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   includedFacets: ReturnedFacet[];
@@ -218,9 +218,9 @@ export const FacetsPanel = ({
     id: string
   ) => void;
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<Category>(
-    defaultCategory || {}
-  );
+  const [selectedCategory, setSelectedCategory] = useState<
+    Required<Category> | undefined
+  >(defaultCategory);
 
   const [showPreview, setShowPreview] = useState(false);
   const [merchandisingRules] = useState<MerchandisingRules>(
@@ -258,7 +258,7 @@ export const FacetsPanel = ({
   }, 300);
 
   // istanbul ignore next
-  const onSelectCategory = (category: Category) => {
+  const onSelectCategory = (category: Required<Category>) => {
     setSelectedCategory(category);
   };
 
@@ -380,7 +380,7 @@ export const FacetsPanel = ({
 
   return (
     <>
-      {showPreview && selectedCategory.identifier && merchandisingRules && (
+      {showPreview && selectedCategory?.identifier && merchandisingRules && (
         <Preview
           onClose={() => setShowPreview(!showPreview)}
           categoryId={selectedCategory.identifier}
@@ -410,7 +410,7 @@ export const FacetsPanel = ({
         <CategorySearch
           selectedCategory={selectedCategory}
           onClearSelection={() => {
-            setSelectedCategory({});
+            setSelectedCategory(undefined);
           }}
           onSelectCategory={onSelectCategory}
           canRemoveCategory={facetType === 'category'}
@@ -453,7 +453,7 @@ export const FacetsPanel = ({
           refreshData={refreshData}
           updatedValues={updatedValues}
           category={
-            facetType === 'category' ? selectedCategory.identifier : undefined
+            facetType === 'category' ? selectedCategory?.identifier : undefined
           }
         />
       )}

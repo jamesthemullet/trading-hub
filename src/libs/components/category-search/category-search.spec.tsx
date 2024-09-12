@@ -104,6 +104,53 @@ describe('CategorySearch', () => {
     expect(mockProps.onSelectCategory).toHaveBeenCalledWith(mockCategory);
   });
 
+  it('should convert undefined search results', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() =>
+        Promise.resolve({
+          categories: [
+            {},
+            {
+              identifier: 'SubCategory_507',
+            },
+            {
+              identifier: 'SubCategory_507',
+              name: 'Thermals',
+            },
+            {
+              path: 'l/lingerie/thermals',
+              name: 'Thermals',
+            },
+          ],
+          pagination: { totalItems: 20 },
+        })
+      ),
+      getCategoriesError: '',
+    });
+
+    render(<CategorySearch {...mockProps} />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507{enter}'
+    );
+
+    expect(screen.getByDisplayValue('SubCategory_507')).toBeVisible();
+
+    const resultsButton = await screen.findByText('SubCategory_507 | Thermals');
+
+    act(() => {
+      resultsButton.click();
+    });
+
+    expect(mockProps.onSelectCategory).toHaveBeenCalledWith({
+      identifier: 'SubCategory_507',
+      name: 'Thermals',
+      path: '',
+    });
+  });
+
   it('should show selected category', () => {
     render(<CategorySearch {...mockProps} selectedCategory={mockCategory} />);
 

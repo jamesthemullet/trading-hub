@@ -117,7 +117,7 @@ export const Ruleset = ({
   onCancel: () => void;
   onCreate?: (args: CategoryRuleSet) => void;
   onCreateKeywordSearchRuleset?: (args: KeywordRuleSet) => void;
-  rulesetCategory?: Category;
+  rulesetCategory?: Required<Category>;
   rulesetFacets?: Array<RuleSetFacetConfigWithId>;
   rulesetExcludedFacets?: ExcludedFacets;
   rulesetId?: string;
@@ -125,9 +125,9 @@ export const Ruleset = ({
   rulesetType: 'global' | 'category' | 'search';
   searchTerms?: string[];
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<Category>(
-    rulesetCategory || {}
-  );
+  const [selectedCategory, setSelectedCategory] = useState<
+    Required<Category> | undefined
+  >(rulesetCategory);
   const [rulesetSearchTerms, setRulesetSearchTerms] = useState(
     searchTerms || []
   );
@@ -188,7 +188,7 @@ export const Ruleset = ({
     };
   }, [hasChanges, router]);
 
-  const onSelectCategory = (category: Category) => {
+  const onSelectCategory = (category: Required<Category>) => {
     setSelectedCategory(category);
     if (!hasChanges) setHasChanges(true);
   };
@@ -428,14 +428,14 @@ export const Ruleset = ({
           rules: merchandisingRules,
           excludedFacets: rulesetExcludedFacets,
         },
-        ...(selectedCategory.identifier && {
+        ...(selectedCategory?.identifier && {
           categoryIds: [selectedCategory.identifier],
         }),
         ...(rulesetSearchTerms && {
           searchTerms: rulesetSearchTerms,
         }),
       });
-    } else if (onCreate && selectedCategory.identifier) {
+    } else if (onCreate && selectedCategory?.identifier) {
       onCreate({
         facets: [],
         isEnabled,
@@ -492,7 +492,7 @@ export const Ruleset = ({
           <CategorySearch
             selectedCategory={selectedCategory}
             onClearSelection={() => {
-              setSelectedCategory({});
+              setSelectedCategory(undefined);
             }}
             onSelectCategory={onSelectCategory}
             canRemoveCategory={true}
@@ -536,7 +536,7 @@ export const Ruleset = ({
                     return;
                   }
                   const data = await searchForProduct({
-                    ...(selectedCategory.identifier && {
+                    ...(selectedCategory?.identifier && {
                       categoryId: selectedCategory.identifier,
                     }),
                     query,
@@ -555,7 +555,7 @@ export const Ruleset = ({
             {currentProductTab === 1 && (
               <RulesetAttributes
                 merchandisingRules={merchandisingRules}
-                category={selectedCategory.identifier}
+                category={selectedCategory?.identifier}
                 onChangeAttribute={onChangeAttribute}
               />
             )}
