@@ -5,7 +5,7 @@ import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
 import {
   attributeValuesMock,
   globalFacetsListMock,
-} from '@/pages/api/merchandising/mocks';
+} from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { FacetsPanel } from './facets-panel';

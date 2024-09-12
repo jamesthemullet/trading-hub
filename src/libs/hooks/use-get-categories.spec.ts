@@ -24,7 +24,7 @@ const getCategoriesMock = jest.fn();
 const baseUrl = 'http://localhost';
 
 const handlers = [
-  http.get(`${baseUrl}/merchandising/category`, ({ request }) => {
+  http.get(`${baseUrl}/search/beta/merchandising/category`, ({ request }) => {
     const { data, status } = getCategoriesMock();
     const url = new URL(request.url);
     if (!url.searchParams.get('rows') || !url.searchParams.get('start')) {

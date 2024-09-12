@@ -7,7 +7,7 @@ import {
   useGlobalRuleSetCreate,
   useRuleSet,
 } from '@/libs/hooks';
-import { attributeValuesMock } from '@/pages/api/merchandising/mocks';
+import { attributeValuesMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';

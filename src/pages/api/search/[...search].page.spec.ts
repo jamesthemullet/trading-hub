@@ -9,15 +9,15 @@ import { createMockNextApiResponse } from '@/test/create-mock-next-api-response'
 
 import { getToken } from 'next-auth/jwt';
 
-import { validateAndMockResponse } from '../merchandising/mocks-support';
 import type { MerchandisingEnvironment } from './[...search].page';
 import proxy from './[...search].page';
+import { validateAndMockResponse } from './mocks-support';
 
 jest.mock('next-auth/jwt', () => ({
   getToken: jest.fn(),
 }));
 
-jest.mock('../merchandising/mocks-support', () => ({
+jest.mock('./mocks-support', () => ({
   validateAndMockResponse: jest.fn(),
 }));
 

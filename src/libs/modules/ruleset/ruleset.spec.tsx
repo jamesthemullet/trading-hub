@@ -11,7 +11,7 @@ import {
 } from '@/libs/api';
 import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 
-import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
+import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
 import { renderWithProviders } from '../../../test/render-with-providers';
 import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
 import { useGetCategories } from '../../hooks/use-get-categories';

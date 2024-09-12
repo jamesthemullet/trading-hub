@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { merchandising } from '../api';
+import { search } from '../api';
 
 export const useGetCategories = () => {
   const [getCategoriesError, setGetCategoriesError] = useState('');
@@ -18,7 +18,7 @@ export const useGetCategories = () => {
       setGetCategoriesError('');
 
       try {
-        const response = await merchandising().categoryList({
+        const response = await search().betaMerchandisingCategoryList({
           q: query,
           start,
           rows,

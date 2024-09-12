@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { ReturnedKeywordRedirect } from '@/libs/api';
-import { returnedRedirectMock } from '@/pages/api/merchandising/mocks';
+import { returnedRedirectMock } from '@/pages/api/search/mocks';
 
 import { useRedirectDetail } from './use-redirect-detail';
 

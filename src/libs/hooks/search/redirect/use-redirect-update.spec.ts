@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { redirectMock } from '@/pages/api/merchandising/mocks';
+import { redirectMock } from '@/pages/api/search/mocks';
 
 import { useRedirectUpdate } from './use-redirect-update';
 

@@ -58,7 +58,6 @@ describe('editable-label', () => {
         const label = screen.getByLabelText('Label for color');
 
         expect(label).toBeVisible();
-        // expect label to contain text 'color'
         expect(label).toHaveTextContent('color');
       });
 

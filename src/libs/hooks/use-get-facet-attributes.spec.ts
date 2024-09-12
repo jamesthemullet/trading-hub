@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { useGetFacetAttributes } from '@/libs/hooks/use-get-facet-attributes';
-import { attributesMock } from '@/pages/api/merchandising/mocks';
+import { attributesMock } from '@/pages/api/search/mocks';
 
 const baseUrl = 'http://localhost';
 

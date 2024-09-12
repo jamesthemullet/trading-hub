@@ -2,7 +2,7 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useGetFacetAttributeValues } from '@/libs/hooks';
-import { attributeValuesMock } from '@/pages/api/merchandising/mocks';
+import { attributeValuesMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { ModalEditValues } from './modal-edit-facets';

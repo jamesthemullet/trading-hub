@@ -3,7 +3,7 @@ import { ErrorResponse } from '@/libs/api';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
-import { validateAndMockResponse as validateOrMockResponse } from '../merchandising/mocks-support';
+import { validateAndMockResponse as validateOrMockResponse } from './mocks-support';
 
 export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;

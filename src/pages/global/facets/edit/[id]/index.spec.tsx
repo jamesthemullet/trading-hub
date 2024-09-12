@@ -8,7 +8,7 @@ import {
   useGlobalRuleSetDetail,
   useRuleSet,
 } from '@/libs/hooks';
-import { globalFacetsListMock } from '@/pages/api/merchandising/mocks';
+import { globalFacetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 
 import { GetServerSidePropsContext } from 'next';

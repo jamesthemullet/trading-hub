@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
-import { returnedRedirectMock } from '@/pages/api/merchandising/mocks';
+import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 
 import type { GetServerSidePropsContext } from 'next';

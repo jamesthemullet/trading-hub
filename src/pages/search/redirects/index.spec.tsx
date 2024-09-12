@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useSearchRedirectList } from '@/libs/hooks';
-import { returnedRedirectMock } from '@/pages/api/merchandising/mocks';
+import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import RedirectRuleSets from './index.page';

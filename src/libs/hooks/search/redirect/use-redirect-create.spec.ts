@@ -2,10 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import {
-  redirectMock,
-  returnedRedirectMock,
-} from '@/pages/api/merchandising/mocks';
+import { redirectMock, returnedRedirectMock } from '@/pages/api/search/mocks';
 
 import { useRedirectCreate } from './use-redirect-create';
 

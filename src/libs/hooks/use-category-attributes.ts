@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { AttributesResponse, AttributeType, merchandising } from '../api';
+import { AttributesResponse, AttributeType, search } from '../api';
 
 export const useCategoryAttributes = (
   category?: string,
@@ -13,12 +13,10 @@ export const useCategoryAttributes = (
   useEffect(() => {
     if (!category) return;
     const fetchAttributes = async () => {
-      const response = await merchandising().categoryAttributesDetail(
-        category,
-        {
-          type,
-        }
-      );
+      const response = await search().betaMerchandisingAttributesList({
+        categoryId: category,
+        type,
+      });
       setAttributes(response.data.attributes);
     };
 

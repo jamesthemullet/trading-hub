@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useRedirectCreate } from '@/libs/hooks/search/redirect/use-redirect-create';
-import { returnedRedirectMock } from '@/pages/api/merchandising/mocks';
+import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import NewRedirect from './index.page';

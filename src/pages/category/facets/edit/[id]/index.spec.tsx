@@ -10,7 +10,7 @@ import {
 import {
   attributeValuesMock,
   globalFacetsListMock,
-} from '@/pages/api/merchandising/mocks';
+} from '@/pages/api/search/mocks';
 import {
   mockUseRuleSetPreviewData,
   ruleSetId,

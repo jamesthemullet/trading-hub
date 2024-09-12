@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MerchandisingRules } from '@/libs/api';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 
-import { boostMock, buriesMock } from '../../../pages/api/merchandising/mocks';
+import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
 import { renderWithProviders } from '../../../test/render-with-providers';
 
 jest.mock('@/libs/hooks', () => ({

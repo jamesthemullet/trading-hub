@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { attributeValuesMock } from '@/pages/api/merchandising/mocks';
+import { attributeValuesMock } from '@/pages/api/search/mocks';
 
 import { useCheckMergeNameUnique } from './use-check-merge-name-unique';
 
