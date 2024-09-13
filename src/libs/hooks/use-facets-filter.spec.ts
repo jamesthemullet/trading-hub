@@ -121,4 +121,52 @@ describe('useFacetsFilter', () => {
       expect(result.current.filteredFacets).toHaveLength(1);
     });
   });
+
+  it('should not return anything if the search returns no results', async () => {
+    const { result } = renderHook(() => useFacetsFilter(mockFacets));
+
+    await waitFor(() => {
+      expect(result.current.filteredFacets).toHaveLength(5);
+    });
+
+    act(() => {
+      result.current.setSearch('shouldnotreturnanything');
+    });
+
+    await waitFor(() => {
+      expect(result.current.filteredFacets).toHaveLength(0);
+    });
+  });
+
+  it('should handle different cases the same', async () => {
+    const { result } = renderHook(() => useFacetsFilter(mockFacets));
+
+    await waitFor(() => {
+      expect(result.current.filteredFacets).toHaveLength(5);
+    });
+
+    act(() => {
+      result.current.setSearch('COLOR');
+    });
+
+    await waitFor(() => {
+      expect(result.current.filteredFacets).toHaveLength(1);
+    });
+
+    act(() => {
+      result.current.setSearch('cOLOR');
+    });
+
+    await waitFor(() => {
+      expect(result.current.filteredFacets).toHaveLength(1);
+    });
+
+    act(() => {
+      result.current.setSearch('color');
+    });
+
+    await waitFor(() => {
+      expect(result.current.filteredFacets).toHaveLength(1);
+    });
+  });
 });
