@@ -32,7 +32,9 @@ describe('useFacetsList', () => {
   });
 
   it('should render the hook', async () => {
-    const { result } = renderHook(() => useFacetsList([]));
+    const { result } = renderHook(() =>
+      useFacetsList({ categoryId: undefined })
+    );
 
     await waitFor(() => {
       expect(result.current.facets.length).toEqual(5);
@@ -49,12 +51,47 @@ describe('useFacetsList', () => {
       })
     );
 
-    const { result } = renderHook(() => useFacetsList([]));
+    const { result } = renderHook(() =>
+      useFacetsList({ categoryId: undefined })
+    );
 
     await waitFor(() => {
       expect(result.current.error).toEqual(
         'Error Internal Server Error undefined'
       );
+    });
+  });
+
+  it('should render the hook with category id', async () => {
+    const { result } = renderHook(() => useFacetsList({ categoryId: '12345' }));
+
+    await waitFor(() => {
+      expect(result.current.facets.length).toEqual(5);
+    });
+  });
+
+  it('should render the hook with empty list', async () => {
+    const { result } = renderHook(() =>
+      useFacetsList({
+        categoryId: undefined,
+        returnEmptyListWhenCategoryNotSelected: true,
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.facets.length).toEqual(0);
+      expect(result.current.isLoading).toBeFalsy();
+    });
+  });
+
+  it('should not call the hook when disabled', async () => {
+    const { result } = renderHook(() =>
+      useFacetsList({ categoryId: undefined, enabled: false })
+    );
+
+    await waitFor(() => {
+      expect(result.current.facets.length).toEqual(0);
+      expect(result.current.isLoading).toBeFalsy();
     });
   });
 });

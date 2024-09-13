@@ -78,6 +78,10 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
   act(() => {
     categoryToSelect.click();
   });
+
+  await waitFor(() => {
+    expect(screen.getByText(categoryId1)).toBeVisible();
+  });
 };
 
 const onSaveSpy = jest.fn();
@@ -149,6 +153,7 @@ describe('Facet Panel', () => {
         includedFacets={[]}
         excludedFacets={[]}
         facetType="category"
+        defaultCategory={undefined}
       />
     );
 
@@ -171,6 +176,7 @@ describe('Facet Panel', () => {
         includedFacets={[]}
         excludedFacets={[]}
         facetType="global"
+        defaultCategory={undefined}
       />
     );
 
@@ -189,6 +195,7 @@ describe('Facet Panel', () => {
         includedFacets={[]}
         excludedFacets={[]}
         facetType="category"
+        defaultCategory={undefined}
       />
     );
 
@@ -211,6 +218,7 @@ describe('Facet Panel', () => {
         excludedFacets={[]}
         onFacetDataChange={jest.fn()}
         facetType="category"
+        defaultCategory={undefined}
       />
     );
 
@@ -283,6 +291,7 @@ describe('Facet Panel', () => {
         includedFacets={includedFacetsMock}
         excludedFacets={[]}
         facetType="category"
+        defaultCategory={undefined}
       />
     );
 
@@ -313,6 +322,7 @@ describe('Facet Panel', () => {
         includedFacets={includedFacetsMock}
         excludedFacets={[]}
         facetType="category"
+        defaultCategory={undefined}
       />
     );
 
@@ -342,6 +352,7 @@ describe('Facet Panel', () => {
         excludedFacets={[]}
         facetType="category"
         searchTerm="color"
+        defaultCategory={undefined}
       />
     );
 
@@ -382,6 +393,8 @@ describe('Facet Panel', () => {
   it('should select a category on user input, and clear category when "remove selected category" button is clicked', async () => {
     const user = userEvent.setup({ delay: null });
 
+    const onSelectedCategoryChangeSpy = jest.fn();
+
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -392,20 +405,23 @@ describe('Facet Panel', () => {
         includedFacets={[]}
         excludedFacets={[]}
         facetType="category"
+        defaultCategory={undefined}
+        onSelectedCategoryChange={onSelectedCategoryChangeSpy}
       />
     );
 
     await selectCategory(screen, user);
 
-    expect(screen.getByText('cat_123')).toBeVisible();
-
-    const clearButton = screen.getByLabelText('Remove selected category');
+    const clearButton = await screen.findByLabelText(
+      'Remove selected category'
+    );
 
     act(() => {
       clearButton.click();
     });
 
-    expect(screen.queryByText('cat_123')).not.toBeInTheDocument();
+    expect(onSelectedCategoryChangeSpy).toHaveBeenCalledTimes(2);
+    expect(onSelectedCategoryChangeSpy).toHaveBeenLastCalledWith(undefined);
   });
 
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
@@ -422,6 +438,7 @@ describe('Facet Panel', () => {
         includedFacets={includedFacetsMock}
         excludedFacets={[]}
         facetType="category"
+        defaultCategory={undefined}
       />
     );
 
@@ -492,6 +509,7 @@ describe('Facet Panel', () => {
         includedFacets={[]}
         excludedFacets={[]}
         facetType="global"
+        defaultCategory={undefined}
       />
     );
 
@@ -536,6 +554,7 @@ describe('Facet Panel', () => {
         includedFacets={[]}
         excludedFacets={[]}
         facetType="category"
+        defaultCategory={undefined}
       />
     );
 
@@ -554,6 +573,7 @@ describe('Facet Panel', () => {
           includedFacets={[]}
           excludedFacets={[]}
           facetType="global"
+          defaultCategory={undefined}
         />
       );
 

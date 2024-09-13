@@ -157,6 +157,7 @@ export const FacetsPanel = ({
   onFacetDataChange,
   onFacetsDataRowOrderChange,
   onHandleStatusChange,
+  onSelectedCategoryChange,
   refreshData,
   title,
   facetsData,
@@ -200,6 +201,9 @@ export const FacetsPanel = ({
     index?: number
   ) => void;
   refreshData?: () => void;
+  onSelectedCategoryChange?: (
+    categoryId: Required<Category> | undefined
+  ) => void;
   displayRowOrderControls?: boolean;
   title: string;
   facetsData: ReturnedFacet[];
@@ -260,6 +264,7 @@ export const FacetsPanel = ({
   // istanbul ignore next
   const onSelectCategory = (category: Required<Category>) => {
     setSelectedCategory(category);
+    onSelectedCategoryChange?.(category);
   };
 
   const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
@@ -411,6 +416,7 @@ export const FacetsPanel = ({
           selectedCategory={selectedCategory}
           onClearSelection={() => {
             setSelectedCategory(undefined);
+            onSelectedCategoryChange?.(undefined);
           }}
           onSelectCategory={onSelectCategory}
           canRemoveCategory={facetType === 'category'}

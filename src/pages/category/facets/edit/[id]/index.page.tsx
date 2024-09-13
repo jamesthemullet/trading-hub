@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
+import { Category, ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import {
   useFacetsFilter,
@@ -31,19 +31,19 @@ const Page = ({ id }: { id: string }) => {
     error: getRulesetDetailError,
   } = useRuleSetDetail(id);
 
-  const categoryId = useMemo(
-    () => [ruleSetDetail.categoryId],
-    [ruleSetDetail.categoryId]
-  );
+  const [userSelectedCategory, setUserSelectedCategory] = useState<
+    Required<Category> | undefined
+  >();
 
   const [facetsFromCategoryRuleSet, setFacetsFromCategoryRuleSet] = useState<
     RuleSetFacetConfigWithId[] | []
   >([]);
 
-  const { facets, error: getFacetListError } = useFacetsList(
-    categoryId,
-    !isLoading
-  );
+  const { facets, error: getFacetListError } = useFacetsList({
+    categoryId: userSelectedCategory?.identifier,
+    enabled: !isLoading,
+    returnEmptyListWhenCategoryNotSelected: true,
+  });
 
   const [facetList, setFacetList] = useState<ReturnedFacet[]>([]);
   const [includedFacets, setIncludedFacets] = useState<ReturnedFacet[]>([]);
@@ -57,6 +57,13 @@ const Page = ({ id }: { id: string }) => {
   useEffect(() => {
     if (ruleSetDetail.facets) {
       setFacetsFromCategoryRuleSet(ruleSetDetail.facets);
+    }
+    if (ruleSetDetail.categoryId) {
+      setUserSelectedCategory({
+        identifier: ruleSetDetail.categoryId,
+        name: ruleSetDetail.categoryName,
+        path: '/',
+      });
     }
   }, [ruleSetDetail]);
 
@@ -120,9 +127,9 @@ const Page = ({ id }: { id: string }) => {
     setFacetList(facets);
   }, [facets]);
 
-  const handleSave = async () => {
+  const handleSave = async (categoryId: string) => {
     const response = await updateRuleSet({
-      categoryId: categoryId[0],
+      categoryId: categoryId,
       rules: {
         facets: orderedFacetList.filter((facet) =>
           includedFacets.some((includedFacet) => includedFacet.id === facet.id)
@@ -144,12 +151,6 @@ const Page = ({ id }: { id: string }) => {
 
   const handleCancel = () => {
     router.push('/category/facets');
-  };
-
-  const category = {
-    identifier: ruleSetDetail.categoryId,
-    name: ruleSetDetail.categoryName,
-    path: '/',
   };
 
   const onHandleStatusChange = async (
@@ -253,6 +254,16 @@ const Page = ({ id }: { id: string }) => {
     });
   };
 
+  const handleUserSelectedCategoryChange = (
+    category: Required<Category> | undefined
+  ) => {
+    setFacetList([]);
+    setExcludedFacets([]);
+    setIncludedFacets([]);
+    setFacetsFromCategoryRuleSet([]);
+    setUserSelectedCategory(category);
+  };
+
   return (
     <>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
@@ -299,8 +310,13 @@ const Page = ({ id }: { id: string }) => {
             setOrderedFacetList(updatedFacets);
           }}
           onHandleStatusChange={onHandleStatusChange}
+          onSelectedCategoryChange={handleUserSelectedCategoryChange}
           refreshData={refreshRuleset}
-          defaultCategory={category}
+          defaultCategory={{
+            identifier: ruleSetDetail.categoryId,
+            name: ruleSetDetail.categoryName,
+            path: '/',
+          }}
           includedFacets={includedFacets}
           excludedFacets={excludedFacets}
           facetType="category"

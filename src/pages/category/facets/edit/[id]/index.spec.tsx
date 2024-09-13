@@ -636,6 +636,36 @@ describe('Category Facet Management Editing', () => {
     });
   }, 10000);
 
+  describe('category operations', () => {
+    it('should show empty list when category is removed', async () => {
+      jest.mocked(useRuleSetDetail).mockReturnValue({
+        ...mockUseRuleSetPreviewData,
+        ruleSetDetail: {
+          ...mockUseRuleSetPreviewData.ruleSetDetail,
+          categoryId: 'SubCategory_428',
+        },
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      const clearButton = await screen.findByLabelText(
+        'Remove selected category'
+      );
+
+      act(() => {
+        clearButton.click();
+      });
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByText('No, there are no attributes yet.')
+        ).toBeVisible();
+      });
+
+      expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+    });
+  });
+
   describe('Display Error Messaging', () => {
     it('should display error message when fetching ruleset fails', async () => {
       mockUseRuleSetPreviewData.error = 'Error fetching ruleset';

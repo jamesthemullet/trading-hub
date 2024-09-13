@@ -4,10 +4,16 @@ import { FacetsList, search } from '@/libs/api';
 
 import { validateErrorResponse } from '../../utils/error';
 
-export const useFacetsList = (
-  categoryId: string[],
-  enabled: boolean = true
-) => {
+export const useFacetsList = ({
+  categoryId,
+  enabled = true,
+  returnEmptyListWhenCategoryNotSelected:
+    emptyListWhenCategoryNotSelected = false,
+}: {
+  categoryId: string | undefined;
+  enabled?: boolean;
+  returnEmptyListWhenCategoryNotSelected?: boolean;
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [facetsList, setFacetsList] = useState<FacetsList>({
     facets: [],
@@ -18,7 +24,7 @@ export const useFacetsList = (
     const asyncCall = async () => {
       try {
         const response = await search().betaMerchandisingFacetList({
-          categoryId,
+          categoryId: categoryId ? [categoryId] : [],
         });
 
         const facetList = response.data;
@@ -30,10 +36,13 @@ export const useFacetsList = (
         setIsLoading(false);
       }
     };
-
     if (enabled) {
-      setIsLoading(true);
-      void asyncCall();
+      if (!categoryId && emptyListWhenCategoryNotSelected) {
+        setFacetsList({ facets: [] });
+      } else {
+        setIsLoading(true);
+        void asyncCall();
+      }
     }
   }, [categoryId, enabled]);
 
