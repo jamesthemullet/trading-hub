@@ -259,7 +259,7 @@ describe('Global Facet Management Editing', () => {
 
     const search = screen.getByPlaceholderText('Search...');
 
-    await act(() => userEvent.type(search, 'color'));
+    await userEvent.type(search, 'color');
 
     await waitFor(() => {
       expect(screen.getAllByText('color')[0]).toBeVisible();

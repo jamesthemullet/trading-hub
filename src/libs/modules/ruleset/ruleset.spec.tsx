@@ -731,6 +731,22 @@ describe('Ruleset', () => {
         },
         setRules: mockSetRules,
       });
+    });
+
+    it('Should remove boost when pinning product', async () => {
+      const user = userEvent.setup({ delay: null });
+      const mockResponse = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        pinnedProducts: [{ id: 'product2' }, { id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      };
 
       renderWithProviders(
         <Ruleset
@@ -762,22 +778,6 @@ describe('Ruleset', () => {
           rulesetType="category"
         />
       );
-    });
-
-    it('Should remove boost when pinning product', async () => {
-      const user = userEvent.setup({ delay: null });
-      const mockResponse = {
-        blockedProducts: [],
-        boosts: { alphanumeric: [], numeric: [], product: [] },
-        buries: { alphanumeric: [], numeric: [], product: [] },
-        pinnedProducts: [{ id: 'product2' }, { id: 'product3' }],
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      };
 
       expect(screen.getAllByLabelText('Pinned product').length).toBe(1);
       expect(screen.getAllByLabelText('Boosted product').length).toBe(1);
@@ -867,6 +867,10 @@ describe('Ruleset', () => {
         },
         setRules: mockSetRules,
       });
+    });
+
+    it('Should boost from the Visual Editor', async () => {
+      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <Ruleset
@@ -898,10 +902,6 @@ describe('Ruleset', () => {
           rulesetType="category"
         />
       );
-    });
-
-    it('Should boost from the Visual Editor', async () => {
-      const user = userEvent.setup({ delay: null });
 
       await user.click(screen.getAllByTitle('Open menu')[0]);
 
@@ -934,6 +934,37 @@ describe('Ruleset', () => {
         },
       };
 
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />
+      );
+
       await user.click(screen.getAllByTitle('Open menu')[0]);
 
       expect(screen.getByLabelText('Pinned product')).toBeInTheDocument();
@@ -959,6 +990,37 @@ describe('Ruleset', () => {
           alphanumeric: [],
         },
       };
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />
+      );
 
       await user.click(screen.getAllByTitle('Open menu')[2]);
 
@@ -990,6 +1052,37 @@ describe('Ruleset', () => {
           alphanumeric: [],
         },
       };
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />
+      );
 
       await user.click(screen.getAllByTitle('Open menu')[3]);
 
@@ -1071,6 +1164,29 @@ describe('Ruleset', () => {
         error: '',
         isLoading: false,
       });
+    });
+
+    it('Should bury from the Visual Editor', async () => {
+      const user = userEvent.setup({ delay: null });
+      const expectedResponse = {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [
+            { id: 'product2', weight: 1 },
+            { id: 'product3', weight: 100 },
+          ],
+        },
+        pinnedProducts: [],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      };
 
       renderWithProviders(
         <Ruleset
@@ -1106,29 +1222,6 @@ describe('Ruleset', () => {
           rulesetType="category"
         />
       );
-    });
-
-    it('Should bury from the Visual Editor', async () => {
-      const user = userEvent.setup({ delay: null });
-      const expectedResponse = {
-        blockedProducts: [],
-        boosts: { alphanumeric: [], numeric: [], product: [] },
-        buries: {
-          alphanumeric: [],
-          numeric: [],
-          product: [
-            { id: 'product2', weight: 1 },
-            { id: 'product3', weight: 100 },
-          ],
-        },
-        pinnedProducts: [],
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      };
 
       await user.click(screen.getAllByTitle('Open menu')[0]);
 
@@ -1158,6 +1251,41 @@ describe('Ruleset', () => {
           alphanumeric: [],
         },
       };
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />
+      );
 
       const searchProduct = screen.getByPlaceholderText('Search for product');
 
@@ -1195,6 +1323,41 @@ describe('Ruleset', () => {
           alphanumeric: [],
         },
       };
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />
+      );
 
       await user.click(screen.getAllByTitle('Open menu')[1]);
 
@@ -1288,6 +1451,26 @@ describe('Ruleset', () => {
         error: '',
         isLoading: false,
       });
+    });
+
+    it('Should block from the Visual Editor', async () => {
+      const user = userEvent.setup({ delay: null });
+      const mockResponse: MerchandisingRules = {
+        blockedProducts: [{ id: 'productId2' }, { id: 'productId' }],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [{ id: 'product2', weight: 1 }],
+        },
+        pinnedProducts: [{ id: 'product3' }],
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      };
 
       renderWithProviders(
         <Ruleset
@@ -1323,26 +1506,6 @@ describe('Ruleset', () => {
           rulesetType="category"
         />
       );
-    });
-
-    it('Should block from the Visual Editor', async () => {
-      const user = userEvent.setup({ delay: null });
-      const mockResponse: MerchandisingRules = {
-        blockedProducts: [{ id: 'productId2' }, { id: 'productId' }],
-        boosts: { alphanumeric: [], numeric: [], product: [] },
-        buries: {
-          alphanumeric: [],
-          numeric: [],
-          product: [{ id: 'product2', weight: 1 }],
-        },
-        pinnedProducts: [{ id: 'product3' }],
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      };
 
       await user.click(screen.getAllByTitle('Open menu')[0]);
 
@@ -1369,6 +1532,41 @@ describe('Ruleset', () => {
           alphanumeric: [],
         },
       };
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'product3' }],
+            blockedProducts: [{ id: 'productId2' }],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: 'product2', weight: 1 }],
+            },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />
+      );
 
       const tab2 = await screen.findByText('Changes');
 
@@ -1572,7 +1770,7 @@ describe('Ruleset', () => {
       });
 
       const pinToPositionButton = await waitFor(() =>
-        screen.getByText('Pin in position')
+        screen.findByText('Pin in position')
       );
 
       act(() => {
@@ -1888,7 +2086,9 @@ describe('Ruleset', () => {
         doneButton.click();
       });
 
-      waitFor(() => expect(screen.getByText('1 attribute rule')).toBeVisible());
+      await waitFor(() =>
+        expect(screen.getByText('2 attribute rules')).toBeVisible()
+      );
     });
 
     it('adds an included alphanumeric attribute', async () => {
@@ -1919,7 +2119,7 @@ describe('Ruleset', () => {
         doneButton.click();
       });
 
-      waitFor(() =>
+      await waitFor(() =>
         expect(screen.getByText('2 attribute rules')).toBeVisible()
       );
     });
@@ -2018,7 +2218,9 @@ describe('Ruleset', () => {
         confirm.click();
       });
 
-      waitFor(() => expect(screen.findByText('Strength 12%')).toBeVisible());
+      await waitFor(async () =>
+        expect(await screen.findByText('Strength 12%')).toBeVisible()
+      );
     });
   });
 });

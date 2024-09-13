@@ -455,24 +455,22 @@ describe('ModalEditValues', () => {
       isLoading: true,
     });
 
-    await act(async () => {
-      renderWithProviders(
-        <ModalEditValues
-          onClose={() => {}}
-          facet={{
-            displayValue: 'color',
-            indexPropertyName: 'color',
-            id: '1',
-            lastChanged: { user: 'Bob', date: '2021-10-01' },
-            boosted: ['Silk', 'More Silk'],
-            excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
-          }}
-          facetType="global"
-          refreshData={() => jest.fn()}
-          category={undefined}
-        />
-      );
-    });
+    renderWithProviders(
+      <ModalEditValues
+        onClose={() => {}}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+          boosted: ['Silk', 'More Silk'],
+          excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
+        }}
+        facetType="global"
+        refreshData={() => jest.fn()}
+        category={undefined}
+      />
+    );
 
     expect(screen.getAllByLabelText('attribute-value-skeleton')).toHaveLength(
       11
@@ -490,24 +488,22 @@ describe('ModalEditValues', () => {
       isLoading: false,
     });
 
-    await act(async () => {
-      renderWithProviders(
-        <ModalEditValues
-          onClose={() => {}}
-          facet={{
-            displayValue: 'color',
-            indexPropertyName: 'color',
-            id: '1',
-            lastChanged: { user: 'Bob', date: '2021-10-01' },
-            boosted: ['Silk', 'More Silk'],
-            excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
-          }}
-          facetType="global"
-          refreshData={() => jest.fn()}
-          category={undefined}
-        />
-      );
-    });
+    renderWithProviders(
+      <ModalEditValues
+        onClose={() => {}}
+        facet={{
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: '1',
+          lastChanged: { user: 'Bob', date: '2021-10-01' },
+          boosted: ['Silk', 'More Silk'],
+          excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
+        }}
+        facetType="global"
+        refreshData={() => jest.fn()}
+        category={undefined}
+      />
+    );
 
     expect(
       screen.getByText('Error whilst retrieving values: Unknown error')
@@ -654,8 +650,8 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
       });
+      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
       act(() => {
-        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
         user.click(mergeButton);
       });
 
@@ -1025,8 +1021,8 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
       });
+      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
       act(() => {
-        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
         user.click(mergeButton);
       });
 
@@ -1062,9 +1058,11 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
       });
+      const updatedMergeButton = screen.getByRole('button', {
+        name: 'Merge (2)',
+      });
       act(() => {
-        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
-        user.click(mergeButton);
+        user.click(updatedMergeButton);
       });
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
@@ -1298,11 +1296,7 @@ describe('ModalEditValues', () => {
         ).toBeInTheDocument();
       });
       user.click(screen.getByLabelText('Move Duck Down row up'));
-      await waitFor(() =>
-        expect(
-          screen.getByLabelText('attribute 0 Duck Down')
-        ).toBeInTheDocument()
-      );
+      await screen.findByLabelText('attribute 0 Duck Down');
     }, 10000);
 
     it('should move down from second to third place', async () => {
@@ -1327,17 +1321,9 @@ describe('ModalEditValues', () => {
           category="SubCategory_507"
         />
       );
-      await waitFor(() =>
-        expect(
-          screen.getByLabelText('attribute 1 Duck Down')
-        ).toBeInTheDocument()
-      );
+      await screen.findByLabelText('attribute 1 Duck Down');
       user.click(screen.getByLabelText('Move Duck Down row down'));
-      await waitFor(() =>
-        expect(
-          screen.getByLabelText('attribute 2 Duck Down')
-        ).toBeInTheDocument()
-      );
+      await screen.findByLabelText('attribute 2 Duck Down');
     });
   });
 
@@ -1389,8 +1375,8 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
       });
+      const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
       act(() => {
-        const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
         user.click(mergeButton);
       });
       await waitFor(() => {
@@ -1496,8 +1482,8 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
       });
+      const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
       act(() => {
-        const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
         user.click(mergeButton);
       });
       await waitFor(() => {
@@ -1761,8 +1747,8 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
       });
+      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
       act(() => {
-        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
         user.click(mergeButton);
       });
       await waitFor(() => {
@@ -1837,8 +1823,8 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
       });
+      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
       act(() => {
-        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
         user.click(mergeButton);
       });
       await waitFor(() => {

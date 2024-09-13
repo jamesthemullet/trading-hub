@@ -96,13 +96,11 @@ describe('RulesetChanges', () => {
       />
     );
 
-    const attributeTitle = await waitFor(() =>
-      screen.getByText('Attribute-level changes (4)')
+    const attributeTitle = await screen.findByText(
+      'Attribute-level changes (4)'
     );
-    const shownProduct = await waitFor(() => screen.getByText('ID: 60183702'));
-    const errorProduct = await waitFor(() =>
-      screen.getByText('Product 60290408 not found')
-    );
+    const shownProduct = await screen.findByText('ID: 60183702');
+    const errorProduct = await screen.findByText('Product 60290408 not found');
 
     expect(attributeTitle).toBeInTheDocument();
     expect(shownProduct).toBeInTheDocument();
@@ -210,8 +208,8 @@ describe('RulesetChanges', () => {
       />
     );
 
-    const attributeTitle = await waitFor(() =>
-      screen.getByText('Attribute-level changes (6)')
+    const attributeTitle = await screen.findByText(
+      'Attribute-level changes (6)'
     );
 
     expect(attributeTitle).toBeInTheDocument();
@@ -280,12 +278,10 @@ describe('RulesetChanges', () => {
       />
     );
 
-    const attributeTitle = await waitFor(() =>
-      screen.getByText('Attribute-level changes (4)')
+    const attributeTitle = await screen.findByText(
+      'Attribute-level changes (4)'
     );
-    const productLoader = await waitFor(() =>
-      screen.getAllByLabelText('Product loader')
-    );
+    const productLoader = await screen.findAllByLabelText('Product loader');
 
     expect(attributeTitle).toBeInTheDocument();
     expect(productLoader).toHaveLength(8);
@@ -338,9 +334,7 @@ describe('RulesetChanges', () => {
       />
     );
 
-    const loadMoreButton = await waitFor(() =>
-      screen.getByText('Load more products')
-    );
+    const loadMoreButton = await screen.findByText('Load more products');
 
     expect(loadMoreButton).toBeInTheDocument();
 

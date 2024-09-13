@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -139,13 +139,15 @@ describe('DataTable', () => {
   });
 
   it('should toggle a rule set using keyboard navigation', async () => {
+    const user = userEvent.setup();
     const mockDelete = jest.fn();
     renderWithProviders(
       <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
     );
 
     const dropDown = screen.queryAllByTitle('More options')[0];
-    fireEvent.keyDown(dropDown, { key: 'Enter' });
+    dropDown.focus();
+    await user.keyboard('{Enter}');
 
     await waitFor(() => {
       expect(screen.getByText('Delete')).toBeVisible();

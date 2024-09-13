@@ -84,9 +84,7 @@ describe('Search Keywords', () => {
 
     await screen.findAllByDisplayValue('new keyword');
 
-    act(() => {
-      fireEvent.blur(input);
-    });
+    fireEvent.blur(input);
 
     await waitFor(() => {
       expect(addSearchTermStub).toHaveBeenCalledWith('new keyword');
@@ -269,9 +267,7 @@ describe('Search Keywords', () => {
       />
     );
 
-    act(() => {
-      userEvent.click(screen.getByRole('button', { name: 'View all' }));
-    });
+    userEvent.click(screen.getByRole('button', { name: 'View all' }));
 
     await waitFor(() => {
       userEvent.type(screen.getByPlaceholderText('Search...'), 'keyword1');

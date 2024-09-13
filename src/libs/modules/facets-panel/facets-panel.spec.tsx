@@ -472,7 +472,7 @@ describe('Facet Panel', () => {
 
     const search = screen.getByPlaceholderText('Search...');
 
-    await act(() => userEvent.type(search, 'color'));
+    await userEvent.type(search, 'color');
 
     await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('color'));
   });
@@ -592,9 +592,9 @@ describe('Facet Panel', () => {
         user.click(closeButton);
       });
 
-      waitFor(() => {
+      await waitFor(async () => {
         expect(
-          screen.getByRole('heading', {
+          await screen.findByRole('heading', {
             level: 3,
             name: 'Facet value settings of: color',
           })
