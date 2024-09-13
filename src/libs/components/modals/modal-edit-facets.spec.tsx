@@ -112,7 +112,7 @@ describe('ModalEditValues', () => {
     );
     expect(editColorInput).toBeVisible();
     expect(editColorInput).toHaveValue('Merged group 1');
-    userEvent.clear(editColorInput);
+    await userEvent.clear(editColorInput);
     await userEvent.type(editColorInput, 'Merged 1 Candy');
 
     await waitFor(() => {
@@ -171,7 +171,7 @@ describe('ModalEditValues', () => {
       );
       expect(editColorInput).toBeVisible();
       expect(editColorInput).toHaveValue('Merged group 1');
-      userEvent.clear(editColorInput);
+      await userEvent.clear(editColorInput);
       expect(editColorInput).toHaveValue('');
     });
 
@@ -219,7 +219,7 @@ describe('ModalEditValues', () => {
     });
 
     const editCottonInput = screen.getByLabelText('Edit Cotton input field');
-    userEvent.clear(editCottonInput);
+    await userEvent.clear(editCottonInput);
     await userEvent.type(editCottonInput, 'Foo');
 
     const saveButton = screen.getByRole('button', {
@@ -278,7 +278,7 @@ describe('ModalEditValues', () => {
     });
 
     const editCottonInput = screen.getByLabelText('Edit Cottonnn input field');
-    userEvent.clear(editCottonInput);
+    await userEvent.clear(editCottonInput);
     await userEvent.type(editCottonInput, 'Cotton');
 
     const saveButton = screen.getByRole('button', {
@@ -337,7 +337,7 @@ describe('ModalEditValues', () => {
     });
 
     const editCottonInput = screen.getByLabelText('Edit Cotton input field');
-    userEvent.clear(editCottonInput);
+    await userEvent.clear(editCottonInput);
     await userEvent.type(editCottonInput, 'McDuck');
 
     const saveButton = screen.getByRole('button', {
@@ -390,7 +390,7 @@ describe('ModalEditValues', () => {
     });
 
     const editCottonInput = screen.getByLabelText('Edit Cotton input field');
-    userEvent.clear(editCottonInput);
+    await userEvent.clear(editCottonInput);
     await userEvent.type(editCottonInput, 'Duck Down');
 
     const saveButton = screen.getByRole('button', {
@@ -782,9 +782,9 @@ describe('ModalEditValues', () => {
         'Edit Name your merge input field'
       );
       await waitFor(async () => {
-        userEvent.clear(mergeInputField);
+        await userEvent.clear(mergeInputField);
         await userEvent.type(mergeInputField, 'New merge name');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -854,9 +854,9 @@ describe('ModalEditValues', () => {
       );
 
       await waitFor(async () => {
-        userEvent.clear(mergeInputField);
+        await userEvent.clear(mergeInputField);
         await userEvent.type(mergeInputField, 'New merge name');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -932,9 +932,9 @@ describe('ModalEditValues', () => {
         'Edit Name your merge input field'
       );
       await waitFor(async () => {
-        userEvent.clear(mergeInputField);
+        await userEvent.clear(mergeInputField);
         await userEvent.type(mergeInputField, 'New merge name');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -1037,9 +1037,9 @@ describe('ModalEditValues', () => {
         'Edit Name your merge input field'
       );
       await waitFor(async () => {
-        userEvent.clear(mergeInputField);
+        await userEvent.clear(mergeInputField);
         await userEvent.type(mergeInputField, 'New merge name');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -1076,9 +1076,9 @@ describe('ModalEditValues', () => {
       );
 
       await waitFor(async () => {
-        userEvent.clear(mergeInputField2);
+        await userEvent.clear(mergeInputField2);
         await userEvent.type(mergeInputField2, 'Newer merge name');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -1242,9 +1242,9 @@ describe('ModalEditValues', () => {
       );
 
       await waitFor(async () => {
-        userEvent.clear(mergeInputField);
+        await userEvent.clear(mergeInputField);
         await userEvent.type(mergeInputField, 'Cotton');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -1493,9 +1493,9 @@ describe('ModalEditValues', () => {
         'Edit Name your merge input field'
       );
       await waitFor(async () => {
-        userEvent.clear(mergeInputField);
+        await userEvent.clear(mergeInputField);
         await userEvent.type(mergeInputField, 'New merge name');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
       await waitFor(() => {
         expect(mergeInputField).toHaveValue('New merge name');
@@ -1766,9 +1766,9 @@ describe('ModalEditValues', () => {
         'Edit Name your merge input field'
       );
       await waitFor(async () => {
-        userEvent.clear(mergeInputField);
+        await userEvent.clear(mergeInputField);
         await userEvent.type(mergeInputField, 'New merge name');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       await waitFor(() => {

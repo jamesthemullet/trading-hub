@@ -83,7 +83,7 @@ describe('editable-label', () => {
         const editColorInput = screen.getByLabelText('Edit color input field');
         expect(editColorInput).toBeVisible();
         expect(editColorInput).toHaveValue('color');
-        userEvent.clear(editColorInput);
+        await userEvent.clear(editColorInput);
         await userEvent.type(editColorInput, 'colour');
       });
 
@@ -122,9 +122,9 @@ describe('editable-label', () => {
         const editColorInput = screen.getByLabelText('Edit color input field');
         expect(editColorInput).toBeVisible();
         expect(editColorInput).toHaveValue('color');
-        userEvent.clear(editColorInput);
+        await userEvent.clear(editColorInput);
         await userEvent.type(editColorInput, 'colour');
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -149,7 +149,7 @@ describe('editable-label', () => {
       );
 
       await waitFor(async () => {
-        userEvent.keyboard('{enter}');
+        await userEvent.keyboard('{enter}');
       });
 
       const saveButton = screen.getByLabelText('Save color change');

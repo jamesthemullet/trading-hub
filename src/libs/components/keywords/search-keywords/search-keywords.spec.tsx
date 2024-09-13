@@ -1,5 +1,5 @@
 import { act } from 'react-dom/test-utils';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -51,8 +51,8 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(() => {
-      userEvent.type(
+    await waitFor(async () => {
+      await userEvent.type(
         screen.getByLabelText('Add keyword'),
         'new keyword{enter}'
       );
@@ -102,8 +102,8 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(() => {
-      userEvent.click(screen.getByLabelText('Remove keyword: keyword2'));
+    await waitFor(async () => {
+      await userEvent.click(screen.getByLabelText('Remove keyword: keyword2'));
     });
 
     await waitFor(() => {
@@ -122,12 +122,12 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(() => {
-      userEvent.click(screen.getByLabelText('View all'));
+    await waitFor(async () => {
+      await userEvent.click(screen.getByLabelText('View all'));
     });
 
-    await waitFor(() => {
-      userEvent.type(
+    await waitFor(async () => {
+      await userEvent.type(
         screen.getByLabelText('Add keyword to list'),
         'new keyword{enter}'
       );
@@ -149,9 +149,9 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(() => {
-      userEvent.click(screen.getByLabelText('View all'));
-      userEvent.click(screen.getByLabelText('Remove keyword: keyword5'));
+    await waitFor(async () => {
+      await userEvent.click(screen.getByLabelText('View all'));
+      await userEvent.click(screen.getByLabelText('Remove keyword: keyword5'));
     });
 
     await waitFor(() => {
@@ -197,8 +197,8 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(() => {
-      userEvent.click(screen.getByRole('button', { name: 'View all' }));
+    await waitFor(async () => {
+      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
     });
 
     await waitFor(() => {
@@ -207,8 +207,8 @@ describe('Search Keywords', () => {
       ).toBeVisible();
     });
 
-    await waitFor(() => {
-      userEvent.click(
+    await waitFor(async () => {
+      await userEvent.click(
         screen.getByRole('button', { name: 'Close keywords modal' })
       );
     });
@@ -230,19 +230,19 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(() => {
-      userEvent.click(screen.getByRole('button', { name: 'View all' }));
+    await waitFor(async () => {
+      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
     });
 
-    await waitFor(() => {
-      userEvent.type(
+    await waitFor(async () => {
+      await userEvent.type(
         screen.getByLabelText('Add keyword to list'),
         'new keyword'
       );
     });
 
-    await waitFor(() => {
-      userEvent.click(
+    await waitFor(async () => {
+      await userEvent.click(
         screen.getByRole('button', { name: 'Close keywords modal' })
       );
     });
@@ -267,16 +267,24 @@ describe('Search Keywords', () => {
       />
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'View all' }));
+    await userEvent.click(screen.getByRole('button', { name: 'View all' }));
 
-    await waitFor(() => {
-      userEvent.type(screen.getByPlaceholderText('Search...'), 'keyword1');
+    const modal = await screen.findByLabelText('Search Keywords Modal');
+    expect(modal).toBeVisible();
+
+    await waitFor(async () => {
+      await userEvent.type(
+        within(modal).getByPlaceholderText('Search...'),
+        'keyword1'
+      );
     });
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Remove keyword: keyword1')).toBeVisible();
       expect(
-        screen.queryByText('Remove keyword: keyword2')
+        within(modal).getByLabelText('Remove keyword: keyword1')
+      ).toBeVisible();
+      expect(
+        within(modal).queryByText('Remove keyword: keyword2')
       ).not.toBeInTheDocument();
     });
   });

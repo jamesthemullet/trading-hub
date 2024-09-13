@@ -233,6 +233,7 @@ export const SearchKeywords = ({
           size="auto"
           closeOnClickOutside={false}
           closeOnEscape={false}
+          aria-label="Search Keywords Modal"
         >
           <Modal.Overlay blur={3} />
           <Modal.Content>

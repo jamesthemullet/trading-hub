@@ -281,7 +281,7 @@ describe('Global Facet Management Editing', () => {
       const editColorInput = screen.getByLabelText('Edit color input field');
       expect(editColorInput).toBeVisible();
       expect(editColorInput).toHaveValue('color');
-      userEvent.clear(editColorInput);
+      await userEvent.clear(editColorInput);
       await userEvent.type(editColorInput, 'colour');
     });
 
