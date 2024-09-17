@@ -39,14 +39,14 @@ test.describe('global facets', () => {
     await page.getByRole('button', { name: 'include' }).click();
     await page.getByLabel('Edit display name for Colour').click();
     await page.getByLabel('Edit Colour input field').press('ArrowLeft');
-    await page.getByLabel('Edit Colour input field').fill('Color');
+    await page.getByLabel('Edit Colour input field').fill('Hue');
     await page.getByLabel('Save Colour change').click();
 
     await expect(page.getByLabel('Row showing Categories as')).toBeVisible();
     await expect(
-      page.getByLabel('Row showing Color as algoControl')
+      page.getByLabel('Row showing Hue as algoControl')
     ).toBeVisible();
-    await expect(page.getByLabel('Label for Color')).toBeVisible();
+    await expect(page.getByLabel('Label for Hue')).toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
     await page.getByTitle('Toggle').nth(0).locator('span').click();
@@ -54,14 +54,14 @@ test.describe('global facets', () => {
 
     await expect(page.getByLabel('Row showing Categories as')).toBeVisible();
     await expect(
-      page.getByLabel('Row showing Color as algoControl')
+      page.getByLabel('Row showing Hue as algoControl')
     ).toBeVisible();
-    await expect(page.getByLabel('Label for Color')).toBeVisible();
+    await expect(page.getByLabel('Label for Hue')).toBeVisible();
 
-    await page.getByLabel('Edit display name for Color').click();
-    await page.getByLabel('Edit Color input field').press('ArrowLeft');
-    await page.getByLabel('Edit Color input field').fill('Colour');
-    await page.getByLabel('Save Color change').click();
+    await page.getByLabel('Edit display name for Hue').click();
+    await page.getByLabel('Edit Hue input field').press('ArrowLeft');
+    await page.getByLabel('Edit Hue input field').fill('Colour');
+    await page.getByLabel('Save Hue change').click();
 
     await page.getByRole('button', { name: 'Cancel' }).click();
     await page.getByRole('button', { name: 'Close without saving' }).click();

@@ -29,7 +29,7 @@ test.describe('Keyword search', () => {
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
 
-    await page.getByLabel('Add keyword').fill('sock');
+    await page.getByLabel('Add keyword').fill('joggers');
     await page.getByLabel('Add keyword').press('Enter');
 
     await page.waitForLoadState('networkidle');
@@ -44,7 +44,7 @@ test.describe('Keyword search', () => {
   });
 
   test('enables a ruleset', async ({ page }) => {
-    await expect(page.getByTitle('sock').first()).toBeVisible();
+    await expect(page.getByTitle('joggers').first()).toBeVisible();
 
     await page.getByTitle('Toggle').first().locator('span').click();
 
@@ -53,6 +53,28 @@ test.describe('Keyword search', () => {
     await expect(
       page.getByTitle('Toggle').first().locator('input')
     ).toBeChecked();
+  });
+
+  test('previews a ruleset', async ({ page }) => {
+    await expect(page.getByTitle('joggers').first()).toBeVisible();
+
+    await page.getByRole('link', { name: 'Edit' }).first().click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('button', { name: 'Preview' }).click();
+
+    await page.waitForLoadState('networkidle');
+
+    await expect(
+      page.getByText('Search across the site to preview the rule influence')
+    ).toBeVisible();
+
+    await expect(page.getByRole('heading', { name: 'Price' })).toBeVisible();
+
+    await expect(
+      page.getByText('Marks and Spencer Fashion joggers').nth(1)
+    ).toBeVisible();
   });
 
   test('deletes a ruleset', async ({ page }) => {
