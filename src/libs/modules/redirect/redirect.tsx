@@ -58,6 +58,7 @@ export const Redirect = ({
           isEnabled: savedRedirect.isEnabled,
           keywords: savedRedirect.keywords,
           type: savedRedirect.type,
+          ruleTitle: savedRedirect.ruleTitle,
         }
       : {
           destinationUrl: '',

@@ -7,7 +7,7 @@ import { renderWithProviders } from '@/test/render-with-providers';
 import { Redirect } from './redirect';
 
 describe('Redirect', () => {
-  it('Creates a redriect', async () => {
+  it('creates a redriect', async () => {
     const mockCreate = jest.fn();
     const user = userEvent.setup({ delay: null });
 
@@ -61,7 +61,7 @@ describe('Redirect', () => {
     });
   });
 
-  it('Saves a redriect', async () => {
+  it('saves a redriect', async () => {
     const mockSave = jest.fn();
 
     const existingRedirect: ReturnedKeywordRedirect = {
@@ -101,5 +101,37 @@ describe('Redirect', () => {
       keywords: ['keyword'],
       type: 'redirectTerm',
     });
+  });
+
+  it('loads a redriect', async () => {
+    const mockSave = jest.fn();
+
+    const existingRedirect: ReturnedKeywordRedirect = {
+      destinationUrl: 'l/womens/dresses',
+      type: 'redirectTerm',
+      keywords: ['keyword'],
+      id: 'abc123',
+      lastChanged: {
+        date: '',
+        user: '',
+      },
+      isEnabled: true,
+      ruleTitle: 'title of redirect',
+    };
+
+    renderWithProviders(
+      <Redirect
+        onCancel={() => jest.fn()}
+        onSave={mockSave}
+        title="Edit Keyword Redirect rule"
+        redirect={existingRedirect}
+      />
+    );
+
+    expect(
+      screen.getByRole('heading', { name: 'Edit Keyword Redirect rule' })
+    ).toBeVisible();
+
+    expect(screen.getByDisplayValue('title of redirect')).toBeVisible();
   });
 });

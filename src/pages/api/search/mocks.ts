@@ -3,13 +3,9 @@ import {
   AttributeValuesResponse,
   BetaMerchandisingFacetListData,
   BoostsBuries,
-  BoostsBuriesWithInfo,
   KeywordRedirect,
   ProductBoostBury,
-  ReturnedCategoryRuleSet,
   ReturnedKeywordRedirect,
-  ReturnedKeywordRedirects,
-  RuleSetFacetConfigWithId,
 } from '@/libs/api';
 
 import { NextApiRequest } from 'next';
@@ -63,23 +59,6 @@ export const boostMock: BoostsBuries = {
   ],
 };
 
-export const boostWithInfoMock: BoostsBuriesWithInfo = {
-  numeric: boostMock.numeric,
-  alphanumeric: boostMock.alphanumeric,
-  product: mockProducts.map((product, index) => ({
-    id: product.id!,
-    weight: product.weight!,
-    productId: `productId-${index + 1}`,
-    title: 'Product title',
-    imageUrl: ['example.jpg'],
-    brand: 'M&S Collection',
-    isInStock: true,
-    metadata: { isPinned: false },
-    price: '10',
-    url: '',
-  })),
-};
-
 export const buriesMock: BoostsBuries = {
   numeric: [
     {
@@ -108,51 +87,6 @@ export const buriesMock: BoostsBuries = {
   ],
   product: mockProducts,
 };
-
-export const buriesWithInfoMock: BoostsBuriesWithInfo = {
-  numeric: buriesMock.numeric,
-  alphanumeric: buriesMock.alphanumeric,
-  product: mockProducts.map((product, index) => ({
-    id: product.id!,
-    weight: product.weight!,
-    productId: `productId-${index + 1}`,
-    title: 'Product title',
-    imageUrl: ['example.jpg'],
-    brand: 'M&S Collection',
-    isInStock: true,
-    metadata: { isPinned: false },
-    price: '10',
-    url: '',
-  })),
-};
-
-export const ruleSetFacetConfigWithIdMock: RuleSetFacetConfigWithId[] = [
-  {
-    id: 'color-id',
-    boosted: [],
-    excludedValues: [],
-  },
-  {
-    id: 'size-id',
-    boosted: [],
-    excludedValues: [],
-  },
-  {
-    id: 'brand-id',
-    boosted: [],
-    excludedValues: [],
-  },
-  {
-    id: 'category-id',
-    boosted: [],
-    excludedValues: [],
-  },
-  {
-    id: 'price-id',
-    boosted: [],
-    excludedValues: [],
-  },
-];
 
 export const globalFacetsListMock: BetaMerchandisingFacetListData = {
   facets: [
@@ -210,39 +144,6 @@ export const globalFacetsListMock: BetaMerchandisingFacetListData = {
         user: 'Test User',
       },
       merged: [],
-    },
-  ],
-};
-
-export const categoryRuleSetMock: ReturnedCategoryRuleSet = {
-  id: 'abc123',
-  categoryName: 'color',
-  categoryId: 'color-id',
-  categoriesInfo: [
-    {
-      id: 'foo00',
-    },
-  ],
-  lastChanged: {
-    date: '2021-01-05T08:34:15Z',
-    user: 'Test User',
-  },
-  isEnabled: true,
-  rules: {
-    pinnedProducts: [],
-    boosts: { numeric: [], alphanumeric: [], product: [] },
-    buries: { numeric: [], alphanumeric: [], product: [] },
-    blockedProducts: [],
-    includes: {
-      alphanumeric: [],
-    },
-    excludes: {
-      alphanumeric: [],
-    },
-  },
-  facets: [
-    {
-      id: 'color-id',
     },
   ],
 };
@@ -327,6 +228,7 @@ export const returnedRedirectMock: ReturnedKeywordRedirect = {
   },
 };
 
+// istanbul ignore next
 export const getMockMapping: () => Record<
   string,
   Partial<
@@ -339,48 +241,4 @@ export const getMockMapping: () => Record<
       ) => { body: object; status: number }
     >
   >
-> = () => ({
-  '/search/beta/merchandising/keyword/redirect': {
-    get: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        const body: ReturnedKeywordRedirects = {
-          redirects: [returnedRedirectMock],
-          pagination: {
-            totalItems: 1,
-          },
-        };
-
-        return {
-          body,
-          status: 200,
-        };
-      }
-      // istanbul ignore next
-      return { body: jsonBody, status };
-    },
-    post: (_req, status, jsonBody) => {
-      if (status !== 200) {
-        return {
-          body: returnedRedirectMock,
-          status: 200,
-        };
-      }
-      // istanbul ignore next
-      return { body: jsonBody, status };
-    },
-  },
-  '/search/beta/merchandising/keyword/redirect/{redirectId}': {
-    get: () => {
-      return {
-        body: returnedRedirectMock,
-        status: 200,
-      };
-    },
-    put: () => {
-      return {
-        body: returnedRedirectMock,
-        status: 200,
-      };
-    },
-  },
-});
+> = () => ({});
