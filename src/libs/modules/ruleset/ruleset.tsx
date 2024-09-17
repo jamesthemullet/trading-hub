@@ -163,6 +163,7 @@ export const Ruleset = ({
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
   const [showPreview, setShowPreview] = useState(false);
   const router = useRouter();
+  const [productSearchTerm, setProductSearchTerm] = useState('');
 
   useEffect(() => {
     const warningText =
@@ -203,7 +204,6 @@ export const Ruleset = ({
     ...(rulesetSearchTerms && { searchTerm: rulesetSearchTerms[0] }),
     merchandisingRules,
     facetConfig: [],
-    previewType: rulesetType === 'category' ? 'category' : 'all',
   });
 
   const onAddSearchTerm = (keyword: string) => {
@@ -255,6 +255,7 @@ export const Ruleset = ({
     };
     setMerchandisingRules(updatedMerchRules);
     setPreviewRules(updatedMerchRules);
+    updateProductSearch(productSearchTerm, updatedMerchRules);
     if (!hasChanges) setHasChanges(true);
   };
 
@@ -349,6 +350,7 @@ export const Ruleset = ({
     }
 
     setPreviewRules(updatedState);
+    updateProductSearch(productSearchTerm, updatedState);
   };
 
   const onProductBoostBury = ({
@@ -393,8 +395,35 @@ export const Ruleset = ({
 
     setMerchandisingRules(updatedRules);
     setPreviewRules(updatedRules);
+    updateProductSearch(productSearchTerm, updatedRules);
 
     if (!hasChanges) setHasChanges(true);
+  };
+
+  const updateProductSearch = async (
+    query: string,
+    merchandisingRules: MerchandisingRules
+  ) => {
+    if (!query) {
+      setSearchProducts([]);
+      return;
+    }
+    const { products } = await searchForProduct({
+      ...(selectedCategory?.identifier && {
+        categoryId: selectedCategory.identifier,
+      }),
+      query,
+      start: 0,
+      rows: 10,
+      merchandisingRules,
+    });
+
+    setSearchProducts(products);
+  };
+
+  const onProductSearch = async (query: string) => {
+    setProductSearchTerm(query);
+    updateProductSearch(query, merchandisingRules);
   };
 
   /* istanbul ignore next */
@@ -530,22 +559,7 @@ export const Ruleset = ({
             {currentProductTab === 0 && (
               <ProductSearch
                 isPinnable={rulesetType !== 'global'}
-                onSearch={async (query) => {
-                  if (!query) {
-                    setSearchProducts([]);
-                    return;
-                  }
-                  const data = await searchForProduct({
-                    ...(selectedCategory?.identifier && {
-                      categoryId: selectedCategory.identifier,
-                    }),
-                    query,
-                    start: 0,
-                    rows: 10,
-                    merchandisingRules,
-                  });
-                  setSearchProducts(data.products);
-                }}
+                onSearch={onProductSearch}
                 pinnedProductsCount={merchandisingRules.pinnedProducts.length}
                 onChangePosition={onChangePosition}
                 onProductBoostBury={onProductBoostBury}

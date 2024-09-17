@@ -14,13 +14,11 @@ export const usePreview = ({
   categoryId,
   facetConfig,
   merchandisingRules,
-  previewType,
   searchTerm,
   excludedFacets,
 }: {
   facetConfig: Array<RuleSetFacetConfigWithId>;
   merchandisingRules: MerchandisingRules;
-  previewType: 'category' | 'all';
   categoryId?: string;
   searchTerm?: string;
   excludedFacets?: ExcludedFacets;
@@ -110,14 +108,7 @@ export const usePreview = ({
     };
 
     fetchData();
-  }, [
-    facetConfigRules,
-    categoryId,
-    rules,
-    previewType,
-    searchTerm,
-    excludedFacets,
-  ]);
+  }, [facetConfigRules, categoryId, rules, searchTerm, excludedFacets]);
 
   return {
     data,

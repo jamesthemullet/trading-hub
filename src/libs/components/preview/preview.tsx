@@ -199,7 +199,6 @@ export const Preview = ({
     ...(searchTerm && { searchTerm }),
     merchandisingRules,
     facetConfig,
-    previewType: searchTerm ? 'all' : 'category',
   });
 
   const toggleView = (withMerchandisingRules: boolean) => {

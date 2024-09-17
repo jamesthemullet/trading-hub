@@ -297,6 +297,23 @@ describe('Ruleset', () => {
     expect(screen.getByLabelText('loader')).toBeInTheDocument();
   });
 
+  it('should show preview errrors', () => {
+    jest.mocked(usePreview).mockReturnValueOnce({
+      ...mockCategoryReturnValue,
+      error: 'Failed to preview',
+    });
+    renderWithProviders(
+      <Ruleset
+        isEnabled={true}
+        onSave={jest.fn()}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
+    );
+
+    expect(screen.getByText('Error: Failed to preview')).toBeInTheDocument();
+  });
+
   it('should select a category', async () => {
     const user = userEvent.setup();
 
@@ -553,52 +570,55 @@ describe('Ruleset', () => {
         expect.objectContaining({ searchTerms: mockSearchTerms })
       );
     });
-  });
 
-  it('should create a keyword ruleset', async () => {
-    const mockCreate = jest.fn();
-    const user = userEvent.setup();
+    it('should create a keyword ruleset', async () => {
+      const mockCreate = jest.fn();
+      const user = userEvent.setup();
 
-    const expectedData = {
-      isEnabled: true,
-      rules: {
-        blockedProducts: [],
-        boosts: { alphanumeric: [], numeric: [], product: [] },
-        buries: { alphanumeric: [], numeric: [], product: [] },
-        pinnedProducts: [],
-        includes: {
-          alphanumeric: [],
+      const expectedData = {
+        isEnabled: true,
+        rules: {
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: { alphanumeric: [], numeric: [], product: [] },
+          pinnedProducts: [],
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
-      searchTerms: ['new keyword'],
-    };
+        searchTerms: ['new keyword'],
+      };
 
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onCreateKeywordSearchRuleset={mockCreate}
+          onCancel={jest.fn()}
+          rulesetType="search"
+        />
+      );
+
+      await user.type(
+        screen.getByLabelText('Add keyword'),
+        'new keyword{enter}'
+      );
+
+      const createButton = await screen.findByText(CREATE_BUTTON);
+
+      act(() => {
+        createButton.click();
+      });
+
+      expect(mockCreate).toHaveBeenCalledWith(expectedData);
     });
-
-    renderWithProviders(
-      <Ruleset
-        isEnabled={true}
-        onCreateKeywordSearchRuleset={mockCreate}
-        onCancel={jest.fn()}
-        rulesetType="search"
-      />
-    );
-
-    await user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
-
-    const createButton = await screen.findByText(CREATE_BUTTON);
-
-    act(() => {
-      createButton.click();
-    });
-
-    expect(mockCreate).toHaveBeenCalledWith(expectedData);
   });
 
   it('should cancel changes', async () => {
@@ -1654,6 +1674,19 @@ describe('Ruleset', () => {
           alphanumeric: [],
         },
       };
+      const expectedPreview = {
+        categoryId: 'cat_123',
+        facetConfig: [],
+        merchandisingRules: {
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: { alphanumeric: [], numeric: [], product: [] },
+          excludes: { alphanumeric: [] },
+          includes: { alphanumeric: [] },
+          pinnedProducts: [{ id: 'product-id-2' }],
+        },
+        searchTerm: undefined,
+      };
 
       jest.mocked(useGetCategories).mockReturnValue({
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
@@ -1783,11 +1816,12 @@ describe('Ruleset', () => {
 
       const confirmButton = screen.getByText('Confirm');
 
-      act(() => {
+      await waitFor(() => {
         confirmButton.click();
       });
 
       expect(mockSetRules).toHaveBeenCalledWith(mockResponse);
+      expect(usePreview).toHaveBeenCalledWith(expectedPreview);
     });
   });
 
@@ -1860,7 +1894,7 @@ describe('Ruleset', () => {
 
     const tab2 = await screen.findByText('Changes');
 
-    act(() => {
+    await waitFor(() => {
       tab2.click();
     });
 

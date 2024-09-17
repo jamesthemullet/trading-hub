@@ -105,7 +105,6 @@ describe('useRuleSet', () => {
         categoryId: mockCategoryId,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
-        previewType: 'category',
       })
     );
 
@@ -151,7 +150,6 @@ describe('useRuleSet', () => {
         searchTerm: 'foo',
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
-        previewType: 'all',
       })
     );
 
@@ -176,7 +174,6 @@ describe('useRuleSet', () => {
         searchTerm: 'foo',
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
-        previewType: 'all',
       })
     );
 
@@ -222,7 +219,6 @@ describe('useRuleSet', () => {
         categoryId: mockCategoryId,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
-        previewType: 'all',
       })
     );
 
@@ -268,7 +264,6 @@ describe('useRuleSet', () => {
         categoryId: undefined,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
-        previewType: 'category',
       })
     );
 
@@ -303,7 +298,6 @@ describe('useRuleSet', () => {
         categoryId: mockCategoryId,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
-        previewType: 'category',
       })
     );
 
