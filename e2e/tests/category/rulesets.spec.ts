@@ -21,7 +21,7 @@ test('creates and deletes new ruleset', async ({ page }) => {
   await page.waitForLoadState();
 
   await page.getByPlaceholder('Search...').click();
-  await page.getByPlaceholder('Search...').fill('SubCategory_10102');
+  await page.getByPlaceholder('Search...').fill('Joggers');
   await page.getByText('SubCategory_10102 | Joggers').click();
 
   await expect(page.getByLabel('Position 1')).toBeVisible();
