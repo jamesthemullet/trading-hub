@@ -2,7 +2,12 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Box } from '@mantine/core';
 
-import { Category, MerchandisingRules, ReturnedFacet } from '@/libs/api';
+import {
+  Category,
+  ExcludedFacets,
+  MerchandisingRules,
+  ReturnedFacet,
+} from '@/libs/api';
 import {
   Button,
   CategorySearch,
@@ -214,7 +219,7 @@ export const FacetsPanel = ({
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   includedFacets: ReturnedFacet[];
-  excludedFacets: ReturnedFacet[];
+  excludedFacets: ExcludedFacets;
   searchTerm?: string;
   updatedValues?: (
     orderedPinnedValues: string[],
@@ -289,7 +294,9 @@ export const FacetsPanel = ({
       (includedFacet) => includedFacet.id === facet.id
     )
       ? 'included'
-      : excludedFacets?.find((excludedFacet) => excludedFacet.id === facet.id)
+      : excludedFacets?.facets?.find(
+            (excludedFacet) => excludedFacet.id === facet.id
+          )
         ? 'excluded'
         : 'algoControl';
 
@@ -391,6 +398,7 @@ export const FacetsPanel = ({
           categoryId={selectedCategory.identifier}
           merchandisingRules={merchandisingRules}
           facetConfig={includedFacets}
+          excludedFacets={excludedFacets}
         />
       )}
 

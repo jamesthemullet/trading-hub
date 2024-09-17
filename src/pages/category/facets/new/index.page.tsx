@@ -73,7 +73,9 @@ const Page = () => {
         title="Facet Rule Editor"
         facetsData={[]}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{
+          facets: [],
+        }}
         facetType="category"
         rulesetMerchandisingRules={defaultMerchandisingRules}
       />

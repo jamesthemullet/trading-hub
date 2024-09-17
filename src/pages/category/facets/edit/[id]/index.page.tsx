@@ -318,7 +318,9 @@ const Page = ({ id }: { id: string }) => {
             path: '/',
           }}
           includedFacets={includedFacets}
-          excludedFacets={excludedFacets}
+          excludedFacets={{
+            facets: excludedFacets?.map((facet) => ({ id: facet.id })),
+          }}
           facetType="category"
           rulesetMerchandisingRules={ruleSetDetail.rules}
           searchTerm={search}

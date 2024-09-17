@@ -151,7 +151,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
         defaultCategory={undefined}
       />
@@ -174,7 +174,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="global"
         defaultCategory={undefined}
       />
@@ -193,7 +193,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
         defaultCategory={undefined}
       />
@@ -215,7 +215,7 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         onFacetDataChange={jest.fn()}
         facetType="category"
         defaultCategory={undefined}
@@ -247,7 +247,7 @@ describe('Facet Panel', () => {
           path: categoryPath1,
         }}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
       />
     );
@@ -289,7 +289,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
         includedFacets={includedFacetsMock}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
         defaultCategory={undefined}
       />
@@ -320,7 +320,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
         includedFacets={includedFacetsMock}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
         defaultCategory={undefined}
       />
@@ -349,7 +349,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
         includedFacets={includedFacetsMock}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
         searchTerm="color"
         defaultCategory={undefined}
@@ -380,7 +380,7 @@ describe('Facet Panel', () => {
         }}
         rulesetMerchandisingRules={mockMerchandisingRules}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
       />
     );
@@ -403,7 +403,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
         defaultCategory={undefined}
         onSelectedCategoryChange={onSelectedCategoryChangeSpy}
@@ -436,7 +436,7 @@ describe('Facet Panel', () => {
         defaultOrderData={mockDefaultOrderData}
         onHandleStatusChange={onHandleStatusChangeSpy}
         includedFacets={includedFacetsMock}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
         defaultCategory={undefined}
       />
@@ -482,7 +482,7 @@ describe('Facet Panel', () => {
         }}
         onFacetDataChange={jest.fn()}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
       />
     );
@@ -507,7 +507,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={onFacetDataChangeSpy}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="global"
         defaultCategory={undefined}
       />
@@ -552,7 +552,7 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={onFacetDataChangeSpy}
         includedFacets={[]}
-        excludedFacets={[]}
+        excludedFacets={{ facets: [] }}
         facetType="category"
         defaultCategory={undefined}
       />
@@ -571,7 +571,7 @@ describe('Facet Panel', () => {
           facetsData={globalFacetsListMock.facets}
           onFacetDataChange={onFacetDataChangeSpy}
           includedFacets={[]}
-          excludedFacets={[]}
+          excludedFacets={{ facets: [] }}
           facetType="global"
           defaultCategory={undefined}
         />

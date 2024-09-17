@@ -259,7 +259,9 @@ const Page = ({ id }: PageProps) => {
           defaultCategory={defaultCategory}
           canMergeValueAttributes
           includedFacets={includedFacets}
-          excludedFacets={excludedFacets}
+          excludedFacets={{
+            facets: excludedFacets?.map((facet) => ({ id: facet.id })),
+          }}
           facetType="global"
         />
       )}

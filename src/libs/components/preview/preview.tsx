@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
+  ExcludedFacets,
   Facet,
   MerchandisingRules,
   RuleSetFacetConfigWithId,
@@ -23,6 +24,7 @@ type Props = {
   onClose: () => void;
   categoryId?: string;
   searchTerm?: string;
+  excludedFacets?: ExcludedFacets;
 };
 
 const Wrapper = styled.div`
@@ -175,6 +177,7 @@ export const Preview = ({
   categoryId,
   facetConfig,
   merchandisingRules,
+  excludedFacets,
   onClose,
   searchTerm,
 }: Props) => {
@@ -199,6 +202,7 @@ export const Preview = ({
     ...(searchTerm && { searchTerm }),
     merchandisingRules,
     facetConfig,
+    excludedFacets,
   });
 
   const toggleView = (withMerchandisingRules: boolean) => {

@@ -318,4 +318,89 @@ describe('Preview', () => {
 
     expect(screen.getByLabelText('loader')).toBeInTheDocument();
   });
+
+  it('should not show excluded facets', () => {
+    jest.mocked(usePreview).mockReturnValue({
+      ...mockCategoryReturnValue,
+      data: {
+        ...mockCategoryReturnValue.data,
+        facets: [
+          {
+            id: 'Brand',
+            order: 0,
+            data: [
+              {
+                name: 'M&S Collection',
+                count: 66,
+                disabled: false,
+                selected: false,
+              },
+            ],
+          },
+          {
+            id: 'Price',
+            order: 1,
+            data: [
+              {
+                minimum: 5,
+                maximum: 30,
+                count: 67,
+                selected: false,
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    renderWithProviders(
+      <Preview
+        facetConfig={[]}
+        merchandisingRules={mockMerchandisingRules}
+        categoryId={mockCategoryId}
+        onClose={mockOnClose}
+        excludedFacets={{
+          facets: [
+            {
+              id: 'Product Type',
+            },
+          ],
+        }}
+      />
+    );
+
+    expect(usePreview).toHaveBeenCalledWith({
+      excludedFacets: {
+        facets: [
+          {
+            id: 'Product Type',
+          },
+        ],
+      },
+      categoryId: 'SubCat_123',
+      facetConfig: [],
+      merchandisingRules: {
+        blockedProducts: [],
+        boosts: {
+          alphanumeric: [],
+          numeric: [],
+          product: [],
+        },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+        includes: {
+          alphanumeric: [],
+        },
+        pinnedProducts: [],
+      },
+    });
+
+    expect(screen.queryByText('Product Type')).toBe(null);
+  });
 });
