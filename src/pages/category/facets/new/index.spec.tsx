@@ -120,7 +120,7 @@ describe('Facet Management Editing', () => {
       submit.click();
     });
 
-    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(handlePost).toHaveBeenCalledWith({
       categoryId: 'cat_123',
       facets: [],

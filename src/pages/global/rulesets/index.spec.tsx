@@ -206,7 +206,7 @@ describe('Index', () => {
       createButton.click();
     });
 
-    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
 
     expect(mockRouter.push).toHaveBeenCalledWith(
       `/global/rulesets/edit/${MOCK_CATEGORY_ID}`

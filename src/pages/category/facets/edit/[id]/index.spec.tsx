@@ -263,26 +263,26 @@ describe('Category Facet Management Editing', () => {
 
     renderWithProviders(<Page id={ruleSetId} />);
 
-    expect(() => {
-      screen.getByRole('button', { name: 'Move color row up' });
-    }).toThrow('Unable to find an accessible element with the role "button"');
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Move color row up')
+      ).not.toBeInTheDocument();
+    });
 
-    await user.click(
-      screen.getByRole('button', { name: 'Move color row down' })
-    );
+    await user.click(await screen.findByLabelText('Move color row down'));
+
+    await waitFor(async () => {
+      expect(await screen.findByLabelText('Move color row up')).toBeVisible();
+    });
+
+    await user.click(await screen.findByLabelText('Move color row up'));
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'Move color row up' })
-      ).toBeVisible();
+        screen.queryByLabelText('Move color row up')
+      ).not.toBeInTheDocument();
     });
-
-    await user.click(screen.getByRole('button', { name: 'Move color row up' }));
-
-    expect(() => {
-      screen.getByRole('button', { name: 'Move color row up' });
-    }).toThrow('Unable to find an accessible element with the role "button"');
-  }, 15000);
+  });
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {
     const user = userEvent.setup();

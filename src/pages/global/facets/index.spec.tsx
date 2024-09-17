@@ -178,7 +178,7 @@ describe('Global Facet Management', () => {
       createButton.click();
     });
 
-    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
 
     expect(mockRouter.push).toHaveBeenCalledWith(
       `/global/facets/edit/${MOCK_CATEGORY_ID}`

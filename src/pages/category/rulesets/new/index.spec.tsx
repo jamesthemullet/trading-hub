@@ -145,7 +145,7 @@ describe('Index', () => {
       clear.click();
     });
 
-    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT).textContent
     ).toBe('');
@@ -208,7 +208,7 @@ describe('Index', () => {
       submit.click();
     });
 
-    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets');
   });
 
@@ -253,7 +253,7 @@ describe('Index', () => {
       submit.click();
     });
 
-    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(mockRouter.push).not.toHaveBeenCalled();
   });
 });

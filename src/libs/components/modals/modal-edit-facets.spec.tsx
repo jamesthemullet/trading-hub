@@ -1296,7 +1296,9 @@ describe('ModalEditValues', () => {
         ).toBeInTheDocument();
       });
       user.click(screen.getByLabelText('Move Duck Down row up'));
-      await screen.findByLabelText('attribute 0 Duck Down');
+      expect(
+        await screen.findByLabelText('attribute 0 Duck Down')
+      ).toBeInTheDocument();
     }, 10000);
 
     it('should move down from second to third place', async () => {
@@ -1321,9 +1323,13 @@ describe('ModalEditValues', () => {
           category="SubCategory_507"
         />
       );
-      await screen.findByLabelText('attribute 1 Duck Down');
+      expect(
+        await screen.findByLabelText('attribute 1 Duck Down')
+      ).toBeInTheDocument();
       user.click(screen.getByLabelText('Move Duck Down row down'));
-      await screen.findByLabelText('attribute 2 Duck Down');
+      expect(
+        await screen.findByLabelText('attribute 2 Duck Down')
+      ).toBeInTheDocument();
     });
   });
 

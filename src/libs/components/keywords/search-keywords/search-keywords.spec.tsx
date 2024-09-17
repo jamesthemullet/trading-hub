@@ -82,7 +82,9 @@ describe('Search Keywords', () => {
       user.type(input, 'new keyword');
     });
 
-    await screen.findAllByDisplayValue('new keyword');
+    await waitFor(() => {
+      expect(screen.getAllByDisplayValue('new keyword')).toHaveLength(1);
+    });
 
     fireEvent.blur(input);
 

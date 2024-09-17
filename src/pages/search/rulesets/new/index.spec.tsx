@@ -83,7 +83,7 @@ describe('Index', () => {
       submit.click();
     });
 
-    await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
 
     expect(mockRouter.push).toHaveBeenCalledWith('/search/rulesets');
   });
