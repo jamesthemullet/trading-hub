@@ -65,10 +65,13 @@ const KeywordMockWithValues = () => {
   );
 };
 
-const Sandbox = () => {
+const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
   return (
     <div>
       <h1>Sandbox examples</h1>
+      <Example>
+        <h3>Running on Node version {nodeVersion}</h3>
+      </Example>
       <Example>
         <h2>Calendar Component(Dropdown)</h2>
         <ExampleCalendarDropdown />
@@ -143,7 +146,9 @@ const Sandbox = () => {
 
 export const getServerSideProps = () => {
   return {
-    props: {},
+    props: {
+      nodeVersion: process.version,
+    },
   };
 };
 
