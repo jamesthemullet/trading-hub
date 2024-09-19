@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import { Header3, Text } from '../typography/typography.styles';
@@ -125,6 +126,7 @@ export const Navigation = () => {
   const session = useSession();
   const isLoggedIn = session && session.status === 'authenticated';
   const [openMenu, setOpenMenu] = useState(0);
+  const pathname = usePathname();
 
   return (
     <NavigationWrapper>
@@ -134,12 +136,17 @@ export const Navigation = () => {
           <Link
             as="button"
             title="Category Ranking Rules"
+            aria-label="Category Ranking Rules"
             onClick={() => {
               setOpenMenu(openMenu === 1 ? 0 : 1);
             }}
             isOpen={!!openMenu && openMenu === 1}
           >
-            <Icon src="/trading-hub/asset/menu-category-ranking.svg" />
+            {pathname.includes('/category/') ? (
+              <Icon src="/trading-hub/asset/menu-category-ranking-active.svg" />
+            ) : (
+              <Icon src="/trading-hub/asset/menu-category-ranking.svg" />
+            )}
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 1}>
             <Header3>Category Ranking</Header3>
@@ -154,12 +161,17 @@ export const Navigation = () => {
           <Link
             as="button"
             title="Search Ranking Rules"
+            aria-label="Search Ranking Rules"
             onClick={() => {
               setOpenMenu(openMenu === 2 ? 0 : 2);
             }}
             isOpen={!!openMenu && openMenu === 2}
           >
-            <Icon src="/trading-hub/asset/menu-search.svg" />
+            {pathname.includes('/search/') ? (
+              <Icon src="/trading-hub/asset/menu-search-active.svg" />
+            ) : (
+              <Icon src="/trading-hub/asset/menu-search.svg" />
+            )}
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 2}>
             <Header3>Search optimisation</Header3>
@@ -174,12 +186,17 @@ export const Navigation = () => {
           <Link
             as="button"
             title="Setup"
+            aria-label="Setup"
             onClick={() => {
               setOpenMenu(openMenu === 3 ? 0 : 3);
             }}
             isOpen={!!openMenu && openMenu === 3}
           >
-            <Icon src="/trading-hub/asset/menu-setup.svg" />
+            {pathname.includes('/global/') ? (
+              <Icon src="/trading-hub/asset/menu-setup-active.svg" />
+            ) : (
+              <Icon src="/trading-hub/asset/menu-setup.svg" />
+            )}
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 3}>
             <Header3>Setup Global</Header3>

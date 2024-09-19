@@ -14,6 +14,11 @@ jest.mock('next-auth/react', () => ({
   signOut: jest.fn(),
 }));
 
+jest.mock('next/navigation', () => ({
+  ...jest.requireActual('next/navigation'),
+  usePathname: jest.fn().mockReturnValue('/category/rulesets'),
+}));
+
 const mockSession = {
   expires: new Date(Date.now() + 2 * 86400).toISOString(),
   user: { id: '', userName: 'Test User' },

@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import { Navigation } from './navigation';
@@ -12,7 +13,20 @@ jest.mock('next-auth/react', () => ({
   signOut: jest.fn(),
 }));
 
+jest.mock('next/navigation', () => ({
+  ...jest.requireActual('next/navigation'),
+  usePathname: jest.fn(),
+}));
+
 describe('Navigation', () => {
+  beforeEach(() => {
+    jest.mocked(usePathname).mockReturnValue('/category/rulesets');
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render trading hub navigation', () => {
     render(<Navigation />);
 
@@ -132,4 +146,44 @@ describe('Navigation', () => {
 
     expect(signOut).toHaveBeenCalled();
   });
+
+  it.each([
+    [
+      '/category/rulesets',
+      '/trading-hub/asset/menu-category-ranking-active.svg',
+      '/trading-hub/asset/menu-search.svg',
+      '/trading-hub/asset/menu-setup.svg',
+    ],
+    [
+      '/search/rulesets',
+      '/trading-hub/asset/menu-category-ranking.svg',
+      '/trading-hub/asset/menu-search-active.svg',
+      '/trading-hub/asset/menu-setup.svg',
+    ],
+    [
+      '/global/rulesets',
+      '/trading-hub/asset/menu-category-ranking.svg',
+      '/trading-hub/asset/menu-search.svg',
+      '/trading-hub/asset/menu-setup-active.svg',
+    ],
+  ])(
+    'should activate the category menu icon',
+    async (url, icon1, icon2, icon3) => {
+      jest.mocked(usePathname).mockReturnValue(url);
+
+      render(<Navigation />);
+
+      expect(
+        (await screen.findByLabelText('Category Ranking Rules')).childNodes[0]
+      ).toHaveAttribute('src', icon1);
+
+      expect(
+        (await screen.findByLabelText('Search Ranking Rules')).childNodes[0]
+      ).toHaveAttribute('src', icon2);
+
+      expect(
+        (await screen.findByLabelText('Setup')).childNodes[0]
+      ).toHaveAttribute('src', icon3);
+    }
+  );
 });
