@@ -10,3 +10,5 @@ app_environment = {
 enable_frontdoor_waf = true
 frontdoor_waf_mode   = "Prevention"
 akamai_enabled       = true
+
+# Bump me for update of Bright Cloud latest changes 1
