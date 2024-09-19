@@ -1,5 +1,13 @@
+import styled from '@emotion/styled';
+
+import { Text } from '@/libs/components';
+
 import Head from 'next/head';
 import { signIn, signOut, useSession } from 'next-auth/react';
+
+const Wrapper = styled.div`
+  padding: 20px;
+`;
 
 const Index = () => {
   const session = useSession();
@@ -11,15 +19,17 @@ const Index = () => {
       </Head>
       <h1>
         {session && session.status === 'authenticated' ? (
-          <div>
-            <p>Hello, {session.data.user?.email}</p>
-            <button onClick={() => signOut()}>Sign out</button>
-          </div>
+          <Wrapper>
+            <Text>Hello, {session.data.user?.email}</Text>
+            <Text>
+              <button onClick={() => signOut()}>Sign out</button>
+            </Text>
+          </Wrapper>
         ) : (
-          <div>
+          <Wrapper>
             Unauthorised,{' '}
             <button onClick={() => signIn('azure-ad')}>Sign in</button>
-          </div>
+          </Wrapper>
         )}
       </h1>
     </>
