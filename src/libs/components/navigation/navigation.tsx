@@ -143,9 +143,9 @@ export const Navigation = () => {
             isOpen={!!openMenu && openMenu === 1}
           >
             {pathname.includes('/category/') ? (
-              <Icon src="/trading-hub/asset/menu-category-ranking-active.svg" />
+              <Icon src="/trading-hub/asset/menu-category-ranking-v2-active.svg" />
             ) : (
-              <Icon src="/trading-hub/asset/menu-category-ranking.svg" />
+              <Icon src="/trading-hub/asset/menu-category-ranking-v2.svg" />
             )}
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 1}>
@@ -168,9 +168,9 @@ export const Navigation = () => {
             isOpen={!!openMenu && openMenu === 2}
           >
             {pathname.includes('/search/') ? (
-              <Icon src="/trading-hub/asset/menu-search-active.svg" />
+              <Icon src="/trading-hub/asset/menu-search-v2-active.svg" />
             ) : (
-              <Icon src="/trading-hub/asset/menu-search.svg" />
+              <Icon src="/trading-hub/asset/menu-search-v2.svg" />
             )}
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 2}>
@@ -193,9 +193,9 @@ export const Navigation = () => {
             isOpen={!!openMenu && openMenu === 3}
           >
             {pathname.includes('/global/') ? (
-              <Icon src="/trading-hub/asset/menu-setup-active.svg" />
+              <Icon src="/trading-hub/asset/menu-setup-v2-active.svg" />
             ) : (
-              <Icon src="/trading-hub/asset/menu-setup.svg" />
+              <Icon src="/trading-hub/asset/menu-setup-v2.svg" />
             )}
           </Link>
           <SubMenu isVisible={!!openMenu && openMenu === 3}>

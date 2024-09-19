@@ -150,21 +150,21 @@ describe('Navigation', () => {
   it.each([
     [
       '/category/rulesets',
-      '/trading-hub/asset/menu-category-ranking-active.svg',
-      '/trading-hub/asset/menu-search.svg',
-      '/trading-hub/asset/menu-setup.svg',
+      '/trading-hub/asset/menu-category-ranking-v2-active.svg',
+      '/trading-hub/asset/menu-search-v2.svg',
+      '/trading-hub/asset/menu-setup-v2.svg',
     ],
     [
       '/search/rulesets',
-      '/trading-hub/asset/menu-category-ranking.svg',
-      '/trading-hub/asset/menu-search-active.svg',
-      '/trading-hub/asset/menu-setup.svg',
+      '/trading-hub/asset/menu-category-ranking-v2.svg',
+      '/trading-hub/asset/menu-search-v2-active.svg',
+      '/trading-hub/asset/menu-setup-v2.svg',
     ],
     [
       '/global/rulesets',
-      '/trading-hub/asset/menu-category-ranking.svg',
-      '/trading-hub/asset/menu-search.svg',
-      '/trading-hub/asset/menu-setup-active.svg',
+      '/trading-hub/asset/menu-category-ranking-v2.svg',
+      '/trading-hub/asset/menu-search-v2.svg',
+      '/trading-hub/asset/menu-setup-v2-active.svg',
     ],
   ])(
     'should activate the category menu icon',
