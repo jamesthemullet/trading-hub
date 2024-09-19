@@ -4,11 +4,16 @@ app_environment = {
   "MERCHANDISING_API_BASEURL" : "https://api-dev.marksandspencer.com/merchandising",
   "NODE_OPTIONS" : "--max-http-header-size 32768",
   "BUMP_ME_FOR_SECRETS_UPDATE" : "2",
-  "NEXTAUTH_URL": "https://dev-merchandising-hub.search.marksandspencer.app/api/auth/"
+  "NEXTAUTH_URL" : "https://dev-merchandising-hub.search.marksandspencer.app/api/auth/"
 }
 
 enable_frontdoor_waf = true
 frontdoor_waf_mode   = "Prevention"
 akamai_enabled       = true
 
+app_stack = "NODE|20-lts"
+
+application_stack = {
+  node_version = "20-lts"
+}
 # Bump me for update of Bright Cloud latest changes 1
