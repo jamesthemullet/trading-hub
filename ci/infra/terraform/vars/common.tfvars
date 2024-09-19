@@ -15,11 +15,11 @@ stack_version    = "1"
 
 allowed_uris = ["/*"] #CHANGEME # Update to include your allowed paths
 
-app_stack = "NODE|18-lts"
+app_stack = "NODE|20-lts"
 use_oidc  = "true" # Required tag: Set used_oidc as true for using Federated Credentials.
 
 application_stack = {
-  node_version = "18-lts"
+  node_version = "20-lts"
 }
 
 #duplicated from app_name as PR environemnts appname is overridden

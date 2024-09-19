@@ -11,9 +11,4 @@ enable_frontdoor_waf = true
 frontdoor_waf_mode   = "Prevention"
 akamai_enabled       = true
 
-app_stack = "NODE|20-lts"
-
-application_stack = {
-  node_version = "20-lts"
-}
 # Bump me for update of Bright Cloud latest changes 1

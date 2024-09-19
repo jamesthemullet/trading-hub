@@ -14,9 +14,3 @@ allowed_origins = ["marksandspencer.com"]
 enable_frontdoor_waf = true
 frontdoor_waf_mode   = "Prevention"
 akamai_enabled       = true
-
-app_stack = "NODE|18-lts"
-
-application_stack = {
-  node_version = "18-lts"
-}

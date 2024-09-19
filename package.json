@@ -5,7 +5,7 @@
   "engines": {
     "npm": ">=9.6.7",
     "yarn": "please-use-npm",
-    "node": "^18.18.0",
+    "node": "^20.9.0",
     "pnpm": "please-use-npm"
   },
   "scripts": {
