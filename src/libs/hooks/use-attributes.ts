@@ -2,26 +2,29 @@ import { useEffect, useState } from 'react';
 
 import { AttributesResponse, AttributeType, search } from '../api';
 
-export const useCategoryAttributes = (
-  category?: string,
-  type?: AttributeType
-) => {
+type Props = {
+  category?: string;
+  searchTerms?: string[];
+  type?: AttributeType;
+};
+
+export const useAttributes = ({ category, searchTerms, type }: Props) => {
   const [attributes, setAttributes] = useState<
     AttributesResponse['attributes']
   >([]);
 
   useEffect(() => {
-    if (!category) return;
     const fetchAttributes = async () => {
       const response = await search().betaMerchandisingAttributesList({
-        categoryId: category,
+        ...(category && { categoryId: category }),
+        ...(searchTerms && { searchTerms }),
         type,
       });
       setAttributes(response.data.attributes);
     };
 
     fetchAttributes();
-  }, [category, type]);
+  }, [category, searchTerms, type]);
 
   return { attributes };
 };

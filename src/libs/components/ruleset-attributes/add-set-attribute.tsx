@@ -1,4 +1,4 @@
-import { useCategoryAttributes } from '@/libs/hooks';
+import { useAttributes } from '@/libs/hooks';
 
 import { RulesetAttribute } from '../types';
 import { AddAttribute } from './add-attribute';
@@ -6,22 +6,26 @@ import { AddAttribute } from './add-attribute';
 type Props = {
   onCancel: () => void;
   onSelect: (attribute: RulesetAttribute) => void;
-  category: string;
+  category?: string;
+  searchTerms?: string[];
 };
 
-export const AddCategoryAttribute = ({
+export const AddSetAttribute = ({
   onCancel,
   onSelect,
   category,
+  searchTerms,
 }: Props) => {
-  const { attributes: numericAttributes } = useCategoryAttributes(
+  const { attributes: numericAttributes } = useAttributes({
     category,
-    'numeric'
-  );
-  const { attributes: alphanumericAttributes } = useCategoryAttributes(
+    searchTerms,
+    type: 'numeric',
+  });
+  const { attributes: alphanumericAttributes } = useAttributes({
     category,
-    'alphanumeric'
-  );
+    searchTerms,
+    type: 'alphanumeric',
+  });
 
   return (
     <AddAttribute

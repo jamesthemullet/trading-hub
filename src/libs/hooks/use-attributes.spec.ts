@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { AttributesResponse } from '../api';
-import { useCategoryAttributes } from './use-category-attributes';
+import { useAttributes } from './use-attributes';
 
 const baseUrl = 'http://localhost';
 
@@ -62,10 +62,18 @@ describe('use-attributes', () => {
 
   afterAll(() => server.close());
 
-  describe('useCategoryAttributes', () => {
+  describe('useAttributes', () => {
     it('should return attributes', async () => {
       const category = 'TestCategory';
-      const { result } = renderHook(() => useCategoryAttributes(category));
+      const { result } = renderHook(() => useAttributes({ category }));
+      await waitFor(() => {
+        expect(result.current.attributes).toEqual(mockedResponse.attributes);
+      });
+    });
+
+    it('should accept search terms', async () => {
+      const searchTerms = ['foo', 'bar'];
+      const { result } = renderHook(() => useAttributes({ searchTerms }));
       await waitFor(() => {
         expect(result.current.attributes).toEqual(mockedResponse.attributes);
       });
@@ -73,7 +81,7 @@ describe('use-attributes', () => {
 
     it('should return empty attributes when category is not provided', async () => {
       const category = undefined;
-      const { result } = renderHook(() => useCategoryAttributes(category));
+      const { result } = renderHook(() => useAttributes({ category }));
       await waitFor(() => {
         expect(result.current.attributes).toEqual([]);
       });

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import {
-  useCategoryAttributes,
+  useAttributes,
   useCategoryProductSearch,
   useGetCategories,
   useRuleSetDetail,
@@ -38,8 +38,8 @@ jest.mock('../../../../../libs/hooks/use-rule-set-update', () => ({
 jest.mock('../../../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
-jest.mock('../../../../../libs/hooks/use-category-attributes', () => ({
-  useCategoryAttributes: jest.fn(),
+jest.mock('../../../../../libs/hooks/use-attributes', () => ({
+  useAttributes: jest.fn(),
 }));
 
 describe('Index', () => {
@@ -90,7 +90,7 @@ describe('Index', () => {
     jest
       .mocked(useRuleSetDetail)
       .mockImplementation(() => mockUseRuleSetPreviewData);
-    jest.mocked(useCategoryAttributes).mockImplementation(() => ({
+    jest.mocked(useAttributes).mockImplementation(() => ({
       attributes: [],
     }));
 

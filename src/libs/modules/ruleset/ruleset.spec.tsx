@@ -30,8 +30,8 @@ jest.mock('../../hooks/use-preview', () => ({
 jest.mock('../../hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
-jest.mock('../../hooks/use-category-attributes', () => ({
-  useCategoryAttributes: (_category: string, type: string) => {
+jest.mock('../../hooks/use-attributes', () => ({
+  useAttributes: ({ type }: { type: string }) => {
     if (type === 'alphanumeric') {
       return {
         attributes: [

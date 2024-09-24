@@ -15,8 +15,7 @@ import { Button } from '../buttons/button/button';
 import { RulesetAttribute } from '../types';
 import { Label } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
-import { AddCategoryAttribute } from './add-category-attribute';
-import { AddGlobalAttribute } from './add-global-attribute';
+import { AddSetAttribute } from './add-set-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { NumericAttribute } from './numeric-attribute';
 import { AttributeCount } from './ruleset-attributes.styles';
@@ -50,6 +49,7 @@ const RuleSetAttributesContainer = styled.div`
 
 export type Props = {
   category?: string;
+  searchTerms?: string[];
   merchandisingRules: MerchandisingRules;
   onChangeAttribute: (args: RulesetAttribute) => void;
 };
@@ -58,6 +58,7 @@ export const RulesetAttributes = ({
   category,
   merchandisingRules,
   onChangeAttribute,
+  searchTerms,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   /* istanbul ignore next */
@@ -270,28 +271,17 @@ export const RulesetAttributes = ({
         <Modal.Overlay blur={3} />
         <Modal.Content>
           <Modal.Body>
-            {category ? (
-              <AddCategoryAttribute
-                category={category}
-                onCancel={() => {
-                  setIsModalOpen(false);
-                }}
-                onSelect={(attribute: RulesetAttribute) => {
-                  onChangeAttribute(attribute);
-                  setIsModalOpen(false);
-                }}
-              />
-            ) : (
-              <AddGlobalAttribute
-                onCancel={() => {
-                  setIsModalOpen(false);
-                }}
-                onSelect={(attribute: RulesetAttribute) => {
-                  onChangeAttribute(attribute);
-                  setIsModalOpen(false);
-                }}
-              />
-            )}
+            <AddSetAttribute
+              category={category}
+              searchTerms={searchTerms}
+              onCancel={() => {
+                setIsModalOpen(false);
+              }}
+              onSelect={(attribute: RulesetAttribute) => {
+                onChangeAttribute(attribute);
+                setIsModalOpen(false);
+              }}
+            />
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>

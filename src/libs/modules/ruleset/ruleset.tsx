@@ -571,6 +571,7 @@ export const Ruleset = ({
                 merchandisingRules={merchandisingRules}
                 category={selectedCategory?.identifier}
                 onChangeAttribute={onChangeAttribute}
+                searchTerms={rulesetSearchTerms}
               />
             )}
           </ProductSearchTabContent>
