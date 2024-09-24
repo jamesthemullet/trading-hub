@@ -148,10 +148,11 @@ jobs:
       - name: Delete zip file
         run: rm next.zip
 
-  deploy-stage:
+  deploy-prod:
     runs-on: ubuntu-latest
     needs: [build, deploy-dev]
-    name: Deploy to Azure Web App (stage)
+    if: false
+    name: Deploy to Azure Web App (production)
     environment:
       name: prodeun
     steps:
