@@ -18,12 +18,13 @@ jobs:
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
 
-  end-to-end-tests:
+  end-to-end-smoke-tests:
     runs-on: ubuntu-latest
     name: E2E Smoke Tests
     env:
       SMOKE_TEST_TOKEN: ${{ secrets.SMOKE_TEST_TOKEN }}
-      MERCHANDISING_API_APIGEE_KEY: ${{ secrets._MERCHANDISING_API_APIGEE_KEY }}
+      MERCHANDISING_API_BASEURL: https://api-dev.marksandspencer.com/merchandising
+      MERCHANDISING_API_APIGEE_KEY: ${{ secrets.MERCHANDISING_API_DEV_APIGEE_KEY }}
       NEXTAUTH_URL: http://localhost:3000/api/auth
       NEXTAUTH_SECRET: ${{ secrets._NEXTAUTH_SECRET }}
       AZURE_AD_CLIENT_ID: ${{ secrets._AZURE_AD_CLIENT_ID }}
