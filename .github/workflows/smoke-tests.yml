@@ -1,0 +1,49 @@
+name: Smoke tests
+
+on:
+  schedule:
+    - cron: '0 9-18 * * 1-5' # Mon-Fri 9-6 https://crontab.guru/#0_9-18_*_*_1-5
+
+env:
+  GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+
+jobs:
+  build:
+    name: Checkout app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare node and install dependencies
+        uses: ./.github/actions/prepare
+
+  end-to-end-tests:
+    runs-on: ubuntu-latest
+    name: E2E Smoke Tests
+    env:
+      SMOKE_TEST_TOKEN: ${{ secrets.SMOKE_TEST_TOKEN }}
+      MERCHANDISING_API_APIGEE_KEY: ${{ secrets._MERCHANDISING_API_APIGEE_KEY }}
+      NEXTAUTH_URL: http://localhost:3000/api/auth
+      NEXTAUTH_SECRET: ${{ secrets._NEXTAUTH_SECRET }}
+      AZURE_AD_CLIENT_ID: ${{ secrets._AZURE_AD_CLIENT_ID }}
+      AZURE_AD_TENANT_ID: ${{ secrets._AZURE_AD_TENANT_ID }}
+      AZURE_AD_CLIENT_SECRET: ${{ secrets._AZURE_AD_CLIENT_SECRET }}
+      NEXT_PUBLIC_AUTO_LOGIN: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright tests
+        run: npx playwright test --project=smoke
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

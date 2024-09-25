@@ -33,11 +33,20 @@ export default defineConfig({
   ],
   projects: [
     {
-      name: 'chromium',
+      name: 'mock',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 1080 },
       },
+      testIgnore: /.*smoke.spec.ts/,
+    },
+    {
+      name: 'smoke',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 1080 },
+      },
+      testMatch: /.*smoke.spec.ts/,
     },
   ],
 });

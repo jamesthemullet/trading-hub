@@ -33,6 +33,8 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     headers.set('Authorization', `Bearer ${token.accessToken}`);
   } else if (process.env.E2E_TEST_USER_TOKEN) {
     headers.set('Authorization', `Bearer ${process.env.E2E_TEST_USER_TOKEN}`);
+  } else if (process.env.SMOKE_TEST_TOKEN) {
+    headers.set('Authorization', `${process.env.SMOKE_TEST_TOKEN}`);
   }
 
   if (req.body) {

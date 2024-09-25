@@ -461,5 +461,20 @@ describe('Search api proxy', () => {
       );
       delete process.env.E2E_TEST_USER_TOKEN;
     });
+
+    it('should work when process.env.SMOKE_TEST_TOKEN is set', async () => {
+      process.env.SMOKE_TEST_TOKEN = 'token';
+      const response = responses[0][0];
+      await performGet(
+        `${baseUrl}/search/beta/merchandising/facet/subcategory_427`,
+        response
+      );
+
+      expect(httpGet).toHaveBeenCalled();
+      expect(httpGet.mock.calls[0][0].url).toBe(
+        `${baseUrl}/search/beta/merchandising/facet/subcategory_427?apikey=`
+      );
+      delete process.env.SMOKE_TEST_TOKEN;
+    });
   });
 });
