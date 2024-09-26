@@ -66,7 +66,7 @@ export const sessionCallback: Required<
   return session;
 };
 
-export const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
+const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
   providers: [
     AzureADProvider({
       clientId: envSettings.clientId,

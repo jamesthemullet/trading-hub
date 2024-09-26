@@ -526,10 +526,8 @@ export const EditFacetModal = ({
       displayValue: group.displayValue,
       mergedValues: group.mergedValues?.map((id) => {
         const foundValue = unmergedFacetValues.find((val) => val.id === id);
-        return foundValue
-          ? foundValue.displayValue
-          : // istanbul ignore next
-            '';
+        // istanbul ignore next
+        return foundValue?.displayValue || '';
       }),
     }));
 

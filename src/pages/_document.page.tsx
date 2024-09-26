@@ -49,7 +49,7 @@ const fontStyles = css`
   }
 `;
 
-export const resetStyles = () => css`
+const resetStyles = () => css`
   html {
     box-sizing: border-box;
     font-size: 16px;

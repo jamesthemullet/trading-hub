@@ -9,7 +9,7 @@ import { mediaQuery } from '../utils/media-query';
 import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
 
-export const resetSearchInput = css`
+const resetSearchInput = css`
   &::-webkit-search-decoration,
   &::-webkit-search-cancel-button,
   &::-webkit-search-results-button,

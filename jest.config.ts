@@ -1,7 +1,6 @@
 import type { Config } from 'jest';
 
 const config: Config = {
-  preset: 'ts-jest',
   testEnvironment: '<rootDir>src/test/helpers/jsdom-extended.js',
   clearMocks: true,
   collectCoverage: true,
@@ -46,12 +45,19 @@ const config: Config = {
   modulePathIgnorePatterns: ['<rootDir>/e2e'],
   transform: {
     '^.+\\.(ts|tsx)$': [
-      'ts-jest',
+      '@swc/jest',
       {
-        tsconfig: './tsconfig.test.json',
+        sourceMaps: 'inline',
+        jsc: {
+          target: 'es2022',
+          transform: {
+            react: {
+              runtime: 'automatic',
+            },
+          },
+        },
       },
     ],
-    '^.+\\.(js|jsx)$': 'babel-jest',
   },
   transformIgnorePatterns: [],
   testEnvironmentOptions: {

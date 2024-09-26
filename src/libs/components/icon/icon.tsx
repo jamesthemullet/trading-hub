@@ -31,7 +31,7 @@ const legacyPaddingMap: { [key: number]: number } = {
   64: 16,
   80: 20,
 };
-export const iconPaddingMap: { [key: number]: number } = {
+const iconPaddingMap: { [key: number]: number } = {
   16: 4,
   24: 8,
   32: 8,

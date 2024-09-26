@@ -62,3 +62,4 @@ src/libs/api/api.yml
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+.swc/

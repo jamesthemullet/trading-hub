@@ -11,7 +11,7 @@ const Input = styled.input`
   min-width: 60px;
 `;
 
-export const ErrorText = styled(Text)`
+const ErrorText = styled(Text)`
   color: ${color.errorRed};
 `;
 

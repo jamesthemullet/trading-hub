@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import type { ReactNode } from 'react';
 import React from 'react';
 
-export const visuallyHide = css`
+const visuallyHide = css`
   border: 0;
   clip: rect(0, 0, 0, 0);
   margin: -1px;

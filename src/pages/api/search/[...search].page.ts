@@ -9,7 +9,7 @@ export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
 };
 
-export const isErrorSchemaCompatible = (err: unknown): err is ErrorResponse => {
+const isErrorSchemaCompatible = (err: unknown): err is ErrorResponse => {
   if (
     err &&
     typeof err === 'object' &&

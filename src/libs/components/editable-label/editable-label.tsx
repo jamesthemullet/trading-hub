@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 import { color } from '../utils/constants';
 
-export const DisplayName = styled.div`
+const DisplayName = styled.div`
   display: flex;
   align-items: center;
   width: max-content;
