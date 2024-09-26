@@ -65,11 +65,11 @@ export const ProductDetails = ({
         />
       </ProductCard>
       <ProductInfo aria-label="Product details" isSearchResult={isSearchResult}>
-        <Text isStrong={isBrandStrong ?? true}>
+        <Text isStrong={isBrandStrong ?? true} aria-label="product title">
           {brand} {title}
         </Text>
         <Text>{price}</Text>
-        <Text>ID: {productId}</Text>
+        <Text aria-label="product id">ID: {productId}</Text>
       </ProductInfo>
     </>
   );

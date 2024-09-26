@@ -100,6 +100,20 @@ Click the green run button in the playwright UI, to run it without UI, execute:
 npm run test:e2e
 ```
 
+#### Mock tests
+
+There are in depth e2e tests using mock data to test page interations when editing a ruleset, these should be used for testing page behaviour before changes are saved
+
+These can be run by selecting the "mock" project in playwright
+
+![Mock tests](./docs/img/mock.png)
+
+#### Smoke tests
+
+There are [smoke tests](https://github.com/DigitalInnovation/trading-hub/actions/workflows/smoke-tests.yml) run each hour during the working day. The focus of these is for any data updates with the backend
+
+These can be run by selecting the "smoke" project in playwright and setting the `SMOKE_TEST_TOKEN` variable
+
 #### Running e2e tests with docker compose
 
 First we need to disable autologin, it is useful for customers but e2e needs to mock the token, in your `.env`:
