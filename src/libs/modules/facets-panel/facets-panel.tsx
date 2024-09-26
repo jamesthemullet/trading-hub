@@ -19,7 +19,7 @@ import {
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
-import { ModalEditValues } from '@/libs/components/modals/modal-edit-facets';
+import { EditFacetModal } from '@/libs/components/modals/edit-facet/edit-facet-modal';
 import { Preview } from '@/libs/components/preview/preview';
 import {
   TableCol,
@@ -460,7 +460,7 @@ export const FacetsPanel = ({
       </AttributesTable>
 
       {isEditValuesModalOpen && selectedFacet && (
-        <ModalEditValues
+        <EditFacetModal
           onClose={onClose}
           facet={selectedFacet}
           facetType={facetType}

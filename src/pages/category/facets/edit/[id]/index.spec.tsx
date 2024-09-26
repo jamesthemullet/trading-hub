@@ -7,6 +7,8 @@ import {
   useGetFacetAttributeValues,
   useRuleSetDetail,
 } from '@/libs/hooks';
+import { useGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
+import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import {
   attributeValuesMock,
   globalFacetsListMock,
@@ -44,16 +46,29 @@ jest.mock('@/libs/hooks', () => ({
   useFacetsList: () => {
     return mockUseFacetsList;
   },
-  useGetFacetAttributeValues: jest.fn(),
-  useGlobalFacetUpdate: () => {
-    return { handleUpdate: mockUpdateGlobalFacet };
-  },
   useUpdateRuleSet: () => {
     return updateRuleSet;
   },
 }));
+
 jest.mock('@/libs/hooks/use-get-facet-attributes', () => ({
+  ...jest.requireActual('@/libs/hooks/use-get-facet-attributes'),
   useGetFacetAttributes: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
+  ...jest.requireActual('@/libs/hooks/use-get-facet-attribute-values'),
+  useGetFacetAttributeValues: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/global/facets/use-global-facet-update', () => ({
+  ...jest.requireActual('@/libs/hooks/global/facets/use-global-facet-update'),
+  useGlobalFacetUpdate: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/use-check-merge-name-unique', () => ({
+  ...jest.requireActual('@/libs/hooks/use-check-merge-name-unique'),
+  useCheckMergeNameUnique: jest.fn(),
 }));
 
 const categoryId1 = 'cat_123';
@@ -93,6 +108,16 @@ describe('Category Facet Management Editing', () => {
       },
       refetch: jest.fn(),
       isLoading: false,
+    });
+    jest.mocked(useGlobalFacetUpdate).mockReturnValue({
+      handleGlobalFacetUpdate: mockUpdateGlobalFacet,
+      error: '',
+    });
+    jest.mocked(useCheckMergeNameUnique).mockReturnValue({
+      checkMergeNameUnique: jest.fn().mockResolvedValue({
+        isUnique: true,
+      }),
+      error: '',
     });
   });
 

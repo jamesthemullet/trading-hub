@@ -1,13 +1,18 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { useGetFacetAttributeValues } from '@/libs/hooks';
+import { ReturnedGlobalFacet } from '@/libs/api';
+import { useGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
+import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
+import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 import { attributeValuesMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { ModalEditValues } from './modal-edit-facets';
+import { EditFacetModal } from './edit-facet-modal';
 
-const mockUpdateGlobalFacet = jest.fn(() => Promise.resolve({}));
+const mockUpdateGlobalFacet = jest.fn(() =>
+  Promise.resolve({} as ReturnedGlobalFacet | { status: string })
+);
 const updateGlobalFacet = {
   handleGlobalFacetUpdate: mockUpdateGlobalFacet,
   error: '',
@@ -18,22 +23,29 @@ const mockUseCheckMergeNameUnique = {
   checkMergeNameUnique: jest.fn(() => Promise.resolve({ isUniqueValue: true })),
 };
 
-jest.mock('@/libs/hooks', () => ({
-  ...jest.requireActual('@/libs/hooks'),
-  useGetFacetAttributeValues: jest.fn().mockReturnValue(null),
-  useGlobalFacetUpdate: () => {
-    return updateGlobalFacet;
-  },
+jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
+  ...jest.requireActual('@/libs/hooks/use-get-facet-attribute-values'),
+  useGetFacetAttributeValues: jest.fn(),
 }));
 
-jest.mock('../../hooks/use-check-merge-name-unique', () => ({
-  useCheckMergeNameUnique: () => mockUseCheckMergeNameUnique,
+jest.mock('@/libs/hooks/global/facets/use-global-facet-update', () => ({
+  ...jest.requireActual('@/libs/hooks/global/facets/use-global-facet-update'),
+  useGlobalFacetUpdate: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/use-check-merge-name-unique', () => ({
+  ...jest.requireActual('@/libs/hooks/use-check-merge-name-unique'),
+  useCheckMergeNameUnique: jest.fn(),
 }));
 
 describe('ModalEditValues', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    jest.mocked(useGlobalFacetUpdate).mockReturnValue(updateGlobalFacet);
+    jest
+      .mocked(useCheckMergeNameUnique)
+      .mockReturnValue(mockUseCheckMergeNameUnique);
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
       error: '',
@@ -52,7 +64,7 @@ describe('ModalEditValues', () => {
   it('should render edit values modal', async () => {
     const onCloseSpy = jest.fn();
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={onCloseSpy}
         facet={{
           displayValue: 'color',
@@ -72,7 +84,7 @@ describe('ModalEditValues', () => {
   it('should be able to edit a display value of a merged group', async () => {
     const onCloseSpy = jest.fn();
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={onCloseSpy}
         facet={{
           displayValue: 'color',
@@ -136,7 +148,7 @@ describe('ModalEditValues', () => {
   it('should not be able to edit a display value of a merged group to be an empty string', async () => {
     const onCloseSpy = jest.fn();
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={onCloseSpy}
         facet={{
           displayValue: 'color',
@@ -185,7 +197,7 @@ describe('ModalEditValues', () => {
   it('should be able to edit a display value if not in a merge group', async () => {
     const onCloseSpy = jest.fn();
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={onCloseSpy}
         facet={{
           displayValue: 'color',
@@ -239,7 +251,7 @@ describe('ModalEditValues', () => {
   it('should be able to edit a display value back to the origininal name', async () => {
     const onCloseSpy = jest.fn();
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={onCloseSpy}
         facet={{
           displayValue: 'color',
@@ -297,7 +309,7 @@ describe('ModalEditValues', () => {
 
   it('should not be able to edit a display value to the same name as another edited value', async () => {
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={jest.fn()}
         facet={{
           displayValue: 'color',
@@ -356,7 +368,7 @@ describe('ModalEditValues', () => {
       Promise.resolve({ isUniqueValue: false })
     );
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={jest.fn()}
         facet={{
           displayValue: 'color',
@@ -409,7 +421,7 @@ describe('ModalEditValues', () => {
       Promise.resolve({ isUniqueValue: true })
     );
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={() => {}}
         facet={{
           displayValue: 'color',
@@ -456,7 +468,7 @@ describe('ModalEditValues', () => {
     });
 
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={() => {}}
         facet={{
           displayValue: 'color',
@@ -489,7 +501,7 @@ describe('ModalEditValues', () => {
     });
 
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={() => {}}
         facet={{
           displayValue: 'color',
@@ -515,7 +527,7 @@ describe('ModalEditValues', () => {
     const onCloseSpy = jest.fn();
 
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={onCloseSpy}
         facet={{
           displayValue: 'color',
@@ -540,7 +552,7 @@ describe('ModalEditValues', () => {
     it('should not show merge options if not enabled', async () => {
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -563,7 +575,7 @@ describe('ModalEditValues', () => {
     it('should disable the merge button if less than two attributes selected', () => {
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -584,7 +596,7 @@ describe('ModalEditValues', () => {
       const onCloseSpy = jest.fn();
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -622,7 +634,7 @@ describe('ModalEditValues', () => {
       const user = userEvent.setup({ delay: null });
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -667,7 +679,7 @@ describe('ModalEditValues', () => {
       const user = userEvent.setup({ delay: null });
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -698,7 +710,7 @@ describe('ModalEditValues', () => {
       const user = userEvent.setup({ delay: null });
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -745,7 +757,7 @@ describe('ModalEditValues', () => {
       const user = userEvent.setup({ delay: null });
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -816,7 +828,7 @@ describe('ModalEditValues', () => {
       const user = userEvent.setup({ delay: null });
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -890,7 +902,7 @@ describe('ModalEditValues', () => {
       const user = userEvent.setup({ delay: null });
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -957,7 +969,7 @@ describe('ModalEditValues', () => {
     it('should not demerge a value if it is a category facet', async () => {
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -990,7 +1002,7 @@ describe('ModalEditValues', () => {
       const user = userEvent.setup({ delay: null });
       const onCloseSpy = jest.fn();
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={onCloseSpy}
           facet={{
             displayValue: 'color',
@@ -1089,7 +1101,7 @@ describe('ModalEditValues', () => {
     it('should select and deselect all facet attributes', async () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={jest.fn()}
           facet={{
             displayValue: 'color',
@@ -1125,7 +1137,7 @@ describe('ModalEditValues', () => {
     it('should deselect all facet attributes toggle when unchecking a value', async () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={jest.fn()}
           facet={{
             displayValue: 'color',
@@ -1164,7 +1176,7 @@ describe('ModalEditValues', () => {
 
     it('should show previously saved merge values', async () => {
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={jest.fn()}
           facet={{
             displayValue: 'color',
@@ -1194,7 +1206,7 @@ describe('ModalEditValues', () => {
 
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={jest.fn()}
           facet={{
             displayValue: 'color',
@@ -1261,7 +1273,7 @@ describe('ModalEditValues', () => {
     it('should move up from second to first place', async () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={() => {}}
           facet={{
             displayValue: 'color',
@@ -1304,7 +1316,7 @@ describe('ModalEditValues', () => {
     it('should move down from second to third place', async () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={() => {}}
           facet={{
             displayValue: 'color',
@@ -1340,7 +1352,7 @@ describe('ModalEditValues', () => {
       );
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={() => {}}
           facet={{
             displayValue: 'color',
@@ -1448,7 +1460,7 @@ describe('ModalEditValues', () => {
     it('should save initial and newly created merged values with included/excluded', async () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={() => {}}
           facet={{
             displayValue: 'color',
@@ -1581,7 +1593,7 @@ describe('ModalEditValues', () => {
     it('should update included/excluded values for global facets', async () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={() => {}}
           facet={{
             displayValue: 'color',
@@ -1657,7 +1669,7 @@ describe('ModalEditValues', () => {
         .fn()
         .mockImplementation(() => mockUpdateRuleSet);
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={() => {}}
           facet={{
             displayValue: 'color',
@@ -1721,7 +1733,7 @@ describe('ModalEditValues', () => {
       updateGlobalFacet.error = 'Failed to update facet';
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={() => {}}
           facet={{
             displayValue: 'color',
@@ -1798,7 +1810,7 @@ describe('ModalEditValues', () => {
     it('should not allow any other action during the process creating a merge group (ie when writing the name of the merge group)', async () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(
-        <ModalEditValues
+        <EditFacetModal
           onClose={() => {}}
           facet={{
             displayValue: 'color',
@@ -1858,7 +1870,7 @@ describe('ModalEditValues', () => {
   it('should display error message when updating facet fails', async () => {
     updateGlobalFacet.error = 'Failed to update facet';
     renderWithProviders(
-      <ModalEditValues
+      <EditFacetModal
         onClose={() => {}}
         facet={{
           displayValue: 'color',

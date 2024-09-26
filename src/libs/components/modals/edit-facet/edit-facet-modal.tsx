@@ -3,32 +3,33 @@ import { useEffect, useMemo, useState } from 'react';
 import { Modal, Skeleton } from '@mantine/core';
 
 import { AttributeValuesResponse, ReturnedGlobalFacet } from '@/libs/api';
-import { ErrorMessage } from '@/libs/components';
-import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
-import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
-import { useDebounce } from '@/libs/hooks/utils/use-debounce';
-
-import Image from 'next/image';
-
-import { ArrowButton } from '../buttons/button/arrow-button';
-import { Button } from '../buttons/button/button';
-import { FacetOrderDropdown } from '../dropdowns/facet-order-dropdown/facet-order-dropdown';
-import { EditableLabel } from '../editable-label/editable-label';
-import { FilteredResultsPanel } from '../filtered-results-panel/filtered-results-panel';
-import { Search } from '../search/search';
+import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
+import { Button } from '@/libs/components/buttons/button/button';
+import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
+import { EditableLabel } from '@/libs/components/editable-label/editable-label';
+import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { Search } from '@/libs/components/search/search';
 import {
   FacetAttributeValuesTableRow,
   TableCol,
   TableHeading,
-} from '../table/table.styles';
-import { Header3, Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
+} from '@/libs/components/table/table.styles';
+import { ErrorMessage } from '@/libs/components/typography/typography.styles';
+import { Header3, Text } from '@/libs/components/typography/typography.styles';
+import { color } from '@/libs/components/utils/constants';
+import { spacing } from '@/libs/components/utils/spacing';
+import { useGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
+import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
+import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+
+import Image from 'next/image';
+
 import {
   HeadingContainer,
   ModalAttributesTable,
   ModalStickyHeader,
-} from './modal.styles';
+} from '../modal.styles';
 
 type AttributeValue = AttributeValuesResponse['values'][number] & {
   index: number;
@@ -155,7 +156,7 @@ const EDITFACETVALUESMODALCOLUMNS: {
   },
 ];
 
-export const ModalEditValues = ({
+export const EditFacetModal = ({
   onClose,
   facet,
   facetType,
