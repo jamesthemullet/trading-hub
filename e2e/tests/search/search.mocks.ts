@@ -1,4 +1,6 @@
 import {
+  AttributesResponse,
+  ProductSearchResponse,
   ReturnedKeywordRuleSet,
   ReturnedKeywordRuleSets,
   SearchPreviewResponseBeta,
@@ -204,10 +206,10 @@ export const mockPreview: SearchPreviewResponseBeta = {
       },
     },
     {
-      id: '22531198',
-      productId: '22531198',
+      id: '225311981',
+      productId: '225311981',
       title: 'Cotton Blend Kindness Slogan Cuffed Joggers',
-      url: 'cotton-kindness-slogan-cuffed-joggers/p/clp22531198?color=CREAM&image=SD_10_T82_6308_K0_X_EC_0',
+      url: 'cotton-kindness-slogan-cuffed-joggers/p/clp225311981?color=CREAM&image=SD_10_T82_6308_K0_X_EC_0',
       price: '£17.00',
       brand: "Nobody's Child",
       isInStock: true,
@@ -230,6 +232,27 @@ export const mockPreview: SearchPreviewResponseBeta = {
       title: 'Cotton Blend Embroidered Cuffed Joggers',
       url: 'organic-cotton-embroidered-cuffed-joggers/p/clp22531197?color=PINK&image=SD_10_T82_6307_A0_X_EC_0',
       price: '£17.00',
+      brand: "Nobody's Child",
+      isInStock: true,
+      imageUrl: [
+        'SD_10_T82_6307_A0_X_EC_0',
+        'SD_10_T82_6307_A0_X_EC_0',
+        'SD_10_T82_6307_A0_X_EC_0',
+        'SD_10_T82_6307_A0_X_EC_0',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '22531198',
+      productId: '22531198',
+      title: 'Cotton Blend Embroidered Joggers',
+      url: 'organic-cotton-embroidered-cuffed-joggers/p/clp22531198?color=PINK&image=SD_10_T82_6307_A0_X_EC_0',
+      price: '£7.00',
       brand: "Nobody's Child",
       isInStock: true,
       imageUrl: [
@@ -452,4 +475,290 @@ export const mockRuleSet: ReturnedKeywordRuleSet = {
   searchTerms: ['joggers'],
   facets: [],
   excludedFacets: { facets: [] },
+};
+
+export const mockProducts: ProductSearchResponse = {
+  products: [
+    {
+      id: '60529550',
+      productId: '60529550',
+      title: 'V-Neck Knee Length Swing Dress',
+      url: 'v-neck-knee-length-smock-dress/p/clp60529552?color=BLACK&image=SD_10_T97_6310B_Y0_X_EC_90',
+      price: '£125.00',
+      brand: 'JAEGER',
+      isInStock: true,
+      imageUrl: [
+        'SD_10_T97_6310B_Y0_X_EC_0',
+        'SD_10_T97_6310B_Y0_X_EC_0',
+        'SD_10_T97_6310B_Y0_X_EC_90',
+        'SD_10_T97_6310B_Y0_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: true,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+
+    {
+      id: '22531022',
+      productId: '22531022',
+      title: 'Swing Dress',
+      url: 'swing-dress/p/clp22531022?color=BLACKMIX&image=SD_10_T83_5439_Y4_X_EC_90',
+      price: '£89.00',
+      brand: 'Phase Eight',
+      isInStock: true,
+      imageUrl: [
+        'SD_10_T83_5439_Y4_X_EC_90',
+        'SD_10_T83_5439_Y4_X_EC_90',
+        'SD_10_T83_5439_Y4_X_EC_90',
+        'SD_10_T83_5439_Y4_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '22530754',
+      productId: '22530754',
+      title: 'Cord Shirt Dress',
+      url: 'cord-shirt-dress/p/clp22530754?color=PINK&image=SD_10_T83_5732_A0_X_EC_90',
+      price: '£59.50',
+      brand: 'FatFace',
+      isInStock: true,
+      imageUrl: [
+        'SD_10_T83_5732_A0_X_EC_0',
+        'SD_10_T83_5732_A0_X_EC_0',
+        'SD_10_T83_5732_A0_X_EC_90',
+        'SD_10_T83_5732_A0_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '60534443',
+      productId: '60534443',
+      title: 'Shirred Midi Smock Dress',
+      url: 'shirred-midi-smock-dress/p/clp60534443?color=BLACK&image=SD_01_T69_1196_Y0_X_EC_90',
+      price: '£45.00',
+      brand: 'M&S Collection',
+      isInStock: true,
+      imageUrl: [
+        'SD_01_T69_1196_Y0_X_EC_0',
+        'SD_01_T69_1196_Y0_X_EC_0',
+        'SD_01_T69_1196_Y0_X_EC_90',
+        'SD_01_T69_1196_Y0_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '60506901',
+      productId: '60506901',
+      title: 'Floral Midi Waisted Dress',
+      url: 'floral-midi-waisted-dress/p/clp60506901?color=NAVYMIX&image=SD_01_T42_4755_F4_X_EC_90',
+      price: '£39.50',
+      brand: 'M&S Collection',
+      isInStock: true,
+      imageUrl: [
+        'SD_01_T42_4755_F4_X_EC_0',
+        'SD_01_T42_4755_F4_X_EC_0',
+        'SD_01_T42_4755_F4_X_EC_90',
+        'SD_01_T42_4755_F4_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '60533510',
+      productId: 'P60533510',
+      title: 'Floral Midi Waisted Dress',
+      url: 'floral-midi-waisted-dress/p/clp60533510?color=BLUEMIX&image=SD_01_T69_1192_E4_X_EC_90',
+      price: '£45.00',
+      brand: 'M&S Collection',
+      isInStock: true,
+      imageUrl: [
+        'SD_01_T69_1192_E4_X_EC_0',
+        'SD_01_T69_1192_E4_X_EC_0',
+        'SD_01_T69_1192_E4_X_EC_90',
+        'SD_01_T69_1192_E4_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '60534411',
+      productId: 'P60533510',
+      title: 'Floral Midi Waisted Dress',
+      url: 'floral-midi-waisted-dress/p/clp60533510?color=MULTI&image=SD_01_T69_1192_ZZ_X_EC_90',
+      price: '£45.00',
+      brand: 'M&S Collection',
+      isInStock: true,
+      imageUrl: [
+        'SD_01_T69_1192_ZZ_X_EC_0',
+        'SD_01_T69_1192_ZZ_X_EC_0',
+        'SD_01_T69_1192_ZZ_X_EC_90',
+        'SD_01_T69_1192_ZZ_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '60530380',
+      productId: 'P60530380',
+      title: 'Satin Midi Tea Dress',
+      url: 'satin-midi-tea-dress/p/clp60530380?color=OLIVE&image=SD_01_T69_6085_JR_X_EC_90',
+      price: '£79.00',
+      brand: 'M&S X GHOST',
+      isInStock: true,
+      imageUrl: [
+        'SD_01_T69_6085_JR_X_EC_0',
+        'SD_01_T69_6085_JR_X_EC_0',
+        'SD_01_T69_6085_JR_X_EC_90',
+        'SD_01_T69_6085_JR_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '22532311',
+      productId: '22532311',
+      title: 'Sequin Mini Shift Dress',
+      url: 'sequin-mini-shift-dress/p/clp22532311?color=BLACKMIX&image=SD_10_T83_3103_Y4_X_EC_90',
+      price: '£149.00',
+      brand: 'HOBBS',
+      isInStock: true,
+      imageUrl: [
+        'SD_10_T83_3103_Y4_X_EC_0',
+        'SD_10_T83_3103_Y4_X_EC_0',
+        'SD_10_T83_3103_Y4_X_EC_90',
+        'SD_10_T83_3103_Y4_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '22532683',
+      productId: 'P22532683',
+      title: 'Ditsy Floral Shirt Dress',
+      url: 'ditsy-floral-shirt-dress/p/clp22532683?color=GREYMIX&image=SD_10_T83_8880_T4_X_EC_90',
+      price: '£59.00',
+      brand: 'White Stuff',
+      isInStock: true,
+      imageUrl: [
+        'SD_10_T83_8880_T4_X_EC_0',
+        'SD_10_T83_8880_T4_X_EC_0',
+        'SD_10_T83_8880_T4_X_EC_90',
+        'SD_10_T83_8880_T4_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+    {
+      id: '22531286',
+      productId: '22531286',
+      title: 'Floral Midi Waisted Dress',
+      url: 'cotton-floral-midi-waisted-dress/p/clp22531286?color=NAVYMIX&image=SD_10_T83_6647_F4_X_EC_90',
+      price: '£55.00',
+      brand: 'White Stuff',
+      isInStock: true,
+      imageUrl: [
+        'SD_10_T83_6647_F4_X_EC_0',
+        'SD_10_T83_6647_F4_X_EC_0',
+        'SD_10_T83_6647_F4_X_EC_90',
+        'SD_10_T83_6647_F4_X_EC_90',
+      ],
+      metadata: {
+        isPinned: false,
+        isBoosted: false,
+        isBuried: false,
+        isBlocked: false,
+      },
+    },
+  ],
+  pagination: { totalItems: 130 },
+};
+
+export const mockCategoryNumericAttributes: AttributesResponse = {
+  attributes: [
+    {
+      name: 'predictions.salesIn1Day.normalisedValue',
+      type: 'numeric',
+    },
+    {
+      name: 'newInFreshNess',
+      type: 'numeric',
+    },
+  ],
+};
+
+export const mockCategoryAlphanumericAttributes: AttributesResponse = {
+  attributes: [
+    {
+      name: 'offerFlag',
+      type: 'alphanumeric',
+      values: [
+        {
+          value: '0',
+        },
+        {
+          value: '1',
+        },
+      ],
+    },
+    {
+      name: 'fit',
+      type: 'alphanumeric',
+      values: [
+        {
+          value: 'Regular fit',
+        },
+        {
+          value: 'Relaxed fit',
+        },
+        {
+          value: 'Fitted',
+        },
+        {
+          value: 'Straight leg',
+        },
+      ],
+    },
+  ],
 };

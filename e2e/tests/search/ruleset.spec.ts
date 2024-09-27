@@ -2,9 +2,14 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import { expect, test } from '@playwright/test';
 
-import { mockPreview, mockRuleSet, mockRulesetsList } from './search.mocks';
-
-test.describe.configure({ mode: 'serial' });
+import {
+  mockCategoryAlphanumericAttributes,
+  mockCategoryNumericAttributes,
+  mockPreview,
+  mockProducts,
+  mockRuleSet,
+  mockRulesetsList,
+} from './search.mocks';
 
 test.describe('Keyword search', () => {
   test.beforeEach(async ({ page }) => {
@@ -26,6 +31,27 @@ test.describe('Keyword search', () => {
       '*/**/api/search/beta/merchandising/keyword/ruleset/2b948868-cbe2-4d21-8b8a-0fd713516add*',
       async (route) => {
         const json = mockRuleSet;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      '*/**/api/search/beta/merchandising/product*',
+      async (route) => {
+        const json = mockProducts;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      '*/**/api/search/beta/merchandising/attributes?searchTerms=joggers&type=numeric',
+      async (route) => {
+        const json = mockCategoryNumericAttributes;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      '*/**/api/search/beta/merchandising/attributes?searchTerms=joggers&type=alphanumeric',
+      async (route) => {
+        const json = mockCategoryAlphanumericAttributes;
         await route.fulfill({ status: 200, json });
       }
     );
@@ -105,5 +131,310 @@ test.describe('Keyword search', () => {
     await expect(
       page.getByText('Do you want to delete this rule')
     ).not.toBeVisible();
+  });
+
+  test('pin/block/bury/boost from visual editor', async ({ page }) => {
+    await page.goto(
+      '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
+    );
+
+    await page.waitForLoadState('networkidle');
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
+
+    await page
+      .getByLabel('Position 1', { exact: true })
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Boost to Top' }).click();
+
+    await page
+      .getByLabel('Position 2')
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Bury to Bottom' }).click();
+
+    await page
+      .getByLabel('Position 3')
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Pin in position' }).click();
+
+    await page.getByPlaceholder('i.e. 3').fill('1');
+    await page
+      .getByLabel('Position 3')
+      .getByRole('button', { name: 'Confirm' })
+      .click();
+
+    await page
+      .getByLabel('Position 4')
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Block Product' }).click();
+
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByRole('button', { name: 'Changes6' })).toBeVisible();
+  });
+
+  test('pin/block/bury/boost from search', async ({ page }) => {
+    await page.goto(
+      '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
+    );
+
+    await page.waitForLoadState('networkidle');
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
+
+    await page.getByPlaceholder('Search for product').fill('dress');
+    await page.waitForTimeout(400);
+    await page.waitForLoadState('networkidle');
+
+    await page
+      .getByLabel('Position 2', { exact: true })
+      .first()
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Boost to Top' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await page
+      .getByLabel('Position 3')
+      .first()
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Bury to Bottom' }).click();
+
+    await page
+      .getByLabel('Position 4')
+      .first()
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Pin in position' }).click();
+
+    await page.getByPlaceholder('i.e. 3').fill('1');
+    await page
+      .getByLabel('Position 4')
+      .first()
+      .getByRole('button', { name: 'Confirm' })
+      .click();
+
+    await page
+      .getByLabel('Position 5')
+      .first()
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Block Product' }).click();
+
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByRole('button', { name: 'Changes6' })).toBeVisible();
+  });
+
+  test('boost numeric attribute', async ({ page }) => {
+    await page.goto(
+      '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
+    );
+
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Attribute' }).click();
+
+    await page
+      .getByRole('button', { name: 'Create new attribute rule' })
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('button', { name: 'Numeric Attributes' }).click();
+
+    await page.getByLabel('newInFreshNess').first().click();
+
+    await page.getByRole('button', { name: 'Done' }).click();
+
+    await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
+  });
+
+  test('bury numeric attribute', async ({ page }) => {
+    await page.goto(
+      '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
+    );
+
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Attribute' }).click();
+
+    await page
+      .getByRole('button', { name: 'Create new attribute rule' })
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('button', { name: 'Numeric Attributes' }).click();
+
+    await page.getByRole('button', { name: 'Boost' }).first().click();
+
+    await page.getByRole('button', { name: 'Bury' }).click();
+
+    await page
+      .getByLabel('predictions.salesIn1Day.normalisedValue')
+      .first()
+      .click();
+
+    await page.getByRole('button', { name: 'Done' }).click();
+
+    await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
+  });
+
+  test('boost alphanumeric attribute', async ({ page }) => {
+    await page.goto(
+      '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
+    );
+
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Attribute' }).click();
+
+    await page
+      .getByRole('button', { name: 'Create new attribute rule' })
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page
+      .getByRole('button', { name: 'Product description attributes' })
+      .click();
+
+    await page.getByRole('button', { name: 'fit' }).first().click();
+
+    await page.getByLabel('Regular fit').first().click();
+
+    await page.getByRole('button', { name: 'Done' }).click();
+
+    await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
+  });
+
+  test('bury alphanumeric attribute', async ({ page }) => {
+    await page.goto(
+      '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
+    );
+
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Attribute' }).click();
+
+    await page
+      .getByRole('button', { name: 'Create new attribute rule' })
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page
+      .getByRole('button', { name: 'Product description attributes' })
+      .click();
+
+    await page.getByRole('button', { name: 'Boost' }).nth(1).click();
+
+    await page.getByRole('button', { name: 'Bury' }).click();
+
+    await page.getByRole('button', { name: 'fit' }).first().click();
+
+    await page.getByLabel('Regular fit').first().click();
+
+    await page.getByRole('button', { name: 'Done' }).click();
+
+    await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
+  });
+
+  test('include alphanumeric attribute', async ({ page }) => {
+    await page.goto(
+      '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
+    );
+
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Attribute' }).click();
+
+    await page
+      .getByRole('button', { name: 'Create new attribute rule' })
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page
+      .getByRole('button', { name: 'Product description attributes' })
+      .click();
+
+    await page.getByRole('button', { name: 'Boost' }).nth(1).click();
+
+    await page.getByRole('button', { name: 'Include only' }).click();
+
+    await page.getByRole('button', { name: 'fit' }).first().click();
+
+    await page.getByLabel('Regular fit').first().click();
+
+    await page.getByRole('button', { name: 'Done' }).click();
+
+    await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
+  });
+
+  test('exclude alphanumeric attribute', async ({ page }) => {
+    await page.goto(
+      '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
+    );
+
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Attribute' }).click();
+
+    await page
+      .getByRole('button', { name: 'Create new attribute rule' })
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page
+      .getByRole('button', { name: 'Product description attributes' })
+      .click();
+
+    await page.getByRole('button', { name: 'Boost' }).nth(1).click();
+
+    await page.getByRole('button', { name: 'Exclude only' }).click();
+
+    await page.getByRole('button', { name: 'fit' }).first().click();
+
+    await page.getByLabel('Regular fit').first().click();
+
+    await page.getByRole('button', { name: 'Done' }).click();
+
+    await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
   });
 });

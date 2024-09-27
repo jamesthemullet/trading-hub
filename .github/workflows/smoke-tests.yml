@@ -1,6 +1,7 @@
 name: Smoke tests
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 9-18 * * 1-5' # Mon-Fri 9-6 https://crontab.guru/#0_9-18_*_*_1-5
 
