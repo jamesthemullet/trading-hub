@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 
 import { useSearchRuleSetPreview } from '@/libs/hooks/search/ruleset/use-search-ruleset-preview';
 import { useSearchRuleSetUpdate } from '@/libs/hooks/search/ruleset/use-search-ruleset-update';
+import { usePreview } from '@/libs/hooks/use-preview';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { mockUseSearchRuleSetPreviewData } from '@/test/data/mock-use-search-ruleset-preview';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -17,10 +18,20 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-preview', () => ({
+  ...jest.requireActual(
+    '@/libs/hooks/search/ruleset/use-search-ruleset-preview'
+  ),
   useSearchRuleSetPreview: jest.fn(),
 }));
 jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-update', () => ({
+  ...jest.requireActual(
+    '@/libs/hooks/search/ruleset/use-search-ruleset-update'
+  ),
   useSearchRuleSetUpdate: jest.fn(),
+}));
+jest.mock('@/libs/hooks/use-preview', () => ({
+  ...jest.requireActual('@/libs/hooks/use-preview'),
+  usePreview: jest.fn(),
 }));
 
 describe('Search ranking rules', () => {
@@ -64,6 +75,48 @@ describe('Search ranking rules', () => {
   };
 
   beforeAll(() => {
+    jest.mocked(usePreview).mockReturnValue({
+      data: {
+        products: [],
+        facets: [],
+        category: '123',
+        ruleSet: {
+          facets: [],
+          rules: {
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          },
+        },
+        externalChanges: {
+          pinnedProducts: [],
+          boosts: {
+            alphanumeric: [],
+            numeric: [],
+            product: [],
+          },
+          buries: {
+            alphanumeric: [],
+            numeric: [],
+            product: [],
+          },
+        },
+        pagination: {
+          totalItems: 1,
+        },
+      },
+      error: '',
+      isLoading: false,
+      setRules: jest.fn(),
+      setFacetConfigRules: jest.fn(),
+    });
     jest
       .mocked(useSearchRuleSetUpdate)
       .mockImplementation(() => mockUpdateRuleSet);

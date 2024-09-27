@@ -74,7 +74,7 @@ describe('useFacetsList', () => {
     const { result } = renderHook(() =>
       useFacetsList({
         categoryId: undefined,
-        returnEmptyListWhenCategoryNotSelected: true,
+        emptyListWhenCategoryNotSelected: true,
       })
     );
 

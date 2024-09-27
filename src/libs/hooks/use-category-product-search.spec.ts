@@ -56,13 +56,15 @@ describe('useCategoryProductSearch', () => {
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
-    const data = await result.current.searchForProduct({
-      query: '',
-      rows: 10,
-      start: 0,
-      merchandisingRules: mockMerchandisingRules,
+    await act(async () => {
+      const data = await result.current.searchForProduct({
+        query: '',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+      });
+      expect(data.pagination.totalItems).toEqual(3);
     });
-    expect(data.pagination.totalItems).toEqual(3);
   });
 
   it('searches by categoryId', async () => {
@@ -76,14 +78,16 @@ describe('useCategoryProductSearch', () => {
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
-    const data = await result.current.searchForProduct({
-      categoryId: '1',
-      query: 'Socks',
-      rows: 10,
-      start: 0,
-      merchandisingRules: mockMerchandisingRules,
+    await act(async () => {
+      const data = await result.current.searchForProduct({
+        categoryId: '1',
+        query: 'Socks',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+      });
+      expect(data.pagination.totalItems).toEqual(3);
     });
-    expect(data.pagination.totalItems).toEqual(3);
   });
 
   it('searches by productIds', async () => {
@@ -97,14 +101,16 @@ describe('useCategoryProductSearch', () => {
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
-    const data = await result.current.searchForProduct({
-      productIds: ['1a', '2b'],
-      query: '',
-      rows: 10,
-      start: 0,
-      merchandisingRules: mockMerchandisingRules,
+    await act(async () => {
+      const data = await result.current.searchForProduct({
+        productIds: ['1a', '2b'],
+        query: '',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+      });
+      expect(data.pagination.totalItems).toEqual(3);
     });
-    expect(data.pagination.totalItems).toEqual(3);
   });
 
   it('should render the hook with error', async () => {

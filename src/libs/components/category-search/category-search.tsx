@@ -120,7 +120,7 @@ export const CategorySearch = ({
         <Container>
           {categoryResults.categories.map((category) => (
             <Row
-              key={`row-${category.identifier}`}
+              key={`row-${category.identifier}-${category.name}-${category.path}`}
               onClick={() => onSelectCategory(category)}
               aria-label={`Select category ${category.identifier}`}
             >

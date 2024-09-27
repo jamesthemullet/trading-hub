@@ -1,3 +1,4 @@
+import { act } from 'react-dom/test-utils';
 import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
@@ -172,7 +173,9 @@ describe('useRuleSetDetail', () => {
       status: { status: 200 },
     });
 
-    result.current.refreshRuleset();
+    act(() => {
+      result.current.refreshRuleset();
+    });
 
     await waitFor(() => {
       expect(result.current.ruleSetDetail).toEqual(mockRuleData);

@@ -42,7 +42,7 @@ const Page = ({ id }: { id: string }) => {
   const { facets, error: getFacetListError } = useFacetsList({
     categoryId: userSelectedCategory?.identifier,
     enabled: !isLoading,
-    returnEmptyListWhenCategoryNotSelected: true,
+    emptyListWhenCategoryNotSelected: true,
   });
 
   const [facetList, setFacetList] = useState<ReturnedFacet[]>([]);
@@ -179,7 +179,7 @@ const Page = ({ id }: { id: string }) => {
     switch (value) {
       case 'included':
         setOrderedFacetList([
-          ...currentlyIncludedFacets,
+          ...currentlyIncludedFacets.filter((facet) => facet !== facetToChange),
           facetToChange,
           ...restOfFacets,
           ...currentlyExcludedFacets.filter((facet) => facet !== facetToChange),

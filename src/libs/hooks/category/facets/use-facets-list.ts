@@ -7,12 +7,11 @@ import { validateErrorResponse } from '../../utils/error';
 export const useFacetsList = ({
   categoryId,
   enabled = true,
-  returnEmptyListWhenCategoryNotSelected:
-    emptyListWhenCategoryNotSelected = false,
+  emptyListWhenCategoryNotSelected = false,
 }: {
   categoryId: string | undefined;
   enabled?: boolean;
-  returnEmptyListWhenCategoryNotSelected?: boolean;
+  emptyListWhenCategoryNotSelected?: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [facetsList, setFacetsList] = useState<FacetsList>({
@@ -44,7 +43,7 @@ export const useFacetsList = ({
         void asyncCall();
       }
     }
-  }, [categoryId, enabled]);
+  }, [categoryId, enabled, emptyListWhenCategoryNotSelected]);
 
   return {
     facets: facetsList.facets,
