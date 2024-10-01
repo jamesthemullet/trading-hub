@@ -1,5 +1,6 @@
 import {
   AttributesResponse,
+  AttributeValuesResponse,
   FacetsList,
   ProductSearchResponse,
   ReturnedGlobalFacet,
@@ -75,7 +76,7 @@ export const mockGlobalFacet: FacetsList = {
           displayValue: 'Name your mergey',
           mergedValues: ['6+ years', 'All ages'],
         },
-        { displayValue: '0-2 yearssss', mergedValues: ['0-2 years'] },
+        { displayValue: '0-2 Years', mergedValues: ['0-2 years'] },
       ],
     },
     {
@@ -90,7 +91,7 @@ export const mockGlobalFacet: FacetsList = {
     {
       id: '29102aa3-54d4-11ef-af66-000000000000',
       indexPropertyName: 'drinkStyle',
-      displayValue: 'Alcohol Type Graham Test Facet',
+      displayValue: 'Alcohol Type',
       lastChanged: { date: '2024-09-10T11:33:29Z', user: 'James Winfield' },
       excludedValues: ['Mixed Gin Case'],
       boosted: [],
@@ -584,4 +585,30 @@ export const mockCategoryAlphanumericAttributes: AttributesResponse = {
       ],
     },
   ],
+};
+
+export const mockAttributeValues: AttributeValuesResponse = {
+  values: [
+    {
+      displayValue: 'All ages',
+    },
+    {
+      displayValue: '3+ years',
+    },
+    {
+      displayValue: '6+ years',
+    },
+    {
+      displayValue: '0-2 years',
+    },
+    {
+      displayValue: '3-5 years',
+    },
+    {
+      displayValue: 'Not suitable under 36 mth',
+    },
+  ],
+  pagination: {
+    totalItems: 6,
+  },
 };
