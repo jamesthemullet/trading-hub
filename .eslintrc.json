@@ -9,7 +9,6 @@
   "extends": [
     "next",
     "prettier",
-    "plugin:eslint-comments/recommended",
     "plugin:jest/recommended",
     "eslint:recommended",
     "plugin:functional/recommended",
