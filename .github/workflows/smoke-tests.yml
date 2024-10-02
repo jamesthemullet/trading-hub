@@ -3,7 +3,7 @@ name: Smoke tests
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 9-18 * * 1-5' # Mon-Fri 9-6 https://crontab.guru/#0_9-18_*_*_1-5
+    - cron: '*/15 7-20 * * 1-5' # Every 15 minutes Mon-Fri 7-8pm GMT https://crontab.guru/#*/15_7-20_*_*_1-5
 
 env:
   GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}

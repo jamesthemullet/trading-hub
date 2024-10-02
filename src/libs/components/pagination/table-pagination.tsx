@@ -59,7 +59,9 @@ export const TablePagination = ({
 
   return (
     <NavigationContainer>
-      <TotalResultsLabel>{pagination.totalItems} results</TotalResultsLabel>
+      <TotalResultsLabel aria-label="results count">
+        {pagination.totalItems} results
+      </TotalResultsLabel>
       <Pagination
         current={currentPage}
         total={Math.max(

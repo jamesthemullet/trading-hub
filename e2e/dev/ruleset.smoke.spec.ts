@@ -156,13 +156,19 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByText('1 results', { exact: true })).toBeVisible();
+    await page.waitForTimeout(2000);
+    await expect(
+      page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()
+    ).toBeVisible();
 
+    const currentCount =
+      (await page.getByLabel('results count').textContent()) || '';
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByLabel('Delete rule').click();
 
-    await expect(page.getByText('0 results', { exact: true })).toBeVisible();
+    await expect(
+      page.getByText(`${parseInt(currentCount) - 1} results`, { exact: true })
+    ).toBeVisible();
   });
 });
