@@ -11,7 +11,6 @@ const DisplayName = styled.div`
   display: flex;
   align-items: center;
   width: max-content;
-  flex-wrap: wrap;
 `;
 
 const EditConfirmationButtons = styled.div`
@@ -30,7 +29,7 @@ const EditButton = styled(Button)`
   background: none;
   width: 20px;
   display: flex;
-  margin-left: ${spacing(3)};
+  margin-left: ${spacing(1)};
   height: 100%;
   align-items: center;
 
