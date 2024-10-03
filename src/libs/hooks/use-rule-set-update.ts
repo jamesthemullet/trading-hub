@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import type { ExcludedFacets, RuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { validateErrorResponse } from './utils/error';
+import { handleError } from './utils/error';
 
 export const useUpdateRuleSet = () => {
   const [error, setError] = useState('');
@@ -39,7 +39,7 @@ export const useUpdateRuleSet = () => {
         return { status: 'success' };
       } catch (error) {
         setIsSaving(false);
-        setError(validateErrorResponse(error));
+        setError(handleError(error));
         return { status: 'error' };
       }
     },

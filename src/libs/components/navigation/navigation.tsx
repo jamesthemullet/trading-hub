@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
@@ -50,7 +51,7 @@ const ListItem = styled.li`
   }
 `;
 
-const Link = styled.a<{ isOpen?: boolean }>`
+const StyledLink = styled.a<{ isOpen?: boolean }>`
   text-decoration: none;
   font-size: 12px;
   color: #fff;
@@ -77,6 +78,7 @@ const SubLink = styled(Link)`
   width: 100%;
   justify-items: left;
   display: inline-block;
+  text-decoration: none;
 
   &:hover,
   &:focus {
@@ -133,7 +135,7 @@ export const Navigation = () => {
       <Logo src="/trading-hub/asset/logo-no-date.svg" alt="M&S" />
       <List>
         <ListItem>
-          <Link
+          <StyledLink
             as="button"
             title="Category Ranking Rules"
             aria-label="Category Ranking Rules"
@@ -147,18 +149,28 @@ export const Navigation = () => {
             ) : (
               <Icon src="/trading-hub/asset/menu-category-ranking-v2.svg" />
             )}
-          </Link>
+          </StyledLink>
           <SubMenu isVisible={!!openMenu && openMenu === 1}>
             <Header3>Category Ranking</Header3>
-            <SubLink href="/category/rulesets">
+            <SubLink
+              href="/category/rulesets"
+              onClick={() => {
+                setOpenMenu(0);
+              }}
+            >
               <Text>Ranking rules</Text>
             </SubLink>
-            <SubLink href="/category/facets">
+            <SubLink
+              href="/category/facets"
+              onClick={() => {
+                setOpenMenu(0);
+              }}
+            >
               <Text>Facets</Text>
             </SubLink>
           </SubMenu>
 
-          <Link
+          <StyledLink
             as="button"
             title="Search Ranking Rules"
             aria-label="Search Ranking Rules"
@@ -172,18 +184,28 @@ export const Navigation = () => {
             ) : (
               <Icon src="/trading-hub/asset/menu-search-v2.svg" />
             )}
-          </Link>
+          </StyledLink>
           <SubMenu isVisible={!!openMenu && openMenu === 2}>
             <Header3>Search optimisation</Header3>
-            <SubLink href="/search/rulesets">
+            <SubLink
+              href="/search/rulesets"
+              onClick={() => {
+                setOpenMenu(0);
+              }}
+            >
               <Text>Ranking rules</Text>
             </SubLink>
-            <SubLink href="/search/redirects">
+            <SubLink
+              href="/search/redirects"
+              onClick={() => {
+                setOpenMenu(0);
+              }}
+            >
               <Text>Redirect</Text>
             </SubLink>
           </SubMenu>
 
-          <Link
+          <StyledLink
             as="button"
             title="Setup"
             aria-label="Setup"
@@ -197,13 +219,23 @@ export const Navigation = () => {
             ) : (
               <Icon src="/trading-hub/asset/menu-setup-v2.svg" />
             )}
-          </Link>
+          </StyledLink>
           <SubMenu isVisible={!!openMenu && openMenu === 3}>
             <Header3>Setup Global</Header3>
-            <SubLink href="/global/rulesets">
+            <SubLink
+              href="/global/rulesets"
+              onClick={() => {
+                setOpenMenu(0);
+              }}
+            >
               <Text>Global Category Ranking</Text>
             </SubLink>
-            <SubLink href="/global/facets">
+            <SubLink
+              href="/global/facets"
+              onClick={() => {
+                setOpenMenu(0);
+              }}
+            >
               <Text>Global Facet Management</Text>
             </SubLink>
           </SubMenu>

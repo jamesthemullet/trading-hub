@@ -1,7 +1,17 @@
 import { css, Global } from '@emotion/react';
 import { ColorSchemeScript } from '@mantine/core';
 
-import { Head, Html, Main, NextScript } from 'next/document';
+import { logger } from '@/libs/components/logger/logger';
+
+import newrelic from 'newrelic';
+import Document, {
+  DocumentContext,
+  DocumentInitialProps,
+  Head,
+  Html,
+  Main,
+  NextScript,
+} from 'next/document';
 
 import { fonts } from '../libs/components';
 import { color } from '../libs/components/utils/constants';
@@ -49,6 +59,7 @@ const fontStyles = css`
   }
 `;
 
+// istanbul ignore next
 const resetStyles = () => css`
   html {
     box-sizing: border-box;
@@ -111,22 +122,73 @@ const resetStyles = () => css`
   }
 `;
 
-export default function Document() {
-  return (
-    <Html lang="en">
-      <Head>
-        <ColorSchemeScript defaultColorScheme="light" />
-      </Head>
-      <Global
-        styles={css`
-          ${resetStyles()}
-          ${fontStyles}
-        `}
-      />
-      <body>
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  );
+type MerchHubInitialProps = DocumentInitialProps & {
+  browserTimingHeader: string;
+};
+
+const checkNewRelicConnection = async () => {
+  if (
+    process.env.NEW_RELIC_APP_NAME &&
+    process.env.NEW_RELIC_LICENSE_KEY &&
+    newrelic.agent.collector.isConnected() === false
+  ) {
+    return new Promise((resolve) => {
+      newrelic.agent.on('connected', resolve);
+    });
+  } else {
+    logger.warn('missing new relic env vars');
+  }
+};
+
+// eslint-disable-next-line functional/no-classes
+class RootDocument extends Document<MerchHubInitialProps> {
+  static async getInitialProps(
+    ctx: DocumentContext
+  ): Promise<MerchHubInitialProps> {
+    const initialProps = await Document.getInitialProps(ctx);
+
+    await checkNewRelicConnection();
+    const browserTimingHeader = newrelic.getBrowserTimingHeader({
+      hasToRemoveScriptWrapper: true,
+      allowTransactionlessInjection: true,
+    });
+
+    logger.info('Trading Hub Loaded', {
+      application: 'Trading Hub',
+      test: 'Testing logging with Winston',
+      pathname: ctx.pathname,
+    });
+
+    return {
+      ...initialProps,
+      browserTimingHeader,
+    };
+  }
+
+  // istanbul ignore next
+  render() {
+    return (
+      <Html lang="en">
+        <Head>
+          <script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{ __html: this.props.browserTimingHeader }}
+          />
+          <ColorSchemeScript defaultColorScheme="light" />
+        </Head>
+        <Global
+          styles={css`
+            ${resetStyles()}
+            ${fontStyles}
+          `}
+        />
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
 }
+
+export default RootDocument;

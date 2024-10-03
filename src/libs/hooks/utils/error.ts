@@ -1,8 +1,30 @@
 import { ErrorResponse } from '@/libs/api';
 
-export const validateErrorResponse = (err: unknown) => {
+const sendErrorToNewRelic = (err: unknown) => {
+  if (window && window.newrelic) {
+    if (err instanceof Error || typeof err === 'string') {
+      window.newrelic.noticeError(err, {
+        application: 'Trading Hub',
+        pathname: window.location.pathname,
+      });
+    } else {
+      const errorString = JSON.stringify(err);
+      window.newrelic.noticeError(errorString, {
+        application: 'Trading Hub',
+        pathname: window.location.pathname,
+      });
+    }
+  }
+};
+
+const validateErrorResponse = (err: unknown) => {
   if (err && typeof err === 'object' && 'error' in err) {
     return `Error ${(err.error as ErrorResponse)?.message} ${(err.error as ErrorResponse)?.status}`;
   }
   return 'Unknown error';
+};
+
+export const handleError = (err: unknown) => {
+  sendErrorToNewRelic(err);
+  return validateErrorResponse(err);
 };

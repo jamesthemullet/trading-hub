@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ReturnedCategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { validateErrorResponse } from '../../utils/error';
+import { handleError } from '../../utils/error';
 
 export const useRuleSetDetail = (id: string) => {
   const [shouldRefetch, refetch] = useState({});
@@ -53,7 +53,7 @@ export const useRuleSetDetail = (id: string) => {
         setRuleSetDetail(data);
         setError('');
       } catch (error) {
-        setError(validateErrorResponse(error));
+        setError(handleError(error));
         setIsLoading(false);
         return;
       }

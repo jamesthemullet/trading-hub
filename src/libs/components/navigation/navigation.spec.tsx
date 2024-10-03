@@ -53,6 +53,44 @@ describe('Navigation', () => {
     expect(screen.getByText('Category Ranking')).not.toBeVisible();
   });
 
+  it.each([
+    ['Category Ranking Rules', ['Ranking rules', 'Facets'], 'Category Ranking'],
+    [
+      'Search Ranking Rules',
+      ['Ranking rules', 'Redirect'],
+      'Search optimisation',
+    ],
+    [
+      'Setup',
+      ['Global Category Ranking', 'Global Facet Management'],
+      'Setup Global',
+    ],
+  ])(
+    'should close the submenu on navigation via sublink',
+    (menuItemName, subLinkNames, hiddenText) => {
+      render(<Navigation />);
+      const menuItem = screen.getByRole('button', { name: menuItemName });
+
+      act(() => {
+        menuItem.click();
+      });
+
+      subLinkNames.forEach((subLinkName) => {
+        const subLink = screen.getByRole('link', { name: subLinkName });
+
+        act(() => {
+          subLink.click();
+        });
+
+        expect(screen.getByText(hiddenText)).not.toBeVisible();
+
+        act(() => {
+          menuItem.click();
+        });
+      });
+    }
+  );
+
   it('should open and close search sub menu', () => {
     render(<Navigation />);
 

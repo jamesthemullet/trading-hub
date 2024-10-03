@@ -56,6 +56,9 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
@@ -233,6 +236,8 @@ jobs:
       AZURE_AD_TENANT_ID: ${{ secrets._AZURE_AD_TENANT_ID }}
       AZURE_AD_CLIENT_SECRET: ${{ secrets._AZURE_AD_CLIENT_SECRET }}
       NEXT_PUBLIC_AUTO_LOGIN: false
+      NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
+      NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

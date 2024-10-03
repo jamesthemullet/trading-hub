@@ -32,6 +32,8 @@ jobs:
       AZURE_AD_TENANT_ID: ${{ secrets._AZURE_AD_TENANT_ID }}
       AZURE_AD_CLIENT_SECRET: ${{ secrets._AZURE_AD_CLIENT_SECRET }}
       NEXT_PUBLIC_AUTO_LOGIN: false
+      NEW_RELIC_LICENSE_KEY: ${{ secrets._NEW_RELIC_LICENSE_KEY }}
+      NEW_RELIC_APP_NAME: ${{ secrets._NEW_RELIC_APP_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

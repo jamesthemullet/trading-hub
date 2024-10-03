@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ReturnedGlobalRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { validateErrorResponse } from '../../utils/error';
+import { handleError } from '../../utils/error';
 
 export const useGlobalRuleSetDetail = (id: string) => {
   const api = useMemo(() => search(), []);
@@ -45,7 +45,7 @@ export const useGlobalRuleSetDetail = (id: string) => {
         setGlobalRuleSet(data);
         setError('');
       } catch (error) {
-        setError(validateErrorResponse(error));
+        setError(handleError(error));
       }
       setIsLoading(false);
     };

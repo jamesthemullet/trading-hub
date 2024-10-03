@@ -4,7 +4,8 @@
     "src/pages/status.page.tsx",
     "src/pages/sandbox/**",
     "/src/pages/api/auth/next-auth.d.ts",
-    "/src/libs/api/generated/open-api.ts"
+    "/src/libs/api/generated/open-api.ts",
+    "/newrelic.js"
   ],
   "extends": [
     "next",

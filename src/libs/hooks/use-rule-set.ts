@@ -7,7 +7,7 @@ import type {
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { validateErrorResponse } from './utils/error';
+import { handleError } from './utils/error';
 
 export const useRuleSet = (
   searchQuery: string,
@@ -51,7 +51,7 @@ export const useRuleSet = (
         setPagination(result.data.pagination);
       } catch (error) {
         // istanbul ignore next
-        setError(validateErrorResponse(error));
+        setError(handleError(error));
       } finally {
         setIsLoading(false);
       }

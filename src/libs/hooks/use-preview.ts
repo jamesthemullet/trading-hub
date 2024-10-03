@@ -8,7 +8,7 @@ import type {
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { validateErrorResponse } from './utils/error';
+import { handleError } from './utils/error';
 
 export const usePreview = ({
   categoryId,
@@ -101,7 +101,7 @@ export const usePreview = ({
         setIsLoading(false);
       } catch (error: unknown) {
         if (error) {
-          setError(validateErrorResponse(error));
+          setError(handleError(error));
           setIsLoading(false);
         }
       }

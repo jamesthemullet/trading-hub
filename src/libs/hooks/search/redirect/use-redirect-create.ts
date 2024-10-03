@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import type { KeywordRedirect } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { validateErrorResponse } from '../../utils/error';
+import { handleError } from '../../utils/error';
 
 export const useRedirectCreate = () => {
   const [error, setError] = useState('');
@@ -21,7 +21,7 @@ export const useRedirectCreate = () => {
         return response.data;
       } catch (error: unknown) {
         if (error) {
-          setError(validateErrorResponse(error));
+          setError(handleError(error));
           setIsSaving(false);
         }
       }

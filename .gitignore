@@ -63,3 +63,6 @@ src/libs/api/api.yml
 /blob-report/
 /playwright/.cache/
 .swc/
+
+# New Relic
+newrelic_agent.log

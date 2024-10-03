@@ -29,6 +29,12 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "next-auth.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "next-auth.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "newrelic.js"
+  ],
   "exclude": ["node_modules", "playwright-report"]
 }

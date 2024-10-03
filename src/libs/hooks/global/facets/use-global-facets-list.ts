@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { FacetsList, search } from '@/libs/api';
 
-import { validateErrorResponse } from '../../utils/error';
+import { handleError } from '../../utils/error';
 
 export const useGlobalFacetsList = () => {
   const [shouldRefetch, refetch] = useState({});
@@ -21,7 +21,7 @@ export const useGlobalFacetsList = () => {
 
         setFacetsList(facetList);
       } catch {
-        setError(validateErrorResponse(error));
+        setError(handleError(error));
       } finally {
         setIsLoading(false);
       }

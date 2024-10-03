@@ -1,8 +1,91 @@
-import Document from './_document.page';
+import { logger } from '@/libs/components/logger/logger';
 
-/* eslint jest/expect-expect: "off" */
-describe('<Document />', () => {
-  it('should render without errors', async () => {
-    Document();
+import newrelic from 'newrelic';
+
+import RootDocument from './_document.page';
+
+jest.mock('newrelic', () => ({
+  agent: {
+    collector: {
+      isConnected: jest.fn().mockReturnValue(false),
+    },
+    on: jest.fn((_, callback) => callback()),
+  },
+  getBrowserTimingHeader: jest.fn().mockReturnValue('newRelicHeader'),
+}));
+
+jest.mock('@/libs/components/logger/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
+describe('<RootDocument />', () => {
+  let mockedLogger: { info: jest.Mock; error: jest.Mock; warn: jest.Mock };
+  let mockedNewrelic: jest.Mocked<typeof newrelic>;
+
+  beforeEach(() => {
+    mockedLogger = jest.mocked(logger);
+    mockedNewrelic = jest.mocked(newrelic);
+    jest.clearAllMocks();
+    process.env['NEW_RELIC_APP_NAME'] = 'app-name';
+    process.env['NEW_RELIC_LICENSE_KEY'] = 'license-key';
+  });
+
+  it('should call getInitialProps without errors', async () => {
+    // @ts-expect-error for newrelic
+    mockedNewrelic.agent.on.mockImplementationOnce((_, callback) => callback());
+    const ctx = {
+      renderPage: jest.fn(),
+      pathname: '/test',
+      defaultGetInitialProps: jest.fn().mockResolvedValue({
+        html: '',
+        head: [],
+        styles: [],
+      }),
+    };
+
+    const initialProps = await RootDocument.getInitialProps(ctx as any);
+
+    expect(initialProps).toStrictEqual({
+      html: '',
+      head: [],
+      styles: [],
+      browserTimingHeader: 'newRelicHeader',
+    });
+
+    expect(mockedLogger.info).toHaveBeenCalledWith(
+      'Trading Hub Loaded',
+      expect.objectContaining({
+        application: 'Trading Hub',
+        test: 'Testing logging with Winston',
+        pathname: '/test',
+      })
+    );
+
+    expect(mockedLogger.warn).not.toHaveBeenCalled();
+  });
+
+  it('should handle newrelic secrets not being available', async () => {
+    delete process.env['NEW_RELIC_APP_NAME'];
+    delete process.env['NEW_RELIC_LICENSE_KEY'];
+
+    const ctx = {
+      renderPage: jest.fn(),
+      pathname: '/error-test',
+      defaultGetInitialProps: jest.fn().mockResolvedValue({
+        html: '',
+        head: [],
+        styles: [],
+      }),
+    };
+
+    await RootDocument.getInitialProps(ctx as any);
+
+    expect(mockedLogger.warn).toHaveBeenCalledWith(
+      'missing new relic env vars'
+    );
   });
 });

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { FacetsList, search } from '@/libs/api';
 
-import { validateErrorResponse } from '../../utils/error';
+import { handleError } from '../../utils/error';
 
 export const useFacetsList = ({
   categoryId,
@@ -30,7 +30,7 @@ export const useFacetsList = ({
 
         setFacetsList(facetList);
       } catch (error) {
-        setError(validateErrorResponse(error));
+        setError(handleError(error));
       } finally {
         setIsLoading(false);
       }

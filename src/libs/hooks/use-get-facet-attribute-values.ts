@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import type { AttributeValuesResponse, Pagination } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { validateErrorResponse } from './utils/error';
+import { handleError } from './utils/error';
 
 export const useGetFacetAttributeValues = (
   facetId: string,
@@ -36,7 +36,7 @@ export const useGetFacetAttributeValues = (
         }
         setIsLoading(false);
       } catch (error) {
-        setError(validateErrorResponse(error));
+        setError(handleError(error));
         setIsLoading(false);
       }
     };

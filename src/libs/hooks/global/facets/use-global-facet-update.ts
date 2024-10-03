@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { FacetConfig, search } from '@/libs/api';
 
-import { validateErrorResponse } from '../../utils/error';
+import { handleError } from '../../utils/error';
 
 export const useGlobalFacetUpdate = () => {
   const [error, setError] = useState('');
@@ -16,7 +16,7 @@ export const useGlobalFacetUpdate = () => {
         );
         return response.data;
       } catch (error) {
-        setError(validateErrorResponse(error));
+        setError(handleError(error));
         return { status: 'error' };
       }
     },
