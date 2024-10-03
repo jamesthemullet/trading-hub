@@ -151,7 +151,6 @@ jobs:
   deploy-prod:
     runs-on: ubuntu-latest
     needs: [build, deploy-dev]
-    if: false
     name: Deploy to Azure Web App (production)
     environment:
       name: prodeun
