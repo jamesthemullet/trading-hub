@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -11,8 +10,10 @@ import {
   SectionWrapper,
   TablePagination,
 } from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
-import { spacing } from '@/libs/components/utils/spacing';
+import {
+  NewButton,
+  PageNameLabel,
+} from '@/libs/components/utils/shared.styles';
 import {
   useGlobalRuleSetCreate,
   useGlobalRuleSetDelete,
@@ -22,20 +23,6 @@ import {
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Link from 'next/link';
-
-const PageNameLabel = styled.h2`
-  margin: ${spacing(3)} ${spacing(2)};
-`;
-
-const NewButton = styled.div`
-  margin-left: auto;
-  margin-top: ${spacing(1)};
-  margin-right: ${spacing(2)};
-
-  & a {
-    color: ${color.focusBlue};
-  }
-`;
 
 const FacetManagementPage = () => {
   const pageSizes = [10, 20, 50, 100];

@@ -13,40 +13,17 @@ import {
   TablePagination,
   TablePaginationSkeleton,
 } from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
+import {
+  NewButton,
+  PageNameLabel,
+  PageWrapper,
+  ToolsContainer,
+} from '@/libs/components/utils/shared.styles';
 import { spacing } from '@/libs/components/utils/spacing';
 import { useRuleSet, useRuleSetDelete, useUpdateRuleSet } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Link from 'next/link';
-
-const PageNameLabel = styled.h2`
-  margin: ${spacing(3)} ${spacing(2)};
-`;
-
-const ToolsContainer = styled.div`
-  display: flex;
-  align-items: left;
-
-  margin: ${spacing(2)};
-`;
-
-const PageWrapper = styled.div`
-  box-shadow: #000 0 0 10px -5px;
-  margin: ${spacing(2)};
-  padding-top: ${spacing(1)};
-  border-radius: 4px;
-`;
-
-const NewButton = styled.div`
-  margin-left: auto;
-  margin-top: ${spacing(1)};
-  margin-right: ${spacing(2)};
-
-  & a {
-    color: ${color.focusBlue};
-  }
-`;
 
 const SkeletonButtonWrapper = styled.div`
   margin-left: auto;
@@ -116,7 +93,14 @@ const RuleSets = () => {
     setCategoryRuleSets(updatedRuleSetsList);
   };
 
-  const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
+  const headings = [
+    'Identifier',
+    'Breadcrumb',
+    'Enable',
+    'Last Changed',
+    'User',
+    'Actions',
+  ];
 
   const rows = categoryRuleSets.map(
     ({

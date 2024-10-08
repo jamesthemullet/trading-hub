@@ -1,7 +1,9 @@
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 import { fonts } from '../typography/typography.styles';
 import { color } from './constants';
+import { mediaQuery } from './media-query';
 import { spacing, type SpacingUnit } from './spacing';
 
 export const formDefaultStyles = ({ padding }: { padding: SpacingUnit }) => css`
@@ -74,4 +76,39 @@ export const extraSmallTypographyStyles = ({
 
 export const boxShadow = () => css`
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+`;
+
+export const PageWrapper = styled.div`
+  box-shadow: #000 0 0 10px -5px;
+  margin: ${spacing(2)};
+  padding-top: ${spacing(1)};
+  border-radius: 4px;
+
+  ${mediaQuery('xxl')} {
+    margin: ${spacing(2)} ${spacing(3)};
+  }
+`;
+
+export const PageNameLabel = styled.h2`
+  margin: ${spacing(3)} ${spacing(2)};
+
+  ${mediaQuery('xxl')} {
+    margin: ${spacing(3)};
+  }
+`;
+
+export const ToolsContainer = styled.div`
+  display: flex;
+  align-items: left;
+  margin: ${spacing(2)};
+`;
+
+export const NewButton = styled.div`
+  margin-left: auto;
+  margin-top: ${spacing(1)};
+  margin-right: ${spacing(2)};
+
+  & a {
+    color: ${color.focusBlue};
+  }
 `;

@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { Button } from '../buttons/button/button';
 import { Toggle } from '../toggle/toggle';
 import { Text, Title } from '../typography/typography.styles';
+import { mediaQuery } from '../utils/media-query';
 import { spacing } from '../utils/spacing';
 import {
   TableActions,
@@ -21,9 +22,27 @@ import {
   TableRow,
 } from './table.styles';
 
-export const Row = styled(TableRow)`
+export const Row = styled(TableRow)<{
+  numColumns: number;
+}>`
   grid-template-columns: minmax(140px, 2fr) 90px 120px 150px 130px;
   min-height: 83px;
+
+  ${mediaQuery('xxl')} {
+    ${({ numColumns }) =>
+      `grid-template-columns: ${
+        numColumns === 6 &&
+        'minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;'
+      };`}
+  }
+
+  ${mediaQuery('xxxl')} {
+    ${({ numColumns }) =>
+      `grid-template-columns: ${
+        numColumns === 6 &&
+        'minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;'
+      };`}
+  }
 `;
 
 const Divider = styled.span`
@@ -46,6 +65,30 @@ const Buttons = styled.div`
 export const FirstColumn = styled(TableCol)`
   display: flex;
   flex-direction: column;
+
+  ${mediaQuery('xxl')} {
+    p:not(:first-of-type) {
+      display: none;
+    }
+  }
+`;
+
+const BreadcrumbColumn = styled(TableCol)`
+  display: none;
+
+  ${mediaQuery('xxl')} {
+    display: block;
+  }
+`;
+
+const DynamicTableCol = styled(TableCol)`
+  &[data-heading='Breadcrumb'] {
+    display: none;
+
+    ${mediaQuery('xxl')} {
+      display: block;
+    }
+  }
 `;
 
 const StyledUrlText = styled(Text)`
@@ -99,13 +142,16 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
   return (
     <>
       <TableContainer>
-        <Row style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
+        <Row
+          style={{ color: '#8a8a8a', fontSize: '0.9em' }}
+          numColumns={headings.length}
+        >
           {headings.map((heading) => (
-            <TableCol key={heading}>
+            <DynamicTableCol key={heading} data-heading={heading}>
               <TableHeading as="p" isStrong={true}>
                 {heading}
               </TableHeading>
-            </TableCol>
+            </DynamicTableCol>
           ))}
         </Row>
 
@@ -121,7 +167,7 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
           }: Row) => {
             const isOptionDropdownOpen = optionToggle === id;
             return (
-              <Row key={id}>
+              <Row key={id} numColumns={headings.length}>
                 <FirstColumn>
                   <Text
                     title={identifier}
@@ -134,6 +180,17 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
                     />
                   )}
                 </FirstColumn>
+                {headings.filter((heading) => heading === 'Breadcrumb').length >
+                  0 && (
+                  <BreadcrumbColumn>
+                    {categoryPlpUrl && (
+                      <StyledUrlText
+                        title={categoryPlpUrl}
+                        dangerouslySetInnerHTML={{ __html: categoryPlpUrl }}
+                      />
+                    )}
+                  </BreadcrumbColumn>
+                )}
                 <TableCol>
                   <Toggle
                     checked={isEnabled}

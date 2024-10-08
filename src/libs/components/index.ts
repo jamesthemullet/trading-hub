@@ -12,7 +12,6 @@ export * from './loader/loader';
 export * from './login/login-check';
 export * from './modals';
 export * from './navigation/navigation';
-export * from './page-wrapper/page-wrapper';
 export * from './pagination/pagination';
 export * from './pagination/table-pagination';
 export * from './pagination/table-pagination-skeleton';

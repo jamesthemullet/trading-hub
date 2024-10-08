@@ -33,6 +33,7 @@ const StyledList = styled(List)`
   }
 
   ${mediaQuery('md')} {
+    margin: 0 ${spacing(1)};
     overflow: visible;
     li + li:nth-last-of-type(2)::before {
       margin: 0 ${spacing(1)};

@@ -1,15 +1,13 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { ReturnedKeywordRedirect, ReturnedKeywordRedirects } from '@/libs/api';
+import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
 import {
-  DataTable,
-  Heading,
-  Search,
-  spacing,
-  TablePagination,
-} from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
+  NewButton,
+  PageNameLabel,
+  PageWrapper,
+  ToolsContainer,
+} from '@/libs/components/utils/shared.styles';
 import {
   useRedirectDelete,
   useRedirectUpdate,
@@ -18,34 +16,6 @@ import {
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Link from 'next/link';
-
-const PageNameLabel = styled.h2`
-  margin: ${spacing(3)} ${spacing(2)};
-`;
-
-const PageWrapper = styled.div`
-  box-shadow: #000 0 0 10px -5px;
-  margin: ${spacing(2)};
-  padding-top: ${spacing(1)};
-  border-radius: 4px;
-`;
-
-const ToolsContainer = styled.div`
-  display: flex;
-  align-items: left;
-
-  margin: ${spacing(2)};
-`;
-
-const NewButton = styled.div`
-  margin-left: auto;
-  margin-top: ${spacing(1)};
-  margin-right: ${spacing(2)};
-
-  & a {
-    color: ${color.focusBlue};
-  }
-`;
 
 const RedirectRuleSets = () => {
   const pageSizes = [10, 20, 50, 100];

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { Text } from '../typography/typography.styles';
+import { mediaQuery } from '../utils/media-query';
 import { spacing } from '../utils/spacing';
 
 const BreadcrumbText = styled(Text)`
@@ -17,6 +18,10 @@ const HeadingWrapper = styled.div`
   top: 0;
   width: 100%;
   z-index: 3;
+
+  ${mediaQuery('xxl')} {
+    padding: ${spacing(1)} ${spacing(2)};
+  }
 `;
 
 const HeadingSpacer = styled.div`

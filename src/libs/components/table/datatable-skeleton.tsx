@@ -13,7 +13,10 @@ export const DataTableSkeleton = ({
   return (
     <>
       <TableContainer aria-label="datatable-skeleton">
-        <Row style={{ color: '#8a8a8a', fontSize: '0.9em' }}>
+        <Row
+          style={{ color: '#8a8a8a', fontSize: '0.9em' }}
+          numColumns={headings.length}
+        >
           {headings.map((heading) => (
             <TableCol key={heading}>
               <TableHeading as="p" isStrong={true}>
@@ -25,7 +28,7 @@ export const DataTableSkeleton = ({
 
         {Array.from({ length: rowsCount }).map((_, index) => {
           return (
-            <Row key={`skeleton-row-${index}`}>
+            <Row key={`skeleton-row-${index}`} numColumns={headings.length}>
               <FirstColumn>
                 <Skeleton height={48} width={'100%'} />
               </FirstColumn>
