@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useSearchRuleSetCreate } from '@/libs/hooks';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import RuleSetCreate from './index.page';
 
@@ -25,11 +26,11 @@ const mockRouter = {
 };
 
 describe('Index', () => {
-  afterEach(() => {
+  afterAll(() => {
     jest.resetAllMocks();
   });
 
-  beforeEach(() => {
+  beforeAll(() => {
     jest.mocked(useSearchRuleSetCreate).mockReturnValue({
       createRuleset: jest.fn(),
       error: '',
@@ -89,12 +90,18 @@ describe('Index', () => {
   });
 
   it('cancels new ruleset creation', async () => {
-    render(<RuleSetCreate />);
+    renderWithProviders(<RuleSetCreate />);
 
     const cancel = await screen.findByText('Cancel');
 
     act(() => {
       cancel.click();
+    });
+
+    const confirmCancelButton = await screen.findByText('Close without saving');
+
+    act(() => {
+      confirmCancelButton.click();
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith(`/search/rulesets`);

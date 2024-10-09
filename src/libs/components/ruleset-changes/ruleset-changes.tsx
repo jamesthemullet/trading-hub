@@ -1,18 +1,15 @@
 import styled from '@emotion/styled';
-import { useCallback, useEffect, useState } from 'react';
+import { Dispatch, useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
 import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 
 import { Button } from '../buttons/button/button';
-import {
-  ChangeProductBoostBury,
-  MissingProduct,
-  Product,
-} from '../product/product';
+import { MissingProduct, Product } from '../product/product';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
+import { Action } from '../types';
 import { Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
@@ -41,20 +38,18 @@ type ProductRule = { id: string };
 
 const ProductsLoader = ({
   changeType,
+  dispatch,
   heading,
   isPinnable,
   merchandisingRules,
-  onChangePosition,
-  onProductBoostBury,
   pinnedProductsCount,
   products,
 }: {
-  changeType: 'boosts' | 'buries' | 'pin' | 'block';
+  changeType: 'boost' | 'bury' | 'pin' | 'block';
+  dispatch: Dispatch<Action>;
   heading: string;
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
-  onChangePosition: (arg: ChangePositionTypes) => void;
-  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
   pinnedProductsCount: number;
   products: ProductRule[];
 }) => {
@@ -132,13 +127,12 @@ const ProductsLoader = ({
                   <MissingProduct
                     index={index}
                     id={id}
-                    onChangePosition={onChangePosition}
-                    onProductBoostBury={onProductBoostBury}
+                    dispatch={dispatch}
                     isProductNumberEnabled={true}
                     isBlocked={changeType === 'block'}
-                    isBuried={changeType === 'buries'}
+                    isBuried={changeType === 'bury'}
                     isPinned={changeType === 'pin'}
-                    isBoosted={changeType === 'boosts'}
+                    isBoosted={changeType === 'boost'}
                   />
                 )
               ) : (
@@ -147,8 +141,7 @@ const ProductsLoader = ({
                   index={index}
                   isPinnable={isPinnable}
                   pinnedProductsCount={pinnedProductsCount}
-                  onChangePosition={onChangePosition}
-                  onProductBoostBury={onProductBoostBury}
+                  dispatch={dispatch}
                 />
               )}
             </ProductBox>
@@ -175,13 +168,11 @@ const ProductsLoader = ({
 export const RulesetChanges = ({
   isPinnable,
   merchandisingRules,
-  onChangePosition,
-  onProductBoostBury,
+  dispatch,
 }: {
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
-  onChangePosition: (arg: ChangePositionTypes) => void;
-  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
+  dispatch: Dispatch<Action>;
 }) => {
   /* istanbul ignore next */
   const countOfAttributeChanges =
@@ -223,7 +214,7 @@ export const RulesetChanges = ({
                   <NumericAttribute
                     key={`boost-numeric-${index}`}
                     name={field}
-                    operation="boosts"
+                    operation="boost"
                     weight={weight}
                   />
                 );
@@ -236,7 +227,7 @@ export const RulesetChanges = ({
                 <AlphanumericAttribute
                   key={`boost-alphanumeric-${index}`}
                   fields={fields}
-                  operation="boosts"
+                  operation="boost"
                   weight={weight}
                 />
               ))}
@@ -249,7 +240,7 @@ export const RulesetChanges = ({
                   <NumericAttribute
                     key={`bury-numeric-${index}`}
                     name={field}
-                    operation="buries"
+                    operation="bury"
                     weight={weight}
                   />
                 );
@@ -263,7 +254,7 @@ export const RulesetChanges = ({
                   <AlphanumericAttribute
                     key={`bury-alphanumeric-${index}`}
                     fields={fields}
-                    operation="buries"
+                    operation="bury"
                     weight={weight}
                   />
                 );
@@ -277,7 +268,7 @@ export const RulesetChanges = ({
                   <AlphanumericAttribute
                     key={`include-alphanumeric-${index}`}
                     fields={fields}
-                    operation="includes"
+                    operation="include"
                   />
                 );
               })}
@@ -290,7 +281,7 @@ export const RulesetChanges = ({
                   <AlphanumericAttribute
                     key={`exclude-alphanumeric-${index}`}
                     fields={fields}
-                    operation="excludes"
+                    operation="exclude"
                   />
                 );
               })}
@@ -305,8 +296,7 @@ export const RulesetChanges = ({
           isPinnable={isPinnable}
           changeType="block"
           merchandisingRules={merchandisingRules}
-          onChangePosition={onChangePosition}
-          onProductBoostBury={onProductBoostBury}
+          dispatch={dispatch}
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.blockedProducts}
         />
@@ -318,8 +308,7 @@ export const RulesetChanges = ({
           isPinnable={isPinnable}
           changeType="pin"
           merchandisingRules={merchandisingRules}
-          onChangePosition={onChangePosition}
-          onProductBoostBury={onProductBoostBury}
+          dispatch={dispatch}
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.pinnedProducts}
         />
@@ -329,10 +318,9 @@ export const RulesetChanges = ({
         <ProductsLoader
           heading="Boosted Products"
           isPinnable={isPinnable}
-          changeType="boosts"
+          changeType="boost"
           merchandisingRules={merchandisingRules}
-          onChangePosition={onChangePosition}
-          onProductBoostBury={onProductBoostBury}
+          dispatch={dispatch}
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.boosts.product}
         />
@@ -342,10 +330,9 @@ export const RulesetChanges = ({
         <ProductsLoader
           heading="Buried Products"
           isPinnable={isPinnable}
-          changeType="buries"
+          changeType="bury"
           merchandisingRules={merchandisingRules}
-          onChangePosition={onChangePosition}
-          onProductBoostBury={onProductBoostBury}
+          dispatch={dispatch}
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.buries.product}
         />

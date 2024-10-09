@@ -1,17 +1,17 @@
 export const labels = {
-  boosts: {
+  boost: {
     text: 'Boost',
     icon: 'boost-signifier',
   },
-  buries: {
+  bury: {
     text: 'Bury',
     icon: 'bury-signifier',
   },
-  includes: {
+  include: {
     text: 'Include',
     icon: 'icon-include-only',
   },
-  excludes: {
+  exclude: {
     text: 'Exclude',
     icon: 'icon-exclude-only',
   },

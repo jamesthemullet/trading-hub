@@ -183,6 +183,7 @@ export const Preview = ({
 }: Props) => {
   const [withRules, setWithRules] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [rules, setRules] = useState(merchandisingRules);
 
   const emptyRules: MerchandisingRules = {
     pinnedProducts: [],
@@ -197,10 +198,10 @@ export const Preview = ({
     },
   };
 
-  const { data, isLoading, setRules, setFacetConfigRules } = usePreview({
+  const { data, isLoading, setFacetConfigRules } = usePreview({
     ...(categoryId && { categoryId }),
     ...(searchTerm && { searchTerm }),
-    merchandisingRules,
+    merchandisingRules: rules,
     facetConfig,
     excludedFacets,
   });

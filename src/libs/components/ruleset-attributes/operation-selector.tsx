@@ -46,9 +46,9 @@ export const OperationSelector = ({
   setSelectedOperation,
 }: {
   hasIncludeExclude: boolean;
-  selectedOperation: 'boosts' | 'buries' | 'includes' | 'excludes';
+  selectedOperation: 'boost' | 'bury' | 'include' | 'exclude';
   setSelectedOperation: (
-    args: 'boosts' | 'buries' | 'includes' | 'excludes'
+    args: 'boost' | 'bury' | 'include' | 'exclude'
   ) => void;
 }) => {
   const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
@@ -71,7 +71,7 @@ export const OperationSelector = ({
             // istanbul ignore next
             () => {
               setIsOperationDropdownOpen(false);
-              setSelectedOperation('boosts');
+              setSelectedOperation('boost');
             }
           }
         >
@@ -86,7 +86,7 @@ export const OperationSelector = ({
         <StyledDropdownOption
           onClick={() => {
             setIsOperationDropdownOpen(false);
-            setSelectedOperation('buries');
+            setSelectedOperation('bury');
           }}
         >
           <Image
@@ -102,7 +102,7 @@ export const OperationSelector = ({
             <StyledDropdownOption
               onClick={() => {
                 setIsOperationDropdownOpen(false);
-                setSelectedOperation('includes');
+                setSelectedOperation('include');
               }}
             >
               <Image
@@ -117,7 +117,7 @@ export const OperationSelector = ({
             <StyledDropdownOption
               onClick={() => {
                 setIsOperationDropdownOpen(false);
-                setSelectedOperation('excludes');
+                setSelectedOperation('exclude');
               }}
             >
               <Image

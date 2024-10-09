@@ -136,7 +136,6 @@ const mockCategoryReturnValue = {
   },
   error: '',
   isLoading: false,
-  setRules: jest.fn(),
   setFacetConfigRules: jest.fn(),
 };
 

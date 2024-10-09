@@ -23,7 +23,7 @@ export const AlphanumericAttribute = ({
   weight,
 }: {
   fields: Array<AlphanumericBoostBuryField>;
-  operation: 'boosts' | 'buries' | 'includes' | 'excludes';
+  operation: 'boost' | 'bury' | 'include' | 'exclude';
   weight?: number;
   isEditable?: boolean;
   onChangeAttribute?: (args: { newWeight: number }) => void;

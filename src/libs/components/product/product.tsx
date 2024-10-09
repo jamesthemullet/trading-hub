@@ -1,11 +1,16 @@
-import type { ChangeEvent, DetailedHTMLProps, HTMLAttributes } from 'react';
+import type {
+  ChangeEvent,
+  DetailedHTMLProps,
+  Dispatch,
+  HTMLAttributes,
+} from 'react';
 import { useState } from 'react';
 
 import Image from 'next/image';
 
 import type { Product as ProductType } from '../../api';
 import { Button } from '../buttons/button/button';
-import { EditProduct } from '../types';
+import { Action } from '../types';
 import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
@@ -28,16 +33,6 @@ import {
   ProductPin,
   ProductWrapper,
 } from './product.styles';
-
-type ChangePositionTypes = {
-  isPinned: boolean;
-  id: string;
-  newPosition: number;
-};
-
-export type ChangeProductBoostBury = {
-  id: string;
-} & Pick<EditProduct, 'change' | 'operation'>;
 
 export const ProductDetails = ({
   imageUrl,
@@ -75,69 +70,58 @@ export const ProductDetails = ({
   );
 };
 
-export const Product = ({
-  brand,
-  id,
-  productId,
-  index,
-  isPinnable,
-  metadata: { isPinned, isBoosted, isBuried, isBlocked },
-  onChangePosition,
-  onProductBoostBury,
-  pinnedProductsCount = 0,
-  price,
-  imageUrl,
-  title,
-  isBrandStrong,
-  isProductNumberEnabled,
-  isSearchResult = false,
-  ...rest
-}: ProductType & {
+export type ProductProps = ProductType & {
   index: number;
   isPinnable: boolean;
-  onChangePosition?: ({
-    id,
-    isPinned,
-    newPosition,
-  }: ChangePositionTypes) => void;
-  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
+  dispatch: Dispatch<Action>;
   pinnedProductsCount?: number;
   isBrandStrong?: boolean;
   isProductNumberEnabled?: boolean;
   isSearchResult?: boolean;
-} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+
+export const Product = ({
+  brand,
+  dispatch,
+  id,
+  imageUrl,
+  index,
+  isBrandStrong,
+  isPinnable,
+  isProductNumberEnabled,
+  isSearchResult = false,
+  metadata: { isPinned, isBoosted, isBuried, isBlocked },
+  pinnedProductsCount,
+  price,
+  productId,
+  title,
+  ...rest
+}: ProductProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLockToPositionMenuOpen, setIsLockToPositionMenuOpen] =
     useState(false);
   const [positionToLockTo, setPositionToLockTo] = useState<number>();
   const [error, setError] = useState('');
+  const totalPinnedProducts =
+    pinnedProductsCount || /* istanbul ignore next */ 0;
 
-  const pin = (positionToPin: number, isPinned: boolean) => {
-    if (isPinnable && onChangePosition) {
-      onChangePosition({
-        id,
-        newPosition: positionToPin,
-        isPinned,
-      });
-    }
-    setIsMenuOpen(false);
-  };
-
-  const onBoostBuryBlock = ({
-    operation,
-    change,
-  }: Pick<EditProduct, 'change' | 'operation'>) => {
-    onProductBoostBury({ id, change, operation });
-    setIsMenuOpen(false);
-  };
-
-  const lockToPosition = (pinTo: number) => {
+  const lockToPosition = (positionToPin: number) => {
     setIsMenuOpen(false);
     setIsLockToPositionMenuOpen(false);
-    pin(pinTo, true);
+    setIsMenuOpen(false);
+    dispatch({
+      type: 'product',
+      payload: { id, operation: 'pin', change: 'add', position: positionToPin },
+    });
   };
 
-  const clearChanges = (position: number) => pin(position, false);
+  const clearChanges = () => {
+    dispatch({
+      type: 'product',
+      payload: { id, operation: 'pin', change: 'remove' },
+    });
+    setIsMenuOpen(false);
+  };
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -147,14 +131,14 @@ export const Product = ({
     const diff = isPinned ? 0 : 1;
 
     if (
-      (value && parseInt(value) > pinnedProductsCount + diff) ||
+      (value && parseInt(value) > totalPinnedProducts + diff) ||
       (value && parseInt(value) < 1)
     ) {
-      if (pinnedProductsCount === 0) {
+      if (totalPinnedProducts === 0) {
         setError(`Please choose a position sequentially starting from 1`);
       } else {
         setError(
-          `Please choose a position between 1 and ${pinnedProductsCount + diff}`
+          `Please choose a position between 1 and ${totalPinnedProducts + diff}`
         );
       }
     } else {
@@ -216,6 +200,7 @@ export const Product = ({
                 color: '#000',
                 padding: `${spacing(1)} ${spacing(1)} 0`,
               }}
+              as="h4"
             >
               Product actions
             </Text>
@@ -224,7 +209,7 @@ export const Product = ({
                 icon="restore"
                 as="button"
                 size="16px 16px"
-                onClick={() => clearChanges(index)}
+                onClick={() => clearChanges()}
               >
                 Restore
               </ProductMenuButton>
@@ -234,9 +219,17 @@ export const Product = ({
                 icon="restore"
                 as="button"
                 size="16px 16px"
-                onClick={() =>
-                  onBoostBuryBlock({ operation: 'boosts', change: 'remove' })
-                }
+                onClick={() => {
+                  dispatch({
+                    type: 'product',
+                    payload: {
+                      id,
+                      operation: 'boost',
+                      change: 'remove',
+                    },
+                  });
+                  setIsMenuOpen(false);
+                }}
               >
                 Unboost
               </ProductMenuButton>
@@ -246,9 +239,17 @@ export const Product = ({
                 icon="restore"
                 as="button"
                 size="16px 16px"
-                onClick={() =>
-                  onBoostBuryBlock({ operation: 'buries', change: 'remove' })
-                }
+                onClick={() => {
+                  dispatch({
+                    type: 'product',
+                    payload: {
+                      id,
+                      operation: 'bury',
+                      change: 'remove',
+                    },
+                  });
+                  setIsMenuOpen(false);
+                }}
               >
                 Unbury
               </ProductMenuButton>
@@ -259,10 +260,17 @@ export const Product = ({
                 as="button"
                 size="16px 16px"
                 onClick={() => {
-                  onBoostBuryBlock({
-                    operation: 'block',
-                    change: 'remove',
-                  });
+                  {
+                    dispatch({
+                      type: 'product',
+                      payload: {
+                        id,
+                        operation: 'block',
+                        change: 'remove',
+                      },
+                    });
+                    setIsMenuOpen(false);
+                  }
                 }}
               >
                 Restore
@@ -283,9 +291,17 @@ export const Product = ({
                   <ProductMenuButton
                     icon="boost"
                     as="button"
-                    onClick={() =>
-                      onBoostBuryBlock({ operation: 'boosts', change: 'add' })
-                    }
+                    onClick={() => {
+                      dispatch({
+                        type: 'product',
+                        payload: {
+                          id,
+                          operation: 'boost',
+                          change: 'add',
+                        },
+                      });
+                      setIsMenuOpen(false);
+                    }}
                   >
                     Boost to Top
                   </ProductMenuButton>
@@ -295,9 +311,17 @@ export const Product = ({
                   <ProductMenuButton
                     icon="bury"
                     as="button"
-                    onClick={() =>
-                      onBoostBuryBlock({ operation: 'buries', change: 'add' })
-                    }
+                    onClick={() => {
+                      dispatch({
+                        type: 'product',
+                        payload: {
+                          id,
+                          operation: 'bury',
+                          change: 'add',
+                        },
+                      });
+                      setIsMenuOpen(false);
+                    }}
                   >
                     Bury to Bottom
                   </ProductMenuButton>
@@ -307,9 +331,17 @@ export const Product = ({
                   <ProductMenuButton
                     icon="block"
                     as="button"
-                    onClick={() =>
-                      onBoostBuryBlock({ operation: 'block', change: 'add' })
-                    }
+                    onClick={() => {
+                      dispatch({
+                        type: 'product',
+                        payload: {
+                          id,
+                          operation: 'block',
+                          change: 'add',
+                        },
+                      });
+                      setIsMenuOpen(false);
+                    }}
                   >
                     Block Product
                   </ProductMenuButton>
@@ -323,7 +355,11 @@ export const Product = ({
                   height: error ? '330px' : '245px',
                 }}
               >
-                <Text isStrong={true} style={{ marginBottom: spacing(1) }}>
+                <Text
+                  isStrong={true}
+                  style={{ marginBottom: spacing(1) }}
+                  aria-label="Pinning heading"
+                >
                   Slot position
                 </Text>
                 <Text style={{ marginBottom: spacing(1) }}>
@@ -334,7 +370,7 @@ export const Product = ({
                     e.preventDefault();
                     if (
                       positionToLockTo &&
-                      positionToLockTo < pinnedProductsCount + 2
+                      positionToLockTo < totalPinnedProducts + 2
                     ) {
                       lockToPosition(positionToLockTo - 1);
                     }
@@ -348,7 +384,9 @@ export const Product = ({
                     autoFocus
                     hasError={!!error.length}
                   />
-                  {error && <ErrorText>{error}</ErrorText>}
+                  {error && (
+                    <ErrorText aria-label="Error message">{error}</ErrorText>
+                  )}
                   <LockActions isSearchResult={isSearchResult}>
                     <Button onClick={() => setIsLockToPositionMenuOpen(false)}>
                       Cancel
@@ -381,10 +419,9 @@ export const Product = ({
 };
 
 export const MissingProduct = ({
+  dispatch,
   id,
   index,
-  onChangePosition,
-  onProductBoostBury,
   isProductNumberEnabled,
   isPinned,
   isBoosted,
@@ -392,14 +429,9 @@ export const MissingProduct = ({
   isBlocked,
   ...rest
 }: {
+  dispatch: Dispatch<Action>;
   index: number;
   id: string;
-  onChangePosition?: ({
-    id,
-    isPinned,
-    newPosition,
-  }: ChangePositionTypes) => void;
-  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
   isProductNumberEnabled?: boolean;
   isPinned?: boolean;
   isBoosted?: boolean;
@@ -407,27 +439,12 @@ export const MissingProduct = ({
   isBlocked?: boolean;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const pin = (positionToPin: number, isPinned: boolean) => {
-    if (onChangePosition) {
-      onChangePosition({
-        id,
-        newPosition: positionToPin,
-        isPinned,
-      });
-    }
-    setIsMenuOpen(false);
+  const clearChanges = () => {
+    dispatch({
+      type: 'product',
+      payload: { id, operation: 'pin', change: 'remove' },
+    });
   };
-
-  const onBoostBuryBlock = ({
-    operation,
-    change,
-  }: Pick<EditProduct, 'change' | 'operation'>) => {
-    onProductBoostBury({ id, change, operation });
-    setIsMenuOpen(false);
-  };
-
-  const clearChanges = (position: number) => pin(position, false);
 
   return (
     <ProductWrapper aria-label={`Position ${index + 1}`} {...rest}>
@@ -482,6 +499,7 @@ export const MissingProduct = ({
                 color: '#000',
                 padding: `${spacing(1)} ${spacing(1)} 0`,
               }}
+              as="h4"
             >
               Product actions
             </Text>
@@ -490,7 +508,7 @@ export const MissingProduct = ({
                 icon="restore"
                 as="button"
                 size="16px 16px"
-                onClick={() => clearChanges(index)}
+                onClick={() => clearChanges()}
               >
                 Restore
               </ProductMenuButton>
@@ -500,9 +518,17 @@ export const MissingProduct = ({
                 icon="restore"
                 as="button"
                 size="16px 16px"
-                onClick={() =>
-                  onBoostBuryBlock({ operation: 'boosts', change: 'remove' })
-                }
+                onClick={() => {
+                  dispatch({
+                    type: 'product',
+                    payload: {
+                      id,
+                      operation: 'boost',
+                      change: 'remove',
+                    },
+                  });
+                  setIsMenuOpen(false);
+                }}
               >
                 Unboost
               </ProductMenuButton>
@@ -512,9 +538,17 @@ export const MissingProduct = ({
                 icon="restore"
                 as="button"
                 size="16px 16px"
-                onClick={() =>
-                  onBoostBuryBlock({ operation: 'buries', change: 'remove' })
-                }
+                onClick={() => {
+                  dispatch({
+                    type: 'product',
+                    payload: {
+                      id,
+                      operation: 'bury',
+                      change: 'remove',
+                    },
+                  });
+                  setIsMenuOpen(false);
+                }}
               >
                 Unbury
               </ProductMenuButton>
@@ -525,10 +559,17 @@ export const MissingProduct = ({
                 as="button"
                 size="16px 16px"
                 onClick={() => {
-                  onBoostBuryBlock({
-                    operation: 'block',
-                    change: 'remove',
-                  });
+                  {
+                    dispatch({
+                      type: 'product',
+                      payload: {
+                        id,
+                        operation: 'block',
+                        change: 'remove',
+                      },
+                    });
+                    setIsMenuOpen(false);
+                  }
                 }}
               >
                 Restore
@@ -538,7 +579,7 @@ export const MissingProduct = ({
         )}
       </ProductHeader>
       <p style={{ color: color.errorRed }}>Error</p>
-      <p>Product {id} not found</p>
+      <p aria-label="Error message">Product {id} not found</p>
     </ProductWrapper>
   );
 };

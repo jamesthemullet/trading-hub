@@ -52,17 +52,8 @@ describe('VisualEditor', () => {
     jest.resetAllMocks();
   });
 
-  const onChangePosition = jest.fn();
-  const onProductBoostBury = jest.fn();
-
   it('should render products', () => {
-    render(
-      <VisualEditor
-        products={products}
-        onChangePosition={onChangePosition}
-        onProductBoostBury={onProductBoostBury}
-      />
-    );
+    render(<VisualEditor products={products} dispatch={jest.fn()} />);
 
     expect(
       screen.getByText(`${product1Brand} ${product1Title}`)

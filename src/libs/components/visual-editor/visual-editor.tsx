@@ -1,29 +1,16 @@
+import { Dispatch } from 'react';
+
 import type { Product as ProductType } from '../../api';
 import { Product } from '../product/product';
-import { EditProduct } from '../types';
+import { Action } from '../types';
 import { Layout, ProductBox } from './visual-editor.styles';
-
-export type ChangeProductBoostBury = {
-  id: string;
-} & Pick<EditProduct, 'change' | 'operation'>;
-
-type ChangePositionTypes = {
-  isPinned: boolean;
-  id: string;
-  newPosition: number;
-};
 
 type Props = {
   products: ProductType[];
-  onChangePosition: (arg: ChangePositionTypes) => void;
-  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
+  dispatch: Dispatch<Action>;
 };
 
-export const VisualEditor = ({
-  products,
-  onChangePosition,
-  onProductBoostBury,
-}: Props) => {
+export const VisualEditor = ({ products, dispatch }: Props) => {
   const pinnedProductsCount = products.filter(
     (product) => product.metadata.isPinned
   ).length;
@@ -36,8 +23,7 @@ export const VisualEditor = ({
             {...product}
             index={index}
             isPinnable={true}
-            onChangePosition={onChangePosition}
-            onProductBoostBury={onProductBoostBury}
+            dispatch={dispatch}
             pinnedProductsCount={pinnedProductsCount}
           />
         </ProductBox>

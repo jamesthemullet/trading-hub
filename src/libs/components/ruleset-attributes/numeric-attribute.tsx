@@ -22,7 +22,7 @@ export const NumericAttribute = ({
   name: string;
   onChangeAttribute?: (args: { newWeight: number }) => void;
   onDelete?: ({ field, weight }: NumericBoostBury) => void;
-  operation: 'boosts' | 'buries' | 'includes' | 'excludes';
+  operation: 'boost' | 'bury' | 'include' | 'exclude';
   weight?: number;
 }) => (
   <AttributeWrapper aria-label="Product Attribute">

@@ -1,16 +1,13 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
-  AlphanumericBoostBury,
   Category,
   CategoryRuleSet,
   ExcludedFacets,
   KeywordRuleSet,
   MerchandisingRules,
-  NumericBoostBury,
-  Product,
   RuleSet,
   RuleSetFacetConfigWithId,
 } from '@/libs/api';
@@ -26,16 +23,17 @@ import {
   Text,
 } from '@/libs/components';
 import { Preview } from '@/libs/components/preview/preview';
-import { ChangeProductBoostBury } from '@/libs/components/product/product';
 import { ProductSearch } from '@/libs/components/product-search/product-search';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
-import { RulesetAttribute } from '@/libs/components/types';
+import { Action } from '@/libs/components/types';
 import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
-import { useCategoryProductSearch, usePreview } from '@/libs/hooks';
+import { usePreview } from '@/libs/hooks';
 
 import isEqual from 'lodash/isEqual';
 import pluralize from 'pluralize';
+
+import { rulesetReducer } from './reducer';
 
 const CategoryPanel = styled.div`
   border-top: 2px solid #005640;
@@ -133,50 +131,54 @@ export const Ruleset = ({
   );
   const [currentEditorTab, setCurrentEditorTab] = useState(0);
   const [currentProductTab, setCurrentProductTab] = useState(0);
-  const [merchandisingRules, setMerchandisingRules] =
-    useState<MerchandisingRules>(
-      rulesetMerchandisingRules
-        ? rulesetMerchandisingRules
-        : {
-            pinnedProducts: [],
-            blockedProducts: [],
-            boosts: {
-              alphanumeric: [],
-              numeric: [],
-              product: [],
-            },
-            buries: {
-              alphanumeric: [],
-              numeric: [],
-              product: [],
-            },
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
-          }
-    );
   const [hasChanges, setHasChanges] = useState(false);
-  const { searchForProduct } = useCategoryProductSearch();
-  const [searchProducts, setSearchProducts] = useState<Product[]>([]);
   const [showPreview, setShowPreview] = useState(false);
   const router = useRouter();
-  const [productSearchTerm, setProductSearchTerm] = useState('');
+
+  const onSelectCategory = (category: Required<Category>) => {
+    setSelectedCategory(category);
+    if (!hasChanges) setHasChanges(true);
+  };
+
+  const [merchandisingRules, dispatch] = useReducer<
+    (state: MerchandisingRules, action: Action) => MerchandisingRules
+  >(
+    rulesetReducer,
+    rulesetMerchandisingRules || {
+      pinnedProducts: [],
+      blockedProducts: [],
+      boosts: {
+        alphanumeric: [],
+        numeric: [],
+        product: [],
+      },
+      buries: {
+        alphanumeric: [],
+        numeric: [],
+        product: [],
+      },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
+    }
+  );
 
   useEffect(() => {
     const warningText =
       'You have unsaved changes - are you sure you wish to leave this page?';
+    const noChanges = !hasChanges;
     /* istanbul ignore next */
     const handleWindowClose = (e: BeforeUnloadEvent) => {
-      if (!hasChanges) return;
+      if (noChanges) return;
       e.preventDefault();
       return warningText;
     };
     /* istanbul ignore next */
     const handleBrowseAway = () => {
-      if (!hasChanges) return;
+      if (noChanges) return;
       if (window.confirm(warningText)) return;
       router.events.emit('routeChangeError');
       throw 'routeChange aborted.';
@@ -189,20 +191,14 @@ export const Ruleset = ({
     };
   }, [hasChanges, router]);
 
-  const onSelectCategory = (category: Required<Category>) => {
-    setSelectedCategory(category);
-    if (!hasChanges) setHasChanges(true);
-  };
-
   const {
     data,
     error: previewError,
     isLoading,
-    setRules: setPreviewRules,
   } = usePreview({
     ...(selectedCategory && { categoryId: selectedCategory.identifier }),
     ...(rulesetSearchTerms && { searchTerm: rulesetSearchTerms[0] }),
-    merchandisingRules,
+    merchandisingRules: merchandisingRules,
     facetConfig: [],
   });
 
@@ -213,217 +209,6 @@ export const Ruleset = ({
     setRulesetSearchTerms(
       rulesetSearchTerms.filter((term) => term !== keyword)
     );
-  };
-
-  const onChangePosition = ({
-    isPinned,
-    newPosition,
-    id,
-  }: ChangePositionTypes) => {
-    const pinnedProducts = merchandisingRules.pinnedProducts.filter(
-      (product) => product.id !== id
-    );
-
-    // istanbul ignore next
-    const updatedPinnedProducts = isPinned
-      ? [
-          ...pinnedProducts.slice(0, newPosition),
-          { id },
-          ...pinnedProducts.slice(newPosition),
-        ]
-      : pinnedProducts;
-    const updatedMerchRules = {
-      ...merchandisingRules,
-      pinnedProducts: updatedPinnedProducts,
-      boosts: {
-        ...merchandisingRules.boosts,
-        product: merchandisingRules.boosts.product.filter(
-          (product) => product.id !== id
-        ),
-      },
-      buries: {
-        ...merchandisingRules.buries,
-        product: merchandisingRules.buries.product.filter(
-          // istanbul ignore next
-          (product) => product.id !== id
-        ),
-      },
-      blockedProducts: merchandisingRules.blockedProducts.filter(
-        // istanbul ignore next
-        (product) => product.id !== id
-      ),
-    };
-    setMerchandisingRules(updatedMerchRules);
-    setPreviewRules(updatedMerchRules);
-    updateProductSearch(productSearchTerm, updatedMerchRules);
-    if (!hasChanges) setHasChanges(true);
-  };
-
-  const onChangeAttribute = ({
-    attribute,
-    change,
-    index,
-    operation,
-    type,
-  }: RulesetAttribute) => {
-    let updatedState = { ...merchandisingRules };
-
-    if (operation === 'boosts' || operation === 'buries') {
-      setMerchandisingRules((prevState) => {
-        if (change === 'modify') {
-          updatedState = {
-            ...prevState,
-            [operation]: {
-              ...prevState[operation],
-              [type]: prevState[operation][type].map((attr, attributeIndex) => {
-                if (attributeIndex === index) {
-                  return attribute;
-                }
-                return attr;
-              }),
-            },
-          };
-          return updatedState;
-        }
-        if (type === 'alphanumeric') {
-          updatedState = {
-            ...prevState,
-            [operation]: {
-              ...prevState[operation],
-              alphanumeric:
-                change === 'add'
-                  ? [
-                      ...merchandisingRules[operation][type],
-                      attribute as AlphanumericBoostBury,
-                    ]
-                  : [
-                      ...merchandisingRules[operation][type].filter(
-                        (attr) => !isEqual(attr, attribute)
-                      ),
-                    ],
-            },
-          };
-          return updatedState;
-        }
-        if (type === 'numeric') {
-          updatedState = {
-            ...prevState,
-            [operation]: {
-              ...prevState[operation],
-              numeric:
-                change === 'add'
-                  ? [
-                      ...merchandisingRules[operation][type],
-                      attribute as NumericBoostBury,
-                    ]
-                  : merchandisingRules[operation][type].filter(
-                      (attr) => !isEqual(attr, attribute)
-                    ),
-            },
-          };
-          return updatedState;
-        }
-        /* istanbul ignore next */
-        return updatedState;
-      });
-    }
-
-    if (operation === 'includes' || operation === 'excludes') {
-      setMerchandisingRules((prevState) => {
-        updatedState = {
-          ...prevState,
-          [operation]: {
-            alphanumeric:
-              change === 'add'
-                ? [...(prevState[operation].alphanumeric || []), attribute]
-                : [
-                    ...(
-                      prevState[operation].alphanumeric ||
-                      // istanbul ignore next
-                      []
-                    ).filter((attr) => !isEqual(attr, attribute)),
-                  ],
-          },
-        };
-        return updatedState;
-      });
-    }
-
-    setPreviewRules(updatedState);
-    updateProductSearch(productSearchTerm, updatedState);
-  };
-
-  const onProductBoostBury = ({
-    id,
-    operation,
-    change,
-  }: ChangeProductBoostBury) => {
-    const isBoosted = change === 'add' && operation === 'boosts';
-    const isBuried = change === 'add' && operation === 'buries';
-    const isBlocked = change === 'add' && operation === 'block';
-
-    const productBoosts = isBoosted
-      ? [...merchandisingRules.boosts.product, { id, weight: 100 }]
-      : merchandisingRules.boosts.product.filter(
-          (product) => product.id !== id
-        );
-    const productBuries = isBuried
-      ? [...merchandisingRules.buries.product, { id, weight: 100 }]
-      : merchandisingRules.buries.product.filter(
-          (product) => product.id !== id
-        );
-
-    const updatedRules: MerchandisingRules = {
-      ...merchandisingRules,
-      boosts: {
-        ...merchandisingRules.boosts,
-        product: productBoosts,
-      },
-      buries: {
-        ...merchandisingRules.buries,
-        product: productBuries,
-      },
-      pinnedProducts: merchandisingRules.pinnedProducts.filter(
-        (product) => product.id !== id
-      ),
-      blockedProducts: isBlocked
-        ? [...merchandisingRules.blockedProducts, { id }]
-        : merchandisingRules.blockedProducts.filter(
-            (product) => product.id !== id
-          ),
-    };
-
-    setMerchandisingRules(updatedRules);
-    setPreviewRules(updatedRules);
-    updateProductSearch(productSearchTerm, updatedRules);
-
-    if (!hasChanges) setHasChanges(true);
-  };
-
-  const updateProductSearch = async (
-    query: string,
-    merchandisingRules: MerchandisingRules
-  ) => {
-    if (!query) {
-      setSearchProducts([]);
-      return;
-    }
-    const { products } = await searchForProduct({
-      ...(selectedCategory?.identifier && {
-        categoryId: selectedCategory.identifier,
-      }),
-      query,
-      start: 0,
-      rows: 10,
-      merchandisingRules,
-    });
-
-    setSearchProducts(products);
-  };
-
-  const onProductSearch = async (query: string) => {
-    setProductSearchTerm(query);
-    updateProductSearch(query, merchandisingRules);
   };
 
   /* istanbul ignore next */
@@ -506,10 +291,11 @@ export const Ruleset = ({
           !!selectedCategory?.identifier || !!rulesetSearchTerms.length
         }
         onPreview={() => setShowPreview(!showPreview)}
-        hasChanges={hasChanges}
+        hasChanges={
+          hasChanges || !isEqual(merchandisingRules, rulesetMerchandisingRules)
+        }
         isNewRuleSet={!!onCreate || !!onCreateKeywordSearchRuleset}
         onCancel={() => {
-          setHasChanges(false);
           onCancel();
         }}
         shouldHidePreview={rulesetType === 'global'}
@@ -559,18 +345,17 @@ export const Ruleset = ({
             {currentProductTab === 0 && (
               <ProductSearch
                 isPinnable={rulesetType !== 'global'}
-                onSearch={onProductSearch}
                 pinnedProductsCount={merchandisingRules.pinnedProducts.length}
-                onChangePosition={onChangePosition}
-                onProductBoostBury={onProductBoostBury}
-                products={searchProducts}
+                merchandisingRules={merchandisingRules}
+                dispatch={dispatch}
+                categoryId={selectedCategory?.identifier}
               />
             )}
             {currentProductTab === 1 && (
               <RulesetAttributes
                 merchandisingRules={merchandisingRules}
                 category={selectedCategory?.identifier}
-                onChangeAttribute={onChangeAttribute}
+                dispatch={dispatch}
                 searchTerms={rulesetSearchTerms}
               />
             )}
@@ -599,17 +384,12 @@ export const Ruleset = ({
             {previewError && <ErrorMessage>Error: {previewError}</ErrorMessage>}
 
             {currentEditorTab === 0 && (
-              <VisualEditor
-                products={data.products}
-                onChangePosition={onChangePosition}
-                onProductBoostBury={onProductBoostBury}
-              />
+              <VisualEditor products={data.products} dispatch={dispatch} />
             )}
             {(currentEditorTab === 1 || rulesetType === 'global') && (
               <RulesetChanges
                 merchandisingRules={merchandisingRules}
-                onChangePosition={onChangePosition}
-                onProductBoostBury={onProductBoostBury}
+                dispatch={dispatch}
                 isPinnable={rulesetType !== 'global'}
               />
             )}

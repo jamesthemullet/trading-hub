@@ -201,8 +201,8 @@ export const AddAttribute = ({
   >([]);
   const [selectedNumericField, setSelectedNumericField] = useState<string>('');
   const [selectedOperation, setSelectedOperation] = useState<
-    'boosts' | 'buries' | 'includes' | 'excludes'
-  >('boosts');
+    'boost' | 'bury' | 'include' | 'exclude'
+  >('boost');
   const [selectedAttributeType, setSelectedAttributeType] = useState<
     'numeric' | 'alphanumeric'
   >('numeric');
@@ -256,7 +256,9 @@ export const AddAttribute = ({
           {...(modalStep !== 0 && { inert: '' })}
         >
           <ModalSection>
-            <Label isStrong>Choose attribute type</Label>
+            <Label isStrong as="h4">
+              Choose attribute type
+            </Label>
           </ModalSection>
           <ModalSection>
             <ModalButton as="button" isStrong onClick={() => setModalStep(1)}>
@@ -353,14 +355,16 @@ export const AddAttribute = ({
                 setSelectedAlphanumericValues([]);
                 setSelectedNumericField('');
                 setModalStep(0);
-                setSelectedOperation('boosts');
+                setSelectedOperation('boost');
               }}
             >
               Back
             </PreviousStep>
           </ModalSection>
           <ModalSection>
-            <Label isStrong>Product description attributes</Label>
+            <Label isStrong as="h4">
+              Product description attributes
+            </Label>
             <Text>Attributes are aggregated from the account level</Text>
             <Filters>
               <OperationSelector

@@ -6,6 +6,7 @@ import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-
 
 import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
 import { renderWithProviders } from '../../../test/render-with-providers';
+import { Action } from '../types';
 
 jest.mock('@/libs/hooks', () => ({
   useAttributes: ({ type }: { type: string }) => {
@@ -80,7 +81,7 @@ const mockRules: MerchandisingRules = {
   },
 };
 
-const mockAddAttribute = jest.fn();
+const mockDispatch = jest.fn();
 
 describe('RulesetAttributes', () => {
   const openModal = async () => {
@@ -88,44 +89,48 @@ describe('RulesetAttributes', () => {
       <RulesetAttributes
         merchandisingRules={mockRules}
         category="TestCategory"
-        onChangeAttribute={mockAddAttribute}
+        dispatch={mockDispatch}
       />
     );
 
-    const newAttributeButton = screen.getByText('Create new attribute rule');
+    const newAttributeButton = screen.getByRole('button', {
+      name: 'Create new attribute rule',
+    });
 
     act(() => {
       newAttributeButton.click();
     });
 
     await waitFor(() =>
-      expect(screen.getByText('Choose attribute type')).toBeVisible()
+      expect(
+        screen.getByRole('heading', { name: 'Choose attribute type' })
+      ).toBeVisible()
     );
   };
 
   it('should render correctly', () => {
     renderWithProviders(
       <RulesetAttributes
-        onChangeAttribute={jest.fn()}
+        dispatch={mockDispatch}
         merchandisingRules={mockRules}
       />
     );
 
-    expect(screen.getByText('Create new attribute rule')).toBeVisible();
-  });
-
-  it('opens the modal', async () => {
-    await openModal();
-
-    expect(screen.getByText('Choose type')).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: 'Create new attribute rule' })
+    ).toBeVisible();
   });
 
   it('goes to the Numeric Attributes step and back', async () => {
     await openModal();
 
-    expect(screen.getByText('Numeric attributes')).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: 'Numeric attributes' })
+    ).toBeVisible();
 
-    const nextStepButton = screen.getByText('Numeric attributes');
+    const nextStepButton = screen.getByRole('button', {
+      name: 'Numeric attributes',
+    });
 
     act(() => {
       nextStepButton.click();
@@ -141,29 +146,33 @@ describe('RulesetAttributes', () => {
       prevStepButton.click();
     });
 
-    expect(screen.getByText('Choose attribute type')).toBeVisible();
+    expect(
+      screen.getByRole('heading', { name: 'Choose attribute type' })
+    ).toBeVisible();
   });
 
   it('goes to the Product description attributes', async () => {
     openModal();
 
     await waitFor(() =>
-      expect(screen.getByText('Numeric attributes')).toBeVisible()
+      expect(
+        screen.getByRole('button', { name: 'Numeric attributes' })
+      ).toBeVisible()
     );
 
-    const nextStepButton = screen.getAllByText(
-      'Product description attributes'
-    )[0];
+    const nextStepButton = screen.getByRole('button', {
+      name: 'Product description attributes',
+    });
 
     act(() => {
       nextStepButton.click();
     });
 
     expect(
-      screen.getByText('Attributes are aggregated from the account level')
+      screen.getByRole('heading', { name: 'Product description attributes' })
     ).toBeVisible();
 
-    const brandStepButton = screen.getByText('Brand');
+    const brandStepButton = screen.getByRole('button', { name: 'Brand' });
 
     act(() => {
       brandStepButton.click();
@@ -182,7 +191,7 @@ describe('RulesetAttributes', () => {
     });
 
     expect(
-      screen.getByText('Attributes are aggregated from the account level')
+      screen.getByRole('heading', { name: 'Product description attributes' })
     ).toBeVisible();
 
     const firstStepButton = screen.getAllByText('Back')[1];
@@ -191,26 +200,32 @@ describe('RulesetAttributes', () => {
       firstStepButton.click();
     });
 
-    expect(screen.getByText('Choose attribute type')).toBeVisible();
+    expect(
+      screen.getByRole('heading', { name: 'Choose attribute type' })
+    ).toBeVisible();
   });
 
   it('cancels changes', async () => {
     await openModal();
 
-    const cancelButton = screen.getByText('Cancel');
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
 
     act(() => {
       cancelButton.click();
     });
     await waitFor(() =>
-      expect(screen.getByText('Choose attribute type')).not.toBeVisible()
+      expect(
+        screen.getByRole('heading', { name: 'Choose attribute type' })
+      ).not.toBeVisible()
     );
   });
 
   it('selects a numeric attribute', async () => {
     await openModal();
 
-    const nextStepButton = screen.getByText('Numeric attributes');
+    const nextStepButton = screen.getByRole('button', {
+      name: 'Numeric attributes',
+    });
 
     act(() => {
       nextStepButton.click();
@@ -233,7 +248,9 @@ describe('RulesetAttributes', () => {
     const user = userEvent.setup();
     await openModal();
 
-    const nextStepButton = screen.getByText('Numeric attributes');
+    const nextStepButton = screen.getByRole('button', {
+      name: 'Numeric attributes',
+    });
 
     act(() => {
       nextStepButton.click();
@@ -255,7 +272,7 @@ describe('RulesetAttributes', () => {
       nextStepButton.click();
     });
 
-    const colourButton = screen.getByText('Colour');
+    const colourButton = screen.getByRole('button', { name: 'Colour' });
 
     act(() => {
       colourButton.click();
@@ -296,47 +313,47 @@ describe('RulesetAttributes', () => {
 
     expect(screen.queryByText('Brand')).toBeNull();
 
-    const colourStepButton = screen.getByText('Colour');
+    const colourStepButton = screen.getByRole('button', { name: 'Colour' });
 
     act(() => {
       colourStepButton.click();
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Red')).toBeVisible();
-      expect(screen.getByText('Blue')).toBeVisible();
-      expect(screen.getByText('Green')).toBeVisible();
+      expect(screen.getByLabelText('Red')).toBeVisible();
+      expect(screen.getByLabelText('Blue')).toBeVisible();
+      expect(screen.getByLabelText('Green')).toBeVisible();
     });
 
     await user.type(screen.getByLabelText('Filter selected attributes'), 'Red');
 
-    expect(screen.queryByText('Blue')).toBeNull();
+    expect(screen.queryByLabelText('Blue')).toBeNull();
   });
 
   it('buries Product description attributes', async () => {
     await openModal();
 
-    const nextStepButton = screen.getAllByText(
-      'Product description attributes'
-    )[0];
+    const nextStepButton = screen.getByRole('button', {
+      name: 'Product description attributes',
+    });
 
     act(() => {
       nextStepButton.click();
     });
 
-    const dropdownButton = screen.getAllByText('Boost');
+    const dropdownButton = screen.getAllByRole('button', { name: 'Boost' });
 
     act(() => {
       dropdownButton[1].click();
     });
 
-    const buryButton = screen.getAllByText('Bury');
+    const buryButton = screen.getByRole('button', { name: 'Bury' });
 
     act(() => {
-      buryButton[1].click();
+      buryButton.click();
     });
 
-    const colourButton = screen.getByText('Colour');
+    const colourButton = screen.getByRole('button', { name: 'Colour' });
 
     act(() => {
       colourButton.click();
@@ -379,7 +396,7 @@ describe('RulesetAttributes', () => {
 
     renderWithProviders(
       <RulesetAttributes
-        onChangeAttribute={jest.fn()}
+        dispatch={mockDispatch}
         merchandisingRules={merchandisingRules}
       />
     );
@@ -392,17 +409,22 @@ describe('RulesetAttributes', () => {
   });
 
   describe('adding and deleting', () => {
-    it('adds numeric attributes', async () => {
-      const expectedCall = {
-        attribute: { field: 'Size', weight: 100 },
-        change: 'add',
-        operation: 'boosts',
-        type: 'numeric',
+    it('adds boosted numeric attribute', async () => {
+      const expectedCall: Action = {
+        payload: {
+          change: 'add',
+          index: 0,
+          operation: 'boost',
+          data: { field: 'Size', weight: 100 },
+        },
+        type: 'numericAttribute',
       };
 
       await openModal();
 
-      const nextStepButton = screen.getByText('Numeric attributes');
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Numeric attributes',
+      });
 
       act(() => {
         nextStepButton.click();
@@ -422,17 +444,69 @@ describe('RulesetAttributes', () => {
         doneButton.click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
+    });
+
+    it('adds buried numeric attribute', async () => {
+      const expectedCall: Action = {
+        payload: {
+          change: 'add',
+          index: 0,
+          operation: 'bury',
+          data: { field: 'Size', weight: 100 },
+        },
+        type: 'numericAttribute',
+      };
+
+      await openModal();
+
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Numeric attributes',
+      });
+
+      const dropdownButton = screen.getAllByText('Boost');
+
+      act(() => {
+        dropdownButton[1].click();
+      });
+
+      const buryButton = screen.getAllByText('Bury');
+
+      act(() => {
+        buryButton[1].click();
+      });
+
+      act(() => {
+        nextStepButton.click();
+      });
+
+      const sizeButton = screen.getAllByLabelText('Size');
+
+      act(() => {
+        sizeButton[1].click();
+      });
+
+      const doneButton = screen.getByRole('button', {
+        name: 'Done',
+      });
+
+      act(() => {
+        doneButton.click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
 
     it('modifies numeric attributes', async () => {
       const user = userEvent.setup();
-      const expectedCall = {
-        attribute: { field: 'averageRating', weight: 20 },
-        change: 'modify',
-        operation: 'boosts',
-        index: 0,
-        type: 'numeric',
+      const expectedCall: Action = {
+        payload: {
+          data: { field: 'averageRating', weight: 20 },
+          change: 'modify',
+          operation: 'boost',
+          index: 0,
+        },
+        type: 'numericAttribute',
       };
 
       await openModal();
@@ -452,28 +526,34 @@ describe('RulesetAttributes', () => {
         saveButton.click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
 
     it('deletes numeric attributes', async () => {
-      const expectedCall1 = {
-        attribute: mockRules.boosts.numeric[1],
-        change: 'remove',
-        operation: 'boosts',
-        type: 'numeric',
+      const expectedCall1: Action = {
+        type: 'numericAttribute',
+        payload: {
+          data: mockRules.boosts.numeric[1],
+          change: 'remove',
+          operation: 'boost',
+          index: 1,
+        },
       };
-      const expectedCall2 = {
-        attribute: mockRules.buries.numeric[0],
-        change: 'remove',
-        operation: 'buries',
-        type: 'numeric',
+      const expectedCall2: Action = {
+        type: 'numericAttribute',
+        payload: {
+          data: mockRules.buries.numeric[0],
+          change: 'remove',
+          operation: 'bury',
+          index: 0,
+        },
       };
 
       renderWithProviders(
         <RulesetAttributes
           merchandisingRules={mockRules}
           category="TestCategory"
-          onChangeAttribute={mockAddAttribute}
+          dispatch={mockDispatch}
         />
       );
 
@@ -483,29 +563,32 @@ describe('RulesetAttributes', () => {
         deleteButton[3].click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall1);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall1);
 
       act(() => {
         deleteButton[4].click();
       });
 
-      expect(mockAddAttribute).toHaveBeenLastCalledWith(expectedCall2);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall2);
     });
 
     it('adds alphanumeric attributes', async () => {
-      const expectedCall = {
-        attribute: {
-          fields: [
-            {
-              field: 'Colour',
-              values: ['Blue', 'Red'],
-            },
-          ],
-          weight: 100,
+      const expectedCall: Action = {
+        payload: {
+          data: {
+            fields: [
+              {
+                field: 'Colour',
+                values: ['Blue', 'Red'],
+              },
+            ],
+            weight: 100,
+          },
+          change: 'add',
+          operation: 'boost',
+          index: 0,
         },
-        change: 'add',
-        operation: 'boosts',
-        type: 'alphanumeric',
+        type: 'alphanumericBoostBuryAttribute',
       };
 
       await openModal();
@@ -518,7 +601,7 @@ describe('RulesetAttributes', () => {
         nextStepButton.click();
       });
 
-      const colourButton = screen.getByText('Colour');
+      const colourButton = screen.getByRole('button', { name: 'Colour' });
 
       act(() => {
         colourButton.click();
@@ -532,34 +615,40 @@ describe('RulesetAttributes', () => {
         colourRedButton.click();
       });
 
-      const doneButton = screen.getByText('Done');
+      const doneButton = screen.getByRole('button', { name: 'Done' });
 
       act(() => {
         doneButton.click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
 
     it('deletes alphanumeric attributes', async () => {
-      const expectedCall1 = {
-        attribute: mockRules.boosts.alphanumeric[0],
-        change: 'remove',
-        operation: 'boosts',
-        type: 'alphanumeric',
+      const expectedCall1: Action = {
+        payload: {
+          data: mockRules.boosts.alphanumeric[0],
+          change: 'remove',
+          operation: 'boost',
+          index: 0,
+        },
+        type: 'alphanumericBoostBuryAttribute',
       };
-      const expectedCall2 = {
-        attribute: mockRules.buries.alphanumeric[0],
-        change: 'remove',
-        operation: 'buries',
-        type: 'alphanumeric',
+      const expectedCall2: Action = {
+        payload: {
+          data: mockRules.buries.alphanumeric[0],
+          change: 'remove',
+          operation: 'bury',
+          index: 0,
+        },
+        type: 'alphanumericBoostBuryAttribute',
       };
 
       renderWithProviders(
         <RulesetAttributes
           merchandisingRules={mockRules}
           category="TestCategory"
-          onChangeAttribute={mockAddAttribute}
+          dispatch={mockDispatch}
         />
       );
 
@@ -569,43 +658,52 @@ describe('RulesetAttributes', () => {
         deleteButton[0].click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall1);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall1);
 
       act(() => {
         deleteButton[1].click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall2);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall2);
     });
   });
 
   describe('global attributes', () => {
     it('can add numeric attributes globally', async () => {
-      const expectedCall = {
-        attribute: { field: 'Size', weight: 100 },
-        change: 'add',
-        operation: 'boosts',
-        type: 'numeric',
+      const expectedCall: Action = {
+        payload: {
+          data: { field: 'Size', weight: 100 },
+          change: 'add',
+          operation: 'boost',
+          index: 0,
+        },
+        type: 'numericAttribute',
       };
 
       renderWithProviders(
         <RulesetAttributes
           merchandisingRules={mockRules}
-          onChangeAttribute={mockAddAttribute}
+          dispatch={mockDispatch}
         />
       );
 
-      const newAttributeButton = screen.getByText('Create new attribute rule');
+      const newAttributeButton = screen.getByRole('button', {
+        name: 'Create new attribute rule',
+      });
 
       act(() => {
         newAttributeButton.click();
       });
 
       await waitFor(() =>
-        expect(screen.getByText('Choose attribute type')).toBeVisible()
+        expect(
+          screen.getByRole('heading', { name: 'Choose attribute type' })
+        ).toBeVisible()
       );
 
-      const nextStepButton = screen.getByText('Numeric attributes');
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Numeric attributes',
+      });
 
       act(() => {
         nextStepButton.click();
@@ -625,28 +723,34 @@ describe('RulesetAttributes', () => {
         doneButton.click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
 
     it('can cancel editing', async () => {
       renderWithProviders(
         <RulesetAttributes
           merchandisingRules={mockRules}
-          onChangeAttribute={mockAddAttribute}
+          dispatch={mockDispatch}
         />
       );
 
-      const newAttributeButton = screen.getByText('Create new attribute rule');
+      const newAttributeButton = screen.getByRole('button', {
+        name: 'Create new attribute rule',
+      });
 
       act(() => {
         newAttributeButton.click();
       });
 
       await waitFor(() =>
-        expect(screen.getByText('Choose attribute type')).toBeVisible()
+        expect(
+          screen.getByRole('heading', { name: 'Choose attribute type' })
+        ).toBeVisible()
       );
 
-      const nextStepButton = screen.getByText('Numeric attributes');
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Numeric attributes',
+      });
 
       act(() => {
         nextStepButton.click();
@@ -666,25 +770,27 @@ describe('RulesetAttributes', () => {
         cancelButton.click();
       });
 
-      expect(mockAddAttribute).not.toHaveBeenCalled();
+      expect(mockDispatch).not.toHaveBeenCalled();
     });
   });
 
   describe('include exclude', () => {
     it('includes alphanumeric attributes', async () => {
-      const expectedCall = {
-        attribute: {
-          fields: [
-            {
-              field: 'Colour',
-              values: ['Blue', 'Red'],
-            },
-          ],
-          weight: 100,
+      const expectedCall: Action = {
+        payload: {
+          data: {
+            fields: [
+              {
+                field: 'Colour',
+                values: ['Blue', 'Red'],
+              },
+            ],
+          },
+          change: 'add',
+          operation: 'include',
+          index: 0,
         },
-        change: 'add',
-        operation: 'includes',
-        type: 'alphanumeric',
+        type: 'alphanumericIncludeExcludeAttribute',
       };
 
       await openModal();
@@ -709,7 +815,7 @@ describe('RulesetAttributes', () => {
         includeButton[0].click();
       });
 
-      const colourButton = screen.getByText('Colour');
+      const colourButton = screen.getByRole('button', { name: 'Colour' });
 
       act(() => {
         colourButton.click();
@@ -723,29 +829,31 @@ describe('RulesetAttributes', () => {
         colourRedButton.click();
       });
 
-      const doneButton = screen.getByText('Done');
+      const doneButton = screen.getByRole('button', { name: 'Done' });
 
       act(() => {
         doneButton.click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
 
     it('excludes alphanumeric attributes', async () => {
-      const expectedCall = {
-        attribute: {
-          fields: [
-            {
-              field: 'Colour',
-              values: ['Blue', 'Red'],
-            },
-          ],
-          weight: 100,
+      const expectedCall: Action = {
+        payload: {
+          data: {
+            fields: [
+              {
+                field: 'Colour',
+                values: ['Blue', 'Red'],
+              },
+            ],
+          },
+          change: 'add',
+          operation: 'exclude',
+          index: 0,
         },
-        change: 'add',
-        operation: 'excludes',
-        type: 'alphanumeric',
+        type: 'alphanumericIncludeExcludeAttribute',
       };
 
       await openModal();
@@ -770,7 +878,7 @@ describe('RulesetAttributes', () => {
         includeButton[0].click();
       });
 
-      const colourButton = screen.getByText('Colour');
+      const colourButton = screen.getByRole('button', { name: 'Colour' });
 
       act(() => {
         colourButton.click();
@@ -784,13 +892,13 @@ describe('RulesetAttributes', () => {
         colourRedButton.click();
       });
 
-      const doneButton = screen.getByText('Done');
+      const doneButton = screen.getByRole('button', { name: 'Done' });
 
       act(() => {
         doneButton.click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
 
     it('deletes included attributes', async () => {
@@ -802,11 +910,14 @@ describe('RulesetAttributes', () => {
           },
         ],
       };
-      const expectedCall = {
-        attribute: mock,
-        change: 'remove',
-        operation: 'includes',
-        type: 'alphanumeric',
+      const expectedCall: Action = {
+        payload: {
+          data: mock,
+          change: 'remove',
+          operation: 'include',
+          index: 0,
+        },
+        type: 'alphanumericIncludeExcludeAttribute',
       };
 
       renderWithProviders(
@@ -816,7 +927,7 @@ describe('RulesetAttributes', () => {
             includes: { alphanumeric: [mock] },
           }}
           category="TestCategory"
-          onChangeAttribute={mockAddAttribute}
+          dispatch={mockDispatch}
         />
       );
 
@@ -826,7 +937,7 @@ describe('RulesetAttributes', () => {
         deleteButton[2].click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
 
     it('deletes excludes attributes', async () => {
@@ -838,11 +949,14 @@ describe('RulesetAttributes', () => {
           },
         ],
       };
-      const expectedCall = {
-        attribute: mock,
-        change: 'remove',
-        operation: 'excludes',
-        type: 'alphanumeric',
+      const expectedCall: Action = {
+        payload: {
+          data: mock,
+          change: 'remove',
+          operation: 'exclude',
+          index: 0,
+        },
+        type: 'alphanumericIncludeExcludeAttribute',
       };
 
       renderWithProviders(
@@ -852,7 +966,7 @@ describe('RulesetAttributes', () => {
             excludes: { alphanumeric: [mock] },
           }}
           category="TestCategory"
-          onChangeAttribute={mockAddAttribute}
+          dispatch={mockDispatch}
         />
       );
 
@@ -862,7 +976,7 @@ describe('RulesetAttributes', () => {
         deleteButton[2].click();
       });
 
-      expect(mockAddAttribute).toHaveBeenCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
   });
 });

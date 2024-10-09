@@ -24,7 +24,6 @@ export const usePreview = ({
   excludedFacets?: ExcludedFacets;
 }) => {
   const [error, setError] = useState('');
-  const [rules, setRules] = useState(merchandisingRules);
   const [isLoading, setIsLoading] = useState(false);
 
   const [facetConfigRules, setFacetConfigRules] =
@@ -86,7 +85,7 @@ export const usePreview = ({
             start: 0,
           },
           {
-            rules,
+            rules: merchandisingRules,
             excludedFacets,
             facets: facetConfigRules,
             isEnabled: true,
@@ -108,7 +107,13 @@ export const usePreview = ({
     };
 
     fetchData();
-  }, [facetConfigRules, categoryId, rules, searchTerm, excludedFacets]);
+  }, [
+    facetConfigRules,
+    categoryId,
+    merchandisingRules,
+    searchTerm,
+    excludedFacets,
+  ]);
 
   return {
     data,
@@ -116,6 +121,5 @@ export const usePreview = ({
     isLoading,
     setFacetConfigRules: (facets: RuleSetFacetConfigWithId[]) =>
       setFacetConfigRules(facets),
-    setRules: (rules: MerchandisingRules) => setRules(rules),
   };
 };

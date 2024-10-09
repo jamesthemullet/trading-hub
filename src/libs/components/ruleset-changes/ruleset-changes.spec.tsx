@@ -22,8 +22,7 @@ describe('RulesetChanges', () => {
       <RulesetChanges
         isPinnable={false}
         merchandisingRules={mockMerchandisingRules}
-        onChangePosition={jest.fn()}
-        onProductBoostBury={jest.fn()}
+        dispatch={jest.fn()}
       />
     );
 
@@ -91,8 +90,7 @@ describe('RulesetChanges', () => {
           },
           blockedProducts: [{ id: '124124' }],
         }}
-        onChangePosition={jest.fn()}
-        onProductBoostBury={jest.fn()}
+        dispatch={jest.fn()}
       />
     );
 
@@ -203,8 +201,7 @@ describe('RulesetChanges', () => {
             ],
           },
         }}
-        onChangePosition={jest.fn()}
-        onProductBoostBury={jest.fn()}
+        dispatch={jest.fn()}
       />
     );
 
@@ -273,8 +270,7 @@ describe('RulesetChanges', () => {
           },
           blockedProducts: [{ id: '124124' }],
         }}
-        onChangePosition={jest.fn()}
-        onProductBoostBury={jest.fn()}
+        dispatch={jest.fn()}
       />
     );
 
@@ -329,8 +325,7 @@ describe('RulesetChanges', () => {
           },
           blockedProducts: [{ id: '124124' }],
         }}
-        onChangePosition={jest.fn()}
-        onProductBoostBury={jest.fn()}
+        dispatch={jest.fn()}
       />
     );
 

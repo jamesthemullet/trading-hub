@@ -301,13 +301,6 @@ describe('useRuleSet', () => {
       })
     );
 
-    await waitFor(() => {
-      expect(result.current.data.products.length).toEqual(1);
-    });
-    act(() => {
-      result.current.setRules(mockMerchandisingRules);
-    });
-
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: newMocks,
       status: { status: 200 },

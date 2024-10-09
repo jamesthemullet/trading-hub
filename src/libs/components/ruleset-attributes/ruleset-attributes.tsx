@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { Dispatch, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import {
@@ -12,7 +12,7 @@ import {
 import pluralize from 'pluralize';
 
 import { Button } from '../buttons/button/button';
-import { RulesetAttribute } from '../types';
+import { Action, RulesetAttribute } from '../types';
 import { Label } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { AddSetAttribute } from './add-set-attribute';
@@ -51,13 +51,13 @@ export type Props = {
   category?: string;
   searchTerms?: string[];
   merchandisingRules: MerchandisingRules;
-  onChangeAttribute: (args: RulesetAttribute) => void;
+  dispatch: Dispatch<Action>;
 };
 
 export const RulesetAttributes = ({
   category,
   merchandisingRules,
-  onChangeAttribute,
+  dispatch,
   searchTerms,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -105,25 +105,36 @@ export const RulesetAttributes = ({
                 key={fields[0].field}
                 isEditable
                 fields={fields}
-                operation="boosts"
+                operation="boost"
                 weight={weight}
                 onChangeAttribute={
                   // istanbul ignore next
                   ({ newWeight }: { newWeight: number }) =>
-                    onChangeAttribute({
-                      attribute: { fields, weight: newWeight },
-                      change: 'modify',
-                      index,
-                      operation: 'boosts',
-                      type: 'alphanumeric',
+                    dispatch({
+                      type: 'alphanumericBoostBuryAttribute',
+                      payload: {
+                        change: 'modify',
+                        operation: 'boost',
+                        index,
+                        data: {
+                          fields,
+                          weight: newWeight,
+                        },
+                      },
                     })
                 }
                 onDelete={({ fields, weight }: AlphanumericBoostBury) =>
-                  onChangeAttribute({
-                    attribute: { fields, weight },
-                    change: 'remove',
-                    operation: 'boosts',
-                    type: 'alphanumeric',
+                  dispatch({
+                    type: 'alphanumericBoostBuryAttribute',
+                    payload: {
+                      change: 'remove',
+                      operation: 'boost',
+                      index,
+                      data: {
+                        fields,
+                        weight,
+                      },
+                    },
                   })
                 }
               />
@@ -135,61 +146,82 @@ export const RulesetAttributes = ({
                 key={fields[0].field}
                 isEditable
                 fields={fields}
-                operation="buries"
+                operation="bury"
                 weight={weight}
                 onChangeAttribute={
                   // istanbul ignore next
                   ({ newWeight }: { newWeight: number }) =>
-                    onChangeAttribute({
-                      attribute: { fields, weight: newWeight },
-                      change: 'modify',
-                      index,
-                      operation: 'buries',
-                      type: 'alphanumeric',
+                    dispatch({
+                      type: 'alphanumericBoostBuryAttribute',
+                      payload: {
+                        change: 'modify',
+                        operation: 'bury',
+                        index,
+                        data: {
+                          fields,
+                          weight: newWeight,
+                        },
+                      },
                     })
                 }
                 onDelete={({ fields, weight }: AlphanumericBoostBury) =>
-                  onChangeAttribute({
-                    attribute: { fields, weight },
-                    change: 'remove',
-                    operation: 'buries',
-                    type: 'alphanumeric',
+                  dispatch({
+                    type: 'alphanumericBoostBuryAttribute',
+                    payload: {
+                      change: 'remove',
+                      operation: 'bury',
+                      index,
+                      data: {
+                        fields,
+                        weight,
+                      },
+                    },
                   })
                 }
               />
             ))}
 
           {!!alphanumericIncludes.length &&
-            alphanumericIncludes.map(({ fields }) => (
+            alphanumericIncludes.map(({ fields }, index) => (
               <AlphanumericAttribute
                 key={fields[0].field}
                 isEditable
                 fields={fields}
-                operation="includes"
+                operation="include"
                 onDelete={({ fields }: IncludeExclude) =>
-                  onChangeAttribute({
-                    attribute: { fields },
-                    change: 'remove',
-                    operation: 'includes',
-                    type: 'alphanumeric',
+                  dispatch({
+                    type: 'alphanumericIncludeExcludeAttribute',
+                    payload: {
+                      change: 'remove',
+                      operation: 'include',
+                      index,
+                      data: {
+                        fields,
+                      },
+                    },
                   })
                 }
               />
             ))}
 
           {!!alphanumericExcludes.length &&
-            alphanumericExcludes.map(({ fields }) => (
+            alphanumericExcludes.map(({ fields }, index) => (
               <AlphanumericAttribute
                 key={fields[0].field}
                 isEditable
                 fields={fields}
-                operation="excludes"
+                operation="exclude"
                 onDelete={({ fields }: IncludeExclude) =>
-                  onChangeAttribute({
-                    attribute: { fields },
-                    change: 'remove',
-                    operation: 'excludes',
-                    type: 'alphanumeric',
+                  dispatch({
+                    type: 'alphanumericIncludeExcludeAttribute',
+                    payload: {
+                      change: 'remove',
+                      operation: 'exclude',
+                      index,
+                      data: {
+                        fields,
+                      },
+                    },
                   })
                 }
               />
@@ -205,24 +237,35 @@ export const RulesetAttributes = ({
               <NumericAttribute
                 key={field}
                 isEditable
-                operation="boosts"
+                operation="boost"
                 name={field}
                 weight={weight}
                 onChangeAttribute={({ newWeight }: { newWeight: number }) =>
-                  onChangeAttribute({
-                    attribute: { field, weight: newWeight },
-                    change: 'modify',
-                    index,
-                    operation: 'boosts',
-                    type: 'numeric',
+                  dispatch({
+                    type: 'numericAttribute',
+                    payload: {
+                      change: 'modify',
+                      operation: 'boost',
+                      index,
+                      data: {
+                        field,
+                        weight: newWeight,
+                      },
+                    },
                   })
                 }
                 onDelete={({ field, weight }: NumericBoostBury) =>
-                  onChangeAttribute({
-                    attribute: { field, weight },
-                    change: 'remove',
-                    operation: 'boosts',
-                    type: 'numeric',
+                  dispatch({
+                    type: 'numericAttribute',
+                    payload: {
+                      change: 'remove',
+                      operation: 'boost',
+                      index,
+                      data: {
+                        field,
+                        weight,
+                      },
+                    },
                   })
                 }
               />
@@ -232,26 +275,37 @@ export const RulesetAttributes = ({
               <NumericAttribute
                 key={field}
                 isEditable
-                operation="buries"
+                operation="bury"
                 name={field}
                 weight={weight}
                 onChangeAttribute={
                   // istanbul ignore next
                   ({ newWeight }: { newWeight: number }) =>
-                    onChangeAttribute({
-                      attribute: { field, weight: newWeight },
-                      change: 'modify',
-                      index,
-                      operation: 'buries',
-                      type: 'numeric',
+                    dispatch({
+                      type: 'numericAttribute',
+                      payload: {
+                        change: 'modify',
+                        operation: 'bury',
+                        index,
+                        data: {
+                          field,
+                          weight: newWeight,
+                        },
+                      },
                     })
                 }
                 onDelete={({ field, weight }: NumericBoostBury) =>
-                  onChangeAttribute({
-                    attribute: { field, weight },
-                    change: 'remove',
-                    operation: 'buries',
-                    type: 'numeric',
+                  dispatch({
+                    type: 'numericAttribute',
+                    payload: {
+                      change: 'remove',
+                      operation: 'bury',
+                      index,
+                      data: {
+                        field,
+                        weight,
+                      },
+                    },
                   })
                 }
               />
@@ -278,7 +332,58 @@ export const RulesetAttributes = ({
                 setIsModalOpen(false);
               }}
               onSelect={(attribute: RulesetAttribute) => {
-                onChangeAttribute(attribute);
+                if (
+                  attribute.type === 'numeric' &&
+                  (attribute.operation === 'boost' ||
+                    attribute.operation === 'bury')
+                ) {
+                  const data = attribute.attribute as NumericBoostBury;
+                  dispatch({
+                    type: 'numericAttribute',
+                    payload: {
+                      change: 'add',
+                      index: 0,
+                      data,
+                      operation: attribute.operation,
+                    },
+                  });
+                }
+
+                if (
+                  attribute.type === 'alphanumeric' &&
+                  (attribute.operation === 'boost' ||
+                    attribute.operation === 'bury')
+                ) {
+                  const data = attribute.attribute as AlphanumericBoostBury;
+                  dispatch({
+                    type: 'alphanumericBoostBuryAttribute',
+                    payload: {
+                      change: 'add',
+                      index: 0,
+                      data,
+                      operation: attribute.operation,
+                    },
+                  });
+                }
+
+                if (
+                  attribute.type === 'alphanumeric' &&
+                  (attribute.operation === 'include' ||
+                    attribute.operation === 'exclude')
+                ) {
+                  const data = attribute.attribute as IncludeExclude;
+                  dispatch({
+                    type: 'alphanumericIncludeExcludeAttribute',
+                    payload: {
+                      change: 'add',
+                      index: 0,
+                      data: {
+                        fields: data.fields,
+                      },
+                      operation: attribute.operation,
+                    },
+                  });
+                }
                 setIsModalOpen(false);
               }}
             />

@@ -6,11 +6,6 @@ import {
   NumericBoostBury,
 } from '../api';
 
-export type EditProduct = {
-  change: 'add' | 'remove' | 'modify';
-  operation: 'boosts' | 'buries' | 'block';
-};
-
 export type RulesetAttribute = {
   attribute: {
     fields?: Array<AlphanumericBoostBuryField>;
@@ -18,22 +13,52 @@ export type RulesetAttribute = {
     field?: string;
   };
   change: 'add' | 'remove' | 'modify';
-  operation: 'boosts' | 'buries' | 'includes' | 'excludes';
+  operation: 'boost' | 'bury' | 'include' | 'exclude';
   type: AttributeType;
   index?: number;
 };
 
-export type EditAttribute = {
-  attribute: AlphanumericBoostBury | NumericBoostBury;
-  change: 'add' | 'remove' | 'modify';
-  operation: 'boosts' | 'buries';
-  type: AttributeType;
-  index?: number;
+type Change = 'add' | 'remove' | 'modify';
+
+type ProductPayload = {
+  operation: 'pin' | 'boost' | 'bury' | 'block' | 'include' | 'exclude';
+  change: Change;
+  id: string;
+  position?: number;
 };
 
-export type EditIncludeExcludeAttribute = {
-  attribute: IncludeExclude;
-  change: 'add' | 'remove' | 'modify';
-  operation: 'includes' | 'excludes';
-  index?: number;
+type NumericAttributePayload = {
+  operation: 'boost' | 'bury';
+  change: Change;
+  index: number;
+  data: NumericBoostBury;
 };
+
+type AlphanumericBoostBuryAttributePayload = {
+  operation: 'boost' | 'bury';
+  change: Change;
+  index: number;
+  data: AlphanumericBoostBury;
+};
+
+type AlphanumericIncludeExcludeAttributePayload = {
+  operation: 'include' | 'exclude';
+  change: Change;
+  index: number;
+  data: IncludeExclude;
+};
+
+export type Action =
+  | {
+      type: 'product';
+      payload: ProductPayload;
+    }
+  | { type: 'numericAttribute'; payload: NumericAttributePayload }
+  | {
+      type: 'alphanumericBoostBuryAttribute';
+      payload: AlphanumericBoostBuryAttributePayload;
+    }
+  | {
+      type: 'alphanumericIncludeExcludeAttribute';
+      payload: AlphanumericIncludeExcludeAttributePayload;
+    };

@@ -2,11 +2,11 @@ import type { Screen } from '@testing-library/react';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { MissingProduct, Product } from './product';
+import { Action } from '../types';
+import { MissingProduct, Product, ProductProps } from './product';
 
-const mockChangePosition = jest.fn();
-const mockProductBoostBury = jest.fn();
-const productProps = {
+const mockDispatch = jest.fn();
+const productProps: ProductProps = {
   id: 'id',
   productId: 'product id',
   title: 'product title',
@@ -18,16 +18,14 @@ const productProps = {
   price: '£10',
   url: '',
   index: 1,
-  onChangePosition: mockChangePosition,
-  onProductBoostBury: mockProductBoostBury,
+  dispatch: mockDispatch,
   pinnedProductsCount: 2,
 };
 
 const missingProductProps = {
   id: 'id',
   index: 1,
-  onChangePosition: mockChangePosition,
-  onProductBoostBury: mockProductBoostBury,
+  dispatch: mockDispatch,
 };
 
 const openActionsMenu = (screen: Screen) => {
@@ -39,7 +37,7 @@ const openActionsMenu = (screen: Screen) => {
 };
 
 const openPinningMenu = (screen: Screen) => {
-  const pinMenu = screen.getByText('Pin in position');
+  const pinMenu = screen.getByRole('button', { name: 'Pin in position' });
 
   act(() => {
     pinMenu.click();
@@ -51,42 +49,85 @@ describe('Product', () => {
     it('should render correctly', () => {
       render(<Product {...productProps} />);
 
-      expect(
-        screen.getByText('product brand product title')
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText('product title')).toBeInTheDocument();
+
+      expect(screen.getByLabelText('product title').textContent).toBe(
+        'product brand product title'
+      );
     });
 
     it('should show pinned label', () => {
       render(<Product {...productProps} metadata={{ isPinned: true }} />);
 
-      expect(screen.getByText('Internal')).toBeInTheDocument();
-    });
-
-    it('should open the actions menu', () => {
-      render(<Product {...productProps} />);
-
-      openActionsMenu(screen);
-
-      expect(screen.getByText('Product actions')).toBeInTheDocument();
+      expect(screen.getByLabelText('Pinned product')).toBeInTheDocument();
     });
 
     it('should boost to top', () => {
-      const expectedCall = {
-        id: 'id',
-        change: 'add',
-        operation: 'boosts',
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'add',
+          operation: 'boost',
+        },
       };
       render(<Product {...productProps} />);
 
       openActionsMenu(screen);
 
-      const boostToTop = screen.getByText('Boost to Top');
+      const boostToTop = screen.getByRole('button', { name: 'Boost to Top' });
 
       act(() => {
         boostToTop.click();
       });
 
-      expect(mockProductBoostBury).toHaveBeenLastCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
+    });
+
+    it('should block', () => {
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'add',
+          operation: 'block',
+        },
+      };
+      render(<Product {...productProps} />);
+
+      openActionsMenu(screen);
+
+      const blockProduct = screen.getByRole('button', {
+        name: 'Block Product',
+      });
+
+      act(() => {
+        blockProduct.click();
+      });
+
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
+    });
+
+    it('should bury', () => {
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'add',
+          operation: 'bury',
+        },
+      };
+      render(<Product {...productProps} />);
+
+      openActionsMenu(screen);
+
+      const buryButton = screen.getByRole('button', { name: 'Bury to Bottom' });
+
+      act(() => {
+        buryButton.click();
+      });
+
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
     });
 
     it('should open pinning menu', () => {
@@ -96,7 +137,7 @@ describe('Product', () => {
 
       openPinningMenu(screen);
 
-      expect(screen.getByText('Slot position')).toBeInTheDocument();
+      expect(screen.getByLabelText('Pinning heading')).toBeInTheDocument();
     });
 
     it('should close the pinning menu', () => {
@@ -106,13 +147,15 @@ describe('Product', () => {
 
       openPinningMenu(screen);
 
-      const cancelButton = screen.getByText('Cancel');
+      const cancelButton = screen.getByRole('button', { name: 'Cancel' });
 
       act(() => {
         cancelButton.click();
       });
 
-      expect(screen.queryByText('Slot position')).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Pinning heading')
+      ).not.toBeInTheDocument();
     });
 
     it('should close the pinning menu clicking on the overlay', () => {
@@ -128,7 +171,9 @@ describe('Product', () => {
         cancelButton.click();
       });
 
-      expect(screen.queryByText('Slot position')).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Pinning heading')
+      ).not.toBeInTheDocument();
     });
 
     it('should not allow pinning in a non sequential order', async () => {
@@ -137,14 +182,14 @@ describe('Product', () => {
 
       openActionsMenu(screen);
 
-      const pinMenu = screen.getByText('Edit position');
+      const pinMenu = screen.getByRole('button', { name: 'Edit position' });
 
       act(() => {
         pinMenu.click();
       });
 
       const input = screen.getByPlaceholderText('i.e. 3');
-      const confirmButton = screen.getByText('Confirm');
+      const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
       await userEvent.type(input, '5');
 
@@ -152,7 +197,9 @@ describe('Product', () => {
         confirmButton.click();
       });
 
-      expect(screen.getByText(expectedError)).toBeInTheDocument();
+      expect(screen.getByLabelText('Error message').textContent).toBe(
+        expectedError
+      );
     });
 
     it('should only allow pinning from position 1', async () => {
@@ -165,7 +212,7 @@ describe('Product', () => {
       openPinningMenu(screen);
 
       const input = screen.getByPlaceholderText('i.e. 3');
-      const confirmButton = screen.getByText('Confirm');
+      const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
       await userEvent.type(input, '5');
 
@@ -173,7 +220,9 @@ describe('Product', () => {
         confirmButton.click();
       });
 
-      expect(screen.getByText(expectedError)).toBeInTheDocument();
+      expect(screen.getByLabelText('Error message').textContent).toBe(
+        expectedError
+      );
     });
 
     it('should not allow pinning with non numeric text', async () => {
@@ -184,7 +233,7 @@ describe('Product', () => {
       openPinningMenu(screen);
 
       const input = screen.getByPlaceholderText('i.e. 3');
-      const confirmButton = screen.getByText('Confirm');
+      const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
       await userEvent.type(input, 'a');
 
@@ -192,10 +241,14 @@ describe('Product', () => {
     });
 
     it('should pin correctly', async () => {
-      const expectedCall = {
-        id: 'id',
-        isPinned: true,
-        newPosition: 2,
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          position: 2,
+          operation: 'pin',
+          change: 'add',
+        },
       };
       render(<Product {...productProps} />);
 
@@ -204,7 +257,7 @@ describe('Product', () => {
       openPinningMenu(screen);
 
       const input = screen.getByPlaceholderText('i.e. 3');
-      const confirmButton = screen.getByText('Confirm');
+      const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
       await userEvent.type(input, '3');
 
@@ -212,7 +265,7 @@ describe('Product', () => {
         confirmButton.click();
       });
 
-      expect(mockChangePosition).toHaveBeenLastCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
     });
 
     it('should not pin when disallowed', async () => {
@@ -224,29 +277,35 @@ describe('Product', () => {
     });
 
     it('should un-pin', () => {
-      const expectedCall = {
-        id: 'id',
-        isPinned: false,
-        newPosition: 1,
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'remove',
+          operation: 'pin',
+        },
       };
       render(<Product {...productProps} metadata={{ isPinned: true }} />);
 
       openActionsMenu(screen);
 
-      const unboostButton = screen.getByText('Restore');
+      const unboostButton = screen.getByRole('button', { name: 'Restore' });
 
       act(() => {
         unboostButton.click();
       });
 
-      expect(mockChangePosition).toHaveBeenLastCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
     });
 
     it('should un-block', () => {
-      const expectedCall = {
-        id: 'id',
-        change: 'remove',
-        operation: 'block',
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'remove',
+          operation: 'block',
+        },
       };
       render(
         <Product
@@ -257,13 +316,67 @@ describe('Product', () => {
 
       openActionsMenu(screen);
 
-      const unboostButton = screen.getByText('Restore');
+      const unboostButton = screen.getByRole('button', { name: 'Restore' });
 
       act(() => {
         unboostButton.click();
       });
 
-      expect(mockProductBoostBury).toHaveBeenLastCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
+    });
+
+    it('should un-boost', () => {
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'remove',
+          operation: 'boost',
+        },
+      };
+      render(
+        <Product
+          {...productProps}
+          metadata={{ isPinned: false, isBoosted: true }}
+        />
+      );
+
+      openActionsMenu(screen);
+
+      const unboostButton = screen.getByRole('button', { name: 'Unboost' });
+
+      act(() => {
+        unboostButton.click();
+      });
+
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
+    });
+
+    it('should un-bury', () => {
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'remove',
+          operation: 'bury',
+        },
+      };
+      render(
+        <Product
+          {...productProps}
+          metadata={{ isPinned: false, isBuried: true }}
+        />
+      );
+
+      openActionsMenu(screen);
+
+      const unboostButton = screen.getByRole('button', { name: 'Unbury' });
+
+      act(() => {
+        unboostButton.click();
+      });
+
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
     });
   });
 
@@ -271,85 +384,97 @@ describe('Product', () => {
     it('should render correctly', () => {
       render(<MissingProduct {...missingProductProps} />);
 
-      expect(
-        screen.getByText(`Product ${missingProductProps.id} not found`)
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText('Error message').textContent).toBe(
+        `Product ${missingProductProps.id} not found`
+      );
     });
 
     it('should un-boost', () => {
-      const expectedCall = {
-        id: 'id',
-        change: 'remove',
-        operation: 'boosts',
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'remove',
+          operation: 'boost',
+        },
       };
       render(<MissingProduct {...missingProductProps} isBoosted={true} />);
 
       openActionsMenu(screen);
 
-      const unboostButton = screen.getByText('Unboost');
+      const unboostButton = screen.getByRole('button', { name: 'Unboost' });
 
       act(() => {
         unboostButton.click();
       });
 
-      expect(mockProductBoostBury).toHaveBeenLastCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
     });
 
     it('should un-bury', () => {
-      const expectedCall = {
-        id: 'id',
-        change: 'remove',
-        operation: 'buries',
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'remove',
+          operation: 'bury',
+        },
       };
       render(<MissingProduct {...missingProductProps} isBuried={true} />);
 
       openActionsMenu(screen);
 
-      const unburyButton = screen.getByText('Unbury');
+      const unburyButton = screen.getByRole('button', { name: 'Unbury' });
 
       act(() => {
         unburyButton.click();
       });
 
-      expect(mockProductBoostBury).toHaveBeenLastCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
     });
 
     it('should un-pin', () => {
-      const expectedCall = {
-        id: 'id',
-        isPinned: false,
-        newPosition: 1,
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          operation: 'pin',
+          change: 'remove',
+        },
       };
       render(<MissingProduct {...missingProductProps} isPinned={true} />);
 
       openActionsMenu(screen);
 
-      const unpinButton = screen.getByText('Restore');
+      const unpinButton = screen.getByRole('button', { name: 'Restore' });
 
       act(() => {
         unpinButton.click();
       });
 
-      expect(mockChangePosition).toHaveBeenLastCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
     });
 
     it('should un-block', () => {
-      const expectedCall = {
-        id: 'id',
-        change: 'remove',
-        operation: 'block',
+      const expectedCall: Action = {
+        type: 'product',
+        payload: {
+          id: 'id',
+          change: 'remove',
+          operation: 'block',
+        },
       };
       render(<MissingProduct {...missingProductProps} isBlocked={true} />);
 
       openActionsMenu(screen);
 
-      const unblockButton = screen.getByText('Restore');
+      const unblockButton = screen.getByRole('button', { name: 'Restore' });
 
       act(() => {
         unblockButton.click();
       });
 
-      expect(mockProductBoostBury).toHaveBeenLastCalledWith(expectedCall);
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
     });
 
     it('should open and close the actions menu', () => {
@@ -357,7 +482,9 @@ describe('Product', () => {
 
       openActionsMenu(screen);
 
-      expect(screen.getByText('Product actions')).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'Product actions' })
+      ).toBeInTheDocument();
 
       const actionsMenu = screen.getByTitle('Close menu');
 
@@ -365,7 +492,9 @@ describe('Product', () => {
         actionsMenu.click();
       });
 
-      expect(screen.queryByText('Product actions')).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('heading', { name: 'Product actions' })
+      ).not.toBeInTheDocument();
     });
 
     it('should close the menu by clicking on the overlay', () => {

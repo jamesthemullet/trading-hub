@@ -1,10 +1,13 @@
 import styled from '@emotion/styled';
+import { Dispatch, useCallback, useEffect, useState } from 'react';
 
-import type { Product as ProductType } from '@/libs/api';
+import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
+import { useCategoryProductSearch } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
-import { ChangeProductBoostBury, Product } from '../product/product';
+import { Product } from '../product/product';
 import { Search } from '../search/search';
+import { Action } from '../types';
 import { spacing } from '../utils/spacing';
 
 const ProductSearchRootContainer = styled.div`
@@ -53,29 +56,52 @@ const InfoContainer = styled.div`
   align-items: center;
 `;
 
-type ChangePositionTypes = {
-  isPinned: boolean;
-  id: string;
-  newPosition: number;
-};
-
 export type ProductSearchProps = {
+  dispatch: Dispatch<Action>;
   isPinnable: boolean;
+  merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
-  onSearch: (query: string) => void;
-  products: ProductType[];
-  onChangePosition: (arg: ChangePositionTypes) => void;
-  onProductBoostBury: (arg: ChangeProductBoostBury) => void;
+  categoryId?: string;
 };
 
 export const ProductSearch = ({
+  dispatch,
   isPinnable,
+  merchandisingRules,
   pinnedProductsCount,
-  onSearch,
-  products,
-  onChangePosition,
-  onProductBoostBury,
+  categoryId,
 }: ProductSearchProps) => {
+  const [productSearchTerm, setProductSearchTerm] = useState('');
+  const [products, setSearchProducts] = useState<ProductType[]>([]);
+  const { searchForProduct } = useCategoryProductSearch();
+
+  const fetchData = useCallback(async () => {
+    const { products } = await searchForProduct({
+      ...(categoryId && {
+        categoryId,
+      }),
+      query: productSearchTerm,
+      start: 0,
+      rows: 10,
+      merchandisingRules,
+    });
+
+    setSearchProducts(products);
+  }, [searchForProduct, productSearchTerm, categoryId, merchandisingRules]);
+
+  useEffect(() => {
+    if (productSearchTerm) {
+      fetchData();
+    }
+  }, [productSearchTerm, fetchData]);
+
+  const onSearch = (query: string) => {
+    setProductSearchTerm(query);
+    if (!query) {
+      setSearchProducts([]);
+    }
+  };
+
   const { callback: handleSearch } = useDebounce((val: string) => {
     onSearch(val);
   }, 300);
@@ -100,8 +126,7 @@ export const ProductSearch = ({
               {...product}
               index={index}
               isPinnable={isPinnable}
-              onChangePosition={onChangePosition}
-              onProductBoostBury={onProductBoostBury}
+              dispatch={dispatch}
               pinnedProductsCount={pinnedProductsCount}
               isBrandStrong={false}
               isProductNumberEnabled={false}
