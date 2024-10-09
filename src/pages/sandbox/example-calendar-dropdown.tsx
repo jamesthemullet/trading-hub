@@ -38,7 +38,7 @@ export const ExampleCalendarDropdown = () => {
         </Popover.Target>
         <StyledPopoverDropdown>
           <CalendarContainer>
-            <DatePicker size="xl" value={dateRange} onChange={setDateRange} />
+            <DatePicker value={dateRange} onChange={setDateRange} />
           </CalendarContainer>
         </StyledPopoverDropdown>
       </Popover>

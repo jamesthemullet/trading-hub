@@ -13,3 +13,23 @@ export const formatMonthDayDateRange = (range: DatesRangeValue) => {
     .map((date) => (date ? dayjs(date).format('MMM DD') : ''))
     .join(' - ');
 };
+
+export const formatMonthDayDateTimeRange = (
+  range: DatesRangeValue,
+  startTime?: string,
+  endTime?: string
+) => {
+  const dateFormat = 'MMM DD YYYY';
+
+  const startDate = range[0] ? dayjs(range[0]) : null;
+  const endDate = range[1] ? dayjs(range[1]) : null;
+
+  if (!startDate) {
+    return '';
+  }
+  if (endDate) {
+    return `${startDate?.format(dateFormat)}${startTime ? ` ${startTime}` : ''} - ${endDate?.format(dateFormat)}${endTime ? ` ${endTime}` : ''}`;
+  }
+
+  return `${startDate?.format(dateFormat)} ${startTime || ''}`;
+};
