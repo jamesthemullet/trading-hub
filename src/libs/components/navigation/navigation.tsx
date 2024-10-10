@@ -45,6 +45,7 @@ const List = styled.ul`
 
 const ListItem = styled.li`
   margin-bottom: ${spacing(2)};
+  width: 100%;
 
   &:last-of-type {
     margin-top: auto;
@@ -241,8 +242,20 @@ export const Navigation = () => {
           </SubMenu>
         </ListItem>
         <ListItem>
-          <Link href="/" onClick={() => (isLoggedIn ? signOut() : signIn())}>
-            <Text style={{ color: ' #fff' }}>
+          <Link
+            href="/"
+            onClick={() => (isLoggedIn ? signOut() : signIn())}
+            style={{ textDecoration: 'none' }}
+          >
+            <Text
+              style={{
+                color: ' #fff',
+                zIndex: 100,
+                position: 'relative',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
               {isLoggedIn ? 'Logout' : 'Login'}
             </Text>
           </Link>

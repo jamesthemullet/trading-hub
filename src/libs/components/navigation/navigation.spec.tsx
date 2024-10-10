@@ -134,7 +134,7 @@ describe('Navigation', () => {
   it('should show Login when signed out', () => {
     render(<Navigation />);
 
-    expect(screen.getByText('Login')).toBeInTheDocument();
+    expect(screen.getByText('Login')).toBeVisible();
   });
 
   it('should call auth Login when signed out', async () => {
@@ -161,7 +161,7 @@ describe('Navigation', () => {
     });
     render(<Navigation />);
 
-    expect(screen.getByText('Logout')).toBeInTheDocument();
+    expect(screen.getByText('Logout')).toBeVisible();
   });
 
   it('should call auth logout when signed in', async () => {
