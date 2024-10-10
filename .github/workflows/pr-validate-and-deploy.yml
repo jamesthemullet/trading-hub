@@ -59,6 +59,7 @@ jobs:
         env:
           NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
           NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+          NEXT_PUBLIC_SCHEDULING: ${{ secrets.NEXT_PUBLIC_SCHEDULING }}
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
@@ -238,6 +239,7 @@ jobs:
       NEXT_PUBLIC_AUTO_LOGIN: false
       NEW_RELIC_APP_NAME: ${{ secrets._NEW_RELIC_APP_NAME }}
       NEW_RELIC_LICENSE_KEY: ${{ secrets._NEW_RELIC_LICENSE_KEY }}
+      NEXT_PUBLIC_SCHEDULING: ${{ secrets.NEXT_PUBLIC_SCHEDULING }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

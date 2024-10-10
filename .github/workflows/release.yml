@@ -140,6 +140,7 @@ jobs:
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
               "NEW_RELIC_APP_NAME=${{ secrets._NEW_RELIC_APP_NAME }}" \
               "NEW_RELIC_LICENSE_KEY=${{ secrets._NEW_RELIC_LICENSE_KEY }}" \
+              "NEXT_PUBLIC_SCHEDULING=${{ secrets.NEXT_PUBLIC_SCHEDULING }}" \
 
       - name: Deploy to Azure Web Apps
         shell: bash

@@ -5,6 +5,7 @@ import { useSearchRedirectList } from '@/libs/hooks';
 import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
+import { FEATURE_FLAGS } from '../../../libs/components/utils/feature-flags';
 import RedirectRuleSets from './index.page';
 
 jest.mock('@/libs/hooks/search/redirect/use-redirect-list', () => ({
@@ -22,6 +23,13 @@ const mockRedirectDelete = jest.fn();
 jest.mock('@/libs/hooks/search/redirect/use-redirect-delete', () => ({
   useRedirectDelete: () => {
     return { deleteRedirect: mockRedirectDelete };
+  },
+}));
+
+jest.mock('../../../libs/components/utils/feature-flags', () => ({
+  ...jest.requireActual('../../../libs/components/utils/feature-flags'),
+  FEATURE_FLAGS: {
+    scheduling: true,
   },
 }));
 
@@ -144,5 +152,39 @@ describe('Search Rulesets', () => {
 
     await user.click(screen.getByLabelText('Delete rule'));
     expect(mockRedirectDelete).toHaveBeenCalledWith({ redirectId: mockId });
+  });
+
+  it('should display scheduling column if feature flag is enabled', () => {
+    FEATURE_FLAGS.scheduling = true;
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(<RedirectRuleSets />);
+
+    expect(screen.getByText('Schedule')).toBeInTheDocument();
+  });
+
+  it('should not display scheduling column if feature flag is not enabled', () => {
+    FEATURE_FLAGS.scheduling = false;
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(<RedirectRuleSets />);
+
+    expect(screen.queryByText('Schedule')).not.toBeInTheDocument();
   });
 });

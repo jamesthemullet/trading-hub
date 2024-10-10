@@ -5,6 +5,7 @@ import { Modal } from '@mantine/core';
 import { useOnOutsideClick } from '@/libs/hooks';
 
 import { format } from 'date-fns';
+import Image from 'next/image';
 
 import { Button } from '../buttons/button/button';
 import { Toggle } from '../toggle/toggle';
@@ -24,24 +25,46 @@ import {
 
 export const Row = styled(TableRow)<{
   numColumns: number;
+  showBreadcrumbColumn?: boolean;
 }>`
   grid-template-columns: minmax(140px, 2fr) 90px 120px 150px 130px;
   min-height: 83px;
 
   ${mediaQuery('xxl')} {
-    ${({ numColumns }) =>
+    ${({ numColumns, showBreadcrumbColumn }) =>
       `grid-template-columns: ${
-        numColumns === 6 &&
+        ((numColumns === 6 && showBreadcrumbColumn) || numColumns === 7) &&
         'minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;'
       };`}
   }
 
   ${mediaQuery('xxxl')} {
-    ${({ numColumns }) =>
-      `grid-template-columns: ${
-        numColumns === 6 &&
-        'minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;'
-      };`}
+    ${({ numColumns }) => {
+      if (numColumns === 6) {
+        return 'grid-template-columns: minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;';
+      }
+      if (numColumns === 7) {
+        return 'grid-template-columns: minmax(140px, 2fr) minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;';
+      }
+      return '';
+    }}
+  }
+`;
+
+const FullWidthRow = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: end;
+  margin-right: ${spacing(2)};
+  margin-bottom: ${spacing(1)};
+  align-items: end;
+
+  img {
+    margin-right: ${spacing(1)};
+  }
+
+  ${mediaQuery('xxl')} {
+    display: none;
   }
 `;
 
@@ -89,11 +112,50 @@ const DynamicTableCol = styled(TableCol)`
       display: block;
     }
   }
+
+  &[data-heading='Schedule'] {
+    display: none;
+
+    ${mediaQuery('xxxl')} {
+      display: block;
+    }
+  }
 `;
 
 const StyledUrlText = styled(Text)`
   padding-top: ${spacing(1)};
   font-style: italic;
+`;
+
+const SchedulingDetailLeftSide = styled.div`
+  display: none;
+
+  ${mediaQuery('xxl')} {
+    display: flex;
+    align-items: end;
+    padding-top: ${spacing(1)};
+
+    img {
+      margin-right: ${spacing(1)};
+    }
+  }
+
+  ${mediaQuery('xxxl')} {
+    display: none;
+  }
+`;
+
+const SchedulingColumn = styled(TableCol)`
+  display: none;
+
+  ${mediaQuery('xxxl')} {
+    display: flex;
+    align-items: center;
+
+    img {
+      margin-right: ${spacing(1)};
+    }
+  }
 `;
 
 type Row = {
@@ -108,6 +170,8 @@ type Row = {
   onToggle: ({ id }: { id: string }) => void;
   url: string;
   categoryPlpUrl?: string | undefined;
+  startDate?: string;
+  endDate?: string;
 };
 
 type Props = {
@@ -145,6 +209,9 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
         <Row
           style={{ color: '#8a8a8a', fontSize: '0.9em' }}
           numColumns={headings.length}
+          showBreadcrumbColumn={
+            headings.filter((heading) => heading === 'Breadcrumb').length > 0
+          }
         >
           {headings.map((heading) => (
             <DynamicTableCol key={heading} data-heading={heading}>
@@ -164,10 +231,19 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
             onToggle,
             url,
             categoryPlpUrl,
+            startDate,
+            endDate,
           }: Row) => {
             const isOptionDropdownOpen = optionToggle === id;
             return (
-              <Row key={id} numColumns={headings.length}>
+              <Row
+                key={id}
+                numColumns={headings.length}
+                showBreadcrumbColumn={
+                  headings.filter((heading) => heading === 'Breadcrumb')
+                    .length > 0
+                }
+              >
                 <FirstColumn>
                   <Text
                     title={identifier}
@@ -179,6 +255,23 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
                       dangerouslySetInnerHTML={{ __html: categoryPlpUrl }}
                     />
                   )}
+                  {startDate &&
+                    endDate &&
+                    headings.filter((heading) => heading === 'Schedule')
+                      .length > 0 && (
+                      <SchedulingDetailLeftSide>
+                        <Image
+                          alt=""
+                          src={`/trading-hub/asset/icon-calendar.svg`}
+                          width={24}
+                          height={24}
+                        />
+                        <Text>
+                          {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
+                          {format(new Date(endDate), 'dd MMM yyyy')}
+                        </Text>
+                      </SchedulingDetailLeftSide>
+                    )}
                 </FirstColumn>
                 {headings.filter((heading) => heading === 'Breadcrumb').length >
                   0 && (
@@ -190,6 +283,25 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
                       />
                     )}
                   </BreadcrumbColumn>
+                )}
+                {headings.filter((heading) => heading === 'Schedule').length >
+                  0 && (
+                  <SchedulingColumn>
+                    {startDate && endDate && (
+                      <>
+                        <Image
+                          alt=""
+                          src={`/trading-hub/asset/icon-calendar.svg`}
+                          width={24}
+                          height={24}
+                        />
+                        <Text>
+                          {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
+                          {format(new Date(endDate), 'dd MMM yyyy')}
+                        </Text>
+                      </>
+                    )}
+                  </SchedulingColumn>
                 )}
                 <TableCol>
                   <Toggle
@@ -207,7 +319,7 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
                 <TableCol>
                   <Text>{lastChanged.user}</Text>
                 </TableCol>
-                <TableCol style={{ padding: '12px 0 16px' }}>
+                <TableCol style={{ padding: '12px 0 0' }}>
                   <TableActions
                     onKeyDown={handleOnKeyDown}
                     ref={dropdownWrapperRef}
@@ -246,6 +358,22 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
                     )}
                   </TableActions>
                 </TableCol>
+                <FullWidthRow>
+                  {startDate && endDate && (
+                    <>
+                      <Image
+                        alt=""
+                        src={`/trading-hub/asset/icon-calendar.svg`}
+                        width={24}
+                        height={24}
+                      />
+                      <Text>
+                        {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
+                        {format(new Date(endDate), 'dd MMM yyyy')}
+                      </Text>
+                    </>
+                  )}
+                </FullWidthRow>
               </Row>
             );
           }

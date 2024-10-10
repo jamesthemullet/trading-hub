@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { ReturnedKeywordRedirect, ReturnedKeywordRedirects } from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
+import { FEATURE_FLAGS } from '@/libs/components/utils/feature-flags';
 import {
   NewButton,
   PageNameLabel,
@@ -67,22 +68,33 @@ const RedirectRuleSets = () => {
     refetchRedirectList();
   };
 
-  const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
-  const rows = redirects.map(({ id, keywords, isEnabled, lastChanged }) => ({
-    id: id,
-    identifier: keywords
-      .map((term) =>
-        !!searchQuery.length &&
-        term.toLowerCase().startsWith(searchQuery.toLowerCase())
-          ? `<b>${term}</b>`
-          : term
-      )
-      .join(' | '),
-    isEnabled,
-    lastChanged,
-    onToggle: onEnableDisableRedirect,
-    url: `/search/redirects/edit/${id}`,
-  }));
+  const headings = [
+    'Identifier',
+    ...(FEATURE_FLAGS.scheduling ? ['Schedule'] : []),
+    'Enable',
+    'Last Changed',
+    'User',
+    'Actions',
+  ];
+
+  const rows = redirects.map(
+    ({ id, keywords, isEnabled, lastChanged, startDate, endDate }) => ({
+      id: id,
+      identifier: keywords
+        .map((term) =>
+          !!searchQuery.length &&
+          term.toLowerCase().startsWith(searchQuery.toLowerCase())
+            ? `<b>${term}</b>`
+            : term
+        )
+        .join(' | '),
+      isEnabled,
+      lastChanged,
+      onToggle: onEnableDisableRedirect,
+      url: `/search/redirects/edit/${id}`,
+      ...(FEATURE_FLAGS.scheduling && { startDate, endDate }),
+    })
+  );
 
   return (
     <>

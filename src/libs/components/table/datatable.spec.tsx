@@ -8,6 +8,24 @@ import { DataTable } from './datatable';
 const mockToggle = jest.fn();
 
 const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
+const sixHeadings = [
+  'Identifier',
+  'Breadcrumb',
+  'Enable',
+  'Last Changed',
+  'User',
+  'Actions',
+];
+
+const sevenHeadings = [
+  'Identifier',
+  'Breadcrumb',
+  'Schedule',
+  'Enable',
+  'Last Changed',
+  'User',
+  'Actions',
+];
 
 const rows = [
   {
@@ -17,6 +35,28 @@ const rows = [
     lastChanged: { user: 'Bob', date: '2021-10-01' },
     onToggle: mockToggle,
     url: 'path/to/ruleset',
+  },
+  {
+    id: '123',
+    identifier: 'SubCategory_123',
+    isEnabled: false,
+    lastChanged: { user: 'Bobby', date: '2022-10-01' },
+    onToggle: mockToggle,
+    url: 'path/to/ruleset',
+    categoryPlpUrl: 'path/to/SubCategory_123',
+  },
+];
+
+const schedulingRows = [
+  {
+    id: 'id',
+    identifier: '*',
+    isEnabled: true,
+    lastChanged: { user: 'Bob', date: '2021-10-01' },
+    onToggle: mockToggle,
+    url: 'path/to/ruleset',
+    startDate: '2022-10-01',
+    endDate: '2022-10-01',
   },
   {
     id: '123',
@@ -42,6 +82,32 @@ describe('DataTable', () => {
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
     expect(screen.getByText('Bob')).toBeInTheDocument();
     expect(screen.getByText('path/to/SubCategory_123')).toBeInTheDocument();
+  });
+
+  it('should render correctly with six headings', () => {
+    renderWithProviders(
+      <DataTable
+        headings={sixHeadings}
+        rows={rows}
+        onDeleteRuleSet={jest.fn()}
+      />
+    );
+
+    expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
+    expect(screen.getByText('Breadcrumb')).toBeInTheDocument();
+  });
+
+  it('should render correctly with seven headings', () => {
+    renderWithProviders(
+      <DataTable
+        headings={sevenHeadings}
+        rows={schedulingRows}
+        onDeleteRuleSet={jest.fn()}
+      />
+    );
+
+    expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
+    expect(screen.getByText('Schedule')).toBeInTheDocument();
   });
 
   it('should delete rule set', async () => {
