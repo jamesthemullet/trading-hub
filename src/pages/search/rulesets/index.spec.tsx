@@ -1,5 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
 
 import { useSearchRulesetList } from '@/libs/hooks';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
@@ -7,25 +8,37 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
 
-jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-list', () => ({
-  useSearchRulesetList: jest.fn(),
-}));
-
+const mockNewRuleset = 'foo123';
 const mockUpdateRuleSet = jest.fn();
-jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-update', () => ({
+const mockRuleSetDelete = jest.fn();
+const mockRuleSetCreate = jest.fn().mockResolvedValue({ id: mockNewRuleset });
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useSearchRulesetList: jest.fn(),
   useSearchRuleSetUpdate: () => {
     return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
   },
-}));
-
-const mockRuleSetDelete = jest.fn();
-jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-delete', () => ({
   useSearchRuleSetDelete: () => {
     return { deleteRuleset: mockRuleSetDelete };
   },
+  useSearchRuleSetCreate: () => {
+    return { createRuleset: mockRuleSetCreate };
+  },
+}));
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
 }));
 
 describe('Search Rulesets', () => {
+  const mockRouter = {
+    push: jest.fn(),
+  };
+  const mockNewRuleset = 'foo123';
+
+  beforeAll(() => {
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -136,6 +149,56 @@ describe('Search Rulesets', () => {
         rules: mockMerchandisingRules,
       },
     });
+  });
+
+  it('should duplicate a ruleset', async () => {
+    const user = userEvent.setup();
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockSearchTerms = ['search', 'terms'];
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [
+        {
+          searchTerms: mockSearchTerms,
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      error: '',
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Create a duplicate rule' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Duplicate rule',
+    });
+    await user.click(confirmButton);
+    expect(mockRuleSetCreate).toHaveBeenCalledWith({
+      merchandisingRules: mockMerchandisingRules,
+      searchTerms: mockSearchTerms,
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      `/search/rulesets/edit/${mockNewRuleset}`
+    );
   });
 
   it('should delete a ruleset', async () => {

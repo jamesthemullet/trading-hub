@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { ReturnedKeywordRedirect, ReturnedKeywordRedirects } from '@/libs/api';
+import {
+  KeywordRedirect,
+  ReturnedKeywordRedirect,
+  ReturnedKeywordRedirects,
+} from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
 import { FEATURE_FLAGS } from '@/libs/components/utils/feature-flags';
 import {
@@ -10,6 +15,7 @@ import {
   ToolsContainer,
 } from '@/libs/components/utils/shared.styles';
 import {
+  useRedirectCreate,
   useRedirectDelete,
   useRedirectUpdate,
   useSearchRedirectList,
@@ -26,6 +32,17 @@ const RedirectRuleSets = () => {
   const currentPageIndex = currentPage - 1;
   const { deleteRedirect } = useRedirectDelete();
   const { updateRedirect } = useRedirectUpdate();
+
+  const { createRedirect } = useRedirectCreate();
+  const router = useRouter();
+
+  const createNewRedirect = async (redirect: KeywordRedirect) => {
+    const response = await createRedirect({ redirect });
+
+    if (response) {
+      router.push(`/search/redirects/edit/${response.id}`);
+    }
+  };
 
   const { pagination, redirects, refetchRedirectList, setKeywordList } =
     useSearchRedirectList(
@@ -60,6 +77,14 @@ const RedirectRuleSets = () => {
       pagination,
     };
     setKeywordList(updatedRedirectsList);
+  };
+
+  const onDuplicateRedirect = (id: string) => {
+    const redirectToCopy = redirects.find((redirect) => redirect.id === id);
+
+    // istanbul ignore next
+    if (!redirectToCopy) return;
+    createNewRedirect(redirectToCopy);
   };
 
   const onDeleteRedirect = async ({ id }: { id: string }) => {
@@ -116,6 +141,7 @@ const RedirectRuleSets = () => {
           headings={headings}
           rows={rows}
           onDeleteRuleSet={onDeleteRedirect}
+          onDuplicate={onDuplicateRedirect}
         />
 
         <TablePagination

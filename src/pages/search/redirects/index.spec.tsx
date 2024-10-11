@@ -1,29 +1,30 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
 
-import { useSearchRedirectList } from '@/libs/hooks';
+import { useRedirectCreate, useSearchRedirectList } from '@/libs/hooks';
 import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { FEATURE_FLAGS } from '../../../libs/components/utils/feature-flags';
 import RedirectRuleSets from './index.page';
 
-jest.mock('@/libs/hooks/search/redirect/use-redirect-list', () => ({
-  useSearchRedirectList: jest.fn(),
-}));
-
-const mockUpdateRedirect = jest.fn();
-jest.mock('@/libs/hooks/search/redirect/use-redirect-update', () => ({
-  useRedirectUpdate: () => {
-    return { updateRedirect: mockUpdateRedirect, isSaving: true };
-  },
-}));
-
 const mockRedirectDelete = jest.fn();
-jest.mock('@/libs/hooks/search/redirect/use-redirect-delete', () => ({
+const mockUpdateRedirect = jest.fn();
+
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useSearchRedirectList: jest.fn(),
   useRedirectDelete: () => {
     return { deleteRedirect: mockRedirectDelete };
   },
+  useRedirectUpdate: () => {
+    return { updateRedirect: mockUpdateRedirect, isSaving: true };
+  },
+  useRedirectCreate: jest.fn(),
+}));
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
 }));
 
 jest.mock('../../../libs/components/utils/feature-flags', () => ({
@@ -34,6 +35,21 @@ jest.mock('../../../libs/components/utils/feature-flags', () => ({
 }));
 
 describe('Search Rulesets', () => {
+  const mockRouter = {
+    push: jest.fn(),
+  };
+  const mockNewRuleset = 'foo123';
+  const createRedirect = jest.fn().mockResolvedValue({ id: mockNewRuleset });
+
+  beforeAll(() => {
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    jest.mocked(useRedirectCreate).mockReturnValue({
+      createRedirect,
+      isSaving: false,
+      error: '',
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -112,6 +128,54 @@ describe('Search Rulesets', () => {
         keywords: mockKeywords,
       },
     });
+  });
+
+  it('should duplicate a ruleset', async () => {
+    const user = userEvent.setup();
+    const mockKeywords = ['search', 'terms'];
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [{ ...returnedRedirectMock, keywords: mockKeywords }],
+      pagination: {
+        totalItems: 1,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+    renderWithProviders(<RedirectRuleSets />);
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Create a duplicate rule' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Duplicate rule',
+    });
+    await user.click(confirmButton);
+    expect(createRedirect).toHaveBeenCalledWith({
+      redirect: {
+        destinationUrl: 'l/women/dresses',
+        endDate: '2024-08-01T09:37:06.109Z',
+        id: '9a32d206-6b7f-47a2-8f83-578429d2a024',
+        isEnabled: true,
+        keywords: ['search', 'terms'],
+        lastChanged: {
+          date: '2024-08-01T09:37:06.109Z',
+          user: 'Jo Smith',
+        },
+        ruleTitle: 'title of redirect',
+        startDate: '2024-08-01T09:37:06.109Z',
+        type: 'redirectTerm',
+      },
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      `/search/redirects/edit/${mockNewRuleset}`
+    );
   });
 
   it('should delete a ruleset', async () => {
