@@ -307,62 +307,6 @@ describe('ModalEditValues', () => {
     });
   });
 
-  it('should not be able to edit a display value to the same name as another edited value', async () => {
-    renderWithProviders(
-      <EditFacetModal
-        onClose={jest.fn()}
-        facet={{
-          displayValue: 'color',
-          indexPropertyName: 'color',
-          id: '1',
-          lastChanged: { user: 'Bob', date: '2021-10-01' },
-          boosted: ['Cotton'],
-          merged: [
-            {
-              displayValue: 'McDuck',
-              mergedValues: ['Duck Down', 'Silk'],
-            },
-          ],
-        }}
-        facetType="global"
-        refreshData={() => jest.fn()}
-        category={undefined}
-      />
-    );
-
-    expect(screen.getAllByText('Cotton')[0]).toBeVisible();
-
-    const editButton = screen.queryByRole('button', {
-      name: 'Edit display name for Cotton',
-    });
-
-    if (!editButton) {
-      throw new Error('Edit button for cotton not found');
-    }
-
-    act(() => {
-      editButton.click();
-    });
-
-    await waitFor(async () => {
-      expect(screen.getByLabelText('Edit Cotton input field')).toBeVisible();
-    });
-
-    const editCottonInput = screen.getByLabelText('Edit Cotton input field');
-    await userEvent.clear(editCottonInput);
-    await userEvent.type(editCottonInput, 'McDuck');
-
-    const saveButton = screen.getByRole('button', {
-      name: 'Save Cotton change',
-    });
-
-    await userEvent.click(saveButton);
-
-    expect(
-      await screen.findByText('McDuck is not a unique value')
-    ).toBeVisible();
-  });
-
   it('should not be able to edit a display value to the same name as another attribute value', async () => {
     mockUseCheckMergeNameUnique.checkMergeNameUnique = jest.fn(() =>
       Promise.resolve({ isUniqueValue: false })

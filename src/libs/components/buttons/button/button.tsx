@@ -10,18 +10,42 @@ import {
 import { color } from '../../utils/constants';
 import { spacing } from '../../utils/spacing';
 
-const setColours = ({
+const setTheme = ({
   isDisabled,
   isPrimary,
+  isTertiary,
 }: {
   isDisabled?: boolean;
   isPrimary?: boolean;
+  isTertiary?: boolean;
 }) => {
+  if (isTertiary) {
+    return css`
+      color: rgba(29, 29, 27, 1);
+      background: ${isDisabled ? color.backgroundGrey : '#fff'};
+      border-color: ${color.accessibilityGrey};
+      font-weight: 600;
+      border-radius: 20px;
+
+      &:hover,
+      &:focus {
+        background-color: ${color.backgroundGrey};
+        border-color: ${isDisabled
+          ? color.accessibilityGrey
+          : '#C0E2C9'}; // colour in figma but not in design system
+      }
+
+      &:active {
+        background-color: #c0e2c9;
+        border-color: #c0e2c9;
+      }
+    `;
+  }
   if (isDisabled) {
     return css`
       color: rgba(142, 142, 142, 1);
-      background-color: #f2f2f2;
-      border-color: #f2f2f2;
+      background-color: ${color.backgroundGrey};
+      border-color: ${color.backgroundGrey};
     `;
   }
   if (isPrimary) {
@@ -33,8 +57,8 @@ const setColours = ({
       &:hover,
       &:active {
         color: rgba(29, 29, 27, 1);
-        background-color: #c1e2c9;
-        border-color: #c1e2c9;
+        background-color: ${color.lightGreen};
+        border-color: ${color.lightGreen};
       }
 
       &:active {
@@ -50,14 +74,13 @@ const setColours = ({
 
     &:hover,
     &:focus {
-      background-color: #f2f2f2;
-      border-color: #c1e2c9;
-      outline: none;
+      background-color: ${color.backgroundGrey};
+      border-color: ${color.lightGreen};
     }
 
     &:active {
-      background-color: #c1e2c9;
-      border-color: #c1e2c9;
+      background-color: ${color.lightGreen};
+      border-color: ${color.lightGreen};
     }
   `;
 };
@@ -65,7 +88,8 @@ const setColours = ({
 const StyledButton = styled.button<ButtonProps>`
   border: solid 1px ${color.lightGrey};
   border-radius: 4px;
-  ${({ isDisabled, isPrimary }) => setColours({ isDisabled, isPrimary })};
+  ${({ isDisabled, isPrimary, isTertiary }) =>
+    setTheme({ isDisabled, isPrimary, isTertiary })};
   font-size: 16px;
   transition: all 0.1s ease-in;
   transition-property: background-color color border-color;
@@ -76,18 +100,20 @@ const StyledButton = styled.button<ButtonProps>`
 
   &:disabled {
     cursor: default;
+    pointer-events: none;
     opacity: 0.7;
   }
 `;
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   isPrimary?: boolean;
+  isTertiary?: boolean;
   as?: ElementType;
   isDisabled?: boolean;
   href?: string;
   isInline?: boolean;
   onClick?: () => void;
-  theme?: string;
+  theme?: 'primary' | 'secondary' | 'tertiary';
   type?: 'submit' | 'reset' | 'button' | undefined;
 };
 
@@ -111,6 +137,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         as={as}
         {...(href && { href })}
         isPrimary={theme === 'primary'}
+        isTertiary={theme === 'tertiary'}
         {...(onClick && !isDisabled && { onClick })}
         {...(isDisabled && { disabled: isDisabled })}
         isDisabled={isDisabled}

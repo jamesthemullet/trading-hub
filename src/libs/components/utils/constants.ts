@@ -5,6 +5,7 @@ export const color = {
   darkHeritageGreen: '#005640',
   lightGrey: '#ccc',
   grey: '#999',
+  accessibilityGrey: '#707070',
   backgroundGrey: '#f5f5f5',
   backgroundDarkGrey: '#f0f0f0',
   backgroundPink: '#fbf6f4',

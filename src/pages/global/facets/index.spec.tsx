@@ -235,7 +235,7 @@ describe('Global Facet Management', () => {
       ).toBeVisible();
     });
 
-    await user.click(screen.getByRole('button', { name: 'Cancel delete' }));
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
     await waitFor(() => {
       expect(
         screen.getByText('Do you want to delete this rule?')

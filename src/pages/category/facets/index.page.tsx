@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Skeleton } from '@mantine/core';
+import { useRouter } from 'next/router';
 
-import type { ReturnedRuleSet } from '@/libs/api';
+import type { CategoryRuleSet, ReturnedRuleSet } from '@/libs/api';
 import {
   DataTable,
   DataTableSkeleton,
@@ -17,7 +18,12 @@ import {
   PageWrapper,
   ToolsContainer,
 } from '@/libs/components/utils/shared.styles';
-import { useRuleSet, useRuleSetDelete, useUpdateRuleSet } from '@/libs/hooks';
+import {
+  useRuleSet,
+  useRuleSetCreate,
+  useRuleSetDelete,
+  useUpdateRuleSet,
+} from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Link from 'next/link';
@@ -27,6 +33,8 @@ const FacetManagementPage = () => {
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const { handlePost } = useRuleSetCreate();
+  const router = useRouter();
 
   const currentPageIndex = currentPage - 1;
 
@@ -115,6 +123,35 @@ const FacetManagementPage = () => {
     })
   );
 
+  const createNewCategoryRuleSet = async ({
+    rules,
+    facets,
+    categoryId,
+  }: CategoryRuleSet) => {
+    const resp = await handlePost({
+      facets,
+      categoryId,
+      merchandisingRules: rules,
+    });
+
+    if (resp) {
+      return router.push(`/category/facets/edit/${resp.id}`);
+    }
+  };
+
+  const onDuplicateRuleSet = (id: string) => {
+    const rulesetToCopy = categoryRuleSets.find((ruleset) => ruleset.id === id);
+
+    // istanbul ignore next
+    if (!rulesetToCopy) return;
+    createNewCategoryRuleSet({
+      rules: rulesetToCopy.rules,
+      facets: rulesetToCopy.facets || [],
+      categoryId: rulesetToCopy.categoryId,
+      isEnabled: false,
+    });
+  };
+
   return (
     <>
       <Heading
@@ -164,6 +201,7 @@ const FacetManagementPage = () => {
             headings={headings}
             rows={rows}
             onDeleteRuleSet={onDeleteRuleSet}
+            onDuplicate={onDuplicateRuleSet}
           />
         )}
 

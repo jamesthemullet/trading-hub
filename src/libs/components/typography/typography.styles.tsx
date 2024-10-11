@@ -52,12 +52,13 @@ export const Title = styled.h4`
   line-height: 1.5714;
 `;
 
-export const Text = styled.p<{ isStrong?: boolean }>`
+export const Text = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
   ${commonStyles}
   font-family: ${fonts.regular};
   font-weight: ${({ isStrong }) => (isStrong ? 600 : 'normal')};
   font-size: 0.875rem;
   line-height: 1.5714;
+  margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
 `;
 
 export const Label = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`

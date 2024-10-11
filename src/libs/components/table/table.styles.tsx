@@ -129,6 +129,11 @@ export const TableOptionButton = styled.button<{ isOpen: boolean }>`
   transition: background-color 0.1s ease-in;
   border-left: solid 1px #999;
 
+  border-right: solid 1px ${color.accessibilityGrey};
+  border-top: solid 1px ${color.accessibilityGrey};
+  border-bottom: solid 1px ${color.accessibilityGrey};
+  border-radius: 0 4px 4px 0;
+
   &::before {
     border: 4px solid transparent;
     border-bottom-color: ${({ isOpen }) => isOpen && '#000'};
@@ -137,7 +142,7 @@ export const TableOptionButton = styled.button<{ isOpen: boolean }>`
     display: block;
     height: 0;
     right: 15px;
-    top: ${({ isOpen }) => (isOpen ? '35%' : '23px')};
+    top: ${({ isOpen }) => (isOpen ? '35%' : '18px')};
     position: absolute;
     width: 0;
   }
@@ -153,12 +158,17 @@ export const TableActionsButton = styled.a`
   background-color: #f5f5f5;
   transition: background-color 0.1s ease-in;
   text-decoration: none;
-  padding: 12px 16px;
+  padding: ${spacing(1)} ${spacing(2)};
   width: 100%;
 
   &:hover {
     background-color: #e3e3e3;
   }
+
+  border-left: solid 1px ${color.accessibilityGrey};
+  border-top: solid 1px ${color.accessibilityGrey};
+  border-bottom: solid 1px ${color.accessibilityGrey};
+  border-radius: 4px 0 0 4px;
 `;
 
 export const TableActions = styled.div`
@@ -166,12 +176,17 @@ export const TableActions = styled.div`
   display: flex;
 `;
 
-export const TableDropdown = styled.button`
+export const DropdownOptions = styled.div`
   position: absolute;
-  top: 47px;
+  top: 40px;
   background-color: #f5f5f5;
   width: 100%;
-  padding: ${spacing(2)};
+  z-index: 1;
+`;
+
+export const TableDropdown = styled.button`
+  width: 100%;
+  padding: ${spacing(1)} ${spacing(2)};
   z-index: 1;
   border: none;
   border-top: solid 1px #999;

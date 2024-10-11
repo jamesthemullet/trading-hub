@@ -1,13 +1,20 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
 
-import { useRuleSet } from '@/libs/hooks';
+import { ReturnedCategoryRuleSet } from '@/libs/api';
+import { useRuleSet, useRuleSetCreate } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';
 
-jest.mock('../../../libs/hooks/use-rule-set', () => ({
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useRuleSetCreate: jest.fn(),
   useRuleSet: jest.fn(),
+}));
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
 }));
 const handleDeleteMock = jest.fn();
 const mockRuleSetDelete = {
@@ -47,6 +54,20 @@ const mockMerchandisingRules = {
 };
 
 describe('Category facet management', () => {
+  const mockRouter = {
+    push: jest.fn(),
+  };
+  const mockNewRuleset = 'foo123';
+  const handlePost = jest.fn().mockResolvedValue({ id: mockNewRuleset });
+
+  beforeAll(() => {
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      handlePost,
+      error: '',
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -329,6 +350,145 @@ describe('Category facet management', () => {
     expect(
       screen.getByLabelText('table-pagination-skeleton')
     ).toBeInTheDocument();
+  });
+
+  it('should duplicate a ruleset', async () => {
+    const user = userEvent.setup();
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockFacets = [
+      {
+        id: '4f8d4802-3eb0-11ef-9a6a-000000000000',
+        excludedValues: [],
+        boosted: [],
+      },
+      {
+        id: '1e511220-3240-11ef-aa09-000000000000',
+        excludedValues: [],
+        boosted: [],
+      },
+      {
+        id: 'f04094a0-563e-11ef-a364-000000000000',
+        excludedValues: [
+          '£50.00',
+          '£500.00',
+          '£60.00',
+          '£70.00',
+          '£80.00',
+          '£90.00',
+        ],
+        boosted: ['Tiny', 'Newborn', '1 Months', '0-3 Months'],
+      },
+    ];
+    const mockRuleset = {
+      categoryName: 'cat name',
+      id: mockId,
+      categoriesInfo: [
+        {
+          id: 'foo00',
+        },
+      ],
+      categoryId: 'catId',
+      isEnabled: true,
+      lastChanged: {
+        user: 'user',
+        date: '2021-01-01',
+      },
+      facets: mockFacets,
+      rules: mockMerchandisingRules,
+    };
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [mockRuleset],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Create a duplicate rule' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Duplicate rule',
+    });
+    await user.click(confirmButton);
+    expect(handlePost).toHaveBeenCalledWith({
+      merchandisingRules: mockRuleset.rules,
+      facets: mockFacets,
+      categoryId: mockRuleset.categoryId,
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      `/category/facets/edit/${mockNewRuleset}`
+    );
+  });
+
+  it('should add an empty facet array to a duplicated ruleset which does not have any set', async () => {
+    const user = userEvent.setup();
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockRuleset: ReturnedCategoryRuleSet = {
+      categoryName: 'cat name',
+      id: mockId,
+      categoriesInfo: [
+        {
+          id: 'foo00',
+        },
+      ],
+      categoryId: 'catId',
+      isEnabled: true,
+      lastChanged: {
+        user: 'user',
+        date: '2021-01-01',
+      },
+      rules: mockMerchandisingRules,
+    };
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [mockRuleset],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Create a duplicate rule' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Duplicate rule',
+    });
+    await user.click(confirmButton);
+    expect(handlePost).toHaveBeenCalledWith({
+      merchandisingRules: mockRuleset.rules,
+      facets: [],
+      categoryId: mockRuleset.categoryId,
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      `/category/facets/edit/${mockNewRuleset}`
+    );
   });
 
   describe('Error messaging', () => {

@@ -1,29 +1,29 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
 
-import { useRuleSet } from '@/libs/hooks';
+import { useRuleSet, useRuleSetCreate } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
 
 process.env.DEBUG_PRINT_LIMIT = '1000000';
 
-jest.mock('../../../libs/hooks/use-rule-set', () => ({
-  useRuleSet: jest.fn(),
-}));
-
 const mockRuleSetDelete = jest.fn();
-jest.mock('../../../libs/hooks/use-rule-set-delete', () => ({
+const mockUpdateRuleSet = jest.fn();
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useRuleSetCreate: jest.fn(),
+  useRuleSet: jest.fn(),
   useRuleSetDelete: () => {
     return { handleDelete: mockRuleSetDelete };
   },
-}));
-
-const mockUpdateRuleSet = jest.fn();
-jest.mock('../../../libs/hooks/use-rule-set-update', () => ({
   useUpdateRuleSet: () => {
     return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
   },
+}));
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
 }));
 
 const mockMerchandisingRules = {
@@ -40,6 +40,20 @@ const mockMerchandisingRules = {
 };
 
 describe('Index', () => {
+  const mockRouter = {
+    push: jest.fn(),
+  };
+  const mockNewRuleset = 'foo123';
+  const handlePost = jest.fn().mockResolvedValue({ id: mockNewRuleset });
+
+  beforeAll(() => {
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      handlePost,
+      error: '',
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -277,6 +291,63 @@ describe('Index', () => {
         rules: mockMerchandisingRules,
       },
     });
+  });
+
+  it('should duplicate a ruleset', async () => {
+    const user = userEvent.setup();
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockRuleset = {
+      categoryName: 'cat name',
+      id: mockId,
+      categoriesInfo: [
+        {
+          id: 'foo00',
+        },
+      ],
+      categoryId: 'catId',
+      isEnabled: true,
+      lastChanged: {
+        user: 'user',
+        date: '2021-01-01',
+      },
+      rules: mockMerchandisingRules,
+    };
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [mockRuleset],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Create a duplicate rule' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Duplicate rule',
+    });
+    await user.click(confirmButton);
+    expect(handlePost).toHaveBeenCalledWith({
+      merchandisingRules: mockRuleset.rules,
+      facets: [],
+      categoryId: mockRuleset.categoryId,
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      `/category/rulesets/edit/${mockNewRuleset}`
+    );
   });
 
   it('should show errors', async () => {

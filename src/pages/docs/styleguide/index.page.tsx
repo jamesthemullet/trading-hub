@@ -119,7 +119,9 @@ const StyleGuide = () => {
         </div>
         <Text>Primary</Text>
         <Text>
-          <code>&lt;Button isPrimary&gt;Button&lt;/Button&gt;</code>
+          <code>
+            &lt;Button theme=&quot;primary&quot; &gt;Button&lt;/Button&gt;
+          </code>
         </Text>
       </Guide>
       <Guide>
@@ -138,6 +140,31 @@ const StyleGuide = () => {
         <Text>Inactive</Text>
         <Text>
           <code>&lt;Button isDisabled&gt;Button&lt;/Button&gt;</code>
+        </Text>
+      </Guide>
+      <Guide>
+        <div style={{ width: '60%' }}>
+          <Button theme="tertiary">Button</Button>
+        </div>
+        <Text>Tertiary</Text>
+        <Text>
+          <code>
+            &lt;Button theme=&quot;tertiary&quot; &gt;Button&lt;/Button&gt;
+          </code>
+        </Text>
+      </Guide>
+      <Guide>
+        <div style={{ width: '60%' }}>
+          <Button theme="tertiary" isDisabled>
+            Button
+          </Button>
+        </div>
+        <Text>Tertiary Inactive</Text>
+        <Text>
+          <code>
+            &lt;Button theme=&quot;tertiary&quot;
+            isDisabled&gt;Button&lt;/Button&gt;
+          </code>
         </Text>
       </Guide>
 

@@ -9,10 +9,11 @@ import Image from 'next/image';
 
 import { Button } from '../buttons/button/button';
 import { Toggle } from '../toggle/toggle';
-import { Text, Title } from '../typography/typography.styles';
+import { Header3, Text } from '../typography/typography.styles';
 import { mediaQuery } from '../utils/media-query';
 import { spacing } from '../utils/spacing';
 import {
+  DropdownOptions,
   TableActions,
   TableActionsButton,
   TableCol,
@@ -178,11 +179,21 @@ type Props = {
   headings: string[];
   onDeleteRuleSet: ({ id }: { id: string }) => void;
   rows: Row[];
+  onDuplicate?: (id: string) => void;
 };
 
-export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
+export const DataTable = ({
+  headings,
+  onDeleteRuleSet,
+  rows,
+  onDuplicate,
+}: Props) => {
   const [optionToggle, setOptionToggle] = useState('');
-  const [ruleSetIdToDelete, setRuleSetIdToDelete] = useState('');
+  const [ruleSetIdToEdit, setRuleSetIdToEdit] = useState('');
+  const [ruleSetCategoryIdToEdit, setRuleSetCategoryIdToEdit] = useState('');
+  const [ruleSetEditOption, setRuleSetEditOption] = useState<
+    'delete' | 'duplicate'
+  >('delete');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onClose = () => {
@@ -235,6 +246,19 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
             endDate,
           }: Row) => {
             const isOptionDropdownOpen = optionToggle === id;
+
+            const onConfirmDelete = () => {
+              setRuleSetIdToEdit(id);
+              setRuleSetEditOption('delete');
+              setIsModalOpen(true);
+            };
+            const onConfirmDuplicate = () => {
+              setRuleSetIdToEdit(id);
+              setRuleSetEditOption('duplicate');
+              setRuleSetCategoryIdToEdit(identifier);
+              setIsModalOpen(true);
+            };
+
             return (
               <Row
                 key={id}
@@ -340,21 +364,32 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
                       title="More options"
                     />
                     {isOptionDropdownOpen && (
-                      <TableDropdown
-                        title="Delete"
-                        onMouseDown={() => {
-                          setRuleSetIdToDelete(id);
-                          setIsModalOpen(true);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            setRuleSetIdToDelete(id);
-                            setIsModalOpen(true);
-                          }
-                        }}
-                      >
-                        Delete
-                      </TableDropdown>
+                      <DropdownOptions>
+                        <TableDropdown
+                          title="Delete"
+                          onMouseDown={onConfirmDelete}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              onConfirmDelete();
+                            }
+                          }}
+                        >
+                          Delete
+                        </TableDropdown>
+                        {!!onDuplicate && (
+                          <TableDropdown
+                            title="Duplicate"
+                            onMouseDown={onConfirmDuplicate}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                onConfirmDuplicate();
+                              }
+                            }}
+                          >
+                            Duplicate
+                          </TableDropdown>
+                        )}
+                      </DropdownOptions>
                     )}
                   </TableActions>
                 </TableCol>
@@ -391,29 +426,63 @@ export const DataTable = ({ headings, onDeleteRuleSet, rows }: Props) => {
         <Modal.Overlay blur={3} />
         <Modal.Content>
           <Modal.Body>
-            <Title>Do you want to delete this rule?</Title>
+            <Header3>
+              {ruleSetEditOption === 'delete'
+                ? 'Do you want to delete this rule?'
+                : 'Create a duplicate rule'}
+            </Header3>
+
+            {ruleSetEditOption === 'duplicate' && (
+              <>
+                <Text withMargin>
+                  Are you sure you want to create a duplicate of{' '}
+                  {ruleSetCategoryIdToEdit}
+                </Text>
+                <Text>
+                  This will duplicate both the ranking and facet rules of the
+                  subcategory above. It will supersede the current rules until
+                  it becomes inactive. You can make changes to the duplicate
+                  after it is created
+                </Text>
+              </>
+            )}
 
             <Divider />
 
             <Buttons>
-              <Button
-                aria-label="Cancel delete"
-                onClick={() => setIsModalOpen(false)}
-              >
+              <Button onClick={() => setIsModalOpen(false)} theme="tertiary">
                 Cancel
               </Button>
 
-              <Button
-                onClick={() => {
-                  onDeleteRuleSet({ id: ruleSetIdToDelete });
-                  setIsModalOpen(false);
-                  setOptionToggle('');
-                }}
-                theme="primary"
-                aria-label="Delete rule"
-              >
-                Delete
-              </Button>
+              {ruleSetEditOption === 'delete' && (
+                <Button
+                  onClick={() => {
+                    onDeleteRuleSet({ id: ruleSetIdToEdit });
+                    setIsModalOpen(false);
+                    setOptionToggle('');
+                  }}
+                  theme="tertiary"
+                  aria-label="Delete rule"
+                  data-autofocus
+                >
+                  Delete
+                </Button>
+              )}
+
+              {ruleSetEditOption === 'duplicate' && onDuplicate && (
+                <Button
+                  onClick={() => {
+                    onDuplicate(ruleSetIdToEdit);
+                    setIsModalOpen(false);
+                    setOptionToggle('');
+                  }}
+                  theme="tertiary"
+                  aria-label="Duplicate rule"
+                  data-autofocus
+                >
+                  Confirm
+                </Button>
+              )}
             </Buttons>
           </Modal.Body>
         </Modal.Content>

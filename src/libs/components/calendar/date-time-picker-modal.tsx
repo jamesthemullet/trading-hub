@@ -10,8 +10,6 @@ import {
   Input,
 } from '@/libs/components';
 
-import { color } from '../utils/constants';
-
 const theme = createTheme({});
 
 const StyledModalBody = styled(Modal.Body)`
@@ -33,12 +31,6 @@ const StyledButton = styled(Button)`
   align-self: flex-start;
   width: 96px;
   border-radius: 20px;
-
-  &:disabled {
-    pointer-events: none;
-    background-color: ${color.lightGrey};
-    border-color: ${color.lightGrey};
-  }
 `;
 
 const DatePickerInputContainer = styled.div`
@@ -121,9 +113,12 @@ export const DateTimePickerModal = () => {
             </StyledModalBody>
 
             <Footer>
-              <StyledButton onClick={close}>Cancel</StyledButton>
+              <StyledButton theme="tertiary" onClick={close}>
+                Cancel
+              </StyledButton>
               <StyledButton
-                disabled={
+                theme="tertiary"
+                isDisabled={
                   tempDateRange[0] !== null && tempDateRange[1] === null
                 }
                 onClick={handleSave}

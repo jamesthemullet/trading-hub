@@ -29,7 +29,7 @@ const sevenHeadings = [
 
 const rows = [
   {
-    id: 'id',
+    id: 'mockId',
     identifier: '*',
     isEnabled: true,
     lastChanged: { user: 'Bob', date: '2021-10-01' },
@@ -110,7 +110,7 @@ describe('DataTable', () => {
     expect(screen.getByText('Schedule')).toBeInTheDocument();
   });
 
-  it('should delete rule set', async () => {
+  it('should delete a rule set', async () => {
     const user = userEvent.setup();
     const mockDelete = jest.fn();
     renderWithProviders(
@@ -127,7 +127,7 @@ describe('DataTable', () => {
     await user.click(screen.getByLabelText('Delete rule'));
 
     expect(mockDelete).toHaveBeenCalledWith({
-      id: 'id',
+      id: 'mockId',
     });
     await waitFor(() => {
       expect(screen.queryByText('Delete')).not.toBeInTheDocument();
@@ -159,7 +159,7 @@ describe('DataTable', () => {
     await user.type(confirmDeleteButton, '{Enter}');
 
     expect(mockDelete).toHaveBeenCalledWith({
-      id: 'id',
+      id: 'mockId',
     });
     await waitFor(() => {
       expect(screen.queryByText('Delete')).not.toBeInTheDocument();
@@ -180,12 +180,73 @@ describe('DataTable', () => {
         screen.getByText('Do you want to delete this rule?')
       ).toBeVisible();
     });
-    await user.click(screen.getByLabelText('Cancel delete'));
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     await user.click(screen.getAllByTitle('More options')[0]);
     expect(
       screen.getByText('Do you want to delete this rule?')
     ).not.toBeVisible();
+  });
+
+  it('should duplicate a rule set', async () => {
+    const user = userEvent.setup();
+    const mockDelete = jest.fn();
+    const mockDuplicate = jest.fn();
+    renderWithProviders(
+      <DataTable
+        headings={headings}
+        rows={rows}
+        onDeleteRuleSet={mockDelete}
+        onDuplicate={mockDuplicate}
+      />
+    );
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Create a duplicate rule' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Duplicate rule',
+    });
+    await user.click(confirmButton);
+
+    expect(mockDuplicate).toHaveBeenCalledWith('mockId');
+  });
+
+  it('should duplicate a rule set using keyboard navigation', async () => {
+    const user = userEvent.setup();
+    const mockDelete = jest.fn();
+    const mockDuplicate = jest.fn();
+    renderWithProviders(
+      <DataTable
+        headings={headings}
+        rows={rows}
+        onDeleteRuleSet={mockDelete}
+        onDuplicate={mockDuplicate}
+      />
+    );
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+
+    await user.tab();
+    await user.tab();
+    await user.keyboard('{Enter}');
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Create a duplicate rule' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Duplicate rule',
+    });
+    await user.type(confirmButton, '{Enter}');
+
+    expect(mockDuplicate).toHaveBeenCalledWith('mockId');
   });
 
   it('should toggle a rule set', async () => {
@@ -199,7 +260,7 @@ describe('DataTable', () => {
 
     await waitFor(() => {
       expect(mockToggle).toHaveBeenCalledWith({
-        id: 'id',
+        id: 'mockId',
       });
     });
   });
