@@ -3,7 +3,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import styled from '@emotion/styled';
-import { ExampleCalendarDropdown } from './example-calendar-dropdown';
 import { ArrowButton } from '../../libs/components/buttons/button/arrow-button';
 import { SearchKeywords } from '@/libs/components/keywords/search-keywords/search-keywords';
 import { useState } from 'react';
@@ -70,10 +69,6 @@ const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
       <h1>Sandbox examples</h1>
       <Example>
         <h3>Running on Node version {nodeVersion}</h3>
-      </Example>
-      <Example>
-        <h2>Calendar Component(Dropdown)</h2>
-        <ExampleCalendarDropdown />
       </Example>
       <Example>
         <h2>Calendar Component(Modal)</h2>

@@ -7,6 +7,10 @@ import dayjs from 'dayjs';
 import { DatePicker } from './date-picker';
 
 describe('date-picker', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render', () => {
     render(
       <MantineProvider>
@@ -70,6 +74,66 @@ describe('date-picker', () => {
 
     const endTimeInput = screen.getByLabelText('End time (GMT +1)');
     await user.type(endTimeInput, '2');
+    expect(mockSetEndTime).toHaveBeenCalledWith('00:02');
+  });
+
+  it('should call with start time if end time before start time on the same date', async () => {
+    const user = userEvent.setup();
+    const mockSetStartTime = jest.fn();
+    const mockSetEndTime = jest.fn();
+    render(
+      <MantineProvider>
+        <DatePicker
+          value={[dayjs('2021-01-01').toDate(), dayjs('2021-01-01').toDate()]}
+          isTimeEnabled
+          startTime="00:03"
+          endTime="00:00"
+          setStartTime={mockSetStartTime}
+          setEndTime={mockSetEndTime}
+        />
+      </MantineProvider>
+    );
+    screen.getByTitle('Toggle').click();
+
+    const endTimeInput = screen.getByLabelText('End time (GMT +1)');
+    await user.type(endTimeInput, '2');
+    expect(mockSetEndTime).toHaveBeenCalledWith('00:03');
+  });
+
+  it('should be able to open time pickers', async () => {
+    const user = userEvent.setup();
+    const mockSetStartTime = jest.fn();
+    const mockSetEndTime = jest.fn();
+    render(
+      <MantineProvider>
+        <DatePicker
+          value={[dayjs('2021-01-01').toDate(), dayjs('2021-01-31').toDate()]}
+          isTimeEnabled
+          startTime="00:00"
+          endTime="00:00"
+          setStartTime={mockSetStartTime}
+          setEndTime={mockSetEndTime}
+        />
+      </MantineProvider>
+    );
+    screen.getByTitle('Toggle').click();
+
+    const startTimeInput = screen.getByLabelText('Start time (GMT +1)');
+
+    (startTimeInput as HTMLInputElement).showPicker = jest.fn();
+    await user.type(startTimeInput, '1');
+    expect(mockSetStartTime).toHaveBeenCalledWith('00:01');
+
+    const startAction = screen.getByLabelText('Open edit start time select');
+    await user.click(startAction);
+
+    const endTimeInput = screen.getByLabelText('End time (GMT +1)');
+    (endTimeInput as HTMLInputElement).showPicker = jest.fn();
+    await user.type(endTimeInput, '2');
+
+    const endAction = screen.getByLabelText('Open edit end time select');
+    await user.click(endAction);
+
     expect(mockSetEndTime).toHaveBeenCalledWith('00:02');
   });
 });

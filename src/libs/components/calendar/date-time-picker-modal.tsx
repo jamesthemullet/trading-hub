@@ -37,10 +37,16 @@ const DatePickerInputContainer = styled.div`
   width: 200px;
 `;
 
-export const DateTimePickerModal = () => {
+export const DateTimePickerModal = ({
+  dateTime,
+  onUpdateDateTimeRange,
+}: {
+  dateTime?: [Date, Date];
+  onUpdateDateTimeRange?: (dateTime: [Date | null, Date | null]) => void;
+}) => {
   const [tempDateRange, setTempDateRange] = useState<
     [Date | null, Date | null]
-  >([new Date(), null]);
+  >(dateTime || [new Date(), null]);
   const [opened, { open, close }] = useDisclosure(false);
 
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
@@ -50,12 +56,12 @@ export const DateTimePickerModal = () => {
   const [startTime, setStartTime] = useState(
     dateRange?.[0]
       ? `${dateRange[0].getHours()} : ${dateRange[0].getMinutes()}`
-      : ''
+      : '00:00'
   );
   const [endTime, setEndTime] = useState(
     dateRange?.[1]
       ? `${dateRange[1].getHours()} : ${dateRange[1].getMinutes()}`
-      : ''
+      : '23:59'
   );
 
   const handleSave = () => {
@@ -73,6 +79,7 @@ export const DateTimePickerModal = () => {
     }
 
     setDateRange([startDate, endDate]);
+    onUpdateDateTimeRange?.([startDate, endDate]);
     close();
   };
 

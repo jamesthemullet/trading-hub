@@ -56,7 +56,7 @@ describe('DateTimePickerModal', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Mar 14 2022')).toBeVisible();
+      expect(screen.getByText('Mar 14 2022 00:00')).toBeVisible();
     });
 
     await waitFor(() => {
@@ -88,7 +88,6 @@ describe('DateTimePickerModal', () => {
       input.click();
     });
 
-    // select date range
     await waitFor(() => {
       const startDate = screen.getAllByText('14')[0];
       act(() => {
@@ -97,7 +96,7 @@ describe('DateTimePickerModal', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Mar 14 2022')).toBeVisible();
+      expect(screen.getByText('Mar 14 2022 00:00')).toBeVisible();
     });
 
     await waitFor(() => {
@@ -108,10 +107,11 @@ describe('DateTimePickerModal', () => {
     });
 
     const startTimeInput = screen.getByLabelText('Start time (GMT +1)');
-    user.type(startTimeInput, '12:00');
+    user.type(startTimeInput, '3');
+    user.type(startTimeInput, '0');
 
     const headerText = await screen.findByText(
-      'Mar 14 2022 12:00 - Mar 16 2022'
+      'Mar 14 2022 00:30 - Mar 16 2022 23:59'
     );
     expect(headerText).toBeVisible();
 
@@ -133,7 +133,7 @@ describe('DateTimePickerModal', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText('Mar 14 2022 12:00 - Mar 16 2022')
+        screen.queryByText('Mar 14 2022 00:30 - Mar 16 2022 23:59')
       ).toBeVisible();
     });
   });
@@ -156,7 +156,7 @@ describe('DateTimePickerModal', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Mar 14 2022')).toBeVisible();
+      expect(screen.getByText('Mar 14 2022 00:00')).toBeVisible();
     });
 
     await waitFor(() => {
@@ -167,10 +167,11 @@ describe('DateTimePickerModal', () => {
     });
 
     const endTimeInput = screen.getByLabelText('End time (GMT +1)');
-    user.type(endTimeInput, '12:00');
+    user.type(endTimeInput, '0');
+    user.type(endTimeInput, '0');
 
     const headerText = await screen.findByText(
-      'Mar 14 2022 - Mar 16 2022 12:00'
+      'Mar 14 2022 00:00 - Mar 16 2022 23:00'
     );
     expect(headerText).toBeVisible();
 
@@ -192,7 +193,7 @@ describe('DateTimePickerModal', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText('Mar 14 2022 - Mar 16 2022 12:00')
+        screen.queryByText('Mar 14 2022 00:00 - Mar 16 2022 23:00')
       ).toBeVisible();
     });
   });

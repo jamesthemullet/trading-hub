@@ -59,6 +59,10 @@ const ToggleSwitch = styled.label`
     background-size: contain;
     transform: translateX(20px);
   }
+
+  & > input:focus + span::before {
+    outline: solid;
+  }
 `;
 
 export const Toggle = (

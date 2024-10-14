@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { useRef } from 'react';
+import { ActionIcon } from '@mantine/core';
 import {
   DatePicker as MantineDatePicker,
   DatePickerProps,
@@ -6,6 +8,7 @@ import {
 } from '@mantine/dates';
 
 import dayjs from 'dayjs';
+import Image from 'next/image';
 
 import { Toggle } from '../toggle/toggle';
 import { color } from '../utils/constants';
@@ -131,11 +134,11 @@ const StyledInfoLabel = styled.div`
   margin-bottom: ${spacing(2)};
 `;
 
-const StyledDateRangeLabel = styled.div`
+const StyledvalueLabel = styled.div`
   display: flex;
   justify-content: left;
   align-items: center;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 21px;
   margin-left: 10px;
@@ -174,9 +177,27 @@ export const DatePicker = (
     ...datePickerProps
   } = props;
 
+  const startTimeRef = useRef<HTMLInputElement>(null);
+  const endTimeRef = useRef<HTMLInputElement>(null);
+
   const isToggleEnabled = value
     ? value[0] === null && value[1] === null
     : false;
+
+  const handleSetEndTime = (time: string) => {
+    if (
+      value &&
+      value[0] &&
+      value[1] &&
+      startTime &&
+      dayjs(value[0]).format('DD-MM-YYYY') ===
+        dayjs(value[1]).format('DD-MM-YYYY') &&
+      time < startTime
+    ) {
+      return setEndTime?.(startTime);
+    }
+    setEndTime?.(time);
+  };
 
   return (
     <CalendarContainer>
@@ -202,13 +223,13 @@ export const DatePicker = (
       <StyledInfoContainer>
         <StyledInfoLabel>Rule date and time duration</StyledInfoLabel>
 
-        <StyledDateRangeLabel>
+        <StyledvalueLabel>
           {isToggleEnabled
             ? 'All the time'
             : props.value
               ? formatMonthDayDateTimeRange(props.value, startTime, endTime)
               : ''}
-        </StyledDateRangeLabel>
+        </StyledvalueLabel>
       </StyledInfoContainer>
 
       <Content disabled={isToggleEnabled}>
@@ -233,6 +254,22 @@ export const DatePicker = (
               value={startTime}
               disabled={value?.[0] === null}
               onChange={(event) => setStartTime?.(event.currentTarget.value)}
+              ref={startTimeRef}
+              rightSection={
+                <ActionIcon
+                  variant="subtle"
+                  color="gray"
+                  aria-label="Open edit start time select"
+                  onClick={() => startTimeRef.current?.showPicker()}
+                >
+                  <Image
+                    src="/trading-hub/asset/icon-clock.svg"
+                    width="16"
+                    height="16"
+                    alt=""
+                  />
+                </ActionIcon>
+              }
             />
 
             <StyledTimeInput
@@ -241,7 +278,26 @@ export const DatePicker = (
               maxTime="23:59"
               value={endTime}
               disabled={value?.[1] === null}
-              onChange={(event) => setEndTime?.(event.currentTarget.value)}
+              onChange={(event) =>
+                handleSetEndTime?.(event.currentTarget.value)
+              }
+              ref={endTimeRef}
+              rightSection={
+                <ActionIcon
+                  disabled={value?.[1] === null}
+                  variant="subtle"
+                  color="gray"
+                  aria-label="Open edit end time select"
+                  onClick={() => endTimeRef.current?.showPicker()}
+                >
+                  <Image
+                    src="/trading-hub/asset/icon-clock.svg"
+                    width="16"
+                    height="16"
+                    alt=""
+                  />
+                </ActionIcon>
+              }
             />
           </StyledTimeInputGroup>
         )}
