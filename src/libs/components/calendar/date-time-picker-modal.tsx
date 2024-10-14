@@ -10,6 +10,8 @@ import {
   Input,
 } from '@/libs/components';
 
+import dayjs from 'dayjs';
+
 const theme = createTheme({});
 
 const StyledModalBody = styled(Modal.Body)`
@@ -49,19 +51,14 @@ export const DateTimePickerModal = ({
   >(dateTime || [new Date(), null]);
   const [opened, { open, close }] = useDisclosure(false);
 
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
-    null,
-    null,
-  ]);
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>(
+    dateTime || [null, null]
+  );
   const [startTime, setStartTime] = useState(
-    dateRange?.[0]
-      ? `${dateRange[0].getHours()} : ${dateRange[0].getMinutes()}`
-      : '00:00'
+    dateRange?.[0] ? dayjs(dateRange[0]).format('HH:mm') : '00:00'
   );
   const [endTime, setEndTime] = useState(
-    dateRange?.[1]
-      ? `${dateRange[1].getHours()} : ${dateRange[1].getMinutes()}`
-      : '23:59'
+    dateRange?.[1] ? dayjs(dateRange[1]).format('HH:mm') : '23:59'
   );
 
   const handleSave = () => {

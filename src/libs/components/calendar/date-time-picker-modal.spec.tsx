@@ -81,7 +81,10 @@ describe('DateTimePickerModal', () => {
 
   it('should be able to select start time', async () => {
     const user = userEvent.setup({ delay: null });
-    render(<DateTimePickerModal />);
+    const onUpdateDateTimeRange = jest.fn();
+    render(
+      <DateTimePickerModal onUpdateDateTimeRange={onUpdateDateTimeRange} />
+    );
 
     const input = screen.getByPlaceholderText('Select date range');
     act(() => {
@@ -126,6 +129,10 @@ describe('DateTimePickerModal', () => {
       expect(headerText).not.toBeInTheDocument();
     });
     expect((input as HTMLInputElement).value).toBe('Mar 14 - Mar 16');
+    expect(onUpdateDateTimeRange).toHaveBeenCalledWith([
+      new Date('2022-03-14T00:30:00.000Z'),
+      new Date('2022-03-16T23:59:00.000Z'),
+    ]);
 
     act(() => {
       input.click();
@@ -140,7 +147,10 @@ describe('DateTimePickerModal', () => {
 
   it('should be able to select end time', async () => {
     const user = userEvent.setup({ delay: null });
-    render(<DateTimePickerModal />);
+    const onUpdateDateTimeRange = jest.fn();
+    render(
+      <DateTimePickerModal onUpdateDateTimeRange={onUpdateDateTimeRange} />
+    );
 
     const input = screen.getByPlaceholderText('Select date range');
     act(() => {
@@ -186,6 +196,10 @@ describe('DateTimePickerModal', () => {
       expect(headerText).not.toBeInTheDocument();
     });
     expect((input as HTMLInputElement).value).toBe('Mar 14 - Mar 16');
+    expect(onUpdateDateTimeRange).toHaveBeenCalledWith([
+      new Date('2022-03-14T00:00:00.000Z'),
+      new Date('2022-03-16T23:00:00.000Z'),
+    ]);
 
     act(() => {
       input.click();
@@ -196,5 +210,51 @@ describe('DateTimePickerModal', () => {
         screen.queryByText('Mar 14 2022 00:00 - Mar 16 2022 23:00')
       ).toBeVisible();
     });
+  });
+
+  it('should init with date', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onUpdateDateTimeRange = jest.fn();
+    render(
+      <DateTimePickerModal
+        dateTime={[
+          new Date('2022-03-01T12:00:00.000Z'),
+          new Date('2022-03-20T12:00:00.000Z'),
+        ]}
+        onUpdateDateTimeRange={onUpdateDateTimeRange}
+      />
+    );
+
+    const input = screen.getByPlaceholderText('Select date range');
+    act(() => {
+      input.click();
+    });
+
+    await waitFor(() => {
+      const endTimeInput = screen.getByLabelText('End time (GMT +1)');
+      user.type(endTimeInput, '0');
+      user.type(endTimeInput, '0');
+    });
+
+    const headerText = await screen.findByText(
+      'Mar 01 2022 12:00 - Mar 20 2022 12:00'
+    );
+    expect(headerText).toBeVisible();
+
+    const saveButton = screen.getByRole('button', { name: 'Save' });
+    act(() => {
+      saveButton.click();
+    });
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: 'Save' })
+      ).not.toBeInTheDocument();
+      expect(headerText).not.toBeInTheDocument();
+    });
+    expect((input as HTMLInputElement).value).toBe('Mar 01 - Mar 20');
+    expect(onUpdateDateTimeRange).toHaveBeenCalledWith([
+      new Date('2022-03-01T12:00:00.000Z'),
+      new Date('2022-03-20T12:00:00.000Z'),
+    ]);
   });
 });
