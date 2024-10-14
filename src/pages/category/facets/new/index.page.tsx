@@ -5,11 +5,11 @@ import { useRuleSetCreate } from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 
 const Page = () => {
-  const { handlePost, error } = useRuleSetCreate();
+  const { createRuleset, error } = useRuleSetCreate();
   const router = useRouter();
 
   const createNewCategoryRuleSet = async (categoryId: string) => {
-    const resp = await handlePost({
+    const resp = await createRuleset({
       facets: [],
       categoryId,
       merchandisingRules: {
@@ -32,6 +32,7 @@ const Page = () => {
           alphanumeric: [],
         },
       },
+      isEnabled: true,
     });
 
     if (resp) {

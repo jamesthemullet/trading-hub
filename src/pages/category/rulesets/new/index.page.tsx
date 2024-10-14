@@ -6,16 +6,17 @@ import { useRuleSetCreate } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 const NewRuleSetPage = () => {
-  const { handlePost } = useRuleSetCreate();
+  const { createRuleset } = useRuleSetCreate();
   const router = useRouter();
 
   const createNewCategoryRuleSet = async ({
     rules,
     facets,
     categoryId,
-  }: CategoryRuleSet) => {
-    const resp = await handlePost({
-      facets,
+  }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
+    const resp = await createRuleset({
+      facets: facets,
+      isEnabled: true,
       categoryId,
       merchandisingRules: rules,
     });

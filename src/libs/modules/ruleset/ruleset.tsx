@@ -113,7 +113,9 @@ export const Ruleset = ({
     searchTerms?: Array<string>;
   }) => void;
   onCancel: () => void;
-  onCreate?: (args: CategoryRuleSet) => void;
+  onCreate?: (
+    args: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet
+  ) => void;
   onCreateKeywordSearchRuleset?: (args: KeywordRuleSet) => void;
   rulesetCategory?: Required<Category>;
   rulesetFacets?: Array<RuleSetFacetConfigWithId>;

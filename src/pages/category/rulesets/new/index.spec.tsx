@@ -59,7 +59,7 @@ describe('Index', () => {
 
   beforeAll(() => {
     jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost: jest.fn(),
+      createRuleset: jest.fn(),
       error: '',
     });
     jest.mocked(useGetCategories).mockReturnValue({
@@ -92,7 +92,7 @@ describe('Index', () => {
   it('clears category search results', async () => {
     const user = userEvent.setup();
     jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost: jest.fn(() =>
+      createRuleset: jest.fn(() =>
         Promise.resolve({
           id: MOCK_CATEGORY_ID,
           categoryName: "Men's shirts",
@@ -155,7 +155,7 @@ describe('Index', () => {
   it('creates a new rule set and redirects to the edit page', async () => {
     const user = userEvent.setup();
     jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost: jest.fn(() =>
+      createRuleset: jest.fn(() =>
         Promise.resolve({
           id: MOCK_CATEGORY_ID,
           categoryName: "Men's shirts",
@@ -234,7 +234,7 @@ describe('Index', () => {
   it('creates a new rule set and does not redirect if no id given for the edit page', async () => {
     const user = userEvent.setup();
     jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost: jest.fn(() => Promise.resolve(undefined)),
+      createRuleset: jest.fn(() => Promise.resolve(undefined)),
       error: '',
     });
     jest.mocked(useGetCategories).mockReturnValue({

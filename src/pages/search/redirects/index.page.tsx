@@ -36,8 +36,10 @@ const RedirectRuleSets = () => {
   const { createRedirect } = useRedirectCreate();
   const router = useRouter();
 
-  const createNewRedirect = async (redirect: KeywordRedirect) => {
-    const response = await createRedirect({ redirect });
+  const createDuplicatedRedirect = async (redirect: KeywordRedirect) => {
+    const response = await createRedirect({
+      redirect: { ...redirect, isEnabled: false },
+    });
 
     if (response) {
       router.push(`/search/redirects/edit/${response.id}`);
@@ -84,7 +86,7 @@ const RedirectRuleSets = () => {
 
     // istanbul ignore next
     if (!redirectToCopy) return;
-    createNewRedirect(redirectToCopy);
+    createDuplicatedRedirect(redirectToCopy);
   };
 
   const onDeleteRedirect = async ({ id }: { id: string }) => {

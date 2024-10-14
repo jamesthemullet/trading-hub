@@ -44,12 +44,12 @@ describe('Index', () => {
     push: jest.fn(),
   };
   const mockNewRuleset = 'foo123';
-  const handlePost = jest.fn().mockResolvedValue({ id: mockNewRuleset });
+  const createRuleset = jest.fn().mockResolvedValue({ id: mockNewRuleset });
 
   beforeAll(() => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost,
+      createRuleset,
       error: '',
     });
   });
@@ -339,10 +339,11 @@ describe('Index', () => {
       name: 'Duplicate rule',
     });
     await user.click(confirmButton);
-    expect(handlePost).toHaveBeenCalledWith({
+    expect(createRuleset).toHaveBeenCalledWith({
       merchandisingRules: mockRuleset.rules,
       facets: [],
       categoryId: mockRuleset.categoryId,
+      isEnabled: false,
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith(

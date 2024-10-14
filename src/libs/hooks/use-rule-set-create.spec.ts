@@ -57,9 +57,11 @@ describe('useRuleSetCreate', () => {
     const {
       result: { current },
     } = renderHook(() => useRuleSetCreate());
-    const resp = await current.handlePost({
+    const resp = await current.createRuleset({
       categoryId: mockCategoryId,
       merchandisingRules: mockMerchandisingRules,
+      facets: [],
+      isEnabled: true,
     });
 
     expect(resp).toEqual(mockResponse);
@@ -74,9 +76,11 @@ describe('useRuleSetCreate', () => {
     const { result } = renderHook(() => useRuleSetCreate());
 
     await act(async () => {
-      await result.current.handlePost({
+      await result.current.createRuleset({
         categoryId: mockCategoryId,
         merchandisingRules: mockMerchandisingRules,
+        facets: [],
+        isEnabled: false,
       });
     });
 

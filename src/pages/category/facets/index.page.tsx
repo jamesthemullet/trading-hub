@@ -33,7 +33,7 @@ const FacetManagementPage = () => {
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const { handlePost } = useRuleSetCreate();
+  const { createRuleset } = useRuleSetCreate();
   const router = useRouter();
 
   const currentPageIndex = currentPage - 1;
@@ -123,13 +123,14 @@ const FacetManagementPage = () => {
     })
   );
 
-  const createNewCategoryRuleSet = async ({
+  const createDuplicatedCategoryRuleSet = async ({
     rules,
     facets,
     categoryId,
-  }: CategoryRuleSet) => {
-    const resp = await handlePost({
-      facets,
+  }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
+    const resp = await createRuleset({
+      facets: facets,
+      isEnabled: false,
       categoryId,
       merchandisingRules: rules,
     });
@@ -144,7 +145,7 @@ const FacetManagementPage = () => {
 
     // istanbul ignore next
     if (!rulesetToCopy) return;
-    createNewCategoryRuleSet({
+    createDuplicatedCategoryRuleSet({
       rules: rulesetToCopy.rules,
       facets: rulesetToCopy.facets || [],
       categoryId: rulesetToCopy.categoryId,

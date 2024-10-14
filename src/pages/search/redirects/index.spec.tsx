@@ -161,7 +161,7 @@ describe('Search Rulesets', () => {
         destinationUrl: 'l/women/dresses',
         endDate: '2024-08-01T09:37:06.109Z',
         id: '9a32d206-6b7f-47a2-8f83-578429d2a024',
-        isEnabled: true,
+        isEnabled: false,
         keywords: ['search', 'terms'],
         lastChanged: {
           date: '2024-08-01T09:37:06.109Z',

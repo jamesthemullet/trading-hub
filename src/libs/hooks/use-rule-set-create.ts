@@ -6,14 +6,16 @@ import { search } from '@/libs/api';
 export const useRuleSetCreate = () => {
   const [error, setError] = useState('');
 
-  const handlePost = useCallback(
+  const createRuleset = useCallback(
     async ({
       categoryId,
       facets,
+      isEnabled,
       merchandisingRules,
     }: {
       categoryId: string;
-      facets?: Array<RuleSetFacetConfigWithId>;
+      facets: Array<RuleSetFacetConfigWithId>;
+      isEnabled: boolean;
       merchandisingRules: MerchandisingRules;
     }) => {
       setError('');
@@ -22,7 +24,7 @@ export const useRuleSetCreate = () => {
         const body = {
           facets,
           categoryId,
-          isEnabled: true,
+          isEnabled,
           rules: merchandisingRules,
         };
         const response =
@@ -35,5 +37,5 @@ export const useRuleSetCreate = () => {
     []
   );
 
-  return { handlePost, error };
+  return { createRuleset, error };
 };

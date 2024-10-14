@@ -66,7 +66,7 @@ const SearchRuleSets = () => {
     setRuleSets(updatedRuleSetsList);
   };
 
-  const createNewCategoryRuleSet = async ({
+  const createDuplicatedCategoryRuleSet = async ({
     rules,
     searchTerms,
   }: KeywordRuleSet) => {
@@ -93,7 +93,7 @@ const SearchRuleSets = () => {
 
     // istanbul ignore next
     if (!rulesetToCopy) return;
-    createNewCategoryRuleSet({
+    createDuplicatedCategoryRuleSet({
       rules: rulesetToCopy.rules,
       searchTerms: rulesetToCopy.searchTerms,
       isEnabled: false,

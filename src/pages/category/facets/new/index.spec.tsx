@@ -64,7 +64,7 @@ describe('Facet Management Editing', () => {
 
   it('should render category ruleset facet editor', async () => {
     jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost: jest.fn(),
+      createRuleset: jest.fn(),
       error: '',
     });
     renderWithProviders(<NewFacetRuleset />);
@@ -92,9 +92,9 @@ describe('Facet Management Editing', () => {
 
   it('should save changes to a facet', async () => {
     const user = userEvent.setup();
-    const handlePost = jest.fn().mockResolvedValue({});
+    const createRuleset = jest.fn().mockResolvedValue({});
     jest.mocked(useRuleSetCreate).mockReturnValue({
-      handlePost,
+      createRuleset,
       error: '',
     });
     jest.mocked(useGetCategories).mockReturnValue({
@@ -121,9 +121,10 @@ describe('Facet Management Editing', () => {
     });
 
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
-    expect(handlePost).toHaveBeenCalledWith({
+    expect(createRuleset).toHaveBeenCalledWith({
       categoryId: 'cat_123',
       facets: [],
+      isEnabled: true,
       merchandisingRules: {
         blockedProducts: [],
         boosts: { alphanumeric: [], numeric: [], product: [] },
