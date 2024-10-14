@@ -214,15 +214,16 @@ export const DataTable = ({
     setOptionToggle(optionToggle === id ? '' : id);
   };
 
+  const showBreadcrumbColumn =
+    headings.filter((heading) => heading === 'Breadcrumb').length > 0;
+
   return (
     <>
       <TableContainer>
         <Row
           style={{ color: '#8a8a8a', fontSize: '0.9em' }}
           numColumns={headings.length}
-          showBreadcrumbColumn={
-            headings.filter((heading) => heading === 'Breadcrumb').length > 0
-          }
+          showBreadcrumbColumn={showBreadcrumbColumn}
         >
           {headings.map((heading) => (
             <DynamicTableCol key={heading} data-heading={heading}>
@@ -263,10 +264,7 @@ export const DataTable = ({
               <Row
                 key={id}
                 numColumns={headings.length}
-                showBreadcrumbColumn={
-                  headings.filter((heading) => heading === 'Breadcrumb')
-                    .length > 0
-                }
+                showBreadcrumbColumn={showBreadcrumbColumn}
               >
                 <FirstColumn>
                   <Text
@@ -290,7 +288,7 @@ export const DataTable = ({
                           width={24}
                           height={24}
                         />
-                        <Text>
+                        <Text as="time">
                           {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
                           {format(new Date(endDate), 'dd MMM yyyy')}
                         </Text>
@@ -402,7 +400,7 @@ export const DataTable = ({
                         width={24}
                         height={24}
                       />
-                      <Text>
+                      <Text as="time">
                         {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
                         {format(new Date(endDate), 'dd MMM yyyy')}
                       </Text>

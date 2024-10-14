@@ -16,6 +16,11 @@ jest.mock('@/libs/hooks', () => ({
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
+jest.mock('@/libs/components/utils/feature-flags', () => ({
+  get FEATURE_FLAGS() {
+    return { scheduling: true };
+  },
+}));
 const handleDeleteMock = jest.fn();
 const mockRuleSetDelete = {
   handleDelete: handleDeleteMock,
@@ -432,6 +437,76 @@ describe('Category facet management', () => {
 
     expect(mockRouter.push).toHaveBeenCalledWith(
       `/category/facets/edit/${mockNewRuleset}`
+    );
+  });
+
+  it('displays shedule if a ruleset has a start and end date', () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockFacets = [
+      {
+        id: '4f8d4802-3eb0-11ef-9a6a-000000000000',
+        excludedValues: [],
+        boosted: [],
+      },
+      {
+        id: '1e511220-3240-11ef-aa09-000000000000',
+        excludedValues: [],
+        boosted: [],
+      },
+      {
+        id: 'f04094a0-563e-11ef-a364-000000000000',
+        excludedValues: [
+          '£50.00',
+          '£500.00',
+          '£60.00',
+          '£70.00',
+          '£80.00',
+          '£90.00',
+        ],
+        boosted: ['Tiny', 'Newborn', '1 Months', '0-3 Months'],
+      },
+    ];
+    const mockRuleset = {
+      categoryName: 'cat name',
+      id: mockId,
+      categoriesInfo: [
+        {
+          id: 'foo00',
+        },
+      ],
+      categoryId: 'catId',
+      isEnabled: true,
+      lastChanged: {
+        user: 'user',
+        date: '2021-01-01',
+      },
+      facets: mockFacets,
+      rules: mockMerchandisingRules,
+    };
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        mockRuleset,
+        {
+          ...mockRuleset,
+          id: 'foo',
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-15T10:02:38.556Z',
+        },
+      ],
+      pagination: {
+        totalItems: 2,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<FacetManagementPage />);
+
+    expect(screen.getByRole('time').textContent).toBe(
+      '14 Oct 2024 - 15 Oct 2024'
     );
   });
 

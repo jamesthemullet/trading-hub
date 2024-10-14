@@ -26,6 +26,12 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+jest.mock('@/libs/components/utils/feature-flags', () => ({
+  get FEATURE_FLAGS() {
+    return { scheduling: true };
+  },
+}));
+
 const mockMerchandisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
@@ -129,6 +135,63 @@ describe('Index', () => {
     });
 
     expect(dropdown.previousSibling?.textContent).toBe('100');
+  });
+
+  it('displays shedule if a ruleset has a start and end date', () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          categoryName: `identifier-1`,
+          id: `1`,
+          categoryId: `1`,
+          categoriesInfo: [
+            {
+              id: `1`,
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+        {
+          categoryName: `identifier-2`,
+          id: `2`,
+          categoryId: `2`,
+          categoriesInfo: [
+            {
+              id: `2`,
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-15T10:02:38.556Z',
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 2,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<RuleSets />);
+
+    expect(screen.getByRole('time').textContent).toBe(
+      '14 Oct 2024 - 15 Oct 2024'
+    );
   });
 
   it('should search', async () => {

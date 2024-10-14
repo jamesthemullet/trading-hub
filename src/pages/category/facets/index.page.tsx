@@ -12,6 +12,7 @@ import {
   TablePagination,
   TablePaginationSkeleton,
 } from '@/libs/components';
+import { FEATURE_FLAGS } from '@/libs/components/utils/feature-flags';
 import {
   NewButton,
   PageNameLabel,
@@ -93,9 +94,14 @@ const FacetManagementPage = () => {
     setCategoryRuleSets(updatedRuleSetsList);
   };
 
+  const hasSchedule =
+    categoryRuleSets.some((rule) => rule.startDate && rule.endDate) &&
+    FEATURE_FLAGS.scheduling;
+
   const headings = [
     'Identifier',
     'Breadcrumb',
+    ...(hasSchedule ? ['Schedule'] : []),
     'Enable',
     'Last Changed',
     'User',
@@ -110,6 +116,8 @@ const FacetManagementPage = () => {
       isEnabled,
       lastChanged,
       categoriesInfo,
+      startDate,
+      endDate,
     }) => ({
       id: id,
       identifier: `${categoryId} | ${categoryName}`,
@@ -120,6 +128,7 @@ const FacetManagementPage = () => {
       categoryPlpUrl: categoriesInfo.find(
         (category) => category.id === categoryId
       )?.plpUrl,
+      ...(FEATURE_FLAGS.scheduling && { startDate, endDate }),
     })
   );
 
