@@ -10,7 +10,9 @@ import {
   SubHeader3,
   Text,
 } from '@/libs/components';
+import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { color } from '@/libs/components/utils/constants';
+import { FEATURE_FLAGS } from '@/libs/components/utils/feature-flags';
 
 const RedirectType = styled.div`
   border-top: solid 1px ${color.darkHeritageGreen};
@@ -34,6 +36,23 @@ const Input = styled.input`
   min-height: 64px;
   max-width: 1024px;
   width: 100%;
+`;
+
+const Duration = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: ${spacing(2)};
+  gap: ${spacing(1)};
+
+  label {
+    margin-top: ${spacing(0.5)};
+  }
+`;
+
+const LabelContainer = styled.label`
+  display: flex;
+  font-size: 14px;
+  align-items: center;
 `;
 
 type Props = {
@@ -151,7 +170,7 @@ export const Redirect = ({
             ? 'Redirect Term(s)'
             : 'Redirect Phrase(s)'}
         </SubHeader3>
-        <Row>
+        <Row style={{ display: 'flex' }}>
           <SearchKeywords
             searchTerms={redirect.keywords}
             title={
@@ -160,6 +179,12 @@ export const Redirect = ({
             addSearchTerm={onAddKeyword}
             removeSearchTerm={onRemoveKeyword}
           />
+          {FEATURE_FLAGS.scheduling && (
+            <Duration>
+              <LabelContainer>Duration</LabelContainer>
+              <DateTimePickerModal showCalendarIcon={true} />
+            </Duration>
+          )}
         </Row>
         <Row>
           <Text>Destination URL*</Text>

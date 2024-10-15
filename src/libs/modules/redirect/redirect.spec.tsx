@@ -6,6 +6,13 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import { Redirect } from './redirect';
 
+jest.mock('../../../libs/components/utils/feature-flags', () => ({
+  ...jest.requireActual('../../../libs/components/utils/feature-flags'),
+  FEATURE_FLAGS: {
+    scheduling: true,
+  },
+}));
+
 describe('Redirect', () => {
   it('creates a redriect', async () => {
     const mockCreate = jest.fn();
@@ -133,5 +140,33 @@ describe('Redirect', () => {
     ).toBeVisible();
 
     expect(screen.getByDisplayValue('title of redirect')).toBeVisible();
+  });
+
+  it('should show datepicker if feature flag is enabled', async () => {
+    const mockSave = jest.fn();
+
+    const existingRedirect: ReturnedKeywordRedirect = {
+      destinationUrl: 'l/womens/dresses',
+      type: 'redirectTerm',
+      keywords: ['keyword'],
+      id: 'abc123',
+      lastChanged: {
+        date: '',
+        user: '',
+      },
+      isEnabled: true,
+      ruleTitle: 'title of redirect',
+    };
+
+    renderWithProviders(
+      <Redirect
+        onCancel={() => jest.fn()}
+        onSave={mockSave}
+        title="Edit Keyword Redirect rule"
+        redirect={existingRedirect}
+      />
+    );
+
+    expect(screen.getByText('Duration')).toBeVisible();
   });
 });

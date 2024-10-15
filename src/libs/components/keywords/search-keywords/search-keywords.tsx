@@ -32,7 +32,7 @@ const SearchKeywordsContainer = styled.div`
 const LabelContainer = styled.div`
   display: flex;
   font-size: 14px;
-  align-items: center;
+  align-items: baseline;
 `;
 
 const SearchBoxContainer = styled.div`
@@ -62,7 +62,7 @@ const ViewAllButton = styled(Button)`
 const InputBoxWrapper = styled.div`
   background-color: #f5f5f5;
   border-bottom: solid 1px #cacaca;
-  height: 56px;
+  height: 55px;
   width: 470px;
   display: flex;
   gap: ${spacing(1)};

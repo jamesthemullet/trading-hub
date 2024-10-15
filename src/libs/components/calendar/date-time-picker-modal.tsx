@@ -6,11 +6,13 @@ import { useDisclosure } from '@mantine/hooks';
 import {
   Button,
   DatePicker,
-  formatMonthDayDateRange,
+  formatDateMonthYearTimeRange,
   Input,
+  spacing,
 } from '@/libs/components';
 
 import dayjs from 'dayjs';
+import Image from 'next/image';
 
 const theme = createTheme({});
 
@@ -35,16 +37,32 @@ const StyledButton = styled(Button)`
   border-radius: 20px;
 `;
 
-const DatePickerInputContainer = styled.div`
-  width: 200px;
+const StyledInput = styled(Input)`
+  background-color: #f5f5f5;
+  border: none;
+  height: 54px;
+`;
+
+const StyledInputContainer = styled.div`
+  background-color: #f5f5f5;
+  border-bottom: solid 1px #cacaca;
+  width: 316px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 ${spacing(1)};
 `;
 
 export const DateTimePickerModal = ({
   dateTime,
   onUpdateDateTimeRange,
+  label,
+  showCalendarIcon,
 }: {
   dateTime?: [Date, Date];
   onUpdateDateTimeRange?: (dateTime: [Date | null, Date | null]) => void;
+  label?: string;
+  showCalendarIcon?: boolean;
 }) => {
   const [tempDateRange, setTempDateRange] = useState<
     [Date | null, Date | null]
@@ -82,18 +100,28 @@ export const DateTimePickerModal = ({
 
   return (
     <>
-      <DatePickerInputContainer>
-        <Input
+      <StyledInputContainer>
+        <StyledInput
           id={''}
-          label={''}
+          label={label || ''}
           placeholder={'Select date range'}
-          value={formatMonthDayDateRange(dateRange)}
+          value={formatDateMonthYearTimeRange(dateRange, startTime, endTime)}
           onClick={() => {
             setTempDateRange(dateRange);
             open();
           }}
-        ></Input>
-      </DatePickerInputContainer>
+          isLabelHidden={true}
+        ></StyledInput>
+
+        {showCalendarIcon && (
+          <Image
+            alt=""
+            src={`/trading-hub/asset/icon-blank-calendar.svg`}
+            width={20}
+            height={20}
+          />
+        )}
+      </StyledInputContainer>
 
       <MantineProvider theme={theme}>
         <Modal.Root

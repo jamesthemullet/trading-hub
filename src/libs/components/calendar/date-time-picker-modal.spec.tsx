@@ -76,7 +76,9 @@ describe('DateTimePickerModal', () => {
         screen.queryByRole('button', { name: 'Save' })
       ).not.toBeInTheDocument();
     });
-    expect((input as HTMLInputElement).value).toBe('Mar 14 - Mar 16');
+    expect((input as HTMLInputElement).value).toBe(
+      '14/03/22 00:00 - 16/03/22 23:59'
+    );
   });
 
   it('should be able to select start time', async () => {
@@ -128,7 +130,9 @@ describe('DateTimePickerModal', () => {
       ).not.toBeInTheDocument();
       expect(headerText).not.toBeInTheDocument();
     });
-    expect((input as HTMLInputElement).value).toBe('Mar 14 - Mar 16');
+    expect((input as HTMLInputElement).value).toBe(
+      '14/03/22 00:30 - 16/03/22 23:59'
+    );
     expect(onUpdateDateTimeRange).toHaveBeenCalledWith([
       new Date('2022-03-14T00:30:00.000Z'),
       new Date('2022-03-16T23:59:00.000Z'),
@@ -195,7 +199,9 @@ describe('DateTimePickerModal', () => {
       ).not.toBeInTheDocument();
       expect(headerText).not.toBeInTheDocument();
     });
-    expect((input as HTMLInputElement).value).toBe('Mar 14 - Mar 16');
+    expect((input as HTMLInputElement).value).toBe(
+      '14/03/22 00:00 - 16/03/22 23:00'
+    );
     expect(onUpdateDateTimeRange).toHaveBeenCalledWith([
       new Date('2022-03-14T00:00:00.000Z'),
       new Date('2022-03-16T23:00:00.000Z'),
@@ -251,7 +257,9 @@ describe('DateTimePickerModal', () => {
       ).not.toBeInTheDocument();
       expect(headerText).not.toBeInTheDocument();
     });
-    expect((input as HTMLInputElement).value).toBe('Mar 01 - Mar 20');
+    expect((input as HTMLInputElement).value).toBe(
+      '01/03/22 12:00 - 20/03/22 12:00'
+    );
     expect(onUpdateDateTimeRange).toHaveBeenCalledWith([
       new Date('2022-03-01T12:00:00.000Z'),
       new Date('2022-03-20T12:00:00.000Z'),
