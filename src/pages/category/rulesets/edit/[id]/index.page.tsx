@@ -60,6 +60,8 @@ const Page = ({ id }: PageProps) => {
           rulesetId={ruleSetDetail.id}
           rulesetMerchandisingRules={ruleSetDetail.rules}
           rulesetType="category"
+          startDate={ruleSetDetail.startDate}
+          endDate={ruleSetDetail.endDate}
         />
       )}
 

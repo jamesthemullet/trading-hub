@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { ExcludedFacets, RuleSet } from '@/libs/api';
+import type { CategoryRuleSet, ExcludedFacets, RuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { handleError } from './utils/error';
@@ -25,12 +25,14 @@ export const useUpdateRuleSet = () => {
       setIsSaving(true);
 
       try {
-        const body = {
+        const body: CategoryRuleSet = {
           categoryId,
           facets: rules.facets,
           isEnabled: rules.isEnabled,
           rules: rules.rules,
           excludedFacets: excludedFacets,
+          startDate: rules.startDate,
+          endDate: rules.endDate,
         };
 
         await search().betaMerchandisingCategoryRulesetUpdate(ruleSetId, body);

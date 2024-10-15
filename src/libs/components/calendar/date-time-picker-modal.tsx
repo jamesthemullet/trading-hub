@@ -59,7 +59,7 @@ export const DateTimePickerModal = ({
   label,
   showCalendarIcon,
 }: {
-  dateTime?: [Date, Date];
+  dateTime?: [Date | null, Date | null];
   onUpdateDateTimeRange?: (dateTime: [Date | null, Date | null]) => void;
   label?: string;
   showCalendarIcon?: boolean;

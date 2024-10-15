@@ -6,8 +6,7 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import { Search } from '../search/search';
 import { Text } from '../typography/typography.styles';
-import { spacing } from '../utils/spacing';
-import { Container, Row, Wrapper } from './category.styles';
+import { CategoryTitle, Container, Row, Wrapper } from './category.styles';
 import { SelectedCategory } from './selected-category';
 
 const SEARCH_DEBOUNCE_WAIT = 500;
@@ -112,7 +111,7 @@ export const CategorySearch = ({
 
   return (
     <Wrapper>
-      <Text style={{ marginBottom: spacing(1) }}>Category</Text>
+      <CategoryTitle>Category</CategoryTitle>
       <form onSubmit={onSubmit}>
         <Search value={searchValue} onChange={onSearchChange} />
       </form>

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useReducer, useState } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -22,6 +22,8 @@ import {
   Tabs,
   Text,
 } from '@/libs/components';
+import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearch } from '@/libs/components/product-search/product-search';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
@@ -38,6 +40,7 @@ import { rulesetReducer } from './reducer';
 const CategoryPanel = styled.div`
   border-top: 2px solid #005640;
   padding: ${spacing(1)};
+  display: flex;
 `;
 
 const MainContainerPanel = styled.div`
@@ -80,6 +83,35 @@ const ProductSearchTabContent = styled(TabContent)`
   overflow: hidden;
 `;
 
+const CategorySearchWrapper = styled.div`
+  min-width: 600px;
+`;
+
+const KeywordSearchWrapper = styled.div`
+  min-width: 470px;
+`;
+
+const GlobalInfoWrapper = styled.div`
+  width: 100%;
+`;
+
+const Duration = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: ${spacing(2)};
+  gap: ${spacing(1)};
+
+  label {
+    margin-top: ${spacing(0.5)};
+  }
+`;
+
+const LabelContainer = styled.label`
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+`;
+
 export type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
@@ -87,6 +119,7 @@ export type ChangePositionTypes = {
 };
 
 export const Ruleset = ({
+  endDate,
   isEnabled,
   onCancel,
   onCreate,
@@ -99,6 +132,7 @@ export const Ruleset = ({
   rulesetMerchandisingRules,
   rulesetType,
   searchTerms,
+  startDate,
 }: {
   isEnabled: boolean;
   onSave?: ({
@@ -124,6 +158,8 @@ export const Ruleset = ({
   rulesetMerchandisingRules?: MerchandisingRules;
   rulesetType: 'global' | 'category' | 'search';
   searchTerms?: string[];
+  startDate?: string;
+  endDate?: string;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<
     Required<Category> | undefined
@@ -136,17 +172,20 @@ export const Ruleset = ({
   const [hasChanges, setHasChanges] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const router = useRouter();
+  const featureFlags = useContext(FeatureFlagContext);
 
   const onSelectCategory = (category: Required<Category>) => {
     setSelectedCategory(category);
     if (!hasChanges) setHasChanges(true);
   };
 
-  const [merchandisingRules, dispatch] = useReducer<
-    (state: MerchandisingRules, action: Action) => MerchandisingRules
-  >(
-    rulesetReducer,
-    rulesetMerchandisingRules || {
+  const [ruleset, dispatch] = useReducer<
+    (state: RuleSet, action: Action) => RuleSet
+  >(rulesetReducer, {
+    isEnabled,
+    startDate,
+    endDate,
+    rules: rulesetMerchandisingRules || {
       pinnedProducts: [],
       blockedProducts: [],
       boosts: {
@@ -165,8 +204,10 @@ export const Ruleset = ({
       excludes: {
         alphanumeric: [],
       },
-    }
-  );
+    },
+  });
+
+  const { rules: merchandisingRules } = ruleset;
 
   useEffect(() => {
     const warningText =
@@ -243,6 +284,8 @@ export const Ruleset = ({
           isEnabled,
           rules: merchandisingRules,
           excludedFacets: rulesetExcludedFacets,
+          startDate: ruleset.startDate,
+          endDate: ruleset.endDate,
         },
         ...(selectedCategory?.identifier && {
           categoryIds: [selectedCategory.identifier],
@@ -257,12 +300,16 @@ export const Ruleset = ({
         isEnabled,
         rules: merchandisingRules,
         categoryId: selectedCategory.identifier,
+        startDate: ruleset.startDate,
+        endDate: ruleset.endDate,
       });
     } else if (onCreateKeywordSearchRuleset && rulesetSearchTerms.length) {
       onCreateKeywordSearchRuleset({
         isEnabled,
         rules: merchandisingRules,
         searchTerms: rulesetSearchTerms,
+        startDate: ruleset.startDate,
+        endDate: ruleset.endDate,
       });
     }
   };
@@ -304,35 +351,58 @@ export const Ruleset = ({
         title="Product Grid"
       />
 
-      {rulesetType === 'category' && (
-        <CategoryPanel>
-          <CategorySearch
-            selectedCategory={selectedCategory}
-            onClearSelection={() => {
-              setSelectedCategory(undefined);
-            }}
-            onSelectCategory={onSelectCategory}
-            canRemoveCategory={true}
-          />
-        </CategoryPanel>
-      )}
+      <CategoryPanel>
+        {rulesetType === 'category' && (
+          <CategorySearchWrapper>
+            <CategorySearch
+              selectedCategory={selectedCategory}
+              onClearSelection={() => {
+                setSelectedCategory(undefined);
+              }}
+              onSelectCategory={onSelectCategory}
+              canRemoveCategory={true}
+            />
+          </CategorySearchWrapper>
+        )}
 
-      {rulesetType === 'search' && (
-        <CategoryPanel>
-          <SearchKeywords
-            title="Search Keywords"
-            searchTerms={rulesetSearchTerms}
-            addSearchTerm={onAddSearchTerm}
-            removeSearchTerm={onRemoveSearchTerm}
-          />
-        </CategoryPanel>
-      )}
+        {rulesetType === 'search' && (
+          <KeywordSearchWrapper>
+            <SearchKeywords
+              title="Search Keywords"
+              searchTerms={rulesetSearchTerms}
+              addSearchTerm={onAddSearchTerm}
+              removeSearchTerm={onRemoveSearchTerm}
+            />
+          </KeywordSearchWrapper>
+        )}
 
-      {rulesetType === 'global' && (
-        <CategoryPanel>
-          <SelectedCategory label="All pages" />
-        </CategoryPanel>
-      )}
+        {rulesetType === 'global' && (
+          <GlobalInfoWrapper>
+            <SelectedCategory label="All pages" />
+          </GlobalInfoWrapper>
+        )}
+
+        {rulesetType !== 'global' && featureFlags.hasScheduling && (
+          <Duration>
+            <LabelContainer>Duration</LabelContainer>
+            <DateTimePickerModal
+              showCalendarIcon={true}
+              onUpdateDateTimeRange={(dateTime: [Date | null, Date | null]) =>
+                dispatch({
+                  type: 'dateTime',
+                  payload: {
+                    dateTime,
+                  },
+                })
+              }
+              dateTime={[
+                ruleset.startDate ? new Date(ruleset.startDate) : null,
+                ruleset.endDate ? new Date(ruleset.endDate) : null,
+              ]}
+            />
+          </Duration>
+        )}
+      </CategoryPanel>
 
       <MainContainerPanel>
         <ProductSearchPanel>

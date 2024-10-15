@@ -1,31 +1,34 @@
 import {
   AlphanumericBoostBury,
   IncludeExclude,
-  MerchandisingRules,
   NumericBoostBury,
+  RuleSet,
 } from '@/libs/api';
 
 import { rulesetReducer } from './reducer';
 
 describe('Ruleset reducer', () => {
-  const defaultState: MerchandisingRules = {
-    pinnedProducts: [],
-    blockedProducts: [],
-    boosts: {
-      alphanumeric: [],
-      numeric: [],
-      product: [],
-    },
-    buries: {
-      alphanumeric: [],
-      numeric: [],
-      product: [],
-    },
-    includes: {
-      alphanumeric: [],
-    },
-    excludes: {
-      alphanumeric: [],
+  const defaultState: RuleSet = {
+    isEnabled: true,
+    rules: {
+      pinnedProducts: [],
+      blockedProducts: [],
+      boosts: {
+        alphanumeric: [],
+        numeric: [],
+        product: [],
+      },
+      buries: {
+        alphanumeric: [],
+        numeric: [],
+        product: [],
+      },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
     },
   };
 
@@ -54,12 +57,20 @@ describe('Ruleset reducer', () => {
         },
       });
 
-      expect(reducerState.pinnedProducts[0]).toEqual({ id: mockProductId });
+      expect(reducerState.rules.pinnedProducts[0]).toEqual({
+        id: mockProductId,
+      });
     });
 
     it('should unpin a product', () => {
       const reducerState = rulesetReducer(
-        { ...defaultState, pinnedProducts: [{ id: mockProductId }] },
+        {
+          ...defaultState,
+          rules: {
+            ...defaultState.rules,
+            pinnedProducts: [{ id: mockProductId }],
+          },
+        },
         {
           type: 'product',
           payload: {
@@ -71,16 +82,20 @@ describe('Ruleset reducer', () => {
         }
       );
 
-      expect(reducerState.pinnedProducts.length).toEqual(0);
+      expect(reducerState.rules.pinnedProducts.length).toEqual(0);
     });
 
     it('should remove a product from boosts if pinning the same product', () => {
       const reducerState = rulesetReducer(
         {
           ...defaultState,
-          boosts: {
-            ...defaultState.boosts,
-            product: [{ id: mockProductId, weight: 100 }],
+          rules: {
+            ...defaultState.rules,
+
+            boosts: {
+              ...defaultState.rules.boosts,
+              product: [{ id: mockProductId, weight: 100 }],
+            },
           },
         },
         {
@@ -94,17 +109,22 @@ describe('Ruleset reducer', () => {
         }
       );
 
-      expect(reducerState.pinnedProducts[0]).toEqual({ id: mockProductId });
-      expect(reducerState.boosts.product.length).toBe(0);
+      expect(reducerState.rules.pinnedProducts[0]).toEqual({
+        id: mockProductId,
+      });
+      expect(reducerState.rules.boosts.product.length).toBe(0);
     });
 
     it('should remove a product from buries if pinning the same product', () => {
       const reducerState = rulesetReducer(
         {
           ...defaultState,
-          buries: {
-            ...defaultState.buries,
-            product: [{ id: mockProductId, weight: 100 }],
+          rules: {
+            ...defaultState.rules,
+            buries: {
+              ...defaultState.rules.buries,
+              product: [{ id: mockProductId, weight: 100 }],
+            },
           },
         },
         {
@@ -118,15 +138,20 @@ describe('Ruleset reducer', () => {
         }
       );
 
-      expect(reducerState.pinnedProducts[0]).toEqual({ id: mockProductId });
-      expect(reducerState.buries.product.length).toBe(0);
+      expect(reducerState.rules.pinnedProducts[0]).toEqual({
+        id: mockProductId,
+      });
+      expect(reducerState.rules.buries.product.length).toBe(0);
     });
 
     it('should remove a product from block products if pinning the same product', () => {
       const reducerState = rulesetReducer(
         {
           ...defaultState,
-          blockedProducts: [{ id: mockProductId }],
+          rules: {
+            ...defaultState.rules,
+            blockedProducts: [{ id: mockProductId }],
+          },
         },
         {
           type: 'product',
@@ -139,8 +164,10 @@ describe('Ruleset reducer', () => {
         }
       );
 
-      expect(reducerState.pinnedProducts[0]).toEqual({ id: mockProductId });
-      expect(reducerState.blockedProducts.length).toBe(0);
+      expect(reducerState.rules.pinnedProducts[0]).toEqual({
+        id: mockProductId,
+      });
+      expect(reducerState.rules.blockedProducts.length).toBe(0);
     });
 
     it('should block a product', () => {
@@ -149,7 +176,7 @@ describe('Ruleset reducer', () => {
         payload: { operation: 'block', change: 'add', id: mockProductId },
       });
 
-      expect(reducerState.blockedProducts[0]).toEqual({
+      expect(reducerState.rules.blockedProducts[0]).toEqual({
         id: mockProductId,
         weight: 100,
       });
@@ -157,21 +184,30 @@ describe('Ruleset reducer', () => {
 
     it('should unblock a product', () => {
       const reducerState = rulesetReducer(
-        { ...defaultState, blockedProducts: [{ id: mockProductId }] },
+        {
+          ...defaultState,
+          rules: {
+            ...defaultState.rules,
+            blockedProducts: [{ id: mockProductId }],
+          },
+        },
         {
           type: 'product',
           payload: { operation: 'block', change: 'remove', id: mockProductId },
         }
       );
 
-      expect(reducerState.blockedProducts.length).toEqual(0);
+      expect(reducerState.rules.blockedProducts.length).toEqual(0);
     });
 
     it('should remove a product from pinned products if blocking the same product', () => {
       const reducerState = rulesetReducer(
         {
           ...defaultState,
-          pinnedProducts: [{ id: mockProductId }],
+          rules: {
+            ...defaultState.rules,
+            pinnedProducts: [{ id: mockProductId }],
+          },
         },
         {
           type: 'product',
@@ -184,11 +220,11 @@ describe('Ruleset reducer', () => {
         }
       );
 
-      expect(reducerState.blockedProducts[0]).toEqual({
+      expect(reducerState.rules.blockedProducts[0]).toEqual({
         id: mockProductId,
         weight: 100,
       });
-      expect(reducerState.pinnedProducts.length).toBe(0);
+      expect(reducerState.rules.pinnedProducts.length).toBe(0);
     });
 
     it('should boost a product', () => {
@@ -197,7 +233,7 @@ describe('Ruleset reducer', () => {
         payload: { operation: 'boost', change: 'add', id: mockProductId },
       });
 
-      expect(reducerState.boosts.product[0]).toEqual({
+      expect(reducerState.rules.boosts.product[0]).toEqual({
         id: mockProductId,
         weight: 100,
       });
@@ -207,10 +243,13 @@ describe('Ruleset reducer', () => {
       const reducerState = rulesetReducer(
         {
           ...defaultState,
-          boosts: {
-            product: [{ id: mockProductId, weight: 100 }],
-            alphanumeric: [],
-            numeric: [],
+          rules: {
+            ...defaultState.rules,
+            boosts: {
+              product: [{ id: mockProductId, weight: 100 }],
+              alphanumeric: [],
+              numeric: [],
+            },
           },
         },
         {
@@ -219,7 +258,7 @@ describe('Ruleset reducer', () => {
         }
       );
 
-      expect(reducerState.boosts.product.length).toEqual(0);
+      expect(reducerState.rules.boosts.product.length).toEqual(0);
     });
 
     it('should bury a product', () => {
@@ -228,7 +267,7 @@ describe('Ruleset reducer', () => {
         payload: { operation: 'bury', change: 'add', id: mockProductId },
       });
 
-      expect(reducerState.buries.product[0]).toEqual({
+      expect(reducerState.rules.buries.product[0]).toEqual({
         id: mockProductId,
         weight: 100,
       });
@@ -238,9 +277,12 @@ describe('Ruleset reducer', () => {
       const reducerState = rulesetReducer(
         {
           ...defaultState,
-          buries: {
-            ...defaultState.buries,
-            product: [{ id: mockProductId, weight: 100 }],
+          rules: {
+            ...defaultState.rules,
+            buries: {
+              ...defaultState.rules.buries,
+              product: [{ id: mockProductId, weight: 100 }],
+            },
           },
         },
         {
@@ -249,7 +291,7 @@ describe('Ruleset reducer', () => {
         }
       );
 
-      expect(reducerState.buries.product.length).toEqual(0);
+      expect(reducerState.rules.buries.product.length).toEqual(0);
     });
   });
 
@@ -266,16 +308,21 @@ describe('Ruleset reducer', () => {
           },
         });
 
-        expect(reducerState.boosts.numeric[0]).toEqual(mockNumericAttribute);
+        expect(reducerState.rules.boosts.numeric[0]).toEqual(
+          mockNumericAttribute
+        );
       });
 
       it('should modify a numeric attribute', () => {
         const reducerUpdatedState = rulesetReducer(
           {
             ...defaultState,
-            boosts: {
-              ...defaultState.boosts,
-              numeric: [mockNumericAttribute, mockNumericAttribute],
+            rules: {
+              ...defaultState.rules,
+              boosts: {
+                ...defaultState.rules.boosts,
+                numeric: [mockNumericAttribute, mockNumericAttribute],
+              },
             },
           },
           {
@@ -289,14 +336,20 @@ describe('Ruleset reducer', () => {
           }
         );
 
-        expect(reducerUpdatedState.boosts.numeric[0].weight).toEqual(10);
+        expect(reducerUpdatedState.rules.boosts.numeric[0].weight).toEqual(10);
       });
 
       it('should remove a numeric attribute', () => {
         const reducerDeletedState = rulesetReducer(
           {
             ...defaultState,
-            boosts: { ...defaultState.boosts, numeric: [mockNumericAttribute] },
+            rules: {
+              ...defaultState.rules,
+              boosts: {
+                ...defaultState.rules.boosts,
+                numeric: [mockNumericAttribute],
+              },
+            },
           },
           {
             type: 'numericAttribute',
@@ -309,7 +362,7 @@ describe('Ruleset reducer', () => {
           }
         );
 
-        expect(reducerDeletedState.boosts.numeric.length).toEqual(0);
+        expect(reducerDeletedState.rules.boosts.numeric.length).toEqual(0);
       });
 
       it('should bury a numeric attribute', () => {
@@ -323,7 +376,9 @@ describe('Ruleset reducer', () => {
           },
         });
 
-        expect(reducerState.buries.numeric[0]).toEqual(mockNumericAttribute);
+        expect(reducerState.rules.buries.numeric[0]).toEqual(
+          mockNumericAttribute
+        );
       });
     });
 
@@ -339,7 +394,7 @@ describe('Ruleset reducer', () => {
           },
         });
 
-        expect(reducerState.boosts.alphanumeric[0]).toEqual(
+        expect(reducerState.rules.boosts.alphanumeric[0]).toEqual(
           mockAlphaNumericAttribute
         );
       });
@@ -348,12 +403,15 @@ describe('Ruleset reducer', () => {
         const reducerUpdatedState = rulesetReducer(
           {
             ...defaultState,
-            boosts: {
-              ...defaultState.boosts,
-              alphanumeric: [
-                mockAlphaNumericAttribute,
-                mockAlphaNumericAttribute,
-              ],
+            rules: {
+              ...defaultState.rules,
+              boosts: {
+                ...defaultState.rules.boosts,
+                alphanumeric: [
+                  mockAlphaNumericAttribute,
+                  mockAlphaNumericAttribute,
+                ],
+              },
             },
           },
           {
@@ -367,16 +425,21 @@ describe('Ruleset reducer', () => {
           }
         );
 
-        expect(reducerUpdatedState.boosts.alphanumeric[0].weight).toEqual(10);
+        expect(reducerUpdatedState.rules.boosts.alphanumeric[0].weight).toEqual(
+          10
+        );
       });
 
       it('should remove an alphanumeric attribute', () => {
         const reducerDeletedState = rulesetReducer(
           {
             ...defaultState,
-            boosts: {
-              ...defaultState.boosts,
-              alphanumeric: [mockAlphaNumericAttribute],
+            rules: {
+              ...defaultState.rules,
+              boosts: {
+                ...defaultState.rules.boosts,
+                alphanumeric: [mockAlphaNumericAttribute],
+              },
             },
           },
           {
@@ -390,7 +453,7 @@ describe('Ruleset reducer', () => {
           }
         );
 
-        expect(reducerDeletedState.boosts.alphanumeric.length).toEqual(0);
+        expect(reducerDeletedState.rules.boosts.alphanumeric.length).toEqual(0);
       });
 
       it('should bury an alphanumeric attribute', () => {
@@ -404,7 +467,7 @@ describe('Ruleset reducer', () => {
           },
         });
 
-        expect(reducerState.buries.alphanumeric[0]).toEqual(
+        expect(reducerState.rules.buries.alphanumeric[0]).toEqual(
           mockAlphaNumericAttribute
         );
       });
@@ -420,7 +483,7 @@ describe('Ruleset reducer', () => {
           },
         });
 
-        expect(reducerState.includes.alphanumeric?.[0]).toEqual(
+        expect(reducerState.rules.includes.alphanumeric?.[0]).toEqual(
           mockAlphaNumericIncludeExcludeAttribute
         );
       });
@@ -436,14 +499,14 @@ describe('Ruleset reducer', () => {
           },
         });
 
-        expect(reducerState.excludes.alphanumeric?.[0]).toEqual(
+        expect(reducerState.rules.excludes.alphanumeric?.[0]).toEqual(
           mockAlphaNumericIncludeExcludeAttribute
         );
       });
 
       it('should include an alphanumeric attribute when not set', () => {
         const reducerState = rulesetReducer(
-          { ...defaultState, includes: {} },
+          { ...defaultState, rules: { ...defaultState.rules, includes: {} } },
           {
             type: 'alphanumericIncludeExcludeAttribute',
             payload: {
@@ -455,14 +518,14 @@ describe('Ruleset reducer', () => {
           }
         );
 
-        expect(reducerState.includes.alphanumeric?.[0]).toEqual(
+        expect(reducerState.rules.includes.alphanumeric?.[0]).toEqual(
           mockAlphaNumericIncludeExcludeAttribute
         );
       });
 
       it('should exclude an alphanumeric attribute when not set', () => {
         const reducerState = rulesetReducer(
-          { ...defaultState, excludes: {} },
+          { ...defaultState, rules: { ...defaultState.rules, excludes: {} } },
           {
             type: 'alphanumericIncludeExcludeAttribute',
             payload: {
@@ -474,7 +537,7 @@ describe('Ruleset reducer', () => {
           }
         );
 
-        expect(reducerState.excludes.alphanumeric?.[0]).toEqual(
+        expect(reducerState.rules.excludes.alphanumeric?.[0]).toEqual(
           mockAlphaNumericIncludeExcludeAttribute
         );
       });
@@ -483,7 +546,10 @@ describe('Ruleset reducer', () => {
         const reducerState = rulesetReducer(
           {
             ...defaultState,
-            excludes: { alphanumeric: [mockAlphaNumericAttribute] },
+            rules: {
+              ...defaultState.rules,
+              excludes: { alphanumeric: [mockAlphaNumericAttribute] },
+            },
           },
           {
             type: 'alphanumericIncludeExcludeAttribute',
@@ -496,8 +562,40 @@ describe('Ruleset reducer', () => {
           }
         );
 
-        expect(reducerState.excludes.alphanumeric?.length).toBe(0);
+        expect(reducerState.rules.excludes.alphanumeric?.length).toBe(0);
       });
+    });
+  });
+
+  describe('Scheduling', () => {
+    const mockStartDate = '2024-10-31T00:00:00.000Z';
+    const mockEndDate = '2024-10-31T23:59:00.000Z';
+
+    it('should add a start and end date', () => {
+      const reducerState = rulesetReducer(defaultState, {
+        type: 'dateTime',
+        payload: {
+          dateTime: [new Date(mockStartDate), new Date(mockEndDate)],
+        },
+      });
+
+      expect(reducerState.startDate).toEqual(mockStartDate);
+      expect(reducerState.endDate).toEqual(mockEndDate);
+    });
+
+    it('should remove a start and end date', () => {
+      const reducerState = rulesetReducer(
+        { ...defaultState, startDate: mockStartDate, endDate: mockEndDate },
+        {
+          type: 'dateTime',
+          payload: {
+            dateTime: [null, null],
+          },
+        }
+      );
+
+      expect(reducerState.startDate).toBeUndefined();
+      expect(reducerState.endDate).toBeUndefined();
     });
   });
 });

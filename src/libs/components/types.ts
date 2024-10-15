@@ -48,6 +48,12 @@ type AlphanumericIncludeExcludeAttributePayload = {
   data: IncludeExclude;
 };
 
+type DateValue = Date | null;
+
+type DateTime = {
+  dateTime: Array<DateValue>;
+};
+
 export type Action =
   | {
       type: 'product';
@@ -61,4 +67,8 @@ export type Action =
   | {
       type: 'alphanumericIncludeExcludeAttribute';
       payload: AlphanumericIncludeExcludeAttributePayload;
+    }
+  | {
+      type: 'dateTime';
+      payload: DateTime;
     };

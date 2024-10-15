@@ -13,12 +13,16 @@ const NewRuleSetPage = () => {
     rules,
     facets,
     categoryId,
+    startDate,
+    endDate,
   }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
     const resp = await createRuleset({
       facets: facets,
       isEnabled: true,
       categoryId,
       merchandisingRules: rules,
+      startDate,
+      endDate,
     });
 
     if (resp) {

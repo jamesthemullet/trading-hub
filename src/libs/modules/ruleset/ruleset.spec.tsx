@@ -9,6 +9,7 @@ import {
   MerchandisingRules,
   SearchPreviewResponseBeta,
 } from '@/libs/api';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 
 import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
@@ -1347,6 +1348,73 @@ describe('Ruleset', () => {
       await waitFor(async () =>
         expect(await screen.findByText('Strength 12%')).toBeVisible()
       );
+    });
+  });
+
+  describe('Scheduling', () => {
+    const mockRules: MerchandisingRules = {
+      pinnedProducts: [],
+      boosts: boostMock,
+      buries: buriesMock,
+      blockedProducts: [],
+      includes: {},
+      excludes: {},
+    };
+
+    beforeAll(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2022, 2, 1));
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    it('should set a start and end date', async () => {
+      renderWithProviders(
+        <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+          <Ruleset
+            isEnabled={true}
+            onSave={jest.fn()}
+            onCancel={jest.fn()}
+            rulesetMerchandisingRules={mockRules}
+            rulesetCategory={{
+              identifier: 'SubCategory_507',
+              name: 'SubCategory',
+              path: 'SubCategory',
+            }}
+            rulesetType="category"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      const input = screen.getByPlaceholderText('Select date range');
+      act(() => {
+        input.click();
+      });
+
+      await waitFor(() => {
+        const startDate = screen.getAllByText('14')[0];
+        act(() => {
+          startDate.click();
+        });
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Mar 14 2022 00:00')).toBeVisible();
+      });
+
+      await waitFor(() => {
+        const endDate = screen.getAllByText('16')[0];
+        act(() => {
+          endDate.click();
+        });
+      });
+
+      const saveButton = screen.getByRole('button', { name: 'Save' });
+      act(() => {
+        saveButton.click();
+      });
     });
   });
 });

@@ -12,10 +12,14 @@ const NewRuleSetPage = () => {
   const createNewKeywordRuleset = async ({
     rules,
     searchTerms,
+    startDate,
+    endDate,
   }: KeywordRuleSet) => {
     const resp = await createRuleset({
       searchTerms,
       merchandisingRules: rules,
+      startDate,
+      endDate,
     });
 
     if (resp) {

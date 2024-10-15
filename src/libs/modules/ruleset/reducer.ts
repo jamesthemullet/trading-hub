@@ -1,25 +1,26 @@
 import {
   AlphanumericBoostBury,
   IncludeExclude,
-  MerchandisingRules,
   NumericBoostBury,
+  RuleSet,
 } from '@/libs/api';
 import { Action } from '@/libs/components/types';
 
-export const rulesetReducer = (state: MerchandisingRules, action: Action) => {
+export const rulesetReducer = (state: RuleSet, action: Action) => {
+  const { rules } = state;
   switch (action.type) {
     case 'product': {
       const { payload } = action;
-      const pinnedProducts = state.pinnedProducts.filter(
+      const pinnedProducts = rules.pinnedProducts.filter(
         (product) => product.id !== payload.id
       );
-      const blockedProducts = state.blockedProducts.filter(
+      const blockedProducts = rules.blockedProducts.filter(
         (product) => product.id !== payload.id
       );
-      const boostedProducts = state.boosts.product.filter(
+      const boostedProducts = rules.boosts.product.filter(
         (product) => product.id !== payload.id
       );
-      const buriedProducts = state.buries.product.filter(
+      const buriedProducts = rules.buries.product.filter(
         (product) => product.id !== payload.id
       );
       if (payload.change === 'add') {
@@ -27,43 +28,50 @@ export const rulesetReducer = (state: MerchandisingRules, action: Action) => {
 
         return {
           ...state,
-          pinnedProducts:
-            payload.operation === 'pin' && typeof payload.position === 'number'
-              ? [
-                  ...pinnedProducts.slice(0, payload.position),
-                  { id: payload.id },
-                  ...pinnedProducts.slice(payload.position),
-                ]
-              : pinnedProducts,
-          blockedProducts: [...blockedProducts].concat(
-            payload.operation === 'block' ? product : []
-          ),
-          boosts: {
-            ...state.boosts,
-            product: [...boostedProducts].concat(
-              payload.operation === 'boost' ? product : []
+          rules: {
+            ...rules,
+            pinnedProducts:
+              payload.operation === 'pin' &&
+              typeof payload.position === 'number'
+                ? [
+                    ...pinnedProducts.slice(0, payload.position),
+                    { id: payload.id },
+                    ...pinnedProducts.slice(payload.position),
+                  ]
+                : pinnedProducts,
+            blockedProducts: [...blockedProducts].concat(
+              payload.operation === 'block' ? product : []
             ),
-          },
-          buries: {
-            ...state.buries,
-            product: [...buriedProducts].concat(
-              payload.operation === 'bury' ? product : []
-            ),
+            boosts: {
+              ...rules.boosts,
+              product: [...boostedProducts].concat(
+                payload.operation === 'boost' ? product : []
+              ),
+            },
+            buries: {
+              ...rules.buries,
+              product: [...buriedProducts].concat(
+                payload.operation === 'bury' ? product : []
+              ),
+            },
           },
         };
       }
 
       return {
         ...state,
-        pinnedProducts,
-        blockedProducts,
-        boosts: {
-          ...state.boosts,
-          product: boostedProducts,
-        },
-        buries: {
-          ...state.buries,
-          product: buriedProducts,
+        rules: {
+          ...rules,
+          pinnedProducts,
+          blockedProducts,
+          boosts: {
+            ...rules.boosts,
+            product: boostedProducts,
+          },
+          buries: {
+            ...rules.buries,
+            product: buriedProducts,
+          },
         },
       };
     }
@@ -82,16 +90,22 @@ export const rulesetReducer = (state: MerchandisingRules, action: Action) => {
       return payload.operation === 'boost'
         ? {
             ...state,
-            boosts: {
-              ...state.boosts,
-              numeric: update(state.boosts.numeric),
+            rules: {
+              ...rules,
+              boosts: {
+                ...rules.boosts,
+                numeric: update(rules.boosts.numeric),
+              },
             },
           }
         : {
             ...state,
-            buries: {
-              ...state.buries,
-              numeric: update(state.buries.numeric),
+            rules: {
+              ...rules,
+              buries: {
+                ...rules.buries,
+                numeric: update(rules.buries.numeric),
+              },
             },
           };
     }
@@ -110,16 +124,22 @@ export const rulesetReducer = (state: MerchandisingRules, action: Action) => {
       return payload.operation === 'boost'
         ? {
             ...state,
-            boosts: {
-              ...state.boosts,
-              alphanumeric: update(state.boosts.alphanumeric),
+            rules: {
+              ...rules,
+              boosts: {
+                ...rules.boosts,
+                alphanumeric: update(rules.boosts.alphanumeric),
+              },
             },
           }
         : {
             ...state,
-            buries: {
-              ...state.buries,
-              alphanumeric: update(state.buries.alphanumeric),
+            rules: {
+              ...rules,
+              buries: {
+                ...rules.buries,
+                alphanumeric: update(rules.buries.alphanumeric),
+              },
             },
           };
     }
@@ -134,18 +154,37 @@ export const rulesetReducer = (state: MerchandisingRules, action: Action) => {
       return payload.operation === 'include'
         ? {
             ...state,
-            includes: {
-              ...state.includes,
-              alphanumeric: update(state.includes.alphanumeric || []),
+            rules: {
+              ...rules,
+              includes: {
+                ...rules.includes,
+                alphanumeric: update(rules.includes.alphanumeric || []),
+              },
             },
           }
         : {
             ...state,
-            excludes: {
-              ...state.excludes,
-              alphanumeric: update(state.excludes.alphanumeric || []),
+            rules: {
+              ...rules,
+              excludes: {
+                ...rules.excludes,
+                alphanumeric: update(rules.excludes.alphanumeric || []),
+              },
             },
           };
+    }
+    case 'dateTime': {
+      const { payload } = action;
+
+      return {
+        ...state,
+        startDate: payload.dateTime[0]
+          ? new Date(payload.dateTime[0]).toISOString()
+          : undefined,
+        endDate: payload.dateTime[1]
+          ? new Date(payload.dateTime[1]).toISOString()
+          : undefined,
+      };
     }
   }
 };

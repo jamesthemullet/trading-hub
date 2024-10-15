@@ -1,7 +1,6 @@
-import { Text } from '../typography/typography.styles';
-import { spacing } from '../utils/spacing';
 import {
   Categories,
+  CategoryTitle,
   SelectedCategoryClose,
   SelectedCategoryPill,
   Wrapper,
@@ -17,7 +16,7 @@ export const SelectedCategory = ({
   canRemoveCategory?: boolean;
 }) => (
   <Wrapper>
-    <Text style={{ marginBottom: spacing(1) }}>Category</Text>
+    <CategoryTitle>Category</CategoryTitle>
     <Categories>
       <SelectedCategoryPill>
         {label}

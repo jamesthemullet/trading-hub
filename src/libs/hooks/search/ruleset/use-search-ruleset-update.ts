@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { RuleSet, search } from '@/libs/api';
+import { KeywordRuleSet, RuleSet, search } from '@/libs/api';
 
 export const useSearchRuleSetUpdate = () => {
   const [error, setError] = useState('');
@@ -20,11 +20,13 @@ export const useSearchRuleSetUpdate = () => {
       setIsSaving(true);
 
       try {
-        const body = {
+        const body: KeywordRuleSet = {
           searchTerms,
           facets: rules.facets,
           isEnabled: rules.isEnabled,
           rules: rules.rules,
+          startDate: rules.startDate,
+          endDate: rules.endDate,
         };
         const response = await search().betaMerchandisingKeywordRulesetUpdate(
           ruleSetId,

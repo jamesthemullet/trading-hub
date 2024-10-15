@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Label } from '../typography/typography.styles';
+import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
@@ -34,6 +34,11 @@ export const Categories = styled.div`
   background-color: ${color.backgroundGrey};
   border-bottom: 1px solid #b1b1b1;
   padding: ${spacing(1)} ${spacing(1)} 0;
+`;
+
+export const CategoryTitle = styled(Text)`
+  margin-bottom: ${spacing(1)};
+  line-height: 1.6rem;
 `;
 
 export const SelectedCategoryPill = styled(Label)`
