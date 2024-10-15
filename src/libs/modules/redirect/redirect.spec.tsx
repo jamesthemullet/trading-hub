@@ -2,16 +2,10 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { ReturnedKeywordRedirect } from '@/libs/api';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { Redirect } from './redirect';
-
-jest.mock('../../../libs/components/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../libs/components/utils/feature-flags'),
-  FEATURE_FLAGS: {
-    scheduling: true,
-  },
-}));
 
 describe('Redirect', () => {
   it('creates a redriect', async () => {
@@ -159,12 +153,14 @@ describe('Redirect', () => {
     };
 
     renderWithProviders(
-      <Redirect
-        onCancel={() => jest.fn()}
-        onSave={mockSave}
-        title="Edit Keyword Redirect rule"
-        redirect={existingRedirect}
-      />
+      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <Redirect
+          onCancel={() => jest.fn()}
+          onSave={mockSave}
+          title="Edit Keyword Redirect rule"
+          redirect={existingRedirect}
+        />
+      </FeatureFlagContext.Provider>
     );
 
     expect(screen.getByText('Duration')).toBeVisible();

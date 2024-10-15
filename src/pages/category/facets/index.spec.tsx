@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { ReturnedCategoryRuleSet } from '@/libs/api';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useRuleSet, useRuleSetCreate } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -15,11 +16,6 @@ jest.mock('@/libs/hooks', () => ({
 }));
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
-}));
-jest.mock('@/libs/components/utils/feature-flags', () => ({
-  get FEATURE_FLAGS() {
-    return { scheduling: true };
-  },
 }));
 const handleDeleteMock = jest.fn();
 const mockRuleSetDelete = {
@@ -503,7 +499,11 @@ describe('Category facet management', () => {
       error: '',
       isLoading: false,
     });
-    renderWithProviders(<FacetManagementPage />);
+    renderWithProviders(
+      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <FacetManagementPage />
+      </FeatureFlagContext.Provider>
+    );
 
     expect(screen.getByRole('time').textContent).toBe(
       '14 Oct 2024 - 15 Oct 2024'

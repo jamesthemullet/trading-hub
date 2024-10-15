@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -7,7 +7,7 @@ import {
   ReturnedKeywordRedirects,
 } from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
-import { FEATURE_FLAGS } from '@/libs/components/utils/feature-flags';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   NewButton,
   PageNameLabel,
@@ -35,6 +35,8 @@ const RedirectRuleSets = () => {
 
   const { createRedirect } = useRedirectCreate();
   const router = useRouter();
+
+  const featureFlags = useContext(FeatureFlagContext);
 
   const createDuplicatedRedirect = async (redirect: KeywordRedirect) => {
     const response = await createRedirect({
@@ -97,7 +99,7 @@ const RedirectRuleSets = () => {
 
   const headings = [
     'Identifier',
-    ...(FEATURE_FLAGS.scheduling ? ['Schedule'] : []),
+    ...(featureFlags.hasScheduling ? ['Schedule'] : []),
     'Enable',
     'Last Changed',
     'User',
@@ -119,7 +121,7 @@ const RedirectRuleSets = () => {
       lastChanged,
       onToggle: onEnableDisableRedirect,
       url: `/search/redirects/edit/${id}`,
-      ...(FEATURE_FLAGS.scheduling && { startDate, endDate }),
+      ...(featureFlags.hasScheduling && { startDate, endDate }),
     })
   );
 

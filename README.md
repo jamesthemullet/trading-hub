@@ -76,6 +76,12 @@ Our agreed API contract with the backend team is stored in the [search-service](
 
 You can check or generate the code by running `npm run codegen` which copies the file locally to [api.yml](src/libs/api/api.yml)
 
+### Feature flags
+
+Any new features not ready for production use should be hidden behind a feature flag. We are using a cookie based solution with cookies set on http://localhost:3000/flags
+
+Naming should follow `flagXXX` and default to false
+
 ### Tests
 
 ```bash

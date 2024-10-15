@@ -2,6 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useRuleSet, useRuleSetCreate } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -24,12 +25,6 @@ jest.mock('@/libs/hooks', () => ({
 }));
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
-}));
-
-jest.mock('@/libs/components/utils/feature-flags', () => ({
-  get FEATURE_FLAGS() {
-    return { scheduling: true };
-  },
 }));
 
 const mockMerchandisingRules = {
@@ -187,7 +182,11 @@ describe('Index', () => {
       error: '',
       isLoading: false,
     });
-    renderWithProviders(<RuleSets />);
+    renderWithProviders(
+      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <RuleSets />
+      </FeatureFlagContext.Provider>
+    );
 
     expect(screen.getByRole('time').textContent).toBe(
       '14 Oct 2024 - 15 Oct 2024'

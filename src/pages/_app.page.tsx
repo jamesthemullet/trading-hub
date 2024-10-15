@@ -1,8 +1,10 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
+import { useCookies } from 'react-cookie';
 import { MantineProvider } from '@mantine/core';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { LoginCheck } from '@/libs/components/login/login-check';
 
 import type { AppProps } from 'next/app';
@@ -16,17 +18,22 @@ export default function App({
   pageProps,
 }: AppProps<{ session: Session | null }>) {
   const { session } = pageProps;
+  const [cookies] = useCookies(['flagScheduling']);
   return (
-    <SessionProvider session={session}>
-      <MantineProvider>
-        <LoginCheck
-          autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
-        />
-        <Layout>
-          <Navigation />
-          <Component {...pageProps} />
-        </Layout>
-      </MantineProvider>
-    </SessionProvider>
+    <FeatureFlagContext.Provider
+      value={{ hasScheduling: cookies.flagScheduling }}
+    >
+      <SessionProvider session={session}>
+        <MantineProvider>
+          <LoginCheck
+            autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
+          />
+          <Layout>
+            <Navigation />
+            <Component {...pageProps} />
+          </Layout>
+        </MantineProvider>
+      </SessionProvider>
+    </FeatureFlagContext.Provider>
   );
 }

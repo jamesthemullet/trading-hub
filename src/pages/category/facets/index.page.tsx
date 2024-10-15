@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -12,7 +12,7 @@ import {
   TablePagination,
   TablePaginationSkeleton,
 } from '@/libs/components';
-import { FEATURE_FLAGS } from '@/libs/components/utils/feature-flags';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   NewButton,
   PageNameLabel,
@@ -36,6 +36,7 @@ const FacetManagementPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { createRuleset } = useRuleSetCreate();
   const router = useRouter();
+  const featureFlags = useContext(FeatureFlagContext);
 
   const currentPageIndex = currentPage - 1;
 
@@ -96,7 +97,7 @@ const FacetManagementPage = () => {
 
   const hasSchedule =
     categoryRuleSets.some((rule) => rule.startDate && rule.endDate) &&
-    FEATURE_FLAGS.scheduling;
+    featureFlags.hasScheduling;
 
   const headings = [
     'Identifier',
@@ -128,7 +129,7 @@ const FacetManagementPage = () => {
       categoryPlpUrl: categoriesInfo.find(
         (category) => category.id === categoryId
       )?.plpUrl,
-      ...(FEATURE_FLAGS.scheduling && { startDate, endDate }),
+      ...(featureFlags.hasScheduling && { startDate, endDate }),
     })
   );
 

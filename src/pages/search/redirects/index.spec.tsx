@@ -2,11 +2,11 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useRedirectCreate, useSearchRedirectList } from '@/libs/hooks';
 import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { FEATURE_FLAGS } from '../../../libs/components/utils/feature-flags';
 import RedirectRuleSets from './index.page';
 
 const mockRedirectDelete = jest.fn();
@@ -25,13 +25,6 @@ jest.mock('@/libs/hooks', () => ({
 }));
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
-}));
-
-jest.mock('../../../libs/components/utils/feature-flags', () => ({
-  ...jest.requireActual('../../../libs/components/utils/feature-flags'),
-  FEATURE_FLAGS: {
-    scheduling: true,
-  },
 }));
 
 describe('Search Rulesets', () => {
@@ -219,9 +212,14 @@ describe('Search Rulesets', () => {
   });
 
   it('should display scheduling column if feature flag is enabled', () => {
-    FEATURE_FLAGS.scheduling = true;
     jest.mocked(useSearchRedirectList).mockReturnValue({
-      redirects: [],
+      redirects: [
+        {
+          ...returnedRedirectMock,
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-14T10:02:38.556Z',
+        },
+      ],
       pagination: {
         totalItems: 0,
       },
@@ -230,13 +228,16 @@ describe('Search Rulesets', () => {
       setKeywordList: jest.fn(),
     });
 
-    renderWithProviders(<RedirectRuleSets />);
+    renderWithProviders(
+      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <RedirectRuleSets />
+      </FeatureFlagContext.Provider>
+    );
 
     expect(screen.getByText('Schedule')).toBeInTheDocument();
   });
 
   it('should not display scheduling column if feature flag is not enabled', () => {
-    FEATURE_FLAGS.scheduling = false;
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [],
       pagination: {
@@ -247,7 +248,11 @@ describe('Search Rulesets', () => {
       setKeywordList: jest.fn(),
     });
 
-    renderWithProviders(<RedirectRuleSets />);
+    renderWithProviders(
+      <FeatureFlagContext.Provider value={{ hasScheduling: false }}>
+        <RedirectRuleSets />
+      </FeatureFlagContext.Provider>
+    );
 
     expect(screen.queryByText('Schedule')).not.toBeInTheDocument();
   });

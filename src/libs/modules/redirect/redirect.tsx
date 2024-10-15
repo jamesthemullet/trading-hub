@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { KeywordRedirect, ReturnedKeywordRedirect } from '@/libs/api';
 import {
@@ -11,8 +11,8 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { color } from '@/libs/components/utils/constants';
-import { FEATURE_FLAGS } from '@/libs/components/utils/feature-flags';
 
 const RedirectType = styled.div`
   border-top: solid 1px ${color.darkHeritageGreen};
@@ -70,6 +70,7 @@ export const Redirect = ({
   redirect: savedRedirect,
   title,
 }: Props) => {
+  const featureFlags = useContext(FeatureFlagContext);
   const [redirect, setRedirect] = useState<KeywordRedirect>(
     savedRedirect
       ? {
@@ -179,7 +180,7 @@ export const Redirect = ({
             addSearchTerm={onAddKeyword}
             removeSearchTerm={onRemoveKeyword}
           />
-          {FEATURE_FLAGS.scheduling && (
+          {featureFlags.hasScheduling && (
             <Duration>
               <LabelContainer>Duration</LabelContainer>
               <DateTimePickerModal showCalendarIcon={true} />
