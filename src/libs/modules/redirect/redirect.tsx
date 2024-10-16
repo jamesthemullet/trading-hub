@@ -70,7 +70,6 @@ export const Redirect = ({
   redirect: savedRedirect,
   title,
 }: Props) => {
-  const featureFlags = useContext(FeatureFlagContext);
   const [redirect, setRedirect] = useState<KeywordRedirect>(
     savedRedirect
       ? {
@@ -79,6 +78,8 @@ export const Redirect = ({
           keywords: savedRedirect.keywords,
           type: savedRedirect.type,
           ruleTitle: savedRedirect.ruleTitle,
+          startDate: savedRedirect.startDate,
+          endDate: savedRedirect.endDate,
         }
       : {
           destinationUrl: '',
@@ -86,8 +87,12 @@ export const Redirect = ({
           keywords: [],
           ruleTitle: '',
           type: 'redirectTerm',
+          startDate: '',
+          endDate: '',
         }
   );
+
+  const featureFlags = useContext(FeatureFlagContext);
 
   const onSaveRedirect = () => {
     if (onCreate) {
@@ -120,6 +125,15 @@ export const Redirect = ({
       ...redirect,
       keywords,
     });
+  };
+
+  const getExistingDateRange = (
+    startDate: string | undefined,
+    endDate: string | undefined
+  ) => {
+    return startDate && endDate
+      ? ([new Date(startDate), new Date(endDate)] as [Date, Date])
+      : undefined;
   };
 
   return (
@@ -183,7 +197,20 @@ export const Redirect = ({
           {featureFlags.hasScheduling && (
             <Duration>
               <LabelContainer>Duration</LabelContainer>
-              <DateTimePickerModal showCalendarIcon={true} />
+              <DateTimePickerModal
+                showCalendarIcon={true}
+                dateTime={getExistingDateRange(
+                  redirect.startDate,
+                  redirect.endDate
+                )}
+                onUpdateDateTimeRange={([startDate, endDate]) => {
+                  setRedirect({
+                    ...redirect,
+                    startDate: startDate ? startDate.toISOString() : '',
+                    endDate: endDate ? endDate.toISOString() : '',
+                  });
+                }}
+              />
             </Duration>
           )}
         </Row>

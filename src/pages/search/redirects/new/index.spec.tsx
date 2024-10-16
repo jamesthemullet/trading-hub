@@ -93,9 +93,11 @@ describe('Create new redirect', () => {
     const expectedCall = {
       redirect: {
         destinationUrl: 'c/redirect-url',
+        endDate: '',
         isEnabled: true,
         keywords: ['new keyword'],
         ruleTitle: 'title',
+        startDate: '',
         type: 'redirectTerm',
       },
     };

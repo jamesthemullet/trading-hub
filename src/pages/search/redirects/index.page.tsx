@@ -74,9 +74,9 @@ const RedirectRuleSets = () => {
       redirectId: id,
     });
     const updatedRedirectsList: ReturnedKeywordRedirects = {
-      redirects: redirects.map((redriect: ReturnedKeywordRedirect) =>
+      redirects: redirects.map((redirect: ReturnedKeywordRedirect) =>
         // istanbul ignore next
-        redriect.id === id ? { ...redriect, isEnabled: !isEnabled } : redriect
+        redirect.id === id ? { ...redirect, isEnabled: !isEnabled } : redirect
       ),
       pagination,
     };
