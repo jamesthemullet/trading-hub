@@ -57,6 +57,7 @@ const Count = styled.span`
 
 const ViewAllButton = styled(Button)`
   width: 100px;
+  margin-left: ${spacing(1)};
 `;
 
 const InputBoxWrapper = styled.div`

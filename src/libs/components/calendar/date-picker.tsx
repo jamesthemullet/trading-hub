@@ -114,6 +114,7 @@ const Content = styled.div`
 
 const OnAllTimeContainer = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const OnAllTimeLabel = styled.div`
