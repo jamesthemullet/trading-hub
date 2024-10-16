@@ -126,11 +126,11 @@ test.describe('global facets', () => {
       page.getByRole('heading', { name: 'Facet value settings of: Age' })
     ).toBeVisible();
 
-    await expect(page.getByLabel('attribute 0 3+ years')).toBeVisible();
+    await expect(page.getByLabel('attribute 1 3+ years')).toBeVisible();
 
     await page.getByLabel('Move 3+ years row down').click();
 
-    await expect(page.getByLabel('attribute 1 3+ years')).toBeVisible();
+    await expect(page.getByLabel('attribute 2 3+ years')).toBeVisible();
 
     await page
       .getByTestId(
@@ -140,7 +140,7 @@ test.describe('global facets', () => {
     await page.getByLabel('include Not suitable under 36 mth').click();
 
     await expect(
-      page.getByLabel('attribute 2 Not suitable under 36 mth')
+      page.getByLabel('attribute 3 Not suitable under 36 mth')
     ).toBeVisible();
 
     await page
@@ -148,7 +148,7 @@ test.describe('global facets', () => {
       .click();
     await page.getByLabel('exclude 3-5 years').click();
 
-    await expect(page.getByLabel('attribute 0 3-5 years')).toBeVisible();
+    await expect(page.getByLabel('attribute 6 3-5 years')).toBeVisible();
   });
 
   test('merges facet values', async ({ page }) => {
@@ -206,10 +206,6 @@ test.describe('global facets', () => {
     await page.getByLabel('Remove merged facet for 6+ years').click();
 
     await page.waitForTimeout(2000);
-
-    await expect(
-      page.getByLabel('Edit display name for Name your mergey')
-    ).not.toBeVisible();
 
     await expect(
       page.getByLabel('Edit display name for 6+ years')

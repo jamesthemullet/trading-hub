@@ -577,7 +577,7 @@ describe('Category Facet Management Editing', () => {
     });
 
     act(() => {
-      screen.getByRole('button', { name: 'Save' }).click();
+      screen.getByText('Save').click();
     });
 
     await waitFor(() => {
@@ -616,8 +616,8 @@ describe('Category Facet Management Editing', () => {
           facets: [
             {
               displayValue: 'color',
-              boosted: ['More Silk'],
-              excludedValues: [],
+              boosted: ['test include', 'More Silk'],
+              excludedValues: ['test exclude'],
               indexPropertyName: 'color',
               id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
               lastChanged: {

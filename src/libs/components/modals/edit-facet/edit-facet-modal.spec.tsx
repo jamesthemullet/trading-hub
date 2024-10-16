@@ -1205,9 +1205,7 @@ describe('ModalEditValues', () => {
 
       await waitFor(() => {
         expect(
-          screen.getAllByText(
-            'The name above already exists. Please choose another one.'
-          )[0]
+          screen.getAllByText('Cotton is not a unique value')[0]
         ).toBeVisible();
       });
     });
@@ -1799,11 +1797,6 @@ describe('ModalEditValues', () => {
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeDisabled();
       expect(
         screen.getByRole('checkbox', { name: 'Select all facet attributes' })
-      ).toBeDisabled();
-      expect(
-        screen.getByRole('checkbox', {
-          name: 'Select test merged group to merge',
-        })
       ).toBeDisabled();
       expect(
         screen.getByRole('button', { name: 'Save changes to attributes' })

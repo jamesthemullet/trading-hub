@@ -128,7 +128,7 @@ test.describe('Category rulesets', () => {
     await page.getByRole('button', { name: 'Edit values' }).first().click();
     await page.waitForLoadState('networkidle');
 
-    await expect(page.getByLabel('attribute 0 SMOKE')).toBeVisible();
+    await expect(page.getByLabel('attribute 1 SMOKE')).toBeVisible();
 
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')
