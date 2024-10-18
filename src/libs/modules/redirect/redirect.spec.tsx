@@ -261,7 +261,9 @@ describe('Redirect', () => {
         });
       });
 
-      const saveButton = screen.getByRole('button', { name: 'Save schedule' });
+      const saveButton = screen.getByRole('button', {
+        name: 'Close schedule editor',
+      });
       expect(saveButton).not.toBeDisabled();
       act(() => {
         saveButton.click();
@@ -315,7 +317,9 @@ describe('Redirect', () => {
 
       await user.click(screen.getByTitle('Toggle'));
 
-      const saveButton = screen.getByRole('button', { name: 'Save schedule' });
+      const saveButton = screen.getByRole('button', {
+        name: 'Close schedule editor',
+      });
       expect(saveButton).not.toBeDisabled();
       act(() => {
         saveButton.click();

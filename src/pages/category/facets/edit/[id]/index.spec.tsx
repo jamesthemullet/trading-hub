@@ -723,7 +723,7 @@ describe('Category Facet Management Editing', () => {
 
       const saveButton = within(screen.getByRole('dialog')).getByRole(
         'button',
-        { name: 'Save schedule' }
+        { name: 'Close schedule editor' }
       );
       expect(saveButton).not.toBeDisabled();
       act(() => {
@@ -735,7 +735,7 @@ describe('Category Facet Management Editing', () => {
       );
 
       act(() => {
-        screen.getAllByRole('button', { name: 'Save' })[0].click();
+        screen.getByRole('button', { name: /^Save$/ }).click();
       });
 
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({

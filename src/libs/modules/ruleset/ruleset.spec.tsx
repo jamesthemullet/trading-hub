@@ -1411,7 +1411,9 @@ describe('Ruleset', () => {
         });
       });
 
-      const saveButton = screen.getByRole('button', { name: 'Save schedule' });
+      const saveButton = screen.getByRole('button', {
+        name: 'Close schedule editor',
+      });
       act(() => {
         saveButton.click();
       });

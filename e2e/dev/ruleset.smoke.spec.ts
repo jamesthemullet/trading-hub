@@ -138,8 +138,8 @@ test.describe('Category Ranking', () => {
       page.getByText('Nov 14 2024 00:00 - Nov 19 2024 23:59')
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Save' }).nth(1).click();
-    await page.getByRole('button', { name: 'Save' }).first().click();
+    await page.getByRole('button', { name: 'Close schedule editor' }).click();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
 
     await expect(
       page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()

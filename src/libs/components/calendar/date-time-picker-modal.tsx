@@ -154,9 +154,9 @@ export const DateTimePickerModal = ({
                   tempDateRange[0] !== null && tempDateRange[1] === null
                 }
                 onClick={handleSave}
-                aria-label="Save schedule"
+                aria-label="Close schedule editor"
               >
-                Save
+                Done
               </StyledButton>
             </Footer>
           </Modal.Content>

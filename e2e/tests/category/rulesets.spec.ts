@@ -490,7 +490,7 @@ test.describe('Category rulesets', () => {
 
       await page.getByTitle('Toggle').click();
       await expect(
-        page.getByRole('button', { name: 'Save schedule' })
+        page.getByRole('button', { name: 'Close schedule editor' })
       ).toBeDisabled();
 
       await page.locator('button:has-text("16")').nth(1).click();
@@ -503,10 +503,10 @@ test.describe('Category rulesets', () => {
       await expect(page.getByText('10:30')).toBeVisible();
 
       await expect(
-        page.getByRole('button', { name: 'Save schedule' })
+        page.getByRole('button', { name: 'Close schedule editor' })
       ).not.toBeDisabled();
 
-      await page.getByRole('button', { name: 'Save schedule' }).click();
+      await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
       await page.waitForLoadState('networkidle');
 
@@ -548,10 +548,10 @@ test.describe('Category rulesets', () => {
       await expect(page.getByText('11:45')).toBeVisible();
 
       await expect(
-        page.getByRole('button', { name: 'Save schedule' })
+        page.getByRole('button', { name: 'Close schedule editor' })
       ).not.toBeDisabled();
 
-      await page.getByRole('button', { name: 'Save schedule' }).click();
+      await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
       await page.waitForLoadState('networkidle');
 
@@ -581,7 +581,7 @@ test.describe('Category rulesets', () => {
 
       await page.getByTitle('Toggle').click();
 
-      await page.getByRole('button', { name: 'Save schedule' }).click();
+      await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
       await page.waitForLoadState('networkidle');
 

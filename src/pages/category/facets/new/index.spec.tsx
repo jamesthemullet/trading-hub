@@ -687,7 +687,7 @@ describe('Facet Management Editing', () => {
       const saveButton = within(screen.getByRole('dialog')).getByRole(
         'button',
         {
-          name: 'Save schedule',
+          name: 'Close schedule editor',
         }
       );
       expect(saveButton).not.toBeDisabled();
