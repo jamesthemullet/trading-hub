@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 
 import type {
   CategoryRuleSet,
+  ExcludedFacets,
   MerchandisingRules,
   RuleSetFacetConfigWithId,
 } from '@/libs/api';
@@ -18,6 +19,7 @@ export const useRuleSetCreate = () => {
       merchandisingRules,
       startDate,
       endDate,
+      excludedFacets,
     }: {
       categoryId: string;
       facets: Array<RuleSetFacetConfigWithId>;
@@ -25,17 +27,19 @@ export const useRuleSetCreate = () => {
       merchandisingRules: MerchandisingRules;
       startDate?: string;
       endDate?: string;
+      excludedFacets?: ExcludedFacets;
     }) => {
       setError('');
 
       try {
         const body: CategoryRuleSet = {
+          rules: merchandisingRules,
           facets,
           categoryId,
           isEnabled,
-          rules: merchandisingRules,
           startDate,
           endDate,
+          excludedFacets,
         };
         const response =
           await search().betaMerchandisingCategoryRulesetCreate(body);

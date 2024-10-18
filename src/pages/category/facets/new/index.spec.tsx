@@ -1,8 +1,9 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useGetCategories, useRuleSetCreate } from '@/libs/hooks';
+import { globalFacetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import NewFacetRuleset from './index.page';
@@ -14,6 +15,12 @@ const categoryName2 = 'dresses';
 const categoryPath1 = 'l/jeans';
 const categoryPath2 = 'l/women/dresses';
 
+const mockUseFacetsList = {
+  isLoading: false,
+  facets: globalFacetsListMock.facets,
+  error: '',
+};
+
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
@@ -21,6 +28,9 @@ jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useRuleSetCreate: jest.fn(),
   useGetCategories: jest.fn(),
+  useFacetsList: () => {
+    return mockUseFacetsList;
+  },
 }));
 
 const logSpy = jest.spyOn(console, 'log');
@@ -115,6 +125,30 @@ describe('Facet Management Editing', () => {
       categoryToSelect.click();
     });
 
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+    });
+
+    const includeOnlyOption = screen.getAllByText('Include only')[0];
+
+    await user.click(includeOnlyOption);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+    });
+
+    const excludeOnlyOption = screen.getAllByText('Exclude only')[1];
+
+    await user.click(excludeOnlyOption);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing size as excluded')
+      ).toBeVisible();
+    });
+
     const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);
     act(() => {
       submit.click();
@@ -123,8 +157,31 @@ describe('Facet Management Editing', () => {
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(createRuleset).toHaveBeenCalledWith({
       categoryId: 'cat_123',
-      facets: [],
+      facets: [
+        {
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          lastChanged: {
+            date: '2021-01-01T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        },
+      ],
       isEnabled: true,
+      excludedFacets: {
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+          },
+        ],
+      },
       merchandisingRules: {
         blockedProducts: [],
         boosts: { alphanumeric: [], numeric: [], product: [] },
@@ -135,5 +192,420 @@ describe('Facet Management Editing', () => {
       },
     });
     expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
+  });
+
+  it('should update status on dropdown change to include only, and re-order by status', async () => {
+    const user = userEvent.setup({ delay: null });
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      createRuleset: jest.fn(),
+      error: '',
+    });
+
+    renderWithProviders(<NewFacetRuleset />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507'
+    );
+
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
+    act(() => {
+      categoryToSelect.click();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing category as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing category as included')
+      ).not.toBeInTheDocument();
+    });
+
+    act(() => {
+      user.click(screen.getAllByText('Include only')[3]);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing category as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing category as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing category as algoControl')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+
+    act(() => {
+      user.click(screen.getAllByText('Include only')[2]);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Move category row up')
+      ).not.toBeInTheDocument();
+    });
+
+    await user.click(await screen.findByLabelText('Move category row down'));
+
+    await waitFor(async () => {
+      expect(
+        await screen.findByLabelText('Move category row up')
+      ).toBeVisible();
+    });
+
+    await user.click(await screen.findByLabelText('Move category row up'));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Move category row up')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to exclude only, and re-order by status', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      createRuleset: jest.fn(),
+      error: '',
+    });
+
+    renderWithProviders(<NewFacetRuleset />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507'
+    );
+
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
+    act(() => {
+      categoryToSelect.click();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+
+    const includeOnlyOption = screen.getAllByText('Include only')[0];
+
+    await user.click(includeOnlyOption);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
+
+    const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
+
+    await user.click(excludeOnlyOption);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to algoControl', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      createRuleset: jest.fn(),
+      error: '',
+    });
+
+    renderWithProviders(<NewFacetRuleset />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507'
+    );
+
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
+    act(() => {
+      categoryToSelect.click();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Include only')[0];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Algo control')[0];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to algoControl from excluded', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      createRuleset: jest.fn(),
+      error: '',
+    });
+
+    renderWithProviders(<NewFacetRuleset />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507'
+    );
+
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
+    act(() => {
+      categoryToSelect.click();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Exclude only')[0];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Algo control')[8];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should update status on dropdown change to included from excluded', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      createRuleset: jest.fn(),
+      error: '',
+    });
+
+    renderWithProviders(<NewFacetRuleset />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507'
+    );
+
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
+    act(() => {
+      categoryToSelect.click();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Exclude only')[0];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Include only')[4];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as algoControl')
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should not update status if the same status is selected', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      createRuleset: jest.fn(),
+      error: '',
+    });
+
+    renderWithProviders(<NewFacetRuleset />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507'
+    );
+
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
+    act(() => {
+      categoryToSelect.click();
+    });
+
+    expect(
+      screen.getByLabelText('Row showing color as algoControl')
+    ).toBeVisible();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      const includeOnlyOption = screen.getAllByText('Algo control')[0];
+
+      user.click(includeOnlyOption);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+      expect(
+        screen.queryByLabelText('Row showing color as included')
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByLabelText('Row showing color as excluded')
+      ).not.toBeInTheDocument();
+    });
   });
 });
