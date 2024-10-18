@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Box } from '@mantine/core';
 
 import {
@@ -17,6 +17,8 @@ import {
   Text,
 } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
+import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { EditFacetModal } from '@/libs/components/modals/edit-facet/edit-facet-modal';
@@ -69,6 +71,31 @@ export const AddFacetPanel = styled.div`
 export const LowerHeading = styled(Text)`
   font-size: 1em;
   margin-bottom: 1em;
+`;
+
+const ScopeWrapper = styled.div`
+  display: flex;
+
+  & > div:first-child {
+    width: 100%;
+  }
+`;
+
+const Duration = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: ${spacing(2)};
+  gap: ${spacing(1)};
+
+  label {
+    margin-top: ${spacing(0.5)};
+  }
+`;
+
+const LabelContainer = styled.label`
+  display: flex;
+  font-size: 14px;
+  align-items: center;
 `;
 
 export const AttributesTable = styled.div`
@@ -163,6 +190,7 @@ export const FacetsPanel = ({
   onFacetsDataRowOrderChange,
   onHandleStatusChange,
   onSelectedCategoryChange,
+  onScheduleDateChange,
   refreshData,
   title,
   facetsData,
@@ -170,10 +198,12 @@ export const FacetsPanel = ({
   isNewRuleset,
   defaultCategory,
   displayRowOrderControls = false,
+  endDate,
   includedFacets,
   excludedFacets,
   rulesetMerchandisingRules,
   searchTerm,
+  startDate,
   updatedValues,
 }: {
   onSave: (categoryId: string) => void;
@@ -209,6 +239,7 @@ export const FacetsPanel = ({
   onSelectedCategoryChange?: (
     categoryId: Required<Category> | undefined
   ) => void;
+  onScheduleDateChange?: (dateTime: [Date | null, Date | null]) => void;
   displayRowOrderControls?: boolean;
   title: string;
   facetsData: ReturnedFacet[];
@@ -216,17 +247,20 @@ export const FacetsPanel = ({
   isNewRuleset?: boolean;
   rulesetMerchandisingRules?: MerchandisingRules;
   defaultCategory?: Required<Category>;
+  endDate?: string;
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   includedFacets: ReturnedFacet[];
   excludedFacets: ExcludedFacets;
   searchTerm?: string;
+  startDate?: string;
   updatedValues?: (
     orderedPinnedValues: string[],
     orderedExcludedValues: string[],
     id: string
   ) => void;
 }) => {
+  const featureFlags = useContext(FeatureFlagContext);
   const [selectedCategory, setSelectedCategory] = useState<
     Required<Category> | undefined
   >(defaultCategory);
@@ -420,15 +454,32 @@ export const FacetsPanel = ({
 
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
-        <CategorySearch
-          selectedCategory={selectedCategory}
-          onClearSelection={() => {
-            setSelectedCategory(undefined);
-            onSelectedCategoryChange?.(undefined);
-          }}
-          onSelectCategory={onSelectCategory}
-          canRemoveCategory={facetType === 'category'}
-        />
+        <ScopeWrapper>
+          <CategorySearch
+            selectedCategory={selectedCategory}
+            onClearSelection={() => {
+              setSelectedCategory(undefined);
+              onSelectedCategoryChange?.(undefined);
+            }}
+            onSelectCategory={onSelectCategory}
+            canRemoveCategory={facetType === 'category'}
+          />
+          {facetType !== 'global' &&
+            featureFlags.hasScheduling &&
+            onScheduleDateChange && (
+              <Duration>
+                <LabelContainer>Duration</LabelContainer>
+                <DateTimePickerModal
+                  showCalendarIcon={true}
+                  onUpdateDateTimeRange={onScheduleDateChange}
+                  dateTime={[
+                    startDate ? new Date(startDate) : null,
+                    endDate ? new Date(endDate) : null,
+                  ]}
+                />
+              </Duration>
+            )}
+        </ScopeWrapper>
       </SectionWrapper>
       <SectionWrapper>
         <AddFacetPanel>

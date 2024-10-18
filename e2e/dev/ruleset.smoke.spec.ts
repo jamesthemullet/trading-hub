@@ -2,8 +2,13 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 
 import { expect, test } from '@playwright/test';
+import { cookies } from '../helpers';
 
 test.describe.configure({ mode: 'serial' });
+
+test.beforeEach(async ({ context }) => {
+  await context.addCookies(cookies);
+});
 
 test.describe('Category Ranking', () => {
   test('creates new ruleset', async ({ page }) => {
@@ -75,6 +80,7 @@ test.describe('Category Ranking', () => {
   });
 
   test('edits a ruleset', async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
     await page.goto('/category/rulesets');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
@@ -118,7 +124,29 @@ test.describe('Category Ranking', () => {
     await expect(
       page.getByRole('heading', { name: 'Buried Products (1)' })
     ).toBeVisible();
-    await page.getByRole('button', { name: 'Save' }).click();
+
+    await page.getByPlaceholder('Select date range').click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Rule date and time duration' })
+    ).toBeVisible();
+
+    await page.getByTitle('Toggle').click();
+    await page.getByLabel('14 November 2024').click();
+    await page.getByLabel('19 November 2024').click();
+    await expect(
+      page.getByText('Nov 14 2024 00:00 - Nov 19 2024 23:59')
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Save' }).nth(1).click();
+    await page.getByRole('button', { name: 'Save' }).first().click();
+
+    await expect(
+      page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()
+    ).toBeVisible();
+    await expect(page.getByRole('time').first()).toHaveText(
+      '14 Nov 2024 - 19 Nov 2024'
+    );
   });
 
   test('keeps changes for facets and products', async ({ page }) => {
@@ -131,6 +159,10 @@ test.describe('Category Ranking', () => {
     await expect(
       page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()
     ).toBeVisible();
+
+    await expect(page.getByRole('time').first()).toHaveText(
+      '14 Nov 2024 - 19 Nov 2024'
+    );
 
     await page.getByRole('link', { name: 'Edit' }).first().click();
     await page.waitForLoadState('networkidle');

@@ -39,6 +39,8 @@ const Page = ({ id }: { id: string }) => {
     RuleSetFacetConfigWithId[] | []
   >([]);
 
+  const [dateTime, setDateTime] = useState<Array<Date | null>>([null, null]);
+
   const { facets, error: getFacetListError } = useFacetsList({
     categoryId: userSelectedCategory?.identifier,
     enabled: !isLoading,
@@ -64,6 +66,12 @@ const Page = ({ id }: { id: string }) => {
         name: ruleSetDetail.categoryName,
         path: '/',
       });
+    }
+    if (ruleSetDetail.startDate && ruleSetDetail.endDate) {
+      setDateTime([
+        new Date(ruleSetDetail.startDate),
+        new Date(ruleSetDetail.endDate),
+      ]);
     }
   }, [ruleSetDetail]);
 
@@ -136,6 +144,10 @@ const Page = ({ id }: { id: string }) => {
         ),
         isEnabled: ruleSetDetail.isEnabled,
         rules: ruleSetDetail.rules,
+        startDate: dateTime[0]
+          ? new Date(dateTime[0]).toISOString()
+          : undefined,
+        endDate: dateTime[1] ? new Date(dateTime[1]).toISOString() : undefined,
       },
       ruleSetId: id,
       excludedFacets: {
@@ -311,12 +323,18 @@ const Page = ({ id }: { id: string }) => {
           }}
           onHandleStatusChange={onHandleStatusChange}
           onSelectedCategoryChange={handleUserSelectedCategoryChange}
+          onScheduleDateChange={(
+            updatedDateTime: [Date | null, Date | null]
+          ) => {
+            setDateTime(updatedDateTime);
+          }}
           refreshData={refreshRuleset}
           defaultCategory={{
             identifier: ruleSetDetail.categoryId,
             name: ruleSetDetail.categoryName,
             path: '/',
           }}
+          endDate={ruleSetDetail.endDate}
           includedFacets={includedFacets}
           excludedFacets={{
             facets: excludedFacets?.map((facet) => ({ id: facet.id })),
@@ -324,6 +342,7 @@ const Page = ({ id }: { id: string }) => {
           facetType="category"
           rulesetMerchandisingRules={ruleSetDetail.rules}
           searchTerm={search}
+          startDate={ruleSetDetail.startDate}
           updatedValues={handleUpdatedValues}
         />
       )}

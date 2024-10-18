@@ -1,7 +1,8 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   useGetCategories,
   useGetFacetAttributeValues,
@@ -660,6 +661,164 @@ describe('Category Facet Management Editing', () => {
       });
     });
   }, 10000);
+
+  describe('Sechduling', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2022, 2, 1));
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    it('should set a scheduled date', async () => {
+      const mockScheduleRuleset = {
+        ...mockUseRuleSetPreviewData,
+        ruleSetDetail: {
+          ...mockUseRuleSetPreviewData.ruleSetDetail,
+          endDate: '2022-04-13T22:59:00.000Z',
+          startDate: '2022-04-11T23:00:00.000Z',
+        },
+      };
+
+      jest
+        .mocked(useRuleSetDetail)
+        .mockImplementation(() => mockScheduleRuleset);
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+          <Page id={ruleSetId} />
+        </FeatureFlagContext.Provider>
+      );
+
+      expect(screen.getByText('Duration')).toBeVisible();
+
+      const input = screen.getByPlaceholderText('Select date range');
+      act(() => {
+        input.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('On all the time')).toBeVisible();
+      });
+
+      expect(screen.getByPlaceholderText('Select date range')).toHaveValue(
+        '11/04/22 23:00 - 13/04/22 22:59'
+      );
+
+      await waitFor(() => {
+        const startDate = screen.getAllByText('16')[1];
+        act(() => {
+          startDate.click();
+        });
+      });
+
+      await waitFor(() => {
+        const endDate = screen.getAllByText('17')[1];
+        act(() => {
+          endDate.click();
+        });
+      });
+
+      const saveButton = within(screen.getByRole('dialog')).getByRole(
+        'button',
+        { name: 'Save' }
+      );
+      expect(saveButton).not.toBeDisabled();
+      act(() => {
+        saveButton.click();
+      });
+
+      expect(screen.getByPlaceholderText('Select date range')).toHaveValue(
+        '16/04/22 23:00 - 17/04/22 22:59'
+      );
+
+      act(() => {
+        screen.getAllByRole('button', { name: 'Save' })[0].click();
+      });
+
+      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+        categoryId: 'SubCategory_428',
+        excludedFacets: {
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+            },
+          ],
+        },
+        ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+        rules: {
+          endDate: '2022-04-17T22:59:00.000Z',
+          startDate: '2022-04-16T23:00:00.000Z',
+          rules: {
+            pinnedProducts: [{ id: 'a1' }],
+            blockedProducts: [],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          },
+          isEnabled: false,
+          facets: [
+            {
+              displayValue: 'color',
+              boosted: ['test include'],
+              excludedValues: ['test exclude'],
+              indexPropertyName: 'color',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              lastChanged: {
+                date: '2021-01-01T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [
+                {
+                  displayValue: 'test merged group',
+                  mergedValues: ['merged 1', 'merged 2'],
+                },
+              ],
+            },
+            {
+              displayValue: 'size',
+              boosted: [],
+              excludedValues: [],
+              indexPropertyName: 'size',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+              lastChanged: {
+                date: '2021-01-02T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [],
+            },
+            {
+              displayValue: 'brand',
+              boosted: [],
+              excludedValues: [],
+              indexPropertyName: 'brand',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+              lastChanged: {
+                date: '2021-01-03T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [],
+            },
+          ],
+        },
+      });
+    });
+  });
 
   describe('category operations', () => {
     it('should show empty list when category is removed', async () => {

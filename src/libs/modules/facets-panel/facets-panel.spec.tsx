@@ -1,6 +1,7 @@
 import { act, Screen, screen, waitFor } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
 import {
   attributeValuesMock,
@@ -492,6 +493,62 @@ describe('Facet Panel', () => {
     await userEvent.type(search, 'color');
 
     await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('color'));
+  });
+
+  it('should show the schedule date picker', async () => {
+    renderWithProviders(
+      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <FacetsPanel
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          setSearch={setSearchSpy}
+          title="Facet Rule Editor"
+          facetsData={globalFacetsListMock.facets}
+          defaultCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          onFacetDataChange={jest.fn()}
+          includedFacets={[]}
+          excludedFacets={{ facets: [] }}
+          facetType="category"
+          onScheduleDateChange={jest.fn()}
+        />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.getByPlaceholderText('Select date range')).toHaveValue('');
+  });
+
+  it('should show a previously saved scheduled date', async () => {
+    renderWithProviders(
+      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <FacetsPanel
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          setSearch={setSearchSpy}
+          title="Facet Rule Editor"
+          facetsData={globalFacetsListMock.facets}
+          defaultCategory={{
+            identifier: categoryId1,
+            name: categoryName1,
+            path: categoryPath1,
+          }}
+          onFacetDataChange={jest.fn()}
+          includedFacets={[]}
+          excludedFacets={{ facets: [] }}
+          facetType="category"
+          startDate="2024-11-05T00:00:00.000Z"
+          endDate="2024-11-06T00:00:00.000Z"
+          onScheduleDateChange={jest.fn()}
+        />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.getByPlaceholderText('Select date range')).toHaveValue(
+      '05/11/24 00:00 - 06/11/24 00:00'
+    );
   });
 
   it('should edit a display value of global facets', async () => {

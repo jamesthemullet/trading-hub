@@ -7,6 +7,7 @@ import { useFacetsFilter, useFacetsList, useRuleSetCreate } from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
 
 const Page = () => {
+  const [dateTime, setDateTime] = useState<Array<Date | null>>([null, null]);
   const { createRuleset, error: crateRuleSetError } = useRuleSetCreate();
   const router = useRouter();
 
@@ -154,6 +155,8 @@ const Page = () => {
       categoryId,
       merchandisingRules: defaultMerchandisingRules,
       isEnabled: true,
+      startDate: dateTime[0] ? new Date(dateTime[0]).toISOString() : undefined,
+      endDate: dateTime[1] ? new Date(dateTime[1]).toISOString() : undefined,
     });
 
     if (resp) {
@@ -193,6 +196,9 @@ const Page = () => {
         onSelectedCategoryChange={handleUserSelectedCategoryChange}
         onSave={createNewCategoryRuleSet}
         onCancel={handleCancel}
+        onScheduleDateChange={(updatedDateTime: [Date | null, Date | null]) => {
+          setDateTime(updatedDateTime);
+        }}
         setSearch={setSearch}
       />
     </>

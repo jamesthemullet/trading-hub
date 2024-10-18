@@ -222,7 +222,7 @@ export const DatePicker = (
       </Header>
 
       <StyledInfoContainer>
-        <StyledInfoLabel>Rule date and time duration</StyledInfoLabel>
+        <StyledInfoLabel as="h4">Rule date and time duration</StyledInfoLabel>
 
         <StyledvalueLabel>
           {isToggleEnabled

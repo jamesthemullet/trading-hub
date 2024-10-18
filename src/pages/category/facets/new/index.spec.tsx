@@ -1,7 +1,8 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useGetCategories, useRuleSetCreate } from '@/libs/hooks';
 import { globalFacetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -606,6 +607,121 @@ describe('Facet Management Editing', () => {
       expect(
         screen.queryByLabelText('Row showing color as excluded')
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Scheduling', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2022, 2, 1));
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    it('should save scheduling changes to a facet', async () => {
+      const user = userEvent.setup({ delay: 0 });
+      const createRuleset = jest.fn().mockResolvedValue({});
+      jest.mocked(useRuleSetCreate).mockReturnValue({
+        createRuleset,
+        error: '',
+      });
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+      renderWithProviders(
+        <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+          <NewFacetRuleset />
+        </FeatureFlagContext.Provider>
+      );
+
+      expect(screen.getByText('Duration')).toBeVisible();
+
+      act(() => {
+        user.type(
+          screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+          'SubCategory_507{Enter}'
+        );
+      });
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      const categoryToSelect = await screen.findByText(
+        `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+      );
+      act(() => {
+        categoryToSelect.click();
+      });
+
+      const input = screen.getByPlaceholderText('Select date range');
+      act(() => {
+        input.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('On all the time')).toBeVisible();
+      });
+
+      const toggle = screen.getByTitle('Toggle');
+      act(() => {
+        toggle.click();
+      });
+
+      await waitFor(() => {
+        const startDate = screen.getAllByText('16')[1];
+        act(() => {
+          startDate.click();
+        });
+      });
+
+      await waitFor(() => {
+        const endDate = screen.getAllByText('17')[1];
+        act(() => {
+          endDate.click();
+        });
+      });
+
+      const saveButton = within(screen.getByRole('dialog')).getByRole(
+        'button',
+        {
+          name: 'Save',
+        }
+      );
+      expect(saveButton).not.toBeDisabled();
+      act(() => {
+        saveButton.click();
+      });
+
+      expect(screen.getByPlaceholderText('Select date range')).toHaveValue(
+        '16/04/22 00:00 - 17/04/22 23:59'
+      );
+
+      const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);
+      act(() => {
+        submit.click();
+      });
+
+      expect(createRuleset).toHaveBeenCalledWith({
+        categoryId: 'cat_123',
+        facets: [],
+        excludedFacets: {
+          facets: [],
+        },
+        isEnabled: true,
+        endDate: '2022-04-17T23:59:00.000Z',
+        startDate: '2022-04-16T00:00:00.000Z',
+        merchandisingRules: {
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: { alphanumeric: [], numeric: [], product: [] },
+          excludes: { alphanumeric: [] },
+          includes: { alphanumeric: [] },
+          pinnedProducts: [],
+        },
+      });
     });
   });
 });
