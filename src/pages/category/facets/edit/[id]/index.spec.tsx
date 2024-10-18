@@ -723,7 +723,7 @@ describe('Category Facet Management Editing', () => {
 
       const saveButton = within(screen.getByRole('dialog')).getByRole(
         'button',
-        { name: 'Save' }
+        { name: 'Save schedule' }
       );
       expect(saveButton).not.toBeDisabled();
       act(() => {

@@ -44,6 +44,8 @@ export const mockRulesetsList: ReturnedKeywordRuleSets = {
       excludedFacets: {
         facets: [],
       },
+      startDate: '2024-09-12T14:17:54Z',
+      endDate: '2024-12-19T04:20:03Z',
     },
     {
       id: '3394effe-ceda-4bc6-a1d6-ec09673a0549',
@@ -475,6 +477,8 @@ export const mockRuleSet: ReturnedKeywordRuleSet = {
   searchTerms: ['joggers'],
   facets: [],
   excludedFacets: { facets: [] },
+  startDate: '2024-09-12T14:17:54Z',
+  endDate: '2024-12-19T04:20:03Z',
 };
 
 export const mockProducts: ProductSearchResponse = {

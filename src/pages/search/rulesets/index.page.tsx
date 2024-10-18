@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type { KeywordRuleSet, ReturnedKeywordRuleSet } from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   NewButton,
   PageNameLabel,
@@ -88,6 +89,8 @@ const SearchRuleSets = () => {
     refetchRuleSetList();
   };
 
+  const featureFlags = useContext(FeatureFlagContext);
+
   const onDuplicateRuleSet = (id: string) => {
     const rulesetToCopy = ruleSets.find((ruleset) => ruleset.id === id);
 
@@ -100,23 +103,37 @@ const SearchRuleSets = () => {
     });
   };
 
-  const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
+  const hasSchedule =
+    ruleSets.some((rule) => rule.startDate && rule.endDate) &&
+    featureFlags.hasScheduling;
 
-  const rows = ruleSets.map(({ searchTerms, id, isEnabled, lastChanged }) => ({
-    id: id,
-    identifier: searchTerms
-      .map((term) =>
-        !!searchQuery.length &&
-        term.toLowerCase().startsWith(searchQuery.toLowerCase())
-          ? `<b>${term}</b>`
-          : term
-      )
-      .join(' | '),
-    isEnabled,
-    lastChanged,
-    onToggle: onEnableDisableRuleSet,
-    url: `/search/rulesets/edit/${id}`,
-  }));
+  const headings = [
+    'Identifier',
+    ...(hasSchedule ? ['Schedule'] : []),
+    'Enable',
+    'Last Changed',
+    'User',
+    'Actions',
+  ];
+
+  const rows = ruleSets.map(
+    ({ searchTerms, id, isEnabled, lastChanged, startDate, endDate }) => ({
+      id: id,
+      identifier: searchTerms
+        .map((term) =>
+          !!searchQuery.length &&
+          term.toLowerCase().startsWith(searchQuery.toLowerCase())
+            ? `<b>${term}</b>`
+            : term
+        )
+        .join(' | '),
+      isEnabled,
+      lastChanged,
+      onToggle: onEnableDisableRuleSet,
+      url: `/search/rulesets/edit/${id}`,
+      ...(featureFlags.hasScheduling && { startDate, endDate }),
+    })
+  );
 
   return (
     <>

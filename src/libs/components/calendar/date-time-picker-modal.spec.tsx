@@ -16,7 +16,7 @@ describe('DateTimePickerModal', () => {
   it('should render correctly', async () => {
     render(<DateTimePickerModal />);
     expect(
-      screen.queryByRole('button', { name: 'Save' })
+      screen.queryByRole('button', { name: 'Save schedule' })
     ).not.toBeInTheDocument();
     const input = screen.getByPlaceholderText('Select date range');
     act(() => {
@@ -24,7 +24,9 @@ describe('DateTimePickerModal', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Save schedule' })
+      ).toBeInTheDocument();
     });
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
@@ -34,7 +36,7 @@ describe('DateTimePickerModal', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByRole('button', { name: 'Save' })
+        screen.queryByRole('button', { name: 'Save schedule' })
       ).not.toBeInTheDocument();
     });
   });
@@ -66,14 +68,14 @@ describe('DateTimePickerModal', () => {
       });
     });
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
+    const saveButton = screen.getByRole('button', { name: 'Save schedule' });
     act(() => {
       saveButton.click();
     });
 
     await waitFor(() => {
       expect(
-        screen.queryByRole('button', { name: 'Save' })
+        screen.queryByRole('button', { name: 'Save schedule' })
       ).not.toBeInTheDocument();
     });
     expect((input as HTMLInputElement).value).toBe(
@@ -120,13 +122,13 @@ describe('DateTimePickerModal', () => {
     );
     expect(headerText).toBeVisible();
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
+    const saveButton = screen.getByRole('button', { name: 'Save schedule' });
     act(() => {
       saveButton.click();
     });
     await waitFor(() => {
       expect(
-        screen.queryByRole('button', { name: 'Save' })
+        screen.queryByRole('button', { name: 'Save schedule' })
       ).not.toBeInTheDocument();
       expect(headerText).not.toBeInTheDocument();
     });
@@ -189,13 +191,13 @@ describe('DateTimePickerModal', () => {
     );
     expect(headerText).toBeVisible();
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
+    const saveButton = screen.getByRole('button', { name: 'Save schedule' });
     act(() => {
       saveButton.click();
     });
     await waitFor(() => {
       expect(
-        screen.queryByRole('button', { name: 'Save' })
+        screen.queryByRole('button', { name: 'Save schedule' })
       ).not.toBeInTheDocument();
       expect(headerText).not.toBeInTheDocument();
     });
@@ -247,13 +249,13 @@ describe('DateTimePickerModal', () => {
     );
     expect(headerText).toBeVisible();
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
+    const saveButton = screen.getByRole('button', { name: 'Save schedule' });
     act(() => {
       saveButton.click();
     });
     await waitFor(() => {
       expect(
-        screen.queryByRole('button', { name: 'Save' })
+        screen.queryByRole('button', { name: 'Save schedule' })
       ).not.toBeInTheDocument();
       expect(headerText).not.toBeInTheDocument();
     });

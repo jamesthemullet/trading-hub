@@ -1,6 +1,8 @@
+/* eslint-disable testing-library/prefer-screen-queries */
 import { expect, test } from '@playwright/test';
 
 import { mockRedirect, mockRedirectsList } from './redirects.mocks';
+
 test.describe('Keyword Redirects', () => {
   test.beforeEach(async ({ page }) => {
     await page.route(
@@ -116,5 +118,121 @@ test.describe('Keyword Redirects', () => {
     await expect(
       page.getByText('Do you want to delete this rule')
     ).not.toBeVisible();
+  });
+
+  test.describe('Scheduling', () => {
+    test.beforeEach(async ({ context }) => {
+      await context.addCookies([
+        {
+          name: 'flagScheduling',
+          value: 'true',
+          url: 'http://localhost:3000/search/redirects',
+        },
+      ]);
+    });
+
+    test('Should schedule a redirect', async ({ page }) => {
+      await expect(
+        page.getByRole('heading', { name: 'Keyword Redirect' })
+      ).toBeVisible();
+
+      await page.getByRole('link', { name: 'Add new rule' }).click();
+
+      await expect(
+        page.getByRole('heading', { name: 'Add Keyword Redirect rule' })
+      ).toBeVisible();
+      await expect(page.getByText('Duration')).toBeVisible();
+
+      await page.getByPlaceholder('Select date range').click();
+
+      await expect(page.getByText('Rule date and time duration')).toBeVisible();
+
+      await page.getByTitle('Toggle').click();
+      await expect(
+        page.getByRole('button', { name: 'Save schedule' })
+      ).toBeDisabled();
+
+      await page.locator('button:has-text("16")').nth(1).click();
+      await page.locator('button:has-text("22")').nth(1).click();
+      await page.getByText('00:00').click();
+      await page.fill('input[type="time"]', '10:30');
+
+      await expect(page.getByText('00:00')).not.toBeVisible();
+
+      await expect(page.getByText('10:30')).toBeVisible();
+
+      await expect(
+        page.getByRole('button', { name: 'Save schedule' })
+      ).not.toBeDisabled();
+
+      await page.getByRole('button', { name: 'Save schedule' }).click();
+
+      await page.waitForLoadState('networkidle');
+
+      await expect(
+        page.getByRole('heading', { name: 'Keyword Redirect' })
+      ).toBeVisible();
+    });
+
+    test('should edit a scheduled redirect', async ({ page }) => {
+      await page.getByRole('link', { name: 'Edit' }).click();
+
+      await expect(page.getByText('Duration')).toBeVisible();
+
+      await page.getByPlaceholder('Select date range').click();
+
+      await expect(page.getByText('Rule date and time duration')).toBeVisible();
+      await expect(
+        page.getByText('Sep 12 2024 15:17 - Dec 19 2024 04:20')
+      ).toBeVisible();
+
+      await page.locator('button:has-text("16")').nth(1).click();
+      await page.locator('button:has-text("22")').nth(1).click();
+
+      const timeInputs = await page.$$('input[type="time"]');
+      await timeInputs[0].fill('10:30');
+      await timeInputs[1].fill('11:45');
+
+      await expect(page.getByText('15:17')).not.toBeVisible();
+      await expect(page.getByText('04:20')).not.toBeVisible();
+
+      await expect(page.getByText('10:30')).toBeVisible();
+      await expect(page.getByText('11:45')).toBeVisible();
+
+      await expect(
+        page.getByRole('button', { name: 'Save schedule' })
+      ).not.toBeDisabled();
+
+      await page.getByRole('button', { name: 'Save schedule' }).click();
+
+      await page.waitForLoadState('networkidle');
+
+      await expect(
+        page.getByRole('heading', { name: 'Keyword Redirect' })
+      ).toBeVisible();
+    });
+
+    test('should delete a scheduled redirect', async ({ page }) => {
+      await page.getByRole('link', { name: 'Edit' }).click();
+
+      await expect(page.getByText('Duration')).toBeVisible();
+
+      await page.getByPlaceholder('Select date range').click();
+
+      await expect(page.getByText('Rule date and time duration')).toBeVisible();
+      await expect(
+        page.getByText('Sep 12 2024 15:17 - Dec 19 2024 04:20')
+      ).toBeVisible();
+
+      await page.getByTitle('Toggle').click();
+
+      await page.getByRole('button', { name: 'Save schedule' }).click();
+
+      await page.waitForLoadState('networkidle');
+
+      await expect(
+        page.getByRole('heading', { name: 'Keyword Redirect' })
+      ).toBeVisible();
+    });
   });
 });

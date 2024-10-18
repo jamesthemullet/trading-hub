@@ -1411,7 +1411,7 @@ describe('Ruleset', () => {
         });
       });
 
-      const saveButton = screen.getByRole('button', { name: 'Save' });
+      const saveButton = screen.getByRole('button', { name: 'Save schedule' });
       act(() => {
         saveButton.click();
       });

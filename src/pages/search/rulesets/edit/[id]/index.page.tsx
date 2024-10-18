@@ -53,6 +53,8 @@ const Page = ({ id }: PageProps) => {
           rulesetMerchandisingRules={ruleSet.rules}
           rulesetType="search"
           searchTerms={ruleSet.searchTerms}
+          startDate={ruleSet.startDate}
+          endDate={ruleSet.endDate}
         />
       )}
 

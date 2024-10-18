@@ -97,9 +97,13 @@ const RedirectRuleSets = () => {
     refetchRedirectList();
   };
 
+  const hasSchedule =
+    redirects.some((redirect) => redirect.startDate && redirect.endDate) &&
+    featureFlags.hasScheduling;
+
   const headings = [
     'Identifier',
-    ...(featureFlags.hasScheduling ? ['Schedule'] : []),
+    ...(hasSchedule ? ['Schedule'] : []),
     'Enable',
     'Last Changed',
     'User',

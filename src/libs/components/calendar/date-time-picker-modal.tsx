@@ -154,6 +154,7 @@ export const DateTimePickerModal = ({
                   tempDateRange[0] !== null && tempDateRange[1] === null
                 }
                 onClick={handleSave}
+                aria-label="Save schedule"
               >
                 Save
               </StyledButton>

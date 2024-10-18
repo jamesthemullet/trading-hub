@@ -22,6 +22,7 @@ export default defineConfig({
     baseURL: process.env.E2E_TARGET_URL || 'http://localhost:3000',
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
+    timezoneId: 'Europe/London',
   },
   webServer: [
     {

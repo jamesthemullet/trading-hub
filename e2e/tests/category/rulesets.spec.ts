@@ -445,4 +445,149 @@ test.describe('Category rulesets', () => {
 
     await expect(page.getByRole('button', { name: 'Changes9' })).toBeVisible();
   });
+
+  test.describe('Scheduling', () => {
+    test.beforeEach(async ({ context }) => {
+      await context.addCookies([
+        {
+          name: 'flagScheduling',
+          value: 'true',
+          url: 'http://localhost:3000/category/rulesets',
+        },
+      ]);
+    });
+
+    test('Should schedule a ruleset', async ({ page }) => {
+      await page.goto('/category/rulesets');
+      await expect(
+        page.getByRole('heading', { name: 'Category ranking rules' })
+      ).toBeVisible();
+
+      await page.waitForLoadState('networkidle');
+
+      await page.getByRole('link', { name: 'Add new rule' }).click();
+
+      await page.waitForLoadState();
+      await expect(page.getByLabel('Visual Editor')).toBeVisible();
+
+      await page.getByPlaceholder('Search...').click();
+      await page.getByPlaceholder('Search...').fill('Dresses');
+      await page
+        .getByText('SubCategory_429 | Dresses | l/women/dresses')
+        .click();
+
+      await page.waitForLoadState('networkidle');
+
+      await expect(
+        page.getByLabel('Position 1', { exact: true })
+      ).toBeVisible();
+
+      await expect(page.getByText('Duration')).toBeVisible();
+
+      await page.getByPlaceholder('Select date range').click();
+
+      await expect(page.getByText('Rule date and time duration')).toBeVisible();
+
+      await page.getByTitle('Toggle').click();
+      await expect(
+        page.getByRole('button', { name: 'Save schedule' })
+      ).toBeDisabled();
+
+      await page.locator('button:has-text("16")').nth(1).click();
+      await page.locator('button:has-text("22")').nth(1).click();
+      await page.getByText('00:00').click();
+      await page.fill('input[type="time"]', '10:30');
+
+      await expect(page.getByText('00:00')).not.toBeVisible();
+
+      await expect(page.getByText('10:30')).toBeVisible();
+
+      await expect(
+        page.getByRole('button', { name: 'Save schedule' })
+      ).not.toBeDisabled();
+
+      await page.getByRole('button', { name: 'Save schedule' }).click();
+
+      await page.waitForLoadState('networkidle');
+
+      await expect(
+        page.getByRole('heading', { name: 'Product Grid' })
+      ).toBeVisible();
+    });
+
+    test('should edit a scheduled ruleset', async ({ page }) => {
+      await page.goto('/category/rulesets');
+      await expect(
+        page.getByRole('heading', { name: 'Category ranking rules' })
+      ).toBeVisible();
+
+      await page.waitForLoadState('networkidle');
+
+      await page.getByRole('link', { name: 'Edit' }).nth(0).click();
+
+      await expect(page.getByText('Duration')).toBeVisible();
+
+      await page.getByPlaceholder('Select date range').click();
+
+      await expect(page.getByText('Rule date and time duration')).toBeVisible();
+      await expect(
+        page.getByText('Sep 12 2024 15:17 - Dec 19 2024 04:20')
+      ).toBeVisible();
+
+      await page.locator('button:has-text("16")').nth(1).click();
+      await page.locator('button:has-text("22")').nth(1).click();
+
+      const timeInputs = await page.$$('input[type="time"]');
+      await timeInputs[0].fill('10:30');
+      await timeInputs[1].fill('11:45');
+
+      await expect(page.getByText('15:17')).not.toBeVisible();
+      await expect(page.getByText('04:20')).not.toBeVisible();
+
+      await expect(page.getByText('10:30')).toBeVisible();
+      await expect(page.getByText('11:45')).toBeVisible();
+
+      await expect(
+        page.getByRole('button', { name: 'Save schedule' })
+      ).not.toBeDisabled();
+
+      await page.getByRole('button', { name: 'Save schedule' }).click();
+
+      await page.waitForLoadState('networkidle');
+
+      await expect(
+        page.getByRole('heading', { name: 'Product Grid' })
+      ).toBeVisible();
+    });
+
+    test('should delete a scheduled ruleset', async ({ page }) => {
+      await page.goto('/category/rulesets');
+      await expect(
+        page.getByRole('heading', { name: 'Category ranking rules' })
+      ).toBeVisible();
+
+      await page.waitForLoadState('networkidle');
+
+      await page.getByRole('link', { name: 'Edit' }).nth(0).click();
+
+      await expect(page.getByText('Duration')).toBeVisible();
+
+      await page.getByPlaceholder('Select date range').click();
+
+      await expect(page.getByText('Rule date and time duration')).toBeVisible();
+      await expect(
+        page.getByText('Sep 12 2024 15:17 - Dec 19 2024 04:20')
+      ).toBeVisible();
+
+      await page.getByTitle('Toggle').click();
+
+      await page.getByRole('button', { name: 'Save schedule' }).click();
+
+      await page.waitForLoadState('networkidle');
+
+      await expect(
+        page.getByRole('heading', { name: 'Product Grid' })
+      ).toBeVisible();
+    });
+  });
 });
