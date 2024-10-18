@@ -1,9 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import type { Product } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
+import { renderWithProviders } from '../../../test/render-with-providers';
 import { ProductSearch } from './product-search';
 
 const PLACEHOLDER_TEXT = 'Search for product';
@@ -37,7 +40,7 @@ describe('ProductSearch', () => {
       error: '',
       isLoading: false,
     });
-    render(
+    renderWithProviders(
       <ProductSearch
         isPinnable
         dispatch={mockDispatch}
@@ -76,7 +79,7 @@ describe('ProductSearch', () => {
       isLoading: false,
     });
 
-    render(
+    renderWithProviders(
       <ProductSearch
         isPinnable
         dispatch={mockDispatch}
@@ -123,7 +126,7 @@ describe('ProductSearch', () => {
       isLoading: false,
     });
 
-    render(
+    renderWithProviders(
       <ProductSearch
         isPinnable
         categoryId="cat123"
@@ -189,7 +192,7 @@ describe('ProductSearch', () => {
             },
           ],
           pagination: {
-            totalItems: 1,
+            totalItems: 3,
           },
         });
       }),
@@ -197,7 +200,7 @@ describe('ProductSearch', () => {
       isLoading: false,
     });
 
-    render(
+    renderWithProviders(
       <ProductSearch
         isPinnable
         dispatch={mockDispatch}
@@ -212,6 +215,66 @@ describe('ProductSearch', () => {
 
     await waitFor(() => {
       expect(screen.getByText('3 results')).toBeInTheDocument();
+    });
+  });
+
+  it('should render placeholder', async () => {
+    const user = userEvent.setup({ delay: null });
+    const searchForProductMock = jest.fn(() => {
+      return Promise.resolve({
+        products: Array.from({ length: 10 }).map(
+          (_, index) =>
+            ({
+              id: `${index}`,
+              productId: `id${index}`,
+              title: 'title',
+              imageUrl: ['example1.jpg'],
+              brand: 'brand',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£5',
+              url: '',
+            }) satisfies Product
+        ),
+        pagination: {
+          totalItems: 25,
+        },
+      });
+    });
+    jest.mocked(useCategoryProductSearch).mockReturnValue({
+      searchForProduct: searchForProductMock,
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <ProductSearch
+        categoryId="cat123"
+        isPinnable
+        dispatch={mockDispatch}
+        pinnedProductsCount={0}
+        merchandisingRules={mockMerchandisingRules}
+      />
+    );
+
+    const searchProduct = screen.getByPlaceholderText('Search for product');
+
+    await act(async () => {
+      await user.type(searchProduct, 'productSearchTitle');
+    });
+
+    await waitFor(() => {
+      expect(searchForProductMock).toHaveBeenLastCalledWith({
+        categoryId: 'cat123',
+        query: 'productSearchTitle',
+        start: 0,
+        rows: 10,
+        merchandisingRules: mockMerchandisingRules,
+      });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('placeholder-11')).toBeInTheDocument();
     });
   });
 });

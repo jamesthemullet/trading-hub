@@ -1,14 +1,15 @@
 import styled from '@emotion/styled';
-import { Dispatch, useCallback, useEffect, useState } from 'react';
+import { Dispatch, useState } from 'react';
+import { Skeleton } from '@mantine/core';
 
-import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
-import { useCategoryProductSearch } from '@/libs/hooks';
+import type { MerchandisingRules } from '@/libs/api';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import { Product } from '../product/product';
 import { Search } from '../search/search';
 import { Action } from '../types';
 import { spacing } from '../utils/spacing';
+import { useProducts } from './use-products';
 
 const ProductSearchRootContainer = styled.div`
   padding-top: ${spacing(2.5)};
@@ -62,6 +63,7 @@ export type ProductSearchProps = {
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
   categoryId?: string;
+  maxToQuery?: number;
 };
 
 export const ProductSearch = ({
@@ -70,35 +72,22 @@ export const ProductSearch = ({
   merchandisingRules,
   pinnedProductsCount,
   categoryId,
+  maxToQuery = 10,
 }: ProductSearchProps) => {
   const [productSearchTerm, setProductSearchTerm] = useState('');
-  const [products, setSearchProducts] = useState<ProductType[]>([]);
-  const { searchForProduct } = useCategoryProductSearch();
 
-  const fetchData = useCallback(async () => {
-    const { products } = await searchForProduct({
-      ...(categoryId && {
-        categoryId,
-      }),
-      query: productSearchTerm,
-      start: 0,
-      rows: 10,
+  const { products, totalProducts, scrollContainerRef, clearProducts } =
+    useProducts({
+      productSearchTerm,
+      categoryId,
+      maxToQuery,
       merchandisingRules,
     });
-
-    setSearchProducts(products);
-  }, [searchForProduct, productSearchTerm, categoryId, merchandisingRules]);
-
-  useEffect(() => {
-    if (productSearchTerm) {
-      fetchData();
-    }
-  }, [productSearchTerm, fetchData]);
 
   const onSearch = (query: string) => {
     setProductSearchTerm(query);
     if (!query) {
-      setSearchProducts([]);
+      clearProducts();
     }
   };
 
@@ -116,14 +105,14 @@ export const ProductSearch = ({
           }}
         />
       </TopContainer>
-      <InfoContainer>{products.length} results</InfoContainer>
-      <ProductsContainer>
-        {products.map((product, index) => {
-          const id = `${product.id}-${index}`;
-          return (
+      <InfoContainer>{totalProducts} results</InfoContainer>
+      <ProductsContainer ref={scrollContainerRef}>
+        {products.map((productWrapper, index) => {
+          const id = `${productWrapper.id}`;
+          return productWrapper.type === 'product' ? (
             <StyledProduct
               key={id}
-              {...product}
+              {...productWrapper.product}
               index={index}
               isPinnable={isPinnable}
               dispatch={dispatch}
@@ -132,6 +121,8 @@ export const ProductSearch = ({
               isProductNumberEnabled={false}
               isSearchResult={true}
             />
+          ) : (
+            <Skeleton key={id} aria-label={id} w={'100%'} h={'200px'} />
           );
         })}
       </ProductsContainer>
