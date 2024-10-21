@@ -2,9 +2,8 @@ require('dotenv').config();
 
 exports.config = {
   app_name: [process.env.NEW_RELIC_APP_NAME],
-
   license_key: String(process.env.NEW_RELIC_LICENSE_KEY),
-
+  agent_enabled: process.env.NEW_RELIC_APP_NAME === 'true',
   distributed_tracing: {
     /**
      * Enables/disables distributed tracing.
