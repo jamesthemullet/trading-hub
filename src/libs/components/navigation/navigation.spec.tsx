@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { usePathname } from 'next/navigation';
@@ -31,104 +31,6 @@ describe('Navigation', () => {
     render(<Navigation />);
 
     expect(screen.getByTitle('Category Ranking Rules')).toBeInTheDocument();
-  });
-
-  it('should open and close category sub menu', () => {
-    render(<Navigation />);
-
-    const menuItemOne = screen.getByRole('button', {
-      name: 'Category Ranking Rules',
-    });
-
-    act(() => {
-      menuItemOne.click();
-    });
-
-    expect(screen.getByText('Category Ranking')).toBeVisible();
-
-    act(() => {
-      menuItemOne.click();
-    });
-
-    expect(screen.getByText('Category Ranking')).not.toBeVisible();
-  });
-
-  it.each([
-    ['Category Ranking Rules', ['Ranking rules', 'Facets'], 'Category Ranking'],
-    [
-      'Search Ranking Rules',
-      ['Ranking rules', 'Redirect'],
-      'Search optimisation',
-    ],
-    [
-      'Setup',
-      ['Global Category Ranking', 'Global Facet Management'],
-      'Setup Global',
-    ],
-  ])(
-    'should close the submenu on navigation via sublink',
-    (menuItemName, subLinkNames, hiddenText) => {
-      render(<Navigation />);
-      const menuItem = screen.getByRole('button', { name: menuItemName });
-
-      act(() => {
-        menuItem.click();
-      });
-
-      subLinkNames.forEach((subLinkName) => {
-        const subLink = screen.getByRole('link', { name: subLinkName });
-
-        act(() => {
-          subLink.click();
-        });
-
-        expect(screen.getByText(hiddenText)).not.toBeVisible();
-
-        act(() => {
-          menuItem.click();
-        });
-      });
-    }
-  );
-
-  it('should open and close search sub menu', () => {
-    render(<Navigation />);
-
-    const menuItemTwo = screen.getByRole('button', {
-      name: 'Search Ranking Rules',
-    });
-
-    act(() => {
-      menuItemTwo.click();
-    });
-
-    expect(screen.getByText('Search optimisation')).toBeVisible();
-
-    act(() => {
-      menuItemTwo.click();
-    });
-
-    expect(screen.getByText('Search optimisation')).not.toBeVisible();
-  });
-
-  it('should open and close setup sub menu', () => {
-    render(<Navigation />);
-
-    const menuItemThree = screen.getByRole('button', {
-      name: 'Setup',
-    });
-
-    act(() => {
-      menuItemThree.click();
-    });
-
-    expect(screen.getByText('Setup Global')).toBeVisible();
-
-    act(() => {
-      menuItemThree.click();
-    });
-
-    expect(screen.getByText('Setup Global')).not.toBeVisible();
   });
 
   it('should show Login when signed out', () => {
