@@ -421,6 +421,7 @@ export const Ruleset = ({
                 merchandisingRules={merchandisingRules}
                 dispatch={dispatch}
                 categoryId={selectedCategory?.identifier}
+                searchTerms={rulesetSearchTerms}
               />
             )}
             {currentProductTab === 1 && (

@@ -63,6 +63,7 @@ export type ProductSearchProps = {
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
   categoryId?: string;
+  searchTerms?: string[];
   maxToQuery?: number;
 };
 
@@ -72,6 +73,7 @@ export const ProductSearch = ({
   merchandisingRules,
   pinnedProductsCount,
   categoryId,
+  searchTerms,
   maxToQuery = 10,
 }: ProductSearchProps) => {
   const [productSearchTerm, setProductSearchTerm] = useState('');
@@ -80,6 +82,7 @@ export const ProductSearch = ({
     useProducts({
       productSearchTerm,
       categoryId,
+      searchTerms,
       maxToQuery,
       merchandisingRules,
     });

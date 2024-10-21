@@ -29,11 +29,13 @@ const createRequestHandler = (response: HttpResponse) => {
     }),
   ];
 };
+const requestSpy = jest.fn();
 
 describe('useCategoryProductSearch', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();
+    server.events.on('request:start', requestSpy);
   });
 
   afterEach(() => {
@@ -88,6 +90,45 @@ describe('useCategoryProductSearch', () => {
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
+    expect(requestSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({
+          method: 'POST',
+          url: 'http://localhost/search/beta/merchandising/product?q=Socks&rows=10&start=0&categoryId=1',
+        }),
+      })
+    );
+  });
+
+  it('searches by merchandising search term', async () => {
+    const mockResponse: ReturnedCategoryRuleSets = {
+      ruleSets: [],
+      pagination: {
+        totalItems: 3,
+      },
+    };
+    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+
+    const { result } = renderHook(() => useCategoryProductSearch());
+
+    await act(async () => {
+      const data = await result.current.searchForProduct({
+        searchTerms: ['foo', 'bar', 'baz'],
+        query: 'Socks',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+      });
+      expect(data.pagination.totalItems).toEqual(3);
+    });
+    expect(requestSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({
+          method: 'POST',
+          url: 'http://localhost/search/beta/merchandising/product?q=Socks&rows=10&start=0&merchandisingSearchTerm=foo&merchandisingSearchTerm=bar&merchandisingSearchTerm=baz',
+        }),
+      })
+    );
   });
 
   it('searches by productIds', async () => {

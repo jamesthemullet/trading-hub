@@ -7,11 +7,13 @@ import { useScrollOffset } from './use-scroll-offset';
 
 export const useProducts = ({
   categoryId,
+  searchTerms,
   productSearchTerm,
   maxToQuery,
   merchandisingRules,
 }: {
   categoryId?: string;
+  searchTerms?: string[];
   productSearchTerm: string;
   maxToQuery: number;
   merchandisingRules: MerchandisingRules;
@@ -39,6 +41,7 @@ export const useProducts = ({
       ...(categoryId && {
         categoryId,
       }),
+      ...(searchTerms && { searchTerms }),
       query: productSearchTerm,
       start: offset,
       rows: maxToQuery,

@@ -12,6 +12,7 @@ export const useCategoryProductSearch = () => {
       productIds,
       query,
       rows,
+      searchTerms,
       start,
       merchandisingRules,
     }: {
@@ -20,6 +21,7 @@ export const useCategoryProductSearch = () => {
       productIds?: string[];
       query?: string;
       rows?: number;
+      searchTerms?: string[];
       start?: number;
     }) => {
       setError('');
@@ -31,6 +33,7 @@ export const useCategoryProductSearch = () => {
           ...(!productIds && { rows }),
           ...(!productIds && { start }),
           ...(categoryId && { categoryId }),
+          ...(searchTerms && { merchandisingSearchTerm: searchTerms }),
           ...(productIds && { productId: productIds }),
         };
 
