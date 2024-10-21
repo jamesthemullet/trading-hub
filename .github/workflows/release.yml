@@ -140,7 +140,8 @@ jobs:
               "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
               "NEW_RELIC_APP_NAME=${{ secrets._NEW_RELIC_APP_NAME }}" \
-              "NEW_RELIC_LICENSE_KEY=${{ secrets._NEW_RELIC_LICENSE_KEY }}"
+              "NEW_RELIC_LICENSE_KEY=${{ secrets._NEW_RELIC_LICENSE_KEY }}" \
+              "NEW_RELIC_ENABLED=${{ secrets.NEW_RELIC_ENABLED }}"
 
       - name: Deploy to Azure Web Apps
         shell: bash
@@ -218,6 +219,7 @@ jobs:
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
               "NEW_RELIC_APP_NAME=${{ secrets._NEW_RELIC_APP_NAME }}" \
               "NEW_RELIC_LICENSE_KEY=${{ secrets._NEW_RELIC_LICENSE_KEY }}" \
+              "NEW_RELIC_ENABLED=${{ secrets.NEW_RELIC_ENABLED }}"
 
       - name: Deploy to Azure Web Apps slot
         uses: azure/cli@v2
