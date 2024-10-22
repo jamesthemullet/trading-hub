@@ -211,6 +211,12 @@ An example settings.json file is in the .vscode folder
 
 ## Deployments
 
+During the 2024/5 golden quarter there is a manual step required for releasing. After merging to main and provided there is no code freeze go to your commit in the [release workflow](https://github.com/DigitalInnovation/trading-hub/actions/workflows/release.yml) and approve the production step, monitor the release and check your changes on production as usual
+
+A [hotfix branch](https://github.com/DigitalInnovation/trading-hub/tree/hotfix) is set up should any releases be required during code freezes. To release a hotfix raise a PR against this branch, which will deploy to dev then production on confirmation. Hotfix branch is updated with code from main after successful production release from main
+
+[Smoke tests](https://github.com/DigitalInnovation/trading-hub/actions/workflows/smoke-tests.yml) are run against dev every 15 minutes. These tests can be manually triggered from the workflow and is recommended to run after deploying to confirm tests pass
+
 | Environment | URL                                                         |
 | ----------- | ----------------------------------------------------------- |
 | Dev         | https://dev-merchandising-hub.search.marksandspencer.app/   |

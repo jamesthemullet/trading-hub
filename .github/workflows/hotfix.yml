@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - hotfix
   workflow_dispatch:
 
 concurrency:
@@ -259,17 +259,3 @@ jobs:
 
       - name: Delete zip file
         run: rm next.zip
-
-  sync-branch:
-    runs-on: ubuntu-latest
-    needs: [deploy-prod]
-    steps:
-      - uses: actions/checkout@master
-
-      - name: Merge main -> hotfix
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: main
-          target_branch: hotfix
-          github_token: ${{ secrets.GITHUB_TOKEN }}
