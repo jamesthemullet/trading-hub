@@ -505,7 +505,7 @@ describe('Category facet management', () => {
       </FeatureFlagContext.Provider>
     );
 
-    expect(screen.getByRole('time').textContent).toBe(
+    expect(screen.getByRole('time')).toHaveTextContent(
       '14 Oct 2024 - 15 Oct 2024'
     );
   });

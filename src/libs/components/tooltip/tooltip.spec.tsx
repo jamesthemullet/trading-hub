@@ -13,7 +13,7 @@ describe('Tooltip', () => {
 
     expect(openButton).toBeInTheDocument();
     expect(closeButton).toBeInTheDocument();
-    expect(tooltipText.getAttribute('id')).toEqual('inputId-tooltip');
+    expect(tooltipText).toHaveAttribute('id', 'inputId-tooltip');
     expect(tooltip).toHaveStyleRule('display', 'none');
     expect(tooltip).toHaveStyleRule('right', 'calc(0.75rem - 2px)', {
       target: ':after',

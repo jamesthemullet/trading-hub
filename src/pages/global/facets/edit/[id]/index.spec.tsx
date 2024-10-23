@@ -162,7 +162,9 @@ describe('Global Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
-    expect(screen.queryByRole('button', { name: 'Preview' })).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'Preview' })
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
     expect(
       screen.getByRole('heading', {

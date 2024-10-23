@@ -564,7 +564,7 @@ describe('Category Facet Management Editing', () => {
     await waitFor(() => {
       expect(
         screen.getByRole('button', { name: 'Save changes to attributes' })
-      ).not.toBeDisabled();
+      ).toBeEnabled();
     });
 
     act(() => {
@@ -725,7 +725,7 @@ describe('Category Facet Management Editing', () => {
         'button',
         { name: 'Close schedule editor' }
       );
-      expect(saveButton).not.toBeDisabled();
+      expect(saveButton).toBeEnabled();
       act(() => {
         saveButton.click();
       });

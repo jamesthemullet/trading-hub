@@ -51,7 +51,7 @@ describe('Product', () => {
 
       expect(screen.getByLabelText('product title')).toBeInTheDocument();
 
-      expect(screen.getByLabelText('product title').textContent).toBe(
+      expect(screen.getByLabelText('product title')).toHaveTextContent(
         'product brand product title'
       );
     });
@@ -197,7 +197,7 @@ describe('Product', () => {
         confirmButton.click();
       });
 
-      expect(screen.getByLabelText('Error message').textContent).toBe(
+      expect(screen.getByLabelText('Error message')).toHaveTextContent(
         expectedError
       );
     });
@@ -220,7 +220,7 @@ describe('Product', () => {
         confirmButton.click();
       });
 
-      expect(screen.getByLabelText('Error message').textContent).toBe(
+      expect(screen.getByLabelText('Error message')).toHaveTextContent(
         expectedError
       );
     });
@@ -273,7 +273,7 @@ describe('Product', () => {
 
       openActionsMenu(screen);
 
-      expect(screen.queryByText('Pin in position')).toBeNull();
+      expect(screen.queryByText('Pin in position')).not.toBeInTheDocument();
     });
 
     it('should un-pin', () => {
@@ -384,7 +384,7 @@ describe('Product', () => {
     it('should render correctly', () => {
       render(<MissingProduct {...missingProductProps} />);
 
-      expect(screen.getByLabelText('Error message').textContent).toBe(
+      expect(screen.getByLabelText('Error message')).toHaveTextContent(
         `Product ${missingProductProps.id} not found`
       );
     });

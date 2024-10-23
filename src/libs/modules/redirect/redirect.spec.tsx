@@ -264,7 +264,7 @@ describe('Redirect', () => {
       const saveButton = screen.getByRole('button', {
         name: 'Close schedule editor',
       });
-      expect(saveButton).not.toBeDisabled();
+      expect(saveButton).toBeEnabled();
       act(() => {
         saveButton.click();
       });
@@ -320,7 +320,7 @@ describe('Redirect', () => {
       const saveButton = screen.getByRole('button', {
         name: 'Close schedule editor',
       });
-      expect(saveButton).not.toBeDisabled();
+      expect(saveButton).toBeEnabled();
       act(() => {
         saveButton.click();
       });

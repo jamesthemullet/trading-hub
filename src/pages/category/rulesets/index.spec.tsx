@@ -132,7 +132,7 @@ describe('Index', () => {
     expect(dropdown.previousSibling?.textContent).toBe('100');
   });
 
-  it('displays shedule if a ruleset has a start and end date', () => {
+  it('displays schedule if a ruleset has a start and end date', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
@@ -188,7 +188,7 @@ describe('Index', () => {
       </FeatureFlagContext.Provider>
     );
 
-    expect(screen.getByRole('time').textContent).toBe(
+    expect(screen.getByRole('time')).toHaveTextContent(
       '14 Oct 2024 - 15 Oct 2024'
     );
   });

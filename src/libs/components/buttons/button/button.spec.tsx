@@ -19,7 +19,8 @@ describe('Button', () => {
       </Button>
     );
 
-    expect(screen.getByRole('link', { name: 'foo' }).getAttribute('href')).toBe(
+    expect(screen.getByRole('link', { name: 'foo' })).toHaveAttribute(
+      'href',
       '/bar'
     );
   });

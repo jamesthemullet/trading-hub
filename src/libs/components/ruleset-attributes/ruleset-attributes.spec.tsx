@@ -258,7 +258,7 @@ describe('RulesetAttributes', () => {
 
     await user.type(screen.getByLabelText('Filter numeric attributes'), 'Size');
 
-    expect(screen.queryByText('Price')).toBeNull();
+    expect(screen.queryByText('Price')).not.toBeInTheDocument();
   });
 
   it('selects Product description attributes', async () => {
@@ -311,7 +311,7 @@ describe('RulesetAttributes', () => {
       'Colour'
     );
 
-    expect(screen.queryByText('Brand')).toBeNull();
+    expect(screen.queryByText('Brand')).not.toBeInTheDocument();
 
     const colourStepButton = screen.getByRole('button', { name: 'Colour' });
 
@@ -327,7 +327,7 @@ describe('RulesetAttributes', () => {
 
     await user.type(screen.getByLabelText('Filter selected attributes'), 'Red');
 
-    expect(screen.queryByLabelText('Blue')).toBeNull();
+    expect(screen.queryByLabelText('Blue')).not.toBeInTheDocument();
   });
 
   it('buries Product description attributes', async () => {

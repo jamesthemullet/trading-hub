@@ -153,7 +153,8 @@ describe('Input', () => {
 
     expect(screen.getByLabelText('Open tooltip')).toBeInTheDocument();
     expect(screen.getByText('An additional help message')).toBeInTheDocument();
-    expect(screen.getByRole('textbox').getAttribute('aria-labelledby')).toEqual(
+    expect(screen.getByRole('textbox')).toHaveAttribute(
+      'aria-labelledby',
       'inputId inputId-tooltip'
     );
   });

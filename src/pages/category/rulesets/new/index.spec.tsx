@@ -148,8 +148,8 @@ describe('Index', () => {
 
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(
-      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT).textContent
-    ).toBe('');
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT)
+    ).toHaveTextContent('');
   });
 
   it('creates a new rule set and redirects to the edit page', async () => {

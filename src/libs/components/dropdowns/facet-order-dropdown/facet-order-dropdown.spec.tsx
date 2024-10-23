@@ -14,8 +14,8 @@ describe('Filter dropdown', () => {
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown'
     );
-    expect(dropdownHeader.getAttribute('aria-haspopup')).toBe('listbox');
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownHeader).toHaveAttribute('aria-haspopup', 'listbox');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
     expect(screen.getByText('Select an action')).toBeVisible();
     expect(screen.getByText('Include only')).not.toBeVisible();
     expect(screen.getByText('Exclude only')).not.toBeVisible();
@@ -30,7 +30,7 @@ describe('Filter dropdown', () => {
     );
     await user.click(screen.getByRole('button'));
 
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'true');
     expect(dropdownHeader).toHaveStyle('border-bottom: 1px solid #b1b1b1;');
     expect(dropdownHeader).toHaveStyle('border-radius: 4px 4px 0 0;');
     expect(screen.getByText('Select an action')).toBeVisible();
@@ -47,7 +47,7 @@ describe('Filter dropdown', () => {
     );
     await user.click(screen.getByRole('button'));
 
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'true');
     expect(dropdownHeader).toHaveStyle('border-bottom: 1px solid #b1b1b1;');
     expect(dropdownHeader).toHaveStyle('border-radius: 4px 4px 0 0;');
     expect(screen.getByText('Select an action')).toBeVisible();
@@ -65,11 +65,11 @@ describe('Filter dropdown', () => {
     );
     await user.click(dropdownHeader);
 
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'true');
 
     await user.click(dropdownHeader);
 
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('should change the selected option when an option is clicked, and close the dropdown', async () => {
@@ -90,7 +90,7 @@ describe('Filter dropdown', () => {
     expect(screen.getAllByText('Exclude only')[0]).toBeVisible();
     expect(screen.getAllByText('Exclude only')[1]).not.toBeVisible();
     expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('when hasAlgoControl should change the selected option when an option is clicked, and close the dropdown', async () => {
@@ -111,7 +111,7 @@ describe('Filter dropdown', () => {
     expect(screen.getAllByText('Algo control')[0]).toBeVisible();
     expect(screen.getAllByText('Algo control')[1]).not.toBeVisible();
     expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('should close the dropdown when Escape key is pressed', async () => {
@@ -123,10 +123,10 @@ describe('Filter dropdown', () => {
     );
     await user.click(dropdownHeader);
 
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('true');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'true');
 
     await user.keyboard('{Escape}');
 
-    expect(dropdownHeader.getAttribute('aria-expanded')).toBe('false');
+    expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
   });
 });

@@ -205,7 +205,7 @@ describe('ModalEditValues', () => {
 
     expect(
       screen.queryByLabelText('Remove merged value red from color merge group')
-    ).toBeNull();
+    ).not.toBeInTheDocument();
   });
 
   it('should not render merge group and not allow removal', async () => {
@@ -240,11 +240,11 @@ describe('ModalEditValues', () => {
 
     expect(
       screen.queryByLabelText('Remove merged value red from red merge group')
-    ).toBeNull();
+    ).not.toBeInTheDocument();
 
     expect(
       screen.queryByLabelText('Merge selected facet attributes button')
-    ).toBeNull();
+    ).not.toBeInTheDocument();
   });
 
   it('should dispatch MOVE_BOOSTED_ROW_DOWN', async () => {
@@ -458,7 +458,7 @@ describe('ModalEditValues', () => {
 
     const mergeButtonAfter = await screen.findByText('Merge (2)');
     expect(mergeButtonAfter).toBeVisible();
-    expect(mergeButtonAfter).not.toBeDisabled();
+    expect(mergeButtonAfter).toBeEnabled();
     expect(blueCheckbox).toBeChecked();
     expect(selectAllCheckbox).toBeChecked();
 
@@ -573,7 +573,9 @@ describe('ModalEditValues', () => {
     await userEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(screen.queryByText('red is not a unique value')).toBeFalsy();
+      expect(
+        screen.queryByText('red is not a unique value')
+      ).not.toBeInTheDocument();
       expect(inputField).not.toBeVisible();
       expect(dispatchMock).toHaveBeenCalledTimes(0);
     });

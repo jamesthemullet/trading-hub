@@ -400,6 +400,6 @@ describe('Preview', () => {
       },
     });
 
-    expect(screen.queryByText('Product Type')).toBe(null);
+    expect(screen.queryByText('Product Type')).not.toBeInTheDocument();
   });
 });

@@ -181,8 +181,12 @@ describe('Facet Panel', () => {
       />
     );
 
-    expect(screen.queryByRole('button', { name: 'Preview' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Add new facet' })).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'Preview' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Add new facet' })
+    ).not.toBeInTheDocument();
   });
 
   it('should render column headings', () => {
@@ -615,7 +619,7 @@ describe('Facet Panel', () => {
       />
     );
 
-    expect(screen.queryByText('Edit values')).toBeNull();
+    expect(screen.queryByText('Edit values')).not.toBeInTheDocument();
   });
 
   describe('Edit Facet Values Modal', () => {

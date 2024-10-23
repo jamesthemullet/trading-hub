@@ -13,7 +13,7 @@ describe('Pagination', () => {
         }}
       />
     );
-    expect(screen.getByText('Page 1 of 1')).toBeTruthy();
+    expect(screen.getByText('Page 1 of 1')).toBeInTheDocument();
   });
 
   it('should render the correct page number', () => {

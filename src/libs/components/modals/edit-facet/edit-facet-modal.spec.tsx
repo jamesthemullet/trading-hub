@@ -512,7 +512,7 @@ describe('ModalEditValues', () => {
       );
       const mergeButton = screen.queryByRole('button', { name: 'Merge (0)' });
       const mergeCheckBoxes = screen.queryAllByRole('checkbox');
-      expect(mergeButton).toBeNull();
+      expect(mergeButton).not.toBeInTheDocument();
       expect(mergeCheckBoxes.length).toBe(0);
     });
 
@@ -818,7 +818,7 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(
           screen.getAllByLabelText('Remove merged facet for Duck Down')[0]
-        ).not.toBeDisabled();
+        ).toBeEnabled();
       });
 
       act(() => {
