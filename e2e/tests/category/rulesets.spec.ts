@@ -504,7 +504,7 @@ test.describe('Category rulesets', () => {
 
       await expect(
         page.getByRole('button', { name: 'Close schedule editor' })
-      ).not.toBeDisabled();
+      ).toBeEnabled();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
@@ -549,7 +549,7 @@ test.describe('Category rulesets', () => {
 
       await expect(
         page.getByRole('button', { name: 'Close schedule editor' })
-      ).not.toBeDisabled();
+      ).toBeEnabled();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
 

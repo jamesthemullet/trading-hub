@@ -436,7 +436,7 @@ describe('Category facet management', () => {
     );
   });
 
-  it('displays shedule if a ruleset has a start and end date', () => {
+  it('displays schedule if a ruleset has a start and end date', () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockFacets = [
       {

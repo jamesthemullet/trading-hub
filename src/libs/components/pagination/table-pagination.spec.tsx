@@ -94,34 +94,18 @@ describe('TablePagination', () => {
       pageSizes,
     };
 
-    const { container } = render(<TablePagination {...mockProps} />);
+    render(<TablePagination {...mockProps} />);
     const text = 'Page 2 of 10';
 
     expect(screen.getByText(text)).toBeVisible();
 
-    const nextPageButton = container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Next page"]'
-    );
-
-    if (!nextPageButton) {
-      throw new Error('Next page button not found');
-    }
-
     act(() => {
-      nextPageButton.click();
+      screen.getByRole('button', { name: 'Next page' }).click();
     });
     expect(pageSpy).toHaveBeenCalledWith(3);
 
-    const prevPageButton = container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Previous page"]'
-    );
-
-    if (!prevPageButton) {
-      throw new Error('Prev page button not found');
-    }
-
     act(() => {
-      prevPageButton.click();
+      screen.getByRole('button', { name: 'Previous page' }).click();
     });
 
     expect(pageSpy).toHaveBeenCalledWith(1);

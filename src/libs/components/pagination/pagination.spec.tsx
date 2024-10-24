@@ -18,34 +18,16 @@ describe('Pagination', () => {
 
   it('should render the correct page number', () => {
     const onClickCallback = jest.fn();
-    const { container } = render(
-      <Pagination current={2} total={5} onClick={onClickCallback} />
-    );
-
-    const nextPageButton = container.querySelector<HTMLButtonElement>(
-      'button[name="next-button"]'
-    );
-
-    if (!nextPageButton) {
-      throw new Error('Next page button not found');
-    }
+    render(<Pagination current={2} total={5} onClick={onClickCallback} />);
 
     act(() => {
-      nextPageButton.click();
+      screen.getByRole('button', { name: 'Next page' }).click();
     });
 
     expect(onClickCallback).toHaveBeenCalledWith(expect.anything(), 3);
 
-    const prevPageButton = container.querySelector<HTMLButtonElement>(
-      'button[name="prev-button"]'
-    );
-
-    if (!prevPageButton) {
-      throw new Error('Prev page button not found');
-    }
-
     act(() => {
-      prevPageButton.click();
+      screen.getByRole('button', { name: 'Previous page' }).click();
     });
 
     expect(onClickCallback).toHaveBeenCalledWith(expect.anything(), 1);
