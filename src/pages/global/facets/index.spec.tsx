@@ -189,11 +189,7 @@ describe('Global Facet Management', () => {
     const user = userEvent.setup();
     renderWithProviders(<FacetManagementPage />);
 
-    const search = screen.queryByPlaceholderText(/Search\.\.\./i);
-
-    if (!search) {
-      throw new Error('Search not found');
-    }
+    const search = screen.getByPlaceholderText(/Search\.\.\./i);
 
     await user.type(search, 'search-search');
 

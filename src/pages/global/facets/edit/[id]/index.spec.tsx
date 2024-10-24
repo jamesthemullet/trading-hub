@@ -370,7 +370,7 @@ describe('Global Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing size as algoControl')
+        screen.getByLabelText('Row showing size as algoControl')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing size as included')
@@ -402,7 +402,7 @@ describe('Global Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing price as excluded')
+        screen.getByLabelText('Row showing price as excluded')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing price as included')
@@ -434,7 +434,7 @@ describe('Global Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing color as included')
+        screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing color as algoControl')

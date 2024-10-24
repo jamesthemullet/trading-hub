@@ -150,7 +150,7 @@ describe('DateTimePickerModal', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText('Mar 14 2022 00:30 - Mar 16 2022 23:59')
+        screen.getByText('Mar 14 2022 00:30 - Mar 16 2022 23:59')
       ).toBeVisible();
     });
   });
@@ -221,7 +221,7 @@ describe('DateTimePickerModal', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText('Mar 14 2022 00:00 - Mar 16 2022 23:00')
+        screen.getByText('Mar 14 2022 00:00 - Mar 16 2022 23:00')
       ).toBeVisible();
     });
   });

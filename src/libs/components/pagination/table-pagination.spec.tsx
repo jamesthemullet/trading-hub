@@ -186,7 +186,7 @@ describe('TablePagination', () => {
     });
 
     await waitFor(() => {
-      expect(screen.queryByText('20')).toBeVisible();
+      expect(screen.getByText('20')).toBeVisible();
     });
 
     const label = await screen.findByText('20');

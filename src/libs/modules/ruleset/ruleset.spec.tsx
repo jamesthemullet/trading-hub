@@ -1238,7 +1238,7 @@ describe('Ruleset', () => {
       });
 
       expect(screen.getByText('Nike')).toBeVisible();
-      expect(screen.queryByText('minPrice')).toBeVisible();
+      expect(screen.getByText('minPrice')).toBeVisible();
 
       const deleteButton = screen.getAllByLabelText('Delete attribute');
 

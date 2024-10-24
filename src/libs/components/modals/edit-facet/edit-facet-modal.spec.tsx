@@ -214,13 +214,9 @@ describe('ModalEditValues', () => {
 
     expect(screen.getAllByText('Cotton')[0]).toBeVisible();
 
-    const editButton = screen.queryByRole('button', {
+    const editButton = screen.getByRole('button', {
       name: 'Edit display name for Cotton',
     });
-
-    if (!editButton) {
-      throw new Error('Edit button for cotton not found');
-    }
 
     act(() => {
       editButton.click();
@@ -273,13 +269,9 @@ describe('ModalEditValues', () => {
 
     expect(screen.getAllByText('Cottonnn')[0]).toBeVisible();
 
-    const editButton = screen.queryByRole('button', {
+    const editButton = screen.getByRole('button', {
       name: 'Edit display name for Cottonnn',
     });
-
-    if (!editButton) {
-      throw new Error('Edit button for cottonnn not found');
-    }
 
     act(() => {
       editButton.click();
@@ -329,13 +321,9 @@ describe('ModalEditValues', () => {
 
     expect(screen.getAllByText('Cotton')[0]).toBeVisible();
 
-    const editButton = screen.queryByRole('button', {
+    const editButton = screen.getByRole('button', {
       name: 'Edit display name for Cotton',
     });
-
-    if (!editButton) {
-      throw new Error('Edit button for cotton not found');
-    }
 
     act(() => {
       editButton.click();
@@ -384,11 +372,7 @@ describe('ModalEditValues', () => {
     expect(screen.getAllByText('Cotton')[0]).toBeInTheDocument();
     expect(screen.getAllByText('Duck Down')[0]).toBeInTheDocument();
 
-    const search = screen.queryByPlaceholderText(/Search\.\.\./i);
-
-    if (!search) {
-      throw new Error('Search not found');
-    }
+    const search = screen.getByPlaceholderText(/Search\.\.\./i);
 
     await userEvent.type(search, 'cotton');
     await waitFor<void>(() =>
@@ -510,10 +494,11 @@ describe('ModalEditValues', () => {
           category="SubCategory_507"
         />
       );
-      const mergeButton = screen.queryByRole('button', { name: 'Merge (0)' });
-      const mergeCheckBoxes = screen.queryAllByRole('checkbox');
-      expect(mergeButton).not.toBeInTheDocument();
-      expect(mergeCheckBoxes.length).toBe(0);
+
+      expect(
+        screen.queryByRole('button', { name: 'Merge (0)' })
+      ).not.toBeInTheDocument();
+      expect(screen.queryAllByRole('checkbox').length).toBe(0);
     });
 
     it('should disable the merge button if less than two attributes selected', () => {
@@ -1791,9 +1776,9 @@ describe('ModalEditValues', () => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
       });
       expect(
-        screen.queryByLabelText('Remove merged facet for Duck Down')
+        screen.getByLabelText('Remove merged facet for Duck Down')
       ).toBeDisabled();
-      expect(screen.queryByLabelText('Select Cotton to merge')).toBeDisabled();
+      expect(screen.getByLabelText('Select Cotton to merge')).toBeDisabled();
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeDisabled();
       expect(
         screen.getByRole('checkbox', { name: 'Select all facet attributes' })

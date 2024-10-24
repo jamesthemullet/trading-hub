@@ -219,7 +219,7 @@ describe('Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing category as algoControl')
+        screen.getByLabelText('Row showing category as algoControl')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing category as included')
@@ -244,7 +244,7 @@ describe('Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing color as algoControl')
+        screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing color as included')
@@ -377,7 +377,7 @@ describe('Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing color as algoControl')
+        screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing color as included')
@@ -447,7 +447,7 @@ describe('Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing color as algoControl')
+        screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing color as included')
@@ -465,7 +465,7 @@ describe('Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing color as excluded')
+        screen.getByLabelText('Row showing color as excluded')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing color as algoControl')
@@ -517,7 +517,7 @@ describe('Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing color as algoControl')
+        screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing color as included')
@@ -535,7 +535,7 @@ describe('Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Row showing color as excluded')
+        screen.getByLabelText('Row showing color as excluded')
       ).toBeVisible();
       expect(
         screen.queryByLabelText('Row showing color as algoControl')

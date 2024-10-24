@@ -236,7 +236,7 @@ describe('ModalEditValues', () => {
       />
     );
 
-    expect(screen.queryByLabelText('Merged value red label')).toBeVisible();
+    expect(screen.getByLabelText('Merged value red label')).toBeVisible();
 
     expect(
       screen.queryByLabelText('Remove merged value red from red merge group')

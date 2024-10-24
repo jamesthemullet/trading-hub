@@ -30,7 +30,7 @@ describe('Index', () => {
     );
 
     const expectedWelcomeIntroText = 'Unauthorised,';
-    const headingElement = screen.queryByText(expectedWelcomeIntroText);
+    const headingElement = screen.getByText(expectedWelcomeIntroText);
 
     expect(headingElement).toBeVisible();
     expect(headingElement).toHaveTextContent(
@@ -55,7 +55,7 @@ describe('Index', () => {
     );
 
     const expectedUserEmailText = 'Hello,';
-    const headingElement = screen.queryByText(expectedUserEmailText, {
+    const headingElement = screen.getByText(expectedUserEmailText, {
       exact: false,
     });
 
@@ -70,7 +70,7 @@ describe('Index', () => {
       </SessionProvider>
     );
 
-    const signInButtonElement = screen.queryByText('Sign in', {
+    const signInButtonElement = screen.getByText('Sign in', {
       exact: false,
     });
 
@@ -103,7 +103,7 @@ describe('Index', () => {
       </SessionProvider>
     );
 
-    const signOutButtonElement = screen.queryByText('Sign out', {
+    const signOutButtonElement = screen.getByText('Sign out', {
       exact: false,
     });
 

@@ -76,7 +76,7 @@ describe('Filter dropdown', () => {
     const user = userEvent.setup();
     render(<FacetOrderDropdown />);
 
-    expect(screen.queryByText('Select an action')).toBeVisible();
+    expect(screen.getByText('Select an action')).toBeVisible();
 
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown'
@@ -97,7 +97,7 @@ describe('Filter dropdown', () => {
     const user = userEvent.setup();
     render(<FacetOrderDropdown hasAlgoControl />);
 
-    expect(screen.queryByText('Select an action')).toBeVisible();
+    expect(screen.getByText('Select an action')).toBeVisible();
 
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown'

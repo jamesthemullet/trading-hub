@@ -178,11 +178,7 @@ describe('Category facet management', () => {
 
     renderWithProviders(<FacetManagementPage />);
 
-    const search = screen.queryByPlaceholderText(/Search\.\.\./i);
-
-    if (!search) {
-      throw new Error('Search not found');
-    }
+    const search = screen.getByPlaceholderText(/Search\.\.\./i);
 
     await user.type(search, 'search-search');
 
@@ -223,11 +219,7 @@ describe('Category facet management', () => {
 
     expect(screen.getByText('Page 4 of 8')).toBeVisible();
 
-    const search = screen.queryByPlaceholderText(/Search\.\.\./i);
-
-    if (!search) {
-      throw new Error('Search not found');
-    }
+    const search = screen.getByPlaceholderText(/Search\.\.\./i);
 
     await user.type(search, 'search-search');
 

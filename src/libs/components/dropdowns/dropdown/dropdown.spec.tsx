@@ -41,7 +41,7 @@ describe('Filter dropdown', () => {
         <div>Content</div>
       </Dropdown>
     );
-    expect(screen.queryByText('Content')).toBeVisible();
+    expect(screen.getByText('Content')).toBeVisible();
   });
 
   it('should close dropdown when button is clicked again when already open', async () => {
@@ -77,8 +77,8 @@ describe('Filter dropdown', () => {
       </Dropdown>
     );
 
-    expect(screen.queryByText('Content')).toBeVisible();
-    expect(screen.queryByText('Done')).toBeVisible();
+    expect(screen.getByText('Content')).toBeVisible();
+    expect(screen.getByText('Done')).toBeVisible();
   });
 
   it('should render content starting from left', () => {
@@ -88,7 +88,7 @@ describe('Filter dropdown', () => {
       </Dropdown>
     );
 
-    expect(screen.queryByText('Content')).toBeVisible();
+    expect(screen.getByText('Content')).toBeVisible();
     expect(screen.getByText('Content').parentElement).toHaveStyleRule(
       'left',
       '0'
@@ -102,7 +102,7 @@ describe('Filter dropdown', () => {
       </Dropdown>
     );
 
-    expect(screen.queryByText('Content')).toBeVisible();
+    expect(screen.getByText('Content')).toBeVisible();
     expect(screen.getByText('Content').parentElement).toHaveStyleRule(
       'right',
       '0'

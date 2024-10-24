@@ -79,7 +79,7 @@ describe('SearchBox', () => {
       'right',
       '0.5rem'
     );
-    expect(screen.queryByLabelText('Some button')).toBeVisible();
+    expect(screen.getByLabelText('Some button')).toBeVisible();
   });
 
   it('should not render a search icon if hideIcon is true', () => {
