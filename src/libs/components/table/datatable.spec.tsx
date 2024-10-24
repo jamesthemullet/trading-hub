@@ -118,10 +118,13 @@ describe('DataTable', () => {
     );
 
     await user.click(screen.getAllByTitle('More options')[0]);
-    await user.click(screen.getByText('Delete'));
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
     await waitFor(() => {
       expect(
-        screen.getByText('Do you want to delete this rule?')
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
       ).toBeVisible();
     });
     await user.click(screen.getByLabelText('Delete rule'));
@@ -144,14 +147,17 @@ describe('DataTable', () => {
     await user.click(screen.getAllByTitle('More options')[0]);
 
     await waitFor(() => {
-      expect(screen.getByText('Delete')).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
     });
 
     await user.tab();
     await user.keyboard('{Enter}');
     await waitFor(() => {
       expect(
-        screen.getByText('Do you want to delete this rule?')
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
       ).toBeVisible();
     });
 
@@ -174,17 +180,23 @@ describe('DataTable', () => {
     );
 
     await user.click(screen.getAllByTitle('More options')[0]);
-    await user.click(screen.getByText('Delete'));
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
     await waitFor(() => {
       expect(
-        screen.getByText('Do you want to delete this rule?')
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
       ).toBeVisible();
     });
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     await user.click(screen.getAllByTitle('More options')[0]);
     expect(
-      screen.getByText('Do you want to delete this rule?')
+      screen.getByRole('heading', {
+        level: 3,
+        name: 'Do you want to delete this rule?',
+      })
     ).not.toBeVisible();
   });
 
@@ -277,7 +289,7 @@ describe('DataTable', () => {
     await user.keyboard('{Enter}');
 
     await waitFor(() => {
-      expect(screen.getByText('Delete')).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
     });
   });
 
@@ -289,7 +301,7 @@ describe('DataTable', () => {
 
     await user.click(screen.getAllByTitle('More options')[0]);
     await waitFor(() => {
-      expect(screen.getByText('Delete')).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
     });
 
     await user.click(screen.getAllByTitle('More options')[0]);
@@ -307,7 +319,7 @@ describe('DataTable', () => {
 
     await user.click(screen.getAllByTitle('More options')[0]);
     await waitFor(() => {
-      expect(screen.getByText('Delete')).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
     });
 
     await userEvent.keyboard('{Escape}');

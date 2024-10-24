@@ -59,7 +59,7 @@ describe('Edit keyword redirect', () => {
 
     render(<Page id={ruleSetId} />);
 
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(mockUpdateRedirect.updateRedirect).toHaveBeenCalled();
   });
@@ -69,7 +69,7 @@ describe('Edit keyword redirect', () => {
 
     render(<Page id={ruleSetId} />);
 
-    await user.click(screen.getByText('Cancel'));
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/search/redirects');
   });

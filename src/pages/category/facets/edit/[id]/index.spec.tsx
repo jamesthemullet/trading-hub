@@ -580,7 +580,7 @@ describe('Category Facet Management Editing', () => {
     });
 
     act(() => {
-      screen.getByText('Save').click();
+      screen.getByRole('button', { name: 'Save' }).click();
     });
 
     await waitFor(() => {

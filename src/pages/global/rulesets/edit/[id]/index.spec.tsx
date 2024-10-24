@@ -98,7 +98,7 @@ describe('Index', () => {
 
     render(<Page id={ruleSetId} />);
 
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
     expect(mockRouter.push).toHaveBeenCalledWith('/global/rulesets');
@@ -114,7 +114,7 @@ describe('Index', () => {
 
     render(<Page id={ruleSetId} />);
 
-    await user.click(screen.getByText('Cancel'));
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global/rulesets');
   });

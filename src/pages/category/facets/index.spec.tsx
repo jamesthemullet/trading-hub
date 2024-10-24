@@ -153,7 +153,10 @@ describe('Category facet management', () => {
     await user.click(screen.getAllByText('Delete')[0]);
     await waitFor(() => {
       expect(
-        screen.getByText('Do you want to delete this rule?')
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
       ).toBeVisible();
     });
 

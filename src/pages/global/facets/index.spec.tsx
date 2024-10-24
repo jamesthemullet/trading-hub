@@ -227,14 +227,20 @@ describe('Global Facet Management', () => {
     await user.click(deleteButton);
     await waitFor(() => {
       expect(
-        screen.getByText('Do you want to delete this rule?')
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
       ).toBeVisible();
     });
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     await waitFor(() => {
       expect(
-        screen.getByText('Do you want to delete this rule?')
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
       ).not.toBeVisible();
     });
 
@@ -245,7 +251,10 @@ describe('Global Facet Management', () => {
     await user.click(reRenderedDeleteButton);
     await waitFor(() => {
       expect(
-        screen.getByText('Do you want to delete this rule?')
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
       ).toBeVisible();
     });
     await user.click(screen.getByLabelText('Delete rule'));

@@ -129,7 +129,10 @@ test.describe('Keyword search', () => {
     await page.getByLabel('Delete rule').click();
 
     await expect(
-      page.getByText('Do you want to delete this rule')
+      page.getByRole('heading', {
+        level: 3,
+        name: 'Do you want to delete this rule?',
+      })
     ).not.toBeVisible();
   });
 

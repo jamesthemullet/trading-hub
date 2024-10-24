@@ -116,7 +116,10 @@ test.describe('Keyword Redirects', () => {
     await page.getByLabel('Delete rule').click();
 
     await expect(
-      page.getByText('Do you want to delete this rule')
+      page.getByRole('heading', {
+        level: 3,
+        name: 'Do you want to delete this rule?',
+      })
     ).not.toBeVisible();
   });
 
@@ -163,7 +166,7 @@ test.describe('Keyword Redirects', () => {
 
       await expect(
         page.getByRole('button', { name: 'Close schedule editor' })
-      ).not.toBeDisabled();
+      ).toBeEnabled();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
@@ -201,7 +204,7 @@ test.describe('Keyword Redirects', () => {
 
       await expect(
         page.getByRole('button', { name: 'Close schedule editor' })
-      ).not.toBeDisabled();
+      ).toBeEnabled();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
 

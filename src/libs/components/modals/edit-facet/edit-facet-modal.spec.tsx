@@ -1354,7 +1354,9 @@ describe('ModalEditValues', () => {
       });
 
       act(() => {
-        screen.getByText('Save').click();
+        screen
+          .getByRole('button', { name: 'Save changes to attributes' })
+          .click();
       });
       await waitFor(async () =>
         expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
@@ -1487,7 +1489,9 @@ describe('ModalEditValues', () => {
       });
       // save
       act(() => {
-        screen.getByText('Save').click();
+        screen
+          .getByRole('button', { name: 'Save changes to attributes' })
+          .click();
       });
       await waitFor(async () =>
         expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
@@ -1564,7 +1568,9 @@ describe('ModalEditValues', () => {
         screen.getByLabelText('include Ducky Downy And Feathery')
       );
       act(() => {
-        screen.getByText('Save').click();
+        screen
+          .getByRole('button', { name: 'Save changes to attributes' })
+          .click();
       });
       await waitFor(async () =>
         expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
@@ -1641,7 +1647,9 @@ describe('ModalEditValues', () => {
         screen.getByLabelText('include Ducky Downy And Feathery')
       );
       act(() => {
-        screen.getByText('Done').click();
+        screen
+          .getByRole('button', { name: 'Save changes to attributes' })
+          .click();
       });
       await waitFor(async () =>
         expect(updatedValuesMock).toHaveBeenCalledWith(
@@ -1721,7 +1729,9 @@ describe('ModalEditValues', () => {
       });
 
       act(() => {
-        user.click(screen.getByText('Save'));
+        user.click(
+          screen.getByRole('button', { name: 'Save changes to attributes' })
+        );
       });
 
       await waitFor(() => {

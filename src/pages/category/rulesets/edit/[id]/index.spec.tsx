@@ -102,7 +102,9 @@ describe('Index', () => {
       tab2.click();
     });
 
-    expect(screen.getByText('Create new attribute rule')).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: 'Create new attribute rule' })
+    ).toBeVisible();
   });
 
   it('should save ruleset', async () => {
@@ -114,7 +116,7 @@ describe('Index', () => {
 
     render(<Page id={ruleSetId} />);
 
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
   });
@@ -128,7 +130,7 @@ describe('Index', () => {
 
     render(<Page id={ruleSetId} />);
 
-    await user.click(screen.getByText('Cancel'));
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets');
   });

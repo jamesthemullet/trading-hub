@@ -20,7 +20,7 @@ describe('ProductGridHeader', () => {
     );
 
     expect(screen.getByText('Title')).toBeVisible();
-    expect(screen.getByText('Save')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 
   it('should show Create for new rulesets', () => {
@@ -38,7 +38,7 @@ describe('ProductGridHeader', () => {
       />
     );
 
-    expect(screen.getByText('Create')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Create' })).toBeVisible();
   });
 
   it('should call save callback on click', () => {
@@ -57,7 +57,7 @@ describe('ProductGridHeader', () => {
       />
     );
 
-    const saveButton = screen.getByText('Save');
+    const saveButton = screen.getByRole('button', { name: 'Save' });
 
     act(() => {
       saveButton.click();
@@ -82,7 +82,7 @@ describe('ProductGridHeader', () => {
       />
     );
 
-    const saveButton = screen.getByText('Save');
+    const saveButton = screen.getByRole('button', { name: 'Save' });
 
     act(() => {
       saveButton.click();
@@ -107,7 +107,7 @@ describe('ProductGridHeader', () => {
       />
     );
 
-    const previewButton = screen.getByText('Preview');
+    const previewButton = screen.getByRole('button', { name: 'Preview' });
 
     act(() => {
       previewButton.click();
@@ -132,7 +132,7 @@ describe('ProductGridHeader', () => {
       />
     );
 
-    const cancelButton = screen.getByText('Cancel');
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
 
     act(() => {
       cancelButton.click();
@@ -163,7 +163,7 @@ describe('ProductGridHeader', () => {
       />
     );
 
-    const cancelButton = screen.getByText('Cancel');
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
 
     act(() => {
       cancelButton.click();
@@ -187,7 +187,7 @@ describe('ProductGridHeader', () => {
       />
     );
 
-    const cancelButton = screen.getByText('Cancel');
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
 
     act(() => {
       cancelButton.click();

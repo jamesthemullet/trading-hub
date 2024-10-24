@@ -57,7 +57,7 @@ describe('Create new redirect', () => {
 
     renderWithProviders(<NewRedirect />);
 
-    await user.click(screen.getByText('Cancel'));
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/search/redirects');
   });

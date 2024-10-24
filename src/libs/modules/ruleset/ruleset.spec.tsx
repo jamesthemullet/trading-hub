@@ -277,7 +277,7 @@ describe('Ruleset', () => {
       />
     );
 
-    expect(screen.getByText('Save')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
   });
 
   it('should render a loading when updating data', () => {
@@ -922,7 +922,7 @@ describe('Ruleset', () => {
 
       await selectCategory(screen, user);
 
-      const previewButton = screen.getByText('Preview');
+      const previewButton = screen.getByRole('button', { name: 'Preview' });
 
       act(() => {
         previewButton.click();
@@ -1016,7 +1016,9 @@ describe('Ruleset', () => {
         tab2.click();
       });
 
-      const newAttributeButton = screen.getByText('Create new attribute rule');
+      const newAttributeButton = screen.getByRole('button', {
+        name: 'Create new attribute rule',
+      });
 
       act(() => {
         newAttributeButton.click();
@@ -1099,7 +1101,9 @@ describe('Ruleset', () => {
         tab2.click();
       });
 
-      const newAttributeButton = screen.getByText('Create new attribute rule');
+      const newAttributeButton = screen.getByRole('button', {
+        name: 'Create new attribute rule',
+      });
 
       act(() => {
         newAttributeButton.click();
@@ -1121,7 +1125,7 @@ describe('Ruleset', () => {
         sizeButton[1].click();
       });
 
-      const doneButton = screen.getByText('Done');
+      const doneButton = screen.getByRole('button', { name: 'Done' });
 
       act(() => {
         doneButton.click();
@@ -1150,7 +1154,7 @@ describe('Ruleset', () => {
 
       await selectAlphanumericAttribute(screen, false);
 
-      const doneButton = screen.getByText('Done');
+      const doneButton = screen.getByRole('button', { name: 'Done' });
 
       act(() => {
         doneButton.click();
@@ -1179,7 +1183,7 @@ describe('Ruleset', () => {
 
       await selectAlphanumericAttribute(screen, true);
 
-      const doneButton = screen.getByText('Done');
+      const doneButton = screen.getByRole('button', { name: 'Done' });
 
       act(() => {
         doneButton.click();
@@ -1208,7 +1212,7 @@ describe('Ruleset', () => {
 
       await selectAlphanumericAttribute(screen, false, true);
 
-      const doneButton = screen.getByText('Done');
+      const doneButton = screen.getByRole('button', { name: 'Done' });
 
       act(() => {
         doneButton.click();
