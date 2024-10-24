@@ -56,6 +56,8 @@ const SearchRuleSets = () => {
         facets,
         rules,
         isEnabled: !isEnabled,
+        startDate: ruleSet.startDate,
+        endDate: ruleSet.endDate,
       },
       searchTerms,
     });

@@ -31,6 +31,8 @@ const Page = ({ id }: PageProps) => {
       ruleSetId,
       rules: ruleSet,
       searchTerms,
+      startDate: ruleSet.startDate,
+      endDate: ruleSet.endDate,
     }).then(() => {
       router.push('/search/rulesets');
     });

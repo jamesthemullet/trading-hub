@@ -84,6 +84,8 @@ const FacetManagementPage = () => {
         facets,
         rules,
         isEnabled: !isEnabled,
+        startDate: ruleSet.startDate,
+        endDate: ruleSet.endDate,
       },
       excludedFacets,
       categoryId,

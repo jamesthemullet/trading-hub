@@ -15,6 +15,8 @@ export const useSearchRuleSetUpdate = () => {
       searchTerms: string[];
       ruleSetId: string;
       rules: RuleSet;
+      startDate?: string;
+      endDate?: string;
     }) => {
       setError('');
       setIsSaving(true);

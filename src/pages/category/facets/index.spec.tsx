@@ -308,6 +308,78 @@ describe('Category facet management', () => {
     });
   });
 
+  it('should enable or disable a scheduled ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockCatId = 'catId';
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          categoryName: 'cat id',
+          categoriesInfo: [
+            {
+              id: 'foo00',
+            },
+          ],
+          id: mockId,
+          categoryId: mockCatId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-15T10:02:38.556Z',
+        },
+        {
+          categoryName: 'cat id 2',
+          id: 'ewfw-e3f23-f23f2-3cwef4',
+          categoriesInfo: [
+            {
+              id: 'foo00',
+            },
+          ],
+          categoryId: 'catId2',
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      pagination: {
+        totalItems: 0,
+      },
+      globalRuleSets: [],
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    const rulesetToggle = screen.getAllByTitle('Toggle');
+
+    await userEvent.click(rulesetToggle[0]);
+
+    expect(handleUpdateMock).toHaveBeenCalledWith({
+      categoryId: mockCatId,
+      ruleSetId: mockId,
+      rules: {
+        facets: [],
+        rules: mockMerchandisingRules,
+        isEnabled: false,
+        startDate: '2024-10-14T10:02:38.556Z',
+        endDate: '2024-10-15T10:02:38.556Z',
+      },
+    });
+  });
+
   it('should have loading state', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({

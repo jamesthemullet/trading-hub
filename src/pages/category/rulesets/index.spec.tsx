@@ -357,6 +357,78 @@ describe('Index', () => {
     });
   });
 
+  it('should enable or disable a scheduled ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockCatId = 'catId';
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          categoryName: 'cat id',
+          id: mockId,
+          categoryId: mockCatId,
+          categoriesInfo: [
+            {
+              id: mockCatId,
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-15T10:02:38.556Z',
+        },
+        {
+          categoryName: 'cat id 2',
+          id: 'ewfw-e3f23-f23f2-3cwef4',
+          categoryId: 'catId2',
+          categoriesInfo: [
+            {
+              id: 'catId2',
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    const rulesetToggle = screen.getAllByTitle('Toggle');
+
+    await userEvent.click(rulesetToggle[0]);
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryId: mockCatId,
+      ruleSetId: mockId,
+      rules: {
+        facets: [],
+        isEnabled: false,
+        rules: mockMerchandisingRules,
+        startDate: '2024-10-14T10:02:38.556Z',
+        endDate: '2024-10-15T10:02:38.556Z',
+      },
+    });
+  });
+
   it('should duplicate a ruleset', async () => {
     const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';

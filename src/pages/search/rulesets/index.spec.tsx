@@ -148,6 +148,57 @@ describe('Search Rulesets', () => {
     });
   });
 
+  it('should enable or disable a scheduled ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockSearchTerms = ['search', 'terms'];
+
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [
+        {
+          searchTerms: mockSearchTerms,
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-14T10:02:38.556Z',
+        },
+      ],
+      error: '',
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <RuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    const rulesetToggle = screen.getAllByTitle('Toggle');
+
+    await userEvent.click(rulesetToggle[0]);
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      searchTerms: mockSearchTerms,
+      ruleSetId: mockId,
+      rules: {
+        facets: [],
+        isEnabled: false,
+        rules: mockMerchandisingRules,
+        startDate: '2024-10-14T10:02:38.556Z',
+        endDate: '2024-10-14T10:02:38.556Z',
+      },
+    });
+  });
+
   it('should duplicate a ruleset', async () => {
     const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
