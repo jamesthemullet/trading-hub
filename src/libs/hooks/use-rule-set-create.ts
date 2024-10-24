@@ -14,6 +14,7 @@ export const useRuleSetCreate = () => {
   const createRuleset = useCallback(
     async ({
       categoryId,
+      categoryIds,
       facets,
       isEnabled,
       merchandisingRules,
@@ -22,6 +23,7 @@ export const useRuleSetCreate = () => {
       excludedFacets,
     }: {
       categoryId: string;
+      categoryIds?: string[];
       facets: Array<RuleSetFacetConfigWithId>;
       isEnabled: boolean;
       merchandisingRules: MerchandisingRules;
@@ -35,7 +37,9 @@ export const useRuleSetCreate = () => {
         const body: CategoryRuleSet = {
           rules: merchandisingRules,
           facets,
+          // note categoryId is a required field but is deprecated
           categoryId,
+          ...(categoryIds && { categoryIds }),
           isEnabled,
           startDate,
           endDate,

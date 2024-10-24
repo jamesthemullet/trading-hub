@@ -13,6 +13,7 @@ import {
   CategorySearch,
   ProductGridHeader,
   Search,
+  SelectedCategory,
   spacing,
   Text,
 } from '@/libs/components';
@@ -196,7 +197,7 @@ export const FacetsPanel = ({
   facetsData,
   facetType,
   isNewRuleset,
-  defaultCategory,
+  categoryIds,
   displayRowOrderControls = false,
   endDate,
   includedFacets,
@@ -206,7 +207,7 @@ export const FacetsPanel = ({
   startDate,
   updatedValues,
 }: {
-  onSave: (categoryId: string) => void;
+  onSave: (categoryIds: string[]) => void;
   onCancel: () => void;
   setSearch?: (value: string) => void;
   onFacetDataChange?: ({
@@ -246,7 +247,7 @@ export const FacetsPanel = ({
   facetType: 'global' | 'category' | 'search';
   isNewRuleset?: boolean;
   rulesetMerchandisingRules?: MerchandisingRules;
-  defaultCategory?: Required<Category>;
+  categoryIds?: string[];
   endDate?: string;
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
@@ -261,9 +262,9 @@ export const FacetsPanel = ({
   ) => void;
 }) => {
   const featureFlags = useContext(FeatureFlagContext);
-  const [selectedCategory, setSelectedCategory] = useState<
-    Required<Category> | undefined
-  >(defaultCategory);
+  const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
+    categoryIds || []
+  );
 
   const [showPreview, setShowPreview] = useState(false);
   const [merchandisingRules] = useState<MerchandisingRules>(
@@ -300,10 +301,10 @@ export const FacetsPanel = ({
     setSearch?.(val);
   }, 300);
 
-  // istanbul ignore next
-  const onSelectCategory = (category: Required<Category>) => {
-    setSelectedCategory(category);
-    onSelectedCategoryChange?.(category);
+  const onSelectCategory = (category: string) => {
+    setSelectedCategories([...selectedCategories, category]);
+    // TODO further refactoring needed here
+    onSelectedCategoryChange?.({ identifier: category, name: '', path: '' });
   };
 
   const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
@@ -426,10 +427,10 @@ export const FacetsPanel = ({
 
   return (
     <>
-      {showPreview && selectedCategory?.identifier && merchandisingRules && (
+      {showPreview && selectedCategories.length && merchandisingRules && (
         <Preview
           onClose={() => setShowPreview(!showPreview)}
-          categoryId={selectedCategory.identifier}
+          categoryId={selectedCategories[0]}
           merchandisingRules={merchandisingRules}
           facetConfig={includedFacets}
           excludedFacets={excludedFacets}
@@ -437,13 +438,16 @@ export const FacetsPanel = ({
       )}
 
       <ProductGridHeader
-        canSave={!!selectedCategory?.identifier}
+        canSave={!!selectedCategories.length || facetType === 'global'}
         onSave={() => {
-          if (onSave && selectedCategory?.identifier) {
-            onSave(selectedCategory?.identifier);
+          if (
+            onSave &&
+            (selectedCategories.length > 0 || facetType === 'global')
+          ) {
+            onSave(selectedCategories);
           }
         }}
-        hasPreview={!!selectedCategory?.identifier}
+        hasPreview={!!selectedCategories.length}
         onPreview={() => setShowPreview(!showPreview)}
         isNewRuleSet={!!isNewRuleset}
         hasChanges
@@ -455,15 +459,24 @@ export const FacetsPanel = ({
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <ScopeWrapper>
-          <CategorySearch
-            selectedCategory={selectedCategory}
-            onClearSelection={() => {
-              setSelectedCategory(undefined);
-              onSelectedCategoryChange?.(undefined);
-            }}
-            onSelectCategory={onSelectCategory}
-            canRemoveCategory={facetType === 'category'}
-          />
+          {facetType === 'category' && (
+            <CategorySearch
+              selectedCategories={selectedCategories}
+              onClearSelection={(category: string) => {
+                setSelectedCategories(
+                  selectedCategories.filter(
+                    (categoryName) => categoryName !== category
+                  )
+                );
+                onSelectedCategoryChange?.(undefined);
+              }}
+              onSelectCategory={onSelectCategory}
+              canRemoveCategory
+            />
+          )}
+          {facetType === 'global' && (
+            <SelectedCategory label="Applies to all pages in marksandspencer.com" />
+          )}
           {facetType !== 'global' &&
             featureFlags.hasScheduling &&
             onScheduleDateChange && (
@@ -490,11 +503,12 @@ export const FacetsPanel = ({
         </AddFacetPanel>
       </SectionWrapper>
 
-      {selectedCategory && setSearch && (
-        <SectionWrapper>
-          <Search onChange={(e) => handleSearch(e.target.value)} />
-        </SectionWrapper>
-      )}
+      {(selectedCategories.length > 0 || facetType === 'global') &&
+        setSearch && (
+          <SectionWrapper>
+            <Search onChange={(e) => handleSearch(e.target.value)} />
+          </SectionWrapper>
+        )}
 
       <AttributesTable>
         <Row>
@@ -518,7 +532,7 @@ export const FacetsPanel = ({
           refreshData={refreshData}
           updatedValues={updatedValues}
           category={
-            facetType === 'category' ? selectedCategory?.identifier : undefined
+            facetType === 'category' ? selectedCategories[0] : undefined
           }
         />
       )}

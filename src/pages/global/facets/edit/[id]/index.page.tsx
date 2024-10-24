@@ -16,12 +16,6 @@ import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-sk
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-const defaultCategory = {
-  identifier: 'Applies to all pages in marksandspencer.com',
-  name: 'All products',
-  path: '/',
-};
-
 type PageProps = {
   id: string;
 };
@@ -256,7 +250,6 @@ const Page = ({ id }: PageProps) => {
           refreshData={onRefreshFacetList}
           title="Global Facet Rule Editor"
           facetsData={orderedFilteredFacets}
-          defaultCategory={defaultCategory}
           canMergeValueAttributes
           includedFacets={includedFacets}
           excludedFacets={{

@@ -59,6 +59,7 @@ describe('useRuleSetCreate', () => {
     } = renderHook(() => useRuleSetCreate());
     const resp = await current.createRuleset({
       categoryId: mockCategoryId,
+      categoryIds: [mockCategoryId],
       merchandisingRules: mockMerchandisingRules,
       facets: [],
       isEnabled: true,

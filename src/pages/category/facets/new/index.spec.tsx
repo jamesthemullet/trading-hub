@@ -158,6 +158,7 @@ describe('Facet Management Editing', () => {
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(createRuleset).toHaveBeenCalledWith({
       categoryId: 'cat_123',
+      categoryIds: ['cat_123'],
       facets: [
         {
           displayValue: 'color',
@@ -706,6 +707,7 @@ describe('Facet Management Editing', () => {
 
       expect(createRuleset).toHaveBeenCalledWith({
         categoryId: 'cat_123',
+        categoryIds: ['cat_123'],
         facets: [],
         excludedFacets: {
           facets: [],

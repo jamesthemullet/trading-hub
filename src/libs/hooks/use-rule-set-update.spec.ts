@@ -74,7 +74,8 @@ describe('useUpdateRuleSet', () => {
           isEnabled: true,
           rules: mockMerchandisingRules,
         },
-        categoryId: categoryId,
+        categoryId,
+        categoryIds: [categoryId],
       });
 
       expect(resp).toEqual({ status: 'success' });

@@ -14,15 +14,17 @@ const mockProps = {
     pagination: {},
   },
   searchValue: '',
-  selectedCategory: undefined,
+  selectedCategories: [],
   onClearSelection: jest.fn(),
   onSubmit: jest.fn(),
   onSearchChange: jest.fn(),
   onSelectCategory: jest.fn(),
 };
 
+const mockCategoryId = 'SubCategory_507';
+
 const mockCategory = {
-  identifier: 'SubCategory_507',
+  identifier: mockCategoryId,
   name: 'Thermals',
   path: 'l/lingerie/thermals',
 };
@@ -101,7 +103,9 @@ describe('CategorySearch', () => {
       resultsButton.click();
     });
 
-    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(mockCategory);
+    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(
+      mockCategory.identifier
+    );
   });
 
   it('should convert undefined search results', async () => {
@@ -144,15 +148,13 @@ describe('CategorySearch', () => {
       resultsButton.click();
     });
 
-    expect(mockProps.onSelectCategory).toHaveBeenCalledWith({
-      identifier: 'SubCategory_507',
-      name: 'Thermals',
-      path: '',
-    });
+    expect(mockProps.onSelectCategory).toHaveBeenCalledWith('SubCategory_507');
   });
 
   it('should show selected category', () => {
-    render(<CategorySearch {...mockProps} selectedCategory={mockCategory} />);
+    render(
+      <CategorySearch {...mockProps} selectedCategories={[mockCategoryId]} />
+    );
 
     expect(screen.getByText(mockCategory.identifier)).toBeInTheDocument();
   });
@@ -161,7 +163,7 @@ describe('CategorySearch', () => {
     render(
       <CategorySearch
         {...mockProps}
-        selectedCategory={mockCategory}
+        selectedCategories={[mockCategoryId]}
         canRemoveCategory={true}
       />
     );

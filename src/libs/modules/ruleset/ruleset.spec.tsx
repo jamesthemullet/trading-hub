@@ -381,11 +381,7 @@ describe('Ruleset', () => {
         isEnabled={true}
         onSave={mockSave}
         onCancel={jest.fn()}
-        rulesetCategory={{
-          identifier: categoryId1,
-          name: categoryName1,
-          path: categoryPath1,
-        }}
+        categoryIds={[categoryId1]}
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
@@ -636,11 +632,7 @@ describe('Ruleset', () => {
         isEnabled={true}
         onSave={mockSave}
         onCancel={mockCancel}
-        rulesetCategory={{
-          identifier: categoryId1,
-          name: categoryName1,
-          path: categoryPath1,
-        }}
+        categoryIds={['SubCategory_507']}
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
@@ -725,11 +717,7 @@ describe('Ruleset', () => {
           isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
-          rulesetCategory={{
-            identifier: categoryId1,
-            name: categoryName1,
-            path: categoryPath1,
-          }}
+          categoryIds={['SubCategory_507']}
           rulesetMerchandisingRules={{
             pinnedProducts: [],
             blockedProducts: [],
@@ -848,11 +836,7 @@ describe('Ruleset', () => {
           isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
-          rulesetCategory={{
-            identifier: categoryId1,
-            name: categoryName1,
-            path: categoryPath1,
-          }}
+          categoryIds={[categoryId1]}
           rulesetMerchandisingRules={{
             pinnedProducts: [],
             blockedProducts: [],
@@ -1104,11 +1088,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          rulesetCategory={{
-            identifier: 'SubCategory_507',
-            name: 'SubCategory',
-            path: 'SubCategory',
-          }}
+          categoryIds={['SubCategory_507']}
           rulesetType="category"
         />
       );
@@ -1163,11 +1143,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          rulesetCategory={{
-            identifier: 'SubCategory_507',
-            name: 'SubCategory',
-            path: 'SubCategory',
-          }}
+          categoryIds={['SubCategory_507']}
           rulesetType="category"
         />
       );
@@ -1196,11 +1172,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          rulesetCategory={{
-            identifier: 'SubCategory_507',
-            name: 'SubCategory',
-            path: 'SubCategory',
-          }}
+          categoryIds={['SubCategory_507']}
           rulesetType="category"
         />
       );
@@ -1229,11 +1201,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          rulesetCategory={{
-            identifier: 'SubCategory_507',
-            name: 'SubCategory',
-            path: 'SubCategory',
-          }}
+          categoryIds={['SubCategory_507']}
           rulesetType="category"
         />
       );
@@ -1258,11 +1226,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          rulesetCategory={{
-            identifier: 'SubCategory_507',
-            name: 'SubCategory',
-            path: 'SubCategory',
-          }}
+          categoryIds={['SubCategory_507']}
           rulesetType="category"
         />
       );
@@ -1301,11 +1265,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          rulesetCategory={{
-            identifier: 'SubCategory_507',
-            name: 'SubCategory',
-            path: 'SubCategory',
-          }}
+          categoryIds={['SubCategory_507']}
           rulesetType="category"
         />
       );
@@ -1378,11 +1338,7 @@ describe('Ruleset', () => {
             onSave={jest.fn()}
             onCancel={jest.fn()}
             rulesetMerchandisingRules={mockRules}
-            rulesetCategory={{
-              identifier: 'SubCategory_507',
-              name: 'SubCategory',
-              path: 'SubCategory',
-            }}
+            categoryIds={['SubCategory_507']}
             rulesetType="category"
           />
         </FeatureFlagContext.Provider>

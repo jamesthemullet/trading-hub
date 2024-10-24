@@ -12,11 +12,13 @@ export const useUpdateRuleSet = () => {
   const updateRuleSet = useCallback(
     async ({
       categoryId,
+      categoryIds,
       ruleSetId,
       rules,
       excludedFacets,
     }: {
       categoryId: string;
+      categoryIds?: string[];
       ruleSetId: string;
       rules: RuleSet;
       excludedFacets?: ExcludedFacets;
@@ -27,6 +29,7 @@ export const useUpdateRuleSet = () => {
       try {
         const body: CategoryRuleSet = {
           categoryId,
+          ...(categoryIds && { categoryIds }),
           facets: rules.facets,
           isEnabled: rules.isEnabled,
           rules: rules.rules,

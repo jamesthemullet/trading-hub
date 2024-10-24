@@ -142,7 +142,7 @@ const Page = () => {
     setOrderedFacetList(updatedFacets);
   };
 
-  const createNewCategoryRuleSet = async (categoryId: string) => {
+  const createNewCategoryRuleSet = async (categoryIds: string[]) => {
     const resp = await createRuleset({
       facets: orderedFacetList.filter((facet) =>
         includedFacets.some((includedFacet) => includedFacet.id === facet.id)
@@ -152,7 +152,8 @@ const Page = () => {
           id: excludedFacet.id,
         })),
       },
-      categoryId,
+      categoryId: categoryIds[0],
+      categoryIds,
       merchandisingRules: defaultMerchandisingRules,
       isEnabled: true,
       startDate: dateTime[0] ? new Date(dateTime[0]).toISOString() : undefined,

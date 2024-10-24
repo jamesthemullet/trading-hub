@@ -50,11 +50,9 @@ const Page = ({ id }: PageProps) => {
           isEnabled={ruleSetDetail.isEnabled}
           onSave={saveRuleSet}
           onCancel={() => router.push('/category/rulesets')}
-          rulesetCategory={{
-            identifier: ruleSetDetail.categoryId,
-            name: ruleSetDetail.categoryName,
-            path: 'path/to/plp',
-          }}
+          categoryIds={ruleSetDetail.categoriesInfo.map(
+            (category) => category.id
+          )}
           rulesetFacets={ruleSetDetail.facets}
           rulesetExcludedFacets={ruleSetDetail.excludedFacets}
           rulesetId={ruleSetDetail.id}

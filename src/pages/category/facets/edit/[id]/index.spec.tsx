@@ -188,6 +188,7 @@ describe('Category Facet Management Editing', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryId: 'SubCategory_428',
+      categoryIds: ['SubCategory_428'],
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
       excludedFacets: {
         facets: [
@@ -474,6 +475,7 @@ describe('Category Facet Management Editing', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryId: 'SubCategory_428',
+      categoryIds: ['SubCategory_428'],
       excludedFacets: {
         facets: [
           {
@@ -584,6 +586,7 @@ describe('Category Facet Management Editing', () => {
     await waitFor(() => {
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
         categoryId: 'SubCategory_428',
+        categoryIds: ['SubCategory_428'],
         excludedFacets: {
           facets: [
             {
@@ -662,7 +665,7 @@ describe('Category Facet Management Editing', () => {
     });
   }, 10000);
 
-  describe('Sechduling', () => {
+  describe('Scheduling', () => {
     beforeAll(() => {
       jest.useFakeTimers();
       jest.setSystemTime(new Date(2022, 2, 1));
@@ -740,6 +743,7 @@ describe('Category Facet Management Editing', () => {
 
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
         categoryId: 'SubCategory_428',
+        categoryIds: ['SubCategory_428'],
         excludedFacets: {
           facets: [
             {

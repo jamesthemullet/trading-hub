@@ -3,7 +3,6 @@ import { useContext, useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
-  Category,
   CategoryRuleSet,
   ExcludedFacets,
   KeywordRuleSet,
@@ -125,7 +124,7 @@ export const Ruleset = ({
   onCreate,
   onCreateKeywordSearchRuleset,
   onSave,
-  rulesetCategory,
+  categoryIds,
   rulesetFacets,
   rulesetExcludedFacets,
   rulesetId,
@@ -151,7 +150,7 @@ export const Ruleset = ({
     args: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet
   ) => void;
   onCreateKeywordSearchRuleset?: (args: KeywordRuleSet) => void;
-  rulesetCategory?: Required<Category>;
+  categoryIds?: Array<string>;
   rulesetFacets?: Array<RuleSetFacetConfigWithId>;
   rulesetExcludedFacets?: ExcludedFacets;
   rulesetId?: string;
@@ -161,9 +160,9 @@ export const Ruleset = ({
   startDate?: string;
   endDate?: string;
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<
-    Required<Category> | undefined
-  >(rulesetCategory);
+  const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
+    categoryIds || []
+  );
   const [rulesetSearchTerms, setRulesetSearchTerms] = useState(
     searchTerms || []
   );
@@ -174,8 +173,8 @@ export const Ruleset = ({
   const router = useRouter();
   const featureFlags = useContext(FeatureFlagContext);
 
-  const onSelectCategory = (category: Required<Category>) => {
-    setSelectedCategory(category);
+  const onSelectCategory = (category: string) => {
+    setSelectedCategories([...selectedCategories, category]);
     if (!hasChanges) setHasChanges(true);
   };
 
@@ -239,7 +238,7 @@ export const Ruleset = ({
     error: previewError,
     isLoading,
   } = usePreview({
-    ...(selectedCategory && { categoryId: selectedCategory.identifier }),
+    ...(selectedCategories.length && { categoryId: selectedCategories[0] }),
     ...(rulesetSearchTerms && { searchTerm: rulesetSearchTerms[0] }),
     merchandisingRules: merchandisingRules,
     facetConfig: [],
@@ -287,19 +286,18 @@ export const Ruleset = ({
           startDate: ruleset.startDate,
           endDate: ruleset.endDate,
         },
-        ...(selectedCategory?.identifier && {
-          categoryIds: [selectedCategory.identifier],
-        }),
+        categoryIds: selectedCategories,
         ...(rulesetSearchTerms && {
           searchTerms: rulesetSearchTerms,
         }),
       });
-    } else if (onCreate && selectedCategory?.identifier) {
+    } else if (onCreate && selectedCategories.length) {
       onCreate({
         facets: [],
         isEnabled,
         rules: merchandisingRules,
-        categoryId: selectedCategory.identifier,
+        categoryId: selectedCategories[0],
+        categoryIds: selectedCategories,
         startDate: ruleset.startDate,
         endDate: ruleset.endDate,
       });
@@ -319,7 +317,7 @@ export const Ruleset = ({
       {showPreview && (
         <Preview
           onClose={() => setShowPreview(!showPreview)}
-          categoryId={selectedCategory?.identifier}
+          categoryId={selectedCategories[0]}
           searchTerm={rulesetSearchTerms[0]}
           merchandisingRules={merchandisingRules}
           facetConfig={rulesetFacets || []}
@@ -328,7 +326,7 @@ export const Ruleset = ({
 
       <ProductGridHeader
         canSave={
-          !!selectedCategory?.identifier ||
+          !!selectedCategories.length ||
           !!rulesetSearchTerms.length ||
           rulesetType === 'global'
         }
@@ -336,9 +334,7 @@ export const Ruleset = ({
           onSaveRuleset();
           setHasChanges(false);
         }}
-        hasPreview={
-          !!selectedCategory?.identifier || !!rulesetSearchTerms.length
-        }
+        hasPreview={!!selectedCategories.length || !!rulesetSearchTerms.length}
         onPreview={() => setShowPreview(!showPreview)}
         hasChanges={
           hasChanges || !isEqual(merchandisingRules, rulesetMerchandisingRules)
@@ -355,9 +351,13 @@ export const Ruleset = ({
         {rulesetType === 'category' && (
           <CategorySearchWrapper>
             <CategorySearch
-              selectedCategory={selectedCategory}
-              onClearSelection={() => {
-                setSelectedCategory(undefined);
+              selectedCategories={selectedCategories}
+              onClearSelection={(category: string) => {
+                setSelectedCategories(
+                  selectedCategories.filter(
+                    (categoryName) => categoryName !== category
+                  )
+                );
               }}
               onSelectCategory={onSelectCategory}
               canRemoveCategory={true}
@@ -420,14 +420,14 @@ export const Ruleset = ({
                 pinnedProductsCount={merchandisingRules.pinnedProducts.length}
                 merchandisingRules={merchandisingRules}
                 dispatch={dispatch}
-                categoryId={selectedCategory?.identifier}
+                categoryId={selectedCategories[0]}
                 searchTerms={rulesetSearchTerms}
               />
             )}
             {currentProductTab === 1 && (
               <RulesetAttributes
                 merchandisingRules={merchandisingRules}
-                category={selectedCategory?.identifier}
+                category={selectedCategories[0]}
                 dispatch={dispatch}
                 searchTerms={rulesetSearchTerms}
               />

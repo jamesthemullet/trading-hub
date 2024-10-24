@@ -135,9 +135,10 @@ const Page = ({ id }: { id: string }) => {
     setFacetList(facets);
   }, [facets]);
 
-  const handleSave = async (categoryId: string) => {
+  const handleSave = async (categoryIds: string[]) => {
     const response = await updateRuleSet({
-      categoryId: categoryId,
+      categoryId: categoryIds[0],
+      categoryIds,
       rules: {
         facets: orderedFacetList.filter((facet) =>
           includedFacets.some((includedFacet) => includedFacet.id === facet.id)
@@ -329,11 +330,9 @@ const Page = ({ id }: { id: string }) => {
             setDateTime(updatedDateTime);
           }}
           refreshData={refreshRuleset}
-          defaultCategory={{
-            identifier: ruleSetDetail.categoryId,
-            name: ruleSetDetail.categoryName,
-            path: '/',
-          }}
+          categoryIds={ruleSetDetail.categoriesInfo.map(
+            (category) => category.id
+          )}
           endDate={ruleSetDetail.endDate}
           includedFacets={includedFacets}
           excludedFacets={{

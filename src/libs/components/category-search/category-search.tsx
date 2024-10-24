@@ -12,14 +12,14 @@ import { SelectedCategory } from './selected-category';
 const SEARCH_DEBOUNCE_WAIT = 500;
 
 type Props = {
-  onClearSelection: () => void;
-  onSelectCategory: (category: Required<Category>) => void;
-  selectedCategory?: Required<Category>;
+  onClearSelection: (category: string) => void;
+  onSelectCategory: (category: string) => void;
+  selectedCategories: string[];
   canRemoveCategory?: boolean;
 };
 
 export const CategorySearch = ({
-  selectedCategory,
+  selectedCategories,
   onClearSelection,
   onSelectCategory,
   canRemoveCategory,
@@ -92,17 +92,17 @@ export const CategorySearch = ({
     await searchCategories(searchValue);
   };
 
-  if (selectedCategory && selectedCategory.identifier) {
+  if (selectedCategories.length) {
     return (
       <SelectedCategory
-        label={selectedCategory.identifier}
+        label={selectedCategories[0]}
         onClick={() => {
           setSearchValue('');
           setCategoryResults({
             categories: [],
             pagination: {},
           });
-          onClearSelection();
+          onClearSelection(selectedCategories[0]);
         }}
         canRemoveCategory={canRemoveCategory}
       />
@@ -120,7 +120,7 @@ export const CategorySearch = ({
           {categoryResults.categories.map((category) => (
             <Row
               key={`row-${category.identifier}-${category.name}-${category.path}`}
-              onClick={() => onSelectCategory(category)}
+              onClick={() => onSelectCategory(category.identifier)}
               aria-label={`Select category ${category.identifier}`}
             >
               <Text>
