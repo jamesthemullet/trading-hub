@@ -119,7 +119,15 @@ const SearchRuleSets = () => {
   ];
 
   const rows = ruleSets.map(
-    ({ searchTerms, id, isEnabled, lastChanged, startDate, endDate }) => ({
+    ({
+      searchTerms,
+      id,
+      isEnabled,
+      lastChanged,
+      startDate,
+      endDate,
+      countryCode,
+    }) => ({
       id: id,
       identifier: searchTerms
         .map((term) =>
@@ -134,6 +142,7 @@ const SearchRuleSets = () => {
       onToggle: onEnableDisableRuleSet,
       url: `/search/rulesets/edit/${id}`,
       ...(featureFlags.hasScheduling && { startDate, endDate }),
+      ...(featureFlags.hasIreland && { countryCode }),
     })
   );
 

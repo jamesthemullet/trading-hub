@@ -231,7 +231,9 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: true, hasIreland: false }}
+      >
         <RedirectRuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -251,11 +253,62 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasScheduling: false }}>
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: false }}
+      >
         <RedirectRuleSets />
       </FeatureFlagContext.Provider>
     );
 
     expect(screen.queryByText('Schedule')).not.toBeInTheDocument();
+  });
+
+  it('should display country flag if Ireland feature flag is enabled', () => {
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [
+        {
+          ...returnedRedirectMock,
+          countryCode: 'IE',
+        },
+      ],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: true }}
+      >
+        <RedirectRuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.getByAltText('IE rule')).toBeInTheDocument();
+  });
+
+  it('should not display country flag if Ireland feature flag is not enabled', () => {
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: false }}
+      >
+        <RedirectRuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.queryByAltText('IE rule')).not.toBeInTheDocument();
   });
 });

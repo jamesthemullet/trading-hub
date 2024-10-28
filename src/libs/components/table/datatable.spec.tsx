@@ -69,6 +69,19 @@ const schedulingRows = [
   },
 ];
 
+const countryRows = [
+  {
+    id: '123',
+    identifier: 'SubCategory_123',
+    isEnabled: false,
+    lastChanged: { user: 'Bobby', date: '2022-10-01' },
+    onToggle: mockToggle,
+    url: 'path/to/ruleset',
+    categoryPlpUrl: 'path/to/SubCategory_123',
+    countryCode: 'FR',
+  },
+];
+
 describe('DataTable', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -327,5 +340,44 @@ describe('DataTable', () => {
     await waitFor(() => {
       expect(screen.queryByText('Delete')).not.toBeInTheDocument();
     });
+  });
+
+  it('should not show country flag if the country is not UK or IE', () => {
+    renderWithProviders(
+      <DataTable
+        headings={headings}
+        rows={countryRows}
+        onDeleteRuleSet={jest.fn()}
+      />
+    );
+
+    expect(screen.queryByAltText('UK rule')).not.toBeInTheDocument();
+    expect(screen.queryByAltText('IE rule')).not.toBeInTheDocument();
+  });
+
+  it('should display both the UK and IE flags if the country code is UK_IE', () => {
+    const ukIeRows = [
+      {
+        id: '123',
+        identifier: 'SubCategory_123',
+        isEnabled: false,
+        lastChanged: { user: 'Bobby', date: '2022-10-01' },
+        onToggle: mockToggle,
+        url: 'path/to/ruleset',
+        categoryPlpUrl: 'path/to/SubCategory_123',
+        countryCode: 'UK_IE',
+      },
+    ];
+
+    renderWithProviders(
+      <DataTable
+        headings={headings}
+        rows={ukIeRows}
+        onDeleteRuleSet={jest.fn()}
+      />
+    );
+
+    expect(screen.getByAltText('UK rule')).toBeInTheDocument();
+    expect(screen.getByAltText('IE rule')).toBeInTheDocument();
   });
 });

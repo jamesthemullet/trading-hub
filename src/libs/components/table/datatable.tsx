@@ -159,6 +159,15 @@ const SchedulingColumn = styled(TableCol)`
   }
 `;
 
+const FlagAndIdentifier = styled.div`
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-right: ${spacing(1)};
+  }
+`;
+
 type Row = {
   id: string;
   identifier: string;
@@ -173,6 +182,7 @@ type Row = {
   categoryPlpUrl?: string | undefined;
   startDate?: string;
   endDate?: string;
+  countryCode?: string;
 };
 
 type Props = {
@@ -245,6 +255,7 @@ export const DataTable = ({
             categoryPlpUrl,
             startDate,
             endDate,
+            countryCode,
           }: Row) => {
             const isOptionDropdownOpen = optionToggle === id;
 
@@ -253,11 +264,31 @@ export const DataTable = ({
               setRuleSetEditOption('delete');
               setIsModalOpen(true);
             };
+
             const onConfirmDuplicate = () => {
               setRuleSetIdToEdit(id);
               setRuleSetEditOption('duplicate');
               setRuleSetCategoryIdToEdit(identifier);
               setIsModalOpen(true);
+            };
+
+            const getFlagFromCountryCode = (
+              countryCode: string | undefined
+            ): { flags: string; alt: string }[] => {
+              const createFlagObject = (code: string) => ({
+                flags: `/trading-hub/asset/icon-${code.toLowerCase()}-flag.svg`,
+                alt: `${code} rule`,
+              });
+
+              switch (countryCode) {
+                case 'UK':
+                case 'IE':
+                  return [createFlagObject(countryCode)];
+                case 'UK_IE':
+                  return [createFlagObject('UK'), createFlagObject('IE')];
+                default:
+                  return [];
+              }
             };
 
             return (
@@ -267,10 +298,27 @@ export const DataTable = ({
                 showBreadcrumbColumn={showBreadcrumbColumn}
               >
                 <FirstColumn>
-                  <Text
-                    title={identifier}
-                    dangerouslySetInnerHTML={{ __html: identifier }}
-                  />
+                  <FlagAndIdentifier>
+                    {countryCode && (
+                      <>
+                        {getFlagFromCountryCode(countryCode).map(
+                          ({ flags, alt }, index) => (
+                            <Image
+                              key={index}
+                              src={flags}
+                              width={20}
+                              height={20}
+                              alt={alt}
+                            />
+                          )
+                        )}
+                      </>
+                    )}
+                    <Text
+                      title={identifier}
+                      dangerouslySetInnerHTML={{ __html: identifier }}
+                    />
+                  </FlagAndIdentifier>
                   {categoryPlpUrl && (
                     <StyledUrlText
                       title={categoryPlpUrl}

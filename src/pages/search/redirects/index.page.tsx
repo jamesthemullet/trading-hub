@@ -111,7 +111,15 @@ const RedirectRuleSets = () => {
   ];
 
   const rows = redirects.map(
-    ({ id, keywords, isEnabled, lastChanged, startDate, endDate }) => ({
+    ({
+      id,
+      keywords,
+      isEnabled,
+      lastChanged,
+      startDate,
+      endDate,
+      countryCode,
+    }) => ({
       id: id,
       identifier: keywords
         .map((term) =>
@@ -126,6 +134,7 @@ const RedirectRuleSets = () => {
       onToggle: onEnableDisableRedirect,
       url: `/search/redirects/edit/${id}`,
       ...(featureFlags.hasScheduling && { startDate, endDate }),
+      ...(featureFlags.hasIreland && { countryCode }),
     })
   );
 

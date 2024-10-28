@@ -1336,7 +1336,9 @@ describe('Ruleset', () => {
 
     it('should set a start and end date', async () => {
       renderWithProviders(
-        <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <FeatureFlagContext.Provider
+          value={{ hasScheduling: true, hasIreland: false }}
+        >
           <Ruleset
             isEnabled={true}
             onSave={jest.fn()}

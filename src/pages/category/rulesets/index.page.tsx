@@ -128,7 +128,15 @@ const RuleSets = () => {
   ];
 
   const rows = categoryRuleSets.map(
-    ({ id, isEnabled, lastChanged, categoriesInfo, startDate, endDate }) => ({
+    ({
+      id,
+      isEnabled,
+      lastChanged,
+      categoriesInfo,
+      startDate,
+      endDate,
+      countryCode,
+    }) => ({
       id: id,
       identifier: `${categoriesInfo[0].id} | ${categoriesInfo[0].name}`,
       isEnabled,
@@ -137,6 +145,7 @@ const RuleSets = () => {
       url: `/category/rulesets/edit/${id}`,
       categoryPlpUrl: categoriesInfo[0].plpUrl,
       ...(featureFlags.hasScheduling && { startDate, endDate }),
+      ...(featureFlags.hasIreland && { countryCode }),
     })
   );
 

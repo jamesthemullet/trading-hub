@@ -480,7 +480,9 @@ describe('Facet Panel', () => {
 
   it('should show the schedule date picker', async () => {
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: true, hasIreland: false }}
+      >
         <FacetsPanel
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
@@ -502,7 +504,9 @@ describe('Facet Panel', () => {
 
   it('should show a previously saved scheduled date', async () => {
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: true, hasIreland: false }}
+      >
         <FacetsPanel
           onSave={onSaveSpy}
           onCancel={onCancelSpy}

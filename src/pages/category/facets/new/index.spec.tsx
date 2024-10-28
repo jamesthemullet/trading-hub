@@ -633,7 +633,9 @@ describe('Facet Management Editing', () => {
         getCategoriesError: '',
       });
       renderWithProviders(
-        <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+        <FeatureFlagContext.Provider
+          value={{ hasScheduling: true, hasIreland: false }}
+        >
           <NewFacetRuleset />
         </FeatureFlagContext.Provider>
       );

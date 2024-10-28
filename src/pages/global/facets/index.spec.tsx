@@ -2,6 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   useGetFacetAttributeValues,
   useGlobalRuleSetCreate,
@@ -346,5 +347,77 @@ describe('Global Facet Management', () => {
         screen.getByText('Error whilst deleting ruleset: An error occurred')
       ).toBeVisible();
     });
+  });
+
+  it('should show the country flag if Ireland feature flag is enabled', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          countryCode: 'IE',
+        },
+      ],
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: true }}
+      >
+        <FacetManagementPage />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.getByAltText('IE rule')).toBeInTheDocument();
+  });
+
+  it('should not display the country flag if Ireland feature flag is not enabled', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          countryCode: 'IE',
+        },
+      ],
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: false }}
+      >
+        <FacetManagementPage />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.queryByAltText('IE rule')).not.toBeInTheDocument();
   });
 });

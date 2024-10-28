@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -10,6 +10,7 @@ import {
   SectionWrapper,
   TablePagination,
 } from '@/libs/components';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   NewButton,
   PageNameLabel,
@@ -80,14 +81,19 @@ const FacetManagementPage = () => {
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 
-  const rows = globalRuleSets.map(({ id, isEnabled, lastChanged }) => ({
-    id,
-    identifier: '*',
-    isEnabled,
-    lastChanged,
-    onToggle: onEnableDisableRuleSet,
-    url: `/global/facets/edit/${id}`,
-  }));
+  const featureFlags = useContext(FeatureFlagContext);
+
+  const rows = globalRuleSets.map(
+    ({ id, isEnabled, lastChanged, countryCode }) => ({
+      id,
+      identifier: '*',
+      isEnabled,
+      lastChanged,
+      onToggle: onEnableDisableRuleSet,
+      url: `/global/facets/edit/${id}`,
+      ...(featureFlags.hasIreland && { countryCode }),
+    })
+  );
 
   const createNewRuleSet = async () => {
     const response = await createGlobalRuleSet();

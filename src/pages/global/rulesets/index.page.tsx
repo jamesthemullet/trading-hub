@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   NewButton,
   PageNameLabel,
@@ -67,14 +68,19 @@ const RuleSets = () => {
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 
-  const rows = globalRuleSets.map(({ id, isEnabled, lastChanged }) => ({
-    id,
-    identifier: '*',
-    isEnabled,
-    lastChanged,
-    onToggle: onEnableDisableRuleSet,
-    url: `/global/rulesets/edit/${id}`,
-  }));
+  const featureFlags = useContext(FeatureFlagContext);
+
+  const rows = globalRuleSets.map(
+    ({ id, isEnabled, lastChanged, countryCode }) => ({
+      id,
+      identifier: '*',
+      isEnabled,
+      lastChanged,
+      onToggle: onEnableDisableRuleSet,
+      url: `/global/rulesets/edit/${id}`,
+      ...(featureFlags.hasIreland && { countryCode }),
+    })
+  );
 
   const createNewRuleSet = async () => {
     const resp = await createGlobalRuleSet();

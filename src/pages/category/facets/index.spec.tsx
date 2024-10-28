@@ -591,7 +591,9 @@ describe('Category facet management', () => {
       isLoading: false,
     });
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: true, hasIreland: false }}
+      >
         <FacetManagementPage />
       </FeatureFlagContext.Provider>
     );
@@ -773,5 +775,91 @@ describe('Category facet management', () => {
         ).toBeVisible();
       });
     });
+  });
+
+  it('should display country flag when Ireland feature flag is enabled', () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          categoryName: 'cat name',
+          id: '1234',
+          categoriesInfo: [
+            {
+              id: 'foo00',
+            },
+          ],
+          categoryId: 'catId',
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          countryCode: 'IE',
+        },
+      ],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: true }}
+      >
+        <FacetManagementPage />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.getByAltText('IE rule')).toBeVisible();
+  });
+
+  it('should not display country flag when Ireland feature flag is disabled', () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          categoryName: 'cat name',
+          id: '1234',
+          categoriesInfo: [
+            {
+              id: 'foo00',
+            },
+          ],
+          categoryId: 'catId',
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          countryCode: 'IE',
+        },
+      ],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: false }}
+      >
+        <FacetManagementPage />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.queryByAltText('IE rule')).not.toBeInTheDocument();
   });
 });

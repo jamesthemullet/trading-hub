@@ -18,10 +18,14 @@ export default function App({
   pageProps,
 }: AppProps<{ session: Session | null }>) {
   const { session } = pageProps;
-  const [cookies] = useCookies(['flagScheduling']);
+  const [cookies] = useCookies(['flagScheduling', 'flagIreland']);
+
   return (
     <FeatureFlagContext.Provider
-      value={{ hasScheduling: cookies.flagScheduling }}
+      value={{
+        hasScheduling: cookies.flagScheduling,
+        hasIreland: cookies.flagIreland,
+      }}
     >
       <SessionProvider session={session}>
         <MantineProvider>

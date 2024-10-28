@@ -184,7 +184,9 @@ describe('Index', () => {
       isLoading: false,
     });
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasScheduling: true }}>
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: true, hasIreland: false }}
+      >
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -534,5 +536,93 @@ describe('Index', () => {
 
     expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
     expect(screen.getByLabelText('table-pagination-skeleton')).toBeVisible();
+  });
+
+  it('should show country flag if Ireland feature flag is enabled', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          categoryName: 'cat id',
+          id: 'ewfw-e3f23-f23f2-3cwef3',
+          categoryId: 'catId',
+          categoriesInfo: [
+            {
+              id: 'catId',
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          countryCode: 'IE',
+        },
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: true }}
+      >
+        <RuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.getByAltText('IE rule')).toBeVisible();
+  });
+
+  it('should not show country flag if Ireland feature flag is not enabled', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          categoryName: 'cat id',
+          id: 'ewfw-e3f23-f23f2-3cwef3',
+          categoryId: 'catId',
+          categoriesInfo: [
+            {
+              id: 'catId',
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          countryCode: 'IE',
+        },
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: false }}
+      >
+        <RuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.queryByAltText('IE rule')).not.toBeInTheDocument();
   });
 });

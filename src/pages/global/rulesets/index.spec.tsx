@@ -2,6 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useGlobalRuleSetCreate, useRuleSet } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -324,5 +325,79 @@ describe('Index', () => {
 
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
     expect(mockRefetchRulesList).toHaveBeenCalled();
+  });
+
+  it('should display country flag if Ireland feature flag is enabled', () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      globalRuleSets: [
+        {
+          id: '1234',
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          countryCode: 'UK',
+        },
+      ],
+      pagination: {
+        totalItems: undefined,
+      },
+      categoryRuleSets: [],
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: true }}
+      >
+        <RuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.getByAltText('UK rule')).toBeInTheDocument();
+  });
+
+  it('should not display country flag if Ireland feature flag is not enabled', () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      globalRuleSets: [
+        {
+          id: '1234',
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          countryCode: 'UK',
+        },
+      ],
+      pagination: {
+        totalItems: undefined,
+      },
+      categoryRuleSets: [],
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: false }}
+      >
+        <RuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    expect(screen.queryByAltText('UK rule')).not.toBeInTheDocument();
   });
 });
