@@ -44,7 +44,7 @@ jest.mock('../../../../../libs/hooks/use-attributes', () => ({
 
 describe('Index', () => {
   const mockUpdateRuleSet = {
-    updateRuleSet: jest.fn(() =>
+    updateCategoryRuleSet: jest.fn(() =>
       Promise.resolve({
         status: 'success',
       })
@@ -108,9 +108,14 @@ describe('Index', () => {
   });
 
   it('should save ruleset', async () => {
-    jest
-      .mocked(useRuleSetDetail)
-      .mockImplementation(() => mockUseRuleSetPreviewData);
+    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
+      ...mockUseRuleSetPreviewData,
+      ruleSetDetail: {
+        ...mockUseRuleSetPreviewData.ruleSetDetail,
+        startDate: '2024-09-12T14:17:54Z',
+        endDate: '2024-12-19T04:20:03Z',
+      },
+    }));
 
     const user = userEvent.setup({ delay: null });
 
@@ -118,7 +123,7 @@ describe('Index', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
+    expect(mockUpdateRuleSet.updateCategoryRuleSet).toHaveBeenCalled();
   });
 
   it('should cancel changes to a ruleset', async () => {
@@ -151,7 +156,7 @@ describe('Index', () => {
 
   it('should show errors', async () => {
     const mockUpdateRuleSet = {
-      updateRuleSet: jest.fn(() =>
+      updateCategoryRuleSet: jest.fn(() =>
         Promise.resolve({
           status: 'fail',
         })

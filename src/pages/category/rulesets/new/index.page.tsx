@@ -12,15 +12,16 @@ const NewRuleSetPage = () => {
   const createNewCategoryRuleSet = async ({
     rules,
     facets,
-    categoryId,
+    categoryIds,
     startDate,
     endDate,
   }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
     const resp = await createRuleset({
       facets: facets,
       isEnabled: true,
-      categoryId,
-      merchandisingRules: rules,
+      categoryIds,
+      countryCode: 'UK',
+      rules,
       startDate,
       endDate,
     });

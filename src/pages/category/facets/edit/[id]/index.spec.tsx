@@ -28,7 +28,7 @@ import Page, { getServerSideProps } from './index.page';
 const mockUpdateGlobalFacet = jest.fn();
 const mockUpdateRuleSet = jest.fn().mockReturnValue(true);
 const updateRuleSet = {
-  updateRuleSet: mockUpdateRuleSet,
+  updateCategoryRuleSet: mockUpdateRuleSet,
   error: '',
 };
 const mockUseFacetsList = {
@@ -187,7 +187,6 @@ describe('Category Facet Management Editing', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      categoryId: 'SubCategory_428',
       categoryIds: ['SubCategory_428'],
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
       excludedFacets: {
@@ -198,71 +197,70 @@ describe('Category Facet Management Editing', () => {
         ],
       },
       rules: {
-        rules: {
-          pinnedProducts: [{ id: 'a1' }],
-          blockedProducts: [],
-          boosts: {
-            numeric: [],
-            alphanumeric: [],
-            product: [],
-          },
-          buries: {
-            numeric: [],
-            alphanumeric: [],
-            product: [],
-          },
-          includes: {
-            alphanumeric: [],
-          },
-          excludes: {
-            alphanumeric: [],
-          },
+        pinnedProducts: [{ id: 'a1' }],
+        blockedProducts: [],
+        boosts: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
         },
-        isEnabled: false,
-        facets: [
-          {
-            displayValue: 'color',
-            boosted: ['test include'],
-            excludedValues: ['test exclude'],
-            indexPropertyName: 'color',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-            lastChanged: {
-              date: '2021-01-01T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [
-              {
-                displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
-              },
-            ],
-          },
-          {
-            displayValue: 'size',
-            boosted: [],
-            excludedValues: [],
-            indexPropertyName: 'size',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-            lastChanged: {
-              date: '2021-01-02T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
-          },
-          {
-            displayValue: 'brand',
-            boosted: [],
-            excludedValues: [],
-            indexPropertyName: 'brand',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-            lastChanged: {
-              date: '2021-01-03T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
-          },
-        ],
+        buries: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       },
+
+      isEnabled: false,
+      facets: [
+        {
+          displayValue: 'color',
+          boosted: ['test include'],
+          excludedValues: ['test exclude'],
+          indexPropertyName: 'color',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          lastChanged: {
+            date: '2021-01-01T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        },
+        {
+          displayValue: 'size',
+          boosted: [],
+          excludedValues: [],
+          indexPropertyName: 'size',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+          lastChanged: {
+            date: '2021-01-02T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+        {
+          displayValue: 'brand',
+          boosted: [],
+          excludedValues: [],
+          indexPropertyName: 'brand',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          lastChanged: {
+            date: '2021-01-03T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+      ],
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith('/category/facets/');
@@ -474,7 +472,6 @@ describe('Category Facet Management Editing', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      categoryId: 'SubCategory_428',
       categoryIds: ['SubCategory_428'],
       excludedFacets: {
         facets: [
@@ -485,6 +482,114 @@ describe('Category Facet Management Editing', () => {
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
       rules: {
+        pinnedProducts: [{ id: 'a1' }],
+        blockedProducts: [],
+        boosts: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+        buries: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      },
+      isEnabled: false,
+      facets: [
+        {
+          displayValue: 'color',
+          boosted: ['test include'],
+          excludedValues: ['test exclude'],
+          indexPropertyName: 'color',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          lastChanged: {
+            date: '2021-01-01T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        },
+        {
+          displayValue: 'size',
+          boosted: [],
+          excludedValues: [],
+          indexPropertyName: 'size',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+          lastChanged: {
+            date: '2021-01-02T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+        {
+          displayValue: 'brand',
+          boosted: [],
+          excludedValues: [],
+          indexPropertyName: 'brand',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          lastChanged: {
+            date: '2021-01-03T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+      ],
+    });
+  });
+
+  it('should update facet values', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getAllByRole('button', { name: 'Edit values' })[0]);
+    expect(screen.getAllByText('More Silk')[0]).toBeVisible();
+
+    await user.click(screen.getByLabelText('include More Silk'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Save changes to attributes' })
+      ).toBeEnabled();
+    });
+
+    act(() => {
+      screen
+        .getByRole('button', { name: 'Save changes to attributes' })
+        .click();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('More Silk')).not.toBeInTheDocument();
+    });
+
+    act(() => {
+      screen.getByRole('button', { name: 'Save' }).click();
+    });
+
+    await waitFor(() => {
+      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+        categoryIds: ['SubCategory_428'],
+        excludedFacets: {
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+            },
+          ],
+        },
+        ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+
         rules: {
           pinnedProducts: [{ id: 'a1' }],
           blockedProducts: [],
@@ -509,7 +614,7 @@ describe('Category Facet Management Editing', () => {
         facets: [
           {
             displayValue: 'color',
-            boosted: ['test include'],
+            boosted: ['test include', 'More Silk'],
             excludedValues: ['test exclude'],
             indexPropertyName: 'color',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
@@ -549,118 +654,6 @@ describe('Category Facet Management Editing', () => {
             merged: [],
           },
         ],
-      },
-    });
-  });
-
-  it('should update facet values', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(<Page id={ruleSetId} />);
-
-    await user.click(screen.getAllByRole('button', { name: 'Edit values' })[0]);
-    expect(screen.getAllByText('More Silk')[0]).toBeVisible();
-
-    await user.click(screen.getByLabelText('include More Silk'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: 'Save changes to attributes' })
-      ).toBeEnabled();
-    });
-
-    act(() => {
-      screen
-        .getByRole('button', { name: 'Save changes to attributes' })
-        .click();
-    });
-
-    await waitFor(() => {
-      expect(screen.queryByText('More Silk')).not.toBeInTheDocument();
-    });
-
-    act(() => {
-      screen.getByRole('button', { name: 'Save' }).click();
-    });
-
-    await waitFor(() => {
-      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        categoryId: 'SubCategory_428',
-        categoryIds: ['SubCategory_428'],
-        excludedFacets: {
-          facets: [
-            {
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-            },
-          ],
-        },
-        ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-        rules: {
-          rules: {
-            pinnedProducts: [{ id: 'a1' }],
-            blockedProducts: [],
-            boosts: {
-              numeric: [],
-              alphanumeric: [],
-              product: [],
-            },
-            buries: {
-              numeric: [],
-              alphanumeric: [],
-              product: [],
-            },
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
-          },
-          isEnabled: false,
-          facets: [
-            {
-              displayValue: 'color',
-              boosted: ['test include', 'More Silk'],
-              excludedValues: ['test exclude'],
-              indexPropertyName: 'color',
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-              lastChanged: {
-                date: '2021-01-01T08:34:15Z',
-                user: 'Test User',
-              },
-              merged: [
-                {
-                  displayValue: 'test merged group',
-                  mergedValues: ['merged 1', 'merged 2'],
-                },
-              ],
-            },
-            {
-              displayValue: 'size',
-              boosted: [],
-              excludedValues: [],
-              indexPropertyName: 'size',
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-              lastChanged: {
-                date: '2021-01-02T08:34:15Z',
-                user: 'Test User',
-              },
-              merged: [],
-            },
-            {
-              displayValue: 'brand',
-              boosted: [],
-              excludedValues: [],
-              indexPropertyName: 'brand',
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-              lastChanged: {
-                date: '2021-01-03T08:34:15Z',
-                user: 'Test User',
-              },
-              merged: [],
-            },
-          ],
-        },
       });
     });
   }, 10000);
@@ -742,7 +735,6 @@ describe('Category Facet Management Editing', () => {
       });
 
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        categoryId: 'SubCategory_428',
         categoryIds: ['SubCategory_428'],
         excludedFacets: {
           facets: [
@@ -752,74 +744,73 @@ describe('Category Facet Management Editing', () => {
           ],
         },
         ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+
+        endDate: '2022-04-17T22:59:00.000Z',
+        startDate: '2022-04-16T23:00:00.000Z',
         rules: {
-          endDate: '2022-04-17T22:59:00.000Z',
-          startDate: '2022-04-16T23:00:00.000Z',
-          rules: {
-            pinnedProducts: [{ id: 'a1' }],
-            blockedProducts: [],
-            boosts: {
-              numeric: [],
-              alphanumeric: [],
-              product: [],
-            },
-            buries: {
-              numeric: [],
-              alphanumeric: [],
-              product: [],
-            },
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
+          pinnedProducts: [{ id: 'a1' }],
+          blockedProducts: [],
+          boosts: {
+            numeric: [],
+            alphanumeric: [],
+            product: [],
           },
-          isEnabled: false,
-          facets: [
-            {
-              displayValue: 'color',
-              boosted: ['test include'],
-              excludedValues: ['test exclude'],
-              indexPropertyName: 'color',
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-              lastChanged: {
-                date: '2021-01-01T08:34:15Z',
-                user: 'Test User',
-              },
-              merged: [
-                {
-                  displayValue: 'test merged group',
-                  mergedValues: ['merged 1', 'merged 2'],
-                },
-              ],
-            },
-            {
-              displayValue: 'size',
-              boosted: [],
-              excludedValues: [],
-              indexPropertyName: 'size',
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-              lastChanged: {
-                date: '2021-01-02T08:34:15Z',
-                user: 'Test User',
-              },
-              merged: [],
-            },
-            {
-              displayValue: 'brand',
-              boosted: [],
-              excludedValues: [],
-              indexPropertyName: 'brand',
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-              lastChanged: {
-                date: '2021-01-03T08:34:15Z',
-                user: 'Test User',
-              },
-              merged: [],
-            },
-          ],
+          buries: {
+            numeric: [],
+            alphanumeric: [],
+            product: [],
+          },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
         },
+        isEnabled: false,
+        facets: [
+          {
+            displayValue: 'color',
+            boosted: ['test include'],
+            excludedValues: ['test exclude'],
+            indexPropertyName: 'color',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+            lastChanged: {
+              date: '2021-01-01T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [
+              {
+                displayValue: 'test merged group',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
+          },
+          {
+            displayValue: 'size',
+            boosted: [],
+            excludedValues: [],
+            indexPropertyName: 'size',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+            lastChanged: {
+              date: '2021-01-02T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [],
+          },
+          {
+            displayValue: 'brand',
+            boosted: [],
+            excludedValues: [],
+            indexPropertyName: 'brand',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+            lastChanged: {
+              date: '2021-01-03T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [],
+          },
+        ],
       });
     });
   });
@@ -830,7 +821,7 @@ describe('Category Facet Management Editing', () => {
         ...mockUseRuleSetPreviewData,
         ruleSetDetail: {
           ...mockUseRuleSetPreviewData.ruleSetDetail,
-          categoryId: 'SubCategory_428',
+          categoryIds: ['SubCategory_428'],
         },
       });
 

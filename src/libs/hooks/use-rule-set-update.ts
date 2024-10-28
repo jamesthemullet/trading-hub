@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { CategoryRuleSet, ExcludedFacets, RuleSet } from '@/libs/api';
+import type { CategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { handleError } from './utils/error';
@@ -9,33 +9,31 @@ export const useUpdateRuleSet = () => {
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  const updateRuleSet = useCallback(
+  const updateCategoryRuleSet = useCallback(
     async ({
-      categoryId,
       categoryIds,
+      countryCode,
+      endDate,
+      excludedFacets,
+      facets,
+      isEnabled,
       ruleSetId,
       rules,
-      excludedFacets,
-    }: {
-      categoryId: string;
-      categoryIds?: string[];
-      ruleSetId: string;
-      rules: RuleSet;
-      excludedFacets?: ExcludedFacets;
-    }) => {
+      startDate,
+    }: CategoryRuleSet & { ruleSetId: string }) => {
       setError('');
       setIsSaving(true);
 
       try {
         const body: CategoryRuleSet = {
-          categoryId,
-          ...(categoryIds && { categoryIds }),
-          facets: rules.facets,
-          isEnabled: rules.isEnabled,
-          rules: rules.rules,
-          excludedFacets: excludedFacets,
-          startDate: rules.startDate,
-          endDate: rules.endDate,
+          categoryIds,
+          countryCode,
+          facets,
+          isEnabled,
+          rules,
+          excludedFacets,
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
         };
 
         await search().betaMerchandisingCategoryRulesetUpdate(ruleSetId, body);
@@ -51,5 +49,5 @@ export const useUpdateRuleSet = () => {
     [setIsSaving]
   );
 
-  return { isSaving, updateRuleSet, error };
+  return { isSaving, updateCategoryRuleSet, error };
 };

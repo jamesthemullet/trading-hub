@@ -30,7 +30,7 @@ jest.mock('../../../libs/hooks/use-rule-set-delete', () => ({
 
 const handleUpdateMock = jest.fn();
 const mockUpdateRuleSet = {
-  updateRuleSet: handleUpdateMock,
+  updateCategoryRuleSet: handleUpdateMock,
   isSaving: false,
   error: '',
 };
@@ -84,10 +84,11 @@ describe('Category facet management', () => {
         id: `${i}`,
         categoriesInfo: [
           {
-            id: 'foo00',
+            id: `${i}`,
+            name: `identifier-${i}`,
           },
         ],
-        categoryId: `${i}`,
+        categoryIds: [`${i}`],
         isEnabled: true,
         lastChanged: {
           user: 'user',
@@ -126,7 +127,7 @@ describe('Category facet management', () => {
               id: 'foo00',
             },
           ],
-          categoryId: 'catId',
+          categoryIds: ['foo00'],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -247,13 +248,14 @@ describe('Category facet management', () => {
       categoryRuleSets: [
         {
           categoryName: 'cat id',
+          countryCode: 'UK_IE',
           categoriesInfo: [
             {
               id: 'foo00',
             },
           ],
           id: mockId,
-          categoryId: mockCatId,
+          categoryIds: [mockCatId],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -261,16 +263,24 @@ describe('Category facet management', () => {
           },
           rules: mockMerchandisingRules,
           facets: [],
+          excludedFacets: {
+            facets: [
+              {
+                id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+              },
+            ],
+          },
         },
         {
           categoryName: 'cat id 2',
+          countryCode: 'UK_IE',
           id: 'ewfw-e3f23-f23f2-3cwef4',
           categoriesInfo: [
             {
               id: 'foo00',
             },
           ],
-          categoryId: 'catId2',
+          categoryIds: ['catId2'],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -298,13 +308,19 @@ describe('Category facet management', () => {
     await userEvent.click(rulesetToggle[0]);
 
     expect(handleUpdateMock).toHaveBeenCalledWith({
-      categoryId: mockCatId,
+      categoryIds: [mockCatId],
+      countryCode: 'UK_IE',
       ruleSetId: mockId,
-      rules: {
-        facets: [],
-        rules: mockMerchandisingRules,
-        isEnabled: false,
+      rules: mockMerchandisingRules,
+      facets: [],
+      excludedFacets: {
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+          },
+        ],
       },
+      isEnabled: false,
     });
   });
 
@@ -315,13 +331,14 @@ describe('Category facet management', () => {
       categoryRuleSets: [
         {
           categoryName: 'cat id',
+          countryCode: 'UK_IE',
           categoriesInfo: [
             {
               id: 'foo00',
             },
           ],
           id: mockId,
-          categoryId: mockCatId,
+          categoryIds: [mockCatId],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -340,7 +357,7 @@ describe('Category facet management', () => {
               id: 'foo00',
             },
           ],
-          categoryId: 'catId2',
+          categoryIds: ['catId2'],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -368,15 +385,14 @@ describe('Category facet management', () => {
     await userEvent.click(rulesetToggle[0]);
 
     expect(handleUpdateMock).toHaveBeenCalledWith({
-      categoryId: mockCatId,
+      categoryIds: [mockCatId],
+      countryCode: 'UK_IE',
       ruleSetId: mockId,
-      rules: {
-        facets: [],
-        rules: mockMerchandisingRules,
-        isEnabled: false,
-        startDate: '2024-10-14T10:02:38.556Z',
-        endDate: '2024-10-15T10:02:38.556Z',
-      },
+      rules: mockMerchandisingRules,
+      facets: [],
+      isEnabled: false,
+      startDate: '2024-10-14T10:02:38.556Z',
+      endDate: '2024-10-15T10:02:38.556Z',
     });
   });
 
@@ -390,7 +406,7 @@ describe('Category facet management', () => {
             id: 'foo00',
           },
         ],
-        categoryId: `${i}`,
+        categoryIds: [`${i}`],
         isEnabled: true,
         lastChanged: {
           user: 'user',
@@ -447,7 +463,7 @@ describe('Category facet management', () => {
         boosted: ['Tiny', 'Newborn', '1 Months', '0-3 Months'],
       },
     ];
-    const mockRuleset = {
+    const mockRuleset: ReturnedCategoryRuleSet = {
       categoryName: 'cat name',
       id: mockId,
       categoriesInfo: [
@@ -455,14 +471,18 @@ describe('Category facet management', () => {
           id: 'foo00',
         },
       ],
-      categoryId: 'catId',
+      categoryIds: ['catId'],
+      countryCode: 'UK',
       isEnabled: true,
       lastChanged: {
         user: 'user',
         date: '2021-01-01',
       },
       facets: mockFacets,
+      excludedFacets: {},
       rules: mockMerchandisingRules,
+      startDate: '2024-11-15T23:59:00.000Z',
+      endDate: '2024-11-15T23:59:00.000Z',
     };
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [mockRuleset],
@@ -492,10 +512,14 @@ describe('Category facet management', () => {
     });
     await user.click(confirmButton);
     expect(createRuleset).toHaveBeenCalledWith({
-      merchandisingRules: mockRuleset.rules,
+      rules: mockRuleset.rules,
       facets: mockFacets,
-      categoryId: mockRuleset.categoryId,
+      excludedFacets: {},
+      categoryIds: mockRuleset.categoryIds,
+      countryCode: 'UK',
       isEnabled: false,
+      startDate: '2024-11-15T23:59:00.000Z',
+      endDate: '2024-11-15T23:59:00.000Z',
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith(
@@ -537,7 +561,7 @@ describe('Category facet management', () => {
           id: 'foo00',
         },
       ],
-      categoryId: 'catId',
+      categoryIds: ['catId'],
       isEnabled: true,
       lastChanged: {
         user: 'user',
@@ -585,10 +609,10 @@ describe('Category facet management', () => {
       id: mockId,
       categoriesInfo: [
         {
-          id: 'foo00',
+          id: 'catId',
         },
       ],
-      categoryId: 'catId',
+      categoryIds: ['catId'],
       isEnabled: true,
       lastChanged: {
         user: 'user',
@@ -624,10 +648,10 @@ describe('Category facet management', () => {
     });
     await user.click(confirmButton);
     expect(createRuleset).toHaveBeenCalledWith({
-      merchandisingRules: mockRuleset.rules,
+      rules: mockRuleset.rules,
       facets: [],
       isEnabled: false,
-      categoryId: mockRuleset.categoryId,
+      categoryIds: ['catId'],
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith(
@@ -671,7 +695,7 @@ describe('Category facet management', () => {
                 id: 'foo00',
               },
             ],
-            categoryId: 'catId',
+            categoryIds: ['catId'],
             isEnabled: true,
             lastChanged: {
               user: 'user',
@@ -716,7 +740,7 @@ describe('Category facet management', () => {
               },
             ],
             id: mockId,
-            categoryId: mockCatId,
+            categoryIds: [mockCatId],
             isEnabled: true,
             lastChanged: {
               user: 'user',

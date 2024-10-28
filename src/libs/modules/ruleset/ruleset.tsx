@@ -296,7 +296,6 @@ export const Ruleset = ({
         facets: [],
         isEnabled,
         rules: merchandisingRules,
-        categoryId: selectedCategories[0],
         categoryIds: selectedCategories,
         startDate: ruleset.startDate,
         endDate: ruleset.endDate,

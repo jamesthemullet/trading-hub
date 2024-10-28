@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
-import type { CategoryRuleSet, ReturnedRuleSet } from '@/libs/api';
+import type { CategoryRuleSet, ReturnedCategoryRuleSet } from '@/libs/api';
 import {
   DataTable,
   DataTableSkeleton,
@@ -44,7 +44,7 @@ const RuleSets = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const { isSaving, updateRuleSet } = useUpdateRuleSet();
+  const { isSaving, updateCategoryRuleSet } = useUpdateRuleSet();
   const { createRuleset } = useRuleSetCreate();
   const router = useRouter();
   const featureFlags = useContext(FeatureFlagContext);
@@ -85,21 +85,29 @@ const RuleSets = () => {
     // istanbul ignore next
     if (!ruleSet) return;
 
-    const { categoryId, facets, rules, isEnabled } = ruleSet;
-    await updateRuleSet({
+    const {
+      categoryIds,
+      facets,
+      rules,
+      isEnabled,
+      startDate,
+      endDate,
+      excludedFacets,
+      countryCode,
+    } = ruleSet;
+    await updateCategoryRuleSet({
+      categoryIds,
+      facets,
+      isEnabled: !isEnabled,
+      rules,
       ruleSetId: id,
-      excludedFacets: ruleSet.excludedFacets,
-      rules: {
-        facets,
-        rules,
-        isEnabled: !isEnabled,
-        startDate: ruleSet.startDate,
-        endDate: ruleSet.endDate,
-      },
-      categoryId,
+      ...(countryCode && { countryCode }),
+      ...(endDate && { endDate }),
+      ...(excludedFacets && { excludedFacets }),
+      ...(startDate && { startDate }),
     });
     const updatedRuleSetsList = categoryRuleSets.map(
-      (ruleset: ReturnedRuleSet) =>
+      (ruleset: ReturnedCategoryRuleSet) =>
         ruleset.id === id ? { ...ruleset, isEnabled: !isEnabled } : ruleset
     );
     setCategoryRuleSets(updatedRuleSetsList);
@@ -120,39 +128,37 @@ const RuleSets = () => {
   ];
 
   const rows = categoryRuleSets.map(
-    ({
-      categoryId,
-      categoryName,
-      id,
-      isEnabled,
-      lastChanged,
-      categoriesInfo,
-      startDate,
-      endDate,
-    }) => ({
+    ({ id, isEnabled, lastChanged, categoriesInfo, startDate, endDate }) => ({
       id: id,
-      identifier: `${categoryId} | ${categoryName}`,
+      identifier: `${categoriesInfo[0].id} | ${categoriesInfo[0].name}`,
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,
       url: `/category/rulesets/edit/${id}`,
-      categoryPlpUrl: categoriesInfo.find(
-        (category) => category.id === categoryId
-      )?.plpUrl,
+      categoryPlpUrl: categoriesInfo[0].plpUrl,
       ...(featureFlags.hasScheduling && { startDate, endDate }),
     })
   );
 
   const createDuplicatedCategoryRuleSet = async ({
-    rules,
+    categoryIds,
+    countryCode,
+    endDate,
+    excludedFacets,
     facets,
-    categoryId,
+    isEnabled,
+    rules,
+    startDate,
   }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
     const resp = await createRuleset({
-      facets: facets,
-      isEnabled: false,
-      categoryId,
-      merchandisingRules: rules,
+      categoryIds,
+      facets,
+      isEnabled,
+      rules,
+      ...(countryCode && { countryCode }),
+      ...(excludedFacets && { excludedFacets }),
+      ...(startDate && { startDate }),
+      ...(endDate && { endDate }),
     });
 
     if (resp) {
@@ -165,11 +171,16 @@ const RuleSets = () => {
 
     // istanbul ignore next
     if (!rulesetToCopy) return;
+
     createDuplicatedCategoryRuleSet({
       rules: rulesetToCopy.rules,
       facets: rulesetToCopy.facets || [],
-      categoryId: rulesetToCopy.categoryId,
+      excludedFacets: rulesetToCopy.excludedFacets,
+      categoryIds: rulesetToCopy.categoryIds,
+      startDate: rulesetToCopy.startDate,
+      endDate: rulesetToCopy.endDate,
       isEnabled: false,
+      countryCode: rulesetToCopy.countryCode,
     });
   };
 

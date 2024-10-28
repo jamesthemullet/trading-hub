@@ -1,11 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type {
-  CategoryRuleSet,
-  ExcludedFacets,
-  MerchandisingRules,
-  RuleSetFacetConfigWithId,
-} from '@/libs/api';
+import type { CategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
 export const useRuleSetCreate = () => {
@@ -13,37 +8,27 @@ export const useRuleSetCreate = () => {
 
   const createRuleset = useCallback(
     async ({
-      categoryId,
       categoryIds,
-      facets,
-      isEnabled,
-      merchandisingRules,
-      startDate,
+      countryCode,
       endDate,
       excludedFacets,
-    }: {
-      categoryId: string;
-      categoryIds?: string[];
-      facets: Array<RuleSetFacetConfigWithId>;
-      isEnabled: boolean;
-      merchandisingRules: MerchandisingRules;
-      startDate?: string;
-      endDate?: string;
-      excludedFacets?: ExcludedFacets;
-    }) => {
+      facets,
+      isEnabled,
+      rules,
+      startDate,
+    }: CategoryRuleSet) => {
       setError('');
 
       try {
         const body: CategoryRuleSet = {
-          rules: merchandisingRules,
-          facets,
-          // note categoryId is a required field but is deprecated
-          categoryId,
-          ...(categoryIds && { categoryIds }),
-          isEnabled,
-          startDate,
+          categoryIds,
+          countryCode,
           endDate,
           excludedFacets,
+          facets,
+          isEnabled,
+          rules,
+          startDate,
         };
         const response =
           await search().betaMerchandisingCategoryRulesetCreate(body);

@@ -13,7 +13,7 @@ type PageProps = {
 
 const Page = ({ id }: PageProps) => {
   const { ruleSetDetail } = useRuleSetDetail(id);
-  const { updateRuleSet, isSaving, error } = useUpdateRuleSet();
+  const { updateCategoryRuleSet, isSaving, error } = useUpdateRuleSet();
   const router = useRouter();
 
   const saveRuleSet = async ({
@@ -28,11 +28,16 @@ const Page = ({ id }: PageProps) => {
   }) => {
     // istanbul ignore next
     if (!categoryIds?.[0]) return;
-    const response = await updateRuleSet({
+
+    const response = await updateCategoryRuleSet({
+      categoryIds,
+      isEnabled: ruleSet.isEnabled,
       ruleSetId,
-      rules: ruleSet,
-      categoryId: categoryIds[0],
-      excludedFacets: ruleSet.excludedFacets,
+      rules: ruleSet.rules,
+      ...(ruleSet.excludedFacets && { excludedFacets: ruleSet.excludedFacets }),
+      ...(ruleSet.facets && { facets: ruleSet.facets }),
+      ...(ruleSet.endDate && { endDate: ruleSet.endDate }),
+      ...(ruleSet.startDate && { startDate: ruleSet.startDate }),
     });
     if (response.status === 'success') {
       router.push('/category/rulesets');

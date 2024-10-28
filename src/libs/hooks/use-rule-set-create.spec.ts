@@ -58,9 +58,9 @@ describe('useRuleSetCreate', () => {
       result: { current },
     } = renderHook(() => useRuleSetCreate());
     const resp = await current.createRuleset({
-      categoryId: mockCategoryId,
       categoryIds: [mockCategoryId],
-      merchandisingRules: mockMerchandisingRules,
+      countryCode: 'UK',
+      rules: mockMerchandisingRules,
       facets: [],
       isEnabled: true,
     });
@@ -78,8 +78,8 @@ describe('useRuleSetCreate', () => {
 
     await act(async () => {
       await result.current.createRuleset({
-        categoryId: mockCategoryId,
-        merchandisingRules: mockMerchandisingRules,
+        rules: mockMerchandisingRules,
+        countryCode: 'UK',
         facets: [],
         isEnabled: false,
       });

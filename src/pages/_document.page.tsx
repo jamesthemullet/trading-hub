@@ -177,6 +177,10 @@ class RootDocument extends Document<MerchHubInitialProps> {
             dangerouslySetInnerHTML={{ __html: this.props.browserTimingHeader }}
           />
           <ColorSchemeScript defaultColorScheme="light" />
+          <link
+            rel="shortcut icon"
+            href="https://static.marksandspencer.com/images/favicon.ico"
+          />
         </Head>
         <Global
           styles={css`

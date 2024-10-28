@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
-import type { CategoryRuleSet, ReturnedRuleSet } from '@/libs/api';
+import type { CategoryRuleSet, ReturnedCategoryRuleSet } from '@/libs/api';
 import {
   DataTable,
   DataTableSkeleton,
@@ -63,7 +63,8 @@ const FacetManagementPage = () => {
 
   const { handleDelete, error: deleteRulesetError } = useRuleSetDelete();
 
-  const { updateRuleSet, error: updateRulesetError } = useUpdateRuleSet();
+  const { updateCategoryRuleSet, error: updateRulesetError } =
+    useUpdateRuleSet();
 
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
     await handleDelete({ rulesetId: id });
@@ -77,21 +78,29 @@ const FacetManagementPage = () => {
     // istanbul ignore next
     if (!ruleSet) return;
 
-    const { facets, isEnabled, rules, categoryId, excludedFacets } = ruleSet;
-    await updateRuleSet({
-      ruleSetId: id,
-      rules: {
-        facets,
-        rules,
-        isEnabled: !isEnabled,
-        startDate: ruleSet.startDate,
-        endDate: ruleSet.endDate,
-      },
+    const {
+      categoryIds,
+      facets,
+      rules,
+      isEnabled,
+      startDate,
+      endDate,
       excludedFacets,
-      categoryId,
+      countryCode,
+    } = ruleSet;
+    await updateCategoryRuleSet({
+      categoryIds,
+      countryCode,
+      facets,
+      isEnabled: !isEnabled,
+      rules,
+      ruleSetId: id,
+      ...(endDate && { endDate }),
+      ...(excludedFacets && { excludedFacets }),
+      ...(startDate && { startDate }),
     });
     const updatedRuleSetsList = categoryRuleSets.map(
-      (ruleset: ReturnedRuleSet) =>
+      (ruleset: ReturnedCategoryRuleSet) =>
         ruleset.id === id ? { ...ruleset, isEnabled: !isEnabled } : ruleset
     );
     setCategoryRuleSets(updatedRuleSetsList);
@@ -112,39 +121,37 @@ const FacetManagementPage = () => {
   ];
 
   const rows = categoryRuleSets.map(
-    ({
-      categoryId,
-      categoryName,
-      id,
-      isEnabled,
-      lastChanged,
-      categoriesInfo,
-      startDate,
-      endDate,
-    }) => ({
+    ({ id, isEnabled, lastChanged, categoriesInfo, startDate, endDate }) => ({
       id: id,
-      identifier: `${categoryId} | ${categoryName}`,
+      identifier: `${categoriesInfo[0].id} | ${categoriesInfo[0].name}`,
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,
       url: `/category/facets/edit/${id}`,
-      categoryPlpUrl: categoriesInfo.find(
-        (category) => category.id === categoryId
-      )?.plpUrl,
+      categoryPlpUrl: categoriesInfo[0].plpUrl,
       ...(featureFlags.hasScheduling && { startDate, endDate }),
     })
   );
 
   const createDuplicatedCategoryRuleSet = async ({
-    rules,
+    categoryIds,
+    countryCode,
+    endDate,
+    excludedFacets,
     facets,
-    categoryId,
+    isEnabled,
+    rules,
+    startDate,
   }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
     const resp = await createRuleset({
-      facets: facets,
-      isEnabled: false,
-      categoryId,
-      merchandisingRules: rules,
+      categoryIds,
+      facets,
+      isEnabled,
+      rules,
+      ...(countryCode && { countryCode }),
+      ...(excludedFacets && { excludedFacets }),
+      ...(startDate && { startDate }),
+      ...(endDate && { endDate }),
     });
 
     if (resp) {
@@ -160,8 +167,12 @@ const FacetManagementPage = () => {
     createDuplicatedCategoryRuleSet({
       rules: rulesetToCopy.rules,
       facets: rulesetToCopy.facets || [],
-      categoryId: rulesetToCopy.categoryId,
+      excludedFacets: rulesetToCopy.excludedFacets,
+      categoryIds: rulesetToCopy.categoryIds,
+      startDate: rulesetToCopy.startDate,
+      endDate: rulesetToCopy.endDate,
       isEnabled: false,
+      countryCode: rulesetToCopy.countryCode,
     });
   };
 

@@ -96,7 +96,7 @@ describe('Index', () => {
         Promise.resolve({
           id: MOCK_CATEGORY_ID,
           categoryName: "Men's shirts",
-          categoryId: 'foo',
+          categoryIds: ['foo'],
           categoriesInfo: [
             {
               id: 'foo',
@@ -159,7 +159,7 @@ describe('Index', () => {
         Promise.resolve({
           id: MOCK_CATEGORY_ID,
           categoryName: "Men's shirts",
-          categoryId: 'foo',
+          categoryIds: ['foo'],
           categoriesInfo: [
             {
               id: 'foo',

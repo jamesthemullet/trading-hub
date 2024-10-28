@@ -24,7 +24,7 @@ const mockMerchandisingRules = {
 
 const ruleSet = {
   rules: mockMerchandisingRules,
-  categoryId: categoryId,
+  categoryIds: [categoryId],
   isEnabled: true,
   categoryName: 'Jeans',
   id: ruleSetId,

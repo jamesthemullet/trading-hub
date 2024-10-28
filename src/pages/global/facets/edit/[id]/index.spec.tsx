@@ -100,10 +100,10 @@ describe('Global Facet Management Editing', () => {
         id: `${i}`,
         categoriesInfo: [
           {
-            id: 'foo00',
+            id: `foo${i}`,
           },
         ],
-        categoryId: `${i}`,
+        categoryIds: [`foo${i}`],
         isEnabled: true,
         lastChanged: {
           user: 'user',

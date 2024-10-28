@@ -54,16 +54,18 @@ const Page = ({ id }: { id: string }) => {
 
   const { search, setSearch, filteredFacets } =
     useFacetsFilter(orderedFacetList);
-  const { updateRuleSet, error: updateRulesetError } = useUpdateRuleSet();
+  const { updateCategoryRuleSet, error: updateRulesetError } =
+    useUpdateRuleSet();
 
   useEffect(() => {
     if (ruleSetDetail.facets) {
       setFacetsFromCategoryRuleSet(ruleSetDetail.facets);
     }
-    if (ruleSetDetail.categoryId) {
+    // TODO this needs additional refactoring
+    if (ruleSetDetail.categoriesInfo[0]) {
       setUserSelectedCategory({
-        identifier: ruleSetDetail.categoryId,
-        name: ruleSetDetail.categoryName,
+        identifier: ruleSetDetail.categoriesInfo[0].id,
+        name: ruleSetDetail.categoriesInfo[0].name || '',
         path: '/',
       });
     }
@@ -136,20 +138,19 @@ const Page = ({ id }: { id: string }) => {
   }, [facets]);
 
   const handleSave = async (categoryIds: string[]) => {
-    const response = await updateRuleSet({
-      categoryId: categoryIds[0],
+    const response = await updateCategoryRuleSet({
       categoryIds,
-      rules: {
-        facets: orderedFacetList.filter((facet) =>
-          includedFacets.some((includedFacet) => includedFacet.id === facet.id)
-        ),
-        isEnabled: ruleSetDetail.isEnabled,
-        rules: ruleSetDetail.rules,
-        startDate: dateTime[0]
-          ? new Date(dateTime[0]).toISOString()
-          : undefined,
-        endDate: dateTime[1] ? new Date(dateTime[1]).toISOString() : undefined,
-      },
+      rules: ruleSetDetail.rules,
+
+      facets: orderedFacetList.filter((facet) =>
+        includedFacets.some((includedFacet) => includedFacet.id === facet.id)
+      ),
+      isEnabled: ruleSetDetail.isEnabled,
+      ...(dateTime[0] && { startDate: new Date(dateTime[0]).toISOString() }),
+      ...(dateTime[1] && {
+        endDate: new Date(dateTime[1]).toISOString(),
+      }),
+
       ruleSetId: id,
       excludedFacets: {
         facets: excludedFacets.map((excludedFacet) => ({
@@ -330,9 +331,7 @@ const Page = ({ id }: { id: string }) => {
             setDateTime(updatedDateTime);
           }}
           refreshData={refreshRuleset}
-          categoryIds={ruleSetDetail.categoriesInfo.map(
-            (category) => category.id
-          )}
+          categoryIds={ruleSetDetail.categoryIds}
           endDate={ruleSetDetail.endDate}
           includedFacets={includedFacets}
           excludedFacets={{

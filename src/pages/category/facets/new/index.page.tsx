@@ -152,12 +152,12 @@ const Page = () => {
           id: excludedFacet.id,
         })),
       },
-      categoryId: categoryIds[0],
       categoryIds,
-      merchandisingRules: defaultMerchandisingRules,
+      countryCode: 'UK',
+      rules: defaultMerchandisingRules,
       isEnabled: true,
-      startDate: dateTime[0] ? new Date(dateTime[0]).toISOString() : undefined,
-      endDate: dateTime[1] ? new Date(dateTime[1]).toISOString() : undefined,
+      ...(dateTime[0] && { startDate: new Date(dateTime[0]).toISOString() }),
+      ...(dateTime[1] && { endDate: new Date(dateTime[1]).toISOString() }),
     });
 
     if (resp) {

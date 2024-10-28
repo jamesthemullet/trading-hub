@@ -363,7 +363,7 @@ describe('Ruleset', () => {
     });
 
     expect(mockCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ categoryId: categoryId1 })
+      expect.objectContaining({ categoryIds: [categoryId1] })
     );
   });
 

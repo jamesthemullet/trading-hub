@@ -63,7 +63,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       startDate: '2024-09-12T14:17:54Z',
       endDate: '2024-12-19T04:20:03Z',
       categoryName: 'Lamp Shades',
-      categoryId: 'SubCategory_2933925',
+
       categoryPlpUrl: 'l/furniture/lighting/lamp-shades',
       categoryIds: ['SubCategory_2933925'],
     },
@@ -106,7 +106,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
         ],
       },
       categoryName: 'Dresses',
-      categoryId: 'SubCategory_429',
+
       categoryPlpUrl: 'l/women/dresses',
       categoryIds: ['SubCategory_429'],
     },
@@ -141,7 +141,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       ],
       excludedFacets: { facets: [] },
       categoryName: 'Mens',
-      categoryId: 'SubCategory_20584814',
+
       categoryPlpUrl: 'l/cold-weather/cold-weather/mens',
       categoryIds: ['SubCategory_20584814'],
     },
@@ -185,7 +185,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
         facets: [{ id: '4f8d4801-3eb0-11ef-9a6a-000000000000' }],
       },
       categoryName: 'Dresses',
-      categoryId: 'SubCategory_429',
+
       categoryPlpUrl: 'l/women/dresses',
       categoryIds: ['SubCategory_429'],
     },
@@ -207,7 +207,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       ],
       excludedFacets: { facets: [] },
       categoryName: 'Jeans',
-      categoryId: 'SubCategory_26759315',
+
       categoryPlpUrl: 'l/women/jeans',
       categoryIds: ['SubCategory_26759315'],
     },
@@ -266,7 +266,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
         facets: [{ id: '1e742a80-3240-11ef-aa09-000000000000' }],
       },
       categoryName: 'Dresses',
-      categoryId: 'SubCategory_429',
+
       categoryPlpUrl: 'l/women/dresses',
       categoryIds: ['SubCategory_429'],
     },
@@ -312,7 +312,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       ],
       excludedFacets: { facets: [] },
       categoryName: "Men's Shirts",
-      categoryId: 'SubCategory_26224922',
+
       categoryPlpUrl: 'l/men/mens-shirts',
       categoryIds: ['SubCategory_26224922'],
     },
@@ -368,7 +368,7 @@ export const mockCategoryRuleset: ReturnedCategoryRuleSet = {
   excludedFacets: { facets: [] },
   startDate: '2024-09-12T14:17:54Z',
   endDate: '2024-12-19T04:20:03Z',
-  categoryId: 'SubCategory_2933925',
+
   categoryName: 'Lamp Shades',
   categoryPlpUrl: 'l/furniture/lighting/lamp-shades',
   categoryIds: ['SubCategory_2933925'],

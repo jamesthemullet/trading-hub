@@ -22,7 +22,7 @@ const mockRuleData: ReturnedCategoryRuleSet = {
       alphanumeric: [],
     },
   },
-  categoryId: mockCategoryId,
+  categoryIds: [mockCategoryId],
   categoriesInfo: [{ id: mockCategoryId }],
   isEnabled: true,
   categoryName: 'Dresses',
@@ -100,8 +100,8 @@ describe('useRuleSetDetail', () => {
 
     const expectedData = {
       ruleSetDetail: {
-        categoryId: '',
         categoryName: '',
+        categoryIds: [],
         categoriesInfo: [
           {
             id: '',

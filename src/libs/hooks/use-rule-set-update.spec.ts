@@ -23,7 +23,7 @@ const mockMerchandisingRules = {
 const baseUrl = 'http://localhost';
 const ruleSet = {
   rules: mockMerchandisingRules,
-  categoryId: categoryId,
+  categoryIds: [categoryId],
   isEnabled: true,
   categoryName: 'Jeans',
   id: ruleSetId,
@@ -68,14 +68,13 @@ describe('useUpdateRuleSet', () => {
       result: { current },
     } = renderHook(() => useUpdateRuleSet());
     await act(async () => {
-      const resp = await current.updateRuleSet({
+      const resp = await current.updateCategoryRuleSet({
         ruleSetId,
-        rules: {
-          isEnabled: true,
-          rules: mockMerchandisingRules,
-        },
-        categoryId,
+        isEnabled: true,
+        rules: mockMerchandisingRules,
         categoryIds: [categoryId],
+        startDate: '2024-11-15T23:59:00.000Z',
+        endDate: '2024-11-15T23:59:00.000Z',
       });
 
       expect(resp).toEqual({ status: 'success' });
@@ -93,13 +92,11 @@ describe('useUpdateRuleSet', () => {
     const { result } = renderHook(() => useUpdateRuleSet());
 
     await act(async () => {
-      await result.current.updateRuleSet({
+      await result.current.updateCategoryRuleSet({
         ruleSetId,
-        rules: {
-          isEnabled: true,
-          rules: mockMerchandisingRules,
-        },
-        categoryId: categoryId,
+        isEnabled: true,
+        rules: mockMerchandisingRules,
+        categoryIds: [categoryId],
       });
     });
 
@@ -113,13 +110,11 @@ describe('useUpdateRuleSet', () => {
     const { result } = renderHook(() => useUpdateRuleSet());
 
     await act(async () => {
-      await result.current.updateRuleSet({
+      await result.current.updateCategoryRuleSet({
         ruleSetId,
-        rules: {
-          isEnabled: true,
-          rules: mockMerchandisingRules,
-        },
-        categoryId: categoryId,
+        isEnabled: true,
+        rules: mockMerchandisingRules,
+        categoryIds: [categoryId],
       });
     });
 

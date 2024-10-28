@@ -9,7 +9,7 @@ export const useRuleSetDetail = (id: string) => {
   const [shouldRefetch, refetch] = useState({});
   const api = useMemo(() => search(), []);
   const [ruleSetDetail, setRuleSetDetail] = useState<ReturnedCategoryRuleSet>({
-    categoryId: '',
+    categoryIds: [],
     categoryName: '',
     categoriesInfo: [
       {

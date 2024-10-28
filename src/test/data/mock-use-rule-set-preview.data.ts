@@ -13,7 +13,7 @@ export const product2Price = '£10';
 
 export const mockUseRuleSetPreviewData = {
   ruleSetDetail: {
-    categoryId: categoryId,
+    categoryIds: [categoryId],
     categoryName: 'Cat Name',
     id: ruleSetId,
     categoriesInfo: [

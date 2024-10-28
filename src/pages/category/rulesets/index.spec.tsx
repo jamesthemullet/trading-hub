@@ -2,6 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { ReturnedCategoryRuleSet } from '@/libs/api';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useRuleSet, useRuleSetCreate } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -20,7 +21,7 @@ jest.mock('@/libs/hooks', () => ({
     return { handleDelete: mockRuleSetDelete };
   },
   useUpdateRuleSet: () => {
-    return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
+    return { updateCategoryRuleSet: mockUpdateRuleSet, isSaving: true };
   },
 }));
 jest.mock('next/router', () => ({
@@ -86,10 +87,10 @@ describe('Index', () => {
       categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
         categoryName: `identifier-${i}`,
         id: `${i}`,
-        categoryId: `${i}`,
+        categoryIds: [`category${i}`],
         categoriesInfo: [
           {
-            id: `${i}`,
+            id: `category${i}`,
           },
         ],
         isEnabled: true,
@@ -138,7 +139,7 @@ describe('Index', () => {
         {
           categoryName: `identifier-1`,
           id: `1`,
-          categoryId: `1`,
+          categoryIds: [`1`],
           categoriesInfo: [
             {
               id: `1`,
@@ -155,7 +156,7 @@ describe('Index', () => {
         {
           categoryName: `identifier-2`,
           id: `2`,
-          categoryId: `2`,
+          categoryIds: [`2`],
           categoriesInfo: [
             {
               id: `2`,
@@ -231,7 +232,7 @@ describe('Index', () => {
         {
           categoryName: 'cat name',
           id: mockId,
-          categoryId: 'catId',
+          categoryIds: ['catId'],
           categoriesInfo: [
             {
               id: 'catId',
@@ -296,13 +297,14 @@ describe('Index', () => {
       categoryRuleSets: [
         {
           categoryName: 'cat id',
+          countryCode: 'UK',
           id: mockId,
-          categoryId: mockCatId,
           categoriesInfo: [
             {
               id: mockCatId,
             },
           ],
+          categoryIds: [mockCatId],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -310,11 +312,12 @@ describe('Index', () => {
           },
           rules: mockMerchandisingRules,
           facets: [],
+          excludedFacets: {},
         },
         {
           categoryName: 'cat id 2',
           id: 'ewfw-e3f23-f23f2-3cwef4',
-          categoryId: 'catId2',
+          categoryIds: ['catId2'],
           categoriesInfo: [
             {
               id: 'catId2',
@@ -347,13 +350,13 @@ describe('Index', () => {
     await userEvent.click(rulesetToggle[0]);
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      categoryId: mockCatId,
+      categoryIds: [mockCatId],
+      countryCode: 'UK',
       ruleSetId: mockId,
-      rules: {
-        facets: [],
-        isEnabled: false,
-        rules: mockMerchandisingRules,
-      },
+      facets: [],
+      excludedFacets: {},
+      isEnabled: false,
+      rules: mockMerchandisingRules,
     });
   });
 
@@ -365,7 +368,7 @@ describe('Index', () => {
         {
           categoryName: 'cat id',
           id: mockId,
-          categoryId: mockCatId,
+          categoryIds: [mockCatId],
           categoriesInfo: [
             {
               id: mockCatId,
@@ -384,7 +387,7 @@ describe('Index', () => {
         {
           categoryName: 'cat id 2',
           id: 'ewfw-e3f23-f23f2-3cwef4',
-          categoryId: 'catId2',
+          categoryIds: ['catId2'],
           categoriesInfo: [
             {
               id: 'catId2',
@@ -417,36 +420,38 @@ describe('Index', () => {
     await userEvent.click(rulesetToggle[0]);
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      categoryId: mockCatId,
+      categoryIds: [mockCatId],
       ruleSetId: mockId,
-      rules: {
-        facets: [],
-        isEnabled: false,
-        rules: mockMerchandisingRules,
-        startDate: '2024-10-14T10:02:38.556Z',
-        endDate: '2024-10-15T10:02:38.556Z',
-      },
+      rules: mockMerchandisingRules,
+      facets: [],
+      isEnabled: false,
+      startDate: '2024-10-14T10:02:38.556Z',
+      endDate: '2024-10-15T10:02:38.556Z',
     });
   });
 
   it('should duplicate a ruleset', async () => {
     const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    const mockRuleset = {
+    const mockRuleset: ReturnedCategoryRuleSet = {
       categoryName: 'cat name',
       id: mockId,
+      countryCode: 'UK',
       categoriesInfo: [
         {
           id: 'foo00',
         },
       ],
-      categoryId: 'catId',
+      categoryIds: ['catId'],
       isEnabled: true,
       lastChanged: {
         user: 'user',
         date: '2021-01-01',
       },
       rules: mockMerchandisingRules,
+      excludedFacets: { facets: [] },
+      startDate: '2024-09-12T14:17:54Z',
+      endDate: '2024-12-19T04:20:03Z',
     };
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [mockRuleset],
@@ -476,10 +481,14 @@ describe('Index', () => {
     });
     await user.click(confirmButton);
     expect(createRuleset).toHaveBeenCalledWith({
-      merchandisingRules: mockRuleset.rules,
+      rules: mockRuleset.rules,
       facets: [],
-      categoryId: mockRuleset.categoryId,
+      excludedFacets: { facets: [] },
+      categoryIds: mockRuleset.categoryIds,
       isEnabled: false,
+      startDate: '2024-09-12T14:17:54Z',
+      endDate: '2024-12-19T04:20:03Z',
+      countryCode: 'UK',
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith(

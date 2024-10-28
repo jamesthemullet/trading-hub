@@ -127,7 +127,7 @@ describe('Index', () => {
       globalRuleSets: Array.from({ length: 80 }, (_, i) => ({
         categoryName: `identifier-${i}`,
         id: `${i}`,
-        categoryId: `${i}`,
+        categoryIds: [`category${i}`],
         isEnabled: true,
         lastChanged: {
           user: 'user',

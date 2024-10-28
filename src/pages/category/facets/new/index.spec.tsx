@@ -157,8 +157,8 @@ describe('Facet Management Editing', () => {
 
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(createRuleset).toHaveBeenCalledWith({
-      categoryId: 'cat_123',
       categoryIds: ['cat_123'],
+      countryCode: 'UK',
       facets: [
         {
           displayValue: 'color',
@@ -184,7 +184,7 @@ describe('Facet Management Editing', () => {
           },
         ],
       },
-      merchandisingRules: {
+      rules: {
         blockedProducts: [],
         boosts: { alphanumeric: [], numeric: [], product: [] },
         buries: { alphanumeric: [], numeric: [], product: [] },
@@ -706,8 +706,8 @@ describe('Facet Management Editing', () => {
       });
 
       expect(createRuleset).toHaveBeenCalledWith({
-        categoryId: 'cat_123',
         categoryIds: ['cat_123'],
+        countryCode: 'UK',
         facets: [],
         excludedFacets: {
           facets: [],
@@ -715,7 +715,7 @@ describe('Facet Management Editing', () => {
         isEnabled: true,
         endDate: '2022-04-17T23:59:00.000Z',
         startDate: '2022-04-16T00:00:00.000Z',
-        merchandisingRules: {
+        rules: {
           blockedProducts: [],
           boosts: { alphanumeric: [], numeric: [], product: [] },
           buries: { alphanumeric: [], numeric: [], product: [] },
