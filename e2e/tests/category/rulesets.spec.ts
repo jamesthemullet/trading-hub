@@ -249,6 +249,68 @@ test.describe('Category rulesets', () => {
     await expect(page.getByRole('button', { name: 'Changes12' })).toBeVisible();
   });
 
+  test('should search for a products with query1 then scroll to bottom and search with query2 correctly', async ({
+    page,
+  }) => {
+    await page.goto(
+      '/category/rulesets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010a'
+    );
+
+    await page.waitForLoadState('networkidle');
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Changes8' })).toBeVisible();
+
+    const input = page.getByPlaceholder('Search for product');
+    await input.fill('dress');
+    await page.waitForTimeout(400);
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.locator('[aria-label="placeholder-13"]')).toBeVisible();
+
+    await page.evaluate(() => {
+      const productsPanel = document.querySelector(
+        '[aria-label="Product Search Result"]'
+      );
+      if (productsPanel) {
+        productsPanel.scrollBy({
+          top: 1600,
+          left: 0,
+          behavior: 'smooth',
+        });
+      }
+    });
+    await page.waitForTimeout(400);
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.locator('[aria-label="Position 13"]')).toBeVisible();
+
+    await input.fill('shirt');
+
+    await page.waitForTimeout(400);
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('[aria-label="placeholder-13"]')).toBeVisible();
+
+    await page.evaluate(() => {
+      const productsPanel = document.querySelector(
+        '[aria-label="Product Search Result"]'
+      );
+      if (productsPanel) {
+        productsPanel.scrollBy({
+          top: 1600,
+          left: 0,
+          behavior: 'smooth',
+        });
+      }
+    });
+
+    await page.waitForTimeout(400);
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.locator('[aria-label="Position 13"]')).toBeVisible();
+  });
+
   test('boost numeric attribute', async ({ page }) => {
     await page.goto(
       '/category/rulesets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010a'

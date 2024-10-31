@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
@@ -30,62 +30,68 @@ export const useProducts = ({
       | { id: string; type: 'placeholder' }
     )[]
   >([]);
+  const prevQuery = useRef<string | null>(null);
 
-  const { offset, scrollContainerRef } = useScrollOffset({
+  const { offset, scrollContainerRef, query } = useScrollOffset({
+    productSearchTerm,
     totalProducts,
     maxToQuery,
   });
 
-  const fetchData = useCallback(async () => {
-    const { products, pagination } = await searchForProduct({
-      ...(categoryId && {
-        categoryId,
-      }),
-      ...(searchTerms && { searchTerms }),
-      query: productSearchTerm,
-      start: offset,
-      rows: maxToQuery,
-      merchandisingRules,
-    });
+  const fetchData = useCallback(
+    async (query: string, offset: number) => {
+      const { products, pagination } = await searchForProduct({
+        ...(categoryId && {
+          categoryId,
+        }),
+        ...(searchTerms && { searchTerms }),
+        query,
+        start: offset,
+        rows: maxToQuery,
+        merchandisingRules,
+      });
 
-    const { totalItems } = pagination;
+      const { totalItems } = pagination;
 
-    setTotalProducts(totalItems ?? products.length);
-    setSearchProducts((prev) =>
-      Array.from({ length: totalItems ?? products.length }).map((_, index) => {
-        const productOffset = index - offset;
-        const product =
-          prev[index]?.type === 'product'
-            ? prev[index].product
-            : productOffset < 0 || productOffset >= products.length
-              ? undefined
-              : products[productOffset];
-        return product !== undefined
-          ? {
-              id: `${product.id}-${index}`,
-              type: 'product' as const,
-              product: product,
-            }
-          : {
-              id: `placeholder-${index}`,
-              type: 'placeholder' as const,
-            };
-      })
-    );
-  }, [
-    searchForProduct,
-    productSearchTerm,
-    categoryId,
-    merchandisingRules,
-    maxToQuery,
-    offset,
-  ]);
+      setTotalProducts(totalItems ?? products.length);
+      setSearchProducts((prev) => {
+        return Array.from({ length: totalItems ?? products.length }).map(
+          (_, index) => {
+            const productOffset = index - offset;
+            const product =
+              prev[index]?.type === 'product'
+                ? prev[index].product
+                : productOffset < 0 || productOffset >= products.length
+                  ? undefined
+                  : products[productOffset];
+            return product !== undefined
+              ? {
+                  id: `${product.id}-${index}`,
+                  type: 'product' as const,
+                  product: product,
+                }
+              : {
+                  id: `placeholder-${index}`,
+                  type: 'placeholder' as const,
+                };
+          }
+        );
+      });
+    },
+    [searchForProduct, categoryId, merchandisingRules, maxToQuery, searchTerms]
+  );
 
   useEffect(() => {
-    if (productSearchTerm) {
-      fetchData();
+    if (query) {
+      if (prevQuery.current !== query) {
+        // eslint-disable-next-line functional/immutable-data
+        prevQuery.current = query;
+        setTotalProducts(0);
+        setSearchProducts([]);
+      }
+      fetchData(query, offset);
     }
-  }, [productSearchTerm, fetchData]);
+  }, [fetchData, query, offset]);
 
   return {
     products,

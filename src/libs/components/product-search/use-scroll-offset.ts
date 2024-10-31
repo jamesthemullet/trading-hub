@@ -1,14 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
 
 export const useScrollOffset = ({
+  productSearchTerm,
   totalProducts,
   maxToQuery,
 }: {
+  productSearchTerm: string;
   totalProducts: number;
   maxToQuery: number;
 }) => {
-  const [offset, setOffset] = useState(0);
+  const [offsetState, setOffsetState] = useState<{
+    offset: number;
+    query: string;
+  }>({ offset: 0, query: productSearchTerm });
+
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (
+      scrollContainerRef.current &&
+      'scrollTo' in scrollContainerRef.current
+    ) {
+      scrollContainerRef.current.scrollTo(0, 0);
+    }
+    setOffsetState({
+      offset: 0,
+      query: productSearchTerm,
+    });
+  }, [productSearchTerm]);
 
   useEffect(() => {
     // this function is called when the component is mounted
@@ -29,7 +48,11 @@ export const useScrollOffset = ({
       const maxItemsVisible = maxRowVisible * 2;
       const offsetRoundedToNextMaxToQuery =
         Math.floor(maxItemsVisible / maxToQuery) * maxToQuery;
-      setOffset((prev) => Math.max(prev, offsetRoundedToNextMaxToQuery));
+
+      setOffsetState((prev) => ({
+        offset: Math.max(prev.offset, offsetRoundedToNextMaxToQuery),
+        query: prev.query,
+      }));
     };
 
     container.addEventListener('scroll', handleScroll);
@@ -39,7 +62,8 @@ export const useScrollOffset = ({
   }, [totalProducts, maxToQuery]);
 
   return {
-    offset,
+    offset: offsetState.offset,
+    query: offsetState.query,
     scrollContainerRef,
   };
 };

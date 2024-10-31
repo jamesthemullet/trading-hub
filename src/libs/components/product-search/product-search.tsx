@@ -109,7 +109,10 @@ export const ProductSearch = ({
         />
       </TopContainer>
       <InfoContainer>{totalProducts} results</InfoContainer>
-      <ProductsContainer ref={scrollContainerRef}>
+      <ProductsContainer
+        ref={scrollContainerRef}
+        aria-label="Product Search Result"
+      >
         {products.map((productWrapper, index) => {
           const id = `${productWrapper.id}`;
           return productWrapper.type === 'product' ? (

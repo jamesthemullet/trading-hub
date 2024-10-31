@@ -14,12 +14,14 @@ describe('use-scroll-offset', () => {
       scrollTop: 600,
       clientHeight: 400,
       scrollHeight: 1000,
+      scrollTo: () => {},
     } as unknown as HTMLDivElement;
 
     const { result } = renderHook(() => {
       const result = useScrollOffset({
         totalProducts: 25,
         maxToQuery: 10,
+        productSearchTerm: 'test',
       });
 
       result.scrollContainerRef.current = divMock;
@@ -33,6 +35,7 @@ describe('use-scroll-offset', () => {
     expect(result.current).toEqual({
       offset: 20,
       scrollContainerRef: { current: divMock },
+      query: 'test',
     });
   });
 
@@ -41,12 +44,14 @@ describe('use-scroll-offset', () => {
       useScrollOffset({
         totalProducts: 25,
         maxToQuery: 10,
+        productSearchTerm: 'test',
       })
     );
 
     expect(result.current).toEqual({
       offset: 0,
       scrollContainerRef: { current: null },
+      query: 'test',
     });
   });
 });
