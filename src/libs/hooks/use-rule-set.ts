@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import type {
+  CountryCode,
   Pagination,
   ReturnedCategoryRuleSet,
   ReturnedGlobalRuleSet,
@@ -25,6 +26,7 @@ export const useRuleSet = (
   const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [countryCode, setCountryCode] = useState<CountryCode>();
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -38,6 +40,7 @@ export const useRuleSet = (
           q: searchQuery,
           start,
           rows,
+          countryCode,
         });
 
         if (ruleSetType === 'category') {
@@ -66,6 +69,7 @@ export const useRuleSet = (
     shouldRefetch,
     setError,
     setIsLoading,
+    countryCode,
   ]);
 
   return {
@@ -73,7 +77,10 @@ export const useRuleSet = (
     error,
     globalRuleSets,
     pagination: pagination,
-    refetchRuleSetList: () => refetch({}),
+    refetchRuleSetList: ({ countryCode }: { countryCode?: CountryCode }) => {
+      setCountryCode(countryCode);
+      refetch({});
+    },
     setCategoryRuleSets,
     setGlobalRuleSets,
     isLoading,

@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import type { Pagination, ReturnedKeywordRuleSet } from '@/libs/api';
+import type {
+  CountryCode,
+  Pagination,
+  ReturnedKeywordRuleSet,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 
 export const useSearchRulesetList = (
@@ -12,6 +16,7 @@ export const useSearchRulesetList = (
   const [ruleSets, setRuleSets] = useState<Array<ReturnedKeywordRuleSet>>([]);
   const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
   const [error, setError] = useState('');
+  const [countryCode, setCountryCode] = useState<CountryCode>();
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -22,6 +27,7 @@ export const useSearchRulesetList = (
           q: searchQuery,
           start,
           rows,
+          countryCode,
         });
 
         setRuleSets(result.data.ruleSets);
@@ -32,12 +38,15 @@ export const useSearchRulesetList = (
     };
 
     void asyncCall();
-  }, [start, rows, searchQuery, shouldRefetch]);
+  }, [start, rows, searchQuery, shouldRefetch, countryCode]);
 
   return {
     error,
     pagination,
-    refetchRuleSetList: () => refetch({}),
+    refetchRuleSetList: ({ countryCode }: { countryCode?: CountryCode }) => {
+      setCountryCode(countryCode);
+      refetch({});
+    },
     ruleSets,
     setRuleSets,
   };

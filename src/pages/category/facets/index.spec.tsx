@@ -9,19 +9,24 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';
 
+const handleDeleteMock = jest.fn();
+const mockRefetchRuleSetList = jest.fn();
+
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useRuleSetCreate: jest.fn(),
   useRuleSet: jest.fn(),
 }));
+
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-const handleDeleteMock = jest.fn();
+
 const mockRuleSetDelete = {
   handleDelete: handleDeleteMock,
   error: '',
 };
+
 jest.mock('../../../libs/hooks/use-rule-set-delete', () => ({
   useRuleSetDelete: () => {
     return mockRuleSetDelete;
@@ -777,7 +782,7 @@ describe('Category facet management', () => {
     });
   });
 
-  it('should display country flag when Ireland feature flag is enabled', () => {
+  it('should display country flag and filter when Ireland feature flag is enabled', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
@@ -818,9 +823,12 @@ describe('Category facet management', () => {
     );
 
     expect(screen.getByAltText('IE rule')).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: 'All marksandspencer.com' })
+    ).toBeVisible();
   });
 
-  it('should not display country flag when Ireland feature flag is disabled', () => {
+  it('should not display country flag or filter when Ireland feature flag is disabled', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
@@ -861,5 +869,54 @@ describe('Category facet management', () => {
     );
 
     expect(screen.queryByAltText('IE rule')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'All marksandspencer.com' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should refetch the ruleset list when the country is changed', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: mockRefetchRuleSetList,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: true }}
+      >
+        <FacetManagementPage />
+      </FeatureFlagContext.Provider>
+    );
+
+    const dropdown = screen.getByRole('button', {
+      name: 'All marksandspencer.com',
+    });
+
+    await user.click(dropdown);
+
+    const showUK = screen.getByText('UK only marksandspencer');
+    await user.click(showUK);
+
+    expect(mockRefetchRuleSetList).toHaveBeenCalledWith({ countryCode: 'UK' });
+    expect(
+      screen.getByRole('button', { name: 'UK only marksandspencer' })
+    ).toBeVisible();
+
+    const showIE = screen.getByText('IE only marksandspencer');
+    await userEvent.click(showIE);
+
+    expect(mockRefetchRuleSetList).toHaveBeenCalledWith({ countryCode: 'IE' });
+    expect(
+      screen.getByRole('button', { name: 'IE only marksandspencer' })
+    ).toBeVisible();
   });
 });

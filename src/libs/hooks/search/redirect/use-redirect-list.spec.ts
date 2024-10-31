@@ -50,7 +50,7 @@ describe('useRedirectUpdate', () => {
     const { result } = renderHook(() => useSearchRedirectList('', 0, 10));
 
     act(() => {
-      result.current.refetchRedirectList();
+      result.current.refetchRedirectList({});
     });
 
     await waitFor(() => {

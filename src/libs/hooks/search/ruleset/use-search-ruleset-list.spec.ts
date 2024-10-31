@@ -56,7 +56,7 @@ describe('useSearchRulesetList', () => {
   it('should render the hook', async () => {
     const { result } = renderHook(() => useSearchRulesetList('', 0, 50));
     act(() => {
-      result.current.refetchRuleSetList();
+      result.current.refetchRuleSetList({});
     });
 
     await waitFor(() => {

@@ -99,16 +99,23 @@ export const PageNameLabel = styled.h2`
 
 export const ToolsContainer = styled.div`
   display: flex;
-  align-items: left;
   margin: ${spacing(2)};
+  gap: ${spacing(2)};
+  max-width: 100%;
+  align-items: center;
 `;
 
 export const NewButton = styled.div`
   margin-left: auto;
-  margin-top: ${spacing(1)};
-  margin-right: ${spacing(2)};
 
   & a {
     color: ${color.focusBlue};
   }
+`;
+
+export const SectionWrapper = styled.div`
+  box-shadow: #000 0 0 10px -5px;
+  margin: ${spacing(2)};
+  padding-top: ${spacing(1)};
+  border-radius: 4px;
 `;

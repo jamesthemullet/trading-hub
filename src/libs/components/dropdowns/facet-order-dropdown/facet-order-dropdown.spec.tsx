@@ -17,8 +17,8 @@ describe('Filter dropdown', () => {
     expect(dropdownHeader).toHaveAttribute('aria-haspopup', 'listbox');
     expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
     expect(screen.getByText('Select an action')).toBeVisible();
-    expect(screen.getByText('Include only')).not.toBeVisible();
-    expect(screen.getByText('Exclude only')).not.toBeVisible();
+    expect(screen.queryByText('Include only')).not.toBeVisible();
+    expect(screen.queryByText('Exclude only')).not.toBeVisible();
   });
 
   it('should open the dropdown and display the options when button is clicked', async () => {
@@ -88,7 +88,7 @@ describe('Filter dropdown', () => {
 
     expect(screen.getByText('Include only')).not.toBeVisible();
     expect(screen.getAllByText('Exclude only')[0]).toBeVisible();
-    expect(screen.getAllByText('Exclude only')[1]).not.toBeVisible();
+    expect(screen.queryAllByText('Exclude only')[1]).not.toBeVisible();
     expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
     expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
   });
@@ -109,7 +109,7 @@ describe('Filter dropdown', () => {
 
     expect(screen.getByText('Include only')).not.toBeVisible();
     expect(screen.getAllByText('Algo control')[0]).toBeVisible();
-    expect(screen.getAllByText('Algo control')[1]).not.toBeVisible();
+    expect(screen.queryAllByText('Algo control')[1]).not.toBeVisible();
     expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
     expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
   });

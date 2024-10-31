@@ -2,7 +2,11 @@ import { useContext, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
-import type { CategoryRuleSet, ReturnedCategoryRuleSet } from '@/libs/api';
+import type {
+  CategoryRuleSet,
+  CountryCode,
+  ReturnedCategoryRuleSet,
+} from '@/libs/api';
 import {
   DataTable,
   DataTableSkeleton,
@@ -13,6 +17,7 @@ import {
   TablePaginationSkeleton,
 } from '@/libs/components';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
+import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
   PageNameLabel,
@@ -69,7 +74,7 @@ const FacetManagementPage = () => {
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
     await handleDelete({ rulesetId: id });
 
-    refetchRuleSetList();
+    refetchRuleSetList({});
   };
 
   const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
@@ -185,6 +190,10 @@ const FacetManagementPage = () => {
     });
   };
 
+  const handleCountryFilter = (countryCode?: CountryCode) => {
+    refetchRuleSetList({ countryCode });
+  };
+
   return (
     <>
       <Heading
@@ -216,6 +225,9 @@ const FacetManagementPage = () => {
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
+          {featureFlags.hasIreland && (
+            <CountryFilterDropdown onChange={handleCountryFilter} />
+          )}
           <NewButton>
             {isLoading ? (
               <Skeleton height={33} width={110} />

@@ -1,8 +1,10 @@
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { CountryCode } from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
+import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
   PageNameLabel,
@@ -58,12 +60,12 @@ const RuleSets = () => {
       },
     });
 
-    refetchRuleSetList();
+    refetchRuleSetList({});
   };
 
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
     await handleDelete({ rulesetId: id });
-    refetchRuleSetList();
+    refetchRuleSetList({});
   };
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
@@ -90,6 +92,10 @@ const RuleSets = () => {
     }
   };
 
+  const handleCountryFilter = (countryCode?: CountryCode) => {
+    refetchRuleSetList({ countryCode });
+  };
+
   return (
     <>
       <Heading
@@ -100,6 +106,9 @@ const RuleSets = () => {
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
+          {featureFlags.hasIreland && (
+            <CountryFilterDropdown onChange={handleCountryFilter} />
+          )}
           <NewButton onClick={createNewRuleSet}>
             <Link href={''}>Add new rule</Link>
           </NewButton>

@@ -9,6 +9,7 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import RedirectRuleSets from './index.page';
 
+const mockRefetchRedirectList = jest.fn();
 const mockRedirectDelete = jest.fn();
 const mockUpdateRedirect = jest.fn();
 
@@ -263,7 +264,7 @@ describe('Search Rulesets', () => {
     expect(screen.queryByText('Schedule')).not.toBeInTheDocument();
   });
 
-  it('should display country flag if Ireland feature flag is enabled', () => {
+  it('should display country flag and filter if Ireland feature flag is enabled', () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [
         {
@@ -288,9 +289,12 @@ describe('Search Rulesets', () => {
     );
 
     expect(screen.getByAltText('IE rule')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'All marksandspencer.com' })
+    ).toBeVisible();
   });
 
-  it('should not display country flag if Ireland feature flag is not enabled', () => {
+  it('should not display country flag or filter if Ireland feature flag is not enabled', () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [],
       pagination: {
@@ -310,5 +314,51 @@ describe('Search Rulesets', () => {
     );
 
     expect(screen.queryByAltText('IE rule')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'All marksandspencer.com' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should refetch the ruleset list when the country is changed', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRedirectList: mockRefetchRedirectList,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: true }}
+      >
+        <RedirectRuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    const dropdown = screen.getByRole('button', {
+      name: 'All marksandspencer.com',
+    });
+
+    await user.click(dropdown);
+
+    const showUK = screen.getByText('UK only marksandspencer');
+    await user.click(showUK);
+
+    expect(mockRefetchRedirectList).toHaveBeenCalledWith({ countryCode: 'UK' });
+    expect(
+      screen.getByRole('button', { name: 'UK only marksandspencer' })
+    ).toBeVisible();
+
+    const showIE = screen.getByText('IE only marksandspencer');
+    await userEvent.click(showIE);
+
+    expect(mockRefetchRedirectList).toHaveBeenCalledWith({ countryCode: 'IE' });
+    expect(
+      screen.getByRole('button', { name: 'IE only marksandspencer' })
+    ).toBeVisible();
   });
 });

@@ -1,9 +1,14 @@
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import type { KeywordRuleSet, ReturnedKeywordRuleSet } from '@/libs/api';
+import type {
+  CountryCode,
+  KeywordRuleSet,
+  ReturnedKeywordRuleSet,
+} from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
+import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
   PageNameLabel,
@@ -88,7 +93,7 @@ const SearchRuleSets = () => {
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
     await deleteRuleset({ rulesetId: id });
 
-    refetchRuleSetList();
+    refetchRuleSetList({});
   };
 
   const featureFlags = useContext(FeatureFlagContext);
@@ -146,6 +151,10 @@ const SearchRuleSets = () => {
     })
   );
 
+  const handleCountryFilter = (countryCode?: CountryCode) => {
+    refetchRuleSetList({ countryCode });
+  };
+
   return (
     <>
       <Heading
@@ -160,6 +169,9 @@ const SearchRuleSets = () => {
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
+          {featureFlags.hasIreland && (
+            <CountryFilterDropdown onChange={handleCountryFilter} />
+          )}
           <NewButton>
             <Link href="/search/rulesets/new">Add new rule</Link>
           </NewButton>

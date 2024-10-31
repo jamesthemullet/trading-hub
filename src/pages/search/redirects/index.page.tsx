@@ -2,12 +2,14 @@ import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import {
+  CountryCode,
   KeywordRedirect,
   ReturnedKeywordRedirect,
   ReturnedKeywordRedirects,
 } from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
+import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
   PageNameLabel,
@@ -94,7 +96,7 @@ const RedirectRuleSets = () => {
   const onDeleteRedirect = async ({ id }: { id: string }) => {
     await deleteRedirect({ redirectId: id });
 
-    refetchRedirectList();
+    refetchRedirectList({});
   };
 
   const hasSchedule =
@@ -138,6 +140,10 @@ const RedirectRuleSets = () => {
     })
   );
 
+  const handleCountryFilter = (countryCode?: CountryCode) => {
+    refetchRedirectList({ countryCode });
+  };
+
   return (
     <>
       <Heading
@@ -149,6 +155,9 @@ const RedirectRuleSets = () => {
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
+          {featureFlags.hasIreland && (
+            <CountryFilterDropdown onChange={handleCountryFilter} />
+          )}
           <NewButton>
             <Link href="/search/redirects/new">Add new rule</Link>
           </NewButton>

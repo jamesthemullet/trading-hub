@@ -10,9 +10,14 @@ import { renderWithProviders } from '@/test/render-with-providers';
 import { default as RuleSets } from './index.page';
 
 const mockNewRuleset = 'foo123';
+const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+const mockSearchTerms = ['search', 'terms'];
+
+const mockRefetchRuleSetList = jest.fn();
 const mockUpdateRuleSet = jest.fn();
 const mockRuleSetDelete = jest.fn();
 const mockRuleSetCreate = jest.fn().mockResolvedValue({ id: mockNewRuleset });
+
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useSearchRulesetList: jest.fn(),
@@ -26,6 +31,7 @@ jest.mock('@/libs/hooks', () => ({
     return { createRuleset: mockRuleSetCreate };
   },
 }));
+
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
@@ -388,7 +394,7 @@ describe('Search Rulesets', () => {
     expect(screen.queryByText('Schedule')).not.toBeInTheDocument();
   });
 
-  it('should display country flags if ireland feature flag is enabled', () => {
+  it('should display country flags and filter if ireland feature flag is enabled', () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockSearchTerms = ['search', 'terms'];
 
@@ -424,12 +430,12 @@ describe('Search Rulesets', () => {
     );
 
     expect(screen.getByAltText('UK rule')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'All marksandspencer.com' })
+    ).toBeVisible();
   });
 
-  it('should not display country flags if ireland feature flag is not enabled', () => {
-    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    const mockSearchTerms = ['search', 'terms'];
-
+  it('should not display country flags or filter if ireland feature flag is not enabled', () => {
     jest.mocked(useSearchRulesetList).mockReturnValue({
       ruleSets: [
         {
@@ -463,5 +469,65 @@ describe('Search Rulesets', () => {
     );
 
     expect(screen.queryByAltText('UK rule')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'All marksandspencer.com' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should refetch the ruleset list when the country is changed', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [
+        {
+          searchTerms: mockSearchTerms,
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-14T10:02:38.556Z',
+        },
+      ],
+      error: '',
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: mockRefetchRuleSetList,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasScheduling: false, hasIreland: true }}
+      >
+        <RuleSets />
+      </FeatureFlagContext.Provider>
+    );
+
+    const dropdown = screen.getByRole('button', {
+      name: 'All marksandspencer.com',
+    });
+
+    await user.click(dropdown);
+
+    const showUK = screen.getByText('UK only marksandspencer');
+    await user.click(showUK);
+
+    expect(mockRefetchRuleSetList).toHaveBeenCalledWith({ countryCode: 'UK' });
+    expect(
+      screen.getByRole('button', { name: 'UK only marksandspencer' })
+    ).toBeVisible();
+
+    const showIE = screen.getByText('IE only marksandspencer');
+    await userEvent.click(showIE);
+
+    expect(mockRefetchRuleSetList).toHaveBeenCalledWith({ countryCode: 'IE' });
+    expect(
+      screen.getByRole('button', { name: 'IE only marksandspencer' })
+    ).toBeVisible();
   });
 });

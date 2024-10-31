@@ -1,19 +1,21 @@
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
+import { CountryCode } from '@/libs/api';
 import {
   DataTable,
   ErrorMessage,
   Heading,
   Search,
-  SectionHeader,
-  SectionWrapper,
   TablePagination,
 } from '@/libs/components';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
+import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
   PageNameLabel,
+  SectionWrapper,
+  ToolsContainer,
 } from '@/libs/components/utils/shared.styles';
 import {
   useGlobalRuleSetCreate,
@@ -71,12 +73,12 @@ const FacetManagementPage = () => {
       },
     });
 
-    refetchRuleSetList();
+    refetchRuleSetList({});
   };
 
   const onDeleteRuleSet = async ({ id }: { id: string }) => {
     await handleDelete({ rulesetId: id });
-    refetchRuleSetList();
+    refetchRuleSetList({});
   };
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
@@ -101,6 +103,10 @@ const FacetManagementPage = () => {
     if (response) {
       return router.push(`/global/facets/edit/${response.id}`);
     }
+  };
+
+  const handleCountryFilter = (countryCode?: CountryCode) => {
+    refetchRuleSetList({ countryCode });
   };
 
   return (
@@ -133,13 +139,16 @@ const FacetManagementPage = () => {
 
       <PageNameLabel>Global Facet Management</PageNameLabel>
       <SectionWrapper>
-        <SectionHeader>
+        <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
+          {featureFlags.hasIreland && (
+            <CountryFilterDropdown onChange={handleCountryFilter} />
+          )}
 
           <NewButton onClick={createNewRuleSet}>
             <Link href={''}>Add new rule</Link>
           </NewButton>
-        </SectionHeader>
+        </ToolsContainer>
 
         <DataTable
           headings={headings}

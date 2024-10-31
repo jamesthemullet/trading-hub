@@ -83,7 +83,7 @@ describe('useRuleSet', () => {
     const { result } = renderHook(() => useRuleSet('', 0, 50, 'global'));
 
     act(() => {
-      result.current.refetchRuleSetList();
+      result.current.refetchRuleSetList({});
     });
 
     await waitFor(() => {

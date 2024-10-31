@@ -18,7 +18,6 @@ export * from './pagination/table-pagination-skeleton';
 export * from './product-grid-header/product-grid-header';
 export * from './radio-buttons/radio-buttons';
 export * from './search/search';
-export * from './section/section';
 export * from './table/datatable';
 export * from './table/datatable-skeleton';
 export * from './tabs/tabs';
