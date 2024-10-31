@@ -265,7 +265,13 @@ describe('Global Facet Management Editing', () => {
 
     await waitFor(() => {
       expect(screen.getAllByText('color')[0]).toBeVisible();
+    });
+
+    await waitFor(() => {
       expect(screen.getAllByText('color')[1]).toBeVisible();
+    });
+
+    await waitFor(() => {
       expect(screen.queryAllByText('size').length).toBe(0);
     });
   });
@@ -279,13 +285,17 @@ describe('Global Facet Management Editing', () => {
       editButton.click();
     });
 
+    const editColorInput = await screen.findByLabelText(
+      'Edit color input field'
+    );
+
     await waitFor(async () => {
-      const editColorInput = screen.getByLabelText('Edit color input field');
       expect(editColorInput).toBeVisible();
-      expect(editColorInput).toHaveValue('color');
-      await userEvent.clear(editColorInput);
-      await userEvent.type(editColorInput, 'colour');
     });
+
+    expect(editColorInput).toHaveValue('color');
+    await userEvent.clear(editColorInput);
+    await userEvent.type(editColorInput, 'colour');
 
     const saveButton = screen.getByLabelText('Save color change');
 
@@ -317,12 +327,13 @@ describe('Global Facet Management Editing', () => {
       editButton.click();
     });
 
-    await waitFor(async () => {
-      const editColorInput = screen.getByLabelText('Edit color input field');
-      await userEvent.type(editColorInput, 'colour edit');
-    });
+    const editColorInput = await screen.findByLabelText(
+      'Edit color input field'
+    );
 
-    const saveButton = screen.getByLabelText('Save color change');
+    await userEvent.type(editColorInput, 'colour edit');
+
+    const saveButton = await screen.findByLabelText('Save color change');
 
     act(() => {
       saveButton.click();
@@ -343,10 +354,11 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
 
     const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
 
@@ -355,13 +367,14 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as excluded')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to include only, and re-order by status', async () => {
@@ -372,10 +385,11 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing size as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing size as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing size as included')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Include only')[6];
@@ -387,13 +401,14 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing size as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing size as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing size as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing size as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing size as algoControl')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to include only from exclude only', async () => {
@@ -404,10 +419,11 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing price as excluded')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing price as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing price as included')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Include only')[7];
@@ -419,13 +435,14 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing price as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing price as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing price as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing price as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing price as algoControl')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to algoControl only from include only', async () => {
@@ -436,10 +453,11 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Algo control')[0];
@@ -451,13 +469,14 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
   });
 
   it('should not update status if the same status is selected', async () => {
@@ -481,10 +500,11 @@ describe('Global Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
   });
 
   it('loads the mock data', async () => {

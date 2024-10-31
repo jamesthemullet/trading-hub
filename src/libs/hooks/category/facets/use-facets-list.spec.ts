@@ -80,8 +80,9 @@ describe('useFacetsList', () => {
 
     await waitFor(() => {
       expect(result.current.facets.length).toEqual(0);
-      expect(result.current.isLoading).toBeFalsy();
     });
+
+    expect(result.current.isLoading).toBeFalsy();
   });
 
   it('should not call the hook when disabled', async () => {
@@ -91,7 +92,8 @@ describe('useFacetsList', () => {
 
     await waitFor(() => {
       expect(result.current.facets.length).toEqual(0);
-      expect(result.current.isLoading).toBeFalsy();
     });
+
+    expect(result.current.isLoading).toBeFalsy();
   });
 });

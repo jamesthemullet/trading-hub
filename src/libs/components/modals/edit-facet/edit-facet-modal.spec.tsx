@@ -119,7 +119,7 @@ describe('ModalEditValues', () => {
       ).toBeVisible();
     });
 
-    const editColorInput = screen.getByLabelText(
+    const editColorInput = await screen.findByLabelText(
       'Edit Merged group 1 input field'
     );
     expect(editColorInput).toBeVisible();
@@ -177,15 +177,17 @@ describe('ModalEditValues', () => {
       editButton.click();
     });
 
+    const editColorInput = await screen.findByLabelText(
+      'Edit Merged group 1 input field'
+    );
+
     await waitFor(async () => {
-      const editColorInput = screen.getByLabelText(
-        'Edit Merged group 1 input field'
-      );
       expect(editColorInput).toBeVisible();
-      expect(editColorInput).toHaveValue('Merged group 1');
-      await userEvent.clear(editColorInput);
-      expect(editColorInput).toHaveValue('');
     });
+
+    expect(editColorInput).toHaveValue('Merged group 1');
+    await userEvent.clear(editColorInput);
+    expect(editColorInput).toHaveValue('');
 
     const saveButton = screen.getByRole('button', {
       name: 'Save Merged group 1 change',
@@ -598,10 +600,10 @@ describe('ModalEditValues', () => {
 
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-        expect(
-          screen.getByLabelText('Edit Name your merge input field')
-        ).toBeVisible();
       });
+      expect(
+        screen.getByLabelText('Edit Name your merge input field')
+      ).toBeVisible();
     }, 15000);
 
     it('should unselect a merged value', async () => {
@@ -670,14 +672,14 @@ describe('ModalEditValues', () => {
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
       });
+      const editColorInput = await screen.findByLabelText(
+        'Edit Name your merge input field'
+      );
       await waitFor(async () => {
-        const editColorInput = screen.getByLabelText(
-          'Edit Name your merge input field'
-        );
         expect(editColorInput).toBeVisible();
-        expect(editColorInput).toHaveValue('Name your merge');
-        await userEvent.keyboard('{enter}');
       });
+      expect(editColorInput).toHaveValue('Name your merge');
+      await userEvent.keyboard('{enter}');
       const saveButton = screen.getByLabelText('Save Name your merge change');
       expect(saveButton).toBeDisabled();
     });
@@ -889,10 +891,10 @@ describe('ModalEditValues', () => {
       });
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-        expect(
-          screen.queryByLabelText('Remove merged facet for Ducky Downy')
-        ).not.toBeInTheDocument();
       });
+      expect(
+        screen.queryByLabelText('Remove merged facet for Ducky Downy')
+      ).not.toBeInTheDocument();
     }, 10000);
 
     it('should not demerge a value if it is a category facet', async () => {
@@ -969,10 +971,10 @@ describe('ModalEditValues', () => {
 
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-        expect(
-          screen.getByLabelText('Edit Name your merge input field')
-        ).toBeVisible();
       });
+      expect(
+        screen.getByLabelText('Edit Name your merge input field')
+      ).toBeVisible();
 
       const mergeInputField = screen.getByLabelText(
         'Edit Name your merge input field'
@@ -1007,10 +1009,10 @@ describe('ModalEditValues', () => {
       });
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-        expect(
-          screen.getByLabelText('Edit Name your merge input field')
-        ).toBeVisible();
       });
+      expect(
+        screen.getByLabelText('Edit Name your merge input field')
+      ).toBeVisible();
 
       const mergeInputField2 = screen.getByLabelText(
         'Edit Name your merge input field'
@@ -1227,13 +1229,13 @@ describe('ModalEditValues', () => {
       );
       await waitFor(() => {
         expect(screen.getByLabelText('attribute 0 Cotton')).toBeInTheDocument();
-        expect(
-          screen.getByLabelText('attribute 1 Duck Down')
-        ).toBeInTheDocument();
-        expect(
-          screen.getByLabelText('attribute 2 Duck Down And Feather')
-        ).toBeInTheDocument();
       });
+      expect(
+        screen.getByLabelText('attribute 1 Duck Down')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText('attribute 2 Duck Down And Feather')
+      ).toBeInTheDocument();
       user.click(screen.getByLabelText('Move Duck Down row up'));
       expect(
         await screen.findByLabelText('attribute 0 Duck Down')
@@ -1334,16 +1336,17 @@ describe('ModalEditValues', () => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
       });
       // change name for initial
+      const editMergedValue = await screen.findByLabelText(
+        'Edit Name your merge input field'
+      );
 
       await waitFor(async () => {
-        const editMergedValue = screen.getByLabelText(
-          'Edit Name your merge input field'
-        );
         expect(editMergedValue).toBeVisible();
-        expect(editMergedValue).toHaveValue('Name your merge');
-        user.clear(editMergedValue);
-        await user.type(editMergedValue, 'test test');
       });
+
+      expect(editMergedValue).toHaveValue('Name your merge');
+      user.clear(editMergedValue);
+      await user.type(editMergedValue, 'test test');
       act(() => {
         screen.getByLabelText('Save Name your merge change').click();
       });
@@ -1470,15 +1473,16 @@ describe('ModalEditValues', () => {
           .getByLabelText('Edit display name for test merged group')
           .click();
       });
+      const editMergedValue = await screen.findByLabelText(
+        'Edit test merged group input field'
+      );
       await waitFor(async () => {
-        const editMergedValue = screen.getByLabelText(
-          'Edit test merged group input field'
-        );
         expect(editMergedValue).toBeVisible();
-        expect(editMergedValue).toHaveValue('test merged group');
-        user.clear(editMergedValue);
-        await user.type(editMergedValue, 'test test');
       });
+
+      expect(editMergedValue).toHaveValue('test merged group');
+      user.clear(editMergedValue);
+      await user.type(editMergedValue, 'test test');
       act(() => {
         screen.getByLabelText('Save test merged group change').click();
       });
@@ -1710,10 +1714,11 @@ describe('ModalEditValues', () => {
 
       await waitFor(() => {
         expect(screen.getAllByText('Merged Value Group')[0]).toBeVisible();
-        expect(
-          screen.getByLabelText('Edit Name your merge input field')
-        ).toBeVisible();
       });
+
+      expect(
+        screen.getByLabelText('Edit Name your merge input field')
+      ).toBeVisible();
 
       const mergeInputField = screen.getByLabelText(
         'Edit Name your merge input field'
@@ -1734,14 +1739,16 @@ describe('ModalEditValues', () => {
         );
       });
 
+      expect(refreshDataMock).not.toHaveBeenCalled();
+
       await waitFor(() => {
         expect(
           screen.getByText(
             'Error whilst updating facet: Failed to update facet'
           )
         ).toBeVisible();
-        expect(refreshDataMock).not.toHaveBeenCalled();
       });
+      expect(refreshDataMock).not.toHaveBeenCalled();
     });
 
     it('should not allow any other action during the process creating a merge group (ie when writing the name of the merge group)', async () => {

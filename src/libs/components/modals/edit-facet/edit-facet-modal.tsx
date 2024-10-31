@@ -39,11 +39,16 @@ export const EditFacetModal = ({
         const facetBoosted = facet.boosted ?? [];
         const facetExcludedValues = facet.excludedValues ?? [];
         if (facetType === 'global') {
-          await handleGlobalFacetUpdate({
+          const response = await handleGlobalFacetUpdate({
             facetId: facet.id,
             data: facet,
           });
-          refreshData?.();
+          if ('status' in response && response.status === 'error') {
+            return;
+          }
+          if (response && refreshData) {
+            refreshData();
+          }
         } else {
           updatedValues?.(facetBoosted, facetExcludedValues, facet.id);
           onClose();

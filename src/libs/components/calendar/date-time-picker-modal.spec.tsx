@@ -134,8 +134,10 @@ describe('DateTimePickerModal', () => {
       expect(
         screen.queryByRole('button', { name: 'Close schedule editor' })
       ).not.toBeInTheDocument();
-      expect(headerText).not.toBeInTheDocument();
     });
+
+    expect(headerText).not.toBeInTheDocument();
+
     expect((input as HTMLInputElement).value).toBe(
       '14/03/22 00:30 - 16/03/22 23:59'
     );
@@ -205,8 +207,10 @@ describe('DateTimePickerModal', () => {
       expect(
         screen.queryByRole('button', { name: 'Close schedule editor' })
       ).not.toBeInTheDocument();
-      expect(headerText).not.toBeInTheDocument();
     });
+
+    expect(headerText).not.toBeInTheDocument();
+
     expect((input as HTMLInputElement).value).toBe(
       '14/03/22 00:00 - 16/03/22 23:00'
     );
@@ -265,8 +269,9 @@ describe('DateTimePickerModal', () => {
       expect(
         screen.queryByRole('button', { name: 'Close schedule editor' })
       ).not.toBeInTheDocument();
-      expect(headerText).not.toBeInTheDocument();
     });
+
+    expect(headerText).not.toBeInTheDocument();
     expect((input as HTMLInputElement).value).toBe(
       '01/03/22 12:00 - 20/03/22 12:00'
     );

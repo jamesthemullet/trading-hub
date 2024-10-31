@@ -51,8 +51,9 @@ describe('useGetFacetAttributeValues', () => {
 
     await waitFor(() => {
       expect(typeof result.current.checkMergeNameUnique).toBe('function');
-      expect(result.current.error).toBe('');
     });
+
+    expect(result.current.error).toBe('');
   });
 
   it('should return error', async () => {

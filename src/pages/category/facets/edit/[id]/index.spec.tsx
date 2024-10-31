@@ -317,10 +317,11 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
 
     const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
 
@@ -329,10 +330,11 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as excluded')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to include only, and re-order by status', async () => {
@@ -343,10 +345,11 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing category as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing category as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing category as included')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Include only')[6];
@@ -358,13 +361,14 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing category as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing category as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing category as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing category as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing category as algoControl')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to algoControl', async () => {
@@ -375,13 +379,14 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Algo control')[0];
@@ -393,13 +398,14 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing category as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing category as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing category as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing category as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing category as included')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to algoControl from excluded', async () => {
@@ -410,13 +416,14 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing price as excluded')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing price as algoControl')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing price as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing price as algoControl')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing price as included')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Algo control')[5];
@@ -428,13 +435,14 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing price as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing price as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing price as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing price as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing price as included')
+    ).not.toBeInTheDocument();
   });
 
   it('should not update status if the same status is selected', async () => {
@@ -458,10 +466,11 @@ describe('Category Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
   });
 
   it('should save changes to category facet values', async () => {

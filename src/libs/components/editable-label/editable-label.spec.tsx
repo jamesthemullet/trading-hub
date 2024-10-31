@@ -54,12 +54,13 @@ describe('editable-label', () => {
         cancelButton.click();
       });
 
-      await waitFor(() => {
-        const label = screen.getByLabelText('Label for color');
+      const label = await screen.findByLabelText('Label for color');
 
+      await waitFor(() => {
         expect(label).toBeVisible();
-        expect(label).toHaveTextContent('color');
       });
+
+      expect(label).toHaveTextContent('color');
 
       expect(onDisplayValueChange).not.toHaveBeenCalled();
     });
@@ -79,13 +80,17 @@ describe('editable-label', () => {
         editButton.click();
       });
 
+      const editColorInput = await screen.findByLabelText(
+        'Edit color input field'
+      );
+
       await waitFor(async () => {
-        const editColorInput = screen.getByLabelText('Edit color input field');
         expect(editColorInput).toBeVisible();
-        expect(editColorInput).toHaveValue('color');
-        await userEvent.clear(editColorInput);
-        await userEvent.type(editColorInput, 'colour');
       });
+
+      expect(editColorInput).toHaveValue('color');
+      await userEvent.clear(editColorInput);
+      await userEvent.type(editColorInput, 'colour');
 
       const saveButton = screen.getByLabelText('Save color change');
 
@@ -118,14 +123,18 @@ describe('editable-label', () => {
         editButton.click();
       });
 
+      const editColorInput = await screen.findByLabelText(
+        'Edit color input field'
+      );
+
       await waitFor(async () => {
-        const editColorInput = screen.getByLabelText('Edit color input field');
         expect(editColorInput).toBeVisible();
-        expect(editColorInput).toHaveValue('color');
-        await userEvent.clear(editColorInput);
-        await userEvent.type(editColorInput, 'colour');
-        await userEvent.keyboard('{enter}');
       });
+
+      expect(editColorInput).toHaveValue('color');
+      await userEvent.clear(editColorInput);
+      await userEvent.type(editColorInput, 'colour');
+      await userEvent.keyboard('{enter}');
 
       await waitFor(() => {
         const newEditButton = screen.getByRole('button', {
@@ -174,16 +183,20 @@ describe('editable-label', () => {
         editButton.click();
       });
 
+      const editColorInput = await screen.findByLabelText(
+        'Edit color input field'
+      );
+
       await waitFor(async () => {
-        const editColorInput = screen.getByLabelText('Edit color input field');
         expect(editColorInput).toBeVisible();
-        expect(editColorInput).toHaveValue('color');
-        await userEvent.clear(editColorInput);
-        await userEvent.type(editColorInput, 'colour');
-        await userEvent.keyboard('{Escape}');
       });
 
-      const label = screen.getByLabelText('Label for color');
+      expect(editColorInput).toHaveValue('color');
+      await userEvent.clear(editColorInput);
+      await userEvent.type(editColorInput, 'colour');
+      await userEvent.keyboard('{Escape}');
+
+      const label = await screen.findByLabelText('Label for color');
       expect(label).toBeVisible();
       expect(label).toHaveTextContent('color');
 

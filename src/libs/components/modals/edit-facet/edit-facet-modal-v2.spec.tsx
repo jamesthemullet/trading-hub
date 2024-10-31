@@ -517,13 +517,14 @@ describe('ModalEditValues', () => {
 
     await waitFor(() => {
       expect(dispatchMock).toHaveBeenCalledTimes(1);
-      expect(dispatchMock).toHaveBeenCalledWith({
-        type: 'RENAME_DISPLAY_VALUE',
-        payload: {
-          id: 'red',
-          newDisplayValue: 'New merge name',
-        },
-      });
+    });
+
+    expect(dispatchMock).toHaveBeenCalledWith({
+      type: 'RENAME_DISPLAY_VALUE',
+      payload: {
+        id: 'red',
+        newDisplayValue: 'New merge name',
+      },
     });
   });
 
@@ -576,9 +577,10 @@ describe('ModalEditValues', () => {
       expect(
         screen.queryByText('red is not a unique value')
       ).not.toBeInTheDocument();
-      expect(inputField).not.toBeVisible();
-      expect(dispatchMock).toHaveBeenCalledTimes(0);
     });
+
+    expect(inputField).not.toBeVisible();
+    expect(dispatchMock).toHaveBeenCalledTimes(0);
   });
 
   it('should not allow edit display value to the same name as another edited value', async () => {
@@ -885,12 +887,13 @@ describe('ModalEditValues', () => {
 
     await waitFor(() => {
       expect(useAttributeValuesRowsSelector).toHaveBeenCalledTimes(2);
-      expect(useAttributeValuesRowsSelector).toHaveBeenCalledWith(
-        facetMock,
-        'blue',
-        'SubCategory_507'
-      );
     });
+
+    expect(useAttributeValuesRowsSelector).toHaveBeenCalledWith(
+      facetMock,
+      'blue',
+      'SubCategory_507'
+    );
   });
 
   it('should disable the save button when display value is not finished renaming', async () => {

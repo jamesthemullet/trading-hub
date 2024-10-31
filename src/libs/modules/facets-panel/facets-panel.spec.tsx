@@ -552,13 +552,17 @@ describe('Facet Panel', () => {
 
     await user.click(editButton);
 
+    const editColorInput = await screen.findByLabelText(
+      'Edit color input field'
+    );
+
     await waitFor(async () => {
-      const editColorInput = screen.getByLabelText('Edit color input field');
       expect(editColorInput).toBeVisible();
-      expect(editColorInput).toHaveValue('color');
-      await userEvent.clear(editColorInput);
-      await userEvent.type(editColorInput, 'colour 2');
     });
+
+    expect(editColorInput).toHaveValue('color');
+    await userEvent.clear(editColorInput);
+    await userEvent.type(editColorInput, 'colour 2');
 
     const saveButton = screen.getByLabelText('Save color change');
 

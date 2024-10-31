@@ -135,8 +135,9 @@ describe('useRuleSet', () => {
       expect(result.current.data.products).toMatchObject(
         expectedData.categoryProducts
       );
-      expect(result.current.data.pagination.totalItems).toBe(1);
     });
+
+    expect(result.current.data.pagination.totalItems).toBe(1);
   });
 
   it('should return an error when the api call fails', async () => {
@@ -204,8 +205,9 @@ describe('useRuleSet', () => {
       expect(result.current.data.products).toMatchObject(
         expectedData.categoryProducts
       );
-      expect(result.current.data.pagination.totalItems).toBe(1);
     });
+
+    expect(result.current.data.pagination.totalItems).toBe(1);
   });
 
   it('should return category data for beta preview', async () => {
@@ -249,8 +251,9 @@ describe('useRuleSet', () => {
       expect(result.current.data.products).toMatchObject(
         expectedData.categoryProducts
       );
-      expect(result.current.data.pagination.totalItems).toBe(1);
     });
+
+    expect(result.current.data.pagination.totalItems).toBe(1);
   });
 
   it('should return empty with no category id', async () => {

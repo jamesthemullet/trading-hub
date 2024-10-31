@@ -321,9 +321,10 @@ describe('RulesetAttributes', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText('Red')).toBeVisible();
-      expect(screen.getByLabelText('Blue')).toBeVisible();
-      expect(screen.getByLabelText('Green')).toBeVisible();
     });
+
+    expect(screen.getByLabelText('Blue')).toBeVisible();
+    expect(screen.getByLabelText('Green')).toBeVisible();
 
     await user.type(screen.getByLabelText('Filter selected attributes'), 'Red');
 

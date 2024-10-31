@@ -253,10 +253,11 @@ describe('Search Keywords', () => {
       expect(
         screen.getByText('Please finish adding the keyword to close')
       ).toBeVisible();
-      expect(
-        screen.getByRole('button', { name: 'Close keywords modal' })
-      ).toBeVisible();
     });
+
+    expect(
+      screen.getByRole('button', { name: 'Close keywords modal' })
+    ).toBeVisible();
   });
 
   it('should filter attributes on user input', async () => {
@@ -285,9 +286,10 @@ describe('Search Keywords', () => {
       expect(
         within(modal).getByLabelText('Remove keyword: keyword1')
       ).toBeVisible();
-      expect(
-        within(modal).queryByText('Remove keyword: keyword2')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      within(modal).queryByText('Remove keyword: keyword2')
+    ).not.toBeInTheDocument();
   });
 });

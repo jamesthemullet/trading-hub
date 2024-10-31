@@ -221,10 +221,11 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing category as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing category as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing category as included')
+    ).not.toBeInTheDocument();
 
     act(() => {
       user.click(screen.getAllByText('Include only')[3]);
@@ -234,22 +235,24 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing category as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing category as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing category as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing category as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing category as algoControl')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
 
     act(() => {
       user.click(screen.getAllByText('Include only')[2]);
@@ -259,13 +262,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(
@@ -315,13 +319,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
 
     const includeOnlyOption = screen.getAllByText('Include only')[0];
 
@@ -330,13 +335,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
 
     const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
 
@@ -345,13 +351,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as excluded')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to algoControl', async () => {
@@ -379,13 +386,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Include only')[0];
@@ -397,13 +405,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Algo control')[0];
@@ -415,13 +424,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to algoControl from excluded', async () => {
@@ -449,13 +459,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Exclude only')[0];
@@ -467,13 +478,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as excluded')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Algo control')[8];
@@ -485,13 +497,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
   });
 
   it('should update status on dropdown change to included from excluded', async () => {
@@ -519,13 +532,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Exclude only')[0];
@@ -537,13 +551,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as excluded')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       const includeOnlyOption = screen.getAllByText('Include only')[4];
@@ -555,13 +570,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as included')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as algoControl')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
+    ).not.toBeInTheDocument();
   });
 
   it('should not update status if the same status is selected', async () => {
@@ -602,13 +618,14 @@ describe('Facet Management Editing', () => {
       expect(
         screen.getByLabelText('Row showing color as algoControl')
       ).toBeVisible();
-      expect(
-        screen.queryByLabelText('Row showing color as included')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByLabelText('Row showing color as excluded')
-      ).not.toBeInTheDocument();
     });
+
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
   });
 
   describe('Scheduling', () => {

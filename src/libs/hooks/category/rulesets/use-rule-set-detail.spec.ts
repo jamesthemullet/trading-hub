@@ -83,11 +83,12 @@ describe('useRuleSetDetail', () => {
     };
 
     await waitFor(() => {
-      expect(result.current.error).toEqual(expectedData.error);
       expect(result.current.isLoading).toEqual(expectedData.isLoading);
-      expect(result.current.ruleSetDetail).toEqual(expectedData.ruleSetDetail);
-      expect(typeof result.current.refreshRuleset).toBe('function');
     });
+
+    expect(result.current.error).toEqual(expectedData.error);
+    expect(result.current.ruleSetDetail).toEqual(expectedData.ruleSetDetail);
+    expect(typeof result.current.refreshRuleset).toBe('function');
   });
 
   it('should return an error when the category api call fails', async () => {
@@ -137,10 +138,11 @@ describe('useRuleSetDetail', () => {
 
     await waitFor(() => {
       expect(result.current.error).toEqual(expectedData.error);
-      expect(result.current.isLoading).toEqual(expectedData.isLoading);
-      expect(result.current.ruleSetDetail).toEqual(expectedData.ruleSetDetail);
-      expect(typeof result.current.refreshRuleset).toBe('function');
     });
+
+    expect(result.current.isLoading).toEqual(expectedData.isLoading);
+    expect(result.current.ruleSetDetail).toEqual(expectedData.ruleSetDetail);
+    expect(typeof result.current.refreshRuleset).toBe('function');
   });
 
   it('should error when category api fails to fetch', async () => {
