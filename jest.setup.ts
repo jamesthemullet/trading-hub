@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+
 import { createSerializer, matchers } from '@emotion/jest';
 
 expect.addSnapshotSerializer(createSerializer());
@@ -14,7 +15,14 @@ Object.defineProperties(globalThis, {
 
 const { Blob, File } = require('node:buffer');
 
+function channelMock() {}
+channelMock.prototype.onmessage = function () {};
+channelMock.prototype.postMessage = function (data: any) {
+  this.onmessage({ data });
+};
+
 Object.defineProperties(globalThis, {
   Blob: { value: Blob },
   File: { value: File },
+  BroadcastChannel: { value: channelMock },
 });
