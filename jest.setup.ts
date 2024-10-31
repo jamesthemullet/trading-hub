@@ -21,8 +21,15 @@ channelMock.prototype.postMessage = function (data: any) {
   this.onmessage({ data });
 };
 
+function Transform() {}
+Transform.prototype.readable = true;
+Transform.prototype.writable = true;
+Transform.prototype.write = function () {};
+Transform.prototype.end = function () {};
+
 Object.defineProperties(globalThis, {
   Blob: { value: Blob },
   File: { value: File },
   BroadcastChannel: { value: channelMock },
+  TransformStream: { value: Transform },
 });
