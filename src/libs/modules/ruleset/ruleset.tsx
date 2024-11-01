@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useContext, useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -22,7 +22,6 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearch } from '@/libs/components/product-search/product-search';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
@@ -171,7 +170,6 @@ export const Ruleset = ({
   const [hasChanges, setHasChanges] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const router = useRouter();
-  const featureFlags = useContext(FeatureFlagContext);
 
   const onSelectCategory = (category: string) => {
     setSelectedCategories([...selectedCategories, category]);
@@ -381,7 +379,7 @@ export const Ruleset = ({
           </GlobalInfoWrapper>
         )}
 
-        {rulesetType !== 'global' && featureFlags.hasScheduling && (
+        {rulesetType !== 'global' && (
           <Duration>
             <LabelContainer>Duration</LabelContainer>
             <DateTimePickerModal

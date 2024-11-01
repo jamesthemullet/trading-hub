@@ -183,9 +183,7 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: true, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -316,7 +314,7 @@ describe('Search Rulesets', () => {
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 
-  it('should display scheduling column if scheduling feature flag is enabled', () => {
+  it('should display scheduling column', () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockSearchTerms = ['search', 'terms'];
 
@@ -345,53 +343,12 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: true, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
 
     expect(screen.getByText('Schedule')).toBeInTheDocument();
-  });
-
-  it('should not display scheduling column if scheduling feature flag is not enabled', () => {
-    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    const mockSearchTerms = ['search', 'terms'];
-
-    jest.mocked(useSearchRulesetList).mockReturnValue({
-      ruleSets: [
-        {
-          searchTerms: mockSearchTerms,
-          id: mockId,
-          isEnabled: true,
-          lastChanged: {
-            user: 'user',
-            date: '2021-01-01',
-          },
-          rules: mockMerchandisingRules,
-          facets: [],
-          startDate: '2024-10-14T10:02:38.556Z',
-          endDate: '2024-10-14T10:02:38.556Z',
-        },
-      ],
-      error: '',
-      pagination: {
-        totalItems: 0,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
-    });
-
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: false }}
-      >
-        <RuleSets />
-      </FeatureFlagContext.Provider>
-    );
-
-    expect(screen.queryByText('Schedule')).not.toBeInTheDocument();
   });
 
   it('should display country flags and filter if ireland feature flag is enabled', () => {
@@ -422,9 +379,7 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -461,9 +416,7 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -501,9 +454,7 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );

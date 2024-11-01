@@ -692,9 +692,7 @@ describe('Category Facet Management Editing', () => {
         .mockImplementation(() => mockScheduleRuleset);
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasScheduling: true, hasIreland: false }}
-        >
+        <FeatureFlagContext.Provider value={{ hasIreland: false }}>
           <Page id={ruleSetId} />
         </FeatureFlagContext.Provider>
       );

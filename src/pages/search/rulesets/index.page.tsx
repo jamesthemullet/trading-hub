@@ -110,13 +110,9 @@ const SearchRuleSets = () => {
     });
   };
 
-  const hasSchedule =
-    ruleSets.some((rule) => rule.startDate && rule.endDate) &&
-    featureFlags.hasScheduling;
-
   const headings = [
     'Identifier',
-    ...(hasSchedule ? ['Schedule'] : []),
+    'Schedule',
     'Enable',
     'Last Changed',
     'User',
@@ -146,7 +142,8 @@ const SearchRuleSets = () => {
       lastChanged,
       onToggle: onEnableDisableRuleSet,
       url: `/search/rulesets/edit/${id}`,
-      ...(featureFlags.hasScheduling && { startDate, endDate }),
+      startDate,
+      endDate,
       ...(featureFlags.hasIreland && { countryCode }),
     })
   );

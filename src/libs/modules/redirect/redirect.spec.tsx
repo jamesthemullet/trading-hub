@@ -158,9 +158,7 @@ describe('Redirect', () => {
       };
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasScheduling: true, hasIreland: false }}
-        >
+        <FeatureFlagContext.Provider value={{ hasIreland: false }}>
           <Redirect
             onCancel={() => jest.fn()}
             onSave={mockSave}
@@ -192,9 +190,7 @@ describe('Redirect', () => {
       };
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasScheduling: true, hasIreland: false }}
-        >
+        <FeatureFlagContext.Provider value={{ hasIreland: false }}>
           <Redirect
             onCancel={() => jest.fn()}
             onSave={mockSave}
@@ -228,9 +224,7 @@ describe('Redirect', () => {
       };
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasScheduling: true, hasIreland: false }}
-        >
+        <FeatureFlagContext.Provider value={{ hasIreland: false }}>
           <Redirect
             onCancel={() => jest.fn()}
             onSave={mockSave}
@@ -300,9 +294,7 @@ describe('Redirect', () => {
       };
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasScheduling: true, hasIreland: false }}
-        >
+        <FeatureFlagContext.Provider value={{ hasIreland: false }}>
           <Redirect
             onCancel={() => jest.fn()}
             onSave={mockSave}

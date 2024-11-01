@@ -118,14 +118,10 @@ const RuleSets = () => {
     setCategoryRuleSets(updatedRuleSetsList);
   };
 
-  const hasSchedule =
-    categoryRuleSets.some((rule) => rule.startDate && rule.endDate) &&
-    featureFlags.hasScheduling;
-
   const headings = [
     'Identifier',
     'Breadcrumb',
-    ...(hasSchedule ? ['Schedule'] : []),
+    'Schedule',
     'Enable',
     'Last Changed',
     'User',
@@ -149,7 +145,8 @@ const RuleSets = () => {
       onToggle: onEnableDisableRuleSet,
       url: `/category/rulesets/edit/${id}`,
       categoryPlpUrl: categoriesInfo[0].plpUrl,
-      ...(featureFlags.hasScheduling && { startDate, endDate }),
+      startDate,
+      endDate,
       ...(featureFlags.hasIreland && { countryCode }),
     })
   );

@@ -442,16 +442,6 @@ test.describe('Keyword search', () => {
   });
 
   test.describe('Scheduling', () => {
-    test.beforeEach(async ({ context }) => {
-      await context.addCookies([
-        {
-          name: 'flagScheduling',
-          value: 'true',
-          url: 'http://localhost:3000/search/rulesets',
-        },
-      ]);
-    });
-
     test('Should schedule a ruleset', async ({ page }) => {
       await page.goto('/search/rulesets');
       await expect(

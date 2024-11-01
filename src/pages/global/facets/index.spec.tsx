@@ -377,9 +377,7 @@ describe('Global Facet Management', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <FacetManagementPage />
       </FeatureFlagContext.Provider>
     );
@@ -416,9 +414,7 @@ describe('Global Facet Management', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <FacetManagementPage />
       </FeatureFlagContext.Provider>
     );
@@ -456,9 +452,7 @@ describe('Global Facet Management', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <FacetManagementPage />
       </FeatureFlagContext.Provider>
     );

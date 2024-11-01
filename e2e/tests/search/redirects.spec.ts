@@ -124,16 +124,6 @@ test.describe('Keyword Redirects', () => {
   });
 
   test.describe('Scheduling', () => {
-    test.beforeEach(async ({ context }) => {
-      await context.addCookies([
-        {
-          name: 'flagScheduling',
-          value: 'true',
-          url: 'http://localhost:3000/search/redirects',
-        },
-      ]);
-    });
-
     test('Should schedule a redirect', async ({ page }) => {
       await expect(
         page.getByRole('heading', { name: 'Keyword Redirect' })

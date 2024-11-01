@@ -580,9 +580,7 @@ describe('Category facet management', () => {
       isLoading: false,
     });
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: true, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <FacetManagementPage />
       </FeatureFlagContext.Provider>
     );
@@ -791,9 +789,7 @@ describe('Category facet management', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <FacetManagementPage />
       </FeatureFlagContext.Provider>
     );
@@ -835,9 +831,7 @@ describe('Category facet management', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <FacetManagementPage />
       </FeatureFlagContext.Provider>
     );
@@ -864,9 +858,7 @@ describe('Category facet management', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <FacetManagementPage />
       </FeatureFlagContext.Provider>
     );

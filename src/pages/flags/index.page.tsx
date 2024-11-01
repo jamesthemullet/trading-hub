@@ -19,24 +19,11 @@ const Flag = styled.div`
 `;
 
 const FeatureFlags = () => {
-  const [cookies, setCookie] = useCookies(['flagScheduling', 'flagIreland']);
+  const [cookies, setCookie] = useCookies(['flagIreland']);
 
   return (
     <Wrapper>
       <h1>Feature Flags</h1>
-
-      <Flag>
-        <p>Scheduling:&nbsp;</p>
-        <Toggle
-          checked={cookies.flagScheduling}
-          onChange={() => {
-            setCookie(
-              'flagScheduling',
-              JSON.stringify(!cookies.flagScheduling)
-            );
-          }}
-        />
-      </Flag>
 
       <Flag>
         <p>Ireland:&nbsp;</p>

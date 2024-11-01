@@ -183,9 +183,7 @@ describe('Index', () => {
       isLoading: false,
     });
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: true, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -557,9 +555,7 @@ describe('Index', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -602,9 +598,7 @@ describe('Index', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -630,9 +624,7 @@ describe('Index', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <RuleSets />
       </FeatureFlagContext.Provider>
     );

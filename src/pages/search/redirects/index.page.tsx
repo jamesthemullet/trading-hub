@@ -99,13 +99,9 @@ const RedirectRuleSets = () => {
     refetchRedirectList({});
   };
 
-  const hasSchedule =
-    redirects.some((redirect) => redirect.startDate && redirect.endDate) &&
-    featureFlags.hasScheduling;
-
   const headings = [
     'Identifier',
-    ...(hasSchedule ? ['Schedule'] : []),
+    'Schedule',
     'Enable',
     'Last Changed',
     'User',
@@ -135,7 +131,8 @@ const RedirectRuleSets = () => {
       lastChanged,
       onToggle: onEnableDisableRedirect,
       url: `/search/redirects/edit/${id}`,
-      ...(featureFlags.hasScheduling && { startDate, endDate }),
+      startDate,
+      endDate,
       ...(featureFlags.hasIreland && { countryCode }),
     })
   );

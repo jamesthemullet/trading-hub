@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
 import { KeywordRedirect, ReturnedKeywordRedirect } from '@/libs/api';
 import {
@@ -11,7 +11,6 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { color } from '@/libs/components/utils/constants';
 
 const RedirectType = styled.div`
@@ -91,8 +90,6 @@ export const Redirect = ({
           endDate: '',
         }
   );
-
-  const featureFlags = useContext(FeatureFlagContext);
 
   const onSaveRedirect = () => {
     if (onCreate) {
@@ -194,25 +191,23 @@ export const Redirect = ({
             addSearchTerm={onAddKeyword}
             removeSearchTerm={onRemoveKeyword}
           />
-          {featureFlags.hasScheduling && (
-            <Duration>
-              <LabelContainer>Duration</LabelContainer>
-              <DateTimePickerModal
-                showCalendarIcon={true}
-                dateTime={getExistingDateRange(
-                  redirect.startDate,
-                  redirect.endDate
-                )}
-                onUpdateDateTimeRange={([startDate, endDate]) => {
-                  setRedirect({
-                    ...redirect,
-                    startDate: startDate ? startDate.toISOString() : '',
-                    endDate: endDate ? endDate.toISOString() : '',
-                  });
-                }}
-              />
-            </Duration>
-          )}
+          <Duration>
+            <LabelContainer>Duration</LabelContainer>
+            <DateTimePickerModal
+              showCalendarIcon={true}
+              dateTime={getExistingDateRange(
+                redirect.startDate,
+                redirect.endDate
+              )}
+              onUpdateDateTimeRange={([startDate, endDate]) => {
+                setRedirect({
+                  ...redirect,
+                  startDate: startDate ? startDate.toISOString() : '',
+                  endDate: endDate ? endDate.toISOString() : '',
+                });
+              }}
+            />
+          </Duration>
         </Row>
         <Row>
           <Text>Destination URL*</Text>

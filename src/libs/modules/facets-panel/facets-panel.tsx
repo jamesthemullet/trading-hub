@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Box } from '@mantine/core';
 
 import {
@@ -19,7 +19,6 @@ import {
 } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { EditFacetModal } from '@/libs/components/modals/edit-facet/edit-facet-modal';
@@ -261,7 +260,6 @@ export const FacetsPanel = ({
     id: string
   ) => void;
 }) => {
-  const featureFlags = useContext(FeatureFlagContext);
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     categoryIds || []
   );
@@ -477,21 +475,19 @@ export const FacetsPanel = ({
           {facetType === 'global' && (
             <SelectedCategory label="Applies to all pages in marksandspencer.com" />
           )}
-          {facetType !== 'global' &&
-            featureFlags.hasScheduling &&
-            onScheduleDateChange && (
-              <Duration>
-                <LabelContainer>Duration</LabelContainer>
-                <DateTimePickerModal
-                  showCalendarIcon={true}
-                  onUpdateDateTimeRange={onScheduleDateChange}
-                  dateTime={[
-                    startDate ? new Date(startDate) : null,
-                    endDate ? new Date(endDate) : null,
-                  ]}
-                />
-              </Duration>
-            )}
+          {facetType !== 'global' && onScheduleDateChange && (
+            <Duration>
+              <LabelContainer>Duration</LabelContainer>
+              <DateTimePickerModal
+                showCalendarIcon={true}
+                onUpdateDateTimeRange={onScheduleDateChange}
+                dateTime={[
+                  startDate ? new Date(startDate) : null,
+                  endDate ? new Date(endDate) : null,
+                ]}
+              />
+            </Duration>
+          )}
         </ScopeWrapper>
       </SectionWrapper>
       <SectionWrapper>

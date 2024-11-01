@@ -214,7 +214,7 @@ describe('Search Rulesets', () => {
     expect(mockRedirectDelete).toHaveBeenCalledWith({ redirectId: mockId });
   });
 
-  it('should display scheduling column if feature flag is enabled', () => {
+  it('should display scheduling column', () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [
         {
@@ -232,36 +232,12 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: true, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <RedirectRuleSets />
       </FeatureFlagContext.Provider>
     );
 
     expect(screen.getByText('Schedule')).toBeInTheDocument();
-  });
-
-  it('should not display scheduling column if feature flag is not enabled', () => {
-    jest.mocked(useSearchRedirectList).mockReturnValue({
-      redirects: [],
-      pagination: {
-        totalItems: 0,
-      },
-      error: '',
-      refetchRedirectList: () => jest.fn,
-      setKeywordList: jest.fn(),
-    });
-
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: false }}
-      >
-        <RedirectRuleSets />
-      </FeatureFlagContext.Provider>
-    );
-
-    expect(screen.queryByText('Schedule')).not.toBeInTheDocument();
   });
 
   it('should display country flag and filter if Ireland feature flag is enabled', () => {
@@ -281,9 +257,7 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <RedirectRuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -306,9 +280,7 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: false }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
         <RedirectRuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -332,9 +304,7 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasScheduling: false, hasIreland: true }}
-      >
+      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
         <RedirectRuleSets />
       </FeatureFlagContext.Provider>
     );

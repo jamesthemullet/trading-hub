@@ -509,16 +509,6 @@ test.describe('Category rulesets', () => {
   });
 
   test.describe('Scheduling', () => {
-    test.beforeEach(async ({ context }) => {
-      await context.addCookies([
-        {
-          name: 'flagScheduling',
-          value: 'true',
-          url: 'http://localhost:3000/category/rulesets',
-        },
-      ]);
-    });
-
     test('Should schedule a ruleset', async ({ page }) => {
       await page.goto('/category/rulesets');
       await expect(
