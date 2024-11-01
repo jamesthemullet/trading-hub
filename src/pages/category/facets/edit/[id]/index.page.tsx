@@ -331,7 +331,9 @@ const Page = ({ id }: { id: string }) => {
             setDateTime(updatedDateTime);
           }}
           refreshData={refreshRuleset}
-          categoryIds={ruleSetDetail.categoryIds}
+          categoryIds={ruleSetDetail.categoriesInfo.map(
+            (category) => category.id
+          )}
           endDate={ruleSetDetail.endDate}
           includedFacets={includedFacets}
           excludedFacets={{

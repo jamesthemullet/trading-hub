@@ -91,7 +91,7 @@ const RuleSets = () => {
     if (!ruleSet) return;
 
     const {
-      categoryIds,
+      categoriesInfo,
       facets,
       rules,
       isEnabled,
@@ -101,7 +101,7 @@ const RuleSets = () => {
       countryCode,
     } = ruleSet;
     await updateCategoryRuleSet({
-      categoryIds,
+      categoryIds: categoriesInfo.map((category) => category.id),
       facets,
       isEnabled: !isEnabled,
       rules,
@@ -190,7 +190,7 @@ const RuleSets = () => {
       rules: rulesetToCopy.rules,
       facets: rulesetToCopy.facets || [],
       excludedFacets: rulesetToCopy.excludedFacets,
-      categoryIds: rulesetToCopy.categoryIds,
+      categoryIds: rulesetToCopy.categoriesInfo.map((category) => category.id),
       startDate: rulesetToCopy.startDate,
       endDate: rulesetToCopy.endDate,
       isEnabled: false,

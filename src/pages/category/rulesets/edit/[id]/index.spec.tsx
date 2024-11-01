@@ -86,6 +86,29 @@ describe('Index', () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
+  it('shows a loader', async () => {
+    const mockResponse = {
+      ...mockUseRuleSetPreviewData,
+      isLoading: true,
+      isSaving: false,
+    };
+    const mockUpdateRuleSet = {
+      updateCategoryRuleSet: jest.fn(),
+      isSaving: false,
+      error: '',
+    };
+    jest.mocked(useUpdateRuleSet).mockImplementation(() => mockUpdateRuleSet);
+
+    jest.mocked(useRuleSetDetail).mockImplementation(() => mockResponse);
+    jest.mocked(useAttributes).mockImplementation(() => ({
+      attributes: [],
+    }));
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
+  });
+
   it('opens attributes tab', async () => {
     jest
       .mocked(useRuleSetDetail)

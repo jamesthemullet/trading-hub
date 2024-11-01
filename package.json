@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "npm run codegen && next dev",
-    "codegen": "npm run copy && swagger-typescript-api --path https://dev-search-service-v1-eun-layer4-frontdoor.azurefd.net/search-merchandising.yml --output src/libs/api/generated --name open-api.ts --extract-response-body  --clean-output --another-array-type --sort-types --union-enums --extract-enums --enum-names-as-values --route-types",
+    "codegen": "npm run copy && swagger-typescript-api --path https://dev-search-service-v1-eun-layer4-frontdoor.azurefd.net/search-merchandising.yml --output src/libs/api/generated --name open-api.ts --extract-response-body --clean-output --another-array-type --sort-types --union-enums --extract-enums --enum-names-as-values --route-types",
     "copy": "copy-files-from-to",
     "build": "npm run codegen && next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
     "start": "NODE_OPTIONS='-r newrelic' next start",
@@ -109,7 +109,7 @@
   },
   "copyFiles": [
     {
-      "from": "https://prod-search-service-v1-eun-layer4-frontdoor.azurefd.net/search-merchandising.yml",
+      "from": "https://dev-search-service-v1-eun-layer4-frontdoor.azurefd.net/search-merchandising.yml",
       "to": "/src/libs/api/api.yml"
     }
   ],

@@ -22,10 +22,8 @@ const mockRuleData: ReturnedCategoryRuleSet = {
       alphanumeric: [],
     },
   },
-  categoryIds: [mockCategoryId],
   categoriesInfo: [{ id: mockCategoryId }],
   isEnabled: true,
-  categoryName: 'Dresses',
   id: 'df70401f-f89d-45ad-92e7-6e152930ff86',
   lastChanged: { date: '2023-12-06T14:24:17Z', user: 'Mark Spencer' },
 };
@@ -101,8 +99,6 @@ describe('useRuleSetDetail', () => {
 
     const expectedData = {
       ruleSetDetail: {
-        categoryName: '',
-        categoryIds: [],
         categoriesInfo: [
           {
             id: '',

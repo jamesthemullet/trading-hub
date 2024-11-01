@@ -12,7 +12,7 @@ type PageProps = {
 };
 
 const Page = ({ id }: PageProps) => {
-  const { ruleSetDetail } = useRuleSetDetail(id);
+  const { ruleSetDetail, isLoading } = useRuleSetDetail(id);
   const { updateCategoryRuleSet, isSaving, error } = useUpdateRuleSet();
   const router = useRouter();
 
@@ -50,7 +50,9 @@ const Page = ({ id }: PageProps) => {
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
-      {ruleSetDetail.categoryName && (
+      {isLoading ? (
+        <Loader />
+      ) : (
         <Ruleset
           isEnabled={ruleSetDetail.isEnabled}
           onSave={saveRuleSet}

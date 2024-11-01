@@ -140,9 +140,7 @@ describe('Index', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: `identifier-1`,
           id: `1`,
-          categoryIds: [`1`],
           categoriesInfo: [
             {
               id: `1`,
@@ -157,9 +155,7 @@ describe('Index', () => {
           facets: [],
         },
         {
-          categoryName: `identifier-2`,
           id: `2`,
-          categoryIds: [`2`],
           categoriesInfo: [
             {
               id: `2`,
@@ -235,9 +231,7 @@ describe('Index', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat name',
           id: mockId,
-          categoryIds: ['catId'],
           categoriesInfo: [
             {
               id: 'catId',
@@ -301,7 +295,6 @@ describe('Index', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat id',
           countryCode: 'UK',
           id: mockId,
           categoriesInfo: [
@@ -309,7 +302,6 @@ describe('Index', () => {
               id: mockCatId,
             },
           ],
-          categoryIds: [mockCatId],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -320,9 +312,7 @@ describe('Index', () => {
           excludedFacets: {},
         },
         {
-          categoryName: 'cat id 2',
           id: 'ewfw-e3f23-f23f2-3cwef4',
-          categoryIds: ['catId2'],
           categoriesInfo: [
             {
               id: 'catId2',
@@ -371,9 +361,7 @@ describe('Index', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat id',
           id: mockId,
-          categoryIds: [mockCatId],
           categoriesInfo: [
             {
               id: mockCatId,
@@ -390,9 +378,7 @@ describe('Index', () => {
           endDate: '2024-10-15T10:02:38.556Z',
         },
         {
-          categoryName: 'cat id 2',
           id: 'ewfw-e3f23-f23f2-3cwef4',
-          categoryIds: ['catId2'],
           categoriesInfo: [
             {
               id: 'catId2',
@@ -439,7 +425,6 @@ describe('Index', () => {
     const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockRuleset: ReturnedCategoryRuleSet = {
-      categoryName: 'cat name',
       id: mockId,
       countryCode: 'UK',
       categoriesInfo: [
@@ -447,7 +432,6 @@ describe('Index', () => {
           id: 'foo00',
         },
       ],
-      categoryIds: ['catId'],
       isEnabled: true,
       lastChanged: {
         user: 'user',
@@ -489,7 +473,7 @@ describe('Index', () => {
       rules: mockRuleset.rules,
       facets: [],
       excludedFacets: { facets: [] },
-      categoryIds: mockRuleset.categoryIds,
+      categoryIds: ['foo00'],
       isEnabled: false,
       startDate: '2024-09-12T14:17:54Z',
       endDate: '2024-12-19T04:20:03Z',
@@ -545,9 +529,7 @@ describe('Index', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat id',
           id: 'ewfw-e3f23-f23f2-3cwef3',
-          categoryId: 'catId',
           categoriesInfo: [
             {
               id: 'catId',
@@ -592,9 +574,7 @@ describe('Index', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat id',
           id: 'ewfw-e3f23-f23f2-3cwef3',
-          categoryId: 'catId',
           categoriesInfo: [
             {
               id: 'catId',

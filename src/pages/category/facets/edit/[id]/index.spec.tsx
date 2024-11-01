@@ -832,7 +832,11 @@ describe('Category Facet Management Editing', () => {
         ...mockUseRuleSetPreviewData,
         ruleSetDetail: {
           ...mockUseRuleSetPreviewData.ruleSetDetail,
-          categoryIds: ['SubCategory_428'],
+          categoriesInfo: [
+            {
+              id: 'SubCategory_428',
+            },
+          ],
         },
       });
 

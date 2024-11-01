@@ -93,7 +93,6 @@ describe('Category facet management', () => {
             name: `identifier-${i}`,
           },
         ],
-        categoryIds: [`${i}`],
         isEnabled: true,
         lastChanged: {
           user: 'user',
@@ -125,14 +124,12 @@ describe('Category facet management', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat name',
           id: mockId,
           categoriesInfo: [
             {
               id: 'foo00',
             },
           ],
-          categoryIds: ['foo00'],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -140,7 +137,7 @@ describe('Category facet management', () => {
           },
           rules: mockMerchandisingRules,
         },
-      ],
+      ] as ReturnedCategoryRuleSet[],
       pagination: {
         totalItems: 0,
       },
@@ -248,11 +245,10 @@ describe('Category facet management', () => {
 
   it('should enable or disable a ruleset', async () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    const mockCatId = 'catId';
+
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat id',
           countryCode: 'UK_IE',
           categoriesInfo: [
             {
@@ -260,7 +256,6 @@ describe('Category facet management', () => {
             },
           ],
           id: mockId,
-          categoryIds: [mockCatId],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -277,7 +272,6 @@ describe('Category facet management', () => {
           },
         },
         {
-          categoryName: 'cat id 2',
           countryCode: 'UK_IE',
           id: 'ewfw-e3f23-f23f2-3cwef4',
           categoriesInfo: [
@@ -285,7 +279,6 @@ describe('Category facet management', () => {
               id: 'foo00',
             },
           ],
-          categoryIds: ['catId2'],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -313,8 +306,8 @@ describe('Category facet management', () => {
     await userEvent.click(rulesetToggle[0]);
 
     expect(handleUpdateMock).toHaveBeenCalledWith({
-      categoryIds: [mockCatId],
       countryCode: 'UK_IE',
+      categoryIds: ['foo00'],
       ruleSetId: mockId,
       rules: mockMerchandisingRules,
       facets: [],
@@ -331,11 +324,10 @@ describe('Category facet management', () => {
 
   it('should enable or disable a scheduled ruleset', async () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    const mockCatId = 'catId';
+
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat id',
           countryCode: 'UK_IE',
           categoriesInfo: [
             {
@@ -343,7 +335,6 @@ describe('Category facet management', () => {
             },
           ],
           id: mockId,
-          categoryIds: [mockCatId],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -355,14 +346,12 @@ describe('Category facet management', () => {
           endDate: '2024-10-15T10:02:38.556Z',
         },
         {
-          categoryName: 'cat id 2',
           id: 'ewfw-e3f23-f23f2-3cwef4',
           categoriesInfo: [
             {
               id: 'foo00',
             },
           ],
-          categoryIds: ['catId2'],
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -390,8 +379,8 @@ describe('Category facet management', () => {
     await userEvent.click(rulesetToggle[0]);
 
     expect(handleUpdateMock).toHaveBeenCalledWith({
-      categoryIds: [mockCatId],
       countryCode: 'UK_IE',
+      categoryIds: ['foo00'],
       ruleSetId: mockId,
       rules: mockMerchandisingRules,
       facets: [],
@@ -408,10 +397,9 @@ describe('Category facet management', () => {
         id: `${i}`,
         categoriesInfo: [
           {
-            id: 'foo00',
+            id: `${i}`,
           },
         ],
-        categoryIds: [`${i}`],
         isEnabled: true,
         lastChanged: {
           user: 'user',
@@ -469,14 +457,12 @@ describe('Category facet management', () => {
       },
     ];
     const mockRuleset: ReturnedCategoryRuleSet = {
-      categoryName: 'cat name',
       id: mockId,
       categoriesInfo: [
         {
           id: 'foo00',
         },
       ],
-      categoryIds: ['catId'],
       countryCode: 'UK',
       isEnabled: true,
       lastChanged: {
@@ -520,7 +506,7 @@ describe('Category facet management', () => {
       rules: mockRuleset.rules,
       facets: mockFacets,
       excludedFacets: {},
-      categoryIds: mockRuleset.categoryIds,
+      categoryIds: ['foo00'],
       countryCode: 'UK',
       isEnabled: false,
       startDate: '2024-11-15T23:59:00.000Z',
@@ -559,14 +545,12 @@ describe('Category facet management', () => {
       },
     ];
     const mockRuleset = {
-      categoryName: 'cat name',
       id: mockId,
       categoriesInfo: [
         {
           id: 'foo00',
         },
       ],
-      categoryIds: ['catId'],
       isEnabled: true,
       lastChanged: {
         user: 'user',
@@ -612,14 +596,12 @@ describe('Category facet management', () => {
     const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockRuleset: ReturnedCategoryRuleSet = {
-      categoryName: 'cat name',
       id: mockId,
       categoriesInfo: [
         {
           id: 'catId',
         },
       ],
-      categoryIds: ['catId'],
       isEnabled: true,
       lastChanged: {
         user: 'user',
@@ -695,14 +677,12 @@ describe('Category facet management', () => {
       jest.mocked(useRuleSet).mockReturnValue({
         categoryRuleSets: [
           {
-            categoryName: 'cat name',
             id: mockId,
             categoriesInfo: [
               {
                 id: 'foo00',
               },
             ],
-            categoryIds: ['catId'],
             isEnabled: true,
             lastChanged: {
               user: 'user',
@@ -736,18 +716,16 @@ describe('Category facet management', () => {
 
     it('should display an error when updating a ruleset fails', async () => {
       const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      const mockCatId = 'catId';
+
       jest.mocked(useRuleSet).mockReturnValue({
         categoryRuleSets: [
           {
-            categoryName: 'cat id',
             categoriesInfo: [
               {
                 id: 'foo00',
               },
             ],
             id: mockId,
-            categoryIds: [mockCatId],
             isEnabled: true,
             lastChanged: {
               user: 'user',
@@ -786,14 +764,12 @@ describe('Category facet management', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat name',
           id: '1234',
           categoriesInfo: [
             {
               id: 'foo00',
             },
           ],
-          categoryId: 'catId',
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -832,14 +808,12 @@ describe('Category facet management', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          categoryName: 'cat name',
           id: '1234',
           categoriesInfo: [
             {
               id: 'foo00',
             },
           ],
-          categoryId: 'catId',
           isEnabled: true,
           lastChanged: {
             user: 'user',

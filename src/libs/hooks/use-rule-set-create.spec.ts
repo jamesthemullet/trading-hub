@@ -80,6 +80,7 @@ describe('useRuleSetCreate', () => {
       await result.current.createRuleset({
         rules: mockMerchandisingRules,
         countryCode: 'UK',
+        categoryIds: ['foo'],
         facets: [],
         isEnabled: false,
       });

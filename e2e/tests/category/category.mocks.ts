@@ -62,10 +62,6 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       excludedFacets: { facets: [] },
       startDate: '2024-09-12T14:17:54Z',
       endDate: '2024-12-19T04:20:03Z',
-      categoryName: 'Lamp Shades',
-
-      categoryPlpUrl: 'l/furniture/lighting/lamp-shades',
-      categoryIds: ['SubCategory_2933925'],
     },
     {
       id: '22ce8ae9-a7b3-4a52-bea4-e31ebf1f5f10',
@@ -105,10 +101,6 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
           { id: '1e742a80-3240-11ef-aa09-000000000000' },
         ],
       },
-      categoryName: 'Dresses',
-
-      categoryPlpUrl: 'l/women/dresses',
-      categoryIds: ['SubCategory_429'],
     },
     {
       id: '9d7f6ae7-2653-4eb6-b51b-1ee6f4087cce',
@@ -140,10 +132,6 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
         },
       ],
       excludedFacets: { facets: [] },
-      categoryName: 'Mens',
-
-      categoryPlpUrl: 'l/cold-weather/cold-weather/mens',
-      categoryIds: ['SubCategory_20584814'],
     },
     {
       id: 'd9cb14fd-bed0-4d95-822a-743edd44a624',
@@ -184,10 +172,6 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       excludedFacets: {
         facets: [{ id: '4f8d4801-3eb0-11ef-9a6a-000000000000' }],
       },
-      categoryName: 'Dresses',
-
-      categoryPlpUrl: 'l/women/dresses',
-      categoryIds: ['SubCategory_429'],
     },
     {
       id: 'f2bd8b23-9986-4d15-9cc7-a1340403be11',
@@ -206,10 +190,6 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
         { id: 'SubCategory_26759315', name: 'Jeans', plpUrl: 'l/women/jeans' },
       ],
       excludedFacets: { facets: [] },
-      categoryName: 'Jeans',
-
-      categoryPlpUrl: 'l/women/jeans',
-      categoryIds: ['SubCategory_26759315'],
     },
     {
       id: '72712f3f-345f-490b-a04e-1dfadc3a9704',
@@ -265,10 +245,6 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       excludedFacets: {
         facets: [{ id: '1e742a80-3240-11ef-aa09-000000000000' }],
       },
-      categoryName: 'Dresses',
-
-      categoryPlpUrl: 'l/women/dresses',
-      categoryIds: ['SubCategory_429'],
     },
     {
       id: '2ab7aaff-0d5c-4617-a8a6-fc6fb3f531f0',
@@ -311,10 +287,6 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
         },
       ],
       excludedFacets: { facets: [] },
-      categoryName: "Men's Shirts",
-
-      categoryPlpUrl: 'l/men/mens-shirts',
-      categoryIds: ['SubCategory_26224922'],
     },
   ],
   pagination: { totalItems: 7 },
@@ -368,10 +340,6 @@ export const mockCategoryRuleset: ReturnedCategoryRuleSet = {
   excludedFacets: { facets: [] },
   startDate: '2024-09-12T14:17:54Z',
   endDate: '2024-12-19T04:20:03Z',
-
-  categoryName: 'Lamp Shades',
-  categoryPlpUrl: 'l/furniture/lighting/lamp-shades',
-  categoryIds: ['SubCategory_2933925'],
 };
 
 export const mockCategoryList: Categories = {

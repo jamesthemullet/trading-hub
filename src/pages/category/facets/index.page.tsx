@@ -84,7 +84,7 @@ const FacetManagementPage = () => {
     if (!ruleSet) return;
 
     const {
-      categoryIds,
+      categoriesInfo,
       facets,
       rules,
       isEnabled,
@@ -94,7 +94,7 @@ const FacetManagementPage = () => {
       countryCode,
     } = ruleSet;
     await updateCategoryRuleSet({
-      categoryIds,
+      categoryIds: categoriesInfo.map((category) => category.id),
       countryCode,
       facets,
       isEnabled: !isEnabled,
@@ -182,7 +182,7 @@ const FacetManagementPage = () => {
       rules: rulesetToCopy.rules,
       facets: rulesetToCopy.facets || [],
       excludedFacets: rulesetToCopy.excludedFacets,
-      categoryIds: rulesetToCopy.categoryIds,
+      categoryIds: rulesetToCopy.categoriesInfo.map((category) => category.id),
       startDate: rulesetToCopy.startDate,
       endDate: rulesetToCopy.endDate,
       isEnabled: false,
