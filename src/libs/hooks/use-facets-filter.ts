@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 
-import { ReturnedFacet } from '../api';
+import { FacetRowDisplayValue } from '../modules/facets-panel/facets-panel-reducer';
 
-export const useFacetsFilter = (facets: ReturnedFacet[]) => {
+export const useFacetsFilter = (facets: FacetRowDisplayValue[]) => {
   const [search, setSearch] = useState('');
 
-  const filteredFacets = useMemo<ReturnedFacet[]>(() => {
+  const filteredFacets = useMemo<FacetRowDisplayValue[]>(() => {
     if (search === '') return facets;
 
     return facets.filter(

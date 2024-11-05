@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Category, ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
+import {
+  Category,
+  ExcludedFacets,
+  ReturnedFacet,
+  RuleSetFacetConfigWithId,
+} from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import {
-  useFacetsFilter,
   useFacetsList,
   useRuleSetDetail,
   useUpdateRuleSet,
@@ -41,19 +45,20 @@ const Page = ({ id }: { id: string }) => {
 
   const [dateTime, setDateTime] = useState<Array<Date | null>>([null, null]);
 
-  const { facets, error: getFacetListError } = useFacetsList({
+  const { facets, error: getFacetsDataError } = useFacetsList({
     categoryId: userSelectedCategory?.identifier,
     enabled: !isLoading,
     emptyListWhenCategoryNotSelected: true,
   });
 
-  const [facetList, setFacetList] = useState<ReturnedFacet[]>([]);
-  const [includedFacets, setIncludedFacets] = useState<ReturnedFacet[]>([]);
-  const [excludedFacets, setExcludedFacets] = useState<ReturnedFacet[]>([]);
-  const [orderedFacetList, setOrderedFacetList] = useState<ReturnedFacet[]>([]);
+  const [facetsData, setFacetsData] = useState<ReturnedFacet[]>([]);
+  const [initialIncludedFacets, setInitialIncludedFacets] = useState<string[]>(
+    []
+  );
+  const [initialExcludedFacets, setInitialExcludedFacets] = useState<string[]>(
+    []
+  );
 
-  const { search, setSearch, filteredFacets } =
-    useFacetsFilter(orderedFacetList);
   const { updateCategoryRuleSet, error: updateRulesetError } =
     useUpdateRuleSet();
 
@@ -78,73 +83,57 @@ const Page = ({ id }: { id: string }) => {
   }, [ruleSetDetail]);
 
   useEffect(() => {
-    const includedFacets = facetsFromCategoryRuleSet
-      .map((facet) => {
-        const localFacet = facetList.find(
-          (localFacet) => localFacet.id === facet.id
-        );
+    const includedFacets = facetsFromCategoryRuleSet.map((facet) => {
+      return facet.id;
+    });
 
-        // istanbul ignore next
-        if (!localFacet) {
-          return facet;
-        }
-
-        const ruleSetFacet = ruleSetDetail.facets?.find(
-          (facet) => facet.id === localFacet.id
-        );
-
-        // istanbul ignore next
-        if (!ruleSetFacet) {
-          return localFacet;
-        }
-
-        return {
-          ...localFacet,
-          boosted: ruleSetFacet.boosted,
-          excludedValues: ruleSetFacet.excludedValues,
-        };
-      })
-      .filter((facet): facet is ReturnedFacet => Boolean(facet));
-
-    setIncludedFacets(includedFacets);
-
-    const excludedFacets = facetList.filter((facet) =>
-      ruleSetDetail.excludedFacets?.facets?.some(
-        (excludedFacet) => excludedFacet?.id === facet.id
+    const excludedFacets = facets
+      .filter((facet) =>
+        ruleSetDetail.excludedFacets?.facets?.some(
+          (excludedFacet) => excludedFacet?.id === facet.id
+        )
       )
-    );
+      .map((facet) => facet.id);
 
-    const restOfFacets = facetList.filter(
-      (facet) =>
-        !includedFacets.some((ruleFacet) => ruleFacet.id === facet.id) &&
-        !excludedFacets.some((ruleFacet) => ruleFacet.id === facet.id)
-    );
+    const newFacetsData = facets.map((facet) => {
+      const includedFacet = facetsFromCategoryRuleSet.find(
+        (facetFromCategory) => facetFromCategory.id === facet.id
+      );
 
-    setExcludedFacets(excludedFacets);
-    setOrderedFacetList([
-      ...includedFacets,
-      ...restOfFacets,
-      ...excludedFacets,
-    ]);
+      if (!includedFacet) {
+        return facet;
+      }
+
+      return {
+        ...facet,
+        ...includedFacet,
+      };
+    });
+
+    setFacetsData(newFacetsData);
+    setInitialIncludedFacets(includedFacets);
+    setInitialExcludedFacets(excludedFacets);
   }, [
-    facetList,
+    facets,
     facetsFromCategoryRuleSet,
     ruleSetDetail.facets,
     ruleSetDetail.excludedFacets?.facets,
   ]);
 
-  useEffect(() => {
-    setFacetList(facets);
-  }, [facets]);
-
-  const handleSave = async (categoryIds: string[]) => {
+  const handleSave = async ({
+    categoryIds,
+    includedFacets,
+    excludedFacets,
+  }: {
+    categoryIds: string[];
+    includedFacets: ReturnedFacet[];
+    excludedFacets: ExcludedFacets;
+  }) => {
     const response = await updateCategoryRuleSet({
       categoryIds,
       rules: ruleSetDetail.rules,
 
-      facets: orderedFacetList.filter((facet) =>
-        includedFacets.some((includedFacet) => includedFacet.id === facet.id)
-      ),
+      facets: includedFacets,
       isEnabled: ruleSetDetail.isEnabled,
       ...(dateTime[0] && { startDate: new Date(dateTime[0]).toISOString() }),
       ...(dateTime[1] && {
@@ -152,11 +141,7 @@ const Page = ({ id }: { id: string }) => {
       }),
 
       ruleSetId: id,
-      excludedFacets: {
-        facets: excludedFacets.map((excludedFacet) => ({
-          id: excludedFacet.id,
-        })),
-      },
+      excludedFacets,
     });
     if (response && response.status !== 'error') {
       return router.push(`/category/facets/`);
@@ -167,92 +152,12 @@ const Page = ({ id }: { id: string }) => {
     router.push('/category/facets');
   };
 
-  const onHandleStatusChange = async (
-    value: 'included' | 'excluded' | 'algoControl',
-    id?: string
-  ) => {
-    const facetToChange = orderedFacetList.find((facet) => facet.id === id);
-    // istanbul ignore next
-    if (!facetToChange) {
-      return;
-    }
-
-    const currentlyIncludedFacets = orderedFacetList.filter((facet) =>
-      includedFacets.includes(facet)
-    );
-    const currentlyExcludedFacets = orderedFacetList.filter((facet) =>
-      excludedFacets.includes(facet)
-    );
-    const restOfFacets = orderedFacetList.filter(
-      (facet) =>
-        !includedFacets.includes(facet) &&
-        !excludedFacets.includes(facet) &&
-        facet.id !== facetToChange.id
-    );
-
-    switch (value) {
-      case 'included':
-        setOrderedFacetList([
-          ...currentlyIncludedFacets.filter((facet) => facet !== facetToChange),
-          facetToChange,
-          ...restOfFacets,
-          ...currentlyExcludedFacets.filter((facet) => facet !== facetToChange),
-        ]);
-        setIncludedFacets([...includedFacets, facetToChange]);
-        setExcludedFacets(
-          excludedFacets.filter((facet) => facet.id !== facetToChange.id)
-        );
-        break;
-      case 'excluded':
-        setOrderedFacetList([
-          ...currentlyIncludedFacets.filter((facet) => facet !== facetToChange),
-          ...restOfFacets,
-          facetToChange,
-          ...currentlyExcludedFacets,
-        ]);
-        setIncludedFacets(
-          includedFacets.filter((facet) => facet.id !== facetToChange.id)
-        );
-        setExcludedFacets([...excludedFacets, facetToChange]);
-        break;
-      case 'algoControl':
-        setOrderedFacetList([
-          ...currentlyIncludedFacets.filter((facet) => facet !== facetToChange),
-          facetToChange,
-          ...restOfFacets,
-          ...currentlyExcludedFacets.filter((facet) => facet !== facetToChange),
-        ]);
-        setIncludedFacets(
-          includedFacets.filter((facet) => facet.id !== facetToChange.id)
-        );
-        setExcludedFacets(
-          excludedFacets.filter((facet) => facet.id !== facetToChange.id)
-        );
-        break;
-    }
-  };
-
   const handleUpdatedValues = (
     included: string[],
     excluded: string[],
     id: string
   ) => {
-    setOrderedFacetList((prev) => {
-      const updatedFacets = prev.map((facet) => {
-        if (facet.id === id) {
-          return {
-            ...facet,
-            boosted: included,
-            excludedValues: excluded,
-          };
-        } else {
-          return facet;
-        }
-      });
-      return updatedFacets;
-    });
-
-    setIncludedFacets((prev) => {
+    setFacetsData((prev) => {
       const updatedFacets = prev.map((facet) => {
         if (facet.id === id) {
           return {
@@ -271,9 +176,7 @@ const Page = ({ id }: { id: string }) => {
   const handleUserSelectedCategoryChange = (
     category: Required<Category> | undefined
   ) => {
-    setFacetList([]);
-    setExcludedFacets([]);
-    setIncludedFacets([]);
+    setFacetsData([]);
     setFacetsFromCategoryRuleSet([]);
     setUserSelectedCategory(category);
   };
@@ -292,9 +195,9 @@ const Page = ({ id }: { id: string }) => {
           Error whilst updating ruleset: {updateRulesetError}
         </ErrorMessage>
       )}
-      {getFacetListError && (
+      {getFacetsDataError && (
         <ErrorMessage>
-          Error whilst retrieving facet list: {getFacetListError}
+          Error whilst retrieving facet list: {getFacetsDataError}
         </ErrorMessage>
       )}
 
@@ -304,26 +207,8 @@ const Page = ({ id }: { id: string }) => {
         <FacetsPanel
           onSave={handleSave}
           onCancel={handleCancel}
-          setSearch={setSearch}
           title="Facet Rule Editor"
-          facetsData={filteredFacets}
           displayRowOrderControls={true}
-          onFacetsDataRowOrderChange={(index, direction) => {
-            const item = orderedFacetList[index];
-            const firstPart = orderedFacetList.slice(0, index);
-            const secondPart = orderedFacetList.slice(index + 1);
-            const updatedFacets =
-              direction === -1
-                ? [
-                    ...firstPart.slice(0, -1),
-                    item,
-                    firstPart[firstPart.length - 1],
-                    ...secondPart,
-                  ]
-                : [...firstPart, secondPart[0], item, ...secondPart.slice(1)];
-            setOrderedFacetList(updatedFacets);
-          }}
-          onHandleStatusChange={onHandleStatusChange}
           onSelectedCategoryChange={handleUserSelectedCategoryChange}
           onScheduleDateChange={(
             updatedDateTime: [Date | null, Date | null]
@@ -335,13 +220,11 @@ const Page = ({ id }: { id: string }) => {
             (category) => category.id
           )}
           endDate={ruleSetDetail.endDate}
-          includedFacets={includedFacets}
-          excludedFacets={{
-            facets: excludedFacets?.map((facet) => ({ id: facet.id })),
-          }}
+          facetsData={facetsData}
+          initialIncludedFacets={initialIncludedFacets}
+          initialExcludedFacets={initialExcludedFacets}
           facetType="category"
           rulesetMerchandisingRules={ruleSetDetail.rules}
-          searchTerm={search}
           startDate={ruleSetDetail.startDate}
           updatedValues={handleUpdatedValues}
         />

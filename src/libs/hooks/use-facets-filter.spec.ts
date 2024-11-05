@@ -1,9 +1,10 @@
 import { act } from 'react-dom/test-utils';
 import { renderHook, waitFor } from '@testing-library/react';
 
+import { FacetRowDisplayValue } from '../modules/facets-panel/facets-panel-reducer';
 import { useFacetsFilter } from './use-facets-filter';
 
-const mockFacets = [
+const mockFacets: FacetRowDisplayValue[] = [
   {
     displayValue: 'color',
     indexPropertyName: 'color',
@@ -13,6 +14,7 @@ const mockFacets = [
       user: 'Test User',
     },
     merged: [],
+    displayType: 'algoControl',
   },
   {
     displayValue: 'size',
@@ -23,6 +25,7 @@ const mockFacets = [
       user: 'Test User',
     },
     merged: [],
+    displayType: 'algoControl',
   },
   {
     displayValue: 'brand',
@@ -33,6 +36,7 @@ const mockFacets = [
       user: 'Test User',
     },
     merged: [],
+    displayType: 'algoControl',
   },
   {
     displayValue: 'category',
@@ -43,6 +47,7 @@ const mockFacets = [
       user: 'Test User',
     },
     merged: [],
+    displayType: 'algoControl',
   },
   {
     displayValue: 'price',
@@ -53,10 +58,11 @@ const mockFacets = [
       user: 'Test User',
     },
     merged: [],
+    displayType: 'algoControl',
   },
 ];
 
-const mockEmptyDisplayValueFacets = [
+const mockEmptyDisplayValueFacets: FacetRowDisplayValue[] = [
   {
     displayValue: undefined as unknown as string,
     indexPropertyName: 'category',
@@ -66,6 +72,7 @@ const mockEmptyDisplayValueFacets = [
       user: 'Test User',
     },
     merged: [],
+    displayType: 'algoControl',
   },
   {
     displayValue: 'price',
@@ -76,6 +83,7 @@ const mockEmptyDisplayValueFacets = [
       user: 'Test User',
     },
     merged: [],
+    displayType: 'algoControl',
   },
 ];
 

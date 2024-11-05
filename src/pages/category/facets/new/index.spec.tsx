@@ -264,19 +264,6 @@ describe('Facet Management Editing', () => {
       ).toBeVisible();
     });
 
-    expect(
-      screen.queryByLabelText('Row showing color as excluded')
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByLabelText('Row showing color as algoControl')
-    ).not.toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(
-        screen.queryByLabelText('Move category row up')
-      ).not.toBeInTheDocument();
-    });
-
     await user.click(await screen.findByLabelText('Move category row down'));
 
     await waitFor(async () => {
@@ -287,11 +274,12 @@ describe('Facet Management Editing', () => {
 
     await user.click(await screen.findByLabelText('Move category row up'));
 
-    await waitFor(() => {
+    await waitFor(async () => {
       expect(
-        screen.queryByLabelText('Move category row up')
-      ).not.toBeInTheDocument();
+        await screen.findByLabelText('Move category row up')
+      ).toBeInTheDocument();
     });
+    expect(screen.queryByLabelText('Move category row up')).toBeDisabled();
   });
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {

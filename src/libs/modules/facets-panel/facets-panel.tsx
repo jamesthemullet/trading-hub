@@ -1,6 +1,4 @@
-import styled from '@emotion/styled';
-import { useState } from 'react';
-import { Box } from '@mantine/core';
+import { useEffect, useReducer, useState } from 'react';
 
 import {
   Category,
@@ -14,152 +12,39 @@ import {
   ProductGridHeader,
   Search,
   SelectedCategory,
-  spacing,
   Text,
 } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
+import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { EditFacetModal } from '@/libs/components/modals/edit-facet/edit-facet-modal';
 import { Preview } from '@/libs/components/preview/preview';
-import {
-  TableCol,
-  TableHeading,
-  TableRow,
-} from '@/libs/components/table/table.styles';
-import { color } from '@/libs/components/utils/constants';
+import { TableHeading } from '@/libs/components/table/table.styles';
+import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
-export const ActionContainer = styled.div`
-  display: flex;
-
-  h1 {
-    font-size: 1.5em;
-    padding: ${spacing(3)} ${spacing(2)};
-  }
-
-  a,
-  button {
-    min-width: 150px;
-    text-align: center;
-  }
-`;
-
-export const Actions = styled.div`
-  display: flex;
-  gap: ${spacing(2)};
-  margin-left: auto;
-  padding: 18px;
-`;
-
-export const AddFacetPanel = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  div {
-    &:first-of-type {
-      flex: 6;
-    }
-
-    &:last-of-type {
-      flex: 1;
-    }
-  }
-`;
-
-export const LowerHeading = styled(Text)`
-  font-size: 1em;
-  margin-bottom: 1em;
-`;
-
-const ScopeWrapper = styled.div`
-  display: flex;
-
-  & > div:first-child {
-    width: 100%;
-  }
-`;
-
-const Duration = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: ${spacing(2)};
-  gap: ${spacing(1)};
-
-  label {
-    margin-top: ${spacing(0.5)};
-  }
-`;
-
-const LabelContainer = styled.label`
-  display: flex;
-  font-size: 14px;
-  align-items: center;
-`;
-
-export const AttributesTable = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: ${spacing(2)};
-`;
-
-export const SectionWrapper = styled.div`
-  box-shadow: #000 0 0 10px -5px;
-  margin: ${spacing(2)};
-  margin-bottom: 0;
-  border-radius: 4px;
-  padding: ${spacing(2)};
-`;
-
-const OrderColumn = styled.div`
-  display: flex;
-  gap: ${spacing(1)};
-  padding-right: ${spacing(1)};
-`;
-
-type TableRowProps = {
-  optionSelected?: string;
-};
-
-export const Row = styled(TableRow)<TableRowProps>`
-  font-size: 1rem;
-  align-items: center;
-  border-bottom: none;
-  box-shadow: #000 0 0 10px -5px;
-  margin-bottom: ${spacing(2)};
-  padding: ${spacing(2)};
-
-  ${({ optionSelected }) =>
-    optionSelected === 'included' &&
-    `background-color: ${color.successGreenBackground}`}
-
-  ${({ optionSelected }) =>
-    optionSelected === 'excluded' &&
-    `background-color: ${color.errorRedBackground}`}
-
-  ${({ optionSelected }) =>
-    optionSelected === 'algoControl' &&
-    `background-color: ${color.backgroundDarkGrey}`}
-`;
-
-export const Col = styled(TableCol)`
-  justify-content: space-between;
-`;
-
-const NoAttributesBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  margin-top: 100px;
-
-  p {
-    font-size: 1.25rem;
-    color: #707070;
-  }
-`;
+import {
+  AddFacetPanel,
+  AttributesTable,
+  Col,
+  Duration,
+  LabelContainer,
+  LowerHeading,
+  NoAttributesBlock,
+  OrderArrowsContainer,
+  OrderColumn,
+  Row,
+  ScopeWrapper,
+  SectionWrapper,
+} from './facets-panel.styles';
+import {
+  FacetDisplayType,
+  FacetRowDisplayValue,
+  facetsPanelReducer,
+} from './facets-panel-reducer';
+import { useFacetsRowsSelector } from './use-facets-panel-rows-selector';
 
 export const COLUMNS: {
   label: string;
@@ -182,31 +67,12 @@ type defaultOrderDataType = {
   defaultOrder: string;
 }[];
 
-export const FacetsPanel = ({
-  onSave,
-  onCancel,
-  setSearch,
-  onFacetDataChange,
-  onFacetsDataRowOrderChange,
-  onHandleStatusChange,
-  onSelectedCategoryChange,
-  onScheduleDateChange,
-  refreshData,
-  title,
-  facetsData,
-  facetType,
-  isNewRuleset,
-  categoryIds,
-  displayRowOrderControls = false,
-  endDate,
-  includedFacets,
-  excludedFacets,
-  rulesetMerchandisingRules,
-  searchTerm,
-  startDate,
-  updatedValues,
-}: {
-  onSave: (categoryIds: string[]) => void;
+interface FacetsPanelProps {
+  onSave: (value: {
+    categoryIds: string[];
+    includedFacets: ReturnedFacet[];
+    excludedFacets: ExcludedFacets;
+  }) => void;
   onCancel: () => void;
   setSearch?: (value: string) => void;
   onFacetDataChange?: ({
@@ -225,16 +91,6 @@ export const FacetsPanel = ({
     orderedPinnedValues: string[];
     orderedExcludedValues: string[];
   }) => void;
-  onFacetsDataRowOrderChange?: (
-    index: number,
-    direction: -1 | 1,
-    id: string
-  ) => void;
-  onHandleStatusChange?: (
-    status: 'included' | 'excluded' | 'algoControl',
-    id?: string,
-    index?: number
-  ) => void;
   refreshData?: () => void;
   onSelectedCategoryChange?: (
     categoryId: Required<Category> | undefined
@@ -250,16 +106,36 @@ export const FacetsPanel = ({
   endDate?: string;
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
-  includedFacets: ReturnedFacet[];
-  excludedFacets: ExcludedFacets;
-  searchTerm?: string;
+  initialIncludedFacets: string[];
+  initialExcludedFacets: string[];
   startDate?: string;
   updatedValues?: (
     orderedPinnedValues: string[],
     orderedExcludedValues: string[],
     id: string
   ) => void;
-}) => {
+}
+
+export const FacetsPanel = ({
+  onSave,
+  onCancel,
+  onFacetDataChange,
+  onSelectedCategoryChange,
+  onScheduleDateChange,
+  refreshData,
+  title,
+  facetsData,
+  facetType,
+  isNewRuleset,
+  categoryIds,
+  displayRowOrderControls = false,
+  endDate,
+  initialIncludedFacets,
+  initialExcludedFacets,
+  rulesetMerchandisingRules,
+  startDate,
+  updatedValues,
+}: FacetsPanelProps) => {
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     categoryIds || []
   );
@@ -299,6 +175,51 @@ export const FacetsPanel = ({
     setSearch?.(val);
   }, 300);
 
+  const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
+    includedFacets: initialIncludedFacets,
+    excludedFacets: initialExcludedFacets,
+  });
+  const { facetsState, includedFacets, excludedFacets } = useFacetsRowsSelector(
+    facetPanelLocalState,
+    facetsData
+  );
+  const { setSearch, filteredFacets } = useFacetsFilter(facetsState);
+
+  useEffect(() => {
+    dispatch({
+      type: 'INITIALIZE_STATE',
+      payload: {
+        includedFacets: initialIncludedFacets,
+        excludedFacets: initialExcludedFacets,
+      },
+    });
+  }, [initialIncludedFacets, initialExcludedFacets]);
+
+  const handleOrderChange =
+    (attributeState: FacetRowDisplayValue) => (newOrder: FacetDisplayType) => {
+      dispatch({
+        type: 'CHANGE_DISPLAY_TYPE',
+        payload: {
+          id: attributeState.id,
+          newDisplayType: newOrder,
+        },
+      });
+    };
+
+  const handleMoveRowUp = (attributeState: FacetRowDisplayValue) => () => {
+    dispatch({
+      type: 'MOVE_INCLUDED_ROW_UP',
+      payload: { id: attributeState.id },
+    });
+  };
+
+  const handleMoveRowDown = (attributeState: FacetRowDisplayValue) => () => {
+    dispatch({
+      type: 'MOVE_INCLUDED_ROW_DOWN',
+      payload: { id: attributeState.id },
+    });
+  };
+
   const onSelectCategory = (category: string) => {
     setSelectedCategories([...selectedCategories, category]);
     // TODO further refactoring needed here
@@ -314,30 +235,23 @@ export const FacetsPanel = ({
     setIsEditValuesModalOpen(false);
   };
 
-  const FacetRow = ({
-    facet,
-    index,
-    totalIncludedFacets,
-  }: {
-    facet: ReturnedFacet;
-    index: number;
-    totalIncludedFacets?: number;
-  }) => {
-    const facetIncluded = includedFacets?.find(
-      (includedFacet) => includedFacet.id === facet.id
-    )
-      ? 'included'
-      : excludedFacets?.facets?.find(
-            (excludedFacet) => excludedFacet.id === facet.id
-          )
-        ? 'excluded'
-        : 'algoControl';
+  const handleSave = () => {
+    onSave({
+      categoryIds: selectedCategories,
+      includedFacets,
+      excludedFacets,
+    });
+  };
+
+  const FacetRow = (facet: FacetRowDisplayValue) => {
+    const { displayValue, displayType, meta } = facet;
 
     return (
       <Row
-        optionSelected={facetIncluded}
+        optionSelected={displayType}
         data-testid="facets-table-row"
-        aria-label={`Row showing ${facet.displayValue} as ${facetIncluded}`}
+        aria-label={`Row showing ${facet.displayValue} as ${displayType}`}
+        key={facet.id}
       >
         <Col>
           <Text>{facet.indexPropertyName}</Text>
@@ -358,51 +272,32 @@ export const FacetsPanel = ({
         <Col>
           <OrderColumn>
             <FacetOrderDropdown
-              status={facetIncluded}
+              status={displayType}
+              onChange={handleOrderChange(facet)}
               hasAlgoControl
-              onChange={(status): void => {
-                if (onHandleStatusChange) {
-                  onHandleStatusChange(status, facet.id);
-                }
-              }}
             />
-            {!!totalIncludedFacets && index < totalIncludedFacets && (
-              <>
-                {index === 0 || !displayRowOrderControls ? (
-                  <Box w="40" h="40" />
-                ) : (
-                  <ArrowButton
-                    direction="up"
-                    aria-label={`Move ${facet.displayValue} row up`}
-                    isDisabled={Boolean(searchTerm)}
-                    onClick={() => {
-                      if (onFacetsDataRowOrderChange) {
-                        onFacetsDataRowOrderChange(index, -1, facet.id);
-                      }
-                    }}
-                  ></ArrowButton>
-                )}
-                {index === totalIncludedFacets - 1 ||
-                !displayRowOrderControls ? (
-                  <Box w="40" h="40" />
-                ) : (
-                  <ArrowButton
-                    direction="down"
-                    aria-label={`Move ${facet.displayValue} row down`}
-                    isDisabled={Boolean(searchTerm)}
-                    onClick={() => {
-                      if (onFacetsDataRowOrderChange) {
-                        onFacetsDataRowOrderChange(index, 1, facet.id);
-                      }
-                    }}
-                  ></ArrowButton>
-                )}
-              </>
+
+            {displayType === 'included' && displayRowOrderControls && (
+              <OrderArrowsContainer>
+                <ArrowButton
+                  direction="up"
+                  aria-label={`Move ${displayValue} row up`}
+                  onClick={handleMoveRowUp(facet)}
+                  isDisabled={meta?.isBeginningOfDisplayTypeGroup}
+                />
+
+                <ArrowButton
+                  direction="down"
+                  aria-label={`Move ${displayValue} row down`}
+                  onClick={handleMoveRowDown(facet)}
+                  isDisabled={meta?.isEndOfDisplayTypeGroup}
+                />
+              </OrderArrowsContainer>
             )}
           </OrderColumn>
         </Col>
         <Col>
-          {(facetType === 'global' || facetIncluded === 'included') && (
+          {(facetType === 'global' || displayType === 'included') && (
             <Button onClick={() => handleOpenFacetEditModal(facet)}>
               Edit values
             </Button>
@@ -411,17 +306,6 @@ export const FacetsPanel = ({
       </Row>
     );
   };
-
-  const sortedAndMappedFacets = facetsData?.map(
-    (facet: ReturnedFacet, index: number) => (
-      <FacetRow
-        key={facet.id}
-        facet={facet}
-        index={index}
-        totalIncludedFacets={includedFacets.length}
-      />
-    )
-  );
 
   return (
     <>
@@ -438,11 +322,8 @@ export const FacetsPanel = ({
       <ProductGridHeader
         canSave={!!selectedCategories.length || facetType === 'global'}
         onSave={() => {
-          if (
-            onSave &&
-            (selectedCategories.length > 0 || facetType === 'global')
-          ) {
-            onSave(selectedCategories);
+          if (selectedCategories.length > 0 || facetType === 'global') {
+            handleSave();
           }
         }}
         hasPreview={!!selectedCategories.length}
@@ -499,12 +380,11 @@ export const FacetsPanel = ({
         </AddFacetPanel>
       </SectionWrapper>
 
-      {(selectedCategories.length > 0 || facetType === 'global') &&
-        setSearch && (
-          <SectionWrapper>
-            <Search onChange={(e) => handleSearch(e.target.value)} />
-          </SectionWrapper>
-        )}
+      {(selectedCategories.length > 0 || facetType === 'global') && (
+        <SectionWrapper>
+          <Search onChange={(e) => handleSearch(e.target.value)} />
+        </SectionWrapper>
+      )}
 
       <AttributesTable>
         <Row>
@@ -517,7 +397,7 @@ export const FacetsPanel = ({
           ))}
         </Row>
 
-        {sortedAndMappedFacets}
+        {filteredFacets.map(FacetRow)}
       </AttributesTable>
 
       {isEditValuesModalOpen && selectedFacet && (
@@ -533,12 +413,14 @@ export const FacetsPanel = ({
         />
       )}
 
-      {facetsData.length === 0 && (
+      {filteredFacets.length === 0 && (
         <NoAttributesBlock>
           <Text>No, there are no attributes yet.</Text>
           <Text>How about adding a subcategory first?</Text>
         </NoAttributesBlock>
       )}
+
+      <FilteredResultsPanel filteredFacets={filteredFacets.length} />
     </>
   );
 };

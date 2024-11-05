@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { useOnOutsideClick } from '@/libs/hooks';
+import { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-reducer';
 
 import Image from 'next/image';
 
@@ -20,17 +21,17 @@ export const FacetOrderDropdown = ({
   hasAlgoControl = false,
   onChange,
 }: {
-  status?: 'included' | 'excluded' | 'algoControl';
+  status?: FacetDisplayType;
   attribute?: string;
   hasAlgoControl?: boolean;
-  onChange?: (status: 'included' | 'excluded' | 'algoControl') => void;
+  onChange: (status: FacetDisplayType) => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState<
     {
       index: number;
       label: string;
-      name: 'included' | 'excluded' | 'algoControl' | 'select';
+      name: FacetDisplayType | 'select';
       src: string | null;
       selected: boolean;
       ariaLabel: string;
@@ -77,9 +78,8 @@ export const FacetOrderDropdown = ({
   const handleSelectedOption = (index: number) => {
     const updatedDropdownOptions = dropdownOptions.map((option) => {
       if (option.index === index && option.name !== 'select') {
-        if (onChange) {
-          onChange(option.name);
-        }
+        onChange(option.name);
+
         return { ...option, selected: true };
       }
       return { ...option, selected: false };

@@ -141,9 +141,6 @@ describe('Category Facet Management Editing', () => {
   });
 
   it('should render the facet management editing page', async () => {
-    jest
-      .mocked(useRuleSetDetail)
-      .mockImplementation(() => mockUseRuleSetPreviewData);
     renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -289,10 +286,9 @@ describe('Category Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     await waitFor(() => {
-      expect(
-        screen.queryByLabelText('Move color row up')
-      ).not.toBeInTheDocument();
+      expect(screen.getByLabelText('Move color row up')).toBeInTheDocument();
     });
+    expect(screen.getByLabelText('Move color row up')).toBeDisabled();
 
     await user.click(await screen.findByLabelText('Move color row down'));
 
@@ -303,10 +299,9 @@ describe('Category Facet Management Editing', () => {
     await user.click(await screen.findByLabelText('Move color row up'));
 
     await waitFor(() => {
-      expect(
-        screen.queryByLabelText('Move color row up')
-      ).not.toBeInTheDocument();
+      expect(screen.getByLabelText('Move color row up')).toBeInTheDocument();
     });
+    expect(screen.getByLabelText('Move color row up')).toBeDisabled();
   });
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {
@@ -846,12 +841,6 @@ describe('Category Facet Management Editing', () => {
 
       act(() => {
         clearButton.click();
-      });
-
-      await waitFor(async () => {
-        expect(
-          await screen.findByText('No, there are no attributes yet.')
-        ).toBeVisible();
       });
 
       expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();

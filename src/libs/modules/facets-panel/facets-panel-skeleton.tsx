@@ -3,17 +3,17 @@ import { Skeleton } from '@mantine/core';
 import { Text } from '@/libs/components';
 import { TableHeading } from '@/libs/components/table/table.styles';
 
+import { COLUMNS } from './facets-panel';
 import {
   ActionContainer,
   Actions,
   AddFacetPanel,
   AttributesTable,
   Col,
-  COLUMNS,
   LowerHeading,
   Row,
   SectionWrapper,
-} from './facets-panel';
+} from './facets-panel.styles';
 
 export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
   return (

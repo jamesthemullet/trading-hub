@@ -211,19 +211,45 @@ describe('Global Facet Management Editing', () => {
       ruleSet: {
         facets: [
           {
+            boosted: undefined,
+            excludedValues: undefined,
+            displayValue: 'color',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-            boosted: undefined,
-            excludedValues: undefined,
+            indexPropertyName: 'color',
+            lastChanged: {
+              date: '2021-01-01T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [
+              {
+                displayValue: 'test merged group',
+                mergedValues: ['merged 1', 'merged 2'],
+              },
+            ],
           },
           {
+            boosted: undefined,
+            excludedValues: undefined,
+            displayValue: 'brand',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-            boosted: undefined,
-            excludedValues: undefined,
+            indexPropertyName: 'brand',
+            lastChanged: {
+              date: '2021-01-03T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [],
           },
           {
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
             boosted: undefined,
             excludedValues: undefined,
+            displayValue: 'category',
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+            indexPropertyName: 'category',
+            lastChanged: {
+              date: '2021-01-04T08:34:15Z',
+              user: 'Test User',
+            },
+            merged: [],
           },
         ],
         rules: mockMerchandisingRules,
@@ -476,6 +502,58 @@ describe('Global Facet Management Editing', () => {
     ).not.toBeInTheDocument();
     expect(
       screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
+  });
+
+  it('should render correct with undefined excluded facets', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
+      globalRuleSet: {
+        id: '123',
+        isEnabled: true,
+        lastChanged: {
+          date: '2021-01-01',
+          user: 'Test user',
+        },
+        rules: mockMerchandisingRules,
+        facets: [
+          { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' },
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          },
+          { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87' },
+        ],
+        excludedFacets: undefined,
+      },
+
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+    });
+    expect(
+      screen.queryByLabelText('Row showing color as excluded')
+    ).not.toBeInTheDocument();
+
+    const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
+
+    await user.click(excludeOnlyOption);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as excluded')
+      ).toBeVisible();
+    });
+    expect(
+      screen.queryByLabelText('Row showing color as included')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Row showing color as algoControl')
     ).not.toBeInTheDocument();
   });
 

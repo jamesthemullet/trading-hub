@@ -1,3 +1,4 @@
+import { useReducer } from 'react';
 import { act, Screen, screen, waitFor } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
@@ -22,6 +23,13 @@ jest.mock('next/router', () => ({
 jest.mock('../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
+
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useReducer: jest.fn(),
+}));
+
+const dispatchMock = jest.fn();
 
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const categoryId1 = 'cat_123';
@@ -87,42 +95,26 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
 
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
-const setSearchSpy = jest.fn();
-const onFacetDataChangeSpy = jest.fn();
-const onHandleStatusChangeSpy = jest.fn();
 
-const includedFacetsMock = [
-  {
-    displayValue: 'color',
-    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-    indexPropertyName: 'color',
-    lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
-    merged: [],
-  },
-  {
-    displayValue: 'brand',
-    indexPropertyName: 'brand',
-    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-    lastChanged: {
-      date: '2021-01-03T08:34:15Z',
-      user: 'Test User',
-    },
-    merged: [],
-  },
-  {
-    displayValue: 'category',
-    indexPropertyName: 'category',
-    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
-    lastChanged: {
-      date: '2021-01-04T08:34:15Z',
-      user: 'Test User',
-    },
-    merged: [],
-  },
+const onFacetDataChangeSpy = jest.fn();
+
+const initialIncludedFacetsMock = [
+  'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+  'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+  'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
 ];
+
+const facetsPanelLocalStateMock = {
+  includedFacets: initialIncludedFacetsMock,
+  excludedFacets: [],
+};
 
 describe('Facet Panel', () => {
   beforeEach(() => {
+    jest
+      .mocked(useReducer)
+      .mockReturnValue([facetsPanelLocalStateMock, dispatchMock]);
+
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
@@ -151,8 +143,8 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         facetType="category"
       />
     );
@@ -173,8 +165,8 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         facetType="global"
       />
     );
@@ -195,8 +187,8 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         facetType="category"
       />
     );
@@ -216,8 +208,8 @@ describe('Facet Panel', () => {
         onCancel={onCancelSpy}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         onFacetDataChange={jest.fn()}
         facetType="category"
       />
@@ -243,8 +235,8 @@ describe('Facet Panel', () => {
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
         categoryIds={[categoryId1]}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         facetType="category"
       />
     );
@@ -274,19 +266,17 @@ describe('Facet Panel', () => {
 
   it('should handle order change when button down is clicked', async () => {
     const user = userEvent.setup({ delay: null });
-    const onFacetsDataRowOrderChangeSpy = jest.fn();
 
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
-        onFacetsDataRowOrderChange={onFacetsDataRowOrderChangeSpy}
         displayRowOrderControls={true}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        includedFacets={includedFacetsMock}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={initialIncludedFacetsMock}
+        initialExcludedFacets={[]}
         facetType="category"
       />
     );
@@ -295,39 +285,35 @@ describe('Facet Panel', () => {
       screen.getByRole('button', { name: 'Move color row down' })
     );
 
-    expect(onFacetsDataRowOrderChangeSpy).toHaveBeenCalledWith(
-      0,
-      1,
-      'b04eaac3-f4ea-4f21-9459-0b4302dc2a84'
-    );
+    expect(dispatchMock).toHaveBeenCalledWith({
+      payload: { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' },
+      type: 'MOVE_INCLUDED_ROW_DOWN',
+    });
   });
 
   it('should handle order change when button up is clicked', async () => {
     const user = userEvent.setup({ delay: null });
-    const onFacetsDataRowOrderChangeSpy = jest.fn();
 
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
-        onFacetsDataRowOrderChange={onFacetsDataRowOrderChangeSpy}
         displayRowOrderControls={true}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        includedFacets={includedFacetsMock}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={initialIncludedFacetsMock}
+        initialExcludedFacets={[]}
         facetType="category"
       />
     );
 
-    await user.click(screen.getByRole('button', { name: 'Move size row up' }));
+    await user.click(screen.getByRole('button', { name: 'Move brand row up' }));
 
-    expect(onFacetsDataRowOrderChangeSpy).toHaveBeenCalledWith(
-      1,
-      -1,
-      'b04eaac3-f4ea-4f21-9459-0b4302dc2a85'
-    );
+    expect(dispatchMock).toHaveBeenCalledWith({
+      payload: { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86' },
+      type: 'MOVE_INCLUDED_ROW_UP',
+    });
   });
 
   it('should block order change when search is present', async () => {
@@ -338,15 +324,13 @@ describe('Facet Panel', () => {
       <FacetsPanel
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
-        onFacetsDataRowOrderChange={onFacetsDataRowOrderChangeSpy}
         displayRowOrderControls={true}
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        includedFacets={includedFacetsMock}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={initialIncludedFacetsMock}
+        initialExcludedFacets={[]}
         facetType="category"
-        searchTerm="color"
       />
     );
 
@@ -369,8 +353,8 @@ describe('Facet Panel', () => {
         onFacetDataChange={jest.fn()}
         categoryIds={[categoryId1]}
         rulesetMerchandisingRules={mockMerchandisingRules}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         facetType="category"
       />
     );
@@ -392,8 +376,8 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         facetType="category"
         onSelectedCategoryChange={onSelectedCategoryChangeSpy}
       />
@@ -423,9 +407,8 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         defaultOrderData={mockDefaultOrderData}
-        onHandleStatusChange={onHandleStatusChangeSpy}
-        includedFacets={includedFacetsMock}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={initialIncludedFacetsMock}
+        initialExcludedFacets={[]}
         facetType="category"
       />
     );
@@ -448,34 +431,14 @@ describe('Facet Panel', () => {
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(onHandleStatusChangeSpy).toHaveBeenCalledWith(
-        'excluded',
-        'b04eaac3-f4ea-4f21-9459-0b4302dc2a84'
-      );
+      expect(dispatchMock).toHaveBeenCalledWith({
+        payload: {
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          newDisplayType: 'excluded',
+        },
+        type: 'CHANGE_DISPLAY_TYPE',
+      });
     });
-  });
-
-  it('should filter on the facet list', async () => {
-    renderWithProviders(
-      <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        setSearch={setSearchSpy}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        categoryIds={[categoryId1]}
-        onFacetDataChange={jest.fn()}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
-        facetType="category"
-      />
-    );
-
-    const search = screen.getByPlaceholderText('Search...');
-
-    await userEvent.type(search, 'color');
-
-    await waitFor(() => expect(setSearchSpy).toHaveBeenCalledWith('color'));
   });
 
   it('should show the schedule date picker', async () => {
@@ -484,13 +447,12 @@ describe('Facet Panel', () => {
         <FacetsPanel
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
-          setSearch={setSearchSpy}
           title="Facet Rule Editor"
           facetsData={globalFacetsListMock.facets}
           categoryIds={[categoryId1]}
           onFacetDataChange={jest.fn()}
-          includedFacets={[]}
-          excludedFacets={{ facets: [] }}
+          initialIncludedFacets={[]}
+          initialExcludedFacets={[]}
           facetType="category"
           onScheduleDateChange={jest.fn()}
         />
@@ -506,13 +468,12 @@ describe('Facet Panel', () => {
         <FacetsPanel
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
-          setSearch={setSearchSpy}
           title="Facet Rule Editor"
           facetsData={globalFacetsListMock.facets}
           categoryIds={[categoryId1]}
           onFacetDataChange={jest.fn()}
-          includedFacets={[]}
-          excludedFacets={{ facets: [] }}
+          initialIncludedFacets={[]}
+          initialExcludedFacets={[]}
           facetType="category"
           startDate="2024-11-05T00:00:00.000Z"
           endDate="2024-11-06T00:00:00.000Z"
@@ -538,8 +499,8 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={onFacetDataChangeSpy}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         facetType="global"
       />
     );
@@ -568,17 +529,30 @@ describe('Facet Panel', () => {
       value: 'colour 2',
       facet: {
         ...mockFacet,
+        displayType: 'included',
         merged: [
           {
             displayValue: 'test merged group',
             mergedValues: ['merged 1', 'merged 2'],
           },
         ],
+        meta: {
+          isBeginningOfDisplayTypeGroup: true,
+          isEndOfDisplayTypeGroup: false,
+        },
       },
     });
   });
 
   it('should not show Edit Values button if facet is category and the facet is not included', async () => {
+    jest.mocked(useReducer).mockReturnValueOnce([
+      {
+        includedFacets: [],
+        excludedFacets: [],
+      },
+      dispatchMock,
+    ]);
+
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -586,8 +560,8 @@ describe('Facet Panel', () => {
         title="Facet Rule Editor"
         facetsData={globalFacetsListMock.facets}
         onFacetDataChange={onFacetDataChangeSpy}
-        includedFacets={[]}
-        excludedFacets={{ facets: [] }}
+        initialIncludedFacets={[]}
+        initialExcludedFacets={[]}
         facetType="category"
       />
     );
@@ -604,8 +578,8 @@ describe('Facet Panel', () => {
           title="Facet Rule Editor"
           facetsData={globalFacetsListMock.facets}
           onFacetDataChange={onFacetDataChangeSpy}
-          includedFacets={[]}
-          excludedFacets={{ facets: [] }}
+          initialIncludedFacets={[]}
+          initialExcludedFacets={[]}
           facetType="global"
         />
       );
@@ -637,8 +611,8 @@ describe('Facet Panel', () => {
           title="Facet Rule Editor"
           facetsData={globalFacetsListMock.facets}
           onFacetDataChange={onFacetDataChangeSpy}
-          includedFacets={[]}
-          excludedFacets={{ facets: [] }}
+          initialIncludedFacets={[]}
+          initialExcludedFacets={[]}
           facetType="global"
         />
       );

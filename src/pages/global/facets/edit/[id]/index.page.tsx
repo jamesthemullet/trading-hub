@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { ReturnedFacet, RuleSetFacetConfigWithId } from '@/libs/api';
-import { ErrorMessage, Heading } from '@/libs/components';
-import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import {
-  useFacetsFilter,
+  ExcludedFacets,
+  ReturnedFacet,
+  RuleSetFacetConfigWithId,
+} from '@/libs/api';
+import { ErrorMessage, Heading } from '@/libs/components';
+import {
   useGlobalFacetsList,
   useGlobalFacetUpdate,
   useGlobalRuleSetDetail,
@@ -38,11 +40,12 @@ const Page = ({ id }: PageProps) => {
   const [facetsFromGlobalRuleSet, setFacetsFromGlobalRuleSet] = useState<
     RuleSetFacetConfigWithId[] | []
   >([]);
-  const [includedFacets, setIncludedFacets] = useState<ReturnedFacet[]>([]);
-  const [excludedFacets, setExcludedFacets] = useState<ReturnedFacet[]>([]);
-  const [orderedLocalFacetData, setOrderedLocalFacetData] = useState<
-    ReturnedFacet[]
-  >([]);
+  const [initialIncludedFacets, setInitialIncludedFacets] = useState<string[]>(
+    []
+  );
+  const [initialExcludedFacets, setInitialExcludedFacets] = useState<string[]>(
+    []
+  );
 
   useEffect(() => {
     setGlobalFacetsList(facets);
@@ -52,35 +55,19 @@ const Page = ({ id }: PageProps) => {
     if (globalRulesetError !== '') {
       return;
     }
-    const includedFacets = facetsFromGlobalRuleSet
-      .map((facet) => {
-        const localFacet = globalFacetsList.find(
-          (localFacet) => localFacet.id === facet.id
-        );
-        return localFacet;
-      })
-      .filter((facet): facet is ReturnedFacet => Boolean(facet));
-    setIncludedFacets(includedFacets);
+    const includedFacets = facetsFromGlobalRuleSet.map((facet) => {
+      return facet.id;
+    });
 
-    const excludedFacets = globalFacetsList.filter((facet) =>
-      globalRuleSet.excludedFacets?.facets?.some(
-        (excludedFacet) => excludedFacet?.id === facet.id
-      )
-    );
+    const excludedFacets =
+      globalRuleSet.excludedFacets?.facets?.map(
+        (facet) =>
+          // istanbul ignore next
+          facet.id || ''
+      ) || [];
 
-    const restOfFacets = globalFacetsList.filter(
-      (facet) =>
-        !includedFacets.some(
-          (includedFacet) => includedFacet.id === facet.id
-        ) &&
-        !excludedFacets.some((excludedFacet) => excludedFacet.id === facet.id)
-    );
-    setExcludedFacets(excludedFacets);
-    setOrderedLocalFacetData([
-      ...includedFacets,
-      ...restOfFacets,
-      ...excludedFacets,
-    ]);
+    setInitialIncludedFacets(includedFacets);
+    setInitialExcludedFacets(excludedFacets);
   }, [
     globalFacetsList,
     facetsFromGlobalRuleSet,
@@ -94,50 +81,26 @@ const Page = ({ id }: PageProps) => {
     }
   }, [globalRuleSet]);
 
-  const { setSearch, filteredFacets } = useFacetsFilter(orderedLocalFacetData);
-
-  const orderedFilteredFacets = useMemo(() => {
-    const filteredIncludedFacets = filteredFacets.filter((facet) =>
-      includedFacets.includes(facet)
-    );
-    const filteredExcludedFacets = filteredFacets.filter((facet) =>
-      excludedFacets.includes(facet)
-    );
-
-    const restOfTheFacets = filteredFacets.filter(
-      (facet) =>
-        !filteredIncludedFacets.includes(facet) &&
-        !filteredExcludedFacets.includes(facet)
-    );
-
-    return [
-      ...filteredIncludedFacets,
-      ...restOfTheFacets,
-      ...filteredExcludedFacets,
-    ];
-  }, [filteredFacets, includedFacets, excludedFacets]);
-
   const { handleGlobalFacetUpdate, error: updatingGlobalFacetError } =
     useGlobalFacetUpdate();
   const { saveGlobalRuleset, error: savingGlobalRulesetError } =
     useGlobalRuleSetUpdate();
 
-  const handleSave = async () => {
+  const handleSave = async ({
+    includedFacets,
+    excludedFacets,
+  }: {
+    categoryIds: string[];
+    includedFacets: ReturnedFacet[];
+    excludedFacets: ExcludedFacets;
+  }) => {
     const response = await saveGlobalRuleset({
       ruleSetId: globalRuleSet.id,
       ruleSet: {
-        facets: includedFacets.map((facet) => ({
-          id: facet.id,
-          boosted: facet.boosted,
-          excludedValues: facet.excludedValues,
-        })),
+        facets: includedFacets,
         rules: globalRuleSet.rules,
         isEnabled: globalRuleSet.isEnabled,
-        excludedFacets: {
-          facets: excludedFacets.map((excludedFacet) => ({
-            id: excludedFacet.id,
-          })),
-        },
+        excludedFacets,
       },
     });
 
@@ -181,33 +144,6 @@ const Page = ({ id }: PageProps) => {
     setGlobalFacetsList(updatedGlobalFacets);
   };
 
-  const onHandleStatusChange = async (
-    value: 'included' | 'excluded' | 'algoControl',
-    id?: string
-  ) => {
-    const existingFacet = globalFacetsList.find((facet) => facet.id === id);
-    // istanbul ignore next
-    if (!existingFacet) {
-      return;
-    }
-
-    switch (value) {
-      case 'included':
-        setIncludedFacets((prev) => [...prev, existingFacet]);
-        setExcludedFacets((prev) => prev.filter((facet) => facet.id !== id));
-
-        break;
-      case 'excluded':
-        setIncludedFacets((prev) => prev.filter((facet) => facet.id !== id));
-        setExcludedFacets((prev) => [...prev, existingFacet]);
-        break;
-      case 'algoControl':
-        setIncludedFacets((prev) => prev.filter((facet) => facet.id !== id));
-        setExcludedFacets((prev) => prev.filter((facet) => facet.id !== id));
-        break;
-    }
-  };
-
   return (
     <>
       <Heading
@@ -244,21 +180,16 @@ const Page = ({ id }: PageProps) => {
         <FacetsPanel
           onSave={handleSave}
           onCancel={handleCancel}
-          setSearch={setSearch}
           onFacetDataChange={onFacetDataChange}
-          onHandleStatusChange={onHandleStatusChange}
           refreshData={onRefreshFacetList}
           title="Global Facet Rule Editor"
-          facetsData={orderedFilteredFacets}
-          canMergeValueAttributes
-          includedFacets={includedFacets}
-          excludedFacets={{
-            facets: excludedFacets?.map((facet) => ({ id: facet.id })),
-          }}
+          facetsData={globalFacetsList}
+          initialIncludedFacets={initialIncludedFacets}
+          initialExcludedFacets={initialExcludedFacets}
           facetType="global"
+          canMergeValueAttributes
         />
       )}
-      <FilteredResultsPanel filteredFacets={filteredFacets.length} />
     </>
   );
 };

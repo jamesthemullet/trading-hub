@@ -9,7 +9,7 @@ describe('Filter dropdown', () => {
   });
 
   it('should render the dropdown', () => {
-    render(<FacetOrderDropdown />);
+    render(<FacetOrderDropdown onChange={jest.fn()} />);
 
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown'
@@ -23,7 +23,7 @@ describe('Filter dropdown', () => {
 
   it('should open the dropdown and display the options when button is clicked', async () => {
     const user = userEvent.setup();
-    render(<FacetOrderDropdown attribute="color" />);
+    render(<FacetOrderDropdown onChange={jest.fn()} attribute="color" />);
 
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown for color'
@@ -40,7 +40,13 @@ describe('Filter dropdown', () => {
 
   it('should open the dropdown with hasAlgoControl and display the options when button is clicked', async () => {
     const user = userEvent.setup();
-    render(<FacetOrderDropdown hasAlgoControl attribute="color" />);
+    render(
+      <FacetOrderDropdown
+        onChange={jest.fn()}
+        hasAlgoControl
+        attribute="color"
+      />
+    );
 
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown for color'
@@ -58,7 +64,7 @@ describe('Filter dropdown', () => {
 
   it('should close dropdown when button is clicked again when already open', async () => {
     const user = userEvent.setup();
-    render(<FacetOrderDropdown />);
+    render(<FacetOrderDropdown onChange={jest.fn()} />);
 
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown'
@@ -74,7 +80,7 @@ describe('Filter dropdown', () => {
 
   it('should change the selected option when an option is clicked, and close the dropdown', async () => {
     const user = userEvent.setup();
-    render(<FacetOrderDropdown />);
+    render(<FacetOrderDropdown onChange={jest.fn()} />);
 
     expect(screen.getByText('Select an action')).toBeVisible();
 
@@ -95,7 +101,7 @@ describe('Filter dropdown', () => {
 
   it('when hasAlgoControl should change the selected option when an option is clicked, and close the dropdown', async () => {
     const user = userEvent.setup();
-    render(<FacetOrderDropdown hasAlgoControl />);
+    render(<FacetOrderDropdown onChange={jest.fn()} hasAlgoControl />);
 
     expect(screen.getByText('Select an action')).toBeVisible();
 
@@ -116,7 +122,7 @@ describe('Filter dropdown', () => {
 
   it('should close the dropdown when Escape key is pressed', async () => {
     const user = userEvent.setup();
-    render(<FacetOrderDropdown />);
+    render(<FacetOrderDropdown onChange={jest.fn()} />);
 
     const dropdownHeader = screen.getByTestId(
       'button to open facet order dropdown'
