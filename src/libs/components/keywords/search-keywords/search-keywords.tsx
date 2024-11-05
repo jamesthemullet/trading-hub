@@ -16,6 +16,7 @@ import {
   KeyWordPill,
   ModalContainer,
   ModalFooter,
+  RemoveKeyWordPill,
   StyledCloseButton,
   StyledInput,
   StyledSearchContainer,
@@ -66,7 +67,6 @@ const InputBoxWrapper = styled.div`
   height: 55px;
   width: 470px;
   display: flex;
-  gap: ${spacing(1)};
   align-items: center;
   padding: 0 ${spacing(1)};
 
@@ -184,19 +184,19 @@ export const SearchKeywords = ({
           <InputBoxWrapper>
             {searchTerms.map((term, index) => {
               return index < wordsToDisplay ? (
-                <KeyWordPill key={`${term}-${index}`}>
+                <KeyWordPill key={`${term}-${index}`} isSelected={false}>
                   {term}
-                  <Button
+                  <RemoveKeyWordPill
                     onClick={() => removeSearchTerm(term)}
                     aria-label={`Remove keyword: ${term}`}
                   >
                     <Image
                       alt=""
-                      src={`/trading-hub/asset/icon-remove-keyword.svg`}
+                      src={`/trading-hub/asset/icon-remove-chip.svg`}
                       width={16}
                       height={16}
                     />
-                  </Button>
+                  </RemoveKeyWordPill>
                 </KeyWordPill>
               ) : null;
             })}
@@ -240,7 +240,7 @@ export const SearchKeywords = ({
           <Modal.Content>
             <Modal.Body>
               <ModalContainer>
-                <Heading>Search keywords</Heading>
+                <Heading>{title}</Heading>
                 <StyledSearchContainer>
                   <SearchBox
                     inputProps={{
@@ -262,19 +262,19 @@ export const SearchKeywords = ({
                 </StyledSearchContainer>
                 <KeywordList unfinishedKeyword={unfinishedKeyword}>
                   {filteredKeywords.map((keyword, index) => (
-                    <KeyWordPill key={`${keyword}-${index}`}>
+                    <KeyWordPill key={`${keyword}-${index}`} isSelected={false}>
                       {keyword}
-                      <Button
+                      <RemoveKeyWordPill
                         onClick={() => removeSearchTerm(keyword)}
                         aria-label={`Remove keyword: ${keyword}`}
                       >
                         <Image
                           alt=""
-                          src={`/trading-hub/asset/icon-remove-keyword.svg`}
+                          src={`/trading-hub/asset/icon-remove-chip.svg`}
                           width={16}
                           height={16}
                         />
-                      </Button>
+                      </RemoveKeyWordPill>
                     </KeyWordPill>
                   ))}
                   <StyledInput

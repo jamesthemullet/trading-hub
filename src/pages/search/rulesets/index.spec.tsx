@@ -183,7 +183,9 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: false, hasMultipleCategories: false }}
+      >
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -343,7 +345,9 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: false, hasMultipleCategories: false }}
+      >
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -379,7 +383,9 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: true, hasMultipleCategories: false }}
+      >
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -416,7 +422,9 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasIreland: false }}>
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: false, hasMultipleCategories: false }}
+      >
         <RuleSets />
       </FeatureFlagContext.Provider>
     );
@@ -454,7 +462,9 @@ describe('Search Rulesets', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider value={{ hasIreland: true }}>
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: true, hasMultipleCategories: false }}
+      >
         <RuleSets />
       </FeatureFlagContext.Provider>
     );

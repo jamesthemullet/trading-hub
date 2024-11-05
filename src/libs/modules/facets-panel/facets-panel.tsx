@@ -235,6 +235,10 @@ export const FacetsPanel = ({
     setIsEditValuesModalOpen(false);
   };
 
+  const [previewValue, setPreviewValue] = useState(
+    categoryIds && categoryIds[0]
+  );
+
   const handleSave = () => {
     onSave({
       categoryIds: selectedCategories,
@@ -350,7 +354,8 @@ export const FacetsPanel = ({
                 onSelectedCategoryChange?.(undefined);
               }}
               onSelectCategory={onSelectCategory}
-              canRemoveCategory
+              previewCategory={previewValue}
+              selectPreviewCategory={setPreviewValue}
             />
           )}
           {facetType === 'global' && (

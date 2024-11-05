@@ -176,6 +176,10 @@ export const Ruleset = ({
     if (!hasChanges) setHasChanges(true);
   };
 
+  const [previewValue, setPreviewValue] = useState(
+    (categoryIds && categoryIds[0]) || (searchTerms && searchTerms[0])
+  );
+
   const [ruleset, dispatch] = useReducer<
     (state: RuleSet, action: Action) => RuleSet
   >(rulesetReducer, {
@@ -357,7 +361,8 @@ export const Ruleset = ({
                 );
               }}
               onSelectCategory={onSelectCategory}
-              canRemoveCategory={true}
+              previewCategory={previewValue}
+              selectPreviewCategory={setPreviewValue}
             />
           </CategorySearchWrapper>
         )}

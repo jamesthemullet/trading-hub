@@ -19,7 +19,10 @@ const Flag = styled.div`
 `;
 
 const FeatureFlags = () => {
-  const [cookies, setCookie] = useCookies(['flagIreland']);
+  const [cookies, setCookie] = useCookies([
+    'flagIreland',
+    'flagMultipleCategories',
+  ]);
 
   return (
     <Wrapper>
@@ -31,6 +34,19 @@ const FeatureFlags = () => {
           checked={cookies.flagIreland}
           onChange={() => {
             setCookie('flagIreland', JSON.stringify(!cookies.flagIreland));
+          }}
+        />
+      </Flag>
+
+      <Flag>
+        <p>Multiple categories:&nbsp;</p>
+        <Toggle
+          checked={cookies.flagMultipleCategories}
+          onChange={() => {
+            setCookie(
+              'flagMultipleCategories',
+              JSON.stringify(!cookies.flagMultipleCategories)
+            );
           }}
         />
       </Flag>

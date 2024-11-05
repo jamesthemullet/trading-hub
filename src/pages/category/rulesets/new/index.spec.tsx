@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -70,7 +70,7 @@ describe('Index', () => {
   });
 
   it('renders', () => {
-    render(<RuleSetCreate />);
+    renderWithProviders(<RuleSetCreate />);
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Product Grid'
@@ -79,7 +79,7 @@ describe('Index', () => {
 
   it('stores input value', async () => {
     const user = userEvent.setup();
-    render(<RuleSetCreate />);
+    renderWithProviders(<RuleSetCreate />);
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -127,7 +127,7 @@ describe('Index', () => {
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
     });
-    render(<RuleSetCreate />);
+    renderWithProviders(<RuleSetCreate />);
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -190,7 +190,7 @@ describe('Index', () => {
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
     });
-    render(<RuleSetCreate />);
+    renderWithProviders(<RuleSetCreate />);
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -241,7 +241,7 @@ describe('Index', () => {
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
     });
-    render(<RuleSetCreate />);
+    renderWithProviders(<RuleSetCreate />);
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),

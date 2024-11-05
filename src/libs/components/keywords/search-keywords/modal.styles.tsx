@@ -27,10 +27,12 @@ export const KeywordList = styled.ul<{ unfinishedKeyword: boolean }>`
     unfinishedKeyword ? `1px solid ${color.saleRed}` : 'none'};
 `;
 
-export const KeyWordPill = styled.li`
-  background-color: #fff;
-  color: ${color.selectionBox};
-  border: 2px solid ${color.selectionBox};
+export const KeyWordPill = styled.li<{ isSelected: boolean }>`
+  background-color: ${({ isSelected }) =>
+    isSelected ? color.selectionBox : '#fff'};
+  color: ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
+  border: 2px solid
+    ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
   border-radius: 6px;
   padding: 8px;
   font-weight: 600;
@@ -40,16 +42,21 @@ export const KeyWordPill = styled.li`
   display: flex;
   align-items: center;
   height: 36px;
+  margin-right: ${spacing(1)};
 
   button {
-    width: 18px;
-    height: 18px;
-    padding: 0;
-    margin-left: ${spacing(1)};
-    background: none;
-    outline: none;
-    border: none;
+    color: ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
   }
+`;
+
+export const RemoveKeyWordPill = styled.button`
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin-left: ${spacing(1)};
+  background: none;
+  outline: none;
+  border: none;
 `;
 
 export const StyledInput = styled.input`

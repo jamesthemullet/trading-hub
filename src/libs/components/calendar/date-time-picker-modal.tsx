@@ -111,7 +111,7 @@ export const DateTimePickerModal = ({
             open();
           }}
           isLabelHidden={true}
-        ></StyledInput>
+        />
 
         {showCalendarIcon && (
           <Image

@@ -15,7 +15,7 @@ export type SearchProps = {
 const SearchBoxContainer = styled.div`
   margin: 0;
   padding: 0;
-  & > div {
+  & div {
     border-bottom: 1px solid #b1b1b1;
 
     & > input {

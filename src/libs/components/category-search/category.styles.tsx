@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 
+import { Button } from '../buttons/button/button';
+import { Icon } from '../icon/icon';
 import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
@@ -41,8 +43,68 @@ export const CategoryTitle = styled(Text)`
   line-height: 1.6rem;
 `;
 
+export const SearchBox = styled.div`
+  display: flex;
+`;
+
+export const SearchWrapper = styled.div`
+  background-color: ${color.backgroundGrey};
+  display: flex;
+  border-bottom: 1px solid ${color.lightGrey};
+  min-width: 600px;
+  & div {
+    border-bottom: none;
+  }
+`;
+
+export const SelectedCategories = styled.div`
+  padding: ${spacing(1)};
+  display: flex;
+
+  & > li {
+    margin-right: ${spacing(1)};
+  }
+`;
+
+export const SearchForm = styled.form`
+  position: relative;
+  margin-left: auto;
+  width: 100%;
+  height: 54px;
+`;
+
+export const SearchInput = styled.input`
+  border: none;
+  background: none;
+  margin-left: ${spacing(1)};
+  height: 54px;
+
+  &::placeholder {
+    color: #222222;
+  }
+`;
+
+export const SearchValue = styled.button`
+  border: none;
+  background: none;
+`;
+
+export const StyledIcon = styled(Icon)`
+  position: absolute;
+  right: 4px;
+  top: 12px;
+  pointer-events: none;
+`;
+
+export const ViewAllButton = styled(Button)`
+  width: 100px;
+  margin-top: ${spacing(1)};
+  margin-left: ${spacing(1)};
+`;
+
 export const SelectedCategoryPill = styled(Label)`
   margin-bottom: ${spacing(1)};
+  margin-right: ${spacing(1)};
   color: #fff;
   background-color: ${color.selectionBox};
   border-radius: 6px;
@@ -57,4 +119,34 @@ export const SelectedCategoryClose = styled.button`
   height: 18px;
   display: inline-block;
   border: none;
+`;
+
+export const ModalWrapper = styled.div`
+  width: 856px;
+  height: 400px;
+  padding-top: ${spacing(2)};
+  overflow: auto;
+`;
+
+export const ModalSelectedCategory = styled.div`
+  display: flex;
+  padding-top: ${spacing(1)};
+
+  h4 {
+    padding: ${spacing(1)} ${spacing(1)} 0 0;
+  }
+`;
+export const ModalCategoriesList = styled.ul`
+  margin-top: ${spacing(2)};
+  padding: ${spacing(2)};
+  display: flex;
+  gap: ${spacing(1)};
+  flex-wrap: wrap;
+  width: 100%;
+  background-color: ${color.backgroundGrey};
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 160px;
+  max-height: 260px;
+  align-content: baseline;
 `;

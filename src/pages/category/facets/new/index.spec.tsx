@@ -638,7 +638,9 @@ describe('Facet Management Editing', () => {
         getCategoriesError: '',
       });
       renderWithProviders(
-        <FeatureFlagContext.Provider value={{ hasIreland: false }}>
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: false, hasMultipleCategories: false }}
+        >
           <NewFacetRuleset />
         </FeatureFlagContext.Provider>
       );

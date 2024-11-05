@@ -1,12 +1,37 @@
-import { type ChangeEvent, type FormEvent, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
+import { Modal } from '@mantine/core';
 
 import type { Category, Pagination } from '@/libs/api';
 import { useGetCategories } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
-import { Search } from '../search/search';
-import { Text } from '../typography/typography.styles';
-import { CategoryTitle, Container, Row, Wrapper } from './category.styles';
+import Image from 'next/image';
+
+import { FeatureFlagContext } from '../context/feature-flag';
+import {
+  KeyWordPill,
+  ModalFooter,
+  RemoveKeyWordPill,
+  StyledCloseButton,
+} from '../keywords/search-keywords/modal.styles';
+import { Header3, Label, Text } from '../typography/typography.styles';
+import {
+  CategoryTitle,
+  Container,
+  ModalCategoriesList,
+  ModalSelectedCategory,
+  ModalWrapper,
+  Row,
+  SearchBox,
+  SearchForm,
+  SearchInput,
+  SearchValue,
+  SearchWrapper,
+  SelectedCategories,
+  StyledIcon,
+  ViewAllButton,
+  Wrapper,
+} from './category.styles';
 import { SelectedCategory } from './selected-category';
 
 const SEARCH_DEBOUNCE_WAIT = 500;
@@ -14,18 +39,22 @@ const SEARCH_DEBOUNCE_WAIT = 500;
 type Props = {
   onClearSelection: (category: string) => void;
   onSelectCategory: (category: string) => void;
+  previewCategory: string | undefined;
   selectedCategories: string[];
-  canRemoveCategory?: boolean;
+  selectPreviewCategory: (category: string | undefined) => void;
 };
 
 export const CategorySearch = ({
-  selectedCategories,
   onClearSelection,
   onSelectCategory,
-  canRemoveCategory,
+  previewCategory,
+  selectedCategories,
+  selectPreviewCategory,
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { getCategories } = useGetCategories();
+  const { hasMultipleCategories } = useContext(FeatureFlagContext);
   const [categoryResults, setCategoryResults] = useState<{
     /**
      * Category type contains all fields that are optional, this is a bad design and should be fixed in future in API: https://jira.marksandspencer.app/browse/LPN-2687
@@ -92,7 +121,7 @@ export const CategorySearch = ({
     await searchCategories(searchValue);
   };
 
-  if (selectedCategories.length) {
+  if (!hasMultipleCategories && selectedCategories.length) {
     return (
       <SelectedCategory
         label={selectedCategories[0]}
@@ -104,33 +133,214 @@ export const CategorySearch = ({
           });
           onClearSelection(selectedCategories[0]);
         }}
-        canRemoveCategory={canRemoveCategory}
+        canRemoveCategory
       />
     );
   }
 
+  const visibleCategories = selectedCategories.slice(0, 2);
+
+  const additionalCategories = selectedCategories.filter(
+    (category) => category !== previewCategory
+  );
+
+  const CategoryRow = (category: Required<Category>) => (
+    <Row
+      key={`row-${category.identifier}-${category.name}-${category.path}`}
+      onClick={() => {
+        onSelectCategory(category.identifier);
+        setSearchValue('');
+        setCategoryResults({
+          categories: [],
+          pagination: {},
+        });
+      }}
+      aria-label={`Select category ${category.identifier}`}
+    >
+      <Text>
+        {category.identifier} | {category.name}{' '}
+        {category.path && `| ${category.path}`}
+      </Text>
+    </Row>
+  );
+
   return (
     <Wrapper>
       <CategoryTitle>Category</CategoryTitle>
-      <form onSubmit={onSubmit}>
-        <Search value={searchValue} onChange={onSearchChange} />
-      </form>
-      {categoryResults && (
-        <Container>
-          {categoryResults.categories.map((category) => (
-            <Row
-              key={`row-${category.identifier}-${category.name}-${category.path}`}
-              onClick={() => onSelectCategory(category.identifier)}
-              aria-label={`Select category ${category.identifier}`}
-            >
-              <Text>
-                {category.identifier} | {category.name}{' '}
-                {category.path && `| ${category.path}`}
-              </Text>
-            </Row>
-          ))}
-        </Container>
+      <SearchBox>
+        <SearchWrapper>
+          <SelectedCategories>
+            {visibleCategories.map((category) => {
+              const isPreviewCategory = category === previewCategory;
+              return (
+                <KeyWordPill
+                  key={category}
+                  isSelected={isPreviewCategory}
+                  aria-label={
+                    isPreviewCategory
+                      ? 'Preview category'
+                      : 'Additional category'
+                  }
+                  as="p"
+                >
+                  {isPreviewCategory ? (
+                    category
+                  ) : (
+                    <SearchValue
+                      onClick={() => selectPreviewCategory(category)}
+                    >
+                      {category}
+                    </SearchValue>
+                  )}
+                  <RemoveKeyWordPill
+                    onClick={() => {
+                      onClearSelection(category);
+                      if (isPreviewCategory) {
+                        selectPreviewCategory(
+                          additionalCategories.length
+                            ? additionalCategories[0]
+                            : undefined
+                        );
+                      }
+                    }}
+                    aria-label={`Remove category: ${category}`}
+                  >
+                    <Image
+                      alt=""
+                      src={`/trading-hub/asset/icon-remove-${category === previewCategory ? 'selected-' : ''}chip.svg`}
+                      width={16}
+                      height={16}
+                    />
+                  </RemoveKeyWordPill>
+                </KeyWordPill>
+              );
+            })}
+          </SelectedCategories>
+          {selectedCategories.length < 2 && (
+            <SearchForm onSubmit={onSubmit}>
+              <SearchInput
+                placeholder="Search..."
+                value={searchValue}
+                onChange={onSearchChange}
+              />
+              <StyledIcon name="Search" size={32} />
+            </SearchForm>
+          )}
+        </SearchWrapper>
+        {selectedCategories.length > 1 && (
+          <ViewAllButton onClick={() => setIsModalOpen(true)} theme="secondary">
+            View all
+          </ViewAllButton>
+        )}
+      </SearchBox>
+      {categoryResults.categories.length > 0 && !isModalOpen && (
+        <Container>{categoryResults.categories.map(CategoryRow)}</Container>
       )}
+
+      <Modal.Root
+        opened={isModalOpen}
+        onClose={
+          // istanbul ignore next
+          () => setIsModalOpen(false)
+        }
+        centered
+        padding={20}
+        size="auto"
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <Modal.Body>
+            <ModalWrapper>
+              <Header3>Category</Header3>
+
+              <SearchBox>
+                <SearchWrapper>
+                  <SearchForm onSubmit={onSubmit}>
+                    <SearchInput
+                      placeholder="Search..."
+                      value={searchValue}
+                      onChange={onSearchChange}
+                    />
+                    <StyledIcon name="Search" size={32} />
+                  </SearchForm>
+                </SearchWrapper>
+              </SearchBox>
+
+              {categoryResults.categories.length > 0 && (
+                <Container>
+                  {categoryResults.categories.map(CategoryRow)}
+                </Container>
+              )}
+
+              {previewCategory && (
+                <ModalSelectedCategory aria-label="Preview category">
+                  <Label as="h4">Selected: </Label>
+                  <KeyWordPill isSelected as="p">
+                    {previewCategory}
+                    <RemoveKeyWordPill
+                      onClick={() => {
+                        onClearSelection(previewCategory);
+                        selectPreviewCategory(
+                          additionalCategories.length
+                            ? additionalCategories[0]
+                            : undefined
+                        );
+                      }}
+                      aria-label={`Remove category from modal: ${previewCategory}`}
+                    >
+                      <Image
+                        alt=""
+                        src={`/trading-hub/asset/icon-remove-selected-chip.svg`}
+                        width={16}
+                        height={16}
+                      />
+                    </RemoveKeyWordPill>
+                  </KeyWordPill>
+                </ModalSelectedCategory>
+              )}
+
+              <ModalCategoriesList>
+                {selectedCategories
+                  .filter((category) => category !== previewCategory)
+                  .map((category) => (
+                    <KeyWordPill
+                      isSelected={false}
+                      key={`category-${category}`}
+                      aria-label="Additional category"
+                      as="p"
+                    >
+                      <SearchValue
+                        onClick={() => selectPreviewCategory(category)}
+                      >
+                        {category}
+                      </SearchValue>
+                      <RemoveKeyWordPill
+                        onClick={() => onClearSelection(category)}
+                        aria-label={`Remove category from modal: ${category}`}
+                      >
+                        <Image
+                          alt=""
+                          src={`/trading-hub/asset/icon-remove-chip.svg`}
+                          width={16}
+                          height={16}
+                        />
+                      </RemoveKeyWordPill>
+                    </KeyWordPill>
+                  ))}
+              </ModalCategoriesList>
+            </ModalWrapper>
+          </Modal.Body>
+          <ModalFooter>
+            <StyledCloseButton
+              theme="secondary"
+              onClick={() => setIsModalOpen(false)}
+              aria-label="Close modal"
+            >
+              Close
+            </StyledCloseButton>
+          </ModalFooter>
+        </Modal.Content>
+      </Modal.Root>
     </Wrapper>
   );
 };

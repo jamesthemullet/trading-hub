@@ -5,4 +5,10 @@ export const cookies = [
     path: '/',
     domain: 'localhost',
   },
+  {
+    name: 'flagMultipleCategories',
+    value: 'false',
+    path: '/',
+    domain: 'localhost',
+  },
 ];
