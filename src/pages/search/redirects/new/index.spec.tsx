@@ -99,6 +99,7 @@ describe('Create new redirect', () => {
         ruleTitle: 'title',
         startDate: '',
         type: 'redirectTerm',
+        countryCode: 'UK_IE',
       },
     };
 

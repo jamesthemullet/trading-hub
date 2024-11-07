@@ -185,6 +185,7 @@ describe('Category Facet Management Editing', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryIds: ['SubCategory_428'],
+      countryCode: 'UK_IE',
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
       excludedFacets: {
         facets: [
@@ -261,6 +262,108 @@ describe('Category Facet Management Editing', () => {
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith('/category/facets/');
+  });
+
+  it('should save changes to a facet ruleset with a different country', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: true, hasMultipleCategories: false }}
+      >
+        <Page id={ruleSetId} />
+      </FeatureFlagContext.Provider>
+    );
+
+    const countryDropdown = screen.getByRole('button', {
+      name: 'select market',
+    });
+
+    await user.click(countryDropdown);
+    const irelandOption = screen.getByLabelText('select IE market only');
+    await user.click(irelandOption);
+
+    const saveButton = screen.getByRole('button', { name: 'Save' });
+    await user.click(saveButton);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryIds: ['SubCategory_428'],
+      countryCode: 'IE',
+      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      excludedFacets: {
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+          },
+        ],
+      },
+      rules: {
+        pinnedProducts: [{ id: 'a1' }],
+        blockedProducts: [],
+        boosts: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+        buries: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      },
+      isEnabled: false,
+      facets: [
+        {
+          displayValue: 'color',
+          boosted: ['test include'],
+          excludedValues: ['test exclude'],
+          indexPropertyName: 'color',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          lastChanged: {
+            date: '2021-01-01T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        },
+        {
+          displayValue: 'size',
+          boosted: [],
+          excludedValues: [],
+          indexPropertyName: 'size',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+          lastChanged: {
+            date: '2021-01-02T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+        {
+          displayValue: 'brand',
+          boosted: [],
+          excludedValues: [],
+          indexPropertyName: 'brand',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          lastChanged: {
+            date: '2021-01-03T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+      ],
+    });
   });
 
   it('should render the skeleton loader', () => {
@@ -477,6 +580,7 @@ describe('Category Facet Management Editing', () => {
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryIds: ['SubCategory_428'],
+      countryCode: 'UK_IE',
       excludedFacets: {
         facets: [
           {
@@ -585,6 +689,7 @@ describe('Category Facet Management Editing', () => {
     await waitFor(() => {
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
         categoryIds: ['SubCategory_428'],
+        countryCode: 'UK_IE',
         excludedFacets: {
           facets: [
             {
@@ -742,6 +847,7 @@ describe('Category Facet Management Editing', () => {
 
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
         categoryIds: ['SubCategory_428'],
+        countryCode: 'UK_IE',
         excludedFacets: {
           facets: [
             {
@@ -750,7 +856,6 @@ describe('Category Facet Management Editing', () => {
           ],
         },
         ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-
         endDate: '2022-04-17T22:59:00.000Z',
         startDate: '2022-04-16T23:00:00.000Z',
         rules: {

@@ -2,6 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   useAttributes,
   useCategoryProductSearch,
@@ -147,6 +148,80 @@ describe('Index', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(mockUpdateRuleSet.updateCategoryRuleSet).toHaveBeenCalled();
+  });
+
+  it('should save country change to a ruleset', async () => {
+    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
+      ...mockUseRuleSetPreviewData,
+      ruleSetDetail: {
+        ...mockUseRuleSetPreviewData.ruleSetDetail,
+        countryCode: 'UK_IE',
+      },
+    }));
+
+    const user = userEvent.setup({ delay: null });
+
+    render(
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: true, hasMultipleCategories: false }}
+      >
+        <Page id={ruleSetId} />
+      </FeatureFlagContext.Provider>
+    );
+
+    const dropdownButton = screen.getByRole('button', {
+      name: 'select market',
+    });
+
+    await user.click(dropdownButton);
+
+    const irelandOption = screen.getByLabelText('select IE market only');
+    await user.click(irelandOption);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(mockUpdateRuleSet.updateCategoryRuleSet).toHaveBeenCalledWith({
+      countryCode: 'IE',
+      categoryIds: ['SubCategory_428'],
+      isEnabled: false,
+      excludedFacets: {
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+          },
+        ],
+      },
+      facets: [
+        {
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          boosted: ['test include'],
+          excludedValues: ['test exclude'],
+        },
+        {
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+          boosted: [],
+          excludedValues: [],
+        },
+        {
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          boosted: [],
+          excludedValues: [],
+        },
+      ],
+      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      rules: {
+        pinnedProducts: [{ id: 'a1' }],
+        blockedProducts: [],
+        boosts: { numeric: [], alphanumeric: [], product: [] },
+        buries: { numeric: [], alphanumeric: [], product: [] },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      },
+    });
   });
 
   it('should cancel changes to a ruleset', async () => {

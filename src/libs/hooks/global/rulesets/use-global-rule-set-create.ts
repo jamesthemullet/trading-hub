@@ -33,6 +33,7 @@ export const useGlobalRuleSetCreate = () => {
             alphanumeric: [],
           },
         },
+        countryCode: 'UK_IE',
       };
       const response =
         await search().betaMerchandisingGlobalRulesetCreate(body);

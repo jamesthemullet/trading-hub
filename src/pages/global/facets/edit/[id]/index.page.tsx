@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import {
+  CountryCode,
   ExcludedFacets,
   ReturnedFacet,
   RuleSetFacetConfigWithId,
@@ -89,10 +90,12 @@ const Page = ({ id }: PageProps) => {
   const handleSave = async ({
     includedFacets,
     excludedFacets,
+    countryCode,
   }: {
     categoryIds: string[];
     includedFacets: ReturnedFacet[];
     excludedFacets: ExcludedFacets;
+    countryCode: CountryCode;
   }) => {
     const response = await saveGlobalRuleset({
       ruleSetId: globalRuleSet.id,
@@ -101,6 +104,7 @@ const Page = ({ id }: PageProps) => {
         rules: globalRuleSet.rules,
         isEnabled: globalRuleSet.isEnabled,
         excludedFacets,
+        countryCode,
       },
     });
 
@@ -188,6 +192,7 @@ const Page = ({ id }: PageProps) => {
           initialExcludedFacets={initialExcludedFacets}
           facetType="global"
           canMergeValueAttributes
+          countryCode={globalRuleSet.countryCode || 'UK_IE'}
         />
       )}
     </>

@@ -14,12 +14,14 @@ const NewRuleSetPage = () => {
     searchTerms,
     startDate,
     endDate,
+    countryCode,
   }: KeywordRuleSet) => {
     const resp = await createRuleset({
       searchTerms,
       merchandisingRules: rules,
       startDate,
       endDate,
+      countryCode,
     });
 
     if (resp) {

@@ -61,6 +61,69 @@ describe('Redirect', () => {
       ruleTitle: 'title',
       startDate: '',
       type: 'redirectPhrase',
+      countryCode: 'UK_IE',
+    });
+  });
+
+  it('should create a redirect with the country code selected in the dropdown', async () => {
+    const mockCreate = jest.fn();
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: true, hasMultipleCategories: false }}
+      >
+        <Redirect
+          onCancel={() => jest.fn()}
+          onCreate={mockCreate}
+          title="Add Keyword Redirect rule"
+        />
+      </FeatureFlagContext.Provider>
+    );
+
+    await act(() => {
+      user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+    });
+
+    const redirectUrl = await screen.findByPlaceholderText('c/');
+
+    await act(async () => {
+      user.type(redirectUrl, 'c/redirect-url');
+    });
+
+    const redirectTitle = await screen.findByPlaceholderText(
+      'Enter redirect title'
+    );
+
+    await act(async () => {
+      user.type(redirectTitle, 'title');
+    });
+
+    const dropdownButton = screen.getByRole('button', {
+      name: 'select market',
+    });
+
+    await user.click(dropdownButton);
+
+    const selectIE = screen.getByLabelText('select IE market only');
+
+    await user.click(selectIE);
+
+    const saveButton = await screen.findByRole('button', { name: 'Create' });
+
+    await act(() => {
+      saveButton.click();
+    });
+
+    expect(mockCreate).toHaveBeenCalledWith({
+      destinationUrl: 'c/redirect-url',
+      endDate: '',
+      isEnabled: true,
+      keywords: ['new keyword'],
+      ruleTitle: 'title',
+      startDate: '',
+      type: 'redirectTerm',
+      countryCode: 'IE',
     });
   });
 

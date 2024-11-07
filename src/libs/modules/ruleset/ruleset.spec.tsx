@@ -367,6 +367,51 @@ describe('Ruleset', () => {
     );
   });
 
+  it('should create a ruleset with the country code selected in the dropdown', async () => {
+    const user = userEvent.setup();
+    const mockCreate = jest.fn();
+
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: true, hasMultipleCategories: false }}
+      >
+        <Ruleset
+          isEnabled={true}
+          onCreate={mockCreate}
+          onCancel={jest.fn()}
+          rulesetType="category"
+        />
+      </FeatureFlagContext.Provider>
+    );
+
+    await selectCategory(screen, user);
+
+    const dropdownButton = screen.getByRole('button', {
+      name: 'select market',
+    });
+
+    await user.click(dropdownButton);
+
+    const selectIE = screen.getByLabelText('select UK/IE Market');
+
+    await user.click(selectIE);
+
+    const saveButton = await screen.findByText(CREATE_BUTTON);
+
+    act(() => {
+      saveButton.click();
+    });
+
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ countryCode: 'UK_IE' })
+    );
+  });
+
   it('should edit a ruleset', async () => {
     const user = userEvent.setup();
     const mockSave = jest.fn();
@@ -586,6 +631,7 @@ describe('Ruleset', () => {
           },
         },
         searchTerms: ['new keyword'],
+        countryCode: 'UK_IE',
       };
 
       jest.mocked(useGetCategories).mockReturnValue({

@@ -63,6 +63,7 @@ const SearchRuleSets = () => {
         isEnabled: !isEnabled,
         startDate: ruleSet.startDate,
         endDate: ruleSet.endDate,
+        countryCode: ruleSet.countryCode,
       },
       searchTerms,
     });
@@ -77,10 +78,16 @@ const SearchRuleSets = () => {
   const createDuplicatedCategoryRuleSet = async ({
     rules,
     searchTerms,
+    startDate,
+    endDate,
+    countryCode = 'UK_IE',
   }: KeywordRuleSet) => {
     const resp = await createRuleset({
       searchTerms,
       merchandisingRules: rules,
+      startDate,
+      endDate,
+      countryCode,
     });
 
     if (resp) {

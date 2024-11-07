@@ -60,6 +60,7 @@ describe('useSearchRuleSetCreate', () => {
     const resp = await current.createRuleset({
       searchTerms: mockSearchTerms,
       merchandisingRules: mockMerchandisingRules,
+      countryCode: 'UK_IE',
     });
 
     expect(resp).toEqual(mockResponse);
@@ -77,6 +78,7 @@ describe('useSearchRuleSetCreate', () => {
       await result.current.createRuleset({
         searchTerms: mockSearchTerms,
         merchandisingRules: mockMerchandisingRules,
+        countryCode: 'UK_IE',
       });
     });
 

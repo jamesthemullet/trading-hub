@@ -186,5 +186,13 @@ export const rulesetReducer = (state: RuleSet, action: Action) => {
           : undefined,
       };
     }
+    case 'changeCountry': {
+      const { payload } = action;
+
+      return {
+        ...state,
+        countryCode: payload,
+      };
+    }
   }
 };

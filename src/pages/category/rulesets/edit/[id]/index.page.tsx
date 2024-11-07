@@ -38,7 +38,9 @@ const Page = ({ id }: PageProps) => {
       ...(ruleSet.facets && { facets: ruleSet.facets }),
       ...(ruleSet.endDate && { endDate: ruleSet.endDate }),
       ...(ruleSet.startDate && { startDate: ruleSet.startDate }),
+      ...(ruleSet.countryCode && { countryCode: ruleSet.countryCode }),
     });
+
     if (response.status === 'success') {
       router.push('/category/rulesets');
     }
@@ -67,6 +69,7 @@ const Page = ({ id }: PageProps) => {
           rulesetType="category"
           startDate={ruleSetDetail.startDate}
           endDate={ruleSetDetail.endDate}
+          countryCode={ruleSetDetail.countryCode}
         />
       )}
 

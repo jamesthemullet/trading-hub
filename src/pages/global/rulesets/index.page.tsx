@@ -57,6 +57,7 @@ const RuleSets = () => {
         rules: ruleSet.rules,
         isEnabled: !ruleSet.isEnabled,
         excludedFacets: ruleSet.excludedFacets,
+        countryCode: ruleSet.countryCode,
       },
     });
 

@@ -1,7 +1,13 @@
-import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
+import {
+  type ChangeEvent,
+  type FormEvent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 
-import type { Category, Pagination } from '@/libs/api';
+import type { Category, CountryCode, Pagination } from '@/libs/api';
 import { useGetCategories } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -41,12 +47,14 @@ type Props = {
   onSelectCategory: (category: string) => void;
   previewCategory: string | undefined;
   selectedCategories: string[];
+  countrySelected?: CountryCode;
   selectPreviewCategory: (category: string | undefined) => void;
 };
 
 export const CategorySearch = ({
   onClearSelection,
   onSelectCategory,
+  countrySelected,
   previewCategory,
   selectedCategories,
   selectPreviewCategory,
@@ -77,6 +85,15 @@ export const CategorySearch = ({
     categories: [],
     pagination: {},
   });
+
+  useEffect(() => {
+    setCategoryResults({
+      categories: [],
+      pagination: {},
+    });
+    setSearchValue('');
+  }, [countrySelected]);
+
   const searchCategories = async (query: string) => {
     const resp = await getCategories({
       query,

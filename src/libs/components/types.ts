@@ -2,6 +2,7 @@ import {
   AlphanumericBoostBury,
   AlphanumericBoostBuryField,
   AttributeType,
+  CountryCode,
   IncludeExclude,
   NumericBoostBury,
 } from '../api';
@@ -71,4 +72,8 @@ export type Action =
   | {
       type: 'dateTime';
       payload: DateTime;
+    }
+  | {
+      type: 'changeCountry';
+      payload: CountryCode;
     };

@@ -1,7 +1,11 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
-import { KeywordRedirect, ReturnedKeywordRedirect } from '@/libs/api';
+import {
+  CountryCode,
+  KeywordRedirect,
+  ReturnedKeywordRedirect,
+} from '@/libs/api';
 import {
   ProductGridHeader,
   RadioButtons,
@@ -11,6 +15,8 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
+import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { color } from '@/libs/components/utils/constants';
 
 const RedirectType = styled.div`
@@ -54,6 +60,15 @@ const LabelContainer = styled.label`
   align-items: center;
 `;
 
+const InfluenceWrapper = styled.div`
+  margin-right: ${spacing(2)};
+`;
+
+const InfluenceLabel = styled(Text)`
+  margin-bottom: ${spacing(1)};
+  line-height: 1.6rem;
+`;
+
 type Props = {
   onCreate?: (args: KeywordRedirect) => void;
   onSave?: (args: KeywordRedirect) => void;
@@ -79,6 +94,7 @@ export const Redirect = ({
           ruleTitle: savedRedirect.ruleTitle,
           startDate: savedRedirect.startDate,
           endDate: savedRedirect.endDate,
+          countryCode: savedRedirect.countryCode,
         }
       : {
           destinationUrl: '',
@@ -88,8 +104,11 @@ export const Redirect = ({
           type: 'redirectTerm',
           startDate: '',
           endDate: '',
+          countryCode: 'UK_IE',
         }
   );
+
+  const featureFlags = useContext(FeatureFlagContext);
 
   const onSaveRedirect = () => {
     if (onCreate) {
@@ -183,6 +202,17 @@ export const Redirect = ({
             : 'Redirect Phrase(s)'}
         </SubHeader3>
         <Row style={{ display: 'flex' }}>
+          {featureFlags.hasIreland && (
+            <InfluenceWrapper>
+              <InfluenceLabel>Influence</InfluenceLabel>
+              <CountrySelectorDropdown
+                onChange={(country: CountryCode) =>
+                  onUpdate('countryCode', country)
+                }
+                selectedCountryCode={redirect.countryCode}
+              />
+            </InfluenceWrapper>
+          )}
           <SearchKeywords
             searchTerms={redirect.keywords}
             title={

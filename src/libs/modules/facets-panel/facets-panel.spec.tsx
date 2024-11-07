@@ -146,6 +146,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={[]}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode="UK_IE"
       />
     );
 
@@ -168,6 +169,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={[]}
         initialExcludedFacets={[]}
         facetType="global"
+        countryCode="UK_IE"
       />
     );
 
@@ -190,6 +192,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={[]}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode="UK_IE"
       />
     );
 
@@ -212,6 +215,7 @@ describe('Facet Panel', () => {
         initialExcludedFacets={[]}
         onFacetDataChange={jest.fn()}
         facetType="category"
+        countryCode="UK_IE"
       />
     );
 
@@ -238,6 +242,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={[]}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode="UK_IE"
       />
     );
 
@@ -278,6 +283,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={initialIncludedFacetsMock}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode="UK_IE"
       />
     );
 
@@ -305,6 +311,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={initialIncludedFacetsMock}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode="UK_IE"
       />
     );
 
@@ -331,6 +338,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={initialIncludedFacetsMock}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode={'UK'}
       />
     );
 
@@ -356,6 +364,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={[]}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode={'UK'}
       />
     );
 
@@ -380,6 +389,7 @@ describe('Facet Panel', () => {
         initialExcludedFacets={[]}
         facetType="category"
         onSelectedCategoryChange={onSelectedCategoryChangeSpy}
+        countryCode={'UK'}
       />
     );
 
@@ -410,6 +420,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={initialIncludedFacetsMock}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode={'UK'}
       />
     );
 
@@ -457,6 +468,7 @@ describe('Facet Panel', () => {
           initialExcludedFacets={[]}
           facetType="category"
           onScheduleDateChange={jest.fn()}
+          countryCode={'UK'}
         />
       </FeatureFlagContext.Provider>
     );
@@ -482,6 +494,7 @@ describe('Facet Panel', () => {
           startDate="2024-11-05T00:00:00.000Z"
           endDate="2024-11-06T00:00:00.000Z"
           onScheduleDateChange={jest.fn()}
+          countryCode={'UK'}
         />
       </FeatureFlagContext.Provider>
     );
@@ -506,6 +519,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={[]}
         initialExcludedFacets={[]}
         facetType="global"
+        countryCode={'UK'}
       />
     );
 
@@ -567,6 +581,7 @@ describe('Facet Panel', () => {
         initialIncludedFacets={[]}
         initialExcludedFacets={[]}
         facetType="category"
+        countryCode={'UK'}
       />
     );
 
@@ -585,6 +600,7 @@ describe('Facet Panel', () => {
           initialIncludedFacets={[]}
           initialExcludedFacets={[]}
           facetType="global"
+          countryCode={'UK'}
         />
       );
 
@@ -618,6 +634,7 @@ describe('Facet Panel', () => {
           initialIncludedFacets={[]}
           initialExcludedFacets={[]}
           facetType="global"
+          countryCode={'UK'}
         />
       );
 

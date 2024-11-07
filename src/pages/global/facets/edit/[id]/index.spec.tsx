@@ -261,6 +261,7 @@ describe('Global Facet Management Editing', () => {
           ],
         },
         isEnabled: true,
+        countryCode: 'UK_IE',
       },
     });
 

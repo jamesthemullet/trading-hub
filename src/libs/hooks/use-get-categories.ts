@@ -22,6 +22,7 @@ export const useGetCategories = () => {
           q: query,
           start,
           rows,
+          catalogue: 'MANDSUK',
         });
 
         return response.data;

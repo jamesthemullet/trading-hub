@@ -31,6 +31,7 @@ const RedirectRuleSets = () => {
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
+
   const currentPageIndex = currentPage - 1;
   const { deleteRedirect } = useRedirectDelete();
   const { updateRedirect } = useRedirectUpdate();

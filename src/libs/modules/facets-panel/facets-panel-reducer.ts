@@ -1,4 +1,4 @@
-import { ReturnedFacet } from '@/libs/api';
+import { CountryCode, ReturnedFacet } from '@/libs/api';
 import { toArrayWithSwappedElements } from '@/libs/components/modals/edit-facet/utils/swap-array-elements';
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
@@ -34,20 +34,27 @@ type ChangeDisplayTypeAction = {
   };
 };
 
-type InitializeStateAction = {
-  type: 'INITIALIZE_STATE';
+type InitialiseStateAction = {
+  type: 'INITIALISE_STATE';
   payload: FacetPanelState;
+};
+
+type ChangeCountryAction = {
+  type: 'changeCountry';
+  payload: CountryCode;
 };
 
 export type Action =
   | MoveRowUpAction
   | MoveRowDownAction
   | ChangeDisplayTypeAction
-  | InitializeStateAction;
+  | InitialiseStateAction
+  | ChangeCountryAction;
 
 export type FacetPanelState = {
   excludedFacets: string[];
   includedFacets: string[];
+  countryCode: CountryCode;
 };
 
 export const facetsPanelReducer = (
@@ -99,8 +106,16 @@ export const facetsPanelReducer = (
             : [...currentExcluded, action.payload.id],
       };
     }
-    case 'INITIALIZE_STATE': {
+    case 'INITIALISE_STATE': {
       return action.payload;
+    }
+    case 'changeCountry': {
+      const { payload } = action;
+
+      return {
+        ...state,
+        countryCode: payload,
+      };
     }
   }
 };

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 
 import {
   Category,
+  CountryCode,
   ExcludedFacets,
   ReturnedFacet,
   RuleSetFacetConfigWithId,
@@ -124,24 +125,25 @@ const Page = ({ id }: { id: string }) => {
     categoryIds,
     includedFacets,
     excludedFacets,
+    countryCode,
   }: {
     categoryIds: string[];
     includedFacets: ReturnedFacet[];
     excludedFacets: ExcludedFacets;
+    countryCode: CountryCode;
   }) => {
     const response = await updateCategoryRuleSet({
       categoryIds,
       rules: ruleSetDetail.rules,
-
       facets: includedFacets,
       isEnabled: ruleSetDetail.isEnabled,
       ...(dateTime[0] && { startDate: new Date(dateTime[0]).toISOString() }),
       ...(dateTime[1] && {
         endDate: new Date(dateTime[1]).toISOString(),
       }),
-
       ruleSetId: id,
       excludedFacets,
+      countryCode,
     });
     if (response && response.status !== 'error') {
       return router.push(`/category/facets/`);
@@ -227,6 +229,7 @@ const Page = ({ id }: { id: string }) => {
           rulesetMerchandisingRules={ruleSetDetail.rules}
           startDate={ruleSetDetail.startDate}
           updatedValues={handleUpdatedValues}
+          countryCode={ruleSetDetail.countryCode || 'UK_IE'}
         />
       )}
     </>

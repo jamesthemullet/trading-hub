@@ -50,6 +50,7 @@ const Page = ({ id }: PageProps) => {
           rulesetExcludedFacets={globalRuleSet.excludedFacets}
           rulesetType="global"
           rulesetId={id}
+          countryCode={globalRuleSet.countryCode}
         />
       )}
     </>

@@ -29,6 +29,7 @@ export const useSearchRuleSetUpdate = () => {
           rules: rules.rules,
           startDate: rules.startDate,
           endDate: rules.endDate,
+          countryCode: rules.countryCode,
         };
         const response = await search().betaMerchandisingKeywordRulesetUpdate(
           ruleSetId,

@@ -1,8 +1,11 @@
+import { CountryCode } from '@/libs/api';
+
 import { FacetPanelState, facetsPanelReducer } from './facets-panel-reducer';
 
 const mockFacetsPanelState: FacetPanelState = {
   includedFacets: ['1', '2', '3'],
   excludedFacets: [],
+  countryCode: 'UK_IE',
 };
 
 describe('facetsPanelReducer', () => {
@@ -141,6 +144,23 @@ describe('facetsPanelReducer', () => {
         ...mockFacetsPanelState,
         includedFacets: ['2', '4'],
         excludedFacets: ['1', '3'],
+      });
+    });
+  });
+
+  describe('changeCountry', () => {
+    it('should change country', () => {
+      const state: FacetPanelState = {
+        ...mockFacetsPanelState,
+      };
+      const action = {
+        type: 'changeCountry' as const,
+        payload: 'UK' as CountryCode,
+      };
+      const result = facetsPanelReducer(state, action);
+      expect(result).toEqual({
+        ...mockFacetsPanelState,
+        countryCode: 'UK',
       });
     });
   });

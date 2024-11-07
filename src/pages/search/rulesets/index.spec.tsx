@@ -250,6 +250,7 @@ describe('Search Rulesets', () => {
     expect(mockRuleSetCreate).toHaveBeenCalledWith({
       merchandisingRules: mockMerchandisingRules,
       searchTerms: mockSearchTerms,
+      countryCode: 'UK_IE',
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith(

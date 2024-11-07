@@ -57,6 +57,7 @@ const Page = ({ id }: PageProps) => {
           searchTerms={ruleSet.searchTerms}
           startDate={ruleSet.startDate}
           endDate={ruleSet.endDate}
+          countryCode={ruleSet.countryCode}
         />
       )}
 

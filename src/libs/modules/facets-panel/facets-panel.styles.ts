@@ -49,7 +49,7 @@ export const LowerHeading = styled(Text)`
 export const ScopeWrapper = styled.div`
   display: flex;
 
-  & > div:first-child {
+  & > div:second-child {
     width: 100%;
   }
 `;
@@ -141,4 +141,13 @@ export const OrderArrowsContainer = styled.div`
   width: 100%;
   max-width: ${spacing(12)};
   margin-right: ${spacing(2)};
+`;
+
+export const CountrySelectorWrapper = styled.div`
+  margin-right: ${spacing(2)};
+`;
+
+export const CountrySelectorLabel = styled(Text)`
+  margin-bottom: ${spacing(1)};
+  line-height: 1.6rem;
 `;

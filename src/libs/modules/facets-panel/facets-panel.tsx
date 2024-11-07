@@ -1,7 +1,8 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 
 import {
   Category,
+  CountryCode,
   ExcludedFacets,
   MerchandisingRules,
   ReturnedFacet,
@@ -16,6 +17,8 @@ import {
 } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
+import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
@@ -29,6 +32,8 @@ import {
   AddFacetPanel,
   AttributesTable,
   Col,
+  CountrySelectorLabel,
+  CountrySelectorWrapper,
   Duration,
   LabelContainer,
   LowerHeading,
@@ -72,6 +77,7 @@ interface FacetsPanelProps {
     categoryIds: string[];
     includedFacets: ReturnedFacet[];
     excludedFacets: ExcludedFacets;
+    countryCode: CountryCode;
   }) => void;
   onCancel: () => void;
   setSearch?: (value: string) => void;
@@ -100,6 +106,7 @@ interface FacetsPanelProps {
   title: string;
   facetsData: ReturnedFacet[];
   facetType: 'global' | 'category' | 'search';
+  countryCode: CountryCode;
   isNewRuleset?: boolean;
   rulesetMerchandisingRules?: MerchandisingRules;
   categoryIds?: string[];
@@ -126,6 +133,7 @@ export const FacetsPanel = ({
   title,
   facetsData,
   facetType,
+  countryCode,
   isNewRuleset,
   categoryIds,
   displayRowOrderControls = false,
@@ -169,7 +177,10 @@ export const FacetsPanel = ({
   const [selectedFacet, setSelectedFacet] = useState<ReturnedFacet | undefined>(
     undefined
   );
+
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
+
+  const featureFlags = useContext(FeatureFlagContext);
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
@@ -178,6 +189,7 @@ export const FacetsPanel = ({
   const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
     includedFacets: initialIncludedFacets,
     excludedFacets: initialExcludedFacets,
+    countryCode: countryCode,
   });
   const { facetsState, includedFacets, excludedFacets } = useFacetsRowsSelector(
     facetPanelLocalState,
@@ -187,13 +199,19 @@ export const FacetsPanel = ({
 
   useEffect(() => {
     dispatch({
-      type: 'INITIALIZE_STATE',
+      type: 'INITIALISE_STATE',
       payload: {
         includedFacets: initialIncludedFacets,
         excludedFacets: initialExcludedFacets,
+        countryCode: facetPanelLocalState.countryCode || countryCode,
       },
     });
-  }, [initialIncludedFacets, initialExcludedFacets]);
+  }, [
+    initialIncludedFacets,
+    initialExcludedFacets,
+    countryCode,
+    facetPanelLocalState.countryCode,
+  ]);
 
   const handleOrderChange =
     (attributeState: FacetRowDisplayValue) => (newOrder: FacetDisplayType) => {
@@ -244,6 +262,7 @@ export const FacetsPanel = ({
       categoryIds: selectedCategories,
       includedFacets,
       excludedFacets,
+      countryCode: facetPanelLocalState.countryCode || 'UK_IE',
     });
   };
 
@@ -342,6 +361,17 @@ export const FacetsPanel = ({
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <ScopeWrapper>
+          {featureFlags.hasIreland && (
+            <CountrySelectorWrapper>
+              <CountrySelectorLabel>Influence</CountrySelectorLabel>
+              <CountrySelectorDropdown
+                onChange={(country) => {
+                  dispatch({ type: 'changeCountry', payload: country });
+                }}
+                selectedCountryCode={facetPanelLocalState.countryCode}
+              />
+            </CountrySelectorWrapper>
+          )}
           {facetType === 'category' && (
             <CategorySearch
               selectedCategories={selectedCategories}
@@ -354,6 +384,7 @@ export const FacetsPanel = ({
                 onSelectedCategoryChange?.(undefined);
               }}
               onSelectCategory={onSelectCategory}
+              countrySelected={facetPanelLocalState.countryCode}
               previewCategory={previewValue}
               selectPreviewCategory={setPreviewValue}
             />

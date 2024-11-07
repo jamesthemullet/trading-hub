@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Category, ExcludedFacets, ReturnedFacet } from '@/libs/api';
+import {
+  Category,
+  CountryCode,
+  ExcludedFacets,
+  ReturnedFacet,
+} from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { useFacetsList, useRuleSetCreate } from '@/libs/hooks';
 import { FacetsPanel } from '@/libs/modules/facets-panel/facets-panel';
@@ -59,16 +64,18 @@ const Page = () => {
     categoryIds,
     includedFacets,
     excludedFacets,
+    countryCode,
   }: {
     categoryIds: string[];
     includedFacets: ReturnedFacet[];
     excludedFacets: ExcludedFacets;
+    countryCode: CountryCode;
   }) => {
     const resp = await createRuleset({
       excludedFacets,
       categoryIds,
       facets: includedFacets,
-      countryCode: 'UK',
+      countryCode,
       rules: defaultMerchandisingRules,
       isEnabled: true,
       ...(dateTime[0] && { startDate: new Date(dateTime[0]).toISOString() }),
@@ -110,6 +117,7 @@ const Page = () => {
         onScheduleDateChange={(updatedDateTime: [Date | null, Date | null]) => {
           setDateTime(updatedDateTime);
         }}
+        countryCode={'UK_IE'}
       />
     </>
   );

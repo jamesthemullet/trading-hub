@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react';
 
-import type { KeywordRuleSet, MerchandisingRules } from '@/libs/api';
+import type {
+  CountryCode,
+  KeywordRuleSet,
+  MerchandisingRules,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 
 export const useSearchRuleSetCreate = () => {
@@ -12,11 +16,13 @@ export const useSearchRuleSetCreate = () => {
       merchandisingRules,
       startDate,
       endDate,
+      countryCode,
     }: {
       searchTerms: string[];
       merchandisingRules: MerchandisingRules;
       startDate?: string;
       endDate?: string;
+      countryCode?: CountryCode;
     }) => {
       setError('');
 
@@ -27,6 +33,7 @@ export const useSearchRuleSetCreate = () => {
           rules: merchandisingRules,
           startDate,
           endDate,
+          countryCode,
         };
         const response =
           await search().betaMerchandisingKeywordRulesetCreate(body);

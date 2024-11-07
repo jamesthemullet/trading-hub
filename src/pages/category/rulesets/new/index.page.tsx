@@ -15,15 +15,16 @@ const NewRuleSetPage = () => {
     categoryIds,
     startDate,
     endDate,
+    countryCode,
   }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
     const resp = await createRuleset({
       facets: facets,
       isEnabled: true,
       categoryIds,
-      countryCode: 'UK',
       rules,
       startDate,
       endDate,
+      countryCode,
     });
 
     if (resp) {

@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import { useEffect, useReducer, useState } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
   CategoryRuleSet,
+  CountryCode,
   ExcludedFacets,
   KeywordRuleSet,
   MerchandisingRules,
@@ -22,6 +23,8 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
+import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
+import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearch } from '@/libs/components/product-search/product-search';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
@@ -83,6 +86,7 @@ const ProductSearchTabContent = styled(TabContent)`
 
 const CategorySearchWrapper = styled.div`
   min-width: 600px;
+  width: 100%;
 `;
 
 const KeywordSearchWrapper = styled.div`
@@ -91,6 +95,15 @@ const KeywordSearchWrapper = styled.div`
 
 const GlobalInfoWrapper = styled.div`
   width: 100%;
+`;
+
+const InfluenceWrapper = styled.div`
+  margin-right: ${spacing(2)};
+`;
+
+const InfluenceLabel = styled(Text)`
+  margin-bottom: ${spacing(1)};
+  line-height: 1.6rem;
 `;
 
 const Duration = styled.div`
@@ -131,6 +144,7 @@ export const Ruleset = ({
   rulesetType,
   searchTerms,
   startDate,
+  countryCode,
 }: {
   isEnabled: boolean;
   onSave?: ({
@@ -158,6 +172,7 @@ export const Ruleset = ({
   searchTerms?: string[];
   startDate?: string;
   endDate?: string;
+  countryCode?: CountryCode;
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     categoryIds || []
@@ -169,6 +184,7 @@ export const Ruleset = ({
   const [currentProductTab, setCurrentProductTab] = useState(0);
   const [hasChanges, setHasChanges] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+
   const router = useRouter();
 
   const onSelectCategory = (category: string) => {
@@ -206,9 +222,12 @@ export const Ruleset = ({
         alphanumeric: [],
       },
     },
+    countryCode,
   });
 
   const { rules: merchandisingRules } = ruleset;
+
+  const featureFlags = useContext(FeatureFlagContext);
 
   useEffect(() => {
     const warningText =
@@ -287,6 +306,7 @@ export const Ruleset = ({
           excludedFacets: rulesetExcludedFacets,
           startDate: ruleset.startDate,
           endDate: ruleset.endDate,
+          countryCode: ruleset.countryCode,
         },
         categoryIds: selectedCategories,
         ...(rulesetSearchTerms && {
@@ -301,6 +321,7 @@ export const Ruleset = ({
         categoryIds: selectedCategories,
         startDate: ruleset.startDate,
         endDate: ruleset.endDate,
+        countryCode: ruleset.countryCode || 'UK_IE',
       });
     } else if (onCreateKeywordSearchRuleset && rulesetSearchTerms.length) {
       onCreateKeywordSearchRuleset({
@@ -309,6 +330,7 @@ export const Ruleset = ({
         searchTerms: rulesetSearchTerms,
         startDate: ruleset.startDate,
         endDate: ruleset.endDate,
+        countryCode: ruleset.countryCode || 'UK_IE',
       });
     }
   };
@@ -349,6 +371,17 @@ export const Ruleset = ({
       />
 
       <CategoryPanel>
+        {featureFlags.hasIreland && (
+          <InfluenceWrapper>
+            <InfluenceLabel>Influence</InfluenceLabel>
+            <CountrySelectorDropdown
+              onChange={(country) =>
+                dispatch({ type: 'changeCountry', payload: country })
+              }
+              selectedCountryCode={ruleset.countryCode || 'UK_IE'}
+            />
+          </InfluenceWrapper>
+        )}
         {rulesetType === 'category' && (
           <CategorySearchWrapper>
             <CategorySearch
@@ -361,6 +394,7 @@ export const Ruleset = ({
                 );
               }}
               onSelectCategory={onSelectCategory}
+              countrySelected={ruleset.countryCode}
               previewCategory={previewValue}
               selectPreviewCategory={setPreviewValue}
             />
