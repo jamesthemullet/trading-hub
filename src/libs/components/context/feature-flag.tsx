@@ -1,6 +1,11 @@
 import { createContext } from 'react';
 
-export const FeatureFlagContext = createContext({
+export type FeatureFlags = {
+  hasIreland: boolean;
+  hasMultipleCategories: boolean;
+};
+
+export const FeatureFlagContext = createContext<FeatureFlags>({
   hasIreland: false,
   hasMultipleCategories: false,
 });

@@ -78,6 +78,7 @@ export const TablePagination = ({
         <Dropdown
           label={`${currentPageSize}`}
           isOpen={isPageSizeOpen}
+          aria-label="rows per page"
           onOpen={() => {
             setIsPageSizeOpen(true);
           }}

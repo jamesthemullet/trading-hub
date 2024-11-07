@@ -144,6 +144,7 @@ export const Dropdown = ({
   alignContentTowards,
   footerContent,
   isOpen,
+  ...props
 }: FilterDropdownProps) => {
   const dropdownWrapperRef = useOnOutsideClick<HTMLDivElement>({
     handler: onClose,
@@ -177,6 +178,7 @@ export const Dropdown = ({
         onKeyDown={handleButtonOnKeyDown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        {...props}
       >
         <ButtonText as="span" color={'#000'}>
           {icon && (
