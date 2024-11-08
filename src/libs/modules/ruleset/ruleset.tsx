@@ -222,7 +222,7 @@ export const Ruleset = ({
         alphanumeric: [],
       },
     },
-    countryCode,
+    countryCode: countryCode || 'UK_IE',
   });
 
   const { rules: merchandisingRules } = ruleset;
@@ -321,7 +321,7 @@ export const Ruleset = ({
         categoryIds: selectedCategories,
         startDate: ruleset.startDate,
         endDate: ruleset.endDate,
-        countryCode: ruleset.countryCode || 'UK_IE',
+        countryCode: ruleset.countryCode,
       });
     } else if (onCreateKeywordSearchRuleset && rulesetSearchTerms.length) {
       onCreateKeywordSearchRuleset({
@@ -330,7 +330,7 @@ export const Ruleset = ({
         searchTerms: rulesetSearchTerms,
         startDate: ruleset.startDate,
         endDate: ruleset.endDate,
-        countryCode: ruleset.countryCode || 'UK_IE',
+        countryCode: ruleset.countryCode,
       });
     }
   };
@@ -378,7 +378,7 @@ export const Ruleset = ({
               onChange={(country) =>
                 dispatch({ type: 'changeCountry', payload: country })
               }
-              selectedCountryCode={ruleset.countryCode || 'UK_IE'}
+              selectedCountryCode={ruleset.countryCode}
             />
           </InfluenceWrapper>
         )}
@@ -394,7 +394,7 @@ export const Ruleset = ({
                 );
               }}
               onSelectCategory={onSelectCategory}
-              countrySelected={ruleset.countryCode}
+              countryCode={ruleset.countryCode}
               previewCategory={previewValue}
               selectPreviewCategory={setPreviewValue}
             />

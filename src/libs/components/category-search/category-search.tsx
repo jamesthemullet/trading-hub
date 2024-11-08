@@ -47,22 +47,22 @@ type Props = {
   onSelectCategory: (category: string) => void;
   previewCategory: string | undefined;
   selectedCategories: string[];
-  countrySelected?: CountryCode;
   selectPreviewCategory: (category: string | undefined) => void;
+  countryCode?: CountryCode;
 };
 
 export const CategorySearch = ({
   onClearSelection,
   onSelectCategory,
-  countrySelected,
   previewCategory,
   selectedCategories,
   selectPreviewCategory,
+  countryCode = 'UK_IE',
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { getCategories } = useGetCategories();
-  const { hasMultipleCategories } = useContext(FeatureFlagContext);
+  const { hasMultipleCategories, hasIreland } = useContext(FeatureFlagContext);
   const [categoryResults, setCategoryResults] = useState<{
     /**
      * Category type contains all fields that are optional, this is a bad design and should be fixed in future in API: https://jira.marksandspencer.app/browse/LPN-2687
@@ -92,13 +92,17 @@ export const CategorySearch = ({
       pagination: {},
     });
     setSearchValue('');
-  }, [countrySelected]);
+  }, [countryCode]);
 
-  const searchCategories = async (query: string) => {
+  const searchCategories = async (query: string, countryCode: CountryCode) => {
+    const countryCodes = countryCode
+      .split('_')
+      .filter((code): code is CountryCode => code === 'UK' || code === 'IE');
     const resp = await getCategories({
       query,
       rows: 5,
       start: 0,
+      countryCodes: hasIreland ? countryCodes : ['UK'],
     });
 
     if (resp !== undefined) {
@@ -121,7 +125,7 @@ export const CategorySearch = ({
 
   const { callback: onSearchRequest, cancel } = useDebounce(
     async (value: string) => {
-      await searchCategories(value);
+      await searchCategories(value, countryCode);
     },
     SEARCH_DEBOUNCE_WAIT
   );
@@ -135,7 +139,7 @@ export const CategorySearch = ({
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await searchCategories(searchValue);
+    await searchCategories(searchValue, countryCode);
   };
 
   if (!hasMultipleCategories && selectedCategories.length) {

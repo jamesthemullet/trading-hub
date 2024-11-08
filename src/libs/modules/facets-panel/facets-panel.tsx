@@ -384,7 +384,7 @@ export const FacetsPanel = ({
                 onSelectedCategoryChange?.(undefined);
               }}
               onSelectCategory={onSelectCategory}
-              countrySelected={facetPanelLocalState.countryCode}
+              countryCode={facetPanelLocalState.countryCode}
               previewCategory={previewValue}
               selectPreviewCategory={setPreviewValue}
             />

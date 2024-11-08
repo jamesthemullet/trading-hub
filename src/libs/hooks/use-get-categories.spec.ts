@@ -67,6 +67,7 @@ describe('useGetCategories', () => {
     const resp = await current.getCategories({
       start: start,
       rows: rows,
+      countryCodes: ['UK'],
     });
 
     expect(resp).toEqual(categoryListDataMultipleResults);
@@ -85,6 +86,7 @@ describe('useGetCategories', () => {
       query: categoryId1,
       start: start,
       rows: rows,
+      countryCodes: ['UK'],
     });
 
     expect(resp).toEqual(categoryListDataSingleResult);
@@ -103,9 +105,29 @@ describe('useGetCategories', () => {
       query: categoryName,
       start: start,
       rows: rows,
+      countryCodes: ['UK'],
     });
 
     expect(resp).toEqual(categoryListDataMultipleResults);
+  });
+
+  it('should handle zero results', async () => {
+    getCategoriesMock.mockReturnValueOnce({
+      data: { categories: [], pagination: 0 },
+      status: { status: 200 },
+    });
+    const {
+      result: { current },
+    } = renderHook(() => useGetCategories());
+
+    const resp = await current.getCategories({
+      query: categoryName,
+      start: start,
+      rows: rows,
+      countryCodes: ['UK'],
+    });
+
+    expect(resp).toEqual({ categories: [], pagination: { totalItems: 0 } });
   });
 
   it('should return error if API returns non 200', async () => {
@@ -121,6 +143,7 @@ describe('useGetCategories', () => {
         query: categoryName,
         start: start,
         rows: rows,
+        countryCodes: ['UK'],
       });
     });
 
@@ -138,6 +161,7 @@ describe('useGetCategories', () => {
         query: categoryName,
         start: start,
         rows: rows,
+        countryCodes: ['UK'],
       });
     });
 

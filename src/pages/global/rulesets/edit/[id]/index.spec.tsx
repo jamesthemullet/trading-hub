@@ -91,6 +91,7 @@ describe('Index', () => {
             alphanumeric: [],
           },
         },
+        countryCode: 'UK_IE',
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
     };
