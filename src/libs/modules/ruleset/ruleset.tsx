@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useContext, useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -38,10 +39,45 @@ import pluralize from 'pluralize';
 
 import { rulesetReducer } from './reducer';
 
-const CategoryPanel = styled.div`
+const CategoryPanel = styled.div<{
+  rulesetType: 'global' | 'category' | 'search';
+  hasIreland: boolean;
+}>`
   border-top: 2px solid #005640;
   padding: ${spacing(1)};
-  display: flex;
+
+  ${({ hasIreland }) =>
+    !hasIreland &&
+    css`
+      display: flex;
+    `};
+
+  ${({ hasIreland, rulesetType }) =>
+    hasIreland &&
+    css`
+      display: grid;
+      grid-template-areas:
+        'countryCode rulesetIdentifier'
+        'duration duration';
+      grid-template-columns: 240px auto;
+      @media only screen and (min-width: 1200px) {
+        grid-template-areas:
+          'countryCode'
+          'rulesetIdentifier'
+          'duration';
+        ${rulesetType === 'search' ||
+        (rulesetType === 'global' &&
+          /* istanbul ignore next */
+          'grid-template-columns: 240px 490px 320px')};
+        ${rulesetType === 'category' &&
+        'grid-template-columns: 240px 730px 320px'};
+      }
+    `}
+`;
+
+const RulesetIdentifier = styled.div`
+  grid-area: 'rulesetIdentifier';
+  margin-right: ${spacing(2)};
 `;
 
 const MainContainerPanel = styled.div`
@@ -99,6 +135,8 @@ const GlobalInfoWrapper = styled.div`
 
 const InfluenceWrapper = styled.div`
   margin-right: ${spacing(2)};
+  width: 220px;
+  grid-area: 'countryCode';
 `;
 
 const InfluenceLabel = styled(Text)`
@@ -109,8 +147,8 @@ const InfluenceLabel = styled(Text)`
 const Duration = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: ${spacing(2)};
   gap: ${spacing(1)};
+  grid-area: 'duration';
 
   label {
     margin-top: ${spacing(0.5)};
@@ -189,6 +227,9 @@ export const Ruleset = ({
 
   const onSelectCategory = (category: string) => {
     setSelectedCategories([...selectedCategories, category]);
+    if (!selectedCategories.length) {
+      setPreviewValue(category);
+    }
     if (!hasChanges) setHasChanges(true);
   };
 
@@ -259,7 +300,7 @@ export const Ruleset = ({
     error: previewError,
     isLoading,
   } = usePreview({
-    ...(selectedCategories.length && { categoryId: selectedCategories[0] }),
+    ...(selectedCategories.length && { categoryId: previewValue }),
     ...(rulesetSearchTerms.length && { searchTerm: previewValue }),
     merchandisingRules: merchandisingRules,
     facetConfig: [],
@@ -343,7 +384,7 @@ export const Ruleset = ({
       {showPreview && (
         <Preview
           onClose={() => setShowPreview(!showPreview)}
-          categoryId={selectedCategories[0]}
+          categoryId={rulesetType === 'category' ? previewValue : undefined}
           searchTerm={rulesetType === 'search' ? previewValue : undefined}
           merchandisingRules={merchandisingRules}
           facetConfig={rulesetFacets || []}
@@ -373,7 +414,10 @@ export const Ruleset = ({
         title="Product Grid"
       />
 
-      <CategoryPanel>
+      <CategoryPanel
+        rulesetType={rulesetType}
+        hasIreland={featureFlags.hasIreland}
+      >
         {featureFlags.hasIreland && (
           <InfluenceWrapper>
             <InfluenceLabel>Influence</InfluenceLabel>
@@ -385,43 +429,45 @@ export const Ruleset = ({
             />
           </InfluenceWrapper>
         )}
-        {rulesetType === 'category' && (
-          <CategorySearchWrapper>
-            <CategorySearch
-              selectedCategories={selectedCategories}
-              onClearSelection={(category: string) => {
-                setSelectedCategories(
-                  selectedCategories.filter(
-                    (categoryName) => categoryName !== category
-                  )
-                );
-              }}
-              onSelectCategory={onSelectCategory}
-              countryCode={ruleset.countryCode}
-              previewCategory={previewValue}
-              selectPreviewCategory={setPreviewValue}
-            />
-          </CategorySearchWrapper>
-        )}
+        <RulesetIdentifier>
+          {rulesetType === 'category' && (
+            <CategorySearchWrapper>
+              <CategorySearch
+                selectedCategories={selectedCategories}
+                onClearSelection={(category: string) => {
+                  setSelectedCategories(
+                    selectedCategories.filter(
+                      (categoryName) => categoryName !== category
+                    )
+                  );
+                }}
+                onSelectCategory={onSelectCategory}
+                countryCode={ruleset.countryCode}
+                previewCategory={previewValue}
+                selectPreviewCategory={setPreviewValue}
+              />
+            </CategorySearchWrapper>
+          )}
 
-        {rulesetType === 'search' && (
-          <KeywordSearchWrapper>
-            <SearchKeywords
-              title="Search Keywords"
-              searchTerms={rulesetSearchTerms}
-              addSearchTerm={onAddSearchTerm}
-              removeSearchTerm={onRemoveSearchTerm}
-              previewSearchTerm={previewValue}
-              selectPreviewSearchTerm={setPreviewValue}
-            />
-          </KeywordSearchWrapper>
-        )}
+          {rulesetType === 'search' && (
+            <KeywordSearchWrapper>
+              <SearchKeywords
+                title="Search Keywords"
+                searchTerms={rulesetSearchTerms}
+                addSearchTerm={onAddSearchTerm}
+                removeSearchTerm={onRemoveSearchTerm}
+                previewSearchTerm={previewValue}
+                selectPreviewSearchTerm={setPreviewValue}
+              />
+            </KeywordSearchWrapper>
+          )}
 
-        {rulesetType === 'global' && (
-          <GlobalInfoWrapper>
-            <SelectedCategory label="All pages" />
-          </GlobalInfoWrapper>
-        )}
+          {rulesetType === 'global' && (
+            <GlobalInfoWrapper>
+              <SelectedCategory label="All pages" />
+            </GlobalInfoWrapper>
+          )}
+        </RulesetIdentifier>
 
         {rulesetType !== 'global' && (
           <Duration>

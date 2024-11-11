@@ -159,7 +159,11 @@ export const CategorySearch = ({
     );
   }
 
-  const visibleCategories = selectedCategories.slice(0, 2);
+  const visibleCategories = [...selectedCategories]
+    .sort((a, b) =>
+      a === previewCategory ? -1 : b === previewCategory ? 1 : 0
+    )
+    .slice(0, 2);
 
   const additionalCategories = selectedCategories.filter(
     (category) => category !== previewCategory

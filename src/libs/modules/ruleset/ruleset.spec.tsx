@@ -88,6 +88,7 @@ const CANCEL_BUTTON = 'Cancel';
 const CONFIRM_BUTTON = 'Close without saving';
 
 const categoryId1 = 'cat_123';
+const categoryId2 = 'cat_456';
 const categoryName1 = 'jeans';
 const categoryPath1 = 'l/jeans';
 const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
@@ -498,6 +499,121 @@ describe('Ruleset', () => {
     expect(mockSave).toHaveBeenCalledWith(
       expect.objectContaining({ ruleSetId })
     );
+  });
+
+  describe('category ranking rules', () => {
+    it('should call preview with the selected category', async () => {
+      const expectedPreview = {
+        categoryId: 'cat_456',
+        facetConfig: [],
+        merchandisingRules: {
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: { alphanumeric: [], numeric: [], product: [] },
+          excludes: { alphanumeric: [] },
+          includes: { alphanumeric: [] },
+          pinnedProducts: [],
+        },
+        searchTerm: undefined,
+      };
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      jest.mocked(usePreview).mockReturnValue({
+        ...mockCategoryReturnValue,
+        data: {
+          ...mockCategoryReturnValue.data,
+          pagination: {
+            totalItems: 145,
+          },
+          products: [
+            {
+              id: 'product-id-1',
+              productId: 'product-id-1',
+              title: 'productSearchTitle',
+              imageUrl: ['example1.jpg'],
+              brand: product1Brand,
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: product1Price,
+              url: '',
+            },
+          ],
+          ruleSet: {
+            ...mockCategoryReturnValue.data.ruleSet,
+            rules: {
+              ...mockCategoryReturnValue.data.ruleSet.rules,
+              pinnedProducts: [{ ...mockProduct, id: 'product2' }],
+            },
+          },
+        },
+      });
+
+      jest.mocked(useCategoryProductSearch).mockReturnValue({
+        searchForProduct: jest.fn(() => {
+          return Promise.resolve({
+            products: [
+              {
+                id: 'product-id-2',
+                productId: 'product-id-2',
+                title: 'productSearchTitle',
+                imageUrl: ['example2.jpg'],
+                brand: product1Brand,
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: product1Price,
+                url: '',
+              },
+            ],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+        error: '',
+        isLoading: false,
+      });
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: false, hasMultipleCategories: true }}
+        >
+          <Ruleset
+            isEnabled={true}
+            onSave={jest.fn()}
+            onCancel={jest.fn()}
+            categoryIds={[categoryId1, categoryId2]}
+            rulesetMerchandisingRules={{
+              pinnedProducts: [],
+              blockedProducts: [],
+              boosts: { numeric: [], alphanumeric: [], product: [] },
+              buries: { numeric: [], alphanumeric: [], product: [] },
+              includes: {
+                alphanumeric: [],
+              },
+              excludes: {
+                alphanumeric: [],
+              },
+            }}
+            rulesetId={ruleSetId}
+            rulesetType="category"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      const category2button = await screen.findByRole('button', {
+        name: 'cat_456',
+      });
+
+      await waitFor(() => {
+        category2button.click();
+      });
+
+      expect(usePreview).toHaveBeenCalledWith(expectedPreview);
+    });
   });
 
   describe('keyword search', () => {
