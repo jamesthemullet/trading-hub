@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -40,7 +40,7 @@ describe('Index', () => {
   });
 
   it('renders', () => {
-    render(<RuleSetCreate />);
+    renderWithProviders(<RuleSetCreate />);
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Product Grid'
@@ -75,7 +75,7 @@ describe('Index', () => {
       ),
       error: '',
     });
-    render(<RuleSetCreate />);
+    renderWithProviders(<RuleSetCreate />);
 
     await user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
 

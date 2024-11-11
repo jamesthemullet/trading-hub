@@ -661,6 +661,39 @@ describe('Ruleset', () => {
 
       expect(mockCreate).toHaveBeenCalledWith(expectedData);
     });
+
+    it('should show preview', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetType="search"
+        />
+      );
+
+      await user.type(
+        screen.getByLabelText('Add keyword'),
+        'new keyword{enter}'
+      );
+
+      const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(
+        screen.getByText('Search across the site to preview the rule influence')
+      ).toBeInTheDocument();
+    });
   });
 
   it('should cancel changes', async () => {
@@ -849,7 +882,6 @@ describe('Ruleset', () => {
             },
           },
         },
-        // setRules: mockSetRules,
       });
 
       jest.mocked(useCategoryProductSearch).mockReturnValue({

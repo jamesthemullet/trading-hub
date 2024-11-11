@@ -20,6 +20,7 @@ const KeywordMock = () => {
   const onRemoveSearchTerm = (keyword: string) => {
     setSearchTerms(searchTerms.filter((term) => term !== keyword));
   };
+  const [previewValue, setPreviewValue] = useState<string | undefined>('');
 
   return (
     <SearchKeywords
@@ -27,6 +28,8 @@ const KeywordMock = () => {
       searchTerms={searchTerms}
       addSearchTerm={onAddSearchTerm}
       removeSearchTerm={onRemoveSearchTerm}
+      previewSearchTerm={previewValue}
+      selectPreviewSearchTerm={setPreviewValue}
     />
   );
 };
@@ -52,6 +55,9 @@ const KeywordMockWithValues = () => {
   const onRemoveSearchTerm = (keyword: string) => {
     setSearchTerms(searchTerms.filter((term) => term !== keyword));
   };
+  const [previewValue, setPreviewValue] = useState<string | undefined>(
+    mockKeywords[0]
+  );
 
   return (
     <SearchKeywords
@@ -59,6 +65,8 @@ const KeywordMockWithValues = () => {
       searchTerms={searchTerms}
       addSearchTerm={onAddSearchTerm}
       removeSearchTerm={onRemoveSearchTerm}
+      previewSearchTerm={previewValue}
+      selectPreviewSearchTerm={setPreviewValue}
     />
   );
 };

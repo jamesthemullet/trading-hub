@@ -260,13 +260,16 @@ export const Ruleset = ({
     isLoading,
   } = usePreview({
     ...(selectedCategories.length && { categoryId: selectedCategories[0] }),
-    ...(rulesetSearchTerms && { searchTerm: rulesetSearchTerms[0] }),
+    ...(rulesetSearchTerms.length && { searchTerm: previewValue }),
     merchandisingRules: merchandisingRules,
     facetConfig: [],
   });
 
   const onAddSearchTerm = (keyword: string) => {
     setRulesetSearchTerms([...rulesetSearchTerms, keyword]);
+    if (!rulesetSearchTerms.length) {
+      setPreviewValue(keyword);
+    }
   };
   const onRemoveSearchTerm = (keyword: string) => {
     setRulesetSearchTerms(
@@ -341,7 +344,7 @@ export const Ruleset = ({
         <Preview
           onClose={() => setShowPreview(!showPreview)}
           categoryId={selectedCategories[0]}
-          searchTerm={rulesetSearchTerms[0]}
+          searchTerm={rulesetType === 'search' ? previewValue : undefined}
           merchandisingRules={merchandisingRules}
           facetConfig={rulesetFacets || []}
         />
@@ -408,6 +411,8 @@ export const Ruleset = ({
               searchTerms={rulesetSearchTerms}
               addSearchTerm={onAddSearchTerm}
               removeSearchTerm={onRemoveSearchTerm}
+              previewSearchTerm={previewValue}
+              selectPreviewSearchTerm={setPreviewValue}
             />
           </KeywordSearchWrapper>
         )}
@@ -477,7 +482,7 @@ export const Ruleset = ({
               onTabChange={setCurrentEditorTab}
               currentTab={currentEditorTab}
             />
-            {rulesetType === 'category' && (
+            {rulesetType !== 'global' && (
               <Text>
                 {data.products.length}{' '}
                 {pluralize(' product', data.products.length)}{' '}

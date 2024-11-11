@@ -6,6 +6,7 @@ import Image from 'next/image';
 
 import { Button } from '../../buttons/button/button';
 import { SearchBox } from '../../search-box/search-box';
+import { Label } from '../../typography/typography.styles';
 import { color } from '../../utils/constants';
 import { spacing } from '../../utils/spacing';
 import {
@@ -16,7 +17,9 @@ import {
   KeyWordPill,
   ModalContainer,
   ModalFooter,
+  ModalSelectedKeyword,
   RemoveKeyWordPill,
+  SelectKeywordPill,
   StyledCloseButton,
   StyledInput,
   StyledSearchContainer,
@@ -96,11 +99,13 @@ const KeyWordInput = styled.input`
   }
 `;
 
-type Props = {
-  searchTerms: string[];
-  title: string;
+export type Props = {
   addSearchTerm: (keyword: string) => void;
   removeSearchTerm: (keyword: string) => void;
+  searchTerms: string[];
+  title: string;
+  previewSearchTerm?: string | undefined;
+  selectPreviewSearchTerm?: (keyword: string | undefined) => void;
 };
 
 const calculateWordsToDisplay = (searchTerms: string[], MAX_CHARS: number) => {
@@ -123,10 +128,12 @@ const calculateWordsToDisplay = (searchTerms: string[], MAX_CHARS: number) => {
 };
 
 export const SearchKeywords = ({
-  searchTerms,
-  title,
   addSearchTerm,
+  previewSearchTerm,
   removeSearchTerm,
+  searchTerms,
+  selectPreviewSearchTerm,
+  title,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -159,11 +166,13 @@ export const SearchKeywords = ({
 
   useEffect(() => {
     setFilteredKeywords(
-      searchTerms.filter((keyword) =>
-        keyword.toLowerCase().includes(filterValue.toLowerCase())
-      )
+      searchTerms
+        .filter((term) => term !== previewSearchTerm)
+        .filter((keyword) =>
+          keyword.toLowerCase().includes(filterValue.toLowerCase())
+        )
     );
-  }, [filterValue, searchTerms]);
+  }, [filterValue, searchTerms, previewSearchTerm]);
 
   const handleClose = () => {
     if (inputValue === '') {
@@ -172,6 +181,14 @@ export const SearchKeywords = ({
       setUnfinishedKeyword(true);
     }
   };
+
+  const additionalSearchTerms = searchTerms.filter(
+    (term) => term !== previewSearchTerm
+  );
+
+  const sortedSearchTerms = [...searchTerms].sort((a, b) =>
+    a === previewSearchTerm ? -1 : b === previewSearchTerm ? 1 : 0
+  );
 
   return (
     <>
@@ -182,17 +199,41 @@ export const SearchKeywords = ({
         </LabelContainer>
         <SearchBoxContainer>
           <InputBoxWrapper>
-            {searchTerms.map((term, index) => {
+            {sortedSearchTerms.map((term, index) => {
+              const isSelectedSearchTerm =
+                previewSearchTerm === term && !!selectPreviewSearchTerm;
               return index < wordsToDisplay ? (
-                <KeyWordPill key={`${term}-${index}`} isSelected={false}>
-                  {term}
+                <KeyWordPill
+                  key={`${term}-${index}`}
+                  isSelected={isSelectedSearchTerm}
+                  as="p"
+                >
+                  {isSelectedSearchTerm || !selectPreviewSearchTerm ? (
+                    term
+                  ) : (
+                    <SelectKeywordPill
+                      onClick={() => selectPreviewSearchTerm(term)}
+                    >
+                      {term}
+                    </SelectKeywordPill>
+                  )}
                   <RemoveKeyWordPill
-                    onClick={() => removeSearchTerm(term)}
+                    onClick={() => {
+                      removeSearchTerm(term);
+
+                      if (isSelectedSearchTerm) {
+                        selectPreviewSearchTerm(
+                          additionalSearchTerms.length
+                            ? additionalSearchTerms[0]
+                            : undefined
+                        );
+                      }
+                    }}
                     aria-label={`Remove keyword: ${term}`}
                   >
                     <Image
                       alt=""
-                      src={`/trading-hub/asset/icon-remove-chip.svg`}
+                      src={`/trading-hub/asset/icon-remove-${isSelectedSearchTerm ? 'selected-' : ''}chip.svg`}
                       width={16}
                       height={16}
                     />
@@ -225,104 +266,138 @@ export const SearchKeywords = ({
           )}
         </SearchBoxContainer>
       </SearchKeywordsContainer>
-      {showModal && (
-        <Modal.Root
-          opened={true}
-          onClose={onClose}
-          centered
-          padding={20}
-          size="auto"
-          closeOnClickOutside={false}
-          closeOnEscape={false}
-          aria-label="Search Keywords Modal"
-        >
-          <Modal.Overlay blur={3} />
-          <Modal.Content>
-            <Modal.Body>
-              <ModalContainer>
-                <Heading>{title}</Heading>
-                <StyledSearchContainer>
-                  <SearchBox
-                    inputProps={{
-                      id: 'searchId',
-                      label: 'search keywords',
-                      isLabelHidden: true,
-                      placeholder: 'Search...',
-                      value: filterValue,
-                      onChange: (
-                        event: React.ChangeEvent<HTMLInputElement>
-                      ) => {
-                        setFilterValue(event.target.value);
-                      },
-                    }}
-                    iconButtonProps={{
-                      id: 'SearchIconInputBtn',
-                    }}
-                  />
-                </StyledSearchContainer>
-                <KeywordList unfinishedKeyword={unfinishedKeyword}>
-                  {filteredKeywords.map((keyword, index) => (
-                    <KeyWordPill key={`${keyword}-${index}`} isSelected={false}>
-                      {keyword}
-                      <RemoveKeyWordPill
-                        onClick={() => removeSearchTerm(keyword)}
-                        aria-label={`Remove keyword: ${keyword}`}
-                      >
-                        <Image
-                          alt=""
-                          src={`/trading-hub/asset/icon-remove-chip.svg`}
-                          width={16}
-                          height={16}
-                        />
-                      </RemoveKeyWordPill>
-                    </KeyWordPill>
-                  ))}
-                  <StyledInput
-                    type="text"
-                    value={inputValue}
-                    onChange={(event) => setInputValue(event.target.value)}
-                    onKeyDown={(event) => {
-                      setUnfinishedKeyword(false);
-                      if (event.key === 'Enter') {
-                        addSearchTerm(inputValue);
-                        setInputValue('');
+
+      <Modal.Root
+        opened={showModal}
+        onClose={onClose}
+        centered
+        padding={20}
+        size="auto"
+        closeOnClickOutside={false}
+        closeOnEscape={false}
+        aria-label="Search Keywords Modal"
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <Modal.Body>
+            <ModalContainer>
+              <Heading>{title}</Heading>
+              <StyledSearchContainer>
+                <SearchBox
+                  inputProps={{
+                    id: 'searchId',
+                    label: 'search keywords',
+                    isLabelHidden: true,
+                    placeholder: 'Search...',
+                    value: filterValue,
+                    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                      setFilterValue(event.target.value);
+                    },
+                  }}
+                  iconButtonProps={{
+                    id: 'SearchIconInputBtn',
+                  }}
+                />
+              </StyledSearchContainer>
+              {previewSearchTerm && (
+                <ModalSelectedKeyword aria-label="Preview category">
+                  <Label as="h4">Selected: </Label>
+                  <KeyWordPill isSelected as="p">
+                    {previewSearchTerm}
+                    <RemoveKeyWordPill
+                      onClick={
+                        // istanbul ignore next
+                        () => {
+                          removeSearchTerm(previewSearchTerm);
+                          if (selectPreviewSearchTerm) {
+                            selectPreviewSearchTerm(
+                              additionalSearchTerms.length
+                                ? additionalSearchTerms[0]
+                                : undefined
+                            );
+                          }
+                        }
                       }
-                    }}
-                    aria-label="Add keyword to list"
-                    style={{
-                      flex: '1',
-                      border: 'none',
-                      outline: 'none',
-                    }}
-                  />
-                </KeywordList>
-              </ModalContainer>
-            </Modal.Body>
-            <ModalFooter>
-              {unfinishedKeyword && (
-                <ErrorContainer>
-                  <Image
-                    alt=""
-                    src={`/trading-hub/asset/icon-warning.svg`}
-                    width={20}
-                    height={20}
-                  />
-                  <ErrorText>
-                    Please finish adding the keyword to close
-                  </ErrorText>
-                </ErrorContainer>
+                      aria-label={`Remove category from modal: ${previewSearchTerm}`}
+                    >
+                      <Image
+                        alt=""
+                        src={`/trading-hub/asset/icon-remove-selected-chip.svg`}
+                        width={16}
+                        height={16}
+                      />
+                    </RemoveKeyWordPill>
+                  </KeyWordPill>
+                </ModalSelectedKeyword>
               )}
-              <StyledCloseButton
-                theme="secondary"
-                onClick={handleClose}
-                aria-label="Close keywords modal"
-              >
-                Close
-              </StyledCloseButton>
-            </ModalFooter>
-          </Modal.Content>
-        </Modal.Root>
-      )}
+              <KeywordList unfinishedKeyword={unfinishedKeyword}>
+                {filteredKeywords.map((keyword, index) => (
+                  <KeyWordPill key={`${keyword}-${index}`} isSelected={false}>
+                    {selectPreviewSearchTerm ? (
+                      <SelectKeywordPill
+                        onClick={() => selectPreviewSearchTerm(keyword)}
+                      >
+                        {keyword}
+                      </SelectKeywordPill>
+                    ) : (
+                      keyword
+                    )}
+                    <RemoveKeyWordPill
+                      onClick={() => removeSearchTerm(keyword)}
+                      aria-label={`Remove keyword: ${keyword}`}
+                    >
+                      <Image
+                        alt=""
+                        src={`/trading-hub/asset/icon-remove-chip.svg`}
+                        width={16}
+                        height={16}
+                      />
+                    </RemoveKeyWordPill>
+                  </KeyWordPill>
+                ))}
+                <StyledInput
+                  type="text"
+                  value={inputValue}
+                  onChange={(event) => setInputValue(event.target.value)}
+                  onKeyDown={(event) => {
+                    setUnfinishedKeyword(false);
+                    if (event.key === 'Enter') {
+                      addSearchTerm(inputValue);
+                      setInputValue('');
+                    }
+                  }}
+                  aria-label="Add keyword to list"
+                  style={{
+                    flex: '1',
+                    border: 'none',
+                    outline: 'none',
+                  }}
+                />
+              </KeywordList>
+            </ModalContainer>
+          </Modal.Body>
+          <ModalFooter>
+            {unfinishedKeyword && (
+              <ErrorContainer>
+                <Image
+                  alt=""
+                  src={`/trading-hub/asset/icon-warning.svg`}
+                  width={20}
+                  height={20}
+                />
+                <ErrorText>Please finish adding the keyword to close</ErrorText>
+              </ErrorContainer>
+            )}
+            <StyledCloseButton
+              theme="secondary"
+              onClick={handleClose}
+              aria-label="Close keywords modal"
+            >
+              Close
+            </StyledCloseButton>
+          </ModalFooter>
+        </Modal.Content>
+      </Modal.Root>
     </>
   );
 };

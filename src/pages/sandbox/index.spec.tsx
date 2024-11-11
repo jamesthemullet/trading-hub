@@ -1,10 +1,10 @@
-import { render } from '@testing-library/react';
 import Index, { getServerSideProps } from './index.page';
 import { screen } from '@testing-library/react';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 describe('Index', () => {
   it('should render', () => {
-    render(<Index nodeVersion="20.9.0" />);
+    renderWithProviders(<Index nodeVersion="20.9.0" />);
     screen.getByText('Sandbox examples');
   });
 

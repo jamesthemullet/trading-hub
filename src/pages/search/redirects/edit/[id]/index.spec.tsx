@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
 import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { GetServerSidePropsContext } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
@@ -57,7 +58,7 @@ describe('Edit keyword redirect', () => {
   it('should save the redirect', async () => {
     const user = userEvent.setup({ delay: null });
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -67,7 +68,7 @@ describe('Edit keyword redirect', () => {
   it('should cancel changes to a redirect', async () => {
     const user = userEvent.setup({ delay: null });
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -96,7 +97,7 @@ describe('Edit keyword redirect', () => {
     };
     jest.mocked(useRedirectDetail).mockImplementation(() => mockGetRedirect);
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByLabelText('loader')).toBeInTheDocument();
   });
@@ -109,7 +110,7 @@ describe('Edit keyword redirect', () => {
     };
     jest.mocked(useRedirectDetail).mockImplementation(() => mockGetRedirect);
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(await screen.findByText('Error: Bad request')).toBeVisible();
   });

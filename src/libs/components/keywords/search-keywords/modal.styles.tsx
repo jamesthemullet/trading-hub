@@ -20,8 +20,8 @@ export const KeywordList = styled.ul<{ unfinishedKeyword: boolean }>`
   background-color: ${color.backgroundGrey};
   overflow-y: auto;
   overflow-x: hidden;
-  height: 260px;
-  max-height: 260px;
+  height: 220px;
+  max-height: 220px;
   align-content: baseline;
   border-bottom: ${({ unfinishedKeyword }) =>
     unfinishedKeyword ? `1px solid ${color.saleRed}` : 'none'};
@@ -49,6 +49,12 @@ export const KeyWordPill = styled.li<{ isSelected: boolean }>`
   }
 `;
 
+export const SelectKeywordPill = styled.button`
+  border: none;
+  background: none;
+  padding: 0;
+`;
+
 export const RemoveKeyWordPill = styled.button`
   width: 18px;
   height: 18px;
@@ -63,6 +69,15 @@ export const StyledInput = styled.input`
   background-color: ${color.backgroundGrey};
 `;
 
+export const ModalSelectedKeyword = styled.div`
+  display: flex;
+  padding-top: ${spacing(1)};
+
+  h4 {
+    padding: ${spacing(1)} ${spacing(1)} 0 0;
+  }
+`;
+
 export const Heading = styled(Title)`
   padding-top: ${spacing(2)};
   margin-bottom: ${spacing(2)};
@@ -74,14 +89,11 @@ export const StyledSearchContainer = styled.div`
 
   button {
     height: 40px;
+    right: 1rem;
   }
 
   input {
     min-height: 56px;
-  }
-
-  .icon {
-    margin-right: 20px;
   }
 `;
 

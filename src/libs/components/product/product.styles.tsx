@@ -213,5 +213,6 @@ export const ProductCard = styled.div`
   img {
     height: 160px;
     width: auto;
+    max-width: 100%;
   }
 `;

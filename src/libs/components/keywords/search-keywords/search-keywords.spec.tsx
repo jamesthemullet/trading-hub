@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { SearchKeywords } from './search-keywords';
+import { Props, SearchKeywords } from './search-keywords';
 
 const shorterSearchTermsList = ['keyword1', 'keyword2', 'keyword3'];
 
@@ -18,6 +18,15 @@ const longerSearchTermsList = [
   'very long keyword to take it over the 60 character limit',
 ];
 
+const mockProps: Props = {
+  title: 'Search Keywords',
+  searchTerms: [],
+  addSearchTerm: jest.fn(),
+  removeSearchTerm: jest.fn(),
+  previewSearchTerm: undefined,
+  selectPreviewSearchTerm: jest.fn(),
+};
+
 describe('Search Keywords', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -25,12 +34,7 @@ describe('Search Keywords', () => {
 
   it('should render successfully', () => {
     renderWithProviders(
-      <SearchKeywords
-        title="Search Keywords"
-        searchTerms={shorterSearchTermsList}
-        addSearchTerm={() => {}}
-        removeSearchTerm={() => {}}
-      />
+      <SearchKeywords {...mockProps} searchTerms={shorterSearchTermsList} />
     );
 
     expect(screen.getByText('Search Keywords')).toBeInTheDocument();
@@ -44,10 +48,9 @@ describe('Search Keywords', () => {
     const addSearchTermStub = jest.fn();
     renderWithProviders(
       <SearchKeywords
-        title="Search Keywords"
+        {...mockProps}
         searchTerms={shorterSearchTermsList}
         addSearchTerm={addSearchTermStub}
-        removeSearchTerm={() => {}}
       />
     );
 
@@ -68,12 +71,7 @@ describe('Search Keywords', () => {
     const user = userEvent.setup();
 
     renderWithProviders(
-      <SearchKeywords
-        title="Search Keywords"
-        searchTerms={[]}
-        addSearchTerm={addSearchTermStub}
-        removeSearchTerm={jest.fn()}
-      />
+      <SearchKeywords {...mockProps} addSearchTerm={addSearchTermStub} />
     );
 
     const input = screen.getByLabelText('Add keyword');
@@ -97,9 +95,8 @@ describe('Search Keywords', () => {
     const removeSearchTermStub = jest.fn();
     renderWithProviders(
       <SearchKeywords
-        title="Search Keywords"
+        {...mockProps}
         searchTerms={shorterSearchTermsList}
-        addSearchTerm={() => {}}
         removeSearchTerm={removeSearchTermStub}
       />
     );
@@ -117,10 +114,10 @@ describe('Search Keywords', () => {
     const addSearchTermStub = jest.fn();
     renderWithProviders(
       <SearchKeywords
-        title="Search Keywords"
+        {...mockProps}
         searchTerms={longerSearchTermsList}
         addSearchTerm={addSearchTermStub}
-        removeSearchTerm={() => {}}
+        selectPreviewSearchTerm={undefined}
       />
     );
 
@@ -144,16 +141,19 @@ describe('Search Keywords', () => {
     const removeSearchTermStub = jest.fn();
     renderWithProviders(
       <SearchKeywords
-        title="Search Keywords"
+        {...mockProps}
         searchTerms={longerSearchTermsList}
-        addSearchTerm={() => {}}
         removeSearchTerm={removeSearchTermStub}
       />
     );
+    const modal = await screen.findByLabelText('Search Keywords Modal');
+    expect(modal).toBeVisible();
 
     await waitFor(async () => {
       await userEvent.click(screen.getByLabelText('View all'));
-      await userEvent.click(screen.getByLabelText('Remove keyword: keyword5'));
+      await userEvent.click(
+        within(modal).getByLabelText('Remove keyword: keyword5')
+      );
     });
 
     await waitFor(() => {
@@ -163,12 +163,7 @@ describe('Search Keywords', () => {
 
   it('should not show the view all button when there are less keywords than the max to display', () => {
     renderWithProviders(
-      <SearchKeywords
-        title="Search Keywords"
-        searchTerms={shorterSearchTermsList}
-        addSearchTerm={() => {}}
-        removeSearchTerm={() => {}}
-      />
+      <SearchKeywords {...mockProps} searchTerms={shorterSearchTermsList} />
     );
 
     expect(
@@ -178,12 +173,7 @@ describe('Search Keywords', () => {
 
   it('should show the view all button when there are more keywords than the max to display', () => {
     renderWithProviders(
-      <SearchKeywords
-        title="Search Keywords"
-        searchTerms={longerSearchTermsList}
-        addSearchTerm={() => {}}
-        removeSearchTerm={() => {}}
-      />
+      <SearchKeywords {...mockProps} searchTerms={longerSearchTermsList} />
     );
 
     expect(screen.getByRole('button', { name: 'View all' })).toBeVisible();
@@ -191,12 +181,7 @@ describe('Search Keywords', () => {
 
   it('should close the modal', async () => {
     renderWithProviders(
-      <SearchKeywords
-        title="Search Keywords"
-        searchTerms={longerSearchTermsList}
-        addSearchTerm={() => {}}
-        removeSearchTerm={() => {}}
-      />
+      <SearchKeywords {...mockProps} searchTerms={longerSearchTermsList} />
     );
 
     await waitFor(async () => {
@@ -224,12 +209,7 @@ describe('Search Keywords', () => {
 
   it('should not close the modal if the user tries to close it with an unfinished keyword', async () => {
     renderWithProviders(
-      <SearchKeywords
-        title="Search Keywords"
-        searchTerms={longerSearchTermsList}
-        addSearchTerm={() => {}}
-        removeSearchTerm={() => {}}
-      />
+      <SearchKeywords {...mockProps} searchTerms={longerSearchTermsList} />
     );
 
     await waitFor(async () => {
@@ -262,12 +242,7 @@ describe('Search Keywords', () => {
 
   it('should filter attributes on user input', async () => {
     renderWithProviders(
-      <SearchKeywords
-        title="Search Keywords"
-        searchTerms={longerSearchTermsList}
-        addSearchTerm={() => {}}
-        removeSearchTerm={() => {}}
-      />
+      <SearchKeywords {...mockProps} searchTerms={longerSearchTermsList} />
     );
 
     await userEvent.click(screen.getByRole('button', { name: 'View all' }));
@@ -291,5 +266,169 @@ describe('Search Keywords', () => {
     expect(
       within(modal).queryByText('Remove keyword: keyword2')
     ).not.toBeInTheDocument();
+  });
+
+  it('should change the preview keyword', async () => {
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={shorterSearchTermsList}
+        previewSearchTerm={shorterSearchTermsList[0]}
+      />
+    );
+
+    const keyword2 = await screen.findByRole('button', {
+      name: shorterSearchTermsList[1],
+    });
+
+    act(() => {
+      keyword2.click();
+    });
+
+    expect(mockProps.selectPreviewSearchTerm).toHaveBeenCalledWith(
+      shorterSearchTermsList[1]
+    );
+  });
+
+  it('should show the preview keyword first in the list', async () => {
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={longerSearchTermsList}
+        previewSearchTerm={longerSearchTermsList[5]}
+      />
+    );
+
+    const keywords = screen.getAllByLabelText('Remove keyword: ', {
+      exact: false,
+    });
+
+    expect(keywords[0]).toHaveAttribute(
+      'aria-label',
+      `Remove keyword: ${longerSearchTermsList[5]}`
+    );
+  });
+
+  it('should select an additional keyword as the preview keyword if the preview keyword is removed', async () => {
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={shorterSearchTermsList}
+        previewSearchTerm={shorterSearchTermsList[0]}
+      />
+    );
+
+    const keyword1remove = await screen.findAllByRole('button', {
+      name: `Remove keyword: ${shorterSearchTermsList[0]}`,
+    });
+
+    act(() => {
+      keyword1remove[0].click();
+    });
+
+    expect(mockProps.removeSearchTerm).toHaveBeenCalledWith(
+      shorterSearchTermsList[0]
+    );
+    expect(mockProps.selectPreviewSearchTerm).toHaveBeenCalledWith(
+      shorterSearchTermsList[1]
+    );
+  });
+
+  it('should clear the preview keyword if the preview keyword is removed and no other keywords have been selected', async () => {
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={shorterSearchTermsList.slice(0, 1)}
+        previewSearchTerm={shorterSearchTermsList[0]}
+      />
+    );
+
+    const keyword1remove = await screen.findAllByRole('button', {
+      name: `Remove keyword: ${shorterSearchTermsList[0]}`,
+    });
+
+    act(() => {
+      keyword1remove[0].click();
+    });
+
+    expect(mockProps.removeSearchTerm).toHaveBeenCalledWith(
+      shorterSearchTermsList[0]
+    );
+    expect(mockProps.selectPreviewSearchTerm).toHaveBeenCalledWith(undefined);
+  });
+
+  it('should change the selected keyword from the modal', async () => {
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={longerSearchTermsList}
+        previewSearchTerm={longerSearchTermsList[0]}
+      />
+    );
+
+    const modalButton = await screen.findByRole('button', {
+      name: 'View all',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Close keywords modal' })
+      ).toBeVisible();
+    });
+
+    const keyword2 = await screen.findByRole('button', {
+      name: longerSearchTermsList[2],
+    });
+
+    act(() => {
+      keyword2.click();
+    });
+
+    expect(mockProps.selectPreviewSearchTerm).toHaveBeenCalledWith(
+      longerSearchTermsList[2]
+    );
+  });
+
+  it('should remove additional keywords', async () => {
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={longerSearchTermsList}
+        previewSearchTerm={longerSearchTermsList[0]}
+      />
+    );
+
+    const modalButton = await screen.findByRole('button', {
+      name: 'View all',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Close keywords modal' })
+      ).toBeVisible();
+    });
+
+    const modal = await screen.findByLabelText('Search Keywords Modal');
+    expect(modal).toBeVisible();
+
+    const keyword2remove = await within(modal).findByRole('button', {
+      name: `Remove keyword: ${longerSearchTermsList[3]}`,
+    });
+
+    act(() => {
+      keyword2remove.click();
+    });
+
+    expect(mockProps.removeSearchTerm).toHaveBeenCalledWith(
+      longerSearchTermsList[3]
+    );
   });
 });
