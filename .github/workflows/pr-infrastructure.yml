@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - main
+      - test-pr-env
 
 concurrency:
   # injecting the uri is subject to race condition so we need to limit the concurrency
@@ -23,6 +23,7 @@ jobs:
   deploy-pr-infrastructure:
     name: Deploy PR infrastructure
     runs-on: ubuntu-latest
+    if: false
     strategy:
       fail-fast: false
     environment:
@@ -83,7 +84,8 @@ jobs:
           echo "secrets=$secrets" >> "$GITHUB_OUTPUT"
 
       - name: Deploy PR infrastructure
-        if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
+        if: false
+        # if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
         uses: DigitalInnovation/brightcloud/.github/actions/webapp-dynamic-env-oidc@feat/oidcn
         with:
           NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
