@@ -116,6 +116,35 @@ describe('CategorySearch', () => {
     );
   });
 
+  it('should show and remove search results via keyboard', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    renderWithProviders(<CategorySearch {...mockProps} />);
+
+    const input = screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT);
+
+    await user.type(input, 'SubCategory_507{enter}');
+
+    expect(screen.getByDisplayValue('SubCategory_507')).toBeVisible();
+
+    const resultsButton = await screen.findByText(
+      `${mockCategory.identifier} | ${mockCategory.name} | ${mockCategory.path}`
+    );
+
+    expect(resultsButton).toBeVisible();
+
+    input.focus();
+    await user.keyboard('{Tab}{Escape}');
+
+    await waitFor(() => {
+      expect(resultsButton).not.toBeVisible();
+    });
+  });
+
   it('should convert undefined search results', async () => {
     const user = userEvent.setup();
     jest.mocked(useGetCategories).mockReturnValue({

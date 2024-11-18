@@ -142,6 +142,17 @@ export const CategorySearch = ({
     await searchCategories(searchValue, countryCode);
   };
 
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setCategoryResults({
+        categories: [],
+        pagination: {},
+      });
+      setSearchValue('');
+    }
+  };
+
   if (!hasMultipleCategories && selectedCategories.length) {
     return (
       <SelectedCategory
@@ -259,7 +270,9 @@ export const CategorySearch = ({
         )}
       </SearchBox>
       {categoryResults.categories.length > 0 && !isModalOpen && (
-        <Container>{categoryResults.categories.map(CategoryRow)}</Container>
+        <Container onKeyDown={handleOnKeyDown}>
+          {categoryResults.categories.map(CategoryRow)}
+        </Container>
       )}
 
       <Modal.Root

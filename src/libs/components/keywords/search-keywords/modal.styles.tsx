@@ -46,6 +46,11 @@ export const KeyWordPill = styled.li<{ isSelected: boolean }>`
 
   button {
     color: ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
+
+    &:focus {
+      outline: solid
+        ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
+    }
   }
 `;
 

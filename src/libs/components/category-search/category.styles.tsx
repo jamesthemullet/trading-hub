@@ -19,11 +19,14 @@ export const Container = styled.div`
   background: #f5f5f5;
 `;
 
-export const Row = styled.div`
+export const Row = styled.button`
   display: flex;
   flex-direction: row;
   padding: ${spacing(1)};
   color: #1d1d1b;
+  border: none;
+  background: none;
+  text-align: left;
 
   &:hover {
     background: #f1f1f1;
