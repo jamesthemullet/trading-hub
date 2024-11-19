@@ -1,6 +1,7 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
+import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { MantineProvider } from '@mantine/core';
 
@@ -19,12 +20,19 @@ export default function App({
 }: AppProps<{ session: Session | null }>) {
   const { session } = pageProps;
   const [cookies] = useCookies(['flagIreland', 'flagMultipleCategories']);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <FeatureFlagContext.Provider
       value={{
-        hasIreland: cookies.flagIreland,
-        hasMultipleCategories: cookies.flagMultipleCategories,
+        hasIreland: isClient ? cookies.flagIreland : false,
+        hasMultipleCategories: isClient
+          ? cookies.flagMultipleCategories
+          : false,
       }}
     >
       <SessionProvider session={session}>
