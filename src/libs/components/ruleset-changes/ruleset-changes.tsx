@@ -2,7 +2,11 @@ import styled from '@emotion/styled';
 import { Dispatch, useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
-import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
+import type {
+  CountryCode,
+  MerchandisingRules,
+  Product as ProductType,
+} from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 
 import { Button } from '../buttons/button/button';
@@ -44,6 +48,7 @@ const ProductsLoader = ({
   merchandisingRules,
   pinnedProductsCount,
   products,
+  countryCode = 'UK_IE',
 }: {
   changeType: 'boost' | 'bury' | 'pin' | 'block';
   dispatch: Dispatch<Action>;
@@ -52,6 +57,7 @@ const ProductsLoader = ({
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
   products: ProductRule[];
+  countryCode?: string;
 }) => {
   const [productDetails, setProductDetails] = useState<ProductType[]>([]);
   const [productsShown, setProductsShown] = useState(PRODUCTS_TO_LOAD);
@@ -60,13 +66,18 @@ const ProductsLoader = ({
 
   const fetch = useCallback(
     async (productIds: string[]) => {
+      const countryCodes = countryCode
+        .split('_')
+        .filter((code): code is CountryCode => code === 'UK' || code === 'IE');
+
       const data = await searchForProduct({
         productIds,
         merchandisingRules,
+        countryCodes,
       });
       return data.products;
     },
-    [searchForProduct, merchandisingRules]
+    [searchForProduct, merchandisingRules, countryCode]
   );
 
   useEffect(() => {
@@ -169,10 +180,12 @@ export const RulesetChanges = ({
   isPinnable,
   merchandisingRules,
   dispatch,
+  countryCode,
 }: {
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
   dispatch: Dispatch<Action>;
+  countryCode?: CountryCode;
 }) => {
   /* istanbul ignore next */
   const countOfAttributeChanges =
@@ -299,6 +312,7 @@ export const RulesetChanges = ({
           dispatch={dispatch}
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.blockedProducts}
+          countryCode={countryCode}
         />
       )}
 
@@ -311,6 +325,7 @@ export const RulesetChanges = ({
           dispatch={dispatch}
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.pinnedProducts}
+          countryCode={countryCode}
         />
       )}
 
@@ -323,6 +338,7 @@ export const RulesetChanges = ({
           dispatch={dispatch}
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.boosts.product}
+          countryCode={countryCode}
         />
       )}
 
@@ -335,6 +351,7 @@ export const RulesetChanges = ({
           dispatch={dispatch}
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.buries.product}
+          countryCode={countryCode}
         />
       )}
     </>

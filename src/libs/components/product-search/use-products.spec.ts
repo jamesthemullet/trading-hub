@@ -260,6 +260,7 @@ describe('useProducts', () => {
         productSearchTerm,
         maxToQuery,
         merchandisingRules,
+        countryCode: 'UK',
       })
     );
 
@@ -274,6 +275,7 @@ describe('useProducts', () => {
         start: 0,
         rows: 2,
         merchandisingRules,
+        countryCodes: ['UK'],
       });
     });
 
@@ -324,6 +326,7 @@ describe('useProducts', () => {
         start: 2,
         rows: 2,
         merchandisingRules,
+        countryCodes: ['UK'],
       });
     });
 

@@ -84,7 +84,9 @@ test.describe('Category rulesets', () => {
     await page.getByRole('link', { name: 'Add new rule' }).click();
 
     await page.waitForLoadState();
-    await expect(page.getByLabel('Visual Editor')).toBeVisible();
+    await expect(
+      page.getByText('No, there are no product rankings yet')
+    ).toBeVisible();
 
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Dresses');
@@ -267,7 +269,7 @@ test.describe('Category rulesets', () => {
     await page.waitForTimeout(400);
     await page.waitForLoadState('networkidle');
 
-    await expect(page.locator('[aria-label="placeholder-13"]')).toBeVisible();
+    await expect(page.locator('[aria-label="placeholder-24"]')).toBeVisible();
 
     await page.evaluate(() => {
       const productsPanel = document.querySelector(
@@ -284,13 +286,13 @@ test.describe('Category rulesets', () => {
     await page.waitForTimeout(400);
     await page.waitForLoadState('networkidle');
 
-    await expect(page.locator('[aria-label="Position 13"]')).toBeVisible();
+    await expect(page.locator('[aria-label="Position 24"]')).toBeVisible();
 
     await input.fill('shirt');
 
     await page.waitForTimeout(400);
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('[aria-label="placeholder-13"]')).toBeVisible();
+    await expect(page.locator('[aria-label="placeholder-24"]')).toBeVisible();
 
     await page.evaluate(() => {
       const productsPanel = document.querySelector(
@@ -308,7 +310,7 @@ test.describe('Category rulesets', () => {
     await page.waitForTimeout(400);
     await page.waitForLoadState('networkidle');
 
-    await expect(page.locator('[aria-label="Position 13"]')).toBeVisible();
+    await expect(page.locator('[aria-label="Position 24"]')).toBeVisible();
   });
 
   test('boost numeric attribute', async ({ page }) => {
@@ -520,7 +522,9 @@ test.describe('Category rulesets', () => {
       await page.getByRole('link', { name: 'Add new rule' }).click();
 
       await page.waitForLoadState();
-      await expect(page.getByLabel('Visual Editor')).toBeVisible();
+      await expect(
+        page.getByText('No, there are no product rankings yet')
+      ).toBeVisible();
 
       await page.getByPlaceholder('Search...').click();
       await page.getByPlaceholder('Search...').fill('Dresses');

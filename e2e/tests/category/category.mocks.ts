@@ -62,6 +62,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       excludedFacets: { facets: [] },
       startDate: '2024-09-12T14:17:54Z',
       endDate: '2024-12-19T04:20:03Z',
+      countryCode: 'UK',
     },
     {
       id: '22ce8ae9-a7b3-4a52-bea4-e31ebf1f5f10',
@@ -101,6 +102,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
           { id: '1e742a80-3240-11ef-aa09-000000000000' },
         ],
       },
+      countryCode: 'UK',
     },
     {
       id: '9d7f6ae7-2653-4eb6-b51b-1ee6f4087cce',
@@ -132,6 +134,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
         },
       ],
       excludedFacets: { facets: [] },
+      countryCode: 'UK',
     },
     {
       id: 'd9cb14fd-bed0-4d95-822a-743edd44a624',
@@ -172,6 +175,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       excludedFacets: {
         facets: [{ id: '4f8d4801-3eb0-11ef-9a6a-000000000000' }],
       },
+      countryCode: 'UK',
     },
     {
       id: 'f2bd8b23-9986-4d15-9cc7-a1340403be11',
@@ -245,6 +249,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
       excludedFacets: {
         facets: [{ id: '1e742a80-3240-11ef-aa09-000000000000' }],
       },
+      countryCode: 'UK',
     },
     {
       id: '2ab7aaff-0d5c-4617-a8a6-fc6fb3f531f0',
@@ -287,6 +292,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
         },
       ],
       excludedFacets: { facets: [] },
+      countryCode: 'UK',
     },
   ],
   pagination: { totalItems: 7 },
@@ -340,6 +346,7 @@ export const mockCategoryRuleset: ReturnedCategoryRuleSet = {
   excludedFacets: { facets: [] },
   startDate: '2024-09-12T14:17:54Z',
   endDate: '2024-12-19T04:20:03Z',
+  countryCode: 'UK',
 };
 
 export const mockCategoryList: Categories = {
@@ -1437,9 +1444,9 @@ export const mockProducts: ProductSearchResponse = {
     },
     {
       id: '60534411',
-      productId: 'P60533510',
+      productId: 'P60534411',
       title: 'Floral Midi Waisted Dress',
-      url: 'floral-midi-waisted-dress/p/clp60533510?color=MULTI&image=SD_01_T69_1192_ZZ_X_EC_90',
+      url: 'floral-midi-waisted-dress/p/clp60534411?color=MULTI&image=SD_01_T69_1192_ZZ_X_EC_90',
       price: '£45.00',
       brand: 'M&S Collection',
       isInStock: true,

@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { MerchandisingRules, Product as ProductType } from '@/libs/api';
+import type {
+  CountryCode,
+  MerchandisingRules,
+  Product as ProductType,
+} from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 
 import { useScrollOffset } from './use-scroll-offset';
@@ -11,12 +15,14 @@ export const useProducts = ({
   productSearchTerm,
   maxToQuery,
   merchandisingRules,
+  countryCode = 'UK_IE',
 }: {
   categoryId?: string;
   searchTerms?: string[];
   productSearchTerm: string;
   maxToQuery: number;
   merchandisingRules: MerchandisingRules;
+  countryCode?: string;
 }) => {
   const { searchForProduct } = useCategoryProductSearch();
   const [totalProducts, setTotalProducts] = useState(0);
@@ -30,20 +36,28 @@ export const useProducts = ({
       | { id: string; type: 'placeholder' }
     )[]
   >([]);
+
   const prevQuery = useRef<string | null>(null);
+  const prevCategoryId = useRef<string | null>(null);
 
   const { offset, scrollContainerRef, query } = useScrollOffset({
     productSearchTerm,
     totalProducts,
     maxToQuery,
+    categoryId,
   });
 
   const fetchData = useCallback(
     async (query: string, offset: number) => {
+      const countryCodes = countryCode
+        .split('_')
+        .filter((code): code is CountryCode => code === 'UK' || code === 'IE');
+
       const { products, pagination } = await searchForProduct({
         ...(categoryId && {
           categoryId,
         }),
+        countryCodes,
         ...(searchTerms && { searchTerms }),
         query,
         start: offset,
@@ -78,7 +92,14 @@ export const useProducts = ({
         );
       });
     },
-    [searchForProduct, categoryId, merchandisingRules, maxToQuery, searchTerms]
+    [
+      searchForProduct,
+      categoryId,
+      merchandisingRules,
+      maxToQuery,
+      searchTerms,
+      countryCode,
+    ]
   );
 
   useEffect(() => {
@@ -92,6 +113,17 @@ export const useProducts = ({
       fetchData(query, offset);
     }
   }, [fetchData, query, offset]);
+
+  useEffect(() => {
+    if (categoryId) {
+      if (prevCategoryId.current !== categoryId) {
+        // eslint-disable-next-line functional/immutable-data
+        prevCategoryId.current = categoryId;
+        setTotalProducts(0);
+        setSearchProducts([]);
+      }
+    }
+  }, [categoryId]);
 
   return {
     products,

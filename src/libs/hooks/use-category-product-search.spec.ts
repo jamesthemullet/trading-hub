@@ -64,6 +64,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
+        countryCodes: ['UK'],
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
@@ -87,17 +88,68 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
+        countryCodes: ['UK'],
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
+
     expect(requestSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         request: expect.objectContaining({
           method: 'POST',
-          url: 'http://localhost/search/beta/merchandising/product?q=Socks&rows=10&start=0&categoryId=1',
+          url: 'http://localhost/search/beta/merchandising/product?q=Socks&rows=10&start=0&categoryId=1&catalogue=MANDSUK',
         }),
       })
     );
+  });
+
+  it('should make two requests if requesting data for IE and UK', async () => {
+    const mockResponse: ReturnedCategoryRuleSets = {
+      ruleSets: [],
+      pagination: {
+        totalItems: 3,
+      },
+    };
+    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+
+    const { result } = renderHook(() => useCategoryProductSearch());
+
+    await act(async () => {
+      await result.current.searchForProduct({
+        categoryId: '1',
+        query: 'Socks',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+        countryCodes: ['UK', 'IE'],
+      });
+    });
+
+    expect(requestSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should handle pagination totalItems being undefined', async () => {
+    const mockResponse: ReturnedCategoryRuleSets = {
+      ruleSets: [],
+      pagination: {
+        totalItems: undefined,
+      },
+    };
+    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+
+    const { result } = renderHook(() => useCategoryProductSearch());
+
+    await act(async () => {
+      const data = await result.current.searchForProduct({
+        searchTerms: ['foo', 'bar', 'baz'],
+        query: 'Socks',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+        countryCodes: ['UK'],
+      });
+      expect(data.pagination.totalItems).toEqual(0);
+    });
   });
 
   it('searches by merchandising search term', async () => {
@@ -118,6 +170,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
+        countryCodes: ['UK'],
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
@@ -125,7 +178,7 @@ describe('useCategoryProductSearch', () => {
       expect.objectContaining({
         request: expect.objectContaining({
           method: 'POST',
-          url: 'http://localhost/search/beta/merchandising/product?q=Socks&rows=10&start=0&merchandisingSearchTerm=foo&merchandisingSearchTerm=bar&merchandisingSearchTerm=baz',
+          url: 'http://localhost/search/beta/merchandising/product?q=Socks&rows=10&start=0&merchandisingSearchTerm=foo&merchandisingSearchTerm=bar&merchandisingSearchTerm=baz&catalogue=MANDSUK',
         }),
       })
     );
@@ -149,6 +202,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
+        countryCodes: ['UK'],
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
@@ -166,6 +220,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
+        countryCodes: ['UK'],
       });
     });
 

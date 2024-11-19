@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 
-import { type MerchandisingRules, search } from '@/libs/api';
+import { CountryCode, type MerchandisingRules, search } from '@/libs/api';
+
+import { convertCountryCodeToCatalogue } from '../components/utils/convert-country-code-to-catalogue';
 
 export const useCategoryProductSearch = () => {
   const [error, setError] = useState('');
@@ -9,6 +11,7 @@ export const useCategoryProductSearch = () => {
   const searchForProduct = useCallback(
     async ({
       categoryId,
+      countryCodes,
       productIds,
       query,
       rows,
@@ -17,6 +20,7 @@ export const useCategoryProductSearch = () => {
       merchandisingRules,
     }: {
       merchandisingRules: MerchandisingRules;
+      countryCodes: CountryCode[];
       categoryId?: string;
       productIds?: string[];
       query?: string;
@@ -37,12 +41,34 @@ export const useCategoryProductSearch = () => {
           ...(productIds && { productId: productIds }),
         };
 
-        const response = await search().betaMerchandisingProductCreate(
-          merchandisingRules,
-          queryData
+        const promises = countryCodes.map((code) =>
+          search()
+            .betaMerchandisingProductCreate(merchandisingRules, {
+              ...queryData,
+              catalogue: convertCountryCodeToCatalogue(code),
+            })
+            .then((response) => response.data)
         );
+
+        const results = await Promise.all(promises);
+
+        const combinedProducts = results.flatMap((result) => result.products);
+
+        const totalItems = results.reduce(
+          (sum, result) => sum + (result.pagination?.totalItems ?? 0),
+          0
+        );
+
+        const combinedData = {
+          products: combinedProducts,
+          pagination: {
+            totalItems,
+          },
+        };
+
         setIsLoading(false);
-        return response.data;
+
+        return combinedData;
       } catch (error) {
         setError(`Failed to search products ${error}`);
         setIsLoading(false);

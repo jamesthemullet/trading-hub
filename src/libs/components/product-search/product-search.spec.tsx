@@ -270,6 +270,7 @@ describe('ProductSearch', () => {
         start: 0,
         rows: 10,
         merchandisingRules: mockMerchandisingRules,
+        countryCodes: ['UK', 'IE'],
       });
     });
 

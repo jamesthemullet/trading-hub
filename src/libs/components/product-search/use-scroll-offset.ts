@@ -4,10 +4,12 @@ export const useScrollOffset = ({
   productSearchTerm,
   totalProducts,
   maxToQuery,
+  categoryId,
 }: {
   productSearchTerm: string;
   totalProducts: number;
   maxToQuery: number;
+  categoryId?: string;
 }) => {
   const [offsetState, setOffsetState] = useState<{
     offset: number;
@@ -27,7 +29,7 @@ export const useScrollOffset = ({
       offset: 0,
       query: productSearchTerm,
     });
-  }, [productSearchTerm]);
+  }, [productSearchTerm, categoryId]);
 
   useEffect(() => {
     // this function is called when the component is mounted

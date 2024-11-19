@@ -162,6 +162,15 @@ const LabelContainer = styled.label`
   align-items: center;
 `;
 
+const TextContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing(1)};
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
 export type ChangePositionTypes = {
   isPinned: boolean;
   id: string;
@@ -534,26 +543,33 @@ export const Ruleset = ({
               currentTab={currentProductTab}
             />
           </PanelTop>
-          <ProductSearchTabContent>
-            {currentProductTab === 0 && (
-              <ProductSearch
-                isPinnable={rulesetType !== 'global'}
-                pinnedProductsCount={merchandisingRules.pinnedProducts.length}
-                merchandisingRules={merchandisingRules}
-                dispatch={dispatch}
-                categoryId={selectedCategories[0]}
-                searchTerms={rulesetSearchTerms}
-              />
-            )}
-            {currentProductTab === 1 && (
-              <RulesetAttributes
-                merchandisingRules={merchandisingRules}
-                category={selectedCategories[0]}
-                dispatch={dispatch}
-                searchTerms={rulesetSearchTerms}
-              />
-            )}
-          </ProductSearchTabContent>
+          {(!!selectedCategories.length || rulesetType !== 'category') && (
+            <ProductSearchTabContent>
+              {currentProductTab === 0 && (
+                <ProductSearch
+                  isPinnable={rulesetType !== 'global'}
+                  pinnedProductsCount={merchandisingRules.pinnedProducts.length}
+                  merchandisingRules={merchandisingRules}
+                  dispatch={dispatch}
+                  categoryId={
+                    rulesetType === 'category' ? previewValue : undefined
+                  }
+                  searchTerms={rulesetSearchTerms}
+                  countryCode={
+                    featureFlags.hasIreland ? ruleset.countryCode : 'UK_IE'
+                  }
+                />
+              )}
+              {currentProductTab === 1 && (
+                <RulesetAttributes
+                  merchandisingRules={merchandisingRules}
+                  category={selectedCategories[0]}
+                  dispatch={dispatch}
+                  searchTerms={rulesetSearchTerms}
+                />
+              )}
+            </ProductSearchTabContent>
+          )}
         </ProductSearchPanel>
         <RulesPanel>
           <PanelTop>
@@ -577,14 +593,21 @@ export const Ruleset = ({
           <TabContent>
             {previewError && <ErrorMessage>Error: {previewError}</ErrorMessage>}
 
-            {currentEditorTab === 0 && (
-              <VisualEditor products={data.products} dispatch={dispatch} />
-            )}
+            {currentEditorTab === 0 &&
+              (selectedCategories.length || rulesetType !== 'category' ? (
+                <VisualEditor products={data.products} dispatch={dispatch} />
+              ) : (
+                <TextContent>
+                  <p>No, there are no product rankings yet.</p>
+                  <p>You need to select a category or sub-category first.</p>
+                </TextContent>
+              ))}
             {(currentEditorTab === 1 || rulesetType === 'global') && (
               <RulesetChanges
                 merchandisingRules={merchandisingRules}
                 dispatch={dispatch}
                 isPinnable={rulesetType !== 'global'}
+                countryCode={ruleset.countryCode}
               />
             )}
           </TabContent>

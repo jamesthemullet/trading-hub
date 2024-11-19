@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Dispatch, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
-import type { MerchandisingRules } from '@/libs/api';
+import type { CountryCode, MerchandisingRules } from '@/libs/api';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import { Product } from '../product/product';
@@ -65,6 +65,7 @@ export type ProductSearchProps = {
   categoryId?: string;
   searchTerms?: string[];
   maxToQuery?: number;
+  countryCode?: CountryCode;
 };
 
 export const ProductSearch = ({
@@ -75,6 +76,7 @@ export const ProductSearch = ({
   categoryId,
   searchTerms,
   maxToQuery = 10,
+  countryCode,
 }: ProductSearchProps) => {
   const [productSearchTerm, setProductSearchTerm] = useState('');
 
@@ -85,6 +87,7 @@ export const ProductSearch = ({
       searchTerms,
       maxToQuery,
       merchandisingRules,
+      countryCode,
     });
 
   const onSearch = (query: string) => {
