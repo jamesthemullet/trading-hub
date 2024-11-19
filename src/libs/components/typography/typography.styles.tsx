@@ -73,7 +73,8 @@ export const Label = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
 export const ErrorMessage = styled.p`
   ${commonStyles}
   color: ${color.saleRed};
-  padding: ${spacing(4)};
+  margin-top: ${spacing(1)};
+  margin-left: ${spacing(1)};
 `;
 
 export const CentredError = styled.p`

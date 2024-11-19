@@ -10,6 +10,7 @@ import {
 import {
   Button,
   CategorySearch,
+  ErrorMessage,
   ProductGridHeader,
   Search,
   SelectedCategory,
@@ -25,6 +26,7 @@ import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/f
 import { EditFacetModal } from '@/libs/components/modals/edit-facet/edit-facet-modal';
 import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
+import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -179,6 +181,7 @@ export const FacetsPanel = ({
   );
 
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
+  const [duplicationError, setDuplicationError] = useState('');
 
   const featureFlags = useContext(FeatureFlagContext);
 
@@ -239,9 +242,21 @@ export const FacetsPanel = ({
   };
 
   const onSelectCategory = (category: string) => {
-    setSelectedCategories([...selectedCategories, category]);
-    // TODO further refactoring needed here
-    onSelectedCategoryChange?.({ identifier: category, name: '', path: '' });
+    const hasDuplicates = checkForDuplicates(
+      [...selectedCategories],
+      category,
+      'ruleset'
+    );
+
+    if (hasDuplicates) {
+      setDuplicationError(hasDuplicates);
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+
+      // TODO further refactoring needed here
+      onSelectedCategoryChange?.({ identifier: category, name: '', path: '' });
+      setDuplicationError('');
+    }
   };
 
   const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
@@ -387,6 +402,7 @@ export const FacetsPanel = ({
               countryCode={facetPanelLocalState.countryCode}
               previewCategory={previewValue}
               selectPreviewCategory={setPreviewValue}
+              error={duplicationError}
             />
           )}
           {facetType === 'global' && (
@@ -406,6 +422,9 @@ export const FacetsPanel = ({
             </Duration>
           )}
         </ScopeWrapper>
+        {duplicationError && (
+          <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
+        )}
       </SectionWrapper>
       <SectionWrapper>
         <AddFacetPanel>

@@ -7,7 +7,7 @@ import { spacing } from '../../utils/spacing';
 
 export const ModalContainer = styled.div`
   width: 856px;
-  height: 400px;
+  height: 420px;
 `;
 
 export const KeywordList = styled.ul<{ unfinishedKeyword: boolean }>`

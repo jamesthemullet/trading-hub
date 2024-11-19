@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 import { Button } from '../../buttons/button/button';
 import { SearchBox } from '../../search-box/search-box';
-import { Label } from '../../typography/typography.styles';
+import { ErrorMessage, Label } from '../../typography/typography.styles';
 import { color } from '../../utils/constants';
 import { spacing } from '../../utils/spacing';
 import {
@@ -106,6 +106,7 @@ export type Props = {
   title: string;
   previewSearchTerm?: string | undefined;
   selectPreviewSearchTerm?: (keyword: string | undefined) => void;
+  error?: string;
 };
 
 const calculateWordsToDisplay = (searchTerms: string[], MAX_CHARS: number) => {
@@ -134,6 +135,7 @@ export const SearchKeywords = ({
   searchTerms,
   selectPreviewSearchTerm,
   title,
+  error,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -374,6 +376,9 @@ export const SearchKeywords = ({
                   }}
                 />
               </KeywordList>
+              {error && (
+                <ErrorMessage style={{ padding: 0 }}>{error}</ErrorMessage>
+              )}
             </ModalContainer>
           </Modal.Body>
           <ModalFooter>

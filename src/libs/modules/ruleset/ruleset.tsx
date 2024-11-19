@@ -31,6 +31,7 @@ import { ProductSearch } from '@/libs/components/product-search/product-search';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
 import { Action } from '@/libs/components/types';
+import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
 import { usePreview } from '@/libs/hooks';
 
@@ -222,15 +223,30 @@ export const Ruleset = ({
   const [currentProductTab, setCurrentProductTab] = useState(0);
   const [hasChanges, setHasChanges] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [duplicationError, setDuplicationError] = useState('');
 
   const router = useRouter();
 
   const onSelectCategory = (category: string) => {
-    setSelectedCategories([...selectedCategories, category]);
-    if (!selectedCategories.length) {
-      setPreviewValue(category);
+    const hasDuplicates = checkForDuplicates(
+      [...selectedCategories],
+      category,
+      'ruleset'
+    );
+
+    if (hasDuplicates) {
+      setDuplicationError(hasDuplicates);
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+
+      if (!selectedCategories.length) {
+        setPreviewValue(category);
+      }
+      if (!hasChanges) {
+        setHasChanges(true);
+      }
+      setDuplicationError('');
     }
-    if (!hasChanges) setHasChanges(true);
   };
 
   const [previewValue, setPreviewValue] = useState(
@@ -307,11 +323,23 @@ export const Ruleset = ({
   });
 
   const onAddSearchTerm = (keyword: string) => {
-    setRulesetSearchTerms([...rulesetSearchTerms, keyword]);
-    if (!rulesetSearchTerms.length) {
-      setPreviewValue(keyword);
+    const hasDuplicates = checkForDuplicates(
+      [...rulesetSearchTerms],
+      keyword,
+      'keyword'
+    );
+    if (hasDuplicates) {
+      setDuplicationError(hasDuplicates);
+    } else {
+      setRulesetSearchTerms([...rulesetSearchTerms, keyword]);
+
+      if (!rulesetSearchTerms.length) {
+        setPreviewValue(keyword);
+      }
+      setDuplicationError('');
     }
   };
+
   const onRemoveSearchTerm = (keyword: string) => {
     setRulesetSearchTerms(
       rulesetSearchTerms.filter((term) => term !== keyword)
@@ -429,6 +457,7 @@ export const Ruleset = ({
             />
           </InfluenceWrapper>
         )}
+
         <RulesetIdentifier>
           {rulesetType === 'category' && (
             <CategorySearchWrapper>
@@ -445,6 +474,7 @@ export const Ruleset = ({
                 countryCode={ruleset.countryCode}
                 previewCategory={previewValue}
                 selectPreviewCategory={setPreviewValue}
+                error={duplicationError}
               />
             </CategorySearchWrapper>
           )}
@@ -458,6 +488,7 @@ export const Ruleset = ({
                 removeSearchTerm={onRemoveSearchTerm}
                 previewSearchTerm={previewValue}
                 selectPreviewSearchTerm={setPreviewValue}
+                error={duplicationError}
               />
             </KeywordSearchWrapper>
           )}
@@ -490,6 +521,9 @@ export const Ruleset = ({
           </Duration>
         )}
       </CategoryPanel>
+      {duplicationError && (
+        <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
+      )}
 
       <MainContainerPanel>
         <ProductSearchPanel>

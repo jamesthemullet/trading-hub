@@ -75,10 +75,10 @@ const mockDefaultOrderData = [
 ];
 
 const selectCategory = async (screen: Screen, user: UserEvent) => {
-  await user.type(
-    screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
-    'SubCategory_507{enter}'
-  );
+  const input = screen.getAllByPlaceholderText(
+    CATEGORY_SEARCH_PLACEHOLDER_TEXT
+  )[0];
+  await user.type(input, 'SubCategory_507{enter}');
 
   const categoryToSelect = await screen.findByText(
     `${categoryId1} | ${categoryName1} | ${categoryPath1}`
@@ -405,6 +405,42 @@ describe('Facet Panel', () => {
 
     expect(onSelectedCategoryChangeSpy).toHaveBeenCalledTimes(2);
     expect(onSelectedCategoryChangeSpy).toHaveBeenLastCalledWith(undefined);
+  });
+
+  it('should show error and not add ruleset to the list if trying to add a duplicate ruleset', async () => {
+    const user = userEvent.setup();
+
+    const onSelectedCategoryChangeSpy = jest.fn();
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: false, hasMultipleCategories: true }}
+      >
+        <FacetsPanel
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          title="Facet Rule Editor"
+          facetsData={globalFacetsListMock.facets}
+          onFacetDataChange={jest.fn()}
+          initialIncludedFacets={[]}
+          initialExcludedFacets={[]}
+          facetType="category"
+          onSelectedCategoryChange={onSelectedCategoryChangeSpy}
+          countryCode={'UK'}
+        />
+      </FeatureFlagContext.Provider>
+    );
+
+    await selectCategory(screen, user);
+    await selectCategory(screen, user);
+
+    expect(
+      screen.getByText('Ruleset cat_123 has already been added')
+    ).toBeVisible();
+
+    expect(
+      screen.queryAllByRole('button', { name: 'Remove category: cat_123' })
+    ).toHaveLength(1);
   });
 
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {

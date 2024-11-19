@@ -127,6 +127,58 @@ describe('Redirect', () => {
     });
   });
 
+  it('should show error and not add keyword to the list if there are duplicate keywords', async () => {
+    const mockCreate = jest.fn();
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <Redirect
+        onCancel={() => jest.fn()}
+        onCreate={mockCreate}
+        title="Add Keyword Redirect rule"
+      />
+    );
+
+    await act(() => {
+      user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+    });
+
+    await act(() => {
+      user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+    });
+
+    const redirectUrl = await screen.findByPlaceholderText('c/');
+
+    await act(async () => {
+      user.type(redirectUrl, 'c/redirect-url');
+    });
+
+    const redirectTitle = await screen.findByPlaceholderText(
+      'Enter redirect title'
+    );
+
+    await act(async () => {
+      user.type(redirectTitle, 'title');
+    });
+
+    const toggle = await screen.findAllByLabelText('Redirect Phrase(s)');
+    await act(async () => {
+      user.click(toggle[0]);
+    });
+
+    expect(
+      screen.getByRole('heading', { name: 'Add Keyword Redirect rule' })
+    ).toBeVisible();
+
+    expect(
+      screen.getByText('Keyword new keyword has already been added')
+    ).toBeVisible();
+
+    expect(
+      screen.queryAllByRole('button', { name: 'Remove keyword: new keyword' })
+    ).toHaveLength(1);
+  });
+
   it('saves a redirect', async () => {
     const mockSave = jest.fn();
 

@@ -20,7 +20,12 @@ import {
   RemoveKeyWordPill,
   StyledCloseButton,
 } from '../keywords/search-keywords/modal.styles';
-import { Header3, Label, Text } from '../typography/typography.styles';
+import {
+  ErrorMessage,
+  Header3,
+  Label,
+  Text,
+} from '../typography/typography.styles';
 import {
   CategoryTitle,
   Container,
@@ -49,6 +54,7 @@ type Props = {
   selectedCategories: string[];
   selectPreviewCategory: (category: string | undefined) => void;
   countryCode?: CountryCode;
+  error?: string;
 };
 
 export const CategorySearch = ({
@@ -58,6 +64,7 @@ export const CategorySearch = ({
   selectedCategories,
   selectPreviewCategory,
   countryCode = 'UK_IE',
+  error,
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -367,6 +374,9 @@ export const CategorySearch = ({
                   ))}
               </ModalCategoriesList>
             </ModalWrapper>
+            {error && (
+              <ErrorMessage style={{ padding: 0 }}>{error}</ErrorMessage>
+            )}
           </Modal.Body>
           <ModalFooter>
             <StyledCloseButton

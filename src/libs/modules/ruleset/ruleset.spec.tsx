@@ -298,7 +298,7 @@ describe('Ruleset', () => {
     expect(screen.getByLabelText('loader')).toBeInTheDocument();
   });
 
-  it('should show preview errrors', () => {
+  it('should show preview errors', () => {
     jest.mocked(usePreview).mockReturnValueOnce({
       ...mockCategoryReturnValue,
       error: 'Failed to preview',
@@ -411,6 +411,40 @@ describe('Ruleset', () => {
     expect(mockCreate).toHaveBeenCalledWith(
       expect.objectContaining({ countryCode: 'UK_IE' })
     );
+  });
+
+  it('should show error and not add ruleset to the list if trying to add a duplicate ruleset', async () => {
+    const mockCreate = jest.fn();
+    const user = userEvent.setup();
+
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    renderWithProviders(
+      <FeatureFlagContext.Provider
+        value={{ hasIreland: false, hasMultipleCategories: true }}
+      >
+        <Ruleset
+          isEnabled={true}
+          onCreateKeywordSearchRuleset={mockCreate}
+          onCancel={jest.fn()}
+          rulesetType="category"
+        />
+      </FeatureFlagContext.Provider>
+    );
+
+    await selectCategory(screen, user);
+    await selectCategory(screen, user);
+
+    expect(
+      screen.getByText('Ruleset cat_123 has already been added')
+    ).toBeVisible();
+
+    expect(
+      screen.queryAllByRole('button', { name: 'Remove category: cat_123' })
+    ).toHaveLength(1);
   });
 
   it('should edit a ruleset', async () => {
@@ -776,6 +810,43 @@ describe('Ruleset', () => {
       });
 
       expect(mockCreate).toHaveBeenCalledWith(expectedData);
+    });
+
+    it('should show error and not add ruleset to the list if attempting to add a duplicate keyword', async () => {
+      const mockCreate = jest.fn();
+      const user = userEvent.setup();
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onCreateKeywordSearchRuleset={mockCreate}
+          onCancel={jest.fn()}
+          rulesetType="search"
+        />
+      );
+
+      await user.type(
+        screen.getByLabelText('Add keyword'),
+        'new keyword{enter}'
+      );
+
+      await user.type(
+        screen.getByLabelText('Add keyword'),
+        'new keyword{enter}'
+      );
+
+      expect(
+        screen.getByText('Keyword new keyword has already been added')
+      ).toBeVisible();
+
+      expect(
+        screen.queryAllByRole('button', { name: 'Remove keyword: new keyword' })
+      ).toHaveLength(1);
     });
 
     it('should show preview', async () => {
