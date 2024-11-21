@@ -42,14 +42,28 @@ test.describe('Keyword search', () => {
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/attributes?searchTerms=joggers&type=numeric',
+      '*/**/api/search/beta/merchandising/attributes?searchTerms=joggers&type=numeric&catalogue=MANDSUK',
       async (route) => {
         const json = mockCategoryNumericAttributes;
         await route.fulfill({ status: 200, json });
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/attributes?searchTerms=joggers&type=alphanumeric',
+      '*/**/api/search/beta/merchandising/attributes?searchTerms=joggers&type=alphanumeric&catalogue=MANDSUK',
+      async (route) => {
+        const json = mockCategoryAlphanumericAttributes;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      '*/**/api/search/beta/merchandising/attributes?searchTerms=joggers&type=numeric&catalogue=MANDSIE',
+      async (route) => {
+        const json = mockCategoryNumericAttributes;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      '*/**/api/search/beta/merchandising/attributes?searchTerms=joggers&type=alphanumeric&catalogue=MANDSIE',
       async (route) => {
         const json = mockCategoryAlphanumericAttributes;
         await route.fulfill({ status: 200, json });

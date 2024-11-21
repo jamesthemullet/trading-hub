@@ -4,6 +4,7 @@ import { Modal } from '@mantine/core';
 
 import {
   AlphanumericBoostBury,
+  CountryCode,
   IncludeExclude,
   MerchandisingRules,
   NumericBoostBury,
@@ -48,6 +49,7 @@ const RuleSetAttributesContainer = styled.div`
 `;
 
 export type Props = {
+  countryCode: CountryCode;
   category?: string;
   searchTerms?: string[];
   merchandisingRules: MerchandisingRules;
@@ -55,6 +57,7 @@ export type Props = {
 };
 
 export const RulesetAttributes = ({
+  countryCode,
   category,
   merchandisingRules,
   dispatch,
@@ -327,6 +330,7 @@ export const RulesetAttributes = ({
           <Modal.Body>
             <AddSetAttribute
               category={category}
+              countryCode={countryCode}
               searchTerms={searchTerms}
               onCancel={() => {
                 setIsModalOpen(false);

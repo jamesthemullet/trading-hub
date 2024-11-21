@@ -564,6 +564,7 @@ export const Ruleset = ({
                 <RulesetAttributes
                   merchandisingRules={merchandisingRules}
                   category={selectedCategories[0]}
+                  countryCode={countryCode || 'UK_IE'}
                   dispatch={dispatch}
                   searchTerms={rulesetSearchTerms}
                 />

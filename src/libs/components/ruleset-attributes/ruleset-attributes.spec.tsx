@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { MerchandisingRules } from '@/libs/api';
+import { CountryCode, MerchandisingRules } from '@/libs/api';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 
 import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
@@ -83,11 +83,18 @@ const mockRules: MerchandisingRules = {
 
 const mockDispatch = jest.fn();
 
+const mockCountryCode: CountryCode = 'UK';
+
+const mockProps = {
+  merchandisingRules: mockRules,
+  countryCode: mockCountryCode,
+};
+
 describe('RulesetAttributes', () => {
   const openModal = async () => {
     renderWithProviders(
       <RulesetAttributes
-        merchandisingRules={mockRules}
+        {...mockProps}
         category="TestCategory"
         dispatch={mockDispatch}
       />
@@ -110,10 +117,7 @@ describe('RulesetAttributes', () => {
 
   it('should render correctly', () => {
     renderWithProviders(
-      <RulesetAttributes
-        dispatch={mockDispatch}
-        merchandisingRules={mockRules}
-      />
+      <RulesetAttributes dispatch={mockDispatch} {...mockProps} />
     );
 
     expect(
@@ -397,8 +401,9 @@ describe('RulesetAttributes', () => {
 
     renderWithProviders(
       <RulesetAttributes
-        dispatch={mockDispatch}
+        countryCode={mockCountryCode}
         merchandisingRules={merchandisingRules}
+        dispatch={mockDispatch}
       />
     );
 
@@ -552,7 +557,7 @@ describe('RulesetAttributes', () => {
 
       renderWithProviders(
         <RulesetAttributes
-          merchandisingRules={mockRules}
+          {...mockProps}
           category="TestCategory"
           dispatch={mockDispatch}
         />
@@ -647,7 +652,7 @@ describe('RulesetAttributes', () => {
 
       renderWithProviders(
         <RulesetAttributes
-          merchandisingRules={mockRules}
+          {...mockProps}
           category="TestCategory"
           dispatch={mockDispatch}
         />
@@ -682,10 +687,7 @@ describe('RulesetAttributes', () => {
       };
 
       renderWithProviders(
-        <RulesetAttributes
-          merchandisingRules={mockRules}
-          dispatch={mockDispatch}
-        />
+        <RulesetAttributes {...mockProps} dispatch={mockDispatch} />
       );
 
       const newAttributeButton = screen.getByRole('button', {
@@ -729,10 +731,7 @@ describe('RulesetAttributes', () => {
 
     it('can cancel editing', async () => {
       renderWithProviders(
-        <RulesetAttributes
-          merchandisingRules={mockRules}
-          dispatch={mockDispatch}
-        />
+        <RulesetAttributes {...mockProps} dispatch={mockDispatch} />
       );
 
       const newAttributeButton = screen.getByRole('button', {
@@ -923,6 +922,7 @@ describe('RulesetAttributes', () => {
 
       renderWithProviders(
         <RulesetAttributes
+          countryCode={mockCountryCode}
           merchandisingRules={{
             ...mockRules,
             includes: { alphanumeric: [mock] },
@@ -962,6 +962,7 @@ describe('RulesetAttributes', () => {
 
       renderWithProviders(
         <RulesetAttributes
+          countryCode={mockCountryCode}
           merchandisingRules={{
             ...mockRules,
             excludes: { alphanumeric: [mock] },

@@ -103,6 +103,7 @@ describe('Index', () => {
     jest.mocked(useRuleSetDetail).mockImplementation(() => mockResponse);
     jest.mocked(useAttributes).mockImplementation(() => ({
       attributes: [],
+      fetchError: '',
     }));
 
     renderWithProviders(<Page id={ruleSetId} />);
@@ -116,6 +117,7 @@ describe('Index', () => {
       .mockImplementation(() => mockUseRuleSetPreviewData);
     jest.mocked(useAttributes).mockImplementation(() => ({
       attributes: [],
+      fetchError: '',
     }));
 
     renderWithProviders(<Page id={ruleSetId} />);

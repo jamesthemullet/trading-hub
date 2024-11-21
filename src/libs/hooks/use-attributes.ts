@@ -1,30 +1,56 @@
 import { useEffect, useState } from 'react';
 
-import { AttributesResponse, AttributeType, search } from '../api';
+import { union, uniqBy } from 'lodash';
+
+import { AttributesResponse, AttributeType, CountryCode, search } from '../api';
+import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogue';
 
 type Props = {
   category?: string;
   searchTerms?: string[];
   type?: AttributeType;
+  countryCode: CountryCode;
 };
 
-export const useAttributes = ({ category, searchTerms, type }: Props) => {
+export const useAttributes = ({
+  category,
+  countryCode,
+  searchTerms,
+  type,
+}: Props) => {
   const [attributes, setAttributes] = useState<
     AttributesResponse['attributes']
   >([]);
+  const [fetchError, setFetchError] = useState('');
 
   useEffect(() => {
-    const fetchAttributes = async () => {
-      const response = await search().betaMerchandisingAttributesList({
-        ...(category && { categoryId: category }),
-        ...(searchTerms && { searchTerms }),
-        type,
-      });
-      setAttributes(response.data.attributes);
+    const asyncCall = async () => {
+      try {
+        setFetchError('');
+        const catalogues = convertCountryCodeToCatalogues(countryCode);
+
+        const promises = catalogues.map((catalogue) =>
+          search()
+            .betaMerchandisingAttributesList({
+              ...(category && { categoryId: category }),
+              ...(searchTerms && { searchTerms }),
+              type,
+              catalogue,
+            })
+            .then((response) => response.data.attributes)
+        );
+
+        const results = await Promise.all(promises);
+
+        const res = uniqBy(union(results), 'name');
+        setAttributes(res[0]);
+      } catch (err) {
+        setFetchError(`Error: ${err}`);
+      }
     };
 
-    fetchAttributes();
-  }, [category, searchTerms, type]);
+    void asyncCall();
+  }, [category, countryCode, searchTerms, type]);
 
-  return { attributes };
+  return { attributes, fetchError };
 };
