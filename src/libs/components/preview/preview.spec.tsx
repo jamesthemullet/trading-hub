@@ -4,7 +4,7 @@ import { Facet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { usePreview } from '../../hooks/use-preview';
-import { Preview } from './preview';
+import { Preview, Props } from './preview';
 
 jest.mock('../../hooks/use-preview', () => ({
   usePreview: jest.fn(),
@@ -143,6 +143,14 @@ const NEW_RULE_CHANGE = 'with new rule change';
 const CURRENT_STATE = 'current state';
 
 describe('Preview', () => {
+  const mockProps: Props = {
+    onClose: mockOnClose,
+    categoryId: mockCategoryId,
+    countryCode: 'UK',
+    facetConfig: [],
+    merchandisingRules: mockMerchandisingRules,
+  };
+
   beforeEach(() => {
     jest.mocked(usePreview).mockReturnValue({
       ...mockCategoryReturnValue,
@@ -150,14 +158,7 @@ describe('Preview', () => {
   });
 
   it('should render correctly', () => {
-    renderWithProviders(
-      <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
-      />
-    );
+    renderWithProviders(<Preview {...mockProps} />);
 
     expect(screen.getByText('Preview')).toBeInTheDocument();
   });
@@ -165,12 +166,7 @@ describe('Preview', () => {
   it('calls the api with the supplied facet config', () => {
     const mockFacetConfig = [{ id: 'mockId', boosted: ['Red', 'Yellow'] }];
     renderWithProviders(
-      <Preview
-        facetConfig={mockFacetConfig}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
-      />
+      <Preview {...mockProps} facetConfig={mockFacetConfig} />
     );
 
     expect(usePreview).toHaveBeenCalledWith(
@@ -180,12 +176,7 @@ describe('Preview', () => {
 
   it('calls the api with the supplied search term config', () => {
     renderWithProviders(
-      <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        searchTerm="foo"
-        onClose={mockOnClose}
-      />
+      <Preview {...mockProps} categoryId={undefined} searchTerm="foo" />
     );
 
     expect(usePreview).toHaveBeenCalledWith(
@@ -194,14 +185,7 @@ describe('Preview', () => {
   });
 
   it('open and close dropdown', () => {
-    renderWithProviders(
-      <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
-      />
-    );
+    renderWithProviders(<Preview {...mockProps} />);
 
     const toggleButton = screen.getAllByText(NEW_RULE_CHANGE)[0];
 
@@ -217,14 +201,7 @@ describe('Preview', () => {
   });
 
   it('should show current state', () => {
-    renderWithProviders(
-      <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
-      />
-    );
+    renderWithProviders(<Preview {...mockProps} />);
 
     const toggleButton = screen.getAllByText(NEW_RULE_CHANGE)[0];
 
@@ -243,14 +220,7 @@ describe('Preview', () => {
   });
 
   it('should select current state', () => {
-    renderWithProviders(
-      <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
-      />
-    );
+    renderWithProviders(<Preview {...mockProps} />);
 
     const toggleButton = screen.getAllByText(NEW_RULE_CHANGE)[0];
 
@@ -269,14 +239,7 @@ describe('Preview', () => {
   });
 
   it('should show more facets', () => {
-    renderWithProviders(
-      <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
-      />
-    );
+    renderWithProviders(<Preview {...mockProps} />);
 
     const viewMoreButton = screen.getByText('View more');
 
@@ -288,14 +251,7 @@ describe('Preview', () => {
   });
 
   it('should show price facet info', () => {
-    renderWithProviders(
-      <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
-      />
-    );
+    renderWithProviders(<Preview {...mockProps} />);
 
     expect(screen.getByText('£5 - £30 (67)')).toBeInTheDocument();
   });
@@ -306,14 +262,7 @@ describe('Preview', () => {
       isLoading: true,
     });
 
-    renderWithProviders(
-      <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
-      />
-    );
+    renderWithProviders(<Preview {...mockProps} />);
 
     expect(screen.getByLabelText('loader')).toBeInTheDocument();
   });
@@ -354,10 +303,7 @@ describe('Preview', () => {
 
     renderWithProviders(
       <Preview
-        facetConfig={[]}
-        merchandisingRules={mockMerchandisingRules}
-        categoryId={mockCategoryId}
-        onClose={mockOnClose}
+        {...mockProps}
         excludedFacets={{
           facets: [
             {
@@ -377,6 +323,7 @@ describe('Preview', () => {
         ],
       },
       categoryId: 'SubCat_123',
+      countryCode: 'UK',
       facetConfig: [],
       merchandisingRules: {
         blockedProducts: [],

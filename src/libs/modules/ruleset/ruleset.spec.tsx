@@ -89,6 +89,7 @@ const CONFIRM_BUTTON = 'Close without saving';
 
 const categoryId1 = 'cat_123';
 const categoryId2 = 'cat_456';
+const categoryId3 = 'IE_cat_456';
 const categoryName1 = 'jeans';
 const categoryPath1 = 'l/jeans';
 const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
@@ -106,6 +107,11 @@ const mockGetCategories = {
   categories: [
     {
       identifier: categoryId1,
+      name: categoryName1,
+      path: categoryPath1,
+    },
+    {
+      identifier: categoryId3,
       name: categoryName1,
       path: categoryPath1,
     },
@@ -539,6 +545,7 @@ describe('Ruleset', () => {
     it('should call preview with the selected category', async () => {
       const expectedPreview = {
         categoryId: 'cat_456',
+        countryCode: 'UK',
         facetConfig: [],
         merchandisingRules: {
           blockedProducts: [],
@@ -647,6 +654,210 @@ describe('Ruleset', () => {
       });
 
       expect(usePreview).toHaveBeenCalledWith(expectedPreview);
+    });
+
+    it('should preview IE products with an IE category', async () => {
+      const mockSave = jest.fn();
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+          categoryIds={['IE_789123']}
+          countryCode="UK_IE"
+        />
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+    });
+
+    it('should preview IE products when an IE category is first selected', async () => {
+      const user = userEvent.setup();
+      const mockSave = jest.fn();
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <Ruleset
+            isEnabled={true}
+            onSave={mockSave}
+            onCancel={jest.fn()}
+            rulesetMerchandisingRules={{
+              pinnedProducts: [{ id: 'abc123' }],
+              blockedProducts: [],
+              boosts: { numeric: [], alphanumeric: [], product: [] },
+              buries: { numeric: [], alphanumeric: [], product: [] },
+              includes: {
+                alphanumeric: [],
+              },
+              excludes: {
+                alphanumeric: [],
+              },
+            }}
+            rulesetId={ruleSetId}
+            rulesetType="category"
+            categoryIds={undefined}
+            countryCode="UK_IE"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      await user.type(
+        screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
+        'IE_SubCategory_507{enter}'
+      );
+
+      const categoryToSelect = await screen.findByText(
+        `${categoryId3} | ${categoryName1} | ${categoryPath1}`
+      );
+
+      act(() => {
+        categoryToSelect.click();
+      });
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+    });
+
+    it('should preview UK products when an IE category is added and an existing UK category is present', async () => {
+      const user = userEvent.setup();
+      const mockSave = jest.fn();
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <Ruleset
+            isEnabled={true}
+            onSave={mockSave}
+            onCancel={jest.fn()}
+            rulesetMerchandisingRules={{
+              pinnedProducts: [{ id: 'abc123' }],
+              blockedProducts: [],
+              boosts: { numeric: [], alphanumeric: [], product: [] },
+              buries: { numeric: [], alphanumeric: [], product: [] },
+              includes: {
+                alphanumeric: [],
+              },
+              excludes: {
+                alphanumeric: [],
+              },
+            }}
+            rulesetId={ruleSetId}
+            rulesetType="category"
+            categoryIds={[categoryId1]}
+            countryCode="UK_IE"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+
+      await user.type(
+        screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
+        'IE_SubCategory_507{enter}'
+      );
+
+      const categoryToSelect = await screen.findByText(
+        `${categoryId3} | ${categoryName1} | ${categoryPath1}`
+      );
+
+      act(() => {
+        categoryToSelect.click();
+      });
+
+      expect(screen.getByLabelText('Additional category')).toBeVisible();
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+    });
+
+    it('should preview IE products when an selected IE category is clicked', async () => {
+      const mockSave = jest.fn();
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <Ruleset
+            isEnabled={true}
+            onSave={mockSave}
+            onCancel={jest.fn()}
+            rulesetMerchandisingRules={{
+              pinnedProducts: [{ id: 'abc123' }],
+              blockedProducts: [],
+              boosts: { numeric: [], alphanumeric: [], product: [] },
+              buries: { numeric: [], alphanumeric: [], product: [] },
+              includes: {
+                alphanumeric: [],
+              },
+              excludes: {
+                alphanumeric: [],
+              },
+            }}
+            rulesetId={ruleSetId}
+            rulesetType="category"
+            categoryIds={['Cat_2134235', 'IE_789123']}
+            countryCode="UK_IE"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+
+      const IECategory = screen.getByRole('button', { name: 'IE_789123' });
+
+      act(() => {
+        IECategory.click();
+      });
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
     });
   });
 
@@ -881,6 +1092,248 @@ describe('Ruleset', () => {
         screen.getByText('Search across the site to preview the rule influence')
       ).toBeInTheDocument();
     });
+
+    it('should open and close UK or IE view dropdown', async () => {
+      const mockSave = jest.fn();
+      const mockSearchTerms = ['foo', 'bar'];
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={mockSearchTerms}
+          countryCode="UK_IE"
+        />
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+
+      const selectUK = screen.getByRole('button', { name: 'UK view' });
+
+      act(() => {
+        selectUK.click();
+      });
+
+      expect(
+        screen.getByRole('button', { name: 'IE flag IE view' })
+      ).toBeVisible();
+
+      act(() => {
+        selectUK.click();
+      });
+
+      expect(
+        screen.queryByRole('button', { name: 'IE flag IE view' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should allow for previewing UK and IE products', async () => {
+      const mockSave = jest.fn();
+      const mockSearchTerms = ['foo', 'bar'];
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={mockSearchTerms}
+          countryCode="UK_IE"
+        />
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+
+      const selectUK = screen.getByRole('button', { name: 'UK view' });
+
+      act(() => {
+        selectUK.click();
+      });
+
+      const selectIE = screen.getByRole('button', { name: 'IE flag IE view' });
+      act(() => {
+        selectIE.click();
+      });
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+
+      act(() => {
+        selectUK.click();
+      });
+
+      const selectUKView = screen.getByRole('button', {
+        name: 'UK flag UK view',
+      });
+      act(() => {
+        selectUKView.click();
+      });
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+    });
+
+    it('should change preview country to IE if previewing UK and influence changed to IE only', async () => {
+      const mockSave = jest.fn();
+      const mockSearchTerms = ['foo', 'bar'];
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <Ruleset
+            isEnabled={true}
+            onSave={mockSave}
+            onCancel={jest.fn()}
+            rulesetMerchandisingRules={{
+              pinnedProducts: [{ id: 'abc123' }],
+              blockedProducts: [],
+              boosts: { numeric: [], alphanumeric: [], product: [] },
+              buries: { numeric: [], alphanumeric: [], product: [] },
+              includes: {
+                alphanumeric: [],
+              },
+              excludes: {
+                alphanumeric: [],
+              },
+            }}
+            rulesetId={ruleSetId}
+            rulesetType="search"
+            searchTerms={mockSearchTerms}
+            countryCode="UK"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+
+      const selectMarket = screen.getByLabelText('select market');
+
+      act(() => {
+        selectMarket.click();
+      });
+
+      const selectIE = screen.getByLabelText('select IE market only');
+      act(() => {
+        selectIE.click();
+      });
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+    });
+
+    it('should change preview country to UK if previewing IE and influence changed to UK only', async () => {
+      const mockSave = jest.fn();
+      const mockSearchTerms = ['foo', 'bar'];
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <Ruleset
+            isEnabled={true}
+            onSave={mockSave}
+            onCancel={jest.fn()}
+            rulesetMerchandisingRules={{
+              pinnedProducts: [{ id: 'abc123' }],
+              blockedProducts: [],
+              boosts: { numeric: [], alphanumeric: [], product: [] },
+              buries: { numeric: [], alphanumeric: [], product: [] },
+              includes: {
+                alphanumeric: [],
+              },
+              excludes: {
+                alphanumeric: [],
+              },
+            }}
+            rulesetId={ruleSetId}
+            rulesetType="search"
+            searchTerms={mockSearchTerms}
+            countryCode="IE"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+
+      const selectMarket = screen.getByRole('button', {
+        name: 'select market',
+      });
+
+      act(() => {
+        selectMarket.click();
+      });
+
+      const selectIE = screen.getByRole('button', {
+        name: 'select UK market only',
+      });
+      act(() => {
+        selectIE.click();
+      });
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+    });
   });
 
   it('should cancel changes', async () => {
@@ -1024,6 +1477,7 @@ describe('Ruleset', () => {
       const productSearchTitle = 'productSearchTitle';
       const expectedPreview = {
         categoryId: 'cat_123',
+        countryCode: 'UK',
         facetConfig: [],
         merchandisingRules: {
           blockedProducts: [],

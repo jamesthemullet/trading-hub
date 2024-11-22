@@ -211,7 +211,7 @@ export const CategorySearch = ({
     <Wrapper>
       <CategoryTitle>Category</CategoryTitle>
       <SearchBox>
-        <SearchWrapper>
+        <SearchWrapper hasModal={selectedCategories.length > 1}>
           <SelectedCategories>
             {visibleCategories.map((category) => {
               const isPreviewCategory = category === previewCategory;
@@ -299,7 +299,7 @@ export const CategorySearch = ({
               <Header3>Category</Header3>
 
               <SearchBox>
-                <SearchWrapper>
+                <SearchWrapper hasModal>
                   <SearchForm onSubmit={onSubmit}>
                     <SearchInput
                       placeholder="Search..."

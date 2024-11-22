@@ -8,15 +8,18 @@ import type {
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { convertCountryCodeToCatalogue } from '../components/utils/convert-country-code-to-catalogue';
 import { handleError } from './utils/error';
 
 export const usePreview = ({
   categoryId,
+  countryCode,
   facetConfig,
   merchandisingRules,
   searchTerm,
   excludedFacets,
 }: {
+  countryCode: 'UK' | 'IE';
   facetConfig: Array<RuleSetFacetConfigWithId>;
   merchandisingRules: MerchandisingRules;
   categoryId?: string;
@@ -83,6 +86,7 @@ export const usePreview = ({
             ...(searchTerm && { searchTerm }),
             rows: 140,
             start: 0,
+            catalogue: convertCountryCodeToCatalogue(countryCode),
           },
           {
             rules: merchandisingRules,
@@ -108,11 +112,12 @@ export const usePreview = ({
 
     fetchData();
   }, [
-    facetConfigRules,
     categoryId,
+    countryCode,
+    excludedFacets,
+    facetConfigRules,
     merchandisingRules,
     searchTerm,
-    excludedFacets,
   ]);
 
   return {

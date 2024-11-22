@@ -34,7 +34,7 @@ const FilterDropdownWrapper = styled.div`
 
 const FilterDropdownButton = styled.button<Pick<FilterDropdownProps, 'isOpen'>>`
   align-items: center;
-  background: #e1e1e1;
+  background: ${color.backgroundGrey};
   border: none;
   border-bottom: 1px solid #b1b1b1;
   border-radius: 4px 4px 0 0;
@@ -131,6 +131,29 @@ export const DropdownOption = styled.button`
   &:hover,
   &:active {
     background-color: #e3e3e3;
+  }
+`;
+
+export const DropdownContent = styled.div<{ isLeftAligned?: boolean }>`
+  display: flex;
+  flex-wrap: wrap;
+  ${({ isLeftAligned }) =>
+    isLeftAligned &&
+    css`
+      justify-content: left;
+    `}
+`;
+
+export const DropdownItem = styled(Text)`
+  padding: ${spacing(1)} ${spacing(2)};
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  background: none;
+  display: flex;
+
+  &:hover {
+    background-color: #f5f5f5;
   }
 `;
 

@@ -2,12 +2,18 @@ import { useReducer } from 'react';
 import { act, Screen, screen, waitFor } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
+import { SearchPreviewResponseBeta } from '@/libs/api';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
-import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
+import {
+  useGetCategories,
+  useGetFacetAttributeValues,
+  usePreview,
+} from '@/libs/hooks';
 import {
   attributeValuesMock,
   globalFacetsListMock,
 } from '@/pages/api/search/mocks';
+import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { FacetsPanel } from './facets-panel';
@@ -15,6 +21,7 @@ import { FacetsPanel } from './facets-panel';
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGetFacetAttributeValues: jest.fn(),
+  usePreview: jest.fn(),
 }));
 
 jest.mock('next/router', () => ({
@@ -33,12 +40,18 @@ const dispatchMock = jest.fn();
 
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const categoryId1 = 'cat_123';
+const categoryId2 = 'IE_cat123';
 const categoryName1 = 'jeans';
 const categoryPath1 = 'l/jeans';
 const mockGetCategories = {
   categories: [
     {
       identifier: categoryId1,
+      name: categoryName1,
+      path: categoryPath1,
+    },
+    {
+      identifier: categoryId2,
       name: categoryName1,
       path: categoryPath1,
     },
@@ -73,6 +86,52 @@ const mockDefaultOrderData = [
   { defaultOrder: 'Include only' },
   { defaultOrder: 'Include only' },
 ];
+
+const mockData: SearchPreviewResponseBeta = {
+  category: categoryId1,
+  externalChanges: mockMerchandisingRulesWithInfo,
+  facets: [
+    {
+      id: 'brand',
+      order: 0,
+      data: [
+        {
+          name: 'M&S Collection',
+          count: 122,
+          selected: false,
+          disabled: false,
+        },
+        {
+          name: 'Autograph',
+          count: 7,
+          selected: false,
+          disabled: false,
+        },
+        {
+          name: 'GOODMOVE',
+          count: 4,
+          selected: false,
+          disabled: false,
+        },
+      ],
+    },
+  ],
+  pagination: {
+    totalItems: 1,
+  },
+  ruleSet: {
+    facets: [mockFacet],
+    rules: mockMerchandisingRulesWithInfo,
+  },
+  products: [],
+};
+
+const mockCategoryReturnValue = {
+  data: mockData,
+  error: '',
+  isLoading: false,
+  setFacetConfigRules: jest.fn(),
+};
 
 const selectCategory = async (screen: Screen, user: UserEvent) => {
   const input = screen.getAllByPlaceholderText(
@@ -231,6 +290,8 @@ describe('Facet Panel', () => {
   });
 
   it('should preview changes to a facet', async () => {
+    jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
+
     renderWithProviders(
       <FacetsPanel
         onSave={onSaveSpy}
@@ -701,6 +762,214 @@ describe('Facet Panel', () => {
           })
         ).not.toBeVisible();
       });
+    });
+  });
+
+  describe('Ireland', () => {
+    it('should preview IE products with an IE category', async () => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <FacetsPanel
+            onSave={onSaveSpy}
+            onCancel={onCancelSpy}
+            title="Facet Rule Editor"
+            facetsData={globalFacetsListMock.facets}
+            onFacetDataChange={jest.fn()}
+            categoryIds={[categoryId2]}
+            initialIncludedFacets={[]}
+            initialExcludedFacets={[]}
+            facetType="category"
+            countryCode="UK_IE"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(usePreview).toHaveBeenCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+    });
+
+    it('should preview IE products when selecting an IE category', async () => {
+      const user = userEvent.setup({ delay: null });
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <FacetsPanel
+            onSave={onSaveSpy}
+            onCancel={onCancelSpy}
+            title="Facet Rule Editor"
+            facetsData={globalFacetsListMock.facets}
+            onFacetDataChange={jest.fn()}
+            categoryIds={undefined}
+            initialIncludedFacets={[]}
+            initialExcludedFacets={[]}
+            facetType="category"
+            countryCode="UK_IE"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      await user.type(
+        screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
+        'IE_SubCategory_507{enter}'
+      );
+
+      const categoryToSelect = await screen.findByText(
+        `${categoryId2} | ${categoryName1} | ${categoryPath1}`
+      );
+
+      act(() => {
+        categoryToSelect.click();
+      });
+
+      const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(usePreview).toHaveBeenCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+    });
+
+    it('should preview IE products when an IE category is selected after viewing a UK category', async () => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <FacetsPanel
+            onSave={onSaveSpy}
+            onCancel={onCancelSpy}
+            title="Facet Rule Editor"
+            facetsData={globalFacetsListMock.facets}
+            onFacetDataChange={jest.fn()}
+            categoryIds={[categoryId1, categoryId2]}
+            initialIncludedFacets={[]}
+            initialExcludedFacets={[]}
+            facetType="category"
+            countryCode="UK_IE"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(usePreview).toHaveBeenCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
+
+      const closeButton = screen.getByLabelText('close modal');
+
+      act(() => {
+        closeButton.click();
+      });
+
+      const IECategory = screen.getByRole('button', { name: categoryId2 });
+
+      act(() => {
+        IECategory.click();
+      });
+
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(usePreview).toHaveBeenCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+    });
+
+    it('should preview UK products when a UK category is selected after viewing an IE category', async () => {
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
+
+      renderWithProviders(
+        <FeatureFlagContext.Provider
+          value={{ hasIreland: true, hasMultipleCategories: true }}
+        >
+          <FacetsPanel
+            onSave={onSaveSpy}
+            onCancel={onCancelSpy}
+            title="Facet Rule Editor"
+            facetsData={globalFacetsListMock.facets}
+            onFacetDataChange={jest.fn()}
+            categoryIds={[categoryId2, categoryId1]}
+            initialIncludedFacets={[]}
+            initialExcludedFacets={[]}
+            facetType="category"
+            countryCode="UK_IE"
+          />
+        </FeatureFlagContext.Provider>
+      );
+
+      const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(usePreview).toHaveBeenCalledWith(
+        expect.objectContaining({ countryCode: 'IE' })
+      );
+
+      const closeButton = screen.getByLabelText('close modal');
+
+      act(() => {
+        closeButton.click();
+      });
+
+      const UKCategory = screen.getByRole('button', { name: categoryId1 });
+
+      act(() => {
+        UKCategory.click();
+      });
+
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(usePreview).toHaveBeenCalledWith(
+        expect.objectContaining({ countryCode: 'UK' })
+      );
     });
   });
 });

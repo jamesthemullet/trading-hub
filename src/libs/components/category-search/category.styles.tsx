@@ -50,11 +50,13 @@ export const SearchBox = styled.div`
   display: flex;
 `;
 
-export const SearchWrapper = styled.div`
+export const SearchWrapper = styled.div<{
+  hasModal: boolean;
+}>`
   background-color: ${color.backgroundGrey};
   display: flex;
   border-bottom: 1px solid ${color.lightGrey};
-  min-width: 600px;
+  min-width: ${({ hasModal }) => (hasModal ? '600px' : '620px')};
   & div {
     border-bottom: none;
   }

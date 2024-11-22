@@ -103,6 +103,7 @@ describe('useRuleSet', () => {
     const { result } = renderHook(() =>
       usePreview({
         categoryId: mockCategoryId,
+        countryCode: 'UK',
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
       })
@@ -148,6 +149,7 @@ describe('useRuleSet', () => {
 
     const { result } = renderHook(() =>
       usePreview({
+        countryCode: 'UK',
         searchTerm: 'foo',
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
@@ -172,6 +174,7 @@ describe('useRuleSet', () => {
 
     const { result } = renderHook(() =>
       usePreview({
+        countryCode: 'UK',
         searchTerm: 'foo',
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
@@ -218,6 +221,7 @@ describe('useRuleSet', () => {
 
     const { result } = renderHook(() =>
       usePreview({
+        countryCode: 'UK',
         categoryId: mockCategoryId,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
@@ -264,6 +268,7 @@ describe('useRuleSet', () => {
 
     const { result } = renderHook(() =>
       usePreview({
+        countryCode: 'UK',
         categoryId: undefined,
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
@@ -299,6 +304,7 @@ describe('useRuleSet', () => {
     const { result } = renderHook(() =>
       usePreview({
         categoryId: mockCategoryId,
+        countryCode: 'UK',
         merchandisingRules: mockMerchandisingRules,
         facetConfig: [],
       })

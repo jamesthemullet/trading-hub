@@ -14,6 +14,9 @@ import type {
 } from '@/libs/api';
 import {
   CategorySearch,
+  Dropdown,
+  DropdownContent,
+  DropdownItem,
   ErrorMessage,
   Loader,
   ProductGridHeader,
@@ -36,6 +39,7 @@ import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
 import { usePreview } from '@/libs/hooks';
 
 import isEqual from 'lodash/isEqual';
+import Image from 'next/image';
 import pluralize from 'pluralize';
 
 import { rulesetReducer } from './reducer';
@@ -66,10 +70,12 @@ const CategoryPanel = styled.div<{
           'countryCode'
           'rulesetIdentifier'
           'duration';
-        ${rulesetType === 'search' ||
-        (rulesetType === 'global' &&
-          /* istanbul ignore next */
-          'grid-template-columns: 240px 490px 320px')};
+        ${rulesetType === 'global' &&
+        /* istanbul ignore next */
+        'grid-template-columns: 240px 490px 320px'};
+        ${rulesetType === 'search' &&
+        /* istanbul ignore next */
+        'grid-template-columns: 240px 490px 320px'};
         ${rulesetType === 'category' &&
         'grid-template-columns: 240px 730px 320px'};
       }
@@ -106,8 +112,28 @@ const PanelTop = styled.div`
   margin: 0 ${spacing(1)};
   border-bottom: solid 1px #b1b1b1;
 
-  div {
+  & > div {
     flex: 1;
+  }
+`;
+
+const CountryPreviewWrapper = styled.div`
+  position: relative;
+  justify-content: end;
+  display: flex;
+`;
+
+const CountryPreviewDropdown = styled(Dropdown)`
+  width: 155px;
+  border-radius: 0;
+
+  img {
+    margin-left: -${spacing(2)};
+    margin-right: ${spacing(1)};
+  }
+
+  span {
+    padding-left: 0;
   }
 `;
 
@@ -115,6 +141,11 @@ const TabContent = styled.div`
   height: calc(100vh - 285px);
   overflow: auto;
   margin: 0 ${spacing(1)};
+`;
+
+const ProductCount = styled.div`
+  padding: ${spacing(1)};
+  text-align: right;
 `;
 
 const ProductSearchTabContent = styled(TabContent)`
@@ -234,6 +265,16 @@ export const Ruleset = ({
   const [showPreview, setShowPreview] = useState(false);
   const [duplicationError, setDuplicationError] = useState('');
 
+  const defaultPreviewCountryCode =
+    (categoryIds && categoryIds[0].includes('IE_')) ||
+    (rulesetType === 'search' && countryCode === 'IE')
+      ? 'IE'
+      : 'UK';
+  const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
+    'UK' | 'IE'
+  >(defaultPreviewCountryCode);
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+
   const router = useRouter();
 
   const onSelectCategory = (category: string) => {
@@ -250,6 +291,7 @@ export const Ruleset = ({
 
       if (!selectedCategories.length) {
         setPreviewValue(category);
+        setSelectedPreviewCountryCode(category.includes('IE_') ? 'IE' : 'UK');
       }
       if (!hasChanges) {
         setHasChanges(true);
@@ -329,6 +371,7 @@ export const Ruleset = ({
     ...(rulesetSearchTerms.length && { searchTerm: previewValue }),
     merchandisingRules: merchandisingRules,
     facetConfig: [],
+    countryCode: selectedPreviewCountryCode,
   });
 
   const onAddSearchTerm = (keyword: string) => {
@@ -425,6 +468,7 @@ export const Ruleset = ({
           searchTerm={rulesetType === 'search' ? previewValue : undefined}
           merchandisingRules={merchandisingRules}
           facetConfig={rulesetFacets || []}
+          countryCode={selectedPreviewCountryCode}
         />
       )}
 
@@ -459,9 +503,15 @@ export const Ruleset = ({
           <InfluenceWrapper>
             <InfluenceLabel>Influence</InfluenceLabel>
             <CountrySelectorDropdown
-              onChange={(country) =>
-                dispatch({ type: 'changeCountry', payload: country })
-              }
+              onChange={(country) => {
+                dispatch({ type: 'changeCountry', payload: country });
+                if (country === 'UK' && selectedPreviewCountryCode === 'IE') {
+                  setSelectedPreviewCountryCode('UK');
+                }
+                if (country === 'IE' && selectedPreviewCountryCode === 'UK') {
+                  setSelectedPreviewCountryCode('IE');
+                }
+              }}
               selectedCountryCode={ruleset.countryCode}
             />
           </InfluenceWrapper>
@@ -482,7 +532,12 @@ export const Ruleset = ({
                 onSelectCategory={onSelectCategory}
                 countryCode={ruleset.countryCode}
                 previewCategory={previewValue}
-                selectPreviewCategory={setPreviewValue}
+                selectPreviewCategory={(category: string | undefined) => {
+                  setPreviewValue(category);
+                  setSelectedPreviewCountryCode(
+                    category?.includes('IE_') ? 'IE' : 'UK'
+                  );
+                }}
                 error={duplicationError}
               />
             </CategorySearchWrapper>
@@ -581,20 +636,70 @@ export const Ruleset = ({
               onTabChange={setCurrentEditorTab}
               currentTab={currentEditorTab}
             />
-            {rulesetType !== 'global' && (
-              <Text>
-                {data.products.length}{' '}
-                {pluralize(' product', data.products.length)}{' '}
-                {data.pagination.totalItems &&
-                data.pagination.totalItems > data.products.length
-                  ? `of ${data.pagination.totalItems}`
-                  : ''}
-                {' shown'}
-              </Text>
+            {rulesetType === 'search' && ruleset.countryCode === 'UK_IE' && (
+              <CountryPreviewWrapper>
+                <CountryPreviewDropdown
+                  label={`${selectedPreviewCountryCode} view`}
+                  isOpen={isCountryDropdownOpen}
+                  icon={`icon-${selectedPreviewCountryCode.toLowerCase()}-flag`}
+                  onOpen={() => {
+                    setIsCountryDropdownOpen(true);
+                  }}
+                  onClose={() => {
+                    setIsCountryDropdownOpen(false);
+                  }}
+                >
+                  <DropdownContent isLeftAligned>
+                    <DropdownItem
+                      as="button"
+                      onClick={() => {
+                        setSelectedPreviewCountryCode('IE');
+                        setIsCountryDropdownOpen(false);
+                      }}
+                    >
+                      <Image
+                        src={`/trading-hub/asset/icon-ie-flag.svg`}
+                        width={20}
+                        height={20}
+                        alt="IE flag"
+                      />
+                      &nbsp; IE view
+                    </DropdownItem>
+                    <DropdownItem
+                      as="button"
+                      onClick={() => {
+                        setSelectedPreviewCountryCode('UK');
+                        setIsCountryDropdownOpen(false);
+                      }}
+                    >
+                      <Image
+                        src={`/trading-hub/asset/icon-uk-flag.svg`}
+                        width={20}
+                        height={20}
+                        alt="UK flag"
+                      />
+                      &nbsp; UK view
+                    </DropdownItem>
+                  </DropdownContent>
+                </CountryPreviewDropdown>
+              </CountryPreviewWrapper>
             )}
           </PanelTop>
           <TabContent>
             {previewError && <ErrorMessage>Error: {previewError}</ErrorMessage>}
+
+            <ProductCount>
+              {rulesetType !== 'global' && (
+                <Text>
+                  {data.products.length}{' '}
+                  {data.pagination.totalItems &&
+                  data.pagination.totalItems > data.products.length
+                    ? `out of ${data.pagination.totalItems}`
+                    : ''}
+                  {` algo ${pluralize(' product', data.products.length)} loaded`}
+                </Text>
+              )}
+            </ProductCount>
 
             {currentEditorTab === 0 &&
               rulesetType !== 'global' &&

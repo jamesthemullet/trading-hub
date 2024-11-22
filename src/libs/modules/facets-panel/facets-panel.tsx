@@ -151,6 +151,9 @@ export const FacetsPanel = ({
   );
 
   const [showPreview, setShowPreview] = useState(false);
+  const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
+    'UK' | 'IE'
+  >(categoryIds && categoryIds[0].includes('IE_') ? 'IE' : 'UK');
   const [merchandisingRules] = useState<MerchandisingRules>(
     rulesetMerchandisingRules
       ? rulesetMerchandisingRules
@@ -252,6 +255,7 @@ export const FacetsPanel = ({
       setDuplicationError(hasDuplicates);
     } else {
       setSelectedCategories([...selectedCategories, category]);
+      setSelectedPreviewCountryCode(category.includes('IE_') ? 'IE' : 'UK');
 
       // TODO further refactoring needed here
       onSelectedCategoryChange?.({ identifier: category, name: '', path: '' });
@@ -350,10 +354,11 @@ export const FacetsPanel = ({
       {showPreview && selectedCategories.length && merchandisingRules && (
         <Preview
           onClose={() => setShowPreview(!showPreview)}
-          categoryId={selectedCategories[0]}
+          categoryId={previewValue}
           merchandisingRules={merchandisingRules}
           facetConfig={includedFacets}
           excludedFacets={excludedFacets}
+          countryCode={selectedPreviewCountryCode}
         />
       )}
 
@@ -401,7 +406,12 @@ export const FacetsPanel = ({
               onSelectCategory={onSelectCategory}
               countryCode={facetPanelLocalState.countryCode}
               previewCategory={previewValue}
-              selectPreviewCategory={setPreviewValue}
+              selectPreviewCategory={(category: string | undefined) => {
+                setPreviewValue(category);
+                setSelectedPreviewCountryCode(
+                  category?.includes('IE_') ? 'IE' : 'UK'
+                );
+              }}
               error={duplicationError}
             />
           )}

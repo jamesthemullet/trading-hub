@@ -18,7 +18,8 @@ import { boxShadow } from '../utils/shared.styles';
 import { spacing } from '../utils/spacing';
 import { ProductBox } from '../visual-editor/visual-editor.styles';
 
-type Props = {
+export type Props = {
+  countryCode: 'UK' | 'IE';
   facetConfig: RuleSetFacetConfigWithId[];
   merchandisingRules: MerchandisingRules;
   onClose: () => void;
@@ -175,6 +176,7 @@ const FacetInfo = ({ facet }: { facet: Facet }) => {
 
 export const Preview = ({
   categoryId,
+  countryCode,
   facetConfig,
   merchandisingRules,
   excludedFacets,
@@ -201,6 +203,7 @@ export const Preview = ({
   const { data, isLoading, setFacetConfigRules } = usePreview({
     ...(categoryId && { categoryId }),
     ...(searchTerm && { searchTerm }),
+    countryCode,
     merchandisingRules: rules,
     facetConfig,
     excludedFacets,
