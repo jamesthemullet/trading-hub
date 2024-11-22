@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { CountryCode, type MerchandisingRules, search } from '@/libs/api';
 
+import { union, uniqBy } from 'lodash';
+
 import { convertCountryCodeToCatalogue } from '../components/utils/convert-country-code-to-catalogue';
 
 export const useCategoryProductSearch = () => {
@@ -52,15 +54,15 @@ export const useCategoryProductSearch = () => {
 
         const results = await Promise.all(promises);
 
-        const combinedProducts = results.flatMap((result) => result.products);
+        const combinedProducts = uniqBy(union(results), 'name');
 
-        const totalItems = results.reduce(
+        const totalItems = combinedProducts.reduce(
           (sum, result) => sum + (result.pagination?.totalItems ?? 0),
           0
         );
 
         const combinedData = {
-          products: combinedProducts,
+          products: combinedProducts[0].products,
           pagination: {
             totalItems,
           },

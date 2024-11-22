@@ -543,7 +543,9 @@ export const Ruleset = ({
               currentTab={currentProductTab}
             />
           </PanelTop>
-          {(!!selectedCategories.length || rulesetType !== 'category') && (
+          {(!!selectedCategories.length ||
+            rulesetSearchTerms.length ||
+            rulesetType === 'global') && (
             <ProductSearchTabContent>
               {currentProductTab === 0 && (
                 <ProductSearch
@@ -595,7 +597,8 @@ export const Ruleset = ({
             {previewError && <ErrorMessage>Error: {previewError}</ErrorMessage>}
 
             {currentEditorTab === 0 &&
-              (selectedCategories.length || rulesetType !== 'category' ? (
+              rulesetType !== 'global' &&
+              (selectedCategories.length || rulesetSearchTerms.length ? (
                 <VisualEditor products={data.products} dispatch={dispatch} />
               ) : (
                 <TextContent>

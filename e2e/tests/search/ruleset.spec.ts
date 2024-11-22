@@ -467,7 +467,9 @@ test.describe('Keyword search', () => {
       await page.getByRole('link', { name: 'Add new rule' }).click();
 
       await page.waitForLoadState();
-      await expect(page.getByLabel('Visual Editor')).toBeVisible();
+      await expect(
+        page.getByText('No, there are no product rankings yet.')
+      ).toBeVisible();
 
       await expect(page.getByText('Duration')).toBeVisible();
 
