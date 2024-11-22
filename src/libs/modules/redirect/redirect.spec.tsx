@@ -20,7 +20,7 @@ describe('Redirect', () => {
       />
     );
 
-    await act(() => {
+    act(() => {
       user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
     });
 
@@ -49,7 +49,7 @@ describe('Redirect', () => {
 
     const saveButton = await screen.findByRole('button', { name: 'Create' });
 
-    await act(() => {
+    act(() => {
       saveButton.click();
     });
 
@@ -81,7 +81,7 @@ describe('Redirect', () => {
       </FeatureFlagContext.Provider>
     );
 
-    await act(() => {
+    act(() => {
       user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
     });
 
@@ -111,7 +111,7 @@ describe('Redirect', () => {
 
     const saveButton = await screen.findByRole('button', { name: 'Create' });
 
-    await act(() => {
+    act(() => {
       saveButton.click();
     });
 
@@ -139,11 +139,11 @@ describe('Redirect', () => {
       />
     );
 
-    await act(() => {
+    await act(async () => {
       user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
     });
 
-    await act(() => {
+    await act(async () => {
       user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
     });
 
@@ -209,7 +209,7 @@ describe('Redirect', () => {
 
     const saveButton = await screen.findByRole('button', { name: 'Save' });
 
-    await act(() => {
+    act(() => {
       saveButton.click();
     });
 
