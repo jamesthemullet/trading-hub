@@ -128,6 +128,12 @@ const StyledUrlText = styled(Text)`
   font-style: italic;
 `;
 
+const CompactUrlText = styled(StyledUrlText)`
+  ${mediaQuery('xxxl')} {
+    display: none;
+  }
+`;
+
 const SchedulingDetailLeftSide = styled.div`
   display: none;
 
@@ -320,7 +326,7 @@ export const DataTable = ({
                     />
                   </FlagAndIdentifier>
                   {categoryPlpUrl && (
-                    <StyledUrlText
+                    <CompactUrlText
                       title={categoryPlpUrl}
                       dangerouslySetInnerHTML={{ __html: categoryPlpUrl }}
                     />
@@ -357,7 +363,7 @@ export const DataTable = ({
                 {headings.filter((heading) => heading === 'Schedule').length >
                   0 && (
                   <SchedulingColumn>
-                    {startDate && endDate && (
+                    {startDate && endDate ? (
                       <>
                         <Image
                           alt=""
@@ -370,6 +376,8 @@ export const DataTable = ({
                           {format(new Date(endDate), 'dd MMM yyyy')}
                         </Text>
                       </>
+                    ) : (
+                      <Text>All time</Text>
                     )}
                   </SchedulingColumn>
                 )}
