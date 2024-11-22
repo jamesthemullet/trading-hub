@@ -98,6 +98,7 @@ export const facetReducer = (
         return isInMergedValues;
       });
       const currentMerged = state.merged ?? [];
+
       return {
         ...state,
         merged:

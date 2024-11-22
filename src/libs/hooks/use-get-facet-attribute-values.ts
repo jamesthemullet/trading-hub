@@ -27,7 +27,7 @@ export const useGetFacetAttributeValues = (
             categoryId,
             ...(searchQuery && { q: searchQuery }),
             start: 0,
-            rows: 100,
+            rows: 1000,
           });
 
         setAttributeValues(result.data.values);

@@ -281,11 +281,18 @@ export const EditFacetModalV2 = ({
       if (trimmedNewValue === attributeState.displayValue) {
         return;
       }
-      const { isUniqueValue } = await checkMergeNameUnique(
-        facet.id,
-        trimmedNewValue,
-        category
-      );
+      const { isUniqueValue } = await checkMergeNameUnique({
+        facetId: facet.id,
+        searchQuery: trimmedNewValue,
+        categoryId: category,
+        localAttributeValues: attributeValuesState.map(
+          (attr) => attr.displayValue
+        ),
+        exceptions:
+          attributeState.mergeType === 'merged'
+            ? attributeState.mergedValues
+            : undefined,
+      });
       const isSameNameAsAnotherMergeGroup = facetLocalState.merged?.some(
         (mergeGroup) => mergeGroup.displayValue === trimmedNewValue
       );

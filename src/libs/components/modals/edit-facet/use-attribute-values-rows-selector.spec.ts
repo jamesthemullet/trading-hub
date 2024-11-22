@@ -164,7 +164,7 @@ describe('useAttributeValuesRowsSelector', () => {
       useAttributeValuesRowsSelector(
         {
           ...mockReturnedGlobalFacetState,
-          boosted: ['Merged group 1'],
+          boosted: ['Cotton'],
           merged: [
             {
               displayValue: 'Merged group 1',
@@ -182,7 +182,7 @@ describe('useAttributeValuesRowsSelector', () => {
       {
         displayType: 'boosted',
         displayValue: 'Merged group 1',
-        id: 'Merged group 1',
+        id: 'Cotton',
         mergeType: 'merged',
         mergedValues: ['Cotton', 'Duck Down'],
         meta: {

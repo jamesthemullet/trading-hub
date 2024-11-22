@@ -24,12 +24,6 @@ const getMergeType = (
   attributeToMergeGroupMap: AttributeToMergeGroupMap,
   displayValue: string
 ) => {
-  const group = Object.values(attributeToMergeGroupMap).find(
-    (group) => group.displayValue === displayValue
-  );
-  if (group !== undefined) {
-    return { type: 'MERGED_TROUGH_GROUP' as const, group };
-  }
   const mergeGroup = attributeToMergeGroupMap[displayValue];
   if (mergeGroup === undefined || mergeGroup.mergedValues.length <= 1) {
     return { type: 'UNMERGED' as const };
@@ -101,15 +95,6 @@ export const useAttributeValuesRowsSelector = (
             id: displayValue,
             meta: defaultMeta,
             ...attributeToMergeGroupMap[displayValue],
-            mergeType: 'merged' as const,
-            displayType: facetValueType,
-          };
-        } else if (mergeInfo.type === 'MERGED_TROUGH_GROUP') {
-          return {
-            id: displayValue,
-            meta: defaultMeta,
-            displayValue: displayValue,
-            mergedValues: mergeInfo.group.mergedValues,
             mergeType: 'merged' as const,
             displayType: facetValueType,
           };

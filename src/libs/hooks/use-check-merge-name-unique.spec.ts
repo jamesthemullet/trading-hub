@@ -46,7 +46,10 @@ describe('useGetFacetAttributeValues', () => {
     const { result } = renderHook(() => useCheckMergeNameUnique());
 
     act(() => {
-      result.current.checkMergeNameUnique('color-id', 'A unique name');
+      result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'A unique name',
+      });
     });
 
     await waitFor(() => {
@@ -72,7 +75,10 @@ describe('useGetFacetAttributeValues', () => {
     const { result } = renderHook(() => useCheckMergeNameUnique());
 
     act(() => {
-      result.current.checkMergeNameUnique('color-id', 'test');
+      result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'test',
+      });
     });
 
     // Wait for the hook to update
@@ -81,5 +87,33 @@ describe('useGetFacetAttributeValues', () => {
         'Failed to get Facet Attribute Values'
       )
     );
+  });
+
+  it('should work with local values', async () => {
+    const { result } = renderHook(() => useCheckMergeNameUnique());
+
+    await act(async () => {
+      const check = await result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'test 1',
+        localAttributeValues: ['test 1'],
+      });
+
+      expect(check.isUniqueValue).toBe(false);
+    });
+  });
+
+  it('should work with exceptions', async () => {
+    const { result } = renderHook(() => useCheckMergeNameUnique());
+
+    await act(async () => {
+      const check = await result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'Cotton',
+        exceptions: ['Cotton'],
+      });
+
+      expect(check.isUniqueValue).toBe(true);
+    });
   });
 });
