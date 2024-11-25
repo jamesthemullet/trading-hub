@@ -67,7 +67,7 @@ describe('useGetCategories', () => {
     const resp = await current.getCategories({
       start: start,
       rows: rows,
-      countryCodes: ['UK'],
+      countryCode: 'UK',
     });
 
     expect(resp).toEqual(categoryListDataMultipleResults);
@@ -86,7 +86,7 @@ describe('useGetCategories', () => {
       query: categoryId1,
       start: start,
       rows: rows,
-      countryCodes: ['UK'],
+      countryCode: 'UK',
     });
 
     expect(resp).toEqual(categoryListDataSingleResult);
@@ -105,7 +105,7 @@ describe('useGetCategories', () => {
       query: categoryName,
       start: start,
       rows: rows,
-      countryCodes: ['UK'],
+      countryCode: 'UK',
     });
 
     expect(resp).toEqual(categoryListDataMultipleResults);
@@ -124,7 +124,7 @@ describe('useGetCategories', () => {
       query: categoryName,
       start: start,
       rows: rows,
-      countryCodes: ['UK'],
+      countryCode: 'UK',
     });
 
     expect(resp).toEqual({ categories: [], pagination: { totalItems: 0 } });
@@ -143,7 +143,7 @@ describe('useGetCategories', () => {
         query: categoryName,
         start: start,
         rows: rows,
-        countryCodes: ['UK'],
+        countryCode: 'UK',
       });
     });
 
@@ -161,7 +161,7 @@ describe('useGetCategories', () => {
         query: categoryName,
         start: start,
         rows: rows,
-        countryCodes: ['UK'],
+        countryCode: 'UK',
       });
     });
 

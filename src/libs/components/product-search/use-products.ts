@@ -22,7 +22,7 @@ export const useProducts = ({
   productSearchTerm: string;
   maxToQuery: number;
   merchandisingRules: MerchandisingRules;
-  countryCode?: string;
+  countryCode?: CountryCode;
 }) => {
   const { searchForProduct } = useCategoryProductSearch();
   const [totalProducts, setTotalProducts] = useState(0);
@@ -49,15 +49,11 @@ export const useProducts = ({
 
   const fetchData = useCallback(
     async (query: string, offset: number) => {
-      const countryCodes = countryCode
-        .split('_')
-        .filter((code): code is CountryCode => code === 'UK' || code === 'IE');
-
       const { products, pagination } = await searchForProduct({
         ...(categoryId && {
           categoryId,
         }),
-        countryCodes,
+        countryCode,
         ...(searchTerms && { searchTerms }),
         query,
         start: offset,

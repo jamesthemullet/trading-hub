@@ -57,7 +57,7 @@ const ProductsLoader = ({
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
   products: ProductRule[];
-  countryCode?: string;
+  countryCode?: CountryCode;
 }) => {
   const [productDetails, setProductDetails] = useState<ProductType[]>([]);
   const [productsShown, setProductsShown] = useState(PRODUCTS_TO_LOAD);
@@ -66,14 +66,10 @@ const ProductsLoader = ({
 
   const fetch = useCallback(
     async (productIds: string[]) => {
-      const countryCodes = countryCode
-        .split('_')
-        .filter((code): code is CountryCode => code === 'UK' || code === 'IE');
-
       const data = await searchForProduct({
         productIds,
         merchandisingRules,
-        countryCodes,
+        countryCode,
       });
       return data.products;
     },

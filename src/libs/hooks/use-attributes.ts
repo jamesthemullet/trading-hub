@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { union, uniqBy } from 'lodash';
 
 import { AttributesResponse, AttributeType, CountryCode, search } from '../api';
-import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogue';
+import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
 
 type Props = {
   category?: string;

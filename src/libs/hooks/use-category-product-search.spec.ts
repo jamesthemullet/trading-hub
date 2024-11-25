@@ -64,7 +64,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
-        countryCodes: ['UK'],
+        countryCode: 'UK',
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
@@ -88,7 +88,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
-        countryCodes: ['UK'],
+        countryCode: 'UK',
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
@@ -121,7 +121,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
-        countryCodes: ['UK', 'IE'],
+        countryCode: 'UK_IE',
       });
     });
 
@@ -146,7 +146,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
-        countryCodes: ['UK'],
+        countryCode: 'UK',
       });
       expect(data.pagination.totalItems).toEqual(0);
     });
@@ -170,7 +170,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
-        countryCodes: ['UK'],
+        countryCode: 'UK',
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
@@ -202,7 +202,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
-        countryCodes: ['UK'],
+        countryCode: 'UK',
       });
       expect(data.pagination.totalItems).toEqual(3);
     });
@@ -220,7 +220,7 @@ describe('useCategoryProductSearch', () => {
         rows: 10,
         start: 0,
         merchandisingRules: mockMerchandisingRules,
-        countryCodes: ['UK'],
+        countryCode: 'UK',
       });
     });
 

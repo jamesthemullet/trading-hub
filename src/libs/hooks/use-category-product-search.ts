@@ -4,7 +4,7 @@ import { CountryCode, type MerchandisingRules, search } from '@/libs/api';
 
 import { union, uniqBy } from 'lodash';
 
-import { convertCountryCodeToCatalogue } from '../components/utils/convert-country-code-to-catalogue';
+import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
 
 export const useCategoryProductSearch = () => {
   const [error, setError] = useState('');
@@ -13,7 +13,7 @@ export const useCategoryProductSearch = () => {
   const searchForProduct = useCallback(
     async ({
       categoryId,
-      countryCodes,
+      countryCode,
       productIds,
       query,
       rows,
@@ -22,7 +22,7 @@ export const useCategoryProductSearch = () => {
       merchandisingRules,
     }: {
       merchandisingRules: MerchandisingRules;
-      countryCodes: CountryCode[];
+      countryCode: CountryCode;
       categoryId?: string;
       productIds?: string[];
       query?: string;
@@ -43,11 +43,13 @@ export const useCategoryProductSearch = () => {
           ...(productIds && { productId: productIds }),
         };
 
-        const promises = countryCodes.map((code) =>
+        const catalogues = convertCountryCodeToCatalogues(countryCode);
+
+        const promises = catalogues.map((catalogue) =>
           search()
             .betaMerchandisingProductCreate(merchandisingRules, {
               ...queryData,
-              catalogue: convertCountryCodeToCatalogue(code),
+              catalogue,
             })
             .then((response) => response.data)
         );

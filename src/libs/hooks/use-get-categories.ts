@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { CountryCode, search } from '../api';
-import { convertCountryCodeToCatalogue } from '../components/utils/convert-country-code-to-catalogue';
+import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
 
 export const useGetCategories = () => {
   const [getCategoriesError, setGetCategoriesError] = useState('');
@@ -11,23 +11,25 @@ export const useGetCategories = () => {
       query,
       start,
       rows,
-      countryCodes,
+      countryCode,
     }: {
       query?: string;
       start: number;
       rows: number;
-      countryCodes: CountryCode[];
+      countryCode: CountryCode;
     }) => {
       setGetCategoriesError('');
 
+      const catalogues = convertCountryCodeToCatalogues(countryCode);
+
       try {
-        const promises = countryCodes.map((code) =>
+        const promises = catalogues.map((catalogue) =>
           search()
             .betaMerchandisingCategoryList({
               q: query,
               start,
               rows,
-              catalogue: convertCountryCodeToCatalogue(code),
+              catalogue,
             })
             .then((response) => response.data)
         );

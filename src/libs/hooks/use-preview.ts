@@ -8,7 +8,7 @@ import type {
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { convertCountryCodeToCatalogue } from '../components/utils/convert-country-code-to-catalogue';
+import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
 import { handleError } from './utils/error';
 
 export const usePreview = ({
@@ -86,7 +86,7 @@ export const usePreview = ({
             ...(searchTerm && { searchTerm }),
             rows: 140,
             start: 0,
-            catalogue: convertCountryCodeToCatalogue(countryCode),
+            catalogue: convertCountryCodeToCatalogues(countryCode)[0],
           },
           {
             rules: merchandisingRules,

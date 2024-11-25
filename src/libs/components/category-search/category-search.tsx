@@ -102,14 +102,11 @@ export const CategorySearch = ({
   }, [countryCode]);
 
   const searchCategories = async (query: string, countryCode: CountryCode) => {
-    const countryCodes = countryCode
-      .split('_')
-      .filter((code): code is CountryCode => code === 'UK' || code === 'IE');
     const resp = await getCategories({
       query,
       rows: 5,
       start: 0,
-      countryCodes: hasIreland ? countryCodes : ['UK'],
+      countryCode: hasIreland ? countryCode : 'UK',
     });
 
     if (resp !== undefined) {
