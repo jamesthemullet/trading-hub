@@ -174,6 +174,12 @@ const FlagAndIdentifier = styled.div`
   }
 `;
 
+const NoOverflowText = styled(Text)`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 type Row = {
   id: string;
   identifier: string;
@@ -320,7 +326,7 @@ export const DataTable = ({
                         )}
                       </>
                     )}
-                    <Text
+                    <NoOverflowText
                       title={identifier}
                       dangerouslySetInnerHTML={{ __html: identifier }}
                     />

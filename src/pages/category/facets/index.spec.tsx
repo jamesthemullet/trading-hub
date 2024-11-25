@@ -116,7 +116,7 @@ describe('Category facet management', () => {
 
     expect(screen.getByText('Category Facet Management')).toBeVisible();
     expect(screen.getByText('Add new facet')).toBeVisible();
-    expect(screen.getByText('1 | identifier-1')).toBeVisible();
+    expect(screen.getByText('1 - identifier-1')).toBeVisible();
   });
 
   it('should open delete modal and close on cancel', async () => {

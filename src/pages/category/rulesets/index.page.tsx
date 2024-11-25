@@ -20,6 +20,7 @@ import {
 } from '@/libs/components';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
+import { formatCategoriesInfo } from '@/libs/components/utils/format-categories-info';
 import {
   NewButton,
   PageNameLabel,
@@ -139,7 +140,7 @@ const RuleSets = () => {
       countryCode,
     }) => ({
       id: id,
-      identifier: `${categoriesInfo[0].id} | ${categoriesInfo[0].name}`,
+      identifier: formatCategoriesInfo(categoriesInfo),
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,

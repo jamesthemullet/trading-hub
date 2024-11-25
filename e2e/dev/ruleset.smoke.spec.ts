@@ -53,7 +53,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()
+      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
     ).toBeVisible();
 
     await page.getByRole('link', { name: 'Edit' }).first().click();
@@ -88,7 +88,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()
+      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
     ).toBeVisible();
 
     await page.getByRole('link', { name: 'Edit' }).first().click();
@@ -142,7 +142,7 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Save', exact: true }).click();
 
     await expect(
-      page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()
+      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
     ).toBeVisible();
     await expect(page.getByRole('time').first()).toHaveText(
       '14 Nov 2024 - 19 Nov 2024'
@@ -157,7 +157,7 @@ test.describe('Category Ranking', () => {
     await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()
+      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
     ).toBeVisible();
 
     await expect(page.getByRole('time').first()).toHaveText(
@@ -190,7 +190,7 @@ test.describe('Category Ranking', () => {
     await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 | Hat, Gloves & Scarves').first()
+      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
     ).toBeVisible();
 
     const currentCount =

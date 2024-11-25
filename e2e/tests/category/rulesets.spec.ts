@@ -137,7 +137,7 @@ test.describe('Category rulesets', () => {
       page.getByRole('heading', { name: 'Category ranking rules' })
     ).toBeVisible();
 
-    await expect(page.getByText('SubCategory_429 |').first()).toBeVisible();
+    await expect(page.getByText('SubCategory_429 -').first()).toBeVisible();
 
     await expect(page.getByText('7 results')).toBeVisible();
 
