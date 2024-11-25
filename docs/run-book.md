@@ -4,7 +4,7 @@
 
 ### Business overview
 
-The application provides a UI for confuguring results for Search Results Pages (SRPs) and Product Listing Pages (PLPs).
+The application provides a UI for configuring results for Search Results Pages (SRPs) and Product Listing Pages (PLPs).
 
 ### Technical overview
 
@@ -70,6 +70,20 @@ In the event of an outage the most likely causes are:
 - failed deployment
 - api error from search service
 - user is not authorised to use the trading hub
+
+In case of users not being able to sign in after being signed out, it could be that the redirect url is missing from Azure.
+
+This is the error that they would receive:
+
+![alt text](no-redirect-error.png)
+
+This can be corrected by adding it back to the Authentication page:
+
+![alt text](authentication-page.png)
+
+The redirect for prod is: https://merchandising-hub.search.marksandspencer.app/api/auth/callback/azure-ad
+For dev: https://dev-merchandising-hub.search.marksandspencer.app/api/auth/callback/azure-ad
+For localhost: http://localhost:3000/api/auth/callback/azure-ad
 
 ### Incident management
 
