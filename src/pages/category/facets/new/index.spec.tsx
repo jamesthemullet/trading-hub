@@ -56,7 +56,7 @@ const mockGetCategories = {
   pagination: { totalItems: 20 },
 };
 
-describe('Facet Management Editing', () => {
+describe('Category Facet Management New', () => {
   const mockRouter = {
     push: jest.fn(),
   };

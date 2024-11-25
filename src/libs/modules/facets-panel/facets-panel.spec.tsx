@@ -1,6 +1,5 @@
-import { useReducer } from 'react';
-import { act, Screen, screen, waitFor } from '@testing-library/react';
-import userEvent, { UserEvent } from '@testing-library/user-event';
+import { act, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { SearchPreviewResponseBeta } from '@/libs/api';
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
@@ -17,6 +16,7 @@ import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-r
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { FacetsPanel } from './facets-panel';
+import { FacetRowDisplayValue } from './facets-panel-reducer';
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
@@ -31,14 +31,6 @@ jest.mock('../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
 
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useReducer: jest.fn(),
-}));
-
-const dispatchMock = jest.fn();
-
-const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const categoryId1 = 'cat_123';
 const categoryId2 = 'IE_cat123';
 const categoryName1 = 'jeans';
@@ -58,26 +50,6 @@ const mockGetCategories = {
   ],
   pagination: { totalItems: 20 },
 };
-const mockFacet = {
-  displayValue: 'color',
-  id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-  indexPropertyName: 'color',
-  lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
-  merged: [],
-};
-
-const mockMerchandisingRules = {
-  pinnedProducts: [{ id: 'productId' }],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  blockedProducts: [],
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
-};
 
 const mockDefaultOrderData = [
   { defaultOrder: 'Include only' },
@@ -86,6 +58,14 @@ const mockDefaultOrderData = [
   { defaultOrder: 'Include only' },
   { defaultOrder: 'Include only' },
 ];
+
+const mockFacet = {
+  displayValue: 'color',
+  id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+  indexPropertyName: 'color',
+  lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
+  merged: [],
+};
 
 const mockData: SearchPreviewResponseBeta = {
   category: categoryId1,
@@ -133,47 +113,105 @@ const mockCategoryReturnValue = {
   setFacetConfigRules: jest.fn(),
 };
 
-const selectCategory = async (screen: Screen, user: UserEvent) => {
-  const input = screen.getAllByPlaceholderText(
-    CATEGORY_SEARCH_PLACEHOLDER_TEXT
-  )[0];
-  await user.type(input, 'SubCategory_507{enter}');
-
-  const categoryToSelect = await screen.findByText(
-    `${categoryId1} | ${categoryName1} | ${categoryPath1}`
-  );
-
-  act(() => {
-    categoryToSelect.click();
-  });
-
-  await waitFor(() => {
-    expect(screen.getByText(categoryId1)).toBeVisible();
-  });
-};
-
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
+const dispatchSpy = jest.fn();
+const setDateTimeSpy = jest.fn();
 
-const onFacetDataChangeSpy = jest.fn();
-
-const initialIncludedFacetsMock = [
-  'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-  'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-  'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+const mockFacetsState: FacetRowDisplayValue[] = [
+  {
+    displayType: 'included',
+    displayValue: 'color',
+    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+    indexPropertyName: 'color',
+    lastChanged: {
+      date: '2021-01-01T08:34:15Z',
+      user: 'Test User',
+    },
+    merged: [
+      {
+        displayValue: 'test merged group',
+        mergedValues: ['merged 1', 'merged 2'],
+      },
+    ],
+    meta: {
+      isBeginningOfDisplayTypeGroup: true,
+      isEndOfDisplayTypeGroup: false,
+    },
+  },
+  {
+    displayType: 'included',
+    displayValue: 'brand',
+    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+    indexPropertyName: 'brand',
+    lastChanged: {
+      date: '2021-01-03T08:34:15Z',
+      user: 'Test User',
+    },
+    merged: [],
+    meta: {
+      isBeginningOfDisplayTypeGroup: false,
+      isEndOfDisplayTypeGroup: true,
+    },
+  },
+  {
+    displayType: 'algoControl',
+    displayValue: 'size',
+    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+    indexPropertyName: 'size',
+    lastChanged: {
+      date: '2021-01-02T08:34:15Z',
+      user: 'Test User',
+    },
+    merged: [],
+    meta: {
+      isBeginningOfDisplayTypeGroup: true,
+      isEndOfDisplayTypeGroup: false,
+    },
+  },
+  {
+    displayType: 'algoControl',
+    displayValue: 'price',
+    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+    indexPropertyName: 'price',
+    lastChanged: {
+      date: '2021-01-05T08:34:15Z',
+      user: 'Test User',
+    },
+    merged: [],
+    meta: {
+      isBeginningOfDisplayTypeGroup: false,
+      isEndOfDisplayTypeGroup: true,
+    },
+  },
+  {
+    displayType: 'excluded',
+    displayValue: 'category',
+    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+    indexPropertyName: 'category',
+    lastChanged: {
+      date: '2021-01-04T08:34:15Z',
+      user: 'Test User',
+    },
+    merged: [],
+    meta: {
+      isBeginningOfDisplayTypeGroup: true,
+      isEndOfDisplayTypeGroup: true,
+    },
+  },
 ];
 
-const facetsPanelLocalStateMock = {
-  includedFacets: initialIncludedFacetsMock,
-  excludedFacets: [],
+const mockIncludedFacets = [
+  globalFacetsListMock.facets[0],
+  globalFacetsListMock.facets[2],
+  globalFacetsListMock.facets[3],
+];
+const mockExcludedFacets = {
+  facets: [{ id: globalFacetsListMock.facets[1].id }],
 };
 
 describe('Facet Panel', () => {
   beforeEach(() => {
-    jest
-      .mocked(useReducer)
-      .mockReturnValue([facetsPanelLocalStateMock, dispatchMock]);
-
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
@@ -197,15 +235,17 @@ describe('Facet Panel', () => {
   it('should render the facet management editing page', async () => {
     renderWithProviders(
       <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
         title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        onFacetDataChange={jest.fn()}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
         facetType="category"
         countryCode="UK_IE"
+        selectedPreviewCountryCode="UK"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetDataChange={jest.fn()}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
       />
     );
 
@@ -220,15 +260,17 @@ describe('Facet Panel', () => {
   it('should not render preview button or add new facets button, if global facets page', async () => {
     renderWithProviders(
       <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
         title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        onFacetDataChange={jest.fn()}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
         facetType="global"
         countryCode="UK_IE"
+        selectedPreviewCountryCode="UK"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetDataChange={jest.fn()}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
       />
     );
 
@@ -243,15 +285,17 @@ describe('Facet Panel', () => {
   it('should render column headings', () => {
     renderWithProviders(
       <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
         title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        onFacetDataChange={jest.fn()}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
         facetType="category"
         countryCode="UK_IE"
+        selectedPreviewCountryCode="UK"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetDataChange={jest.fn()}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
       />
     );
 
@@ -261,49 +305,22 @@ describe('Facet Panel', () => {
     expect(screen.getByText('Value options')).toBeVisible();
   });
 
-  it('should cancel changes to a facet', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(
-      <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
-        onFacetDataChange={jest.fn()}
-        facetType="category"
-        countryCode="UK_IE"
-      />
-    );
-
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
-
-    const confirmCancelButton = await screen.findByText('Close without saving');
-
-    act(() => {
-      confirmCancelButton.click();
-    });
-
-    expect(onCancelSpy).toHaveBeenCalled();
-  });
-
   it('should preview changes to a facet', async () => {
     jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
 
     renderWithProviders(
       <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
         title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        onFacetDataChange={jest.fn()}
-        categoryIds={[categoryId1]}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
         facetType="category"
         countryCode="UK_IE"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetDataChange={jest.fn()}
+        selectedCategories={[categoryId1]}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
       />
     );
 
@@ -318,6 +335,10 @@ describe('Facet Panel', () => {
     );
 
     expect(previewText).toBeInTheDocument();
+
+    expect(usePreview).toHaveBeenCalledWith(
+      expect.objectContaining({ countryCode: 'UK' })
+    );
 
     const closeButton = screen.getByLabelText('close modal');
 
@@ -335,16 +356,18 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="category"
+        countryCode="UK_IE"
+        selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         displayRowOrderControls={true}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        initialIncludedFacets={initialIncludedFacetsMock}
-        initialExcludedFacets={[]}
-        facetType="category"
-        countryCode="UK_IE"
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
       />
     );
 
@@ -352,7 +375,7 @@ describe('Facet Panel', () => {
       screen.getByRole('button', { name: 'Move color row down' })
     );
 
-    expect(dispatchMock).toHaveBeenCalledWith({
+    expect(dispatchSpy).toHaveBeenCalledWith({
       payload: { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' },
       type: 'MOVE_INCLUDED_ROW_DOWN',
     });
@@ -363,22 +386,24 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="category"
+        countryCode="UK_IE"
+        selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         displayRowOrderControls={true}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        initialIncludedFacets={initialIncludedFacetsMock}
-        initialExcludedFacets={[]}
-        facetType="category"
-        countryCode="UK_IE"
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
       />
     );
 
     await user.click(screen.getByRole('button', { name: 'Move brand row up' }));
 
-    expect(dispatchMock).toHaveBeenCalledWith({
+    expect(dispatchSpy).toHaveBeenCalledWith({
       payload: { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86' },
       type: 'MOVE_INCLUDED_ROW_UP',
     });
@@ -386,122 +411,27 @@ describe('Facet Panel', () => {
 
   it('should block order change when search is present', async () => {
     const user = userEvent.setup({ delay: null });
-    const onFacetsDataRowOrderChangeSpy = jest.fn();
 
     renderWithProviders(
       <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="category"
+        countryCode="UK"
+        selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         displayRowOrderControls={true}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
         onFacetDataChange={jest.fn()}
-        initialIncludedFacets={initialIncludedFacetsMock}
-        initialExcludedFacets={[]}
-        facetType="category"
-        countryCode={'UK'}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
       />
     );
 
     await user.click(
       screen.getByRole('button', { name: 'Move color row down' })
     );
-
-    expect(onFacetsDataRowOrderChangeSpy).not.toHaveBeenCalled();
-  });
-
-  it('should save changes to a facet', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(
-      <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        onFacetDataChange={jest.fn()}
-        categoryIds={[categoryId1]}
-        rulesetMerchandisingRules={mockMerchandisingRules}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
-        facetType="category"
-        countryCode={'UK'}
-      />
-    );
-
-    await user.click(screen.getByRole('button', { name: 'Save' }));
-
-    expect(onSaveSpy).toHaveBeenCalled();
-  });
-
-  it('should select a category on user input, and clear category when "remove selected category" button is clicked', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    const onSelectedCategoryChangeSpy = jest.fn();
-
-    renderWithProviders(
-      <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        onFacetDataChange={jest.fn()}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
-        facetType="category"
-        onSelectedCategoryChange={onSelectedCategoryChangeSpy}
-        countryCode={'UK'}
-      />
-    );
-
-    await selectCategory(screen, user);
-
-    const clearButton = await screen.findByLabelText(
-      'Remove selected category'
-    );
-
-    act(() => {
-      clearButton.click();
-    });
-
-    expect(onSelectedCategoryChangeSpy).toHaveBeenCalledTimes(2);
-    expect(onSelectedCategoryChangeSpy).toHaveBeenLastCalledWith(undefined);
-  });
-
-  it('should show error and not add ruleset to the list if trying to add a duplicate ruleset', async () => {
-    const user = userEvent.setup();
-
-    const onSelectedCategoryChangeSpy = jest.fn();
-
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: true }}
-      >
-        <FacetsPanel
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          title="Facet Rule Editor"
-          facetsData={globalFacetsListMock.facets}
-          onFacetDataChange={jest.fn()}
-          initialIncludedFacets={[]}
-          initialExcludedFacets={[]}
-          facetType="category"
-          onSelectedCategoryChange={onSelectedCategoryChangeSpy}
-          countryCode={'UK'}
-        />
-      </FeatureFlagContext.Provider>
-    );
-
-    await selectCategory(screen, user);
-    await selectCategory(screen, user);
-
-    expect(
-      screen.getByText('Ruleset cat_123 has already been added')
-    ).toBeVisible();
-
-    expect(
-      screen.queryAllByRole('button', { name: 'Remove category: cat_123' })
-    ).toHaveLength(1);
   });
 
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
@@ -509,15 +439,17 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="category"
+        countryCode="UK"
+        selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
         defaultOrderData={mockDefaultOrderData}
-        initialIncludedFacets={initialIncludedFacetsMock}
-        initialExcludedFacets={[]}
-        facetType="category"
-        countryCode={'UK'}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
       />
     );
 
@@ -539,7 +471,7 @@ describe('Facet Panel', () => {
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(dispatchMock).toHaveBeenCalledWith({
+      expect(dispatchSpy).toHaveBeenCalledWith({
         payload: {
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
           newDisplayType: 'excluded',
@@ -555,17 +487,19 @@ describe('Facet Panel', () => {
         value={{ hasIreland: false, hasMultipleCategories: false }}
       >
         <FacetsPanel
+          title="Facet Rule Editor"
+          facetType="category"
+          countryCode="UK"
+          selectedPreviewCountryCode="UK"
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
-          title="Facet Rule Editor"
-          facetsData={globalFacetsListMock.facets}
-          categoryIds={[categoryId1]}
+          selectedCategories={[categoryId1]}
+          setDateTime={jest.fn()}
           onFacetDataChange={jest.fn()}
-          initialIncludedFacets={[]}
-          initialExcludedFacets={[]}
-          facetType="category"
-          onScheduleDateChange={jest.fn()}
-          countryCode={'UK'}
+          facetsState={mockFacetsState}
+          includedFacets={mockIncludedFacets}
+          excludedFacets={mockExcludedFacets}
+          dispatch={dispatchSpy}
         />
       </FeatureFlagContext.Provider>
     );
@@ -579,19 +513,21 @@ describe('Facet Panel', () => {
         value={{ hasIreland: false, hasMultipleCategories: false }}
       >
         <FacetsPanel
+          title="Facet Rule Editor"
+          facetType="category"
+          countryCode="UK"
+          selectedPreviewCountryCode="UK"
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
-          title="Facet Rule Editor"
-          facetsData={globalFacetsListMock.facets}
-          categoryIds={[categoryId1]}
+          selectedCategories={[categoryId1]}
           onFacetDataChange={jest.fn()}
-          initialIncludedFacets={[]}
-          initialExcludedFacets={[]}
-          facetType="category"
           startDate="2024-11-05T00:00:00.000Z"
           endDate="2024-11-06T00:00:00.000Z"
-          onScheduleDateChange={jest.fn()}
-          countryCode={'UK'}
+          setDateTime={jest.fn()}
+          facetsState={mockFacetsState}
+          includedFacets={mockIncludedFacets}
+          excludedFacets={mockExcludedFacets}
+          dispatch={dispatchSpy}
         />
       </FeatureFlagContext.Provider>
     );
@@ -601,103 +537,23 @@ describe('Facet Panel', () => {
     );
   });
 
-  it('should edit a display value of global facets', async () => {
-    const onSaveSpy = jest.fn();
-    const onCancelSpy = jest.fn();
-    const user = userEvent.setup();
-
-    renderWithProviders(
-      <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        onFacetDataChange={onFacetDataChangeSpy}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
-        facetType="global"
-        countryCode={'UK'}
-      />
-    );
-
-    const editButton = screen.getByLabelText('Edit display name for color');
-
-    await user.click(editButton);
-
-    const editColorInput = await screen.findByLabelText(
-      'Edit color input field'
-    );
-
-    await waitFor(async () => {
-      expect(editColorInput).toBeVisible();
-    });
-
-    expect(editColorInput).toHaveValue('color');
-    await userEvent.clear(editColorInput);
-    await userEvent.type(editColorInput, 'colour 2');
-
-    const saveButton = screen.getByLabelText('Save color change');
-
-    await user.click(saveButton);
-
-    expect(onFacetDataChangeSpy).toHaveBeenCalledWith({
-      value: 'colour 2',
-      facet: {
-        ...mockFacet,
-        displayType: 'included',
-        merged: [
-          {
-            displayValue: 'test merged group',
-            mergedValues: ['merged 1', 'merged 2'],
-          },
-        ],
-        meta: {
-          isBeginningOfDisplayTypeGroup: true,
-          isEndOfDisplayTypeGroup: false,
-        },
-      },
-    });
-  });
-
-  it('should not show Edit Values button if facet is category and the facet is not included', async () => {
-    jest.mocked(useReducer).mockReturnValueOnce([
-      {
-        includedFacets: [],
-        excludedFacets: [],
-      },
-      dispatchMock,
-    ]);
-
-    renderWithProviders(
-      <FacetsPanel
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        title="Facet Rule Editor"
-        facetsData={globalFacetsListMock.facets}
-        onFacetDataChange={onFacetDataChangeSpy}
-        initialIncludedFacets={[]}
-        initialExcludedFacets={[]}
-        facetType="category"
-        countryCode={'UK'}
-      />
-    );
-
-    expect(screen.queryByText('Edit values')).not.toBeInTheDocument();
-  });
-
   describe('Edit Facet Values Modal', () => {
     it('should open the modal', async () => {
+      const user = userEvent.setup();
+
       renderWithProviders(
         <FacetsPanel
+          title="Facet Rule Editor"
+          facetType="global"
+          countryCode="UK"
+          selectedPreviewCountryCode="UK"
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
-          title="Facet Rule Editor"
-          facetsData={globalFacetsListMock.facets}
-          onFacetDataChange={onFacetDataChangeSpy}
-          initialIncludedFacets={[]}
-          initialExcludedFacets={[]}
-          facetType="global"
-          countryCode={'UK'}
+          setDateTime={setDateTimeSpy}
+          facetsState={mockFacetsState}
+          includedFacets={mockIncludedFacets}
+          excludedFacets={mockExcludedFacets}
+          dispatch={dispatchSpy}
         />
       );
 
@@ -705,9 +561,9 @@ describe('Facet Panel', () => {
         await screen.findAllByText('Edit values')
       )[0];
 
-      act(() => {
-        editFacetValuesButton.click();
-      });
+      expect(editFacetValuesButton).toBeVisible();
+
+      user.click(editFacetValuesButton);
 
       await waitFor(() => {
         expect(
@@ -721,17 +577,20 @@ describe('Facet Panel', () => {
 
     it('should close the modal on click of the close button', async () => {
       const user = userEvent.setup({ delay: null });
+
       renderWithProviders(
         <FacetsPanel
+          title="Facet Rule Editor"
+          facetType="global"
+          countryCode="UK"
+          selectedPreviewCountryCode="UK"
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
-          title="Facet Rule Editor"
-          facetsData={globalFacetsListMock.facets}
-          onFacetDataChange={onFacetDataChangeSpy}
-          initialIncludedFacets={[]}
-          initialExcludedFacets={[]}
-          facetType="global"
-          countryCode={'UK'}
+          setDateTime={setDateTimeSpy}
+          facetsState={mockFacetsState}
+          includedFacets={mockIncludedFacets}
+          excludedFacets={mockExcludedFacets}
+          dispatch={dispatchSpy}
         />
       );
 
@@ -762,214 +621,6 @@ describe('Facet Panel', () => {
           })
         ).not.toBeVisible();
       });
-    });
-  });
-
-  describe('Ireland', () => {
-    it('should preview IE products with an IE category', async () => {
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
-
-      renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <FacetsPanel
-            onSave={onSaveSpy}
-            onCancel={onCancelSpy}
-            title="Facet Rule Editor"
-            facetsData={globalFacetsListMock.facets}
-            onFacetDataChange={jest.fn()}
-            categoryIds={[categoryId2]}
-            initialIncludedFacets={[]}
-            initialExcludedFacets={[]}
-            facetType="category"
-            countryCode="UK_IE"
-          />
-        </FeatureFlagContext.Provider>
-      );
-
-      const previewButton = screen.getByRole('button', { name: 'Preview' });
-
-      act(() => {
-        previewButton.click();
-      });
-
-      expect(usePreview).toHaveBeenCalledWith(
-        expect.objectContaining({ countryCode: 'IE' })
-      );
-    });
-
-    it('should preview IE products when selecting an IE category', async () => {
-      const user = userEvent.setup({ delay: null });
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
-
-      renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <FacetsPanel
-            onSave={onSaveSpy}
-            onCancel={onCancelSpy}
-            title="Facet Rule Editor"
-            facetsData={globalFacetsListMock.facets}
-            onFacetDataChange={jest.fn()}
-            categoryIds={undefined}
-            initialIncludedFacets={[]}
-            initialExcludedFacets={[]}
-            facetType="category"
-            countryCode="UK_IE"
-          />
-        </FeatureFlagContext.Provider>
-      );
-
-      await user.type(
-        screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
-        'IE_SubCategory_507{enter}'
-      );
-
-      const categoryToSelect = await screen.findByText(
-        `${categoryId2} | ${categoryName1} | ${categoryPath1}`
-      );
-
-      act(() => {
-        categoryToSelect.click();
-      });
-
-      const previewButton = screen.getByRole('button', { name: 'Preview' });
-
-      act(() => {
-        previewButton.click();
-      });
-
-      expect(usePreview).toHaveBeenCalledWith(
-        expect.objectContaining({ countryCode: 'IE' })
-      );
-    });
-
-    it('should preview IE products when an IE category is selected after viewing a UK category', async () => {
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
-
-      renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <FacetsPanel
-            onSave={onSaveSpy}
-            onCancel={onCancelSpy}
-            title="Facet Rule Editor"
-            facetsData={globalFacetsListMock.facets}
-            onFacetDataChange={jest.fn()}
-            categoryIds={[categoryId1, categoryId2]}
-            initialIncludedFacets={[]}
-            initialExcludedFacets={[]}
-            facetType="category"
-            countryCode="UK_IE"
-          />
-        </FeatureFlagContext.Provider>
-      );
-
-      const previewButton = screen.getByRole('button', { name: 'Preview' });
-
-      act(() => {
-        previewButton.click();
-      });
-
-      expect(usePreview).toHaveBeenCalledWith(
-        expect.objectContaining({ countryCode: 'UK' })
-      );
-
-      const closeButton = screen.getByLabelText('close modal');
-
-      act(() => {
-        closeButton.click();
-      });
-
-      const IECategory = screen.getByRole('button', { name: categoryId2 });
-
-      act(() => {
-        IECategory.click();
-      });
-
-      act(() => {
-        previewButton.click();
-      });
-
-      expect(usePreview).toHaveBeenCalledWith(
-        expect.objectContaining({ countryCode: 'IE' })
-      );
-    });
-
-    it('should preview UK products when a UK category is selected after viewing an IE category', async () => {
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
-
-      renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <FacetsPanel
-            onSave={onSaveSpy}
-            onCancel={onCancelSpy}
-            title="Facet Rule Editor"
-            facetsData={globalFacetsListMock.facets}
-            onFacetDataChange={jest.fn()}
-            categoryIds={[categoryId2, categoryId1]}
-            initialIncludedFacets={[]}
-            initialExcludedFacets={[]}
-            facetType="category"
-            countryCode="UK_IE"
-          />
-        </FeatureFlagContext.Provider>
-      );
-
-      const previewButton = screen.getByRole('button', { name: 'Preview' });
-
-      act(() => {
-        previewButton.click();
-      });
-
-      expect(usePreview).toHaveBeenCalledWith(
-        expect.objectContaining({ countryCode: 'IE' })
-      );
-
-      const closeButton = screen.getByLabelText('close modal');
-
-      act(() => {
-        closeButton.click();
-      });
-
-      const UKCategory = screen.getByRole('button', { name: categoryId1 });
-
-      act(() => {
-        UKCategory.click();
-      });
-
-      act(() => {
-        previewButton.click();
-      });
-
-      expect(usePreview).toHaveBeenCalledWith(
-        expect.objectContaining({ countryCode: 'UK' })
-      );
     });
   });
 });

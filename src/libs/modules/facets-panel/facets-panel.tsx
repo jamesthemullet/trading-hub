@@ -1,7 +1,6 @@
-import { useContext, useEffect, useReducer, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import {
-  Category,
   CountryCode,
   ExcludedFacets,
   MerchandisingRules,
@@ -47,11 +46,10 @@ import {
   SectionWrapper,
 } from './facets-panel.styles';
 import {
+  Action,
   FacetDisplayType,
   FacetRowDisplayValue,
-  facetsPanelReducer,
 } from './facets-panel-reducer';
-import { useFacetsRowsSelector } from './use-facets-panel-rows-selector';
 
 export const COLUMNS: {
   label: string;
@@ -75,14 +73,24 @@ type defaultOrderDataType = {
 }[];
 
 interface FacetsPanelProps {
-  onSave: (value: {
-    categoryIds: string[];
-    includedFacets: ReturnedFacet[];
-    excludedFacets: ExcludedFacets;
-    countryCode: CountryCode;
-  }) => void;
+  displayRowOrderControls?: boolean;
+  title: string;
+  facetType: 'global' | 'category' | 'search';
+  isNewRuleset?: boolean;
+  rulesetMerchandisingRules?: MerchandisingRules;
+  endDate?: string;
+  canMergeValueAttributes?: boolean;
+  defaultOrderData?: defaultOrderDataType;
+  startDate?: string;
+  facetsState: FacetRowDisplayValue[];
+  selectedCategories?: string[];
+  countryCode: CountryCode;
+  includedFacets: ReturnedFacet[];
+  excludedFacets: ExcludedFacets;
+  selectedPreviewCountryCode?: 'UK' | 'IE';
+  dispatch: (action: Action) => void;
+  onSave: () => void;
   onCancel: () => void;
-  setSearch?: (value: string) => void;
   onFacetDataChange?: ({
     value,
     facet,
@@ -90,70 +98,45 @@ interface FacetsPanelProps {
     value: string | 'included' | 'excluded' | 'algoControl';
     facet: ReturnedFacet;
   }) => void;
-  onFacetValuesChange?: ({
-    facet,
-    orderedPinnedValues,
-    orderedExcludedValues,
-  }: {
-    facet: ReturnedFacet;
-    orderedPinnedValues: string[];
-    orderedExcludedValues: string[];
-  }) => void;
-  refreshData?: () => void;
-  onSelectedCategoryChange?: (
-    categoryId: Required<Category> | undefined
-  ) => void;
-  onScheduleDateChange?: (dateTime: [Date | null, Date | null]) => void;
-  displayRowOrderControls?: boolean;
-  title: string;
-  facetsData: ReturnedFacet[];
-  facetType: 'global' | 'category' | 'search';
-  countryCode: CountryCode;
-  isNewRuleset?: boolean;
-  rulesetMerchandisingRules?: MerchandisingRules;
-  categoryIds?: string[];
-  endDate?: string;
-  canMergeValueAttributes?: boolean;
-  defaultOrderData?: defaultOrderDataType;
-  initialIncludedFacets: string[];
-  initialExcludedFacets: string[];
-  startDate?: string;
+  setDateTime?: (dateTime: [Date | null, Date | null]) => void;
   updatedValues?: (
     orderedPinnedValues: string[],
     orderedExcludedValues: string[],
     id: string
   ) => void;
+  setSelectedCategories?: (category: string[]) => void;
+  setSelectedPreviewCountryCode?: (countryCode: 'UK' | 'IE') => void;
+  refreshData?: () => void;
 }
 
 export const FacetsPanel = ({
+  displayRowOrderControls = false,
+  selectedCategories = [],
+  title,
+  facetType,
+  isNewRuleset,
+  endDate,
+  rulesetMerchandisingRules,
+  startDate,
+  facetsState,
+  countryCode,
+  includedFacets,
+  excludedFacets,
+  selectedPreviewCountryCode,
+  dispatch,
   onSave,
   onCancel,
   onFacetDataChange,
-  onSelectedCategoryChange,
-  onScheduleDateChange,
-  refreshData,
-  title,
-  facetsData,
-  facetType,
-  countryCode,
-  isNewRuleset,
-  categoryIds,
-  displayRowOrderControls = false,
-  endDate,
-  initialIncludedFacets,
-  initialExcludedFacets,
-  rulesetMerchandisingRules,
-  startDate,
+  setDateTime,
   updatedValues,
+  setSelectedCategories,
+  setSelectedPreviewCountryCode,
+  refreshData,
 }: FacetsPanelProps) => {
-  const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
-    categoryIds || []
-  );
+  const featureFlags = useContext(FeatureFlagContext);
 
   const [showPreview, setShowPreview] = useState(false);
-  const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
-    'UK' | 'IE'
-  >(categoryIds && categoryIds[0].includes('IE_') ? 'IE' : 'UK');
+
   const [merchandisingRules] = useState<MerchandisingRules>(
     rulesetMerchandisingRules
       ? rulesetMerchandisingRules
@@ -186,38 +169,23 @@ export const FacetsPanel = ({
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
   const [duplicationError, setDuplicationError] = useState('');
 
-  const featureFlags = useContext(FeatureFlagContext);
+  const [previewValue, setPreviewValue] = useState<string | undefined>(
+    selectedCategories[0]
+  );
 
+  const { setSearch, filteredFacets } = useFacetsFilter(facetsState);
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
   }, 300);
 
-  const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
-    includedFacets: initialIncludedFacets,
-    excludedFacets: initialExcludedFacets,
-    countryCode: countryCode,
-  });
-  const { facetsState, includedFacets, excludedFacets } = useFacetsRowsSelector(
-    facetPanelLocalState,
-    facetsData
-  );
-  const { setSearch, filteredFacets } = useFacetsFilter(facetsState);
+  const onClose = () => {
+    setIsEditValuesModalOpen(false);
+  };
 
-  useEffect(() => {
-    dispatch({
-      type: 'INITIALISE_STATE',
-      payload: {
-        includedFacets: initialIncludedFacets,
-        excludedFacets: initialExcludedFacets,
-        countryCode: facetPanelLocalState.countryCode || countryCode,
-      },
-    });
-  }, [
-    initialIncludedFacets,
-    initialExcludedFacets,
-    countryCode,
-    facetPanelLocalState.countryCode,
-  ]);
+  const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
+    setIsEditValuesModalOpen(true);
+    setSelectedFacet(facet);
+  };
 
   const handleOrderChange =
     (attributeState: FacetRowDisplayValue) => (newOrder: FacetDisplayType) => {
@@ -244,6 +212,11 @@ export const FacetsPanel = ({
     });
   };
 
+  const onClearSelection = (category: string) => {
+    setSelectedCategories?.(
+      selectedCategories.filter((categoryName) => categoryName !== category)
+    );
+  };
   const onSelectCategory = (category: string) => {
     const hasDuplicates = checkForDuplicates(
       [...selectedCategories],
@@ -254,35 +227,13 @@ export const FacetsPanel = ({
     if (hasDuplicates) {
       setDuplicationError(hasDuplicates);
     } else {
-      setSelectedCategories([...selectedCategories, category]);
-      setSelectedPreviewCountryCode(category.includes('IE_') ? 'IE' : 'UK');
-
-      // TODO further refactoring needed here
-      onSelectedCategoryChange?.({ identifier: category, name: '', path: '' });
-      setDuplicationError('');
+      setSelectedCategories?.([...selectedCategories, category]);
+      setSelectedPreviewCountryCode?.(category.includes('IE_') ? 'IE' : 'UK');
     }
   };
-
-  const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
-    setIsEditValuesModalOpen(true);
-    setSelectedFacet(facet);
-  };
-
-  const onClose = () => {
-    setIsEditValuesModalOpen(false);
-  };
-
-  const [previewValue, setPreviewValue] = useState(
-    categoryIds && categoryIds[0]
-  );
-
-  const handleSave = () => {
-    onSave({
-      categoryIds: selectedCategories,
-      includedFacets,
-      excludedFacets,
-      countryCode: facetPanelLocalState.countryCode || 'UK_IE',
-    });
+  const onSelectPreviewCategory = (category: string | undefined) => {
+    setPreviewValue(category);
+    setSelectedPreviewCountryCode?.(category?.includes('IE_') ? 'IE' : 'UK');
   };
 
   const FacetRow = (facet: FacetRowDisplayValue) => {
@@ -358,7 +309,7 @@ export const FacetsPanel = ({
           merchandisingRules={merchandisingRules}
           facetConfig={includedFacets}
           excludedFacets={excludedFacets}
-          countryCode={selectedPreviewCountryCode}
+          countryCode={selectedPreviewCountryCode || 'UK'}
         />
       )}
 
@@ -366,7 +317,7 @@ export const FacetsPanel = ({
         canSave={!!selectedCategories.length || facetType === 'global'}
         onSave={() => {
           if (selectedCategories.length > 0 || facetType === 'global') {
-            handleSave();
+            onSave();
           }
         }}
         hasPreview={!!selectedCategories.length}
@@ -388,42 +339,30 @@ export const FacetsPanel = ({
                 onChange={(country) => {
                   dispatch({ type: 'changeCountry', payload: country });
                 }}
-                selectedCountryCode={facetPanelLocalState.countryCode}
+                selectedCountryCode={countryCode}
               />
             </CountrySelectorWrapper>
           )}
           {facetType === 'category' && (
             <CategorySearch
               selectedCategories={selectedCategories}
-              onClearSelection={(category: string) => {
-                setSelectedCategories(
-                  selectedCategories.filter(
-                    (categoryName) => categoryName !== category
-                  )
-                );
-                onSelectedCategoryChange?.(undefined);
-              }}
-              onSelectCategory={onSelectCategory}
-              countryCode={facetPanelLocalState.countryCode}
+              countryCode={countryCode}
               previewCategory={previewValue}
-              selectPreviewCategory={(category: string | undefined) => {
-                setPreviewValue(category);
-                setSelectedPreviewCountryCode(
-                  category?.includes('IE_') ? 'IE' : 'UK'
-                );
-              }}
+              onClearSelection={onClearSelection}
+              onSelectCategory={onSelectCategory}
+              selectPreviewCategory={onSelectPreviewCategory}
               error={duplicationError}
             />
           )}
           {facetType === 'global' && (
             <SelectedCategory label="Applies to all pages in marksandspencer.com" />
           )}
-          {facetType !== 'global' && onScheduleDateChange && (
+          {facetType !== 'global' && setDateTime && (
             <Duration>
               <LabelContainer>Duration</LabelContainer>
               <DateTimePickerModal
                 showCalendarIcon={true}
-                onUpdateDateTimeRange={onScheduleDateChange}
+                onUpdateDateTimeRange={setDateTime}
                 dateTime={[
                   startDate ? new Date(startDate) : null,
                   endDate ? new Date(endDate) : null,

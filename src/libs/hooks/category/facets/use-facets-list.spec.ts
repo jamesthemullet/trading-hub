@@ -33,7 +33,12 @@ describe('useFacetsList', () => {
 
   it('should render the hook', async () => {
     const { result } = renderHook(() =>
-      useFacetsList({ categoryId: undefined })
+      useFacetsList({
+        categoryIds: [],
+        enabled: true,
+        emptyListWhenCategoryNotSelected: false,
+        countryCode: 'UK_IE',
+      })
     );
 
     await waitFor(() => {
@@ -52,7 +57,12 @@ describe('useFacetsList', () => {
     );
 
     const { result } = renderHook(() =>
-      useFacetsList({ categoryId: undefined })
+      useFacetsList({
+        categoryIds: [],
+        enabled: true,
+        emptyListWhenCategoryNotSelected: false,
+        countryCode: 'UK_IE',
+      })
     );
 
     await waitFor(() => {
@@ -63,7 +73,14 @@ describe('useFacetsList', () => {
   });
 
   it('should render the hook with category id', async () => {
-    const { result } = renderHook(() => useFacetsList({ categoryId: '12345' }));
+    const { result } = renderHook(() =>
+      useFacetsList({
+        categoryIds: ['12345'],
+        enabled: true,
+        emptyListWhenCategoryNotSelected: true,
+        countryCode: 'UK_IE',
+      })
+    );
 
     await waitFor(() => {
       expect(result.current.facets.length).toEqual(5);
@@ -73,8 +90,9 @@ describe('useFacetsList', () => {
   it('should render the hook with empty list', async () => {
     const { result } = renderHook(() =>
       useFacetsList({
-        categoryId: undefined,
+        enabled: true,
         emptyListWhenCategoryNotSelected: true,
+        countryCode: 'UK_IE',
       })
     );
 
@@ -87,7 +105,12 @@ describe('useFacetsList', () => {
 
   it('should not call the hook when disabled', async () => {
     const { result } = renderHook(() =>
-      useFacetsList({ categoryId: undefined, enabled: false })
+      useFacetsList({
+        categoryIds: [],
+        enabled: false,
+        emptyListWhenCategoryNotSelected: false,
+        countryCode: 'UK_IE',
+      })
     );
 
     await waitFor(() => {
