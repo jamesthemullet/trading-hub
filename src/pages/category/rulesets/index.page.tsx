@@ -141,6 +141,7 @@ const RuleSets = () => {
     }) => ({
       id: id,
       identifier: formatCategoriesInfo(categoriesInfo),
+      categoriesInfo: categoriesInfo,
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,
@@ -230,6 +231,7 @@ const RuleSets = () => {
           <DataTable
             headings={headings}
             rows={rows}
+            ruleType="categoryRanking"
             onDeleteRuleSet={onDeleteRuleSet}
             onDuplicate={onDuplicateRuleSet}
           />

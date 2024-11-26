@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { Button } from '../buttons/button/button';
 import { Toggle } from '../toggle/toggle';
 import { Header3, Text } from '../typography/typography.styles';
+import { formatCategoriesInfo } from '../utils/format-categories-info';
 import { mediaQuery } from '../utils/media-query';
 import { spacing } from '../utils/spacing';
 import {
@@ -191,7 +192,13 @@ type Row = {
   };
   onToggle: ({ id }: { id: string }) => void;
   url: string;
+  categoriesInfo?: Array<{
+    id: string;
+    name?: string;
+    plpUrl?: string;
+  }>;
   categoryPlpUrl?: string | undefined;
+  searchTerms?: string[];
   startDate?: string;
   endDate?: string;
   countryCode?: string;
@@ -201,6 +208,7 @@ type Props = {
   headings: string[];
   onDeleteRuleSet: ({ id }: { id: string }) => void;
   rows: Row[];
+  ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
   onDuplicate?: (id: string) => void;
 };
 
@@ -208,11 +216,12 @@ export const DataTable = ({
   headings,
   onDeleteRuleSet,
   rows,
+  ruleType,
   onDuplicate,
 }: Props) => {
   const [optionToggle, setOptionToggle] = useState('');
   const [ruleSetIdToEdit, setRuleSetIdToEdit] = useState('');
-  const [ruleSetCategoryIdToEdit, setRuleSetCategoryIdToEdit] = useState('');
+  const [ruleName, setRuleName] = useState('');
   const [ruleSetEditOption, setRuleSetEditOption] = useState<
     'delete' | 'duplicate'
   >('delete');
@@ -238,6 +247,23 @@ export const DataTable = ({
 
   const showBreadcrumbColumn =
     headings.filter((heading) => heading === 'Breadcrumb').length > 0;
+
+  const setDuplicationName = ({
+    categoriesInfo,
+    searchTerms,
+  }: Pick<Row, 'categoriesInfo' | 'searchTerms'>) => {
+    if (ruleType === 'categoryRanking' && categoriesInfo) {
+      const firstThree = [...categoriesInfo].slice(0, 3);
+      return `${formatCategoriesInfo(firstThree)}${categoriesInfo.length > 3 ? ' [...]' : ''}`;
+    }
+    if (
+      (ruleType === 'redirect' || ruleType === 'searchRanking') &&
+      searchTerms
+    ) {
+      return `${searchTerms.slice(0, 3).join(', ')}${searchTerms.length > 3 ? ' [...]' : ''}`;
+    }
+    return 'rule';
+  };
 
   return (
     <>
@@ -265,6 +291,8 @@ export const DataTable = ({
             onToggle,
             url,
             categoryPlpUrl,
+            categoriesInfo,
+            searchTerms,
             startDate,
             endDate,
             countryCode,
@@ -280,7 +308,7 @@ export const DataTable = ({
             const onConfirmDuplicate = () => {
               setRuleSetIdToEdit(id);
               setRuleSetEditOption('duplicate');
-              setRuleSetCategoryIdToEdit(identifier);
+              setRuleName(setDuplicationName({ categoriesInfo, searchTerms }));
               setIsModalOpen(true);
             };
 
@@ -489,20 +517,17 @@ export const DataTable = ({
             <Header3>
               {ruleSetEditOption === 'delete'
                 ? 'Do you want to delete this rule?'
-                : 'Create a duplicate rule'}
+                : `Create a duplicate ${ruleType === 'redirect' ? 'redirect' : ''} rule`}
             </Header3>
 
             {ruleSetEditOption === 'duplicate' && (
               <>
                 <Text withMargin>
-                  Are you sure you want to create a duplicate of{' '}
-                  {ruleSetCategoryIdToEdit}
+                  Are you sure you want to create a duplicate of {ruleName}?
                 </Text>
                 <Text>
-                  This will duplicate both the ranking and facet rules of the
-                  subcategory above. It will supersede the current rules until
-                  it becomes inactive. You can make changes to the duplicate
-                  after it is created
+                  This duplicate will supersede the current rule when it becomes
+                  active.
                 </Text>
               </>
             )}

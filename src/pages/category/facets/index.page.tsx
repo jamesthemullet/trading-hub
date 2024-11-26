@@ -134,6 +134,7 @@ const FacetManagementPage = () => {
     }) => ({
       id: id,
       identifier: formatCategoriesInfo(categoriesInfo),
+      categoriesInfo: categoriesInfo,
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,
@@ -243,6 +244,7 @@ const FacetManagementPage = () => {
           <DataTable
             headings={headings}
             rows={rows}
+            ruleType="categoryRanking"
             onDeleteRuleSet={onDeleteRuleSet}
             onDuplicate={onDuplicateRuleSet}
           />

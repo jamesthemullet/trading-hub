@@ -145,6 +145,7 @@ const SearchRuleSets = () => {
             : term
         )
         .join(' | '),
+      searchTerms,
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRuleSet,
@@ -184,6 +185,7 @@ const SearchRuleSets = () => {
         <DataTable
           headings={headings}
           rows={rows}
+          ruleType="searchRanking"
           onDeleteRuleSet={onDeleteRuleSet}
           onDuplicate={onDuplicateRuleSet}
         />

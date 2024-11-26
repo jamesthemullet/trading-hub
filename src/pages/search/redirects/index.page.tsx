@@ -128,6 +128,7 @@ const RedirectRuleSets = () => {
             : term
         )
         .join(' | '),
+      searchTerms: keywords,
       isEnabled,
       lastChanged,
       onToggle: onEnableDisableRedirect,
@@ -164,6 +165,7 @@ const RedirectRuleSets = () => {
         <DataTable
           headings={headings}
           rows={rows}
+          ruleType="redirect"
           onDeleteRuleSet={onDeleteRedirect}
           onDuplicate={onDuplicateRedirect}
         />

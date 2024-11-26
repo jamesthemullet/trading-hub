@@ -118,6 +118,7 @@ const RuleSets = () => {
         <DataTable
           headings={headings}
           rows={rows}
+          ruleType="global"
           onDeleteRuleSet={onDeleteRuleSet}
         />
 

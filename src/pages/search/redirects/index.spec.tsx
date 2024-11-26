@@ -138,7 +138,9 @@ describe('Search Rulesets', () => {
     await user.click(screen.getByRole('button', { name: 'Duplicate' }));
     await waitFor(() => {
       expect(
-        screen.getByRole('heading', { name: 'Create a duplicate rule' })
+        screen.getByRole('heading', {
+          name: 'Create a duplicate redirect rule',
+        })
       ).toBeVisible();
     });
 

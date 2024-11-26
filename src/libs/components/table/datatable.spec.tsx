@@ -89,7 +89,12 @@ describe('DataTable', () => {
 
   it('should render correctly', () => {
     renderWithProviders(
-      <DataTable headings={headings} rows={rows} onDeleteRuleSet={jest.fn()} />
+      <DataTable
+        headings={headings}
+        rows={rows}
+        onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
+      />
     );
 
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
@@ -103,6 +108,7 @@ describe('DataTable', () => {
         headings={sixHeadings}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
       />
     );
 
@@ -116,6 +122,7 @@ describe('DataTable', () => {
         headings={sevenHeadings}
         rows={schedulingRows}
         onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
       />
     );
 
@@ -123,162 +130,306 @@ describe('DataTable', () => {
     expect(screen.getByText('Schedule')).toBeInTheDocument();
   });
 
-  it('should delete a rule set', async () => {
-    const user = userEvent.setup();
-    const mockDelete = jest.fn();
-    renderWithProviders(
-      <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
-    );
+  describe('deleting', () => {
+    it('should delete a rule set', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={rows}
+          onDeleteRuleSet={mockDelete}
+          ruleType="categoryRanking"
+        />
+      );
 
-    await user.click(screen.getAllByTitle('More options')[0]);
-    await user.click(screen.getByRole('button', { name: 'Delete' }));
-    await waitFor(() => {
+      await user.click(screen.getAllByTitle('More options')[0]);
+      await user.click(screen.getByRole('button', { name: 'Delete' }));
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 3,
+            name: 'Do you want to delete this rule?',
+          })
+        ).toBeVisible();
+      });
+      await user.click(screen.getByLabelText('Delete rule'));
+
+      expect(mockDelete).toHaveBeenCalledWith({
+        id: 'mockId',
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+      });
+    });
+
+    it('should delete a rule set using keyboard navigation', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={rows}
+          onDeleteRuleSet={mockDelete}
+          ruleType="categoryRanking"
+        />
+      );
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
+      });
+
+      await user.tab();
+      await user.keyboard('{Enter}');
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 3,
+            name: 'Do you want to delete this rule?',
+          })
+        ).toBeVisible();
+      });
+
+      const confirmDeleteButton = screen.getByLabelText('Delete rule');
+      await user.type(confirmDeleteButton, '{Enter}');
+
+      expect(mockDelete).toHaveBeenCalledWith({
+        id: 'mockId',
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+      });
+    });
+
+    it('should cancel deleting a rule set', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={rows}
+          onDeleteRuleSet={mockDelete}
+          ruleType="categoryRanking"
+        />
+      );
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+      await user.click(screen.getByRole('button', { name: 'Delete' }));
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 3,
+            name: 'Do you want to delete this rule?',
+          })
+        ).toBeVisible();
+      });
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      await user.click(screen.getAllByTitle('More options')[0]);
       expect(
         screen.getByRole('heading', {
           level: 3,
           name: 'Do you want to delete this rule?',
         })
-      ).toBeVisible();
-    });
-    await user.click(screen.getByLabelText('Delete rule'));
-
-    expect(mockDelete).toHaveBeenCalledWith({
-      id: 'mockId',
-    });
-    await waitFor(() => {
-      expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+      ).not.toBeVisible();
     });
   });
 
-  it('should delete a rule set using keyboard navigation', async () => {
-    const user = userEvent.setup();
-    const mockDelete = jest.fn();
-    renderWithProviders(
-      <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
-    );
+  describe('duplication', () => {
+    it('should duplicate a rule set', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      const mockDuplicate = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={rows}
+          onDeleteRuleSet={mockDelete}
+          onDuplicate={mockDuplicate}
+          ruleType="categoryRanking"
+        />
+      );
 
-    await user.click(screen.getAllByTitle('More options')[0]);
+      await user.click(screen.getAllByTitle('More options')[0]);
+      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: 'Create a duplicate rule' })
+        ).toBeVisible();
+      });
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
+      const confirmButton = screen.getByRole('button', {
+        name: 'Duplicate rule',
+      });
+      await user.click(confirmButton);
+
+      expect(mockDuplicate).toHaveBeenCalledWith('mockId');
     });
 
-    await user.tab();
-    await user.keyboard('{Enter}');
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', {
-          level: 3,
-          name: 'Do you want to delete this rule?',
-        })
-      ).toBeVisible();
+    it('should duplicate a rule set using keyboard navigation', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      const mockDuplicate = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={rows}
+          onDeleteRuleSet={mockDelete}
+          onDuplicate={mockDuplicate}
+          ruleType="categoryRanking"
+        />
+      );
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+
+      await user.tab();
+      await user.tab();
+      await user.keyboard('{Enter}');
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: 'Create a duplicate rule' })
+        ).toBeVisible();
+      });
+
+      const confirmButton = screen.getByRole('button', {
+        name: 'Duplicate rule',
+      });
+      await user.type(confirmButton, '{Enter}');
+
+      expect(mockDuplicate).toHaveBeenCalledWith('mockId');
     });
 
-    const confirmDeleteButton = screen.getByLabelText('Delete rule');
-    await user.type(confirmDeleteButton, '{Enter}');
+    it('should show search terms when duplicating a rule set', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      const mockDuplicate = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={[{ ...rows[0], searchTerms: ['foo', 'bar'] }]}
+          onDeleteRuleSet={mockDelete}
+          onDuplicate={mockDuplicate}
+          ruleType="searchRanking"
+        />
+      );
 
-    expect(mockDelete).toHaveBeenCalledWith({
-      id: 'mockId',
-    });
-    await waitFor(() => {
-      expect(screen.queryByText('Delete')).not.toBeInTheDocument();
-    });
-  });
-
-  it('should cancel deleting a rule set', async () => {
-    const user = userEvent.setup();
-    const mockDelete = jest.fn();
-    renderWithProviders(
-      <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
-    );
-
-    await user.click(screen.getAllByTitle('More options')[0]);
-    await user.click(screen.getByRole('button', { name: 'Delete' }));
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', {
-          level: 3,
-          name: 'Do you want to delete this rule?',
-        })
-      ).toBeVisible();
-    });
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
-
-    await user.click(screen.getAllByTitle('More options')[0]);
-    expect(
-      screen.getByRole('heading', {
-        level: 3,
-        name: 'Do you want to delete this rule?',
-      })
-    ).not.toBeVisible();
-  });
-
-  it('should duplicate a rule set', async () => {
-    const user = userEvent.setup();
-    const mockDelete = jest.fn();
-    const mockDuplicate = jest.fn();
-    renderWithProviders(
-      <DataTable
-        headings={headings}
-        rows={rows}
-        onDeleteRuleSet={mockDelete}
-        onDuplicate={mockDuplicate}
-      />
-    );
-
-    await user.click(screen.getAllByTitle('More options')[0]);
-    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { name: 'Create a duplicate rule' })
-      ).toBeVisible();
+      await user.click(screen.getAllByTitle('More options')[0]);
+      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Are you sure you want to create a duplicate of foo, bar?'
+          )
+        ).toBeVisible();
+      });
     });
 
-    const confirmButton = screen.getByRole('button', {
-      name: 'Duplicate rule',
-    });
-    await user.click(confirmButton);
+    it('should show a maximum of 3 search terms when duplicating a rule set', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      const mockDuplicate = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={[{ ...rows[0], searchTerms: ['one', 'two', 'three', 'four'] }]}
+          onDeleteRuleSet={mockDelete}
+          onDuplicate={mockDuplicate}
+          ruleType="searchRanking"
+        />
+      );
 
-    expect(mockDuplicate).toHaveBeenCalledWith('mockId');
-  });
-
-  it('should duplicate a rule set using keyboard navigation', async () => {
-    const user = userEvent.setup();
-    const mockDelete = jest.fn();
-    const mockDuplicate = jest.fn();
-    renderWithProviders(
-      <DataTable
-        headings={headings}
-        rows={rows}
-        onDeleteRuleSet={mockDelete}
-        onDuplicate={mockDuplicate}
-      />
-    );
-
-    await user.click(screen.getAllByTitle('More options')[0]);
-
-    await user.tab();
-    await user.tab();
-    await user.keyboard('{Enter}');
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { name: 'Create a duplicate rule' })
-      ).toBeVisible();
+      await user.click(screen.getAllByTitle('More options')[0]);
+      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Are you sure you want to create a duplicate of one, two, three [...]?'
+          )
+        ).toBeVisible();
+      });
     });
 
-    const confirmButton = screen.getByRole('button', {
-      name: 'Duplicate rule',
-    });
-    await user.type(confirmButton, '{Enter}');
+    it('should show categories when duplicating a rule set', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      const mockDuplicate = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={[
+            {
+              ...rows[0],
+              categoriesInfo: [
+                { name: 'foo', id: 'fooId' },
+                { name: 'bar', id: 'barId' },
+              ],
+            },
+          ]}
+          onDeleteRuleSet={mockDelete}
+          onDuplicate={mockDuplicate}
+          ruleType="categoryRanking"
+        />
+      );
 
-    expect(mockDuplicate).toHaveBeenCalledWith('mockId');
+      await user.click(screen.getAllByTitle('More options')[0]);
+      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Are you sure you want to create a duplicate of fooId - foo | barId - bar?'
+          )
+        ).toBeVisible();
+      });
+    });
+
+    it('should show a maximum of 3 categories when duplicating a rule set', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      const mockDuplicate = jest.fn();
+      renderWithProviders(
+        <DataTable
+          headings={headings}
+          rows={[
+            {
+              ...rows[0],
+              categoriesInfo: [
+                { name: 'one', id: 'oneId' },
+                { name: 'two', id: 'twoId' },
+                { name: 'three', id: 'threeId' },
+                { name: 'four', id: 'fourId' },
+              ],
+            },
+          ]}
+          onDeleteRuleSet={mockDelete}
+          onDuplicate={mockDuplicate}
+          ruleType="categoryRanking"
+        />
+      );
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Are you sure you want to create a duplicate of oneId - one | twoId - two | threeId - three [...]?'
+          )
+        ).toBeVisible();
+      });
+    });
   });
 
   it('should toggle a rule set', async () => {
     const user = userEvent.setup();
     const mockDelete = jest.fn();
     renderWithProviders(
-      <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
+      <DataTable
+        headings={headings}
+        rows={rows}
+        onDeleteRuleSet={mockDelete}
+        ruleType="categoryRanking"
+      />
     );
 
     user.click(screen.getAllByTitle('Toggle')[0]);
@@ -294,7 +445,12 @@ describe('DataTable', () => {
     const user = userEvent.setup();
     const mockDelete = jest.fn();
     renderWithProviders(
-      <DataTable headings={headings} rows={rows} onDeleteRuleSet={mockDelete} />
+      <DataTable
+        headings={headings}
+        rows={rows}
+        onDeleteRuleSet={mockDelete}
+        ruleType="categoryRanking"
+      />
     );
 
     const dropDown = screen.queryAllByTitle('More options')[0];
@@ -309,7 +465,12 @@ describe('DataTable', () => {
   it('should close the dropdown if already open when clicked', async () => {
     const user = userEvent.setup();
     renderWithProviders(
-      <DataTable headings={headings} rows={rows} onDeleteRuleSet={jest.fn()} />
+      <DataTable
+        headings={headings}
+        rows={rows}
+        onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
+      />
     );
 
     await user.click(screen.getAllByTitle('More options')[0]);
@@ -327,7 +488,12 @@ describe('DataTable', () => {
   it('should close dropdown when Esc key is pressed', async () => {
     const user = userEvent.setup();
     renderWithProviders(
-      <DataTable headings={headings} rows={rows} onDeleteRuleSet={jest.fn()} />
+      <DataTable
+        headings={headings}
+        rows={rows}
+        onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
+      />
     );
 
     await user.click(screen.getAllByTitle('More options')[0]);
@@ -348,6 +514,7 @@ describe('DataTable', () => {
         headings={headings}
         rows={countryRows}
         onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
       />
     );
 
@@ -374,6 +541,7 @@ describe('DataTable', () => {
         headings={headings}
         rows={ukIeRows}
         onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
       />
     );
 

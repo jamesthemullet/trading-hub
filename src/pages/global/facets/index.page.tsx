@@ -154,6 +154,7 @@ const FacetManagementPage = () => {
         <DataTable
           headings={headings}
           rows={rows}
+          ruleType="global"
           onDeleteRuleSet={onDeleteRuleSet}
         />
         <TablePagination
