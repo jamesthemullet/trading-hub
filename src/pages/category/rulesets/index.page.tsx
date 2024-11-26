@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -18,7 +18,6 @@ import {
   TablePagination,
   TablePaginationSkeleton,
 } from '@/libs/components';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import { formatCategoriesInfo } from '@/libs/components/utils/format-categories-info';
 import {
@@ -53,7 +52,6 @@ const RuleSets = () => {
   const { isSaving, updateCategoryRuleSet } = useUpdateRuleSet();
   const { createRuleset } = useRuleSetCreate();
   const router = useRouter();
-  const featureFlags = useContext(FeatureFlagContext);
 
   const currentPageIndex = currentPage - 1;
 
@@ -149,7 +147,7 @@ const RuleSets = () => {
       categoryPlpUrl: categoriesInfo[0].plpUrl,
       startDate,
       endDate,
-      ...(featureFlags.hasIreland && { countryCode }),
+      countryCode,
     })
   );
 
@@ -211,9 +209,7 @@ const RuleSets = () => {
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
-          {featureFlags.hasIreland && (
-            <CountryFilterDropdown onChange={handleCountryFilter} />
-          )}
+          <CountryFilterDropdown onChange={handleCountryFilter} />
           {isLoading ? (
             <SkeletonButtonWrapper>
               <Skeleton height={33} width={110} />

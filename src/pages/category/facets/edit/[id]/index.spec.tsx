@@ -2,7 +2,6 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   useGetCategories,
   useGetFacetAttributeValues,
@@ -267,13 +266,7 @@ describe('Category Facet Management Editing', () => {
   it('should save changes to a facet ruleset with a different country', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: true, hasMultipleCategories: false }}
-      >
-        <Page id={ruleSetId} />
-      </FeatureFlagContext.Provider>
-    );
+    renderWithProviders(<Page id={ruleSetId} />);
 
     const countryDropdown = screen.getByRole('button', {
       name: 'select market',
@@ -791,13 +784,7 @@ describe('Category Facet Management Editing', () => {
         .mocked(useRuleSetDetail)
         .mockImplementation(() => mockScheduleRuleset);
 
-      renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: false, hasMultipleCategories: false }}
-        >
-          <Page id={ruleSetId} />
-        </FeatureFlagContext.Provider>
-      );
+      renderWithProviders(<Page id={ruleSetId} />);
 
       expect(screen.getByText('Duration')).toBeVisible();
 
@@ -943,7 +930,7 @@ describe('Category Facet Management Editing', () => {
       renderWithProviders(<Page id={ruleSetId} />);
 
       const clearButton = await screen.findByLabelText(
-        'Remove selected category'
+        'Remove category: SubCategory_428'
       );
 
       act(() => {

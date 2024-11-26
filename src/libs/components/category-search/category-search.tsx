@@ -1,10 +1,4 @@
-import {
-  type ChangeEvent,
-  type FormEvent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type { Category, CountryCode, Pagination } from '@/libs/api';
@@ -13,7 +7,6 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Image from 'next/image';
 
-import { FeatureFlagContext } from '../context/feature-flag';
 import {
   KeyWordPill,
   ModalFooter,
@@ -43,7 +36,6 @@ import {
   ViewAllButton,
   Wrapper,
 } from './category.styles';
-import { SelectedCategory } from './selected-category';
 
 const SEARCH_DEBOUNCE_WAIT = 500;
 
@@ -69,7 +61,6 @@ export const CategorySearch = ({
   const [searchValue, setSearchValue] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { getCategories } = useGetCategories();
-  const { hasMultipleCategories, hasIreland } = useContext(FeatureFlagContext);
   const [categoryResults, setCategoryResults] = useState<{
     /**
      * Category type contains all fields that are optional, this is a bad design and should be fixed in future in API: https://jira.marksandspencer.app/browse/LPN-2687
@@ -106,7 +97,7 @@ export const CategorySearch = ({
       query,
       rows: 5,
       start: 0,
-      countryCode: hasIreland ? countryCode : 'UK',
+      countryCode,
     });
 
     if (resp !== undefined) {
@@ -156,23 +147,6 @@ export const CategorySearch = ({
       setSearchValue('');
     }
   };
-
-  if (!hasMultipleCategories && selectedCategories.length) {
-    return (
-      <SelectedCategory
-        label={selectedCategories[0]}
-        onClick={() => {
-          setSearchValue('');
-          setCategoryResults({
-            categories: [],
-            pagination: {},
-          });
-          onClearSelection(selectedCategories[0]);
-        }}
-        canRemoveCategory
-      />
-    );
-  }
 
   const visibleCategories = [...selectedCategories]
     .sort((a, b) =>

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -8,7 +8,6 @@ import {
   ReturnedKeywordRedirects,
 } from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
@@ -38,8 +37,6 @@ const RedirectRuleSets = () => {
 
   const { createRedirect } = useRedirectCreate();
   const router = useRouter();
-
-  const featureFlags = useContext(FeatureFlagContext);
 
   const createDuplicatedRedirect = async (redirect: KeywordRedirect) => {
     const response = await createRedirect({
@@ -135,7 +132,7 @@ const RedirectRuleSets = () => {
       url: `/search/redirects/edit/${id}`,
       startDate,
       endDate,
-      ...(featureFlags.hasIreland && { countryCode }),
+      countryCode,
     })
   );
 
@@ -154,9 +151,7 @@ const RedirectRuleSets = () => {
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
-          {featureFlags.hasIreland && (
-            <CountryFilterDropdown onChange={handleCountryFilter} />
-          )}
+          <CountryFilterDropdown onChange={handleCountryFilter} />
           <NewButton>
             <Link href="/search/redirects/new">Add new rule</Link>
           </NewButton>

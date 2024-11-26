@@ -1,8 +1,7 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   useAttributes,
   useCategoryProductSearch,
@@ -145,7 +144,7 @@ describe('Index', () => {
 
     const user = userEvent.setup({ delay: null });
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -163,13 +162,7 @@ describe('Index', () => {
 
     const user = userEvent.setup({ delay: null });
 
-    render(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: true, hasMultipleCategories: false }}
-      >
-        <Page id={ruleSetId} />
-      </FeatureFlagContext.Provider>
-    );
+    renderWithProviders(<Page id={ruleSetId} />);
 
     const dropdownButton = screen.getByRole('button', {
       name: 'select market',
@@ -233,7 +226,7 @@ describe('Index', () => {
 
     const user = userEvent.setup({ delay: null });
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -266,7 +259,7 @@ describe('Index', () => {
     };
     jest.mocked(useUpdateRuleSet).mockImplementation(() => mockUpdateRuleSet);
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(await screen.findByText('Error: Unknown error')).toBeVisible();
   });

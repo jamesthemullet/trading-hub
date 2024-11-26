@@ -2,7 +2,6 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useGetCategories, useRuleSetCreate } from '@/libs/hooks';
 import { globalFacetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -637,13 +636,7 @@ describe('Category Facet Management New', () => {
         getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
         getCategoriesError: '',
       });
-      renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: false, hasMultipleCategories: false }}
-        >
-          <NewFacetRuleset />
-        </FeatureFlagContext.Provider>
-      );
+      renderWithProviders(<NewFacetRuleset />);
 
       expect(screen.getByText('Duration')).toBeVisible();
 

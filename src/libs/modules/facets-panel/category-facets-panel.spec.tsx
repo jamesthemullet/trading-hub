@@ -3,7 +3,6 @@ import { act, Screen, screen, waitFor } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
 import { ReturnedCategoryRuleSet, SearchPreviewResponseBeta } from '@/libs/api';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   useFacetsList,
   useGetCategories,
@@ -387,23 +386,19 @@ describe('Category Facet Panel', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: true }}
-      >
-        <CategoryFacetsPanel
-          ruleSetIncludedFacets={mockRuleData.facets}
-          ruleSetExcludedFacets={mockRuleData.excludedFacets}
-          ruleSetRules={mockRuleData.rules}
-          startDate={mockRuleData.startDate}
-          endDate={mockRuleData.endDate}
-          isLoading={false}
-          countryCode="UK_IE"
-          categoryIds={mockRuleDataCategoryIds}
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          refreshData={refreshDataSpy}
-        />
-      </FeatureFlagContext.Provider>
+      <CategoryFacetsPanel
+        ruleSetIncludedFacets={mockRuleData.facets}
+        ruleSetExcludedFacets={mockRuleData.excludedFacets}
+        ruleSetRules={mockRuleData.rules}
+        startDate={mockRuleData.startDate}
+        endDate={mockRuleData.endDate}
+        isLoading={false}
+        countryCode="UK_IE"
+        categoryIds={mockRuleDataCategoryIds}
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        refreshData={refreshDataSpy}
+      />
     );
 
     await selectCategory(screen, user);
@@ -429,23 +424,19 @@ describe('Category Facet Panel', () => {
     const user = userEvent.setup();
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: true }}
-      >
-        <CategoryFacetsPanel
-          ruleSetIncludedFacets={mockRuleData.facets}
-          ruleSetExcludedFacets={mockRuleData.excludedFacets}
-          ruleSetRules={mockRuleData.rules}
-          startDate={mockRuleData.startDate}
-          endDate={mockRuleData.endDate}
-          isLoading={false}
-          countryCode="UK_IE"
-          categoryIds={mockRuleDataCategoryIds}
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          refreshData={refreshDataSpy}
-        />
-      </FeatureFlagContext.Provider>
+      <CategoryFacetsPanel
+        ruleSetIncludedFacets={mockRuleData.facets}
+        ruleSetExcludedFacets={mockRuleData.excludedFacets}
+        ruleSetRules={mockRuleData.rules}
+        startDate={mockRuleData.startDate}
+        endDate={mockRuleData.endDate}
+        isLoading={false}
+        countryCode="UK_IE"
+        categoryIds={mockRuleDataCategoryIds}
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        refreshData={refreshDataSpy}
+      />
     );
 
     await selectCategory(screen, user);
@@ -508,23 +499,19 @@ describe('Category Facet Panel', () => {
 
   it('should show the schedule date picker', async () => {
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: false }}
-      >
-        <CategoryFacetsPanel
-          ruleSetIncludedFacets={mockRuleData.facets}
-          ruleSetExcludedFacets={mockRuleData.excludedFacets}
-          ruleSetRules={mockRuleData.rules}
-          startDate={mockRuleData.startDate}
-          endDate={mockRuleData.endDate}
-          isLoading={false}
-          countryCode="UK_IE"
-          categoryIds={mockRuleDataCategoryIds}
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          refreshData={refreshDataSpy}
-        />
-      </FeatureFlagContext.Provider>
+      <CategoryFacetsPanel
+        ruleSetIncludedFacets={mockRuleData.facets}
+        ruleSetExcludedFacets={mockRuleData.excludedFacets}
+        ruleSetRules={mockRuleData.rules}
+        startDate={mockRuleData.startDate}
+        endDate={mockRuleData.endDate}
+        isLoading={false}
+        countryCode="UK_IE"
+        categoryIds={mockRuleDataCategoryIds}
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        refreshData={refreshDataSpy}
+      />
     );
 
     expect(screen.getByPlaceholderText('Select date range')).toHaveValue('');
@@ -691,23 +678,19 @@ describe('Category Facet Panel', () => {
       jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <CategoryFacetsPanel
-            ruleSetIncludedFacets={undefined}
-            ruleSetExcludedFacets={mockRuleData.excludedFacets}
-            ruleSetRules={mockRuleData.rules}
-            startDate={mockRuleData.startDate}
-            endDate={mockRuleData.endDate}
-            isLoading={false}
-            countryCode="UK_IE"
-            categoryIds={[categoryId2]}
-            onSave={onSaveSpy}
-            onCancel={onCancelSpy}
-            refreshData={refreshDataSpy}
-          />
-        </FeatureFlagContext.Provider>
+        <CategoryFacetsPanel
+          ruleSetIncludedFacets={undefined}
+          ruleSetExcludedFacets={mockRuleData.excludedFacets}
+          ruleSetRules={mockRuleData.rules}
+          startDate={mockRuleData.startDate}
+          endDate={mockRuleData.endDate}
+          isLoading={false}
+          countryCode="UK_IE"
+          categoryIds={[categoryId2]}
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          refreshData={refreshDataSpy}
+        />
       );
 
       const previewButton = screen.getByRole('button', { name: 'Preview' });
@@ -731,23 +714,19 @@ describe('Category Facet Panel', () => {
       jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <CategoryFacetsPanel
-            ruleSetIncludedFacets={undefined}
-            ruleSetExcludedFacets={mockRuleData.excludedFacets}
-            ruleSetRules={mockRuleData.rules}
-            startDate={mockRuleData.startDate}
-            endDate={mockRuleData.endDate}
-            isLoading={false}
-            countryCode="UK_IE"
-            categoryIds={mockRuleDataCategoryIds}
-            onSave={onSaveSpy}
-            onCancel={onCancelSpy}
-            refreshData={refreshDataSpy}
-          />
-        </FeatureFlagContext.Provider>
+        <CategoryFacetsPanel
+          ruleSetIncludedFacets={undefined}
+          ruleSetExcludedFacets={mockRuleData.excludedFacets}
+          ruleSetRules={mockRuleData.rules}
+          startDate={mockRuleData.startDate}
+          endDate={mockRuleData.endDate}
+          isLoading={false}
+          countryCode="UK_IE"
+          categoryIds={mockRuleDataCategoryIds}
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          refreshData={refreshDataSpy}
+        />
       );
 
       await user.type(
@@ -783,23 +762,19 @@ describe('Category Facet Panel', () => {
       jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <CategoryFacetsPanel
-            ruleSetIncludedFacets={undefined}
-            ruleSetExcludedFacets={mockRuleData.excludedFacets}
-            ruleSetRules={mockRuleData.rules}
-            startDate={mockRuleData.startDate}
-            endDate={mockRuleData.endDate}
-            isLoading={false}
-            countryCode="UK_IE"
-            categoryIds={[categoryId1, categoryId2]}
-            onSave={onSaveSpy}
-            onCancel={onCancelSpy}
-            refreshData={refreshDataSpy}
-          />
-        </FeatureFlagContext.Provider>
+        <CategoryFacetsPanel
+          ruleSetIncludedFacets={undefined}
+          ruleSetExcludedFacets={mockRuleData.excludedFacets}
+          ruleSetRules={mockRuleData.rules}
+          startDate={mockRuleData.startDate}
+          endDate={mockRuleData.endDate}
+          isLoading={false}
+          countryCode="UK_IE"
+          categoryIds={[categoryId1, categoryId2]}
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          refreshData={refreshDataSpy}
+        />
       );
 
       const previewButton = screen.getByRole('button', { name: 'Preview' });
@@ -842,23 +817,19 @@ describe('Category Facet Panel', () => {
       jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <CategoryFacetsPanel
-            ruleSetIncludedFacets={undefined}
-            ruleSetExcludedFacets={mockRuleData.excludedFacets}
-            ruleSetRules={mockRuleData.rules}
-            startDate={mockRuleData.startDate}
-            endDate={mockRuleData.endDate}
-            isLoading={false}
-            countryCode="UK_IE"
-            categoryIds={[categoryId2, categoryId1]}
-            onSave={onSaveSpy}
-            onCancel={onCancelSpy}
-            refreshData={refreshDataSpy}
-          />
-        </FeatureFlagContext.Provider>
+        <CategoryFacetsPanel
+          ruleSetIncludedFacets={undefined}
+          ruleSetExcludedFacets={mockRuleData.excludedFacets}
+          ruleSetRules={mockRuleData.rules}
+          startDate={mockRuleData.startDate}
+          endDate={mockRuleData.endDate}
+          isLoading={false}
+          countryCode="UK_IE"
+          categoryIds={[categoryId2, categoryId1]}
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          refreshData={refreshDataSpy}
+        />
       );
 
       const previewButton = screen.getByRole('button', { name: 'Preview' });

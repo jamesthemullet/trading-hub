@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
 import {
   CountryCode,
@@ -16,7 +16,6 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { color } from '@/libs/components/utils/constants';
@@ -110,8 +109,6 @@ export const Redirect = ({
         }
   );
   const [duplicationError, setDuplicationError] = useState('');
-
-  const featureFlags = useContext(FeatureFlagContext);
 
   const onSaveRedirect = () => {
     if (onCreate) {
@@ -215,17 +212,15 @@ export const Redirect = ({
             : 'Redirect Phrase(s)'}
         </SubHeader3>
         <Row style={{ display: 'flex' }}>
-          {featureFlags.hasIreland && (
-            <InfluenceWrapper>
-              <InfluenceLabel>Influence</InfluenceLabel>
-              <CountrySelectorDropdown
-                onChange={(country: CountryCode) =>
-                  onUpdate('countryCode', country)
-                }
-                selectedCountryCode={redirect.countryCode}
-              />
-            </InfluenceWrapper>
-          )}
+          <InfluenceWrapper>
+            <InfluenceLabel>Influence</InfluenceLabel>
+            <CountrySelectorDropdown
+              onChange={(country: CountryCode) =>
+                onUpdate('countryCode', country)
+              }
+              selectedCountryCode={redirect.countryCode}
+            />
+          </InfluenceWrapper>
           <SearchKeywords
             searchTerms={redirect.keywords}
             title={

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { CountryCode } from '@/libs/api';
@@ -9,7 +9,6 @@ import {
   Search,
   TablePagination,
 } from '@/libs/components';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
@@ -84,8 +83,6 @@ const FacetManagementPage = () => {
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 
-  const featureFlags = useContext(FeatureFlagContext);
-
   const rows = globalRuleSets.map(
     ({ id, isEnabled, lastChanged, countryCode }) => ({
       id,
@@ -94,7 +91,7 @@ const FacetManagementPage = () => {
       lastChanged,
       onToggle: onEnableDisableRuleSet,
       url: `/global/facets/edit/${id}`,
-      ...(featureFlags.hasIreland && { countryCode }),
+      countryCode,
     })
   );
 
@@ -142,9 +139,7 @@ const FacetManagementPage = () => {
       <SectionWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
-          {featureFlags.hasIreland && (
-            <CountryFilterDropdown onChange={handleCountryFilter} />
-          )}
+          <CountryFilterDropdown onChange={handleCountryFilter} />
 
           <NewButton onClick={createNewRuleSet}>
             <Link href={''}>Add new rule</Link>

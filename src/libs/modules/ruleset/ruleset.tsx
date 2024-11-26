@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useContext, useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -27,7 +27,6 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearch } from '@/libs/components/product-search/product-search';
@@ -46,40 +45,30 @@ import { rulesetReducer } from './reducer';
 
 const CategoryPanel = styled.div<{
   rulesetType: 'global' | 'category' | 'search';
-  hasIreland: boolean;
 }>`
   border-top: 2px solid #005640;
   padding: ${spacing(1)};
-
-  ${({ hasIreland }) =>
-    !hasIreland &&
-    css`
-      display: flex;
-    `};
-
-  ${({ hasIreland, rulesetType }) =>
-    hasIreland &&
-    css`
-      display: grid;
+  ${({ rulesetType }) => css`
+    display: grid;
+    grid-template-areas:
+      'countryCode rulesetIdentifier'
+      'duration duration';
+    grid-template-columns: 240px auto;
+    @media only screen and (min-width: 1200px) {
       grid-template-areas:
-        'countryCode rulesetIdentifier'
-        'duration duration';
-      grid-template-columns: 240px auto;
-      @media only screen and (min-width: 1200px) {
-        grid-template-areas:
-          'countryCode'
-          'rulesetIdentifier'
-          'duration';
-        ${rulesetType === 'global' &&
-        /* istanbul ignore next */
-        'grid-template-columns: 240px 490px 320px'};
-        ${rulesetType === 'search' &&
-        /* istanbul ignore next */
-        'grid-template-columns: 240px 490px 320px'};
-        ${rulesetType === 'category' &&
-        'grid-template-columns: 240px 730px 320px'};
-      }
-    `}
+        'countryCode'
+        'rulesetIdentifier'
+        'duration';
+      ${rulesetType === 'global' &&
+      /* istanbul ignore next */
+      'grid-template-columns: 240px 490px 320px'};
+      ${rulesetType === 'search' &&
+      /* istanbul ignore next */
+      'grid-template-columns: 240px 490px 320px'};
+      ${rulesetType === 'category' &&
+      'grid-template-columns: 240px 730px 320px'};
+    }
+  `}
 `;
 
 const RulesetIdentifier = styled.div`
@@ -335,8 +324,6 @@ export const Ruleset = ({
 
   const { rules: merchandisingRules } = ruleset;
 
-  const featureFlags = useContext(FeatureFlagContext);
-
   useEffect(() => {
     const warningText =
       'You have unsaved changes - are you sure you wish to leave this page?';
@@ -495,27 +482,22 @@ export const Ruleset = ({
         title="Product Grid"
       />
 
-      <CategoryPanel
-        rulesetType={rulesetType}
-        hasIreland={featureFlags.hasIreland}
-      >
-        {featureFlags.hasIreland && (
-          <InfluenceWrapper>
-            <InfluenceLabel>Influence</InfluenceLabel>
-            <CountrySelectorDropdown
-              onChange={(country) => {
-                dispatch({ type: 'changeCountry', payload: country });
-                if (country === 'UK' && selectedPreviewCountryCode === 'IE') {
-                  setSelectedPreviewCountryCode('UK');
-                }
-                if (country === 'IE' && selectedPreviewCountryCode === 'UK') {
-                  setSelectedPreviewCountryCode('IE');
-                }
-              }}
-              selectedCountryCode={ruleset.countryCode}
-            />
-          </InfluenceWrapper>
-        )}
+      <CategoryPanel rulesetType={rulesetType}>
+        <InfluenceWrapper>
+          <InfluenceLabel>Influence</InfluenceLabel>
+          <CountrySelectorDropdown
+            onChange={(country) => {
+              dispatch({ type: 'changeCountry', payload: country });
+              if (country === 'UK' && selectedPreviewCountryCode === 'IE') {
+                setSelectedPreviewCountryCode('UK');
+              }
+              if (country === 'IE' && selectedPreviewCountryCode === 'UK') {
+                setSelectedPreviewCountryCode('IE');
+              }
+            }}
+            selectedCountryCode={ruleset.countryCode}
+          />
+        </InfluenceWrapper>
 
         <RulesetIdentifier>
           {rulesetType === 'category' && (
@@ -612,9 +594,7 @@ export const Ruleset = ({
                     rulesetType === 'category' ? previewValue : undefined
                   }
                   searchTerms={rulesetSearchTerms}
-                  countryCode={
-                    featureFlags.hasIreland ? ruleset.countryCode : 'UK_IE'
-                  }
+                  countryCode={ruleset.countryCode}
                 />
               )}
               {currentProductTab === 1 && (

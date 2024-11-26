@@ -2,7 +2,6 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useRedirectCreate, useSearchRedirectList } from '@/libs/hooks';
 import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -233,18 +232,12 @@ describe('Search Rulesets', () => {
       setKeywordList: jest.fn(),
     });
 
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: false }}
-      >
-        <RedirectRuleSets />
-      </FeatureFlagContext.Provider>
-    );
+    renderWithProviders(<RedirectRuleSets />);
 
     expect(screen.getByText('Schedule')).toBeInTheDocument();
   });
 
-  it('should display country flag and filter if Ireland feature flag is enabled', () => {
+  it('should display country flag and filter', () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [
         {
@@ -260,43 +253,12 @@ describe('Search Rulesets', () => {
       setKeywordList: jest.fn(),
     });
 
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: true, hasMultipleCategories: false }}
-      >
-        <RedirectRuleSets />
-      </FeatureFlagContext.Provider>
-    );
+    renderWithProviders(<RedirectRuleSets />);
 
     expect(screen.getByAltText('IE rule')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'All marksandspencer.com' })
     ).toBeVisible();
-  });
-
-  it('should not display country flag or filter if Ireland feature flag is not enabled', () => {
-    jest.mocked(useSearchRedirectList).mockReturnValue({
-      redirects: [],
-      pagination: {
-        totalItems: 0,
-      },
-      error: '',
-      refetchRedirectList: () => jest.fn,
-      setKeywordList: jest.fn(),
-    });
-
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: false }}
-      >
-        <RedirectRuleSets />
-      </FeatureFlagContext.Provider>
-    );
-
-    expect(screen.queryByAltText('IE rule')).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'All marksandspencer.com' })
-    ).not.toBeInTheDocument();
   });
 
   it('should refetch the ruleset list when the country is changed', async () => {
@@ -311,13 +273,7 @@ describe('Search Rulesets', () => {
       setKeywordList: jest.fn(),
     });
 
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: true, hasMultipleCategories: false }}
-      >
-        <RedirectRuleSets />
-      </FeatureFlagContext.Provider>
-    );
+    renderWithProviders(<RedirectRuleSets />);
 
     const dropdown = screen.getByRole('button', {
       name: 'All marksandspencer.com',

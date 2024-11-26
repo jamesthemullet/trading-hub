@@ -2,7 +2,6 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { SearchPreviewResponseBeta } from '@/libs/api';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import {
   useGetCategories,
   useGetFacetAttributeValues,
@@ -483,25 +482,21 @@ describe('Facet Panel', () => {
 
   it('should show the schedule date picker', async () => {
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: false }}
-      >
-        <FacetsPanel
-          title="Facet Rule Editor"
-          facetType="category"
-          countryCode="UK"
-          selectedPreviewCountryCode="UK"
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          selectedCategories={[categoryId1]}
-          setDateTime={jest.fn()}
-          onFacetDataChange={jest.fn()}
-          facetsState={mockFacetsState}
-          includedFacets={mockIncludedFacets}
-          excludedFacets={mockExcludedFacets}
-          dispatch={dispatchSpy}
-        />
-      </FeatureFlagContext.Provider>
+      <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="category"
+        countryCode="UK"
+        selectedPreviewCountryCode="UK"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        selectedCategories={[categoryId1]}
+        setDateTime={jest.fn()}
+        onFacetDataChange={jest.fn()}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
+      />
     );
 
     expect(screen.getByPlaceholderText('Select date range')).toHaveValue('');
@@ -509,27 +504,23 @@ describe('Facet Panel', () => {
 
   it('should show a previously saved scheduled date', async () => {
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: false }}
-      >
-        <FacetsPanel
-          title="Facet Rule Editor"
-          facetType="category"
-          countryCode="UK"
-          selectedPreviewCountryCode="UK"
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          selectedCategories={[categoryId1]}
-          onFacetDataChange={jest.fn()}
-          startDate="2024-11-05T00:00:00.000Z"
-          endDate="2024-11-06T00:00:00.000Z"
-          setDateTime={jest.fn()}
-          facetsState={mockFacetsState}
-          includedFacets={mockIncludedFacets}
-          excludedFacets={mockExcludedFacets}
-          dispatch={dispatchSpy}
-        />
-      </FeatureFlagContext.Provider>
+      <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="category"
+        countryCode="UK"
+        selectedPreviewCountryCode="UK"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        selectedCategories={[categoryId1]}
+        onFacetDataChange={jest.fn()}
+        startDate="2024-11-05T00:00:00.000Z"
+        endDate="2024-11-06T00:00:00.000Z"
+        setDateTime={jest.fn()}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
+      />
     );
 
     expect(screen.getByPlaceholderText('Select date range')).toHaveValue(

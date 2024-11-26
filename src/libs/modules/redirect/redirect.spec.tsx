@@ -2,7 +2,6 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { ReturnedKeywordRedirect } from '@/libs/api';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { Redirect } from './redirect';
@@ -70,15 +69,11 @@ describe('Redirect', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: true, hasMultipleCategories: false }}
-      >
-        <Redirect
-          onCancel={() => jest.fn()}
-          onCreate={mockCreate}
-          title="Add Keyword Redirect rule"
-        />
-      </FeatureFlagContext.Provider>
+      <Redirect
+        onCancel={() => jest.fn()}
+        onCreate={mockCreate}
+        title="Add Keyword Redirect rule"
+      />
     );
 
     act(() => {
@@ -254,7 +249,7 @@ describe('Redirect', () => {
   });
 
   describe('Scheduling', () => {
-    it('should show datepicker if feature flag is enabled', async () => {
+    it('should show datepicker', async () => {
       const mockSave = jest.fn();
 
       const existingRedirect: ReturnedKeywordRedirect = {
@@ -273,16 +268,12 @@ describe('Redirect', () => {
       };
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: false, hasMultipleCategories: false }}
-        >
-          <Redirect
-            onCancel={() => jest.fn()}
-            onSave={mockSave}
-            title="Edit Keyword Redirect rule"
-            redirect={existingRedirect}
-          />
-        </FeatureFlagContext.Provider>
+        <Redirect
+          onCancel={() => jest.fn()}
+          onSave={mockSave}
+          title="Edit Keyword Redirect rule"
+          redirect={existingRedirect}
+        />
       );
 
       expect(screen.getByText('Duration')).toBeVisible();
@@ -307,16 +298,12 @@ describe('Redirect', () => {
       };
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: false, hasMultipleCategories: false }}
-        >
-          <Redirect
-            onCancel={() => jest.fn()}
-            onSave={mockSave}
-            title="Edit Keyword Redirect rule"
-            redirect={existingRedirect}
-          />
-        </FeatureFlagContext.Provider>
+        <Redirect
+          onCancel={() => jest.fn()}
+          onSave={mockSave}
+          title="Edit Keyword Redirect rule"
+          redirect={existingRedirect}
+        />
       );
 
       expect(screen.getByText('Duration')).toBeVisible();
@@ -343,16 +330,12 @@ describe('Redirect', () => {
       };
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: false, hasMultipleCategories: false }}
-        >
-          <Redirect
-            onCancel={() => jest.fn()}
-            onSave={mockSave}
-            title="Edit Keyword Redirect rule"
-            redirect={existingRedirect}
-          />
-        </FeatureFlagContext.Provider>
+        <Redirect
+          onCancel={() => jest.fn()}
+          onSave={mockSave}
+          title="Edit Keyword Redirect rule"
+          redirect={existingRedirect}
+        />
       );
 
       expect(screen.getByText('Duration')).toBeVisible();
@@ -415,16 +398,12 @@ describe('Redirect', () => {
       };
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: false, hasMultipleCategories: false }}
-        >
-          <Redirect
-            onCancel={() => jest.fn()}
-            onSave={mockSave}
-            title="Edit Keyword Redirect rule"
-            redirect={existingRedirect}
-          />
-        </FeatureFlagContext.Provider>
+        <Redirect
+          onCancel={() => jest.fn()}
+          onSave={mockSave}
+          title="Edit Keyword Redirect rule"
+          redirect={existingRedirect}
+        />
       );
 
       expect(screen.getByText('Duration')).toBeVisible();

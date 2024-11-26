@@ -26,7 +26,6 @@ jest.mock('../../../../libs/hooks/use-get-categories', () => ({
 
 const INPUT_PLACEHOLDER_TEXT = 'Search...';
 const NEW_RULE_BUTTON_TEXT = 'Create';
-const REMOVE_SELECTED_CATEGORY_BUTTON = 'Remove selected category';
 const MOCK_CATEGORY_ID = '20';
 
 const mockGetCategories = {
@@ -141,7 +140,9 @@ describe('Index', () => {
       categoryToSelect.click();
     });
 
-    const clear = await screen.findByLabelText(REMOVE_SELECTED_CATEGORY_BUTTON);
+    const clear = await screen.findByLabelText(
+      `Remove category: ${categoryId1}`
+    );
     act(() => {
       clear.click();
     });

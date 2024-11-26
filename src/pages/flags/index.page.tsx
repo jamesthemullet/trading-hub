@@ -1,9 +1,8 @@
 /* istanbul ignore file */
 
 import styled from '@emotion/styled';
-import { useCookies } from 'react-cookie';
 
-import { spacing, Toggle } from '@/libs/components';
+import { spacing } from '@/libs/components';
 
 const Wrapper = styled.div`
   padding: ${spacing(2)};
@@ -12,44 +11,18 @@ const Wrapper = styled.div`
     margin-bottom: ${spacing(2)};
   }
 `;
-const Flag = styled.div`
-  display: flex;
-  margin-bottom: ${spacing(2)};
-  align-items: center;
-`;
 
 const FeatureFlags = () => {
-  const [cookies, setCookie] = useCookies([
-    'flagIreland',
-    'flagMultipleCategories',
-  ]);
-
   return (
     <Wrapper>
       <h1>Feature Flags</h1>
-
-      <Flag>
-        <p>Ireland:&nbsp;</p>
-        <Toggle
-          checked={cookies.flagIreland}
-          onChange={() => {
-            setCookie('flagIreland', JSON.stringify(!cookies.flagIreland));
-          }}
-        />
-      </Flag>
-
-      <Flag>
-        <p>Multiple categories:&nbsp;</p>
-        <Toggle
-          checked={cookies.flagMultipleCategories}
-          onChange={() => {
-            setCookie(
-              'flagMultipleCategories',
-              JSON.stringify(!cookies.flagMultipleCategories)
-            );
-          }}
-        />
-      </Flag>
+      <p>
+        See changes in{' '}
+        <a href="https://github.com/DigitalInnovation/trading-hub/pull/947">
+          github.com/DigitalInnovation/trading-hub/issues/947
+        </a>{' '}
+        to add a feature flag
+      </p>
     </Wrapper>
   );
 };

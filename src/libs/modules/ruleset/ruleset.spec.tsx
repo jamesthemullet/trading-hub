@@ -9,7 +9,6 @@ import {
   MerchandisingRules,
   SearchPreviewResponseBeta,
 } from '@/libs/api';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 
 import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
@@ -384,16 +383,12 @@ describe('Ruleset', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: true, hasMultipleCategories: false }}
-      >
-        <Ruleset
-          isEnabled={true}
-          onCreate={mockCreate}
-          onCancel={jest.fn()}
-          rulesetType="category"
-        />
-      </FeatureFlagContext.Provider>
+      <Ruleset
+        isEnabled={true}
+        onCreate={mockCreate}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
     );
 
     await selectCategory(screen, user);
@@ -429,16 +424,12 @@ describe('Ruleset', () => {
     });
 
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: true }}
-      >
-        <Ruleset
-          isEnabled={true}
-          onCreateKeywordSearchRuleset={mockCreate}
-          onCancel={jest.fn()}
-          rulesetType="category"
-        />
-      </FeatureFlagContext.Provider>
+      <Ruleset
+        isEnabled={true}
+        onCreateKeywordSearchRuleset={mockCreate}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
     );
 
     await selectCategory(screen, user);
@@ -619,30 +610,26 @@ describe('Ruleset', () => {
       });
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: false, hasMultipleCategories: true }}
-        >
-          <Ruleset
-            isEnabled={true}
-            onSave={jest.fn()}
-            onCancel={jest.fn()}
-            categoryIds={[categoryId1, categoryId2]}
-            rulesetMerchandisingRules={{
-              pinnedProducts: [],
-              blockedProducts: [],
-              boosts: { numeric: [], alphanumeric: [], product: [] },
-              buries: { numeric: [], alphanumeric: [], product: [] },
-              includes: {
-                alphanumeric: [],
-              },
-              excludes: {
-                alphanumeric: [],
-              },
-            }}
-            rulesetId={ruleSetId}
-            rulesetType="category"
-          />
-        </FeatureFlagContext.Provider>
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          categoryIds={[categoryId1, categoryId2]}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />
       );
 
       const category2button = await screen.findByRole('button', {
@@ -703,31 +690,27 @@ describe('Ruleset', () => {
       });
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <Ruleset
-            isEnabled={true}
-            onSave={mockSave}
-            onCancel={jest.fn()}
-            rulesetMerchandisingRules={{
-              pinnedProducts: [{ id: 'abc123' }],
-              blockedProducts: [],
-              boosts: { numeric: [], alphanumeric: [], product: [] },
-              buries: { numeric: [], alphanumeric: [], product: [] },
-              includes: {
-                alphanumeric: [],
-              },
-              excludes: {
-                alphanumeric: [],
-              },
-            }}
-            rulesetId={ruleSetId}
-            rulesetType="category"
-            categoryIds={undefined}
-            countryCode="UK_IE"
-          />
-        </FeatureFlagContext.Provider>
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+          categoryIds={undefined}
+          countryCode="UK_IE"
+        />
       );
 
       await user.type(
@@ -758,31 +741,27 @@ describe('Ruleset', () => {
       });
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <Ruleset
-            isEnabled={true}
-            onSave={mockSave}
-            onCancel={jest.fn()}
-            rulesetMerchandisingRules={{
-              pinnedProducts: [{ id: 'abc123' }],
-              blockedProducts: [],
-              boosts: { numeric: [], alphanumeric: [], product: [] },
-              buries: { numeric: [], alphanumeric: [], product: [] },
-              includes: {
-                alphanumeric: [],
-              },
-              excludes: {
-                alphanumeric: [],
-              },
-            }}
-            rulesetId={ruleSetId}
-            rulesetType="category"
-            categoryIds={[categoryId1]}
-            countryCode="UK_IE"
-          />
-        </FeatureFlagContext.Provider>
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+          categoryIds={[categoryId1]}
+          countryCode="UK_IE"
+        />
       );
 
       expect(usePreview).toHaveBeenLastCalledWith(
@@ -818,31 +797,27 @@ describe('Ruleset', () => {
       });
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <Ruleset
-            isEnabled={true}
-            onSave={mockSave}
-            onCancel={jest.fn()}
-            rulesetMerchandisingRules={{
-              pinnedProducts: [{ id: 'abc123' }],
-              blockedProducts: [],
-              boosts: { numeric: [], alphanumeric: [], product: [] },
-              buries: { numeric: [], alphanumeric: [], product: [] },
-              includes: {
-                alphanumeric: [],
-              },
-              excludes: {
-                alphanumeric: [],
-              },
-            }}
-            rulesetId={ruleSetId}
-            rulesetType="category"
-            categoryIds={['Cat_2134235', 'IE_789123']}
-            countryCode="UK_IE"
-          />
-        </FeatureFlagContext.Provider>
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+          categoryIds={['Cat_2134235', 'IE_789123']}
+          countryCode="UK_IE"
+        />
       );
 
       expect(usePreview).toHaveBeenLastCalledWith(
@@ -1227,31 +1202,27 @@ describe('Ruleset', () => {
       });
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <Ruleset
-            isEnabled={true}
-            onSave={mockSave}
-            onCancel={jest.fn()}
-            rulesetMerchandisingRules={{
-              pinnedProducts: [{ id: 'abc123' }],
-              blockedProducts: [],
-              boosts: { numeric: [], alphanumeric: [], product: [] },
-              buries: { numeric: [], alphanumeric: [], product: [] },
-              includes: {
-                alphanumeric: [],
-              },
-              excludes: {
-                alphanumeric: [],
-              },
-            }}
-            rulesetId={ruleSetId}
-            rulesetType="search"
-            searchTerms={mockSearchTerms}
-            countryCode="UK"
-          />
-        </FeatureFlagContext.Provider>
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={mockSearchTerms}
+          countryCode="UK"
+        />
       );
 
       expect(usePreview).toHaveBeenLastCalledWith(
@@ -1284,31 +1255,27 @@ describe('Ruleset', () => {
       });
 
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: true, hasMultipleCategories: true }}
-        >
-          <Ruleset
-            isEnabled={true}
-            onSave={mockSave}
-            onCancel={jest.fn()}
-            rulesetMerchandisingRules={{
-              pinnedProducts: [{ id: 'abc123' }],
-              blockedProducts: [],
-              boosts: { numeric: [], alphanumeric: [], product: [] },
-              buries: { numeric: [], alphanumeric: [], product: [] },
-              includes: {
-                alphanumeric: [],
-              },
-              excludes: {
-                alphanumeric: [],
-              },
-            }}
-            rulesetId={ruleSetId}
-            rulesetType="search"
-            searchTerms={mockSearchTerms}
-            countryCode="IE"
-          />
-        </FeatureFlagContext.Provider>
+        <Ruleset
+          isEnabled={true}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={mockSearchTerms}
+          countryCode="IE"
+        />
       );
 
       expect(usePreview).toHaveBeenLastCalledWith(
@@ -1408,7 +1375,9 @@ describe('Ruleset', () => {
 
     await selectCategory(screen, user);
 
-    const clearButton = screen.getByLabelText('Remove selected category');
+    const clearButton = screen.getByLabelText(
+      `Remove category: ${categoryId1}`
+    );
 
     act(() => {
       clearButton.click();
@@ -2055,18 +2024,14 @@ describe('Ruleset', () => {
 
     it('should set a start and end date', async () => {
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasIreland: false, hasMultipleCategories: false }}
-        >
-          <Ruleset
-            isEnabled={true}
-            onSave={jest.fn()}
-            onCancel={jest.fn()}
-            rulesetMerchandisingRules={mockRules}
-            categoryIds={['SubCategory_507']}
-            rulesetType="category"
-          />
-        </FeatureFlagContext.Provider>
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={mockRules}
+          categoryIds={['SubCategory_507']}
+          rulesetType="category"
+        />
       );
 
       const input = screen.getByPlaceholderText('Select date range');

@@ -10,6 +10,7 @@ import {
   mockCategoryNumericAttributes,
   mockCategoryRuleset,
   mockCategoryRulesets,
+  mockIECategoryList,
   mockPreview,
   mockProducts,
 } from './category.mocks';
@@ -25,8 +26,10 @@ test.describe('Category rulesets', () => {
     );
     await page.route(
       '*/**/api/search/beta/merchandising/category*',
-      async (route) => {
-        const json = mockCategoryList;
+      async (route, request) => {
+        const json = request.url().includes('MANDSIE')
+          ? mockIECategoryList
+          : mockCategoryList;
         await route.fulfill({ status: 200, json });
       }
     );
@@ -104,7 +107,9 @@ test.describe('Category rulesets', () => {
 
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Dresses');
-    await page.getByText('SubCategory_429 | Dresses | l/women/dresses').click();
+    await page
+      .getByText('SubCategory_429 | Dresses | l/women/dresses', { exact: true })
+      .click();
 
     await page.waitForLoadState('networkidle');
 
@@ -543,7 +548,9 @@ test.describe('Category rulesets', () => {
       await page.getByPlaceholder('Search...').click();
       await page.getByPlaceholder('Search...').fill('Dresses');
       await page
-        .getByText('SubCategory_429 | Dresses | l/women/dresses')
+        .getByText('SubCategory_429 | Dresses | l/women/dresses', {
+          exact: true,
+        })
         .click();
 
       await page.waitForLoadState('networkidle');

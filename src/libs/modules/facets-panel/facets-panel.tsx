@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
 import {
   CountryCode,
@@ -17,7 +17,6 @@ import {
 } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
@@ -133,8 +132,6 @@ export const FacetsPanel = ({
   setSelectedPreviewCountryCode,
   refreshData,
 }: FacetsPanelProps) => {
-  const featureFlags = useContext(FeatureFlagContext);
-
   const [showPreview, setShowPreview] = useState(false);
 
   const [merchandisingRules] = useState<MerchandisingRules>(
@@ -332,17 +329,15 @@ export const FacetsPanel = ({
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <ScopeWrapper>
-          {featureFlags.hasIreland && (
-            <CountrySelectorWrapper>
-              <CountrySelectorLabel>Influence</CountrySelectorLabel>
-              <CountrySelectorDropdown
-                onChange={(country) => {
-                  dispatch({ type: 'changeCountry', payload: country });
-                }}
-                selectedCountryCode={countryCode}
-              />
-            </CountrySelectorWrapper>
-          )}
+          <CountrySelectorWrapper>
+            <CountrySelectorLabel>Influence</CountrySelectorLabel>
+            <CountrySelectorDropdown
+              onChange={(country) => {
+                dispatch({ type: 'changeCountry', payload: country });
+              }}
+              selectedCountryCode={countryCode}
+            />
+          </CountrySelectorWrapper>
           {facetType === 'category' && (
             <CategorySearch
               selectedCategories={selectedCategories}

@@ -2,7 +2,6 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { useGlobalRuleSetCreate, useRuleSet } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -329,7 +328,7 @@ describe('Index', () => {
     expect(mockRefetchRulesList).toHaveBeenCalled();
   });
 
-  it('should display country flag and filter if Ireland feature flag is enabled', () => {
+  it('should display country flag and filter', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       globalRuleSets: [
         {
@@ -355,58 +354,12 @@ describe('Index', () => {
       isLoading: false,
     });
 
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: true, hasMultipleCategories: false }}
-      >
-        <RuleSets />
-      </FeatureFlagContext.Provider>
-    );
+    renderWithProviders(<RuleSets />);
 
     expect(screen.getByAltText('UK rule')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'All marksandspencer.com' })
     ).toBeVisible();
-  });
-
-  it('should not display country flag or filter if Ireland feature flag is not enabled', () => {
-    jest.mocked(useRuleSet).mockReturnValue({
-      globalRuleSets: [
-        {
-          id: '1234',
-          isEnabled: true,
-          lastChanged: {
-            user: 'user',
-            date: '2021-01-01',
-          },
-          rules: mockMerchandisingRules,
-          facets: [],
-          countryCode: 'UK',
-        },
-      ],
-      pagination: {
-        totalItems: undefined,
-      },
-      categoryRuleSets: [],
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-      error: '',
-      isLoading: false,
-    });
-
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: false, hasMultipleCategories: false }}
-      >
-        <RuleSets />
-      </FeatureFlagContext.Provider>
-    );
-
-    expect(screen.queryByAltText('UK rule')).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'All marksandspencer.com' })
-    ).not.toBeInTheDocument();
   });
 
   it('should refetch the ruleset list when the country is changed', async () => {
@@ -436,13 +389,7 @@ describe('Index', () => {
       isLoading: false,
     });
 
-    renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasIreland: true, hasMultipleCategories: false }}
-      >
-        <RuleSets />
-      </FeatureFlagContext.Provider>
-    );
+    renderWithProviders(<RuleSets />);
     const dropdown = screen.getByRole('button', {
       name: 'All marksandspencer.com',
     });

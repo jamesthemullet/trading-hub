@@ -371,6 +371,27 @@ export const mockCategoryList: Categories = {
   pagination: { totalItems: 4 },
 };
 
+export const mockIECategoryList: Categories = {
+  categories: [
+    {
+      identifier: 'IE_SubCategory_429',
+      name: 'Dresses',
+      path: 'l/women/dresses',
+    },
+    {
+      identifier: 'IE_SubCategory_841578',
+      name: 'Dresses',
+      path: 'ie/l/women/all-new-in/clothing/dresses',
+    },
+    {
+      identifier: 'IE_SubCategory_25090153',
+      name: 'Dresses',
+      path: 'ie/l/kids/girls/dresses',
+    },
+  ],
+  pagination: { totalItems: 3 },
+};
+
 export const mockPreview: SearchPreviewResponseBeta = {
   category: 'SubCategory_429',
   ruleSet: {

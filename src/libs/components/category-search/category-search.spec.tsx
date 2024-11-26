@@ -5,7 +5,6 @@ import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { useGetCategories } from '../../hooks/use-get-categories';
-import { FeatureFlagContext } from '../context/feature-flag';
 import { CategorySearch } from './category-search';
 
 jest.mock('../../hooks/use-get-categories', () => ({
@@ -202,7 +201,7 @@ describe('CategorySearch', () => {
     );
 
     const clearButton = await screen.findByLabelText(
-      'Remove selected category'
+      `Remove category: ${mockCategoryId}`
     );
 
     act(() => {
@@ -214,15 +213,11 @@ describe('CategorySearch', () => {
 
   it('should show and remove multiple categories', async () => {
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasMultipleCategories: true, hasIreland: false }}
-      >
-        <CategorySearch
-          {...mockProps}
-          selectedCategories={[mockCategoryId, mockCategoryId2]}
-          previewCategory={mockCategoryId}
-        />
-      </FeatureFlagContext.Provider>
+      <CategorySearch
+        {...mockProps}
+        selectedCategories={[mockCategoryId, mockCategoryId2]}
+        previewCategory={mockCategoryId}
+      />
     );
 
     const dressCategory = await screen.findByRole('button', {
@@ -250,15 +245,11 @@ describe('CategorySearch', () => {
 
   it('should select an additional category as the preview category if the preview category is removed', async () => {
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasMultipleCategories: true, hasIreland: false }}
-      >
-        <CategorySearch
-          {...mockProps}
-          selectedCategories={[mockCategoryId, mockCategoryId2]}
-          previewCategory={mockCategoryId}
-        />
-      </FeatureFlagContext.Provider>
+      <CategorySearch
+        {...mockProps}
+        selectedCategories={[mockCategoryId, mockCategoryId2]}
+        previewCategory={mockCategoryId}
+      />
     );
 
     const category1remove = await screen.findAllByRole('button', {
@@ -277,15 +268,11 @@ describe('CategorySearch', () => {
 
   it('should clear the preview category if the preview category is removed and no other categories have been selected', async () => {
     renderWithProviders(
-      <FeatureFlagContext.Provider
-        value={{ hasMultipleCategories: true, hasIreland: false }}
-      >
-        <CategorySearch
-          {...mockProps}
-          selectedCategories={[mockCategoryId]}
-          previewCategory={mockCategoryId}
-        />
-      </FeatureFlagContext.Provider>
+      <CategorySearch
+        {...mockProps}
+        selectedCategories={[mockCategoryId]}
+        previewCategory={mockCategoryId}
+      />
     );
 
     const category1remove = await screen.findAllByRole('button', {
@@ -303,19 +290,15 @@ describe('CategorySearch', () => {
   describe('Category Modal', () => {
     it('should show and close a modal when there are more than one categories', async () => {
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasMultipleCategories: true, hasIreland: false }}
-        >
-          <CategorySearch
-            {...mockProps}
-            selectedCategories={[
-              mockCategoryId,
-              mockCategoryId2,
-              mockCategoryId3,
-            ]}
-            previewCategory={mockCategoryId}
-          />
-        </FeatureFlagContext.Provider>
+        <CategorySearch
+          {...mockProps}
+          selectedCategories={[
+            mockCategoryId,
+            mockCategoryId2,
+            mockCategoryId3,
+          ]}
+          previewCategory={mockCategoryId}
+        />
       );
 
       const modalButton = await screen.findByRole('button', {
@@ -353,19 +336,15 @@ describe('CategorySearch', () => {
 
     it('should change the selected category', async () => {
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasMultipleCategories: true, hasIreland: false }}
-        >
-          <CategorySearch
-            {...mockProps}
-            selectedCategories={[
-              mockCategoryId,
-              mockCategoryId2,
-              mockCategoryId3,
-            ]}
-            previewCategory={mockCategoryId}
-          />
-        </FeatureFlagContext.Provider>
+        <CategorySearch
+          {...mockProps}
+          selectedCategories={[
+            mockCategoryId,
+            mockCategoryId2,
+            mockCategoryId3,
+          ]}
+          previewCategory={mockCategoryId}
+        />
       );
 
       const modalButton = await screen.findByRole('button', {
@@ -399,19 +378,15 @@ describe('CategorySearch', () => {
 
     it('should remove additional categories', async () => {
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasMultipleCategories: true, hasIreland: false }}
-        >
-          <CategorySearch
-            {...mockProps}
-            selectedCategories={[
-              mockCategoryId,
-              mockCategoryId2,
-              mockCategoryId3,
-            ]}
-            previewCategory={mockCategoryId}
-          />
-        </FeatureFlagContext.Provider>
+        <CategorySearch
+          {...mockProps}
+          selectedCategories={[
+            mockCategoryId,
+            mockCategoryId2,
+            mockCategoryId3,
+          ]}
+          previewCategory={mockCategoryId}
+        />
       );
 
       const modalButton = await screen.findByRole('button', {
@@ -441,19 +416,15 @@ describe('CategorySearch', () => {
 
     it('should select an additional category as the preview category if the preview category is removed', async () => {
       renderWithProviders(
-        <FeatureFlagContext.Provider
-          value={{ hasMultipleCategories: true, hasIreland: false }}
-        >
-          <CategorySearch
-            {...mockProps}
-            selectedCategories={[
-              mockCategoryId,
-              mockCategoryId2,
-              mockCategoryId3,
-            ]}
-            previewCategory={mockCategoryId}
-          />
-        </FeatureFlagContext.Provider>
+        <CategorySearch
+          {...mockProps}
+          selectedCategories={[
+            mockCategoryId,
+            mockCategoryId2,
+            mockCategoryId3,
+          ]}
+          previewCategory={mockCategoryId}
+        />
       );
 
       const modalButton = await screen.findByRole('button', {
@@ -494,19 +465,15 @@ describe('CategorySearch', () => {
       const [previewCategory, setPreviewCategory] = useState(mockCategoryId);
 
       return (
-        <FeatureFlagContext.Provider
-          value={{ hasMultipleCategories: true, hasIreland: false }}
-        >
-          <CategorySearch
-            {...mockProps}
-            selectedCategories={selectedCategories}
-            previewCategory={previewCategory}
-            onClearSelection={() => {
-              setSelectedCategories([mockCategoryId2]);
-              setPreviewCategory(mockCategoryId2);
-            }}
-          />
-        </FeatureFlagContext.Provider>
+        <CategorySearch
+          {...mockProps}
+          selectedCategories={selectedCategories}
+          previewCategory={previewCategory}
+          onClearSelection={() => {
+            setSelectedCategories([mockCategoryId2]);
+            setPreviewCategory(mockCategoryId2);
+          }}
+        />
       );
     };
 

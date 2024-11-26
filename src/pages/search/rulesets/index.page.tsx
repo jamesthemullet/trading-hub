@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -7,7 +7,6 @@ import type {
   ReturnedKeywordRuleSet,
 } from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
@@ -103,8 +102,6 @@ const SearchRuleSets = () => {
     refetchRuleSetList({});
   };
 
-  const featureFlags = useContext(FeatureFlagContext);
-
   const onDuplicateRuleSet = (id: string) => {
     const rulesetToCopy = ruleSets.find((ruleset) => ruleset.id === id);
 
@@ -152,7 +149,7 @@ const SearchRuleSets = () => {
       url: `/search/rulesets/edit/${id}`,
       startDate,
       endDate,
-      ...(featureFlags.hasIreland && { countryCode }),
+      countryCode,
     })
   );
 
@@ -174,9 +171,7 @@ const SearchRuleSets = () => {
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
-          {featureFlags.hasIreland && (
-            <CountryFilterDropdown onChange={handleCountryFilter} />
-          )}
+          <CountryFilterDropdown onChange={handleCountryFilter} />
           <NewButton>
             <Link href="/search/rulesets/new">Add new rule</Link>
           </NewButton>

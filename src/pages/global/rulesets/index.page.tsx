@@ -1,9 +1,8 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { CountryCode } from '@/libs/api';
 import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   NewButton,
@@ -71,8 +70,6 @@ const RuleSets = () => {
 
   const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 
-  const featureFlags = useContext(FeatureFlagContext);
-
   const rows = globalRuleSets.map(
     ({ id, isEnabled, lastChanged, countryCode }) => ({
       id,
@@ -81,7 +78,7 @@ const RuleSets = () => {
       lastChanged,
       onToggle: onEnableDisableRuleSet,
       url: `/global/rulesets/edit/${id}`,
-      ...(featureFlags.hasIreland && { countryCode }),
+      countryCode,
     })
   );
 
@@ -107,9 +104,7 @@ const RuleSets = () => {
       <PageWrapper>
         <ToolsContainer>
           <Search onChange={(e) => handleSearch(e.target.value)} />
-          {featureFlags.hasIreland && (
-            <CountryFilterDropdown onChange={handleCountryFilter} />
-          )}
+          <CountryFilterDropdown onChange={handleCountryFilter} />
           <NewButton onClick={createNewRuleSet}>
             <Link href={''}>Add new rule</Link>
           </NewButton>
