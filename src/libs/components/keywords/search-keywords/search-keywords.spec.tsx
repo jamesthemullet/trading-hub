@@ -1,5 +1,10 @@
-import { act } from 'react-dom/test-utils';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -380,7 +385,9 @@ describe('Search Keywords', () => {
       ).toBeVisible();
     });
 
-    const keyword2 = await screen.findByRole('button', {
+    const keyword2 = await within(
+      await screen.findByLabelText('Search Keywords Modal')
+    ).findByRole('button', {
       name: longerSearchTermsList[2],
     });
 

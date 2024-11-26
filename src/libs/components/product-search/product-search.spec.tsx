@@ -1,5 +1,4 @@
-import { act } from 'react-dom/test-utils';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Product } from '@/libs/api';

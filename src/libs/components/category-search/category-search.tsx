@@ -288,6 +288,7 @@ export const CategorySearch = ({
         centered
         padding={20}
         size="auto"
+        aria-label="Category search modal"
       >
         <Modal.Overlay blur={3} />
         <Modal.Content>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -382,7 +382,9 @@ describe('CategorySearch', () => {
         ).toBeVisible();
       });
 
-      const category2 = await screen.findByRole('button', {
+      const category2 = await within(
+        await screen.findByLabelText('Category search modal')
+      ).findByRole('button', {
         name: mockCategoryId2,
       });
 

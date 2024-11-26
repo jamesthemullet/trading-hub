@@ -1,5 +1,4 @@
-import { act } from 'react-dom/test-utils';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { FacetRowDisplayValue } from '../modules/facets-panel/facets-panel-reducer';
 import { useFacetsFilter } from './use-facets-filter';
