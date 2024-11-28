@@ -242,6 +242,7 @@ jobs:
       NEXT_PUBLIC_AUTO_LOGIN: false
       NEW_RELIC_APP_NAME: ${{ secrets._NEW_RELIC_APP_NAME }}
       NEW_RELIC_LICENSE_KEY: ${{ secrets._NEW_RELIC_LICENSE_KEY }}
+      DEBUG: 'pw:webserver'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
