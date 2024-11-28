@@ -68,8 +68,27 @@ describe('<RootDocument />', () => {
     expect(mockedLogger.warn).not.toHaveBeenCalled();
   });
 
-  it('should handle newrelic secrets not being available', async () => {
+  it('should handle newrelic license key secret not being available', async () => {
     delete process.env['NEW_RELIC_APP_NAME'];
+
+    const ctx = {
+      renderPage: jest.fn(),
+      pathname: '/error-test',
+      defaultGetInitialProps: jest.fn().mockResolvedValue({
+        html: '',
+        head: [],
+        styles: [],
+      }),
+    };
+
+    await RootDocument.getInitialProps(ctx as any);
+
+    expect(mockedLogger.warn).toHaveBeenCalledWith(
+      'missing new relic env vars'
+    );
+  });
+
+  it('should handle newrelic app name secret not being available', async () => {
     delete process.env['NEW_RELIC_LICENSE_KEY'];
 
     const ctx = {

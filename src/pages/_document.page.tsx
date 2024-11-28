@@ -137,7 +137,10 @@ const checkNewRelicConnection = async () => {
     return new Promise((resolve) => {
       newrelic.agent.on('connected', resolve);
     });
-  } else {
+  } else if (
+    process.env.NODE_ENV !== 'development' &&
+    (!process.env.NEW_RELIC_APP_NAME || !process.env.NEW_RELIC_LICENSE_KEY)
+  ) {
     logger.warn('missing new relic env vars');
   }
 };
