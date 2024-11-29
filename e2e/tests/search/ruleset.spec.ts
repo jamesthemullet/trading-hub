@@ -6,6 +6,7 @@ import {
   mockCategoryAlphanumericAttributes,
   mockCategoryNumericAttributes,
   mockPreview,
+  mockPreviewIE,
   mockProducts,
   mockRuleSet,
   mockRulesetsList,
@@ -22,8 +23,10 @@ test.describe('Keyword search', () => {
     );
     await page.route(
       '*/**/api/search/beta/merchandising/preview*',
-      async (route) => {
-        const json = mockPreview;
+      async (route, request) => {
+        const json = request.url().includes('MANDSIE')
+          ? mockPreviewIE
+          : mockPreview;
         await route.fulfill({ status: 200, json });
       }
     );
@@ -130,6 +133,36 @@ test.describe('Keyword search', () => {
 
     await expect(
       page.getByText('GOODMOVE Performance Cuffed Joggers').nth(1)
+    ).toBeVisible();
+  });
+
+  test('changes the preview when the country changes', async ({ page }) => {
+    await expect(page.getByTitle('black hiking boots').first()).toBeVisible();
+
+    await page.getByRole('link', { name: 'Edit' }).first().click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page
+      .getByRole('button', { name: 'Select country view for visual editor' })
+      .click();
+
+    await page.getByText('IE view').click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('button', { name: 'Preview' }).click();
+
+    await page.waitForLoadState('networkidle');
+
+    await expect(
+      page.getByText('Search across the site to preview the rule influence')
+    ).toBeVisible();
+
+    await expect(page.getByRole('heading', { name: 'Price' })).toBeVisible();
+
+    await expect(
+      page.getByText('M&S Collection Cotton Rich Straight Leg Joggers').nth(1)
     ).toBeVisible();
   });
 

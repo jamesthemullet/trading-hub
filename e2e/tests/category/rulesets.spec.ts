@@ -136,6 +136,103 @@ test.describe('Category rulesets', () => {
     ).toBeVisible();
   });
 
+  test('creates a new ruleset for ROI', async ({ page }) => {
+    await page.goto('/category/rulesets');
+    await expect(
+      page.getByRole('heading', { name: 'Category ranking rules' })
+    ).toBeVisible();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('link', { name: 'Add new rule' }).click();
+
+    await page.waitForLoadState();
+    await expect(
+      page.getByText('No, there are no product rankings yet')
+    ).toBeVisible();
+
+    await page
+      .getByRole('button', {
+        name: 'select market',
+      })
+      .click();
+
+    await page
+      .getByRole('button', {
+        name: 'IE market only',
+      })
+      .click();
+
+    await page.getByPlaceholder('Search...').click();
+    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page
+      .getByText('IE_SubCategory_1002041 | Dresses | ie/l/women/dresses')
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByLabel('Position 1', { exact: true })).toBeVisible();
+
+    await page
+      .getByLabel('Position 1', { exact: true })
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Boost to Top' }).click();
+
+    await page
+      .getByLabel('Position 2')
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Bury to Bottom' }).click();
+
+    await page.getByRole('button', { name: 'Changes2' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Boosted Products (1)' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Buried Products (1)' })
+    ).toBeVisible();
+  });
+
+  test('should add multiple categories to a ruleset', async ({ page }) => {
+    await page.goto('/category/rulesets');
+    await expect(
+      page.getByRole('heading', { name: 'Category ranking rules' })
+    ).toBeVisible();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('link', { name: 'Add new rule' }).click();
+
+    await page.waitForLoadState();
+    await expect(
+      page.getByText('No, there are no product rankings yet')
+    ).toBeVisible();
+
+    await page.getByPlaceholder('Search...').click();
+    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page.getByText('SubCategory_429 | Dresses | l/women/dresses').click();
+
+    await page.getByPlaceholder('Search...').click();
+    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page
+      .getByText('IE_SubCategory_1002041 | Dresses | ie/l/women/dresses')
+      .click();
+
+    await page.getByRole('button', { name: 'View all' }).click();
+    await page.getByPlaceholder('Search...').click();
+    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page
+      .getByText('IE_SubCategory_7585102 | Dresses | ie/l/baby/dresses')
+      .click();
+
+    await page.getByRole('button', { name: 'Close' }).click();
+
+    await page
+      .getByRole('button', { name: 'Remove category: IE_SubCategory_1002041' })
+      .click();
+  });
+
   test('deletes a ruleset', async ({ page }) => {
     await page.goto('/category/rulesets');
     await expect(

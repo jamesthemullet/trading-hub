@@ -66,7 +66,7 @@ test.describe('Category rulesets', () => {
     );
   });
 
-  test('edits ruleset facets', async ({ page }) => {
+  test('edits ruleset facets for UK', async ({ page }) => {
     await page.goto('/category/facets');
     await expect(
       page.getByRole('heading', { name: 'Category Facet Management' })
@@ -82,6 +82,65 @@ test.describe('Category rulesets', () => {
     ).toBeVisible();
 
     await expect(page.getByText('Colours')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Algo control' }).first().click();
+    await page.getByRole('button', { name: 'include', exact: true }).click();
+
+    await expect(
+      page.getByLabel('Row showing Collections as included')
+    ).toBeVisible();
+
+    await page.keyboard.down('End');
+
+    await page.getByRole('button', { name: 'Algo control' }).first().click();
+    await page.getByRole('button', { name: 'exclude', exact: true }).click();
+
+    await expect(
+      page.getByLabel('Row showing Colour as excluded')
+    ).toBeVisible();
+
+    await expect(page.getByTestId('facets-table-row').first()).toContainText(
+      'Colours'
+    );
+
+    await page.getByRole('button', { name: 'Move Colours row down' }).click();
+
+    await expect(page.getByTestId('facets-table-row').first()).toContainText(
+      'Categories'
+    );
+
+    await page.getByRole('button', { name: 'Move Collections row up' }).click();
+    await page.getByRole('button', { name: 'Move Collections row up' }).click();
+
+    await expect(page.getByTestId('facets-table-row').first()).toContainText(
+      'Collections'
+    );
+  });
+
+  test('edits ruleset facets for IE', async ({ page }) => {
+    await page.goto('/category/facets');
+    await expect(
+      page.getByRole('heading', { name: 'Category Facet Management' })
+    ).toBeVisible();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('link', { name: 'Edit' }).first().click();
+
+    await page.waitForLoadState('networkidle');
+    await expect(
+      page.getByRole('heading', { name: 'Facet Rule Editor' })
+    ).toBeVisible();
+
+    await expect(page.getByText('Colours')).toBeVisible();
+
+    await page.getByRole('button', { name: 'select market' }).click();
+
+    await page.getByRole('button', { name: 'select IE market only' }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Facet Rule Editor' })
+    ).toBeVisible();
 
     await page.getByRole('button', { name: 'Algo control' }).first().click();
     await page.getByRole('button', { name: 'include', exact: true }).click();

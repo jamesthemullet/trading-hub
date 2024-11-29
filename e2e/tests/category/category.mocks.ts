@@ -58,11 +58,16 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
           name: 'Lamp Shades',
           plpUrl: 'l/furniture/lighting/lamp-shades',
         },
+        {
+          id: 'IE_SubCategory_19025005',
+          name: 'Lamp Shades',
+          plpUrl: 'l/furniture/lighting/lamp-shades',
+        },
       ],
       excludedFacets: { facets: [] },
       startDate: '2024-09-12T14:17:54Z',
       endDate: '2024-12-19T04:20:03Z',
-      countryCode: 'UK',
+      countryCode: 'UK_IE',
     },
     {
       id: '22ce8ae9-a7b3-4a52-bea4-e31ebf1f5f10',
@@ -342,11 +347,16 @@ export const mockCategoryRuleset: ReturnedCategoryRuleSet = {
       name: 'Lamp Shades',
       plpUrl: 'l/furniture/lighting/lamp-shades',
     },
+    {
+      id: 'IE_SubCategory_19025005',
+      name: 'Lamp Shades',
+      plpUrl: 'l/furniture/lighting/lamp-shades',
+    },
   ],
   excludedFacets: { facets: [] },
   startDate: '2024-09-12T14:17:54Z',
   endDate: '2024-12-19T04:20:03Z',
-  countryCode: 'UK',
+  countryCode: 'UK_IE',
 };
 
 export const mockCategoryList: Categories = {
@@ -374,9 +384,9 @@ export const mockCategoryList: Categories = {
 export const mockIECategoryList: Categories = {
   categories: [
     {
-      identifier: 'IE_SubCategory_429',
+      identifier: 'IE_SubCategory_1002041',
       name: 'Dresses',
-      path: 'l/women/dresses',
+      path: 'ie/l/women/dresses',
     },
     {
       identifier: 'IE_SubCategory_841578',
@@ -387,6 +397,11 @@ export const mockIECategoryList: Categories = {
       identifier: 'IE_SubCategory_25090153',
       name: 'Dresses',
       path: 'ie/l/kids/girls/dresses',
+    },
+    {
+      identifier: 'IE_SubCategory_7585102',
+      name: 'Dresses',
+      path: 'ie/l/baby/dresses',
     },
   ],
   pagination: { totalItems: 3 },

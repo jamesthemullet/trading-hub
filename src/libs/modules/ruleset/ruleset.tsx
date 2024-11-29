@@ -628,6 +628,7 @@ export const Ruleset = ({
                   onClose={() => {
                     setIsCountryDropdownOpen(false);
                   }}
+                  aria-label="Select country view for visual editor"
                 >
                   <DropdownContent isLeftAligned>
                     <DropdownItem

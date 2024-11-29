@@ -2,13 +2,8 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 
 import { expect, test } from '@playwright/test';
-import { cookies } from '../helpers';
 
 test.describe.configure({ mode: 'serial' });
-
-test.beforeEach(async ({ context }) => {
-  await context.addCookies(cookies);
-});
 
 test.describe('Category Ranking', () => {
   test('creates new ruleset', async ({ page }) => {
@@ -32,8 +27,8 @@ test.describe('Category Ranking', () => {
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
+    await page.getByLabel('Search for category').click();
+    await page.getByLabel('Search for category').fill('SubCategory_19573263');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await page
@@ -174,8 +169,8 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Category Ranking Rules' }).click();
     await page.getByRole('link', { name: 'Ranking rules' }).click();
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
+    await page.getByLabel('Search for category').click();
+    await page.getByLabel('Search for category').fill('SubCategory_19573263');
     await page.waitForTimeout(2000);
 
     await page.getByRole('link', { name: 'Edit' }).first().click();

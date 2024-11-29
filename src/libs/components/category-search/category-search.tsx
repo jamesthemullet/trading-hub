@@ -236,6 +236,7 @@ export const CategorySearch = ({
                 placeholder="Search..."
                 value={searchValue}
                 onChange={onSearchChange}
+                aria-label="Search for category"
               />
               <StyledIcon name="Search" size={32} />
             </SearchForm>

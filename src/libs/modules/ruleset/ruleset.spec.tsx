@@ -1105,7 +1105,9 @@ describe('Ruleset', () => {
         expect.objectContaining({ countryCode: 'UK' })
       );
 
-      const selectUK = screen.getByRole('button', { name: 'UK view' });
+      const selectUK = screen.getByRole('button', {
+        name: 'Select country view for visual editor',
+      });
 
       act(() => {
         selectUK.click();
@@ -1161,7 +1163,9 @@ describe('Ruleset', () => {
         expect.objectContaining({ countryCode: 'UK' })
       );
 
-      const selectUK = screen.getByRole('button', { name: 'UK view' });
+      const selectUK = screen.getByRole('button', {
+        name: 'Select country view for visual editor',
+      });
 
       act(() => {
         selectUK.click();
