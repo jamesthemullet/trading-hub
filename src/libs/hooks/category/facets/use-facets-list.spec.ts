@@ -36,14 +36,15 @@ describe('useFacetsList', () => {
       useFacetsList({
         categoryIds: [],
         enabled: true,
-        emptyListWhenCategoryNotSelected: false,
         countryCode: 'UK_IE',
       })
     );
 
     await waitFor(() => {
-      expect(result.current.facets.length).toEqual(5);
+      expect(result.current.facets.length).toEqual(0);
     });
+
+    expect(result.current.isLoading).toBeFalsy();
   });
 
   it('should render the hook with error', async () => {
@@ -58,9 +59,8 @@ describe('useFacetsList', () => {
 
     const { result } = renderHook(() =>
       useFacetsList({
-        categoryIds: [],
+        categoryIds: ['123'],
         enabled: true,
-        emptyListWhenCategoryNotSelected: false,
         countryCode: 'UK_IE',
       })
     );
@@ -77,7 +77,6 @@ describe('useFacetsList', () => {
       useFacetsList({
         categoryIds: ['12345'],
         enabled: true,
-        emptyListWhenCategoryNotSelected: true,
         countryCode: 'UK_IE',
       })
     );
@@ -87,28 +86,11 @@ describe('useFacetsList', () => {
     });
   });
 
-  it('should render the hook with empty list', async () => {
-    const { result } = renderHook(() =>
-      useFacetsList({
-        enabled: true,
-        emptyListWhenCategoryNotSelected: true,
-        countryCode: 'UK_IE',
-      })
-    );
-
-    await waitFor(() => {
-      expect(result.current.facets.length).toEqual(0);
-    });
-
-    expect(result.current.isLoading).toBeFalsy();
-  });
-
   it('should not call the hook when disabled', async () => {
     const { result } = renderHook(() =>
       useFacetsList({
         categoryIds: [],
         enabled: false,
-        emptyListWhenCategoryNotSelected: false,
         countryCode: 'UK_IE',
       })
     );

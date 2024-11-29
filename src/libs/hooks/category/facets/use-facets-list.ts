@@ -10,12 +10,10 @@ import { handleError } from '../../utils/error';
 export const useFacetsList = ({
   categoryIds,
   enabled,
-  emptyListWhenCategoryNotSelected,
   countryCode,
 }: {
-  categoryIds?: string[];
+  categoryIds: string[];
   enabled: boolean;
-  emptyListWhenCategoryNotSelected: boolean;
   countryCode: CountryCode;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,11 +30,6 @@ export const useFacetsList = ({
 
     const asyncCall = async () => {
       try {
-        if (!categoryIds?.length) {
-          const response = await requestData();
-
-          return setFacetsList(response.data.facets);
-        }
         const responses = await Promise.all(
           categoryIds.map((categoryId) => requestData([categoryId]))
         );
@@ -58,15 +51,11 @@ export const useFacetsList = ({
       }
     };
 
-    if (enabled) {
-      if (!categoryIds && emptyListWhenCategoryNotSelected) {
-        return setFacetsList([]);
-      } else {
-        setIsLoading(true);
-        void asyncCall();
-      }
+    if (enabled && categoryIds.length !== 0) {
+      setIsLoading(true);
+      void asyncCall();
     }
-  }, [categoryIds, countryCode, enabled, emptyListWhenCategoryNotSelected]);
+  }, [categoryIds, countryCode, enabled]);
 
   return {
     facets: facetsList,

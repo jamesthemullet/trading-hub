@@ -79,14 +79,9 @@ const CategoryFacetsPanel = ({
     countryCode: countryCode,
   });
 
-  const {
-    facets,
-    error: getFacetsDataError,
-    isLoading: isFacetsListLoading,
-  } = useFacetsList({
+  const { facets, error: getFacetsDataError } = useFacetsList({
     categoryIds: selectedCategories,
     enabled: !isLoading,
-    emptyListWhenCategoryNotSelected: true,
     countryCode: facetPanelLocalState.countryCode,
   });
 
@@ -198,7 +193,7 @@ const CategoryFacetsPanel = ({
         </ErrorMessage>
       )}
 
-      {isLoading || isFacetsListLoading ? (
+      {isLoading ? (
         <FacetsPanelSkeleton title="Facet Rule Editor" />
       ) : (
         <FacetsPanel

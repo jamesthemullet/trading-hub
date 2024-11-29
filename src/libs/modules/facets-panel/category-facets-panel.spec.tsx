@@ -641,33 +641,6 @@ describe('Category Facet Panel', () => {
     );
   });
 
-  it('should show skeleton when loading facets list', async () => {
-    jest.mocked(useFacetsList).mockReturnValue({
-      ...mockUseFacetsList,
-      isLoading: true,
-    });
-
-    renderWithProviders(
-      <CategoryFacetsPanel
-        ruleSetIncludedFacets={undefined}
-        ruleSetExcludedFacets={mockRuleData.excludedFacets}
-        ruleSetRules={mockRuleData.rules}
-        startDate={mockRuleData.startDate}
-        endDate={mockRuleData.endDate}
-        isLoading={false}
-        countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        refreshData={refreshDataSpy}
-      />
-    );
-
-    expect(() => screen.getByRole('button', { name: 'Save' })).toThrow(
-      'Unable to find an accessible element with the role "button"'
-    );
-  });
-
   describe('Ireland', () => {
     it('should preview IE products with an IE category', async () => {
       jest.mocked(useGetCategories).mockReturnValue({
