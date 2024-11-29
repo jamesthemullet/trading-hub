@@ -121,6 +121,7 @@ const RuleSets = () => {
     'Identifier',
     'Breadcrumb',
     'Schedule',
+    'Influence',
     'Enable',
     'Last Changed',
     'User',

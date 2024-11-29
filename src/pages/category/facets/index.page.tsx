@@ -114,6 +114,7 @@ const FacetManagementPage = () => {
     'Identifier',
     'Breadcrumb',
     'Schedule',
+    'Influence',
     'Enable',
     'Last Changed',
     'User',

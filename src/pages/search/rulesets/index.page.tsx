@@ -117,6 +117,7 @@ const SearchRuleSets = () => {
   const headings = [
     'Identifier',
     'Schedule',
+    'Influence',
     'Enable',
     'Last Changed',
     'User',

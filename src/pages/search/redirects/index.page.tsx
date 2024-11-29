@@ -100,6 +100,7 @@ const RedirectRuleSets = () => {
   const headings = [
     'Identifier',
     'Schedule',
+    'Influence',
     'Enable',
     'Last Changed',
     'User',

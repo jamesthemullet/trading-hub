@@ -25,28 +25,41 @@ import {
   TableRow,
 } from './table.styles';
 
+const totalOfAllPossibleColumns = [
+  'Identifier',
+  'Breadcrumb',
+  'Schedule',
+  'Influence',
+  'Enable',
+  'Last Changed',
+  'User',
+  'Actions',
+].length;
+
 export const Row = styled(TableRow)<{
   numColumns: number;
   showBreadcrumbColumn?: boolean;
 }>`
-  grid-template-columns: minmax(140px, 2fr) 90px 120px 150px 130px;
+  grid-template-columns: minmax(140px, 2fr) 90px 90px 120px 150px 130px;
   min-height: 83px;
 
   ${mediaQuery('xxl')} {
     ${({ numColumns, showBreadcrumbColumn }) =>
       `grid-template-columns: ${
-        ((numColumns === 6 && showBreadcrumbColumn) || numColumns === 7) &&
-        'minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;'
+        ((numColumns === totalOfAllPossibleColumns - 1 &&
+          showBreadcrumbColumn) ||
+          numColumns === totalOfAllPossibleColumns) &&
+        'minmax(140px, 2fr) minmax(120px, 2fr) 90px 90px 120px 150px 130px;'
       };`}
   }
 
   ${mediaQuery('xxxl')} {
     ${({ numColumns }) => {
-      if (numColumns === 6) {
-        return 'grid-template-columns: minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;';
+      if (numColumns === totalOfAllPossibleColumns - 1) {
+        return 'grid-template-columns: minmax(140px, 2fr) minmax(140px, 2fr) 90px 90px 120px 150px 130px;';
       }
-      if (numColumns === 7) {
-        return 'grid-template-columns: minmax(140px, 2fr) minmax(140px, 2fr) minmax(140px, 2fr) 90px 120px 150px 130px;';
+      if (numColumns === totalOfAllPossibleColumns) {
+        return 'grid-template-columns: minmax(140px, 2fr) minmax(140px, 2fr) minmax(140px, 2fr) 90px 90px 120px 150px 130px;';
       }
       return '';
     }}
@@ -415,6 +428,7 @@ export const DataTable = ({
                     )}
                   </SchedulingColumn>
                 )}
+                <TableCol>{countryCode?.replace('_', '/')}</TableCol>
                 <TableCol>
                   <Toggle
                     checked={isEnabled}

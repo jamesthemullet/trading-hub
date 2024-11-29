@@ -81,7 +81,14 @@ const FacetManagementPage = () => {
     refetchRuleSetList({});
   };
 
-  const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
+  const headings = [
+    'Identifier',
+    'Influence',
+    'Enable',
+    'Last Changed',
+    'User',
+    'Actions',
+  ];
 
   const rows = globalRuleSets.map(
     ({ id, isEnabled, lastChanged, countryCode }) => ({
