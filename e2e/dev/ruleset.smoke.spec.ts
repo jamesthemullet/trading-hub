@@ -169,8 +169,12 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Category Ranking Rules' }).click();
     await page.getByRole('link', { name: 'Ranking rules' }).click();
 
-    await page.getByLabel('Search for category').click();
-    await page.getByLabel('Search for category').fill('SubCategory_19573263');
+    await expect(
+      page.getByRole('heading', { name: 'Category Ranking Rules' })
+    ).toBeVisible();
+
+    await page.getByPlaceholder('Search...').click();
+    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
     await page.waitForTimeout(2000);
 
     await page.getByRole('link', { name: 'Edit' }).first().click();
