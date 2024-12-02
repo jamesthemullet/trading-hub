@@ -3,33 +3,77 @@ name: PR infrastructure
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches:
-      - test-pr-env
 
 concurrency:
   # injecting the uri is subject to race condition so we need to limit the concurrency
   group: 'pr-infrastructure'
   cancel-in-progress: false
 
-env:
-  ARM_TENANT_ID: bd5c6713-7399-4b31-be79-78f2d078e543
-  CLIENT_ID: 2c640eb1-36ce-4c8a-be67-0559df1722f5
-
 permissions:
-  id-token: write # This is required for requesting the JWT
-  contents: read # This is required for actions/checkout
+  id-token: write
+  contents: read
 
 jobs:
-  deploy-pr-infrastructure:
-    name: Deploy PR infrastructure
+  deploy-pr-app-infrastructure:
+    name: Deploy PR app infrastructure
     runs-on: ubuntu-latest
-    if: false
     strategy:
       fail-fast: false
     environment:
       name: deveun
     steps:
       - uses: actions/checkout@v4
+      - name: Log in via Azure CLI as federated SP
+        uses: azure/login@v2.2.0
+        with:
+          client-id: ${{ secrets.FEDERATED_AD_CLIENT_ID }}
+          tenant-id: ${{ secrets.FEDERATED_AD_TENANT_ID }}
+          subscription-id: ${{ secrets.FEDERATED_SUBSCRIPTION_ID }}
+
+      - name: Check if app exists and create if not
+        shell: bash
+        id: check-app-exists
+        run: |
+          set -x
+
+          app_name="prs-ar-trading-hub"
+
+          number_of_apps="$(az ad app list --filter "displayname eq '$app_name'" | jq length)"
+          if (( "$number_of_apps" >= 1 )); then
+              echo "App exists"
+          else
+              echo "App does not exist, creating..."
+              az ad app create --display-name "$app_name"
+          fi
+
+          object_id="$(az ad app list --filter "displayname eq '$app_name'" | jq -r '.[0].id')"
+          app_id="$(az ad app list --filter "displayname eq '$app_name'" | jq -r '.[0].appId')"
+
+          number_of_required_resource_access_records="$(az ad app show --id $object_id --query "requiredResourceAccess" | jq length)"
+
+          if (( "$number_of_required_resource_access_records" >= 1 )); then
+              echo "Required resource access records exist"
+          else
+              echo "Required resource access records do not exist, adding..."
+              echo '
+          - resourceAppId: 00000003-0000-0000-c000-000000000000
+            resourceAccess:
+            - id: e1fe6dd8-ba31-4d61-89e7-88639da4683d # User.Read
+              type: Scope
+            - id: 7427e0e9-2fba-42fe-b0c0-848c9e6a8182 # offline_access
+              type: Scope
+            - id: 37f7f235-527c-4136-accd-4a02d197296e # openid
+              type: Scope
+            - id: 14dad69e-099b-42c9-810b-d002981feec1 # profile
+              type: Scope
+          ' | yq -o=json '.' > manifest.json
+              cat manifest.json
+              az ad app update --id "$object_id" --required-resource-accesses @./manifest.json
+          fi
+
+          echo "object-id=$object_id" >> "$GITHUB_OUTPUT"
+          echo "app-id=$app_id" >> "$GITHUB_OUTPUT"
+
       - name: Check composite parameter for the reusable pipeline
         id: check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
@@ -49,11 +93,29 @@ jobs:
           set -e
           exit 0
 
-      - name: Login via Azure CLI
+      - name: Inject secrets to the app registration if needed
         if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
-        uses: azure/login@v1.6.1
-        with:
-          creds: '{"clientId": "${{ env.CLIENT_ID }}" , "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
+        id: inject-secrets
+        run: |
+          set -x
+          existing_secret_display_name=$(az ad app show --id "${{ steps.check-app-exists.outputs.object-id }}" --query "[passwordCredentials]" | jq -c '.[][] | select( .displayName | contains("${{ steps.dynamic-env-name.outputs.dynamic-env-name }}")).displayName')
+
+          if [[ $existing_secret_display_name == *"${{ steps.dynamic-env-name.outputs.dynamic-env-name }}"* ]]; then
+              echo "The secret for ${{ steps.dynamic-env-name.outputs.dynamic-env-name }} is already in the list"
+              exit 0
+          else
+              echo "Adding the secret for ${{ steps.dynamic-env-name.outputs.dynamic-env-name }} to the list"
+              new_password=$(az ad app credential reset --id "${{ steps.check-app-exists.outputs.object-id }}" --append --display-name "${{ steps.dynamic-env-name.outputs.dynamic-env-name }}" | jq -r '.password')
+              echo "new-password=$new_password" >> "$GITHUB_OUTPUT"
+          fi
+
+          secrets=$(echo '${{ toJSON(secrets) }}' | jq -c \
+            --arg _NEXTAUTH_URL https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net/api/auth/ \
+            --arg _AZURE_AD_CLIENT_ID "${{ steps.check-app-exists.outputs.app-id }}" \
+            --arg _AZURE_AD_CLIENT_SECRET "$new_password" \
+            --arg _AZURE_AD_TENANT_ID bd5c6713-7399-4b31-be79-78f2d078e543 \
+            '. + {_NEXTAUTH_URL: $_NEXTAUTH_URL, _AZURE_AD_CLIENT_ID: $_AZURE_AD_CLIENT_ID, _AZURE_AD_CLIENT_SECRET: $_AZURE_AD_CLIENT_SECRET, _AZURE_AD_TENANT_ID: $_AZURE_AD_TENANT_ID }' )
+          echo "secrets=$secrets" >> "$GITHUB_OUTPUT"
 
       - name: Inject uri to redirect uris if needed
         if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
@@ -63,7 +125,7 @@ jobs:
 
           new_uri="https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net/api/auth/callback/azure-ad"
 
-          existing_redirect_uris=$(az ad app show --id "${{ env.CLIENT_ID }}" --query "[web.redirectUris]" --output tsv)
+          existing_redirect_uris=$(az ad app show --id "${{ steps.check-app-exists.outputs.object-id }}" --query "[web.redirectUris]" --output tsv)
           echo "$existing_redirect_uris"
 
           # Check if the new URI is already in the list
@@ -71,30 +133,24 @@ jobs:
               echo "The URI $new_uri is already in the list"
           else
               echo "Adding the URI $new_uri to the list"
-              az ad app update --id "${{ env.CLIENT_ID }}" --web-redirect-uris $existing_redirect_uris $new_uri
+              az ad app update --id "${{ steps.check-app-exists.outputs.object-id }}" --web-redirect-uris $existing_redirect_uris $new_uri
           fi
 
-      - name: Set up environment variables
+      - name: Login via Azure CLI as Cloud9 own SP
         if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
-        id: set-env
-        run: |
-          set -x
-
-          secrets=$(echo '${{ toJSON(secrets) }}' | jq -c --arg _NEXTAUTH_URL https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net/api/auth/ '. + {_NEXTAUTH_URL: $_NEXTAUTH_URL}' )
-          echo "secrets=$secrets" >> "$GITHUB_OUTPUT"
+        uses: azure/login@v1.6.1
+        with:
+          creds: '{"clientId": "2c640eb1-36ce-4c8a-be67-0559df1722f5" , "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
 
       - name: Deploy PR infrastructure
-        if: false
-        # if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
+        if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
         uses: DigitalInnovation/brightcloud/.github/actions/webapp-dynamic-env-oidc@feat/oidcn
         with:
-          NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
-          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
           SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
           SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
           SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
           BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
-          ALL_SECRETS: ('${{ steps.set-env.outputs.secrets }}')
+          ALL_SECRETS: ('${{ steps.inject-secrets.outputs.secrets }}')
           DYNAMIC_ENV_APP_NAME: ${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
           APP_NAME: ${{ steps.dynamic-env-name.outputs.app-name }}
           TTL: 24h
