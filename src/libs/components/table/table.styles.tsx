@@ -127,25 +127,6 @@ export const TableOptionButton = styled.button<{ isOpen: boolean }>`
   border-radius: 0;
   background-color: #f5f5f5;
   transition: background-color 0.1s ease-in;
-  border-left: solid 1px #999;
-
-  border-right: solid 1px ${color.accessibilityGrey};
-  border-top: solid 1px ${color.accessibilityGrey};
-  border-bottom: solid 1px ${color.accessibilityGrey};
-  border-radius: 0 4px 4px 0;
-
-  &::before {
-    border: 4px solid transparent;
-    border-bottom-color: ${({ isOpen }) => isOpen && '#000'};
-    border-top-color: ${({ isOpen }) => !isOpen && '#000'};
-    content: '';
-    display: block;
-    height: 0;
-    right: 15px;
-    top: ${({ isOpen }) => (isOpen ? '35%' : '18px')};
-    position: absolute;
-    width: 0;
-  }
 
   &:hover {
     background-color: #e3e3e3;
@@ -160,20 +141,20 @@ export const TableActionsButton = styled.a`
   text-decoration: none;
   padding: ${spacing(1)} ${spacing(2)};
   width: 100%;
+  border-radius: 4px 0 0 4px;
+  border-top: solid 1px ${color.accessibilityGrey};
+  border-bottom: solid 1px ${color.accessibilityGrey};
+  border-left: solid 1px ${color.accessibilityGrey};
 
   &:hover {
     background-color: #e3e3e3;
   }
-
-  border-left: solid 1px ${color.accessibilityGrey};
-  border-top: solid 1px ${color.accessibilityGrey};
-  border-bottom: solid 1px ${color.accessibilityGrey};
-  border-radius: 4px 0 0 4px;
 `;
 
 export const TableActions = styled.div`
   position: relative;
   display: flex;
+  background-color: #f5f5f5;
 `;
 
 export const DropdownOptions = styled.div`
@@ -182,6 +163,7 @@ export const DropdownOptions = styled.div`
   background-color: #f5f5f5;
   width: 100%;
   z-index: 1;
+  border: solid 1px ${color.accessibilityGrey};
 `;
 
 export const TableDropdown = styled.button`
@@ -189,7 +171,7 @@ export const TableDropdown = styled.button`
   padding: ${spacing(1)} ${spacing(2)};
   z-index: 1;
   border: none;
-  border-top: solid 1px #999;
+  border-bottom: solid 1px #999;
   box-shadow: #000 0 4px 2px -4px;
   font-family: inherit;
   font-size: inherit;

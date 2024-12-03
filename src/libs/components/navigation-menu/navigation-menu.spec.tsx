@@ -19,6 +19,7 @@ const menuItems = [
       { href: '/category/rulesets', text: 'Ranking rules' },
       { href: '/category/facets', text: 'Facets' },
     ],
+    alt: 'Category Ranking Rules',
   },
   {
     title: 'Search Ranking Rules',
@@ -29,6 +30,7 @@ const menuItems = [
       { href: '/search/rulesets', text: 'Ranking rules' },
       { href: '/search/redirects', text: 'Redirect' },
     ],
+    alt: 'Search Ranking Rules',
   },
   {
     title: 'Setup',
@@ -39,6 +41,7 @@ const menuItems = [
       { href: '/global/rulesets', text: 'Global Category Ranking' },
       { href: '/global/facets', text: 'Global Facet Management' },
     ],
+    alt: 'Setup',
   },
 ];
 

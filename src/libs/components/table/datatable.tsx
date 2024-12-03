@@ -8,10 +8,13 @@ import { format } from 'date-fns';
 import Image from 'next/image';
 
 import { Button } from '../buttons/button/button';
+import { Arrow } from '../dropdowns/dropdown.styles';
 import { Toggle } from '../toggle/toggle';
 import { Header3, Text } from '../typography/typography.styles';
+import { color } from '../utils/constants';
 import { formatCategoriesInfo } from '../utils/format-categories-info';
 import { mediaQuery } from '../utils/media-query';
+import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
 import {
   DropdownOptions,
@@ -21,7 +24,6 @@ import {
   TableContainer,
   TableDropdown,
   TableHeading,
-  TableOptionButton,
   TableRow,
 } from './table.styles';
 
@@ -192,6 +194,25 @@ const NoOverflowText = styled(Text)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const ArrowContainer = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: ${sizing(5)};
+  box-sizing: border-box;
+  cursor: pointer;
+  background-color: #f5f5f5;
+
+  &:hover,
+  &:active {
+    background-color: #e3e3e3;
+  }
+
+  border-radius: 0 4px 4px 0;
+  border: solid 1px ${color.accessibilityGrey};
 `;
 
 type Row = {
@@ -451,8 +472,7 @@ export const DataTable = ({
                     ref={dropdownWrapperRef}
                   >
                     <TableActionsButton href={url}>Edit</TableActionsButton>
-                    <TableOptionButton
-                      isOpen={isOptionDropdownOpen}
+                    <ArrowContainer
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           e.stopPropagation();
@@ -464,7 +484,9 @@ export const DataTable = ({
                         handleOptionToggle(id);
                       }}
                       title="More options"
-                    />
+                    >
+                      <Arrow isDropdownOpen={isOptionDropdownOpen} />
+                    </ArrowContainer>
                     {isOptionDropdownOpen && (
                       <DropdownOptions>
                         <TableDropdown

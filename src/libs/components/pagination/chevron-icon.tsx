@@ -8,8 +8,8 @@ type Props = React.DetailedHTMLProps<
   isEnabled: boolean;
 };
 
-const StyledAnimatedSvg = styled.svg`
-  cursor: pointer;
+const StyledAnimatedSvg = styled.svg<{ isEnabled: boolean }>`
+  cursor: ${({ isEnabled }) => (isEnabled ? 'pointer' : 'default')};
   user-select: none;
 `;
 
@@ -22,6 +22,7 @@ export const ChevronIcon = ({ type, isEnabled, ...props }: Props) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
+      isEnabled={isEnabled}
     >
       <rect width="32" height="32" rx="16" fill="#F1F1F1" />
       <path

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 import { Text } from '../typography/typography.styles';
+import { color } from '../utils/constants';
 import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
 
@@ -8,13 +9,12 @@ export const DropdownWrapper = styled.div<{
   isDropdownOpen: boolean;
   width?: number;
 }>`
-  border: 1px solid #b1b1b1;
-  border-radius: 4px;
   width: 346px;
   position: relative;
 
   ${({ isDropdownOpen }) => isDropdownOpen && 'border-radius: 4px 4px 0 0;'}
   ${({ width }) => width && `width: ${width}px;`}
+  ${({ width }) => width && `min-width: ${width}px;`}
 
   img {
     width: 24px;
@@ -25,19 +25,22 @@ export const DropdownWrapper = styled.div<{
 
 export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   align-items: center;
-  border: none;
   border-radius: 4px;
+  border: 1px solid #b1b1b1;
   display: flex;
   height: ${sizing(5)};
   justify-content: space-between;
   align-items: center;
   padding: 0;
   width: ${sizing('100%')};
-  box-sizing: content-box;
 
   ${({ isDropdownOpen }) =>
     isDropdownOpen &&
     'border-bottom: 1px solid #b1b1b1; border-radius: 4px 4px 0 0;'}
+
+  &:hover {
+    background-color: ${color.lightGrey};
+  }
 `;
 
 export const DropdownHeading = styled(Text)`
@@ -59,6 +62,7 @@ export const ArrowContainer = styled.div<{ borderLeft?: boolean }>`
   height: 100%;
   width: ${sizing(5)};
   box-sizing: border-box;
+  cursor: pointer;
 
   ${({ borderLeft }) => borderLeft && 'border-left: 1px solid #b1b1b1;'}
 `;
@@ -78,9 +82,8 @@ export const Arrow = styled.span<{ isDropdownOpen: boolean }>`
 export const DropdownContainer = styled.div<{ isDropdownOpen: boolean }>`
   position: absolute;
   top: 100%;
-  left: -1px;
+  width: 100%;
   display: none;
-  width: inherit;
   border: 1px solid #b1b1b1;
   border-top: none;
   background-color: #fff;

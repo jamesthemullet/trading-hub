@@ -7,7 +7,7 @@ import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
 import { spacing } from '../utils/spacing';
 import { labels } from './utils';
 
-const DropdownWrapper = styled.div`
+const DropdownWrapper = styled.div<{ isOperationDropdownOpen: boolean }>`
   margin-top: ${spacing(2)};
   margin-right: ${spacing(1)};
   margin-left: -${spacing(1)};
@@ -17,7 +17,10 @@ const DropdownWrapper = styled.div`
     &[aria-haspopup='listbox'] {
       background: none;
       border: solid 1px #000;
-      border-radius: 5px;
+      border-radius: ${({ isOperationDropdownOpen }) =>
+        isOperationDropdownOpen ? '4px 4px 0 0' : '4px'};
+      border-bottom: ${({ isOperationDropdownOpen }) =>
+        isOperationDropdownOpen ? 'none' : 'solid 1px #000'};
       text-transform: capitalize;
       height: 40px;
     }
@@ -55,7 +58,7 @@ export const OperationSelector = ({
 
   const label = labels[selectedOperation];
   return (
-    <DropdownWrapper>
+    <DropdownWrapper isOperationDropdownOpen={isOperationDropdownOpen}>
       <Dropdown
         label={label.text}
         icon={label.icon}

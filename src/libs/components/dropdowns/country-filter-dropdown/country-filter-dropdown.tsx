@@ -23,10 +23,6 @@ const DropdownWrapperNoBorder = styled(DropdownWrapper)`
     border: none;
     border-radius: 1px 1px 0 0;
   }
-
-  div {
-    border-left: none;
-  }
 `;
 
 export const CountryFilterDropdown = ({
@@ -106,7 +102,7 @@ export const CountryFilterDropdown = ({
         aria-expanded={isDropdownOpen}
       >
         <DropdownHeading>{dropdownHeading?.label}</DropdownHeading>
-        <ArrowContainer borderLeft={true}>
+        <ArrowContainer borderLeft={false}>
           <Arrow isDropdownOpen={isDropdownOpen} />
         </ArrowContainer>
       </DropdownButton>

@@ -27,10 +27,6 @@ const DropdownWrapperNoBorder = styled(DropdownWrapper)`
     border-radius: 1px 1px 0 0;
     min-height: 54px;
   }
-
-  div {
-    border-left: none;
-  }
 `;
 
 export const CountrySelectorDropdown = ({
@@ -125,7 +121,7 @@ export const CountrySelectorDropdown = ({
           ))}
           {dropdownHeading?.label}
         </DropdownHeading>
-        <ArrowContainer borderLeft={true}>
+        <ArrowContainer borderLeft={false}>
           <Arrow isDropdownOpen={isDropdownOpen} />
         </ArrowContainer>
       </DropdownButton>

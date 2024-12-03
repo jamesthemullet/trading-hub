@@ -43,8 +43,9 @@ const FilterDropdownButton = styled.button<Pick<FilterDropdownProps, 'isOpen'>>`
   justify-content: space-between;
   padding: 0 ${spacing(2)};
   width: ${sizing('100%')};
+
   &:hover {
-    background-color: ${color.grey};
+    background-color: ${color.lightGrey};
   }
 
   ${({ isOpen }) =>
@@ -58,7 +59,7 @@ const FilterDropdownButton = styled.button<Pick<FilterDropdownProps, 'isOpen'>>`
 
 const ArrowIcon = styled(Icon)`
   margin-right: ${spacing(-2)};
-  transition: 0.5s;
+  transition: 0.3s;
   isolation: isolate;
 `;
 

@@ -141,6 +141,7 @@ export const OrderArrowsContainer = styled.div`
   width: 100%;
   max-width: ${spacing(12)};
   margin-right: ${spacing(2)};
+  gap: ${spacing(1)};
 `;
 
 export const CountrySelectorWrapper = styled.div`
