@@ -101,13 +101,13 @@ jobs:
           existing_secret_display_name=$(az ad app show --id "${{ steps.check-app-exists.outputs.object-id }}" --query "[passwordCredentials]" | jq -c '.[][] | select( .displayName | contains("${{ steps.dynamic-env-name.outputs.dynamic-env-name }}")).displayName')
 
           if [[ $existing_secret_display_name == *"${{ steps.dynamic-env-name.outputs.dynamic-env-name }}"* ]]; then
-              echo "The secret for ${{ steps.dynamic-env-name.outputs.dynamic-env-name }} is already in the list"
-              exit 0
-          else
-              echo "Adding the secret for ${{ steps.dynamic-env-name.outputs.dynamic-env-name }} to the list"
-              new_password=$(az ad app credential reset --id "${{ steps.check-app-exists.outputs.object-id }}" --append --display-name "${{ steps.dynamic-env-name.outputs.dynamic-env-name }}" | jq -r '.password')
-              echo "new-password=$new_password" >> "$GITHUB_OUTPUT"
+              echo "The secret for ${{ steps.dynamic-env-name.outputs.dynamic-env-name }} is already in the list, recreating it..."
+              existing_secret_display_key_id=$(az ad app show --id "${{ steps.check-app-exists.outputs.object-id }}" --query "[passwordCredentials]" | jq -r '.[][] | select( .displayName | contains("${{ steps.dynamic-env-name.outputs.dynamic-env-name }}")).keyId')
+              az ad app credential delete --id "${{ steps.check-app-exists.outputs.object-id }}" --key-id $existing_secret_display_key_id
           fi
+
+          echo "Adding the secret for ${{ steps.dynamic-env-name.outputs.dynamic-env-name }} to the list"
+          new_password=$(az ad app credential reset --id "${{ steps.check-app-exists.outputs.object-id }}" --append --display-name "${{ steps.dynamic-env-name.outputs.dynamic-env-name }}" | jq -r '.password')
 
           secrets=$(echo '${{ toJSON(secrets) }}' | jq -c \
             --arg _NEXTAUTH_URL https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net/api/auth/ \
@@ -115,6 +115,8 @@ jobs:
             --arg _AZURE_AD_CLIENT_SECRET "$new_password" \
             --arg _AZURE_AD_TENANT_ID bd5c6713-7399-4b31-be79-78f2d078e543 \
             '. + {_NEXTAUTH_URL: $_NEXTAUTH_URL, _AZURE_AD_CLIENT_ID: $_AZURE_AD_CLIENT_ID, _AZURE_AD_CLIENT_SECRET: $_AZURE_AD_CLIENT_SECRET, _AZURE_AD_TENANT_ID: $_AZURE_AD_TENANT_ID }' )
+
+          echo "new-password=$new_password" >> "$GITHUB_OUTPUT"
           echo "secrets=$secrets" >> "$GITHUB_OUTPUT"
 
       - name: Inject uri to redirect uris if needed
