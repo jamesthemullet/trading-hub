@@ -9,10 +9,7 @@ import {
 } from '@/libs/hooks';
 import { useGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
-import {
-  attributeValuesMock,
-  globalFacetsListMock,
-} from '@/pages/api/search/mocks';
+import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import {
   mockUseRuleSetPreviewData,
   ruleSetId,
@@ -32,7 +29,7 @@ const updateRuleSet = {
 };
 const mockUseFacetsList = {
   isLoading: false,
-  facets: globalFacetsListMock.facets,
+  facets: facetsListMock.facets,
   error: '',
 };
 
@@ -374,7 +371,7 @@ describe('Category Facet Management Editing', () => {
   it('should change the order of rows', async () => {
     jest.mocked(useRuleSetDetail).mockImplementation(() => ({
       ...mockUseRuleSetPreviewData,
-      facets: globalFacetsListMock.facets,
+      facets: facetsListMock.facets,
       isLoading: false,
     }));
     const user = userEvent.setup({ delay: null });

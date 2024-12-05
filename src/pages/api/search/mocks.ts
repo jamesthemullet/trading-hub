@@ -89,7 +89,7 @@ export const buriesMock: BoostsBuries = {
   product: mockProducts,
 };
 
-export const globalFacetsListMock: BetaMerchandisingFacetListData = {
+export const facetsListMock: BetaMerchandisingFacetListData = {
   facets: [
     {
       displayValue: 'color',

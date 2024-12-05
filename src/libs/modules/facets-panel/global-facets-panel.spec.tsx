@@ -4,17 +4,14 @@ import userEvent from '@testing-library/user-event';
 
 import { ReturnedCategoryRuleSet } from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
-import {
-  attributeValuesMock,
-  globalFacetsListMock,
-} from '@/pages/api/search/mocks';
+import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import GlobalFacetsPanel from './global-facets-panel';
 
 const mockUseFacetsList = {
   isLoading: false,
-  facets: globalFacetsListMock.facets,
+  facets: facetsListMock.facets,
   error: '',
   onRefreshFacetList: jest.fn(),
 };

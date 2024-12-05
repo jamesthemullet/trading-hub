@@ -9,10 +9,7 @@ import {
   useGetFacetAttributeValues,
   usePreview,
 } from '@/libs/hooks';
-import {
-  attributeValuesMock,
-  globalFacetsListMock,
-} from '@/pages/api/search/mocks';
+import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -20,7 +17,7 @@ import CategoryFacetsPanel from './category-facets-panel';
 
 const mockUseFacetsList = {
   isLoading: false,
-  facets: globalFacetsListMock.facets,
+  facets: facetsListMock.facets,
   error: '',
 };
 

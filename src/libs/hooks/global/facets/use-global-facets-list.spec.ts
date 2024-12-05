@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { globalFacetsListMock } from '@/pages/api/search/mocks';
+import { facetsListMock } from '@/pages/api/search/mocks';
 
 import { useGlobalFacetsList } from './use-global-facets-list';
 
@@ -10,7 +10,7 @@ const baseUrl = 'http://localhost';
 
 const handlers = [
   http.get(`${baseUrl}/search/beta/merchandising/facet`, () => {
-    return HttpResponse.json(globalFacetsListMock, { status: 200 });
+    return HttpResponse.json(facetsListMock, { status: 200 });
   }),
 ];
 

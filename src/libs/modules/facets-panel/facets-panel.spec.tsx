@@ -7,10 +7,7 @@ import {
   useGetFacetAttributeValues,
   usePreview,
 } from '@/libs/hooks';
-import {
-  attributeValuesMock,
-  globalFacetsListMock,
-} from '@/pages/api/search/mocks';
+import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -201,12 +198,12 @@ const mockFacetsState: FacetRowDisplayValue[] = [
 ];
 
 const mockIncludedFacets = [
-  globalFacetsListMock.facets[0],
-  globalFacetsListMock.facets[2],
-  globalFacetsListMock.facets[3],
+  facetsListMock.facets[0],
+  facetsListMock.facets[2],
+  facetsListMock.facets[3],
 ];
 const mockExcludedFacets = {
-  facets: [{ id: globalFacetsListMock.facets[1].id }],
+  facets: [{ id: facetsListMock.facets[1].id }],
 };
 
 describe('Facet Panel', () => {

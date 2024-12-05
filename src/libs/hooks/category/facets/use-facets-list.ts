@@ -1,9 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { CountryCode, ReturnedGlobalFacet, search } from '@/libs/api';
+import {
+  BetaMerchandisingAttributesListParamsCatalogueEnum,
+  CountryCode,
+  ReturnedGlobalFacet,
+  search,
+} from '@/libs/api';
 import { convertCountryCodeToCatalogues } from '@/libs/components/utils/convert-country-code-to-catalogues';
 
-import { union, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 
 import { handleError } from '../../utils/error';
 
@@ -20,42 +25,69 @@ export const useFacetsList = ({
   const [facetsList, setFacetsList] = useState<ReturnedGlobalFacet[]>([]);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const requestData = async (categoryId?: string[]) => {
-      return await search().betaMerchandisingFacetList({
-        catalogue: convertCountryCodeToCatalogues(countryCode)[0],
-        categoryId,
+  const requestData = useCallback(
+    async (
+      categories: string[],
+      catalogue: BetaMerchandisingAttributesListParamsCatalogueEnum
+    ) => {
+      const categoriesToFetch = categories.map((categoryId) => {
+        switch (catalogue) {
+          case 'MANDSIE':
+            return categoryId.includes('IE_');
+          case 'MANDSUK':
+          default:
+            return !categoryId.includes('IE_');
+        }
       });
-    };
 
-    const asyncCall = async () => {
+      const results = await Promise.all(
+        categoriesToFetch.map(async (shouldFetch, index) => {
+          if (shouldFetch) {
+            const response = await search().betaMerchandisingFacetList({
+              catalogue,
+              categoryId: [categories[index]],
+            });
+
+            return response.data.facets;
+          }
+          return [];
+        })
+      );
+
+      return results.flat();
+    },
+    []
+  );
+
+  const asyncCall = useCallback(
+    async (categories: string[], country: CountryCode) => {
       try {
+        const catalogues = convertCountryCodeToCatalogues(country);
+
         const responses = await Promise.all(
-          categoryIds.map((categoryId) => requestData([categoryId]))
+          catalogues.map((catalogue) => requestData(categories, catalogue))
         );
 
-        const facetList = responses.reduce(
-          (acc: ReturnedGlobalFacet[], response) => {
-            return [...acc, ...response.data.facets];
-          },
-          []
-        );
-
-        const dedupedList = uniqBy(union(facetList), 'id');
+        const dedupedList = uniqBy(responses.flat(), 'displayValue');
 
         setFacetsList(dedupedList);
       } catch (error) {
+        setFacetsList([]);
         setError(handleError(error));
       } finally {
         setIsLoading(false);
       }
-    };
+    },
+    [requestData]
+  );
 
+  useEffect(() => {
     if (enabled && categoryIds.length !== 0) {
       setIsLoading(true);
-      void asyncCall();
+      void asyncCall(categoryIds, countryCode);
     }
-  }, [categoryIds, countryCode, enabled]);
+    return () => {};
+  }, [categoryIds, countryCode, enabled, asyncCall]);
 
   return {
     facets: facetsList,

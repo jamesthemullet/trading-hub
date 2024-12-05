@@ -2,7 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { globalFacetsListMock } from '@/pages/api/search/mocks';
+import { facetsListMock } from '@/pages/api/search/mocks';
 
 import { useGetFacetsById } from './use-get-facet-by-id';
 
@@ -10,7 +10,7 @@ const baseUrl = 'http://localhost';
 
 const handlers = [
   http.get(`${baseUrl}/search/beta/merchandising/facet/color-id`, () => {
-    return HttpResponse.json(globalFacetsListMock.facets[0], { status: 200 });
+    return HttpResponse.json(facetsListMock.facets[0], { status: 200 });
   }),
 ];
 
@@ -36,7 +36,7 @@ describe('useGetFacetsById', () => {
 
     await waitFor(() => {
       expect(result.current).toEqual({
-        facet: globalFacetsListMock.facets[0],
+        facet: facetsListMock.facets[0],
         error: '',
       });
     });

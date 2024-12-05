@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useGetCategories, useRuleSetCreate } from '@/libs/hooks';
-import { globalFacetsListMock } from '@/pages/api/search/mocks';
+import { facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import NewFacetRuleset from './index.page';
@@ -17,7 +17,7 @@ const categoryPath2 = 'l/women/dresses';
 
 const mockUseFacetsList = {
   isLoading: false,
-  facets: globalFacetsListMock.facets,
+  facets: facetsListMock.facets,
   error: '',
 };
 

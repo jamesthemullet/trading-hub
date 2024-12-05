@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import { globalFacetsListMock } from '@/pages/api/search/mocks';
+import { facetsListMock } from '@/pages/api/search/mocks';
 
 import { useFacetsRowsSelector } from './use-facets-panel-rows-selector';
 
@@ -16,7 +16,7 @@ describe('useFacetsRowsSelector', () => {
           excludedFacets: ['b04eaac3-f4ea-4f21-9459-0b4302dc2a87'],
           countryCode: 'UK_IE',
         },
-        globalFacetsListMock.facets
+        facetsListMock.facets
       )
     );
 

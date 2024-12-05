@@ -8,7 +8,7 @@ import {
   useGlobalRuleSetDetail,
   useRuleSet,
 } from '@/libs/hooks';
-import { globalFacetsListMock } from '@/pages/api/search/mocks';
+import { facetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 
 import { GetServerSidePropsContext } from 'next';
@@ -90,7 +90,7 @@ describe('Global Facet Management Editing', () => {
     });
     jest.mocked(useGlobalFacetsList).mockReturnValue({
       isLoading: false,
-      facets: globalFacetsListMock.facets,
+      facets: facetsListMock.facets,
       error: '',
       onRefreshFacetList: jest.fn(),
     });
