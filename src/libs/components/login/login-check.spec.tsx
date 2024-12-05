@@ -1,3 +1,5 @@
+import { act } from 'react';
+
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { signIn, useSession } from 'next-auth/react';
@@ -10,6 +12,7 @@ jest.mock('next-auth/react', () => ({
   signIn: jest.fn(),
   signOut: jest.fn(),
 }));
+jest.useFakeTimers();
 
 describe('Login check', () => {
   afterEach(() => {
@@ -38,5 +41,43 @@ describe('Login check', () => {
     renderWithProviders(<LoginCheck />);
 
     expect(signIn).not.toHaveBeenCalled();
+  });
+
+  it('should update session at regular intervals', () => {
+    const mockUpdate = jest.fn();
+
+    jest.mocked(useSession).mockReturnValue({
+      data: null,
+      status: 'unauthenticated',
+      update: mockUpdate,
+    });
+
+    renderWithProviders(<LoginCheck />);
+
+    expect(mockUpdate).not.toHaveBeenCalled();
+
+    jest.runOnlyPendingTimers();
+
+    expect(mockUpdate).toHaveBeenCalled();
+  });
+
+  it('should update session at visibility change', () => {
+    const mockUpdate = jest.fn();
+
+    jest.mocked(useSession).mockReturnValue({
+      data: null,
+      status: 'unauthenticated',
+      update: mockUpdate,
+    });
+
+    renderWithProviders(<LoginCheck />);
+
+    expect(mockUpdate).not.toHaveBeenCalled();
+
+    act(() => {
+      window.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    expect(mockUpdate).toHaveBeenCalled();
   });
 });
