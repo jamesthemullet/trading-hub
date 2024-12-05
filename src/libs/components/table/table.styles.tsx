@@ -35,8 +35,8 @@ export const FacetAttributeValuesTableRow = styled(
   TableRow
 )<FacetAttributeValuesTableRowProps>`
   grid-template-columns:
-    24px minmax(auto, 340px) minmax(auto, 340px) minmax(50px, auto)
-    200px;
+    24px minmax(auto, 340px) minmax(auto, 340px) minmax(100px, auto)
+    230px;
   border-bottom: none;
   align-items: center;
   margin-bottom: ${spacing(2)};
