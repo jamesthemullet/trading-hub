@@ -153,10 +153,13 @@ class RootDocument extends Document<MerchHubInitialProps> {
     const initialProps = await Document.getInitialProps(ctx);
 
     await checkNewRelicConnection();
-    const browserTimingHeader = newrelic.getBrowserTimingHeader({
-      hasToRemoveScriptWrapper: true,
-      allowTransactionlessInjection: true,
-    });
+    const browserTimingHeader =
+      process.env.NEW_RELIC_ENABLED === 'true'
+        ? newrelic.getBrowserTimingHeader({
+            hasToRemoveScriptWrapper: true,
+            allowTransactionlessInjection: true,
+          })
+        : '';
 
     logger.info('Trading Hub Loaded', {
       application: 'Trading Hub',

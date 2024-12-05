@@ -32,6 +32,7 @@ describe('<RootDocument />', () => {
     jest.clearAllMocks();
     process.env['NEW_RELIC_APP_NAME'] = 'app-name';
     process.env['NEW_RELIC_LICENSE_KEY'] = 'license-key';
+    process.env['NEW_RELIC_ENABLED'] = 'true';
   });
 
   it('should call getInitialProps without errors', async () => {
@@ -106,5 +107,23 @@ describe('<RootDocument />', () => {
     expect(mockedLogger.warn).toHaveBeenCalledWith(
       'missing new relic env vars'
     );
+  });
+
+  it('should not initialise new relic if NEW_RELIC_ENABLED is false', async () => {
+    process.env['NEW_RELIC_ENABLED'] = 'false';
+
+    const ctx = {
+      renderPage: jest.fn(),
+      pathname: '/test',
+      defaultGetInitialProps: jest.fn().mockResolvedValue({
+        html: '',
+        head: [],
+        styles: [],
+      }),
+    };
+
+    await RootDocument.getInitialProps(ctx as any);
+
+    expect(mockedNewrelic.getBrowserTimingHeader).not.toHaveBeenCalled();
   });
 });
