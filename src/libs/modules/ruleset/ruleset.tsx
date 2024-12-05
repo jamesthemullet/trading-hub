@@ -50,21 +50,14 @@ const CategoryPanel = styled.div<{
   padding: ${spacing(1)};
   ${({ rulesetType }) => css`
     display: grid;
-    grid-template-areas:
-      'countryCode rulesetIdentifier'
-      'duration duration';
     grid-template-columns: 240px auto;
     @media only screen and (min-width: 1200px) {
-      grid-template-areas:
-        'countryCode'
-        'rulesetIdentifier'
-        'duration';
       ${rulesetType === 'global' &&
       /* istanbul ignore next */
       'grid-template-columns: 240px 490px 320px'};
       ${rulesetType === 'search' &&
       /* istanbul ignore next */
-      'grid-template-columns: 240px 490px 320px'};
+      'grid-template-columns: 240px 510px 320px'};
       ${rulesetType === 'category' &&
       'grid-template-columns: 240px 730px 320px'};
     }
@@ -72,7 +65,6 @@ const CategoryPanel = styled.div<{
 `;
 
 const RulesetIdentifier = styled.div`
-  grid-area: 'rulesetIdentifier';
   margin-right: ${spacing(2)};
 `;
 
@@ -157,7 +149,6 @@ const GlobalInfoWrapper = styled.div`
 const InfluenceWrapper = styled.div`
   margin-right: ${spacing(2)};
   width: 220px;
-  grid-area: 'countryCode';
 `;
 
 const InfluenceLabel = styled(Text)`
@@ -169,7 +160,6 @@ const Duration = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacing(1)};
-  grid-area: 'duration';
 
   label {
     margin-top: ${spacing(0.5)};

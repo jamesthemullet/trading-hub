@@ -56,7 +56,7 @@ export const SearchWrapper = styled.div<{
   background-color: ${color.backgroundGrey};
   display: flex;
   border-bottom: 1px solid ${color.lightGrey};
-  min-width: ${({ hasModal }) => (hasModal ? '600px' : '620px')};
+  min-width: ${({ hasModal }) => (hasModal ? '600px' : '710px')};
   & div {
     border-bottom: none;
   }
@@ -102,7 +102,7 @@ export const StyledIcon = styled(Icon)`
 `;
 
 export const ViewAllButton = styled(Button)`
-  width: 100px;
+  width: 110px;
   margin-top: ${spacing(1)};
   margin-left: ${spacing(1)};
 `;
