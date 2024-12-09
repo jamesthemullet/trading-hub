@@ -85,6 +85,9 @@ const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
     session: sessionCallback,
   },
   secret: envSettings.nextAuthSecret,
+  pages: {
+    error: '/error?source=auth',
+  },
 });
 
 const auth = (req: NextApiRequest, res: NextApiResponse) => {
