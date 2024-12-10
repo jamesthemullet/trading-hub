@@ -43,6 +43,8 @@ import pluralize from 'pluralize';
 
 import { rulesetReducer } from './reducer';
 
+const MAX_PINNED_PRODUCTS_ALLOWED = 100;
+
 const CategoryPanel = styled.div<{
   rulesetType: 'global' | 'category' | 'search';
 }>`
@@ -451,8 +453,12 @@ export const Ruleset = ({
 
       <ProductGridHeader
         canSave={
-          !!selectedCategories.length ||
-          !!rulesetSearchTerms.length ||
+          (!!selectedCategories.length &&
+            merchandisingRules.pinnedProducts.length <=
+              MAX_PINNED_PRODUCTS_ALLOWED) ||
+          (!!rulesetSearchTerms.length &&
+            merchandisingRules.pinnedProducts.length <=
+              MAX_PINNED_PRODUCTS_ALLOWED) ||
           rulesetType === 'global'
         }
         onSave={() => {
@@ -559,6 +565,12 @@ export const Ruleset = ({
       </CategoryPanel>
       {duplicationError && (
         <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
+      )}
+      {merchandisingRules.pinnedProducts.length >
+        MAX_PINNED_PRODUCTS_ALLOWED && (
+        <ErrorMessage style={{ padding: 0 }}>
+          Error: Please only pin 100 or fewer products
+        </ErrorMessage>
       )}
 
       <MainContainerPanel>

@@ -1546,7 +1546,6 @@ describe('Ruleset', () => {
         />
       );
 
-      // expect to see 1 product in the visual editor
       expect(screen.getByLabelText('Position 1')).toBeVisible();
       expect(screen.queryByLabelText('Position 2')).not.toBeInTheDocument();
 

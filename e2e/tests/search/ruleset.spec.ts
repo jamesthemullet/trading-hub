@@ -1,4 +1,3 @@
-/* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable testing-library/prefer-screen-queries */
 import { expect, test } from '@playwright/test';
 

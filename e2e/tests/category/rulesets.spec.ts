@@ -1,4 +1,3 @@
-/* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable testing-library/prefer-screen-queries */
 import { ReturnedCategoryRuleSets } from '@/libs/api';
 
@@ -51,6 +50,22 @@ test.describe('Category rulesets', () => {
       '*/**/api/search/beta/merchandising/category/ruleset/5e1002e8-bb08-4215-b26f-b5f6814b010a',
       async (route) => {
         const json = mockCategoryRuleset;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      '*/**/api/search/beta/merchandising/category/ruleset/5e1002e8-bb08-4215-b26f-b5f6814b010b',
+      async (route) => {
+        const json = {
+          ...mockCategoryRuleset,
+          rules: {
+            ...mockCategoryRuleset.rules,
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            pinnedProducts: [...Array(100).keys()].map((val) => ({
+              id: `${val + 1000}`,
+            })),
+          },
+        };
         await route.fulfill({ status: 200, json });
       }
     );
@@ -307,6 +322,46 @@ test.describe('Category rulesets', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(page.getByRole('button', { name: 'Changes12' })).toBeVisible();
+  });
+
+  test('disallow pinning more than 100 products', async ({ page }) => {
+    await page.goto(
+      '/category/rulesets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010b'
+    );
+
+    await page.waitForLoadState('networkidle');
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Changes100' })
+    ).toBeVisible();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByPlaceholder('Search for product').fill('dress');
+    await page.waitForLoadState('networkidle');
+
+    await page
+      .getByLabel('Position 1')
+      .first()
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Pin in position' }).click();
+    await page.getByPlaceholder('i.e. 3').fill('1');
+    await page
+      .getByLabel('Position 1')
+      .first()
+      .getByRole('button', { name: 'Confirm' })
+      .click();
+
+    const saveButton = page.getByRole('button', { name: 'Save' });
+
+    await expect(
+      page.getByText('Error: Please only pin 100 or fewer products')
+    ).toBeVisible();
+
+    expect(saveButton.isDisabled()).toBeTruthy();
   });
 
   test('pin/block/bury/boost from search', async ({ page }) => {
