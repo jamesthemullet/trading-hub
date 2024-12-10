@@ -36,7 +36,7 @@ jobs:
       NEW_RELIC_APP_NAME: ${{ secrets._NEW_RELIC_APP_NAME }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install dependencies
@@ -51,3 +51,20 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      - name: Report results to New Relic
+        if: ${{ always() }}
+        run: |
+          set -e
+          TEST_RESULTS=$(cat test-results.json | jq '.stats') # Extract relevant test stats
+          curl -X POST "https://insights-collector.newrelic.com/v1/accounts/${{ secrets.NEW_RELIC_ACCOUNT_ID }}/events" \
+            -H "X-Insert-Key: $NEW_RELIC_LICENSE_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "TradingHubSmokeTestResults",
+              "appName": "$NEW_RELIC_APP_NAME",
+              "totalTests": "$(echo $TEST_RESULTS | jq '.totalTests')",
+              "passed": "$(echo $TEST_RESULTS | jq '.passed')",
+              "failed": "$(echo $TEST_RESULTS | jq '.failed')",
+              "duration": "$(echo $TEST_RESULTS | jq '.duration')",
+              "timestamp": "$(date +%s)"
+            }'
