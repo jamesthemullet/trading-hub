@@ -405,31 +405,6 @@ describe('Facet Panel', () => {
     });
   });
 
-  it('should block order change when search is present', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(
-      <FacetsPanel
-        title="Facet Rule Editor"
-        facetType="category"
-        countryCode="UK"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        displayRowOrderControls={true}
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-      />
-    );
-
-    await user.click(
-      screen.getByRole('button', { name: 'Move color row down' })
-    );
-  });
-
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
     const user = userEvent.setup({ delay: null });
 
