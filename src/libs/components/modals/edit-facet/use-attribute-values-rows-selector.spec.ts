@@ -110,6 +110,69 @@ describe('useAttributeValuesRowsSelector', () => {
     ]);
   });
 
+  it('should return filtered attribute values', () => {
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      ...useGetFacetAttributeValuesReturnValueMock,
+      attributeValues: [
+        {
+          displayValue: 'green',
+        },
+        {
+          displayValue: 'greeen',
+        },
+      ],
+      pagination: {
+        totalItems: 2,
+      },
+    });
+    const { result } = renderHook(() =>
+      useAttributeValuesRowsSelector(
+        {
+          ...{
+            ...mockReturnedGlobalFacetState,
+            boosted: ['green', 'lime', 'blue'],
+            excludedValues: ['greeen', 'red'],
+          },
+          merged: [
+            {
+              displayValue: 'navy',
+              mergedValues: ['blue'],
+            },
+            {
+              displayValue: 'emerald',
+              mergedValues: ['green', 'lime'],
+            },
+          ],
+        },
+        'ee'
+      )
+    );
+
+    expect(result.current.attributeValuesState).toEqual([
+      {
+        displayType: 'boosted',
+        displayValue: 'emerald',
+        id: 'green',
+        mergeType: 'merged',
+        mergedValues: ['green', 'lime'],
+        meta: {
+          isBeginningOfDisplayTypeGroup: true,
+          isEndOfDisplayTypeGroup: true,
+        },
+      },
+      {
+        displayType: 'excluded',
+        displayValue: 'greeen',
+        id: 'greeen',
+        mergeType: 'unmerged',
+        meta: {
+          isBeginningOfDisplayTypeGroup: true,
+          isEndOfDisplayTypeGroup: true,
+        },
+      },
+    ]);
+  });
+
   it('should work with boosted and excludedValues being undefined', () => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       ...useGetFacetAttributeValuesReturnValueMock,

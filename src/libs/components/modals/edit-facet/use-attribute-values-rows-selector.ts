@@ -117,9 +117,32 @@ export const useAttributeValuesRowsSelector = (
       };
     };
 
+    const inSearchQuery = (row: AttributeRowDisplayValue) => {
+      if (!searchQuery) {
+        return true;
+      }
+
+      if (row.mergeType === 'merged') {
+        if (
+          row.mergedValues.some((val) =>
+            val.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        ) {
+          return true;
+        }
+      }
+
+      if (row.displayValue.toLowerCase().includes(searchQuery.toLowerCase())) {
+        return true;
+      }
+
+      return false;
+    };
+
     const boostedResult = boostedAttributeValues
       .map(mapper('boosted'))
       .filter(truthy)
+      .filter(inSearchQuery)
       .map(beginningAndEndMapper);
 
     const defaultResult = defaultAttributeValues
@@ -130,6 +153,7 @@ export const useAttributeValuesRowsSelector = (
     const excludedResult = excludedAttributeValues
       .map(mapper('excluded'))
       .filter(truthy)
+      .filter(inSearchQuery)
       .map(beginningAndEndMapper);
 
     const rows: AttributeRowDisplayValue[] = [
@@ -138,7 +162,7 @@ export const useAttributeValuesRowsSelector = (
       ...excludedResult,
     ];
     return rows;
-  }, [attributeValues, facet]);
+  }, [attributeValues, searchQuery, facet]);
 
   return {
     attributeValuesState,
