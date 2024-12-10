@@ -56,7 +56,10 @@ jobs:
         run: |
           set -e
           TEST_RESULTS=$(cat test-results.json | jq '.stats') # Extract relevant test stats
-          curl -X POST "https://insights-collector.newrelic.com/v1/accounts/${{ secrets.NEW_RELIC_ACCOUNT_ID }}/events" \
+          NEW_RELIC_APP_NAME="${{ secrets.NEW_RELIC_APP_NAME }}"
+          NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
+          NEW_RELIC_ACCOUNT_ID="${{ secrets.NEW_RELIC_ACCOUNT_ID }}"
+          curl -X POST "https://insights-collector.newrelic.com/v1/accounts/$NEW_RELIC_ACCOUNT_ID/events" \
             -H "X-Insert-Key: $NEW_RELIC_LICENSE_KEY" \
             -H "Content-Type: application/json" \
             -d '{
