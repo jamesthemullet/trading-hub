@@ -590,8 +590,13 @@ export const Ruleset = ({
               {currentProductTab === 1 && (
                 <RulesetAttributes
                   merchandisingRules={merchandisingRules}
-                  category={selectedCategories[0]}
-                  countryCode={countryCode || 'UK_IE'}
+                  categories={selectedCategories}
+                  countryCode={
+                    ruleset.countryCode ||
+                    // reducer always sets a country code but optional in api
+                    // istanbul ignore next
+                    'UK_IE'
+                  }
                   dispatch={dispatch}
                   searchTerms={rulesetSearchTerms}
                 />

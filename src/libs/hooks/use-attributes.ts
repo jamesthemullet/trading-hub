@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
 
-import { union, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 
 import { AttributesResponse, AttributeType, CountryCode, search } from '../api';
-import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
+import {
+  convertCategoryIdToCatalogue,
+  convertCountryCodeToCatalogues,
+} from '../components/utils/convert-country-code-to-catalogues';
 
 type Props = {
-  category?: string;
-  searchTerms?: string[];
-  type?: AttributeType;
   countryCode: CountryCode;
+  type: AttributeType;
+  categories?: string[];
+  searchTerms?: string[];
 };
 
 export const useAttributes = ({
-  category,
+  categories,
   countryCode,
   searchTerms,
   type,
@@ -27,30 +30,39 @@ export const useAttributes = ({
     const asyncCall = async () => {
       try {
         setFetchError('');
-        const catalogues = convertCountryCodeToCatalogues(countryCode);
 
-        const promises = catalogues.map((catalogue) =>
-          search()
-            .betaMerchandisingAttributesList({
-              ...(category && { categoryId: category }),
-              ...(searchTerms && { searchTerms }),
-              type,
-              catalogue,
-            })
-            .then((response) => response.data.attributes)
-        );
+        const catalogues = convertCountryCodeToCatalogues(countryCode);
+        const promises = categories?.length
+          ? categories.map((categoryId) =>
+              search()
+                .betaMerchandisingAttributesList({
+                  categoryId,
+                  type,
+                  catalogue: convertCategoryIdToCatalogue(categoryId),
+                })
+                .then((response) => response.data.attributes)
+            )
+          : catalogues.map((catalogue) =>
+              search()
+                .betaMerchandisingAttributesList({
+                  searchTerm: searchTerms,
+                  type,
+                  catalogue,
+                })
+                .then((response) => response.data.attributes)
+            );
 
         const results = await Promise.all(promises);
 
-        const res = uniqBy(union(results), 'name');
-        setAttributes(res[0]);
+        const res = uniqBy(results.flat(), 'name');
+        setAttributes(res);
       } catch (err) {
         setFetchError(`Error: ${err}`);
       }
     };
 
     void asyncCall();
-  }, [category, countryCode, searchTerms, type]);
+  }, [categories, countryCode, searchTerms, type]);
 
   return { attributes, fetchError };
 };

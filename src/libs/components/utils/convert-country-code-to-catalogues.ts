@@ -15,3 +15,8 @@ export const convertCountryCodeToCatalogues = (
       return ['MANDSUK', 'MANDSIE'];
   }
 };
+
+export const convertCategoryIdToCatalogue = (
+  categoryId: string
+): BetaMerchandisingAttributesListParamsCatalogueEnum =>
+  categoryId.includes('IE_') ? 'MANDSIE' : 'MANDSUK';

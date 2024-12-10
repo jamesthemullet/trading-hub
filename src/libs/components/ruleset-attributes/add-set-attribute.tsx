@@ -9,7 +9,7 @@ type Props = {
   onCancel: () => void;
   onSelect: (attribute: RulesetAttribute) => void;
   countryCode: CountryCode;
-  category?: string;
+  categories?: string[];
   searchTerms?: string[];
 };
 
@@ -17,12 +17,12 @@ export const AddSetAttribute = ({
   onCancel,
   onSelect,
   countryCode,
-  category,
+  categories,
   searchTerms,
 }: Props) => {
   const { attributes: numericAttributes, fetchError: numericAttributesError } =
     useAttributes({
-      category,
+      categories,
       searchTerms,
       type: 'numeric',
       countryCode,
@@ -31,7 +31,7 @@ export const AddSetAttribute = ({
     attributes: alphanumericAttributes,
     fetchError: alphanumericAttributesError,
   } = useAttributes({
-    category,
+    categories,
     searchTerms,
     type: 'alphanumeric',
     countryCode,

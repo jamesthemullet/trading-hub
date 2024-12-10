@@ -50,7 +50,7 @@ const RuleSetAttributesContainer = styled.div`
 
 export type Props = {
   countryCode: CountryCode;
-  category?: string;
+  categories?: string[];
   searchTerms?: string[];
   merchandisingRules: MerchandisingRules;
   dispatch: Dispatch<Action>;
@@ -58,7 +58,7 @@ export type Props = {
 
 export const RulesetAttributes = ({
   countryCode,
-  category,
+  categories,
   merchandisingRules,
   dispatch,
   searchTerms,
@@ -329,7 +329,7 @@ export const RulesetAttributes = ({
         <Modal.Content>
           <Modal.Body>
             <AddSetAttribute
-              category={category}
+              categories={categories}
               countryCode={countryCode}
               searchTerms={searchTerms}
               onCancel={() => {

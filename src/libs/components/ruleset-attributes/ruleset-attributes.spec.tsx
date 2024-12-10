@@ -95,7 +95,7 @@ describe('RulesetAttributes', () => {
     renderWithProviders(
       <RulesetAttributes
         {...mockProps}
-        category="TestCategory"
+        categories={['SubCategory_429']}
         dispatch={mockDispatch}
       />
     );
@@ -558,7 +558,7 @@ describe('RulesetAttributes', () => {
       renderWithProviders(
         <RulesetAttributes
           {...mockProps}
-          category="TestCategory"
+          categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />
       );
@@ -653,7 +653,7 @@ describe('RulesetAttributes', () => {
       renderWithProviders(
         <RulesetAttributes
           {...mockProps}
-          category="TestCategory"
+          categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />
       );
@@ -927,7 +927,7 @@ describe('RulesetAttributes', () => {
             ...mockRules,
             includes: { alphanumeric: [mock] },
           }}
-          category="TestCategory"
+          categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />
       );
@@ -967,7 +967,7 @@ describe('RulesetAttributes', () => {
             ...mockRules,
             excludes: { alphanumeric: [mock] },
           }}
-          category="TestCategory"
+          categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />
       );

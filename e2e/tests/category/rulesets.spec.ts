@@ -61,28 +61,28 @@ test.describe('Category rulesets', () => {
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/attributes?categoryId=SubCategory_2933925&&type=numeric&catalogue=MANDSUK',
+      '*/**/api/search/beta/merchandising/attributes?categoryId=SubCategory_2933925&type=numeric&catalogue=MANDSUK',
       async (route) => {
         const json = mockCategoryNumericAttributes;
         await route.fulfill({ status: 200, json });
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/attributes?categoryId=SubCategory_2933925&&type=alphanumeric&catalogue=MANDSUK',
+      '*/**/api/search/beta/merchandising/attributes?categoryId=SubCategory_2933925&type=alphanumeric&catalogue=MANDSUK',
       async (route) => {
         const json = mockCategoryAlphanumericAttributes;
         await route.fulfill({ status: 200, json });
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/attributes?categoryId=SubCategory_2933925&&type=numeric&catalogue=MANDSIE',
+      '*/**/api/search/beta/merchandising/attributes?categoryId=IE_SubCategory_19025005&type=numeric&catalogue=MANDSIE',
       async (route) => {
         const json = mockCategoryNumericAttributes;
         await route.fulfill({ status: 200, json });
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/attributes?categoryId=SubCategory_2933925&&type=alphanumeric&catalogue=MANDSIE',
+      '*/**/api/search/beta/merchandising/attributes?categoryId=IE_SubCategory_19025005&type=alphanumeric&catalogue=MANDSIE',
       async (route) => {
         const json = mockCategoryAlphanumericAttributes;
         await route.fulfill({ status: 200, json });

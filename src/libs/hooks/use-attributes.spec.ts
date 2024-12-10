@@ -92,9 +92,9 @@ describe('use-attributes', () => {
 
   describe('useAttributes', () => {
     it('should return attributes', async () => {
-      const category = 'TestCategory';
+      const categories = ['SubCategory_429'];
       const { result } = renderHook(() =>
-        useAttributes({ category, countryCode: 'UK' })
+        useAttributes({ categories, countryCode: 'UK', type: 'alphanumeric' })
       );
       await waitFor(() => {
         expect(result.current.attributes).toEqual(mockedResponse.attributes);
@@ -104,17 +104,17 @@ describe('use-attributes', () => {
     it('should accept search terms', async () => {
       const searchTerms = ['foo', 'bar'];
       const { result } = renderHook(() =>
-        useAttributes({ searchTerms, countryCode: 'UK' })
+        useAttributes({ searchTerms, countryCode: 'UK', type: 'alphanumeric' })
       );
       await waitFor(() => {
         expect(result.current.attributes).toEqual(mockedResponse.attributes);
       });
     });
 
-    it('should return empty attributes when category is not provided', async () => {
-      const category = undefined;
+    it('should return empty attributes when categories is not provided', async () => {
+      const categories = undefined;
       const { result } = renderHook(() =>
-        useAttributes({ category, countryCode: 'UK' })
+        useAttributes({ categories, countryCode: 'UK', type: 'alphanumeric' })
       );
       await waitFor(() => {
         expect(result.current.attributes).toEqual([]);
@@ -122,9 +122,13 @@ describe('use-attributes', () => {
     });
 
     it('should combine UK and IE attributes', async () => {
-      const category = 'TestCategory';
+      const categories = ['SubCategory_429', 'IE_SubCategory_789'];
       const { result, rerender } = renderHook(() =>
-        useAttributes({ category, countryCode: 'UK_IE' })
+        useAttributes({
+          categories,
+          countryCode: 'UK_IE',
+          type: 'alphanumeric',
+        })
       );
       await Promise.resolve();
 
@@ -134,14 +138,16 @@ describe('use-attributes', () => {
 
       rerender();
 
-      expect(result.current.attributes.length).toEqual(5);
+      expect(result.current.attributes.length).toEqual(6);
+      expect(result.current.attributes[0].name).toBe('Colour');
+      expect(result.current.attributes[5].name).toBe('styles');
     });
 
     it('should return errors when api fails', async () => {
-      const category = undefined;
+      const categories = undefined;
       server.close();
       const { result } = renderHook(() =>
-        useAttributes({ category, countryCode: 'UK' })
+        useAttributes({ categories, countryCode: 'UK', type: 'alphanumeric' })
       );
       await waitFor(() => {
         expect(result.current.fetchError).toEqual(
