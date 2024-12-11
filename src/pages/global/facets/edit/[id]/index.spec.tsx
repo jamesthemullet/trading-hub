@@ -569,17 +569,15 @@ describe('Global Facet Management Editing', () => {
       screen.queryByLabelText('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
-      const includeOnlyOption = screen.getAllByText('Include only')[1];
+    const includeOnlyOption = screen.getAllByText('Include only')[1];
 
+    act(() => {
       user.click(includeOnlyOption);
     });
 
-    await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as included')
-      ).toBeVisible();
-    });
+    expect(
+      screen.getByLabelText('Row showing color as included')
+    ).toBeVisible();
 
     expect(
       screen.queryByLabelText('Row showing color as excluded')
