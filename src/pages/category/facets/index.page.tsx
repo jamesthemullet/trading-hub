@@ -32,6 +32,7 @@ import {
 } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import Head from 'next/head';
 import Link from 'next/link';
 
 const FacetManagementPage = () => {
@@ -194,6 +195,9 @@ const FacetManagementPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Category Facet Management</title>
+      </Head>
       <Heading
         breadcrumbs={[
           'Search & Merchandising',

@@ -7,6 +7,7 @@ import CategoryFacetsPanel from '@/libs/modules/facets-panel/category-facets-pan
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 
 export const getServerSideProps: GetServerSideProps = (
   context: GetServerSidePropsContext
@@ -66,6 +67,9 @@ const Page = ({ id }: { id: string }) => {
 
   return (
     <>
+      <Head>
+        <title>{`Merchandising Hub | M&S | Edit Category Ruleset Facets`}</title>
+      </Head>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
 
       {getRulesetDetailError && (

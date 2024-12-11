@@ -207,7 +207,7 @@ export const Dropdown = ({
         <ButtonText as="span" color={'#000'}>
           {icon && (
             <>
-              <LabelIcon src={`/trading-hub/asset/${icon}.svg`} />{' '}
+              <LabelIcon src={`/trading-hub/asset/${icon}.svg`} alt="" />{' '}
             </>
           )}
           {label}

@@ -223,6 +223,9 @@ export const Preview = ({
       centered
       padding={0}
       size="90vw"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Preview modal"
     >
       <Modal.Overlay blur={3} />
       <Modal.Content>

@@ -6,6 +6,7 @@ import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 
 type PageProps = {
   id: string;
@@ -40,6 +41,9 @@ const Page = ({ id }: PageProps) => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Edit search ranking rule</title>
+      </Head>
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
       />

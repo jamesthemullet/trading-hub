@@ -23,6 +23,7 @@ import {
 } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import Head from 'next/head';
 import Link from 'next/link';
 
 const RedirectRuleSets = () => {
@@ -143,6 +144,9 @@ const RedirectRuleSets = () => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Keyword Redirect</title>
+      </Head>
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Redirects']}
       />

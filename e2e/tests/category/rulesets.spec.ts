@@ -444,7 +444,7 @@ test.describe('Category rulesets', () => {
 
     await page.evaluate(() => {
       const productsPanel = document.querySelector(
-        '[aria-label="Product Search Result"]'
+        '[data-testid="product-search-result"]'
       );
       if (productsPanel) {
         productsPanel.scrollBy({
@@ -467,7 +467,7 @@ test.describe('Category rulesets', () => {
 
     await page.evaluate(() => {
       const productsPanel = document.querySelector(
-        '[aria-label="Product Search Result"]'
+        '[data-testid="product-search-result"]'
       );
       if (productsPanel) {
         productsPanel.scrollBy({

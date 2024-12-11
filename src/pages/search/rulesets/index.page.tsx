@@ -22,6 +22,7 @@ import {
 } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import Head from 'next/head';
 import Link from 'next/link';
 
 const SearchRuleSets = () => {
@@ -160,6 +161,9 @@ const SearchRuleSets = () => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Search ranking rules</title>
+      </Head>
       <Heading
         breadcrumbs={[
           'Search & Merchandising',
@@ -167,7 +171,6 @@ const SearchRuleSets = () => {
           'Search ranking rules',
         ]}
       />
-
       <PageNameLabel>Search ranking rules</PageNameLabel>
       <PageWrapper>
         <ToolsContainer>

@@ -33,7 +33,15 @@ type Props = {
 
 export const ModalUnsavedChanges = ({ onClose, onContinue }: Props) => {
   return (
-    <Modal.Root opened={true} onClose={onContinue} centered padding={10}>
+    <Modal.Root
+      opened={true}
+      onClose={onContinue}
+      centered
+      padding={10}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Unsaved changes modal"
+    >
       <Modal.Overlay blur={3} />
       <Modal.Content>
         <Modal.Body>

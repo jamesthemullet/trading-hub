@@ -12,6 +12,7 @@ import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import GlobalFacetsPanel from '@/libs/modules/facets-panel/global-facets-panel';
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 
 type PageProps = {
   id: string;
@@ -70,6 +71,9 @@ const Page = ({ id }: PageProps) => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Edit global facets</title>
+      </Head>
       <Heading
         breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
       />

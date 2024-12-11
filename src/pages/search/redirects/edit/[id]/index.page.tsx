@@ -6,6 +6,7 @@ import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
 import { Redirect } from '@/libs/modules/redirect/redirect';
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 
 type Props = {
   id: string;
@@ -27,6 +28,10 @@ const EditRedirect = ({ id }: Props) => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Edit redirect</title>
+      </Head>
+
       <Heading
         breadcrumbs={[
           'Search & Merchandising',

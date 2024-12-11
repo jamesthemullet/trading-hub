@@ -35,6 +35,7 @@ import {
 } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import Head from 'next/head';
 import Link from 'next/link';
 
 const SkeletonButtonWrapper = styled.div`
@@ -202,6 +203,9 @@ const RuleSets = () => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Category ranking rules</title>
+      </Head>
       <Heading
         breadcrumbs={['Search & Merchandising', 'Categories', 'Ranking rules']}
       />

@@ -129,6 +129,9 @@ export const DateTimePickerModal = ({
           onClose={close}
           size="auto"
           withinPortal={true}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Datepicker modal"
         >
           <Modal.Overlay backgroundOpacity={0.3} blur={3} />
           <Modal.Content>

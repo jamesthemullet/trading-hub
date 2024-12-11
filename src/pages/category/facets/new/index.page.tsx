@@ -5,6 +5,8 @@ import { ErrorMessage, Heading } from '@/libs/components';
 import { useRuleSetCreate } from '@/libs/hooks';
 import CategoryFacetsPanel from '@/libs/modules/facets-panel/category-facets-panel';
 
+import Head from 'next/head';
+
 const Page = () => {
   const router = useRouter();
 
@@ -62,6 +64,9 @@ const Page = () => {
 
   return (
     <>
+      <Head>
+        <title>{`Merchandising Hub | M&S | Create Category Ruleset`}</title>
+      </Head>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'New']} />
 
       {crateRuleSetError && (

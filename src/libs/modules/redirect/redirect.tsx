@@ -12,7 +12,7 @@ import {
   RadioButtons,
   SearchKeywords,
   spacing,
-  SubHeader3,
+  SubHeader2,
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
@@ -176,7 +176,7 @@ export const Redirect = ({
       />
       <RedirectType>
         <RedirectContent>
-          <SubHeader3>Redirect type</SubHeader3>
+          <SubHeader2>Redirect type</SubHeader2>
 
           <RadioButtons
             hasDivider={false}
@@ -206,11 +206,11 @@ export const Redirect = ({
       </RedirectType>
 
       <RedirectContent>
-        <SubHeader3>
+        <SubHeader2>
           {redirect.type === 'redirectTerm'
             ? 'Redirect Term(s)'
             : 'Redirect Phrase(s)'}
-        </SubHeader3>
+        </SubHeader2>
         <Row style={{ display: 'flex' }}>
           <InfluenceWrapper>
             <InfluenceLabel>Influence</InfluenceLabel>

@@ -474,6 +474,9 @@ export const EditFacetModalV2 = ({
       centered
       size={MODAL_WIDTH}
       padding={0}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Edit facet values modal"
     >
       <Modal.Overlay blur={3} />
       <Modal.Content>

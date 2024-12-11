@@ -6,6 +6,7 @@ import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 
 type PageProps = {
   id: string;
@@ -48,6 +49,9 @@ const Page = ({ id }: PageProps) => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Edit Category Ruleset</title>
+      </Head>
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
 
       {error && <ErrorMessage>{error}</ErrorMessage>}

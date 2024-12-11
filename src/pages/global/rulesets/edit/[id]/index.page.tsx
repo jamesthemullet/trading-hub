@@ -6,6 +6,7 @@ import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 
 type PageProps = {
   id: string;
@@ -34,6 +35,9 @@ const Page = ({ id }: PageProps) => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Edit global ruleset</title>
+      </Head>
       <Heading
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
       />

@@ -546,6 +546,9 @@ export const DataTable = ({
           () => setIsModalOpen(false)
         }
         padding={10}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Modal to confirm ${ruleSetEditOption === 'delete' ? 'deleting of rule' : 'duplicating of rule'}`}
       >
         <Modal.Overlay blur={3} />
         <Modal.Content>

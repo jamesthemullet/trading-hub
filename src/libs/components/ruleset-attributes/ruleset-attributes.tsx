@@ -324,6 +324,9 @@ export const RulesetAttributes = ({
         centered
         size={`${2 * MODAL_WIDTH}px`}
         padding={0}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Add attribute modal"
       >
         <Modal.Overlay blur={3} />
         <Modal.Content>

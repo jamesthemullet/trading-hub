@@ -324,7 +324,6 @@ export const CategorySearch = ({
                     <KeyWordPill
                       isSelected={false}
                       key={`category-${category}`}
-                      aria-label="Additional category"
                       as="p"
                     >
                       <SearchValue

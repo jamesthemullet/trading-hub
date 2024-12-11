@@ -114,7 +114,7 @@ export const ProductSearch = ({
       <InfoContainer>{totalProducts} results</InfoContainer>
       <ProductsContainer
         ref={scrollContainerRef}
-        aria-label="Product Search Result"
+        data-testid="product-search-result"
       >
         {products.map((productWrapper, index) => {
           const id = `${productWrapper.id}`;

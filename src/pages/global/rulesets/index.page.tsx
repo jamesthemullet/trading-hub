@@ -18,6 +18,7 @@ import {
 } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import Head from 'next/head';
 import Link from 'next/link';
 
 const RuleSets = () => {
@@ -103,6 +104,9 @@ const RuleSets = () => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Global category ranking rules</title>
+      </Head>
       <Heading
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
       />

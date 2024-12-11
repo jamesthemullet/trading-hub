@@ -5,6 +5,8 @@ import { CentredError, Heading, Loader } from '@/libs/components';
 import { useRedirectCreate } from '@/libs/hooks';
 import { Redirect } from '@/libs/modules/redirect/redirect';
 
+import Head from 'next/head';
+
 const CreateRedirect = () => {
   const { createRedirect, isSaving, error } = useRedirectCreate();
   const router = useRouter();
@@ -19,6 +21,9 @@ const CreateRedirect = () => {
 
   return (
     <>
+      <Head>
+        <title>Merchandising Hub | M&S | Create redirect</title>
+      </Head>
       <Heading
         breadcrumbs={[
           'Search & Merchandising',

@@ -39,7 +39,7 @@ export const Header3 = styled.h3`
   font-size: 20px;
 `;
 
-export const SubHeader3 = styled.h3`
+export const SubHeader2 = styled.h2`
   ${commonStyles}
   font-family: ${fonts.regular};
   font-size: 20px;

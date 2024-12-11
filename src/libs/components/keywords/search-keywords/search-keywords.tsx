@@ -277,6 +277,8 @@ export const SearchKeywords = ({
         size="auto"
         closeOnClickOutside={false}
         closeOnEscape={false}
+        role="dialog"
+        aria-modal="true"
         aria-label="Search Keywords Modal"
       >
         <Modal.Overlay blur={3} />
