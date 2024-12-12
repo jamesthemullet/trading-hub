@@ -35,7 +35,8 @@ const PageSizeItem = styled.div`
   padding: ${spacing(1)};
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: #f5f5f5;
   }
 `;

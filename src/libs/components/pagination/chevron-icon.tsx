@@ -1,19 +1,23 @@
 import styled from '@emotion/styled';
 
+import { color } from '../utils/constants';
+
 type Props = React.DetailedHTMLProps<
   React.HTMLAttributes<SVGSVGElement>,
   SVGSVGElement
 > & {
   type: 'prev' | 'next';
-  isEnabled: boolean;
 };
 
-const StyledAnimatedSvg = styled.svg<{ isEnabled: boolean }>`
-  cursor: ${({ isEnabled }) => (isEnabled ? 'pointer' : 'default')};
+const StyledAnimatedSvg = styled.svg`
   user-select: none;
 `;
 
-export const ChevronIcon = ({ type, isEnabled, ...props }: Props) => {
+const StyledRect = styled.rect`
+  fill: ${color.backgroundDarkGrey};
+`;
+
+export const ChevronIcon = ({ type, ...props }: Props) => {
   return (
     <StyledAnimatedSvg
       width="32"
@@ -22,11 +26,9 @@ export const ChevronIcon = ({ type, isEnabled, ...props }: Props) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
-      isEnabled={isEnabled}
     >
-      <rect width="32" height="32" rx="16" fill="#F1F1F1" />
+      <StyledRect width="32" height="32" rx="16" />
       <path
-        opacity={isEnabled ? '1.0' : '0.2'}
         d={type === 'prev' ? 'M19 23L12 16.5L19 10' : 'M13 10L20 16.5L13 23'}
         stroke="#1D1D1B"
         strokeWidth="2"
