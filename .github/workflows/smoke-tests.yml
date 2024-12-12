@@ -55,7 +55,24 @@ jobs:
         if: ${{ always() }}
         run: |
           set -e
-          TEST_RESULTS=$(cat test-results.json | jq '.stats') # Extract relevant test stats
+          TEST_RESULTS=$(cat test-results.json | jq '.stats')
+          TOTAL_TESTS=$(echo $TEST_RESULTS | jq '.expected + .unexpected')
+          PASSED=$(echo $TEST_RESULTS | jq '.expected')
+          FAILED=$(echo $TEST_RESULTS | jq '.unexpected')
+          DURATION=$(echo $TEST_RESULTS | jq '.duration')
+          TIMESTAMP=$(date +%s)
+          RUN_DATE=$(date -u +"%d %B %Y %H:%M")
+          DAY=$(date -u +"%d")
+
+          # Add ordinal suffix to the day
+          case "${DAY}" in
+            1|21|31) ORDINAL="st";;
+            2|22) ORDINAL="nd";;
+            3|23) ORDINAL="rd";;
+            *) ORDINAL="th";;
+          esac
+
+          FORMATTED_RUN_DATE="$(date -u +"${DAY}${ORDINAL} %B %Y %H:%M UTC")"
           NEW_RELIC_APP_NAME="${{ secrets.NEW_RELIC_APP_NAME }}"
           NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
           NEW_RELIC_ACCOUNT_ID="${{ secrets.NEW_RELIC_ACCOUNT_ID }}"
@@ -64,10 +81,11 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{
               "eventType": "TradingHubSmokeTestResults",
-              "appName": "$NEW_RELIC_APP_NAME",
-              "totalTests": "$(echo $TEST_RESULTS | jq '.totalTests')",
-              "passed": "$(echo $TEST_RESULTS | jq '.passed')",
-              "failed": "$(echo $TEST_RESULTS | jq '.failed')",
-              "duration": "$(echo $TEST_RESULTS | jq '.duration')",
-              "timestamp": "$(date +%s)"
+              "appName": "'"$NEW_RELIC_APP_NAME"'",
+              "runDateTime": "'"${FORMATTED_RUN_DATE}"'",
+              "totalTests": '"$TOTAL_TESTS"',
+              "passed": '"$PASSED"',
+              "failed": '"$FAILED"',
+              "duration": '"$DURATION"',
+              "timestamp": '"$TIMESTAMP"'
             }'
