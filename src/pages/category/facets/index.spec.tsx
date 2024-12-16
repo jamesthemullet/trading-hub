@@ -1,36 +1,127 @@
+import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 
 import { ReturnedCategoryRuleSet } from '@/libs/api';
-import { useRuleSet, useRuleSetCreate } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';
 
+const mockNewRuleset = 'foo123';
+
 const handleDeleteMock = jest.fn();
 const mockRefetchRuleSetList = jest.fn();
-
-jest.mock('@/libs/hooks', () => ({
-  ...jest.requireActual('@/libs/hooks'),
-  useRuleSetCreate: jest.fn(),
-  useRuleSet: jest.fn(),
-}));
+const createRuleset = jest.fn().mockResolvedValue({ id: mockNewRuleset });
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+const useRuleSet = jest.fn();
+
+const server = setupServer(
+  http.get(`/api/search/beta/merchandising/category/ruleset`, (ctx) => {
+    const url = new URL(ctx.request.url);
+    const countryCode = url.searchParams.get('countryCode');
+    const data = useRuleSet(
+      url.searchParams.get('q'),
+      Number(url.searchParams.get('start')),
+      Number(url.searchParams.get('rows')),
+      'category'
+    );
+    if (data.error !== '') {
+      return HttpResponse.json(
+        {
+          message: data.error,
+          status: 500,
+        },
+        { status: 500 }
+      );
+    }
+    mockRefetchRuleSetList({
+      countryCode,
+    });
+    return HttpResponse.json(
+      {
+        ruleSets: data.categoryRuleSets,
+        pagination: data.pagination,
+      },
+      { status: 200 }
+    );
+  }),
+  http.delete(`/api/search/beta/merchandising/category/ruleset/:id`, (ctx) => {
+    if (mockRuleSetDelete.error !== '') {
+      const response = HttpResponse.json(
+        {
+          message: mockRuleSetDelete.error,
+          status: 500,
+        },
+        { status: 500 }
+      );
+      mockRuleSetDelete.error = '';
+      return response;
+    }
+    handleDeleteMock({ rulesetId: ctx.params.id });
+    return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
+  }),
+  http.get(`/api/search/beta/merchandising/category/ruleset/:id`, (ctx) => {
+    const data = useRuleSet();
+    const ruleSetReturned = data.categoryRuleSets.find(
+      (ruleSet: any) => ruleSet.id === ctx.params.id
+    );
+    return HttpResponse.json(ruleSetReturned, { status: 200 });
+  }),
+  http.put(
+    `/api/search/beta/merchandising/category/ruleset/:id`,
+    async (ctx) => {
+      if (mockUpdateRuleSet.error !== '') {
+        const response = HttpResponse.json(
+          {
+            message: mockUpdateRuleSet.error,
+            status: 500,
+          },
+          { status: 500 }
+        );
+        mockUpdateRuleSet.error = '';
+        return response;
+      }
+      const data = useRuleSet();
+      const ruleSetReturned = data.categoryRuleSets.find(
+        (ruleSet: any) => ruleSet.id === ctx.params.id
+      );
+      const ruleSet = (await ctx.request.json()) as object;
+      handleUpdateMock({ ...ruleSet, ruleSetId: ctx.params.id });
+      return HttpResponse.json(
+        { ...ruleSetReturned, ...ruleSet },
+        { status: 200 }
+      );
+    }
+  ),
+  http.post(`/api/search/beta/merchandising/category/ruleset`, async (ctx) => {
+    const ruleSet = (await ctx.request.json()) as object;
+    createRuleset(ruleSet);
+    return HttpResponse.json(
+      {
+        id: mockNewRuleset,
+        categoriesInfo: [
+          {
+            id: mockNewRuleset,
+          },
+        ],
+        ...ruleSet,
+      },
+      { status: 200 }
+    );
+  })
+);
+
 const mockRuleSetDelete = {
   handleDelete: handleDeleteMock,
   error: '',
 };
-
-jest.mock('../../../libs/hooks/use-rule-set-delete', () => ({
-  useRuleSetDelete: () => {
-    return mockRuleSetDelete;
-  },
-}));
 
 const handleUpdateMock = jest.fn();
 const mockUpdateRuleSet = {
@@ -38,12 +129,6 @@ const mockUpdateRuleSet = {
   isSaving: false,
   error: '',
 };
-
-jest.mock('../../../libs/hooks/use-rule-set-update', () => ({
-  useUpdateRuleSet: () => {
-    return mockUpdateRuleSet;
-  },
-}));
 
 const mockMerchandisingRules = {
   pinnedProducts: [],
@@ -62,26 +147,23 @@ describe('Category facet management', () => {
   const mockRouter = {
     push: jest.fn(),
   };
-  const mockNewRuleset = 'foo123';
-  const createRuleset = jest.fn().mockResolvedValue({ id: mockNewRuleset });
 
   beforeAll(() => {
+    server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    jest.mocked(useRuleSetCreate).mockReturnValue({
-      createRuleset,
-      error: '',
-    });
   });
 
   beforeEach(() => {
+    server.resetHandlers();
     jest.clearAllMocks();
   });
 
   afterAll(() => {
+    server.close();
     jest.resetAllMocks();
   });
 
-  it('displays the list of rules', () => {
+  it('displays the list of rules', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
         categoryName: `identifier-${i}`,
@@ -114,8 +196,32 @@ describe('Category facet management', () => {
     renderWithProviders(<FacetManagementPage />);
 
     expect(screen.getByText('Category Facet Management')).toBeVisible();
-    expect(screen.getByText('Add new facet')).toBeVisible();
-    expect(screen.getByText('1 - identifier-1')).toBeVisible();
+    expect(await screen.findByText('Add new facet')).toBeVisible();
+    expect(await screen.findByText('1 - identifier-1')).toBeVisible();
+  });
+
+  it('should redirect to new page when add new rule is clicked', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    const createButton = await screen.findByText('Add new facet');
+    act(() => {
+      createButton.click();
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets/new');
   });
 
   it('should open delete modal and close on cancel', async () => {
@@ -151,7 +257,7 @@ describe('Category facet management', () => {
     const user = userEvent.setup();
     renderWithProviders(<FacetManagementPage />);
 
-    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click((await screen.findAllByTitle('More options'))[0]);
     await user.click(screen.getAllByText('Delete')[0]);
     await waitFor(() => {
       expect(
@@ -188,7 +294,7 @@ describe('Category facet management', () => {
     await user.type(search, 'search-search');
 
     await waitFor(() =>
-      expect(useRuleSet).toHaveBeenCalledWith(
+      expect(useRuleSet).toHaveBeenLastCalledWith(
         'search-search',
         0,
         10,
@@ -214,7 +320,7 @@ describe('Category facet management', () => {
     const user = userEvent.setup();
     renderWithProviders(<FacetManagementPage />);
 
-    expect(screen.getByText('Page 1 of 8')).toBeVisible();
+    expect(await screen.findByText('Page 1 of 8')).toBeVisible();
 
     const nextPageButton = screen.getByLabelText('Next page');
 
@@ -255,6 +361,7 @@ describe('Category facet management', () => {
             },
           ],
           id: mockId,
+          ruleSetId: mockId,
           isEnabled: true,
           lastChanged: {
             user: 'user',
@@ -273,6 +380,7 @@ describe('Category facet management', () => {
         {
           countryCode: 'UK_IE',
           id: 'ewfw-e3f23-f23f2-3cwef4',
+          ruleSetId: 'ewfw-e3f23-f23f2-3cwef4',
           categoriesInfo: [
             {
               id: 'foo00',
@@ -300,7 +408,7 @@ describe('Category facet management', () => {
 
     renderWithProviders(<FacetManagementPage />);
 
-    const rulesetToggle = screen.getAllByTitle('Toggle');
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
 
@@ -373,7 +481,7 @@ describe('Category facet management', () => {
 
     renderWithProviders(<FacetManagementPage />);
 
-    const rulesetToggle = screen.getAllByTitle('Toggle');
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
 
@@ -489,7 +597,7 @@ describe('Category facet management', () => {
 
     renderWithProviders(<FacetManagementPage />);
 
-    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click((await screen.findAllByTitle('More options'))[0]);
     await user.click(screen.getByRole('button', { name: 'Duplicate' }));
     await waitFor(() => {
       expect(
@@ -517,7 +625,7 @@ describe('Category facet management', () => {
     );
   });
 
-  it('displays schedule if a ruleset has a start and end date', () => {
+  it('displays schedule if a ruleset has a start and end date', async () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockFacets = [
       {
@@ -580,7 +688,7 @@ describe('Category facet management', () => {
     });
     renderWithProviders(<FacetManagementPage />);
 
-    expect(screen.getByRole('time')).toHaveTextContent(
+    expect(await screen.findByRole('time')).toHaveTextContent(
       '14 Oct 2024 - 15 Oct 2024'
     );
   });
@@ -617,7 +725,7 @@ describe('Category facet management', () => {
 
     renderWithProviders(<FacetManagementPage />);
 
-    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click((await screen.findAllByTitle('More options'))[0]);
     await user.click(screen.getByRole('button', { name: 'Duplicate' }));
     await waitFor(() => {
       expect(
@@ -642,7 +750,7 @@ describe('Category facet management', () => {
   });
 
   describe('Error messaging', () => {
-    it('should display an error message when fetching rulesets fails', () => {
+    it('should display an error message when fetching rulesets fails', async () => {
       jest.mocked(useRuleSet).mockReturnValue({
         categoryRuleSets: [],
         globalRuleSets: [],
@@ -659,8 +767,8 @@ describe('Category facet management', () => {
       renderWithProviders(<FacetManagementPage />);
 
       expect(
-        screen.getByText(
-          'Error whilst retrieving ruleset: Error fetching ruleset'
+        await screen.findByText(
+          'Error whilst retrieving ruleset: "Error Error fetching ruleset 500"'
         )
       ).toBeVisible();
     });
@@ -696,12 +804,26 @@ describe('Category facet management', () => {
       });
       mockRuleSetDelete.error = 'Error deleting ruleset';
 
+      const user = userEvent.setup();
       renderWithProviders(<FacetManagementPage />);
+
+      await user.click((await screen.findAllByTitle('More options'))[0]);
+      await user.click(screen.getAllByText('Delete')[0]);
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 3,
+            name: 'Do you want to delete this rule?',
+          })
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByLabelText('Delete rule'));
 
       await waitFor(() => {
         expect(
           screen.getByText(
-            'Error whilst deleting ruleset: Error deleting ruleset'
+            'Error whilst deleting ruleset: "Error Error deleting ruleset 500"'
           )
         ).toBeVisible();
       });
@@ -743,17 +865,21 @@ describe('Category facet management', () => {
 
       renderWithProviders(<FacetManagementPage />);
 
+      const rulesetToggle = await screen.findAllByTitle('Toggle');
+
+      await userEvent.click(rulesetToggle[0]);
+
       await waitFor(() => {
         expect(
           screen.getByText(
-            'Error whilst updating ruleset: Error updating ruleset'
+            'Error whilst updating ruleset: "Error Error updating ruleset 500"'
           )
         ).toBeVisible();
       });
     });
   });
 
-  it('should display country flag and filter', () => {
+  it('should display country flag and filter', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
@@ -785,7 +911,7 @@ describe('Category facet management', () => {
 
     renderWithProviders(<FacetManagementPage />);
 
-    expect(screen.getByAltText('IE rule')).toBeVisible();
+    expect(await screen.findByAltText('IE rule')).toBeVisible();
     expect(
       screen.getByRole('button', { name: 'All marksandspencer.com' })
     ).toBeVisible();

@@ -1,87 +1,17 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-
-import { CountryCode } from '@/libs/api';
 import {
-  DataTable,
-  ErrorMessage,
-  Heading,
-  Search,
-  TablePagination,
-} from '@/libs/components';
-import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
-import {
-  NewButton,
-  PageNameLabel,
-  SectionWrapper,
-  ToolsContainer,
-} from '@/libs/components/utils/shared.styles';
-import {
-  useGlobalRuleSetCreate,
-  useGlobalRuleSetDelete,
-  useGlobalRuleSetUpdate,
-  useRuleSet,
-} from '@/libs/hooks';
-import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+  ReturnedGlobalRuleSet,
+  ReturnedGlobalRuleSets,
+  RuleSet,
+  search,
+} from '@/libs/api';
+import { Heading } from '@/libs/components/heading/heading';
+import { TablePanel } from '@/libs/components/table-panel/table-panel';
+import { RuleSetMapping } from '@/libs/components/types';
+import { PageNameLabel } from '@/libs/components/utils/shared.styles';
 
 import Head from 'next/head';
-import Link from 'next/link';
 
 const FacetManagementPage = () => {
-  const pageSizes = [10, 20, 50, 100];
-  const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const { handleDelete, error: deleteRulesetError } = useGlobalRuleSetDelete();
-  const { saveGlobalRuleset, error: updateRulesetError } =
-    useGlobalRuleSetUpdate();
-  const { createGlobalRuleSet } = useGlobalRuleSetCreate();
-  const router = useRouter();
-
-  const currentPageIndex = currentPage - 1;
-
-  const {
-    globalRuleSets,
-    pagination,
-    refetchRuleSetList,
-    error: getRulesetError,
-  } = useRuleSet(
-    searchQuery,
-    currentPageIndex * currentPageSize,
-    currentPageSize,
-    'global'
-  );
-
-  const { callback: handleSearch } = useDebounce((val: string) => {
-    setSearchQuery(val);
-    setCurrentPage(1);
-  }, 300);
-
-  const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
-    const ruleSet = globalRuleSets.find((ruleset) => ruleset.id === id);
-
-    // istanbul ignore next
-    if (!ruleSet) return null;
-
-    await saveGlobalRuleset({
-      ruleSetId: id,
-      ruleSet: {
-        facets: ruleSet.facets,
-        rules: ruleSet.rules,
-        isEnabled: !ruleSet.isEnabled,
-        excludedFacets: ruleSet.excludedFacets,
-        countryCode: ruleSet.countryCode,
-      },
-    });
-
-    refetchRuleSetList({});
-  };
-
-  const onDeleteRuleSet = async ({ id }: { id: string }) => {
-    await handleDelete({ rulesetId: id });
-    refetchRuleSetList({});
-  };
-
   const headings = [
     'Identifier',
     'Influence',
@@ -91,28 +21,52 @@ const FacetManagementPage = () => {
     'Actions',
   ];
 
-  const rows = globalRuleSets.map(
-    ({ id, isEnabled, lastChanged, countryCode }) => ({
+  const mapping: RuleSetMapping<
+    ReturnedGlobalRuleSets,
+    ReturnedGlobalRuleSet,
+    RuleSet
+  > = {
+    queryAllRuleSets: search().betaMerchandisingGlobalRulesetList,
+    deleteRuleSetById: search().betaMerchandisingGlobalRulesetDelete,
+    queryRuleSetById: search().betaMerchandisingGlobalRulesetDetail,
+    updateRuleSetById: search().betaMerchandisingGlobalRulesetUpdate,
+    newRuleSet: search().betaMerchandisingGlobalRulesetCreate,
+    ruleSetToRow: ({ id, isEnabled, lastChanged, countryCode }) => ({
       id,
       identifier: '*',
       isEnabled,
       lastChanged,
-      onToggle: onEnableDisableRuleSet,
       url: `/global/facets/edit/${id}`,
       countryCode,
-    })
-  );
-
-  const createNewRuleSet = async () => {
-    const response = await createGlobalRuleSet();
-
-    if (response) {
-      return router.push(`/global/facets/edit/${response.id}`);
-    }
-  };
-
-  const handleCountryFilter = (countryCode?: CountryCode) => {
-    refetchRuleSetList({ countryCode });
+    }),
+    allToArray: (data) => data.ruleSets,
+    getEmptyRuleSet: () => ({
+      isEnabled: false,
+      countryCode: 'UK_IE',
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { numeric: [], alphanumeric: [], product: [] },
+        buries: { numeric: [], alphanumeric: [], product: [] },
+        includes: { alphanumeric: [] },
+        excludes: { alphanumeric: [] },
+      },
+      endDate: undefined,
+      startDate: undefined,
+      facets: [],
+      excludedFacets: undefined,
+    }),
+    returnedToRuleSet: (returnedRuleSet) => {
+      return {
+        isEnabled: returnedRuleSet.isEnabled,
+        countryCode: returnedRuleSet.countryCode,
+        rules: returnedRuleSet.rules,
+        endDate: returnedRuleSet.endDate,
+        startDate: returnedRuleSet.startDate,
+        facets: returnedRuleSet.facets,
+        excludedFacets: returnedRuleSet.excludedFacets,
+      };
+    },
   };
 
   return (
@@ -127,51 +81,15 @@ const FacetManagementPage = () => {
           'Global Facet Management',
         ]}
       />
-
-      {getRulesetError && (
-        <ErrorMessage>
-          Error whilst retrieving ruleset: {getRulesetError}
-        </ErrorMessage>
-      )}
-
-      {updateRulesetError && (
-        <ErrorMessage>
-          Error whilst updating ruleset: {updateRulesetError}
-        </ErrorMessage>
-      )}
-
-      {deleteRulesetError && (
-        <ErrorMessage>
-          Error whilst deleting ruleset: {deleteRulesetError}
-        </ErrorMessage>
-      )}
-
       <PageNameLabel>Global Facet Management</PageNameLabel>
-      <SectionWrapper>
-        <ToolsContainer>
-          <Search onChange={(e) => handleSearch(e.target.value)} />
-          <CountryFilterDropdown onChange={handleCountryFilter} />
-
-          <NewButton onClick={createNewRuleSet}>
-            <Link href={''}>Add new rule</Link>
-          </NewButton>
-        </ToolsContainer>
-
-        <DataTable
-          headings={headings}
-          rows={rows}
-          ruleType="global"
-          onDeleteRuleSet={onDeleteRuleSet}
-        />
-        <TablePagination
-          pagination={pagination}
-          pageSizes={pageSizes}
-          currentPage={currentPage}
-          currentPageSize={currentPageSize}
-          setCurrentPage={setCurrentPage}
-          setCurrentPageSize={setCurrentPageSize}
-        />
-      </SectionWrapper>
+      <TablePanel
+        basePath="/global/facets"
+        headings={headings}
+        mapping={mapping}
+        newRowCreateMode="create-then-redirect"
+        ruleType="global"
+        isDuplicateEnabled={false}
+      />
     </>
   );
 };

@@ -1,50 +1,21 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 
-import { useGlobalRuleSetCreate, useRuleSet } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
 
-process.env.DEBUG_PRINT_LIMIT = '1000000';
-
 const mockRuleSetDelete = jest.fn();
 const mockRefetchRuleSetList = jest.fn();
 const mockUpdateRuleSet = jest.fn();
+const useRuleSet = jest.fn();
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-
-jest.mock(
-  '../../../libs/hooks/global/rulesets/use-global-rule-set-create',
-  () => ({
-    useGlobalRuleSetCreate: jest.fn(),
-  })
-);
-
-jest.mock('../../../libs/hooks/use-rule-set', () => ({
-  useRuleSet: jest.fn(),
-}));
-
-jest.mock(
-  '../../../libs/hooks/global/rulesets/use-global-rule-set-delete',
-  () => ({
-    useGlobalRuleSetDelete: () => {
-      return { handleDelete: mockRuleSetDelete };
-    },
-  })
-);
-
-jest.mock(
-  '../../../libs/hooks/global/rulesets/use-global-rule-set-update',
-  () => ({
-    useGlobalRuleSetUpdate: () => {
-      return { saveGlobalRuleset: mockUpdateRuleSet, isSaving: true };
-    },
-  })
-);
 
 const NEW_RULE_BUTTON_TEXT = 'Add new rule';
 
@@ -71,38 +42,93 @@ const mockRouter = {
   },
 };
 
+const server = setupServer(
+  http.get(`/api/search/beta/merchandising/global/ruleset`, (ctx) => {
+    const url = new URL(ctx.request.url);
+    const countryCode = url.searchParams.get('countryCode');
+    const data = useRuleSet(
+      url.searchParams.get('q'),
+      Number(url.searchParams.get('start')),
+      Number(url.searchParams.get('rows')),
+      'global'
+    );
+    if ('refetchRuleSetList' in data) {
+      data.refetchRuleSetList();
+    }
+    mockRefetchRuleSetList({
+      countryCode,
+    });
+    return HttpResponse.json(
+      {
+        ruleSets: data.globalRuleSets,
+        pagination: data.pagination,
+      },
+      { status: 200 }
+    );
+  }),
+  http.delete(`/api/search/beta/merchandising/global/ruleset/:id`, (ctx) => {
+    mockRuleSetDelete({ rulesetId: ctx.params.id });
+    return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
+  }),
+  http.get(`/api/search/beta/merchandising/global/ruleset/:id`, (ctx) => {
+    const data = useRuleSet();
+    const ruleSetReturned = data.globalRuleSets.find(
+      (ruleSet: any) => ruleSet.id === ctx.params.id
+    );
+    return HttpResponse.json(ruleSetReturned, { status: 200 });
+  }),
+  http.put(`/api/search/beta/merchandising/global/ruleset/:id`, async (ctx) => {
+    const data = useRuleSet();
+    const ruleSetReturned = data.globalRuleSets.find(
+      (ruleSet: any) => ruleSet.id === ctx.params.id
+    );
+    const ruleSet = (await ctx.request.json()) as object;
+    mockUpdateRuleSet({ ruleSet, ruleSetId: ctx.params.id });
+    return HttpResponse.json(
+      { ...ruleSetReturned, ...ruleSet },
+      { status: 200 }
+    );
+  }),
+  http.post(`/api/search/beta/merchandising/global/ruleset`, async (ctx) => {
+    const ruleSet = (await ctx.request.json()) as object;
+    return HttpResponse.json(
+      {
+        id: MOCK_CATEGORY_ID,
+        lastChanged: {
+          date: '12/12/12',
+          user: 'me',
+        },
+        ...ruleSet,
+      },
+      { status: 200 }
+    );
+  })
+);
+
 describe('Index', () => {
   beforeAll(() => {
+    server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-
-    jest.mocked(useGlobalRuleSetCreate).mockReturnValue({
-      createGlobalRuleSet: jest.fn(() =>
-        Promise.resolve({
-          id: MOCK_CATEGORY_ID,
-          isEnabled: false,
-          rules: {
-            pinnedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
-            blockedProducts: [],
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
-          },
-          lastChanged: {
-            date: '12/12/12',
-            user: 'me',
-          },
-        })
-      ),
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      globalRuleSets: [],
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
       error: '',
+      isLoading: false,
     });
   });
 
+  beforeEach(() => {
+    server.resetHandlers();
+  });
+
   afterAll(() => {
+    server.close();
     jest.resetAllMocks();
   });
 
@@ -122,6 +148,41 @@ describe('Index', () => {
     renderWithProviders(<RuleSets />);
 
     expect(screen.getByText('Global category ranking rules')).toBeVisible();
+  });
+
+  it('should not display the duplicate button', async () => {
+    const user = userEvent.setup();
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      globalRuleSets: [
+        {
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<RuleSets />);
+
+    const rulesetDropdown = await screen.findAllByTitle('More options');
+
+    await user.click(rulesetDropdown[0]);
+
+    expect(screen.queryByTitle('Duplicate')).not.toBeInTheDocument();
   });
 
   it('should update correctly if the totalItems is undefined', async () => {
@@ -239,7 +300,7 @@ describe('Index', () => {
 
     renderWithProviders(<RuleSets />);
 
-    const rulesetToggle = screen.getAllByTitle('Toggle');
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
 
@@ -284,7 +345,7 @@ describe('Index', () => {
 
     renderWithProviders(<RuleSets />);
 
-    const rulesetDropdown = screen.getAllByTitle('More options');
+    const rulesetDropdown = await screen.findAllByTitle('More options');
 
     await user.click(rulesetDropdown[0]);
 
@@ -328,7 +389,7 @@ describe('Index', () => {
     expect(mockRefetchRulesList).toHaveBeenCalled();
   });
 
-  it('should display country flag and filter', () => {
+  it('should display country flag and filter', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       globalRuleSets: [
         {
@@ -356,7 +417,7 @@ describe('Index', () => {
 
     renderWithProviders(<RuleSets />);
 
-    expect(screen.getByAltText('UK rule')).toBeInTheDocument();
+    expect(await screen.findByAltText('UK rule')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'All marksandspencer.com' })
     ).toBeVisible();

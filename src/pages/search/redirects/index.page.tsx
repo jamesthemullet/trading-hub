@@ -1,103 +1,17 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-
 import {
-  CountryCode,
   KeywordRedirect,
   ReturnedKeywordRedirect,
   ReturnedKeywordRedirects,
+  search,
 } from '@/libs/api';
-import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
-import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
-import {
-  NewButton,
-  PageNameLabel,
-  PageWrapper,
-  ToolsContainer,
-} from '@/libs/components/utils/shared.styles';
-import {
-  useRedirectCreate,
-  useRedirectDelete,
-  useRedirectUpdate,
-  useSearchRedirectList,
-} from '@/libs/hooks';
-import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { Heading } from '@/libs/components';
+import { TablePanel } from '@/libs/components/table-panel/table-panel';
+import { RuleSetMapping } from '@/libs/components/types';
+import { PageNameLabel } from '@/libs/components/utils/shared.styles';
 
 import Head from 'next/head';
-import Link from 'next/link';
 
 const RedirectRuleSets = () => {
-  const pageSizes = [10, 20, 50, 100];
-  const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  const currentPageIndex = currentPage - 1;
-  const { deleteRedirect } = useRedirectDelete();
-  const { updateRedirect } = useRedirectUpdate();
-
-  const { createRedirect } = useRedirectCreate();
-  const router = useRouter();
-
-  const createDuplicatedRedirect = async (redirect: KeywordRedirect) => {
-    const response = await createRedirect({
-      redirect: { ...redirect, isEnabled: false },
-    });
-
-    if (response) {
-      router.push(`/search/redirects/edit/${response.id}`);
-    }
-  };
-
-  const { pagination, redirects, refetchRedirectList, setKeywordList } =
-    useSearchRedirectList(
-      searchQuery,
-      currentPageIndex * currentPageSize,
-      currentPageSize
-    );
-
-  const { callback: handleSearch } = useDebounce((val: string) => {
-    setSearchQuery(val);
-  }, 300);
-
-  const onEnableDisableRedirect = async ({ id }: { id: string }) => {
-    const redirect = redirects.find((redirect) => redirect.id === id);
-
-    // istanbul ignore next
-    if (!redirect) return;
-
-    const { isEnabled } = redirect;
-    await updateRedirect({
-      redirect: {
-        ...redirect,
-        isEnabled: !isEnabled,
-      },
-      redirectId: id,
-    });
-    const updatedRedirectsList: ReturnedKeywordRedirects = {
-      redirects: redirects.map((redirect: ReturnedKeywordRedirect) =>
-        // istanbul ignore next
-        redirect.id === id ? { ...redirect, isEnabled: !isEnabled } : redirect
-      ),
-      pagination,
-    };
-    setKeywordList(updatedRedirectsList);
-  };
-
-  const onDuplicateRedirect = (id: string) => {
-    const redirectToCopy = redirects.find((redirect) => redirect.id === id);
-
-    // istanbul ignore next
-    if (!redirectToCopy) return;
-    createDuplicatedRedirect(redirectToCopy);
-  };
-
-  const onDeleteRedirect = async ({ id }: { id: string }) => {
-    await deleteRedirect({ redirectId: id });
-
-    refetchRedirectList({});
-  };
-
   const headings = [
     'Identifier',
     'Schedule',
@@ -108,38 +22,59 @@ const RedirectRuleSets = () => {
     'Actions',
   ];
 
-  const rows = redirects.map(
-    ({
-      id,
-      keywords,
-      isEnabled,
-      lastChanged,
-      startDate,
-      endDate,
-      countryCode,
-    }) => ({
+  const mapping: RuleSetMapping<
+    ReturnedKeywordRedirects,
+    ReturnedKeywordRedirect,
+    KeywordRedirect
+  > = {
+    queryAllRuleSets: search().betaMerchandisingKeywordRedirectList,
+    deleteRuleSetById: search().betaMerchandisingKeywordRedirectDelete,
+    queryRuleSetById: search().betaMerchandisingKeywordRedirectDetail,
+    updateRuleSetById: search().betaMerchandisingKeywordRedirectUpdate,
+    newRuleSet: search().betaMerchandisingKeywordRedirectCreate,
+    ruleSetToRow: (
+      { id, keywords, isEnabled, lastChanged, startDate, endDate, countryCode },
+      { searchQuery }
+    ) => ({
       id: id,
       identifier: keywords
         .map((term) =>
-          !!searchQuery.length &&
+          !!searchQuery?.length &&
           term.toLowerCase().startsWith(searchQuery.toLowerCase())
             ? `<b>${term}</b>`
             : term
         )
         .join(' | '),
-      searchTerms: keywords,
       isEnabled,
       lastChanged,
-      onToggle: onEnableDisableRedirect,
       url: `/search/redirects/edit/${id}`,
       startDate,
       endDate,
       countryCode,
-    })
-  );
-
-  const handleCountryFilter = (countryCode?: CountryCode) => {
-    refetchRedirectList({ countryCode });
+    }),
+    allToArray: (data) => data.redirects,
+    getEmptyRuleSet: () => ({
+      countryCode: 'UK_IE',
+      destinationUrl: '',
+      endDate: undefined,
+      isEnabled: false,
+      keywords: [],
+      ruleTitle: '',
+      startDate: undefined,
+      type: 'redirectTerm',
+    }),
+    returnedToRuleSet: (returnedRuleSet) => {
+      return {
+        countryCode: returnedRuleSet.countryCode,
+        destinationUrl: returnedRuleSet.destinationUrl,
+        endDate: returnedRuleSet.endDate,
+        isEnabled: returnedRuleSet.isEnabled,
+        keywords: returnedRuleSet.keywords,
+        ruleTitle: returnedRuleSet.ruleTitle,
+        startDate: returnedRuleSet.startDate,
+        type: returnedRuleSet.type,
+      };
+    },
   };
 
   return (
@@ -153,32 +88,12 @@ const RedirectRuleSets = () => {
 
       <PageNameLabel>Keyword Redirect</PageNameLabel>
 
-      <PageWrapper>
-        <ToolsContainer>
-          <Search onChange={(e) => handleSearch(e.target.value)} />
-          <CountryFilterDropdown onChange={handleCountryFilter} />
-          <NewButton>
-            <Link href="/search/redirects/new">Add new rule</Link>
-          </NewButton>
-        </ToolsContainer>
-
-        <DataTable
-          headings={headings}
-          rows={rows}
-          ruleType="redirect"
-          onDeleteRuleSet={onDeleteRedirect}
-          onDuplicate={onDuplicateRedirect}
-        />
-
-        <TablePagination
-          pagination={pagination}
-          pageSizes={pageSizes}
-          currentPage={currentPage}
-          currentPageSize={currentPageSize}
-          setCurrentPage={setCurrentPage}
-          setCurrentPageSize={setCurrentPageSize}
-        />
-      </PageWrapper>
+      <TablePanel
+        basePath="/search/redirects"
+        headings={headings}
+        mapping={mapping}
+        ruleType="redirect"
+      />
     </>
   );
 };

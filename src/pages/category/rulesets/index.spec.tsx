@@ -1,34 +1,101 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 
 import { ReturnedCategoryRuleSet } from '@/libs/api';
-import { useRuleSet, useRuleSetCreate } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
 
-process.env.DEBUG_PRINT_LIMIT = '1000000';
+const mockNewRuleset = 'foo123';
 
 const mockRuleSetDelete = jest.fn();
 const mockUpdateRuleSet = jest.fn();
 const mockRefetchRuleSetList = jest.fn();
+const useRuleSetCreate = jest.fn();
+const useRuleSet = jest.fn();
 
-jest.mock('@/libs/hooks', () => ({
-  ...jest.requireActual('@/libs/hooks'),
-  useRuleSetCreate: jest.fn(),
-  useRuleSet: jest.fn(),
-  useRuleSetDelete: () => {
-    return { handleDelete: mockRuleSetDelete };
-  },
-  useUpdateRuleSet: () => {
-    return { updateCategoryRuleSet: mockUpdateRuleSet, isSaving: true };
-  },
-}));
+const createRuleset = jest.fn().mockResolvedValue({ id: mockNewRuleset });
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
+
+const server = setupServer(
+  http.get(`/api/search/beta/merchandising/category/ruleset`, (ctx) => {
+    const url = new URL(ctx.request.url);
+    const countryCode = url.searchParams.get('countryCode');
+    const data = useRuleSet(
+      url.searchParams.get('q'),
+      Number(url.searchParams.get('start')),
+      Number(url.searchParams.get('rows')),
+      'category'
+    );
+    if (data.error !== '') {
+      return HttpResponse.json(
+        {
+          message: data.error,
+          status: 500,
+        },
+        { status: 500 }
+      );
+    }
+    mockRefetchRuleSetList({
+      countryCode,
+    });
+    return HttpResponse.json(
+      {
+        ruleSets: data.categoryRuleSets,
+        pagination: data.pagination,
+      },
+      { status: 200 }
+    );
+  }),
+  http.delete(`/api/search/beta/merchandising/category/ruleset/:id`, (ctx) => {
+    mockRuleSetDelete({ rulesetId: ctx.params.id });
+    return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
+  }),
+  http.get(`/api/search/beta/merchandising/category/ruleset/:id`, (ctx) => {
+    const data = useRuleSet();
+    const ruleSetReturned = data.categoryRuleSets.find(
+      (ruleSet: any) => ruleSet.id === ctx.params.id
+    );
+    return HttpResponse.json(ruleSetReturned, { status: 200 });
+  }),
+  http.put(
+    `/api/search/beta/merchandising/category/ruleset/:id`,
+    async (ctx) => {
+      const data = useRuleSet();
+      const ruleSetReturned = data.categoryRuleSets.find(
+        (ruleSet: any) => ruleSet.id === ctx.params.id
+      );
+      const ruleSet = (await ctx.request.json()) as object;
+      mockUpdateRuleSet({ ...ruleSet, ruleSetId: ctx.params.id });
+      return HttpResponse.json(
+        { ...ruleSetReturned, ...ruleSet },
+        { status: 200 }
+      );
+    }
+  ),
+  http.post(`/api/search/beta/merchandising/category/ruleset`, async (ctx) => {
+    const ruleSet = (await ctx.request.json()) as object;
+    createRuleset(ruleSet);
+    return HttpResponse.json(
+      {
+        id: mockNewRuleset,
+        categoriesInfo: [
+          {
+            id: mockNewRuleset,
+          },
+        ],
+        ...ruleSet,
+      },
+      { status: 200 }
+    );
+  })
+);
 
 const mockMerchandisingRules = {
   pinnedProducts: [],
@@ -47,10 +114,9 @@ describe('Index', () => {
   const mockRouter = {
     push: jest.fn(),
   };
-  const mockNewRuleset = 'foo123';
-  const createRuleset = jest.fn().mockResolvedValue({ id: mockNewRuleset });
 
   beforeAll(() => {
+    server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest.mocked(useRuleSetCreate).mockReturnValue({
       createRuleset,
@@ -59,10 +125,12 @@ describe('Index', () => {
   });
 
   beforeEach(() => {
+    server.resetHandlers();
     jest.clearAllMocks();
   });
 
   afterAll(() => {
+    server.close();
     jest.resetAllMocks();
   });
 
@@ -82,6 +150,30 @@ describe('Index', () => {
     renderWithProviders(<RuleSets />);
 
     expect(screen.getByText('Category ranking rules')).toBeVisible();
+  });
+
+  it('should redirect to new page when add new rule is clicked', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    const createButton = await screen.findByText('Add new rule');
+    act(() => {
+      createButton.click();
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets/new');
   });
 
   it('should update correctly if the totalItems is undefined', async () => {
@@ -135,7 +227,7 @@ describe('Index', () => {
     expect(dropdown.previousSibling?.textContent).toBe('100');
   });
 
-  it('displays schedule if a ruleset has a start and end date', () => {
+  it('displays schedule if a ruleset has a start and end date', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
@@ -183,7 +275,7 @@ describe('Index', () => {
     });
     renderWithProviders(<RuleSets />);
 
-    expect(screen.getByRole('time')).toHaveTextContent(
+    expect(await screen.findByRole('time')).toHaveTextContent(
       '14 Oct 2024 - 15 Oct 2024'
     );
   });
@@ -253,7 +345,7 @@ describe('Index', () => {
     const user = userEvent.setup();
     renderWithProviders(<RuleSets />);
 
-    const rulesetDropdown = screen.getAllByTitle('More options');
+    const rulesetDropdown = await screen.findAllByTitle('More options');
 
     await user.click(rulesetDropdown[0]);
 
@@ -333,7 +425,7 @@ describe('Index', () => {
 
     renderWithProviders(<RuleSets />);
 
-    const rulesetToggle = screen.getAllByTitle('Toggle');
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
 
@@ -399,7 +491,7 @@ describe('Index', () => {
 
     renderWithProviders(<RuleSets />);
 
-    const rulesetToggle = screen.getAllByTitle('Toggle');
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
 
@@ -450,7 +542,7 @@ describe('Index', () => {
 
     renderWithProviders(<RuleSets />);
 
-    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click((await screen.findAllByTitle('More options'))[0]);
     await user.click(screen.getByRole('button', { name: 'Duplicate' }));
     await waitFor(() => {
       expect(
@@ -494,7 +586,11 @@ describe('Index', () => {
 
     renderWithProviders(<RuleSets />);
 
-    expect(await screen.findByText('Error: Failed to fetch')).toBeVisible();
+    expect(
+      await screen.findByText(
+        'Error whilst retrieving ruleset: "Error Failed to fetch 500"'
+      )
+    ).toBeVisible();
   });
 
   it('should have loading state', async () => {
@@ -551,7 +647,7 @@ describe('Index', () => {
 
     renderWithProviders(<RuleSets />);
 
-    expect(screen.getByAltText('IE rule')).toBeVisible();
+    expect(await screen.findByAltText('IE rule')).toBeVisible();
     expect(
       screen.getByRole('button', { name: 'All marksandspencer.com' })
     ).toBeVisible();

@@ -16,9 +16,10 @@ test.describe('Keyword Redirects', () => {
       '*/**/api/search/beta/merchandising/keyword/redirect/2cf46391-1780-4016-9d20-5fd28b571579*',
       async (route) => {
         if (route.request().method() === 'PUT') {
-          const maybeData = route.request().postData();
-          const json = maybeData && JSON.parse(maybeData);
-          return route.fulfill({ status: 200, json });
+          return route.fulfill({
+            status: 200,
+            json: { ...mockRedirect, isEnabled: false },
+          });
         }
         await route.fulfill({ status: 200, json: mockRedirect });
       }

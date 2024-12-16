@@ -1,53 +1,132 @@
+import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 
-import { useRedirectCreate, useSearchRedirectList } from '@/libs/hooks';
 import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import RedirectRuleSets from './index.page';
 
+const mockNewRuleset = 'foo123';
+
 const mockRefetchRedirectList = jest.fn();
 const mockRedirectDelete = jest.fn();
 const mockUpdateRedirect = jest.fn();
+const useSearchRedirectList = jest.fn();
+const createRedirect = jest.fn().mockResolvedValue({ id: mockNewRuleset });
 
-jest.mock('@/libs/hooks', () => ({
-  ...jest.requireActual('@/libs/hooks'),
-  useSearchRedirectList: jest.fn(),
-  useRedirectDelete: () => {
-    return { deleteRedirect: mockRedirectDelete };
-  },
-  useRedirectUpdate: () => {
-    return { updateRedirect: mockUpdateRedirect, isSaving: true };
-  },
-  useRedirectCreate: jest.fn(),
-}));
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
+
+const server = setupServer(
+  http.get(`/api/search/beta/merchandising/keyword/redirect`, (ctx) => {
+    const url = new URL(ctx.request.url);
+    const countryCode = url.searchParams.get('countryCode');
+    const data = useSearchRedirectList(
+      url.searchParams.get('q'),
+      Number(url.searchParams.get('start')),
+      Number(url.searchParams.get('rows'))
+    );
+    if (data.error !== '') {
+      return HttpResponse.json(
+        {
+          message: data.error,
+          status: 500,
+        },
+        { status: 500 }
+      );
+    }
+    mockRefetchRedirectList({
+      countryCode,
+    });
+    return HttpResponse.json(
+      {
+        redirects: data.redirects,
+        pagination: data.pagination,
+      },
+      { status: 200 }
+    );
+  }),
+  http.delete(`/api/search/beta/merchandising/keyword/redirect/:id`, (ctx) => {
+    mockRedirectDelete({ redirectId: ctx.params.id });
+    return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
+  }),
+  http.get(`/api/search/beta/merchandising/keyword/redirect/:id`, (ctx) => {
+    const data = useSearchRedirectList();
+    const ruleSetReturned = data.redirects.find(
+      (ruleSet: any) => ruleSet.id === ctx.params.id
+    );
+    return HttpResponse.json(ruleSetReturned, { status: 200 });
+  }),
+  http.put(
+    `/api/search/beta/merchandising/keyword/redirect/:id`,
+    async (ctx) => {
+      const data = useSearchRedirectList();
+      const redirectReturned = data.redirects.find(
+        (ruleSet: any) => ruleSet.id === ctx.params.id
+      );
+      const redirect = (await ctx.request.json()) as object;
+      mockUpdateRedirect({
+        redirect: {
+          ...redirectReturned,
+          ...redirect,
+        },
+        redirectId: ctx.params.id,
+      });
+      return HttpResponse.json(
+        { ...redirectReturned, ...redirect },
+        { status: 200 }
+      );
+    }
+  ),
+  http.post(`/api/search/beta/merchandising/keyword/redirect`, async (ctx) => {
+    const redirect = (await ctx.request.json()) as object;
+    const response = {
+      redirect: {
+        ...redirect,
+        id: '9a32d206-6b7f-47a2-8f83-578429d2a024',
+        lastChanged: {
+          date: '2024-08-01T09:37:06.109Z',
+          user: 'Jo Smith',
+        },
+      },
+    };
+    createRedirect(response);
+    return HttpResponse.json(
+      {
+        ...redirect,
+        id: mockNewRuleset,
+        lastChanged: {
+          date: '2024-08-01T09:37:06.109Z',
+          user: 'Jo Smith',
+        },
+      },
+      { status: 200 }
+    );
+  })
+);
 
 describe('Search Rulesets', () => {
   const mockRouter = {
     push: jest.fn(),
   };
-  const mockNewRuleset = 'foo123';
-  const createRedirect = jest.fn().mockResolvedValue({ id: mockNewRuleset });
 
   beforeAll(() => {
+    server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    jest.mocked(useRedirectCreate).mockReturnValue({
-      createRedirect,
-      isSaving: false,
-      error: '',
-    });
   });
 
   beforeEach(() => {
+    server.resetHandlers();
     jest.clearAllMocks();
   });
 
   afterAll(() => {
+    server.close();
     jest.resetAllMocks();
   });
 
@@ -65,6 +144,27 @@ describe('Search Rulesets', () => {
     renderWithProviders(<RedirectRuleSets />);
 
     expect(screen.getByText('Keyword Redirect')).toBeVisible();
+  });
+
+  it('should redirect to new page when add new rule is clicked', async () => {
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(<RedirectRuleSets />);
+
+    const createButton = await screen.findByText('Add new rule');
+    act(() => {
+      createButton.click();
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/search/redirects/new');
   });
 
   it('should search', async () => {
@@ -105,7 +205,7 @@ describe('Search Rulesets', () => {
     });
     renderWithProviders(<RedirectRuleSets />);
 
-    const rulesetToggle = screen.getAllByTitle('Toggle');
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
 
@@ -133,7 +233,7 @@ describe('Search Rulesets', () => {
     });
     renderWithProviders(<RedirectRuleSets />);
 
-    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click((await screen.findAllByTitle('More options'))[0]);
     await user.click(screen.getByRole('button', { name: 'Duplicate' }));
     await waitFor(() => {
       expect(
@@ -186,7 +286,7 @@ describe('Search Rulesets', () => {
 
     const user = userEvent.setup();
 
-    const rulesetDropdown = screen.getAllByTitle('More options');
+    const rulesetDropdown = await screen.findAllByTitle('More options');
 
     await user.click(rulesetDropdown[0]);
 
@@ -215,7 +315,7 @@ describe('Search Rulesets', () => {
     expect(mockRedirectDelete).toHaveBeenCalledWith({ redirectId: mockId });
   });
 
-  it('should display scheduling column', () => {
+  it('should display scheduling column', async () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [
         {
@@ -234,10 +334,10 @@ describe('Search Rulesets', () => {
 
     renderWithProviders(<RedirectRuleSets />);
 
-    expect(screen.getByText('Schedule')).toBeInTheDocument();
+    expect(await screen.findByText('Schedule')).toBeInTheDocument();
   });
 
-  it('should display country flag and filter', () => {
+  it('should display country flag and filter', async () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [
         {
@@ -255,7 +355,7 @@ describe('Search Rulesets', () => {
 
     renderWithProviders(<RedirectRuleSets />);
 
-    expect(screen.getByAltText('IE rule')).toBeInTheDocument();
+    expect(await screen.findByAltText('IE rule')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'All marksandspencer.com' })
     ).toBeVisible();

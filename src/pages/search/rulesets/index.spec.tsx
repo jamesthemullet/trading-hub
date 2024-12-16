@@ -1,8 +1,11 @@
+import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 
-import { useSearchRulesetList } from '@/libs/hooks';
+import { KeywordRuleSet, ReturnedKeywordRuleSet } from '@/libs/api';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -16,24 +19,97 @@ const mockRefetchRuleSetList = jest.fn();
 const mockUpdateRuleSet = jest.fn();
 const mockRuleSetDelete = jest.fn();
 const mockRuleSetCreate = jest.fn().mockResolvedValue({ id: mockNewRuleset });
-
-jest.mock('@/libs/hooks', () => ({
-  ...jest.requireActual('@/libs/hooks'),
-  useSearchRulesetList: jest.fn(),
-  useSearchRuleSetUpdate: () => {
-    return { updateRuleSet: mockUpdateRuleSet, isSaving: true };
-  },
-  useSearchRuleSetDelete: () => {
-    return { deleteRuleset: mockRuleSetDelete };
-  },
-  useSearchRuleSetCreate: () => {
-    return { createRuleset: mockRuleSetCreate };
-  },
-}));
+const useSearchRulesetList = jest.fn();
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
+
+const server = setupServer(
+  http.get(`/api/search/beta/merchandising/keyword/ruleset`, (ctx) => {
+    const url = new URL(ctx.request.url);
+    const countryCode = url.searchParams.get('countryCode');
+    const data = useSearchRulesetList(
+      url.searchParams.get('q'),
+      Number(url.searchParams.get('start')),
+      Number(url.searchParams.get('rows'))
+    );
+    if (data.error !== '') {
+      return HttpResponse.json(
+        {
+          message: data.error,
+          status: 500,
+        },
+        { status: 500 }
+      );
+    }
+    mockRefetchRuleSetList({
+      countryCode,
+    });
+    return HttpResponse.json(
+      {
+        ruleSets: data.ruleSets,
+        pagination: data.pagination,
+      },
+      { status: 200 }
+    );
+  }),
+  http.delete(`/api/search/beta/merchandising/keyword/ruleset/:id`, (ctx) => {
+    mockRuleSetDelete({ rulesetId: ctx.params.id });
+    return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
+  }),
+  http.get(`/api/search/beta/merchandising/keyword/ruleset/:id`, (ctx) => {
+    const data = useSearchRulesetList();
+    const ruleSetReturned = data.ruleSets.find(
+      (ruleSet: any) => ruleSet.id === ctx.params.id
+    );
+    return HttpResponse.json(ruleSetReturned, { status: 200 });
+  }),
+  http.put(
+    `/api/search/beta/merchandising/keyword/ruleset/:id`,
+    async (ctx) => {
+      const data = useSearchRulesetList();
+      const ruleSetReturned: ReturnedKeywordRuleSet = data.ruleSets.find(
+        (ruleSet: any) => ruleSet.id === ctx.params.id
+      );
+      const rules = (await ctx.request.json()) as KeywordRuleSet;
+      mockUpdateRuleSet({
+        searchTerms: ruleSetReturned.searchTerms,
+        ruleSetId: ruleSetReturned.id,
+        rules: {
+          facets: rules.facets,
+          isEnabled: rules.isEnabled,
+          rules: rules.rules,
+          startDate: rules.startDate,
+          endDate: rules.endDate,
+        },
+      });
+      return HttpResponse.json(
+        { ...ruleSetReturned, ...rules },
+        { status: 200 }
+      );
+    }
+  ),
+  http.post(`/api/search/beta/merchandising/keyword/ruleset`, async (ctx) => {
+    const ruleSet = (await ctx.request.json()) as KeywordRuleSet;
+    mockRuleSetCreate({
+      merchandisingRules: ruleSet.rules,
+      searchTerms: ruleSet.searchTerms,
+      countryCode: ruleSet.countryCode,
+    });
+    return HttpResponse.json(
+      {
+        id: mockNewRuleset,
+        lastChanged: {
+          user: 'user',
+          date: '2021-01-01',
+        },
+        ...ruleSet,
+      },
+      { status: 200 }
+    );
+  })
+);
 
 describe('Search Rulesets', () => {
   const mockRouter = {
@@ -42,14 +118,17 @@ describe('Search Rulesets', () => {
   const mockNewRuleset = 'foo123';
 
   beforeAll(() => {
+    server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   beforeEach(() => {
+    server.resetHandlers();
     jest.clearAllMocks();
   });
 
   afterAll(() => {
+    server.close();
     jest.resetAllMocks();
   });
 
@@ -68,6 +147,27 @@ describe('Search Rulesets', () => {
     expect(
       screen.getByRole('heading', { name: 'Search ranking rules', level: 2 })
     ).toBeVisible();
+  });
+
+  it('should redirect to new page when add new rule is clicked', async () => {
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    const createButton = await screen.findByText('Add new rule');
+    act(() => {
+      createButton.click();
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/search/rulesets/new');
   });
 
   it('should search', async () => {
@@ -138,7 +238,7 @@ describe('Search Rulesets', () => {
 
     renderWithProviders(<RuleSets />);
 
-    const rulesetToggle = screen.getAllByTitle('Toggle');
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
 
@@ -183,7 +283,7 @@ describe('Search Rulesets', () => {
 
     renderWithProviders(<RuleSets />);
 
-    const rulesetToggle = screen.getAllByTitle('Toggle');
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
 
@@ -228,7 +328,7 @@ describe('Search Rulesets', () => {
 
     renderWithProviders(<RuleSets />);
 
-    await user.click(screen.getAllByTitle('More options')[0]);
+    await user.click((await screen.findAllByTitle('More options'))[0]);
     await user.click(screen.getByRole('button', { name: 'Duplicate' }));
     await waitFor(() => {
       expect(
@@ -281,7 +381,7 @@ describe('Search Rulesets', () => {
 
     const user = userEvent.setup();
 
-    const rulesetDropdown = screen.getAllByTitle('More options');
+    const rulesetDropdown = await screen.findAllByTitle('More options');
 
     await user.click(rulesetDropdown[0]);
 
@@ -310,7 +410,7 @@ describe('Search Rulesets', () => {
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 
-  it('should display scheduling column', () => {
+  it('should display scheduling column', async () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockSearchTerms = ['search', 'terms'];
 
@@ -340,10 +440,10 @@ describe('Search Rulesets', () => {
 
     renderWithProviders(<RuleSets />);
 
-    expect(screen.getByText('Schedule')).toBeInTheDocument();
+    expect(await screen.findByText('Schedule')).toBeInTheDocument();
   });
 
-  it('should display country flag and filter', () => {
+  it('should display country flag and filter', async () => {
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     const mockSearchTerms = ['search', 'terms'];
 
@@ -372,7 +472,7 @@ describe('Search Rulesets', () => {
 
     renderWithProviders(<RuleSets />);
 
-    expect(screen.getByAltText('UK rule')).toBeInTheDocument();
+    expect(await screen.findByAltText('UK rule')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'All marksandspencer.com' })
     ).toBeVisible();

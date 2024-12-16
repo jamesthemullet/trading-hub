@@ -1,120 +1,17 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-
-import type {
-  CountryCode,
+import {
   KeywordRuleSet,
   ReturnedKeywordRuleSet,
+  ReturnedKeywordRuleSets,
+  search,
 } from '@/libs/api';
-import { DataTable, Heading, Search, TablePagination } from '@/libs/components';
-import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
-import {
-  NewButton,
-  PageNameLabel,
-  PageWrapper,
-  ToolsContainer,
-} from '@/libs/components/utils/shared.styles';
-import {
-  useSearchRuleSetCreate,
-  useSearchRuleSetDelete,
-  useSearchRulesetList,
-  useSearchRuleSetUpdate,
-} from '@/libs/hooks';
-import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { Heading } from '@/libs/components';
+import { TablePanel } from '@/libs/components/table-panel/table-panel';
+import { RuleSetMapping } from '@/libs/components/types';
+import { PageNameLabel } from '@/libs/components/utils/shared.styles';
 
 import Head from 'next/head';
-import Link from 'next/link';
 
 const SearchRuleSets = () => {
-  const pageSizes = [10, 20, 50, 100];
-  const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  const { updateRuleSet } = useSearchRuleSetUpdate();
-  const { createRuleset } = useSearchRuleSetCreate();
-  const router = useRouter();
-
-  const currentPageIndex = currentPage - 1;
-
-  const { pagination, ruleSets, setRuleSets, refetchRuleSetList } =
-    useSearchRulesetList(
-      searchQuery,
-      currentPageIndex * currentPageSize,
-      currentPageSize
-    );
-
-  const { callback: handleSearch } = useDebounce((val: string) => {
-    setSearchQuery(val);
-  }, 300);
-
-  const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
-    const ruleSet = ruleSets.find((ruleSet) => ruleSet.id === id);
-
-    // istanbul ignore next
-    if (!ruleSet) return;
-
-    const { searchTerms, facets, rules, isEnabled } = ruleSet;
-    await updateRuleSet({
-      ruleSetId: id,
-      rules: {
-        facets,
-        rules,
-        isEnabled: !isEnabled,
-        startDate: ruleSet.startDate,
-        endDate: ruleSet.endDate,
-        countryCode: ruleSet.countryCode,
-      },
-      searchTerms,
-    });
-    // istanbul ignore next
-    const updatedRuleSetsList = ruleSets.map(
-      (ruleset: ReturnedKeywordRuleSet) =>
-        ruleset.id === id ? { ...ruleset, isEnabled: !isEnabled } : ruleset
-    );
-    setRuleSets(updatedRuleSetsList);
-  };
-
-  const createDuplicatedCategoryRuleSet = async ({
-    rules,
-    searchTerms,
-    startDate,
-    endDate,
-    countryCode = 'UK_IE',
-  }: KeywordRuleSet) => {
-    const resp = await createRuleset({
-      searchTerms,
-      merchandisingRules: rules,
-      startDate,
-      endDate,
-      countryCode,
-    });
-
-    if (resp) {
-      return router.push(`/search/rulesets/edit/${resp.id}`);
-    }
-  };
-
-  const { deleteRuleset } = useSearchRuleSetDelete();
-
-  const onDeleteRuleSet = async ({ id }: { id: string }) => {
-    await deleteRuleset({ rulesetId: id });
-
-    refetchRuleSetList({});
-  };
-
-  const onDuplicateRuleSet = (id: string) => {
-    const rulesetToCopy = ruleSets.find((ruleset) => ruleset.id === id);
-
-    // istanbul ignore next
-    if (!rulesetToCopy) return;
-    createDuplicatedCategoryRuleSet({
-      rules: rulesetToCopy.rules,
-      searchTerms: rulesetToCopy.searchTerms,
-      isEnabled: false,
-    });
-  };
-
   const headings = [
     'Identifier',
     'Schedule',
@@ -125,38 +22,74 @@ const SearchRuleSets = () => {
     'Actions',
   ];
 
-  const rows = ruleSets.map(
-    ({
-      searchTerms,
+  const mapping: RuleSetMapping<
+    ReturnedKeywordRuleSets,
+    ReturnedKeywordRuleSet,
+    KeywordRuleSet
+  > = {
+    queryAllRuleSets: search().betaMerchandisingKeywordRulesetList,
+    deleteRuleSetById: search().betaMerchandisingKeywordRulesetDelete,
+    queryRuleSetById: search().betaMerchandisingKeywordRulesetDetail,
+    updateRuleSetById: search().betaMerchandisingKeywordRulesetUpdate,
+    newRuleSet: search().betaMerchandisingKeywordRulesetCreate,
+    ruleSetToRow: (
+      {
+        id,
+        searchTerms,
+        isEnabled,
+        lastChanged,
+        startDate,
+        endDate,
+        countryCode,
+      },
+      { searchQuery }
+    ) => ({
       id,
-      isEnabled,
-      lastChanged,
-      startDate,
-      endDate,
-      countryCode,
-    }) => ({
-      id: id,
       identifier: searchTerms
         .map((term) =>
-          !!searchQuery.length &&
+          !!searchQuery?.length &&
           term.toLowerCase().startsWith(searchQuery.toLowerCase())
             ? `<b>${term}</b>`
             : term
         )
         .join(' | '),
-      searchTerms,
       isEnabled,
       lastChanged,
-      onToggle: onEnableDisableRuleSet,
       url: `/search/rulesets/edit/${id}`,
       startDate,
       endDate,
       countryCode,
-    })
-  );
-
-  const handleCountryFilter = (countryCode?: CountryCode) => {
-    refetchRuleSetList({ countryCode });
+    }),
+    allToArray: (data) => data.ruleSets,
+    getEmptyRuleSet: () => ({
+      searchTerms: [],
+      countryCode: 'UK_IE',
+      endDate: undefined,
+      excludedFacets: undefined,
+      facets: [],
+      isEnabled: false,
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { numeric: [], alphanumeric: [], product: [] },
+        buries: { numeric: [], alphanumeric: [], product: [] },
+        includes: { alphanumeric: [] },
+        excludes: { alphanumeric: [] },
+      },
+      startDate: undefined,
+    }),
+    returnedToRuleSet: (returnedRuleSet) => {
+      return {
+        searchTerms: returnedRuleSet.searchTerms,
+        countryCode: returnedRuleSet.countryCode || 'UK_IE',
+        endDate: returnedRuleSet.endDate,
+        excludedFacets: returnedRuleSet.excludedFacets,
+        facets: returnedRuleSet.facets,
+        isEnabled: returnedRuleSet.isEnabled,
+        rules: returnedRuleSet.rules,
+        startDate: returnedRuleSet.startDate,
+      };
+    },
   };
 
   return (
@@ -172,32 +105,13 @@ const SearchRuleSets = () => {
         ]}
       />
       <PageNameLabel>Search ranking rules</PageNameLabel>
-      <PageWrapper>
-        <ToolsContainer>
-          <Search onChange={(e) => handleSearch(e.target.value)} />
-          <CountryFilterDropdown onChange={handleCountryFilter} />
-          <NewButton>
-            <Link href="/search/rulesets/new">Add new rule</Link>
-          </NewButton>
-        </ToolsContainer>
-
-        <DataTable
-          headings={headings}
-          rows={rows}
-          ruleType="searchRanking"
-          onDeleteRuleSet={onDeleteRuleSet}
-          onDuplicate={onDuplicateRuleSet}
-        />
-
-        <TablePagination
-          pagination={pagination}
-          pageSizes={pageSizes}
-          currentPage={currentPage}
-          currentPageSize={currentPageSize}
-          setCurrentPage={setCurrentPage}
-          setCurrentPageSize={setCurrentPageSize}
-        />
-      </PageWrapper>
+      <TablePanel
+        basePath="/search/rulesets"
+        headings={headings}
+        mapping={mapping}
+        newRowCreateMode="redirect-to-new"
+        ruleType="searchRanking"
+      />
     </>
   );
 };

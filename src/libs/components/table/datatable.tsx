@@ -224,7 +224,7 @@ type Row = {
     date: string;
     user: string;
   };
-  onToggle: ({ id }: { id: string }) => void;
+  onToggle?: ({ id }: { id: string }) => void;
   url: string;
   categoriesInfo?: Array<{
     id: string;
@@ -241,6 +241,7 @@ type Row = {
 type Props = {
   headings: string[];
   onDeleteRuleSet: ({ id }: { id: string }) => void;
+  onToggleRuleSet?: ({ id }: { id: string }) => void;
   rows: Row[];
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
   onDuplicate?: (id: string) => void;
@@ -252,6 +253,7 @@ export const DataTable = ({
   rows,
   ruleType,
   onDuplicate,
+  onToggleRuleSet,
 }: Props) => {
   const [optionToggle, setOptionToggle] = useState('');
   const [ruleSetIdToEdit, setRuleSetIdToEdit] = useState('');
@@ -454,7 +456,12 @@ export const DataTable = ({
                   <Toggle
                     checked={isEnabled}
                     onChange={() => {
-                      onToggle({ id });
+                      if (onToggleRuleSet) {
+                        onToggleRuleSet({ id });
+                      }
+                      if (onToggle) {
+                        onToggle({ id });
+                      }
                     }}
                   />
                 </TableCol>

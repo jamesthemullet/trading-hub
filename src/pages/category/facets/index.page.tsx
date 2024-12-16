@@ -1,116 +1,18 @@
-import { useState } from 'react';
-import { Skeleton } from '@mantine/core';
-import { useRouter } from 'next/router';
-
-import type {
+import {
   CategoryRuleSet,
-  CountryCode,
   ReturnedCategoryRuleSet,
+  ReturnedCategoryRuleSets,
+  search,
 } from '@/libs/api';
-import {
-  DataTable,
-  DataTableSkeleton,
-  ErrorMessage,
-  Heading,
-  Search,
-  TablePagination,
-  TablePaginationSkeleton,
-} from '@/libs/components';
-import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
+import { Heading } from '@/libs/components';
+import { TablePanel } from '@/libs/components/table-panel/table-panel';
+import { RuleSetMapping } from '@/libs/components/types';
 import { formatCategoriesInfo } from '@/libs/components/utils/format-categories-info';
-import {
-  NewButton,
-  PageNameLabel,
-  PageWrapper,
-  ToolsContainer,
-} from '@/libs/components/utils/shared.styles';
-import {
-  useRuleSet,
-  useRuleSetCreate,
-  useRuleSetDelete,
-  useUpdateRuleSet,
-} from '@/libs/hooks';
-import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { PageNameLabel } from '@/libs/components/utils/shared.styles';
 
 import Head from 'next/head';
-import Link from 'next/link';
 
 const FacetManagementPage = () => {
-  const pageSizes = [10, 20, 50, 100];
-  const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const { createRuleset } = useRuleSetCreate();
-  const router = useRouter();
-
-  const currentPageIndex = currentPage - 1;
-
-  const {
-    categoryRuleSets,
-    pagination,
-    refetchRuleSetList,
-    setCategoryRuleSets,
-    error: getRulesetError,
-    isLoading,
-  } = useRuleSet(
-    searchQuery,
-    currentPageIndex * currentPageSize,
-    currentPageSize,
-    'category'
-  );
-
-  const sizeIsUnknownYet = pagination.totalItems === 0;
-
-  const { callback: handleSearch } = useDebounce((val: string) => {
-    setSearchQuery(val);
-    setCurrentPage(1);
-  }, 300);
-
-  const { handleDelete, error: deleteRulesetError } = useRuleSetDelete();
-
-  const { updateCategoryRuleSet, error: updateRulesetError } =
-    useUpdateRuleSet();
-
-  const onDeleteRuleSet = async ({ id }: { id: string }) => {
-    await handleDelete({ rulesetId: id });
-
-    refetchRuleSetList({});
-  };
-
-  const onEnableDisableRuleSet = async ({ id }: { id: string }) => {
-    const ruleSet = categoryRuleSets.find((ruleSet) => ruleSet.id === id);
-
-    // istanbul ignore next
-    if (!ruleSet) return;
-
-    const {
-      categoriesInfo,
-      facets,
-      rules,
-      isEnabled,
-      startDate,
-      endDate,
-      excludedFacets,
-      countryCode,
-    } = ruleSet;
-    await updateCategoryRuleSet({
-      categoryIds: categoriesInfo.map((category) => category.id),
-      countryCode,
-      facets,
-      isEnabled: !isEnabled,
-      rules,
-      ruleSetId: id,
-      ...(endDate && { endDate }),
-      ...(excludedFacets && { excludedFacets }),
-      ...(startDate && { startDate }),
-    });
-    const updatedRuleSetsList = categoryRuleSets.map(
-      (ruleset: ReturnedCategoryRuleSet) =>
-        ruleset.id === id ? { ...ruleset, isEnabled: !isEnabled } : ruleset
-    );
-    setCategoryRuleSets(updatedRuleSetsList);
-  };
-
   const headings = [
     'Identifier',
     'Breadcrumb',
@@ -122,8 +24,21 @@ const FacetManagementPage = () => {
     'Actions',
   ];
 
-  const rows = categoryRuleSets.map(
-    ({
+  const mapping: RuleSetMapping<
+    ReturnedCategoryRuleSets,
+    ReturnedCategoryRuleSet,
+    CategoryRuleSet
+  > = {
+    queryAllRuleSets: search().betaMerchandisingCategoryRulesetList,
+    deleteRuleSetById: search().betaMerchandisingCategoryRulesetDelete,
+    queryRuleSetById: search().betaMerchandisingCategoryRulesetDetail,
+    updateRuleSetById: search().betaMerchandisingCategoryRulesetUpdate,
+    newRuleSet: (returnedRuleSet) =>
+      search().betaMerchandisingCategoryRulesetCreate({
+        ...returnedRuleSet,
+        facets: returnedRuleSet.facets || [],
+      }),
+    ruleSetToRow: ({
       id,
       isEnabled,
       lastChanged,
@@ -134,63 +49,46 @@ const FacetManagementPage = () => {
     }) => ({
       id: id,
       identifier: formatCategoriesInfo(categoriesInfo),
-      categoriesInfo: categoriesInfo,
       isEnabled,
       lastChanged,
-      onToggle: onEnableDisableRuleSet,
       url: `/category/facets/edit/${id}`,
       categoryPlpUrl: categoriesInfo[0].plpUrl,
       startDate,
       endDate,
       countryCode,
-    })
-  );
-
-  const createDuplicatedCategoryRuleSet = async ({
-    categoryIds,
-    countryCode,
-    endDate,
-    excludedFacets,
-    facets,
-    isEnabled,
-    rules,
-    startDate,
-  }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
-    const resp = await createRuleset({
-      categoryIds,
-      facets,
-      isEnabled,
-      rules,
-      ...(countryCode && { countryCode }),
-      ...(excludedFacets && { excludedFacets }),
-      ...(startDate && { startDate }),
-      ...(endDate && { endDate }),
-    });
-
-    if (resp) {
-      return router.push(`/category/facets/edit/${resp.id}`);
-    }
-  };
-
-  const onDuplicateRuleSet = (id: string) => {
-    const rulesetToCopy = categoryRuleSets.find((ruleset) => ruleset.id === id);
-
-    // istanbul ignore next
-    if (!rulesetToCopy) return;
-    createDuplicatedCategoryRuleSet({
-      rules: rulesetToCopy.rules,
-      facets: rulesetToCopy.facets || [],
-      excludedFacets: rulesetToCopy.excludedFacets,
-      categoryIds: rulesetToCopy.categoriesInfo.map((category) => category.id),
-      startDate: rulesetToCopy.startDate,
-      endDate: rulesetToCopy.endDate,
+    }),
+    allToArray: (data) => data.ruleSets,
+    getEmptyRuleSet: () => ({
+      categoryIds: [],
       isEnabled: false,
-      countryCode: rulesetToCopy.countryCode,
-    });
-  };
-
-  const handleCountryFilter = (countryCode?: CountryCode) => {
-    refetchRuleSetList({ countryCode });
+      countryCode: 'UK_IE',
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { numeric: [], alphanumeric: [], product: [] },
+        buries: { numeric: [], alphanumeric: [], product: [] },
+        includes: { alphanumeric: [] },
+        excludes: { alphanumeric: [] },
+      },
+      endDate: undefined,
+      startDate: undefined,
+      facets: [],
+      excludedFacets: undefined,
+    }),
+    returnedToRuleSet: (returnedRuleSet) => {
+      return {
+        categoryIds: returnedRuleSet.categoriesInfo.map(
+          (category) => category.id
+        ),
+        isEnabled: returnedRuleSet.isEnabled,
+        countryCode: returnedRuleSet.countryCode,
+        rules: returnedRuleSet.rules,
+        endDate: returnedRuleSet.endDate,
+        startDate: returnedRuleSet.startDate,
+        facets: returnedRuleSet.facets,
+        excludedFacets: returnedRuleSet.excludedFacets,
+      };
+    },
   };
 
   return (
@@ -207,63 +105,15 @@ const FacetManagementPage = () => {
         ]}
       />
 
-      {getRulesetError && (
-        <ErrorMessage>
-          Error whilst retrieving ruleset: {getRulesetError}
-        </ErrorMessage>
-      )}
-      {deleteRulesetError && (
-        <ErrorMessage>
-          Error whilst deleting ruleset: {deleteRulesetError}
-        </ErrorMessage>
-      )}
-      {updateRulesetError && (
-        <ErrorMessage>
-          Error whilst updating ruleset: {updateRulesetError}
-        </ErrorMessage>
-      )}
-
       <PageNameLabel>Category Facet Management</PageNameLabel>
-      <PageWrapper>
-        <ToolsContainer>
-          <Search onChange={(e) => handleSearch(e.target.value)} />
-          <CountryFilterDropdown onChange={handleCountryFilter} />
-          <NewButton>
-            {isLoading ? (
-              <Skeleton height={33} width={110} />
-            ) : (
-              <NewButton>
-                <Link href="/category/facets/new">Add new facet</Link>
-              </NewButton>
-            )}
-          </NewButton>
-        </ToolsContainer>
-
-        {isLoading ? (
-          <DataTableSkeleton headings={headings} rowsCount={10} />
-        ) : (
-          <DataTable
-            headings={headings}
-            rows={rows}
-            ruleType="categoryRanking"
-            onDeleteRuleSet={onDeleteRuleSet}
-            onDuplicate={onDuplicateRuleSet}
-          />
-        )}
-
-        {isLoading && sizeIsUnknownYet ? (
-          <TablePaginationSkeleton />
-        ) : (
-          <TablePagination
-            pagination={pagination}
-            pageSizes={pageSizes}
-            currentPage={currentPage}
-            currentPageSize={currentPageSize}
-            setCurrentPage={setCurrentPage}
-            setCurrentPageSize={setCurrentPageSize}
-          />
-        )}
-      </PageWrapper>
+      <TablePanel
+        basePath="/category/facets"
+        headings={headings}
+        mapping={mapping}
+        addNewButtonLabel="Add new facet"
+        newRowCreateMode="redirect-to-new"
+        ruleType="categoryRanking"
+      />
     </>
   );
 };
