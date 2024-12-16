@@ -83,6 +83,7 @@ export const Navigation = () => {
       activeIcon: '/trading-hub/asset/menu-search-v2-active.svg',
       subLinks: [
         { href: '/search/rulesets', text: 'Ranking rules' },
+        { href: '/search/facets', text: 'Facets' },
         { href: '/search/redirects', text: 'Redirect' },
       ],
       alt: 'Search Ranking Rules',
