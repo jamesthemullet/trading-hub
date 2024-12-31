@@ -15,18 +15,18 @@ import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-sk
 import { facetsPanelReducer } from './facets-panel-reducer';
 import { useFacetsRowsSelector } from './use-facets-panel-rows-selector';
 
-type CategoryFacetsPanelProps = {
+type SearchFacetsPanelProps = {
   ruleSetIncludedFacets: RuleSetFacetConfigWithId[] | undefined;
   ruleSetExcludedFacets: ExcludedFacets | undefined;
-  ruleSetRules?: MerchandisingRules;
   isLoading: boolean;
   countryCode: CountryCode;
-  categoryIds: string[];
+  searchTerms: string[];
+  ruleSetRules?: MerchandisingRules;
   startDate?: string;
   endDate?: string;
   isNewRuleset?: boolean;
   onSave: (value: {
-    categoryIds: string[];
+    searchTerms: string[];
     includedFacets: ReturnedFacet[];
     excludedFacets: ExcludedFacets;
     countryCode: CountryCode;
@@ -36,28 +36,24 @@ type CategoryFacetsPanelProps = {
   refreshData?: () => void;
 };
 
-const CategoryFacetsPanel = ({
+const SearchFacetsPanel = ({
   ruleSetIncludedFacets,
   ruleSetExcludedFacets,
-  ruleSetRules,
   isLoading,
   countryCode,
-  categoryIds,
+  searchTerms,
+  ruleSetRules,
   startDate,
   endDate,
   isNewRuleset,
   onSave,
   onCancel,
   refreshData,
-}: CategoryFacetsPanelProps) => {
+}: SearchFacetsPanelProps) => {
   const [stateInitialised, setStateInitialised] = useState(false);
 
-  const [selectedCategories, setSelectedCategories] =
-    useState<Array<string>>(categoryIds);
-
-  const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
-    'UK' | 'IE'
-  >(categoryIds && categoryIds[0]?.includes('IE_') ? 'IE' : 'UK');
+  const [selectedSearchTerms, setSelectedSearchTerms] =
+    useState<Array<string>>(searchTerms);
 
   const [dateTime, setDateTime] = useState<[Date | null, Date | null]>([
     null,
@@ -80,8 +76,8 @@ const CategoryFacetsPanel = ({
   });
 
   const { facets, error: getFacetsDataError } = useFacetsList({
-    query: selectedCategories,
-    queryBy: 'categoryIds',
+    query: selectedSearchTerms,
+    queryBy: 'searchTerms',
     enabled: !isLoading,
     countryCode: facetPanelLocalState.countryCode,
   });
@@ -102,13 +98,9 @@ const CategoryFacetsPanel = ({
       return facet.id;
     });
 
-    const newExcludedFacets = facets
-      .filter((facet) =>
-        ruleSetExcludedFacets?.facets?.some(
-          (excludedFacet) => excludedFacet?.id === facet.id
-        )
-      )
-      .map((facet) => facet.id);
+    const newExcludedFacets = ruleSetExcludedFacets?.facets
+      ?.map((facet) => facet.id)
+      .filter((id): id is string => id !== undefined);
 
     const newFacetsData = facets.map((facet) => {
       const includedFacet = ruleSetIncludedFacets?.find(
@@ -128,7 +120,7 @@ const CategoryFacetsPanel = ({
     setFacetsData(newFacetsData);
     if (!stateInitialised) {
       setInitialIncludedFacets(newIncludedFacets || []);
-      setInitialExcludedFacets(newExcludedFacets);
+      setInitialExcludedFacets(newExcludedFacets || []);
 
       setStateInitialised(true);
     }
@@ -157,7 +149,7 @@ const CategoryFacetsPanel = ({
 
   const handleSave = () => {
     onSave({
-      categoryIds: selectedCategories,
+      searchTerms: selectedSearchTerms,
       includedFacets,
       excludedFacets,
       countryCode: facetPanelLocalState.countryCode || 'UK_IE',
@@ -199,30 +191,28 @@ const CategoryFacetsPanel = ({
       ) : (
         <FacetsPanel
           title="Facet Rule Editor"
-          facetType="category"
+          facetType="search"
           displayRowOrderControls={true}
           isNewRuleset={isNewRuleset}
           startDate={startDate}
           endDate={endDate}
           facetsState={facetsState}
           rulesetMerchandisingRules={ruleSetRules}
-          selectedCategories={selectedCategories}
+          searchTerms={selectedSearchTerms}
           countryCode={facetPanelLocalState.countryCode}
           includedFacets={includedFacets}
           excludedFacets={excludedFacets}
-          selectedPreviewCountryCode={selectedPreviewCountryCode}
-          setSelectedPreviewCountryCode={setSelectedPreviewCountryCode}
           onSave={handleSave}
           onCancel={onCancel}
           setDateTime={setDateTime}
           refreshData={refreshData}
           updatedValues={handleUpdatedValues}
           dispatch={dispatch}
-          setSelectedCategories={setSelectedCategories}
+          setSearchTerms={setSelectedSearchTerms}
         />
       )}
     </>
   );
 };
 
-export default CategoryFacetsPanel;
+export default SearchFacetsPanel;

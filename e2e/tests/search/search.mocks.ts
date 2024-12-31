@@ -40,7 +40,18 @@ export const mockRulesetsList: ReturnedKeywordRuleSets = {
         user: '',
       },
       searchTerms: ['black hiking boots'],
-      facets: [],
+      facets: [
+        {
+          id: '4f8d4803-3eb0-11ef-9a6a-000000000000',
+          excludedValues: ['NO COLOUR'],
+          boosted: ['CHAMPAGNE'],
+        },
+        {
+          id: 'a43271cf-bf57-4e40-8fe3-f3d59f9c4c2e',
+          excludedValues: [],
+          boosted: ['SC_Level_0_0', 'SC_Level_1_16696340'],
+        },
+      ],
       excludedFacets: {
         facets: [],
       },
@@ -89,9 +100,28 @@ export const mockRulesetsList: ReturnedKeywordRuleSets = {
         user: 'Graham Licence',
       },
       searchTerms: ['coats', 'hats'],
-      facets: [],
+      facets: [
+        {
+          id: '4f8ecea1-3eb0-11ef-9a6a-000000000000',
+          excludedValues: [],
+          boosted: [],
+        },
+        {
+          id: '528e50d2-5f32-4248-868b-72cdce842597',
+          excludedValues: ['Brown'],
+          boosted: ['Pink', 'Navy', 'Grey', 'Blue', 'Green'],
+        },
+        {
+          id: '08aa7156-7b45-4399-a24f-345f110ed327',
+          excludedValues: [],
+          boosted: [],
+        },
+      ],
       excludedFacets: {
-        facets: [],
+        facets: [
+          { id: '1e404940-3240-11ef-aa09-000000000000' },
+          { id: '1e742a80-3240-11ef-aa09-000000000000' },
+        ],
       },
     },
     {
@@ -579,7 +609,18 @@ export const mockPreviewIE: SearchPreviewResponseBeta = {
       includes: { alphanumeric: [] },
       excludes: { alphanumeric: [] },
     },
-    facets: [],
+    facets: [
+      {
+        id: '4f8d4803-3eb0-11ef-9a6a-000000000000',
+        excludedValues: ['NO COLOUR'],
+        boosted: ['CHAMPAGNE'],
+      },
+      {
+        id: 'a43271cf-bf57-4e40-8fe3-f3d59f9c4c2e',
+        excludedValues: [],
+        boosted: ['SC_Level_0_0', 'SC_Level_1_16696340'],
+      },
+    ],
   },
   externalChanges: {
     pinnedProducts: [],
@@ -752,7 +793,18 @@ export const mockRuleSet: ReturnedKeywordRuleSet = {
   },
   lastChanged: { date: '2024-09-19T08:11:42Z', user: 'Graham Licence' },
   searchTerms: ['joggers'],
-  facets: [],
+  facets: [
+    {
+      id: '4f8d4803-3eb0-11ef-9a6a-000000000000',
+      excludedValues: ['NO COLOUR'],
+      boosted: ['CHAMPAGNE'],
+    },
+    {
+      id: 'a43271cf-bf57-4e40-8fe3-f3d59f9c4c2e',
+      excludedValues: [],
+      boosted: ['SC_Level_0_0', 'SC_Level_1_16696340'],
+    },
+  ],
   excludedFacets: { facets: [] },
   startDate: '2024-09-12T14:17:54Z',
   endDate: '2024-12-19T04:20:03Z',

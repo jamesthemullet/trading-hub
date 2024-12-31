@@ -2,8 +2,10 @@ import { useCallback, useState } from 'react';
 
 import type {
   CountryCode,
+  ExcludedFacets,
   KeywordRuleSet,
   MerchandisingRules,
+  ReturnedFacet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
@@ -14,12 +16,16 @@ export const useSearchRuleSetCreate = () => {
     async ({
       searchTerms,
       merchandisingRules,
+      includedFacets,
+      excludedFacets,
       startDate,
       endDate,
       countryCode,
     }: {
       searchTerms: string[];
       merchandisingRules: MerchandisingRules;
+      includedFacets: ReturnedFacet[];
+      excludedFacets: ExcludedFacets;
       startDate?: string;
       endDate?: string;
       countryCode?: CountryCode;
@@ -34,6 +40,8 @@ export const useSearchRuleSetCreate = () => {
           startDate,
           endDate,
           countryCode,
+          excludedFacets,
+          facets: includedFacets,
         };
         const response =
           await search().betaMerchandisingKeywordRulesetCreate(body);

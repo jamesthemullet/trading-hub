@@ -60,6 +60,8 @@ describe('useSearchRuleSetCreate', () => {
     const resp = await current.createRuleset({
       searchTerms: mockSearchTerms,
       merchandisingRules: mockMerchandisingRules,
+      includedFacets: [],
+      excludedFacets: { facets: [] },
       countryCode: 'UK_IE',
     });
 
@@ -78,6 +80,8 @@ describe('useSearchRuleSetCreate', () => {
       await result.current.createRuleset({
         searchTerms: mockSearchTerms,
         merchandisingRules: mockMerchandisingRules,
+        includedFacets: [],
+        excludedFacets: { facets: [] },
         countryCode: 'UK_IE',
       });
     });

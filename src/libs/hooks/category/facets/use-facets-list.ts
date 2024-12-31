@@ -13,11 +13,13 @@ import { uniqBy } from 'lodash';
 import { handleError } from '../../utils/error';
 
 export const useFacetsList = ({
-  categoryIds,
+  query,
+  queryBy,
   enabled,
   countryCode,
 }: {
-  categoryIds: string[];
+  query: string[];
+  queryBy: 'categoryIds' | 'searchTerms';
   enabled: boolean;
   countryCode: CountryCode;
 }) => {
@@ -27,45 +29,57 @@ export const useFacetsList = ({
 
   const requestData = useCallback(
     async (
-      categories: string[],
-      catalogue: BetaMerchandisingAttributesListParamsCatalogueEnum
+      query: string[],
+      catalogue: BetaMerchandisingAttributesListParamsCatalogueEnum,
+      queryBy: 'categoryIds' | 'searchTerms'
     ) => {
-      const categoriesToFetch = categories.map((categoryId) => {
-        switch (catalogue) {
-          case 'MANDSIE':
-            return categoryId.includes('IE_');
-          case 'MANDSUK':
-          default:
-            return !categoryId.includes('IE_');
-        }
-      });
-
-      const results = await Promise.all(
-        categoriesToFetch.map(async (shouldFetch, index) => {
-          if (shouldFetch) {
-            const response = await search().betaMerchandisingFacetList({
-              catalogue,
-              categoryId: [categories[index]],
-            });
-
-            return response.data.facets;
+      if (queryBy === 'searchTerms') {
+        const response = await search().betaMerchandisingFacetList({
+          catalogue,
+          searchTerm: query,
+        });
+        return response.data.facets;
+      } else {
+        const categoriesToFetch = query.map((categoryId) => {
+          switch (catalogue) {
+            case 'MANDSIE':
+              return categoryId.includes('IE_');
+            case 'MANDSUK':
+            default:
+              return !categoryId.includes('IE_');
           }
-          return [];
-        })
-      );
+        });
 
-      return results.flat();
+        const results = await Promise.all(
+          categoriesToFetch.map(async (shouldFetch, index) => {
+            if (shouldFetch) {
+              const response = await search().betaMerchandisingFacetList({
+                catalogue,
+                categoryId: [query[index]],
+              });
+              return response.data.facets;
+            }
+            return [];
+          })
+        );
+
+        return results.flat();
+      }
     },
     []
   );
 
   const asyncCall = useCallback(
-    async (categories: string[], country: CountryCode) => {
+    async (
+      query: string[],
+      country: CountryCode,
+      queryBy: 'categoryIds' | 'searchTerms'
+    ) => {
       try {
         const catalogues = convertCountryCodeToCatalogues(country);
 
         const responses = await Promise.all(
-          catalogues.map((catalogue) => requestData(categories, catalogue))
+          catalogues.map((catalogue) => requestData(query, catalogue, queryBy))
         );
 
         const dedupedList = uniqBy(responses.flat(), 'displayValue');
@@ -82,12 +96,12 @@ export const useFacetsList = ({
   );
 
   useEffect(() => {
-    if (enabled && categoryIds.length !== 0) {
+    if (enabled && query && query.length !== 0) {
       setIsLoading(true);
-      void asyncCall(categoryIds, countryCode);
+      void asyncCall(query, countryCode, queryBy);
     }
     return () => {};
-  }, [categoryIds, countryCode, enabled, asyncCall]);
+  }, [query, queryBy, countryCode, enabled, asyncCall]);
 
   return {
     facets: facetsList,

@@ -3,29 +3,20 @@
 
 import { expect, test } from '@playwright/test';
 
+import { mockAttributeValue, mockFacets } from '../category/category.mocks';
 import {
-  mockAttributeValue,
-  mockCategoryList,
-  mockCategoryRuleset,
-  mockCategoryRulesets,
-  mockFacets,
   mockPreview,
   mockProducts,
-} from './category.mocks';
+  mockRuleSet,
+  mockRulesetsList,
+} from './search.mocks';
 
-test.describe('Category rulesets', () => {
+test.describe('Search rulesets', () => {
   test.beforeEach(async ({ page }) => {
     await page.route(
-      '*/**/api/search/beta/merchandising/category/ruleset*',
+      '*/**/api/search/beta/merchandising/keyword/ruleset*',
       async (route) => {
-        const json = mockCategoryRulesets;
-        await route.fulfill({ status: 200, json });
-      }
-    );
-    await page.route(
-      '*/**/api/search/beta/merchandising/category*',
-      async (route) => {
-        const json = mockCategoryList;
+        const json = mockRulesetsList;
         await route.fulfill({ status: 200, json });
       }
     );
@@ -51,9 +42,16 @@ test.describe('Category rulesets', () => {
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/category/ruleset/5e1002e8-bb08-4215-b26f-b5f6814b010a',
+      '*/**/api/search/beta/merchandising/keyword/ruleset/2b948868-cbe2-4d21-8b8a-0fd713516add*',
       async (route) => {
-        const json = mockCategoryRuleset;
+        const json = mockRuleSet;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      '*/**/api/search/beta/merchandising/keyword/ruleset/abcdcae5-c3c4-455b-aeff-b7d2af65b702*',
+      async (route) => {
+        const json = mockRuleSet;
         await route.fulfill({ status: 200, json });
       }
     );
@@ -67,9 +65,9 @@ test.describe('Category rulesets', () => {
   });
 
   test('edits ruleset facets for UK', async ({ page }) => {
-    await page.goto('/category/facets');
+    await page.goto('/search/facets');
     await expect(
-      page.getByRole('heading', { name: 'Category Facet Management' })
+      page.getByRole('heading', { name: 'Search Facet Management' })
     ).toBeVisible();
 
     await page.waitForLoadState('networkidle');
@@ -82,65 +80,6 @@ test.describe('Category rulesets', () => {
     ).toBeVisible();
 
     await expect(page.getByText('Colours')).toBeVisible();
-
-    await page.getByRole('button', { name: 'Algo control' }).first().click();
-    await page.getByRole('button', { name: 'include', exact: true }).click();
-
-    await expect(
-      page.getByLabel('Row showing Collections as included')
-    ).toBeVisible();
-
-    await page.keyboard.down('End');
-
-    await page.getByRole('button', { name: 'Algo control' }).first().click();
-    await page.getByRole('button', { name: 'exclude', exact: true }).click();
-
-    await expect(
-      page.getByLabel('Row showing Colour as excluded')
-    ).toBeVisible();
-
-    await expect(page.getByTestId('facets-table-row').first()).toContainText(
-      'Colours'
-    );
-
-    await page.getByRole('button', { name: 'Move Colours row down' }).click();
-
-    await expect(page.getByTestId('facets-table-row').first()).toContainText(
-      'Categories'
-    );
-
-    await page.getByRole('button', { name: 'Move Collections row up' }).click();
-    await page.getByRole('button', { name: 'Move Collections row up' }).click();
-
-    await expect(page.getByTestId('facets-table-row').first()).toContainText(
-      'Collections'
-    );
-  });
-
-  test('edits ruleset facets for IE', async ({ page }) => {
-    await page.goto('/category/facets');
-    await expect(
-      page.getByRole('heading', { name: 'Category Facet Management' })
-    ).toBeVisible();
-
-    await page.waitForLoadState('networkidle');
-
-    await page.getByRole('link', { name: 'Edit' }).first().click();
-
-    await page.waitForLoadState('networkidle');
-    await expect(
-      page.getByRole('heading', { name: 'Facet Rule Editor' })
-    ).toBeVisible();
-
-    await expect(page.getByText('Colours')).toBeVisible();
-
-    await page.getByRole('button', { name: 'select market' }).click();
-
-    await page.getByRole('button', { name: 'select IE market only' }).click();
-
-    await expect(
-      page.getByRole('heading', { name: 'Facet Rule Editor' })
-    ).toBeVisible();
 
     await page.getByRole('button', { name: 'Algo control' }).first().click();
     await page.getByRole('button', { name: 'include', exact: true }).click();
@@ -177,7 +116,7 @@ test.describe('Category rulesets', () => {
   });
 
   test('edits facet values', async ({ page }) => {
-    page.goto('/category/facets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010a');
+    page.goto('/search/facets/edit/abcdcae5-c3c4-455b-aeff-b7d2af65b702');
 
     await page.waitForLoadState('networkidle');
     await expect(

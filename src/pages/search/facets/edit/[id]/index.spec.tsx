@@ -3,17 +3,15 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import {
-  useGetCategories,
   useGetFacetAttributeValues,
-  useRuleSetDetail,
+  useSearchRuleSetPreview,
+  useSearchRuleSetUpdate,
 } from '@/libs/hooks';
 import { useGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
-import {
-  mockUseRuleSetPreviewData,
-  ruleSetId,
-} from '@/test/data/mock-use-rule-set-preview.data';
+import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
+import { mockUseSearchRuleSetPreviewData } from '@/test/data/mock-use-search-ruleset-preview';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { GetServerSidePropsContext } from 'next';
@@ -22,11 +20,38 @@ import { ParsedUrlQuery } from 'querystring';
 import Page, { getServerSideProps } from './index.page';
 
 const mockUpdateGlobalFacet = jest.fn();
-const mockUpdateRuleSet = jest.fn().mockReturnValue(true);
-const updateRuleSet = {
-  updateCategoryRuleSet: mockUpdateRuleSet,
+
+const mockUpdateRuleSet = {
+  updateRuleSet: jest.fn(() =>
+    Promise.resolve({
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { numeric: [], alphanumeric: [], product: [] },
+        buries: { numeric: [], alphanumeric: [], product: [] },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      },
+      searchTerms: ['foo', 'bar'],
+      isEnabled: true,
+      categoryName: 'Jeans',
+      id: ruleSetId,
+      categoriesInfo: [
+        {
+          id: ruleSetId,
+        },
+      ],
+      lastChanged: { date: '2024-01-02T22:10:17Z', user: 'M&S' },
+    })
+  ),
+  isSaving: true,
   error: '',
 };
+
 const mockUseFacetsList = {
   isLoading: false,
   facets: facetsListMock.facets,
@@ -39,13 +64,9 @@ jest.mock('next/router', () => ({
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
-  useRuleSetDetail: jest.fn(),
-  useGetCategories: jest.fn(),
+  useSearchRuleSetPreview: jest.fn(),
   useFacetsList: () => {
     return mockUseFacetsList;
-  },
-  useUpdateRuleSet: () => {
-    return updateRuleSet;
   },
 }));
 
@@ -69,34 +90,100 @@ jest.mock('@/libs/hooks/use-check-merge-name-unique', () => ({
   useCheckMergeNameUnique: jest.fn(),
 }));
 
-const categoryId1 = 'cat_123';
-const categoryName1 = 'jeans';
-const categoryPath1 = 'l/jeans';
-const mockGetCategories = {
-  categories: [
+jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-update', () => ({
+  ...jest.requireActual(
+    '@/libs/hooks/search/ruleset/use-search-ruleset-update'
+  ),
+  useSearchRuleSetUpdate: jest.fn(),
+}));
+
+const updateMock = {
+  searchTerms: ['foo', 'bar'],
+  countryCode: 'UK_IE',
+  ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+  excludedFacets: {
+    facets: [
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+      },
+    ],
+  },
+  facets: [
     {
-      identifier: categoryId1,
-      name: categoryName1,
-      path: categoryPath1,
+      displayValue: 'color',
+      boosted: ['Pink', 'Navy', 'Grey', 'Blue', 'Green'],
+      excludedValues: ['Brown'],
+      indexPropertyName: 'color',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+      lastChanged: {
+        date: '2021-01-01T08:34:15Z',
+        user: 'Test User',
+      },
+      merged: [
+        {
+          displayValue: 'test merged group',
+          mergedValues: ['merged 1', 'merged 2'],
+        },
+      ],
+    },
+    {
+      displayValue: 'size',
+      boosted: [],
+      excludedValues: [],
+      indexPropertyName: 'size',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+      lastChanged: {
+        date: '2021-01-02T08:34:15Z',
+        user: 'Test User',
+      },
+      merged: [],
+    },
+    {
+      displayValue: 'brand',
+      boosted: [],
+      excludedValues: [],
+      indexPropertyName: 'brand',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+      lastChanged: {
+        date: '2021-01-03T08:34:15Z',
+        user: 'Test User',
+      },
+      merged: [],
     },
   ],
-  pagination: { totalItems: 20 },
+  isEnabled: false,
+  rules: {
+    pinnedProducts: [{ id: 'a1' }],
+    blockedProducts: [],
+    boosts: {
+      numeric: [],
+      alphanumeric: [],
+      product: [],
+    },
+    buries: {
+      numeric: [],
+      alphanumeric: [],
+      product: [],
+    },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
+  },
 };
 
-describe('Category Facet Management Editing', () => {
+describe('Search Facet Management Editing', () => {
   const mockRouter = {
     push: jest.fn(),
   };
 
   beforeEach(() => {
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
-    });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest
-      .mocked(useRuleSetDetail)
-      .mockImplementation(() => mockUseRuleSetPreviewData);
+      .mocked(useSearchRuleSetPreview)
+      .mockImplementation(() => mockUseSearchRuleSetPreviewData);
 
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
@@ -117,13 +204,16 @@ describe('Category Facet Management Editing', () => {
       }),
       error: '',
     });
+    jest
+      .mocked(useSearchRuleSetUpdate)
+      .mockImplementation(() => mockUpdateRuleSet);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('loads the mock data', async () => {
+  it('should load the mock data', async () => {
     const mockPageId = 'abc123';
     const context = { query: { id: mockPageId } as ParsedUrlQuery };
     const result = await getServerSideProps(
@@ -170,7 +260,7 @@ describe('Category Facet Management Editing', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets');
   });
 
   it('should save changes to a facet', async () => {
@@ -180,88 +270,12 @@ describe('Category Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      categoryIds: ['SubCategory_428'],
-      countryCode: 'UK_IE',
-      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-      excludedFacets: {
-        facets: [
-          {
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-          },
-        ],
-      },
-      rules: {
-        pinnedProducts: [{ id: 'a1' }],
-        blockedProducts: [],
-        boosts: {
-          numeric: [],
-          alphanumeric: [],
-          product: [],
-        },
-        buries: {
-          numeric: [],
-          alphanumeric: [],
-          product: [],
-        },
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
 
-      isEnabled: false,
-      facets: [
-        {
-          displayValue: 'color',
-          boosted: ['test include'],
-          excludedValues: ['test exclude'],
-          indexPropertyName: 'color',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          lastChanged: {
-            date: '2021-01-01T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
-        },
-        {
-          displayValue: 'size',
-          boosted: [],
-          excludedValues: [],
-          indexPropertyName: 'size',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-          lastChanged: {
-            date: '2021-01-02T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
-        },
-        {
-          displayValue: 'brand',
-          boosted: [],
-          excludedValues: [],
-          indexPropertyName: 'brand',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-          lastChanged: {
-            date: '2021-01-03T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
-        },
-      ],
-    });
-
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets/');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets/');
   });
 
-  it('should save changes to a facet ruleset with a different country', async () => {
+  it('should save changes to a ruleset with a different country', async () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(<Page id={ruleSetId} />);
@@ -279,87 +293,15 @@ describe('Category Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      categoryIds: ['SubCategory_428'],
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith({
+      ...updateMock,
       countryCode: 'IE',
-      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-      excludedFacets: {
-        facets: [
-          {
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-          },
-        ],
-      },
-      rules: {
-        pinnedProducts: [{ id: 'a1' }],
-        blockedProducts: [],
-        boosts: {
-          numeric: [],
-          alphanumeric: [],
-          product: [],
-        },
-        buries: {
-          numeric: [],
-          alphanumeric: [],
-          product: [],
-        },
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
-      isEnabled: false,
-      facets: [
-        {
-          displayValue: 'color',
-          boosted: ['test include'],
-          excludedValues: ['test exclude'],
-          indexPropertyName: 'color',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          lastChanged: {
-            date: '2021-01-01T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
-        },
-        {
-          displayValue: 'size',
-          boosted: [],
-          excludedValues: [],
-          indexPropertyName: 'size',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-          lastChanged: {
-            date: '2021-01-02T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
-        },
-        {
-          displayValue: 'brand',
-          boosted: [],
-          excludedValues: [],
-          indexPropertyName: 'brand',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-          lastChanged: {
-            date: '2021-01-03T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
-        },
-      ],
     });
   });
 
   it('should render the skeleton loader', () => {
-    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
-      ...mockUseRuleSetPreviewData,
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
       isLoading: true,
     }));
     renderWithProviders(<Page id={ruleSetId} />);
@@ -370,8 +312,8 @@ describe('Category Facet Management Editing', () => {
   });
 
   it('should change the order of rows', async () => {
-    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
-      ...mockUseRuleSetPreviewData,
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
       facets: facetsListMock.facets,
       isLoading: false,
     }));
@@ -380,7 +322,9 @@ describe('Category Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Move color row up')).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Move color row up' })
+      ).toBeInTheDocument();
     });
     expect(screen.getByLabelText('Move color row up')).toBeDisabled();
 
@@ -460,7 +404,7 @@ describe('Category Facet Management Editing', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should update status on dropdown change to algoControl', async () => {
+  it('should update the status on dropdown change to algoControl', async () => {
     const user = userEvent.setup();
     renderWithProviders(<Page id={ruleSetId} />);
 
@@ -567,82 +511,7 @@ describe('Category Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      categoryIds: ['SubCategory_428'],
-      countryCode: 'UK_IE',
-      excludedFacets: {
-        facets: [
-          {
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-          },
-        ],
-      },
-      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-      rules: {
-        pinnedProducts: [{ id: 'a1' }],
-        blockedProducts: [],
-        boosts: {
-          numeric: [],
-          alphanumeric: [],
-          product: [],
-        },
-        buries: {
-          numeric: [],
-          alphanumeric: [],
-          product: [],
-        },
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
-      isEnabled: false,
-      facets: [
-        {
-          displayValue: 'color',
-          boosted: ['test include'],
-          excludedValues: ['test exclude'],
-          indexPropertyName: 'color',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          lastChanged: {
-            date: '2021-01-01T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
-        },
-        {
-          displayValue: 'size',
-          boosted: [],
-          excludedValues: [],
-          indexPropertyName: 'size',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-          lastChanged: {
-            date: '2021-01-02T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
-        },
-        {
-          displayValue: 'brand',
-          boosted: [],
-          excludedValues: [],
-          indexPropertyName: 'brand',
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-          lastChanged: {
-            date: '2021-01-03T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
-        },
-      ],
-    });
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
   });
 
   it('should update facet values', async () => {
@@ -676,44 +545,13 @@ describe('Category Facet Management Editing', () => {
     });
 
     await waitFor(() => {
-      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        categoryIds: ['SubCategory_428'],
-        countryCode: 'UK_IE',
-        excludedFacets: {
-          facets: [
-            {
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-            },
-          ],
-        },
-        ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-
-        rules: {
-          pinnedProducts: [{ id: 'a1' }],
-          blockedProducts: [],
-          boosts: {
-            numeric: [],
-            alphanumeric: [],
-            product: [],
-          },
-          buries: {
-            numeric: [],
-            alphanumeric: [],
-            product: [],
-          },
-          includes: {
-            alphanumeric: [],
-          },
-          excludes: {
-            alphanumeric: [],
-          },
-        },
-        isEnabled: false,
+      expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith({
+        ...updateMock,
         facets: [
           {
             displayValue: 'color',
-            boosted: ['test include', 'More Silk'],
-            excludedValues: ['test exclude'],
+            boosted: ['Pink', 'Navy', 'Grey', 'Blue', 'Green', 'More Silk'],
+            excludedValues: ['Brown'],
             indexPropertyName: 'color',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
             lastChanged: {
@@ -768,16 +606,16 @@ describe('Category Facet Management Editing', () => {
 
     it('should set a scheduled date', async () => {
       const mockScheduleRuleset = {
-        ...mockUseRuleSetPreviewData,
-        ruleSetDetail: {
-          ...mockUseRuleSetPreviewData.ruleSetDetail,
+        ...mockUseSearchRuleSetPreviewData,
+        ruleSet: {
+          ...mockUseSearchRuleSetPreviewData.ruleSet,
           endDate: '2022-04-13T22:59:00.000Z',
           startDate: '2022-04-11T23:00:00.000Z',
         },
       };
 
       jest
-        .mocked(useRuleSetDetail)
+        .mocked(useSearchRuleSetPreview)
         .mockImplementation(() => mockScheduleRuleset);
 
       renderWithProviders(<Page id={ruleSetId} />);
@@ -827,105 +665,28 @@ describe('Category Facet Management Editing', () => {
         screen.getByRole('button', { name: /^Save$/ }).click();
       });
 
-      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        categoryIds: ['SubCategory_428'],
-        countryCode: 'UK_IE',
-        excludedFacets: {
-          facets: [
-            {
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-            },
-          ],
-        },
-        ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-        endDate: '2022-04-17T22:59:00.000Z',
+      expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith({
+        ...updateMock,
         startDate: '2022-04-16T23:00:00.000Z',
-        rules: {
-          pinnedProducts: [{ id: 'a1' }],
-          blockedProducts: [],
-          boosts: {
-            numeric: [],
-            alphanumeric: [],
-            product: [],
-          },
-          buries: {
-            numeric: [],
-            alphanumeric: [],
-            product: [],
-          },
-          includes: {
-            alphanumeric: [],
-          },
-          excludes: {
-            alphanumeric: [],
-          },
-        },
-        isEnabled: false,
-        facets: [
-          {
-            displayValue: 'color',
-            boosted: ['test include'],
-            excludedValues: ['test exclude'],
-            indexPropertyName: 'color',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-            lastChanged: {
-              date: '2021-01-01T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [
-              {
-                displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
-              },
-            ],
-          },
-          {
-            displayValue: 'size',
-            boosted: [],
-            excludedValues: [],
-            indexPropertyName: 'size',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-            lastChanged: {
-              date: '2021-01-02T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
-          },
-          {
-            displayValue: 'brand',
-            boosted: [],
-            excludedValues: [],
-            indexPropertyName: 'brand',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-            lastChanged: {
-              date: '2021-01-03T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
-          },
-        ],
+        endDate: '2022-04-17T22:59:00.000Z',
       });
     });
   });
 
-  describe('category operations', () => {
+  describe('Search term operations', () => {
     it('should show empty list when category is removed', async () => {
-      jest.mocked(useRuleSetDetail).mockReturnValue({
-        ...mockUseRuleSetPreviewData,
-        ruleSetDetail: {
-          ...mockUseRuleSetPreviewData.ruleSetDetail,
-          categoriesInfo: [
-            {
-              id: 'SubCategory_428',
-            },
-          ],
+      jest.mocked(useSearchRuleSetPreview).mockReturnValue({
+        ...mockUseSearchRuleSetPreviewData,
+        ruleSet: {
+          ...mockUseSearchRuleSetPreviewData.ruleSet,
+          searchTerms: ['red dress'],
         },
       });
 
       renderWithProviders(<Page id={ruleSetId} />);
 
       const clearButton = await screen.findByLabelText(
-        'Remove category: SubCategory_428'
+        'Remove keyword: red dress'
       );
 
       act(() => {
@@ -938,7 +699,7 @@ describe('Category Facet Management Editing', () => {
 
   describe('Display Error Messaging', () => {
     it('should display error message when fetching ruleset fails', async () => {
-      mockUseRuleSetPreviewData.error = 'Error fetching ruleset';
+      mockUseSearchRuleSetPreviewData.error = 'Error fetching ruleset';
 
       renderWithProviders(<Page id={ruleSetId} />);
 
@@ -950,7 +711,7 @@ describe('Category Facet Management Editing', () => {
     });
 
     it('should display error message when updating ruleset fails', async () => {
-      updateRuleSet.error = 'Failed to update';
+      mockUpdateRuleSet.error = 'Failed to update';
 
       renderWithProviders(<Page id={ruleSetId} />);
 

@@ -1,0 +1,249 @@
+import { act, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
+
+import { useSearchRuleSetCreate } from '@/libs/hooks';
+import { facetsListMock } from '@/pages/api/search/mocks';
+import { renderWithProviders } from '@/test/render-with-providers';
+
+import NewFacetRuleset from './index.page';
+
+const mockUseFacetsList = {
+  isLoading: false,
+  facets: facetsListMock.facets,
+  error: '',
+};
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useSearchRuleSetCreate: jest.fn(),
+  useFacetsList: () => {
+    return mockUseFacetsList;
+  },
+}));
+
+const logSpy = jest.spyOn(console, 'log');
+logSpy.mockImplementation(jest.fn());
+
+const NEW_RULE_BUTTON_TEXT = 'Create';
+
+describe('Search Facet Management New', () => {
+  const mockRouter = {
+    push: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.mocked(useSearchRuleSetCreate).mockReturnValue({
+      createRuleset: jest.fn(),
+      error: '',
+    });
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should render search ruleset facet editor', async () => {
+    renderWithProviders(<NewFacetRuleset />);
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Facet Rule Editor' })
+    ).toBeVisible();
+  });
+
+  it('should cancel changes to a facet', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<NewFacetRuleset />);
+
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    const confirmCancelButton = await screen.findByText('Close without saving');
+
+    act(() => {
+      confirmCancelButton.click();
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets');
+  });
+
+  it('should save changes to a newly created facet', async () => {
+    const user = userEvent.setup();
+    const createRuleset = jest.fn().mockResolvedValue({});
+    jest.mocked(useSearchRuleSetCreate).mockReturnValue({
+      createRuleset,
+      error: '',
+    });
+
+    renderWithProviders(<NewFacetRuleset />);
+
+    const keywordInput = await screen.findByLabelText('Add keyword');
+    await user.type(keywordInput, 'red dress{Enter}');
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as algoControl')
+      ).toBeVisible();
+    });
+
+    const includeOnlyOption = screen.getAllByText('Include only')[0];
+
+    await user.click(includeOnlyOption);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing color as included')
+      ).toBeVisible();
+    });
+
+    const excludeOnlyOption = screen.getAllByText('Exclude only')[1];
+
+    await user.click(excludeOnlyOption);
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('Row showing size as excluded')
+      ).toBeVisible();
+    });
+
+    const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    act(() => {
+      submit.click();
+    });
+
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
+    expect(createRuleset).toHaveBeenCalledWith({
+      searchTerms: ['red dress'],
+      countryCode: 'UK_IE',
+      includedFacets: [
+        {
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          lastChanged: {
+            date: '2021-01-01T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        },
+      ],
+      excludedFacets: {
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+          },
+        ],
+      },
+      merchandisingRules: {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        excludes: { alphanumeric: [] },
+        includes: { alphanumeric: [] },
+        pinnedProducts: [],
+      },
+    });
+    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets');
+  });
+
+  describe('Scheduling', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2022, 2, 1));
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    it('should save scheduling changes to a facet', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+      const createRuleset = jest.fn().mockResolvedValue({});
+      jest.mocked(useSearchRuleSetCreate).mockReturnValue({
+        createRuleset,
+        error: '',
+      });
+
+      renderWithProviders(<NewFacetRuleset />);
+
+      const keywordInput = await screen.findByLabelText('Add keyword');
+      await user.type(keywordInput, 'red dress{Enter}');
+
+      expect(screen.getByText('Duration')).toBeVisible();
+
+      const input = screen.getByPlaceholderText('Select date range');
+      act(() => {
+        input.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('On all the time')).toBeVisible();
+      });
+
+      const toggle = screen.getByTitle('Toggle');
+      act(() => {
+        toggle.click();
+      });
+
+      await waitFor(() => {
+        const startDate = screen.getAllByText('16')[1];
+        act(() => {
+          startDate.click();
+        });
+      });
+
+      await waitFor(() => {
+        const endDate = screen.getAllByText('17')[1];
+        act(() => {
+          endDate.click();
+        });
+      });
+
+      const saveButton = within(
+        screen.getByLabelText('Datepicker modal')
+      ).getByRole('button', {
+        name: 'Close schedule editor',
+      });
+      expect(saveButton).toBeEnabled();
+      act(() => {
+        saveButton.click();
+      });
+
+      expect(screen.getByPlaceholderText('Select date range')).toHaveValue(
+        '16/04/22 00:00 - 17/04/22 23:59'
+      );
+
+      const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);
+      act(() => {
+        submit.click();
+      });
+
+      expect(createRuleset).toHaveBeenCalledWith({
+        searchTerms: ['red dress'],
+        endDate: '2022-04-17T23:59:00.000Z',
+        startDate: '2022-04-16T00:00:00.000Z',
+        countryCode: 'UK_IE',
+        includedFacets: [],
+        excludedFacets: {
+          facets: [],
+        },
+        merchandisingRules: {
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: { alphanumeric: [], numeric: [], product: [] },
+          excludes: { alphanumeric: [] },
+          includes: { alphanumeric: [] },
+          pinnedProducts: [],
+        },
+      });
+    });
+  });
+});

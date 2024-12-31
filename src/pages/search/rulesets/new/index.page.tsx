@@ -21,6 +21,8 @@ const NewRuleSetPage = () => {
     const resp = await createRuleset({
       searchTerms,
       merchandisingRules: rules,
+      includedFacets: [],
+      excludedFacets: { facets: [] },
       startDate,
       endDate,
       countryCode,

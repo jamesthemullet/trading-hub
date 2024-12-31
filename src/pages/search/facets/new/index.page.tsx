@@ -1,0 +1,88 @@
+import { useRouter } from 'next/router';
+
+import type { CountryCode, ExcludedFacets, ReturnedFacet } from '@/libs/api';
+import { Heading } from '@/libs/components';
+import { useSearchRuleSetCreate } from '@/libs/hooks';
+import SearchFacetsPanel from '@/libs/modules/facets-panel/search-facets-panel';
+
+import Head from 'next/head';
+
+const NewRuleSetPage = () => {
+  const { createRuleset } = useSearchRuleSetCreate();
+  const router = useRouter();
+
+  const handleSave = async ({
+    searchTerms,
+    includedFacets,
+    excludedFacets,
+    countryCode,
+    dateTime,
+  }: {
+    searchTerms: string[];
+    includedFacets: ReturnedFacet[];
+    excludedFacets: ExcludedFacets;
+    countryCode: CountryCode;
+    dateTime?: [Date | null, Date | null];
+  }) => {
+    const defaultMerchandisingRules = {
+      pinnedProducts: [],
+      blockedProducts: [],
+      boosts: { alphanumeric: [], numeric: [], product: [] },
+      buries: {
+        alphanumeric: [],
+        numeric: [],
+        product: [],
+      },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
+    };
+
+    const resp = await createRuleset({
+      searchTerms,
+      merchandisingRules: defaultMerchandisingRules,
+      includedFacets,
+      excludedFacets,
+      ...(dateTime?.[0] && { startDate: new Date(dateTime[0]).toISOString() }),
+      ...(dateTime?.[1] && { endDate: new Date(dateTime[1]).toISOString() }),
+      countryCode,
+    });
+
+    if (resp) {
+      return router.push('/search/facets');
+    }
+  };
+
+  const handleCancel = () => {
+    router.push('/search/facets');
+  };
+
+  return (
+    <>
+      <Head>
+        <title>Merchandising Hub | M&S | Create search ranking rule</title>
+      </Head>
+      <Heading
+        breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
+      />
+
+      <SearchFacetsPanel
+        isNewRuleset
+        ruleSetIncludedFacets={[]}
+        ruleSetExcludedFacets={{
+          facets: [],
+        }}
+        isLoading={false}
+        countryCode={'UK_IE'}
+        searchTerms={[]}
+        onSave={handleSave}
+        onCancel={handleCancel}
+      />
+    </>
+  );
+};
+
+export default NewRuleSetPage;

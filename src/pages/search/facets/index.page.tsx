@@ -55,7 +55,7 @@ const FacetManagementPage = () => {
         .join(' | '),
       isEnabled,
       lastChanged,
-      url: `/search/rulesets/edit/${id}`,
+      url: `/search/facets/edit/${id}`,
       startDate,
       endDate,
       countryCode,
@@ -95,12 +95,16 @@ const FacetManagementPage = () => {
   return (
     <>
       <Head>
-        <title>Merchandising Hub | M&S | Search Facets</title>
+        <title>Merchandising Hub | M&S | Search Facet Management</title>
       </Head>
       <Heading
-        breadcrumbs={['Search & Merchandising', 'Site search', 'Search Facets']}
+        breadcrumbs={[
+          'Search & Merchandising',
+          'Site search',
+          'Search Facet Management',
+        ]}
       />
-      <PageNameLabel>Search Facets</PageNameLabel>
+      <PageNameLabel>Search Facet Management</PageNameLabel>
       <TablePanel
         basePath="/search/facets"
         headings={headings}

@@ -41,13 +41,10 @@ describe('useSearchRulesetList', () => {
     act(() => {
       result.current.updateRuleSet({
         searchTerms: [],
-
         ruleSetId: mockRulesetId,
-        rules: {
-          isEnabled: true,
-          rules: mockMerchandisingRules,
-          facets: [],
-        },
+        isEnabled: true,
+        facets: [],
+        rules: mockMerchandisingRules,
       });
     });
 
@@ -74,13 +71,10 @@ describe('useSearchRulesetList', () => {
     act(() => {
       result.current.updateRuleSet({
         searchTerms: [],
-
         ruleSetId: mockRulesetId,
-        rules: {
-          isEnabled: true,
-          rules: mockMerchandisingRules,
-          facets: [],
-        },
+        isEnabled: true,
+        facets: [],
+        rules: mockMerchandisingRules,
       });
     });
 

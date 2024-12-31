@@ -30,10 +30,13 @@ const Page = ({ id }: PageProps) => {
     if (!searchTerms?.[0]) return;
     await updateRuleSet({
       ruleSetId,
-      rules: ruleSet,
+      rules: ruleSet.rules,
       searchTerms,
       startDate: ruleSet.startDate,
       endDate: ruleSet.endDate,
+      ...(ruleSet.excludedFacets && { excludedFacets: ruleSet.excludedFacets }),
+      ...(ruleSet.facets && { facets: ruleSet.facets }),
+      isEnabled: ruleSet.isEnabled,
     }).then(() => {
       router.push('/search/rulesets');
     });
@@ -59,6 +62,8 @@ const Page = ({ id }: PageProps) => {
           rulesetMerchandisingRules={ruleSet.rules}
           rulesetType="search"
           searchTerms={ruleSet.searchTerms}
+          rulesetFacets={ruleSet.facets}
+          rulesetExcludedFacets={ruleSet.excludedFacets}
           startDate={ruleSet.startDate}
           endDate={ruleSet.endDate}
           countryCode={ruleSet.countryCode}

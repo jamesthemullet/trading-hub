@@ -31,6 +31,30 @@ export const mockUseSearchRuleSetPreviewData = {
         alphanumeric: [],
       },
     },
+    facets: [
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+        excludedValues: ['Brown'],
+        boosted: ['Pink', 'Navy', 'Grey', 'Blue', 'Green'],
+      },
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+        excludedValues: [],
+        boosted: [],
+      },
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+        excludedValues: [],
+        boosted: [],
+      },
+    ],
+    excludedFacets: {
+      facets: [
+        {
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+        },
+      ],
+    },
   },
   products: [
     {

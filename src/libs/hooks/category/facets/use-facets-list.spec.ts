@@ -54,7 +54,8 @@ describe('useFacetsList', () => {
   it('should render the hook', async () => {
     const { result } = renderHook(() =>
       useFacetsList({
-        categoryIds: [],
+        query: [],
+        queryBy: 'categoryIds',
         enabled: true,
         countryCode: 'UK',
       })
@@ -75,7 +76,8 @@ describe('useFacetsList', () => {
 
     const { result } = renderHook(() =>
       useFacetsList({
-        categoryIds: ['123'],
+        query: ['123'],
+        queryBy: 'categoryIds',
         enabled: true,
         countryCode: 'UK',
       })
@@ -91,7 +93,8 @@ describe('useFacetsList', () => {
   it('should render the hook with category id', async () => {
     const { result } = renderHook(() =>
       useFacetsList({
-        categoryIds: ['12345'],
+        query: ['12345'],
+        queryBy: 'categoryIds',
         enabled: true,
         countryCode: 'UK',
       })
@@ -111,11 +114,36 @@ describe('useFacetsList', () => {
     );
   });
 
+  it('should render the hook with search term', async () => {
+    const { result } = renderHook(() =>
+      useFacetsList({
+        query: ['red dress'],
+        queryBy: 'searchTerms',
+        enabled: true,
+        countryCode: 'UK',
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.facets.length).toEqual(5);
+    });
+
+    expect(requestSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({
+          method: 'GET',
+          url: 'http://localhost/search/beta/merchandising/facet?catalogue=MANDSUK&searchTerm=red%20dress',
+        }),
+      })
+    );
+  });
+
   it('should do a request with IE param', async () => {
     const { result } = renderHook(
       () =>
         useFacetsList({
-          categoryIds: ['IE_12345'],
+          query: ['IE_12345'],
+          queryBy: 'categoryIds',
           enabled: true,
           countryCode: 'IE',
         }),
@@ -139,7 +167,8 @@ describe('useFacetsList', () => {
   it('should do 2 requests with UK_IE param', async () => {
     const { result } = renderHook(() =>
       useFacetsList({
-        categoryIds: ['12345', 'IE_12345'],
+        query: ['12345', 'IE_12345'],
+        queryBy: 'categoryIds',
         enabled: true,
         countryCode: 'UK_IE',
       })
@@ -189,7 +218,8 @@ describe('useFacetsList', () => {
   it('should not call the hook when disabled', async () => {
     const { result } = renderHook(() =>
       useFacetsList({
-        categoryIds: [],
+        query: [],
+        queryBy: 'categoryIds',
         enabled: false,
         countryCode: 'UK',
       })

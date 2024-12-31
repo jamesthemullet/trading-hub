@@ -12,6 +12,7 @@ import {
   ErrorMessage,
   ProductGridHeader,
   Search,
+  SearchKeywords,
   SelectedCategory,
   Text,
 } from '@/libs/components';
@@ -83,6 +84,7 @@ interface FacetsPanelProps {
   startDate?: string;
   facetsState: FacetRowDisplayValue[];
   selectedCategories?: string[];
+  searchTerms?: string[];
   countryCode: CountryCode;
   includedFacets: ReturnedFacet[];
   excludedFacets: ExcludedFacets;
@@ -105,12 +107,14 @@ interface FacetsPanelProps {
   ) => void;
   setSelectedCategories?: (category: string[]) => void;
   setSelectedPreviewCountryCode?: (countryCode: 'UK' | 'IE') => void;
+  setSearchTerms?: (searchTerms: string[]) => void;
   refreshData?: () => void;
 }
 
 export const FacetsPanel = ({
   displayRowOrderControls = false,
   selectedCategories = [],
+  searchTerms = [],
   title,
   facetType,
   isNewRuleset,
@@ -130,6 +134,7 @@ export const FacetsPanel = ({
   updatedValues,
   setSelectedCategories,
   setSelectedPreviewCountryCode,
+  setSearchTerms,
   refreshData,
 }: FacetsPanelProps) => {
   const [showPreview, setShowPreview] = useState(false);
@@ -171,6 +176,7 @@ export const FacetsPanel = ({
   );
 
   const { setSearch, filteredFacets } = useFacetsFilter(facetsState);
+
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
   }, 300);
@@ -214,6 +220,7 @@ export const FacetsPanel = ({
       selectedCategories.filter((categoryName) => categoryName !== category)
     );
   };
+
   const onSelectCategory = (category: string) => {
     const hasDuplicates = checkForDuplicates(
       [...selectedCategories],
@@ -228,6 +235,22 @@ export const FacetsPanel = ({
       setSelectedPreviewCountryCode?.(category.includes('IE_') ? 'IE' : 'UK');
     }
   };
+
+  const onRemoveSearchTerm = (term: string) => {
+    setSearchTerms?.(searchTerms.filter((searchTerm) => searchTerm !== term));
+  };
+
+  const onAddSearchTerm = (term: string) => {
+    const hasDuplicates = checkForDuplicates(searchTerms, term, 'keyword');
+
+    if (hasDuplicates) {
+      setDuplicationError(hasDuplicates);
+    } else {
+      setSearchTerms?.([...searchTerms, term]);
+      setDuplicationError('');
+    }
+  };
+
   const onSelectPreviewCategory = (category: string | undefined) => {
     setPreviewValue(category);
     setSelectedPreviewCountryCode?.(category?.includes('IE_') ? 'IE' : 'UK');
@@ -311,9 +334,17 @@ export const FacetsPanel = ({
       )}
 
       <ProductGridHeader
-        canSave={!!selectedCategories.length || facetType === 'global'}
+        canSave={
+          !!selectedCategories.length ||
+          !!searchTerms.length ||
+          facetType === 'global'
+        }
         onSave={() => {
-          if (selectedCategories.length > 0 || facetType === 'global') {
+          if (
+            selectedCategories.length > 0 ||
+            searchTerms.length > 0 ||
+            facetType === 'global'
+          ) {
             onSave();
           }
         }}
@@ -351,6 +382,17 @@ export const FacetsPanel = ({
           )}
           {facetType === 'global' && (
             <SelectedCategory label="Applies to all pages in marksandspencer.com" />
+          )}
+          {facetType === 'search' && (
+            <SearchKeywords
+              title="Search Keywords"
+              searchTerms={searchTerms}
+              addSearchTerm={onAddSearchTerm}
+              removeSearchTerm={onRemoveSearchTerm}
+              previewSearchTerm={previewValue}
+              selectPreviewSearchTerm={setPreviewValue}
+              error={duplicationError}
+            />
           )}
           {facetType !== 'global' && setDateTime && (
             <Duration>

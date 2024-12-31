@@ -22,7 +22,6 @@ const Page = ({ id }: PageProps) => {
     ruleSetId,
     ruleSet,
   }: {
-    categoryId?: string;
     categoryIds?: Array<string>;
     ruleSetId: string;
     ruleSet: RuleSet;
