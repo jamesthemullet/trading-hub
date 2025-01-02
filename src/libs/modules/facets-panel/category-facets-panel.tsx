@@ -126,7 +126,7 @@ const CategoryFacetsPanel = ({
     });
 
     setFacetsData(newFacetsData);
-    if (!stateInitialised) {
+    if (!stateInitialised && newFacetsData?.length) {
       setInitialIncludedFacets(newIncludedFacets || []);
       setInitialExcludedFacets(newExcludedFacets);
 
