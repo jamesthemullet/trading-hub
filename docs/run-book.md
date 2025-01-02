@@ -61,7 +61,15 @@ Anyone with an M&S email can log in to the trading hub. To access data users nee
 
 ### Logs - New relic
 
-TODO
+The results of the smoke tests that run every 15 minutes are sent to New Relic.
+An incident will be created if the percentage of smoke tests that fails is above 0%.
+An e-mail will then be sent to the Search And Sort inbox.
+
+Note that the window duration for the condition to trigger is 30 minutes, so it should require smoke tests to fail on two consecutive runs - this is designed to reduce any random noise from an occasional smoke test failure.
+
+New Relic automatically closes incidents if the condition is no longer met. To clarify, this means that if smoke tests failed twice, and an incident was created - if the smoke tests passed later (following a fix being merged, for example) then the incident would close automatically.
+
+[New Relic alert policy for Trading Hub](https://one.newrelic.com/alerts/condition-builder/policy-entity/MjQ3OTYxNHxBSU9QU3xQT0xJQ1l8NTY4NDc3NA?account=2479614&duration=259200000&filters=%28domain%3D%27AIOPS%27%20AND%20type%3D%27CONDITION%27%29&state=85f587a4-fd1c-1615-c4f5-497a8c561faf).
 
 ### Troubleshooting
 
