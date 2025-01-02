@@ -322,7 +322,7 @@ export const SearchKeywords = ({
                           }
                         }
                       }
-                      aria-label={`Remove category from modal: ${previewSearchTerm}`}
+                      aria-label={`Remove keyword from modal: ${previewSearchTerm}`}
                     >
                       <Image
                         alt=""

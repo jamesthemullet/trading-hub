@@ -196,6 +196,7 @@ export const CategorySearch = ({
                       : 'Additional category'
                   }
                   as="p"
+                  role="button"
                 >
                   {isPreviewCategory ? (
                     category

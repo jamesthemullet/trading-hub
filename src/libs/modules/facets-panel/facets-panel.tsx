@@ -423,7 +423,7 @@ export const FacetsPanel = ({
 
       {(selectedCategories.length > 0 || facetType === 'global') && (
         <SectionWrapper>
-          <Search onChange={(e) => handleSearch(e.target.value)} />
+          <Search onChange={(e) => handleSearch(e.target.value.trim())} />
         </SectionWrapper>
       )}
 
