@@ -95,13 +95,16 @@ export const useFacetsList = ({
     [requestData]
   );
 
+  // stringifying the query to use as a dependency as array causes 10+ rerenders inside test
+  const queryJSON = JSON.stringify(query);
   useEffect(() => {
-    if (enabled && query && query.length !== 0) {
+    const parsedQuery = JSON.parse(queryJSON);
+    if (enabled && parsedQuery && parsedQuery.length !== 0) {
       setIsLoading(true);
-      void asyncCall(query, countryCode, queryBy);
+      void asyncCall(parsedQuery, countryCode, queryBy);
     }
     return () => {};
-  }, [query, queryBy, countryCode, enabled, asyncCall]);
+  }, [queryJSON, queryBy, countryCode, enabled, asyncCall]);
 
   return {
     facets: facetsList,

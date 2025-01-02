@@ -29,9 +29,6 @@ describe('useFacetsList', () => {
   beforeAll(() => {
     process.env.MERCHANDISING_PROXY_BASE_URL = baseUrl;
     server.listen();
-
-    const logSpy = jest.spyOn(console, 'log');
-    logSpy.mockImplementation(jest.fn());
   });
 
   beforeEach(() => {
