@@ -20,6 +20,10 @@
   ],
   "packageRules": [
     {
+      "groupName": "mantine",
+      "matchPackageNames": ["@mantine/**"]
+    },
+    {
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
