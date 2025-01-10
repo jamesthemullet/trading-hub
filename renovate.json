@@ -21,7 +21,7 @@
   "packageRules": [
     {
       "groupName": "mantine",
-      "matchPackageNames": ["@mantine/**"]
+      "matchPackageNames": ["/mantine/"]
     },
     {
       "matchUpdateTypes": ["minor", "patch"],
