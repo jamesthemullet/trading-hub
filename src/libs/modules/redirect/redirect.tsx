@@ -47,7 +47,6 @@ const Input = styled.input`
 const Duration = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: ${spacing(2)};
   gap: ${spacing(1)};
 
   label {
@@ -59,10 +58,6 @@ const LabelContainer = styled.label`
   display: flex;
   font-size: 14px;
   align-items: center;
-`;
-
-const InfluenceWrapper = styled.div`
-  margin-right: ${spacing(2)};
 `;
 
 const InfluenceLabel = styled(Text)`
@@ -211,8 +206,8 @@ export const Redirect = ({
             ? 'Redirect Term(s)'
             : 'Redirect Phrase(s)'}
         </SubHeader2>
-        <Row style={{ display: 'flex' }}>
-          <InfluenceWrapper>
+        <Row style={{ display: 'flex', flexWrap: 'wrap', gap: spacing(2) }}>
+          <div>
             <InfluenceLabel>Influence</InfluenceLabel>
             <CountrySelectorDropdown
               onChange={(country: CountryCode) =>
@@ -220,7 +215,7 @@ export const Redirect = ({
               }
               selectedCountryCode={redirect.countryCode}
             />
-          </InfluenceWrapper>
+          </div>
           <SearchKeywords
             searchTerms={redirect.keywords}
             title={

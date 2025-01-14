@@ -48,6 +48,8 @@ export const LowerHeading = styled(Text)`
 
 export const ScopeWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: ${spacing(2)};
 
   & > div:second-child {
     width: 100%;
@@ -57,7 +59,6 @@ export const ScopeWrapper = styled.div`
 export const Duration = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: ${spacing(2)};
   gap: ${spacing(1)};
 
   label {
@@ -142,10 +143,6 @@ export const OrderArrowsContainer = styled.div`
   max-width: ${spacing(12)};
   margin-right: ${spacing(2)};
   gap: ${spacing(1)};
-`;
-
-export const CountrySelectorWrapper = styled.div`
-  margin-right: ${spacing(2)};
 `;
 
 export const CountrySelectorLabel = styled(Text)`

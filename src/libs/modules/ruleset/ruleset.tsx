@@ -52,16 +52,17 @@ const CategoryPanel = styled.div<{
   padding: ${spacing(1)};
   ${({ rulesetType }) => css`
     display: grid;
-    grid-template-columns: 240px auto;
+    grid-template-columns: 220px auto;
+    gap: ${spacing(2)};
     @media only screen and (min-width: 1200px) {
       ${rulesetType === 'global' &&
       /* istanbul ignore next */
-      'grid-template-columns: 240px 490px 320px'};
+      'grid-template-columns: 220px 490px 320px'};
       ${rulesetType === 'search' &&
       /* istanbul ignore next */
-      'grid-template-columns: 240px 510px 320px'};
+      'grid-template-columns: 220px 470px 320px'};
       ${rulesetType === 'category' &&
-      'grid-template-columns: 240px 730px 320px'};
+      'grid-template-columns: 220px 710px 320px'};
     }
   `}
 `;

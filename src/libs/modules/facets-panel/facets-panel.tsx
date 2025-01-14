@@ -34,7 +34,6 @@ import {
   AttributesTable,
   Col,
   CountrySelectorLabel,
-  CountrySelectorWrapper,
   Duration,
   LabelContainer,
   LowerHeading,
@@ -360,7 +359,7 @@ export const FacetsPanel = ({
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <ScopeWrapper>
-          <CountrySelectorWrapper>
+          <div>
             <CountrySelectorLabel>Influence</CountrySelectorLabel>
             <CountrySelectorDropdown
               onChange={(country) => {
@@ -368,7 +367,7 @@ export const FacetsPanel = ({
               }}
               selectedCountryCode={countryCode}
             />
-          </CountrySelectorWrapper>
+          </div>
           {facetType === 'category' && (
             <CategorySearch
               selectedCategories={selectedCategories}
