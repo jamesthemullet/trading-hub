@@ -32,7 +32,6 @@ import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearch } from '@/libs/components/product-search/product-search';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
-import { Action } from '@/libs/components/types';
 import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
 import { usePreview } from '@/libs/hooks';
@@ -286,9 +285,7 @@ export const Ruleset = ({
     (categoryIds && categoryIds[0]) || (searchTerms && searchTerms[0])
   );
 
-  const [ruleset, dispatch] = useReducer<
-    (state: RuleSet, action: Action) => RuleSet
-  >(rulesetReducer, {
+  const [ruleset, dispatch] = useReducer(rulesetReducer, {
     isEnabled,
     startDate,
     endDate,

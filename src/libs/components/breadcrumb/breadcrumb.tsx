@@ -84,6 +84,7 @@ export const Breadcrumb = ({
   children,
   shouldUnderlineLastElement = false,
 }: BreadcrumbProps) => {
+  const props = { 'aria-current': 'page' };
   return (
     <nav aria-label="breadcrumb">
       <VisuallyHide as="p">You are here:</VisuallyHide>
@@ -92,7 +93,7 @@ export const Breadcrumb = ({
           const element =
             isValidElement(child) && index === Children.count(children) - 1
               ? cloneElement(child as ReactElement, {
-                  'aria-current': 'page',
+                  ...props,
                 })
               : child;
           return (

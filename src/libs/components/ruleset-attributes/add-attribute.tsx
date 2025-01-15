@@ -253,7 +253,7 @@ export const AddAttribute = ({
           style={{
             transform: `translateX(${modalStep * MODAL_WIDTH * -1}px)`,
           }}
-          {...(modalStep !== 0 && { inert: '' })}
+          {...(modalStep !== 0 && { inert: true })}
         >
           <ModalSection>
             <Label isStrong as="h4">
@@ -276,7 +276,7 @@ export const AddAttribute = ({
           style={{
             transform: `translateX(${(modalStep - 1) * MODAL_WIDTH * -1}px)`,
           }}
-          {...(modalStep !== 1 && { inert: '' })}
+          {...(modalStep !== 1 && { inert: true })}
         >
           <ModalSection>
             <PreviousStep
@@ -345,7 +345,7 @@ export const AddAttribute = ({
           style={{
             transform: `translateX(${(modalStep - 2) * MODAL_WIDTH * -1}px)`,
           }}
-          {...(modalStep !== 2 && { inert: '' })}
+          {...(modalStep !== 2 && { inert: true })}
         >
           <ModalSection>
             <PreviousStep
@@ -421,7 +421,7 @@ export const AddAttribute = ({
           style={{
             transform: `translateX(${(modalStep - 3) * MODAL_WIDTH * -1}px)`,
           }}
-          {...(modalStep !== 3 && { inert: '' })}
+          {...(modalStep !== 3 && { inert: true })}
         >
           <ModalSection>
             <PreviousStep as="button" isStrong onClick={() => setModalStep(2)}>

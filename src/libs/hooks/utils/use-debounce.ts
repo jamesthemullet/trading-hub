@@ -4,7 +4,7 @@ export const useDebounce = <TCallbackArgs>(
   originalCallback: (...args: TCallbackArgs[]) => void,
   wait: number
 ) => {
-  const timeout = useRef<ReturnType<typeof setTimeout>>();
+  const timeout = useRef<ReturnType<typeof setTimeout>>(null);
   const callback = useCallback(
     (...args: TCallbackArgs[]) => {
       const later = () => {
