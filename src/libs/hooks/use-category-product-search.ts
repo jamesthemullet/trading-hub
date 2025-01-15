@@ -2,9 +2,12 @@ import { useCallback, useState } from 'react';
 
 import { CountryCode, type MerchandisingRules, search } from '@/libs/api';
 
-import { union, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 
-import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
+import {
+  convertCategoryIdToCatalogue,
+  convertCountryCodeToCatalogues,
+} from '../components/utils/convert-country-code-to-catalogues';
 
 export const useCategoryProductSearch = () => {
   const [error, setError] = useState('');
@@ -12,7 +15,7 @@ export const useCategoryProductSearch = () => {
 
   const searchForProduct = useCallback(
     async ({
-      categoryId,
+      categories,
       countryCode,
       productIds,
       query,
@@ -23,7 +26,7 @@ export const useCategoryProductSearch = () => {
     }: {
       merchandisingRules: MerchandisingRules;
       countryCode: CountryCode;
-      categoryId?: string;
+      categories?: string[];
       productIds?: string[];
       query?: string;
       rows?: number;
@@ -34,37 +37,41 @@ export const useCategoryProductSearch = () => {
       setIsLoading(true);
 
       try {
-        const queryData = {
-          ...(query && { q: query }),
-          ...(!productIds && { rows }),
-          ...(!productIds && { start }),
-          ...(categoryId && { categoryId }),
-          ...(searchTerms && { merchandisingSearchTerm: searchTerms }),
-          ...(productIds && { productId: productIds }),
-        };
-
         const catalogues = convertCountryCodeToCatalogues(countryCode);
-
-        const promises = catalogues.map((catalogue) =>
-          search()
-            .betaMerchandisingProductCreate(merchandisingRules, {
-              ...queryData,
-              catalogue,
-            })
-            .then((response) => response.data)
-        );
+        const promises = categories?.length
+          ? categories.map((categoryId) =>
+              search()
+                .betaMerchandisingProductCreate(merchandisingRules, {
+                  ...(query && { q: query }),
+                  ...(!productIds && { rows }),
+                  ...(!productIds && { start }),
+                  categoryId,
+                  catalogue: convertCategoryIdToCatalogue(categoryId),
+                })
+                .then((response) => response.data)
+            )
+          : catalogues.map((catalogue) =>
+              search()
+                .betaMerchandisingProductCreate(merchandisingRules, {
+                  ...(query && { q: query }),
+                  ...(productIds && { productId: productIds }),
+                  ...(!productIds && { rows }),
+                  ...(!productIds && { start }),
+                  merchandisingSearchTerm: searchTerms,
+                  catalogue,
+                })
+                .then((response) => response.data)
+            );
 
         const results = await Promise.all(promises);
 
-        const combinedProducts = uniqBy(union(results), 'name');
-
-        const totalItems = combinedProducts.reduce(
-          (sum, result) => sum + (result.pagination?.totalItems ?? 0),
-          0
-        );
+        const products = results.map((res) => res.products).flat();
+        const totalItems = results
+          .map((res) => res.pagination.totalItems ?? 0)
+          .reduce((max, current) => Math.max(max, current), 0);
 
         const combinedData = {
-          products: combinedProducts[0].products,
+          products: uniqBy(products, 'id'),
           pagination: {
             totalItems,
           },

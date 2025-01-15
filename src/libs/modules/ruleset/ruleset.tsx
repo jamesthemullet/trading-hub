@@ -593,9 +593,7 @@ export const Ruleset = ({
                   pinnedProductsCount={merchandisingRules.pinnedProducts.length}
                   merchandisingRules={merchandisingRules}
                   dispatch={dispatch}
-                  categoryId={
-                    rulesetType === 'category' ? previewValue : undefined
-                  }
+                  categoryIds={selectedCategories}
                   searchTerms={rulesetSearchTerms}
                   countryCode={ruleset.countryCode}
                 />

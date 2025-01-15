@@ -2,12 +2,11 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedCategoryRuleSets } from '@/libs/api';
+import type { ProductSearchResponse } from '@/libs/api';
 
 import { useCategoryProductSearch } from './use-category-product-search';
 
 const baseUrl = 'http://localhost';
-const server = setupServer();
 
 const mockMerchandisingRules = {
   pinnedProducts: [],
@@ -22,13 +21,34 @@ const mockMerchandisingRules = {
   },
 };
 
-const createRequestHandler = (response: HttpResponse) => {
-  return [
-    http.post(`${baseUrl}/search/beta/merchandising/product`, () => {
-      return response;
-    }),
-  ];
+const getProductsMock = jest.fn();
+
+const mockProduct = {
+  id: '60529550',
+  productId: '60529550',
+  title: 'V-Neck Knee Length Swing Dress',
+  url: 'v-neck-knee-length-smock-dress/p/clp60529552?color=BLACK&image=SD_10_T97_6310B_Y0_X_EC_90',
+  price: '£125.00',
+  brand: 'JAEGER',
+  isInStock: true,
+  imageUrl: ['SD_10_T97_6310B_Y0_X_EC_90', 'SD_10_T97_6310B_Y0_X_EC_90'],
+  metadata: {
+    isPinned: false,
+    isBoosted: false,
+    isBuried: false,
+    isBlocked: false,
+  },
 };
+
+const handlers = [
+  http.post(`${baseUrl}/search/beta/merchandising/product`, () => {
+    const { data, status } = getProductsMock();
+    return HttpResponse.json(data, status);
+  }),
+];
+
+const server = setupServer(...handlers);
+
 const requestSpy = jest.fn();
 
 describe('useCategoryProductSearch', () => {
@@ -48,13 +68,17 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should render the hook', async () => {
-    const mockResponse: ReturnedCategoryRuleSets = {
-      ruleSets: [],
+    const mockResponse: ProductSearchResponse = {
+      products: [],
       pagination: {
         totalItems: 3,
       },
     };
-    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
@@ -71,19 +95,22 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('searches by categoryId', async () => {
-    const mockResponse: ReturnedCategoryRuleSets = {
-      ruleSets: [],
+    const mockResponse: ProductSearchResponse = {
+      products: [mockProduct],
       pagination: {
         totalItems: 3,
       },
     };
-    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
     await act(async () => {
       const data = await result.current.searchForProduct({
-        categoryId: '1',
+        categories: ['1'],
         query: 'Socks',
         rows: 10,
         start: 0,
@@ -91,6 +118,7 @@ describe('useCategoryProductSearch', () => {
         countryCode: 'UK',
       });
       expect(data.pagination.totalItems).toEqual(3);
+      expect(data.products).toEqual([mockProduct]);
     });
 
     expect(requestSpy).toHaveBeenCalledWith(
@@ -104,19 +132,100 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should make two requests if requesting data for IE and UK', async () => {
-    const mockResponse: ReturnedCategoryRuleSets = {
-      ruleSets: [],
+    const mockResponse: ProductSearchResponse = {
+      products: [mockProduct, mockProduct],
+      pagination: {
+        totalItems: 2,
+      },
+    };
+    const mockResponse2: ProductSearchResponse = {
+      products: [mockProduct],
+      pagination: {
+        totalItems: 1,
+      },
+    };
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse2,
+      status: { status: 200 },
+    });
+
+    const { result } = renderHook(() => useCategoryProductSearch());
+
+    await act(async () => {
+      const data = await result.current.searchForProduct({
+        categories: ['1', 'IE_2'],
+        query: 'Socks',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+        countryCode: 'UK_IE',
+      });
+
+      expect(data.pagination.totalItems).toEqual(2);
+      expect(requestSpy).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('should handle undefined pagination totals', async () => {
+    const mockResponse: ProductSearchResponse = {
+      products: [mockProduct, mockProduct],
+      pagination: {
+        totalItems: undefined,
+      },
+    };
+    const mockResponse2: ProductSearchResponse = {
+      products: [mockProduct],
+      pagination: {
+        totalItems: 1,
+      },
+    };
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse2,
+      status: { status: 200 },
+    });
+
+    const { result } = renderHook(() => useCategoryProductSearch());
+
+    await act(async () => {
+      const data = await result.current.searchForProduct({
+        categories: ['1', 'IE_2'],
+        query: 'Socks',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+        countryCode: 'UK_IE',
+      });
+
+      expect(data.pagination.totalItems).toEqual(1);
+      expect(requestSpy).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('should not make two requests if requesting data for IE and UK with only an IE category', async () => {
+    const mockResponse: ProductSearchResponse = {
+      products: [],
       pagination: {
         totalItems: 3,
       },
     };
-    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
     await act(async () => {
       await result.current.searchForProduct({
-        categoryId: '1',
+        categories: ['IE_1'],
         query: 'Socks',
         rows: 10,
         start: 0,
@@ -125,17 +234,20 @@ describe('useCategoryProductSearch', () => {
       });
     });
 
-    expect(requestSpy).toHaveBeenCalledTimes(2);
+    expect(requestSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should handle pagination totalItems being undefined', async () => {
-    const mockResponse: ReturnedCategoryRuleSets = {
-      ruleSets: [],
+    const mockResponse: ProductSearchResponse = {
+      products: [],
       pagination: {
         totalItems: undefined,
       },
     };
-    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
@@ -153,13 +265,16 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('searches by merchandising search term', async () => {
-    const mockResponse: ReturnedCategoryRuleSets = {
-      ruleSets: [],
+    const mockResponse: ProductSearchResponse = {
+      products: [],
       pagination: {
         totalItems: 3,
       },
     };
-    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
@@ -185,13 +300,16 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('searches by productIds', async () => {
-    const mockResponse: ReturnedCategoryRuleSets = {
-      ruleSets: [],
+    const mockResponse: ProductSearchResponse = {
+      products: [],
       pagination: {
         totalItems: 3,
       },
     };
-    server.use(...createRequestHandler(HttpResponse.json(mockResponse)));
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
 
     const { result } = renderHook(() => useCategoryProductSearch());
 
@@ -209,13 +327,16 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should render the hook with error', async () => {
-    server.use(...createRequestHandler(HttpResponse.error()));
+    getProductsMock.mockReturnValueOnce({
+      data: null,
+      status: { status: 500 },
+    });
 
     const { result, rerender } = renderHook(() => useCategoryProductSearch());
 
     await act(async () => {
       await result.current.searchForProduct({
-        categoryId: '1',
+        categories: ['1'],
         query: '',
         rows: 10,
         start: 0,
@@ -226,8 +347,6 @@ describe('useCategoryProductSearch', () => {
 
     rerender();
 
-    expect(result.current.error).toEqual(
-      'Failed to search products TypeError: Failed to fetch'
-    );
+    expect(result.current.error).toContain('Failed to search products');
   });
 });

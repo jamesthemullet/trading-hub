@@ -128,7 +128,7 @@ describe('ProductSearch', () => {
     renderWithProviders(
       <ProductSearch
         isPinnable
-        categoryId="cat123"
+        categoryIds={['cat123']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
         merchandisingRules={mockMerchandisingRules}
@@ -219,6 +219,7 @@ describe('ProductSearch', () => {
 
   it('should render placeholder', async () => {
     const user = userEvent.setup({ delay: null });
+    const mockCategories = ['cat123'];
     const searchForProductMock = jest.fn(() => {
       return Promise.resolve({
         products: Array.from({ length: 10 }).map(
@@ -248,7 +249,7 @@ describe('ProductSearch', () => {
 
     renderWithProviders(
       <ProductSearch
-        categoryId="cat123"
+        categoryIds={mockCategories}
         isPinnable
         dispatch={mockDispatch}
         pinnedProductsCount={0}
@@ -264,7 +265,7 @@ describe('ProductSearch', () => {
 
     await waitFor(() => {
       expect(searchForProductMock).toHaveBeenLastCalledWith({
-        categoryId: 'cat123',
+        categories: mockCategories,
         query: 'productSearchTitle',
         start: 0,
         rows: 10,

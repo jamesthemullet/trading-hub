@@ -10,14 +10,14 @@ import { useCategoryProductSearch } from '@/libs/hooks';
 import { useScrollOffset } from './use-scroll-offset';
 
 export const useProducts = ({
-  categoryId,
+  categoryIds,
   searchTerms,
   productSearchTerm,
   maxToQuery,
   merchandisingRules,
   countryCode = 'UK_IE',
 }: {
-  categoryId?: string;
+  categoryIds?: string[];
   searchTerms?: string[];
   productSearchTerm: string;
   maxToQuery: number;
@@ -38,20 +38,19 @@ export const useProducts = ({
   >([]);
 
   const prevQuery = useRef<string | null>(null);
-  const prevCategoryId = useRef<string | null>(null);
+  const prevCategoryIds = useRef<string[] | null>(null);
 
   const { offset, scrollContainerRef, query } = useScrollOffset({
     productSearchTerm,
     totalProducts,
     maxToQuery,
-    categoryId,
   });
 
   const fetchData = useCallback(
     async (query: string, offset: number) => {
       const { products, pagination } = await searchForProduct({
-        ...(categoryId && {
-          categoryId,
+        ...(categoryIds && {
+          categories: categoryIds,
         }),
         countryCode,
         ...(searchTerms && { searchTerms }),
@@ -90,7 +89,7 @@ export const useProducts = ({
     },
     [
       searchForProduct,
-      categoryId,
+      categoryIds,
       merchandisingRules,
       maxToQuery,
       searchTerms,
@@ -111,15 +110,15 @@ export const useProducts = ({
   }, [fetchData, query, offset]);
 
   useEffect(() => {
-    if (categoryId) {
-      if (prevCategoryId.current !== categoryId) {
+    if (categoryIds?.length) {
+      if (prevCategoryIds.current !== categoryIds) {
         // eslint-disable-next-line functional/immutable-data
-        prevCategoryId.current = categoryId;
+        prevCategoryIds.current = categoryIds;
         setTotalProducts(0);
         setSearchProducts([]);
       }
     }
-  }, [categoryId]);
+  }, [categoryIds]);
 
   return {
     products,

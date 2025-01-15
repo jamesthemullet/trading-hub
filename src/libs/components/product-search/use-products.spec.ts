@@ -66,7 +66,7 @@ const mockProduct4: Product = {
   },
 };
 
-const categoryId = '1';
+const categoryIds = ['1'];
 const productSearchTerm = 'search';
 const maxToQuery = 2;
 const merchandisingRules = {
@@ -96,7 +96,7 @@ describe('useProducts', () => {
   it('should return products', async () => {
     const { result } = renderHook(() =>
       useProducts({
-        categoryId,
+        categoryIds,
         productSearchTerm,
         maxToQuery,
         merchandisingRules,
@@ -138,7 +138,7 @@ describe('useProducts', () => {
 
     const { result, rerender } = renderHook(() =>
       useProducts({
-        categoryId,
+        categoryIds,
         productSearchTerm,
         maxToQuery,
         merchandisingRules,
@@ -172,7 +172,7 @@ describe('useProducts', () => {
     });
 
     rerender({
-      categoryId,
+      categoryIds,
       productSearchTerm: 'search2',
       maxToQuery,
       merchandisingRules,
@@ -210,7 +210,7 @@ describe('useProducts', () => {
 
     const { result } = renderHook(() =>
       useProducts({
-        categoryId,
+        categoryIds,
         productSearchTerm,
         maxToQuery,
         merchandisingRules,
@@ -259,7 +259,7 @@ describe('useProducts', () => {
 
     const { result, rerender } = renderHook(() =>
       useProducts({
-        categoryId,
+        categoryIds,
         productSearchTerm,
         maxToQuery,
         merchandisingRules,
@@ -273,7 +273,7 @@ describe('useProducts', () => {
 
     await waitFor(() => {
       expect(searchForProductMock).toHaveBeenLastCalledWith({
-        categoryId,
+        categories: categoryIds,
         query: productSearchTerm,
         start: 0,
         rows: 2,
@@ -324,7 +324,7 @@ describe('useProducts', () => {
 
     await waitFor(() => {
       expect(newSearchForProductMock).toHaveBeenLastCalledWith({
-        categoryId,
+        categories: categoryIds,
         query: productSearchTerm,
         start: 2,
         rows: 2,

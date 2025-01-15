@@ -62,7 +62,7 @@ export type ProductSearchProps = {
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
-  categoryId?: string;
+  categoryIds?: string[];
   searchTerms?: string[];
   maxToQuery?: number;
   countryCode?: CountryCode;
@@ -73,7 +73,7 @@ export const ProductSearch = ({
   isPinnable,
   merchandisingRules,
   pinnedProductsCount,
-  categoryId,
+  categoryIds,
   searchTerms,
   maxToQuery = 10,
   countryCode,
@@ -83,7 +83,7 @@ export const ProductSearch = ({
   const { products, totalProducts, scrollContainerRef, clearProducts } =
     useProducts({
       productSearchTerm,
-      categoryId,
+      categoryIds,
       searchTerms,
       maxToQuery,
       merchandisingRules,
