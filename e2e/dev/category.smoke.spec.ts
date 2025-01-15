@@ -4,6 +4,9 @@ import { expect, test } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });
 
+const TEST_CATEGORY_ID = 'SubCategory_1842397';
+const TEST_CATEGORY_NAME = 'SubCategory_1842397 | Socks | l/men/socks';
+
 test.describe('Category Ranking', () => {
   test('creates new ruleset', async ({ page }) => {
     await page.goto('/category/facets');
@@ -27,14 +30,10 @@ test.describe('Category Ranking', () => {
     ).toBeVisible();
 
     await page.getByLabel('Search for category').click();
-    await page.getByLabel('Search for category').fill('SubCategory_19573263');
+    await page.getByLabel('Search for category').fill(TEST_CATEGORY_ID);
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
-    await page
-      .getByText(
-        'SubCategory_19573263 | Hat, Gloves & Scarves | l/women/hat-gloves-and-scarves'
-      )
-      .click({ timeout: 500 });
+    await page.getByText(TEST_CATEGORY_NAME).click({ timeout: 500 });
 
     await page.getByRole('button', { name: 'Create' }).click();
     await page.waitForLoadState('networkidle');
@@ -43,7 +42,7 @@ test.describe('Category Ranking', () => {
     ).toBeVisible();
 
     await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
+    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(
@@ -88,7 +87,7 @@ test.describe('Category Ranking', () => {
     await page.goto('/category/rulesets');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
+    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(
@@ -158,7 +157,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
+    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
     await expect(
       page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
@@ -183,7 +182,7 @@ test.describe('Category Ranking', () => {
     ).toBeVisible();
 
     await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
+    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
 
     await page.getByRole('link', { name: 'Edit' }).first().click();
@@ -195,7 +194,7 @@ test.describe('Category Ranking', () => {
     await page.goto('/category/rulesets');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
+    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
     await expect(
       page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
@@ -245,7 +244,7 @@ test.describe('Category Ranking', () => {
     await page.goto('/category/rulesets');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('SubCategory_19573263');
+    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
     await expect(
       page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()

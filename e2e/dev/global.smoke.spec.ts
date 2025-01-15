@@ -181,6 +181,7 @@ test.describe('Global Ranking', () => {
     await page.waitForTimeout(2000);
 
     await page.getByRole('button', { name: 'Edit values' }).first().click();
+    await page.waitForTimeout(5000);
 
     await expect(
       page.getByRole('heading', {
@@ -188,7 +189,7 @@ test.describe('Global Ranking', () => {
       })
     ).toBeVisible();
 
-    await page.getByLabel('Select Assembly Required to merge').click();
+    await page.getByLabel('Select Easy fit to merge').click();
     await page.getByLabel('Select Partial assembly required to merge').click();
 
     await expect(page.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
