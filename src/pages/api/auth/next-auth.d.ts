@@ -7,6 +7,7 @@ declare module 'next-auth/jwt' {
     refreshToken: string;
     accessToken: string;
     user: User;
+    roles: string[];
   }
 }
 
@@ -28,5 +29,6 @@ declare module 'next-auth' {
   interface Session extends NASession {
     user: User;
     accessTokenExpires: number;
+    roles: string[];
   }
 }

@@ -154,6 +154,7 @@ describe('Search api proxy', () => {
           name: 'name',
           email: 'email',
         },
+        roles: ['admin'],
       });
       jest.spyOn(console, 'error').mockImplementation(jest.fn());
       jest.spyOn(console, 'warn').mockImplementation(jest.fn());

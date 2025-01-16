@@ -106,13 +106,17 @@ describe('...NextAuth', () => {
             name: 'name',
           },
           account: {
-            access_token: 'access_token',
+            access_token: `token.${btoa(
+              JSON.stringify({
+                roles: ['ROLE1.Write'],
+              })
+            )}`,
             refresh_token: 'refresh_token',
             ext_expires_in: 123,
           } as any,
         })
       ).toEqual({
-        accessToken: 'access_token',
+        accessToken: 'token.eyJyb2xlcyI6WyJST0xFMS5Xcml0ZSJdfQ==',
         accessTokenExpires: 223000,
         refreshToken: 'refresh_token',
         user: {
@@ -120,6 +124,46 @@ describe('...NextAuth', () => {
           id: 'id',
           name: 'name',
         },
+        roles: ['ROLE1.Write'],
+      });
+    });
+
+    it('JWT callback should persist Azure AD Token when no roles field is present', async () => {
+      const mockAuthEnv = {
+        clientId: 'clientId',
+        clientSecret: 'client',
+        tenantId: 'tenantId',
+        nextAuthSecret: 'secret',
+        dateNow: 100000,
+      };
+      expect(
+        await jwtCallback(mockAuthEnv)({
+          token: undefined as any,
+          user: {
+            id: 'id',
+            email: 'email',
+            name: 'name',
+          },
+          account: {
+            access_token: `token.${btoa(
+              JSON.stringify({
+                roles: undefined,
+              })
+            )}`,
+            refresh_token: 'refresh_token',
+            ext_expires_in: 123,
+          } as any,
+        })
+      ).toEqual({
+        accessToken: 'token.e30=',
+        accessTokenExpires: 223000,
+        refreshToken: 'refresh_token',
+        user: {
+          email: 'email',
+          id: 'id',
+          name: 'name',
+        },
+        roles: [],
       });
     });
 

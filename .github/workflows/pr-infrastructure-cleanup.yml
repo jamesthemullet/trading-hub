@@ -38,7 +38,7 @@ jobs:
       - name: Remove URIs from azure app registration
         run: |
           set -x
-          app_name="prs-ar-trading-hub"
+          app_name="prs-ar-trading-hub-v2"
 
           object_id="$(az ad app list --filter "displayname eq '$app_name'" | jq -r '.[0].id')"
           remove_uri="https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net/api/auth/callback/azure-ad"
@@ -51,10 +51,9 @@ jobs:
       - name: Remove secret from azure app registration
         run: |
           set -x
-          app_name="prs-ar-trading-hub"
+          app_name="prs-ar-trading-hub-v2"
 
           object_id="$(az ad app list --filter "displayname eq '$app_name'" | jq -r '.[0].id')"
-          secret_display_name="${{ steps.dynamic-env-name.outputs.dynamic-env-name }}"
 
           existing_secret_display_key_id=$(az ad app show --id "${object_id}" --query "[passwordCredentials]" | jq -r '.[][] | select( .displayName | contains("${{ steps.dynamic-env-name.outputs.dynamic-env-name }}")).keyId')
 

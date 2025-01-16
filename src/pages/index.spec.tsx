@@ -48,6 +48,7 @@ describe('Index', () => {
           },
           expires: '2024-09-30T14:00:00.000Z',
           accessTokenExpires: 1709735128265,
+          roles: ['admin'],
         }}
       >
         <Index />
@@ -97,6 +98,7 @@ describe('Index', () => {
           },
           accessTokenExpires: 1709735128265,
           expires: '2024-09-30T14:00:00.000Z',
+          roles: ['admin'],
         }}
       >
         <Index />

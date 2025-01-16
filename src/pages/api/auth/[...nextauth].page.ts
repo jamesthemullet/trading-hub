@@ -12,6 +12,10 @@ export type AuthEnvironment = {
   dateNow: number;
 };
 
+const parseJwt = (token: string) => {
+  return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+};
+
 async function refreshAccessToken(token: JWT, envSettings: AuthEnvironment) {
   const url = `https://login.microsoftonline.com/${envSettings.tenantId}/oauth2/v2.0/token`;
   const req = await fetch(url, {
@@ -42,11 +46,15 @@ export const jwtCallback: (
   (envSettings) =>
   async ({ token, account, user }) => {
     if (account && user && account.access_token) {
+      const accessToken = account.access_token;
+      const decodedAccessToken = parseJwt(accessToken);
+
       return {
         accessToken: account.access_token,
         accessTokenExpires: envSettings.dateNow + account.ext_expires_in * 1000,
         refreshToken: account.refresh_token,
         user,
+        roles: decodedAccessToken.roles ?? [],
       };
     }
     if (envSettings.dateNow < token.accessTokenExpires) {
@@ -61,6 +69,7 @@ export const sessionCallback: Required<
   if (token) {
     session.user = token.user;
     session.accessTokenExpires = token.accessTokenExpires;
+    session.roles = token.roles;
   }
 
   return session;

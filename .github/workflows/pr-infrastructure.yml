@@ -36,14 +36,42 @@ jobs:
         run: |
           set -x
 
-          app_name="prs-ar-trading-hub"
+          app_name="prs-ar-trading-hub-v2"
 
           number_of_apps="$(az ad app list --filter "displayname eq '$app_name'" | jq length)"
           if (( "$number_of_apps" >= 1 )); then
               echo "App exists"
           else
               echo "App does not exist, creating..."
-              az ad app create --display-name "$app_name"
+              echo '
+                - allowedMemberTypes:
+                    - User
+                  description: Allows the app to update Merchandising Hub Category level rules
+                  displayName: MerchHubCategory.Write
+                  isEnabled: 'true'
+                  value: Cat.W
+                - allowedMemberTypes:
+                    - User
+                  description: Allows the app to read Merchandising Hub Category level rules
+                  displayName: MerchHubCategory.Read
+                  isEnabled: 'true'
+                  value: Cat.R
+                - allowedMemberTypes:
+                    - User
+                  description: Allows the app to update Merchandising Hub Global level rules
+                  displayName: MerchHubGlobal.Write
+                  isEnabled: 'true'
+                  value: Glob.W
+                - allowedMemberTypes:
+                    - User
+                  description: Allows the app to read Merchandising Hub Global level rules
+                  displayName: MerchHubGlobal.Read
+                  isEnabled: 'true'
+                  value: Glob.R
+              ' | yq -o=json '.' > manifest.json
+              az ad app create --display-name "$app_name" --app-roles @./manifest.json
+              az ad sp create-for-rbac -n "$app_name"
+              rm ./manifest.json
           fi
 
           object_id="$(az ad app list --filter "displayname eq '$app_name'" | jq -r '.[0].id')"
@@ -69,6 +97,7 @@ jobs:
           ' | yq -o=json '.' > manifest.json
               cat manifest.json
               az ad app update --id "$object_id" --required-resource-accesses @./manifest.json
+              rm ./manifest.json
           fi
 
           echo "object-id=$object_id" >> "$GITHUB_OUTPUT"
