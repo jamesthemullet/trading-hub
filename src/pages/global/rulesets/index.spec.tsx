@@ -34,13 +34,7 @@ const mockMerchandisingRules = {
 
 const MOCK_CATEGORY_ID = 'Cat123';
 
-const mockRouter = {
-  push: jest.fn(),
-  events: {
-    on: jest.fn(),
-    off: jest.fn(),
-  },
-};
+const mockPush = jest.fn();
 
 const server = setupServer(
   http.get(`/api/search/beta/merchandising/global/ruleset`, (ctx) => {
@@ -105,10 +99,22 @@ const server = setupServer(
   })
 );
 
+const mockRouter = {
+  query: {
+    currentPage: '1',
+    currentPageSize: '10',
+    searchQuery: '',
+  },
+  push: mockPush,
+  isReady: true,
+  pathname: '/global/rulesets',
+};
+
 describe('Index', () => {
   beforeAll(() => {
     server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [],
       pagination: {
@@ -228,11 +234,18 @@ describe('Index', () => {
       valueToClick.click();
     });
 
-    expect(dropdown.previousSibling?.textContent).toBe('100');
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/global/rulesets',
+      query: {
+        currentPage: 1,
+        currentPageSize: 100,
+      },
+    });
   });
 
   it('should search', async () => {
     const user = userEvent.setup();
+
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [],
       pagination: {
@@ -253,7 +266,14 @@ describe('Index', () => {
     await user.type(search, 'search-search');
 
     await waitFor(() =>
-      expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10, 'global')
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/global/rulesets',
+        query: {
+          searchQuery: 'search-search',
+          currentPage: 1,
+          currentPageSize: 10,
+        },
+      })
     );
   });
 
@@ -267,7 +287,7 @@ describe('Index', () => {
 
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       `/global/rulesets/edit/${MOCK_CATEGORY_ID}`
     );
   });

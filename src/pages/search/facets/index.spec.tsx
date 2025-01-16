@@ -111,10 +111,18 @@ const server = setupServer(
   })
 );
 
+const mockPush = jest.fn();
+const mockRouter = {
+  pathname: '/search/facets',
+  query: {
+    currentPage: '1',
+    currentPageSize: '10',
+    searchQuery: '',
+  },
+  push: mockPush,
+};
+
 describe('Search Facet Management Page', () => {
-  const mockRouter = {
-    push: jest.fn(),
-  };
   const mockNewRuleset = 'foo123';
 
   beforeAll(() => {
@@ -167,7 +175,7 @@ describe('Search Facet Management Page', () => {
       createButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets/new');
+    expect(mockPush).toHaveBeenCalledWith('/search/facets/new');
   });
 
   it('should search', async () => {
@@ -202,12 +210,62 @@ describe('Search Facet Management Page', () => {
     await user.type(search, mockSearchTerms[0]);
 
     await waitFor(() =>
-      expect(useSearchRulesetList).toHaveBeenCalledWith(
-        mockSearchTerms[0],
-        0,
-        10
-      )
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/search/facets',
+        query: {
+          searchQuery: mockSearchTerms[0],
+          currentPage: 1,
+          currentPageSize: 10,
+        },
+      })
     );
+  });
+
+  it('should bold text that matches search', async () => {
+    const mockSearchTerms = ['search', 'terms'];
+    const mockRouter = {
+      pathname: '/search/facets',
+      query: {
+        currentPage: '1',
+        currentPageSize: '10',
+        searchQuery: 'search',
+      },
+      isReady: true,
+      push: mockPush,
+    };
+    jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [
+        {
+          searchTerms: mockSearchTerms,
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      error: '',
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<FacetManagementPage />);
+
+    const boldText = await screen.findByText((content, element) => {
+      return (
+        element?.tagName.toLowerCase() === 'b' && content.includes('search')
+      );
+    });
+
+    expect(boldText).toHaveStyle('font-weight: bold');
   });
 
   it('should enable or disable a ruleset', async () => {
@@ -346,7 +404,7 @@ describe('Search Facet Management Page', () => {
       countryCode: 'UK_IE',
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       `/search/facets/edit/${mockNewRuleset}`
     );
   });

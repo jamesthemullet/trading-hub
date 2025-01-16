@@ -44,17 +44,15 @@ const PageSizeItem = styled.div`
 export const TablePagination = ({
   pagination,
   pageSizes,
+  handlePageChange,
   currentPage,
   currentPageSize,
-  setCurrentPage,
-  setCurrentPageSize,
 }: {
   pagination: PaginationType;
   pageSizes: number[];
+  handlePageChange: (page: number, pageSize: number) => void;
   currentPage: number;
   currentPageSize: number;
-  setCurrentPage: (page: number) => void;
-  setCurrentPageSize: (pageSize: number) => void;
 }) => {
   const [isPageSizeOpen, setIsPageSizeOpen] = useState(false);
 
@@ -71,7 +69,7 @@ export const TablePagination = ({
         )}
         onClick={(e, pageNumber) => {
           e.preventDefault();
-          setCurrentPage(pageNumber);
+          handlePageChange(pageNumber, currentPageSize);
         }}
       />
       <RowsPerPageContainer>
@@ -91,13 +89,14 @@ export const TablePagination = ({
             <PageSizeItem
               key={size}
               onClick={() => {
-                setCurrentPageSize(size);
                 setIsPageSizeOpen(false);
                 if (
                   currentPage * size >
                   Math.ceil(pagination.totalItems ?? 0 / size)
                 ) {
-                  setCurrentPage(1);
+                  handlePageChange(1, size);
+                } else {
+                  handlePageChange(currentPage, size);
                 }
               }}
             >

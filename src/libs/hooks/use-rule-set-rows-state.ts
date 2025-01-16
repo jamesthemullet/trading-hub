@@ -80,14 +80,14 @@ export const useRuleSetRowsState = <
   );
 
   const getRows = useCallback<GetRowsFn>(
-    (query, page, rows, countryCode) => {
+    (currentPage, currentPageSize, query, countryCode) => {
       const asyncCall = async () => {
         setIsLoading(true);
         const [error, data] = await handlePromise(
           mapping.queryAllRuleSets({
             q: query,
-            start: page,
-            rows,
+            start: (currentPage - 1) * currentPageSize,
+            rows: currentPageSize,
             countryCode,
           })
         );

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
+import { useRouter } from 'next/router';
 
 import { CountryCode } from '@/libs/api';
 import {
@@ -18,6 +19,7 @@ import {
   PageWrapper,
   ToolsContainer,
 } from '@/libs/components/utils/shared.styles';
+import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Link from 'next/link';
@@ -63,38 +65,64 @@ export const TablePanel = <
     isLoading,
   } = useRuleSetRowsState(mapping, basePath);
 
+  const router = useRouter();
+
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [countryCode, setCountryCode] = useState<CountryCode | undefined>();
-  const currentPageIndex = currentPage - 1;
 
-  const { callback: handleSearch } = useDebounce(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
-      setCurrentPage(1);
-    },
-    300
+  const [searchInputValue, setSearchInputValue] = useState<string>(
+    router.query.searchQuery?.toString() || ''
   );
 
   useEffect(() => {
-    getRows(
-      searchQuery,
-      currentPageIndex * currentPageSize,
-      currentPageSize,
-      countryCode
-    );
-  }, [searchQuery, currentPageIndex, currentPageSize, countryCode, getRows]);
+    if (router.isReady) {
+      const currentPage = Number(router.query.currentPage) || 1;
+      const currentPageSize = Number(router.query.currentPageSize) || 10;
+      const query = router.query.searchQuery?.toString() || '';
+
+      setSearchInputValue(query);
+      setCurrentPage(currentPage);
+      setCurrentPageSize(currentPageSize);
+
+      getRows(currentPage, currentPageSize, query, countryCode);
+    }
+  }, [router.query, router.isReady, getRows, countryCode]);
+
+  const { callback: handleSearch } = useDebounce(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      updateQueryParams(router, {
+        currentPage: 1,
+        currentPageSize: Number(router.query.currentPageSize) || 10,
+        searchQuery: e.target.value,
+      });
+    },
+    300
+  );
 
   const createNewRuleSet = useCallback(async () => {
     createNewRow(newRowCreateMode);
   }, [createNewRow, newRowCreateMode]);
 
+  const handlePageChange = (page: number, pageSize: number) => {
+    updateQueryParams(router, {
+      currentPage: page,
+      currentPageSize: pageSize,
+      searchQuery: router.query.searchQuery?.toString() || '',
+    });
+  };
+
+  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInputValue(value);
+    handleSearch(e);
+  };
+
   return (
     <PageWrapper>
       <ToolsContainer>
-        <Search onChange={handleSearch} />
+        <Search value={searchInputValue} onChange={handleSearchInputChange} />
         <CountryFilterDropdown onChange={setCountryCode} />
         {isLoading ? (
           <SkeletonButtonWrapper>
@@ -108,16 +136,18 @@ export const TablePanel = <
       </ToolsContainer>
       {isLoading && (
         <>
-          <DataTableSkeleton headings={headings} rowsCount={currentPageSize} />
+          <DataTableSkeleton
+            headings={headings}
+            rowsCount={Number(router.query.currentPageSize || 10)}
+          />
 
           {rowsState.rows.length ? (
             <TablePagination
               pagination={rowsState.pagination}
               pageSizes={pageSizes}
+              handlePageChange={handlePageChange}
               currentPage={currentPage}
               currentPageSize={currentPageSize}
-              setCurrentPage={setCurrentPage}
-              setCurrentPageSize={setCurrentPageSize}
             />
           ) : (
             <TablePaginationSkeleton />
@@ -137,10 +167,9 @@ export const TablePanel = <
       <TablePagination
         pagination={rowsState.pagination}
         pageSizes={pageSizes}
+        handlePageChange={handlePageChange}
         currentPage={currentPage}
         currentPageSize={currentPageSize}
-        setCurrentPage={setCurrentPage}
-        setCurrentPageSize={setCurrentPageSize}
       />
     </PageWrapper>
   );

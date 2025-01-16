@@ -111,10 +111,18 @@ const server = setupServer(
   })
 );
 
+const mockPush = jest.fn();
+const mockRouter = {
+  pathname: '/search/rulesets',
+  query: {
+    currentPage: '1',
+    currentPageSize: '10',
+    searchQuery: '',
+  },
+  push: mockPush,
+};
+
 describe('Search Rulesets', () => {
-  const mockRouter = {
-    push: jest.fn(),
-  };
   const mockNewRuleset = 'foo123';
 
   beforeAll(() => {
@@ -167,7 +175,7 @@ describe('Search Rulesets', () => {
       createButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/rulesets/new');
+    expect(mockPush).toHaveBeenCalledWith('/search/rulesets/new');
   });
 
   it('should search', async () => {
@@ -202,12 +210,63 @@ describe('Search Rulesets', () => {
     await user.type(search, mockSearchTerms[0]);
 
     await waitFor(() =>
-      expect(useSearchRulesetList).toHaveBeenCalledWith(
-        mockSearchTerms[0],
-        0,
-        10
-      )
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/search/rulesets',
+        query: {
+          searchQuery: mockSearchTerms[0],
+          currentPage: 1,
+          currentPageSize: 10,
+        },
+      })
     );
+  });
+
+  it('should bold text that matches search', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockSearchTerms = ['search', 'terms'];
+    const mockRouter = {
+      pathname: '/search/rulesets',
+      query: {
+        currentPage: '1',
+        currentPageSize: '10',
+        searchQuery: 'search',
+      },
+      isReady: true,
+      push: mockPush,
+    };
+    jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [
+        {
+          searchTerms: mockSearchTerms,
+          id: mockId,
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      error: '',
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+
+    renderWithProviders(<RuleSets />);
+
+    const boldText = await screen.findByText((content, element) => {
+      return (
+        element?.tagName.toLowerCase() === 'b' && content.includes('search')
+      );
+    });
+
+    expect(boldText).toHaveStyle('font-weight: bold');
   });
 
   it('should enable or disable a ruleset', async () => {
@@ -346,7 +405,7 @@ describe('Search Rulesets', () => {
       countryCode: 'UK_IE',
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       `/search/rulesets/edit/${mockNewRuleset}`
     );
   });

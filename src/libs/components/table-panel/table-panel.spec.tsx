@@ -106,12 +106,26 @@ const mappingMock = {
   returnedToRuleSet: (data: any) => data,
 };
 
+const mockPush = jest.fn();
+const mockRouter = {
+  pathname: '/search/rulesets',
+  query: {
+    currentPage: '1',
+    currentPageSize: '10',
+    searchQuery: '',
+  },
+  isReady: true,
+  push: mockPush,
+};
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
+
 describe('TablePanel', () => {
   beforeEach(() => {
-    jest.mocked(useRouter).mockReturnValue({
-      query: {},
-      push: jest.fn(),
-    } as any);
+    jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
+
     jest.mocked(mappingMock.queryAllRuleSets).mockResolvedValue({
       data: {
         ruleSets: [mockRow1, mockRow2],
@@ -580,17 +594,32 @@ describe('TablePanel', () => {
 
       await user.type(search, 'search-search');
 
-      await waitFor(() =>
-        expect(mappingMock.queryAllRuleSets).toHaveBeenCalledWith({
-          countryCode: undefined,
-          q: 'search-search',
-          rows: 10,
-          start: 0,
-        })
-      );
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith({
+          pathname: '/search/rulesets',
+          query: {
+            currentPage: 1,
+            currentPageSize: 10,
+            searchQuery: 'search-search',
+          },
+        });
+      });
     });
 
     it('should go back to the first page after the user has searched', async () => {
+      const pushSpy = jest.fn();
+      const mockRouter = {
+        pathname: '/category/rulesets',
+        query: {
+          currentPage: '4',
+          currentPageSize: '10',
+          searchQuery: '',
+        },
+        isReady: true,
+        push: pushSpy,
+      };
+      jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
+
       jest.mocked(mappingMock.queryAllRuleSets).mockResolvedValue({
         data: {
           ruleSets: [],
@@ -611,25 +640,36 @@ describe('TablePanel', () => {
         />
       );
 
-      expect(await screen.findByText('Page 1 of 8')).toBeVisible();
-
-      await user.click(screen.getByLabelText('Next page'));
-      await user.click(screen.getByLabelText('Next page'));
-      await user.click(screen.getByLabelText('Next page'));
-
-      expect(screen.getByText('Page 4 of 8')).toBeVisible();
+      expect(await screen.findByText('Page 4 of 8')).toBeVisible();
 
       const search = screen.getByPlaceholderText(/Search\.\.\./i);
 
       await user.type(search, 'search-search');
 
       await waitFor(() => {
-        expect(screen.getByText('Page 1 of 8')).toBeVisible();
+        expect(pushSpy).toHaveBeenCalledWith({
+          pathname: '/category/rulesets',
+          query: {
+            currentPage: 1,
+            currentPageSize: 10,
+            searchQuery: 'search-search',
+          },
+        });
       });
     });
   });
 
   describe('pagination functionality', () => {
+    beforeEach(() => {
+      const mockRouter = {
+        pathname: '/category/rulesets',
+        query: {},
+        isReady: true,
+        push: mockPush,
+      };
+      jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
+    });
+
     it('should update correctly if the totalItems is undefined', async () => {
       jest.mocked(mappingMock.queryAllRuleSets).mockResolvedValue({
         data: {
@@ -670,17 +710,58 @@ describe('TablePanel', () => {
       const dropdown =
         await screen.findByLabelText<HTMLElement>('rows per page');
 
-      act(() => {
-        dropdown.click();
-      });
+      await userEvent.click(dropdown);
 
       const valueToClick = await screen.findByText('100');
-      act(() => {
-        valueToClick.click();
+      await userEvent.click(valueToClick);
+
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/category/rulesets',
+        query: {
+          currentPage: 1,
+          currentPageSize: 100,
+        },
       });
+    });
+
+    it('should load default page and page size if not in query', async () => {
+      renderWithProviders(
+        <TablePanel
+          basePath="/category/rulesets"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="global"
+        />
+      );
+
+      expect(screen.getByText('Page 1 of 1')).toBeVisible();
+    });
+
+    it('should default to 10 rows per page on search, if no existing url query', async () => {
+      const user = userEvent.setup();
+
+      renderWithProviders(
+        <TablePanel
+          basePath="/category/rulesets"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="global"
+        />
+      );
+
+      const search = screen.getByPlaceholderText(/Search\.\.\./i);
+
+      await user.type(search, 'search-search');
 
       await waitFor(() => {
-        expect(dropdown?.textContent).toBe('100');
+        expect(mockPush).toHaveBeenCalledWith({
+          pathname: '/category/rulesets',
+          query: {
+            currentPage: 1,
+            currentPageSize: 10,
+            searchQuery: 'search-search',
+          },
+        });
       });
     });
   });

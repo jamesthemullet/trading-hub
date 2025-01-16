@@ -128,7 +128,7 @@ describe('useCategoryRuleSetApi', () => {
       );
 
       await act(async () => {
-        await result.current.getRows('', 1, 10, 'UK');
+        await result.current.getRows(1, 10, '', 'UK');
       });
 
       await waitFor(() => {
@@ -152,7 +152,7 @@ describe('useCategoryRuleSetApi', () => {
       );
 
       await act(async () => {
-        await result.current.getRows('', 1, 10, 'UK');
+        await result.current.getRows(1, 10, '', 'UK');
       });
 
       expect(result.current.error).toEqual(
@@ -194,7 +194,7 @@ describe('useCategoryRuleSetApi', () => {
       );
 
       await act(async () => {
-        await result.current.getRows('', 1, 10, 'UK');
+        await result.current.getRows(1, 10, '', 'UK');
       });
 
       await act(async () => {
@@ -351,7 +351,7 @@ describe('useCategoryRuleSetApi', () => {
       );
 
       await act(async () => {
-        await result.current.getRows('', 1, 10, 'UK');
+        await result.current.getRows(1, 10, '', 'UK');
       });
 
       expect(

@@ -143,11 +143,19 @@ const mockMerchandisingRules = {
   },
 };
 
-describe('Category facet management', () => {
-  const mockRouter = {
-    push: jest.fn(),
-  };
+const mockPush = jest.fn();
+const mockRouter = {
+  pathname: '/category/facets',
+  query: {
+    currentPage: '1',
+    currentPageSize: '10',
+    searchQuery: '',
+  },
+  isReady: true,
+  push: mockPush,
+};
 
+describe('Category facet management', () => {
   beforeAll(() => {
     server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
@@ -221,7 +229,7 @@ describe('Category facet management', () => {
       createButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets/new');
+    expect(mockPush).toHaveBeenCalledWith('/category/facets/new');
   });
 
   it('should open delete modal and close on cancel', async () => {
@@ -294,58 +302,15 @@ describe('Category facet management', () => {
     await user.type(search, 'search-search');
 
     await waitFor(() =>
-      expect(useRuleSet).toHaveBeenLastCalledWith(
-        'search-search',
-        0,
-        10,
-        'category'
-      )
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/category/facets',
+        query: {
+          searchQuery: 'search-search',
+          currentPage: 1,
+          currentPageSize: 10,
+        },
+      })
     );
-  });
-
-  it('should go back to the first page after the user has searched', async () => {
-    jest.mocked(useRuleSet).mockReturnValue({
-      categoryRuleSets: [],
-      globalRuleSets: [],
-      pagination: {
-        totalItems: 80,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-      error: '',
-      isLoading: false,
-    });
-
-    const user = userEvent.setup();
-    renderWithProviders(<FacetManagementPage />);
-
-    expect(await screen.findByText('Page 1 of 8')).toBeVisible();
-
-    const nextPageButton = screen.getByLabelText('Next page');
-
-    await user.click(nextPageButton);
-    await user.click(nextPageButton);
-    await user.click(nextPageButton);
-
-    expect(screen.getByText('Page 4 of 8')).toBeVisible();
-
-    const search = screen.getByPlaceholderText(/Search\.\.\./i);
-
-    await user.type(search, 'search-search');
-
-    await waitFor(() =>
-      expect(useRuleSet).toHaveBeenCalledWith(
-        'search-search',
-        0,
-        10,
-        'category'
-      )
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Page 1 of 8')).toBeVisible();
-    });
   });
 
   it('should enable or disable a ruleset', async () => {
@@ -620,7 +585,7 @@ describe('Category facet management', () => {
       endDate: '2024-11-15T23:59:00.000Z',
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       `/category/facets/edit/${mockNewRuleset}`
     );
   });
@@ -744,7 +709,7 @@ describe('Category facet management', () => {
       categoryIds: ['catId'],
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       `/category/facets/edit/${mockNewRuleset}`
     );
   });

@@ -110,11 +110,18 @@ const server = setupServer(
   })
 );
 
-describe('Search Rulesets', () => {
-  const mockRouter = {
-    push: jest.fn(),
-  };
+const mockPush = jest.fn();
+const mockRouter = {
+  pathname: '/search/redirects',
+  query: {
+    currentPage: '1',
+    currentPageSize: '10',
+    searchQuery: '',
+  },
+  push: mockPush,
+};
 
+describe('Search Rulesets', () => {
   beforeAll(() => {
     server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
@@ -164,12 +171,13 @@ describe('Search Rulesets', () => {
       createButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/redirects/new');
+    expect(mockPush).toHaveBeenCalledWith('/search/redirects/new');
   });
 
   it('should search', async () => {
     const mockKeywords = ['search', 'terms'];
     const user = userEvent.setup();
+
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [{ ...returnedRedirectMock, keywords: mockKeywords }],
       pagination: {
@@ -186,8 +194,50 @@ describe('Search Rulesets', () => {
     await user.type(search, mockKeywords[0]);
 
     await waitFor(() =>
-      expect(useSearchRedirectList).toHaveBeenCalledWith(mockKeywords[0], 0, 10)
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/search/redirects',
+        query: {
+          searchQuery: mockKeywords[0],
+          currentPage: 1,
+          currentPageSize: 10,
+        },
+      })
     );
+  });
+
+  it('should bold text that matches search', async () => {
+    const mockSearchTerms = ['search', 'terms'];
+    const mockRouter = {
+      pathname: '/search/redirects',
+      query: {
+        currentPage: '1',
+        currentPageSize: '10',
+        searchQuery: 'search',
+      },
+      isReady: true,
+      push: mockPush,
+    };
+    jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [{ ...returnedRedirectMock, keywords: mockSearchTerms }],
+      pagination: {
+        totalItems: 1,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(<RedirectRuleSets />);
+
+    const boldText = await screen.findByText((content, element) => {
+      return (
+        element?.tagName.toLowerCase() === 'b' && content.includes('search')
+      );
+    });
+
+    expect(boldText).toHaveStyle('font-weight: bold');
   });
 
   it('should enable or disable a redirect', async () => {
@@ -264,7 +314,7 @@ describe('Search Rulesets', () => {
       },
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       `/search/redirects/edit/${mockNewRuleset}`
     );
   });

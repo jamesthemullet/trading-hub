@@ -44,14 +44,6 @@ const MOCK_CATEGORY_ID = 'Cat123';
 const NEW_RULE_BUTTON_TEXT = 'Add new rule';
 const mockId = 'ewfw-e3f23-f23f2-3cwef3';
 
-const mockRouter = {
-  push: jest.fn(),
-  events: {
-    on: jest.fn(),
-    off: jest.fn(),
-  },
-};
-
 const server = setupServer(
   http.get(`/api/search/beta/merchandising/global/ruleset`, (ctx) => {
     const url = new URL(ctx.request.url);
@@ -142,6 +134,18 @@ const server = setupServer(
     );
   })
 );
+
+const mockPush = jest.fn();
+const mockRouter = {
+  query: {
+    currentPage: '1',
+    currentPageSize: '10',
+    searchQuery: '',
+  },
+  push: mockPush,
+  isReady: true,
+  pathname: '/global/facets',
+};
 
 describe('Global Facet Management', () => {
   beforeAll(() => {
@@ -254,7 +258,7 @@ describe('Global Facet Management', () => {
 
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       `/global/facets/edit/${MOCK_CATEGORY_ID}`
     );
   });
@@ -268,7 +272,14 @@ describe('Global Facet Management', () => {
     await user.type(search, 'search-search');
 
     await waitFor(() =>
-      expect(useRuleSet).toHaveBeenCalledWith('search-search', 0, 10, 'global')
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/global/facets',
+        query: {
+          searchQuery: 'search-search',
+          currentPage: 1,
+          currentPageSize: 10,
+        },
+      })
     );
   });
 

@@ -10,10 +10,9 @@ describe('TablePagination', () => {
       pagination: {
         totalItems: 0,
       },
-      currentPage: 0,
+      currentPage: 1,
       currentPageSize: pageSizes[0],
-      setCurrentPage: jest.fn(),
-      setCurrentPageSize: jest.fn(),
+      handlePageChange: jest.fn(),
       pageSizes,
     };
 
@@ -43,15 +42,14 @@ describe('TablePagination', () => {
   });
 
   it('should open select item and change page size', async () => {
-    const pageSizeSpy = jest.fn();
+    const handlePageChangeSpy = jest.fn();
     const mockProps = {
       pagination: {
         totalItems: 0,
       },
-      currentPage: 0,
+      currentPage: 1,
       currentPageSize: pageSizes[0],
-      setCurrentPage: jest.fn(),
-      setCurrentPageSize: pageSizeSpy,
+      handlePageChange: handlePageChangeSpy,
       pageSizes,
     };
 
@@ -77,11 +75,11 @@ describe('TablePagination', () => {
       label.click();
     });
 
-    expect(pageSizeSpy).toHaveBeenCalledWith(100);
+    expect(handlePageChangeSpy).toHaveBeenCalledWith(1, 100);
   });
 
   it('should change current page', () => {
-    const pageSpy = jest.fn();
+    const handlePageChangeSpy = jest.fn();
 
     const mockProps = {
       pagination: {
@@ -89,8 +87,7 @@ describe('TablePagination', () => {
       },
       currentPage: 2,
       currentPageSize: pageSizes[0],
-      setCurrentPage: pageSpy,
-      setCurrentPageSize: jest.fn(),
+      handlePageChange: handlePageChangeSpy,
       pageSizes,
     };
 
@@ -102,18 +99,17 @@ describe('TablePagination', () => {
     act(() => {
       screen.getByRole('button', { name: 'Next page' }).click();
     });
-    expect(pageSpy).toHaveBeenCalledWith(3);
+    expect(handlePageChangeSpy).toHaveBeenCalledWith(3, 10);
 
     act(() => {
       screen.getByRole('button', { name: 'Previous page' }).click();
     });
 
-    expect(pageSpy).toHaveBeenCalledWith(1);
+    expect(handlePageChangeSpy).toHaveBeenCalledWith(1, 10);
   });
 
   it('should change page to 1 when there is no items on current page due to page sizes change', async () => {
-    const setPageSpy = jest.fn();
-    const setPageSizeSpy = jest.fn();
+    const handlePageChangeSpy = jest.fn();
 
     const mockProps = {
       pagination: {
@@ -121,8 +117,7 @@ describe('TablePagination', () => {
       },
       currentPage: 2,
       currentPageSize: pageSizes[0],
-      setCurrentPage: setPageSpy,
-      setCurrentPageSize: setPageSizeSpy,
+      handlePageChange: handlePageChangeSpy,
       pageSizes,
     };
     const { container } = render(<TablePagination {...mockProps} />);
@@ -150,13 +145,11 @@ describe('TablePagination', () => {
       label.click();
     });
 
-    expect(setPageSpy).toHaveBeenCalledWith(1);
-    expect(setPageSizeSpy).toHaveBeenCalledWith(100);
+    expect(handlePageChangeSpy).toHaveBeenCalledWith(1, 100);
   });
 
   it('should not change page to 1 when there are still items on current page due to page sizes change', async () => {
-    const setPageSpy = jest.fn();
-    const setPageSizeSpy = jest.fn();
+    const handlePageChangeSpy = jest.fn();
 
     const mockProps = {
       pagination: {
@@ -164,9 +157,8 @@ describe('TablePagination', () => {
       },
       currentPage: 2,
       currentPageSize: pageSizes[0],
-      setCurrentPage: setPageSpy,
-      setCurrentPageSize: setPageSizeSpy,
       pageSizes,
+      handlePageChange: handlePageChangeSpy,
     };
     const { container } = render(<TablePagination {...mockProps} />);
 
@@ -195,7 +187,6 @@ describe('TablePagination', () => {
       label.click();
     });
 
-    expect(setPageSpy).not.toHaveBeenCalled();
-    expect(setPageSizeSpy).toHaveBeenCalledWith(20);
+    expect(handlePageChangeSpy).toHaveBeenCalledWith(2, 20);
   });
 });

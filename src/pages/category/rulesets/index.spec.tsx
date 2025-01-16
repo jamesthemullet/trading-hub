@@ -110,11 +110,19 @@ const mockMerchandisingRules = {
   },
 };
 
-describe('Index', () => {
-  const mockRouter = {
-    push: jest.fn(),
-  };
+const mockPush = jest.fn();
+const mockRouter = {
+  pathname: '/category/rulesets',
+  query: {
+    currentPage: '1',
+    currentPageSize: '10',
+    searchQuery: '',
+  },
+  isReady: true,
+  push: mockPush,
+};
 
+describe('Index', () => {
   beforeAll(() => {
     server.listen();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
@@ -173,7 +181,7 @@ describe('Index', () => {
       createButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets/new');
+    expect(mockPush).toHaveBeenCalledWith('/category/rulesets/new');
   });
 
   it('should update correctly if the totalItems is undefined', async () => {
@@ -224,7 +232,13 @@ describe('Index', () => {
       valueToClick.click();
     });
 
-    expect(dropdown.previousSibling?.textContent).toBe('100');
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/category/rulesets',
+      query: {
+        currentPage: 1,
+        currentPageSize: 100,
+      },
+    });
   });
 
   it('displays schedule if a ruleset has a start and end date', async () => {
@@ -302,12 +316,14 @@ describe('Index', () => {
     await user.type(search, 'search-search');
 
     await waitFor(() =>
-      expect(useRuleSet).toHaveBeenCalledWith(
-        'search-search',
-        0,
-        10,
-        'category'
-      )
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/category/rulesets',
+        query: {
+          searchQuery: 'search-search',
+          currentPage: 1,
+          currentPageSize: 10,
+        },
+      })
     );
   });
 
@@ -565,7 +581,7 @@ describe('Index', () => {
       countryCode: 'UK',
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
+    expect(mockPush).toHaveBeenCalledWith(
       `/category/rulesets/edit/${mockNewRuleset}`
     );
   });

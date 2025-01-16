@@ -99,9 +99,9 @@ export type Row = {
 };
 
 export type GetRowsFn = (
+  currentPage: number,
+  currentPageSize: number,
   query: string,
-  page: number,
-  rows: number,
   countryCode?: CountryCode
 ) => Promise<void>;
 export type DeleteRowFn = (row: { id: string }) => Promise<void>;
