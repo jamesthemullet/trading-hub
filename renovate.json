@@ -7,17 +7,6 @@
     "enabled": true
   },
   "recreateWhen": "never",
-  "ignoreDeps": [
-    "actions/checkout",
-    "reviewdog/action-actionlint",
-    "reviewdog/action-misspell",
-    "peter-evans/create-pull-request",
-    "tsuyoshicho/action-redpen",
-    "tj-actions/changed-files",
-    "actions/github-script",
-    "azure/CLI",
-    "de-vri-es/setup-git-credentials"
-  ],
   "packageRules": [
     {
       "groupName": "mantine",
@@ -37,14 +26,8 @@
       "matchPackageNames": ["*"]
     },
     {
-      "matchCurrentVersion": "18.2.0",
-      "allowedVersions": "18.2.0",
-      "matchPackageNames": [
-        "@types/react-dom",
-        "@types/react",
-        "react",
-        "react-dom"
-      ]
+      "groupName": "react",
+      "matchPackageNames": ["/react/"]
     }
   ]
 }
