@@ -162,6 +162,7 @@ export const TablePanel = <
         onDuplicate={isDuplicateEnabled ? duplicateRow : undefined}
         onToggleRuleSet={toggleRow}
         ruleType={ruleType}
+        query={searchInputValue}
       />
 
       <TablePagination

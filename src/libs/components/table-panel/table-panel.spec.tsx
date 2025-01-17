@@ -52,6 +52,7 @@ const mockRow1: ReturnedCategoryRuleSet = {
   categoriesInfo: [
     {
       id: 'xyz',
+      name: 'Jeans',
       plpUrl: '/jeans',
     },
   ],
@@ -68,6 +69,7 @@ const mockRow2: ReturnedCategoryRuleSet = {
   categoriesInfo: [
     {
       id: 'xyz',
+      name: 'Jeans',
       plpUrl: '/jeans',
     },
   ],
@@ -83,6 +85,7 @@ const mockRuleSet: ReturnedCategoryRuleSet = {
   categoriesInfo: [
     {
       id: 'xyz0',
+      name: 'Jeans',
       plpUrl: '/jeans',
     },
   ],
@@ -96,7 +99,10 @@ const mappingMock = {
   queryRuleSetById: jest.fn(),
   updateRuleSetById: jest.fn(),
   newRuleSet: jest.fn(),
-  ruleSetToRow: (ruleSet: any) => ruleSet,
+  ruleSetToRow: (ruleSet: any) => ({
+    ...ruleSet,
+    identifier: 'foo | bar',
+  }),
   toggleRuleSet: (ruleSet: any) => ({
     ...ruleSet,
     isEnabled: !ruleSet.isEnabled,
@@ -687,6 +693,7 @@ describe('TablePanel', () => {
                 categoriesInfo: [
                   {
                     id: 'xyz',
+                    name: 'Jeans',
                     plpUrl: '/jeans',
                   },
                 ],
@@ -780,6 +787,7 @@ describe('TablePanel', () => {
         categoriesInfo: [
           {
             id: 'xyz',
+            name: 'Jeans',
             plpUrl: '/jeans',
           },
         ],

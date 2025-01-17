@@ -245,6 +245,7 @@ type Props = {
   rows: Row[];
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
   onDuplicate?: (id: string) => void;
+  query?: string;
 };
 
 export const DataTable = ({
@@ -254,6 +255,7 @@ export const DataTable = ({
   ruleType,
   onDuplicate,
   onToggleRuleSet,
+  query,
 }: Props) => {
   const [optionToggle, setOptionToggle] = useState('');
   const [ruleSetIdToEdit, setRuleSetIdToEdit] = useState('');
@@ -300,6 +302,17 @@ export const DataTable = ({
     }
     return 'rule';
   };
+
+  const formatByQuery = (identifier: string) =>
+    identifier
+      .split(new RegExp(`(${query})`, 'gi'))
+      .map((word, ind) =>
+        word.toLowerCase() === query?.toLowerCase() ? (
+          <b key={`${word}-${ind}`}>{word}</b>
+        ) : (
+          word
+        )
+      );
 
   return (
     <>
@@ -390,16 +403,14 @@ export const DataTable = ({
                         )}
                       </>
                     )}
-                    <NoOverflowText
-                      title={identifier}
-                      dangerouslySetInnerHTML={{ __html: identifier }}
-                    />
+                    <NoOverflowText title={identifier}>
+                      {formatByQuery(identifier)}
+                    </NoOverflowText>
                   </FlagAndIdentifier>
                   {categoryPlpUrl && (
-                    <CompactUrlText
-                      title={categoryPlpUrl}
-                      dangerouslySetInnerHTML={{ __html: categoryPlpUrl }}
-                    />
+                    <CompactUrlText title={categoryPlpUrl}>
+                      {categoryPlpUrl}
+                    </CompactUrlText>
                   )}
                   {startDate &&
                     endDate &&
@@ -423,10 +434,9 @@ export const DataTable = ({
                   0 && (
                   <BreadcrumbColumn>
                     {categoryPlpUrl && (
-                      <StyledUrlText
-                        title={categoryPlpUrl}
-                        dangerouslySetInnerHTML={{ __html: categoryPlpUrl }}
-                      />
+                      <StyledUrlText title={categoryPlpUrl}>
+                        categoryPlpUrl
+                      </StyledUrlText>
                     )}
                   </BreadcrumbColumn>
                 )}
@@ -471,7 +481,7 @@ export const DataTable = ({
                   </Text>
                 </TableCol>
                 <TableCol>
-                  <Text>{lastChanged.user}</Text>
+                  <Text>{formatByQuery(lastChanged.user)}</Text>
                 </TableCol>
                 <TableCol style={{ padding: '12px 0 0' }}>
                   <TableActions

@@ -548,4 +548,49 @@ describe('DataTable', () => {
     expect(screen.getByAltText('UK rule')).toBeInTheDocument();
     expect(screen.getByAltText('IE rule')).toBeInTheDocument();
   });
+
+  it('should show query text in a b tag', async () => {
+    const { container } = renderWithProviders(
+      <DataTable
+        headings={headings}
+        rows={[{ ...rows[0], identifier: 'foo | bar' }]}
+        onDeleteRuleSet={jest.fn()}
+        onDuplicate={jest.fn()}
+        ruleType="searchRanking"
+        query="bar"
+      />
+    );
+    expect(container.querySelector('b')).toHaveTextContent('bar');
+  });
+
+  it('should show capitalised query text in a b tag for a lowercase identifier', async () => {
+    const { container } = renderWithProviders(
+      <DataTable
+        headings={headings}
+        rows={[{ ...rows[0], identifier: 'foo | bar' }]}
+        onDeleteRuleSet={jest.fn()}
+        onDuplicate={jest.fn()}
+        ruleType="searchRanking"
+        query="FOO"
+      />
+    );
+    expect(container.querySelector('b')).toHaveTextContent('foo');
+  });
+
+  it('should show last edited user name that matches query text in a b tag', async () => {
+    const { container } = renderWithProviders(
+      <DataTable
+        headings={headings}
+        rows={[
+          { ...rows[0], lastChanged: { date: '2021-10-01', user: 'Mr Foo' } },
+        ]}
+        onDeleteRuleSet={jest.fn()}
+        onDuplicate={jest.fn()}
+        ruleType="searchRanking"
+        query="FOO"
+      />
+    );
+
+    expect(container.querySelector('b')).toHaveTextContent('Foo');
+  });
 });

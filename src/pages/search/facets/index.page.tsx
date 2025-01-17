@@ -32,27 +32,17 @@ const FacetManagementPage = () => {
     queryRuleSetById: search().betaMerchandisingKeywordRulesetDetail,
     updateRuleSetById: search().betaMerchandisingKeywordRulesetUpdate,
     newRuleSet: search().betaMerchandisingKeywordRulesetCreate,
-    ruleSetToRow: (
-      {
-        id,
-        searchTerms,
-        isEnabled,
-        lastChanged,
-        startDate,
-        endDate,
-        countryCode,
-      },
-      { searchQuery }
-    ) => ({
+    ruleSetToRow: ({
       id,
-      identifier: searchTerms
-        .map((term) =>
-          !!searchQuery?.length &&
-          term.toLowerCase().startsWith(searchQuery.toLowerCase())
-            ? `<b>${term}</b>`
-            : term
-        )
-        .join(' | '),
+      searchTerms,
+      isEnabled,
+      lastChanged,
+      startDate,
+      endDate,
+      countryCode,
+    }) => ({
+      id,
+      identifier: searchTerms.join(' | '),
       isEnabled,
       lastChanged,
       url: `/search/facets/edit/${id}`,

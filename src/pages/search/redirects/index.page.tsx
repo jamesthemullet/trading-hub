@@ -32,19 +32,17 @@ const RedirectRuleSets = () => {
     queryRuleSetById: search().betaMerchandisingKeywordRedirectDetail,
     updateRuleSetById: search().betaMerchandisingKeywordRedirectUpdate,
     newRuleSet: search().betaMerchandisingKeywordRedirectCreate,
-    ruleSetToRow: (
-      { id, keywords, isEnabled, lastChanged, startDate, endDate, countryCode },
-      { searchQuery }
-    ) => ({
+    ruleSetToRow: ({
+      id,
+      keywords,
+      isEnabled,
+      lastChanged,
+      startDate,
+      endDate,
+      countryCode,
+    }) => ({
       id: id,
-      identifier: keywords
-        .map((term) =>
-          !!searchQuery?.length &&
-          term.toLowerCase().startsWith(searchQuery.toLowerCase())
-            ? `<b>${term}</b>`
-            : term
-        )
-        .join(' | '),
+      identifier: keywords.join(' | '),
       isEnabled,
       lastChanged,
       url: `/search/redirects/edit/${id}`,
