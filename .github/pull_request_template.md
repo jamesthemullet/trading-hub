@@ -11,7 +11,7 @@
 
 ## Ticket
 
-https://jira.marksandspencer.app/browse/LPN-XXXX
+https://jira-marksandspencer-app.atlassian.net/browse/PSP-XXXX
 
 ## Required checklist (before asking for a review)
 
