@@ -71,6 +71,28 @@ describe('Search Keywords', () => {
     });
   });
 
+  it('should add a new keyword in lower case if prop is provided', async () => {
+    const addSearchTermStub = jest.fn();
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={shorterSearchTermsList}
+        addSearchTerm={addSearchTermStub}
+      />
+    );
+
+    await waitFor(async () => {
+      await userEvent.type(
+        screen.getByLabelText('Add keyword'),
+        'NEW keyword{enter}'
+      );
+    });
+
+    await waitFor(() => {
+      expect(addSearchTermStub).toHaveBeenCalledWith('new keyword');
+    });
+  });
+
   it('should add a new keyword to the list after typing and clicking elsewhere', async () => {
     const addSearchTermStub = jest.fn();
     const user = userEvent.setup();
@@ -134,6 +156,33 @@ describe('Search Keywords', () => {
       await userEvent.type(
         screen.getByLabelText('Add keyword to list'),
         'new keyword{enter}'
+      );
+    });
+
+    await waitFor(() => {
+      expect(addSearchTermStub).toHaveBeenCalledWith('new keyword');
+    });
+  });
+
+  it('should add a new keyword in lowercase to the list with the modal being open', async () => {
+    const addSearchTermStub = jest.fn();
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={longerSearchTermsList}
+        addSearchTerm={addSearchTermStub}
+        selectPreviewSearchTerm={undefined}
+      />
+    );
+
+    await waitFor(async () => {
+      await userEvent.click(screen.getByLabelText('View all'));
+    });
+
+    await waitFor(async () => {
+      await userEvent.type(
+        screen.getByLabelText('Add keyword to list'),
+        'NEW keyword{enter}'
       );
     });
 

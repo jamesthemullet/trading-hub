@@ -247,7 +247,7 @@ export const SearchKeywords = ({
               <KeyWordInput
                 aria-label="Add keyword"
                 value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
+                onChange={(e) => setInputText(e.target.value.toLowerCase())}
                 onBlur={() => {
                   if (inputText) {
                     addSearchTerm(inputText);
@@ -362,7 +362,9 @@ export const SearchKeywords = ({
                 <StyledInput
                   type="text"
                   value={inputValue}
-                  onChange={(event) => setInputValue(event.target.value)}
+                  onChange={(event) =>
+                    setInputValue(event.target.value.toLowerCase())
+                  }
                   onKeyDown={(event) => {
                     setUnfinishedKeyword(false);
                     if (event.key === 'Enter') {

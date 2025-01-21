@@ -998,7 +998,7 @@ describe('Ruleset', () => {
       expect(mockCreate).toHaveBeenCalledWith(expectedData);
     });
 
-    it('should show error and not add ruleset to the list if attempting to add a duplicate keyword', async () => {
+    it('should show error and not add ruleset to the list if attempting to add a duplicate keyword in any casing', async () => {
       const mockCreate = jest.fn();
       const user = userEvent.setup();
 
@@ -1023,7 +1023,7 @@ describe('Ruleset', () => {
 
       await user.type(
         screen.getByLabelText('Add keyword'),
-        'new keyword{enter}'
+        'nEw kEyWOrd{enter}'
       );
 
       expect(
