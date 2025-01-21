@@ -113,6 +113,7 @@ test.describe('Search Ranking', () => {
 
     await page.getByTitle('Toggle').click();
     await page.getByLabel('14 November 2024').click();
+    await page.getByLabel('14 November 2024').click();
     await page.getByLabel('19 November 2024').click();
     await expect(
       page.getByText('Nov 14 2024 00:00 - Nov 19 2024 23:59')

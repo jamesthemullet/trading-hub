@@ -671,18 +671,19 @@ describe('Category Facet Management New', () => {
         toggle.click();
       });
 
-      await waitFor(() => {
-        const startDate = screen.getAllByText('16')[1];
-        act(() => {
-          startDate.click();
-        });
+      const startDate = screen.getAllByText('16')[1];
+      const endDate = screen.getAllByText('17')[1];
+
+      act(() => {
+        startDate.click();
       });
 
-      await waitFor(() => {
-        const endDate = screen.getAllByText('17')[1];
-        act(() => {
-          endDate.click();
-        });
+      act(() => {
+        startDate.click();
+      });
+
+      act(() => {
+        endDate.click();
       });
 
       const saveButton = within(

@@ -249,6 +249,15 @@ describe('Redirect', () => {
   });
 
   describe('Scheduling', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2022, 2, 1));
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
     it('should show datepicker', async () => {
       const mockSave = jest.fn();
 
@@ -311,7 +320,6 @@ describe('Redirect', () => {
     });
 
     it('should add a date range', async () => {
-      const user = userEvent.setup({ delay: null });
       const mockSave = jest.fn();
 
       const existingRedirect: ReturnedKeywordRedirect = {
@@ -349,20 +357,24 @@ describe('Redirect', () => {
         expect(screen.getByText('On all the time')).toBeVisible();
       });
 
-      await user.click(screen.getByTitle('Toggle'));
-
-      await waitFor(() => {
-        const startDate = screen.getAllByText('16')[1];
-        act(() => {
-          startDate.click();
-        });
+      const toggle = screen.getByTitle('Toggle');
+      act(() => {
+        toggle.click();
       });
 
-      await waitFor(() => {
-        const endDate = screen.getAllByText('17')[1];
-        act(() => {
-          endDate.click();
-        });
+      const startDate = screen.getAllByText('16')[1];
+      const endDate = screen.getAllByText('17')[1];
+
+      // mantine update auto selects the current day so we need to click the start date twice
+      act(() => {
+        startDate.click();
+      });
+      act(() => {
+        startDate.click();
+      });
+
+      act(() => {
+        endDate.click();
       });
 
       const saveButton = screen.getByRole('button', {

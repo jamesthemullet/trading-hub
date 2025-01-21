@@ -6,6 +6,7 @@ test.describe.configure({ mode: 'serial' });
 
 const TEST_CATEGORY_ID = 'SubCategory_1842397';
 const TEST_CATEGORY_NAME = 'SubCategory_1842397 | Socks | l/men/socks';
+const TEST_CATEGORY_IDENTIFIER = 'SubCategory_1842397 - Socks';
 
 test.describe('Category Ranking', () => {
   test('creates new ruleset', async ({ page }) => {
@@ -46,7 +47,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
+      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
     ).toBeVisible();
 
     const checkbox = page
@@ -91,7 +92,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
+      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
     ).toBeVisible();
 
     await page.getByRole('link', { name: 'Edit' }).first().click();
@@ -136,6 +137,7 @@ test.describe('Category Ranking', () => {
 
     await page.getByTitle('Toggle').click();
     await page.getByLabel('14 November 2024').click();
+    await page.getByLabel('14 November 2024').click();
     await page.getByLabel('19 November 2024').click();
     await expect(
       page.getByText('Nov 14 2024 00:00 - Nov 19 2024 23:59')
@@ -145,7 +147,7 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Save', exact: true }).click();
 
     await expect(
-      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
+      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
     ).toBeVisible();
     await expect(page.getByRole('time').first()).toHaveText(
       '14 Nov 2024 - 19 Nov 2024'
@@ -160,7 +162,7 @@ test.describe('Category Ranking', () => {
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
+      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
     ).toBeVisible();
 
     await expect(page.getByRole('time').first()).toHaveText(
@@ -197,7 +199,7 @@ test.describe('Category Ranking', () => {
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
+      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -247,7 +249,7 @@ test.describe('Category Ranking', () => {
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText('SubCategory_19573263 - Hat, Gloves & Scarves').first()
+      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
     ).toBeVisible();
 
     const currentCount =

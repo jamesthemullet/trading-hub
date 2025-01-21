@@ -515,6 +515,7 @@ test.describe('Keyword search', () => {
       ).toBeDisabled();
 
       await page.locator('button:has-text("16")').nth(1).click();
+      await page.locator('button:has-text("16")').nth(1).click();
       await page.locator('button:has-text("22")').nth(1).click();
       await page.getByText('00:00').click();
       await page.fill('input[type="time"]', '10:30');
