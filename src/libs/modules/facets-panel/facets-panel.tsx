@@ -171,7 +171,8 @@ export const FacetsPanel = ({
   const [duplicationError, setDuplicationError] = useState('');
 
   const [previewValue, setPreviewValue] = useState<string | undefined>(
-    selectedCategories[0]
+    (selectedCategories && selectedCategories[0]) ||
+      (searchTerms && searchTerms[0])
   );
 
   const { setSearch, filteredFacets } = useFacetsFilter(facetsState);
@@ -321,10 +322,11 @@ export const FacetsPanel = ({
 
   return (
     <>
-      {showPreview && selectedCategories.length && merchandisingRules && (
+      {showPreview && (
         <Preview
           onClose={() => setShowPreview(!showPreview)}
-          categoryId={previewValue}
+          categoryId={facetType === 'category' ? previewValue : undefined}
+          searchTerm={facetType === 'search' ? previewValue : undefined}
           merchandisingRules={merchandisingRules}
           facetConfig={includedFacets}
           excludedFacets={excludedFacets}
@@ -347,7 +349,7 @@ export const FacetsPanel = ({
             onSave();
           }
         }}
-        hasPreview={!!selectedCategories.length}
+        hasPreview={!!selectedCategories.length || !!searchTerms.length}
         onPreview={() => setShowPreview(!showPreview)}
         isNewRuleSet={!!isNewRuleset}
         hasChanges

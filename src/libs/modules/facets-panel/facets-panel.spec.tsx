@@ -278,6 +278,46 @@ describe('Facet Panel', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should not enable preview button if no categories selected', async () => {
+    renderWithProviders(
+      <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="category"
+        countryCode="UK_IE"
+        selectedPreviewCountryCode="UK"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetDataChange={jest.fn()}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: 'Preview' })).toBeDisabled();
+  });
+
+  it('should not enable preview button if no search terms added', async () => {
+    renderWithProviders(
+      <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="search"
+        countryCode="UK_IE"
+        selectedPreviewCountryCode="UK"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetDataChange={jest.fn()}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: 'Preview' })).toBeDisabled();
+  });
+
   it('should render column headings', () => {
     renderWithProviders(
       <FacetsPanel
@@ -301,7 +341,7 @@ describe('Facet Panel', () => {
     expect(screen.getByText('Value options')).toBeVisible();
   });
 
-  it('should preview changes to a facet', async () => {
+  it('should preview changes to a category facet', async () => {
     jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
 
     renderWithProviders(
@@ -313,6 +353,52 @@ describe('Facet Panel', () => {
         onCancel={onCancelSpy}
         onFacetDataChange={jest.fn()}
         selectedCategories={[categoryId1]}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
+      />
+    );
+
+    const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+    act(() => {
+      previewButton.click();
+    });
+
+    const previewText = await screen.findByText(
+      'Search across the site to preview the rule influence'
+    );
+
+    expect(previewText).toBeInTheDocument();
+
+    expect(usePreview).toHaveBeenCalledWith(
+      expect.objectContaining({ countryCode: 'UK' })
+    );
+
+    const closeButton = screen.getByLabelText('close modal');
+
+    act(() => {
+      closeButton.click();
+    });
+
+    expect(
+      screen.queryByText('Search across the site to preview the rule influence')
+    ).not.toBeInTheDocument();
+  });
+
+  it('should preview changes to a search facet', async () => {
+    jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
+
+    renderWithProviders(
+      <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="search"
+        countryCode="UK_IE"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        onFacetDataChange={jest.fn()}
+        searchTerms={['red']}
         facetsState={mockFacetsState}
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
