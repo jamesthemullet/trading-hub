@@ -43,7 +43,7 @@ jobs:
         uses: DigitalInnovation/brightcloud/.github/actions/get-app-name@feat/oidcn
       - name: Get changed files
         id: changed-ci
-        uses: tj-actions/changed-files@v34
+        uses: tj-actions/changed-files@v45
         with:
           files: |
             ci/**
