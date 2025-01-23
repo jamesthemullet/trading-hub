@@ -409,7 +409,7 @@ export const EditFacetModalV2 = ({
         </Col>
 
         <FlexColumnCol aria-label={`display-value for ${displayValue}`}>
-          {displayValueEditEnabled && (
+          {displayValueEditEnabled ? (
             <EditableLabel
               displayValue={displayValue}
               onDisplayValueChange={handleEditDisplayValue(attributeState)}
@@ -418,9 +418,12 @@ export const EditFacetModalV2 = ({
                 rowError && rowError.id === id ? rowError.error : undefined
               }
               disallowedValues={disallowedValues}
+              canCancelEdit
             />
+          ) : (
+            <Text>{displayValue}</Text>
           )}
-          {!displayValueEditEnabled && <Text>{displayValue}</Text>}
+
           {rowError && rowError.id === id && (
             <StyledError>{rowError.error}</StyledError>
           )}

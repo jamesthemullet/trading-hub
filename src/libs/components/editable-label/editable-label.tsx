@@ -10,11 +10,10 @@ import { color } from '../utils/constants';
 const DisplayName = styled.div`
   display: flex;
   align-items: center;
-  width: max-content;
+  padding-right: ${spacing(2)};
 `;
 
 const EditConfirmationButtons = styled.div`
-  margin-right: ${spacing(1)};
   display: flex;
   align-items: center;
 
@@ -40,6 +39,7 @@ const EditButton = styled(Button)`
 
 const InputContainer = styled.div`
   position: relative;
+  width: 100%;
 `;
 
 const StyledInput = styled(Input)<{ showErrorState: boolean }>`
@@ -50,6 +50,10 @@ const StyledInput = styled(Input)<{ showErrorState: boolean }>`
 
   ${({ showErrorState }) =>
     showErrorState && `border: 1px solid ${color.saleRed}`};
+`;
+
+const StyledText = styled(Text)`
+  margin-left: ${spacing(0.5)};
 `;
 
 const StyledIcon = styled(Image)`
@@ -147,6 +151,7 @@ export const EditableLabel = ({
               aria-label={`Edit ${displayValue} input field`}
               showErrorState={showErrorState}
             />
+
             {showErrorState && (
               <StyledIcon
                 width={20}
@@ -156,6 +161,7 @@ export const EditableLabel = ({
               />
             )}
           </InputContainer>
+
           <EditConfirmationButtons>
             <EditButton
               onClick={() => {
@@ -192,7 +198,10 @@ export const EditableLabel = ({
         </>
       ) : (
         <>
-          <Text aria-label={`Label for ${displayValue}`}>{displayValue}</Text>
+          <StyledText aria-label={`Label for ${displayValue}`}>
+            {displayValue}
+          </StyledText>
+
           <EditButton
             onClick={() => {
               setIsEditMode(true);
