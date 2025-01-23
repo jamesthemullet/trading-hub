@@ -151,6 +151,14 @@ describe('Search Facet Panel', () => {
     expect(onCancelSpy).toHaveBeenCalled();
   });
 
+  it('should show the facets filter search box', () => {
+    renderWithProviders(
+      <SearchFacetsPanel {...mockProps} searchTerms={['foo']} />
+    );
+
+    expect(screen.getAllByPlaceholderText('Search...')).toHaveLength(1);
+  });
+
   it('should handle order change when button down is clicked', async () => {
     const user = userEvent.setup({ delay: null });
 
