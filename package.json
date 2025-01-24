@@ -35,7 +35,7 @@
     "date-fns": "4.1.0",
     "dayjs": "1.11.13",
     "lodash": "4.17.21",
-    "newrelic": "12.11.1",
+    "newrelic": "12.11.2",
     "next": "15.1.6",
     "next-auth": "4.24.11",
     "openapi-response-validator": "12.1.3",
