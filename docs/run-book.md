@@ -31,9 +31,25 @@ The application is deployed via a [pipeline](../.github/workflows/pr-validate-an
 
 ## Service owners
 
-| Name                 | Contact                                                                                                                                                                                                                    |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Search and Sort Team | [Teams link](https://teams.microsoft.com/l/team/19%3attvAGMU-Xb9sEDdi38xCmCWHJ-zz32X0b-KrVGLt4GQ1%40thread.tacv2/conversations?groupId=696cefad-de9d-426d-b3d8-f535802cf24d&tenantId=bd5c6713-7399-4b31-be79-78f2d078e543) |
+| Name                 | Contact                                                                                                                                                                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Search and Sort Team | [Teams link](https://teams.microsoft.com/l/channel/19%3Acd7050274735499eb5b50a6be31eaf33%40thread.tacv2/%5BSquad%5D%20Search%20-%20Incidents?groupId=09be67e3-2208-45f2-9eaf-41d6c22743bb&tenantId=bd5c6713-7399-4b31-be79-78f2d078e543) |
+|                      | [E-mail](grp-search-and-sort@mnscorp.onmicrosoft.com)                                                                                                                                                                                    |
+
+### Engineering Manager:
+
+Toyin Butler
+
+### Engineers:
+
+Graham Licence  
+Krzysztof Kabat  
+James Winfield  
+Nikolay Gushchin
+
+### Product Manager:
+
+Holly Morris
 
 ## System overview
 
@@ -79,15 +95,15 @@ In the event of an outage the most likely causes are:
 - api error from search service
 - user is not authorised to use the trading hub
 
-In case of users not being able to sign in after being signed out, it could be that the redirect url is missing from Azure.
+#### Scenario: In case of users not being able to sign in after being signed out, it could be that the redirect url is missing from Azure.
 
 This is the error that they would receive:
 
-![alt text](no-redirect-error.png)
+<img src="no-redirect-error.png" alt="alt text" width="500">
 
 This can be corrected by adding it back to the Authentication page:
 
-![alt text](authentication-page.png)
+<img src="authentication-page.png" alt="alt text" width="800">
 
 The redirect for prod is: https://merchandising-hub.search.marksandspencer.app/api/auth/callback/azure-ad
 For dev: https://dev-merchandising-hub.search.marksandspencer.app/api/auth/callback/azure-ad
