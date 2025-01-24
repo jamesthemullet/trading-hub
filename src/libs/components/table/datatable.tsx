@@ -435,7 +435,7 @@ export const DataTable = ({
                   <BreadcrumbColumn>
                     {categoryPlpUrl && (
                       <StyledUrlText title={categoryPlpUrl}>
-                        categoryPlpUrl
+                        {categoryPlpUrl}
                       </StyledUrlText>
                     )}
                   </BreadcrumbColumn>

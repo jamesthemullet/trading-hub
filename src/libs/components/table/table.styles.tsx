@@ -11,7 +11,7 @@ export const TableContainer = styled.div`
 
 export const TableRow = styled.div`
   display: grid;
-  grid-template-columns: minmax(140px, 2fr) 200px 350px 180px;
+  grid-template-columns: minmax(180px, 2fr) 200px 350px 180px;
   border-bottom: 1px solid #b1b1b1;
   align-items: center;
   padding-left: ${spacing(2)};
