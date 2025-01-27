@@ -47,7 +47,16 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 1080 },
       },
-      testMatch: /.*smoke.spec.ts/,
+      testMatch: /dev\/.*smoke.spec.ts/,
+    },
+    {
+      name: 'production',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 1080 },
+        baseURL: 'https://merchandising-hub.search.marksandspencer.app',
+      },
+      testMatch: /prod\/.*smoke.spec.ts/,
     },
   ],
 });

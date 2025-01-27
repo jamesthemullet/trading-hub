@@ -1,0 +1,32 @@
+name: Smoke tests (production)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 4-20 * * 1-5' # Every 30 minutes Mon-Fri 4am-8pm GMT https://crontab.guru/#*/30_4-20_*_*_1-5
+
+env:
+  GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+
+jobs:
+  end-to-end-smoke-tests:
+    runs-on: ubuntu-latest
+    name: E2E Production Smoke Tests
+    env:
+      PROD_TEST_USER_PASSWORD: ${{ secrets.PROD_TEST_USER_PASSWORD }}
+      PROD_TEST_USER: ${{ secrets.PROD_TEST_USER }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright tests
+        run: npx playwright test --project=production
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

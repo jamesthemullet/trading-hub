@@ -174,6 +174,12 @@ Some machines will not be able to run the docker image locally and will get the 
 3. In trading hub docker, change application-dev image to `search-service-application-dev:latest` (commented out in code)
 4. Build and run docker as per above steps
 
+### Production tests
+
+Production tests are run to check AD login flow and loading of data to confirm the availability of prod
+
+The yaccount used to login is `y9786775@mnscorp.net`
+
 ### Code formatting
 
 Prettier is used to format files, this can be set up in your IDE or by running `npm run format` before committing.
