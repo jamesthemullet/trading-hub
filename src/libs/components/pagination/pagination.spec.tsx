@@ -4,15 +4,7 @@ import { Pagination } from './pagination';
 
 describe('Pagination', () => {
   it('should render successfully', () => {
-    render(
-      <Pagination
-        current={1}
-        total={1}
-        onClick={() => {
-          // empty
-        }}
-      />
-    );
+    render(<Pagination current={1} total={1} onClick={jest.fn()} />);
     expect(screen.getByText('Page 1 of 1')).toBeInTheDocument();
   });
 

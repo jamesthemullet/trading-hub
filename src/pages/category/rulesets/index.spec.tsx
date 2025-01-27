@@ -142,7 +142,7 @@ describe('Index', () => {
     jest.resetAllMocks();
   });
 
-  it('displays the list of rules', () => {
+  it('displays the list of rules', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [],
       globalRuleSets: [],
@@ -157,7 +157,9 @@ describe('Index', () => {
     });
     renderWithProviders(<RuleSets />);
 
-    expect(screen.getByText('Category ranking rules')).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByText('Category ranking rules')).toBeVisible();
+    });
   });
 
   it('should redirect to new page when add new rule is clicked', async () => {
@@ -567,7 +569,9 @@ describe('Index', () => {
     });
     renderWithProviders(<RuleSets />);
 
-    expect(screen.queryAllByText('Add new rule')).toHaveLength(0);
+    await waitFor(() => {
+      expect(screen.queryAllByText('Add new rule')).toHaveLength(0);
+    });
 
     expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
     expect(screen.getByLabelText('table-pagination-skeleton')).toBeVisible();

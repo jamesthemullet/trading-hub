@@ -138,7 +138,7 @@ describe('Index', () => {
     jest.resetAllMocks();
   });
 
-  it('displays the list of rules', () => {
+  it('displays the list of rules', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [],
       globalRuleSets: [],
@@ -153,7 +153,9 @@ describe('Index', () => {
     });
     renderWithProviders(<RuleSets />);
 
-    expect(screen.getByText('Global category ranking rules')).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByText('Global category ranking rules')).toBeVisible();
+    });
   });
 
   it('should not display the duplicate button', async () => {

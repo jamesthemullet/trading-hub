@@ -273,6 +273,10 @@ describe('Ruleset', () => {
     });
   });
 
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
+
   it('should render correctly', () => {
     renderWithProviders(
       <Ruleset

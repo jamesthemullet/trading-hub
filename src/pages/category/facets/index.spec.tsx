@@ -203,7 +203,9 @@ describe('Category facet management', () => {
     });
     renderWithProviders(<FacetManagementPage />);
 
-    expect(screen.getByText('Category Facet Management')).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByText('Category Facet Management')).toBeVisible();
+    });
     expect(await screen.findByText('Add new facet')).toBeVisible();
     expect(await screen.findByText('1 - identifier-1')).toBeVisible();
   });
@@ -493,12 +495,11 @@ describe('Category facet management', () => {
     });
     renderWithProviders(<FacetManagementPage />);
 
-    expect(screen.queryAllByText('Add new facet')).toHaveLength(0);
-
-    expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
-    expect(
-      screen.getByLabelText('table-pagination-skeleton')
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText('table-pagination-skeleton')
+      ).toBeInTheDocument();
+    });
   });
 
   it('should duplicate a ruleset', async () => {

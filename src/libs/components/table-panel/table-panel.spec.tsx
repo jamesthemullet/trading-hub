@@ -241,8 +241,8 @@ describe('TablePanel', () => {
 
     const addNewRuleButton = await screen.findByText('Add new rule');
 
-    await act(async () => {
-      await user.click(addNewRuleButton);
+    act(() => {
+      user.click(addNewRuleButton);
     });
 
     await waitFor(() => {
@@ -670,7 +670,6 @@ describe('TablePanel', () => {
       const mockRouter = {
         pathname: '/category/rulesets',
         query: {},
-        isReady: true,
         push: mockPush,
       };
       jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
@@ -728,6 +727,43 @@ describe('TablePanel', () => {
           currentPage: 1,
           currentPageSize: 100,
         },
+      });
+    });
+
+    it('should load default page and page size if not in query', async () => {
+      jest.mocked(useRouter as jest.Mock).mockReturnValue({
+        pathname: '/search/rulesets',
+        query: {},
+        isReady: false,
+        push: mockPush,
+      });
+
+      const { rerender } = renderWithProviders(
+        <TablePanel
+          basePath="/category/rulesets"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="global"
+        />
+      );
+      jest.mocked(useRouter as jest.Mock).mockReturnValue({
+        pathname: '/search/rulesets',
+        query: {},
+        isReady: true,
+        push: mockPush,
+      });
+
+      rerender(
+        <TablePanel
+          basePath="/category/rulesets"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="global"
+        />
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('Page 1 of 1')).toBeVisible();
       });
     });
 

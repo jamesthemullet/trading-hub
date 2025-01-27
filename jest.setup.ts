@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import failOnConsole from 'jest-fail-on-console';
 
 import { createSerializer, matchers } from '@emotion/jest';
 
@@ -32,4 +33,8 @@ Object.defineProperties(globalThis, {
   File: { value: File },
   BroadcastChannel: { value: channelMock },
   TransformStream: { value: Transform },
+});
+
+failOnConsole({
+  shouldFailOnWarn: false,
 });

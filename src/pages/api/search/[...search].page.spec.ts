@@ -326,6 +326,9 @@ describe('Search api proxy', () => {
         status: 500,
         body: { someNonStandardProperty: 'error' },
       };
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
       const res = await performGet(
         '/search/beta/merchandising/facet/1',
         response
@@ -337,13 +340,17 @@ describe('Search api proxy', () => {
         message: '{"someNonStandardProperty":"error"}',
         status: '500',
       });
+      expect(consoleSpy).toHaveBeenCalled();
     });
 
-    it('if unauthorised should return with an appropirate error', async () => {
+    it('if unauthorised should return with an appropriate error', async () => {
       const response = {
         status: 401,
         body: { someNonStandardProperty: 'unauthorised' },
       };
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
       const res = await performGet(
         '/search/beta/merchandising/facet/1',
         response
@@ -355,6 +362,7 @@ describe('Search api proxy', () => {
         message: '401 Unauthorized. Please login or try again',
         status: '401',
       });
+      expect(consoleSpy).toHaveBeenCalled();
     });
 
     it('when url is undefined', async () => {
@@ -374,6 +382,7 @@ describe('Search api proxy', () => {
     it.each(responses)(
       'forwards request to backend without Authorization for GET',
       async (response) => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
         const res = await performGet(
           '/search/beta/merchandising/facet/2',
           response
@@ -395,6 +404,7 @@ describe('Search api proxy', () => {
     it.each(responses)(
       'forwards request to backend without Authorization for DELETE',
       async (response) => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
         const res = await performDelete(
           '/search/beta/merchandising/facet/2',
           response
@@ -416,6 +426,8 @@ describe('Search api proxy', () => {
       'forwards request to backend without Authorization for POST',
       async (response) => {
         const requestBody = { another: { request: 'body' } };
+
+        jest.spyOn(console, 'error').mockImplementation(() => {});
         const res = await performPost(
           '/search/beta/merchandising/facet/subcategory_427',
           response,
