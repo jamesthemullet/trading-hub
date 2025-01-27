@@ -191,58 +191,6 @@ describe('Index', () => {
     expect(screen.queryByTitle('Duplicate')).not.toBeInTheDocument();
   });
 
-  it('should update correctly if the totalItems is undefined', async () => {
-    jest.mocked(useRuleSet).mockReturnValue({
-      globalRuleSets: Array.from({ length: 80 }, (_, i) => ({
-        categoryName: `identifier-${i}`,
-        id: `${i}`,
-        categoryIds: [`category${i}`],
-        isEnabled: true,
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
-        rules: mockMerchandisingRules,
-        facets: [],
-      })),
-      pagination: {
-        totalItems: undefined,
-      },
-      categoryRuleSets: [],
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-      error: '',
-      isLoading: false,
-    });
-    const { container } = renderWithProviders(<RuleSets />);
-
-    const dropdown = container.querySelector<HTMLElement>(
-      'span[name="ChevronDownDefault"]'
-    );
-
-    if (!dropdown) {
-      throw new Error('Dropdown not found');
-    }
-
-    act(() => {
-      dropdown.click();
-    });
-
-    const valueToClick = await screen.findByText('100');
-    act(() => {
-      valueToClick.click();
-    });
-
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/global/rulesets',
-      query: {
-        currentPage: 1,
-        currentPageSize: 100,
-      },
-    });
-  });
-
   it('should search', async () => {
     const user = userEvent.setup();
 

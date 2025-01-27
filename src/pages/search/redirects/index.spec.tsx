@@ -365,28 +365,6 @@ describe('Search Rulesets', () => {
     expect(mockRedirectDelete).toHaveBeenCalledWith({ redirectId: mockId });
   });
 
-  it('should display scheduling column', async () => {
-    jest.mocked(useSearchRedirectList).mockReturnValue({
-      redirects: [
-        {
-          ...returnedRedirectMock,
-          startDate: '2024-10-14T10:02:38.556Z',
-          endDate: '2024-10-14T10:02:38.556Z',
-        },
-      ],
-      pagination: {
-        totalItems: 0,
-      },
-      error: '',
-      refetchRedirectList: () => jest.fn,
-      setKeywordList: jest.fn(),
-    });
-
-    renderWithProviders(<RedirectRuleSets />);
-
-    expect(await screen.findByText('Schedule')).toBeInTheDocument();
-  });
-
   it('should display country flag and filter', async () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [

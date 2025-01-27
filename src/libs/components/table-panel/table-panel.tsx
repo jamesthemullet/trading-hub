@@ -134,44 +134,37 @@ export const TablePanel = <
           </NewButton>
         )}
       </ToolsContainer>
-      {isLoading && (
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {isLoading ? (
         <>
           <DataTableSkeleton
             headings={headings}
             rowsCount={Number(router.query.currentPageSize || 10)}
           />
 
-          {rowsState.rows.length ? (
-            <TablePagination
-              pagination={rowsState.pagination}
-              pageSizes={pageSizes}
-              handlePageChange={handlePageChange}
-              currentPage={currentPage}
-              currentPageSize={currentPageSize}
-            />
-          ) : (
-            <TablePaginationSkeleton />
-          )}
+          <TablePaginationSkeleton />
+        </>
+      ) : (
+        <>
+          <DataTable
+            headings={headings}
+            rows={rowsState.rows}
+            onDeleteRuleSet={deleteRow}
+            onDuplicate={isDuplicateEnabled ? duplicateRow : undefined}
+            onToggleRuleSet={toggleRow}
+            ruleType={ruleType}
+            query={searchInputValue}
+          />
+
+          <TablePagination
+            pagination={rowsState.pagination}
+            pageSizes={pageSizes}
+            handlePageChange={handlePageChange}
+            currentPage={currentPage}
+            currentPageSize={currentPageSize}
+          />
         </>
       )}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-      <DataTable
-        headings={headings}
-        rows={rowsState.rows}
-        onDeleteRuleSet={deleteRow}
-        onDuplicate={isDuplicateEnabled ? duplicateRow : undefined}
-        onToggleRuleSet={toggleRow}
-        ruleType={ruleType}
-        query={searchInputValue}
-      />
-
-      <TablePagination
-        pagination={rowsState.pagination}
-        pageSizes={pageSizes}
-        handlePageChange={handlePageChange}
-        currentPage={currentPage}
-        currentPageSize={currentPageSize}
-      />
     </PageWrapper>
   );
 };

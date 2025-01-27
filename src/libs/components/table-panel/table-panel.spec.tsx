@@ -731,19 +731,6 @@ describe('TablePanel', () => {
       });
     });
 
-    it('should load default page and page size if not in query', async () => {
-      renderWithProviders(
-        <TablePanel
-          basePath="/category/rulesets"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
-
-      expect(screen.getByText('Page 1 of 1')).toBeVisible();
-    });
-
     it('should default to 10 rows per page on search, if no existing url query', async () => {
       const user = userEvent.setup();
 

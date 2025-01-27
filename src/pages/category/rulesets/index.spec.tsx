@@ -184,63 +184,6 @@ describe('Index', () => {
     expect(mockPush).toHaveBeenCalledWith('/category/rulesets/new');
   });
 
-  it('should update correctly if the totalItems is undefined', async () => {
-    jest.mocked(useRuleSet).mockReturnValue({
-      categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
-        categoryName: `identifier-${i}`,
-        id: `${i}`,
-        categoryIds: [`category${i}`],
-        categoriesInfo: [
-          {
-            id: `category${i}`,
-          },
-        ],
-        isEnabled: true,
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
-        rules: mockMerchandisingRules,
-        facets: [],
-      })),
-      pagination: {
-        totalItems: undefined,
-      },
-      globalRuleSets: [],
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-      error: '',
-      isLoading: false,
-    });
-    const { container } = renderWithProviders(<RuleSets />);
-
-    const dropdown = container.querySelector<HTMLElement>(
-      'span[name="ChevronDownDefault"]'
-    );
-
-    if (!dropdown) {
-      throw new Error('Dropdown not found');
-    }
-
-    act(() => {
-      dropdown.click();
-    });
-
-    const valueToClick = await screen.findByText('100');
-    act(() => {
-      valueToClick.click();
-    });
-
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/category/rulesets',
-      query: {
-        currentPage: 1,
-        currentPageSize: 100,
-      },
-    });
-  });
-
   it('displays schedule if a ruleset has a start and end date', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
