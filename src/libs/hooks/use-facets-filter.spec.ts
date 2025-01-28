@@ -59,6 +59,17 @@ const mockFacets: FacetRowDisplayValue[] = [
     merged: [],
     displayType: 'algoControl',
   },
+  {
+    displayValue: 'Sizing',
+    indexPropertyName: 'shoeSize',
+    id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a89',
+    lastChanged: {
+      date: '2021-01-05T08:34:15Z',
+      user: 'Test User',
+    },
+    merged: [],
+    displayType: 'algoControl',
+  },
 ];
 
 const mockEmptyDisplayValueFacets: FacetRowDisplayValue[] = [
@@ -99,11 +110,27 @@ describe('useFacetsFilter', () => {
     const { result } = renderHook(() => useFacetsFilter(mockFacets));
 
     await waitFor(() => {
-      expect(result.current.filteredFacets).toHaveLength(5);
+      expect(result.current.filteredFacets).toHaveLength(6);
     });
 
     act(() => {
       result.current.setSearch('color');
+    });
+
+    await waitFor(() => {
+      expect(result.current.filteredFacets).toHaveLength(1);
+    });
+  });
+
+  it('should filter the facets based on indexPropertyName', async () => {
+    const { result } = renderHook(() => useFacetsFilter(mockFacets));
+
+    await waitFor(() => {
+      expect(result.current.filteredFacets).toHaveLength(6);
+    });
+
+    act(() => {
+      result.current.setSearch('shoe');
     });
 
     await waitFor(() => {
@@ -133,7 +160,7 @@ describe('useFacetsFilter', () => {
     const { result } = renderHook(() => useFacetsFilter(mockFacets));
 
     await waitFor(() => {
-      expect(result.current.filteredFacets).toHaveLength(5);
+      expect(result.current.filteredFacets).toHaveLength(6);
     });
 
     act(() => {
@@ -149,7 +176,7 @@ describe('useFacetsFilter', () => {
     const { result } = renderHook(() => useFacetsFilter(mockFacets));
 
     await waitFor(() => {
-      expect(result.current.filteredFacets).toHaveLength(5);
+      expect(result.current.filteredFacets).toHaveLength(6);
     });
 
     act(() => {
