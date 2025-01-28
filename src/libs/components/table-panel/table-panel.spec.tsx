@@ -102,10 +102,12 @@ const mappingMock = {
   ruleSetToRow: (ruleSet: any) => ({
     ...ruleSet,
     identifier: 'foo | bar',
+    url: `/category/rulesets/edit/${ruleSet.id}`,
   }),
   toggleRuleSet: (ruleSet: any) => ({
     ...ruleSet,
     isEnabled: !ruleSet.isEnabled,
+    url: `/category/rulesets/edit/${ruleSet.id}`,
   }),
   allToTotalItems: (data: any) => data.pagination.totalItems,
   allToArray: (data: any) => data.ruleSets,

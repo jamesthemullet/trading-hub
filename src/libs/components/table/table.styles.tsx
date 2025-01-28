@@ -4,6 +4,8 @@ import { Label } from '@/libs/components/typography/typography.styles';
 import { color } from '@/libs/components/utils/constants';
 import { spacing } from '@/libs/components/utils/spacing';
 
+import Link from 'next/link';
+
 export const TableContainer = styled.div`
   margin: ${spacing(2)} 0;
   margin-bottom: 10px;
@@ -133,7 +135,7 @@ export const TableOptionButton = styled.button<{ isOpen: boolean }>`
   }
 `;
 
-export const TableActionsButton = styled.a`
+export const TableActionsButton = styled(Link)`
   border: none;
   color: #000;
   background-color: #f5f5f5;
