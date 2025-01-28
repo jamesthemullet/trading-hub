@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { Modal } from '@mantine/core';
+import { Modal, Skeleton } from '@mantine/core';
 
 import { useOnOutsideClick } from '@/libs/hooks';
 
@@ -38,7 +38,7 @@ const totalOfAllPossibleColumns = [
   'Actions',
 ].length;
 
-export const Row = styled(TableRow)<{
+const Row = styled(TableRow)<{
   numColumns: number;
   showBreadcrumbColumn?: boolean;
 }>`
@@ -102,7 +102,7 @@ const Buttons = styled.div`
   }
 `;
 
-export const FirstColumn = styled(TableCol)`
+const FirstColumn = styled(TableCol)`
   display: flex;
   flex-direction: column;
 
@@ -243,9 +243,11 @@ type Props = {
   onDeleteRuleSet: ({ id }: { id: string }) => void;
   onToggleRuleSet?: ({ id }: { id: string }) => void;
   rows: Row[];
+  isLoading: boolean;
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
   onDuplicate?: (id: string) => void;
   query?: string;
+  currentPageSize?: number;
 };
 
 export const DataTable = ({
@@ -256,6 +258,8 @@ export const DataTable = ({
   onDuplicate,
   onToggleRuleSet,
   query,
+  isLoading,
+  currentPageSize,
 }: Props) => {
   const [optionToggle, setOptionToggle] = useState('');
   const [ruleSetIdToEdit, setRuleSetIdToEdit] = useState('');
@@ -316,7 +320,9 @@ export const DataTable = ({
 
   return (
     <>
-      <TableContainer>
+      <TableContainer
+        aria-label={isLoading ? 'datatable-skeleton' : 'datatable'}
+      >
         <Row
           style={{ color: '#8a8a8a', fontSize: '0.9em' }}
           numColumns={headings.length}
@@ -330,231 +336,270 @@ export const DataTable = ({
             </DynamicTableCol>
           ))}
         </Row>
-
-        {rows.map(
-          ({
-            id,
-            identifier,
-            isEnabled,
-            lastChanged,
-            onToggle,
-            url,
-            categoryPlpUrl,
-            categoriesInfo,
-            searchTerms,
-            startDate,
-            endDate,
-            countryCode,
-          }: Row) => {
-            const isOptionDropdownOpen = optionToggle === id;
-
-            const onConfirmDelete = () => {
-              setRuleSetIdToEdit(id);
-              setRuleSetEditOption('delete');
-              setIsModalOpen(true);
-            };
-
-            const onConfirmDuplicate = () => {
-              setRuleSetIdToEdit(id);
-              setRuleSetEditOption('duplicate');
-              setRuleName(setDuplicationName({ categoriesInfo, searchTerms }));
-              setIsModalOpen(true);
-            };
-
-            const getFlagFromCountryCode = (
-              countryCode: string | undefined
-            ): { flags: string; alt: string }[] => {
-              const createFlagObject = (code: string) => ({
-                flags: `/trading-hub/asset/icon-${code.toLowerCase()}-flag.svg`,
-                alt: `${code} rule`,
-              });
-
-              switch (countryCode) {
-                case 'UK':
-                case 'IE':
-                  return [createFlagObject(countryCode)];
-                case 'UK_IE':
-                  return [createFlagObject('UK'), createFlagObject('IE')];
-                default:
-                  return [];
-              }
-            };
-
-            return (
-              <Row
-                key={id}
-                numColumns={headings.length}
-                showBreadcrumbColumn={showBreadcrumbColumn}
-              >
-                <FirstColumn>
-                  <FlagAndIdentifier>
-                    {countryCode && (
-                      <>
-                        {getFlagFromCountryCode(countryCode).map(
-                          ({ flags, alt }, index) => (
-                            <Image
-                              key={index}
-                              src={flags}
-                              width={20}
-                              height={20}
-                              alt={alt}
-                            />
-                          )
-                        )}
-                      </>
-                    )}
-                    <NoOverflowText title={identifier}>
-                      {formatByQuery(identifier)}
-                    </NoOverflowText>
-                  </FlagAndIdentifier>
-                  {categoryPlpUrl && (
-                    <CompactUrlText title={categoryPlpUrl}>
-                      {categoryPlpUrl}
-                    </CompactUrlText>
-                  )}
-                  {startDate &&
-                    endDate &&
-                    headings.filter((heading) => heading === 'Schedule')
-                      .length > 0 && (
-                      <SchedulingDetailLeftSide>
-                        <Image
-                          alt=""
-                          src={`/trading-hub/asset/icon-calendar.svg`}
-                          width={24}
-                          height={24}
-                        />
-                        <Text as="time">
-                          {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
-                          {format(new Date(endDate), 'dd MMM yyyy')}
-                        </Text>
-                      </SchedulingDetailLeftSide>
-                    )}
-                </FirstColumn>
-                {headings.filter((heading) => heading === 'Breadcrumb').length >
-                  0 && (
-                  <BreadcrumbColumn>
-                    {categoryPlpUrl && (
-                      <StyledUrlText title={categoryPlpUrl}>
-                        {categoryPlpUrl}
-                      </StyledUrlText>
-                    )}
-                  </BreadcrumbColumn>
-                )}
-                {headings.filter((heading) => heading === 'Schedule').length >
-                  0 && (
-                  <SchedulingColumn>
-                    {startDate && endDate ? (
-                      <>
-                        <Image
-                          alt=""
-                          src={`/trading-hub/asset/icon-calendar.svg`}
-                          width={24}
-                          height={24}
-                        />
-                        <Text>
-                          {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
-                          {format(new Date(endDate), 'dd MMM yyyy')}
-                        </Text>
-                      </>
-                    ) : (
-                      <Text>All time</Text>
-                    )}
-                  </SchedulingColumn>
-                )}
-                <TableCol>{countryCode?.replace('_', '/')}</TableCol>
-                <TableCol>
-                  <Toggle
-                    checked={isEnabled}
-                    onChange={() => {
-                      if (onToggleRuleSet) {
-                        onToggleRuleSet({ id });
-                      }
-                      if (onToggle) {
-                        onToggle({ id });
-                      }
-                    }}
-                  />
-                </TableCol>
-                <TableCol>
-                  <Text>
-                    {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
-                  </Text>
-                </TableCol>
-                <TableCol>
-                  <Text>{formatByQuery(lastChanged.user)}</Text>
-                </TableCol>
-                <TableCol style={{ padding: '12px 0 0' }}>
-                  <TableActions
-                    onKeyDown={handleOnKeyDown}
-                    ref={dropdownWrapperRef}
+        {isLoading
+          ? Array.from({ length: Number(currentPageSize || 10) }).map(
+              (_, index) => {
+                return (
+                  <Row
+                    aria-label={`datatable-skeleton-row-${index}`}
+                    key={`skeleton-row-${index}`}
+                    numColumns={headings.length}
                   >
-                    <TableActionsButton href={url}>Edit</TableActionsButton>
-                    <ArrowContainer
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.stopPropagation();
-                          handleOptionToggle(id);
-                        }
-                      }}
-                      onMouseDown={(e) => {
-                        e.stopPropagation();
-                        handleOptionToggle(id);
-                      }}
-                      title="More options"
-                    >
-                      <Arrow isDropdownOpen={isOptionDropdownOpen} />
-                    </ArrowContainer>
-                    {isOptionDropdownOpen && (
-                      <DropdownOptions>
-                        <TableDropdown
-                          title="Delete"
-                          onMouseDown={onConfirmDelete}
+                    <FirstColumn>
+                      <Skeleton height={48} width={'100%'} />
+                    </FirstColumn>
+                    <BreadcrumbColumn>
+                      <Skeleton height={48} width={'100%'} />
+                    </BreadcrumbColumn>
+                    <SchedulingColumn>
+                      <Skeleton height={48} width={'100%'} />
+                    </SchedulingColumn>
+                    <TableCol>
+                      <Skeleton height={48} width={'100%'} />
+                    </TableCol>
+                    <TableCol>
+                      <Skeleton height={48} width={'100%'} />
+                    </TableCol>
+                    <TableCol>
+                      <Skeleton height={48} width={'100%'} />
+                    </TableCol>
+                    <TableCol>
+                      <Skeleton height={48} width={'100%'} />
+                    </TableCol>
+                    <TableCol style={{ padding: '12px 0 16px' }}>
+                      <Skeleton height={48} width={113.3} />
+                    </TableCol>
+                  </Row>
+                );
+              }
+            )
+          : rows.map(
+              ({
+                id,
+                identifier,
+                isEnabled,
+                lastChanged,
+                onToggle,
+                url,
+                categoryPlpUrl,
+                categoriesInfo,
+                searchTerms,
+                startDate,
+                endDate,
+                countryCode,
+              }: Row) => {
+                const isOptionDropdownOpen = optionToggle === id;
+
+                const onConfirmDelete = () => {
+                  setRuleSetIdToEdit(id);
+                  setRuleSetEditOption('delete');
+                  setIsModalOpen(true);
+                };
+
+                const onConfirmDuplicate = () => {
+                  setRuleSetIdToEdit(id);
+                  setRuleSetEditOption('duplicate');
+                  setRuleName(
+                    setDuplicationName({ categoriesInfo, searchTerms })
+                  );
+                  setIsModalOpen(true);
+                };
+
+                const getFlagFromCountryCode = (
+                  countryCode: string | undefined
+                ): { flags: string; alt: string }[] => {
+                  const createFlagObject = (code: string) => ({
+                    flags: `/trading-hub/asset/icon-${code.toLowerCase()}-flag.svg`,
+                    alt: `${code} rule`,
+                  });
+
+                  switch (countryCode) {
+                    case 'UK':
+                    case 'IE':
+                      return [createFlagObject(countryCode)];
+                    case 'UK_IE':
+                      return [createFlagObject('UK'), createFlagObject('IE')];
+                    default:
+                      return [];
+                  }
+                };
+
+                return (
+                  <Row
+                    key={id}
+                    numColumns={headings.length}
+                    showBreadcrumbColumn={showBreadcrumbColumn}
+                  >
+                    <FirstColumn>
+                      <FlagAndIdentifier>
+                        {countryCode && (
+                          <>
+                            {getFlagFromCountryCode(countryCode).map(
+                              ({ flags, alt }, index) => (
+                                <Image
+                                  key={index}
+                                  src={flags}
+                                  width={20}
+                                  height={20}
+                                  alt={alt}
+                                />
+                              )
+                            )}
+                          </>
+                        )}
+                        <NoOverflowText title={identifier}>
+                          {formatByQuery(identifier)}
+                        </NoOverflowText>
+                      </FlagAndIdentifier>
+                      {categoryPlpUrl && (
+                        <CompactUrlText title={categoryPlpUrl}>
+                          {categoryPlpUrl}
+                        </CompactUrlText>
+                      )}
+                      {startDate &&
+                        endDate &&
+                        headings.filter((heading) => heading === 'Schedule')
+                          .length > 0 && (
+                          <SchedulingDetailLeftSide>
+                            <Image
+                              alt=""
+                              src={`/trading-hub/asset/icon-calendar.svg`}
+                              width={24}
+                              height={24}
+                            />
+                            <Text as="time">
+                              {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
+                              {format(new Date(endDate), 'dd MMM yyyy')}
+                            </Text>
+                          </SchedulingDetailLeftSide>
+                        )}
+                    </FirstColumn>
+                    {headings.filter((heading) => heading === 'Breadcrumb')
+                      .length > 0 && (
+                      <BreadcrumbColumn>
+                        {categoryPlpUrl && (
+                          <StyledUrlText title={categoryPlpUrl}>
+                            {categoryPlpUrl}
+                          </StyledUrlText>
+                        )}
+                      </BreadcrumbColumn>
+                    )}
+                    {headings.filter((heading) => heading === 'Schedule')
+                      .length > 0 && (
+                      <SchedulingColumn>
+                        {startDate && endDate ? (
+                          <>
+                            <Image
+                              alt=""
+                              src={`/trading-hub/asset/icon-calendar.svg`}
+                              width={24}
+                              height={24}
+                            />
+                            <Text>
+                              {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
+                              {format(new Date(endDate), 'dd MMM yyyy')}
+                            </Text>
+                          </>
+                        ) : (
+                          <Text>All time</Text>
+                        )}
+                      </SchedulingColumn>
+                    )}
+                    <TableCol>{countryCode?.replace('_', '/')}</TableCol>
+                    <TableCol>
+                      <Toggle
+                        checked={isEnabled}
+                        onChange={() => {
+                          if (onToggleRuleSet) {
+                            onToggleRuleSet({ id });
+                          }
+                          if (onToggle) {
+                            onToggle({ id });
+                          }
+                        }}
+                      />
+                    </TableCol>
+                    <TableCol>
+                      <Text>
+                        {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
+                      </Text>
+                    </TableCol>
+                    <TableCol>
+                      <Text>{formatByQuery(lastChanged.user)}</Text>
+                    </TableCol>
+                    <TableCol style={{ padding: '12px 0 0' }}>
+                      <TableActions
+                        onKeyDown={handleOnKeyDown}
+                        ref={dropdownWrapperRef}
+                      >
+                        <TableActionsButton href={url}>Edit</TableActionsButton>
+                        <ArrowContainer
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                              onConfirmDelete();
+                              e.stopPropagation();
+                              handleOptionToggle(id);
                             }
                           }}
+                          onMouseDown={(e) => {
+                            e.stopPropagation();
+                            handleOptionToggle(id);
+                          }}
+                          title="More options"
                         >
-                          Delete
-                        </TableDropdown>
-                        {!!onDuplicate && (
-                          <TableDropdown
-                            title="Duplicate"
-                            onMouseDown={onConfirmDuplicate}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                onConfirmDuplicate();
-                              }
-                            }}
-                          >
-                            Duplicate
-                          </TableDropdown>
+                          <Arrow isDropdownOpen={isOptionDropdownOpen} />
+                        </ArrowContainer>
+                        {isOptionDropdownOpen && (
+                          <DropdownOptions>
+                            <TableDropdown
+                              title="Delete"
+                              onMouseDown={onConfirmDelete}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  onConfirmDelete();
+                                }
+                              }}
+                            >
+                              Delete
+                            </TableDropdown>
+                            {!!onDuplicate && (
+                              <TableDropdown
+                                title="Duplicate"
+                                onMouseDown={onConfirmDuplicate}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    onConfirmDuplicate();
+                                  }
+                                }}
+                              >
+                                Duplicate
+                              </TableDropdown>
+                            )}
+                          </DropdownOptions>
                         )}
-                      </DropdownOptions>
-                    )}
-                  </TableActions>
-                </TableCol>
-                <FullWidthRow>
-                  {startDate && endDate && (
-                    <>
-                      <Image
-                        alt=""
-                        src={`/trading-hub/asset/icon-calendar.svg`}
-                        width={24}
-                        height={24}
-                      />
-                      <Text as="time">
-                        {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
-                        {format(new Date(endDate), 'dd MMM yyyy')}
-                      </Text>
-                    </>
-                  )}
-                </FullWidthRow>
-              </Row>
-            );
-          }
-        )}
+                      </TableActions>
+                    </TableCol>
+                    <FullWidthRow>
+                      {startDate && endDate && (
+                        <>
+                          <Image
+                            alt=""
+                            src={`/trading-hub/asset/icon-calendar.svg`}
+                            width={24}
+                            height={24}
+                          />
+                          <Text as="time">
+                            {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
+                            {format(new Date(endDate), 'dd MMM yyyy')}
+                          </Text>
+                        </>
+                      )}
+                    </FullWidthRow>
+                  </Row>
+                );
+              }
+            )}
       </TableContainer>
+
       <Modal.Root
         centered
         opened={isModalOpen}

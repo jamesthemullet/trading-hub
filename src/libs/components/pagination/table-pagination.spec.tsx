@@ -1,10 +1,73 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
+
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import { TablePagination } from './table-pagination';
 
 const pageSizes = [10, 20, 50, 100];
 
 describe('TablePagination', () => {
+  it('should renderWithProviders loading skeleton correctly', () => {
+    const handlePageChangeSpy = jest.fn();
+    const mockProps = {
+      pagination: {
+        totalItems: 0,
+      },
+      currentPage: 1,
+      currentPageSize: pageSizes[0],
+      handlePageChange: handlePageChangeSpy,
+      isLoading: true,
+      pageSizes,
+    };
+
+    renderWithProviders(<TablePagination {...mockProps} />);
+
+    expect(screen.getByLabelText('table-pagination-skeleton')).toBeVisible();
+  });
+
+  it('should render if pagination totalItems is undefined', async () => {
+    const handlePageChangeSpy = jest.fn();
+
+    const mockProps = {
+      pagination: {
+        totalItems: undefined,
+      },
+      currentPage: 1,
+      currentPageSize: pageSizes[0],
+      handlePageChange: handlePageChangeSpy,
+      isLoading: false,
+      pageSizes,
+    };
+    const { container } = renderWithProviders(
+      <TablePagination {...mockProps} />
+    );
+
+    const newText = 'Page 1 of 1';
+    expect(await screen.findByText(newText)).toBeVisible();
+
+    const dropdown = container.querySelector<HTMLElement>(
+      'span[name="ChevronDownDefault"]'
+    );
+
+    if (!dropdown) {
+      throw new Error('Dropdown not found');
+    }
+
+    act(() => {
+      dropdown.click();
+    });
+
+    const label = await screen.findByText('100');
+
+    expect(label).toBeVisible();
+
+    act(() => {
+      label.click();
+    });
+
+    expect(handlePageChangeSpy).toHaveBeenCalledWith(1, 100);
+  });
+
   it('should open and close sizes menu', async () => {
     const mockProps = {
       pagination: {
@@ -13,10 +76,15 @@ describe('TablePagination', () => {
       currentPage: 1,
       currentPageSize: pageSizes[0],
       handlePageChange: jest.fn(),
+      isLoading: false,
       pageSizes,
     };
 
-    const { container } = render(<TablePagination {...mockProps} />);
+    const { container } = renderWithProviders(
+      <TablePagination {...mockProps} />
+    );
+
+    expect(await screen.findByText('Page 1 of 1')).toBeVisible();
 
     const dropdown = container.querySelector<HTMLElement>(
       'span[name="ChevronDownDefault"]'
@@ -50,10 +118,13 @@ describe('TablePagination', () => {
       currentPage: 1,
       currentPageSize: pageSizes[0],
       handlePageChange: handlePageChangeSpy,
+      isLoading: false,
       pageSizes,
     };
 
-    const { container } = render(<TablePagination {...mockProps} />);
+    const { container } = renderWithProviders(
+      <TablePagination {...mockProps} />
+    );
 
     const dropdown = container.querySelector<HTMLElement>(
       'span[name="ChevronDownDefault"]'
@@ -88,10 +159,11 @@ describe('TablePagination', () => {
       currentPage: 2,
       currentPageSize: pageSizes[0],
       handlePageChange: handlePageChangeSpy,
+      isLoading: false,
       pageSizes,
     };
 
-    render(<TablePagination {...mockProps} />);
+    renderWithProviders(<TablePagination {...mockProps} />);
     const text = 'Page 2 of 10';
 
     expect(screen.getByText(text)).toBeVisible();
@@ -118,9 +190,12 @@ describe('TablePagination', () => {
       currentPage: 2,
       currentPageSize: pageSizes[0],
       handlePageChange: handlePageChangeSpy,
+      isLoading: false,
       pageSizes,
     };
-    const { container } = render(<TablePagination {...mockProps} />);
+    const { container } = renderWithProviders(
+      <TablePagination {...mockProps} />
+    );
 
     const newText = 'Page 2 of 2';
     expect(await screen.findByText(newText)).toBeVisible();
@@ -157,10 +232,13 @@ describe('TablePagination', () => {
       },
       currentPage: 2,
       currentPageSize: pageSizes[0],
-      pageSizes,
+      isLoading: false,
       handlePageChange: handlePageChangeSpy,
+      pageSizes,
     };
-    const { container } = render(<TablePagination {...mockProps} />);
+    const { container } = renderWithProviders(
+      <TablePagination {...mockProps} />
+    );
 
     const newText = 'Page 2 of 8';
     expect(await screen.findByText(newText)).toBeVisible();
@@ -188,44 +266,5 @@ describe('TablePagination', () => {
     });
 
     expect(handlePageChangeSpy).toHaveBeenCalledWith(2, 20);
-  });
-
-  it('should handle undefined total items', async () => {
-    const handlePageChangeSpy = jest.fn();
-
-    const mockProps = {
-      pagination: {
-        totalItems: undefined,
-      },
-      currentPage: 2,
-      currentPageSize: pageSizes[0],
-      handlePageChange: handlePageChangeSpy,
-      pageSizes,
-    };
-
-    render(<TablePagination {...mockProps} />);
-
-    const newText = 'Page 2 of 1';
-    expect(await screen.findByText(newText)).toBeVisible();
-
-    const dropdown = await screen.findByLabelText<HTMLElement>('rows per page');
-
-    if (!dropdown) {
-      throw new Error('Dropdown not found');
-    }
-
-    act(() => {
-      dropdown.click();
-    });
-
-    const label = await screen.findByText('100');
-
-    expect(label).toBeVisible();
-
-    act(() => {
-      label.click();
-    });
-
-    expect(handlePageChangeSpy).toHaveBeenCalledWith(1, 100);
   });
 });

@@ -6,12 +6,10 @@ import { useRouter } from 'next/router';
 import { CountryCode } from '@/libs/api';
 import {
   DataTable,
-  DataTableSkeleton,
   ErrorMessage,
   Search,
   spacing,
   TablePagination,
-  TablePaginationSkeleton,
 } from '@/libs/components';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
@@ -134,37 +132,29 @@ export const TablePanel = <
           </NewButton>
         )}
       </ToolsContainer>
+
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      {isLoading ? (
-        <>
-          <DataTableSkeleton
-            headings={headings}
-            rowsCount={Number(router.query.currentPageSize || 10)}
-          />
 
-          <TablePaginationSkeleton />
-        </>
-      ) : (
-        <>
-          <DataTable
-            headings={headings}
-            rows={rowsState.rows}
-            onDeleteRuleSet={deleteRow}
-            onDuplicate={isDuplicateEnabled ? duplicateRow : undefined}
-            onToggleRuleSet={toggleRow}
-            ruleType={ruleType}
-            query={searchInputValue}
-          />
+      <DataTable
+        headings={headings}
+        rows={rowsState.rows}
+        currentPageSize={currentPageSize}
+        onDeleteRuleSet={deleteRow}
+        onDuplicate={isDuplicateEnabled ? duplicateRow : undefined}
+        onToggleRuleSet={toggleRow}
+        ruleType={ruleType}
+        query={searchInputValue}
+        isLoading={isLoading}
+      />
 
-          <TablePagination
-            pagination={rowsState.pagination}
-            pageSizes={pageSizes}
-            handlePageChange={handlePageChange}
-            currentPage={currentPage}
-            currentPageSize={currentPageSize}
-          />
-        </>
-      )}
+      <TablePagination
+        pagination={rowsState.pagination}
+        pageSizes={pageSizes}
+        handlePageChange={handlePageChange}
+        currentPage={currentPage}
+        currentPageSize={currentPageSize}
+        isLoading={isLoading}
+      />
     </PageWrapper>
   );
 };
