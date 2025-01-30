@@ -56,6 +56,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     method: req.method,
     headers,
     body: req.body ? JSON.stringify(req.body) : undefined,
+    cache: 'no-store',
   });
 
   let jsonBody = {};
