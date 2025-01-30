@@ -71,6 +71,7 @@ type Props = {
   onCancel: () => void;
   redirect?: ReturnedKeywordRedirect;
   title: string;
+  writeEnabled?: boolean;
 };
 
 export const Redirect = ({
@@ -79,6 +80,7 @@ export const Redirect = ({
   onSave,
   redirect: savedRedirect,
   title,
+  writeEnabled = true,
 }: Props) => {
   const [redirect, setRedirect] = useState<KeywordRedirect>(
     savedRedirect
@@ -160,7 +162,11 @@ export const Redirect = ({
   return (
     <>
       <ProductGridHeader
-        canSave={!!redirect.destinationUrl && redirect.keywords.length > 0}
+        canSave={
+          writeEnabled &&
+          !!redirect.destinationUrl &&
+          redirect.keywords.length > 0
+        }
         title={title}
         onCancel={onCancel}
         onSave={onSaveRedirect}

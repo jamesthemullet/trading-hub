@@ -7,6 +7,10 @@ import CategoryFacetsPanel from '@/libs/modules/facets-panel/category-facets-pan
 
 import Head from 'next/head';
 
+import { AccessDeny } from '../../../../libs/components/access-deny/access-deny';
+import { useAccess } from '../../../../libs/hooks/use-access';
+import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../../category-config';
+
 const Page = () => {
   const router = useRouter();
 
@@ -62,6 +66,15 @@ const Page = () => {
     router.push('/category/facets');
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: CAT_READ_ROLE,
+    writeRole: CAT_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -86,6 +99,7 @@ const Page = () => {
         categoryIds={[]}
         onSave={handleSave}
         onCancel={handleCancel}
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

@@ -65,6 +65,20 @@ describe('Edit keyword redirect', () => {
     expect(mockUpdateRedirect.updateRedirect).toHaveBeenCalled();
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<Page id={ruleSetId} />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('should cancel changes to a redirect', async () => {
     const user = userEvent.setup({ delay: null });
 

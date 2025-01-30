@@ -5,12 +5,16 @@ import {
   search,
 } from '@/libs/api';
 import { Heading } from '@/libs/components';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { TablePanel } from '@/libs/components/table-panel/table-panel';
 import { RuleSetMapping } from '@/libs/components/types';
 import { formatCategoriesInfo } from '@/libs/components/utils/format-categories-info';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
+import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
+
+import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../category-config';
 
 const FacetManagementPage = () => {
   const headings = [
@@ -91,6 +95,15 @@ const FacetManagementPage = () => {
     },
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: CAT_READ_ROLE,
+    writeRole: CAT_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -113,6 +126,7 @@ const FacetManagementPage = () => {
         addNewButtonLabel="Add new facet"
         newRowCreateMode="redirect-to-new"
         ruleType="categoryRanking"
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

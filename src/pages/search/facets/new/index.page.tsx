@@ -2,10 +2,14 @@ import { useRouter } from 'next/router';
 
 import type { CountryCode, ExcludedFacets, ReturnedFacet } from '@/libs/api';
 import { Heading } from '@/libs/components';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useSearchRuleSetCreate } from '@/libs/hooks';
+import { useAccess } from '@/libs/hooks/use-access';
 import SearchFacetsPanel from '@/libs/modules/facets-panel/search-facets-panel';
 
 import Head from 'next/head';
+
+import { SEARCH_READ_ROLE, SEARCH_WRITE_ROLE } from '../../search-config';
 
 const NewRuleSetPage = () => {
   const { createRuleset } = useSearchRuleSetCreate();
@@ -60,6 +64,15 @@ const NewRuleSetPage = () => {
     router.push('/search/facets');
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: SEARCH_READ_ROLE,
+    writeRole: SEARCH_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={SEARCH_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -80,6 +93,7 @@ const NewRuleSetPage = () => {
         searchTerms={[]}
         onSave={handleSave}
         onCancel={handleCancel}
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

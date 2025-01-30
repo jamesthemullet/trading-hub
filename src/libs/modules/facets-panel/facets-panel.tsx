@@ -88,6 +88,7 @@ interface FacetsPanelProps {
   includedFacets: ReturnedFacet[];
   excludedFacets: ExcludedFacets;
   selectedPreviewCountryCode?: 'UK' | 'IE';
+  writeEnabled?: boolean;
   dispatch: (action: Action) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -125,6 +126,7 @@ export const FacetsPanel = ({
   includedFacets,
   excludedFacets,
   selectedPreviewCountryCode,
+  writeEnabled,
   dispatch,
   onSave,
   onCancel,
@@ -336,7 +338,7 @@ export const FacetsPanel = ({
 
       <ProductGridHeader
         canSave={
-          !!selectedCategories.length ||
+          (writeEnabled && !!selectedCategories.length) ||
           !!searchTerms.length ||
           facetType === 'global'
         }

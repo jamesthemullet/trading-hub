@@ -205,6 +205,7 @@ export const Ruleset = ({
   searchTerms,
   startDate,
   countryCode,
+  writeEnabled = true,
 }: {
   isEnabled: boolean;
   onSave?: ({
@@ -233,6 +234,7 @@ export const Ruleset = ({
   startDate?: string;
   endDate?: string;
   countryCode?: CountryCode;
+  writeEnabled?: boolean;
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     categoryIds || []
@@ -451,7 +453,8 @@ export const Ruleset = ({
 
       <ProductGridHeader
         canSave={
-          (!!selectedCategories.length &&
+          (writeEnabled &&
+            !!selectedCategories.length &&
             merchandisingRules.pinnedProducts.length <=
               MAX_PINNED_PRODUCTS_ALLOWED) ||
           (!!rulesetSearchTerms.length &&

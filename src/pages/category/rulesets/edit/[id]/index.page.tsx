@@ -2,11 +2,16 @@ import { useRouter } from 'next/router';
 
 import type { RuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
-import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { useRuleSetDetail } from '@/libs/hooks/category/rulesets/use-rule-set-detail';
+import { useAccess } from '@/libs/hooks/use-access';
+import { useUpdateRuleSet } from '@/libs/hooks/use-rule-set-update';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+
+import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../../../category-config';
 
 type PageProps = {
   id: string;
@@ -46,6 +51,15 @@ const Page = ({ id }: PageProps) => {
     }
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: CAT_READ_ROLE,
+    writeRole: CAT_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -73,6 +87,7 @@ const Page = ({ id }: PageProps) => {
           startDate={ruleSetDetail.startDate}
           endDate={ruleSetDetail.endDate}
           countryCode={ruleSetDetail.countryCode}
+          writeEnabled={hasWriteAccess}
         />
       )}
 

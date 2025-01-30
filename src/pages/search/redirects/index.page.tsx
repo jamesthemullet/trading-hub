@@ -5,11 +5,15 @@ import {
   search,
 } from '@/libs/api';
 import { Heading } from '@/libs/components';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { TablePanel } from '@/libs/components/table-panel/table-panel';
 import { RuleSetMapping } from '@/libs/components/types';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
+import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
+
+import { SEARCH_READ_ROLE, SEARCH_WRITE_ROLE } from '../search-config';
 
 const RedirectRuleSets = () => {
   const headings = [
@@ -75,6 +79,15 @@ const RedirectRuleSets = () => {
     },
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: SEARCH_READ_ROLE,
+    writeRole: SEARCH_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={SEARCH_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -91,6 +104,7 @@ const RedirectRuleSets = () => {
         headings={headings}
         mapping={mapping}
         ruleType="redirect"
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

@@ -8,11 +8,15 @@ import {
   RuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
+import { useAccess } from '@/libs/hooks/use-access';
 import GlobalFacetsPanel from '@/libs/modules/facets-panel/global-facets-panel';
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+
+import { GLOB_READ_ROLE, GLOB_WRITE_ROLE } from '../../../global-config';
 
 type PageProps = {
   id: string;
@@ -69,6 +73,15 @@ const Page = ({ id }: PageProps) => {
     router.push('/global/facets');
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: GLOB_READ_ROLE,
+    writeRole: GLOB_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={GLOB_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -91,16 +104,15 @@ const Page = ({ id }: PageProps) => {
       )}
 
       {!globalRulesetError && (
-        <>
-          <GlobalFacetsPanel
-            ruleSetIncludedFacets={facetsFromGlobalRuleSet}
-            ruleSetExcludedFacets={globalRuleSet.excludedFacets}
-            isLoading={isLoading}
-            countryCode={globalRuleSet.countryCode || 'UK_IE'}
-            onSave={handleSave}
-            onCancel={handleCancel}
-          />
-        </>
+        <GlobalFacetsPanel
+          ruleSetIncludedFacets={facetsFromGlobalRuleSet}
+          ruleSetExcludedFacets={globalRuleSet.excludedFacets}
+          isLoading={isLoading}
+          countryCode={globalRuleSet.countryCode || 'UK_IE'}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          writeEnabled={hasWriteAccess}
+        />
       )}
     </>
   );

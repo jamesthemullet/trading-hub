@@ -147,6 +147,33 @@ describe('DataTable', () => {
     expect(screen.getByText('Identifier')).toBeVisible();
   });
 
+  it('should render correctly with no write access', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <DataTable
+        isLoading={false}
+        currentPageSize={20}
+        headings={headings}
+        rows={rows}
+        onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
+        writeEnabled={false}
+      />
+    );
+
+    expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+    expect(screen.getByText('path/to/SubCategory_123')).toBeInTheDocument();
+
+    await user.click(screen.getAllByTitle('More options')[0]);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: 'Delete' })
+      ).not.toBeInTheDocument();
+    });
+  });
+
   it('should render correctly with six headings', () => {
     renderWithProviders(
       <DataTable

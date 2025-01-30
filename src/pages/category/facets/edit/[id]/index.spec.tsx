@@ -148,6 +148,20 @@ describe('Category Facet Management Editing', () => {
     ).toBeVisible();
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<Page id={ruleSetId} />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('should render column headings', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 

@@ -47,6 +47,20 @@ describe('Index', () => {
     );
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<RuleSetCreate />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('creates a new rule set and redirects to the ruleset list page', async () => {
     const user = userEvent.setup();
     jest.mocked(useSearchRuleSetCreate).mockReturnValue({

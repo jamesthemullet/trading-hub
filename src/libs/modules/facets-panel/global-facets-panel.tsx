@@ -21,6 +21,7 @@ type GlobalFacetsPanelProps = {
   ruleSetRules?: MerchandisingRules;
   isLoading: boolean;
   countryCode: CountryCode;
+  writeEnabled?: boolean;
   onSave: (value: {
     includedFacets: ReturnedFacet[];
     excludedFacets: ExcludedFacets;
@@ -35,6 +36,7 @@ const GlobalFacetsPanel = ({
   ruleSetRules,
   isLoading,
   countryCode,
+  writeEnabled = true,
   onSave,
   onCancel,
 }: GlobalFacetsPanelProps) => {
@@ -172,6 +174,7 @@ const GlobalFacetsPanel = ({
           onCancel={onCancel}
           refreshData={onRefreshFacetList}
           onFacetDataChange={onFacetDataChange}
+          writeEnabled={writeEnabled}
         />
       )}
     </>

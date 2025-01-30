@@ -153,6 +153,20 @@ describe('Search Rulesets', () => {
     expect(screen.getByText('Keyword Redirect')).toBeVisible();
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<RedirectRuleSets />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('should redirect to new page when add new rule is clicked', async () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [],

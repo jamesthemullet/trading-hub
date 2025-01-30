@@ -4,12 +4,16 @@ import {
   RuleSet,
   search,
 } from '@/libs/api';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { Heading } from '@/libs/components/heading/heading';
 import { TablePanel } from '@/libs/components/table-panel/table-panel';
 import { RuleSetMapping } from '@/libs/components/types';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
+import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
+
+import { GLOB_READ_ROLE, GLOB_WRITE_ROLE } from '../global-config';
 
 const FacetManagementPage = () => {
   const headings = [
@@ -69,6 +73,15 @@ const FacetManagementPage = () => {
     },
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: GLOB_READ_ROLE,
+    writeRole: GLOB_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={GLOB_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -82,6 +95,7 @@ const FacetManagementPage = () => {
         ]}
       />
       <PageNameLabel>Global Facet Management</PageNameLabel>
+
       <TablePanel
         basePath="/global/facets"
         headings={headings}
@@ -89,6 +103,7 @@ const FacetManagementPage = () => {
         newRowCreateMode="create-then-redirect"
         ruleType="global"
         isDuplicateEnabled={false}
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

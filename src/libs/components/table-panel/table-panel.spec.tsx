@@ -112,6 +112,8 @@ const mappingMock = {
   allToTotalItems: (data: any) => data.pagination.totalItems,
   allToArray: (data: any) => data.ruleSets,
   returnedToRuleSet: (data: any) => data,
+  readRole: 'Search.R',
+  writeRole: 'Search.W',
 };
 
 const mockPush = jest.fn();
@@ -160,6 +162,24 @@ describe('TablePanel', () => {
     );
     await waitFor(() => {
       expect(screen.getByText('Add new rule')).toBeInTheDocument();
+    });
+  });
+
+  it('should render the component with no access', async () => {
+    renderWithProviders(
+      <TablePanel
+        basePath="/category/rulesets"
+        headings={headings}
+        mapping={mappingMock}
+        ruleType="global"
+      />,
+      [],
+      {
+        featureFlags: { hasAuthorization: true },
+      }
+    );
+    await waitFor(() => {
+      expect(screen.queryByText('Add new rule')).not.toBeInTheDocument();
     });
   });
 

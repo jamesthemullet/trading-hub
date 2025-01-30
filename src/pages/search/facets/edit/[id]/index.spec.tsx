@@ -227,6 +227,20 @@ describe('Search Facet Management Editing', () => {
     expect((await result.props).id).toBe(mockPageId);
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<Page id={ruleSetId} />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('should render the facet management editing page', async () => {
     renderWithProviders(<Page id={ruleSetId} />);
 

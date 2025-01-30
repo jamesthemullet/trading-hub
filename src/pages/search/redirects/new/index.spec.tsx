@@ -51,6 +51,20 @@ describe('Create new redirect', () => {
     expect(screen.getByText('Add Keyword Redirect rule')).toBeVisible();
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<NewRedirect />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('should cancel changes to a ruleset', async () => {
     const user = userEvent.setup({ delay: null });
 

@@ -25,6 +25,7 @@ type SearchFacetsPanelProps = {
   startDate?: string;
   endDate?: string;
   isNewRuleset?: boolean;
+  writeEnabled?: boolean;
   onSave: (value: {
     searchTerms: string[];
     includedFacets: ReturnedFacet[];
@@ -46,6 +47,7 @@ const SearchFacetsPanel = ({
   startDate,
   endDate,
   isNewRuleset,
+  writeEnabled = true,
   onSave,
   onCancel,
   refreshData,
@@ -209,6 +211,7 @@ const SearchFacetsPanel = ({
           updatedValues={handleUpdatedValues}
           dispatch={dispatch}
           setSearchTerms={setSelectedSearchTerms}
+          writeEnabled={writeEnabled}
         />
       )}
     </>

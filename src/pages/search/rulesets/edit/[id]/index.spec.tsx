@@ -132,6 +132,23 @@ describe('Search ranking rules', () => {
     expect(screen.getByText('Search Keywords')).toBeVisible();
   });
 
+  it('should render the access denied page', async () => {
+    jest
+      .mocked(useSearchRuleSetPreview)
+      .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+    renderWithProviders(<Page id={ruleSetId} />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('should cancel changes to a ruleset', async () => {
     jest
       .mocked(useSearchRuleSetPreview)

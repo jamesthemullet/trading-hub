@@ -2,10 +2,14 @@ import { useRouter } from 'next/router';
 
 import type { CategoryRuleSet } from '@/libs/api';
 import { Heading } from '@/libs/components';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';
+import { useAccess } from '@/libs/hooks/use-access';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import Head from 'next/head';
+
+import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../../category-config';
 
 const NewRuleSetPage = () => {
   const { createRuleset } = useRuleSetCreate();
@@ -34,6 +38,15 @@ const NewRuleSetPage = () => {
     }
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: CAT_READ_ROLE,
+    writeRole: CAT_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -46,6 +59,7 @@ const NewRuleSetPage = () => {
         onCreate={createNewCategoryRuleSet}
         onCancel={() => router.push('/category/rulesets')}
         rulesetType="category"
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

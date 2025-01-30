@@ -158,6 +158,20 @@ describe('Index', () => {
     });
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<RuleSets />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('should not display the duplicate button', async () => {
     const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';

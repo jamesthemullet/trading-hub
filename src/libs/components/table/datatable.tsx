@@ -247,6 +247,7 @@ type Props = {
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
   onDuplicate?: (id: string) => void;
   query?: string;
+  writeEnabled?: boolean;
   currentPageSize?: number;
 };
 
@@ -258,6 +259,7 @@ export const DataTable = ({
   onDuplicate,
   onToggleRuleSet,
   query,
+  writeEnabled = true,
   isLoading,
   currentPageSize,
 }: Props) => {
@@ -509,6 +511,7 @@ export const DataTable = ({
                     <TableCol>
                       <Toggle
                         checked={isEnabled}
+                        disabled={!writeEnabled}
                         onChange={() => {
                           if (onToggleRuleSet) {
                             onToggleRuleSet({ id });
@@ -532,7 +535,9 @@ export const DataTable = ({
                         onKeyDown={handleOnKeyDown}
                         ref={dropdownWrapperRef}
                       >
-                        <TableActionsButton href={url}>Edit</TableActionsButton>
+                        <TableActionsButton href={url}>
+                          {writeEnabled ? 'Edit' : 'View'}
+                        </TableActionsButton>
                         <ArrowContainer
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
@@ -550,17 +555,19 @@ export const DataTable = ({
                         </ArrowContainer>
                         {isOptionDropdownOpen && (
                           <DropdownOptions>
-                            <TableDropdown
-                              title="Delete"
-                              onMouseDown={onConfirmDelete}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  onConfirmDelete();
-                                }
-                              }}
-                            >
-                              Delete
-                            </TableDropdown>
+                            {writeEnabled && (
+                              <TableDropdown
+                                title="Delete"
+                                onMouseDown={onConfirmDelete}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    onConfirmDelete();
+                                  }
+                                }}
+                              >
+                                Delete
+                              </TableDropdown>
+                            )}
                             {!!onDuplicate && (
                               <TableDropdown
                                 title="Duplicate"

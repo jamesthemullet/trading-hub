@@ -162,6 +162,20 @@ describe('Index', () => {
     });
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<RuleSets />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('should redirect to new page when add new rule is clicked', async () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [],

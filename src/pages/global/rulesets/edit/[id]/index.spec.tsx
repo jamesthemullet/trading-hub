@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -9,6 +9,7 @@ import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import type { GetServerSidePropsContext } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
+import { renderWithProviders } from '../../../../../test/render-with-providers';
 import Page, { getServerSideProps } from './index.page';
 
 jest.mock('next/router', () => ({
@@ -64,9 +65,31 @@ describe('Index', () => {
       isLoading: true,
     });
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByLabelText('loader')).toBeInTheDocument();
+  });
+
+  it('should render the access denied page', async () => {
+    jest.mocked(useGlobalRuleSetDetail).mockImplementation(() => {
+      return {
+        globalRuleSet: mockRuleData,
+        isLoading: false,
+        error: 'Access denied',
+      };
+    });
+
+    renderWithProviders(<Page id={ruleSetId} />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
   });
 
   it('should save ruleset', async () => {
@@ -97,7 +120,7 @@ describe('Index', () => {
     };
     const user = userEvent.setup({ delay: null });
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -113,7 +136,7 @@ describe('Index', () => {
     });
     const user = userEvent.setup({ delay: null });
 
-    render(<Page id={ruleSetId} />);
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 

@@ -2,13 +2,11 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import {
-  useAttributes,
-  useCategoryProductSearch,
-  useGetCategories,
-  useRuleSetDetail,
-  useUpdateRuleSet,
-} from '@/libs/hooks';
+import { useRuleSetDetail } from '@/libs/hooks/category/rulesets/use-rule-set-detail';
+import { useAttributes } from '@/libs/hooks/use-attributes';
+import { useCategoryProductSearch } from '@/libs/hooks/use-category-product-search';
+import { useGetCategories } from '@/libs/hooks/use-get-categories';
+import { useUpdateRuleSet } from '@/libs/hooks/use-rule-set-update';
 import {
   mockUseRuleSetPreviewData,
   ruleSetId,
@@ -23,22 +21,19 @@ import Page, { getServerSideProps } from './index.page';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../../../libs/hooks/use-category-product-search', () => ({
+jest.mock('@/libs/hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
-jest.mock(
-  '../../../../../libs/hooks/category/rulesets/use-rule-set-detail',
-  () => ({
-    useRuleSetDetail: jest.fn(),
-  })
-);
-jest.mock('../../../../../libs/hooks/use-rule-set-update', () => ({
+jest.mock('@/libs/hooks/category/rulesets/use-rule-set-detail', () => ({
+  useRuleSetDetail: jest.fn(),
+}));
+jest.mock('@/libs/hooks/use-rule-set-update', () => ({
   useUpdateRuleSet: jest.fn(),
 }));
-jest.mock('../../../../../libs/hooks/use-get-categories', () => ({
+jest.mock('@/libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
-jest.mock('../../../../../libs/hooks/use-attributes', () => ({
+jest.mock('@/libs/hooks/use-attributes', () => ({
   useAttributes: jest.fn(),
 }));
 
@@ -149,6 +144,29 @@ describe('Index', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(mockUpdateRuleSet.updateCategoryRuleSet).toHaveBeenCalled();
+  });
+
+  it('should render the access denied page', async () => {
+    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
+      ...mockUseRuleSetPreviewData,
+      ruleSetDetail: {
+        ...mockUseRuleSetPreviewData.ruleSetDetail,
+        startDate: '2024-09-12T14:17:54Z',
+        endDate: '2024-12-19T04:20:03Z',
+      },
+    }));
+
+    renderWithProviders(<Page id={ruleSetId} />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
   });
 
   it('should save country change to a ruleset', async () => {

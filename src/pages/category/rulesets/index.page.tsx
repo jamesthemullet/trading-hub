@@ -12,6 +12,10 @@ import { PageNameLabel } from '@/libs/components/utils/shared.styles';
 
 import Head from 'next/head';
 
+import { AccessDeny } from '../../../libs/components/access-deny/access-deny';
+import { useAccess } from '../../../libs/hooks/use-access';
+import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../category-config';
+
 const RuleSets = () => {
   const headings = [
     'Identifier',
@@ -91,6 +95,15 @@ const RuleSets = () => {
     },
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: CAT_READ_ROLE,
+    writeRole: CAT_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -106,6 +119,7 @@ const RuleSets = () => {
         headings={headings}
         mapping={mapping}
         ruleType="categoryRanking"
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

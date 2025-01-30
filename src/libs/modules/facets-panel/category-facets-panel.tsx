@@ -25,6 +25,7 @@ type CategoryFacetsPanelProps = {
   startDate?: string;
   endDate?: string;
   isNewRuleset?: boolean;
+  writeEnabled?: boolean;
   onSave: (value: {
     categoryIds: string[];
     includedFacets: ReturnedFacet[];
@@ -46,6 +47,7 @@ const CategoryFacetsPanel = ({
   startDate,
   endDate,
   isNewRuleset,
+  writeEnabled = true,
   onSave,
   onCancel,
   refreshData,
@@ -219,6 +221,7 @@ const CategoryFacetsPanel = ({
           updatedValues={handleUpdatedValues}
           dispatch={dispatch}
           setSelectedCategories={setSelectedCategories}
+          writeEnabled={writeEnabled}
         />
       )}
     </>

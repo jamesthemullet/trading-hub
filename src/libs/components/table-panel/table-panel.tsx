@@ -43,6 +43,7 @@ export const TablePanel = <
   addNewButtonLabel = 'Add new rule',
   newRowCreateMode = 'redirect-to-new',
   isDuplicateEnabled = true,
+  writeEnabled = true,
 }: {
   basePath: string;
   headings: string[];
@@ -51,6 +52,7 @@ export const TablePanel = <
   addNewButtonLabel?: string;
   newRowCreateMode?: 'create-then-redirect' | 'redirect-to-new';
   isDuplicateEnabled?: boolean;
+  writeEnabled?: boolean;
 }) => {
   const {
     getRows,
@@ -127,9 +129,11 @@ export const TablePanel = <
             <Skeleton height={33} width={110} />
           </SkeletonButtonWrapper>
         ) : (
-          <NewButton onClick={createNewRuleSet}>
-            <Link href={''}>{addNewButtonLabel}</Link>
-          </NewButton>
+          writeEnabled && (
+            <NewButton onClick={createNewRuleSet}>
+              <Link href={''}>{addNewButtonLabel}</Link>
+            </NewButton>
+          )
         )}
       </ToolsContainer>
 
@@ -145,6 +149,7 @@ export const TablePanel = <
         ruleType={ruleType}
         query={searchInputValue}
         isLoading={isLoading}
+        writeEnabled={writeEnabled}
       />
 
       <TablePagination

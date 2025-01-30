@@ -5,11 +5,15 @@ import {
   search,
 } from '@/libs/api';
 import { Heading } from '@/libs/components';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { TablePanel } from '@/libs/components/table-panel/table-panel';
 import { RuleSetMapping } from '@/libs/components/types';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
+import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
+
+import { GLOB_READ_ROLE, GLOB_WRITE_ROLE } from '../global-config';
 
 const RuleSets = () => {
   const headings = [
@@ -69,6 +73,15 @@ const RuleSets = () => {
     },
   };
 
+  const { hasReadAccess, hasWriteAccess } = useAccess({
+    readRole: GLOB_READ_ROLE,
+    writeRole: GLOB_WRITE_ROLE,
+  });
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={GLOB_READ_ROLE} />;
+  }
+
   return (
     <>
       <Head>
@@ -86,6 +99,7 @@ const RuleSets = () => {
         newRowCreateMode="create-then-redirect"
         ruleType="global"
         isDuplicateEnabled={false}
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

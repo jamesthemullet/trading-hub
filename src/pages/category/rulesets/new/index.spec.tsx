@@ -76,6 +76,20 @@ describe('Index', () => {
     );
   });
 
+  it('should render the access denied page', async () => {
+    renderWithProviders(<RuleSetCreate />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
+
   it('stores input value', async () => {
     const user = userEvent.setup();
     renderWithProviders(<RuleSetCreate />);

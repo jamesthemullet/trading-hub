@@ -58,6 +58,8 @@ const mappingMock = {
   allToTotalItems: (data: any) => data.pagination.totalItems,
   allToArray: (data: any) => data.ruleSets,
   returnedToRuleSet: (data: any) => data,
+  readRole: 'Glob.R',
+  writeRole: 'Glob.W',
 };
 
 jest.mock('next/router', () => ({
