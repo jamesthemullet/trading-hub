@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Check composite parameter for the reusable pipeline
         id : check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
@@ -33,7 +33,7 @@ jobs:
     name: pr-close-destroy-env
     steps:
       - name: Checkout-local-repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - id: dynamic-env-name
         uses: DigitalInnovation/brightcloud/.github/actions/get-app-name@feat/oidcn
       - id: dynamic-env-destroy-oidc

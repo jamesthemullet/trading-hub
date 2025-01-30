@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Check composite parameter for the reusable pipeline
         id : check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
@@ -57,7 +57,7 @@ jobs:
           client-id: ${{ secrets.SP_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: pr-suffix
         run: |
           APP_NAME=$(cat ci/infra/terraform/vars/common.tfvars | grep deploy_app_name | tr -d " " | cut -d= -f2 | tr -d '"')
@@ -89,7 +89,7 @@ jobs:
     name: destroy-expired
     steps:
       - name: Checkout-local-repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - id: dynamic-env-destroy-oidc
         if: ${{ needs.check-vars.outputs.oidc == 'true' }}
         uses: DigitalInnovation/brightcloud/.github/actions/webapp-dynamic-env-housekeeping-oidc@feat/oidcn
