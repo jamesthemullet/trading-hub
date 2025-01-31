@@ -158,11 +158,19 @@ export const CategorySearch = ({
     (category) => category !== previewCategory
   );
 
+  const onAddCategory = (category: string) => {
+    onSelectCategory(category);
+
+    if (selectedCategories.length === 0) {
+      selectPreviewCategory(category);
+    }
+  };
+
   const CategoryRow = (category: Required<Category>) => (
     <Row
       key={`row-${category.identifier}-${category.name}-${category.path}`}
       onClick={() => {
-        onSelectCategory(category.identifier);
+        onAddCategory(category.identifier);
         setSearchValue('');
         setCategoryResults({
           categories: [],

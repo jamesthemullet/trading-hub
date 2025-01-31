@@ -115,6 +115,38 @@ describe('CategorySearch', () => {
     );
   });
 
+  it('should preview a category if it is a first added', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    renderWithProviders(<CategorySearch {...mockProps} />);
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507{enter}'
+    );
+
+    expect(screen.getByDisplayValue('SubCategory_507')).toBeVisible();
+
+    const resultsButton = await screen.findByText(
+      `${mockCategory.identifier} | ${mockCategory.name} | ${mockCategory.path}`
+    );
+
+    act(() => {
+      resultsButton.click();
+    });
+
+    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(
+      mockCategory.identifier
+    );
+    expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(
+      mockCategory.identifier
+    );
+  });
+
   it('should show and remove search results via keyboard', async () => {
     const user = userEvent.setup();
     jest.mocked(useGetCategories).mockReturnValue({
