@@ -169,7 +169,7 @@ jobs:
 
       - name: Login via Azure CLI as Cloud9 own SP
         if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
-        uses: azure/login@v1.6.1
+        uses: azure/login@v2.2.0
         with:
           creds: '{"clientId": "2c640eb1-36ce-4c8a-be67-0559df1722f5" , "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
 
