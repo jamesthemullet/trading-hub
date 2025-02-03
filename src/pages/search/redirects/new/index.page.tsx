@@ -9,8 +9,6 @@ import { Redirect } from '@/libs/modules/redirect/redirect';
 
 import Head from 'next/head';
 
-import { SEARCH_READ_ROLE, SEARCH_WRITE_ROLE } from '../../search-config';
-
 const CreateRedirect = () => {
   const { createRedirect, isSaving, error } = useRedirectCreate();
   const router = useRouter();
@@ -23,13 +21,11 @@ const CreateRedirect = () => {
     }
   };
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: SEARCH_READ_ROLE,
-    writeRole: SEARCH_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } =
+    useAccess('Search');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={SEARCH_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

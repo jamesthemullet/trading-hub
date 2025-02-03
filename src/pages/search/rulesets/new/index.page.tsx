@@ -9,8 +9,6 @@ import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import Head from 'next/head';
 
-import { SEARCH_READ_ROLE, SEARCH_WRITE_ROLE } from '../../search-config';
-
 const NewRuleSetPage = () => {
   const { createRuleset } = useSearchRuleSetCreate();
   const router = useRouter();
@@ -37,13 +35,11 @@ const NewRuleSetPage = () => {
     }
   };
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: SEARCH_READ_ROLE,
-    writeRole: SEARCH_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } =
+    useAccess('Search');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={SEARCH_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

@@ -11,8 +11,6 @@ import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
-import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../../../category-config';
-
 type PageProps = {
   id: string;
 };
@@ -51,13 +49,10 @@ const Page = ({ id }: PageProps) => {
     }
   };
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: CAT_READ_ROLE,
-    writeRole: CAT_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

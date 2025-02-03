@@ -14,8 +14,6 @@ import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
 
-import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../category-config';
-
 const FacetManagementPage = () => {
   const headings = [
     'Identifier',
@@ -95,13 +93,10 @@ const FacetManagementPage = () => {
     },
   };
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: CAT_READ_ROLE,
-    writeRole: CAT_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

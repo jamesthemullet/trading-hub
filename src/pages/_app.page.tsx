@@ -18,12 +18,21 @@ export default function App({
   pageProps,
 }: AppProps<{ session: Session | null }>) {
   const { session } = pageProps;
-  const [cookies] = useCookies(['flagAuthorization', 'flagBulkActions']);
+  const [cookies] = useCookies([
+    'flagAuthorization',
+    'flagAuthorizationRoleOverride',
+    'flagBulkActions',
+  ]);
 
   return (
     <FeatureFlagContext.Provider
       value={{
         hasAuthorization: cookies.flagAuthorization,
+        authorizationRoleOverride: cookies.flagAuthorizationRoleOverride || {
+          catOverride: 'No Override',
+          searchOverride: 'No Override',
+          globalOverride: 'No Override',
+        },
         hasBulkActions: cookies.flagBulkActions,
       }}
     >

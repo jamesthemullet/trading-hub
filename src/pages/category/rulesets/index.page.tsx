@@ -5,16 +5,14 @@ import {
   search,
 } from '@/libs/api';
 import { Heading } from '@/libs/components';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { TablePanel } from '@/libs/components/table-panel/table-panel';
 import { RuleSetMapping } from '@/libs/components/types';
 import { formatCategoriesInfo } from '@/libs/components/utils/format-categories-info';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
+import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
-
-import { AccessDeny } from '../../../libs/components/access-deny/access-deny';
-import { useAccess } from '../../../libs/hooks/use-access';
-import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../category-config';
 
 const RuleSets = () => {
   const headings = [
@@ -95,13 +93,10 @@ const RuleSets = () => {
     },
   };
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: CAT_READ_ROLE,
-    writeRole: CAT_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

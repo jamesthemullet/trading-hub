@@ -1,12 +1,28 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
+export type CatRoleOverride = 'No Override' | '' | 'Cat.R' | 'Cat.W';
+export type SearchRoleOverride = 'No Override' | '' | 'Search.R' | 'Search.W';
+export type GlobalRoleOverride = 'No Override' | '' | 'Glob.R' | 'Glob.W';
+
+export type AuthorizationRoleOverride = {
+  catOverride: CatRoleOverride;
+  searchOverride: SearchRoleOverride;
+  globalOverride: GlobalRoleOverride;
+};
+
 export type FeatureFlags = {
   hasAuthorization: boolean;
+  authorizationRoleOverride: AuthorizationRoleOverride;
   hasBulkActions: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
   hasAuthorization: false,
+  authorizationRoleOverride: {
+    catOverride: 'No Override',
+    searchOverride: 'No Override',
+    globalOverride: 'No Override',
+  },
   hasBulkActions: false,
 };
 
@@ -22,6 +38,19 @@ export const useAuthorizationFlag = () => {
   }, [featureFlags.hasAuthorization]);
 
   return authorizationEnabled;
+};
+
+export const useAuthorizationRoleOverride = () => {
+  const featureFlags = useContext(FeatureFlagContext);
+  const [authorizationRoleOverride, setAuthorizationRoleOverride] = useState(
+    featureFlags.authorizationRoleOverride
+  );
+
+  useEffect(() => {
+    setAuthorizationRoleOverride(featureFlags.authorizationRoleOverride);
+  }, [featureFlags.authorizationRoleOverride]);
+
+  return authorizationRoleOverride;
 };
 
 export const useBulkActionsFlag = () => {

@@ -9,8 +9,6 @@ import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import Head from 'next/head';
 
-import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../../category-config';
-
 const NewRuleSetPage = () => {
   const { createRuleset } = useRuleSetCreate();
   const router = useRouter();
@@ -38,13 +36,10 @@ const NewRuleSetPage = () => {
     }
   };
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: CAT_READ_ROLE,
-    writeRole: CAT_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

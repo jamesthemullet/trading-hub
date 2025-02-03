@@ -13,8 +13,6 @@ import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
 
-import { GLOB_READ_ROLE, GLOB_WRITE_ROLE } from '../global-config';
-
 const FacetManagementPage = () => {
   const headings = [
     'Identifier',
@@ -73,13 +71,10 @@ const FacetManagementPage = () => {
     },
   };
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: GLOB_READ_ROLE,
-    writeRole: GLOB_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={GLOB_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

@@ -2,14 +2,12 @@ import { useRouter } from 'next/router';
 
 import { CountryCode, ExcludedFacets, ReturnedFacet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
+import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';
+import { useAccess } from '@/libs/hooks/use-access';
 import CategoryFacetsPanel from '@/libs/modules/facets-panel/category-facets-panel';
 
 import Head from 'next/head';
-
-import { AccessDeny } from '../../../../libs/components/access-deny/access-deny';
-import { useAccess } from '../../../../libs/hooks/use-access';
-import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../../category-config';
 
 const Page = () => {
   const router = useRouter();
@@ -66,13 +64,10 @@ const Page = () => {
     router.push('/category/facets');
   };
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: CAT_READ_ROLE,
-    writeRole: CAT_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

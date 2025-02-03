@@ -11,8 +11,6 @@ import SearchFacetsPanel from '@/libs/modules/facets-panel/search-facets-panel';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
-import { SEARCH_READ_ROLE, SEARCH_WRITE_ROLE } from '../../../search-config';
-
 export const getServerSideProps: GetServerSideProps = (
   context: GetServerSidePropsContext
 ) => {
@@ -64,13 +62,11 @@ const Page = ({ id }: { id: string }) => {
 
   const { ruleSet, error, isLoading } = useSearchRuleSetPreview(id);
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: SEARCH_READ_ROLE,
-    writeRole: SEARCH_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } =
+    useAccess('Search');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={SEARCH_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (

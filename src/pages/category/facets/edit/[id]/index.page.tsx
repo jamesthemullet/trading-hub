@@ -11,8 +11,6 @@ import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-sk
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
-import { CAT_READ_ROLE, CAT_WRITE_ROLE } from '../../../category-config';
-
 export const getServerSideProps: GetServerSideProps = (
   context: GetServerSidePropsContext
 ) => {
@@ -69,13 +67,10 @@ const Page = ({ id }: { id: string }) => {
     error: getRulesetDetailError,
   } = useRuleSetDetail(id);
 
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: CAT_READ_ROLE,
-    writeRole: CAT_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={CAT_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
   return (
