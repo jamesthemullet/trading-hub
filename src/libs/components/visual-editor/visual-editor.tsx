@@ -8,9 +8,10 @@ import { Layout, ProductBox } from './visual-editor.styles';
 type Props = {
   products: ProductType[];
   dispatch: Dispatch<Action>;
+  hasBulkAction: boolean;
 };
 
-export const VisualEditor = ({ products, dispatch }: Props) => {
+export const VisualEditor = ({ products, dispatch, hasBulkAction }: Props) => {
   const pinnedProductsCount = products.filter(
     (product) => product.metadata.isPinned
   ).length;
@@ -21,6 +22,7 @@ export const VisualEditor = ({ products, dispatch }: Props) => {
         <ProductBox key={`product-${product.id}`}>
           <Product
             {...product}
+            hasBulkAction={hasBulkAction}
             index={index}
             isPinnable={true}
             dispatch={dispatch}

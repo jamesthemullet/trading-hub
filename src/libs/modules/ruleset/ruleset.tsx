@@ -27,6 +27,7 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
+import { useBulkActionsFlag } from '@/libs/components/context/feature-flag';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearch } from '@/libs/components/product-search/product-search';
@@ -259,6 +260,8 @@ export const Ruleset = ({
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
   const router = useRouter();
+
+  const bulkActionsEnabled = useBulkActionsFlag();
 
   const onSelectCategory = (category: string) => {
     const hasDuplicates = checkForDuplicates(
@@ -596,6 +599,7 @@ export const Ruleset = ({
                   categoryIds={selectedCategories}
                   searchTerms={rulesetSearchTerms}
                   countryCode={ruleset.countryCode}
+                  hasBulkAction={bulkActionsEnabled}
                 />
               )}
               {currentProductTab === 1 && (
@@ -691,7 +695,11 @@ export const Ruleset = ({
             {currentEditorTab === 0 &&
               rulesetType !== 'global' &&
               (selectedCategories.length || rulesetSearchTerms.length ? (
-                <VisualEditor products={data.products} dispatch={dispatch} />
+                <VisualEditor
+                  products={data.products}
+                  dispatch={dispatch}
+                  hasBulkAction={bulkActionsEnabled}
+                />
               ) : (
                 <TextContent>
                   <p>No, there are no product rankings yet.</p>

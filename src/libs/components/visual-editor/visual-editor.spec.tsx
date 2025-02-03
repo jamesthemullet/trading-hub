@@ -53,7 +53,13 @@ describe('VisualEditor', () => {
   });
 
   it('should render products', () => {
-    render(<VisualEditor products={products} dispatch={jest.fn()} />);
+    render(
+      <VisualEditor
+        products={products}
+        dispatch={jest.fn()}
+        hasBulkAction={false}
+      />
+    );
 
     expect(
       screen.getByText(`${product1Brand} ${product1Title}`)

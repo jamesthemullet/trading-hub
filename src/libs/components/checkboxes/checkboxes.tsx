@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
+import { Checkbox } from './checkbox';
 
 const Row = styled.label`
   border-bottom: solid 1px ${color.grey};
@@ -10,34 +11,6 @@ const Row = styled.label`
   display: flex;
   align-items: center;
   cursor: pointer;
-`;
-
-const Input = styled.input`
-  appearance: none;
-  background-color: #fff;
-  margin: 0;
-  font: inherit;
-  color: currentColor;
-  width: 1.15em;
-  height: 1.15em;
-  border: 0.15em solid currentColor;
-  margin-right: ${spacing(1)};
-
-  &::before {
-    content: '';
-    width: 0.65em;
-    height: 0.65em;
-    transform: scale(0);
-    transition: 120ms transform ease-in-out;
-    box-shadow: inset 1em 1em #000;
-    margin: 2px 0 0 2px;
-    display: block;
-  }
-  &:checked {
-    &::before {
-      transform: scale(1);
-    }
-  }
 `;
 
 type Value = {
@@ -56,7 +29,8 @@ export const Checkboxes = ({ values, onSelect }: Props) => {
       {values.length ? (
         values.map(({ name, isSelected }) => (
           <Row key={name}>
-            <Input
+            <Checkbox
+              label={name}
               type="checkbox"
               checked={isSelected}
               onChange={() => onSelect(!isSelected, name)}

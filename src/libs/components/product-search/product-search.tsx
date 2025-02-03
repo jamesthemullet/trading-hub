@@ -59,6 +59,7 @@ const InfoContainer = styled.div`
 
 export type ProductSearchProps = {
   dispatch: Dispatch<Action>;
+  hasBulkAction: boolean;
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
@@ -70,6 +71,7 @@ export type ProductSearchProps = {
 
 export const ProductSearch = ({
   dispatch,
+  hasBulkAction,
   isPinnable,
   merchandisingRules,
   pinnedProductsCount,
@@ -122,6 +124,7 @@ export const ProductSearch = ({
             <StyledProduct
               key={id}
               {...productWrapper.product}
+              hasBulkAction={hasBulkAction}
               index={index}
               isPinnable={isPinnable}
               dispatch={dispatch}

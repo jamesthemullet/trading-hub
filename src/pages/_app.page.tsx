@@ -18,12 +18,13 @@ export default function App({
   pageProps,
 }: AppProps<{ session: Session | null }>) {
   const { session } = pageProps;
-  const [cookies] = useCookies(['flagAuthorization']);
+  const [cookies] = useCookies(['flagAuthorization', 'flagBulkActions']);
 
   return (
     <FeatureFlagContext.Provider
       value={{
         hasAuthorization: cookies.flagAuthorization,
+        hasBulkActions: cookies.flagBulkActions,
       }}
     >
       <SessionProvider session={session}>

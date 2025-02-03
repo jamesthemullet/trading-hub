@@ -10,6 +10,7 @@ import Image from 'next/image';
 
 import type { Product as ProductType } from '../../api';
 import { Button } from '../buttons/button/button';
+import { Checkbox } from '../checkboxes/checkbox';
 import { Action } from '../types';
 import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
@@ -23,8 +24,10 @@ import {
   LockInput,
   LockMenu,
   ProductCard,
+  ProductCheckbox,
   ProductHeader,
   ProductInfo,
+  ProductInfoWrapper,
   ProductMenu,
   ProductMenuButton,
   ProductMenuOverlay,
@@ -71,6 +74,7 @@ export const ProductDetails = ({
 };
 
 export type ProductProps = ProductType & {
+  hasBulkAction: boolean;
   index: number;
   isPinnable: boolean;
   dispatch: Dispatch<Action>;
@@ -83,6 +87,7 @@ export type ProductProps = ProductType & {
 export const Product = ({
   brand,
   dispatch,
+  hasBulkAction,
   id,
   imageUrl,
   index,
@@ -158,30 +163,41 @@ export const Product = ({
         />
       )}
       <ProductHeader>
-        {(isProductNumberEnabled ?? true) && (
-          <ProductNumber>{index + 1}</ProductNumber>
+        {hasBulkAction && (
+          <ProductCheckbox>
+            <Checkbox
+              label={`Select ${title}`}
+              defaultChecked={id === '60123837'}
+            />
+          </ProductCheckbox>
         )}
-        {isBoosted && (
-          <BoostPin aria-label="Boosted product">
-            <Text>Internal</Text>
-          </BoostPin>
-        )}
-        {isBuried && (
-          <BuriedPin aria-label="Buried product">
-            <Text>Internal</Text>
-          </BuriedPin>
-        )}
-        {isPinned && (
-          <ProductPin aria-label="Pinned product">
-            <Text>Internal</Text>
-          </ProductPin>
-        )}
-        {isBlocked && (
-          <BlockedPin aria-label="Blocked product">
-            <Text>Internal</Text>
-          </BlockedPin>
-        )}
+        <ProductInfoWrapper hasBulkAction={hasBulkAction}>
+          {(isProductNumberEnabled ?? true) && (
+            <ProductNumber>{index + 1}</ProductNumber>
+          )}
+          {isBoosted && (
+            <BoostPin aria-label="Boosted product">
+              <Text>Internal</Text>
+            </BoostPin>
+          )}
+          {isBuried && (
+            <BuriedPin aria-label="Buried product">
+              <Text>Internal</Text>
+            </BuriedPin>
+          )}
+          {isPinned && (
+            <ProductPin aria-label="Pinned product">
+              <Text>Internal</Text>
+            </ProductPin>
+          )}
+          {isBlocked && (
+            <BlockedPin aria-label="Blocked product">
+              <Text>Internal</Text>
+            </BlockedPin>
+          )}
+        </ProductInfoWrapper>
         <ProductMenuToggle
+          hasBulkAction={hasBulkAction}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
         >
@@ -420,6 +436,7 @@ export const Product = ({
 
 export const MissingProduct = ({
   dispatch,
+  hasBulkAction,
   id,
   index,
   isProductNumberEnabled,
@@ -430,6 +447,7 @@ export const MissingProduct = ({
   ...rest
 }: {
   dispatch: Dispatch<Action>;
+  hasBulkAction: boolean;
   index: number;
   id: string;
   isProductNumberEnabled?: boolean;
@@ -481,6 +499,7 @@ export const MissingProduct = ({
           </BlockedPin>
         )}
         <ProductMenuToggle
+          hasBulkAction={hasBulkAction}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
         >

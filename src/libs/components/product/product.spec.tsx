@@ -20,12 +20,14 @@ const productProps: ProductProps = {
   index: 1,
   dispatch: mockDispatch,
   pinnedProductsCount: 2,
+  hasBulkAction: false,
 };
 
 const missingProductProps = {
   id: 'id',
   index: 1,
   dispatch: mockDispatch,
+  hasBulkAction: false,
 };
 
 const openActionsMenu = (screen: Screen) => {
@@ -478,7 +480,7 @@ describe('Product', () => {
     });
 
     it('should open and close the actions menu', () => {
-      render(<MissingProduct {...productProps} />);
+      render(<MissingProduct {...missingProductProps} />);
 
       openActionsMenu(screen);
 
@@ -498,7 +500,7 @@ describe('Product', () => {
     });
 
     it('should close the menu by clicking on the overlay', () => {
-      render(<MissingProduct {...productProps} />);
+      render(<MissingProduct {...missingProductProps} />);
 
       openActionsMenu(screen);
 
@@ -509,6 +511,16 @@ describe('Product', () => {
       });
 
       expect(screen.queryByText('Product actions')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('bulk action', () => {
+    it('should show bulk action checkbox', () => {
+      render(<Product {...productProps} hasBulkAction={true} />);
+
+      const checkbox = screen.queryByLabelText(`Select ${productProps.title}`);
+
+      expect(checkbox).toBeVisible();
     });
   });
 });

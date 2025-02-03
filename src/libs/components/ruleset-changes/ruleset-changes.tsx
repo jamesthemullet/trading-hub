@@ -140,6 +140,7 @@ const ProductsLoader = ({
                     isBuried={changeType === 'bury'}
                     isPinned={changeType === 'pin'}
                     isBoosted={changeType === 'boost'}
+                    hasBulkAction={false}
                   />
                 )
               ) : (
@@ -149,6 +150,7 @@ const ProductsLoader = ({
                   isPinnable={isPinnable}
                   pinnedProductsCount={pinnedProductsCount}
                   dispatch={dispatch}
+                  hasBulkAction={false}
                 />
               )}
             </ProductBox>

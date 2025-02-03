@@ -16,6 +16,12 @@ jest.mock('@/libs/hooks/use-category-product-search', () => ({
 
 const mockDispatch = jest.fn();
 
+const mockProps = {
+  isPinnable: true,
+  merchandisingRules: mockMerchandisingRules,
+  hasBulkAction: false,
+};
+
 describe('ProductSearch', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -41,10 +47,9 @@ describe('ProductSearch', () => {
     });
     renderWithProviders(
       <ProductSearch
-        isPinnable
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        merchandisingRules={mockMerchandisingRules}
+        {...mockProps}
       />
     );
 
@@ -80,10 +85,9 @@ describe('ProductSearch', () => {
 
     renderWithProviders(
       <ProductSearch
-        isPinnable
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        merchandisingRules={mockMerchandisingRules}
+        {...mockProps}
       />
     );
 
@@ -127,11 +131,10 @@ describe('ProductSearch', () => {
 
     renderWithProviders(
       <ProductSearch
-        isPinnable
         categoryIds={['cat123']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        merchandisingRules={mockMerchandisingRules}
+        {...mockProps}
       />
     );
 
@@ -201,10 +204,9 @@ describe('ProductSearch', () => {
 
     renderWithProviders(
       <ProductSearch
-        isPinnable
         dispatch={mockDispatch}
         pinnedProductsCount={3}
-        merchandisingRules={mockMerchandisingRules}
+        {...mockProps}
       />
     );
 
@@ -250,10 +252,9 @@ describe('ProductSearch', () => {
     renderWithProviders(
       <ProductSearch
         categoryIds={mockCategories}
-        isPinnable
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        merchandisingRules={mockMerchandisingRules}
+        {...mockProps}
       />
     );
 

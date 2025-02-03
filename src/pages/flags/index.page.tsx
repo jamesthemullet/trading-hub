@@ -20,7 +20,12 @@ const Flag = styled.div`
 `;
 
 const FeatureFlags = () => {
-  const [cookies, setCookie] = useCookies(['flagAuthorization']);
+  const [cookies, setCookie] = useCookies([
+    'flagAuthorization',
+    'flagBulkActions',
+  ]);
+
+  const { flagAuthorization, flagBulkActions } = cookies;
 
   return (
     <Wrapper>
@@ -28,22 +33,21 @@ const FeatureFlags = () => {
       <Flag>
         <p>Authorization:&nbsp;</p>
         <Toggle
-          checked={cookies.flagAuthorization}
+          checked={flagAuthorization}
           onChange={() => {
-            setCookie(
-              'flagAuthorization',
-              JSON.stringify(!cookies.flagAuthorization)
-            );
+            setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
           }}
         />
       </Flag>
-      <p>
-        See changes in{' '}
-        <a href="https://github.com/DigitalInnovation/trading-hub/pull/947">
-          github.com/DigitalInnovation/trading-hub/issues/947
-        </a>{' '}
-        to add a feature flag
-      </p>
+      <Flag>
+        <p>Bulk actions:&nbsp;</p>
+        <Toggle
+          checked={flagBulkActions}
+          onChange={() => {
+            setCookie('flagBulkActions', JSON.stringify(!flagBulkActions));
+          }}
+        />
+      </Flag>
     </Wrapper>
   );
 };

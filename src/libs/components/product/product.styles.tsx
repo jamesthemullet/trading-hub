@@ -106,14 +106,25 @@ export const ProductInfo = styled.div<{ isSearchResult?: boolean }>`
     `}
 `;
 
-export const ProductMenuToggle = styled.button`
+export const ProductCheckbox = styled.div`
+  padding-top: 4px;
+`;
+
+export const ProductInfoWrapper = styled.div<{ hasBulkAction: boolean }>`
+  width: 100%;
+  display: flex;
+  ${({ hasBulkAction }) => hasBulkAction && 'justify-content: center;'}
+`;
+
+export const ProductMenuToggle = styled.button<{ hasBulkAction: boolean }>`
+  margin-left: auto;
   user-select: none;
   background: none;
   border: none;
   cursor: pointer;
   text-align: right;
-  margin-left: auto;
   padding-right: ${spacing(1)};
+  ${({ hasBulkAction }) => !hasBulkAction && 'margin-left: auto;'}
 `;
 
 export const ProductMenuOverlay = styled.button`
