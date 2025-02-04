@@ -153,7 +153,7 @@ describe('Search Facet Management Page', () => {
     renderWithProviders(<FacetManagementPage />);
 
     expect(
-      screen.getByRole('heading', { name: 'Search Facet Management', level: 2 })
+      screen.getByRole('heading', { name: 'Search Facet Management', level: 1 })
     ).toBeVisible();
   });
 

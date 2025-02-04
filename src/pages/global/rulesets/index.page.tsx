@@ -82,20 +82,22 @@ const RuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Global category ranking rules</title>
       </Head>
-      <Heading
-        breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
-      />
+      <main>
+        <Heading
+          breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
+        />
 
-      <PageNameLabel>Global category ranking rules</PageNameLabel>
-      <TablePanel
-        basePath="/global/rulesets"
-        headings={headings}
-        mapping={mapping}
-        newRowCreateMode="create-then-redirect"
-        ruleType="global"
-        isDuplicateEnabled={false}
-        writeEnabled={hasWriteAccess}
-      />
+        <PageNameLabel>Global category ranking rules</PageNameLabel>
+        <TablePanel
+          basePath="/global/rulesets"
+          headings={headings}
+          mapping={mapping}
+          newRowCreateMode="create-then-redirect"
+          ruleType="global"
+          isDuplicateEnabled={false}
+          writeEnabled={hasWriteAccess}
+        />
+      </main>
     </>
   );
 };

@@ -82,33 +82,37 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit global facets</title>
       </Head>
-      <Heading
-        breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
-      />
-
-      {globalRulesetError && (
-        <ErrorMessage>
-          Error whilst retrieving global ruleset: {globalRulesetError}
-        </ErrorMessage>
-      )}
-
-      {savingGlobalRulesetError && (
-        <ErrorMessage>
-          Error whilst saving global ruleset: {savingGlobalRulesetError}
-        </ErrorMessage>
-      )}
-
-      {!globalRulesetError && (
-        <GlobalFacetsPanel
-          ruleSetIncludedFacets={facetsFromGlobalRuleSet}
-          ruleSetExcludedFacets={globalRuleSet.excludedFacets}
-          isLoading={isLoading}
-          countryCode={globalRuleSet.countryCode || 'UK_IE'}
-          onSave={handleSave}
-          onCancel={handleCancel}
-          writeEnabled={hasWriteAccess}
+      <main>
+        <Heading
+          breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
         />
-      )}
+
+        {globalRulesetError && (
+          <ErrorMessage>
+            Error whilst retrieving global ruleset: {globalRulesetError}
+          </ErrorMessage>
+        )}
+
+        {savingGlobalRulesetError && (
+          <ErrorMessage>
+            Error whilst saving global ruleset: {savingGlobalRulesetError}
+          </ErrorMessage>
+        )}
+
+        {!globalRulesetError && (
+          <>
+            <GlobalFacetsPanel
+              ruleSetIncludedFacets={facetsFromGlobalRuleSet}
+              ruleSetExcludedFacets={globalRuleSet.excludedFacets}
+              isLoading={isLoading}
+              countryCode={globalRuleSet.countryCode || 'UK_IE'}
+              onSave={handleSave}
+              onCancel={handleCancel}
+              writeEnabled={hasWriteAccess}
+            />
+          </>
+        )}
+      </main>
     </>
   );
 };

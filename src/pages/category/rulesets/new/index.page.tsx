@@ -47,15 +47,19 @@ const NewRuleSetPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create Category Ruleset</title>
       </Head>
-      <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
+      <main>
+        <Heading
+          breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']}
+        />
 
-      <Ruleset
-        isEnabled={true}
-        onCreate={createNewCategoryRuleSet}
-        onCancel={() => router.push('/category/rulesets')}
-        rulesetType="category"
-        writeEnabled={hasWriteAccess}
-      />
+        <Ruleset
+          isEnabled={true}
+          onCreate={createNewCategoryRuleSet}
+          onCancel={() => router.push('/category/rulesets')}
+          rulesetType="category"
+          writeEnabled={hasWriteAccess}
+        />
+      </main>
     </>
   );
 };

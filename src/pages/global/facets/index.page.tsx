@@ -82,24 +82,25 @@ const FacetManagementPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Global Facet Management</title>
       </Head>
-      <Heading
-        breadcrumbs={[
-          'Search & Merchandising',
-          'Categories',
-          'Global Facet Management',
-        ]}
-      />
-      <PageNameLabel>Global Facet Management</PageNameLabel>
-
-      <TablePanel
-        basePath="/global/facets"
-        headings={headings}
-        mapping={mapping}
-        newRowCreateMode="create-then-redirect"
-        ruleType="global"
-        isDuplicateEnabled={false}
-        writeEnabled={hasWriteAccess}
-      />
+      <main>
+        <Heading
+          breadcrumbs={[
+            'Search & Merchandising',
+            'Categories',
+            'Global Facet Management',
+          ]}
+        />
+        <PageNameLabel>Global Facet Management</PageNameLabel>
+        <TablePanel
+          basePath="/global/facets"
+          headings={headings}
+          mapping={mapping}
+          newRowCreateMode="create-then-redirect"
+          ruleType="global"
+          isDuplicateEnabled={false}
+          writeEnabled={hasWriteAccess}
+        />
+      </main>
     </>
   );
 };

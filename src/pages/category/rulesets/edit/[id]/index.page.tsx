@@ -60,33 +60,37 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit Category Ruleset</title>
       </Head>
-      <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
-
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <Ruleset
-          isEnabled={ruleSetDetail.isEnabled}
-          onSave={saveRuleSet}
-          onCancel={() => router.push('/category/rulesets')}
-          categoryIds={ruleSetDetail.categoriesInfo.map(
-            (category) => category.id
-          )}
-          rulesetFacets={ruleSetDetail.facets}
-          rulesetExcludedFacets={ruleSetDetail.excludedFacets}
-          rulesetId={ruleSetDetail.id}
-          rulesetMerchandisingRules={ruleSetDetail.rules}
-          rulesetType="category"
-          startDate={ruleSetDetail.startDate}
-          endDate={ruleSetDetail.endDate}
-          countryCode={ruleSetDetail.countryCode}
-          writeEnabled={hasWriteAccess}
+      <main>
+        <Heading
+          breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']}
         />
-      )}
 
-      {isSaving && <Loader />}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Ruleset
+            isEnabled={ruleSetDetail.isEnabled}
+            onSave={saveRuleSet}
+            onCancel={() => router.push('/category/rulesets')}
+            categoryIds={ruleSetDetail.categoriesInfo.map(
+              (category) => category.id
+            )}
+            rulesetFacets={ruleSetDetail.facets}
+            rulesetExcludedFacets={ruleSetDetail.excludedFacets}
+            rulesetId={ruleSetDetail.id}
+            rulesetMerchandisingRules={ruleSetDetail.rules}
+            rulesetType="category"
+            startDate={ruleSetDetail.startDate}
+            endDate={ruleSetDetail.endDate}
+            countryCode={ruleSetDetail.countryCode}
+            writeEnabled={hasWriteAccess}
+          />
+        )}
+
+        {isSaving && <Loader />}
+      </main>
     </>
   );
 };

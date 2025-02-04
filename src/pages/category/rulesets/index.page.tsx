@@ -104,18 +104,24 @@ const RuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Category ranking rules</title>
       </Head>
-      <Heading
-        breadcrumbs={['Search & Merchandising', 'Categories', 'Ranking rules']}
-      />
+      <main>
+        <Heading
+          breadcrumbs={[
+            'Search & Merchandising',
+            'Categories',
+            'Ranking rules',
+          ]}
+        />
 
-      <PageNameLabel>Category ranking rules</PageNameLabel>
-      <TablePanel
-        basePath="/category/rulesets"
-        headings={headings}
-        mapping={mapping}
-        ruleType="categoryRanking"
-        writeEnabled={hasWriteAccess}
-      />
+        <PageNameLabel>Category ranking rules</PageNameLabel>
+        <TablePanel
+          basePath="/category/rulesets"
+          headings={headings}
+          mapping={mapping}
+          ruleType="categoryRanking"
+          writeEnabled={hasWriteAccess}
+        />
+      </main>
     </>
   );
 };

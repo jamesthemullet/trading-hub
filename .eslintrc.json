@@ -15,14 +15,16 @@
     "plugin:functional/recommended",
     "plugin:jest-formatting/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:jest-dom/recommended"
+    "plugin:jest-dom/recommended",
+    "plugin:jsx-a11y/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": [
     "@typescript-eslint",
     "simple-import-sort",
     "testing-library",
-    "jest-dom"
+    "jest-dom",
+    "jsx-a11y"
   ],
   "overrides": [
     {

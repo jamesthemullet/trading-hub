@@ -153,7 +153,7 @@ describe('Search Rulesets', () => {
     renderWithProviders(<RuleSets />);
 
     expect(
-      screen.getByRole('heading', { name: 'Search ranking rules', level: 2 })
+      screen.getByRole('heading', { name: 'Search ranking rules', level: 1 })
     ).toBeVisible();
   });
 

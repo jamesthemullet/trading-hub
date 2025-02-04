@@ -56,31 +56,37 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit search ranking rule</title>
       </Head>
-      <Heading
-        breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
-      />
-
-      {error && <CentredError>{error}</CentredError>}
-
-      {!isLoading && (
-        <Ruleset
-          isEnabled={ruleSet.isEnabled}
-          onCancel={() => router.push('/search/rulesets')}
-          onSave={saveRuleSet}
-          rulesetId={ruleSet.id}
-          rulesetMerchandisingRules={ruleSet.rules}
-          rulesetType="search"
-          searchTerms={ruleSet.searchTerms}
-          rulesetFacets={ruleSet.facets}
-          rulesetExcludedFacets={ruleSet.excludedFacets}
-          startDate={ruleSet.startDate}
-          endDate={ruleSet.endDate}
-          countryCode={ruleSet.countryCode}
-          writeEnabled={hasWriteAccess}
+      <main>
+        <Heading
+          breadcrumbs={[
+            'Search & Merchandising',
+            'Site search',
+            'Ranking rules',
+          ]}
         />
-      )}
 
-      {isSaving && <Loader />}
+        {error && <CentredError>{error}</CentredError>}
+
+        {!isLoading && (
+          <Ruleset
+            isEnabled={ruleSet.isEnabled}
+            onCancel={() => router.push('/search/rulesets')}
+            onSave={saveRuleSet}
+            rulesetId={ruleSet.id}
+            rulesetMerchandisingRules={ruleSet.rules}
+            rulesetType="search"
+            searchTerms={ruleSet.searchTerms}
+            rulesetFacets={ruleSet.facets}
+            rulesetExcludedFacets={ruleSet.excludedFacets}
+            startDate={ruleSet.startDate}
+            endDate={ruleSet.endDate}
+            countryCode={ruleSet.countryCode}
+            writeEnabled={hasWriteAccess}
+          />
+        )}
+
+        {isSaving && <Loader />}
+      </main>
     </>
   );
 };

@@ -46,26 +46,28 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit global ruleset</title>
       </Head>
-      <Heading
-        breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
-      />
-
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <Ruleset
-          isEnabled={globalRuleSet.isEnabled}
-          onSave={saveRuleSet}
-          onCancel={() => router.push('/global/rulesets')}
-          rulesetMerchandisingRules={globalRuleSet.rules}
-          rulesetFacets={globalRuleSet.facets}
-          rulesetExcludedFacets={globalRuleSet.excludedFacets}
-          rulesetType="global"
-          rulesetId={id}
-          countryCode={globalRuleSet.countryCode}
-          writeEnabled={hasWriteAccess}
+      <main>
+        <Heading
+          breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
         />
-      )}
+
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Ruleset
+            isEnabled={globalRuleSet.isEnabled}
+            onSave={saveRuleSet}
+            onCancel={() => router.push('/global/rulesets')}
+            rulesetMerchandisingRules={globalRuleSet.rules}
+            rulesetFacets={globalRuleSet.facets}
+            rulesetExcludedFacets={globalRuleSet.excludedFacets}
+            rulesetType="global"
+            rulesetId={id}
+            countryCode={globalRuleSet.countryCode}
+            writeEnabled={hasWriteAccess}
+          />
+        )}
+      </main>
     </>
   );
 };

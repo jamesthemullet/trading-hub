@@ -8,7 +8,7 @@ import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
-const NavigationWrapper = styled.div`
+const NavigationWrapper = styled.nav`
   width: ${spacing(8)};
   background-color: ${color.darkHeritageGreen};
   color: #fff;

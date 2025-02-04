@@ -96,22 +96,24 @@ const FacetManagementPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Search Facet Management</title>
       </Head>
-      <Heading
-        breadcrumbs={[
-          'Search & Merchandising',
-          'Site search',
-          'Search Facet Management',
-        ]}
-      />
-      <PageNameLabel>Search Facet Management</PageNameLabel>
-      <TablePanel
-        basePath="/search/facets"
-        headings={headings}
-        mapping={mapping}
-        newRowCreateMode="redirect-to-new"
-        ruleType="searchRanking"
-        writeEnabled={hasWriteAccess}
-      />
+      <main>
+        <Heading
+          breadcrumbs={[
+            'Search & Merchandising',
+            'Site search',
+            'Search Facet Management',
+          ]}
+        />
+        <PageNameLabel>Search Facet Management</PageNameLabel>
+        <TablePanel
+          basePath="/search/facets"
+          headings={headings}
+          mapping={mapping}
+          newRowCreateMode="redirect-to-new"
+          ruleType="searchRanking"
+          writeEnabled={hasWriteAccess}
+        />
+      </main>
     </>
   );
 };

@@ -189,7 +189,7 @@ const CategoryFacetsPanel = ({
   };
 
   return (
-    <>
+    <main>
       {getFacetsDataError && (
         <ErrorMessage>
           Error whilst retrieving facet list: {getFacetsDataError}
@@ -224,7 +224,7 @@ const CategoryFacetsPanel = ({
           writeEnabled={writeEnabled}
         />
       )}
-    </>
+    </main>
   );
 };
 

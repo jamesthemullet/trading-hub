@@ -104,25 +104,27 @@ const FacetManagementPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Category Facet Management</title>
       </Head>
-      <Heading
-        breadcrumbs={[
-          'Search & Merchandising',
-          'Categories',
-          'Ranking rules',
-          'facet-management',
-        ]}
-      />
+      <main>
+        <Heading
+          breadcrumbs={[
+            'Search & Merchandising',
+            'Categories',
+            'Ranking rules',
+            'facet-management',
+          ]}
+        />
 
-      <PageNameLabel>Category Facet Management</PageNameLabel>
-      <TablePanel
-        basePath="/category/facets"
-        headings={headings}
-        mapping={mapping}
-        addNewButtonLabel="Add new facet"
-        newRowCreateMode="redirect-to-new"
-        ruleType="categoryRanking"
-        writeEnabled={hasWriteAccess}
-      />
+        <PageNameLabel>Category Facet Management</PageNameLabel>
+        <TablePanel
+          basePath="/category/facets"
+          headings={headings}
+          mapping={mapping}
+          addNewButtonLabel="Add new facet"
+          newRowCreateMode="redirect-to-new"
+          ruleType="categoryRanking"
+          writeEnabled={hasWriteAccess}
+        />
+      </main>
     </>
   );
 };

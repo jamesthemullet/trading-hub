@@ -89,7 +89,8 @@ export const PageWrapper = styled.div`
   }
 `;
 
-export const PageNameLabel = styled.h2`
+export const PageNameLabel = styled.h1`
+  font-size: 1.5em;
   margin: ${spacing(3)} ${spacing(2)};
 
   ${mediaQuery('xxl')} {

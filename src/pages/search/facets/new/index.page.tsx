@@ -74,23 +74,29 @@ const NewRuleSetPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create search ranking rule</title>
       </Head>
-      <Heading
-        breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
-      />
+      <main>
+        <Heading
+          breadcrumbs={[
+            'Search & Merchandising',
+            'Site search',
+            'Ranking rules',
+          ]}
+        />
 
-      <SearchFacetsPanel
-        isNewRuleset
-        ruleSetIncludedFacets={[]}
-        ruleSetExcludedFacets={{
-          facets: [],
-        }}
-        isLoading={false}
-        countryCode={'UK_IE'}
-        searchTerms={[]}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        writeEnabled={hasWriteAccess}
-      />
+        <SearchFacetsPanel
+          isNewRuleset
+          ruleSetIncludedFacets={[]}
+          ruleSetExcludedFacets={{
+            facets: [],
+          }}
+          isLoading={false}
+          countryCode={'UK_IE'}
+          searchTerms={[]}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          writeEnabled={hasWriteAccess}
+        />
+      </main>
     </>
   );
 };

@@ -4,7 +4,7 @@ import type {
   Dispatch,
   HTMLAttributes,
 } from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -162,6 +162,14 @@ export const Product = ({
       setError('');
     }
   };
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isLockToPositionMenuOpen]);
 
   return (
     <ProductWrapper aria-label={`Position ${index + 1}`} {...rest}>
@@ -409,11 +417,11 @@ export const Product = ({
                   }}
                 >
                   <LockInput
+                    ref={inputRef}
                     placeholder="i.e. 3"
                     onChange={onInputChange}
                     defaultValue={positionToLockTo || ''}
                     type="number"
-                    autoFocus
                     hasError={!!error.length}
                   />
                   {error && (
