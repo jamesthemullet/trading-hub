@@ -40,3 +40,12 @@ export const Input = styled.input`
     }
   }
 `;
+
+export const Label = styled.label`
+  display: flex;
+  align-items: center;
+`;
+
+export const LabelText = styled.span`
+  font-size: 12px;
+`;

@@ -21,6 +21,8 @@ const productProps: ProductProps = {
   dispatch: mockDispatch,
   pinnedProductsCount: 2,
   hasBulkAction: false,
+  isSelected: false,
+  isSelectionDisabled: false,
 };
 
 const missingProductProps = {

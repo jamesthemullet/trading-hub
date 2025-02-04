@@ -151,6 +151,8 @@ const ProductsLoader = ({
                   pinnedProductsCount={pinnedProductsCount}
                   dispatch={dispatch}
                   hasBulkAction={false}
+                  isSelected={false}
+                  isSelectionDisabled
                 />
               )}
             </ProductBox>

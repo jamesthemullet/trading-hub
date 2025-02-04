@@ -5,6 +5,7 @@ import { Skeleton } from '@mantine/core';
 import type { CountryCode, MerchandisingRules } from '@/libs/api';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import { Checkbox } from '../checkboxes/checkbox';
 import { Product } from '../product/product';
 import { Search } from '../search/search';
 import { Action } from '../types';
@@ -57,12 +58,29 @@ const InfoContainer = styled.div`
   align-items: center;
 `;
 
+const SelectAll = styled.div`
+  margin-left: auto;
+  display: flex;
+  height: 34px;
+  align-items: center;
+`;
+
 export type ProductSearchProps = {
   dispatch: Dispatch<Action>;
   hasBulkAction: boolean;
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
+  onSelectProduct: ({
+    id,
+    isSelected,
+  }: {
+    id: string;
+    isSelected: boolean;
+  }) => void;
+  onSelectAll: (args: string[]) => void;
+  selectedProducts: string[];
+  isSelectionDisabled: boolean;
   categoryIds?: string[];
   searchTerms?: string[];
   maxToQuery?: number;
@@ -70,15 +88,19 @@ export type ProductSearchProps = {
 };
 
 export const ProductSearch = ({
+  categoryIds,
+  countryCode,
   dispatch,
   hasBulkAction,
   isPinnable,
-  merchandisingRules,
-  pinnedProductsCount,
-  categoryIds,
-  searchTerms,
+  isSelectionDisabled,
   maxToQuery = 10,
-  countryCode,
+  merchandisingRules,
+  onSelectAll,
+  onSelectProduct,
+  pinnedProductsCount,
+  searchTerms,
+  selectedProducts,
 }: ProductSearchProps) => {
   const [productSearchTerm, setProductSearchTerm] = useState('');
 
@@ -99,9 +121,25 @@ export const ProductSearch = ({
     }
   };
 
+  const onSelectAllProducts = () => {
+    const productIds = products
+      .map((productWrapper) =>
+        productWrapper.type === 'product' ? productWrapper.product.id : ''
+      )
+      .filter((prod) => prod !== '');
+
+    return productIds.length === selectedProducts.length
+      ? onSelectAll([])
+      : onSelectAll(productIds);
+  };
+
   const { callback: handleSearch } = useDebounce((val: string) => {
     onSearch(val);
   }, 300);
+
+  const shownProducts = products.filter(
+    (product) => product.type === 'product'
+  );
 
   return (
     <ProductSearchRootContainer aria-label="Product Search Container">
@@ -113,16 +151,35 @@ export const ProductSearch = ({
           }}
         />
       </TopContainer>
-      <InfoContainer>{totalProducts} results</InfoContainer>
+      <InfoContainer>
+        {totalProducts} results
+        {shownProducts.length > 0 && hasBulkAction && (
+          <SelectAll>
+            <Checkbox
+              label="Select all"
+              onChange={onSelectAllProducts}
+              checked={
+                selectedProducts.length > 0 &&
+                selectedProducts.length === shownProducts.length
+              }
+              showLabel={true}
+              disabled={isSelectionDisabled}
+            />
+          </SelectAll>
+        )}
+      </InfoContainer>
       <ProductsContainer
         ref={scrollContainerRef}
         data-testid="product-search-result"
       >
         {products.map((productWrapper, index) => {
           const id = `${productWrapper.id}`;
+          const isSelected =
+            productWrapper.type === 'product' &&
+            selectedProducts.includes(productWrapper.product.id);
           return productWrapper.type === 'product' ? (
             <StyledProduct
-              key={id}
+              key={productWrapper.product.id}
               {...productWrapper.product}
               hasBulkAction={hasBulkAction}
               index={index}
@@ -132,6 +189,9 @@ export const ProductSearch = ({
               isBrandStrong={false}
               isProductNumberEnabled={false}
               isSearchResult={true}
+              onSelectProduct={onSelectProduct}
+              isSelected={isSelected}
+              isSelectionDisabled={isSelectionDisabled}
             />
           ) : (
             <Skeleton key={id} aria-label={id} w={'100%'} h={'200px'} />

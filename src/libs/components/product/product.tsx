@@ -79,6 +79,15 @@ export type ProductProps = ProductType & {
   isPinnable: boolean;
   dispatch: Dispatch<Action>;
   pinnedProductsCount?: number;
+  onSelectProduct?: ({
+    id,
+    isSelected,
+  }: {
+    id: string;
+    isSelected: boolean;
+  }) => void;
+  isSelected: boolean;
+  isSelectionDisabled: boolean;
   isBrandStrong?: boolean;
   isProductNumberEnabled?: boolean;
   isSearchResult?: boolean;
@@ -95,7 +104,10 @@ export const Product = ({
   isPinnable,
   isProductNumberEnabled,
   isSearchResult = false,
+  isSelected,
+  isSelectionDisabled,
   metadata: { isPinned, isBoosted, isBuried, isBlocked },
+  onSelectProduct,
   pinnedProductsCount,
   price,
   productId,
@@ -167,7 +179,11 @@ export const Product = ({
           <ProductCheckbox>
             <Checkbox
               label={`Select ${title}`}
-              defaultChecked={id === '60123837'}
+              disabled={isSelectionDisabled}
+              checked={isSelected}
+              onChange={() =>
+                onSelectProduct && onSelectProduct({ id, isSelected })
+              }
             />
           </ProductCheckbox>
         )}

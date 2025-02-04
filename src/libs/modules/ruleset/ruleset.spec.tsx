@@ -164,6 +164,7 @@ const mockCategoryReturnValue = {
       {
         ...mockProduct,
         id: 'product2',
+        title: 'productTitle2',
         productId: 'productId2',
         metadata: { isPinned: false, isBoosted: true },
       },
@@ -2070,6 +2071,153 @@ describe('Ruleset', () => {
       act(() => {
         saveButton.click();
       });
+    });
+  });
+
+  describe('Bulk actions', () => {
+    const mockRules: MerchandisingRules = {
+      pinnedProducts: [],
+      boosts: boostMock,
+      buries: buriesMock,
+      blockedProducts: [],
+      includes: {},
+      excludes: {
+        alphanumeric: [
+          {
+            fields: [
+              {
+                field: 'example',
+                values: ['One', 'Two'],
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    it('should show checkboxes on products', async () => {
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={mockRules}
+          categoryIds={['SubCategory_507']}
+          rulesetType="category"
+        />,
+        [],
+        {
+          featureFlags: {
+            hasBulkActions: true,
+          },
+        }
+      );
+
+      expect(await screen.findByLabelText('Select productTitle')).toBeVisible();
+    });
+
+    it('should select and deselect products', async () => {
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={mockRules}
+          categoryIds={['SubCategory_507']}
+          rulesetType="category"
+        />,
+        [],
+        {
+          featureFlags: {
+            hasBulkActions: true,
+          },
+        }
+      );
+
+      const checkbox = await screen.findByLabelText('Select productTitle');
+
+      act(() => {
+        checkbox.click();
+      });
+
+      expect(await screen.findByLabelText('Select productTitle')).toBeChecked();
+
+      act(() => {
+        checkbox.click();
+      });
+
+      expect(
+        await screen.findByLabelText('Select productTitle')
+      ).not.toBeChecked();
+    });
+
+    it('should select products from search', async () => {
+      const user = userEvent.setup();
+      jest.mocked(useCategoryProductSearch).mockReturnValue({
+        searchForProduct: jest.fn(() => {
+          return Promise.resolve({
+            products: [
+              {
+                id: 'product-id-2',
+                productId: 'product-id-2',
+                title: 'productSearchTitle',
+                imageUrl: ['example2.jpg'],
+                brand: product1Brand,
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: product1Price,
+                url: '',
+              },
+            ],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+        error: '',
+        isLoading: false,
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={mockRules}
+          categoryIds={['SubCategory_507']}
+          rulesetType="category"
+        />,
+        [],
+        {
+          featureFlags: {
+            hasBulkActions: true,
+          },
+        }
+      );
+
+      const searchProduct = screen.getByPlaceholderText('Search for product');
+
+      await user.type(searchProduct, 'productSearchTitle');
+
+      const checkbox = await screen.findByLabelText(
+        'Select productSearchTitle'
+      );
+
+      act(() => {
+        checkbox.click();
+      });
+
+      expect(
+        await screen.findByLabelText('Select productSearchTitle')
+      ).toBeChecked();
+
+      act(() => {
+        checkbox.click();
+      });
+
+      expect(
+        await screen.findByLabelText('Select productSearchTitle')
+      ).not.toBeChecked();
     });
   });
 });

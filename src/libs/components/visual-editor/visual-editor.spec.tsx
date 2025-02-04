@@ -58,6 +58,9 @@ describe('VisualEditor', () => {
         products={products}
         dispatch={jest.fn()}
         hasBulkAction={false}
+        onSelectProduct={jest.fn()}
+        isSelectionDisabled
+        selectedProducts={[]}
       />
     );
 

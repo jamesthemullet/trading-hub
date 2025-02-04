@@ -6,7 +6,7 @@ import { useCategoryProductSearch } from '@/libs/hooks';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
 import { renderWithProviders } from '../../../test/render-with-providers';
-import { ProductSearch } from './product-search';
+import { ProductSearch, ProductSearchProps } from './product-search';
 
 const PLACEHOLDER_TEXT = 'Search for product';
 
@@ -16,10 +16,16 @@ jest.mock('@/libs/hooks/use-category-product-search', () => ({
 
 const mockDispatch = jest.fn();
 
-const mockProps = {
+const mockProps: ProductSearchProps = {
   isPinnable: true,
   merchandisingRules: mockMerchandisingRules,
   hasBulkAction: false,
+  isSelectionDisabled: false,
+  onSelectAll: jest.fn(),
+  dispatch: jest.fn(),
+  pinnedProductsCount: 0,
+  onSelectProduct: jest.fn(),
+  selectedProducts: [],
 };
 
 describe('ProductSearch', () => {
@@ -32,7 +38,7 @@ describe('ProductSearch', () => {
     jest.useRealTimers();
   });
 
-  it('should render rules search', () => {
+  it('should render product search', () => {
     jest.mocked(useCategoryProductSearch).mockReturnValue({
       searchForProduct: jest.fn(() => {
         return Promise.resolve({
@@ -47,9 +53,9 @@ describe('ProductSearch', () => {
     });
     renderWithProviders(
       <ProductSearch
+        {...mockProps}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        {...mockProps}
       />
     );
 
@@ -85,9 +91,9 @@ describe('ProductSearch', () => {
 
     renderWithProviders(
       <ProductSearch
+        {...mockProps}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        {...mockProps}
       />
     );
 
@@ -131,10 +137,10 @@ describe('ProductSearch', () => {
 
     renderWithProviders(
       <ProductSearch
+        {...mockProps}
         categoryIds={['cat123']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        {...mockProps}
       />
     );
 
@@ -204,9 +210,9 @@ describe('ProductSearch', () => {
 
     renderWithProviders(
       <ProductSearch
+        {...mockProps}
         dispatch={mockDispatch}
         pinnedProductsCount={3}
-        {...mockProps}
       />
     );
 
@@ -251,10 +257,10 @@ describe('ProductSearch', () => {
 
     renderWithProviders(
       <ProductSearch
+        {...mockProps}
         categoryIds={mockCategories}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        {...mockProps}
       />
     );
 
@@ -278,5 +284,157 @@ describe('ProductSearch', () => {
     await waitFor(() => {
       expect(screen.getByLabelText('placeholder-11')).toBeInTheDocument();
     });
+  });
+
+  it('should select all', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    jest.mocked(useCategoryProductSearch).mockReturnValue({
+      searchForProduct: jest.fn(() => {
+        return Promise.resolve({
+          products: [
+            {
+              id: '1',
+              productId: 'id1',
+              title: 'mock title 1',
+              imageUrl: ['example1.jpg'],
+              brand: 'brand',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£5',
+              url: '',
+            },
+            {
+              id: '2',
+              productId: 'id2',
+              title: 'mock title 2',
+              imageUrl: ['example2.jpg'],
+              brand: 'brand2',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£10',
+              url: '',
+            },
+            {
+              id: '3',
+              productId: 'id3',
+              title: 'mock title 3',
+              imageUrl: ['example3.jpg'],
+              brand: 'brand3',
+              metadata: { isPinned: false },
+              isInStock: true,
+              price: '£15',
+              url: '',
+            },
+          ],
+          pagination: {
+            totalItems: 3,
+          },
+        });
+      }),
+      error: '',
+      isLoading: false,
+    });
+
+    const mockSelectAll = jest.fn();
+
+    renderWithProviders(
+      <ProductSearch
+        {...mockProps}
+        categoryIds={['cat123']}
+        dispatch={mockDispatch}
+        pinnedProductsCount={0}
+        hasBulkAction
+        onSelectAll={mockSelectAll}
+      />,
+      [],
+      {
+        featureFlags: {
+          hasBulkActions: true,
+        },
+      }
+    );
+
+    const searchProduct = screen.getByPlaceholderText('Search for product');
+
+    await user.type(searchProduct, 'productSearchTitle');
+
+    await waitFor(() => {
+      expect(screen.getByText('3 results')).toBeInTheDocument();
+    });
+
+    const checkbox = await screen.findByLabelText('Select all');
+
+    act(() => {
+      checkbox.click();
+    });
+
+    expect(mockSelectAll).toHaveBeenCalledWith(['1', '2', '3']);
+  });
+
+  it('should deselect all', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    jest.mocked(useCategoryProductSearch).mockReturnValue({
+      searchForProduct: jest.fn(() => {
+        return Promise.resolve({
+          products: Array.from({ length: 10 }).map(
+            (_, index) =>
+              ({
+                id: `${index}`,
+                productId: `id${index}`,
+                title: `mock title ${index}`,
+                imageUrl: ['example1.jpg'],
+                brand: 'brand',
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: '£5',
+                url: '',
+              }) satisfies Product
+          ),
+          pagination: {
+            totalItems: 25,
+          },
+        });
+      }),
+      error: '',
+      isLoading: false,
+    });
+
+    const mockSelectAll = jest.fn();
+
+    renderWithProviders(
+      <ProductSearch
+        {...mockProps}
+        categoryIds={['cat123']}
+        dispatch={mockDispatch}
+        pinnedProductsCount={0}
+        hasBulkAction
+        onSelectAll={mockSelectAll}
+        selectedProducts={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
+      />,
+      [],
+      {
+        featureFlags: {
+          hasBulkActions: true,
+        },
+      }
+    );
+
+    const searchProduct = screen.getByPlaceholderText('Search for product');
+
+    await user.type(searchProduct, 'productSearchTitle');
+
+    await waitFor(() => {
+      expect(screen.getByText('25 results')).toBeInTheDocument();
+    });
+
+    const checkbox = await screen.findByLabelText('Select all');
+
+    act(() => {
+      checkbox.click();
+    });
+
+    expect(mockSelectAll).toHaveBeenCalledWith([]);
   });
 });

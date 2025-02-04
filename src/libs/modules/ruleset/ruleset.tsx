@@ -290,6 +290,11 @@ export const Ruleset = ({
     (categoryIds && categoryIds[0]) || (searchTerms && searchTerms[0])
   );
 
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [selectedSearchProducts, setSelectedSearchProducts] = useState<
+    string[]
+  >([]);
+
   const [ruleset, dispatch] = useReducer(rulesetReducer, {
     isEnabled,
     startDate,
@@ -600,6 +605,18 @@ export const Ruleset = ({
                   searchTerms={rulesetSearchTerms}
                   countryCode={ruleset.countryCode}
                   hasBulkAction={bulkActionsEnabled}
+                  selectedProducts={selectedSearchProducts}
+                  isSelectionDisabled={!!selectedProducts.length}
+                  onSelectAll={setSelectedSearchProducts}
+                  onSelectProduct={({ id, isSelected }) => {
+                    setSelectedSearchProducts(
+                      isSelected
+                        ? selectedSearchProducts.filter(
+                            (product) => product !== id
+                          )
+                        : [...selectedSearchProducts, id]
+                    );
+                  }}
                 />
               )}
               {currentProductTab === 1 && (
@@ -699,6 +716,15 @@ export const Ruleset = ({
                   products={data.products}
                   dispatch={dispatch}
                   hasBulkAction={bulkActionsEnabled}
+                  selectedProducts={selectedProducts}
+                  isSelectionDisabled={!!selectedSearchProducts.length}
+                  onSelectProduct={({ id, isSelected }) => {
+                    setSelectedProducts(
+                      isSelected
+                        ? selectedProducts.filter((product) => product !== id)
+                        : [...selectedProducts, id]
+                    );
+                  }}
                 />
               ) : (
                 <TextContent>

@@ -6,12 +6,28 @@ import { Action } from '../types';
 import { Layout, ProductBox } from './visual-editor.styles';
 
 type Props = {
-  products: ProductType[];
   dispatch: Dispatch<Action>;
   hasBulkAction: boolean;
+  onSelectProduct: ({
+    id,
+    isSelected,
+  }: {
+    id: string;
+    isSelected: boolean;
+  }) => void;
+  selectedProducts: string[];
+  isSelectionDisabled: boolean;
+  products: ProductType[];
 };
 
-export const VisualEditor = ({ products, dispatch, hasBulkAction }: Props) => {
+export const VisualEditor = ({
+  products,
+  dispatch,
+  hasBulkAction,
+  onSelectProduct,
+  selectedProducts,
+  isSelectionDisabled,
+}: Props) => {
   const pinnedProductsCount = products.filter(
     (product) => product.metadata.isPinned
   ).length;
@@ -26,6 +42,9 @@ export const VisualEditor = ({ products, dispatch, hasBulkAction }: Props) => {
             index={index}
             isPinnable={true}
             dispatch={dispatch}
+            onSelectProduct={onSelectProduct}
+            isSelected={selectedProducts.includes(product.id)}
+            isSelectionDisabled={isSelectionDisabled}
             pinnedProductsCount={pinnedProductsCount}
           />
         </ProductBox>
