@@ -14,6 +14,73 @@ import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
 
+const mapping: RuleSetMapping<
+  ReturnedCategoryRuleSets,
+  ReturnedCategoryRuleSet,
+  CategoryRuleSet
+> = {
+  queryAllRuleSets: search().betaMerchandisingCategoryRulesetList,
+  deleteRuleSetById: search().betaMerchandisingCategoryRulesetDelete,
+  queryRuleSetById: search().betaMerchandisingCategoryRulesetDetail,
+  updateRuleSetById: search().betaMerchandisingCategoryRulesetUpdate,
+  newRuleSet: (returnedRuleSet) =>
+    search().betaMerchandisingCategoryRulesetCreate({
+      ...returnedRuleSet,
+      facets: returnedRuleSet.facets || [],
+    }),
+  ruleSetToRow: ({
+    id,
+    isEnabled,
+    lastChanged,
+    categoriesInfo,
+    startDate,
+    endDate,
+    countryCode,
+  }) => ({
+    id: id,
+    identifier: formatCategoriesInfo(categoriesInfo),
+    isEnabled,
+    lastChanged,
+    url: `/category/facets/edit/${id}`,
+    categoryPlpUrl: categoriesInfo[0].plpUrl,
+    startDate,
+    endDate,
+    countryCode,
+  }),
+  allToArray: (data) => data.ruleSets,
+  getEmptyRuleSet: () => ({
+    categoryIds: [],
+    isEnabled: false,
+    countryCode: 'UK_IE',
+    rules: {
+      pinnedProducts: [],
+      blockedProducts: [],
+      boosts: { numeric: [], alphanumeric: [], product: [] },
+      buries: { numeric: [], alphanumeric: [], product: [] },
+      includes: { alphanumeric: [] },
+      excludes: { alphanumeric: [] },
+    },
+    endDate: undefined,
+    startDate: undefined,
+    facets: [],
+    excludedFacets: undefined,
+  }),
+  returnedToRuleSet: (returnedRuleSet) => {
+    return {
+      categoryIds: returnedRuleSet.categoriesInfo.map(
+        (category) => category.id
+      ),
+      isEnabled: returnedRuleSet.isEnabled,
+      countryCode: returnedRuleSet.countryCode,
+      rules: returnedRuleSet.rules,
+      endDate: returnedRuleSet.endDate,
+      startDate: returnedRuleSet.startDate,
+      facets: returnedRuleSet.facets,
+      excludedFacets: returnedRuleSet.excludedFacets,
+    };
+  },
+};
+
 const FacetManagementPage = () => {
   const headings = [
     'Identifier',
@@ -25,73 +92,6 @@ const FacetManagementPage = () => {
     'User',
     'Actions',
   ];
-
-  const mapping: RuleSetMapping<
-    ReturnedCategoryRuleSets,
-    ReturnedCategoryRuleSet,
-    CategoryRuleSet
-  > = {
-    queryAllRuleSets: search().betaMerchandisingCategoryRulesetList,
-    deleteRuleSetById: search().betaMerchandisingCategoryRulesetDelete,
-    queryRuleSetById: search().betaMerchandisingCategoryRulesetDetail,
-    updateRuleSetById: search().betaMerchandisingCategoryRulesetUpdate,
-    newRuleSet: (returnedRuleSet) =>
-      search().betaMerchandisingCategoryRulesetCreate({
-        ...returnedRuleSet,
-        facets: returnedRuleSet.facets || [],
-      }),
-    ruleSetToRow: ({
-      id,
-      isEnabled,
-      lastChanged,
-      categoriesInfo,
-      startDate,
-      endDate,
-      countryCode,
-    }) => ({
-      id: id,
-      identifier: formatCategoriesInfo(categoriesInfo),
-      isEnabled,
-      lastChanged,
-      url: `/category/facets/edit/${id}`,
-      categoryPlpUrl: categoriesInfo[0].plpUrl,
-      startDate,
-      endDate,
-      countryCode,
-    }),
-    allToArray: (data) => data.ruleSets,
-    getEmptyRuleSet: () => ({
-      categoryIds: [],
-      isEnabled: false,
-      countryCode: 'UK_IE',
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: { numeric: [], alphanumeric: [], product: [] },
-        buries: { numeric: [], alphanumeric: [], product: [] },
-        includes: { alphanumeric: [] },
-        excludes: { alphanumeric: [] },
-      },
-      endDate: undefined,
-      startDate: undefined,
-      facets: [],
-      excludedFacets: undefined,
-    }),
-    returnedToRuleSet: (returnedRuleSet) => {
-      return {
-        categoryIds: returnedRuleSet.categoriesInfo.map(
-          (category) => category.id
-        ),
-        isEnabled: returnedRuleSet.isEnabled,
-        countryCode: returnedRuleSet.countryCode,
-        rules: returnedRuleSet.rules,
-        endDate: returnedRuleSet.endDate,
-        startDate: returnedRuleSet.startDate,
-        facets: returnedRuleSet.facets,
-        excludedFacets: returnedRuleSet.excludedFacets,
-      };
-    },
-  };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 

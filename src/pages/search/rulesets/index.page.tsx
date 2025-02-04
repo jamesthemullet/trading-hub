@@ -13,6 +13,66 @@ import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
 
+const mapping: RuleSetMapping<
+  ReturnedKeywordRuleSets,
+  ReturnedKeywordRuleSet,
+  KeywordRuleSet
+> = {
+  queryAllRuleSets: search().betaMerchandisingKeywordRulesetList,
+  deleteRuleSetById: search().betaMerchandisingKeywordRulesetDelete,
+  queryRuleSetById: search().betaMerchandisingKeywordRulesetDetail,
+  updateRuleSetById: search().betaMerchandisingKeywordRulesetUpdate,
+  newRuleSet: search().betaMerchandisingKeywordRulesetCreate,
+  ruleSetToRow: ({
+    id,
+    searchTerms,
+    isEnabled,
+    lastChanged,
+    startDate,
+    endDate,
+    countryCode,
+  }) => ({
+    id,
+    identifier: searchTerms.join(' | '),
+    isEnabled,
+    lastChanged,
+    url: `/search/rulesets/edit/${id}`,
+    startDate,
+    endDate,
+    countryCode,
+  }),
+  allToArray: (data) => data.ruleSets,
+  getEmptyRuleSet: () => ({
+    searchTerms: [],
+    countryCode: 'UK_IE',
+    endDate: undefined,
+    excludedFacets: undefined,
+    facets: [],
+    isEnabled: false,
+    rules: {
+      pinnedProducts: [],
+      blockedProducts: [],
+      boosts: { numeric: [], alphanumeric: [], product: [] },
+      buries: { numeric: [], alphanumeric: [], product: [] },
+      includes: { alphanumeric: [] },
+      excludes: { alphanumeric: [] },
+    },
+    startDate: undefined,
+  }),
+  returnedToRuleSet: (returnedRuleSet) => {
+    return {
+      searchTerms: returnedRuleSet.searchTerms,
+      countryCode: returnedRuleSet.countryCode || 'UK_IE',
+      endDate: returnedRuleSet.endDate,
+      excludedFacets: returnedRuleSet.excludedFacets,
+      facets: returnedRuleSet.facets,
+      isEnabled: returnedRuleSet.isEnabled,
+      rules: returnedRuleSet.rules,
+      startDate: returnedRuleSet.startDate,
+    };
+  },
+};
+
 const SearchRuleSets = () => {
   const headings = [
     'Identifier',
@@ -23,66 +83,6 @@ const SearchRuleSets = () => {
     'User',
     'Actions',
   ];
-
-  const mapping: RuleSetMapping<
-    ReturnedKeywordRuleSets,
-    ReturnedKeywordRuleSet,
-    KeywordRuleSet
-  > = {
-    queryAllRuleSets: search().betaMerchandisingKeywordRulesetList,
-    deleteRuleSetById: search().betaMerchandisingKeywordRulesetDelete,
-    queryRuleSetById: search().betaMerchandisingKeywordRulesetDetail,
-    updateRuleSetById: search().betaMerchandisingKeywordRulesetUpdate,
-    newRuleSet: search().betaMerchandisingKeywordRulesetCreate,
-    ruleSetToRow: ({
-      id,
-      searchTerms,
-      isEnabled,
-      lastChanged,
-      startDate,
-      endDate,
-      countryCode,
-    }) => ({
-      id,
-      identifier: searchTerms.join(' | '),
-      isEnabled,
-      lastChanged,
-      url: `/search/rulesets/edit/${id}`,
-      startDate,
-      endDate,
-      countryCode,
-    }),
-    allToArray: (data) => data.ruleSets,
-    getEmptyRuleSet: () => ({
-      searchTerms: [],
-      countryCode: 'UK_IE',
-      endDate: undefined,
-      excludedFacets: undefined,
-      facets: [],
-      isEnabled: false,
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: { numeric: [], alphanumeric: [], product: [] },
-        buries: { numeric: [], alphanumeric: [], product: [] },
-        includes: { alphanumeric: [] },
-        excludes: { alphanumeric: [] },
-      },
-      startDate: undefined,
-    }),
-    returnedToRuleSet: (returnedRuleSet) => {
-      return {
-        searchTerms: returnedRuleSet.searchTerms,
-        countryCode: returnedRuleSet.countryCode || 'UK_IE',
-        endDate: returnedRuleSet.endDate,
-        excludedFacets: returnedRuleSet.excludedFacets,
-        facets: returnedRuleSet.facets,
-        isEnabled: returnedRuleSet.isEnabled,
-        rules: returnedRuleSet.rules,
-        startDate: returnedRuleSet.startDate,
-      };
-    },
-  };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } =
     useAccess('Search');
