@@ -28,7 +28,7 @@ type Change = 'add' | 'modify' | 'remove';
 type ProductPayload = {
   operation: 'pin' | 'boost' | 'bury' | 'block' | 'include' | 'exclude';
   change: Change;
-  id: string;
+  ids: string[];
   position?: number;
 };
 

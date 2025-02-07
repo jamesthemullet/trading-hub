@@ -2219,5 +2219,130 @@ describe('Ruleset', () => {
         await screen.findByLabelText('Select productSearchTitle')
       ).not.toBeChecked();
     });
+
+    it('should deselect products from the bulk actions menu', async () => {
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={mockRules}
+          categoryIds={['SubCategory_507']}
+          rulesetType="category"
+        />,
+        [],
+        {
+          featureFlags: {
+            hasBulkActions: true,
+          },
+        }
+      );
+
+      const checkbox = await screen.findByLabelText('Select productTitle');
+
+      act(() => {
+        checkbox.click();
+      });
+
+      expect(await screen.findByLabelText('Select productTitle')).toBeChecked();
+
+      const deselectButton = await screen.findByRole('button', {
+        name: 'Deselect',
+      });
+
+      act(() => {
+        deselectButton.click();
+      });
+
+      expect(
+        await screen.findByLabelText('Select productTitle')
+      ).not.toBeChecked();
+    });
+
+    it('should boost products from the bulk actions menu', async () => {
+      const mockedRules: MerchandisingRules = {
+        pinnedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        blockedProducts: [],
+        includes: {},
+        excludes: {},
+      };
+      const expectedPreviewRules = {
+        categoryId: 'SubCategory_507',
+        countryCode: 'UK',
+        facetConfig: [],
+        merchandisingRules: {
+          pinnedProducts: [],
+          boosts: {
+            alphanumeric: [],
+            numeric: [],
+            product: [{ id: 'product2', weight: 100 }],
+          },
+          buries: { alphanumeric: [], numeric: [], product: [] },
+          blockedProducts: [],
+          includes: {},
+          excludes: {},
+        },
+      };
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={mockedRules}
+          categoryIds={['SubCategory_507']}
+          rulesetType="category"
+        />,
+        [],
+        {
+          featureFlags: {
+            hasBulkActions: true,
+          },
+        }
+      );
+
+      const checkbox = await screen.findByLabelText('Select productTitle2');
+
+      act(() => {
+        checkbox.click();
+      });
+
+      expect(
+        await screen.findByLabelText('Select productTitle2')
+      ).toBeChecked();
+
+      const bulkActionsButton = await screen.findByRole('button', {
+        name: 'Bulk actions',
+      });
+
+      act(() => {
+        bulkActionsButton.click();
+      });
+
+      const boostToTop = screen.getByRole('button', { name: 'Boost to Top' });
+
+      act(() => {
+        boostToTop.click();
+      });
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('heading', { name: 'Apply new bulk action' })
+        ).toBeVisible();
+      });
+
+      const confirmButton = screen.getByRole('button', {
+        name: 'Apply action',
+      });
+
+      act(() => {
+        confirmButton.click();
+      });
+
+      await waitFor(async () => {
+        expect(usePreview).toHaveBeenLastCalledWith(expectedPreviewRules);
+      });
+    });
   });
 });

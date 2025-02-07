@@ -70,7 +70,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'add',
           operation: 'boost',
         },
@@ -92,7 +92,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'add',
           operation: 'block',
         },
@@ -116,7 +116,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'add',
           operation: 'bury',
         },
@@ -248,7 +248,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           position: 2,
           operation: 'pin',
           change: 'add',
@@ -284,7 +284,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'remove',
           operation: 'pin',
         },
@@ -306,7 +306,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'remove',
           operation: 'block',
         },
@@ -333,7 +333,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'remove',
           operation: 'boost',
         },
@@ -360,7 +360,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'remove',
           operation: 'bury',
         },
@@ -397,7 +397,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'remove',
           operation: 'boost',
         },
@@ -419,7 +419,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'remove',
           operation: 'bury',
         },
@@ -441,7 +441,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           operation: 'pin',
           change: 'remove',
         },
@@ -463,7 +463,7 @@ describe('Product', () => {
       const expectedCall: Action = {
         type: 'product',
         payload: {
-          id: 'id',
+          ids: ['id'],
           change: 'remove',
           operation: 'block',
         },

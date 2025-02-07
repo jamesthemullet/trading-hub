@@ -128,14 +128,19 @@ export const Product = ({
     setIsMenuOpen(false);
     dispatch({
       type: 'product',
-      payload: { id, operation: 'pin', change: 'add', position: positionToPin },
+      payload: {
+        ids: [id],
+        operation: 'pin',
+        change: 'add',
+        position: positionToPin,
+      },
     });
   };
 
   const clearChanges = () => {
     dispatch({
       type: 'product',
-      payload: { id, operation: 'pin', change: 'remove' },
+      payload: { ids: [id], operation: 'pin', change: 'remove' },
     });
     setIsMenuOpen(false);
   };
@@ -263,7 +268,7 @@ export const Product = ({
                   dispatch({
                     type: 'product',
                     payload: {
-                      id,
+                      ids: [id],
                       operation: 'boost',
                       change: 'remove',
                     },
@@ -283,7 +288,7 @@ export const Product = ({
                   dispatch({
                     type: 'product',
                     payload: {
-                      id,
+                      ids: [id],
                       operation: 'bury',
                       change: 'remove',
                     },
@@ -304,7 +309,7 @@ export const Product = ({
                     dispatch({
                       type: 'product',
                       payload: {
-                        id,
+                        ids: [id],
                         operation: 'block',
                         change: 'remove',
                       },
@@ -335,7 +340,7 @@ export const Product = ({
                       dispatch({
                         type: 'product',
                         payload: {
-                          id,
+                          ids: [id],
                           operation: 'boost',
                           change: 'add',
                         },
@@ -355,7 +360,7 @@ export const Product = ({
                       dispatch({
                         type: 'product',
                         payload: {
-                          id,
+                          ids: [id],
                           operation: 'bury',
                           change: 'add',
                         },
@@ -375,7 +380,7 @@ export const Product = ({
                       dispatch({
                         type: 'product',
                         payload: {
-                          id,
+                          ids: [id],
                           operation: 'block',
                           change: 'add',
                         },
@@ -484,7 +489,7 @@ export const MissingProduct = ({
   const clearChanges = () => {
     dispatch({
       type: 'product',
-      payload: { id, operation: 'pin', change: 'remove' },
+      payload: { ids: [id], operation: 'pin', change: 'remove' },
     });
   };
 
@@ -565,7 +570,7 @@ export const MissingProduct = ({
                   dispatch({
                     type: 'product',
                     payload: {
-                      id,
+                      ids: [id],
                       operation: 'boost',
                       change: 'remove',
                     },
@@ -585,7 +590,7 @@ export const MissingProduct = ({
                   dispatch({
                     type: 'product',
                     payload: {
-                      id,
+                      ids: [id],
                       operation: 'bury',
                       change: 'remove',
                     },
@@ -606,7 +611,7 @@ export const MissingProduct = ({
                     dispatch({
                       type: 'product',
                       payload: {
-                        id,
+                        ids: [id],
                         operation: 'block',
                         change: 'remove',
                       },

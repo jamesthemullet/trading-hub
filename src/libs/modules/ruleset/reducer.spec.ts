@@ -52,7 +52,7 @@ describe('Ruleset reducer', () => {
         payload: {
           operation: 'pin',
           change: 'add',
-          id: mockProductId,
+          ids: [mockProductId],
           position: 1,
         },
       });
@@ -76,7 +76,7 @@ describe('Ruleset reducer', () => {
           payload: {
             operation: 'pin',
             change: 'remove',
-            id: mockProductId,
+            ids: [mockProductId],
             position: 1,
           },
         }
@@ -103,7 +103,7 @@ describe('Ruleset reducer', () => {
           payload: {
             operation: 'pin',
             change: 'add',
-            id: mockProductId,
+            ids: [mockProductId],
             position: 1,
           },
         }
@@ -132,7 +132,7 @@ describe('Ruleset reducer', () => {
           payload: {
             operation: 'pin',
             change: 'add',
-            id: mockProductId,
+            ids: [mockProductId],
             position: 1,
           },
         }
@@ -158,7 +158,7 @@ describe('Ruleset reducer', () => {
           payload: {
             operation: 'pin',
             change: 'add',
-            id: mockProductId,
+            ids: [mockProductId],
             position: 1,
           },
         }
@@ -173,7 +173,7 @@ describe('Ruleset reducer', () => {
     it('should block a product', () => {
       const reducerState = rulesetReducer(defaultState, {
         type: 'product',
-        payload: { operation: 'block', change: 'add', id: mockProductId },
+        payload: { operation: 'block', change: 'add', ids: [mockProductId] },
       });
 
       expect(reducerState.rules.blockedProducts[0]).toEqual({
@@ -196,7 +196,7 @@ describe('Ruleset reducer', () => {
           payload: {
             operation: 'block',
             change: 'remove',
-            id: mockProductId,
+            ids: [mockProductId],
           },
         }
       );
@@ -218,7 +218,7 @@ describe('Ruleset reducer', () => {
           payload: {
             operation: 'block',
             change: 'add',
-            id: mockProductId,
+            ids: [mockProductId],
             position: 1,
           },
         }
@@ -234,7 +234,7 @@ describe('Ruleset reducer', () => {
     it('should boost a product', () => {
       const reducerState = rulesetReducer(defaultState, {
         type: 'product',
-        payload: { operation: 'boost', change: 'add', id: mockProductId },
+        payload: { operation: 'boost', change: 'add', ids: [mockProductId] },
       });
 
       expect(reducerState.rules.boosts.product[0]).toEqual({
@@ -261,7 +261,7 @@ describe('Ruleset reducer', () => {
           payload: {
             operation: 'boost',
             change: 'remove',
-            id: mockProductId,
+            ids: [mockProductId],
           },
         }
       );
@@ -272,7 +272,7 @@ describe('Ruleset reducer', () => {
     it('should bury a product', () => {
       const reducerState = rulesetReducer(defaultState, {
         type: 'product',
-        payload: { operation: 'bury', change: 'add', id: mockProductId },
+        payload: { operation: 'bury', change: 'add', ids: [mockProductId] },
       });
 
       expect(reducerState.rules.buries.product[0]).toEqual({
@@ -298,7 +298,7 @@ describe('Ruleset reducer', () => {
           payload: {
             operation: 'bury',
             change: 'remove',
-            id: mockProductId,
+            ids: [mockProductId],
           },
         }
       );

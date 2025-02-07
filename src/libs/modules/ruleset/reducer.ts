@@ -12,19 +12,19 @@ export const rulesetReducer = (state: RuleSet, action: Action) => {
     case 'product': {
       const { payload } = action;
       const pinnedProducts = rules.pinnedProducts.filter(
-        (product) => product.id !== payload.id
+        (product) => !payload.ids.includes(product.id)
       );
       const blockedProducts = rules.blockedProducts.filter(
-        (product) => product.id !== payload.id
+        (product) => !payload.ids.includes(product.id)
       );
       const boostedProducts = rules.boosts.product.filter(
-        (product) => product.id !== payload.id
+        (product) => !payload.ids.includes(product.id)
       );
       const buriedProducts = rules.buries.product.filter(
-        (product) => product.id !== payload.id
+        (product) => !payload.ids.includes(product.id)
       );
       if (payload.change === 'add') {
-        const product = { id: payload.id, weight: 100 };
+        const products = payload.ids.map((id) => ({ id, weight: 100 }));
 
         return {
           ...state,
@@ -35,23 +35,23 @@ export const rulesetReducer = (state: RuleSet, action: Action) => {
               typeof payload.position === 'number'
                 ? [
                     ...pinnedProducts.slice(0, payload.position),
-                    { id: payload.id },
+                    { id: payload.ids[0] },
                     ...pinnedProducts.slice(payload.position),
                   ]
                 : pinnedProducts,
             blockedProducts: [...blockedProducts].concat(
-              payload.operation === 'block' ? product : []
+              payload.operation === 'block' ? products : []
             ),
             boosts: {
               ...rules.boosts,
               product: [...boostedProducts].concat(
-                payload.operation === 'boost' ? product : []
+                payload.operation === 'boost' ? products : []
               ),
             },
             buries: {
               ...rules.buries,
               product: [...buriedProducts].concat(
-                payload.operation === 'bury' ? product : []
+                payload.operation === 'bury' ? products : []
               ),
             },
           },

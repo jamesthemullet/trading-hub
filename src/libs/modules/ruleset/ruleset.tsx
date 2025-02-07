@@ -13,6 +13,7 @@ import type {
   RuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
+  BulkActions,
   CategorySearch,
   Dropdown,
   DropdownContent,
@@ -73,6 +74,7 @@ const RulesetIdentifier = styled.div`
 
 const MainContainerPanel = styled.div`
   display: flex;
+  position: relative;
 `;
 
 const ProductSearchPanel = styled.div`
@@ -606,7 +608,9 @@ export const Ruleset = ({
                   countryCode={ruleset.countryCode}
                   hasBulkAction={bulkActionsEnabled}
                   selectedProducts={selectedSearchProducts}
-                  isSelectionDisabled={!!selectedProducts.length}
+                  isSelectionDisabled={
+                    !writeEnabled || !!selectedProducts.length
+                  }
                   onSelectAll={setSelectedSearchProducts}
                   onSelectProduct={({ id, isSelected }) => {
                     setSelectedSearchProducts(
@@ -717,7 +721,9 @@ export const Ruleset = ({
                   dispatch={dispatch}
                   hasBulkAction={bulkActionsEnabled}
                   selectedProducts={selectedProducts}
-                  isSelectionDisabled={!!selectedSearchProducts.length}
+                  isSelectionDisabled={
+                    !writeEnabled || !!selectedSearchProducts.length
+                  }
                   onSelectProduct={({ id, isSelected }) => {
                     setSelectedProducts(
                       isSelected
@@ -742,6 +748,17 @@ export const Ruleset = ({
             )}
           </TabContent>
         </RulesPanel>
+        {(selectedProducts.length > 0 || selectedSearchProducts.length > 0) && (
+          <BulkActions
+            dispatch={dispatch}
+            selectedProducts={[...selectedProducts, ...selectedSearchProducts]}
+            onReset={() => {
+              setSelectedProducts([]);
+              setSelectedSearchProducts([]);
+            }}
+            ruleset={ruleset}
+          />
+        )}
       </MainContainerPanel>
 
       {isLoading && <Loader />}
