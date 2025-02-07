@@ -1984,11 +1984,11 @@ describe('Ruleset', () => {
       ).toBeVisible();
 
       const editWeightButton = screen.getAllByRole('button', {
-        name: 'Edit weight',
+        name: 'Edit attribute brand',
       });
 
       act(() => {
-        editWeightButton[2].click();
+        editWeightButton[1].click();
       });
 
       const input = screen.getByRole('spinbutton', { name: 'Edit value' });
@@ -1998,7 +1998,7 @@ describe('Ruleset', () => {
       await user.type(input, '12');
 
       const confirm = screen.getByRole('button', {
-        name: 'Save weight change',
+        name: 'Save attribute brand change',
       });
 
       act(() => {

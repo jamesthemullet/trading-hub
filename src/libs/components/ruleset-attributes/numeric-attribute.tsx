@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import Image from 'next/image';
 
 import { NumericBoostBury } from '../../api';
@@ -24,29 +26,39 @@ export const NumericAttribute = ({
   onDelete?: ({ field, weight }: NumericBoostBury) => void;
   operation: 'boost' | 'bury' | 'include' | 'exclude';
   weight?: number;
-}) => (
-  <AttributeWrapper aria-label="Product Attribute">
-    <AttributeHeading>
-      <Label isStrong>{name}</Label>
-    </AttributeHeading>
-    <AttributeRow>
-      <Text>
-        Operation{' '}
-        <Image
-          width={20}
-          height={20}
-          alt=""
-          src={`/trading-hub/asset/${labels[operation].icon}.svg`}
-          style={{ marginBottom: '-4px' }}
-        />{' '}
-        {labels[operation].text}
-      </Text>
-    </AttributeRow>
-    <AttributeWeight
-      weight={weight}
-      isEditable={isEditable}
-      onChangeAttribute={onChangeAttribute}
-      onDelete={() => onDelete && onDelete({ field: name, weight })}
-    />
-  </AttributeWrapper>
-);
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleSubmit = ({ weight }: { weight: number }) => {
+    onChangeAttribute?.({ newWeight: weight });
+  };
+  return (
+    <AttributeWrapper aria-label="Product Attribute">
+      <AttributeHeading>
+        <Label isStrong>{name}</Label>
+      </AttributeHeading>
+      <AttributeRow>
+        <Text>
+          Operation{' '}
+          <Image
+            width={20}
+            height={20}
+            alt=""
+            src={`/trading-hub/asset/${labels[operation].icon}.svg`}
+            style={{ marginBottom: '-4px' }}
+          />{' '}
+          {labels[operation].text}
+        </Text>
+      </AttributeRow>
+      <AttributeWeight
+        weight={weight}
+        field={name}
+        isEditable={isEditable}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        onChangeSubmit={handleSubmit}
+        onDelete={() => onDelete && onDelete({ field: name, weight })}
+      />
+    </AttributeWrapper>
+  );
+};

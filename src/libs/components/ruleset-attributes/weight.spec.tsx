@@ -5,42 +5,54 @@ import { AttributeWeight } from './weight';
 
 describe('AttributeWeight', () => {
   it('shows the attribute weight', () => {
-    render(<AttributeWeight weight={1} />);
+    render(
+      <AttributeWeight
+        onChangeSubmit={jest.fn()}
+        field="category"
+        isEditing={false}
+        setIsEditing={jest.fn()}
+        weight={1}
+      />
+    );
 
     expect(screen.getByText('Strength 1%')).toBeInTheDocument();
   });
 
-  it('edits the attribute weight', async () => {
-    const user = userEvent.setup();
-    render(<AttributeWeight weight={1} isEditable />);
+  it('Should render and call setIsEditing', async () => {
+    const setIsEditing = jest.fn();
 
-    const editButton = screen.getByLabelText('Edit weight');
+    render(
+      <AttributeWeight
+        onChangeSubmit={jest.fn()}
+        field="category"
+        isEditing={false}
+        setIsEditing={setIsEditing}
+        weight={1}
+        isEditable
+      />
+    );
+
+    const editButton = screen.getByLabelText('Edit attribute category');
 
     act(() => {
       editButton.click();
     });
 
-    const input = screen.getByLabelText('Edit value');
-    await user.type(input, '{Delete}{Delete}{Delete}20');
-
-    const saveButton = screen.getByLabelText('Save weight change');
-
-    act(() => {
-      saveButton.click();
-    });
-
-    expect(screen.getByText('Strength 20%')).toBeInTheDocument();
+    expect(setIsEditing).toHaveBeenCalledWith(true);
   });
 
   it('clears the attribute weight', async () => {
     const user = userEvent.setup();
-    render(<AttributeWeight weight={1} isEditable />);
-
-    const editButton = screen.getByLabelText('Edit weight');
-
-    act(() => {
-      editButton.click();
-    });
+    render(
+      <AttributeWeight
+        onChangeSubmit={jest.fn()}
+        field="category"
+        isEditing={true}
+        setIsEditing={jest.fn()}
+        weight={1}
+        isEditable
+      />
+    );
 
     const input = screen.getByRole('spinbutton', { name: 'Edit value' });
     await user.clear(input);
@@ -54,14 +66,15 @@ describe('AttributeWeight', () => {
     const user = userEvent.setup();
     const mockOnChange = jest.fn();
     render(
-      <AttributeWeight weight={1} isEditable onChangeAttribute={mockOnChange} />
+      <AttributeWeight
+        onChangeSubmit={mockOnChange}
+        field="category"
+        isEditing={true}
+        setIsEditing={jest.fn()}
+        weight={1}
+        isEditable
+      />
     );
-
-    const editButton = screen.getByLabelText('Edit weight');
-
-    act(() => {
-      editButton.click();
-    });
 
     const input = screen.getByRole('spinbutton', { name: 'Edit value' });
     await user.clear(input);
@@ -69,6 +82,6 @@ describe('AttributeWeight', () => {
 
     fireEvent.submit(input);
 
-    expect(mockOnChange).toHaveBeenCalledWith({ newWeight: 99 });
+    expect(mockOnChange).toHaveBeenCalledWith({ weight: 99 });
   });
 });

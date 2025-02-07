@@ -23,7 +23,7 @@ export type RulesetAttribute = {
   index?: number;
 };
 
-type Change = 'add' | 'remove' | 'modify';
+type Change = 'add' | 'modify' | 'remove';
 
 type ProductPayload = {
   operation: 'pin' | 'boost' | 'bury' | 'block' | 'include' | 'exclude';

@@ -30,13 +30,54 @@ export const AttributeRow = styled.div`
   background-color: ${color.backgroundGrey};
 `;
 
-export const AttributeValue = styled.label`
+export const AttributeValue = styled.div`
   background-color: #e0e4e7;
   border-radius: 5px;
   padding: ${spacing(1)};
   margin: ${spacing(1)};
   display: inline-block;
   font-size: 14px;
+`;
+
+export const AttributeValueList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+`;
+export const AttributeValuePill = styled.li`
+  background-color: #e0e4e7;
+  border-radius: 5px;
+  padding: ${spacing(1)};
+  margin: ${spacing(1)};
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  margin-right: ${spacing(1)} button {
+    color: #000;
+
+    &:focus {
+      outline: solid #000;
+    }
+  }
+`;
+
+export const RemoveAttributeValuePill = styled.button`
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  margin-left: ${spacing(1)};
+  background: none;
+  outline: none;
+  border: none;
+  display: flex;
+
+  img {
+    width: 12px;
+    height: 12px;
+  }
 `;
 
 export const AttributeSelection = styled.div`

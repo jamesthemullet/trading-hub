@@ -38,7 +38,7 @@ describe('Ruleset reducer', () => {
     weight: 100,
   };
   const mockAlphaNumericAttribute: AlphanumericBoostBury = {
-    fields: [{ field: 'foo', values: ['bar'] }],
+    fields: [{ field: 'foo', values: ['bar', 'baz'] }],
     weight: 100,
   };
   const mockAlphaNumericIncludeExcludeAttribute: IncludeExclude = {
@@ -193,7 +193,11 @@ describe('Ruleset reducer', () => {
         },
         {
           type: 'product',
-          payload: { operation: 'block', change: 'remove', id: mockProductId },
+          payload: {
+            operation: 'block',
+            change: 'remove',
+            id: mockProductId,
+          },
         }
       );
 
@@ -254,7 +258,11 @@ describe('Ruleset reducer', () => {
         },
         {
           type: 'product',
-          payload: { operation: 'boost', change: 'remove', id: mockProductId },
+          payload: {
+            operation: 'boost',
+            change: 'remove',
+            id: mockProductId,
+          },
         }
       );
 
@@ -287,7 +295,11 @@ describe('Ruleset reducer', () => {
         },
         {
           type: 'product',
-          payload: { operation: 'bury', change: 'remove', id: mockProductId },
+          payload: {
+            operation: 'bury',
+            change: 'remove',
+            id: mockProductId,
+          },
         }
       );
 

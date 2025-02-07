@@ -16,25 +16,29 @@ const ErrorText = styled(Text)`
 `;
 
 export const AttributeWeight = ({
-  isEditable,
-  onChangeAttribute,
-  onDelete,
   weight,
+  field,
+  isEditable,
+  isEditing,
+  setIsEditing,
+  onChangeSubmit,
+  onDelete,
+  onCancelChanges,
 }: {
-  isEditable?: boolean;
-  onChangeAttribute?: (args: { newWeight: number }) => void;
-  onDelete?: () => void;
   weight: number;
+  field?: string;
+  isEditable?: boolean;
+  isEditing: boolean;
+  setIsEditing: (isEditing: boolean) => void;
+  onChangeSubmit: (args: { weight: number }) => void;
+  onDelete?: () => void;
+  onCancelChanges?: () => void;
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(weight);
   const [error, setError] = useState('');
 
   const onSubmit = () => {
-    if (onChangeAttribute) {
-      onChangeAttribute({ newWeight: value });
-    }
-    setIsEditing(false);
+    onChangeSubmit({ weight: value });
   };
 
   return (
@@ -77,7 +81,10 @@ export const AttributeWeight = ({
       {isEditable && !isEditing && (
         <AttributeRow>
           <Buttons>
-            <Button onClick={() => setIsEditing(true)} aria-label="Edit weight">
+            <Button
+              onClick={() => setIsEditing(true)}
+              aria-label={`Edit attribute ${field}`}
+            >
               <Image
                 width={20}
                 height={20}
@@ -102,7 +109,10 @@ export const AttributeWeight = ({
             <ErrorText>{error}</ErrorText>
           ) : (
             <Buttons style={{ justifyContent: 'end' }}>
-              <Button onClick={onSubmit} aria-label="Save weight change">
+              <Button
+                onClick={onSubmit}
+                aria-label={`Save attribute ${field} change`}
+              >
                 <Image
                   width={20}
                   height={20}
@@ -116,9 +126,10 @@ export const AttributeWeight = ({
                   () => {
                     setValue(weight);
                     setIsEditing(false);
+                    onCancelChanges?.();
                   }
                 }
-                aria-label="Cancel weight change"
+                aria-label={`Cancel attribute ${field} change`}
               >
                 <Image
                   width={20}

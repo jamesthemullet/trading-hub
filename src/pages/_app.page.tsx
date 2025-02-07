@@ -20,6 +20,7 @@ export default function App({
   const { session } = pageProps;
   const [cookies] = useCookies([
     'flagAuthorization',
+    'flagAttributeEdit',
     'flagAuthorizationRoleOverride',
     'flagBulkActions',
   ]);
@@ -28,6 +29,7 @@ export default function App({
     <FeatureFlagContext.Provider
       value={{
         hasAuthorization: cookies.flagAuthorization,
+        hasAttributeEdit: cookies.flagAttributeEdit,
         authorizationRoleOverride: cookies.flagAuthorizationRoleOverride || {
           catOverride: 'No Override',
           searchOverride: 'No Override',

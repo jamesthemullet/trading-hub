@@ -504,7 +504,7 @@ test.describe('Category rulesets', () => {
 
     await page.getByRole('button', { name: 'Numeric Attributes' }).click();
 
-    await page.getByLabel('newInFreshNess').first().click();
+    await page.getByRole('radio', { name: 'newInFreshNess' }).click();
 
     await page.getByRole('button', { name: 'Done' }).click();
 

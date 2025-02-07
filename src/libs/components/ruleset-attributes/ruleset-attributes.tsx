@@ -102,6 +102,7 @@ export const RulesetAttributes = ({
               Product Description Attribute Rules
             </InsetLabel>
           )}
+
           {!!alphanumericBoost.length &&
             alphanumericBoost.map(({ fields, weight }, index) => (
               <AlphanumericAttribute
@@ -112,7 +113,10 @@ export const RulesetAttributes = ({
                 weight={weight}
                 onChangeAttribute={
                   // istanbul ignore next
-                  ({ newWeight }: { newWeight: number }) =>
+                  ({
+                    weight: newWeight,
+                    fields: newFields,
+                  }: AlphanumericBoostBury) =>
                     dispatch({
                       type: 'alphanumericBoostBuryAttribute',
                       payload: {
@@ -120,7 +124,7 @@ export const RulesetAttributes = ({
                         operation: 'boost',
                         index,
                         data: {
-                          fields,
+                          fields: newFields,
                           weight: newWeight,
                         },
                       },
@@ -153,7 +157,10 @@ export const RulesetAttributes = ({
                 weight={weight}
                 onChangeAttribute={
                   // istanbul ignore next
-                  ({ newWeight }: { newWeight: number }) =>
+                  ({
+                    weight: newWeight,
+                    fields: newFields,
+                  }: AlphanumericBoostBury) =>
                     dispatch({
                       type: 'alphanumericBoostBuryAttribute',
                       payload: {
@@ -161,7 +168,7 @@ export const RulesetAttributes = ({
                         operation: 'bury',
                         index,
                         data: {
-                          fields,
+                          fields: newFields,
                           weight: newWeight,
                         },
                       },
@@ -235,6 +242,7 @@ export const RulesetAttributes = ({
               Numeric Attribute Rules
             </InsetLabel>
           )}
+
           {!!numericBoosts.length &&
             numericBoosts.map(({ field, weight }, index) => (
               <NumericAttribute
@@ -273,6 +281,7 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
+
           {!!numericBury.length &&
             numericBury.map(({ field, weight }, index) => (
               <NumericAttribute
@@ -315,6 +324,7 @@ export const RulesetAttributes = ({
             ))}
         </RuleSetAttributesContainer>
       )}
+
       <Modal.Root
         opened={isModalOpen}
         onClose={

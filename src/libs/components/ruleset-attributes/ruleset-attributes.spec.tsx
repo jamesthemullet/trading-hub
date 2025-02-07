@@ -517,16 +517,20 @@ describe('RulesetAttributes', () => {
 
       await openModal();
 
-      const editButton = screen.getAllByLabelText('Edit weight');
+      const editButton = screen.getAllByLabelText(
+        'Edit attribute averageRating'
+      );
 
       act(() => {
-        editButton[2].click();
+        editButton[0].click();
       });
 
       const input = screen.getByLabelText('Edit value');
       await user.type(input, '{Delete}{Delete}{Delete}20');
 
-      const saveButton = screen.getByLabelText('Save weight change');
+      const saveButton = screen.getByLabelText(
+        'Save attribute averageRating change'
+      );
 
       act(() => {
         saveButton.click();
@@ -671,6 +675,176 @@ describe('RulesetAttributes', () => {
       });
 
       expect(mockDispatch).toHaveBeenCalledWith(expectedCall2);
+    });
+
+    it('removes alphanumeric attribute value', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getAllByLabelText('Edit attribute brand')[0].click();
+      });
+
+      act(() => {
+        screen.getByLabelText('Remove attribute: brand Nike').click();
+      });
+
+      act(() => {
+        screen.getByLabelText('Save attribute brand change').click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          data: {
+            weight: 0.5,
+            fields: [
+              {
+                field: 'brand',
+                values: ['Adidas'],
+              },
+              {
+                field: 'category',
+                values: ['Shoes', 'Clothing'],
+              },
+            ],
+          },
+          change: 'modify',
+          operation: 'boost',
+          index: 0,
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+
+      act(() => {
+        screen.getAllByLabelText('Edit attribute brand')[1].click();
+      });
+
+      act(() => {
+        screen.getByLabelText('Remove attribute: brand Puma').click();
+      });
+
+      act(() => {
+        screen.getByLabelText('Save attribute brand change').click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          data: {
+            weight: 0.7,
+            fields: [
+              {
+                field: 'brand',
+                values: ['Reebok'],
+              },
+              {
+                field: 'category',
+                values: ['Accessories', 'Clothing'],
+              },
+            ],
+          },
+          change: 'modify',
+          operation: 'bury',
+          index: 0,
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+    });
+
+    it('removes alphanumeric attribute if all values are removed', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getAllByLabelText('Edit attribute brand')[0].click();
+      });
+
+      act(() => {
+        screen.getByLabelText('Remove attribute: brand Nike').click();
+      });
+      act(() => {
+        screen.getByLabelText('Remove attribute: brand Adidas').click();
+      });
+      act(() => {
+        screen.getByLabelText('Remove attribute: category Shoes').click();
+      });
+      act(() => {
+        screen.getByLabelText('Remove attribute: category Clothing').click();
+      });
+
+      act(() => {
+        screen.getByLabelText('Save attribute brand change').click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          data: mockRules.boosts.alphanumeric[0],
+          change: 'remove',
+          operation: 'boost',
+          index: 0,
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+    });
+
+    it('does nothing if changes were canceled', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getAllByLabelText('Edit attribute brand')[0].click();
+      });
+
+      act(() => {
+        screen.getByLabelText('Remove attribute: brand Nike').click();
+      });
+      act(() => {
+        screen.getByLabelText('Remove attribute: brand Adidas').click();
+      });
+      act(() => {
+        screen.getByLabelText('Remove attribute: category Shoes').click();
+      });
+      act(() => {
+        screen.getByLabelText('Remove attribute: category Clothing').click();
+      });
+
+      act(() => {
+        screen.getByLabelText('Cancel attribute brand change').click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledTimes(0);
     });
   });
 
