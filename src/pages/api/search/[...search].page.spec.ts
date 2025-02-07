@@ -15,6 +15,7 @@ import { validateAndMockResponse } from './mocks-support';
 
 jest.mock('next-auth/jwt', () => ({
   getToken: jest.fn(),
+  getServerSession: jest.fn(),
 }));
 
 jest.mock('./mocks-support', () => ({
@@ -117,12 +118,16 @@ const performPost = async (
 
 describe('Search api proxy', () => {
   beforeAll(() => {
-    process.env.MERCHANDISING_API_BASEURL = baseUrl;
-    process.env.MERCHANDISING_API_APIGEE_KEY = apiKey;
     server.listen();
   });
 
   beforeEach(() => {
+    process.env.MERCHANDISING_API_BASEURL = baseUrl;
+    process.env.MERCHANDISING_API_APIGEE_KEY = apiKey;
+    process.env.AZURE_AD_CLIENT_ID = 'client_id';
+    process.env.AZURE_AD_CLIENT_SECRET = 'client_secret';
+    process.env.AZURE_AD_TENANT_ID = 'tenant_id';
+    process.env.NEXTAUTH_SECRET = 'secret';
     jest
       .mocked(validateAndMockResponse)
       .mockImplementation((_req, status, jsonBody) => {
@@ -261,6 +266,27 @@ describe('Search api proxy', () => {
 
       expect(res.status).toHaveBeenCalledWith(response.status);
       expect(res.json).toHaveBeenCalledWith({});
+    });
+  });
+
+  describe('when no env is defined', () => {
+    it('should return 500', async () => {
+      delete process.env.AZURE_AD_CLIENT_ID;
+      const response = {
+        status: 200,
+        body: { someNonExistingSchema: 123 },
+      };
+      const res = await performGet(
+        '/search/beta/merchandising/facet/1',
+        response
+      );
+
+      expect(httpGet).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Internal Server Error',
+        status: '500',
+      });
     });
   });
 
@@ -470,7 +496,7 @@ describe('Search api proxy', () => {
 
       expect(httpGet).toHaveBeenCalled();
       expect(httpGet.mock.calls[0][0].url).toBe(
-        `${baseUrl}/search/beta/merchandising/facet/subcategory_427?apikey=`
+        `${baseUrl}/search/beta/merchandising/facet/subcategory_427?apikey=someapikey`
       );
       delete process.env.E2E_TEST_USER_TOKEN;
     });
@@ -485,7 +511,7 @@ describe('Search api proxy', () => {
 
       expect(httpGet).toHaveBeenCalled();
       expect(httpGet.mock.calls[0][0].url).toBe(
-        `${baseUrl}/search/beta/merchandising/facet/subcategory_427?apikey=`
+        `${baseUrl}/search/beta/merchandising/facet/subcategory_427?apikey=someapikey`
       );
       delete process.env.SMOKE_TEST_TOKEN;
     });

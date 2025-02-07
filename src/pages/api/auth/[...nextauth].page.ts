@@ -16,6 +16,15 @@ const parseJwt = (token: string) => {
   return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
 };
 
+const getTokenExpirationInMilliseconds = (
+  envSettings: AuthEnvironment,
+  token: {
+    ext_expires_in: number;
+  }
+) => {
+  return envSettings.dateNow + token.ext_expires_in * 1000;
+};
+
 async function refreshAccessToken(token: JWT, envSettings: AuthEnvironment) {
   const url = `https://login.microsoftonline.com/${envSettings.tenantId}/oauth2/v2.0/token`;
   const req = await fetch(url, {
@@ -34,8 +43,10 @@ async function refreshAccessToken(token: JWT, envSettings: AuthEnvironment) {
   return {
     ...token,
     accessToken: refreshedTokens.access_token,
-    accessTokenExpires:
-      envSettings.dateNow + refreshedTokens.ext_expires_in * 1000,
+    accessTokenExpires: getTokenExpirationInMilliseconds(
+      envSettings,
+      refreshedTokens
+    ),
     refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
   };
 }
@@ -51,7 +62,10 @@ export const jwtCallback: (
 
       return {
         accessToken: account.access_token,
-        accessTokenExpires: envSettings.dateNow + account.ext_expires_in * 1000,
+        accessTokenExpires: getTokenExpirationInMilliseconds(
+          envSettings,
+          account
+        ),
         refreshToken: account.refresh_token,
         user,
         roles: decodedAccessToken.roles ?? [],
@@ -75,7 +89,7 @@ export const sessionCallback: Required<
   return session;
 };
 
-const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
+export const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
   providers: [
     AzureADProvider({
       clientId: envSettings.clientId,
@@ -99,21 +113,29 @@ const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
   },
 });
 
-const auth = (req: NextApiRequest, res: NextApiResponse) => {
+export const getVerifiedAuthEnvironment = (): AuthEnvironment | null => {
   if (
     process.env.AZURE_AD_CLIENT_ID &&
     process.env.AZURE_AD_CLIENT_SECRET &&
     process.env.AZURE_AD_TENANT_ID &&
     process.env.NEXTAUTH_SECRET
   ) {
-    const verifiedConfig: AuthEnvironment = {
+    return {
       clientId: process.env.AZURE_AD_CLIENT_ID,
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
       tenantId: process.env.AZURE_AD_TENANT_ID,
       nextAuthSecret: process.env.NEXTAUTH_SECRET,
       dateNow: Date.now(),
     };
-    return NextAuth(req, res, authOptions(verifiedConfig));
+  }
+
+  return null;
+};
+
+const auth = (req: NextApiRequest, res: NextApiResponse) => {
+  const env = getVerifiedAuthEnvironment();
+  if (env) {
+    return NextAuth(req, res, authOptions(env));
   }
 
   throw new Error('Azure AD environment variables not set.');
