@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
 import { RuleSet } from '@/libs/api';
-import { Heading, Loader } from '@/libs/components';
+import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -17,7 +17,7 @@ type PageProps = {
 const Page = ({ id }: PageProps) => {
   const { globalRuleSet, isLoading } = useGlobalRuleSetDetail(id);
 
-  const { saveGlobalRuleset } = useGlobalRuleSetUpdate();
+  const { saveGlobalRuleset, error } = useGlobalRuleSetUpdate();
   const router = useRouter();
 
   const saveRuleSet = async ({
@@ -27,12 +27,14 @@ const Page = ({ id }: PageProps) => {
     ruleSetId: string;
     ruleSet: RuleSet;
   }) => {
-    await saveGlobalRuleset({
+    const response = await saveGlobalRuleset({
       ruleSetId,
       ruleSet,
-    }).then(() => {
-      router.push('/global/rulesets');
     });
+
+    if (response.status === 'success') {
+      router.push('/global/rulesets');
+    }
   };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
@@ -50,6 +52,8 @@ const Page = ({ id }: PageProps) => {
         <Heading
           breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
         />
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         {isLoading ? (
           <Loader />

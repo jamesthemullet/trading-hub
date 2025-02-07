@@ -12,14 +12,12 @@ export const useGlobalRuleSetUpdate = () => {
       setError('');
 
       try {
-        const response = await search().betaMerchandisingGlobalRulesetUpdate(
-          ruleSetId,
-          ruleSet
-        );
+        await search().betaMerchandisingGlobalRulesetUpdate(ruleSetId, ruleSet);
 
-        return response.data;
+        return { status: 'success' };
       } catch (error) {
         setError(handleError(error));
+        return { status: 'error', error };
       }
     },
     []

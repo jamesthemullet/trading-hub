@@ -16,10 +16,13 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-const mockUpdateGlobalRuleSet = jest.fn(() => Promise.resolve());
+let mockUpdateGlobalRuleSet = jest.fn(() =>
+  Promise.resolve({ status: 'success' })
+);
+let mockError: string | undefined = undefined;
 jest.mock('@/libs/hooks/global/rulesets/use-global-rule-set-update', () => ({
   useGlobalRuleSetUpdate: () => {
-    return { saveGlobalRuleset: mockUpdateGlobalRuleSet, isSaving: true };
+    return { saveGlobalRuleset: mockUpdateGlobalRuleSet, error: mockError };
   },
 }));
 
@@ -126,6 +129,48 @@ describe('Index', () => {
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
     expect(mockRouter.push).toHaveBeenCalledWith('/global/rulesets');
+  });
+
+  it('should not save ruleset with server errors', async () => {
+    jest.mocked(useGlobalRuleSetDetail).mockReturnValueOnce({
+      globalRuleSet: mockRuleData,
+      isLoading: false,
+      error: '',
+    });
+    mockError = 'Error message';
+    mockUpdateGlobalRuleSet = jest.fn(() =>
+      Promise.resolve({ status: 'error', error: 'Error message' })
+    );
+
+    const expectedRuleSet = {
+      ruleSet: {
+        facets: [],
+        isEnabled: false,
+        rules: {
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: { alphanumeric: [], numeric: [], product: [] },
+          pinnedProducts: [],
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
+        },
+        countryCode: 'UK_IE',
+      },
+      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+    };
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
+
+    expect(screen.getByText('Error message')).toBeVisible();
   });
 
   it('should cancel changes to a ruleset', async () => {
