@@ -123,7 +123,8 @@ export const ProductMenuToggle = styled.button<{ hasBulkAction: boolean }>`
   border: none;
   cursor: pointer;
   text-align: right;
-  padding-right: ${spacing(1)};
+  padding: 0;
+  height: 20px;
   ${({ hasBulkAction }) => !hasBulkAction && 'margin-left: auto;'}
 `;
 
