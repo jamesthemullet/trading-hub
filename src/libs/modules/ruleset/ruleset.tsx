@@ -31,6 +31,7 @@ import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker
 import { useBulkActionsFlag } from '@/libs/components/context/feature-flag';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { Preview } from '@/libs/components/preview/preview';
+import { ProductSearchAll } from '@/libs/components/product-search/all/product-search-all';
 import { ProductSearch } from '@/libs/components/product-search/product-search';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
@@ -597,8 +598,8 @@ export const Ruleset = ({
             rulesetSearchTerms.length ||
             rulesetType === 'global') && (
             <ProductSearchTabContent>
-              {currentProductTab === 0 && (
-                <ProductSearch
+              {currentProductTab === 0 && bulkActionsEnabled && (
+                <ProductSearchAll
                   isPinnable={rulesetType !== 'global'}
                   pinnedProductsCount={merchandisingRules.pinnedProducts.length}
                   merchandisingRules={merchandisingRules}
@@ -621,6 +622,17 @@ export const Ruleset = ({
                         : [...selectedSearchProducts, id]
                     );
                   }}
+                />
+              )}
+              {currentProductTab === 0 && !bulkActionsEnabled && (
+                <ProductSearch
+                  isPinnable={rulesetType !== 'global'}
+                  pinnedProductsCount={merchandisingRules.pinnedProducts.length}
+                  merchandisingRules={merchandisingRules}
+                  dispatch={dispatch}
+                  categoryIds={selectedCategories}
+                  searchTerms={rulesetSearchTerms}
+                  countryCode={ruleset.countryCode}
                 />
               )}
               {currentProductTab === 1 && (
