@@ -388,16 +388,17 @@ export const EditFacetModalV2 = ({
                       <Text aria-label={`Merged value ${mergedId} label`}>
                         {mergedId}
                       </Text>{' '}
-                      {removeFacetValueFromMergeGroupEnabled && (
-                        <RemoveMergedFacet
-                          onClick={handleRemoveMergedFacet(
-                            displayValue,
-                            mergedId
-                          )}
-                          aria-label={`Remove merged facet for ${mergedId}`}
-                          disabled={isInDisplayNameEditMode}
-                        />
-                      )}
+                      {removeFacetValueFromMergeGroupEnabled &&
+                        mergedId !== displayValue && (
+                          <RemoveMergedFacet
+                            onClick={handleRemoveMergedFacet(
+                              displayValue,
+                              mergedId
+                            )}
+                            aria-label={`Remove merged facet for ${mergedId}`}
+                            disabled={isInDisplayNameEditMode}
+                          />
+                        )}
                     </MergedValue>
                   );
                 })}

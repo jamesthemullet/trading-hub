@@ -182,17 +182,23 @@ export const facetReducer = (
         excludedValues: state.excludedValues?.filter(
           (excludedValue) => excludedValue !== action.payload.attributeToRemove
         ),
-        merged: state.merged?.map((merge) => {
-          if (merge.displayValue === action.payload.mergeGroupDisplayName) {
-            return {
-              ...merge,
-              mergedValues: merge.mergedValues?.filter(
+        merged: state.merged
+          ?.map((merge) => {
+            if (merge.displayValue === action.payload.mergeGroupDisplayName) {
+              const updatedMergedValues = merge.mergedValues?.filter(
                 (value) => value !== action.payload.attributeToRemove
-              ),
-            };
-          }
-          return merge;
-        }),
+              );
+
+              return {
+                ...merge,
+                mergedValues: updatedMergedValues,
+              };
+            }
+            return merge;
+          })
+          .filter(
+            (merge) => merge.mergedValues && merge.mergedValues.length > 1
+          ),
       };
     }
     case 'CHANGE_DISPLAY_TYPE': {

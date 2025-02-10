@@ -310,7 +310,44 @@ describe('facetReducer', () => {
         merged: [
           {
             displayValue: 'navy',
-            mergedValues: ['blue'],
+            mergedValues: ['blue', 'light blue'],
+          },
+          {
+            displayValue: 'emerald',
+            mergedValues: ['green', 'lime', 'dark green'],
+          },
+        ],
+      };
+      const action = {
+        type: 'REMOVE_MERGED_VALUE' as const,
+        payload: {
+          mergeGroupDisplayName: 'emerald',
+          attributeToRemove: 'green',
+        },
+      };
+      const result = facetReducer(state, action);
+      expect(result).toEqual({
+        ...mockReturnedGlobalFacetState,
+        merged: [
+          {
+            displayValue: 'navy',
+            mergedValues: ['blue', 'light blue'],
+          },
+          {
+            displayValue: 'emerald',
+            mergedValues: ['lime', 'dark green'],
+          },
+        ],
+      });
+    });
+
+    it('should remove object from merged when the penultimate value is removed', () => {
+      const state: ReturnedGlobalFacet = {
+        ...mockReturnedGlobalFacetState,
+        merged: [
+          {
+            displayValue: 'navy',
+            mergedValues: ['blue', 'light blue'],
           },
           {
             displayValue: 'emerald',
@@ -331,11 +368,7 @@ describe('facetReducer', () => {
         merged: [
           {
             displayValue: 'navy',
-            mergedValues: ['blue'],
-          },
-          {
-            displayValue: 'emerald',
-            mergedValues: ['lime'],
+            mergedValues: ['blue', 'light blue'],
           },
         ],
       });

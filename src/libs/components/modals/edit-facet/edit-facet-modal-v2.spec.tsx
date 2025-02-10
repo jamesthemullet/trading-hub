@@ -137,11 +137,11 @@ describe('ModalEditValues', () => {
       ...useAttributeValuesRowsSelectorReturnMock,
       attributeValuesState: [
         {
-          id: 'red',
+          id: 'reds',
           displayType: 'default',
-          displayValue: 'red',
+          displayValue: 'reds',
           mergeType: 'merged',
-          mergedValues: ['red', 'blue'],
+          mergedValues: ['red', 'scarlet'],
           meta: {
             isBeginningOfDisplayTypeGroup: true,
             isEndOfDisplayTypeGroup: true,
@@ -167,8 +167,43 @@ describe('ModalEditValues', () => {
     ).toBeVisible();
 
     expect(
-      await screen.findByLabelText('Merged value blue label')
+      await screen.findByLabelText('Merged value scarlet label')
     ).toBeVisible();
+  });
+
+  it('should not allow de-merge of a merged value that is the same as the display value', async () => {
+    jest.mocked(useAttributeValuesRowsSelector).mockReturnValue({
+      ...useAttributeValuesRowsSelectorReturnMock,
+      attributeValuesState: [
+        {
+          id: 'red',
+          displayType: 'default',
+          displayValue: 'red',
+          mergeType: 'merged',
+          mergedValues: ['red', 'scarlet'],
+          meta: {
+            isBeginningOfDisplayTypeGroup: true,
+            isEndOfDisplayTypeGroup: true,
+          },
+        },
+      ],
+    });
+    renderWithProviders(
+      <EditFacetModalV2
+        onClose={jest.fn()}
+        onSave={jest.fn()}
+        facet={facetMock}
+        category="SubCategory_507"
+      />
+    );
+
+    expect(
+      screen.queryByLabelText('Remove merged facet for red')
+    ).not.toBeInTheDocument();
+
+    expect(
+      screen.getByLabelText('Remove merged facet for scarlet')
+    ).toBeInTheDocument();
   });
 
   it('should render merge group without remove button', async () => {
