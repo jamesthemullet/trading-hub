@@ -246,7 +246,7 @@ describe('ModalEditValues', () => {
     });
   });
 
-  it('should be able to edit a display value back to the origininal name', async () => {
+  it('should be able to edit a display value back to the original name', async () => {
     const onCloseSpy = jest.fn();
     renderWithProviders(
       <EditFacetModal
@@ -560,6 +560,70 @@ describe('ModalEditValues', () => {
         expect(mergeButton).toBeEnabled();
       });
     }, 10000);
+
+    it('should preserve the selection when attribute is renamed', async () => {
+      const onCloseSpy = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <EditFacetModal
+          onClose={onCloseSpy}
+          facet={{
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            id: '1',
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+          }}
+          facetType="global"
+          refreshData={() => jest.fn()}
+          category={undefined}
+        />
+      );
+      const cottonCheckbox = screen.getByLabelText('Select Cotton to merge');
+      const duckDownCheckbox = screen.getByLabelText(
+        'Select Duck Down to merge'
+      );
+
+      act(() => {
+        user.click(cottonCheckbox);
+      });
+
+      await waitFor(() => {
+        const mergeButton = screen.getByRole('button', { name: 'Merge (1)' });
+        expect(mergeButton).toBeDisabled();
+      });
+
+      act(() => {
+        user.click(duckDownCheckbox);
+      });
+
+      await waitFor(() => {
+        const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
+        expect(mergeButton).toBeEnabled();
+      });
+
+      const renameButton = await screen.findByLabelText(
+        'Edit display name for Cotton'
+      );
+      await userEvent.click(renameButton);
+
+      const inputField = await screen.findByLabelText(
+        'Edit Cotton input field'
+      );
+
+      expect(inputField).toHaveValue('Cotton');
+
+      await waitFor(async () => {
+        await userEvent.clear(inputField);
+        await userEvent.type(inputField, 'NewCotton');
+        await userEvent.keyboard('{enter}');
+      });
+
+      const newCottonCheckbox = screen.getByLabelText(
+        'Select NewCotton to merge'
+      );
+
+      expect(newCottonCheckbox).toBeChecked();
+    });
 
     it('should merge two attributes', async () => {
       const user = userEvent.setup({ delay: null });

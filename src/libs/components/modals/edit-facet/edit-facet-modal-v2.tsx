@@ -174,6 +174,7 @@ export const EditFacetModalV2 = ({
   const [selectedFacetAttributeValues, setSelectedFacetAttributes] = useState<
     string[]
   >([]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [rowError, setRowError] = useState<{
     id: string;
@@ -268,6 +269,7 @@ export const EditFacetModalV2 = ({
   const handleEditDisplayValue =
     (attributeState: AttributeRowDisplayValue) => async (newValue: string) => {
       const trimmedNewValue = newValue.trim();
+
       if (
         trimmedNewValue === defaultMergedDisplayValue ||
         trimmedNewValue === ''
@@ -293,9 +295,11 @@ export const EditFacetModalV2 = ({
             ? attributeState.mergedValues
             : undefined,
       });
+
       const isSameNameAsAnotherMergeGroup = facetLocalState.merged?.some(
         (mergeGroup) => mergeGroup.displayValue === trimmedNewValue
       );
+
       if (isUniqueValue && !isSameNameAsAnotherMergeGroup) {
         setRowError(null);
         dispatch({
@@ -312,6 +316,12 @@ export const EditFacetModalV2 = ({
           error: `${trimmedNewValue} is not a unique value`,
         });
       }
+
+      setSelectedFacetAttributes((prev) => {
+        return prev.map((selected) =>
+          selected === attributeState.displayValue ? trimmedNewValue : selected
+        );
+      });
     };
 
   const handleRemoveMergedFacet =
