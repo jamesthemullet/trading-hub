@@ -23,6 +23,30 @@ describe('ProductGridHeader', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 
+  it('should not display action buttons when writeEnabled=false', () => {
+    renderWithProviders(
+      <ProductGridHeader
+        canSave={false}
+        hasPreview={false}
+        onPreview={jest.fn()}
+        onSave={jest.fn()}
+        onCancel={jest.fn()}
+        hasChanges={false}
+        isNewRuleSet={false}
+        shouldHidePreview={false}
+        title="Title"
+        writeEnabled={false}
+      />
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Save' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Cancel' })
+    ).not.toBeInTheDocument();
+  });
+
   it('should show Create for new rulesets', () => {
     renderWithProviders(
       <ProductGridHeader

@@ -358,6 +358,7 @@ export const FacetsPanel = ({
         onCancel={onCancel}
         shouldHidePreview={facetType === 'global'}
         title={title}
+        writeEnabled={writeEnabled}
       />
 
       <SectionWrapper>
