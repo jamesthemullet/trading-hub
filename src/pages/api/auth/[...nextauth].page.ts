@@ -89,7 +89,7 @@ export const sessionCallback: Required<
   return session;
 };
 
-export const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
+const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
   providers: [
     AzureADProvider({
       clientId: envSettings.clientId,
@@ -111,9 +111,12 @@ export const authOptions = (envSettings: AuthEnvironment): AuthOptions => ({
   pages: {
     error: '/error?source=auth',
   },
+  session: {
+    maxAge: 60 * 60, // 1h
+  },
 });
 
-export const getVerifiedAuthEnvironment = (): AuthEnvironment | null => {
+const getVerifiedAuthEnvironment = (): AuthEnvironment | null => {
   if (
     process.env.AZURE_AD_CLIENT_ID &&
     process.env.AZURE_AD_CLIENT_SECRET &&

@@ -269,27 +269,6 @@ describe('Search api proxy', () => {
     });
   });
 
-  describe('when no env is defined', () => {
-    it('should return 500', async () => {
-      delete process.env.AZURE_AD_CLIENT_ID;
-      const response = {
-        status: 200,
-        body: { someNonExistingSchema: 123 },
-      };
-      const res = await performGet(
-        '/search/beta/merchandising/facet/1',
-        response
-      );
-
-      expect(httpGet).not.toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'Internal Server Error',
-        status: '500',
-      });
-    });
-  });
-
   describe('when not logged in', () => {
     beforeEach(() => {
       jest.mocked(getToken).mockResolvedValueOnce(null);

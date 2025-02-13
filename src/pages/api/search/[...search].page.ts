@@ -1,13 +1,8 @@
 import { ErrorResponse } from '@/libs/api';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 
-import {
-  authOptions,
-  getVerifiedAuthEnvironment,
-} from '../auth/[...nextauth].page';
 import { validateAndMockResponse as validateOrMockResponse } from './mocks-support';
 
 export type MerchandisingEnvironment = {
@@ -30,18 +25,6 @@ const isErrorSchemaCompatible = (err: unknown): err is ErrorResponse => {
 };
 
 const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
-  const env = getVerifiedAuthEnvironment();
-
-  if (!env) {
-    return res.status(500).json({
-      message: 'Internal Server Error',
-      status: '500',
-    });
-  }
-
-  // this line will refresh the token
-  await getServerSession(req, res, authOptions(env));
-  // the session doesn't contain the token for security reasons, so we need to get it from the jwt
   const token = await getToken({ req });
 
   const headers = new Headers();
