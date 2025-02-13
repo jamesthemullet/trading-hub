@@ -2,6 +2,8 @@ import type { Screen } from '@testing-library/react';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { renderWithProviders } from '@/test/render-with-providers';
+
 import { Action } from '../types';
 import { MissingProduct, Product, ProductProps } from './product';
 
@@ -30,6 +32,9 @@ const missingProductProps = {
   index: 1,
   dispatch: mockDispatch,
   hasBulkAction: false,
+  onSelectProduct: jest.fn(),
+  isSelected: false,
+  isSelectionDisabled: false,
 };
 
 const openActionsMenu = (screen: Screen) => {
@@ -53,9 +58,9 @@ describe('Product', () => {
     it('should render correctly', () => {
       render(<Product {...productProps} />);
 
-      expect(screen.getByLabelText('product title')).toBeInTheDocument();
+      expect(screen.getByTestId('product title')).toBeInTheDocument();
 
-      expect(screen.getByLabelText('product title')).toHaveTextContent(
+      expect(screen.getByTestId('product title')).toHaveTextContent(
         'product brand product title'
       );
     });
@@ -386,9 +391,9 @@ describe('Product', () => {
 
   describe('Missing product', () => {
     it('should render correctly', () => {
-      render(<MissingProduct {...missingProductProps} />);
+      renderWithProviders(<MissingProduct {...missingProductProps} />);
 
-      expect(screen.getByLabelText('Error message')).toHaveTextContent(
+      expect(screen.getByTestId('product title')).toHaveTextContent(
         `Product ${missingProductProps.id} not found`
       );
     });
@@ -402,7 +407,9 @@ describe('Product', () => {
           operation: 'boost',
         },
       };
-      render(<MissingProduct {...missingProductProps} isBoosted={true} />);
+      renderWithProviders(
+        <MissingProduct {...missingProductProps} isBoosted={true} />
+      );
 
       openActionsMenu(screen);
 
@@ -424,7 +431,9 @@ describe('Product', () => {
           operation: 'bury',
         },
       };
-      render(<MissingProduct {...missingProductProps} isBuried={true} />);
+      renderWithProviders(
+        <MissingProduct {...missingProductProps} isBuried={true} />
+      );
 
       openActionsMenu(screen);
 
@@ -446,7 +455,9 @@ describe('Product', () => {
           change: 'remove',
         },
       };
-      render(<MissingProduct {...missingProductProps} isPinned={true} />);
+      renderWithProviders(
+        <MissingProduct {...missingProductProps} isPinned={true} />
+      );
 
       openActionsMenu(screen);
 
@@ -468,7 +479,9 @@ describe('Product', () => {
           operation: 'block',
         },
       };
-      render(<MissingProduct {...missingProductProps} isBlocked={true} />);
+      renderWithProviders(
+        <MissingProduct {...missingProductProps} isBlocked={true} />
+      );
 
       openActionsMenu(screen);
 
@@ -482,7 +495,7 @@ describe('Product', () => {
     });
 
     it('should open and close the actions menu', () => {
-      render(<MissingProduct {...missingProductProps} />);
+      renderWithProviders(<MissingProduct {...missingProductProps} />);
 
       openActionsMenu(screen);
 
@@ -502,7 +515,7 @@ describe('Product', () => {
     });
 
     it('should close the menu by clicking on the overlay', () => {
-      render(<MissingProduct {...missingProductProps} />);
+      renderWithProviders(<MissingProduct {...missingProductProps} />);
 
       openActionsMenu(screen);
 
@@ -518,11 +531,51 @@ describe('Product', () => {
 
   describe('bulk action', () => {
     it('should show bulk action checkbox', () => {
-      render(<Product {...productProps} hasBulkAction={true} />);
+      renderWithProviders(<Product {...productProps} hasBulkAction={true} />);
 
       const checkbox = screen.queryByLabelText(`Select ${productProps.title}`);
 
       expect(checkbox).toBeVisible();
+    });
+
+    it('should select a product', () => {
+      const mockSelect = jest.fn();
+      renderWithProviders(
+        <Product
+          {...productProps}
+          hasBulkAction={true}
+          onSelectProduct={mockSelect}
+        />
+      );
+
+      act(() => {
+        screen.getByLabelText(`Select ${productProps.title}`).click();
+      });
+
+      expect(mockSelect).toHaveBeenCalledWith({
+        id: productProps.id,
+        isSelected: false,
+      });
+    });
+
+    it('should select a missing product', () => {
+      const mockSelect = jest.fn();
+      renderWithProviders(
+        <MissingProduct
+          {...missingProductProps}
+          hasBulkAction={true}
+          onSelectProduct={mockSelect}
+        />
+      );
+
+      act(() => {
+        screen.getByLabelText(`Select ${missingProductProps.id}`).click();
+      });
+
+      expect(mockSelect).toHaveBeenCalledWith({
+        id: missingProductProps.id,
+        isSelected: false,
+      });
     });
   });
 });

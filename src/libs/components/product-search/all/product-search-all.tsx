@@ -116,7 +116,14 @@ export const ProductSearchAll = ({
     });
 
     setSearchProducts(products);
-  }, [searchForProduct, productSearchTerm, categoryIds, merchandisingRules]);
+  }, [
+    searchForProduct,
+    searchTerms,
+    productSearchTerm,
+    categoryIds,
+    merchandisingRules,
+    countryCode,
+  ]);
 
   useEffect(() => {
     if (productSearchTerm) {

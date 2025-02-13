@@ -24,6 +24,7 @@ const mockProps = {
   onReset: jest.fn(),
   ruleset: mockRules,
   selectedProducts: ['abc123'],
+  hasRestore: false,
 };
 
 describe('Product bulk actions', () => {
@@ -145,6 +146,45 @@ describe('Product bulk actions', () => {
     await waitFor(async () => {
       expect(mockProps.dispatch).toHaveBeenCalledWith({
         payload: { change: 'add', ids: ['abc123'], operation: 'block' },
+        type: 'product',
+      });
+    });
+  });
+
+  it('should bulk restore', async () => {
+    renderWithProviders(<BulkActions {...mockProps} hasRestore={true} />);
+
+    const bulkActionsButton = screen.getByRole('button', {
+      name: 'Bulk actions',
+    });
+
+    act(() => {
+      bulkActionsButton.click();
+    });
+
+    const restoreButton = screen.getByRole('button', { name: 'Restore' });
+
+    act(() => {
+      restoreButton.click();
+    });
+
+    await waitFor(async () => {
+      expect(
+        await screen.findByRole('heading', { name: 'Apply new bulk action' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Apply action',
+    });
+
+    act(() => {
+      confirmButton.click();
+    });
+
+    await waitFor(async () => {
+      expect(mockProps.dispatch).toHaveBeenCalledWith({
+        payload: { change: 'remove', ids: ['abc123'], operation: 'all' },
         type: 'product',
       });
     });

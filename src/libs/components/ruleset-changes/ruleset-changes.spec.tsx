@@ -1,5 +1,6 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 
+import { MerchandisingRules } from '@/libs/api';
 import {
   mockMerchandisingRules,
   mockMerchandisingRulesWithData,
@@ -7,7 +8,7 @@ import {
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
-import { RulesetChanges } from './ruleset-changes';
+import { RulesetChanges, RulesetChangesProps } from './ruleset-changes';
 
 jest.mock('../../hooks/use-preview', () => ({
   usePreview: jest.fn(),
@@ -16,13 +17,38 @@ jest.mock('../../hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
 
+const defaultProps: RulesetChangesProps = {
+  isPinnable: false,
+  merchandisingRules: mockMerchandisingRules,
+  dispatch: jest.fn(),
+  selectedProducts: [],
+  hasBulkAction: false,
+  onSelectAll: jest.fn(),
+  onSelectProduct: jest.fn(),
+  isSelectionDisabled: false,
+};
+
 describe('RulesetChanges', () => {
   it('should render correctly', () => {
+    const { container } = render(<RulesetChanges {...defaultProps} />);
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('should render with undefined data', () => {
+    const undefinedMerchandisingRules: MerchandisingRules = {
+      pinnedProducts: [],
+      blockedProducts: [],
+      boosts: { alphanumeric: [], numeric: [], product: [] },
+      buries: { alphanumeric: [], numeric: [], product: [] },
+      excludes: {},
+      includes: {},
+    };
+
     const { container } = render(
       <RulesetChanges
-        isPinnable={false}
-        merchandisingRules={mockMerchandisingRules}
-        dispatch={jest.fn()}
+        {...defaultProps}
+        merchandisingRules={undefinedMerchandisingRules}
       />
     );
 
@@ -57,6 +83,7 @@ describe('RulesetChanges', () => {
 
     renderWithProviders(
       <RulesetChanges
+        {...defaultProps}
         isPinnable={true}
         merchandisingRules={{
           ...mockMerchandisingRulesWithData,
@@ -90,19 +117,18 @@ describe('RulesetChanges', () => {
           },
           blockedProducts: [{ id: '124124' }],
         }}
-        dispatch={jest.fn()}
       />
     );
 
     const attributeTitle = await screen.findByText(
       'Attribute-level changes (4)'
     );
-    const shownProduct = await screen.findByText('ID: 60183702');
+    const shownProduct = await screen.findByText('Product Brand Product Title');
     const errorProduct = await screen.findByText('Product 60290408 not found');
 
-    expect(attributeTitle).toBeInTheDocument();
-    expect(shownProduct).toBeInTheDocument();
-    expect(errorProduct).toBeInTheDocument();
+    expect(attributeTitle).toBeVisible();
+    expect(shownProduct).toBeVisible();
+    expect(errorProduct).toBeVisible();
   });
 
   it('should show attribute changes', async () => {
@@ -133,6 +159,7 @@ describe('RulesetChanges', () => {
 
     renderWithProviders(
       <RulesetChanges
+        {...defaultProps}
         isPinnable={true}
         merchandisingRules={{
           ...mockMerchandisingRules,
@@ -240,6 +267,7 @@ describe('RulesetChanges', () => {
 
     renderWithProviders(
       <RulesetChanges
+        {...defaultProps}
         isPinnable={true}
         merchandisingRules={{
           ...mockMerchandisingRulesWithData,
@@ -270,7 +298,6 @@ describe('RulesetChanges', () => {
           },
           blockedProducts: [{ id: '124124' }],
         }}
-        dispatch={jest.fn()}
       />
     );
 
@@ -309,6 +336,7 @@ describe('RulesetChanges', () => {
 
     renderWithProviders(
       <RulesetChanges
+        {...defaultProps}
         isPinnable={true}
         merchandisingRules={{
           ...mockMerchandisingRulesWithData,
@@ -325,7 +353,6 @@ describe('RulesetChanges', () => {
           },
           blockedProducts: [{ id: '124124' }],
         }}
-        dispatch={jest.fn()}
       />
     );
 
@@ -351,5 +378,266 @@ describe('RulesetChanges', () => {
     expect(
       within(pinnedProducts).queryByLabelText('Position 10')
     ).not.toBeInTheDocument();
+  });
+
+  describe('Bulk actions', () => {
+    afterAll(() => {
+      jest.resetAllMocks();
+    });
+
+    it('Should select all products', async () => {
+      const mockSelectAll = jest.fn();
+
+      jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
+        error: '',
+        isLoading: false,
+        searchForProduct: jest.fn(() => {
+          return Promise.resolve({
+            products: [
+              {
+                id: '60183702',
+                productId: '60183702',
+                title: 'Product Title',
+                imageUrl: ['example1.jpg'],
+                brand: 'Product Brand',
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: '£1',
+                url: '',
+              },
+            ],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+      }));
+
+      renderWithProviders(
+        <RulesetChanges
+          {...defaultProps}
+          hasBulkAction={true}
+          isPinnable={true}
+          onSelectAll={mockSelectAll}
+          merchandisingRules={{
+            includes: {},
+            excludes: {},
+            blockedProducts: [{ id: '60183702' }],
+            pinnedProducts: [
+              {
+                id: '60183703',
+              },
+            ],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: '60183704', weight: 100 }],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [{ id: '60183705', weight: 100 }],
+            },
+          }}
+        />
+      );
+
+      const blockProductsTitle = await screen.findByText(
+        'Blocked Products (1)'
+      );
+
+      expect(blockProductsTitle).toBeInTheDocument();
+
+      const selectAll = screen.getAllByLabelText('Select all');
+
+      act(() => {
+        selectAll[0].click();
+      });
+
+      expect(mockSelectAll).toHaveBeenCalledWith(['60183702']);
+    });
+
+    it('Should deselect all products', async () => {
+      const mockSelectAll = jest.fn();
+
+      jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
+        error: '',
+        isLoading: false,
+        searchForProduct: jest.fn(() => {
+          return Promise.resolve({
+            products: [
+              {
+                id: '60183701',
+                productId: '60183701',
+                title: 'Product Title 1',
+                imageUrl: ['example1.jpg'],
+                brand: 'Product Brand',
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: '£1',
+                url: '',
+              },
+              {
+                id: '60183702',
+                productId: '60183702',
+                title: 'Product Title 2',
+                imageUrl: ['example1.jpg'],
+                brand: 'Product Brand',
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: '£1',
+                url: '',
+              },
+              {
+                id: '60183703',
+                productId: '60183703',
+                title: 'Product Title 3',
+                imageUrl: ['example1.jpg'],
+                brand: 'Product Brand',
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: '£1',
+                url: '',
+              },
+            ],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+      }));
+
+      renderWithProviders(
+        <RulesetChanges
+          {...defaultProps}
+          hasBulkAction={true}
+          isPinnable={true}
+          onSelectAll={mockSelectAll}
+          selectedProducts={['60183701', '60183702']}
+          merchandisingRules={{
+            includes: {},
+            excludes: {},
+            blockedProducts: [{ id: '60183701' }, { id: '60183702' }],
+            pinnedProducts: [
+              {
+                id: '60183703',
+              },
+            ],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+          }}
+        />
+      );
+
+      const blockProductsTitle = await screen.findByText(
+        'Blocked Products (2)'
+      );
+
+      expect(blockProductsTitle).toBeVisible();
+
+      const selectAll = screen.getAllByLabelText('Select all');
+
+      act(() => {
+        selectAll[0].click();
+      });
+
+      expect(mockSelectAll).toHaveBeenLastCalledWith([]);
+    });
+
+    it('Should not allow selecting pinned products if blocked products selected', async () => {
+      const mockSelectAll = jest.fn();
+
+      const mockBlockedProduct = {
+        id: '60183702',
+        productId: '60183702',
+        title: 'Product Blocked Title',
+        imageUrl: ['example1.jpg'],
+        brand: 'Product Brand',
+        metadata: { isPinned: false },
+        isInStock: true,
+        price: '£1',
+        url: '',
+      };
+
+      const mockPinnedProduct = {
+        id: '60183703',
+        productId: '60183703',
+        title: 'Product Pinned Title',
+        imageUrl: ['example1.jpg'],
+        brand: 'Product Brand',
+        metadata: { isPinned: false },
+        isInStock: true,
+        price: '£1',
+        url: '',
+      };
+
+      jest.mocked(useCategoryProductSearch).mockImplementation(() => ({
+        error: '',
+        isLoading: false,
+        searchForProduct: jest.fn((args) => {
+          const productToReturn =
+            args?.productIds?.[0] === '60183702'
+              ? mockBlockedProduct
+              : mockPinnedProduct;
+
+          return Promise.resolve({
+            products: [productToReturn],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+      }));
+
+      renderWithProviders(
+        <RulesetChanges
+          {...defaultProps}
+          hasBulkAction={true}
+          isPinnable={true}
+          onSelectAll={mockSelectAll}
+          selectedProducts={['60183702']}
+          merchandisingRules={{
+            includes: {},
+            excludes: {},
+            blockedProducts: [{ id: '60183702' }],
+            pinnedProducts: [
+              {
+                id: '60183703',
+              },
+            ],
+            boosts: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+            buries: {
+              numeric: [],
+              alphanumeric: [],
+              product: [],
+            },
+          }}
+        />
+      );
+
+      const blockProductsTitle = await screen.findByText(
+        'Blocked Products (1)'
+      );
+
+      expect(blockProductsTitle).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(
+          screen.getByLabelText('Select Product Pinned Title')
+        ).toBeDisabled();
+      });
+    });
   });
 });

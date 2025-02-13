@@ -9,12 +9,18 @@ export const ConfirmationPanel = styled.div`
   width: 100%;
   background: #fff;
   border-top: solid 1px #000;
+  z-index: 1;
   bottom: 0;
   right: 0;
   padding-left: ${spacing(8)};
   position: fixed;
   min-height: 60px;
   display: flex;
+`;
+
+export const BulkActionsSpacer = styled.div`
+  height: 60px;
+  width: 100%;
 `;
 
 export const ConfirmationInfo = styled.div`

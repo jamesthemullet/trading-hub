@@ -5,6 +5,7 @@ import type {
   HTMLAttributes,
 } from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { Skeleton } from '@mantine/core';
 
 import Image from 'next/image';
 
@@ -13,7 +14,6 @@ import { Button } from '../buttons/button/button';
 import { Checkbox } from '../checkboxes/checkbox';
 import { Action } from '../types';
 import { Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import {
   BlockedPin,
@@ -63,11 +63,11 @@ export const ProductDetails = ({
         />
       </ProductCard>
       <ProductInfo aria-label="Product details" isSearchResult={isSearchResult}>
-        <Text isStrong={isBrandStrong ?? true} aria-label="product title">
+        <Text isStrong={isBrandStrong ?? true} data-testid="product title">
           {brand} {title}
         </Text>
         <Text>{price}</Text>
-        <Text aria-label="product id">ID: {productId}</Text>
+        <Text data-testid="product id">ID: {productId}</Text>
       </ProductInfo>
     </>
   );
@@ -473,12 +473,24 @@ export const MissingProduct = ({
   isBoosted,
   isBuried,
   isBlocked,
+  onSelectProduct,
+  isSelected,
+  isSelectionDisabled,
   ...rest
 }: {
   dispatch: Dispatch<Action>;
   hasBulkAction: boolean;
   index: number;
   id: string;
+  onSelectProduct: ({
+    id,
+    isSelected,
+  }: {
+    id: string;
+    isSelected: boolean;
+  }) => void;
+  isSelected: boolean;
+  isSelectionDisabled: boolean;
   isProductNumberEnabled?: boolean;
   isPinned?: boolean;
   isBoosted?: boolean;
@@ -504,29 +516,43 @@ export const MissingProduct = ({
         />
       )}
       <ProductHeader>
-        {(isProductNumberEnabled ?? true) && (
-          <ProductNumber>{index + 1}</ProductNumber>
+        {hasBulkAction && (
+          <ProductCheckbox>
+            <Checkbox
+              label={`Select ${id}`}
+              disabled={isSelectionDisabled}
+              checked={isSelected}
+              onChange={() =>
+                onSelectProduct && onSelectProduct({ id, isSelected })
+              }
+            />
+          </ProductCheckbox>
         )}
-        {isBoosted && (
-          <BoostPin aria-label="Boosted product">
-            <Text>Internal</Text>
-          </BoostPin>
-        )}
-        {isBuried && (
-          <BuriedPin aria-label="Buried product">
-            <Text>Internal</Text>
-          </BuriedPin>
-        )}
-        {isPinned && (
-          <ProductPin aria-label="Pinned product">
-            <Text>Internal</Text>
-          </ProductPin>
-        )}
-        {isBlocked && (
-          <BlockedPin aria-label="Blocked product">
-            <Text>Internal</Text>
-          </BlockedPin>
-        )}
+        <ProductInfoWrapper hasBulkAction={hasBulkAction}>
+          {(isProductNumberEnabled ?? true) && (
+            <ProductNumber>{index + 1}</ProductNumber>
+          )}
+          {isBoosted && (
+            <BoostPin aria-label="Boosted product">
+              <Text>Internal</Text>
+            </BoostPin>
+          )}
+          {isBuried && (
+            <BuriedPin aria-label="Buried product">
+              <Text>Internal</Text>
+            </BuriedPin>
+          )}
+          {isPinned && (
+            <ProductPin aria-label="Pinned product">
+              <Text>Internal</Text>
+            </ProductPin>
+          )}
+          {isBlocked && (
+            <BlockedPin aria-label="Blocked product">
+              <Text>Internal</Text>
+            </BlockedPin>
+          )}
+        </ProductInfoWrapper>
         <ProductMenuToggle
           hasBulkAction={hasBulkAction}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -626,8 +652,19 @@ export const MissingProduct = ({
           </ProductMenu>
         )}
       </ProductHeader>
-      <p style={{ color: color.errorRed }}>Error</p>
-      <p aria-label="Error message">Product {id} not found</p>
+      <Skeleton
+        key={index}
+        aria-label="Product loader"
+        width="100%"
+        height={175}
+        animate={false}
+      />
+      <ProductInfo aria-label="Product details">
+        <Text isStrong data-testid="product title">
+          Product {id} not found
+        </Text>
+        <Text data-testid="product id">ID:&nbsp;{id}</Text>
+      </ProductInfo>
     </ProductWrapper>
   );
 };

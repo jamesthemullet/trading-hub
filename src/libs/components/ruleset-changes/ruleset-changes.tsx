@@ -10,6 +10,7 @@ import type {
 import { useCategoryProductSearch } from '@/libs/hooks';
 
 import { Button } from '../buttons/button/button';
+import { Checkbox } from '../checkboxes/checkbox';
 import { MissingProduct, Product } from '../product/product';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
@@ -34,6 +35,14 @@ const ButtonWrapper = styled.div`
   justify-content: center;
 `;
 
+const Header = styled.div`
+  display: flex;
+`;
+
+const SelectAll = styled.div`
+  padding: ${spacing(3)} 0 0 ${spacing(4)};
+`;
+
 const PRODUCTS_TO_LOAD = 8;
 const PRODUCTS_TO_LOAD_INCREMENT = 4;
 const MAXIMUM_PRODUCTS_TO_LOAD_BACKEND_SUPPORTS = 10;
@@ -49,6 +58,11 @@ const ProductsLoader = ({
   pinnedProductsCount,
   products,
   countryCode = 'UK_IE',
+  hasBulkAction,
+  onSelectAll,
+  onSelectProduct,
+  selectedProducts,
+  isSelectionDisabled,
 }: {
   changeType: 'boost' | 'bury' | 'pin' | 'block';
   dispatch: Dispatch<Action>;
@@ -58,8 +72,22 @@ const ProductsLoader = ({
   pinnedProductsCount: number;
   products: ProductRule[];
   countryCode?: CountryCode;
+  hasBulkAction: boolean;
+  onSelectAll: (args: string[]) => void;
+  onSelectProduct: ({
+    id,
+    isSelected,
+  }: {
+    id: string;
+    isSelected: boolean;
+  }) => void;
+  selectedProducts: string[];
+  isSelectionDisabled: boolean;
 }) => {
   const [productDetails, setProductDetails] = useState<ProductType[]>([]);
+  const [missingProductDetails, setMissingProductDetails] = useState<string[]>(
+    []
+  );
   const [productsShown, setProductsShown] = useState(PRODUCTS_TO_LOAD);
 
   const { searchForProduct, isLoading } = useCategoryProductSearch();
@@ -83,6 +111,9 @@ const ProductsLoader = ({
         .filter(
           (product) => !productDetails.find(({ id }) => id === product.id)
         )
+        .filter(
+          (product) => !missingProductDetails.find((id) => id === product.id)
+        )
         .map((product) => product.id);
 
       if (productsToGet.length === 0) {
@@ -95,22 +126,47 @@ const ProductsLoader = ({
       );
       const data = await fetch(productsToFetch);
 
-      setProductDetails((prev) => {
-        const newProductDetails = data.filter(
-          (product) => !prev.find(({ id }) => id === product.id)
-        );
-        return [...prev, ...newProductDetails];
-      });
+      const missingProducts = productsToFetch.filter((id) =>
+        data.filter((x) => x.id.includes(id))
+      );
+
+      setMissingProductDetails((prev) => [...prev, ...missingProducts]);
+
+      setProductDetails((prev) => [...prev, ...data]);
     };
 
     fetchData();
   }, [products, productsShown, fetch]);
 
+  const onSelectAllProducts = () => {
+    const allProductIds = products.map(({ id }) => id);
+    return selectedProducts.length === products.length
+      ? onSelectAll([])
+      : onSelectAll(allProductIds);
+  };
+
   return (
     <>
-      <Heading as="h2" isStrong={true}>
-        {`${heading} (${products.length})`}
-      </Heading>
+      <Header>
+        <Heading as="h2" isStrong={true}>
+          {`${heading} (${products.length})`}
+        </Heading>
+
+        {hasBulkAction && (
+          <SelectAll>
+            <Checkbox
+              label="Select all"
+              onChange={onSelectAllProducts}
+              checked={
+                selectedProducts.length > 0 &&
+                selectedProducts.length === products.length
+              }
+              showLabel={true}
+              disabled={isSelectionDisabled}
+            />
+          </SelectAll>
+        )}
+      </Header>
       <Layout aria-label={heading.split('(')[0]}>
         {products.map(({ id }, index) => {
           if (index + 1 > productsShown) {
@@ -123,7 +179,7 @@ const ProductsLoader = ({
           return (
             <ProductBox key={`ruleset-changes-product-${id}`}>
               {!product ? (
-                isLoading ? (
+                isLoading && !missingProductDetails.includes(id) ? (
                   <Skeleton
                     key={index}
                     aria-label="Product loader"
@@ -140,7 +196,10 @@ const ProductsLoader = ({
                     isBuried={changeType === 'bury'}
                     isPinned={changeType === 'pin'}
                     isBoosted={changeType === 'boost'}
-                    hasBulkAction={false}
+                    hasBulkAction={hasBulkAction}
+                    isSelected={selectedProducts.includes(id)}
+                    isSelectionDisabled={isSelectionDisabled}
+                    onSelectProduct={onSelectProduct}
                   />
                 )
               ) : (
@@ -150,9 +209,10 @@ const ProductsLoader = ({
                   isPinnable={isPinnable}
                   pinnedProductsCount={pinnedProductsCount}
                   dispatch={dispatch}
-                  hasBulkAction={false}
-                  isSelected={false}
-                  isSelectionDisabled
+                  hasBulkAction={hasBulkAction}
+                  isSelected={selectedProducts.includes(product.id)}
+                  isSelectionDisabled={isSelectionDisabled}
+                  onSelectProduct={onSelectProduct}
                 />
               )}
             </ProductBox>
@@ -176,36 +236,47 @@ const ProductsLoader = ({
   );
 };
 
+export type RulesetChangesProps = {
+  isPinnable: boolean;
+  merchandisingRules: MerchandisingRules;
+  dispatch: Dispatch<Action>;
+  countryCode?: CountryCode;
+  hasBulkAction: boolean;
+  onSelectAll: (args: string[]) => void;
+  onSelectProduct: ({
+    id,
+    isSelected,
+  }: {
+    id: string;
+    isSelected: boolean;
+  }) => void;
+  selectedProducts: string[];
+  isSelectionDisabled: boolean;
+};
+
 export const RulesetChanges = ({
   isPinnable,
   merchandisingRules,
   dispatch,
   countryCode,
-}: {
-  isPinnable: boolean;
-  merchandisingRules: MerchandisingRules;
-  dispatch: Dispatch<Action>;
-  countryCode?: CountryCode;
-}) => {
-  /* istanbul ignore next */
+  hasBulkAction,
+  onSelectAll,
+  onSelectProduct,
+  selectedProducts,
+  isSelectionDisabled,
+}: RulesetChangesProps) => {
   const countOfAttributeChanges =
-    (merchandisingRules.boosts?.numeric?.length ?? 0) +
-    (merchandisingRules.boosts?.alphanumeric?.length ?? 0) +
-    (merchandisingRules.buries?.numeric?.length ?? 0) +
-    (merchandisingRules.buries.alphanumeric.length ?? 0) +
+    merchandisingRules.boosts.numeric.length +
+    merchandisingRules.boosts.alphanumeric.length +
+    merchandisingRules.buries.numeric.length +
+    merchandisingRules.buries.alphanumeric.length +
     (merchandisingRules.includes.alphanumeric?.length ?? 0) +
     (merchandisingRules.excludes.alphanumeric?.length ?? 0);
-  /* istanbul ignore next */
-  const numericBoosts = merchandisingRules.boosts?.numeric ?? [];
-  /* istanbul ignore next */
-  const alphanumericBoost = merchandisingRules.boosts?.alphanumeric ?? [];
-  /* istanbul ignore next */
-  const numericBury = merchandisingRules.buries?.numeric ?? [];
-  /* istanbul ignore next */
-  const alphanumericBuries = merchandisingRules.buries?.alphanumeric ?? [];
-  /* istanbul ignore next */
+  const numericBoosts = merchandisingRules.boosts.numeric;
+  const alphanumericBoost = merchandisingRules.boosts.alphanumeric;
+  const numericBury = merchandisingRules.buries.numeric;
+  const alphanumericBuries = merchandisingRules.buries.alphanumeric;
   const alphanumericIncludes = merchandisingRules.includes.alphanumeric ?? [];
-  /* istanbul ignore next */
   const alphanumericExcludes = merchandisingRules.excludes.alphanumeric ?? [];
 
   const pinnedProductsCount = merchandisingRules.pinnedProducts.length;
@@ -213,9 +284,25 @@ export const RulesetChanges = ({
   const boostedProductsCount = merchandisingRules.boosts.product.length;
   const buriedProductsCount = merchandisingRules.buries.product.length;
 
+  const hasAttributeChanges = countOfAttributeChanges > 0;
+
+  const hasSelectedProducts = selectedProducts.length > 0;
+  const hasSelectedBlockedProduct = merchandisingRules.blockedProducts.some(
+    (p) => selectedProducts.includes(p.id)
+  );
+  const hasSelectedBoostededProduct = merchandisingRules.boosts.product.some(
+    (p) => selectedProducts.includes(p.id)
+  );
+  const hasSelectedBuriedProduct = merchandisingRules.buries.product.some((p) =>
+    selectedProducts.includes(p.id)
+  );
+  const hasSelectedPinnedProduct = merchandisingRules.pinnedProducts.some((p) =>
+    selectedProducts.includes(p.id)
+  );
+
   return (
     <>
-      {countOfAttributeChanges > 0 && (
+      {hasAttributeChanges && (
         <>
           <Heading as="h2" isStrong={true}>
             Attribute-level changes ({countOfAttributeChanges})
@@ -313,6 +400,14 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.blockedProducts}
           countryCode={countryCode}
+          hasBulkAction={hasBulkAction}
+          isSelectionDisabled={
+            isSelectionDisabled ||
+            (hasSelectedProducts && !hasSelectedBlockedProduct)
+          }
+          selectedProducts={selectedProducts}
+          onSelectProduct={onSelectProduct}
+          onSelectAll={onSelectAll}
         />
       )}
 
@@ -326,6 +421,14 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.pinnedProducts}
           countryCode={countryCode}
+          hasBulkAction={hasBulkAction}
+          isSelectionDisabled={
+            isSelectionDisabled ||
+            (hasSelectedProducts && !hasSelectedPinnedProduct)
+          }
+          selectedProducts={selectedProducts}
+          onSelectProduct={onSelectProduct}
+          onSelectAll={onSelectAll}
         />
       )}
 
@@ -339,6 +442,14 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.boosts.product}
           countryCode={countryCode}
+          hasBulkAction={hasBulkAction}
+          isSelectionDisabled={
+            isSelectionDisabled ||
+            (hasSelectedProducts && !hasSelectedBoostededProduct)
+          }
+          selectedProducts={selectedProducts}
+          onSelectProduct={onSelectProduct}
+          onSelectAll={onSelectAll}
         />
       )}
 
@@ -352,6 +463,14 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.buries.product}
           countryCode={countryCode}
+          hasBulkAction={hasBulkAction}
+          isSelectionDisabled={
+            isSelectionDisabled ||
+            (hasSelectedProducts && !hasSelectedBuriedProduct)
+          }
+          selectedProducts={selectedProducts}
+          onSelectProduct={onSelectProduct}
+          onSelectAll={onSelectAll}
         />
       )}
     </>

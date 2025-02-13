@@ -77,7 +77,7 @@ test.describe('Search Ranking', () => {
     const product2Id =
       (await page
         .getByLabel('Position 2', { exact: true })
-        .getByLabel('product id')
+        .getByTestId('product id')
         .textContent()) || '';
 
     await page

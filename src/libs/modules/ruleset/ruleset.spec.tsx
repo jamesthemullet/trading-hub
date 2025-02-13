@@ -2344,5 +2344,82 @@ describe('Ruleset', () => {
         expect(usePreview).toHaveBeenLastCalledWith(expectedPreviewRules);
       });
     });
+
+    it('should select products from changes tab', async () => {
+      jest.mocked(useCategoryProductSearch).mockReturnValue({
+        searchForProduct: jest.fn(() => {
+          return Promise.resolve({
+            products: [
+              {
+                id: '6780',
+                productId: '6780',
+                title: 'productSearchTitle',
+                imageUrl: ['example2.jpg'],
+                brand: product1Brand,
+                metadata: { isPinned: false },
+                isInStock: true,
+                price: product1Price,
+                url: '',
+              },
+            ],
+            pagination: {
+              totalItems: 1,
+            },
+          });
+        }),
+        error: '',
+        isLoading: false,
+      });
+
+      renderWithProviders(
+        <Ruleset
+          isEnabled={true}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            ...mockRules,
+            pinnedProducts: [{ id: '6780' }],
+          }}
+          categoryIds={['SubCategory_507']}
+          rulesetType="category"
+        />,
+        [],
+        {
+          featureFlags: {
+            hasBulkActions: true,
+          },
+        }
+      );
+
+      const tab2 = await screen.findByText('Changes');
+
+      await waitFor(() => {
+        tab2.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Pinned Products (1)')).toBeVisible();
+      });
+
+      const checkbox = await screen.findByLabelText(
+        'Select productSearchTitle'
+      );
+
+      act(() => {
+        checkbox.click();
+      });
+
+      expect(
+        await screen.findByLabelText('Select productSearchTitle')
+      ).toBeChecked();
+
+      act(() => {
+        checkbox.click();
+      });
+
+      expect(
+        await screen.findByLabelText('Select productSearchTitle')
+      ).not.toBeChecked();
+    });
   });
 });

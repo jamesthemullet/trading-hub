@@ -26,7 +26,7 @@ export type RulesetAttribute = {
 type Change = 'add' | 'modify' | 'remove';
 
 type ProductPayload = {
-  operation: 'pin' | 'boost' | 'bury' | 'block' | 'include' | 'exclude';
+  operation: 'pin' | 'boost' | 'bury' | 'block' | 'include' | 'exclude' | 'all';
   change: Change;
   ids: string[];
   position?: number;

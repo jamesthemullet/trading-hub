@@ -83,7 +83,15 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Save' }).click();
   });
 
-  test('edits a ruleset', async ({ page }) => {
+  test('edits a ruleset', async ({ page, context }) => {
+    await context.addCookies([
+      {
+        name: 'flagBulkActions',
+        value: 'true',
+        domain: 'localhost',
+        path: '/',
+      },
+    ]);
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
     await page.goto('/category/rulesets');
     await page.waitForLoadState('networkidle');
@@ -101,7 +109,7 @@ test.describe('Category Ranking', () => {
     const product2Id =
       (await page
         .getByLabel('Position 2', { exact: true })
-        .getByLabel('product id')
+        .getByTestId('product id')
         .textContent()) || '';
 
     await page
@@ -144,6 +152,45 @@ test.describe('Category Ranking', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Close schedule editor' }).click();
+
+    await page
+      .getByRole('button', { name: 'Visual Editor', exact: true })
+      .click();
+
+    await page
+      .getByLabel('Position 5', { exact: true })
+      .getByLabel('Select', { exact: false })
+      .click();
+    await page
+      .getByLabel('Position 6', { exact: true })
+      .getByLabel('Select', { exact: false })
+      .click();
+
+    await expect(page.getByText('2 items selected')).toBeVisible();
+
+    await page.getByPlaceholder('Search for product').fill('black');
+
+    await expect(page.getByText('result', { exact: false })).toBeVisible();
+
+    await expect(
+      page
+        .getByLabel('Product Search Container')
+        .getByLabel('Position 1', { exact: true })
+        .getByLabel('Select', { exact: false })
+    ).toBeDisabled();
+
+    await page.getByRole('button', { name: 'Bulk actions' }).click();
+    await page.getByRole('button', { name: 'Block Product' }).click();
+
+    await expect(page.getByText('Apply new bulk action')).toBeVisible();
+    await page.getByRole('button', { name: 'Apply action' }).click();
+
+    await page.getByRole('button', { name: 'Changes', exact: false }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Blocked Products (2)' })
+    ).toBeVisible();
+
     await page.getByRole('button', { name: 'Save', exact: true }).click();
 
     await expect(
@@ -189,7 +236,7 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('link', { name: 'Edit' }).first().click();
     await page.waitForLoadState('networkidle');
-    await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Changes4' })).toBeVisible();
   });
 
   test('duplicates and edits a rule', async ({ page }) => {

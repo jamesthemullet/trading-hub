@@ -590,7 +590,11 @@ export const Ruleset = ({
           <PanelTop>
             <Tabs
               tabs={[{ title: 'Product' }, { title: 'Attribute' }]}
-              onTabChange={setCurrentProductTab}
+              onTabChange={(tab) => {
+                setCurrentProductTab(tab);
+                setSelectedProducts([]);
+                setSelectedSearchProducts([]);
+              }}
               currentTab={currentProductTab}
             />
           </PanelTop>
@@ -656,7 +660,11 @@ export const Ruleset = ({
           <PanelTop>
             <Tabs
               tabs={rulesPanelTabs}
-              onTabChange={setCurrentEditorTab}
+              onTabChange={(tab) => {
+                setCurrentEditorTab(tab);
+                setSelectedProducts([]);
+                setSelectedSearchProducts([]);
+              }}
               currentTab={currentEditorTab}
             />
             {rulesetType === 'search' && ruleset.countryCode === 'UK_IE' && (
@@ -756,22 +764,36 @@ export const Ruleset = ({
                 dispatch={dispatch}
                 isPinnable={rulesetType !== 'global'}
                 countryCode={ruleset.countryCode}
+                selectedProducts={selectedProducts}
+                hasBulkAction={bulkActionsEnabled}
+                onSelectAll={setSelectedProducts}
+                onSelectProduct={({ id, isSelected }) => {
+                  setSelectedProducts(
+                    isSelected
+                      ? selectedProducts.filter((product) => product !== id)
+                      : [...selectedProducts, id]
+                  );
+                }}
+                isSelectionDisabled={
+                  !writeEnabled || selectedSearchProducts.length > 0
+                }
               />
             )}
           </TabContent>
         </RulesPanel>
-        {(selectedProducts.length > 0 || selectedSearchProducts.length > 0) && (
-          <BulkActions
-            dispatch={dispatch}
-            selectedProducts={[...selectedProducts, ...selectedSearchProducts]}
-            onReset={() => {
-              setSelectedProducts([]);
-              setSelectedSearchProducts([]);
-            }}
-            ruleset={ruleset}
-          />
-        )}
       </MainContainerPanel>
+      {(selectedProducts.length > 0 || selectedSearchProducts.length > 0) && (
+        <BulkActions
+          dispatch={dispatch}
+          hasRestore={selectedProducts.length > 0}
+          selectedProducts={[...selectedProducts, ...selectedSearchProducts]}
+          onReset={() => {
+            setSelectedProducts([]);
+            setSelectedSearchProducts([]);
+          }}
+          ruleset={ruleset}
+        />
+      )}
 
       {isLoading && <Loader />}
     </>

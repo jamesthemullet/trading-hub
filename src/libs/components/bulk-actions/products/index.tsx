@@ -10,6 +10,7 @@ import { Action } from '../../types';
 import { Header3, Text } from '../../typography/typography.styles';
 import {
   BulkActionsHeader,
+  BulkActionsSpacer,
   Buttons,
   ConfirmationActions,
   ConfirmationInfo,
@@ -21,15 +22,18 @@ import {
 
 type BulkActionsTypes = {
   dispatch: Dispatch<Action>;
+  hasRestore: boolean;
   ruleset: RuleSet;
   selectedProducts: string[];
   onReset: () => void;
 };
 
 type ActionType = 'boost' | 'bury' | 'block';
+type ChangeType = 'add' | 'remove';
 
 export const BulkActions = ({
   dispatch,
+  hasRestore,
   onReset,
   ruleset,
   selectedProducts,
@@ -37,13 +41,28 @@ export const BulkActions = ({
   const [showBulkActionsMenu, setShowBulkActionsMenu] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [actionToPerform, setActionToPerform] = useState<ActionType>('block');
-  const action = (type: ActionType) => {
+  const [changeToPerform, setChangeToPerform] = useState<ChangeType>('add');
+
+  const bulkAction = (type: ActionType) => {
     dispatch({
       type: 'product',
       payload: {
         ids: selectedProducts,
         operation: type,
         change: 'add',
+      },
+    });
+    setShowBulkActionsMenu(false);
+    onReset();
+  };
+
+  const bulkActionRemove = () => {
+    dispatch({
+      type: 'product',
+      payload: {
+        ids: selectedProducts,
+        operation: 'all',
+        change: 'remove',
       },
     });
     setShowBulkActionsMenu(false);
@@ -71,8 +90,16 @@ export const BulkActions = ({
     ...overwrittenBuryRules,
   ].length;
 
+  const allSelectedProductsBlocked =
+    selectedProducts.length === overwrittenBlockedRules.length;
+  const allSelectedProductsBoosted =
+    selectedProducts.length === overwrittenBoostRules.length;
+  const allSelectedProductsBuried =
+    selectedProducts.length === overwrittenBuryRules.length;
+
   return (
     <>
+      <BulkActionsSpacer />
       <ConfirmationPanel>
         <ConfirmationInfo>
           <Text>
@@ -105,38 +132,61 @@ export const BulkActions = ({
                 <BulkActionsHeader isStrong as="h4">
                   Bulk actions
                 </BulkActionsHeader>
-                <ProductMenuButton
-                  icon="boost"
-                  as="button"
-                  onClick={() => {
-                    setActionToPerform('boost');
-                    setIsModalOpen(true);
-                  }}
-                >
-                  Boost to Top
-                </ProductMenuButton>
+                {hasRestore && (
+                  <ProductMenuButton
+                    icon="restore"
+                    as="button"
+                    size="16px 16px"
+                    onClick={() => {
+                      setChangeToPerform('remove');
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Restore
+                  </ProductMenuButton>
+                )}
 
-                <ProductMenuButton
-                  icon="bury"
-                  as="button"
-                  onClick={() => {
-                    setActionToPerform('bury');
-                    setIsModalOpen(true);
-                  }}
-                >
-                  Bury to Bottom
-                </ProductMenuButton>
+                {!allSelectedProductsBoosted && (
+                  <ProductMenuButton
+                    icon="boost"
+                    as="button"
+                    onClick={() => {
+                      setActionToPerform('boost');
+                      setChangeToPerform('add');
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Boost to Top
+                  </ProductMenuButton>
+                )}
 
-                <ProductMenuButton
-                  icon="block"
-                  as="button"
-                  onClick={() => {
-                    setActionToPerform('block');
-                    setIsModalOpen(true);
-                  }}
-                >
-                  Block Product
-                </ProductMenuButton>
+                {!allSelectedProductsBuried && (
+                  <ProductMenuButton
+                    icon="bury"
+                    as="button"
+                    onClick={() => {
+                      setActionToPerform('bury');
+                      setChangeToPerform('add');
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Bury to Bottom
+                  </ProductMenuButton>
+                )}
+
+                {!allSelectedProductsBlocked && (
+                  <ProductMenuButton
+                    icon="block"
+                    as="button"
+                    onClick={() => {
+                      setActionToPerform('block');
+                      setChangeToPerform('add');
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Block Product
+                  </ProductMenuButton>
+                )}
               </ProductMenu>
             </>
           )}
@@ -180,7 +230,9 @@ export const BulkActions = ({
               <Button
                 onClick={() => {
                   setIsModalOpen(false);
-                  action(actionToPerform);
+                  return changeToPerform === 'add'
+                    ? bulkAction(actionToPerform)
+                    : bulkActionRemove();
                 }}
                 theme="primary"
                 data-autofocus
