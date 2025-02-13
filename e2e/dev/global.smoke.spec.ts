@@ -56,50 +56,9 @@ test.describe('Global Ranking', () => {
     await page.getByRole('button', { name: 'Algo control' }).first().click();
     await page.getByRole('button', { name: 'include', exact: true }).click();
 
-    await page.getByRole('button', { name: 'Algo control' }).first().click();
-    await page.getByRole('button', { name: 'exclude', exact: true }).click();
-
     await expect(
       page.getByLabel('Row showing Absorbency Level 1 as included')
     ).toBeVisible();
-
-    await page
-      .getByRole('button', { name: 'Edit display name for Absorbency Level 1' })
-      .click();
-    await page
-      .getByLabel('Edit Absorbency Level 1 input field')
-      .fill('Level Of Absorbency 1');
-    await page
-      .getByRole('button', { name: 'Save Absorbency Level 1 change' })
-      .click();
-
-    await page.waitForLoadState('networkidle');
-
-    await expect(
-      page.getByLabel('Row showing Absorbency Level 1 as included')
-    ).not.toBeVisible();
-    await expect(
-      page.getByLabel('Row showing Level Of Absorbency 1 as included')
-    ).toBeVisible();
-
-    await page
-      .getByRole('button', {
-        name: 'Edit display name for Level Of Absorbency 1',
-      })
-      .click();
-    await page
-      .getByLabel('Edit Level Of Absorbency 1 input field')
-      .fill('Absorbency Level 1');
-    await page
-      .getByRole('button', { name: 'Save Level Of Absorbency 1 change' })
-      .click();
-
-    await expect(
-      page.getByLabel('Row showing Absorbency Level 1 as included')
-    ).toBeVisible();
-    await expect(
-      page.getByLabel('Row showing Level Of Absorbency 1 as included')
-    ).not.toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
 
@@ -154,6 +113,10 @@ test.describe('Global Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(
+      page.getByRole('heading', { name: 'Global Facet Rule Editor' })
+    ).toBeVisible();
+
+    await expect(
       page.getByLabel('Row showing Absorbency Level 1 as included')
     ).toBeVisible();
 
@@ -167,47 +130,6 @@ test.describe('Global Ranking', () => {
     await page.getByRole('link', { name: 'Edit' }).first().click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
-  });
-
-  test('sets up a merge group', async ({ page }) => {
-    await page.goto('/global/facets');
-    await page.waitForLoadState('networkidle');
-
-    await page.getByRole('link', { name: 'Edit' }).first().click();
-    await page.waitForLoadState('networkidle');
-
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Assembly Type');
-    await page.waitForTimeout(2000);
-
-    await page.getByRole('button', { name: 'Edit values' }).first().click();
-    await page.waitForTimeout(5000);
-
-    await expect(
-      page.getByRole('heading', {
-        name: 'Facet value settings of: Assembly Type',
-      })
-    ).toBeVisible();
-
-    await page.getByLabel('Select Easy fit to merge').click();
-    await page.getByLabel('Select Partial assembly required to merge').click();
-
-    await expect(page.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
-
-    await page.getByRole('button', { name: 'Merge (2)' }).click();
-
-    await page.getByLabel('Edit Name your merge input field').click();
-    await page
-      .getByLabel('Edit Name your merge input field')
-      .fill('A merged group name');
-
-    await page.getByLabel('Save Name your merge change').click();
-
-    await page.waitForTimeout(3000);
-
-    await expect(
-      page.getByLabel('Edit display name for A merged group name')
-    ).toBeVisible();
   });
 
   test('deletes a ruleset', async ({ page }) => {

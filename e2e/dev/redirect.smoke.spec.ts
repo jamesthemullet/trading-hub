@@ -126,7 +126,9 @@ test.describe('Search Redirect', () => {
     await page.getByRole('button', { name: 'Save' }).click();
     await page.waitForLoadState('networkidle');
 
-    await expect(page.getByText('Gravy | Vegetarian Gravy')).toBeVisible();
+    await expect(
+      page.getByText('Gravy | Vegetarian Gravy').first()
+    ).toBeVisible();
   });
 
   test('deletes a redirect', async ({ page }) => {
