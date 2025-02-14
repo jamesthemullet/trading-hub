@@ -65,7 +65,7 @@
     "@testing-library/user-event": "14.6.1",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.15",
-    "@types/node": "20.17.18",
+    "@types/node": "20.17.19",
     "@types/pluralize": "0.0.33",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
@@ -101,7 +101,7 @@
     "postcss": "8.5.2",
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "7.0.1",
-    "prettier": "3.5.0",
+    "prettier": "3.5.1",
     "swagger-typescript-api": "13.0.23",
     "ts-node": "10.9.2",
     "typescript": "5.7.3"
