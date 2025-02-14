@@ -2,9 +2,18 @@ import { useReducer } from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { CountryCode, ReturnedKeywordRuleSet } from '@/libs/api';
-import { useFacetsList, useGetFacetAttributeValues } from '@/libs/hooks';
+import {
+  CountryCode,
+  ReturnedKeywordRuleSet,
+  SearchPreviewResponseBeta,
+} from '@/libs/api';
+import {
+  useFacetsList,
+  useGetFacetAttributeValues,
+  usePreview,
+} from '@/libs/hooks';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
+import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import SearchFacetsPanel from './search-facets-panel';
@@ -68,6 +77,60 @@ const mockRuleData: ReturnedKeywordRuleSet = {
   isEnabled: true,
   id: 'df70401f-f89d-45ad-92e7-6e152930ff86',
   lastChanged: { date: '2023-12-06T14:24:17Z', user: 'Mark Spencer' },
+};
+
+const mockFacet = {
+  displayValue: 'color',
+  id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+  indexPropertyName: 'color',
+  lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
+  merged: [],
+};
+
+const mockData: SearchPreviewResponseBeta = {
+  searchTerm: 'foo',
+  externalChanges: mockMerchandisingRulesWithInfo,
+  facets: [
+    {
+      id: 'brand',
+      order: 0,
+      data: [
+        {
+          name: 'M&S Collection',
+          count: 122,
+          selected: false,
+          disabled: false,
+        },
+        {
+          name: 'Autograph',
+          count: 7,
+          selected: false,
+          disabled: false,
+        },
+        {
+          name: 'GOODMOVE',
+          count: 4,
+          selected: false,
+          disabled: false,
+        },
+      ],
+    },
+  ],
+  pagination: {
+    totalItems: 1,
+  },
+  ruleSet: {
+    facets: [mockFacet],
+    rules: mockMerchandisingRulesWithInfo,
+  },
+  products: [],
+};
+
+const mockCategoryReturnValue = {
+  data: mockData,
+  error: '',
+  isLoading: false,
+  setFacetConfigRules: jest.fn(),
 };
 
 const dispatchMock = jest.fn();
@@ -363,6 +426,35 @@ describe('Search Facet Panel', () => {
 
     expect(() => screen.getByRole('button', { name: 'Save' })).toThrow(
       'Unable to find an accessible element with the role "button"'
+    );
+  });
+
+  it('should preview changes to a new search facet', async () => {
+    const user = userEvent.setup({ delay: null });
+    jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
+
+    renderWithProviders(
+      <SearchFacetsPanel {...mockProps} ruleSetIncludedFacets={undefined} />
+    );
+
+    act(() => {
+      user.type(screen.getByLabelText('Add keyword'), 'search term{enter}');
+    });
+
+    const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+    act(() => {
+      previewButton.click();
+    });
+
+    const previewText = await screen.findByText(
+      'Search across the site to preview the rule influence'
+    );
+
+    expect(previewText).toBeInTheDocument();
+
+    expect(usePreview).toHaveBeenLastCalledWith(
+      expect.objectContaining({ searchTerm: 'search term' })
     );
   });
 });

@@ -249,6 +249,7 @@ export const FacetsPanel = ({
       setDuplicationError(hasDuplicates);
     } else {
       setSearchTerms?.([...searchTerms, term]);
+      setPreviewValue(term);
       setDuplicationError('');
     }
   };
