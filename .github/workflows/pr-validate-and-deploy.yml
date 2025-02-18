@@ -123,7 +123,7 @@ jobs:
 
       - name: Check if PR infra is deployed
         id: check-infra-deployed
-        uses: nick-fields/retry@v3.0.0
+        uses: nick-fields/retry@v3.0.1
         with:
           timeout_seconds: 60
           max_attempts: 10
