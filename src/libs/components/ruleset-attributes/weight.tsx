@@ -61,7 +61,7 @@ export const AttributeWeight = ({
                 onSubmit();
               }}
             >
-              <Text as="label" aria-label="Edit value">
+              <Text as="label">
                 Strength{' '}
                 <Input
                   value={value ? value : ''}

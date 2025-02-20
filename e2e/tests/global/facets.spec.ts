@@ -77,7 +77,7 @@ test.describe('global facets', () => {
     ).toBeVisible();
 
     await page
-      .getByLabel('Row showing Age as')
+      .getByTestId('Row showing Age as algoControl')
       .getByTestId('button to open facet order dropdown')
       .click();
     await page.getByRole('button', { name: 'include' }).click();
@@ -86,16 +86,16 @@ test.describe('global facets', () => {
     await page.getByLabel('Edit Age input field').fill('Hue');
     await page.getByLabel('Save Age change').click();
 
-    await expect(page.getByLabel('Label for Hue')).toBeVisible();
+    await expect(page.getByTestId('Label for Hue')).toBeVisible();
   });
 
   test('includes and excludes facets', async ({ page }) => {
     await page.goto('/global/facets/edit/b118cd93-1767-447b-ace5-74084bcf56eb');
     await expect(
-      page.getByLabel('Row showing Age as algoControl')
+      page.getByTestId('Row showing Age as algoControl')
     ).toBeVisible();
     await expect(
-      page.getByLabel('Row showing Alcohol Type as algoControl')
+      page.getByTestId('Row showing Alcohol Type as algoControl')
     ).toBeVisible();
 
     await page
@@ -109,9 +109,9 @@ test.describe('global facets', () => {
       .nth(3)
       .click();
     await page.getByLabel('exclude').nth(3).click();
-    await expect(page.getByLabel('Row showing Age as included')).toBeVisible();
+    await expect(page.getByTestId('Row showing Age as included')).toBeVisible();
     await expect(
-      page.getByLabel('Row showing Alcohol Type as excluded')
+      page.getByTestId('Row showing Alcohol Type as excluded')
     ).toBeVisible();
   });
 
@@ -125,11 +125,11 @@ test.describe('global facets', () => {
       page.getByRole('heading', { name: 'Facet value settings of: Age' })
     ).toBeVisible();
 
-    await expect(page.getByLabel('attribute 1 3+ years')).toBeVisible();
+    await expect(page.getByTestId('attribute 1 3+ years')).toBeVisible();
 
     await page.getByLabel('Move 3+ years row down').click();
 
-    await expect(page.getByLabel('attribute 2 3+ years')).toBeVisible();
+    await expect(page.getByTestId('attribute 2 3+ years')).toBeVisible();
 
     await page
       .getByTestId(
@@ -139,7 +139,7 @@ test.describe('global facets', () => {
     await page.getByLabel('include Not suitable under 36 mth').click();
 
     await expect(
-      page.getByLabel('attribute 3 Not suitable under 36 mth')
+      page.getByTestId('attribute 3 Not suitable under 36 mth')
     ).toBeVisible();
 
     await page
@@ -147,7 +147,7 @@ test.describe('global facets', () => {
       .click();
     await page.getByLabel('exclude 3-5 years').click();
 
-    await expect(page.getByLabel('attribute 6 3-5 years')).toBeVisible();
+    await expect(page.getByTestId('attribute 6 3-5 years')).toBeVisible();
   });
 
   test('merges facet values', async ({ page }) => {

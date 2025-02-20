@@ -198,7 +198,7 @@ describe('Global Facet Panel', () => {
 
     await user.click(includeOnlyOption);
 
-    expect(screen.getAllByTestId('facets-table-row')[0]).toHaveStyle(
+    expect(screen.getAllByTestId(/Row showing/)[0]).toHaveStyle(
       'background-color: #f4faed'
     );
 

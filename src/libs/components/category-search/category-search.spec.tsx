@@ -342,9 +342,7 @@ describe('CategorySearch', () => {
       });
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Close modal' })
-        ).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
       });
 
       const modalHeading = screen.getByRole('heading', {
@@ -354,7 +352,7 @@ describe('CategorySearch', () => {
       expect(modalHeading).toBeVisible();
 
       const closeButton = await screen.findByRole('button', {
-        name: 'Close modal',
+        name: 'Close',
       });
 
       act(() => {
@@ -388,9 +386,7 @@ describe('CategorySearch', () => {
       });
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Close modal' })
-        ).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
       });
 
       const category2 = await within(
@@ -430,9 +426,7 @@ describe('CategorySearch', () => {
       });
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Close modal' })
-        ).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
       });
 
       const category2remove = await screen.findByRole('button', {
@@ -468,9 +462,7 @@ describe('CategorySearch', () => {
       });
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Close modal' })
-        ).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
       });
 
       const category1remove = await screen.findAllByRole('button', {
@@ -520,7 +512,7 @@ describe('CategorySearch', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Close modal' })).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
     });
 
     const category1remove = await screen.findAllByRole('button', {

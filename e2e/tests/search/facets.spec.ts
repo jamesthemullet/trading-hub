@@ -85,7 +85,7 @@ test.describe('Search rulesets', () => {
     await page.getByRole('button', { name: 'include', exact: true }).click();
 
     await expect(
-      page.getByLabel('Row showing Collections as included')
+      page.getByTestId('Row showing Collections as included')
     ).toBeVisible();
 
     await page.keyboard.down('End');
@@ -94,23 +94,23 @@ test.describe('Search rulesets', () => {
     await page.getByRole('button', { name: 'exclude', exact: true }).click();
 
     await expect(
-      page.getByLabel('Row showing Colour as excluded')
+      page.getByTestId('Row showing Colour as excluded')
     ).toBeVisible();
 
-    await expect(page.getByTestId('facets-table-row').first()).toContainText(
+    await expect(page.getByTestId(/Row showing/).first()).toContainText(
       'Colours'
     );
 
     await page.getByRole('button', { name: 'Move Colours row down' }).click();
 
-    await expect(page.getByTestId('facets-table-row').first()).toContainText(
+    await expect(page.getByTestId(/Row showing/).first()).toContainText(
       'Categories'
     );
 
     await page.getByRole('button', { name: 'Move Collections row up' }).click();
     await page.getByRole('button', { name: 'Move Collections row up' }).click();
 
-    await expect(page.getByTestId('facets-table-row').first()).toContainText(
+    await expect(page.getByTestId(/Row showing/).first()).toContainText(
       'Collections'
     );
   });
@@ -126,7 +126,7 @@ test.describe('Search rulesets', () => {
     await page.getByRole('button', { name: 'Edit values' }).first().click();
     await page.waitForLoadState('networkidle');
 
-    await expect(page.getByLabel('attribute 1 SMOKE')).toBeVisible();
+    await expect(page.getByTestId('attribute 1 SMOKE')).toBeVisible();
 
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')

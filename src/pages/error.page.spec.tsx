@@ -27,7 +27,7 @@ describe('Error Page', () => {
       screen.getByText('An unknown error occurred. Please try again later.')
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Return to the sign-in page' })
+      screen.getByRole('button', { name: 'Go Back to Sign In' })
     ).toBeInTheDocument();
   });
 
@@ -59,7 +59,7 @@ describe('Error Page', () => {
     render(<ErrorPage />);
 
     const button = screen.getByRole('button', {
-      name: 'Return to the sign-in page',
+      name: 'Go Back to Sign In',
     });
 
     button.click();

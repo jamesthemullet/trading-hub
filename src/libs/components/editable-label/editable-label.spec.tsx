@@ -54,7 +54,7 @@ describe('editable-label', () => {
         cancelButton.click();
       });
 
-      const label = await screen.findByLabelText('Label for color');
+      const label = await screen.findByTestId('Label for color');
 
       await waitFor(() => {
         expect(label).toBeVisible();
@@ -196,7 +196,7 @@ describe('editable-label', () => {
       await userEvent.type(editColorInput, 'colour');
       await userEvent.keyboard('{Escape}');
 
-      const label = await screen.findByLabelText('Label for color');
+      const label = await screen.findByTestId('Label for color');
       expect(label).toBeVisible();
       expect(label).toHaveTextContent('color');
 

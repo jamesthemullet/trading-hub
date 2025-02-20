@@ -304,7 +304,7 @@ describe('RulesetChanges', () => {
     const attributeTitle = await screen.findByText(
       'Attribute-level changes (4)'
     );
-    const productLoader = await screen.findAllByLabelText('Product loader');
+    const productLoader = await screen.findAllByTestId('Product loader');
 
     expect(attributeTitle).toBeInTheDocument();
     expect(productLoader).toHaveLength(8);
@@ -364,7 +364,7 @@ describe('RulesetChanges', () => {
       loadMoreButton.click();
     });
 
-    const pinnedProducts = screen.getByLabelText('Pinned Products');
+    const pinnedProducts = screen.getByTestId('Pinned Products');
     const product9 = await waitFor(() =>
       within(pinnedProducts).getByLabelText('Position 9')
     );

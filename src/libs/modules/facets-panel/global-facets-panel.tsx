@@ -158,7 +158,10 @@ const GlobalFacetsPanel = ({
       )}
 
       {isLoading || isLoadingFacets ? (
-        <FacetsPanelSkeleton title="Global Facet Rule Editor" />
+        <FacetsPanelSkeleton
+          title="Global Facet Rule Editor"
+          aria-busy="true"
+        />
       ) : (
         <FacetsPanel
           title="Global Facet Rule Editor"

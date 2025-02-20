@@ -277,7 +277,7 @@ describe('ProductSearch', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByLabelText('placeholder-11')).toBeInTheDocument();
+      expect(screen.getByTestId('placeholder-11')).toBeInTheDocument();
     });
   });
 });

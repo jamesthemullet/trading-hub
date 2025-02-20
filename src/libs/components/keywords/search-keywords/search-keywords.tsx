@@ -258,11 +258,7 @@ export const SearchKeywords = ({
             </StyledForm>
           </InputBoxWrapper>
           {showViewAllButton && (
-            <ViewAllButton
-              onClick={() => openModal()}
-              theme="secondary"
-              aria-label="View all"
-            >
+            <ViewAllButton onClick={() => openModal()} theme="secondary">
               View all
             </ViewAllButton>
           )}
@@ -397,11 +393,7 @@ export const SearchKeywords = ({
                 <ErrorText>Please finish adding the keyword to close</ErrorText>
               </ErrorContainer>
             )}
-            <StyledCloseButton
-              theme="secondary"
-              onClick={handleClose}
-              aria-label="Close keywords modal"
-            >
+            <StyledCloseButton theme="secondary" onClick={handleClose}>
               Close
             </StyledCloseButton>
           </ModalFooter>

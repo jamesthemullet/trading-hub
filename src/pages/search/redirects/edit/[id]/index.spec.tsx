@@ -113,7 +113,7 @@ describe('Edit keyword redirect', () => {
 
     renderWithProviders(<Page id={ruleSetId} />);
 
-    expect(screen.getByLabelText('loader')).toBeInTheDocument();
+    expect(screen.getByLabelText('loading content')).toBeInTheDocument();
   });
 
   it('should show errors', async () => {

@@ -174,7 +174,7 @@ describe('Product', () => {
 
       openPinningMenu(screen);
 
-      const cancelButton = screen.getByLabelText('menu overlay');
+      const cancelButton = screen.getByTestId('menu overlay');
 
       act(() => {
         cancelButton.click();

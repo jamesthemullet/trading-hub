@@ -389,7 +389,7 @@ describe('TablePanel', () => {
       });
 
       const confirmButton = screen.getByRole('button', {
-        name: 'Duplicate rule',
+        name: 'Confirm',
       });
       await user.click(confirmButton);
       expect(mappingMock.newRuleSet).toHaveBeenCalledWith({
@@ -460,7 +460,7 @@ describe('TablePanel', () => {
       });
 
       const confirmButton = screen.getByRole('button', {
-        name: 'Duplicate rule',
+        name: 'Confirm',
       });
       await user.click(confirmButton);
 
@@ -499,7 +499,7 @@ describe('TablePanel', () => {
         ).toBeVisible();
       });
 
-      await user.click(screen.getByLabelText('Delete rule'));
+      await user.click(screen.getByRole('button', { name: 'Delete' }));
       expect(mappingMock.deleteRuleSetById).toHaveBeenCalledWith(mockId1);
     });
 
@@ -531,7 +531,7 @@ describe('TablePanel', () => {
           })
         ).toBeVisible();
       });
-      await user.click(screen.getByLabelText('Delete rule'));
+      await user.click(screen.getByRole('button', { name: 'Delete' }));
 
       await waitFor(() => {
         expect(
@@ -735,8 +735,7 @@ describe('TablePanel', () => {
         />
       );
 
-      const dropdown =
-        await screen.findByLabelText<HTMLElement>('rows per page');
+      const dropdown = await screen.findByText('Rows per page');
 
       await userEvent.click(dropdown);
 

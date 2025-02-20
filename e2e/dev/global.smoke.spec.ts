@@ -27,7 +27,7 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
 
     await expect(
-      page.getByLabel('Row showing Age as algoControl')
+      page.getByTestId('Row showing Age as algoControl')
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
@@ -50,14 +50,14 @@ test.describe('Global Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(
-      page.getByLabel('Row showing Absorbency Level 1 as algoControl')
+      page.getByTestId('Row showing Absorbency Level 1 as algoControl')
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Algo control' }).first().click();
     await page.getByRole('button', { name: 'include', exact: true }).click();
 
     await expect(
-      page.getByLabel('Row showing Absorbency Level 1 as included')
+      page.getByTestId('Row showing Absorbency Level 1 as included')
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
@@ -117,7 +117,7 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
 
     await expect(
-      page.getByLabel('Row showing Absorbency Level 1 as included')
+      page.getByTestId('Row showing Absorbency Level 1 as included')
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Setup' }).click();
@@ -137,10 +137,10 @@ test.describe('Global Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     const currentCount =
-      (await page.getByLabel('results count').textContent()) || '';
+      (await page.getByTestId('results count').textContent()) || '';
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByLabel('Delete rule').click();
+    await page.getByTestId('Delete rule').click();
 
     await expect(
       page.getByText(`${parseInt(currentCount) - 1} results`, { exact: true })

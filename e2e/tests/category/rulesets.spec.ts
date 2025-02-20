@@ -137,7 +137,7 @@ test.describe('Category rulesets', () => {
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
     await page
-      .getByLabel('Position 2')
+      .getByLabel('Position 2', { exact: true })
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
@@ -195,7 +195,7 @@ test.describe('Category rulesets', () => {
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
     await page
-      .getByLabel('Position 2')
+      .getByLabel('Position 2', { exact: true })
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
@@ -273,7 +273,7 @@ test.describe('Category rulesets', () => {
         await route.fulfill({ status: 200, json });
       }
     );
-    await page.getByLabel('Delete rule').click();
+    await page.getByTestId('Delete rule').click();
 
     await expect(page.getByText('6 results')).toBeVisible();
   });
@@ -296,25 +296,25 @@ test.describe('Category rulesets', () => {
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
     await page
-      .getByLabel('Position 2')
+      .getByLabel('Position 2', { exact: true })
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
 
     await page
-      .getByLabel('Position 3')
+      .getByLabel('Position 3', { exact: true })
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Pin in position' }).click();
 
     await page.getByPlaceholder('i.e. 3').fill('1');
     await page
-      .getByLabel('Position 3')
+      .getByLabel('Position 3', { exact: true })
       .getByRole('button', { name: 'Confirm' })
       .click();
 
     await page
-      .getByLabel('Position 4')
+      .getByLabel('Position 4', { exact: true })
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();
@@ -343,7 +343,7 @@ test.describe('Category rulesets', () => {
     await page.waitForLoadState('networkidle');
 
     await page
-      .getByLabel('Position 1')
+      .getByLabel('Position 1', { exact: true })
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();
@@ -380,7 +380,7 @@ test.describe('Category rulesets', () => {
     await page.waitForLoadState('networkidle');
 
     await page
-      .getByLabel('Position 2', { exact: true })
+      .getByLabel('Position 2')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();
@@ -440,7 +440,7 @@ test.describe('Category rulesets', () => {
     await page.waitForTimeout(400);
     await page.waitForLoadState('networkidle');
 
-    await expect(page.locator('[aria-label="placeholder-24"]')).toBeVisible();
+    await expect(page.locator('[data-testid="placeholder-24"]')).toBeVisible();
 
     await page.evaluate(() => {
       const productsPanel = document.querySelector(
@@ -463,7 +463,7 @@ test.describe('Category rulesets', () => {
 
     await page.waitForTimeout(400);
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('[aria-label="placeholder-24"]')).toBeVisible();
+    await expect(page.locator('[data-testid="placeholder-24"]')).toBeVisible();
 
     await page.evaluate(() => {
       const productsPanel = document.querySelector(

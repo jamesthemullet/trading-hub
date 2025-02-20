@@ -92,7 +92,7 @@ const Page = ({ id }: { id: string }) => {
       )}
 
       {isLoading ? (
-        <FacetsPanelSkeleton title="Facet Rule Editor" />
+        <FacetsPanelSkeleton title="Facet Rule Editor" aria-busy="true" />
       ) : (
         <CategoryFacetsPanel
           ruleSetIncludedFacets={ruleSetDetail.facets}

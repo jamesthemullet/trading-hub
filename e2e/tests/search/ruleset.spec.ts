@@ -172,7 +172,7 @@ test.describe('Keyword search', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByLabel('Delete rule').click();
+    await page.getByTestId('Delete rule').click();
 
     await expect(
       page.getByRole('heading', {
@@ -195,7 +195,7 @@ test.describe('Keyword search', () => {
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
 
     await page
-      .getByLabel('Position 1', { exact: true })
+      .getByLabel('Position 1')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
@@ -246,7 +246,7 @@ test.describe('Keyword search', () => {
     await page.waitForLoadState('networkidle');
 
     await page
-      .getByLabel('Position 2', { exact: true })
+      .getByLabel('Position 2')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();

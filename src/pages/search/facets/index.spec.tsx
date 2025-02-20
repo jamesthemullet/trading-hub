@@ -112,26 +112,27 @@ const server = setupServer(
 );
 
 const mockPush = jest.fn();
-const mockRouter = {
-  pathname: '/search/facets',
-  query: {
-    currentPage: '1',
-    currentPageSize: '10',
-    searchQuery: '',
-  },
-  push: mockPush,
-};
 
 describe('Search Facet Management Page', () => {
   const mockNewRuleset = 'foo123';
 
   beforeAll(() => {
     server.listen();
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   beforeEach(() => {
     server.resetHandlers();
+    const mockRouter = {
+      pathname: '/search/facets',
+      query: {
+        currentPage: '1',
+        currentPageSize: '10',
+        searchQuery: '',
+      },
+      isReady: true,
+      push: mockPush,
+    };
+    jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest.clearAllMocks();
   });
 
@@ -409,7 +410,7 @@ describe('Search Facet Management Page', () => {
     });
 
     const confirmButton = screen.getByRole('button', {
-      name: 'Duplicate rule',
+      name: 'Confirm',
     });
     await user.click(confirmButton);
     expect(mockRuleSetCreate).toHaveBeenCalledWith({
@@ -478,7 +479,7 @@ describe('Search Facet Management Page', () => {
       ).not.toBeVisible();
     });
 
-    await user.click(screen.getByLabelText('Delete rule'));
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 

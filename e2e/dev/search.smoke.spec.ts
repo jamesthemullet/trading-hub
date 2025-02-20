@@ -143,7 +143,7 @@ test.describe('Search Ranking', () => {
       page.getByRole('heading', { name: 'Create a duplicate rule' })
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Duplicate rule' }).click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
@@ -179,14 +179,14 @@ test.describe('Search Ranking', () => {
     await expect(page.getByText('Sequin Dress').first()).toBeVisible();
 
     const currentCount =
-      (await page.getByLabel('results count').textContent()) || '';
+      (await page.getByTestId('results count').textContent()) || '';
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByLabel('Delete rule').click();
+    await page.getByTestId('Delete rule').click();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByLabel('Delete rule').click();
+    await page.getByTestId('Delete rule').click();
 
     await expect(
       page.getByText(`${parseInt(currentCount) - 1} results`, { exact: true })

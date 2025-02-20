@@ -95,7 +95,7 @@ describe('Create new redirect', () => {
 
     renderWithProviders(<NewRedirect />);
 
-    expect(screen.getByLabelText('loader')).toBeInTheDocument();
+    expect(screen.getByLabelText('loading content')).toBeInTheDocument();
   });
 
   it('should create a new redirect', async () => {

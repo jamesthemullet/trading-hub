@@ -323,7 +323,7 @@ export const DataTable = ({
   return (
     <>
       <TableContainer
-        aria-label={isLoading ? 'datatable-skeleton' : 'datatable'}
+        data-testid={isLoading ? 'datatable-skeleton' : 'datatable'}
       >
         <Row
           style={{ color: '#8a8a8a', fontSize: '0.9em' }}
@@ -343,32 +343,35 @@ export const DataTable = ({
               (_, index) => {
                 return (
                   <Row
-                    aria-label={`datatable-skeleton-row-${index}`}
+                    data-testid={`datatable-skeleton-row-${index}`}
                     key={`skeleton-row-${index}`}
                     numColumns={headings.length}
                   >
-                    <FirstColumn>
+                    <FirstColumn aria-busy="true">
                       <Skeleton height={48} width={'100%'} />
                     </FirstColumn>
-                    <BreadcrumbColumn>
+                    <BreadcrumbColumn aria-busy="true">
                       <Skeleton height={48} width={'100%'} />
                     </BreadcrumbColumn>
-                    <SchedulingColumn>
+                    <SchedulingColumn aria-busy="true">
                       <Skeleton height={48} width={'100%'} />
                     </SchedulingColumn>
-                    <TableCol>
+                    <TableCol aria-busy="true">
                       <Skeleton height={48} width={'100%'} />
                     </TableCol>
-                    <TableCol>
+                    <TableCol aria-busy="true">
                       <Skeleton height={48} width={'100%'} />
                     </TableCol>
-                    <TableCol>
+                    <TableCol aria-busy="true">
                       <Skeleton height={48} width={'100%'} />
                     </TableCol>
-                    <TableCol>
+                    <TableCol aria-busy="true">
                       <Skeleton height={48} width={'100%'} />
                     </TableCol>
-                    <TableCol style={{ padding: '12px 0 16px' }}>
+                    <TableCol
+                      style={{ padding: '12px 0 16px' }}
+                      aria-busy="true"
+                    >
                       <Skeleton height={48} width={113.3} />
                     </TableCol>
                   </Row>
@@ -564,6 +567,7 @@ export const DataTable = ({
                                     onConfirmDelete();
                                   }
                                 }}
+                                data-testid="Delete rule via dropdown"
                               >
                                 Delete
                               </TableDropdown>
@@ -655,7 +659,7 @@ export const DataTable = ({
                     setOptionToggle('');
                   }}
                   theme="tertiary"
-                  aria-label="Delete rule"
+                  data-testid="Delete rule"
                   data-autofocus
                 >
                   Delete
@@ -670,7 +674,6 @@ export const DataTable = ({
                     setOptionToggle('');
                   }}
                   theme="tertiary"
-                  aria-label="Duplicate rule"
                   data-autofocus
                 >
                   Confirm

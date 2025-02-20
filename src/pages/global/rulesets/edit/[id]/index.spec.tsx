@@ -70,7 +70,7 @@ describe('Index', () => {
 
     renderWithProviders(<Page id={ruleSetId} />);
 
-    expect(screen.getByLabelText('loader')).toBeInTheDocument();
+    expect(screen.getByLabelText('loading content')).toBeInTheDocument();
   });
 
   it('should render the access denied page', async () => {

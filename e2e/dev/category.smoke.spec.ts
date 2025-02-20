@@ -174,7 +174,7 @@ test.describe('Category Ranking', () => {
 
     await expect(
       page
-        .getByLabel('Product Search Container')
+        .getByTestId('Product Search Container')
         .getByLabel('Position 1', { exact: true })
         .getByLabel('Select', { exact: false })
     ).toBeDisabled();
@@ -220,7 +220,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(
-      page.getByLabel('Row showing Baby Sizes as included')
+      page.getByTestId('Row showing Baby Sizes as included')
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Category Ranking Rules' }).click();
@@ -256,7 +256,7 @@ test.describe('Category Ranking', () => {
       page.getByRole('heading', { name: 'Create a duplicate rule' })
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Duplicate rule' }).click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product grid' })
@@ -300,14 +300,14 @@ test.describe('Category Ranking', () => {
     ).toBeVisible();
 
     const currentCount =
-      (await page.getByLabel('results count').textContent()) || '';
+      (await page.getByTestId('results count').textContent()) || '';
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByLabel('Delete rule').click();
+    await page.getByTestId('Delete rule').click();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByLabel('Delete rule').click();
+    await page.getByTestId('Delete rule').click();
 
     await expect(
       page.getByText(`${parseInt(currentCount) - 2} results`, { exact: true })

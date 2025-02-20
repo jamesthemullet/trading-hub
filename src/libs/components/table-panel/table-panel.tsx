@@ -125,7 +125,7 @@ export const TablePanel = <
         <Search value={searchInputValue} onChange={handleSearchInputChange} />
         <CountryFilterDropdown onChange={setCountryCode} />
         {isLoading ? (
-          <SkeletonButtonWrapper>
+          <SkeletonButtonWrapper aria-busy="true">
             <Skeleton height={33} width={110} />
           </SkeletonButtonWrapper>
         ) : (

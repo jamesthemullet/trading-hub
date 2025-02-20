@@ -123,7 +123,7 @@ export const BulkActions = ({
           {showBulkActionsMenu && (
             <>
               <ProductMenuOverlay
-                aria-label="menu overlay"
+                aria-label="select available bulk actions"
                 onClick={() => {
                   setShowBulkActionsMenu(false);
                 }}

@@ -111,25 +111,25 @@ const server = setupServer(
 );
 
 const mockPush = jest.fn();
-const mockRouter = {
-  pathname: '/search/redirects',
-  query: {
-    currentPage: '1',
-    currentPageSize: '10',
-    searchQuery: '',
-  },
-  push: mockPush,
-};
 
 describe('Search Rulesets', () => {
   beforeAll(() => {
     server.listen();
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   beforeEach(() => {
     server.resetHandlers();
-    jest.clearAllMocks();
+    const mockRouter = {
+      pathname: '/search/redirects',
+      query: {
+        currentPage: '1',
+        currentPageSize: '10',
+        searchQuery: '',
+      },
+      isReady: true,
+      push: mockPush,
+    };
+    jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   afterAll(() => {
@@ -308,7 +308,7 @@ describe('Search Rulesets', () => {
     });
 
     const confirmButton = screen.getByRole('button', {
-      name: 'Duplicate rule',
+      name: 'Confirm',
     });
     await user.click(confirmButton);
     expect(createRedirect).toHaveBeenCalledWith({
@@ -375,7 +375,7 @@ describe('Search Rulesets', () => {
       ).not.toBeVisible();
     });
 
-    await user.click(screen.getByLabelText('Delete rule'));
+    await user.click(screen.getByTestId('Delete rule'));
     expect(mockRedirectDelete).toHaveBeenCalledWith({ redirectId: mockId });
   });
 

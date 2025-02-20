@@ -124,14 +124,14 @@ describe('date-picker', () => {
     await user.type(startTimeInput, '1');
     expect(mockSetStartTime).toHaveBeenCalledWith('00:01');
 
-    const startAction = screen.getByLabelText('Open edit start time select');
+    const startAction = screen.getByLabelText('Open edit start time selection');
     await user.click(startAction);
 
     const endTimeInput = screen.getByLabelText('End time (GMT +1)');
     (endTimeInput as HTMLInputElement).showPicker = jest.fn();
     await user.type(endTimeInput, '2');
 
-    const endAction = screen.getByLabelText('Open edit end time select');
+    const endAction = screen.getByLabelText('Open edit end time selection');
     await user.click(endAction);
 
     expect(mockSetEndTime).toHaveBeenCalledWith('00:02');

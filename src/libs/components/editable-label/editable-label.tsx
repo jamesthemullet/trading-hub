@@ -198,7 +198,7 @@ export const EditableLabel = ({
         </>
       ) : (
         <>
-          <StyledText aria-label={`Label for ${displayValue}`}>
+          <StyledText data-testid={`Label for ${displayValue}`}>
             {displayValue}
           </StyledText>
 

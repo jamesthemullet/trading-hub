@@ -57,7 +57,7 @@ export const AlphanumericAttribute = ({
   };
 
   return (
-    <AttributeWrapper aria-label="Product Attribute">
+    <AttributeWrapper>
       <AttributeHeading>
         {fields.map(({ field, values }) => (
           <div key={`field-${field}`}>
@@ -90,7 +90,7 @@ export const AlphanumericAttribute = ({
 
       {isEditMode && canEditWeight ? (
         <AttributeRow>
-          <Text as="label" aria-label="Edit value">
+          <Text as="label">
             Strength{' '}
             <input
               value={weight ? weight : ''}

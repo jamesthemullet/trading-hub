@@ -300,7 +300,7 @@ export const CategorySearch = ({
               )}
 
               {previewCategory && (
-                <ModalSelectedCategory aria-label="Preview category">
+                <ModalSelectedCategory>
                   <Label as="h4">Selected: </Label>
                   <KeyWordPill isSelected as="p">
                     {previewCategory}
@@ -363,7 +363,6 @@ export const CategorySearch = ({
             <StyledCloseButton
               theme="secondary"
               onClick={() => setIsModalOpen(false)}
-              aria-label="Close modal"
             >
               Close
             </StyledCloseButton>

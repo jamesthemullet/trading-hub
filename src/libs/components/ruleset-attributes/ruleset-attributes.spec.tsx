@@ -207,7 +207,7 @@ describe('RulesetAttributes', () => {
       brandStepButton.click();
     });
 
-    const attributeSelection = screen.getByLabelText('Selected attributes');
+    const attributeSelection = screen.getByTestId('Selected attributes');
 
     await waitFor(() =>
       expect(within(attributeSelection).getByText('Nike')).toBeVisible()
@@ -266,7 +266,7 @@ describe('RulesetAttributes', () => {
       sizeButton[0].click();
     });
 
-    const attributes = screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByTestId('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Size')).toBeVisible()
@@ -316,7 +316,7 @@ describe('RulesetAttributes', () => {
       colourRedButton.click();
     });
 
-    const attributes = screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByTestId('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Blue')).toBeVisible()
@@ -395,7 +395,7 @@ describe('RulesetAttributes', () => {
       colourRedButton.click();
     });
 
-    const attributes = screen.getByLabelText('Selected Attribute');
+    const attributes = screen.getByTestId('Selected Attribute');
 
     await waitFor(() =>
       expect(within(attributes).getByText('Operation Bury')).toBeVisible()
@@ -432,10 +432,10 @@ describe('RulesetAttributes', () => {
       />
     );
 
-    const rulsetAttributes = screen.getByLabelText('Ruleset attributes');
+    const rulesetAttributes = screen.getByTestId('Ruleset attributes');
 
     expect(
-      within(rulsetAttributes).getByText('Product Description Attribute Rules')
+      within(rulesetAttributes).getByText('Product Description Attribute Rules')
     ).toBeVisible();
   });
 
@@ -550,12 +550,13 @@ describe('RulesetAttributes', () => {
         editButton[0].click();
       });
 
-      const input = screen.getByLabelText('Edit value');
-      await user.type(input, '{Delete}{Delete}{Delete}20');
+      const input = screen.getByLabelText('Strength %');
+      await user.clear(input);
+      await user.type(input, '20');
 
-      const saveButton = screen.getByLabelText(
-        'Save attribute averageRating change'
-      );
+      const saveButton = await screen.findByRole('button', {
+        name: 'Save attribute averageRating change',
+      });
 
       act(() => {
         saveButton.click();
@@ -738,8 +739,9 @@ describe('RulesetAttributes', () => {
         screen.queryAllByLabelText('modal alphanumeric attributes list').length
       ).toBe(0);
 
-      const input = screen.getByLabelText('Edit value');
-      await user.type(input, '{Delete}{Delete}{Delete}20');
+      const input = screen.getByLabelText('Strength %');
+      await user.clear(input);
+      await user.type(input, '20');
 
       const saveButton = screen.getByLabelText('Save attribute brand change');
 
@@ -804,8 +806,9 @@ describe('RulesetAttributes', () => {
         screen.queryAllByTestId('modal numeric attributes list').length
       ).toBe(0);
 
-      const input = screen.getByLabelText('Edit value');
-      await user.type(input, '{Delete}{Delete}{Delete}20');
+      const input = screen.getByLabelText('Strength %');
+      await user.clear(input);
+      await user.type(input, '20');
 
       const saveButton = screen.getByLabelText(
         'Cancel attribute averageRating change'
@@ -851,8 +854,9 @@ describe('RulesetAttributes', () => {
         screen.queryAllByTestId('modal alphanumeric attributes list').length
       ).toBe(0);
 
-      const input = screen.getByLabelText('Edit value');
-      await user.type(input, '{Delete}{Delete}{Delete}20');
+      const input = screen.getByLabelText('Strength %');
+      await user.clear(input);
+      await user.type(input, '20');
 
       const saveButton = screen.getByLabelText('Cancel attribute brand change');
 
@@ -911,12 +915,12 @@ describe('RulesetAttributes', () => {
         expect(screen.getByText('Showing: 3')).toBeVisible();
       });
 
-      const attributeSelection = screen.getByLabelText('Selected attributes');
+      const attributeSelection = screen.getByTestId('Selected attributes');
       act(() => {
         within(attributeSelection).getByText('Puma').click();
       });
 
-      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      const selectedAttributes = screen.getByTestId('Selected Attribute');
       await waitFor(() => {
         expect(within(selectedAttributes).getByText('Puma')).toBeVisible();
       });
@@ -924,9 +928,10 @@ describe('RulesetAttributes', () => {
         within(selectedAttributes).getByText('Operation Boost')
       ).toBeVisible();
 
-      const input = screen.getByLabelText('Edit value');
+      const input = screen.getByLabelText('Strength %');
 
-      await user.type(input, '{Delete}{Delete}{Delete}20');
+      await user.clear(input);
+      await user.type(input, '20');
 
       act(() => {
         screen.getByRole('button', { name: 'Done' }).click();
@@ -989,12 +994,12 @@ describe('RulesetAttributes', () => {
           .click();
       });
 
-      const attributeSelection = screen.getByLabelText('Selected attributes');
+      const attributeSelection = screen.getByTestId('Selected attributes');
       act(() => {
         within(attributeSelection).getByText('Puma').click();
       });
 
-      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      const selectedAttributes = screen.getByTestId('Selected Attribute');
       await waitFor(() => {
         expect(within(selectedAttributes).queryAllByText('Puma').length).toBe(
           0
@@ -1012,7 +1017,7 @@ describe('RulesetAttributes', () => {
         within(selectedAttributes).getByText('Operation Bury')
       ).toBeVisible();
 
-      const input = screen.getByLabelText('Edit value');
+      const input = screen.getByLabelText('Strength %');
 
       await user.type(input, '{Delete}{Delete}{Delete}');
 
@@ -1038,7 +1043,7 @@ describe('RulesetAttributes', () => {
                 values: ['Reebok', 'Nike'],
               },
             ],
-            weight: 0,
+            weight: 0.7,
           },
           index: 0,
           operation: 'bury',
@@ -1237,12 +1242,12 @@ describe('RulesetAttributes', () => {
         expect(screen.getByText('Showing: 3')).toBeVisible();
       });
 
-      const attributeSelection = screen.getByLabelText('Selected attributes');
+      const attributeSelection = screen.getByTestId('Selected attributes');
       act(() => {
         within(attributeSelection).getByText('Puma').click();
       });
 
-      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      const selectedAttributes = screen.getByTestId('Selected Attribute');
       await waitFor(() => {
         expect(within(selectedAttributes).getByText('Puma')).toBeVisible();
       });
@@ -1311,12 +1316,12 @@ describe('RulesetAttributes', () => {
           .click();
       });
 
-      const attributeSelection = screen.getByLabelText('Selected attributes');
+      const attributeSelection = screen.getByTestId('Selected attributes');
       act(() => {
         within(attributeSelection).getByText('Puma').click();
       });
 
-      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      const selectedAttributes = screen.getByTestId('Selected Attribute');
       await waitFor(() => {
         expect(within(selectedAttributes).queryAllByText('Puma').length).toBe(
           0
@@ -1542,7 +1547,7 @@ describe('RulesetAttributes', () => {
         within(attributeSelection).getByText('Size').click();
       });
 
-      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      const selectedAttributes = screen.getByTestId('Selected Attribute');
       await waitFor(() => {
         expect(within(selectedAttributes).getByText('Size')).toBeVisible();
       });
@@ -1550,9 +1555,10 @@ describe('RulesetAttributes', () => {
         within(selectedAttributes).getByText('Operation Boost')
       ).toBeVisible();
 
-      const input = screen.getByLabelText('Edit value');
+      const input = screen.getByLabelText('Strength %');
 
-      await user.type(input, '{Delete}{Delete}{Delete}20');
+      await user.clear(input);
+      await user.type(input, '20');
 
       act(() => {
         screen.getByRole('button', { name: 'Done' }).click();

@@ -264,7 +264,7 @@ describe('Preview', () => {
 
     renderWithProviders(<Preview {...mockProps} />);
 
-    expect(screen.getByLabelText('loader')).toBeInTheDocument();
+    expect(screen.getByLabelText('loading content')).toBeInTheDocument();
   });
 
   it('should not show excluded facets', () => {

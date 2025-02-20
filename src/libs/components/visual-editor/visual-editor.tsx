@@ -33,7 +33,7 @@ export const VisualEditor = ({
   ).length;
 
   return (
-    <Layout aria-label="Visual Editor">
+    <Layout>
       {products.map((product, index) => (
         <ProductBox key={`product-${product.id}`}>
           <Product

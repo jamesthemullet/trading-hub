@@ -260,7 +260,7 @@ export const DatePicker = (
                 <ActionIcon
                   variant="subtle"
                   color="gray"
-                  aria-label="Open edit start time select"
+                  aria-label="Open edit start time selection"
                   onClick={() => startTimeRef.current?.showPicker()}
                 >
                   <Image
@@ -288,7 +288,7 @@ export const DatePicker = (
                   disabled={value?.[1] === null}
                   variant="subtle"
                   color="gray"
-                  aria-label="Open edit end time select"
+                  aria-label="Open edit end time selection"
                   onClick={() => endTimeRef.current?.showPicker()}
                 >
                   <Image

@@ -32,7 +32,7 @@ const AnimatedLoader = styled.div`
 
 export const Loader = () => (
   <Wrapper>
-    <AnimatedLoader aria-label="loader">
+    <AnimatedLoader aria-label="loading content">
       <Icon name="Loader" size={64} />
     </AnimatedLoader>
   </Wrapper>

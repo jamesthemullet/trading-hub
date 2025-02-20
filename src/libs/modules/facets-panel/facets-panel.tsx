@@ -265,8 +265,7 @@ export const FacetsPanel = ({
     return (
       <Row
         optionSelected={displayType}
-        data-testid="facets-table-row"
-        aria-label={`Row showing ${facet.displayValue} as ${displayType}`}
+        data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
         key={facet.id}
       >
         <Col>

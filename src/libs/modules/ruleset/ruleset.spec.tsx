@@ -305,7 +305,7 @@ describe('Ruleset', () => {
       />
     );
 
-    expect(screen.getByLabelText('loader')).toBeInTheDocument();
+    expect(screen.getByLabelText('loading content')).toBeInTheDocument();
   });
 
   it('should show preview errors', () => {
@@ -1552,7 +1552,7 @@ describe('Ruleset', () => {
       );
 
       expect(screen.getByLabelText('Position 1')).toBeVisible();
-      expect(screen.queryByLabelText('Position 2')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('Position 2')).not.toBeInTheDocument();
 
       const searchProduct = screen.getByPlaceholderText('Search for product');
 
@@ -1561,13 +1561,13 @@ describe('Ruleset', () => {
       await waitFor(() => {
         expect(
           screen
-            .getByLabelText('Product Search Container')
+            .getByTestId('Product Search Container')
             .querySelector('button[title="Open menu"]')
         ).toBeVisible();
       });
 
       const menuButton = screen
-        .getByLabelText('Product Search Container')
+        .getByTestId('Product Search Container')
         .querySelector('button[title="Open menu"]');
 
       act(() => {
@@ -1991,7 +1991,9 @@ describe('Ruleset', () => {
         editWeightButton[1].click();
       });
 
-      const input = screen.getByRole('spinbutton', { name: 'Edit value' });
+      const input = screen.getByRole('spinbutton', {
+        name: 'Strength %',
+      });
 
       user.clear(input);
 

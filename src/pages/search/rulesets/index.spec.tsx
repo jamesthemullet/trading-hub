@@ -112,27 +112,27 @@ const server = setupServer(
 );
 
 const mockPush = jest.fn();
-const mockRouter = {
-  pathname: '/search/rulesets',
-  query: {
-    currentPage: '1',
-    currentPageSize: '10',
-    searchQuery: '',
-  },
-  push: mockPush,
-};
 
 describe('Search Rulesets', () => {
   const mockNewRuleset = 'foo123';
 
   beforeAll(() => {
     server.listen();
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   beforeEach(() => {
     server.resetHandlers();
-    jest.clearAllMocks();
+    const mockRouter = {
+      pathname: '/search/rulesets',
+      query: {
+        currentPage: '1',
+        currentPageSize: '10',
+        searchQuery: '',
+      },
+      isReady: true,
+      push: mockPush,
+    };
+    jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   afterAll(() => {
@@ -410,7 +410,7 @@ describe('Search Rulesets', () => {
     });
 
     const confirmButton = screen.getByRole('button', {
-      name: 'Duplicate rule',
+      name: 'Confirm',
     });
     await user.click(confirmButton);
     expect(mockRuleSetCreate).toHaveBeenCalledWith({
@@ -479,7 +479,7 @@ describe('Search Rulesets', () => {
       ).not.toBeVisible();
     });
 
-    await user.click(screen.getByLabelText('Delete rule'));
+    await user.click(screen.getByTestId('Delete rule'));
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 

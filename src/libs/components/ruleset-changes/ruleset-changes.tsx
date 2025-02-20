@@ -167,7 +167,7 @@ const ProductsLoader = ({
           </SelectAll>
         )}
       </Header>
-      <Layout aria-label={heading.split('(')[0]}>
+      <Layout data-testid={heading.split('(')[0]}>
         {products.map(({ id }, index) => {
           if (index + 1 > productsShown) {
             return null;
@@ -182,7 +182,8 @@ const ProductsLoader = ({
                 isLoading && !missingProductDetails.includes(id) ? (
                   <Skeleton
                     key={index}
-                    aria-label="Product loader"
+                    aria-busy="true"
+                    data-testid="Product loader"
                     width={235}
                     height={320}
                   />

@@ -121,7 +121,7 @@ test.describe('global rulesets', () => {
     await page.waitForLoadState('networkidle');
 
     await page
-      .getByLabel('Position 2', { exact: true })
+      .getByLabel('Position 2')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();

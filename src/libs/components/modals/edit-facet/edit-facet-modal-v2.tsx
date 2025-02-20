@@ -366,10 +366,9 @@ export const EditFacetModalV2 = ({
         key={`attribute-${displayValue}`}
         isPinned={displayType === 'boosted'}
         isExcluded={displayType === 'excluded'}
-        data-testid="rows"
-        aria-label={`attribute ${index} ${displayValue}`}
+        data-testid={`attribute ${index} ${displayValue}`}
       >
-        <Col aria-label={`select for ${displayValue}`}>
+        <Col>
           {mergeEnabled && (
             <input
               type="checkbox"
@@ -395,7 +394,7 @@ export const EditFacetModalV2 = ({
                 {attributeState.mergedValues.map((mergedId, index) => {
                   return (
                     <MergedValue key={`${index}-${displayValue}`}>
-                      <Text aria-label={`Merged value ${mergedId} label`}>
+                      <Text data-testid={`Merged value ${mergedId} label`}>
                         {mergedId}
                       </Text>{' '}
                       {removeFacetValueFromMergeGroupEnabled &&
@@ -419,7 +418,7 @@ export const EditFacetModalV2 = ({
           </AttributeWrapper>
         </Col>
 
-        <FlexColumnCol aria-label={`display-value for ${displayValue}`}>
+        <FlexColumnCol>
           {displayValueEditEnabled ? (
             <EditableLabel
               displayValue={displayValue}
@@ -460,7 +459,7 @@ export const EditFacetModalV2 = ({
           )}
         </Col>
 
-        <Col aria-label={`order for ${displayValue}`}>
+        <Col>
           <FacetOrderDropdown
             status={
               {
@@ -560,7 +559,8 @@ export const EditFacetModalV2 = ({
                 attributeValuesState.map((attribute) => (
                   <SkeletonRow
                     key={`attribute-value-skeleton-${attribute.displayValue}`}
-                    aria-label={`attribute-value-skeleton`}
+                    data-testid={`attribute-value-skeleton`}
+                    aria-busy="true"
                   />
                 ))
               ) : (

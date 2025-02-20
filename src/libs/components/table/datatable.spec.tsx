@@ -126,7 +126,7 @@ describe('DataTable', () => {
       />
     );
 
-    expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
+    expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
     expect(screen.getByText('Identifier')).toBeVisible();
   });
 
@@ -142,8 +142,8 @@ describe('DataTable', () => {
       />
     );
 
-    expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
-    expect(screen.getByLabelText('datatable-skeleton-row-19')).toBeVisible();
+    expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
+    expect(screen.getByTestId('datatable-skeleton-row-19')).toBeVisible();
     expect(screen.getByText('Identifier')).toBeVisible();
   });
 
@@ -244,7 +244,7 @@ describe('DataTable', () => {
           })
         ).toBeVisible();
       });
-      await user.click(screen.getByLabelText('Delete rule'));
+      await user.click(screen.getByTestId('Delete rule'));
 
       expect(mockDelete).toHaveBeenCalledWith({
         id: 'mockId',
@@ -284,7 +284,7 @@ describe('DataTable', () => {
         ).toBeVisible();
       });
 
-      const confirmDeleteButton = screen.getByLabelText('Delete rule');
+      const confirmDeleteButton = screen.getByTestId('Delete rule');
       await user.type(confirmDeleteButton, '{Enter}');
 
       expect(mockDelete).toHaveBeenCalledWith({
@@ -355,7 +355,7 @@ describe('DataTable', () => {
       });
 
       const confirmButton = screen.getByRole('button', {
-        name: 'Duplicate rule',
+        name: 'Confirm',
       });
       await user.click(confirmButton);
 
@@ -388,7 +388,7 @@ describe('DataTable', () => {
       });
 
       const confirmButton = screen.getByRole('button', {
-        name: 'Duplicate rule',
+        name: 'Confirm',
       });
       await user.click(confirmButton);
 
@@ -422,7 +422,7 @@ describe('DataTable', () => {
       });
 
       const confirmButton = screen.getByRole('button', {
-        name: 'Duplicate rule',
+        name: 'Confirm',
       });
       await user.type(confirmButton, '{Enter}');
 

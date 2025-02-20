@@ -145,7 +145,7 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
@@ -153,18 +153,14 @@ describe('Category Facet Management New', () => {
 
     await user.click(includeOnlyOption);
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as included')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
     });
 
     const excludeOnlyOption = screen.getAllByText('Exclude only')[1];
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing size as excluded')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing size as excluded')).toBeVisible();
     });
 
     const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);
@@ -236,12 +232,12 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing category as algoControl')
+        screen.getByTestId('Row showing category as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing category as included')
+      screen.queryByTestId('Row showing category as included')
     ).not.toBeInTheDocument();
 
     act(() => {
@@ -250,25 +246,25 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing category as included')
+        screen.getByTestId('Row showing category as included')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing category as excluded')
+      screen.queryByTestId('Row showing category as excluded')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing category as algoControl')
+      screen.queryByTestId('Row showing category as algoControl')
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
 
     act(() => {
@@ -276,9 +272,7 @@ describe('Category Facet Management New', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as included')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
     });
 
     await user.click(await screen.findByLabelText('Move category row down'));
@@ -322,47 +316,43 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
 
     const includeOnlyOption = screen.getAllByText('Include only')[0];
 
     await user.click(includeOnlyOption);
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as included')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as algoControl')
+      screen.queryByTestId('Row showing color as algoControl')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
     const excludeOnlyOption = screen.getAllByText('Exclude only')[0];
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as excluded')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as excluded')).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as algoControl')
+      screen.queryByTestId('Row showing color as algoControl')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
   });
 
@@ -389,15 +379,15 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -407,16 +397,14 @@ describe('Category Facet Management New', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as included')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as algoControl')
+      screen.queryByTestId('Row showing color as algoControl')
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -427,15 +415,15 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
   });
 
@@ -462,15 +450,15 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -480,16 +468,14 @@ describe('Category Facet Management New', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as excluded')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as excluded')).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as algoControl')
+      screen.queryByTestId('Row showing color as algoControl')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -500,15 +486,15 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
   });
 
@@ -535,15 +521,15 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -553,16 +539,14 @@ describe('Category Facet Management New', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as excluded')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as excluded')).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as algoControl')
+      screen.queryByTestId('Row showing color as algoControl')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -572,16 +556,14 @@ describe('Category Facet Management New', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as included')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as algoControl')
+      screen.queryByTestId('Row showing color as algoControl')
     ).not.toBeInTheDocument();
   });
 
@@ -607,10 +589,10 @@ describe('Category Facet Management New', () => {
     });
 
     expect(
-      screen.getByLabelText('Row showing color as algoControl')
+      screen.getByTestId('Row showing color as algoControl')
     ).toBeVisible();
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -621,15 +603,15 @@ describe('Category Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
     expect(
-      screen.queryByLabelText('Row showing color as included')
+      screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Row showing color as excluded')
+      screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
   });
 

@@ -345,7 +345,7 @@ describe('Index', () => {
       ).not.toBeVisible();
     });
 
-    await user.click(screen.getByLabelText('Delete rule'));
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 
@@ -526,7 +526,7 @@ describe('Index', () => {
     });
 
     const confirmButton = screen.getByRole('button', {
-      name: 'Duplicate rule',
+      name: 'Confirm',
     });
     await user.click(confirmButton);
     expect(createRuleset).toHaveBeenCalledWith({
@@ -587,8 +587,8 @@ describe('Index', () => {
       expect(screen.queryAllByText('Add new rule')).toHaveLength(0);
     });
 
-    expect(screen.getByLabelText('datatable-skeleton')).toBeVisible();
-    expect(screen.getByLabelText('table-pagination-skeleton')).toBeVisible();
+    expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
+    expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
   });
 
   it('should show country flag and filter', async () => {

@@ -22,7 +22,7 @@ describe('TablePagination', () => {
 
     renderWithProviders(<TablePagination {...mockProps} />);
 
-    expect(screen.getByLabelText('table-pagination-skeleton')).toBeVisible();
+    expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
   });
 
   it('should render if pagination totalItems is undefined', async () => {

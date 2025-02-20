@@ -101,7 +101,7 @@ export const RulesetAttributes = ({
         Create new attribute rule
       </CreateNew>
       {countOfAttributeChanges > 0 && (
-        <RuleSetAttributesContainer aria-label="Ruleset attributes">
+        <RuleSetAttributesContainer data-testid="Ruleset attributes">
           <AttributeCount>
             {countOfAttributeChanges} attribute{' '}
             {pluralize('rule', countOfAttributeChanges)}

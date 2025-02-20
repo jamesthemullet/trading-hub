@@ -249,7 +249,7 @@ export const AddAttribute = ({
           width: '40%',
         }}
       >
-        <SelectedAttribute aria-label="Selected Attribute">
+        <SelectedAttribute data-testid="Selected Attribute">
           {selectedAttributeType === 'numeric' && !!selectedNumericField && (
             <NumericAttribute
               operation={selectedOperation}
@@ -508,8 +508,7 @@ export const AddAttribute = ({
             <ModalAttributeHeader>
               <Label isStrong>Current matching attribute values</Label>
             </ModalAttributeHeader>
-
-            <div aria-label="Selected attributes">
+            <div data-testid="Selected attributes">
               <Checkboxes
                 onSelect={(isSelected, name) => {
                   setSelectedAttributeType('alphanumeric');

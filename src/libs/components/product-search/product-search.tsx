@@ -102,7 +102,7 @@ export const ProductSearch = ({
   }, 300);
 
   return (
-    <ProductSearchRootContainer aria-label="Product Search Container">
+    <ProductSearchRootContainer data-testid="Product Search Container">
       <TopContainer>
         <StyledSearch
           placeholder="Search for product"
@@ -134,7 +134,13 @@ export const ProductSearch = ({
               isSelectionDisabled
             />
           ) : (
-            <Skeleton key={id} aria-label={id} w={'100%'} h={'200px'} />
+            <Skeleton
+              key={id}
+              w={'100%'}
+              h={'200px'}
+              data-testid={id}
+              aria-busy="true"
+            />
           );
         })}
       </ProductsContainer>

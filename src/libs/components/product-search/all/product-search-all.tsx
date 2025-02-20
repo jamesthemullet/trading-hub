@@ -150,7 +150,7 @@ export const ProductSearchAll = ({
   };
 
   return (
-    <ProductSearchRootContainer aria-label="Product Search Container">
+    <ProductSearchRootContainer data-testid="Product Search Container">
       <TopContainer>
         <StyledSearch
           placeholder="Search for product"

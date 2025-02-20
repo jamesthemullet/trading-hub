@@ -149,7 +149,7 @@ describe('Search Keywords', () => {
     );
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByLabelText('View all'));
+      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
     });
 
     await waitFor(async () => {
@@ -176,7 +176,7 @@ describe('Search Keywords', () => {
     );
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByLabelText('View all'));
+      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
     });
 
     await waitFor(async () => {
@@ -204,7 +204,7 @@ describe('Search Keywords', () => {
     expect(modal).toBeVisible();
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByLabelText('View all'));
+      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
       await userEvent.click(
         within(modal).getByLabelText('Remove keyword: keyword5')
       );
@@ -243,20 +243,16 @@ describe('Search Keywords', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: 'Close keywords modal' })
-      ).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
     });
 
     await waitFor(async () => {
-      await userEvent.click(
-        screen.getByRole('button', { name: 'Close keywords modal' })
-      );
+      await userEvent.click(screen.getByRole('button', { name: 'Close' }));
     });
 
     await waitFor(() => {
       expect(
-        screen.queryByRole('button', { name: 'Close keywords modal' })
+        screen.queryByRole('button', { name: 'Close' })
       ).not.toBeInTheDocument();
     });
   });
@@ -278,9 +274,7 @@ describe('Search Keywords', () => {
     });
 
     await waitFor(async () => {
-      await userEvent.click(
-        screen.getByRole('button', { name: 'Close keywords modal' })
-      );
+      await userEvent.click(screen.getByRole('button', { name: 'Close' }));
     });
 
     await waitFor(() => {
@@ -289,9 +283,7 @@ describe('Search Keywords', () => {
       ).toBeVisible();
     });
 
-    expect(
-      screen.getByRole('button', { name: 'Close keywords modal' })
-    ).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
   });
 
   it('should filter attributes on user input', async () => {
@@ -429,9 +421,7 @@ describe('Search Keywords', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: 'Close keywords modal' })
-      ).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
     });
 
     const keyword2 = await within(
@@ -467,9 +457,7 @@ describe('Search Keywords', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: 'Close keywords modal' })
-      ).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
     });
 
     const modal = await screen.findByLabelText('Search Keywords Modal');

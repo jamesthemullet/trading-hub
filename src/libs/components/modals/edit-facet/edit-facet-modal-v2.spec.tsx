@@ -127,9 +127,7 @@ describe('ModalEditValues', () => {
       'SubCategory_507'
     );
 
-    expect(
-      await screen.findByLabelText('attribute-value-skeleton')
-    ).toBeVisible();
+    expect(await screen.findByTestId('attribute-value-skeleton')).toBeVisible();
   });
 
   it('should render merge group', async () => {
@@ -158,16 +156,14 @@ describe('ModalEditValues', () => {
       />
     );
 
-    expect(
-      await screen.findByLabelText('Merged value red label')
-    ).toBeVisible();
+    expect(await screen.findByTestId('Merged value red label')).toBeVisible();
 
     expect(
       await screen.findByLabelText('Remove merged facet for red')
     ).toBeVisible();
 
     expect(
-      await screen.findByLabelText('Merged value scarlet label')
+      await screen.findByTestId('Merged value scarlet label')
     ).toBeVisible();
   });
 
@@ -234,9 +230,7 @@ describe('ModalEditValues', () => {
       />
     );
 
-    expect(
-      await screen.findByLabelText('Merged value red label')
-    ).toBeVisible();
+    expect(await screen.findByTestId('Merged value red label')).toBeVisible();
 
     expect(
       screen.queryByLabelText('Remove merged value red from color merge group')
@@ -271,7 +265,7 @@ describe('ModalEditValues', () => {
       />
     );
 
-    expect(screen.getByLabelText('Merged value red label')).toBeVisible();
+    expect(await screen.findByTestId('Merged value red label')).toBeVisible();
 
     expect(
       screen.queryByLabelText('Remove merged value red from red merge group')

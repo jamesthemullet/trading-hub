@@ -257,7 +257,7 @@ describe('Product bulk actions', () => {
 
     expect(bulkActionHeading).toBeVisible();
 
-    const menuOverlay = screen.getByLabelText('menu overlay');
+    const menuOverlay = screen.getByLabelText('select available bulk actions');
 
     act(() => {
       menuOverlay.click();

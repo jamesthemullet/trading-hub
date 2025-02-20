@@ -118,7 +118,7 @@ test.describe('Keyword Redirects', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByLabel('Delete rule').click();
+    await page.getByTestId('Delete rule').click();
 
     await expect(
       page.getByRole('heading', {

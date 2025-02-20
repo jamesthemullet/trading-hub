@@ -52,7 +52,7 @@ export const NumericAttribute = ({
   };
 
   return (
-    <AttributeWrapper aria-label="Product Attribute">
+    <AttributeWrapper>
       <AttributeHeading>
         <Label isStrong>{name}</Label>
       </AttributeHeading>
@@ -87,7 +87,7 @@ export const NumericAttribute = ({
 
       {isEditMode && (
         <AttributeRow>
-          <Text as="label" aria-label="Edit value">
+          <Text as="label">
             Strength{' '}
             <input
               value={weight ? weight : ''}

@@ -292,7 +292,7 @@ describe('Category facet management', () => {
       ).toBeVisible();
     });
 
-    await user.click(screen.getByLabelText('Delete rule'));
+    await user.click(screen.getByTestId('Delete rule'));
     expect(handleDeleteMock).toHaveBeenCalledWith({ rulesetId: mockId });
   });
 
@@ -511,7 +511,7 @@ describe('Category facet management', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('table-pagination-skeleton')
+        screen.getByTestId('table-pagination-skeleton')
       ).toBeInTheDocument();
     });
   });
@@ -586,7 +586,7 @@ describe('Category facet management', () => {
     });
 
     const confirmButton = screen.getByRole('button', {
-      name: 'Duplicate rule',
+      name: 'Confirm',
     });
     await user.click(confirmButton);
     expect(createRuleset).toHaveBeenCalledWith({
@@ -714,7 +714,7 @@ describe('Category facet management', () => {
     });
 
     const confirmButton = screen.getByRole('button', {
-      name: 'Duplicate rule',
+      name: 'Confirm',
     });
     await user.click(confirmButton);
     expect(createRuleset).toHaveBeenCalledWith({
@@ -798,7 +798,7 @@ describe('Category facet management', () => {
         ).toBeVisible();
       });
 
-      await user.click(screen.getByLabelText('Delete rule'));
+      await user.click(screen.getByTestId('Delete rule'));
 
       await waitFor(() => {
         expect(

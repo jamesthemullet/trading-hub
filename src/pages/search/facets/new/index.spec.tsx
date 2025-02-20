@@ -98,7 +98,7 @@ describe('Search Facet Management New', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText('Row showing color as algoControl')
+        screen.getByTestId('Row showing color as algoControl')
       ).toBeVisible();
     });
 
@@ -106,18 +106,14 @@ describe('Search Facet Management New', () => {
 
     await user.click(includeOnlyOption);
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing color as included')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
     });
 
     const excludeOnlyOption = screen.getAllByText('Exclude only')[1];
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(
-        screen.getByLabelText('Row showing size as excluded')
-      ).toBeVisible();
+      expect(screen.getByTestId('Row showing size as excluded')).toBeVisible();
     });
 
     const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);

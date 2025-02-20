@@ -189,7 +189,7 @@ const SearchFacetsPanel = ({
       )}
 
       {isLoading ? (
-        <FacetsPanelSkeleton title="Facet Rule Editor" />
+        <FacetsPanelSkeleton title="Facet Rule Editor" aria-busy="true" />
       ) : (
         <FacetsPanel
           title="Facet Rule Editor"

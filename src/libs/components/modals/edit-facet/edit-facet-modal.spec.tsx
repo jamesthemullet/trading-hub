@@ -414,9 +414,7 @@ describe('ModalEditValues', () => {
       />
     );
 
-    expect(screen.getAllByLabelText('attribute-value-skeleton')).toHaveLength(
-      11
-    );
+    expect(screen.getAllByTestId('attribute-value-skeleton')).toHaveLength(11);
   });
 
   it('should display error message when retrieving attributes fails', async () => {
@@ -1191,7 +1189,7 @@ describe('ModalEditValues', () => {
       );
 
       expect(screen.getByText('Merged Value Group')).toBeVisible();
-      expect(screen.getByLabelText('Label for foo')).toBeVisible();
+      expect(screen.getByTestId('Label for foo')).toBeVisible();
     });
 
     it('should show error if user attempts to save a merge with a duplicate name', async () => {
@@ -1292,17 +1290,15 @@ describe('ModalEditValues', () => {
         />
       );
       await waitFor(() => {
-        expect(screen.getByLabelText('attribute 0 Cotton')).toBeInTheDocument();
+        expect(screen.getByTestId('attribute 0 Cotton')).toBeInTheDocument();
       });
+      expect(screen.getByTestId('attribute 1 Duck Down')).toBeInTheDocument();
       expect(
-        screen.getByLabelText('attribute 1 Duck Down')
-      ).toBeInTheDocument();
-      expect(
-        screen.getByLabelText('attribute 2 Duck Down And Feather')
+        screen.getByTestId('attribute 2 Duck Down And Feather')
       ).toBeInTheDocument();
       user.click(screen.getByLabelText('Move Duck Down row up'));
       expect(
-        await screen.findByLabelText('attribute 0 Duck Down')
+        await screen.findByTestId('attribute 0 Duck Down')
       ).toBeInTheDocument();
     }, 10000);
 
@@ -1329,11 +1325,11 @@ describe('ModalEditValues', () => {
         />
       );
       expect(
-        await screen.findByLabelText('attribute 1 Duck Down')
+        await screen.findByTestId('attribute 1 Duck Down')
       ).toBeInTheDocument();
       user.click(screen.getByLabelText('Move Duck Down row down'));
       expect(
-        await screen.findByLabelText('attribute 2 Duck Down')
+        await screen.findByTestId('attribute 2 Duck Down')
       ).toBeInTheDocument();
     });
   });

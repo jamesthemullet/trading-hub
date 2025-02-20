@@ -355,9 +355,9 @@ describe('Index', () => {
     });
 
     await user.click(rulesetDropdown[0]);
-    const reRenderedDeleteButton = screen.getByRole('button', {
-      name: 'Delete',
-    });
+    const reRenderedDeleteButton = screen.getByTestId(
+      'Delete rule via dropdown'
+    );
     await user.click(reRenderedDeleteButton);
     await waitFor(() => {
       expect(
@@ -367,7 +367,7 @@ describe('Index', () => {
         })
       ).toBeVisible();
     });
-    await user.click(screen.getByLabelText('Delete rule'));
+    await user.click(screen.getByTestId('Delete rule'));
 
     expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
     expect(mockRefetchRulesList).toHaveBeenCalled();

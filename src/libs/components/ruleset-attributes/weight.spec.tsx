@@ -59,7 +59,9 @@ describe('AttributeWeight', () => {
       />
     );
 
-    const input = screen.getByRole('spinbutton', { name: 'Edit value' });
+    const input = screen.getByRole('spinbutton', {
+      name: 'Strength %',
+    });
     await user.clear(input);
 
     expect(
@@ -82,7 +84,9 @@ describe('AttributeWeight', () => {
       />
     );
 
-    const input = screen.getByRole('spinbutton', { name: 'Edit value' });
+    const input = screen.getByRole('spinbutton', {
+      name: 'Strength %',
+    });
     await user.clear(input);
     await user.type(input, '99');
 

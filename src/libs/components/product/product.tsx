@@ -62,7 +62,7 @@ export const ProductDetails = ({
           sizes="100%"
         />
       </ProductCard>
-      <ProductInfo aria-label="Product details" isSearchResult={isSearchResult}>
+      <ProductInfo isSearchResult={isSearchResult}>
         <Text isStrong={isBrandStrong ?? true} data-testid="product title">
           {brand} {title}
         </Text>
@@ -180,7 +180,7 @@ export const Product = ({
     <ProductWrapper aria-label={`Position ${index + 1}`} {...rest}>
       {isMenuOpen && (
         <ProductMenuOverlay
-          aria-label="menu overlay"
+          data-testid="menu overlay"
           onClick={() => {
             setIsMenuOpen(!isMenuOpen);
             setIsLockToPositionMenuOpen(false);
@@ -654,7 +654,7 @@ export const MissingProduct = ({
       </ProductHeader>
       <Skeleton
         key={index}
-        aria-label="Product loader"
+        aria-busy="true"
         width="100%"
         height={175}
         animate={false}

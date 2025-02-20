@@ -23,7 +23,7 @@ const TotalResultsLabel = styled.div`
   font-family: mnsLondonRegular, monospace;
   margin-left: 31px;
 `;
-const RowsPerPageLabel = styled.div``;
+
 const RowsPerPageContainer = styled.div`
   font-family: mnsLondonRegular, monospace;
   display: flex;
@@ -63,22 +63,22 @@ export const TablePagination = ({
     <NavigationContainer>
       {isLoading ? (
         <>
-          <TotalResultsLabel>
+          <TotalResultsLabel aria-busy="true">
             <Skeleton
               height={40}
               width={84}
               mb={24}
-              aria-label="table-pagination-skeleton"
+              data-testid="table-pagination-skeleton"
             />
           </TotalResultsLabel>
-          <Skeleton height={40} width={173} mb={24} />
+          <Skeleton height={40} width={173} mb={24} aria-busy="true" />
           <RowsPerPageContainer>
-            <Skeleton height={40} width={235} mb={24} />
+            <Skeleton height={40} width={235} mb={24} aria-busy="true" />
           </RowsPerPageContainer>
         </>
       ) : (
         <>
-          <TotalResultsLabel aria-label="results count">
+          <TotalResultsLabel data-testid="results count">
             {pagination.totalItems} results
           </TotalResultsLabel>
           <Pagination
@@ -93,11 +93,10 @@ export const TablePagination = ({
             }}
           />
           <RowsPerPageContainer>
-            <RowsPerPageLabel>Rows per page</RowsPerPageLabel>
+            <span>Rows per page</span>
             <Dropdown
               label={`${currentPageSize}`}
               isOpen={isPageSizeOpen}
-              aria-label="rows per page"
               onOpen={() => {
                 setIsPageSizeOpen(true);
               }}
