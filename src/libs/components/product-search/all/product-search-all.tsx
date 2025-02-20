@@ -132,7 +132,7 @@ export const ProductSearchAll = ({
   }, [productSearchTerm, fetchData]);
 
   const onSearch = (query: string) => {
-    setProductSearchTerm(query);
+    setProductSearchTerm(query.replace(/ *, */g, ', '));
     if (!query) {
       setSearchProducts([]);
     }

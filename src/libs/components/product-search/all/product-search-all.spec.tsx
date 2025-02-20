@@ -198,6 +198,85 @@ describe('ProductSearchAll', () => {
     expect(mockSearch).toHaveBeenCalledWith(expectedCall);
   });
 
+  it('should add a space after comma for multiple product queries', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    const queryMade = '60371013,22473506,   60089757  ,60286681';
+    const expectedQuery = '60371013, 22473506, 60089757, 60286681';
+
+    const mockSearch = jest.fn(() => {
+      return Promise.resolve({
+        products: [
+          {
+            id: '1',
+            productId: 'id1',
+            title: 'mock title 1',
+            imageUrl: ['example1.jpg'],
+            brand: 'brand',
+            metadata: { isPinned: false },
+            isInStock: true,
+            price: '£5',
+            url: '',
+          },
+        ],
+        pagination: {
+          totalItems: 3,
+        },
+      });
+    });
+
+    const expectedCall = {
+      categories: ['cat123'],
+      countryCode: 'UK_IE',
+      merchandisingRules: {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        excludes: { alphanumeric: [] },
+        includes: { alphanumeric: [] },
+        pinnedProducts: [],
+      },
+      query: expectedQuery,
+      rows: 400,
+      start: 0,
+    };
+
+    jest.mocked(useCategoryProductSearch).mockReturnValue({
+      searchForProduct: mockSearch,
+      error: '',
+      isLoading: false,
+    });
+
+    const mockSelectAll = jest.fn();
+
+    renderWithProviders(
+      <ProductSearchAll
+        {...mockProps}
+        categoryIds={['cat123']}
+        dispatch={mockDispatch}
+        pinnedProductsCount={0}
+        hasBulkAction
+        onSelectAll={mockSelectAll}
+      />,
+      [],
+      {
+        featureFlags: {
+          hasBulkActions: true,
+        },
+      }
+    );
+
+    const searchProduct = screen.getByPlaceholderText('Search for product');
+
+    await user.type(searchProduct, queryMade);
+
+    await waitFor(() => {
+      expect(screen.getByText('1 result')).toBeInTheDocument();
+    });
+
+    expect(mockSearch).toHaveBeenCalledWith(expectedCall);
+  });
+
   it('should search with search terms', async () => {
     const user = userEvent.setup({ delay: null });
 
