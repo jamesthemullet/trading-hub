@@ -4,7 +4,6 @@ import { ActionIcon } from '@mantine/core';
 import {
   DatePicker as MantineDatePicker,
   DatePickerProps,
-  TimeInput,
 } from '@mantine/dates';
 
 import dayjs from 'dayjs';
@@ -12,7 +11,18 @@ import Image from 'next/image';
 
 import { Toggle } from '../toggle/toggle';
 import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
+import {
+  CalendarContainer,
+  Content,
+  Header,
+  OnAllTimeContainer,
+  OnAllTimeLabel,
+  StyledInfoContainer,
+  StyledInfoLabel,
+  StyledTimeInput,
+  StyledTimeInputGroup,
+  StyledvalueLabel,
+} from './date-picker.styles';
 import { formatMonthDayDateTimeRange } from './format-date-range';
 
 const StyledDatePicker = styled(MantineDatePicker<'range'>)`
@@ -75,83 +85,6 @@ const StyledDatePicker = styled(MantineDatePicker<'range'>)`
   & .mantine-DatePicker-weekday {
     color: #000000;
   }
-`;
-
-const CalendarContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  margin: 0;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin: ${spacing(2)};
-`;
-
-const StyledInfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: ${spacing(2)} 0;
-  margin-bottom: ${spacing(2)};
-  border-top: 1px solid ${color.grey};
-  border-bottom: 1px solid ${color.grey};
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  ${(props: { disabled: boolean }) =>
-    props.disabled
-      ? `
-        pointer-events: none;
-        opacity: 0.5;
-      `
-      : ''}
-`;
-
-const OnAllTimeContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const OnAllTimeLabel = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 21px;
-  margin-left: 10px;
-`;
-
-const StyledInfoLabel = styled.div`
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 21px;
-  margin-left: 10px;
-  margin-bottom: ${spacing(2)};
-`;
-
-const StyledvalueLabel = styled.div`
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 21px;
-  margin-left: 10px;
-`;
-
-const StyledTimeInputGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: ${spacing(2)} 0;
-`;
-const StyledTimeInput = styled(TimeInput)`
-  width: 250px;
 `;
 
 const weekDayFormat = (day: Date) => {
@@ -233,7 +166,7 @@ export const DatePicker = (
         </StyledvalueLabel>
       </StyledInfoContainer>
 
-      <Content disabled={isToggleEnabled}>
+      <Content isDisabled={isToggleEnabled}>
         <StyledDatePicker
           allowSingleDateInRange
           size="sm"

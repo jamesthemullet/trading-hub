@@ -14,7 +14,7 @@ describe('DateTimePickerModal', () => {
   });
 
   it('should render correctly', async () => {
-    render(<DateTimePickerModal />);
+    render(<DateTimePickerModal onUpdateDateTimeRange={jest.fn()} />);
     expect(
       screen.queryByRole('button', { name: 'Close schedule editor' })
     ).not.toBeInTheDocument();
@@ -42,14 +42,16 @@ describe('DateTimePickerModal', () => {
   });
 
   it('should call save', async () => {
-    render(<DateTimePickerModal />);
+    render(<DateTimePickerModal onUpdateDateTimeRange={jest.fn()} />);
 
     const input = screen.getByPlaceholderText('Select date range');
     act(() => {
       input.click();
     });
+    await waitFor(() => {
+      screen.getByTitle('Toggle').click();
+    });
 
-    // select date range
     await waitFor(() => {
       const startDate = screen.getAllByText('14')[0];
       act(() => {
@@ -95,6 +97,9 @@ describe('DateTimePickerModal', () => {
     const input = screen.getByPlaceholderText('Select date range');
     act(() => {
       input.click();
+    });
+    await waitFor(() => {
+      screen.getByTitle('Toggle').click();
     });
 
     await waitFor(() => {
@@ -169,7 +174,10 @@ describe('DateTimePickerModal', () => {
       input.click();
     });
 
-    // select date range
+    await waitFor(() => {
+      screen.getByTitle('Toggle').click();
+    });
+
     await waitFor(() => {
       const startDate = screen.getAllByText('14')[0];
       act(() => {
@@ -230,6 +238,68 @@ describe('DateTimePickerModal', () => {
     });
   });
 
+  it('should be able to select start time only', async () => {
+    const onUpdateDateTimeRange = jest.fn();
+    render(
+      <DateTimePickerModal
+        onUpdateDateTimeRange={onUpdateDateTimeRange}
+        showCalendarIcon
+      />
+    );
+
+    const input = screen.getByPlaceholderText('Select date range');
+    const calendarIcon = screen.getByRole('button');
+    act(() => {
+      calendarIcon.click();
+    });
+    await waitFor(() => {
+      screen.getByTitle('Toggle').click();
+    });
+
+    await waitFor(() => {
+      const startDate = screen.getAllByText('14')[0];
+      act(() => {
+        startDate.click();
+      });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Mar 14 2022 00:00')).toBeVisible();
+    });
+
+    await waitFor(() => {
+      const noEndDateButton = screen.getByLabelText('No end date');
+      act(() => {
+        noEndDateButton.click();
+      });
+    });
+
+    const headerText = await screen.findByText('Mar 14 2022 00:00');
+    expect(headerText).toBeVisible();
+
+    const saveButton = screen.getByRole('button', {
+      name: 'Close schedule editor',
+    });
+    act(() => {
+      saveButton.click();
+    });
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: 'Close schedule editor' })
+      ).not.toBeInTheDocument();
+    });
+
+    expect(headerText).not.toBeInTheDocument();
+
+    expect((input as HTMLInputElement).value).toBe(
+      '14/03/22 00:00 - No end date'
+    );
+    expect(onUpdateDateTimeRange).toHaveBeenLastCalledWith([
+      new Date('2022-03-14T00:00:00.000Z'),
+      null,
+    ]);
+  });
+
   it('should init with date', async () => {
     const user = userEvent.setup({ delay: null });
     const onUpdateDateTimeRange = jest.fn();
@@ -279,5 +349,42 @@ describe('DateTimePickerModal', () => {
       new Date('2022-03-01T12:00:00.000Z'),
       new Date('2022-03-20T12:00:00.000Z'),
     ]);
+  });
+
+  it('should init with start date and save no date', async () => {
+    const onUpdateDateTimeRange = jest.fn();
+    render(
+      <DateTimePickerModal
+        dateTime={[new Date('2022-03-01T12:00:00.000Z'), null]}
+        onUpdateDateTimeRange={onUpdateDateTimeRange}
+      />
+    );
+
+    const input = screen.getByPlaceholderText('Select date range');
+    expect((input as HTMLInputElement).value).toBe(
+      '01/03/22 12:00 - No end date'
+    );
+
+    act(() => {
+      input.click();
+    });
+    await waitFor(() => {
+      screen.getByTitle('Toggle').click();
+    });
+
+    const saveButton = screen.getByRole('button', {
+      name: 'Close schedule editor',
+    });
+    act(() => {
+      saveButton.click();
+    });
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: 'Close schedule editor' })
+      ).not.toBeInTheDocument();
+    });
+
+    expect((input as HTMLInputElement).value).toBe('');
+    expect(onUpdateDateTimeRange).toHaveBeenCalledWith([null, null]);
   });
 });

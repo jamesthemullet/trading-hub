@@ -6,6 +6,7 @@ import { useDisclosure } from '@mantine/hooks';
 import {
   Button,
   DatePicker,
+  DatePickerSingle,
   formatDateMonthYearTimeRange,
   Input,
   spacing,
@@ -13,6 +14,9 @@ import {
 
 import dayjs from 'dayjs';
 import Image from 'next/image';
+
+import { Checkbox } from '../checkboxes/checkbox';
+import { Content } from './date-picker.styles';
 
 const theme = createTheme({});
 
@@ -43,6 +47,13 @@ const StyledInput = styled(Input)`
   height: 54px;
 `;
 
+const ButtonImage = styled.button`
+  border: none;
+  background: none;
+  margin: 0;
+  padding: ${spacing(1)} 0 0;
+`;
+
 const StyledInputContainer = styled.div`
   background-color: #f5f5f5;
   border-bottom: solid 1px #cacaca;
@@ -53,6 +64,13 @@ const StyledInputContainer = styled.div`
   padding: 0 ${spacing(1)};
 `;
 
+const RangeSelector = styled.div`
+  display: flex;
+  align-items: end;
+  justify-content: right;
+  padding-right: 150px;
+`;
+
 export const DateTimePickerModal = ({
   dateTime,
   onUpdateDateTimeRange,
@@ -60,7 +78,7 @@ export const DateTimePickerModal = ({
   showCalendarIcon,
 }: {
   dateTime?: [Date | null, Date | null];
-  onUpdateDateTimeRange?: (dateTime: [Date | null, Date | null]) => void;
+  onUpdateDateTimeRange: (dateTime: [Date | null, Date | null]) => void;
   label?: string;
   showCalendarIcon?: boolean;
 }) => {
@@ -72,6 +90,9 @@ export const DateTimePickerModal = ({
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>(
     dateTime || [null, null]
   );
+  const [hasDateRange, setHasDateRange] = useState(
+    dateTime && dateTime[0] !== null && dateTime[1] === null ? false : true
+  );
   const [startTime, setStartTime] = useState(
     dateRange?.[0] ? dayjs(dateRange[0]).format('HH:mm') : '00:00'
   );
@@ -81,7 +102,7 @@ export const DateTimePickerModal = ({
 
   const handleSave = () => {
     const startDate = tempDateRange[0];
-    const endDate = tempDateRange[1];
+    const endDate = hasDateRange ? tempDateRange[1] : null;
 
     if (startTime) {
       startDate?.setHours(Number(startTime.split(':')[0]));
@@ -105,7 +126,12 @@ export const DateTimePickerModal = ({
           id={''}
           label={label || ''}
           placeholder={'Select date range'}
-          value={formatDateMonthYearTimeRange(dateRange, startTime, endTime)}
+          value={formatDateMonthYearTimeRange(
+            dateRange,
+            startTime,
+            endTime,
+            true
+          )}
           onClick={() => {
             setTempDateRange(dateRange);
             open();
@@ -114,12 +140,19 @@ export const DateTimePickerModal = ({
         />
 
         {showCalendarIcon && (
-          <Image
-            alt=""
-            src={`/trading-hub/asset/icon-blank-calendar.svg`}
-            width={20}
-            height={20}
-          />
+          <ButtonImage
+            onClick={() => {
+              setTempDateRange(dateRange);
+              open();
+            }}
+          >
+            <Image
+              alt=""
+              src={`/trading-hub/asset/icon-blank-calendar.svg`}
+              width={20}
+              height={20}
+            />
+          </ButtonImage>
         )}
       </StyledInputContainer>
 
@@ -136,15 +169,35 @@ export const DateTimePickerModal = ({
           <Modal.Overlay backgroundOpacity={0.3} blur={3} />
           <Modal.Content>
             <StyledModalBody>
-              <DatePicker
-                value={tempDateRange}
-                onChange={setTempDateRange}
-                isTimeEnabled
-                startTime={startTime}
-                endTime={endTime}
-                setStartTime={setStartTime}
-                setEndTime={setEndTime}
-              />
+              {hasDateRange ? (
+                <DatePicker
+                  value={tempDateRange}
+                  onChange={setTempDateRange}
+                  isTimeEnabled
+                  startTime={startTime}
+                  endTime={endTime}
+                  setStartTime={setStartTime}
+                  setEndTime={setEndTime}
+                />
+              ) : (
+                <DatePickerSingle
+                  value={tempDateRange[0]}
+                  onChange={(val) => setTempDateRange([val, null])}
+                  startTime={startTime}
+                  setStartTime={setStartTime}
+                />
+              )}
+
+              <Content isDisabled={tempDateRange[0] === null}>
+                <RangeSelector>
+                  <Checkbox
+                    label="No end date"
+                    showLabel
+                    checked={!hasDateRange}
+                    onChange={() => setHasDateRange(!hasDateRange)}
+                  />
+                </RangeSelector>
+              </Content>
             </StyledModalBody>
 
             <Footer>
@@ -154,7 +207,9 @@ export const DateTimePickerModal = ({
               <StyledButton
                 theme="tertiary"
                 isDisabled={
-                  tempDateRange[0] !== null && tempDateRange[1] === null
+                  tempDateRange[0] !== null &&
+                  hasDateRange &&
+                  tempDateRange[1] === null
                 }
                 onClick={handleSave}
                 aria-label="Close schedule editor"

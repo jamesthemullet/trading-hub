@@ -462,7 +462,6 @@ export const DataTable = ({
                         </CompactUrlText>
                       )}
                       {startDate &&
-                        endDate &&
                         headings.filter((heading) => heading === 'Schedule')
                           .length > 0 && (
                           <SchedulingDetailLeftSide>
@@ -473,8 +472,10 @@ export const DataTable = ({
                               height={24}
                             />
                             <Text as="time">
-                              {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
-                              {format(new Date(endDate), 'dd MMM yyyy')}
+                              {format(new Date(startDate), 'dd MMM yyyy')}
+                              {endDate
+                                ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
+                                : ' - No end date'}
                             </Text>
                           </SchedulingDetailLeftSide>
                         )}
@@ -492,7 +493,7 @@ export const DataTable = ({
                     {headings.filter((heading) => heading === 'Schedule')
                       .length > 0 && (
                       <SchedulingColumn>
-                        {startDate && endDate ? (
+                        {startDate ? (
                           <>
                             <Image
                               alt=""
@@ -501,8 +502,10 @@ export const DataTable = ({
                               height={24}
                             />
                             <Text>
-                              {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
-                              {format(new Date(endDate), 'dd MMM yyyy')}
+                              {format(new Date(startDate), 'dd MMM yyyy')}
+                              {endDate
+                                ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
+                                : ' - No end date'}
                             </Text>
                           </>
                         ) : (
@@ -590,7 +593,7 @@ export const DataTable = ({
                       </TableActions>
                     </TableCol>
                     <FullWidthRow>
-                      {startDate && endDate && (
+                      {startDate && (
                         <>
                           <Image
                             alt=""
@@ -599,8 +602,10 @@ export const DataTable = ({
                             height={24}
                           />
                           <Text as="time">
-                            {format(new Date(startDate), 'dd MMM yyyy')} -{' '}
-                            {format(new Date(endDate), 'dd MMM yyyy')}
+                            {format(new Date(startDate), 'dd MMM yyyy')}
+                            {endDate
+                              ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
+                              : ' - No end date'}
                           </Text>
                         </>
                       )}

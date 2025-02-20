@@ -80,7 +80,7 @@ const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
       </Example>
       <Example>
         <h2>Calendar Component(Modal)</h2>
-        <DateTimePickerModal />
+        <DateTimePickerModal onUpdateDateTimeRange={() => {}} />
       </Example>
       <Example>
         <h2>Arrow Button</h2>

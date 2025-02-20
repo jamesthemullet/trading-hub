@@ -17,7 +17,8 @@ export const formatMonthDayDateRange = (range: DatesRangeValue) => {
 export const formatDateMonthYearTimeRange = (
   range: DatesRangeValue,
   startTime: string,
-  endTime: string
+  endTime: string,
+  hasNoEndDateMessage: boolean
 ) => {
   const dateFormat = 'DD/MM/YY';
 
@@ -31,7 +32,7 @@ export const formatDateMonthYearTimeRange = (
     return `${startDate?.format(dateFormat)} ${startTime} - ${endDate?.format(dateFormat)} ${endTime}`;
   }
 
-  return `${startDate?.format(dateFormat)} ${startTime}`;
+  return `${startDate?.format(dateFormat)} ${startTime}${hasNoEndDateMessage ? ' - No end date' : ''}`;
 };
 
 export const formatMonthDayDateTimeRange = (
@@ -48,8 +49,8 @@ export const formatMonthDayDateTimeRange = (
     return '';
   }
   if (endDate) {
-    return `${startDate?.format(dateFormat)}${startTime ? ` ${startTime}` : ''} - ${endDate?.format(dateFormat)}${endTime ? ` ${endTime}` : ''}`;
+    return `${startDate.format(dateFormat)}${startTime ? ` ${startTime}` : ''} - ${endDate?.format(dateFormat)}${endTime ? ` ${endTime}` : ''}`;
   }
 
-  return `${startDate?.format(dateFormat)} ${startTime || ''}`;
+  return `${startDate.format(dateFormat)} ${startTime || ''}`;
 };

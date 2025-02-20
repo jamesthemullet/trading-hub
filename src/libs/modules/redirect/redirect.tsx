@@ -150,15 +150,6 @@ export const Redirect = ({
     });
   };
 
-  const getExistingDateRange = (
-    startDate: string | undefined,
-    endDate: string | undefined
-  ) => {
-    return startDate && endDate
-      ? ([new Date(startDate), new Date(endDate)] as [Date, Date])
-      : undefined;
-  };
-
   return (
     <>
       <ProductGridHeader
@@ -235,10 +226,10 @@ export const Redirect = ({
             <LabelContainer>Duration</LabelContainer>
             <DateTimePickerModal
               showCalendarIcon={true}
-              dateTime={getExistingDateRange(
-                redirect.startDate,
-                redirect.endDate
-              )}
+              dateTime={[
+                redirect.startDate ? new Date(redirect.startDate) : null,
+                redirect.endDate ? new Date(redirect.endDate) : null,
+              ]}
               onUpdateDateTimeRange={([startDate, endDate]) => {
                 setRedirect({
                   ...redirect,

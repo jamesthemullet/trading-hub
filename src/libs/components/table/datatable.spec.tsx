@@ -204,6 +204,29 @@ describe('DataTable', () => {
     expect(screen.getByText('Schedule')).toBeInTheDocument();
   });
 
+  it('should show "No end date" when no set', () => {
+    renderWithProviders(
+      <DataTable
+        isLoading={false}
+        headings={sevenHeadings}
+        rows={[
+          {
+            id: 'id',
+            identifier: '*',
+            isEnabled: true,
+            lastChanged: { user: 'Bob', date: '2021-10-01' },
+            onToggle: mockToggle,
+            url: 'path/to/ruleset',
+            startDate: '2022-10-01',
+          },
+        ]}
+        onDeleteRuleSet={jest.fn()}
+        ruleType="categoryRanking"
+      />
+    );
+    expect(screen.getAllByText('01 Oct 2022 - No end date')).toHaveLength(3);
+  });
+
   it('should render correctly with max headings', () => {
     renderWithProviders(
       <DataTable
