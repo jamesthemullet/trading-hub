@@ -4,6 +4,7 @@ import {
   AttributeValuesResponse,
   BetaMerchandisingFacetListData,
   BoostsBuries,
+  IncludesExcludes,
   KeywordRedirect,
   ProductBoostBury,
   ReturnedKeywordRedirect,
@@ -87,6 +88,40 @@ export const buriesMock: BoostsBuries = {
     },
   ],
   product: mockProducts,
+};
+
+export const includesMock: IncludesExcludes = {
+  alphanumeric: [
+    {
+      fields: [
+        {
+          field: 'brand',
+          values: ['Nike', 'Adidas'],
+        },
+        {
+          field: 'category',
+          values: ['Shoes', 'Clothing'],
+        },
+      ],
+    },
+  ],
+};
+
+export const excludesMock: IncludesExcludes = {
+  alphanumeric: [
+    {
+      fields: [
+        {
+          field: 'brand',
+          values: ['Puma', 'Reebok'],
+        },
+        {
+          field: 'category',
+          values: ['Accessories', 'Clothing'],
+        },
+      ],
+    },
+  ],
 };
 
 export const facetsListMock: BetaMerchandisingFacetListData = {

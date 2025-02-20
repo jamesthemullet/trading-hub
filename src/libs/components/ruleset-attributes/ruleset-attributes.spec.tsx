@@ -3,9 +3,14 @@ import userEvent from '@testing-library/user-event';
 
 import { CountryCode, MerchandisingRules } from '@/libs/api';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
+import {
+  boostMock,
+  buriesMock,
+  excludesMock,
+  includesMock,
+} from '@/pages/api/search/mocks';
+import { renderWithProviders } from '@/test/render-with-providers';
 
-import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
-import { renderWithProviders } from '../../../test/render-with-providers';
 import { Action } from '../types';
 
 jest.mock('@/libs/hooks', () => ({
@@ -15,17 +20,17 @@ jest.mock('@/libs/hooks', () => ({
         attributes: [
           {
             type: 'alphanumeric',
-            name: 'Colour',
+            name: 'colour',
             values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
           },
           {
             type: 'alphanumeric',
-            name: 'Brand',
+            name: 'brand',
             values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
           },
           {
             type: 'alphanumeric',
-            name: 'Category',
+            name: 'category',
             values: [
               { value: 'Shoes' },
               { value: 'Clothing' },
@@ -80,6 +85,22 @@ const mockRules: MerchandisingRules = {
     alphanumeric: [],
   },
 };
+const mockIncludeExcludeRules: MerchandisingRules = {
+  pinnedProducts: [],
+  boosts: {
+    numeric: [],
+    alphanumeric: [],
+    product: [],
+  },
+  buries: {
+    numeric: [],
+    alphanumeric: [],
+    product: [],
+  },
+  blockedProducts: [],
+  includes: includesMock,
+  excludes: excludesMock,
+};
 
 const mockDispatch = jest.fn();
 
@@ -87,6 +108,10 @@ const mockCountryCode: CountryCode = 'UK';
 
 const mockProps = {
   merchandisingRules: mockRules,
+  countryCode: mockCountryCode,
+};
+const mockIncludeExcludeProps = {
+  merchandisingRules: mockIncludeExcludeRules,
   countryCode: mockCountryCode,
 };
 
@@ -176,7 +201,7 @@ describe('RulesetAttributes', () => {
       screen.getByRole('heading', { name: 'Product description attributes' })
     ).toBeVisible();
 
-    const brandStepButton = screen.getByRole('button', { name: 'Brand' });
+    const brandStepButton = screen.getByRole('button', { name: 'brand' });
 
     act(() => {
       brandStepButton.click();
@@ -188,7 +213,7 @@ describe('RulesetAttributes', () => {
       expect(within(attributeSelection).getByText('Nike')).toBeVisible()
     );
 
-    const prevStepButton = screen.getAllByText('Brand')[1];
+    const prevStepButton = screen.getAllByText('brand')[1];
 
     act(() => {
       prevStepButton.click();
@@ -276,7 +301,7 @@ describe('RulesetAttributes', () => {
       nextStepButton.click();
     });
 
-    const colourButton = screen.getByRole('button', { name: 'Colour' });
+    const colourButton = screen.getByRole('button', { name: 'colour' });
 
     act(() => {
       colourButton.click();
@@ -317,7 +342,7 @@ describe('RulesetAttributes', () => {
 
     expect(screen.queryByText('Brand')).not.toBeInTheDocument();
 
-    const colourStepButton = screen.getByRole('button', { name: 'Colour' });
+    const colourStepButton = screen.getByRole('button', { name: 'colour' });
 
     act(() => {
       colourStepButton.click();
@@ -358,7 +383,7 @@ describe('RulesetAttributes', () => {
       buryButton.click();
     });
 
-    const colourButton = screen.getByRole('button', { name: 'Colour' });
+    const colourButton = screen.getByRole('button', { name: 'colour' });
 
     act(() => {
       colourButton.click();
@@ -588,7 +613,7 @@ describe('RulesetAttributes', () => {
           data: {
             fields: [
               {
-                field: 'Colour',
+                field: 'colour',
                 values: ['Blue', 'Red'],
               },
             ],
@@ -611,7 +636,7 @@ describe('RulesetAttributes', () => {
         nextStepButton.click();
       });
 
-      const colourButton = screen.getByRole('button', { name: 'Colour' });
+      const colourButton = screen.getByRole('button', { name: 'colour' });
 
       act(() => {
         colourButton.click();
@@ -624,6 +649,14 @@ describe('RulesetAttributes', () => {
         colourBlueButton.click();
         colourRedButton.click();
       });
+
+      act(() => {
+        screen.getByLabelText('Move back to step 2').click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByRole('button', { name: 'colour' })).toBeVisible()
+      );
 
       const doneButton = screen.getByRole('button', { name: 'Done' });
 
@@ -676,8 +709,168 @@ describe('RulesetAttributes', () => {
 
       expect(mockDispatch).toHaveBeenCalledWith(expectedCall2);
     });
+  });
 
-    it('removes alphanumeric attribute value', async () => {
+  describe('attribute editing', () => {
+    it('does not open modal and can edit weight if feature flag is disabled', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: false,
+          },
+        }
+      );
+
+      const editButton = screen.getAllByLabelText('Edit attribute brand');
+
+      act(() => {
+        editButton[0].click();
+      });
+
+      expect(
+        screen.queryAllByLabelText('modal alphanumeric attributes list').length
+      ).toBe(0);
+
+      const input = screen.getByLabelText('Edit value');
+      await user.type(input, '{Delete}{Delete}{Delete}20');
+
+      const saveButton = screen.getByLabelText('Save attribute brand change');
+
+      act(() => {
+        saveButton.click();
+      });
+
+      await waitFor(() =>
+        expect(
+          screen.queryAllByLabelText('Save attribute brand change').length
+        ).toBe(0)
+      );
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          data: {
+            fields: [
+              {
+                field: 'brand',
+                values: ['Nike', 'Adidas'],
+              },
+              {
+                field: 'category',
+                values: ['Shoes', 'Clothing'],
+              },
+            ],
+            weight: 20,
+          },
+          change: 'modify',
+          operation: 'boost',
+          index: 0,
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+    });
+
+    it('does not open modal and can cancel weight edit on numeric if feature flag is disabled', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: false,
+          },
+        }
+      );
+
+      const editButton = screen.getAllByLabelText(
+        'Edit attribute averageRating'
+      );
+
+      act(() => {
+        editButton[0].click();
+      });
+
+      expect(
+        screen.queryAllByTestId('modal numeric attributes list').length
+      ).toBe(0);
+
+      const input = screen.getByLabelText('Edit value');
+      await user.type(input, '{Delete}{Delete}{Delete}20');
+
+      const saveButton = screen.getByLabelText(
+        'Cancel attribute averageRating change'
+      );
+
+      act(() => {
+        saveButton.click();
+      });
+
+      await waitFor(() =>
+        expect(
+          screen.queryAllByLabelText('Cancel attribute averageRating change')
+            .length
+        ).toBe(0)
+      );
+
+      expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
+    it('does not open modal and can cancel weight edit on alphanumeric if feature flag is disabled', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: false,
+          },
+        }
+      );
+
+      const editButton = screen.getAllByLabelText('Edit attribute brand');
+
+      act(() => {
+        editButton[0].click();
+      });
+
+      expect(
+        screen.queryAllByTestId('modal alphanumeric attributes list').length
+      ).toBe(0);
+
+      const input = screen.getByLabelText('Edit value');
+      await user.type(input, '{Delete}{Delete}{Delete}20');
+
+      const saveButton = screen.getByLabelText('Cancel attribute brand change');
+
+      act(() => {
+        saveButton.click();
+      });
+
+      await waitFor(() =>
+        expect(
+          screen.queryAllByLabelText('Cancel attribute brand change').length
+        ).toBe(0)
+      );
+
+      expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
+    it('opens modal and adds alphanumeric attribute value', async () => {
+      const user = userEvent.setup();
       renderWithProviders(
         <RulesetAttributes
           {...mockProps}
@@ -696,22 +889,287 @@ describe('RulesetAttributes', () => {
         screen.getAllByLabelText('Edit attribute brand')[0].click();
       });
 
-      act(() => {
-        screen.getByLabelText('Remove attribute: brand Nike').click();
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal alphanumeric attributes list')
+        ).toBeVisible();
       });
 
       act(() => {
-        screen.getByLabelText('Save attribute brand change').click();
+        within(screen.getByTestId('modal alphanumeric attributes list'))
+          .getByText('brand')
+          .click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Current matching attribute values')
+        ).toBeVisible();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Showing: 3')).toBeVisible();
+      });
+
+      const attributeSelection = screen.getByLabelText('Selected attributes');
+      act(() => {
+        within(attributeSelection).getByText('Puma').click();
+      });
+
+      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      await waitFor(() => {
+        expect(within(selectedAttributes).getByText('Puma')).toBeVisible();
+      });
+      expect(
+        within(selectedAttributes).getByText('Operation Boost')
+      ).toBeVisible();
+
+      const input = screen.getByLabelText('Edit value');
+
+      await user.type(input, '{Delete}{Delete}{Delete}20');
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      expect(screen.getAllByText('Puma')[0]).toBeVisible();
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'modify',
+          data: {
+            fields: [
+              {
+                field: 'category',
+                values: ['Shoes', 'Clothing'],
+              },
+              {
+                field: 'brand',
+                values: ['Nike', 'Adidas', 'Puma'],
+              },
+            ],
+            weight: 20,
+          },
+          index: 0,
+          operation: 'boost',
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+    });
+
+    it('opens modal and removes an alphanumeric attribute value', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getAllByLabelText('Edit attribute brand')[1].click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal alphanumeric attributes list')
+        ).toBeVisible();
+      });
+
+      act(() => {
+        within(screen.getByTestId('modal alphanumeric attributes list'))
+          .getByText('brand')
+          .click();
+      });
+
+      const attributeSelection = screen.getByLabelText('Selected attributes');
+      act(() => {
+        within(attributeSelection).getByText('Puma').click();
+      });
+
+      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      await waitFor(() => {
+        expect(within(selectedAttributes).queryAllByText('Puma').length).toBe(
+          0
+        );
+      });
+
+      act(() => {
+        within(attributeSelection).getByText('Nike').click();
+      });
+      await waitFor(() => {
+        expect(within(selectedAttributes).getByText('Nike')).toBeVisible();
+      });
+
+      expect(
+        within(selectedAttributes).getByText('Operation Bury')
+      ).toBeVisible();
+
+      const input = screen.getByLabelText('Edit value');
+
+      await user.type(input, '{Delete}{Delete}{Delete}');
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Puma')[1]).not.toBeVisible();
       });
 
       expect(mockDispatch).toHaveBeenCalledWith({
         payload: {
+          change: 'modify',
           data: {
-            weight: 0.5,
+            fields: [
+              {
+                field: 'category',
+                values: ['Accessories', 'Clothing'],
+              },
+              {
+                field: 'brand',
+                values: ['Reebok', 'Nike'],
+              },
+            ],
+            weight: 0,
+          },
+          index: 0,
+          operation: 'bury',
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+    });
+
+    it('opens modal and changes alphanumeric boost/bury operation', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getAllByLabelText('Edit attribute brand')[0].click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal alphanumeric attributes list')
+        ).toBeVisible();
+      });
+
+      const dropdownButton = screen.getAllByRole('button', { name: 'Boost' });
+
+      act(() => {
+        dropdownButton[1].click();
+      });
+
+      const buryButton = screen.getByRole('button', { name: 'Bury' });
+
+      act(() => {
+        buryButton.click();
+      });
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'add',
+          data: {
             fields: [
               {
                 field: 'brand',
-                values: ['Adidas'],
+                values: ['Nike', 'Adidas'],
+              },
+              {
+                field: 'category',
+                values: ['Shoes', 'Clothing'],
+              },
+            ],
+            weight: 0.5,
+          },
+          index: 0,
+          operation: 'bury',
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'remove',
+          data: {
+            fields: [],
+            weight: 0,
+          },
+          index: 0,
+          operation: 'boost',
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+    });
+
+    it('opens modal and changes alphanumeric boost/bury to include/exclude operation', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getAllByLabelText('Edit attribute brand')[0].click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal alphanumeric attributes list')
+        ).toBeVisible();
+      });
+
+      const dropdownButton = screen.getAllByRole('button', { name: 'Boost' });
+
+      act(() => {
+        dropdownButton[1].click();
+      });
+
+      act(() => {
+        screen.getByRole('button', { name: 'Exclude only' }).click();
+      });
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'add',
+          data: {
+            fields: [
+              {
+                field: 'brand',
+                values: ['Nike', 'Adidas'],
               },
               {
                 field: 'category',
@@ -719,52 +1177,197 @@ describe('RulesetAttributes', () => {
               },
             ],
           },
-          change: 'modify',
-          operation: 'boost',
           index: 0,
+          operation: 'exclude',
+        },
+        type: 'alphanumericIncludeExcludeAttribute',
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'remove',
+          data: {
+            fields: [],
+            weight: 0,
+          },
+          index: 0,
+          operation: 'boost',
         },
         type: 'alphanumericBoostBuryAttribute',
       });
+    });
+
+    it('opens modal and adds alphanumeric include/exclude attribute value', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockIncludeExcludeProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getAllByLabelText('Edit attribute brand')[0].click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal alphanumeric attributes list')
+        ).toBeVisible();
+      });
+
+      act(() => {
+        within(screen.getByTestId('modal alphanumeric attributes list'))
+          .getByText('brand')
+          .click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Current matching attribute values')
+        ).toBeVisible();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Showing: 3')).toBeVisible();
+      });
+
+      const attributeSelection = screen.getByLabelText('Selected attributes');
+      act(() => {
+        within(attributeSelection).getByText('Puma').click();
+      });
+
+      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      await waitFor(() => {
+        expect(within(selectedAttributes).getByText('Puma')).toBeVisible();
+      });
+      expect(
+        within(selectedAttributes).getByText('Operation Include')
+      ).toBeVisible();
+
+      expect(screen.queryAllByLabelText('Edit value').length).toBe(0);
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      expect(screen.getAllByText('Puma')[0]).toBeVisible();
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'modify',
+          data: {
+            fields: [
+              {
+                field: 'category',
+                values: ['Shoes', 'Clothing'],
+              },
+              {
+                field: 'brand',
+                values: ['Nike', 'Adidas', 'Puma'],
+              },
+            ],
+          },
+          index: 0,
+          operation: 'include',
+        },
+        type: 'alphanumericIncludeExcludeAttribute',
+      });
+    });
+
+    it('opens modal and removes an alphanumeric include/exclude attribute value', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockIncludeExcludeProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
 
       act(() => {
         screen.getAllByLabelText('Edit attribute brand')[1].click();
       });
 
-      act(() => {
-        screen.getByLabelText('Remove attribute: brand Puma').click();
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal alphanumeric attributes list')
+        ).toBeVisible();
       });
 
       act(() => {
-        screen.getByLabelText('Save attribute brand change').click();
+        within(screen.getByTestId('modal alphanumeric attributes list'))
+          .getByText('brand')
+          .click();
+      });
+
+      const attributeSelection = screen.getByLabelText('Selected attributes');
+      act(() => {
+        within(attributeSelection).getByText('Puma').click();
+      });
+
+      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      await waitFor(() => {
+        expect(within(selectedAttributes).queryAllByText('Puma').length).toBe(
+          0
+        );
+      });
+
+      act(() => {
+        within(attributeSelection).getByText('Nike').click();
+      });
+      await waitFor(() => {
+        expect(within(selectedAttributes).getByText('Nike')).toBeVisible();
+      });
+
+      expect(
+        within(selectedAttributes).getByText('Operation Exclude')
+      ).toBeVisible();
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Puma')[1]).not.toBeVisible();
       });
 
       expect(mockDispatch).toHaveBeenCalledWith({
         payload: {
+          change: 'modify',
           data: {
-            weight: 0.7,
             fields: [
-              {
-                field: 'brand',
-                values: ['Reebok'],
-              },
               {
                 field: 'category',
                 values: ['Accessories', 'Clothing'],
               },
+              {
+                field: 'brand',
+                values: ['Reebok', 'Nike'],
+              },
             ],
           },
-          change: 'modify',
-          operation: 'bury',
           index: 0,
+          operation: 'exclude',
         },
-        type: 'alphanumericBoostBuryAttribute',
+        type: 'alphanumericIncludeExcludeAttribute',
       });
     });
 
-    it('removes alphanumeric attribute if all values are removed', async () => {
+    it('opens modal and changes alphanumeric include/exclude operation', async () => {
       renderWithProviders(
         <RulesetAttributes
-          {...mockProps}
+          {...mockIncludeExcludeProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
@@ -780,38 +1383,63 @@ describe('RulesetAttributes', () => {
         screen.getAllByLabelText('Edit attribute brand')[0].click();
       });
 
-      act(() => {
-        screen.getByLabelText('Remove attribute: brand Nike').click();
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal alphanumeric attributes list')
+        ).toBeVisible();
       });
+
+      const dropdownButton = screen.getAllByRole('button', { name: 'Include' });
+
       act(() => {
-        screen.getByLabelText('Remove attribute: brand Adidas').click();
-      });
-      act(() => {
-        screen.getByLabelText('Remove attribute: category Shoes').click();
-      });
-      act(() => {
-        screen.getByLabelText('Remove attribute: category Clothing').click();
+        dropdownButton[1].click();
       });
 
       act(() => {
-        screen.getByLabelText('Save attribute brand change').click();
+        screen.getByRole('button', { name: 'Exclude only' }).click();
+      });
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
       });
 
       expect(mockDispatch).toHaveBeenCalledWith({
         payload: {
-          data: mockRules.boosts.alphanumeric[0],
-          change: 'remove',
-          operation: 'boost',
+          change: 'add',
+          data: {
+            fields: [
+              {
+                field: 'brand',
+                values: ['Nike', 'Adidas'],
+              },
+              {
+                field: 'category',
+                values: ['Shoes', 'Clothing'],
+              },
+            ],
+          },
           index: 0,
+          operation: 'exclude',
         },
-        type: 'alphanumericBoostBuryAttribute',
+        type: 'alphanumericIncludeExcludeAttribute',
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'remove',
+          data: {
+            fields: [],
+          },
+          index: 0,
+          operation: 'include',
+        },
+        type: 'alphanumericIncludeExcludeAttribute',
       });
     });
 
-    it('does nothing if changes were canceled', async () => {
+    it('opens modal and changes alphanumeric include/exclude to boost/bury operation', async () => {
       renderWithProviders(
         <RulesetAttributes
-          {...mockProps}
+          {...mockIncludeExcludeProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
@@ -827,24 +1455,251 @@ describe('RulesetAttributes', () => {
         screen.getAllByLabelText('Edit attribute brand')[0].click();
       });
 
-      act(() => {
-        screen.getByLabelText('Remove attribute: brand Nike').click();
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal alphanumeric attributes list')
+        ).toBeVisible();
       });
+
+      const dropdownButton = screen.getAllByRole('button', { name: 'Include' });
+
       act(() => {
-        screen.getByLabelText('Remove attribute: brand Adidas').click();
-      });
-      act(() => {
-        screen.getByLabelText('Remove attribute: category Shoes').click();
-      });
-      act(() => {
-        screen.getByLabelText('Remove attribute: category Clothing').click();
+        dropdownButton[1].click();
       });
 
       act(() => {
-        screen.getByLabelText('Cancel attribute brand change').click();
+        screen.getByRole('button', { name: 'Boost' }).click();
       });
 
-      expect(mockDispatch).toHaveBeenCalledTimes(0);
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'add',
+          data: {
+            fields: [
+              {
+                field: 'brand',
+                values: ['Nike', 'Adidas'],
+              },
+              {
+                field: 'category',
+                values: ['Shoes', 'Clothing'],
+              },
+            ],
+            weight: 100,
+          },
+          index: 0,
+          operation: 'boost',
+        },
+        type: 'alphanumericBoostBuryAttribute',
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'remove',
+          data: {
+            fields: [],
+          },
+          index: 0,
+          operation: 'include',
+        },
+        type: 'alphanumericIncludeExcludeAttribute',
+      });
+    });
+
+    it('opens modal and changes numeric attribute value', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getByLabelText('Edit attribute averageRating').click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal numeric attributes list')
+        ).toBeVisible();
+      });
+
+      const attributeSelection = screen.getByTestId(
+        'modal numeric attributes list'
+      );
+      act(() => {
+        within(attributeSelection).getByText('Size').click();
+      });
+
+      const selectedAttributes = screen.getByLabelText('Selected Attribute');
+      await waitFor(() => {
+        expect(within(selectedAttributes).getByText('Size')).toBeVisible();
+      });
+      expect(
+        within(selectedAttributes).getByText('Operation Boost')
+      ).toBeVisible();
+
+      const input = screen.getByLabelText('Edit value');
+
+      await user.type(input, '{Delete}{Delete}{Delete}20');
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'modify',
+          data: {
+            field: 'Size',
+            weight: 20,
+          },
+          index: 0,
+          operation: 'boost',
+        },
+        type: 'numericAttribute',
+      });
+    });
+
+    it('opens modal and changes numeric boost operation', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getByLabelText('Edit attribute averageRating').click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal numeric attributes list')
+        ).toBeVisible();
+      });
+
+      const dropdownButton = screen.getAllByRole('button', { name: 'Boost' });
+
+      act(() => {
+        dropdownButton[0].click();
+      });
+
+      act(() => {
+        screen.getByRole('button', { name: 'Bury' }).click();
+      });
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'add',
+          data: {
+            field: 'averageRating',
+            weight: 0.5,
+          },
+          index: 0,
+          operation: 'bury',
+        },
+        type: 'numericAttribute',
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'remove',
+          data: {
+            field: '',
+            weight: 0,
+          },
+          index: 0,
+          operation: 'boost',
+        },
+        type: 'numericAttribute',
+      });
+    });
+
+    it('opens modal and changes numeric bury operation', async () => {
+      renderWithProviders(
+        <RulesetAttributes
+          {...mockProps}
+          categories={['SubCategory_429']}
+          dispatch={mockDispatch}
+        />,
+        [],
+        {
+          featureFlags: {
+            hasAttributeEdit: true,
+          },
+        }
+      );
+
+      act(() => {
+        screen.getByLabelText('Edit attribute daysSinceLaunch').click();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('modal numeric attributes list')
+        ).toBeVisible();
+      });
+
+      const dropdownButton = screen.getAllByRole('button', { name: 'Bury' });
+
+      act(() => {
+        dropdownButton[0].click();
+      });
+
+      act(() => {
+        screen.getByRole('button', { name: 'Boost' }).click();
+      });
+
+      act(() => {
+        screen.getByRole('button', { name: 'Done' }).click();
+      });
+
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'add',
+          data: {
+            field: 'daysSinceLaunch',
+            weight: 0.7,
+          },
+          index: 0,
+          operation: 'boost',
+        },
+        type: 'numericAttribute',
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
+        payload: {
+          change: 'remove',
+          data: {
+            field: '',
+            weight: 0,
+          },
+          index: 0,
+          operation: 'bury',
+        },
+        type: 'numericAttribute',
+      });
     });
   });
 
@@ -955,7 +1810,7 @@ describe('RulesetAttributes', () => {
           data: {
             fields: [
               {
-                field: 'Colour',
+                field: 'colour',
                 values: ['Blue', 'Red'],
               },
             ],
@@ -989,7 +1844,7 @@ describe('RulesetAttributes', () => {
         includeButton[0].click();
       });
 
-      const colourButton = screen.getByRole('button', { name: 'Colour' });
+      const colourButton = screen.getByRole('button', { name: 'colour' });
 
       act(() => {
         colourButton.click();
@@ -1018,7 +1873,7 @@ describe('RulesetAttributes', () => {
           data: {
             fields: [
               {
-                field: 'Colour',
+                field: 'colour',
                 values: ['Blue', 'Red'],
               },
             ],
@@ -1052,7 +1907,7 @@ describe('RulesetAttributes', () => {
         includeButton[0].click();
       });
 
-      const colourButton = screen.getByRole('button', { name: 'Colour' });
+      const colourButton = screen.getByRole('button', { name: 'colour' });
 
       act(() => {
         colourButton.click();

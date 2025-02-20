@@ -46,6 +46,31 @@ type AlphanumericBoostBuryAttributePayload = {
   data: AlphanumericBoostBury;
 };
 
+export type NumericAttributeEdit = {
+  field: NumericBoostBury;
+  weight: number;
+  index: number;
+  operation: 'boost' | 'bury';
+  type: 'numericBoostBury';
+};
+export type AlphanumericBoostBuryAttributeEdit = {
+  fields: AlphanumericBoostBuryField[];
+  weight: number;
+  index: number;
+  operation: 'boost' | 'bury';
+  type: 'alphanumericBoostBury';
+};
+export type AlphanumericIncludeExcludeAttributeEdit = {
+  fields: AlphanumericBoostBuryField[];
+  index: number;
+  operation: 'include' | 'exclude';
+  type: 'alphanumericIncludeExclude';
+};
+export type AttributeEdit =
+  | NumericAttributeEdit
+  | AlphanumericBoostBuryAttributeEdit
+  | AlphanumericIncludeExcludeAttributeEdit;
+
 type AlphanumericIncludeExcludeAttributePayload = {
   operation: 'include' | 'exclude';
   change: Change;

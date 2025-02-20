@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 
+import { Button as RegularButton } from '../buttons/button/button';
 import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
@@ -48,7 +49,6 @@ export const AttributeValuePill = styled.li`
   border-radius: 5px;
   padding: ${spacing(1)};
   margin: ${spacing(1)};
-  display: inline-block;
   font-size: 14px;
   font-weight: 600;
   text-align: center;
@@ -91,4 +91,20 @@ export const Buttons = styled.div`
 export const Button = styled.button`
   border: none;
   background: none;
+`;
+export const AddAttributeValueButton = styled(RegularButton)`
+  margin: ${spacing(1)};
+  padding: ${spacing(1)};
+  align-items: center;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  display: flex;
+  height: 36px;
+  width: auto;
+`;
+export const AddAttributeValueIcon = styled.div`
+  width: 18px;
+  height: 18px;
+  margin-right: ${spacing(0.5)};
 `;

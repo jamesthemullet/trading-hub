@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { AttributeResponseItem, AttributesResponse } from '@/libs/api';
 
@@ -7,7 +7,7 @@ import { Button } from '../buttons/button/button';
 import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { Search } from '../search/search';
-import { RulesetAttribute } from '../types';
+import { AttributeEdit, RulesetAttribute } from '../types';
 import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
@@ -178,21 +178,26 @@ type Props = {
   onSelect: (attribute: RulesetAttribute) => void;
   numericAttributes: AttributesResponse['attributes'];
   alphanumericAttributes: AttributesResponse['attributes'];
+  isEditMode: boolean;
+  editData: AttributeEdit | null;
 };
 export const AddAttribute = ({
   onCancel,
   onSelect,
   numericAttributes,
   alphanumericAttributes,
+  isEditMode,
+  editData,
 }: Props) => {
   const [modalStep, setModalStep] = useState(0);
 
-  const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
-    useState<string[]>([]);
   const [numbericSearchValue, setNumericSearchValue] = useState('');
   const [alphanumericSearchValue, setAlphanumericSearchValue] = useState('');
   const [alphanumbericFilterValue, setAlphanumericFilterValue] = useState('');
   const [alphanumericField, setAlphanumericField] = useState<string>('');
+  const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
+    useState<string[]>([]);
+
   const [selectedAlphanumericValues, setSelectedAlphanumericValues] = useState<
     Array<{
       field: string;
@@ -205,7 +210,36 @@ export const AddAttribute = ({
   >('boost');
   const [selectedAttributeType, setSelectedAttributeType] = useState<
     'numeric' | 'alphanumeric'
-  >('numeric');
+  >(isEditMode ? 'alphanumeric' : 'numeric');
+
+  const [weight, setWeight] = useState(100);
+
+  useEffect(() => {
+    if (isEditMode && editData) {
+      setSelectedOperation(editData.operation);
+
+      switch (editData.type) {
+        case 'numericBoostBury':
+          setModalStep(1);
+          setSelectedAttributeType('numeric');
+          setSelectedNumericField(editData.field.field);
+          setWeight(editData.weight);
+          break;
+        case 'alphanumericBoostBury':
+          setModalStep(2);
+          setSelectedAttributeType('alphanumeric');
+          setSelectedAlphanumericValues(editData.fields);
+          setWeight(editData.weight);
+          break;
+        case 'alphanumericIncludeExclude':
+          setModalStep(2);
+          setSelectedAttributeType('alphanumeric');
+          setSelectedAlphanumericValues(editData.fields);
+          break;
+      }
+    }
+  }, [isEditMode, alphanumericAttributes, editData]);
+
   return (
     <ModalContainer>
       <ModalSide
@@ -220,6 +254,9 @@ export const AddAttribute = ({
             <NumericAttribute
               operation={selectedOperation}
               name={selectedNumericField}
+              isEditMode={isEditMode}
+              weight={weight}
+              setWeight={setWeight}
             />
           )}
           {selectedAttributeType === 'alphanumeric' &&
@@ -227,11 +264,17 @@ export const AddAttribute = ({
               <AlphanumericAttribute
                 operation={selectedOperation}
                 fields={selectedAlphanumericValues}
-                weight={100}
+                isEditMode={isEditMode}
+                weight={weight}
+                setWeight={setWeight}
+                canEditWeight={
+                  selectedOperation === 'boost' || selectedOperation === 'bury'
+                }
               />
             )}
         </SelectedAttribute>
       </ModalSide>
+
       <ModalRightSide>
         <ModalSection>
           <ModalHeader>
@@ -260,11 +303,13 @@ export const AddAttribute = ({
               Choose attribute type
             </Label>
           </ModalSection>
+
           <ModalSection>
             <ModalButton as="button" isStrong onClick={() => setModalStep(1)}>
               Numeric attributes
             </ModalButton>
           </ModalSection>
+
           <ModalSection>
             <ModalButton as="button" isStrong onClick={() => setModalStep(2)}>
               Product description attributes
@@ -278,18 +323,21 @@ export const AddAttribute = ({
           }}
           {...(modalStep !== 1 && { inert: true })}
         >
-          <ModalSection>
-            <PreviousStep
-              as="button"
-              isStrong
-              onClick={() => {
-                setModalStep(0);
-                setSelectedNumericField('');
-              }}
-            >
-              Back
-            </PreviousStep>
-          </ModalSection>
+          {!isEditMode && (
+            <ModalSection>
+              <PreviousStep
+                as="button"
+                isStrong
+                onClick={() => {
+                  setModalStep(0);
+                  setSelectedNumericField('');
+                }}
+              >
+                Back
+              </PreviousStep>
+            </ModalSection>
+          )}
+
           <ModalSection>
             <Label isStrong>Numeric Attributes</Label>
             <Text>
@@ -316,7 +364,8 @@ export const AddAttribute = ({
               </SearchWrapper>
             </Filters>
           </ModalSection>
-          <AttributeSelection>
+
+          <AttributeSelection data-testid="modal numeric attributes list">
             <ModalAttributeHeader>
               <Label isStrong>Relevant attributes</Label>
             </ModalAttributeHeader>
@@ -347,20 +396,23 @@ export const AddAttribute = ({
           }}
           {...(modalStep !== 2 && { inert: true })}
         >
-          <ModalSection>
-            <PreviousStep
-              as="button"
-              isStrong
-              onClick={() => {
-                setSelectedAlphanumericValues([]);
-                setSelectedNumericField('');
-                setModalStep(0);
-                setSelectedOperation('boost');
-              }}
-            >
-              Back
-            </PreviousStep>
-          </ModalSection>
+          {!isEditMode && (
+            <ModalSection>
+              <PreviousStep
+                as="button"
+                isStrong
+                onClick={() => {
+                  setSelectedAlphanumericValues([]);
+                  setSelectedNumericField('');
+                  setModalStep(0);
+                  setSelectedOperation('boost');
+                }}
+              >
+                Back
+              </PreviousStep>
+            </ModalSection>
+          )}
+
           <ModalSection>
             <Label isStrong as="h4">
               Product description attributes
@@ -385,7 +437,11 @@ export const AddAttribute = ({
               </SearchWrapper>
             </Filters>
           </ModalSection>
-          <AttributeSelection style={{ maxHeight: '295px' }}>
+
+          <AttributeSelection
+            data-testid="modal alphanumeric attributes list"
+            style={{ maxHeight: '295px' }}
+          >
             <ModalAttributeHeader>
               <Label isStrong>Relevant attributes</Label>
             </ModalAttributeHeader>
@@ -424,10 +480,17 @@ export const AddAttribute = ({
           {...(modalStep !== 3 && { inert: true })}
         >
           <ModalSection>
-            <PreviousStep as="button" isStrong onClick={() => setModalStep(2)}>
+            <PreviousStep
+              aria-label="Move back to step 2"
+              as="button"
+              isStrong
+              onClick={() => setModalStep(2)}
+            >
               {alphanumericField}
             </PreviousStep>
+
             <Count>Showing: {alphanumericAttributeValues.length}</Count>
+
             <SearchWrapper>
               <label htmlFor="filerSelectedAttributes">
                 Filter selected attributes
@@ -440,10 +503,12 @@ export const AddAttribute = ({
               />
             </SearchWrapper>
           </ModalSection>
+
           <AttributeSelection style={{ maxHeight: '380px' }}>
             <ModalAttributeHeader>
               <Label isStrong>Current matching attribute values</Label>
             </ModalAttributeHeader>
+
             <div aria-label="Selected attributes">
               <Checkboxes
                 onSelect={(isSelected, name) => {
@@ -502,17 +567,17 @@ export const AddAttribute = ({
                   selectedAttributeType === 'alphanumeric'
                     ? {
                         fields: selectedAlphanumericValues,
-                        weight: 100,
+                        weight: weight,
                       }
                     : {
                         field: selectedNumericField,
-                        weight: 100,
+                        weight: weight,
                       };
 
                 onSelect({
                   attribute,
                   operation: selectedOperation,
-                  change: 'add',
+                  change: isEditMode ? 'modify' : 'add',
                   type: selectedAttributeType,
                 });
               }}

@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Dispatch, useState } from 'react';
-import { Modal } from '@mantine/core';
 
 import {
   AlphanumericBoostBury,
@@ -13,15 +12,13 @@ import {
 import pluralize from 'pluralize';
 
 import { Button } from '../buttons/button/button';
-import { Action, RulesetAttribute } from '../types';
+import { Action, AttributeEdit } from '../types';
 import { Label } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
-import { AddSetAttribute } from './add-set-attribute';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { NumericAttribute } from './numeric-attribute';
 import { AttributeCount } from './ruleset-attributes.styles';
-
-const MODAL_WIDTH = 435;
+import { RulesetAttributesModal } from './ruleset-attributes-modal';
 
 const Wrapper = styled.div`
   position: relative;
@@ -64,6 +61,8 @@ export const RulesetAttributes = ({
   searchTerms,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [editData, setEditData] = useState<AttributeEdit | null>(null);
   /* istanbul ignore next */
   const countOfAttributeChanges =
     (merchandisingRules.boosts.numeric.length ?? 0) +
@@ -84,6 +83,16 @@ export const RulesetAttributes = ({
   const alphanumericIncludes = merchandisingRules.includes.alphanumeric ?? [];
   /* istanbul ignore next */
   const alphanumericExcludes = merchandisingRules.excludes.alphanumeric ?? [];
+
+  const handleAttributeEdit = (data: AttributeEdit) => {
+    setEditData(data);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditData(null);
+  };
 
   return (
     <Wrapper>
@@ -108,6 +117,7 @@ export const RulesetAttributes = ({
               <AlphanumericAttribute
                 key={fields[0].field}
                 isEditable
+                canEditWeight
                 fields={fields}
                 operation="boost"
                 weight={weight}
@@ -144,6 +154,15 @@ export const RulesetAttributes = ({
                     },
                   })
                 }
+                onEdit={(args) =>
+                  handleAttributeEdit({
+                    ...args,
+                    weight,
+                    index,
+                    operation: 'boost',
+                    type: 'alphanumericBoostBury',
+                  })
+                }
               />
             ))}
 
@@ -152,6 +171,7 @@ export const RulesetAttributes = ({
               <AlphanumericAttribute
                 key={fields[0].field}
                 isEditable
+                canEditWeight
                 fields={fields}
                 operation="bury"
                 weight={weight}
@@ -188,6 +208,15 @@ export const RulesetAttributes = ({
                     },
                   })
                 }
+                onEdit={(args) =>
+                  handleAttributeEdit({
+                    ...args,
+                    weight,
+                    index,
+                    operation: 'bury',
+                    type: 'alphanumericBoostBury',
+                  })
+                }
               />
             ))}
 
@@ -211,6 +240,14 @@ export const RulesetAttributes = ({
                     },
                   })
                 }
+                onEdit={(args) =>
+                  handleAttributeEdit({
+                    ...args,
+                    index,
+                    operation: 'include',
+                    type: 'alphanumericIncludeExclude',
+                  })
+                }
               />
             ))}
 
@@ -232,6 +269,14 @@ export const RulesetAttributes = ({
                         fields,
                       },
                     },
+                  })
+                }
+                onEdit={(args) =>
+                  handleAttributeEdit({
+                    ...args,
+                    index,
+                    operation: 'exclude',
+                    type: 'alphanumericIncludeExclude',
                   })
                 }
               />
@@ -279,6 +324,15 @@ export const RulesetAttributes = ({
                     },
                   })
                 }
+                onEdit={(args) =>
+                  handleAttributeEdit({
+                    ...args,
+                    weight,
+                    index,
+                    operation: 'boost',
+                    type: 'numericBoostBury',
+                  })
+                }
               />
             ))}
 
@@ -320,93 +374,29 @@ export const RulesetAttributes = ({
                     },
                   })
                 }
+                onEdit={(args) =>
+                  handleAttributeEdit({
+                    ...args,
+                    weight,
+                    index,
+                    operation: 'bury',
+                    type: 'numericBoostBury',
+                  })
+                }
               />
             ))}
         </RuleSetAttributesContainer>
       )}
 
-      <Modal.Root
-        opened={isModalOpen}
-        onClose={
-          // istanbul ignore next
-          () => setIsModalOpen(false)
-        }
-        centered
-        size={`${2 * MODAL_WIDTH}px`}
-        padding={0}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Add attribute modal"
-      >
-        <Modal.Overlay blur={3} />
-        <Modal.Content>
-          <Modal.Body>
-            <AddSetAttribute
-              categories={categories}
-              countryCode={countryCode}
-              searchTerms={searchTerms}
-              onCancel={() => {
-                setIsModalOpen(false);
-              }}
-              onSelect={(attribute: RulesetAttribute) => {
-                if (
-                  attribute.type === 'numeric' &&
-                  (attribute.operation === 'boost' ||
-                    attribute.operation === 'bury')
-                ) {
-                  const data = attribute.attribute as NumericBoostBury;
-                  dispatch({
-                    type: 'numericAttribute',
-                    payload: {
-                      change: 'add',
-                      index: 0,
-                      data,
-                      operation: attribute.operation,
-                    },
-                  });
-                }
-
-                if (
-                  attribute.type === 'alphanumeric' &&
-                  (attribute.operation === 'boost' ||
-                    attribute.operation === 'bury')
-                ) {
-                  const data = attribute.attribute as AlphanumericBoostBury;
-                  dispatch({
-                    type: 'alphanumericBoostBuryAttribute',
-                    payload: {
-                      change: 'add',
-                      index: 0,
-                      data,
-                      operation: attribute.operation,
-                    },
-                  });
-                }
-
-                if (
-                  attribute.type === 'alphanumeric' &&
-                  (attribute.operation === 'include' ||
-                    attribute.operation === 'exclude')
-                ) {
-                  const data = attribute.attribute as IncludeExclude;
-                  dispatch({
-                    type: 'alphanumericIncludeExcludeAttribute',
-                    payload: {
-                      change: 'add',
-                      index: 0,
-                      data: {
-                        fields: data.fields,
-                      },
-                      operation: attribute.operation,
-                    },
-                  });
-                }
-                setIsModalOpen(false);
-              }}
-            />
-          </Modal.Body>
-        </Modal.Content>
-      </Modal.Root>
+      <RulesetAttributesModal
+        isModalOpen={isModalOpen}
+        onCloseModal={handleCloseModal}
+        dispatch={dispatch}
+        countryCode={countryCode}
+        categories={categories}
+        searchTerms={searchTerms}
+        editData={editData}
+      />
     </Wrapper>
   );
 };

@@ -136,7 +136,7 @@ const ProductsLoader = ({
     };
 
     fetchData();
-  }, [products, productsShown, fetch]);
+  }, [products, productsShown, missingProductDetails, productDetails, fetch]);
 
   const onSelectAllProducts = () => {
     const allProductIds = products.map(({ id }) => id);

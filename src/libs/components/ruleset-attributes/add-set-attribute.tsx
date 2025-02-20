@@ -1,7 +1,7 @@
 import { CountryCode } from '@/libs/api';
 import { useAttributes } from '@/libs/hooks';
 
-import { RulesetAttribute } from '../types';
+import { AttributeEdit, RulesetAttribute } from '../types';
 import { ErrorMessage } from '../typography/typography.styles';
 import { AddAttribute } from './add-attribute';
 
@@ -11,6 +11,8 @@ type Props = {
   countryCode: CountryCode;
   categories?: string[];
   searchTerms?: string[];
+  isEditMode: boolean;
+  editData: AttributeEdit | null;
 };
 
 export const AddSetAttribute = ({
@@ -19,6 +21,8 @@ export const AddSetAttribute = ({
   countryCode,
   categories,
   searchTerms,
+  isEditMode,
+  editData,
 }: Props) => {
   const { attributes: numericAttributes, fetchError: numericAttributesError } =
     useAttributes({
@@ -50,6 +54,8 @@ export const AddSetAttribute = ({
         onSelect={onSelect}
         numericAttributes={numericAttributes}
         alphanumericAttributes={alphanumericAttributes}
+        isEditMode={isEditMode}
+        editData={editData}
       />
     </>
   );

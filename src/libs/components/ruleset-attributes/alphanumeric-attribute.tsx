@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -12,70 +12,54 @@ import {
   AttributeValueList,
   AttributeValuePill,
   AttributeWrapper,
-  Button,
-  Buttons,
-  RemoveAttributeValuePill,
 } from './ruleset-attributes.styles';
 import { labels } from './utils';
 import { AttributeWeight } from './weight';
 
 export const AlphanumericAttribute = ({
   fields,
-  isEditable,
   operation,
+  weight,
+  isEditable,
+  isEditMode,
+  canEditWeight,
+  setWeight,
   onChangeAttribute,
   onDelete,
-  weight,
+  onEdit,
 }: {
   fields: Array<AlphanumericBoostBuryField>;
   operation: 'boost' | 'bury' | 'include' | 'exclude';
   weight?: number;
   isEditable?: boolean;
+  isEditMode?: boolean;
+  canEditWeight?: boolean;
+  setWeight?: (weight: number) => void;
   onChangeAttribute?: (args: AlphanumericBoostBury) => void;
   onDelete?: (args: AlphanumericBoostBury) => void;
+  onEdit?: (args: { fields: AlphanumericBoostBuryField[] }) => void;
 }) => {
   const featureFlags = useContext(FeatureFlagContext);
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [localFields, setLocalFields] = useState(fields);
-
-  useEffect(() => {
-    setLocalFields(fields);
-  }, [fields]);
-
-  const handleRemoveAttribute = (field: string, value: string) => {
-    const newFields = localFields
-      .map((f) => {
-        if (f.field === field) {
-          return {
-            ...f,
-            values: f.values.filter((v) => v !== value),
-          };
-        }
-
-        return f;
-      })
-      .filter((f) => f.values.length > 0);
-
-    setLocalFields(newFields);
+  const handleChangeSubmit = ({ weight }: { weight: number }) => {
+    onChangeAttribute?.({ fields, weight });
+    setIsEditing(false);
   };
 
-  const handleSubmit = ({ weight }: { weight: number }) => {
-    setIsEditing(false);
-
-    if (localFields.length === 0) {
-      onDelete?.({ fields, weight });
-      return;
+  const handleStartChanges = () => {
+    if (featureFlags.hasAttributeEdit) {
+      onEdit?.({ fields });
+    } else {
+      setIsEditing(true);
     }
-
-    onChangeAttribute?.({ fields: localFields, weight });
   };
 
   return (
     <AttributeWrapper aria-label="Product Attribute">
       <AttributeHeading>
-        {localFields.map(({ field, values }) => (
+        {fields.map(({ field, values }) => (
           <div key={`field-${field}`}>
             <Label isStrong>{field}</Label>
 
@@ -83,22 +67,6 @@ export const AlphanumericAttribute = ({
               {values.map((value) => (
                 <AttributeValuePill key={value}>
                   <span>{value}</span>
-
-                  {featureFlags.hasAttributeEdit && isEditing && (
-                    <RemoveAttributeValuePill
-                      onClick={() => {
-                        handleRemoveAttribute(field, value);
-                      }}
-                      aria-label={`Remove attribute: ${field} ${value}`}
-                    >
-                      <Image
-                        alt=""
-                        src={`/trading-hub/asset/icon-remove.svg`}
-                        width={16}
-                        height={16}
-                      />
-                    </RemoveAttributeValuePill>
-                  )}
                 </AttributeValuePill>
               ))}
             </AttributeValueList>
@@ -120,35 +88,37 @@ export const AlphanumericAttribute = ({
         </Text>
       </AttributeRow>
 
-      {weight && (
+      {isEditMode && canEditWeight ? (
+        <AttributeRow>
+          <Text as="label" aria-label="Edit value">
+            Strength{' '}
+            <input
+              value={weight ? weight : ''}
+              onChange={(e) => {
+                const { value } = e.target;
+                // istanbul ignore next
+                setWeight?.(parseInt(value || '0'));
+              }}
+              type="number"
+              step={1}
+              min={0}
+              max={100}
+            />{' '}
+            %
+          </Text>
+        </AttributeRow>
+      ) : (
         <AttributeWeight
-          weight={weight}
+          weight={weight || 0}
           field={fields[0].field}
           isEditable={isEditable}
           isEditing={isEditing}
-          setIsEditing={setIsEditing}
-          onChangeSubmit={handleSubmit}
-          onDelete={() => onDelete && onDelete({ fields, weight })}
-          onCancelChanges={() => setLocalFields(fields)}
+          onChangeSubmit={handleChangeSubmit}
+          onDelete={() => onDelete && onDelete({ fields, weight: weight || 0 })}
+          onStartChanges={handleStartChanges}
+          onCancelChanges={() => setIsEditing(false)}
+          canEditWeight={canEditWeight}
         />
-      )}
-
-      {!weight && isEditable && (
-        <AttributeRow>
-          <Buttons>
-            <Button
-              onClick={() => onDelete && onDelete({ fields, weight: 0 })}
-              aria-label="Delete attribute"
-            >
-              <Image
-                width={20}
-                height={20}
-                src="/trading-hub/asset/icon-delete.svg"
-                alt=""
-              />
-            </Button>
-          </Buttons>
-        </AttributeRow>
       )}
     </AttributeWrapper>
   );

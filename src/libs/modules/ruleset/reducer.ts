@@ -120,6 +120,7 @@ export const rulesetReducer = (state: RuleSet, action: Action) => {
             return values.map((attr, index) =>
               index === payload.index ? payload.data : attr
             );
+          case 'add':
           default:
             return [...values, payload.data];
         }

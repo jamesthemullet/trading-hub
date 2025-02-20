@@ -1,16 +1,19 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import { AttributeWeight } from './weight';
 
 describe('AttributeWeight', () => {
   it('shows the attribute weight', () => {
-    render(
+    renderWithProviders(
       <AttributeWeight
+        canEditWeight
         onChangeSubmit={jest.fn()}
         field="category"
         isEditing={false}
-        setIsEditing={jest.fn()}
+        onStartChanges={jest.fn()}
         weight={1}
       />
     );
@@ -18,15 +21,16 @@ describe('AttributeWeight', () => {
     expect(screen.getByText('Strength 1%')).toBeInTheDocument();
   });
 
-  it('Should render and call setIsEditing', async () => {
-    const setIsEditing = jest.fn();
+  it('Should render and call onStartChanges', async () => {
+    const onStartChanges = jest.fn();
 
-    render(
+    renderWithProviders(
       <AttributeWeight
+        canEditWeight
         onChangeSubmit={jest.fn()}
         field="category"
         isEditing={false}
-        setIsEditing={setIsEditing}
+        onStartChanges={onStartChanges}
         weight={1}
         isEditable
       />
@@ -38,17 +42,18 @@ describe('AttributeWeight', () => {
       editButton.click();
     });
 
-    expect(setIsEditing).toHaveBeenCalledWith(true);
+    expect(onStartChanges).toHaveBeenCalledTimes(1);
   });
 
   it('clears the attribute weight', async () => {
     const user = userEvent.setup();
-    render(
+    renderWithProviders(
       <AttributeWeight
+        canEditWeight
         onChangeSubmit={jest.fn()}
         field="category"
         isEditing={true}
-        setIsEditing={jest.fn()}
+        onStartChanges={jest.fn()}
         weight={1}
         isEditable
       />
@@ -65,12 +70,13 @@ describe('AttributeWeight', () => {
   it('saves the attribute weight change', async () => {
     const user = userEvent.setup();
     const mockOnChange = jest.fn();
-    render(
+    renderWithProviders(
       <AttributeWeight
+        canEditWeight
         onChangeSubmit={mockOnChange}
         field="category"
         isEditing={true}
-        setIsEditing={jest.fn()}
+        onStartChanges={jest.fn()}
         weight={1}
         isEditable
       />
