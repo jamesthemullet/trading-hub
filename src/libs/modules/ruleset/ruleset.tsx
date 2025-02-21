@@ -64,7 +64,7 @@ const CategoryPanel = styled.div<{
       /* istanbul ignore next */
       'grid-template-columns: 220px 470px 320px'};
       ${rulesetType === 'category' &&
-      'grid-template-columns: 220px 710px 320px'};
+      'grid-template-columns: 220px 740px 320px'};
     }
   `}
 `;
