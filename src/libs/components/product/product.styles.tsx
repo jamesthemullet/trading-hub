@@ -23,10 +23,13 @@ export const ProductNumber = styled.div`
   background: #000;
   color: #fff;
   border-radius: 3px;
-  min-width: 22px;
-  height: 22px;
+  min-width: 18px;
+  height: 18px;
   text-align: center;
-  padding: 0 2px 2px;
+  padding: 2px;
+  font-size: 14px;
+  line-height: 14px;
+  margin: 2px 8px 0 0;
 `;
 
 export const ProductPin = styled.div`
