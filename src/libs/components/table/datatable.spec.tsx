@@ -385,6 +385,28 @@ describe('DataTable', () => {
       expect(mockDuplicate).toHaveBeenCalledWith('mockId');
     });
 
+    it('should not show duplicate option for writeEnabled=false', async () => {
+      const user = userEvent.setup();
+      const mockDelete = jest.fn();
+      const mockDuplicate = jest.fn();
+      renderWithProviders(
+        <DataTable
+          isLoading={false}
+          headings={headings}
+          rows={rows}
+          onDeleteRuleSet={mockDelete}
+          onDuplicate={mockDuplicate}
+          ruleType="categoryRanking"
+          writeEnabled={false}
+        />
+      );
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+      expect(
+        screen.queryByRole('button', { name: 'Duplicate' })
+      ).not.toBeInTheDocument();
+    });
+
     it('should duplicate a redirect', async () => {
       const user = userEvent.setup();
       const mockDelete = jest.fn();

@@ -575,7 +575,7 @@ export const DataTable = ({
                                 Delete
                               </TableDropdown>
                             )}
-                            {!!onDuplicate && (
+                            {writeEnabled && !!onDuplicate && (
                               <TableDropdown
                                 title="Duplicate"
                                 onMouseDown={onConfirmDuplicate}
