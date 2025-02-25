@@ -145,7 +145,6 @@ const checkNewRelicConnection = async () => {
   }
 };
 
-// eslint-disable-next-line functional/no-classes
 class RootDocument extends Document<MerchHubInitialProps> {
   static async getInitialProps(
     ctx: DocumentContext
