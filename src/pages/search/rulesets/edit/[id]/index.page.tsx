@@ -31,14 +31,15 @@ const Page = ({ id }: PageProps) => {
     // istanbul ignore next
     if (!searchTerms?.[0]) return;
     await updateRuleSet({
+      searchTerms,
+      isEnabled: ruleSet.isEnabled,
       ruleSetId,
       rules: ruleSet.rules,
-      searchTerms,
-      startDate: ruleSet.startDate,
-      endDate: ruleSet.endDate,
       ...(ruleSet.excludedFacets && { excludedFacets: ruleSet.excludedFacets }),
       ...(ruleSet.facets && { facets: ruleSet.facets }),
-      isEnabled: ruleSet.isEnabled,
+      ...(ruleSet.endDate && { endDate: ruleSet.endDate }),
+      ...(ruleSet.startDate && { startDate: ruleSet.startDate }),
+      ...(ruleSet.countryCode && { countryCode: ruleSet.countryCode }),
     }).then(() => {
       router.push('/search/rulesets');
     });

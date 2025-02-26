@@ -190,16 +190,62 @@ describe('Search ranking rules', () => {
   });
 
   it('should save ruleset', async () => {
-    jest
-      .mocked(useSearchRuleSetPreview)
-      .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+    const mockStartDate = '2024-09-12T14:17:54Z';
+    const mockEndDate = '2024-12-19T04:20:03Z';
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
+      ruleSet: {
+        ...mockUseSearchRuleSetPreviewData.ruleSet,
+        startDate: mockStartDate,
+        endDate: mockEndDate,
+      },
+    }));
 
     const user = userEvent.setup({ delay: null });
+
+    const expectedData = {
+      countryCode: 'UK_IE',
+      excludedFacets: {
+        facets: [{ id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88' }],
+      },
+      facets: [
+        {
+          boosted: ['Pink', 'Navy', 'Grey', 'Blue', 'Green'],
+          excludedValues: ['Brown'],
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+        },
+        {
+          boosted: [],
+          excludedValues: [],
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+        },
+        {
+          boosted: [],
+          excludedValues: [],
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+        },
+      ],
+      isEnabled: false,
+      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      rules: {
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        excludes: { alphanumeric: [] },
+        includes: { alphanumeric: [] },
+        pinnedProducts: [{ id: 'a1' }],
+      },
+      searchTerms: ['foo', 'bar'],
+      startDate: mockStartDate,
+      endDate: mockEndDate,
+    };
 
     renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenLastCalledWith(
+      expectedData
+    );
   });
 });
