@@ -265,7 +265,7 @@ jobs:
             --async true
 
       - name: Validate version number
-        uses: nick-fields/retry@v3.0.1
+        uses: nick-fields/retry@v3.0.2
         with:
           timeout_seconds: 20
           max_attempts: 10
