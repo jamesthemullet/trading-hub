@@ -22,7 +22,6 @@ export default function App({
     'flagAuthorization',
     'flagAttributeEdit',
     'flagAuthorizationRoleOverride',
-    'flagBulkActions',
   ]);
 
   return (
@@ -35,7 +34,6 @@ export default function App({
           searchOverride: 'No Override',
           globalOverride: 'No Override',
         },
-        hasBulkActions: cookies.flagBulkActions,
       }}
     >
       <SessionProvider session={session}>

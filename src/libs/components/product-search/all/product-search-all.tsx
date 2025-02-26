@@ -65,7 +65,6 @@ const SelectAll = styled.div`
 
 export type ProductSearchProps = {
   countryCode?: CountryCode;
-  hasBulkAction: boolean;
   isSelectionDisabled: boolean;
   dispatch: Dispatch<Action>;
   onSelectProduct: ({
@@ -87,7 +86,6 @@ export type ProductSearchProps = {
 export const ProductSearchAll = ({
   countryCode = 'UK_IE',
   dispatch,
-  hasBulkAction,
   isPinnable,
   isSelectionDisabled,
   merchandisingRules,
@@ -163,24 +161,22 @@ export const ProductSearchAll = ({
         {products.length > 0 && (
           <>
             {products.length} {pluralize('results', products.length)}
-            {hasBulkAction && (
-              <SelectAll>
-                <Checkbox
-                  label="Select all"
-                  onChange={onSelectAllProducts}
-                  checked={
-                    selectedProducts.length > 0 &&
-                    selectedProducts.length === products.length
-                  }
-                  showLabel={true}
-                  disabled={isSelectionDisabled}
-                />
-              </SelectAll>
-            )}
+            <SelectAll>
+              <Checkbox
+                label="Select all"
+                onChange={onSelectAllProducts}
+                checked={
+                  selectedProducts.length > 0 &&
+                  selectedProducts.length === products.length
+                }
+                showLabel={true}
+                disabled={isSelectionDisabled}
+              />
+            </SelectAll>
           </>
         )}
       </InfoContainer>
-      <ProductsContainer>
+      <ProductsContainer data-testid="product-search-result">
         {products.map((product, index) => {
           const id = `${product.id}-${index}`;
           const isSelected = selectedProducts.includes(product.id);
@@ -188,7 +184,6 @@ export const ProductSearchAll = ({
             <StyledProduct
               key={id}
               {...product}
-              hasBulkAction={hasBulkAction}
               index={index}
               isPinnable={isPinnable}
               isSelectionDisabled={isSelectionDisabled}

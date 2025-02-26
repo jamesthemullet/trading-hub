@@ -22,7 +22,6 @@ const defaultProps: RulesetChangesProps = {
   merchandisingRules: mockMerchandisingRules,
   dispatch: jest.fn(),
   selectedProducts: [],
-  hasBulkAction: false,
   onSelectAll: jest.fn(),
   onSelectProduct: jest.fn(),
   isSelectionDisabled: false,
@@ -416,7 +415,6 @@ describe('RulesetChanges', () => {
       renderWithProviders(
         <RulesetChanges
           {...defaultProps}
-          hasBulkAction={true}
           isPinnable={true}
           onSelectAll={mockSelectAll}
           merchandisingRules={{
@@ -510,7 +508,6 @@ describe('RulesetChanges', () => {
       renderWithProviders(
         <RulesetChanges
           {...defaultProps}
-          hasBulkAction={true}
           isPinnable={true}
           onSelectAll={mockSelectAll}
           selectedProducts={['60183701', '60183702']}
@@ -600,7 +597,6 @@ describe('RulesetChanges', () => {
       renderWithProviders(
         <RulesetChanges
           {...defaultProps}
-          hasBulkAction={true}
           isPinnable={true}
           onSelectAll={mockSelectAll}
           selectedProducts={['60183702']}

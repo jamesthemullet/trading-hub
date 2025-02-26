@@ -34,7 +34,6 @@ const productProps: ProductProps = {
   index: 1,
   dispatch: mockDispatch,
   pinnedProductsCount: 2,
-  hasBulkAction: false,
   isSelected: false,
   isSelectionDisabled: false,
   hasSupplementaryInfo: true,
@@ -44,7 +43,6 @@ const missingProductProps = {
   id: 'id',
   index: 1,
   dispatch: mockDispatch,
-  hasBulkAction: false,
   onSelectProduct: jest.fn(),
   isSelected: false,
   isSelectionDisabled: false,
@@ -560,7 +558,7 @@ describe('Product', () => {
 
   describe('bulk action', () => {
     it('should show bulk action checkbox', () => {
-      renderWithProviders(<Product {...productProps} hasBulkAction={true} />);
+      renderWithProviders(<Product {...productProps} />);
 
       const checkbox = screen.queryByLabelText(`Select ${productProps.title}`);
 
@@ -570,11 +568,7 @@ describe('Product', () => {
     it('should select a product', () => {
       const mockSelect = jest.fn();
       renderWithProviders(
-        <Product
-          {...productProps}
-          hasBulkAction={true}
-          onSelectProduct={mockSelect}
-        />
+        <Product {...productProps} onSelectProduct={mockSelect} />
       );
 
       act(() => {
@@ -590,11 +584,7 @@ describe('Product', () => {
     it('should select a missing product', () => {
       const mockSelect = jest.fn();
       renderWithProviders(
-        <MissingProduct
-          {...missingProductProps}
-          hasBulkAction={true}
-          onSelectProduct={mockSelect}
-        />
+        <MissingProduct {...missingProductProps} onSelectProduct={mockSelect} />
       );
 
       act(() => {

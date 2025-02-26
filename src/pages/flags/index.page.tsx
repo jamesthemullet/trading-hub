@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import { useCookies } from 'react-cookie';
-import { Select, Space, Stack } from '@mantine/core';
+import { Select, Stack } from '@mantine/core';
 
 import { spacing, Toggle } from '@/libs/components';
 
@@ -24,18 +24,13 @@ const Flag = styled.div`
 
 const FeatureFlags = () => {
   const [cookies, setCookie] = useCookies(
-    [
-      'flagAuthorization',
-      'flagAttributeEdit',
-      'flagAuthorizationRoleOverride',
-      'flagBulkActions',
-    ],
+    ['flagAuthorization', 'flagAttributeEdit', 'flagAuthorizationRoleOverride'],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization, flagBulkActions } = cookies;
+  const { flagAuthorization } = cookies;
 
   return (
     <Wrapper>
@@ -46,15 +41,6 @@ const FeatureFlags = () => {
           checked={flagAuthorization}
           onChange={() => {
             setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
-          }}
-        />
-      </Flag>
-      <Flag>
-        <p>Bulk actions:&nbsp;</p>
-        <Toggle
-          checked={flagBulkActions}
-          onChange={() => {
-            setCookie('flagBulkActions', JSON.stringify(!flagBulkActions));
           }}
         />
       </Flag>
@@ -133,14 +119,6 @@ const FeatureFlags = () => {
           />
         </Stack>
       )}
-      <Space h={40} />
-      <p>
-        See changes in{' '}
-        <a href="https://github.com/DigitalInnovation/trading-hub/pull/947">
-          github.com/DigitalInnovation/trading-hub/issues/947
-        </a>{' '}
-        to add a feature flag
-      </p>
     </Wrapper>
   );
 };

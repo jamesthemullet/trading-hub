@@ -14,7 +14,6 @@ export type FeatureFlags = {
   hasAuthorization: boolean;
   hasAttributeEdit: boolean;
   authorizationRoleOverride: AuthorizationRoleOverride;
-  hasBulkActions: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -25,7 +24,6 @@ export const defaultFeatureFlags: FeatureFlags = {
     searchOverride: 'No Override',
     globalOverride: 'No Override',
   },
-  hasBulkActions: false,
 };
 
 export const FeatureFlagContext =
@@ -53,15 +51,4 @@ export const useAuthorizationRoleOverride = () => {
   }, [featureFlags.authorizationRoleOverride]);
 
   return authorizationRoleOverride;
-};
-
-export const useBulkActionsFlag = () => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [bulkActionsEnabled, setBulkActionsEnabled] = useState(false);
-
-  useEffect(() => {
-    setBulkActionsEnabled(featureFlags.hasBulkActions);
-  }, [featureFlags.hasBulkActions]);
-
-  return bulkActionsEnabled;
 };

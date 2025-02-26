@@ -28,11 +28,9 @@ import {
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { useBulkActionsFlag } from '@/libs/components/context/feature-flag';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearchAll } from '@/libs/components/product-search/all/product-search-all';
-import { ProductSearch } from '@/libs/components/product-search/product-search';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
 import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
@@ -263,8 +261,6 @@ export const Ruleset = ({
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
   const router = useRouter();
-
-  const bulkActionsEnabled = useBulkActionsFlag();
 
   const onSelectCategory = (category: string) => {
     const hasDuplicates = checkForDuplicates(
@@ -602,7 +598,7 @@ export const Ruleset = ({
             rulesetSearchTerms.length ||
             rulesetType === 'global') && (
             <ProductSearchTabContent>
-              {currentProductTab === 0 && bulkActionsEnabled && (
+              {currentProductTab === 0 && (
                 <ProductSearchAll
                   isPinnable={rulesetType !== 'global'}
                   pinnedProductsCount={merchandisingRules.pinnedProducts.length}
@@ -611,7 +607,6 @@ export const Ruleset = ({
                   categoryIds={selectedCategories}
                   searchTerms={rulesetSearchTerms}
                   countryCode={ruleset.countryCode}
-                  hasBulkAction={bulkActionsEnabled}
                   selectedProducts={selectedSearchProducts}
                   isSelectionDisabled={
                     !writeEnabled || !!selectedProducts.length
@@ -626,17 +621,6 @@ export const Ruleset = ({
                         : [...selectedSearchProducts, id]
                     );
                   }}
-                />
-              )}
-              {currentProductTab === 0 && !bulkActionsEnabled && (
-                <ProductSearch
-                  isPinnable={rulesetType !== 'global'}
-                  pinnedProductsCount={merchandisingRules.pinnedProducts.length}
-                  merchandisingRules={merchandisingRules}
-                  dispatch={dispatch}
-                  categoryIds={selectedCategories}
-                  searchTerms={rulesetSearchTerms}
-                  countryCode={ruleset.countryCode}
                 />
               )}
               {currentProductTab === 1 && (
@@ -739,7 +723,6 @@ export const Ruleset = ({
                 <VisualEditor
                   products={data.products}
                   dispatch={dispatch}
-                  hasBulkAction={bulkActionsEnabled}
                   selectedProducts={selectedProducts}
                   isSelectionDisabled={
                     !writeEnabled || !!selectedSearchProducts.length
@@ -765,7 +748,6 @@ export const Ruleset = ({
                 isPinnable={rulesetType !== 'global'}
                 countryCode={ruleset.countryCode}
                 selectedProducts={selectedProducts}
-                hasBulkAction={bulkActionsEnabled}
                 onSelectAll={setSelectedProducts}
                 onSelectProduct={({ id, isSelected }) => {
                   setSelectedProducts(

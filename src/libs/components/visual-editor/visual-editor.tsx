@@ -7,7 +7,7 @@ import { Layout, ProductBox } from './visual-editor.styles';
 
 type Props = {
   dispatch: Dispatch<Action>;
-  hasBulkAction: boolean;
+
   onSelectProduct: ({
     id,
     isSelected,
@@ -23,7 +23,7 @@ type Props = {
 export const VisualEditor = ({
   products,
   dispatch,
-  hasBulkAction,
+
   onSelectProduct,
   selectedProducts,
   isSelectionDisabled,
@@ -38,7 +38,6 @@ export const VisualEditor = ({
         <ProductBox key={`product-${product.id}`}>
           <Product
             {...product}
-            hasBulkAction={hasBulkAction}
             index={index}
             isPinnable={true}
             dispatch={dispatch}

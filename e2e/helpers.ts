@@ -1,8 +1,1 @@
-export const cookies = [
-  {
-    name: 'flagBulkActions',
-    value: 'true',
-    path: '/',
-    domain: 'localhost',
-  },
-];
+export const cookies = [];

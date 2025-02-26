@@ -117,14 +117,14 @@ export const ProductInfo = styled.div<{ isSearchResult?: boolean }>`
     `}
 `;
 
-export const ProductInfoWrapper = styled.div<{ hasBulkAction: boolean }>`
+export const ProductInfoWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  ${({ hasBulkAction }) => hasBulkAction && 'justify-content: center;'}
+  justify-content: center;
 `;
 
-export const ProductMenuToggle = styled.button<{ hasBulkAction: boolean }>`
+export const ProductMenuToggle = styled.button`
   margin-left: auto;
   user-select: none;
   background: none;
@@ -133,7 +133,7 @@ export const ProductMenuToggle = styled.button<{ hasBulkAction: boolean }>`
   text-align: right;
   padding: 0;
   height: 20px;
-  ${({ hasBulkAction }) => !hasBulkAction && 'margin-left: auto;'}
+  margin-left: auto;
 `;
 
 export const ProductMenuOverlay = styled.button`

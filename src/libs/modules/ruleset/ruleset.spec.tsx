@@ -2106,13 +2106,7 @@ describe('Ruleset', () => {
           rulesetMerchandisingRules={mockRules}
           categoryIds={['SubCategory_507']}
           rulesetType="category"
-        />,
-        [],
-        {
-          featureFlags: {
-            hasBulkActions: true,
-          },
-        }
+        />
       );
 
       expect(await screen.findByLabelText('Select productTitle')).toBeVisible();
@@ -2127,13 +2121,7 @@ describe('Ruleset', () => {
           rulesetMerchandisingRules={mockRules}
           categoryIds={['SubCategory_507']}
           rulesetType="category"
-        />,
-        [],
-        {
-          featureFlags: {
-            hasBulkActions: true,
-          },
-        }
+        />
       );
 
       const checkbox = await screen.findByLabelText('Select productTitle');
@@ -2188,13 +2176,7 @@ describe('Ruleset', () => {
           rulesetMerchandisingRules={mockRules}
           categoryIds={['SubCategory_507']}
           rulesetType="category"
-        />,
-        [],
-        {
-          featureFlags: {
-            hasBulkActions: true,
-          },
-        }
+        />
       );
 
       const searchProduct = screen.getByPlaceholderText('Search for product');
@@ -2231,13 +2213,7 @@ describe('Ruleset', () => {
           rulesetMerchandisingRules={mockRules}
           categoryIds={['SubCategory_507']}
           rulesetType="category"
-        />,
-        [],
-        {
-          featureFlags: {
-            hasBulkActions: true,
-          },
-        }
+        />
       );
 
       const checkbox = await screen.findByLabelText('Select productTitle');
@@ -2295,13 +2271,7 @@ describe('Ruleset', () => {
           rulesetMerchandisingRules={mockedRules}
           categoryIds={['SubCategory_507']}
           rulesetType="category"
-        />,
-        [],
-        {
-          featureFlags: {
-            hasBulkActions: true,
-          },
-        }
+        />
       );
 
       const checkbox = await screen.findByLabelText('Select productTitle2');
@@ -2384,13 +2354,7 @@ describe('Ruleset', () => {
           }}
           categoryIds={['SubCategory_507']}
           rulesetType="category"
-        />,
-        [],
-        {
-          featureFlags: {
-            hasBulkActions: true,
-          },
-        }
+        />
       );
 
       const tab2 = await screen.findByText('Changes');

@@ -88,7 +88,6 @@ export const ProductDetails = ({
 };
 
 export type ProductProps = ProductType & {
-  hasBulkAction: boolean;
   index: number;
   isPinnable: boolean;
   dispatch: Dispatch<Action>;
@@ -111,7 +110,6 @@ export type ProductProps = ProductType & {
 export const Product = ({
   brand,
   dispatch,
-  hasBulkAction,
   id,
   imageUrl,
   index,
@@ -204,17 +202,15 @@ export const Product = ({
         />
       )}
       <ProductHeader>
-        {hasBulkAction && (
-          <Checkbox
-            label={`Select ${title}`}
-            disabled={isSelectionDisabled}
-            checked={isSelected}
-            onChange={() =>
-              onSelectProduct && onSelectProduct({ id, isSelected })
-            }
-          />
-        )}
-        <ProductInfoWrapper hasBulkAction={hasBulkAction}>
+        <Checkbox
+          label={`Select ${title}`}
+          disabled={isSelectionDisabled}
+          checked={isSelected}
+          onChange={() =>
+            onSelectProduct && onSelectProduct({ id, isSelected })
+          }
+        />
+        <ProductInfoWrapper>
           {(isProductNumberEnabled ?? true) && (
             <ProductNumber>{index + 1}</ProductNumber>
           )}
@@ -240,7 +236,6 @@ export const Product = ({
           )}
         </ProductInfoWrapper>
         <ProductMenuToggle
-          hasBulkAction={hasBulkAction}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
         >
@@ -481,7 +476,6 @@ export const Product = ({
 
 export const MissingProduct = ({
   dispatch,
-  hasBulkAction,
   id,
   index,
   isProductNumberEnabled,
@@ -495,7 +489,6 @@ export const MissingProduct = ({
   ...rest
 }: {
   dispatch: Dispatch<Action>;
-  hasBulkAction: boolean;
   index: number;
   id: string;
   onSelectProduct: ({
@@ -532,17 +525,15 @@ export const MissingProduct = ({
         />
       )}
       <ProductHeader>
-        {hasBulkAction && (
-          <Checkbox
-            label={`Select ${id}`}
-            disabled={isSelectionDisabled}
-            checked={isSelected}
-            onChange={() =>
-              onSelectProduct && onSelectProduct({ id, isSelected })
-            }
-          />
-        )}
-        <ProductInfoWrapper hasBulkAction={hasBulkAction}>
+        <Checkbox
+          label={`Select ${id}`}
+          disabled={isSelectionDisabled}
+          checked={isSelected}
+          onChange={() =>
+            onSelectProduct && onSelectProduct({ id, isSelected })
+          }
+        />
+        <ProductInfoWrapper>
           {(isProductNumberEnabled ?? true) && (
             <ProductNumber>{index + 1}</ProductNumber>
           )}
@@ -568,7 +559,6 @@ export const MissingProduct = ({
           )}
         </ProductInfoWrapper>
         <ProductMenuToggle
-          hasBulkAction={hasBulkAction}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
         >

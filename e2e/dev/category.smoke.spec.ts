@@ -83,15 +83,7 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Save' }).click();
   });
 
-  test('edits a ruleset', async ({ page, context }) => {
-    await context.addCookies([
-      {
-        name: 'flagBulkActions',
-        value: 'true',
-        domain: 'localhost',
-        path: '/',
-      },
-    ]);
+  test('edits a ruleset', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
     await page.goto('/category/rulesets');
     await page.waitForLoadState('networkidle');

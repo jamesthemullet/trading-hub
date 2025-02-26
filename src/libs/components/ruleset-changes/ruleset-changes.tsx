@@ -58,7 +58,6 @@ const ProductsLoader = ({
   pinnedProductsCount,
   products,
   countryCode = 'UK_IE',
-  hasBulkAction,
   onSelectAll,
   onSelectProduct,
   selectedProducts,
@@ -72,7 +71,6 @@ const ProductsLoader = ({
   pinnedProductsCount: number;
   products: ProductRule[];
   countryCode?: CountryCode;
-  hasBulkAction: boolean;
   onSelectAll: (args: string[]) => void;
   onSelectProduct: ({
     id,
@@ -152,20 +150,18 @@ const ProductsLoader = ({
           {`${heading} (${products.length})`}
         </Heading>
 
-        {hasBulkAction && (
-          <SelectAll>
-            <Checkbox
-              label="Select all"
-              onChange={onSelectAllProducts}
-              checked={
-                selectedProducts.length > 0 &&
-                selectedProducts.length === products.length
-              }
-              showLabel={true}
-              disabled={isSelectionDisabled}
-            />
-          </SelectAll>
-        )}
+        <SelectAll>
+          <Checkbox
+            label="Select all"
+            onChange={onSelectAllProducts}
+            checked={
+              selectedProducts.length > 0 &&
+              selectedProducts.length === products.length
+            }
+            showLabel={true}
+            disabled={isSelectionDisabled}
+          />
+        </SelectAll>
       </Header>
       <Layout data-testid={heading.split('(')[0]}>
         {products.map(({ id }, index) => {
@@ -197,7 +193,6 @@ const ProductsLoader = ({
                     isBuried={changeType === 'bury'}
                     isPinned={changeType === 'pin'}
                     isBoosted={changeType === 'boost'}
-                    hasBulkAction={hasBulkAction}
                     isSelected={selectedProducts.includes(id)}
                     isSelectionDisabled={isSelectionDisabled}
                     onSelectProduct={onSelectProduct}
@@ -210,7 +205,6 @@ const ProductsLoader = ({
                   isPinnable={isPinnable}
                   pinnedProductsCount={pinnedProductsCount}
                   dispatch={dispatch}
-                  hasBulkAction={hasBulkAction}
                   isSelected={selectedProducts.includes(product.id)}
                   isSelectionDisabled={isSelectionDisabled}
                   onSelectProduct={onSelectProduct}
@@ -242,7 +236,7 @@ export type RulesetChangesProps = {
   merchandisingRules: MerchandisingRules;
   dispatch: Dispatch<Action>;
   countryCode?: CountryCode;
-  hasBulkAction: boolean;
+
   onSelectAll: (args: string[]) => void;
   onSelectProduct: ({
     id,
@@ -260,7 +254,6 @@ export const RulesetChanges = ({
   merchandisingRules,
   dispatch,
   countryCode,
-  hasBulkAction,
   onSelectAll,
   onSelectProduct,
   selectedProducts,
@@ -401,7 +394,6 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.blockedProducts}
           countryCode={countryCode}
-          hasBulkAction={hasBulkAction}
           isSelectionDisabled={
             isSelectionDisabled ||
             (hasSelectedProducts && !hasSelectedBlockedProduct)
@@ -422,7 +414,6 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.pinnedProducts}
           countryCode={countryCode}
-          hasBulkAction={hasBulkAction}
           isSelectionDisabled={
             isSelectionDisabled ||
             (hasSelectedProducts && !hasSelectedPinnedProduct)
@@ -443,7 +434,6 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.boosts.product}
           countryCode={countryCode}
-          hasBulkAction={hasBulkAction}
           isSelectionDisabled={
             isSelectionDisabled ||
             (hasSelectedProducts && !hasSelectedBoostededProduct)
@@ -464,7 +454,6 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.buries.product}
           countryCode={countryCode}
-          hasBulkAction={hasBulkAction}
           isSelectionDisabled={
             isSelectionDisabled ||
             (hasSelectedProducts && !hasSelectedBuriedProduct)

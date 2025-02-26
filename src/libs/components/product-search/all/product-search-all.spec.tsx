@@ -19,7 +19,6 @@ const mockDispatch = jest.fn();
 const mockProps: ProductSearchProps = {
   isPinnable: true,
   merchandisingRules: mockMerchandisingRules,
-  hasBulkAction: false,
   isSelectionDisabled: false,
   onSelectAll: jest.fn(),
   dispatch: jest.fn(),
@@ -176,15 +175,8 @@ describe('ProductSearchAll', () => {
         categoryIds={['cat123']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        hasBulkAction
         onSelectAll={mockSelectAll}
-      />,
-      [],
-      {
-        featureFlags: {
-          hasBulkActions: true,
-        },
-      }
+      />
     );
 
     const searchProduct = screen.getByPlaceholderText('Search for product');
@@ -255,15 +247,8 @@ describe('ProductSearchAll', () => {
         categoryIds={['cat123']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        hasBulkAction
         onSelectAll={mockSelectAll}
-      />,
-      [],
-      {
-        featureFlags: {
-          hasBulkActions: true,
-        },
-      }
+      />
     );
 
     const searchProduct = screen.getByPlaceholderText('Search for product');
@@ -331,15 +316,8 @@ describe('ProductSearchAll', () => {
         searchTerms={['dress', 'dresses']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        hasBulkAction
         onSelectAll={mockSelectAll}
-      />,
-      [],
-      {
-        featureFlags: {
-          hasBulkActions: true,
-        },
-      }
+      />
     );
 
     const searchProduct = screen.getByPlaceholderText('Search for product');
@@ -462,15 +440,8 @@ describe('ProductSearchAll', () => {
         categoryIds={['cat123']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        hasBulkAction
         onSelectAll={mockSelectAll}
-      />,
-      [],
-      {
-        featureFlags: {
-          hasBulkActions: true,
-        },
-      }
+      />
     );
 
     const searchProduct = screen.getByPlaceholderText('Search for product');
@@ -527,16 +498,9 @@ describe('ProductSearchAll', () => {
         categoryIds={['cat123']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
-        hasBulkAction
         onSelectAll={mockSelectAll}
         selectedProducts={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
-      />,
-      [],
-      {
-        featureFlags: {
-          hasBulkActions: true,
-        },
-      }
+      />
     );
 
     const searchProduct = screen.getByPlaceholderText('Search for product');
