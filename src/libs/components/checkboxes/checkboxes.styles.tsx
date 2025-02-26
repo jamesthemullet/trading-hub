@@ -19,7 +19,6 @@ export const Input = styled.input`
     width: ${CHECKBOX_SIZE};
     height: ${CHECKBOX_SIZE};
     border: 0.15em solid currentColor;
-    margin: -2px 0 0;
     display: block;
     border-radius: 2px;
   }

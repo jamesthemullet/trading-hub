@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Product } from '@/libs/api';
@@ -554,5 +554,77 @@ describe('ProductSearchAll', () => {
     });
 
     expect(mockSelectAll).toHaveBeenCalledWith([]);
+  });
+
+  it('should display predicted revenue and newness score in the search results', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    jest.mocked(useCategoryProductSearch).mockReturnValue({
+      searchForProduct: jest.fn(() => {
+        return Promise.resolve({
+          products: [
+            {
+              id: '1',
+              productId: 'id1',
+              title: 'mock title 1',
+              imageUrl: ['example1.jpg'],
+              brand: 'brand',
+              metadata: {
+                isPinned: false,
+                ranking: [
+                  {
+                    property: 'Predicted Revenue Score:',
+                    values: ['11.59'],
+                  },
+                  {
+                    property: 'Days Since Launch:',
+                    values: ['100'],
+                  },
+                ],
+              },
+              isInStock: true,
+              price: '£5',
+              url: '',
+              predictedRevenue: 0.5,
+              newnessScore: 0.5,
+            },
+          ],
+          pagination: {
+            totalItems: 1,
+          },
+        });
+      }),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(
+      <ProductSearchAll
+        {...mockProps}
+        categoryIds={['cat123']}
+        dispatch={mockDispatch}
+        pinnedProductsCount={0}
+      />
+    );
+
+    const searchProduct = screen.getByPlaceholderText('Search for product');
+
+    await user.type(searchProduct, 'productSearchTitle');
+
+    await waitFor(() => {
+      expect(screen.getByText('1 result')).toBeInTheDocument();
+    });
+
+    const predictedRevenue = screen.getByText('Predicted Revenue Score:');
+    expect(predictedRevenue).toBeInTheDocument();
+
+    const predictedRevenueValue = within(predictedRevenue).getByText('11.59');
+    expect(predictedRevenueValue).toBeInTheDocument();
+
+    const newness = screen.getByText('Days Since Launch:');
+    expect(newness).toBeInTheDocument();
+
+    const newnessValue = within(newness).getByText('100');
+    expect(newnessValue).toBeInTheDocument();
   });
 });

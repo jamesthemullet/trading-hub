@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Product } from '@/libs/api';
@@ -69,7 +69,19 @@ describe('ProductSearch', () => {
               title: 'title',
               imageUrl: ['example1.jpg'],
               brand: 'brand',
-              metadata: { isPinned: false },
+              metadata: {
+                isPinned: false,
+                ranking: [
+                  {
+                    property: 'Predicted Revenue Score:',
+                    values: ['11.59'],
+                  },
+                  {
+                    property: 'Days Since Launch:',
+                    values: ['100'],
+                  },
+                ],
+              },
               isInStock: true,
               price: '£5',
               url: '',
@@ -101,6 +113,18 @@ describe('ProductSearch', () => {
     });
     expect(screen.getByText(/brand/i)).toBeInTheDocument();
     expect(screen.getByText(/£5/i)).toBeInTheDocument();
+
+    const predictedRevenue = screen.getByText('Predicted Revenue Score:');
+    expect(predictedRevenue).toBeInTheDocument();
+
+    const predictedRevenueValue = within(predictedRevenue).getByText('11.59');
+    expect(predictedRevenueValue).toBeInTheDocument();
+
+    const newness = screen.getByText('Days Since Launch:');
+    expect(newness).toBeInTheDocument();
+
+    const newnessValue = within(newness).getByText('100');
+    expect(newnessValue).toBeInTheDocument();
   });
 
   it('should render no products when search is cleared', async () => {

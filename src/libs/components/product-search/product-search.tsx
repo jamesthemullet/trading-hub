@@ -132,6 +132,7 @@ export const ProductSearch = ({
               isSearchResult={true}
               isSelected={false}
               isSelectionDisabled
+              hasSupplementaryInfo={true}
             />
           ) : (
             <Skeleton

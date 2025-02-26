@@ -8,15 +8,17 @@ import { spacing } from '../utils/spacing';
 
 export const ProductWrapper = styled.div`
   width: 100%;
-  border: solid 1px #cecece;
-  padding: ${spacing(1)};
+  border: solid 1px ${color.grey};
   min-height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const ProductHeader = styled.div`
-  margin-bottom: ${spacing(1)};
+  padding: ${spacing(1)};
   display: flex;
   position: relative;
+  align-items: center;
 `;
 
 export const ProductNumber = styled.div`
@@ -29,11 +31,12 @@ export const ProductNumber = styled.div`
   padding: 2px;
   font-size: 14px;
   line-height: 14px;
-  margin: 2px 8px 0 0;
+  margin: 0px 8px 0 0;
 `;
 
 export const ProductPin = styled.div`
   display: flex;
+  align-items: center;
 
   &::before {
     content: '';
@@ -45,6 +48,7 @@ export const ProductPin = styled.div`
 
 export const BoostPin = styled.div`
   display: flex;
+  align-items: center;
 
   &::before {
     content: '';
@@ -52,12 +56,13 @@ export const BoostPin = styled.div`
     width: 16px;
     height: 16px;
     background-size: contain;
-    margin: 3px 5px 0 3px;
+    margin: 0px 5px 0 3px;
   }
 `;
 
 export const BuriedPin = styled.div`
   display: flex;
+  align-items: center;
 
   &::before {
     content: '';
@@ -65,12 +70,13 @@ export const BuriedPin = styled.div`
     width: 16px;
     height: 16px;
     background-size: contain;
-    margin: 3px 5px 0 3px;
+    margin: 0px 5px 0 3px;
   }
 `;
 
 export const BlockedPin = styled.div`
   display: flex;
+  align-items: center;
 
   &::before {
     content: '';
@@ -78,17 +84,19 @@ export const BlockedPin = styled.div`
     width: 16px;
     height: 16px;
     background-size: contain;
-    margin: 3px 5px 0 3px;
+    margin: 0px 5px 0 3px;
   }
 `;
 
 export const ProductInfo = styled.div<{ isSearchResult?: boolean }>`
-  margin-top: ${spacing(2)};
+  margin-top: ${spacing(1)};
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(1, 1fr);
   grid-column-gap: ${spacing(1)};
   grid-row-gap: ${spacing(1)};
+  padding: ${spacing(1)};
+  flex-grow: 1;
 
   & > p:nth-of-type(1) {
     grid-area: 1 / 1 / 2 / 4;
@@ -109,13 +117,10 @@ export const ProductInfo = styled.div<{ isSearchResult?: boolean }>`
     `}
 `;
 
-export const ProductCheckbox = styled.div`
-  padding-top: 4px;
-`;
-
 export const ProductInfoWrapper = styled.div<{ hasBulkAction: boolean }>`
   width: 100%;
   display: flex;
+  align-items: center;
   ${({ hasBulkAction }) => hasBulkAction && 'justify-content: center;'}
 `;
 
@@ -217,7 +222,9 @@ export const LockActions = styled.div<{ isSearchResult?: boolean }>`
     `}
 `;
 
-export const ProductCard = styled.div`
+export const ProductCard = styled.div<{ hasSupplementaryInfo?: boolean }>`
+  border-top: ${({ hasSupplementaryInfo }) =>
+    hasSupplementaryInfo ? `1px solid ${color.grey}` : 'none'};
   height: 176px;
   position: relative;
   display: flex;
@@ -230,4 +237,30 @@ export const ProductCard = styled.div`
     width: auto;
     max-width: 100%;
   }
+`;
+
+export const SupplementaryInfo = styled.div`
+  border-top: solid 1px ${color.grey};
+  padding: ${spacing(1)};
+
+  p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    align-items: end;
+
+    span {
+      font-weight: bold;
+    }
+
+    &:first-of-type {
+      span {
+        color: ${color.successGreen};
+      }
+    }
+  }
+`;
+
+export const StyledPinText = styled(Text)`
+  line-height: 20px;
 `;

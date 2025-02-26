@@ -199,6 +199,7 @@ export const ProductSearchAll = ({
               isProductNumberEnabled={false}
               isSearchResult={true}
               isSelected={isSelected}
+              hasSupplementaryInfo={true}
             />
           );
         })}

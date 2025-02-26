@@ -2082,8 +2082,24 @@ components:
           type: boolean
         isBlocked:
           type: boolean
+        ranking:
+          type: array
+          items:
+            $ref: '#/components/schemas/RankingAttribute'
       required:
         - isPinned
+    RankingAttribute:
+      type: object
+      properties:
+        property:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+      required:
+        - property
+        - values
     MerchandisingRulesWithInfo:
       type: object
       properties:

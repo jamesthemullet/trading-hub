@@ -1,5 +1,5 @@
 import type { Screen } from '@testing-library/react';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -15,7 +15,19 @@ const productProps: ProductProps = {
   imageUrl: ['example1.jpg'],
   isPinnable: true,
   brand: 'product brand',
-  metadata: { isPinned: false },
+  metadata: {
+    isPinned: false,
+    ranking: [
+      {
+        property: 'Predicted Revenue Score:',
+        values: ['11.59'],
+      },
+      {
+        property: 'Days Since Launch:',
+        values: ['100'],
+      },
+    ],
+  },
   isInStock: true,
   price: '£10',
   url: '',
@@ -25,6 +37,7 @@ const productProps: ProductProps = {
   hasBulkAction: false,
   isSelected: false,
   isSelectionDisabled: false,
+  hasSupplementaryInfo: true,
 };
 
 const missingProductProps = {
@@ -386,6 +399,22 @@ describe('Product', () => {
       });
 
       expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
+    });
+
+    it('should render predicted revenue and newness for visual editor or product search', () => {
+      render(<Product {...productProps} hasSupplementaryInfo={true} />);
+
+      const predictedRevenue = screen.getByText('Predicted Revenue Score:');
+      expect(predictedRevenue).toBeInTheDocument();
+
+      const predictedRevenueValue = within(predictedRevenue).getByText('11.59');
+      expect(predictedRevenueValue).toBeInTheDocument();
+
+      const newness = screen.getByText('Days Since Launch:');
+      expect(newness).toBeInTheDocument();
+
+      const newnessValue = within(newness).getByText('100');
+      expect(newnessValue).toBeInTheDocument();
     });
   });
 

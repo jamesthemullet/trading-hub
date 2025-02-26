@@ -46,6 +46,7 @@ export const VisualEditor = ({
             isSelected={selectedProducts.includes(product.id)}
             isSelectionDisabled={isSelectionDisabled}
             pinnedProductsCount={pinnedProductsCount}
+            hasSupplementaryInfo={true}
           />
         </ProductBox>
       ))}

@@ -9,7 +9,7 @@ import { Skeleton } from '@mantine/core';
 
 import Image from 'next/image';
 
-import type { Product as ProductType } from '../../api';
+import type { Product as ProductType, RankingAttribute } from '../../api';
 import { Button } from '../buttons/button/button';
 import { Checkbox } from '../checkboxes/checkbox';
 import { Action } from '../types';
@@ -24,7 +24,6 @@ import {
   LockInput,
   LockMenu,
   ProductCard,
-  ProductCheckbox,
   ProductHeader,
   ProductInfo,
   ProductInfoWrapper,
@@ -35,6 +34,8 @@ import {
   ProductNumber,
   ProductPin,
   ProductWrapper,
+  StyledPinText,
+  SupplementaryInfo,
 } from './product.styles';
 
 export const ProductDetails = ({
@@ -42,16 +43,20 @@ export const ProductDetails = ({
   brand,
   isBrandStrong,
   isSearchResult,
+  hasSupplementaryInfo,
   title,
   price,
   productId,
+  ranking,
 }: Pick<ProductType, 'title' | 'price' | 'brand' | 'productId' | 'imageUrl'> & {
   isBrandStrong?: boolean;
   isSearchResult?: boolean;
+  hasSupplementaryInfo?: boolean;
+  ranking?: Array<RankingAttribute>;
 }) => {
   return (
     <>
-      <ProductCard>
+      <ProductCard hasSupplementaryInfo={hasSupplementaryInfo}>
         <Image
           src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
           alt=""
@@ -69,6 +74,15 @@ export const ProductDetails = ({
         <Text>{price}</Text>
         <Text data-testid="product id">ID: {productId}</Text>
       </ProductInfo>
+      {hasSupplementaryInfo && (
+        <SupplementaryInfo>
+          {ranking?.map((item) => (
+            <Text key={item.property}>
+              {item.property} <span>{item.values[0]}</span>
+            </Text>
+          ))}
+        </SupplementaryInfo>
+      )}
     </>
   );
 };
@@ -91,6 +105,7 @@ export type ProductProps = ProductType & {
   isBrandStrong?: boolean;
   isProductNumberEnabled?: boolean;
   isSearchResult?: boolean;
+  hasSupplementaryInfo?: boolean;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 export const Product = ({
@@ -104,9 +119,10 @@ export const Product = ({
   isPinnable,
   isProductNumberEnabled,
   isSearchResult = false,
+  hasSupplementaryInfo = false,
   isSelected,
   isSelectionDisabled,
-  metadata: { isPinned, isBoosted, isBuried, isBlocked },
+  metadata: { isPinned, isBoosted, isBuried, isBlocked, ranking },
   onSelectProduct,
   pinnedProductsCount,
   price,
@@ -189,16 +205,14 @@ export const Product = ({
       )}
       <ProductHeader>
         {hasBulkAction && (
-          <ProductCheckbox>
-            <Checkbox
-              label={`Select ${title}`}
-              disabled={isSelectionDisabled}
-              checked={isSelected}
-              onChange={() =>
-                onSelectProduct && onSelectProduct({ id, isSelected })
-              }
-            />
-          </ProductCheckbox>
+          <Checkbox
+            label={`Select ${title}`}
+            disabled={isSelectionDisabled}
+            checked={isSelected}
+            onChange={() =>
+              onSelectProduct && onSelectProduct({ id, isSelected })
+            }
+          />
         )}
         <ProductInfoWrapper hasBulkAction={hasBulkAction}>
           {(isProductNumberEnabled ?? true) && (
@@ -206,22 +220,22 @@ export const Product = ({
           )}
           {isBoosted && (
             <BoostPin aria-label="Boosted product">
-              <Text>Internal</Text>
+              <StyledPinText>Internal</StyledPinText>
             </BoostPin>
           )}
           {isBuried && (
             <BuriedPin aria-label="Buried product">
-              <Text>Internal</Text>
+              <StyledPinText>Internal</StyledPinText>
             </BuriedPin>
           )}
           {isPinned && (
             <ProductPin aria-label="Pinned product">
-              <Text>Internal</Text>
+              <StyledPinText>Internal</StyledPinText>
             </ProductPin>
           )}
           {isBlocked && (
             <BlockedPin aria-label="Blocked product">
-              <Text>Internal</Text>
+              <StyledPinText>Internal</StyledPinText>
             </BlockedPin>
           )}
         </ProductInfoWrapper>
@@ -458,6 +472,8 @@ export const Product = ({
         price={price}
         productId={productId}
         isSearchResult={isSearchResult}
+        hasSupplementaryInfo={hasSupplementaryInfo}
+        ranking={ranking}
       />
     </ProductWrapper>
   );
@@ -517,16 +533,14 @@ export const MissingProduct = ({
       )}
       <ProductHeader>
         {hasBulkAction && (
-          <ProductCheckbox>
-            <Checkbox
-              label={`Select ${id}`}
-              disabled={isSelectionDisabled}
-              checked={isSelected}
-              onChange={() =>
-                onSelectProduct && onSelectProduct({ id, isSelected })
-              }
-            />
-          </ProductCheckbox>
+          <Checkbox
+            label={`Select ${id}`}
+            disabled={isSelectionDisabled}
+            checked={isSelected}
+            onChange={() =>
+              onSelectProduct && onSelectProduct({ id, isSelected })
+            }
+          />
         )}
         <ProductInfoWrapper hasBulkAction={hasBulkAction}>
           {(isProductNumberEnabled ?? true) && (
