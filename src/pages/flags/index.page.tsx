@@ -24,7 +24,7 @@ const Flag = styled.div`
 
 const FeatureFlags = () => {
   const [cookies, setCookie] = useCookies(
-    ['flagAuthorization', 'flagAttributeEdit', 'flagAuthorizationRoleOverride'],
+    ['flagAuthorization', 'flagAuthorizationRoleOverride'],
     {
       doNotUpdate: true,
     }
@@ -41,19 +41,6 @@ const FeatureFlags = () => {
           checked={flagAuthorization}
           onChange={() => {
             setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
-          }}
-        />
-      </Flag>
-
-      <Flag>
-        <p>Attribute Edit:&nbsp;</p>
-        <Toggle
-          checked={cookies.flagAttributeEdit}
-          onChange={() => {
-            setCookie(
-              'flagAttributeEdit',
-              JSON.stringify(!cookies.flagAttributeEdit)
-            );
           }}
         />
       </Flag>

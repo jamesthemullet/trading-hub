@@ -1956,61 +1956,6 @@ describe('Ruleset', () => {
       expect(screen.queryByText('minPrice')).not.toBeInTheDocument();
       expect(screen.queryByText('size')).not.toBeInTheDocument();
     });
-
-    it('edits numeric boost attribute weights', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(
-        <Ruleset
-          isEnabled={true}
-          onSave={jest.fn()}
-          onCancel={jest.fn()}
-          rulesetMerchandisingRules={mockRules}
-          categoryIds={['SubCategory_507']}
-          rulesetType="category"
-        />
-      );
-
-      const tab2 = screen.getByRole('button', { name: 'Attribute' });
-
-      act(() => {
-        tab2.click();
-      });
-
-      expect(
-        screen.getByRole('heading', {
-          level: 3,
-          name: 'Product Description Attribute Rules',
-        })
-      ).toBeVisible();
-
-      const editWeightButton = screen.getAllByRole('button', {
-        name: 'Edit attribute brand',
-      });
-
-      act(() => {
-        editWeightButton[1].click();
-      });
-
-      const input = screen.getByRole('spinbutton', {
-        name: 'Strength %',
-      });
-
-      user.clear(input);
-
-      await user.type(input, '12');
-
-      const confirm = screen.getByRole('button', {
-        name: 'Save attribute brand change',
-      });
-
-      act(() => {
-        confirm.click();
-      });
-
-      await waitFor(async () =>
-        expect(await screen.findByText('Strength 12%')).toBeVisible()
-      );
-    });
   });
 
   describe('Scheduling', () => {

@@ -121,25 +121,6 @@ export const RulesetAttributes = ({
                 fields={fields}
                 operation="boost"
                 weight={weight}
-                onChangeAttribute={
-                  // istanbul ignore next
-                  ({
-                    weight: newWeight,
-                    fields: newFields,
-                  }: AlphanumericBoostBury) =>
-                    dispatch({
-                      type: 'alphanumericBoostBuryAttribute',
-                      payload: {
-                        change: 'modify',
-                        operation: 'boost',
-                        index,
-                        data: {
-                          fields: newFields,
-                          weight: newWeight,
-                        },
-                      },
-                    })
-                }
                 onDelete={({ fields, weight }: AlphanumericBoostBury) =>
                   dispatch({
                     type: 'alphanumericBoostBuryAttribute',
@@ -175,25 +156,6 @@ export const RulesetAttributes = ({
                 fields={fields}
                 operation="bury"
                 weight={weight}
-                onChangeAttribute={
-                  // istanbul ignore next
-                  ({
-                    weight: newWeight,
-                    fields: newFields,
-                  }: AlphanumericBoostBury) =>
-                    dispatch({
-                      type: 'alphanumericBoostBuryAttribute',
-                      payload: {
-                        change: 'modify',
-                        operation: 'bury',
-                        index,
-                        data: {
-                          fields: newFields,
-                          weight: newWeight,
-                        },
-                      },
-                    })
-                }
                 onDelete={({ fields, weight }: AlphanumericBoostBury) =>
                   dispatch({
                     type: 'alphanumericBoostBuryAttribute',
@@ -296,20 +258,6 @@ export const RulesetAttributes = ({
                 operation="boost"
                 name={field}
                 weight={weight}
-                onChangeAttribute={({ newWeight }: { newWeight: number }) =>
-                  dispatch({
-                    type: 'numericAttribute',
-                    payload: {
-                      change: 'modify',
-                      operation: 'boost',
-                      index,
-                      data: {
-                        field,
-                        weight: newWeight,
-                      },
-                    },
-                  })
-                }
                 onDelete={({ field, weight }: NumericBoostBury) =>
                   dispatch({
                     type: 'numericAttribute',
@@ -344,22 +292,6 @@ export const RulesetAttributes = ({
                 operation="bury"
                 name={field}
                 weight={weight}
-                onChangeAttribute={
-                  // istanbul ignore next
-                  ({ newWeight }: { newWeight: number }) =>
-                    dispatch({
-                      type: 'numericAttribute',
-                      payload: {
-                        change: 'modify',
-                        operation: 'bury',
-                        index,
-                        data: {
-                          field,
-                          weight: newWeight,
-                        },
-                      },
-                    })
-                }
                 onDelete={({ field, weight }: NumericBoostBury) =>
                   dispatch({
                     type: 'numericAttribute',

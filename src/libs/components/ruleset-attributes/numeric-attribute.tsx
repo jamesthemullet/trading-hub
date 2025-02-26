@@ -1,9 +1,6 @@
-import { useContext, useState } from 'react';
-
 import Image from 'next/image';
 
 import { NumericBoostBury } from '../../api';
-import { FeatureFlagContext } from '../context/feature-flag';
 import { Label, Text } from '../typography/typography.styles';
 import {
   AttributeHeading,
@@ -19,7 +16,6 @@ export const NumericAttribute = ({
   operation,
   weight,
   isEditMode,
-  onChangeAttribute,
   onDelete,
   onEdit,
   setWeight,
@@ -29,26 +25,12 @@ export const NumericAttribute = ({
   operation: 'boost' | 'bury' | 'include' | 'exclude';
   weight: number;
   isEditMode?: boolean;
-  onChangeAttribute?: (args: { newWeight: number }) => void;
   onDelete?: ({ field, weight }: NumericBoostBury) => void;
   onEdit?: (args: { field: NumericBoostBury }) => void;
   setWeight?: (weight: number) => void;
 }) => {
-  const featureFlags = useContext(FeatureFlagContext);
-
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleChangeSubmit = ({ weight }: { weight: number }) => {
-    onChangeAttribute?.({ newWeight: weight });
-    setIsEditing(false);
-  };
-
   const handleStartChanges = () => {
-    if (featureFlags.hasAttributeEdit) {
-      onEdit?.({ field: { weight: weight, field: name } });
-    } else {
-      setIsEditing(true);
-    }
+    onEdit?.({ field: { weight: weight, field: name } });
   };
 
   return (
@@ -76,11 +58,8 @@ export const NumericAttribute = ({
           weight={weight}
           field={name}
           isEditable={isEditable}
-          isEditing={isEditing}
-          onChangeSubmit={handleChangeSubmit}
           onDelete={() => onDelete && onDelete({ field: name, weight })}
           onStartChanges={handleStartChanges}
-          onCancelChanges={() => setIsEditing(false)}
           canEditWeight
         />
       )}

@@ -1,9 +1,6 @@
-import { useContext, useState } from 'react';
-
 import Image from 'next/image';
 
 import { AlphanumericBoostBury, AlphanumericBoostBuryField } from '../../api';
-import { FeatureFlagContext } from '../context/feature-flag';
 import { Label, Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import {
@@ -24,7 +21,6 @@ export const AlphanumericAttribute = ({
   isEditMode,
   canEditWeight,
   setWeight,
-  onChangeAttribute,
   onDelete,
   onEdit,
 }: {
@@ -35,25 +31,11 @@ export const AlphanumericAttribute = ({
   isEditMode?: boolean;
   canEditWeight?: boolean;
   setWeight?: (weight: number) => void;
-  onChangeAttribute?: (args: AlphanumericBoostBury) => void;
   onDelete?: (args: AlphanumericBoostBury) => void;
   onEdit?: (args: { fields: AlphanumericBoostBuryField[] }) => void;
 }) => {
-  const featureFlags = useContext(FeatureFlagContext);
-
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleChangeSubmit = ({ weight }: { weight: number }) => {
-    onChangeAttribute?.({ fields, weight });
-    setIsEditing(false);
-  };
-
   const handleStartChanges = () => {
-    if (featureFlags.hasAttributeEdit) {
-      onEdit?.({ fields });
-    } else {
-      setIsEditing(true);
-    }
+    onEdit?.({ fields });
   };
 
   return (
@@ -112,11 +94,8 @@ export const AlphanumericAttribute = ({
           weight={weight || 0}
           field={fields[0].field}
           isEditable={isEditable}
-          isEditing={isEditing}
-          onChangeSubmit={handleChangeSubmit}
           onDelete={() => onDelete && onDelete({ fields, weight: weight || 0 })}
           onStartChanges={handleStartChanges}
-          onCancelChanges={() => setIsEditing(false)}
           canEditWeight={canEditWeight}
         />
       )}

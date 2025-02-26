@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
-import { FormEvent, useContext, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import Image from 'next/image';
 
-import { FeatureFlagContext } from '../context/feature-flag';
 import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { AttributeRow, Button, Buttons } from './ruleset-attributes.styles';
@@ -30,20 +29,18 @@ export const AttributeWeight = ({
   weight: number;
   field?: string;
   isEditable?: boolean;
-  isEditing: boolean;
+  isEditing?: boolean;
   canEditWeight?: boolean;
-  onChangeSubmit: (args: { weight: number }) => void;
+  onChangeSubmit?: (args: { weight: number }) => void;
   onDelete?: () => void;
   onStartChanges: () => void;
   onCancelChanges?: () => void;
 }) => {
-  const featureFlags = useContext(FeatureFlagContext);
-
   const [value, setValue] = useState(weight);
   const [error, setError] = useState('');
 
   const onSubmit = () => {
-    onChangeSubmit({ weight: value });
+    onChangeSubmit?.({ weight: value });
   };
 
   useEffect(() => {
@@ -92,19 +89,18 @@ export const AttributeWeight = ({
       {isEditable && !isEditing && (
         <AttributeRow>
           <Buttons>
-            {canEditWeight || featureFlags.hasAttributeEdit ? (
-              <Button
-                onClick={() => onStartChanges()}
-                aria-label={`Edit attribute ${field}`}
-              >
-                <Image
-                  width={20}
-                  height={20}
-                  src="/trading-hub/asset/icon-edit.svg"
-                  alt=""
-                />
-              </Button>
-            ) : null}
+            <Button
+              onClick={() => onStartChanges()}
+              aria-label={`Edit attribute ${field}`}
+            >
+              <Image
+                width={20}
+                height={20}
+                src="/trading-hub/asset/icon-edit.svg"
+                alt=""
+              />
+            </Button>
+
             <Button onClick={onDelete} aria-label="Delete attribute">
               <Image
                 width={20}

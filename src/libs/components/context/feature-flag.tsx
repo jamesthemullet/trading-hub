@@ -12,13 +12,11 @@ export type AuthorizationRoleOverride = {
 
 export type FeatureFlags = {
   hasAuthorization: boolean;
-  hasAttributeEdit: boolean;
   authorizationRoleOverride: AuthorizationRoleOverride;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
   hasAuthorization: false,
-  hasAttributeEdit: false,
   authorizationRoleOverride: {
     catOverride: 'No Override',
     searchOverride: 'No Override',

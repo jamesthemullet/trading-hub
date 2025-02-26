@@ -528,43 +528,6 @@ describe('RulesetAttributes', () => {
       expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });
 
-    it('modifies numeric attributes', async () => {
-      const user = userEvent.setup();
-      const expectedCall: Action = {
-        payload: {
-          data: { field: 'averageRating', weight: 20 },
-          change: 'modify',
-          operation: 'boost',
-          index: 0,
-        },
-        type: 'numericAttribute',
-      };
-
-      await openModal();
-
-      const editButton = screen.getAllByLabelText(
-        'Edit attribute averageRating'
-      );
-
-      act(() => {
-        editButton[0].click();
-      });
-
-      const input = screen.getByLabelText('Strength %');
-      await user.clear(input);
-      await user.type(input, '20');
-
-      const saveButton = await screen.findByRole('button', {
-        name: 'Save attribute averageRating change',
-      });
-
-      act(() => {
-        saveButton.click();
-      });
-
-      expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
-    });
-
     it('deletes numeric attributes', async () => {
       const expectedCall1: Action = {
         type: 'numericAttribute',
@@ -713,166 +676,6 @@ describe('RulesetAttributes', () => {
   });
 
   describe('attribute editing', () => {
-    it('does not open modal and can edit weight if feature flag is disabled', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(
-        <RulesetAttributes
-          {...mockProps}
-          categories={['SubCategory_429']}
-          dispatch={mockDispatch}
-        />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: false,
-          },
-        }
-      );
-
-      const editButton = screen.getAllByLabelText('Edit attribute brand');
-
-      act(() => {
-        editButton[0].click();
-      });
-
-      expect(
-        screen.queryAllByLabelText('modal alphanumeric attributes list').length
-      ).toBe(0);
-
-      const input = screen.getByLabelText('Strength %');
-      await user.clear(input);
-      await user.type(input, '20');
-
-      const saveButton = screen.getByLabelText('Save attribute brand change');
-
-      act(() => {
-        saveButton.click();
-      });
-
-      await waitFor(() =>
-        expect(
-          screen.queryAllByLabelText('Save attribute brand change').length
-        ).toBe(0)
-      );
-
-      expect(mockDispatch).toHaveBeenCalledWith({
-        payload: {
-          data: {
-            fields: [
-              {
-                field: 'brand',
-                values: ['Nike', 'Adidas'],
-              },
-              {
-                field: 'category',
-                values: ['Shoes', 'Clothing'],
-              },
-            ],
-            weight: 20,
-          },
-          change: 'modify',
-          operation: 'boost',
-          index: 0,
-        },
-        type: 'alphanumericBoostBuryAttribute',
-      });
-    });
-
-    it('does not open modal and can cancel weight edit on numeric if feature flag is disabled', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(
-        <RulesetAttributes
-          {...mockProps}
-          categories={['SubCategory_429']}
-          dispatch={mockDispatch}
-        />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: false,
-          },
-        }
-      );
-
-      const editButton = screen.getAllByLabelText(
-        'Edit attribute averageRating'
-      );
-
-      act(() => {
-        editButton[0].click();
-      });
-
-      expect(
-        screen.queryAllByTestId('modal numeric attributes list').length
-      ).toBe(0);
-
-      const input = screen.getByLabelText('Strength %');
-      await user.clear(input);
-      await user.type(input, '20');
-
-      const saveButton = screen.getByLabelText(
-        'Cancel attribute averageRating change'
-      );
-
-      act(() => {
-        saveButton.click();
-      });
-
-      await waitFor(() =>
-        expect(
-          screen.queryAllByLabelText('Cancel attribute averageRating change')
-            .length
-        ).toBe(0)
-      );
-
-      expect(mockDispatch).not.toHaveBeenCalled();
-    });
-
-    it('does not open modal and can cancel weight edit on alphanumeric if feature flag is disabled', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(
-        <RulesetAttributes
-          {...mockProps}
-          categories={['SubCategory_429']}
-          dispatch={mockDispatch}
-        />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: false,
-          },
-        }
-      );
-
-      const editButton = screen.getAllByLabelText('Edit attribute brand');
-
-      act(() => {
-        editButton[0].click();
-      });
-
-      expect(
-        screen.queryAllByTestId('modal alphanumeric attributes list').length
-      ).toBe(0);
-
-      const input = screen.getByLabelText('Strength %');
-      await user.clear(input);
-      await user.type(input, '20');
-
-      const saveButton = screen.getByLabelText('Cancel attribute brand change');
-
-      act(() => {
-        saveButton.click();
-      });
-
-      await waitFor(() =>
-        expect(
-          screen.queryAllByLabelText('Cancel attribute brand change').length
-        ).toBe(0)
-      );
-
-      expect(mockDispatch).not.toHaveBeenCalled();
-    });
-
     it('opens modal and adds alphanumeric attribute value', async () => {
       const user = userEvent.setup();
       renderWithProviders(
@@ -881,12 +684,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -970,12 +768,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1059,12 +852,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1135,12 +923,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1208,12 +991,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1292,12 +1070,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1376,12 +1149,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1448,12 +1216,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1522,12 +1285,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1585,12 +1343,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
@@ -1650,12 +1403,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
         />,
-        [],
-        {
-          featureFlags: {
-            hasAttributeEdit: true,
-          },
-        }
+        []
       );
 
       act(() => {
