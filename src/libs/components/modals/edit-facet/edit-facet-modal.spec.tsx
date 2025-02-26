@@ -155,7 +155,7 @@ describe('ModalEditValues', () => {
           indexPropertyName: 'color',
           id: '1',
           lastChanged: { user: 'Bob', date: '2021-10-01' },
-          boosted: ['Merged group 1'],
+          boosted: ['Merged 1'],
           merged: [
             {
               displayValue: 'Merged group 1',

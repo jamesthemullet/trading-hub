@@ -255,4 +255,192 @@ describe('useAttributeValuesRowsSelector', () => {
       },
     ]);
   });
+
+  it('should work as expected with merged as undefined', () => {
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      ...useGetFacetAttributeValuesReturnValueMock,
+      attributeValues: [
+        {
+          displayValue: 'Cotton',
+        },
+      ],
+      pagination: {
+        totalItems: 1,
+      },
+    });
+
+    const { result } = renderHook(() =>
+      useAttributeValuesRowsSelector(
+        {
+          ...mockReturnedGlobalFacetState,
+          boosted: ['Cotton'],
+          merged: undefined,
+        },
+        ''
+      )
+    );
+
+    const values = result.current.attributeValuesState;
+
+    expect(values).toEqual([
+      {
+        displayType: 'boosted',
+        displayValue: 'Cotton',
+        id: 'Cotton',
+        mergeType: 'unmerged',
+        meta: {
+          isBeginningOfDisplayTypeGroup: true,
+          isEndOfDisplayTypeGroup: true,
+        },
+      },
+    ]);
+  });
+
+  it('should work as expected with merged values as undefined', () => {
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      ...useGetFacetAttributeValuesReturnValueMock,
+      attributeValues: [
+        {
+          displayValue: 'Cotton',
+        },
+      ],
+      pagination: {
+        totalItems: 1,
+      },
+    });
+
+    const { result } = renderHook(() =>
+      useAttributeValuesRowsSelector(
+        {
+          ...mockReturnedGlobalFacetState,
+          boosted: ['Merged group 1'],
+          merged: [
+            {
+              displayValue: 'Merged group 1',
+              mergedValues: undefined,
+            },
+          ],
+        },
+        ''
+      )
+    );
+
+    const values = result.current.attributeValuesState;
+
+    expect(values).toEqual([
+      {
+        displayType: 'boosted',
+        displayValue: 'Merged group 1',
+        id: 'Merged group 1',
+        mergeType: 'unmerged',
+        meta: {
+          isBeginningOfDisplayTypeGroup: true,
+          isEndOfDisplayTypeGroup: true,
+        },
+      },
+      {
+        displayType: 'default',
+        displayValue: 'Cotton',
+        id: 'Cotton',
+        mergeType: 'unmerged',
+        meta: {
+          isBeginningOfDisplayTypeGroup: true,
+          isEndOfDisplayTypeGroup: true,
+        },
+      },
+    ]);
+  });
+
+  it('should add missing attributes from merged list', () => {
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      ...useGetFacetAttributeValuesReturnValueMock,
+      attributeValues: [
+        {
+          displayValue: 'red',
+        },
+        {
+          displayValue: 'blue',
+        },
+        {
+          displayValue: 'green',
+        },
+        {
+          displayValue: 'lime',
+        },
+        {
+          displayValue: 'missing',
+        },
+        {
+          displayValue: 'missing 2',
+        },
+      ],
+      pagination: {
+        totalItems: 2,
+      },
+    });
+    const { result } = renderHook(() =>
+      useAttributeValuesRowsSelector(
+        {
+          ...mockReturnedGlobalFacetState,
+          boosted: ['missing'],
+          merged: [
+            {
+              displayValue: 'missing',
+              mergedValues: ['missing 2', 'missing', 'Missing'],
+            },
+            {
+              displayValue: 'emerald',
+              mergedValues: ['green', 'lime'],
+            },
+          ],
+        },
+        ''
+      )
+    );
+
+    expect(result.current.attributeValuesState).toEqual([
+      {
+        displayType: 'boosted',
+        displayValue: 'missing',
+        id: 'missing 2',
+        mergeType: 'merged',
+        mergedValues: ['missing 2', 'missing', 'Missing'],
+        meta: {
+          isBeginningOfDisplayTypeGroup: true,
+          isEndOfDisplayTypeGroup: true,
+        },
+      },
+      {
+        displayType: 'default',
+        displayValue: 'red',
+        id: 'red',
+        mergeType: 'unmerged',
+        meta: {
+          isBeginningOfDisplayTypeGroup: true,
+          isEndOfDisplayTypeGroup: false,
+        },
+      },
+      {
+        displayType: 'default',
+        displayValue: 'blue',
+        id: 'blue',
+        mergeType: 'unmerged',
+        meta: {
+          isBeginningOfDisplayTypeGroup: false,
+          isEndOfDisplayTypeGroup: false,
+        },
+      },
+      {
+        displayType: 'default',
+        displayValue: 'emerald',
+        id: 'green',
+        mergeType: 'merged',
+        mergedValues: ['green', 'lime'],
+        meta: {
+          isBeginningOfDisplayTypeGroup: false,
+          isEndOfDisplayTypeGroup: true,
+        },
+      },
+    ]);
+  });
 });

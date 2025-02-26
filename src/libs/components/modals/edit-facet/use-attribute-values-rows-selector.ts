@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { ReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 
+import { uniq } from 'lodash';
+
 import {
   AttributeDisplayType,
   AttributeRowDisplayValue,
@@ -51,7 +53,23 @@ export const useAttributeValuesRowsSelector = (
       facet.merged ?? []
     );
 
-    const boostedAttributeValues = facet.boosted ?? [];
+    const rawBoostedAttributeValues = facet.boosted ?? [];
+    const boostedFromMerged: string[] = facet.merged
+      ? facet.merged
+          .filter(
+            (merged) =>
+              merged?.displayValue &&
+              rawBoostedAttributeValues.includes(merged.displayValue)
+          )
+          .reduce<string[]>((acc, merged) => {
+            return [...acc, ...(merged?.mergedValues || [])];
+          }, [])
+      : [];
+    const boostedAttributeValues = uniq([
+      ...rawBoostedAttributeValues,
+      ...boostedFromMerged,
+    ]);
+
     const excludedAttributeValues = facet.excludedValues ?? [];
 
     const defaultAttributeValues = attributeValues
