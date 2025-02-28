@@ -46,8 +46,8 @@ export const Input = styled.input`
       height: 2px;
       background-color: #fff;
       position: absolute;
-      top: 10px;
-      left: 3px;
+      top: 17px;
+      left: 11px;
     }
   }
 `;
