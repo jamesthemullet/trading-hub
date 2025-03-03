@@ -2082,12 +2082,45 @@ components:
           type: boolean
         isBlocked:
           type: boolean
+        isExcluded:
+          type: boolean
+        attributeRules:
+          type: object
+          properties:
+            excludedBecause:
+              type: array
+              items:
+                $ref: '#/components/schemas/RuleDescription'
+            boostedBecause:
+              type: array
+              items:
+                $ref: '#/components/schemas/RuleDescription'
+            buriedBecause:
+              type: array
+              items:
+                $ref: '#/components/schemas/RuleDescription'
         ranking:
           type: array
           items:
             $ref: '#/components/schemas/RankingAttribute'
       required:
         - isPinned
+    RuleDescription:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/RankingAttribute'
+        - properties:
+            effect:
+              type: string
+              enum:
+                - boost
+                - bury
+                - include
+                - exclude
+      required:
+        - effect
+        - property
+        - values
     RankingAttribute:
       type: object
       properties:
