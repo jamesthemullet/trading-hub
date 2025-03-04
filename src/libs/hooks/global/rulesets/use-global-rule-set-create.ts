@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
 
+import { handleError } from '@/libs/hooks/utils/error';
+
 import type { RuleSet } from '../../../api';
 import { search } from '../../../api';
 
@@ -39,7 +41,7 @@ export const useGlobalRuleSetCreate = () => {
         await search().betaMerchandisingGlobalRulesetCreate(body);
       return response.data;
     } catch (error) {
-      setError(`Failed to create ruleset ${error}`);
+      setError(handleError(error));
     }
   }, []);
 

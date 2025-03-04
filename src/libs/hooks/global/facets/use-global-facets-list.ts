@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { FacetsList, search } from '@/libs/api';
-
-import { handleError } from '../../utils/error';
+import { handleError } from '@/libs/hooks/utils/error';
 
 export const useGlobalFacetsList = () => {
   const [shouldRefetch, refetch] = useState({});

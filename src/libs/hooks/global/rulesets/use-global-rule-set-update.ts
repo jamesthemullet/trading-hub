@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { RuleSet, search } from '@/libs/api';
-
-import { handleError } from '../../utils/error';
+import { handleError } from '@/libs/hooks/utils/error';
 
 export const useGlobalRuleSetUpdate = () => {
   const [error, setError] = useState('');

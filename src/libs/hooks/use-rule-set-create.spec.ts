@@ -9,10 +9,7 @@ const getRuleSetCreateMock = jest.fn();
 const baseUrl = 'http://localhost';
 const handlers = [
   http.post(`${baseUrl}/search/beta/merchandising/category/ruleset`, () => {
-    const { data, status, error } = getRuleSetCreateMock();
-    if (error) {
-      return HttpResponse.error();
-    }
+    const { data, status } = getRuleSetCreateMock();
     return HttpResponse.json(data, status);
   }),
 ];
@@ -70,8 +67,10 @@ describe('useRuleSetCreate', () => {
 
   it('should return errors', async () => {
     getRuleSetCreateMock.mockReturnValueOnce({
-      data: {},
-      error: 'error',
+      data: {
+        message: 'Validation Issues: You can only pin up to 100 products',
+        status: 'Bad Request',
+      },
       status: { status: 500 },
     });
     const { result } = renderHook(() => useRuleSetCreate());
@@ -87,7 +86,7 @@ describe('useRuleSetCreate', () => {
     });
 
     expect(result.current.error).toBe(
-      'Failed to create ruleset TypeError: Failed to fetch'
+      'Error Validation Issues: You can only pin up to 100 products Bad Request'
     );
   });
 });

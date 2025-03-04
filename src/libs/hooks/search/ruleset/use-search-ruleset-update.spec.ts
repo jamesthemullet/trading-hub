@@ -59,7 +59,10 @@ describe('useSearchRulesetList', () => {
         `${baseUrl}/search/beta/merchandising/keyword/ruleset/${mockRulesetId}`,
         () => {
           return HttpResponse.json(
-            { message: 'Internal Server Error' },
+            {
+              message: 'Validation Issues: You can only pin up to 100 products',
+              status: 'Bad Request',
+            },
             { status: 500 }
           );
         }
@@ -79,7 +82,9 @@ describe('useSearchRulesetList', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.error).toEqual('PUT status 500');
+      expect(result.current.error).toEqual(
+        'Error Validation Issues: You can only pin up to 100 products Bad Request'
+      );
     });
   });
 });

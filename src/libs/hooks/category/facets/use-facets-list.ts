@@ -7,10 +7,9 @@ import {
   search,
 } from '@/libs/api';
 import { convertCountryCodeToCatalogues } from '@/libs/components/utils/convert-country-code-to-catalogues';
+import { handleError } from '@/libs/hooks/utils/error';
 
 import { uniqBy } from 'lodash';
-
-import { handleError } from '../../utils/error';
 
 export const useFacetsList = ({
   query,

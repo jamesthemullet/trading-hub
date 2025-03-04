@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import type { ReturnedCategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
-
-import { handleError } from '../../utils/error';
+import { handleError } from '@/libs/hooks/utils/error';
 
 export const useRuleSetDetail = (id: string) => {
   const [shouldRefetch, refetch] = useState({});

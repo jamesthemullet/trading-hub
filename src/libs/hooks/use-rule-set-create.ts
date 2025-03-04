@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react';
 import type { CategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { handleError } from './utils/error';
+
 export const useRuleSetCreate = () => {
   const [error, setError] = useState('');
 
@@ -34,7 +36,7 @@ export const useRuleSetCreate = () => {
           await search().betaMerchandisingCategoryRulesetCreate(body);
         return response.data;
       } catch (error) {
-        setError(`Failed to create ruleset ${error}`);
+        setError(handleError(error));
       }
     },
     []

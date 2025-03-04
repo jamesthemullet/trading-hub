@@ -2,8 +2,7 @@ import { useCallback, useState } from 'react';
 
 import type { KeywordRedirect } from '@/libs/api';
 import { search } from '@/libs/api';
-
-import { handleError } from '../../utils/error';
+import { handleError } from '@/libs/hooks/utils/error';
 
 export const useRedirectCreate = () => {
   const [error, setError] = useState('');

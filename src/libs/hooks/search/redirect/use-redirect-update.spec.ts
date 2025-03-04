@@ -56,7 +56,7 @@ describe('useRedirectUpdate', () => {
         `${baseUrl}/search/beta/merchandising/keyword/redirect/${mockRedirectId}`,
         () => {
           return HttpResponse.json(
-            { message: 'Internal Server Error' },
+            { message: 'Internal Server Error', status: 'Bad Request' },
             { status: 500 }
           );
         }
@@ -73,7 +73,9 @@ describe('useRedirectUpdate', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.error).toEqual('PUT status 500');
+      expect(result.current.error).toEqual(
+        'Error Internal Server Error Bad Request'
+      );
     });
   });
 });

@@ -8,6 +8,7 @@ import type {
   ReturnedFacet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
+import { handleError } from '@/libs/hooks/utils/error';
 
 export const useSearchRuleSetCreate = () => {
   const [error, setError] = useState('');
@@ -47,7 +48,7 @@ export const useSearchRuleSetCreate = () => {
           await search().betaMerchandisingKeywordRulesetCreate(body);
         return response.data;
       } catch (error) {
-        setError(`Failed to create ruleset ${error}`);
+        setError(handleError(error));
       }
     },
     []

@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { KeywordRuleSet, search } from '@/libs/api';
+import { handleError } from '@/libs/hooks/utils/error';
 
 export const useSearchRuleSetUpdate = () => {
   const [error, setError] = useState('');
@@ -40,10 +41,7 @@ export const useSearchRuleSetUpdate = () => {
         setIsSaving(false);
         return response.data;
       } catch (error) {
-        if (error && typeof error === 'object' && 'status' in error) {
-          setError(`PUT status ${error.status}`);
-          return;
-        }
+        setError(handleError(error));
       }
     },
     [setIsSaving]

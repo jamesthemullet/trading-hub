@@ -9,10 +9,7 @@ const getRuleSetCreateMock = jest.fn();
 const baseUrl = 'http://localhost';
 const handlers = [
   http.post(`${baseUrl}/search/beta/merchandising/keyword/ruleset`, () => {
-    const { data, status, error } = getRuleSetCreateMock();
-    if (error) {
-      return HttpResponse.error();
-    }
+    const { data, status } = getRuleSetCreateMock();
     return HttpResponse.json(data, status);
   }),
 ];
@@ -70,8 +67,7 @@ describe('useSearchRuleSetCreate', () => {
 
   it('should return errors', async () => {
     getRuleSetCreateMock.mockReturnValueOnce({
-      data: {},
-      error: 'error',
+      data: { message: 'Failed to create', status: 'Bad Request' },
       status: { status: 500 },
     });
     const { result } = renderHook(() => useSearchRuleSetCreate());
@@ -86,8 +82,6 @@ describe('useSearchRuleSetCreate', () => {
       });
     });
 
-    expect(result.current.error).toBe(
-      'Failed to create ruleset TypeError: Failed to fetch'
-    );
+    expect(result.current.error).toBe('Error Failed to create Bad Request');
   });
 });

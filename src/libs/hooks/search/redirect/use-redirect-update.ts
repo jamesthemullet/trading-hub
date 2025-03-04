@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { KeywordRedirect, search } from '@/libs/api';
+import { handleError } from '@/libs/hooks/utils/error';
 
 export const useRedirectUpdate = () => {
   const [error, setError] = useState('');
@@ -26,10 +27,8 @@ export const useRedirectUpdate = () => {
         setIsSaving(false);
         return response.data;
       } catch (error) {
-        if (error && typeof error === 'object' && 'status' in error) {
-          setError(`PUT status ${error.status}`);
-          return;
-        }
+        setError(handleError(error));
+        setIsSaving(false);
       }
     },
     [setIsSaving]
