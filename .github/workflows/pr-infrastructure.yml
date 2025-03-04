@@ -58,6 +58,18 @@ jobs:
                   value: Cat.R
                 - allowedMemberTypes:
                     - User
+                  description: Allows the app to update Merchandising Hub Search level rules
+                  displayName: MerchHubSearch.Write
+                  isEnabled: 'true'
+                  value: Search.W
+                - allowedMemberTypes:
+                    - User
+                  description: Allows the app to read Merchandising Hub Search level rules
+                  displayName: MerchHubSearch.Read
+                  isEnabled: 'true'
+                  value: Search.R
+                - allowedMemberTypes:
+                    - User
                   description: Allows the app to update Merchandising Hub Global level rules
                   displayName: MerchHubGlobal.Write
                   isEnabled: 'true'
