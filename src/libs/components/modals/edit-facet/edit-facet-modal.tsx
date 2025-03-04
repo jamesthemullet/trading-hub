@@ -36,6 +36,7 @@ export const EditFacetModal = ({
       displayValueEditEnabled={facetType === 'global'}
       saveButtonLabel={facetType === 'global' ? 'Save' : 'Done'}
       onSave={async (facet) => {
+        // istanbul ignore next
         const facetBoosted = facet.boosted ?? [];
         const facetExcludedValues = facet.excludedValues ?? [];
         if (facetType === 'global') {

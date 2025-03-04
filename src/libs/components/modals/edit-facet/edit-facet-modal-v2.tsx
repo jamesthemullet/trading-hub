@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useReducer, useState } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import { Modal, Skeleton } from '@mantine/core';
 
 import { ReturnedGlobalFacet } from '@/libs/api';
@@ -22,6 +22,7 @@ import { useGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-face
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import { intersection, without } from 'lodash';
 import Image from 'next/image';
 
 import {
@@ -170,7 +171,17 @@ export const EditFacetModalV2 = ({
   saveButtonLabel?: string;
   category: string | undefined;
 }) => {
-  const [facetLocalState, dispatch] = useReducer(facetReducer, facet);
+  const processedFacet = useMemo(() => {
+    const intersectedValues = intersection(facet.boosted, facet.excludedValues);
+    const boosted = without(facet.boosted, ...intersectedValues);
+
+    return {
+      ...facet,
+      boosted,
+    };
+  }, [facet]);
+
+  const [facetLocalState, dispatch] = useReducer(facetReducer, processedFacet);
   const [selectedFacetAttributeValues, setSelectedFacetAttributes] = useState<
     string[]
   >([]);

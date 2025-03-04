@@ -1042,4 +1042,36 @@ describe('ModalEditValues', () => {
 
     expect(saveButton).toBeDisabled();
   });
+
+  it('should removed duplicated values', async () => {
+    renderWithProviders(
+      <EditFacetModalV2
+        onClose={jest.fn()}
+        onSave={jest.fn()}
+        facet={{
+          ...facetMock,
+          boosted: ['red', 'Red'],
+          excludedValues: ['red', 'Red'],
+        }}
+        mergeEnabled={true}
+        category="SubCategory_507"
+      />
+    );
+
+    expect(
+      await screen.findByText('Facet value settings of: color')
+    ).toBeVisible();
+
+    expect(jest.mocked(useReducer)).toHaveBeenCalledWith(expect.any(Function), {
+      displayValue: 'color',
+      id: '1',
+      indexPropertyName: 'color',
+      lastChanged: {
+        date: '2021-10-01',
+        user: 'Bob',
+      },
+      boosted: [],
+      excludedValues: ['red', 'Red'],
+    });
+  });
 });

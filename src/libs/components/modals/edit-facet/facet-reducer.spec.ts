@@ -259,6 +259,53 @@ describe('facetReducer', () => {
       });
     });
 
+    it('should merge selected attribute values when boosted is undefined', () => {
+      const state: ReturnedGlobalFacet = {
+        ...mockReturnedGlobalFacetState,
+        boosted: undefined,
+        merged: [
+          {
+            displayValue: undefined,
+            mergedValues: undefined,
+          },
+          {
+            displayValue: 'navy',
+            mergedValues: ['blue'],
+          },
+          {
+            displayValue: 'emerald',
+            mergedValues: ['lime'],
+          },
+        ],
+      };
+      const action = {
+        type: 'MERGE_SELECTED_ATTRIBUTE_VALUES' as const,
+        payload: {
+          selectedFacetAttributeValues: ['emerald', 'green'],
+          displayValue: 'new display value',
+        },
+      };
+      const result = facetReducer(state, action);
+      expect(result).toEqual({
+        ...mockReturnedGlobalFacetState,
+        boosted: undefined,
+        merged: [
+          {
+            displayValue: undefined,
+            mergedValues: undefined,
+          },
+          {
+            displayValue: 'navy',
+            mergedValues: ['blue'],
+          },
+          {
+            displayValue: 'new display value',
+            mergedValues: ['lime', 'green'],
+          },
+        ],
+      });
+    });
+
     it('should merge selected boosted and default attribute, keeping merge group boosted', () => {
       const state = {
         ...mockReturnedGlobalFacetState,
