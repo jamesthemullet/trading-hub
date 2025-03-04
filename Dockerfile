@@ -53,6 +53,6 @@ COPY /playwright.config.ts ./
 CMD npm run test:e2e
 
 # External APIs Rest endpoints for local and pipeline use with automated tests
-FROM wiremock/wiremock:3.12.0 AS external-apis-dev
+FROM wiremock/wiremock:3.12.1 AS external-apis-dev
 COPY e2e/wiremock/ /home/wiremock
 ENTRYPOINT ["/docker-entrypoint.sh", "--global-response-templating", "--disable-gzip", "--verbose"]
