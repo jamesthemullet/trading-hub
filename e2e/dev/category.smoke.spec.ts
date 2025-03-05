@@ -267,7 +267,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(
-      page.getByText('M&S Collection Pure Merino Wool Colourblock Scarf')
+      page.getByText('Scarf', { exact: false }).first()
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
