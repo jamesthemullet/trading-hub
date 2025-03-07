@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
 
+import {
+  AttributeResponseItem,
+  AttributesResponse,
+  AttributeType,
+  CountryCode,
+  search,
+} from '@/libs/api';
+
 import { uniqBy } from 'lodash';
 
-import { AttributesResponse, AttributeType, CountryCode, search } from '../api';
 import {
   convertCategoryIdToCatalogue,
   convertCountryCodeToCatalogues,
@@ -54,8 +61,36 @@ export const useAttributes = ({
 
         const results = await Promise.all(promises);
 
-        const res = uniqBy(results.flat(), 'name');
-        setAttributes(res);
+        // merge and combine values of each attribute
+        const mergedAttributes: Array<AttributeResponseItem> = [];
+        results.map((returnedAttributes) => {
+          returnedAttributes.map((attr) => {
+            const index = mergedAttributes.findIndex(
+              (mergedAttribute) => mergedAttribute.name === attr.name
+            );
+            if (index > -1) {
+              // eslint-disable-next-line functional/immutable-data
+              mergedAttributes[index].values = [
+                ...(mergedAttributes[index].values || []),
+                ...(attr.values || []),
+              ];
+            } else {
+              // eslint-disable-next-line functional/immutable-data
+              mergedAttributes.push(attr);
+            }
+          });
+        });
+
+        const attributesWithDedupedValues = mergedAttributes.map(
+          (attribute) => {
+            return {
+              ...attribute,
+              values: uniqBy(attribute.values, 'value'),
+            };
+          }
+        );
+
+        setAttributes(attributesWithDedupedValues);
       } catch (err) {
         setFetchError(`Error: ${err}`);
       }

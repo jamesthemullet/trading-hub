@@ -15,11 +15,6 @@ const mockedResponse: AttributesResponse = {
       values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
     },
     {
-      type: 'numeric',
-      name: 'Size',
-      values: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
-    },
-    {
       type: 'alphanumeric',
       name: 'Brand',
       values: [{ value: 'Nike' }, { value: 'Adidas' }, { value: 'Puma' }],
@@ -34,14 +29,38 @@ const mockedResponse: AttributesResponse = {
       ],
     },
     {
-      type: 'numeric',
-      name: 'Price',
+      name: 'fit',
+      type: 'alphanumeric',
       values: [
-        { value: '0-50' },
-        { value: '50-100' },
-        { value: '100-200' },
-        { value: '200+' },
+        {
+          value: 'Regular fit',
+        },
+        {
+          value: 'Relaxed fit',
+        },
+        {
+          value: 'Tailored fit',
+        },
+        {
+          value: 'Slim fit',
+        },
+        {
+          value: 'Plus fit',
+        },
       ],
+    },
+  ],
+};
+
+const mockedNumericResponse: AttributesResponse = {
+  attributes: [
+    {
+      name: 'newInFreshNess',
+      type: 'numeric',
+    },
+    {
+      name: 'averageRating',
+      type: 'numeric',
     },
   ],
 };
@@ -51,7 +70,7 @@ const mockedIEResponse: AttributesResponse = {
     {
       type: 'alphanumeric',
       name: 'Colour',
-      values: [{ value: 'Red' }, { value: 'Blue' }, { value: 'Green' }],
+      values: [{ value: 'Green' }, { value: 'White' }, { value: 'Orange' }],
     },
     {
       type: 'alphanumeric',
@@ -62,6 +81,46 @@ const mockedIEResponse: AttributesResponse = {
         { value: 'Beanie' },
       ],
     },
+    {
+      name: 'fit',
+      type: 'alphanumeric',
+      values: [
+        {
+          value: 'Regular fit',
+        },
+        {
+          value: 'Relaxed fit',
+        },
+        {
+          value: 'Fitted',
+        },
+        {
+          value: 'Tailored fit',
+        },
+        {
+          value: 'Plus fit',
+        },
+        {
+          value: 'Slim fit',
+        },
+        {
+          value: 'Straight leg',
+        },
+      ],
+    },
+  ],
+};
+
+const mockedIENumericResponse: AttributesResponse = {
+  attributes: [
+    {
+      name: 'predictions.salesIn1Day.normalisedValue',
+      type: 'numeric',
+    },
+    {
+      name: 'newInFreshNess',
+      type: 'numeric',
+    },
   ],
 };
 
@@ -71,11 +130,16 @@ const server = setupServer(
     async ({ request }) => {
       const url = new URL(request.url);
       const catalogue = url.searchParams.get('catalogue');
+      const type = url.searchParams.get('type');
 
       if (catalogue === 'MANDSIE') {
-        return HttpResponse.json(mockedIEResponse);
+        return HttpResponse.json(
+          type === 'numeric' ? mockedIENumericResponse : mockedIEResponse
+        );
       }
-      return HttpResponse.json(mockedResponse);
+      return HttpResponse.json(
+        type === 'numeric' ? mockedNumericResponse : mockedResponse
+      );
     }
   )
 );
@@ -121,8 +185,15 @@ describe('use-attributes', () => {
       });
     });
 
-    it('should combine UK and IE attributes', async () => {
+    it('should combine UK and IE alphanumeric attributes and values', async () => {
       const categories = ['SubCategory_429', 'IE_SubCategory_789'];
+      const expectedCombinedColours = [
+        { value: 'Red' },
+        { value: 'Blue' },
+        { value: 'Green' },
+        { value: 'White' },
+        { value: 'Orange' },
+      ];
       const { result, rerender } = renderHook(() =>
         useAttributes({
           categories,
@@ -138,9 +209,37 @@ describe('use-attributes', () => {
 
       rerender();
 
-      expect(result.current.attributes.length).toEqual(6);
+      expect(result.current.attributes.length).toEqual(5);
       expect(result.current.attributes[0].name).toBe('Colour');
-      expect(result.current.attributes[5].name).toBe('styles');
+      expect(result.current.attributes[0].values).toHaveLength(5);
+      expect(result.current.attributes[0].values).toEqual(
+        expectedCombinedColours
+      );
+      expect(result.current.attributes[1].name).toBe('Brand');
+      expect(result.current.attributes[4].name).toBe('styles');
+    });
+
+    it('should combine UK and IE numeric attributes', async () => {
+      const categories = ['SubCategory_429', 'IE_SubCategory_789'];
+      const { result, rerender } = renderHook(() =>
+        useAttributes({
+          categories,
+          countryCode: 'UK_IE',
+          type: 'numeric',
+        })
+      );
+
+      await waitFor(() => {
+        expect(result.current.attributes.length).toEqual(0);
+      });
+
+      rerender();
+
+      expect(result.current.attributes.length).toEqual(3);
+      expect(result.current.attributes[0].name).toBe('newInFreshNess');
+      expect(result.current.attributes[2].name).toBe(
+        'predictions.salesIn1Day.normalisedValue'
+      );
     });
 
     it('should return errors when api fails', async () => {
