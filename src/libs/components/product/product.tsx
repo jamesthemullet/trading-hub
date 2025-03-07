@@ -23,6 +23,7 @@ import {
   LockActions,
   LockInput,
   LockMenu,
+  OutOfStockMessage,
   ProductCard,
   ProductHeader,
   ProductInfo,
@@ -42,6 +43,7 @@ export const ProductDetails = ({
   imageUrl,
   brand,
   isBrandStrong,
+  isOutOfStock,
   isSearchResult,
   hasSupplementaryInfo,
   title,
@@ -49,6 +51,7 @@ export const ProductDetails = ({
   productId,
   ranking,
 }: Pick<ProductType, 'title' | 'price' | 'brand' | 'productId' | 'imageUrl'> & {
+  isOutOfStock: boolean;
   isBrandStrong?: boolean;
   isSearchResult?: boolean;
   hasSupplementaryInfo?: boolean;
@@ -66,6 +69,7 @@ export const ProductDetails = ({
           priority
           sizes="100%"
         />
+        {isOutOfStock && <OutOfStockMessage>Out of stock</OutOfStockMessage>}
       </ProductCard>
       <ProductInfo isSearchResult={isSearchResult}>
         <Text isStrong={isBrandStrong ?? true} data-testid="product title">
@@ -114,6 +118,7 @@ export const Product = ({
   imageUrl,
   index,
   isBrandStrong,
+  isInStock,
   isPinnable,
   isProductNumberEnabled,
   isSearchResult = false,
@@ -466,6 +471,7 @@ export const Product = ({
         title={title}
         price={price}
         productId={productId}
+        isOutOfStock={isInStock === false}
         isSearchResult={isSearchResult}
         hasSupplementaryInfo={hasSupplementaryInfo}
         ranking={ranking}

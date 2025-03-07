@@ -286,7 +286,10 @@ export const Preview = ({
                 {data.products.map((product) => (
                   <ProductBox key={`product-${product.productId}`}>
                     <ProductWrapper>
-                      <ProductDetails {...product} />
+                      <ProductDetails
+                        {...product}
+                        isOutOfStock={product.isInStock === false}
+                      />
                     </ProductWrapper>
                   </ProductBox>
                 ))}

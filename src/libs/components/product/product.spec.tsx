@@ -414,6 +414,20 @@ describe('Product', () => {
       const newnessValue = within(newness).getByText('100');
       expect(newnessValue).toBeInTheDocument();
     });
+
+    it('should show out of stock message', () => {
+      render(<Product {...productProps} isInStock={false} />);
+
+      const outOfStockMessage = screen.getByText('Out of stock');
+      expect(outOfStockMessage).toBeInTheDocument();
+    });
+
+    it('should not show out of stock message', () => {
+      render(<Product {...productProps} isInStock={true} />);
+
+      const outOfStockMessage = screen.queryByText('Out of stock');
+      expect(outOfStockMessage).not.toBeInTheDocument();
+    });
   });
 
   describe('Missing product', () => {

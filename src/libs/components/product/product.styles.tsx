@@ -239,6 +239,16 @@ export const ProductCard = styled.div<{ hasSupplementaryInfo?: boolean }>`
   }
 `;
 
+export const OutOfStockMessage = styled(Text)`
+  background-color: #000;
+  color: #fff;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  left: 0;
+  right: 0;
+`;
+
 export const SupplementaryInfo = styled.div`
   border-top: solid 1px ${color.grey};
   padding: ${spacing(1)};
