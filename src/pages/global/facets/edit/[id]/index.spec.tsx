@@ -4,11 +4,12 @@ import { useRouter } from 'next/router';
 
 import {
   useGetCategories,
+  useGetFacetAttributeValues,
   useGlobalFacetsList,
   useGlobalRuleSetDetail,
   useRuleSet,
 } from '@/libs/hooks';
-import { facetsListMock } from '@/pages/api/search/mocks';
+import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 
 import { GetServerSidePropsContext } from 'next';
@@ -19,6 +20,11 @@ import Page, { getServerSideProps } from './index.page';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
+  ...jest.requireActual('@/libs/hooks/use-get-facet-attribute-values'),
+  useGetFacetAttributeValues: jest.fn(),
 }));
 
 const mockUpdateGlobalFacet = jest
@@ -149,6 +155,15 @@ describe('Global Facet Management Editing', () => {
       },
 
       error: '',
+      isLoading: false,
+    });
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      attributeValues: attributeValuesMock,
+      error: '',
+      pagination: {
+        totalItems: 5,
+      },
+      refetch: jest.fn(),
       isLoading: false,
     });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
@@ -282,6 +297,94 @@ describe('Global Facet Management Editing', () => {
     expect(mockRouter.push).toHaveBeenCalledWith('/global/facets/');
   });
 
+  it('should update facet values', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getAllByRole('button', { name: 'Edit values' })[0]);
+    expect(screen.getAllByText('More Silk')[0]).toBeVisible();
+
+    await user.click(screen.getByLabelText('exclude More Silk'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Save changes to attributes' })
+      ).toBeEnabled();
+    });
+
+    act(() => {
+      screen
+        .getByRole('button', { name: 'Save changes to attributes' })
+        .click();
+    });
+
+    act(() => {
+      screen.getByRole('button', { name: 'Save' }).click();
+    });
+
+    await waitFor(() => {
+      expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
+        ruleSetId: '123',
+        ruleSet: {
+          facets: [
+            {
+              boosted: undefined,
+              excludedValues: undefined,
+              displayValue: 'color',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              indexPropertyName: 'color',
+              lastChanged: {
+                date: '2021-01-01T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [
+                {
+                  displayValue: 'test merged group',
+                  mergedValues: ['merged 1', 'merged 2'],
+                },
+              ],
+            },
+            {
+              boosted: undefined,
+              excludedValues: undefined,
+              displayValue: 'brand',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+              indexPropertyName: 'brand',
+              lastChanged: {
+                date: '2021-01-03T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [],
+            },
+            {
+              boosted: undefined,
+              excludedValues: undefined,
+              displayValue: 'category',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+              indexPropertyName: 'category',
+              lastChanged: {
+                date: '2021-01-04T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [],
+            },
+          ],
+          rules: mockMerchandisingRules,
+          excludedFacets: {
+            facets: [
+              {
+                id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+              },
+            ],
+          },
+          isEnabled: true,
+          countryCode: 'UK_IE',
+        },
+      });
+    });
+  }, 10000);
+
   it('should render skeleton when loading', () => {
     jest.mocked(useGlobalFacetsList).mockReturnValue({
       isLoading: true,
@@ -372,12 +475,113 @@ describe('Global Facet Management Editing', () => {
       'Edit color input field'
     );
 
-    await userEvent.type(editColorInput, 'colour edit');
+    await waitFor(async () => {
+      expect(editColorInput).toBeVisible();
+    });
 
-    const saveButton = await screen.findByLabelText('Save color change');
+    expect(editColorInput).toHaveValue('color');
+    await userEvent.clear(editColorInput);
+    await userEvent.type(editColorInput, 'colour');
+
+    const saveButton = screen.getByLabelText('Save color change');
 
     act(() => {
       saveButton.click();
+    });
+
+    expect(
+      await screen.findByText(
+        'Error whilst updating global facet: Failed to update facet'
+      )
+    ).toBeVisible();
+  });
+
+  it('should show an error during save if failing to edit a display value', async () => {
+    const user = userEvent.setup();
+    updateGlobalFacet.error = 'Failed to update facet';
+    mockUpdateGlobalFacet.mockResolvedValue({ status: 'error' });
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getAllByRole('button', { name: 'Edit values' })[0]);
+    expect(screen.getAllByText('More Silk')[0]).toBeVisible();
+
+    await user.click(screen.getByLabelText('include More Silk'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Save changes to attributes' })
+      ).toBeEnabled();
+    });
+
+    act(() => {
+      screen
+        .getByRole('button', { name: 'Save changes to attributes' })
+        .click();
+    });
+
+    act(() => {
+      screen.getByRole('button', { name: 'Save' }).click();
+    });
+
+    await waitFor(() => {
+      expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
+        ruleSetId: '123',
+        ruleSet: {
+          facets: [
+            {
+              boosted: undefined,
+              excludedValues: undefined,
+              displayValue: 'color',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              indexPropertyName: 'color',
+              lastChanged: {
+                date: '2021-01-01T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [
+                {
+                  displayValue: 'test merged group',
+                  mergedValues: ['merged 1', 'merged 2'],
+                },
+              ],
+            },
+            {
+              boosted: undefined,
+              excludedValues: undefined,
+              displayValue: 'brand',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+              indexPropertyName: 'brand',
+              lastChanged: {
+                date: '2021-01-03T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [],
+            },
+            {
+              boosted: undefined,
+              excludedValues: undefined,
+              displayValue: 'category',
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+              indexPropertyName: 'category',
+              lastChanged: {
+                date: '2021-01-04T08:34:15Z',
+                user: 'Test User',
+              },
+              merged: [],
+            },
+          ],
+          rules: mockMerchandisingRules,
+          excludedFacets: {
+            facets: [
+              {
+                id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+              },
+            ],
+          },
+          isEnabled: true,
+          countryCode: 'UK_IE',
+        },
+      });
     });
 
     expect(

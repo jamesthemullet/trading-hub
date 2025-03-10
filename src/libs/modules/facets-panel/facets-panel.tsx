@@ -22,11 +22,11 @@ import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-sel
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import { EditFacetModal } from '@/libs/components/modals/edit-facet/edit-facet-modal';
+import { EditFacetModalV2 } from '@/libs/components/modals/edit-facet/edit-facet-modal-v2';
 import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
 import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
-import { useFacetsFilter } from '@/libs/hooks';
+import { useFacetsFilter, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import {
@@ -259,6 +259,8 @@ export const FacetsPanel = ({
     setSelectedPreviewCountryCode?.(category?.includes('IE_') ? 'IE' : 'UK');
   };
 
+  const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
+
   const FacetRow = (facet: FacetRowDisplayValue) => {
     const { displayValue, displayType, meta } = facet;
 
@@ -448,12 +450,33 @@ export const FacetsPanel = ({
       </AttributesTable>
 
       {isEditValuesModalOpen && selectedFacet && (
-        <EditFacetModal
+        <EditFacetModalV2
           onClose={onClose}
+          mergeEnabled={facetType === 'global'}
+          removeFacetValueFromMergeGroupEnabled={facetType === 'global'}
+          displayValueEditEnabled={facetType === 'global'}
+          saveButtonLabel={facetType === 'global' ? 'Save' : 'Done'}
+          onSave={async (facet) => {
+            const facetBoosted = facet.boosted ?? [];
+            const facetExcludedValues = facet.excludedValues ?? [];
+
+            if (facetType === 'global') {
+              const response = await handleGlobalFacetUpdate({
+                facetId: facet.id,
+                data: facet,
+              });
+              if ('status' in response && response.status === 'error') {
+                return;
+              }
+              if (response && refreshData) {
+                refreshData();
+              }
+            } else {
+              updatedValues?.(facetBoosted, facetExcludedValues, facet.id);
+              onClose();
+            }
+          }}
           facet={selectedFacet}
-          facetType={facetType}
-          refreshData={refreshData}
-          updatedValues={updatedValues}
           category={
             facetType === 'category' ? selectedCategories[0] : undefined
           }
