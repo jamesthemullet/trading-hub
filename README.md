@@ -233,6 +233,10 @@ A [hotfix branch](https://github.com/DigitalInnovation/trading-hub/tree/hotfix) 
 
 Please follow this [doc](./docs/run-book.md) for production issues.
 
+## Adding users
+
+Please follow this [doc](./docs/user-access-managment.md)
+
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
