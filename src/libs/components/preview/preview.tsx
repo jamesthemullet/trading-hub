@@ -129,6 +129,7 @@ const Products = styled.div`
   flex-wrap: wrap;
   gap: 10px;
   padding-top: ${spacing(2)};
+  height: max-content;
 `;
 
 const FacetInfo = ({ facet }: { facet: Facet }) => {

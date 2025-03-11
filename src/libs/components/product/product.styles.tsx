@@ -97,6 +97,7 @@ export const ProductInfo = styled.div<{ isSearchResult?: boolean }>`
   grid-row-gap: ${spacing(1)};
   padding: ${spacing(1)};
   flex-grow: 1;
+  word-wrap: break-word;
 
   & > p:nth-of-type(1) {
     grid-area: 1 / 1 / 2 / 4;
