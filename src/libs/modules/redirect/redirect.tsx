@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import {
+import type {
   CountryCode,
   KeywordRedirect,
   ReturnedKeywordRedirect,

@@ -12,8 +12,8 @@ import {
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 
-import { GetServerSidePropsContext } from 'next';
-import { ParsedUrlQuery } from 'querystring';
+import type { GetServerSidePropsContext } from 'next';
+import type { ParsedUrlQuery } from 'querystring';
 
 import { renderWithProviders } from '../../../../../test/render-with-providers';
 import Page, { getServerSideProps } from './index.page';

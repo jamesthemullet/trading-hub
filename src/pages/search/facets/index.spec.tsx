@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { KeywordRuleSet, ReturnedKeywordRuleSet } from '@/libs/api';
+import type { KeywordRuleSet, ReturnedKeywordRuleSet } from '@/libs/api';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 import { renderWithProviders } from '@/test/render-with-providers';
 

@@ -6,7 +6,8 @@ import { useCategoryProductSearch } from '@/libs/hooks';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
 import { renderWithProviders } from '../../../../test/render-with-providers';
-import { ProductSearchAll, ProductSearchProps } from './product-search-all';
+import type { ProductSearchProps } from './product-search-all';
+import { ProductSearchAll } from './product-search-all';
 
 const PLACEHOLDER_TEXT = 'Search for product';
 

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { CountryCode } from '@/libs/api';
+import type { CountryCode } from '@/libs/api';
 import { useOnOutsideClick } from '@/libs/hooks';
 
 import {

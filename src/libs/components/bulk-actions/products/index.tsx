@@ -1,12 +1,13 @@
-import { Dispatch, useState } from 'react';
+import type { Dispatch } from 'react';
+import { useState } from 'react';
 import { Divider, Modal } from '@mantine/core';
 
-import { RuleSet } from '@/libs/api';
+import type { RuleSet } from '@/libs/api';
 
 import pluralize from 'pluralize';
 
 import { Button } from '../../buttons/button/button';
-import { Action } from '../../types';
+import type { Action } from '../../types';
 import { Header3, Text } from '../../typography/typography.styles';
 import {
   BulkActionsHeader,

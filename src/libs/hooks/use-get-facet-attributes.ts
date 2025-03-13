@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { AttributesResponse, search } from '@/libs/api';
+import type { AttributesResponse } from '@/libs/api';
+import { search } from '@/libs/api';
 
 export const useGetFacetAttributes = () => {
   const [isLoading, setIsLoading] = useState(false);

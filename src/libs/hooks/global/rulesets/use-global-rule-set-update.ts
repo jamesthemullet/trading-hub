@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { RuleSet, search } from '@/libs/api';
+import type { RuleSet } from '@/libs/api';
+import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
 export const useGlobalRuleSetUpdate = () => {

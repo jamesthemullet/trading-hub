@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
 import { useRef } from 'react';
 import { ActionIcon } from '@mantine/core';
-import {
-  DatePicker as MantineDatePicker,
-  DatePickerProps,
-} from '@mantine/dates';
+import type { DatePickerProps } from '@mantine/dates';
+import { DatePicker as MantineDatePicker } from '@mantine/dates';
 
 import dayjs from 'dayjs';
 import Image from 'next/image';

@@ -2,7 +2,10 @@ import { act } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/router';
 
-import { ReturnedCategoryRuleSet, ReturnedCategoryRuleSets } from '@/libs/api';
+import type {
+  ReturnedCategoryRuleSet,
+  ReturnedCategoryRuleSets,
+} from '@/libs/api';
 
 import { useRuleSetRowsState } from './use-rule-set-rows-state';
 

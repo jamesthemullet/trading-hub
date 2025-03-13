@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { FacetsList, search } from '@/libs/api';
+import type { FacetsList } from '@/libs/api';
+import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
 export const useGlobalFacetsList = () => {

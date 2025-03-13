@@ -16,8 +16,8 @@ import {
 } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { GetServerSidePropsContext } from 'next';
-import { ParsedUrlQuery } from 'querystring';
+import type { GetServerSidePropsContext } from 'next';
+import type { ParsedUrlQuery } from 'querystring';
 
 import Page, { getServerSideProps } from './index.page';
 

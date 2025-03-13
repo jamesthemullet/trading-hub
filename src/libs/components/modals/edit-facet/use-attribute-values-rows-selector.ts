@@ -1,19 +1,17 @@
 import { useMemo } from 'react';
 
-import { ReturnedGlobalFacet } from '@/libs/api';
+import type { ReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 
 import { uniq } from 'lodash';
 
-import {
+import type {
   AttributeDisplayType,
   AttributeRowDisplayValue,
   BaseDisplayValueMeta,
 } from './types';
-import {
-  AttributeToMergeGroupMap,
-  getAttributeToMergeGroupMap,
-} from './utils/get-attribute-to-merge-group-map';
+import type { AttributeToMergeGroupMap } from './utils/get-attribute-to-merge-group-map';
+import { getAttributeToMergeGroupMap } from './utils/get-attribute-to-merge-group-map';
 
 const defaultMeta: BaseDisplayValueMeta = {
   isBeginningOfDisplayTypeGroup: false,

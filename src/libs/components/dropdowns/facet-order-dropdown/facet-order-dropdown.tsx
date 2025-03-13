@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useOnOutsideClick } from '@/libs/hooks';
-import { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-reducer';
+import type { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-reducer';
 
 import Image from 'next/image';
 

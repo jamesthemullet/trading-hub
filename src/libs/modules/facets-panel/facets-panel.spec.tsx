@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { SearchPreviewResponseBeta } from '@/libs/api';
+import type { SearchPreviewResponseBeta } from '@/libs/api';
 import {
   useGetCategories,
   useGetFacetAttributeValues,
@@ -12,7 +12,7 @@ import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-r
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { FacetsPanel } from './facets-panel';
-import { FacetRowDisplayValue } from './facets-panel-reducer';
+import type { FacetRowDisplayValue } from './facets-panel-reducer';
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),

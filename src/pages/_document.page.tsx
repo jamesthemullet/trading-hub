@@ -4,14 +4,8 @@ import { ColorSchemeScript } from '@mantine/core';
 import { logger } from '@/libs/components/logger/logger';
 
 import newrelic from 'newrelic';
-import Document, {
-  DocumentContext,
-  DocumentInitialProps,
-  Head,
-  Html,
-  Main,
-  NextScript,
-} from 'next/document';
+import type { DocumentContext, DocumentInitialProps } from 'next/document';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
 
 import { fonts } from '../libs/components';
 import { color } from '../libs/components/utils/constants';

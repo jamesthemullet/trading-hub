@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import { CountryCode, ExcludedFacets, ReturnedFacet } from '@/libs/api';
+import type { CountryCode, ExcludedFacets, ReturnedFacet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
@@ -8,7 +8,7 @@ import { useAccess } from '@/libs/hooks/use-access';
 import CategoryFacetsPanel from '@/libs/modules/facets-panel/category-facets-panel';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
 export const getServerSideProps: GetServerSideProps = (

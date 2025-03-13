@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useMemo, useReducer, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import { ReturnedGlobalFacet } from '@/libs/api';
+import type { ReturnedGlobalFacet } from '@/libs/api';
 import { Button } from '@/libs/components/buttons/button/button';
 import { color } from '@/libs/components/utils/constants';
 import { spacing } from '@/libs/components/utils/spacing';

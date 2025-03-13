@@ -1,13 +1,13 @@
-import {
+import type {
   CategoryRuleSet,
   ReturnedCategoryRuleSet,
   ReturnedCategoryRuleSets,
-  search,
 } from '@/libs/api';
+import { search } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { TablePanel } from '@/libs/components/table-panel/table-panel';
-import { RuleSetMapping } from '@/libs/components/types';
+import type { RuleSetMapping } from '@/libs/components/types';
 import { formatCategoriesInfo } from '@/libs/components/utils/format-categories-info';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
 import { useAccess } from '@/libs/hooks/use-access';

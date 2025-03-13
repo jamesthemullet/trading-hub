@@ -4,8 +4,9 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { Action } from '../types';
-import { MissingProduct, Product, ProductProps } from './product';
+import type { Action } from '../types';
+import type { ProductProps } from './product';
+import { MissingProduct, Product } from './product';
 
 const mockDispatch = jest.fn();
 const productProps: ProductProps = {

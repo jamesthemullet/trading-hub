@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 
-import { KeywordRedirect } from '@/libs/api';
+import type { KeywordRedirect } from '@/libs/api';
 import { CentredError, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
 import { Redirect } from '@/libs/modules/redirect/redirect';
 
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
 type Props = {

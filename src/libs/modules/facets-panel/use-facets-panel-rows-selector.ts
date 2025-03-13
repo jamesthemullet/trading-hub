@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { ReturnedFacet } from '@/libs/api';
+import type { ReturnedFacet } from '@/libs/api';
 
-import {
+import type {
   FacetDisplayType,
   FacetPanelState,
   FacetRowDisplayValue,

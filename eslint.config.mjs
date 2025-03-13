@@ -18,7 +18,7 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 });
 
-export default [
+const eslint = [
   {
     ignores: [
       'src/test/**/*',
@@ -71,6 +71,7 @@ export default [
 
     rules: {
       'no-unused-vars': 'off',
+      '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/await-thenable': 'error',
       'functional/no-mixed-types': 'off',
@@ -160,3 +161,5 @@ export default [
     },
   },
 ];
+
+export default eslint;

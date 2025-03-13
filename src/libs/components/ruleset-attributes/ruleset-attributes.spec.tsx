@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { CountryCode, MerchandisingRules } from '@/libs/api';
+import type { CountryCode, MerchandisingRules } from '@/libs/api';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import {
   boostMock,
@@ -11,7 +11,7 @@ import {
 } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { Action } from '../types';
+import type { Action } from '../types';
 
 jest.mock('@/libs/hooks', () => ({
   useAttributes: ({ type }: { type: string }) => {

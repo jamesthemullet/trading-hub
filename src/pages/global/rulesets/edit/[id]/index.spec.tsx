@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { ReturnedGlobalRuleSet } from '@/libs/api';
+import type { ReturnedGlobalRuleSet } from '@/libs/api';
 import { useGlobalRuleSetDetail } from '@/libs/hooks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 

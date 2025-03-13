@@ -1,4 +1,4 @@
-import { ErrorResponse } from '@/libs/api';
+import type { ErrorResponse } from '@/libs/api';
 
 const sendErrorToNewRelic = (err: unknown) => {
   if (window && window.newrelic) {

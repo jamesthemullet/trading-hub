@@ -1,4 +1,4 @@
-import {
+import type {
   BetaMerchandisingAttributesListParamsCatalogueEnum,
   CountryCode,
 } from '@/libs/api';

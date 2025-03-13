@@ -1,4 +1,4 @@
-import { ErrorResponse } from '@/libs/api';
+import type { ErrorResponse } from '@/libs/api';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';

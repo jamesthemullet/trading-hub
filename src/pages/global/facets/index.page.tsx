@@ -1,13 +1,13 @@
-import {
+import type {
   ReturnedGlobalRuleSet,
   ReturnedGlobalRuleSets,
   RuleSet,
-  search,
 } from '@/libs/api';
+import { search } from '@/libs/api';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { Heading } from '@/libs/components/heading/heading';
 import { TablePanel } from '@/libs/components/table-panel/table-panel';
-import { RuleSetMapping } from '@/libs/components/types';
+import type { RuleSetMapping } from '@/libs/components/types';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
 import { useAccess } from '@/libs/hooks/use-access';
 

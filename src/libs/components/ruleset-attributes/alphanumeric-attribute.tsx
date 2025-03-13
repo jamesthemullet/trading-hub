@@ -1,6 +1,9 @@
 import Image from 'next/image';
 
-import { AlphanumericBoostBury, AlphanumericBoostBuryField } from '../../api';
+import type {
+  AlphanumericBoostBury,
+  AlphanumericBoostBuryField,
+} from '../../api';
 import { Label, Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import {

@@ -2,7 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { AttributesResponse } from '@/libs/api';
+import type { AttributesResponse } from '@/libs/api';
 
 import { useGlobalAttributes } from './use-global-attributes';
 

@@ -1,10 +1,11 @@
 import { act, screen } from '@testing-library/react';
 
-import { Facet } from '@/libs/api';
+import type { Facet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { usePreview } from '../../hooks/use-preview';
-import { Preview, Props } from './preview';
+import type { Props } from './preview';
+import { Preview } from './preview';
 
 jest.mock('../../hooks/use-preview', () => ({
   usePreview: jest.fn(),

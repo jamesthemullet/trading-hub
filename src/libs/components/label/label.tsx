@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import type { LabelHTMLAttributes, ReactNode } from 'react';
 
 import { Label as LabelText } from '../typography/typography.styles';
-import { BreakPoints } from '../utils/breakpoint-type';
+import type { BreakPoints } from '../utils/breakpoint-type';
 
 type BaseLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
   isDisabled?: boolean;

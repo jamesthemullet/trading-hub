@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { CountryCode, search } from '../api';
+import type { CountryCode } from '../api';
+import { search } from '../api';
 import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
 
 export const useGetCategories = () => {

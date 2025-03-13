@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { Dispatch, useCallback, useEffect, useState } from 'react';
+import type { Dispatch } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type {
   CountryCode,
@@ -14,7 +15,7 @@ import pluralize from 'pluralize';
 import { Checkbox } from '../../checkboxes/checkbox';
 import { Product } from '../../product/product';
 import { Search } from '../../search/search';
-import { Action } from '../../types';
+import type { Action } from '../../types';
 import { spacing } from '../../utils/spacing';
 
 const ProductSearchRootContainer = styled.div`

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import {
+import type {
   BetaMerchandisingAttributesListParamsCatalogueEnum,
   CountryCode,
   ReturnedGlobalFacet,
-  search,
 } from '@/libs/api';
+import { search } from '@/libs/api';
 import { convertCountryCodeToCatalogues } from '@/libs/components/utils/convert-country-code-to-catalogues';
 import { handleError } from '@/libs/hooks/utils/error';
 

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import {
+import type {
   AttributeResponseItem,
   AttributesResponse,
   AttributeType,
   CountryCode,
-  search,
 } from '@/libs/api';
+import { search } from '@/libs/api';
 
 import { uniqBy } from 'lodash';
 

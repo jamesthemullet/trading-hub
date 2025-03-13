@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { CountryCode, type MerchandisingRules, search } from '@/libs/api';
+import type { CountryCode, MerchandisingRules } from '@/libs/api';
+import { search } from '@/libs/api';
 
 import { uniqBy } from 'lodash';
 

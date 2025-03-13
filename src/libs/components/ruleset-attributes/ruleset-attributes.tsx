@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { Dispatch, useState } from 'react';
+import type { Dispatch } from 'react';
+import { useState } from 'react';
 
-import {
+import type {
   AlphanumericBoostBury,
   CountryCode,
   IncludeExclude,
@@ -12,7 +13,7 @@ import {
 import pluralize from 'pluralize';
 
 import { Button } from '../buttons/button/button';
-import { Action, AttributeEdit } from '../types';
+import type { Action, AttributeEdit } from '../types';
 import { Label } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { AlphanumericAttribute } from './alphanumeric-attribute';

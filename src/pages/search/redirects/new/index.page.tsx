@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import { KeywordRedirect } from '@/libs/api';
+import type { KeywordRedirect } from '@/libs/api';
 import { CentredError, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRedirectCreate } from '@/libs/hooks';

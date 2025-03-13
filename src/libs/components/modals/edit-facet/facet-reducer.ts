@@ -1,6 +1,6 @@
-import { ReturnedGlobalFacet } from '@/libs/api';
+import type { ReturnedGlobalFacet } from '@/libs/api';
 
-import { AttributeDisplayType } from './types';
+import type { AttributeDisplayType } from './types';
 import { toArrayWithSwappedElements } from './utils/swap-array-elements';
 
 type MoveRowUpAction = {

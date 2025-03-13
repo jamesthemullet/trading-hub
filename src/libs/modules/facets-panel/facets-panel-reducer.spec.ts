@@ -1,6 +1,7 @@
-import { CountryCode } from '@/libs/api';
+import type { CountryCode } from '@/libs/api';
 
-import { FacetPanelState, facetsPanelReducer } from './facets-panel-reducer';
+import type { FacetPanelState } from './facets-panel-reducer';
+import { facetsPanelReducer } from './facets-panel-reducer';
 
 const mockFacetsPanelState: FacetPanelState = {
   includedFacets: ['1', '2', '3'],

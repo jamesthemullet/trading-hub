@@ -14,8 +14,8 @@ import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { mockUseSearchRuleSetPreviewData } from '@/test/data/mock-use-search-ruleset-preview';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { GetServerSidePropsContext } from 'next';
-import { ParsedUrlQuery } from 'querystring';
+import type { GetServerSidePropsContext } from 'next';
+import type { ParsedUrlQuery } from 'querystring';
 
 import Page, { getServerSideProps } from './index.page';
 

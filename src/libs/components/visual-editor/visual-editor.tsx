@@ -1,8 +1,8 @@
-import { Dispatch } from 'react';
+import type { Dispatch } from 'react';
 
 import type { Product as ProductType } from '../../api';
 import { Product } from '../product/product';
-import { Action } from '../types';
+import type { Action } from '../types';
 import { Layout, ProductBox } from './visual-editor.styles';
 
 type Props = {

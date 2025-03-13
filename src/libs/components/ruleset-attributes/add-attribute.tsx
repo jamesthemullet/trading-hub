@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { AttributeResponseItem, AttributesResponse } from '@/libs/api';
+import type { AttributeResponseItem, AttributesResponse } from '@/libs/api';
 
 import { Button } from '../buttons/button/button';
 import { Checkboxes } from '../checkboxes/checkboxes';
 import { RadioButtons } from '../radio-buttons/radio-buttons';
 import { Search } from '../search/search';
-import { AttributeEdit, RulesetAttribute } from '../types';
+import type { AttributeEdit, RulesetAttribute } from '../types';
 import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';

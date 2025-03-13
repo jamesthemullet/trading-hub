@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { type ChangeEventHandler } from 'react';
+import type { ChangeEventHandler } from 'react';
 
 import { Icon } from '../icon/icon';
 import { SearchBox } from '../search-box/search-box';

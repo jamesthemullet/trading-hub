@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ReturnedKeywordRedirect } from '@/libs/api';
+import type { ReturnedKeywordRedirect } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { Redirect } from './redirect';

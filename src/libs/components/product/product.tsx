@@ -12,7 +12,7 @@ import Image from 'next/image';
 import type { Product as ProductType, RankingAttribute } from '../../api';
 import { Button } from '../buttons/button/button';
 import { Checkbox } from '../checkboxes/checkbox';
-import { Action } from '../types';
+import type { Action } from '../types';
 import { Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import {

@@ -1,5 +1,5 @@
 // istanbul ignore file
-import {
+import type {
   AttributesResponse,
   AttributeValuesResponse,
   BetaMerchandisingFacetListData,
@@ -10,7 +10,7 @@ import {
   ReturnedKeywordRedirect,
 } from '@/libs/api';
 
-import { NextApiRequest } from 'next';
+import type { NextApiRequest } from 'next';
 
 export const mockProducts: ProductBoostBury[] = [
   {

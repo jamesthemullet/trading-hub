@@ -1,7 +1,7 @@
-import { CountryCode } from '@/libs/api';
+import type { CountryCode } from '@/libs/api';
 import { useAttributes } from '@/libs/hooks';
 
-import { AttributeEdit, RulesetAttribute } from '../types';
+import type { AttributeEdit, RulesetAttribute } from '../types';
 import { ErrorMessage } from '../typography/typography.styles';
 import { AddAttribute } from './add-attribute';
 

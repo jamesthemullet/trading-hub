@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { AttributesResponse, AttributeType, search } from '@/libs/api';
+import type { AttributesResponse, AttributeType } from '@/libs/api';
+import { search } from '@/libs/api';
 
 export const useGlobalAttributes = (type?: AttributeType) => {
   const [isLoading, setIsLoading] = useState(false);

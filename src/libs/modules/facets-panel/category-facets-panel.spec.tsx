@@ -1,8 +1,13 @@
 import { useReducer } from 'react';
-import { act, Screen, screen, waitFor } from '@testing-library/react';
-import userEvent, { UserEvent } from '@testing-library/user-event';
+import type { Screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 
-import { ReturnedCategoryRuleSet, SearchPreviewResponseBeta } from '@/libs/api';
+import type {
+  ReturnedCategoryRuleSet,
+  SearchPreviewResponseBeta,
+} from '@/libs/api';
 import {
   useFacetsList,
   useGetCategories,

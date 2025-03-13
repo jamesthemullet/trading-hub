@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ReturnedGlobalFacet } from '@/libs/api';
+import type { ReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import { attributeValuesMock } from '@/pages/api/search/mocks';

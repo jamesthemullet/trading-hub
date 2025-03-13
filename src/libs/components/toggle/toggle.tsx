@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { DetailedHTMLProps, InputHTMLAttributes } from 'react';
+import type { DetailedHTMLProps, InputHTMLAttributes } from 'react';
 
 import { color } from '../utils/constants';
 

@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useState } from 'react';
 
-import {
+import type {
   CountryCode,
   ExcludedFacets,
   MerchandisingRules,

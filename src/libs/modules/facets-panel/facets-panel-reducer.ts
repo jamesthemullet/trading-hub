@@ -1,4 +1,4 @@
-import { CountryCode, ReturnedFacet } from '@/libs/api';
+import type { CountryCode, ReturnedFacet } from '@/libs/api';
 import { toArrayWithSwappedElements } from '@/libs/components/modals/edit-facet/utils/swap-array-elements';
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';

@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 
-import { MerchandisingRules } from '@/libs/api';
+import type { MerchandisingRules } from '@/libs/api';
 import {
   mockMerchandisingRules,
   mockMerchandisingRulesWithData,
@@ -8,7 +8,8 @@ import {
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
-import { RulesetChanges, RulesetChangesProps } from './ruleset-changes';
+import type { RulesetChangesProps } from './ruleset-changes';
+import { RulesetChanges } from './ruleset-changes';
 
 jest.mock('../../hooks/use-preview', () => ({
   usePreview: jest.fn(),

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Pagination } from '@/libs/api';
+import type { Pagination } from '@/libs/api';
 import type {
   CreateRowFn,
   DeleteRowFn,

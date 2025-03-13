@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { ReturnedFacet, search } from '@/libs/api';
+import type { ReturnedFacet } from '@/libs/api';
+import { search } from '@/libs/api';
 
 export const useGetFacetsById = (facetId: string) => {
   const [facet, setFacet] = useState<ReturnedFacet>();

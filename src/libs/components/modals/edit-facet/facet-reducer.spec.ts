@@ -1,4 +1,4 @@
-import { ReturnedGlobalFacet } from '@/libs/api';
+import type { ReturnedGlobalFacet } from '@/libs/api';
 
 import { facetReducer } from './facet-reducer';
 

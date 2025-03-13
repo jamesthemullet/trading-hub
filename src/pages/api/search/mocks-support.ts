@@ -1,8 +1,8 @@
 import rawApi from '@/libs/api/api.yml';
 
-import { NextApiRequest } from 'next';
+import type { NextApiRequest } from 'next';
 import OpenAPIResponseValidator from 'openapi-response-validator';
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 
 import { getMockMapping } from './mocks';
 

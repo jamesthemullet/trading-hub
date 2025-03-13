@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
-import { Dispatch, useEffect, useState } from 'react';
+import type { Dispatch } from 'react';
+import { useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
-import { ReturnedGlobalFacet } from '@/libs/api';
+import type { ReturnedGlobalFacet } from '@/libs/api';
 import {
   ErrorMessage,
   Header3,
@@ -31,7 +32,7 @@ import {
   ModalAttributesTable,
   ModalStickyHeader,
 } from '../modal.styles';
-import { AttributeRowDisplayValue } from './types';
+import type { AttributeRowDisplayValue } from './types';
 import { useAttributeValuesRowsSelector } from './use-attribute-values-rows-selector';
 
 const Col = styled(TableCol)`

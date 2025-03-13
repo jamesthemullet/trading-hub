@@ -1,14 +1,14 @@
-import { Dispatch } from 'react';
+import type { Dispatch } from 'react';
 import { Modal } from '@mantine/core';
 
-import {
+import type {
   AlphanumericBoostBury,
   CountryCode,
   IncludeExclude,
   NumericBoostBury,
 } from '@/libs/api';
 
-import { Action, AttributeEdit, RulesetAttribute } from '../types';
+import type { Action, AttributeEdit, RulesetAttribute } from '../types';
 import { AddSetAttribute } from './add-set-attribute';
 
 const MODAL_WIDTH = 435;

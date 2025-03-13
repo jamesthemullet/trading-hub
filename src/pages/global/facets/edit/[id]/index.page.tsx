@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import {
+import type {
   CountryCode,
   ExcludedFacets,
   ReturnedFacet,
@@ -13,7 +13,7 @@ import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
 import GlobalFacetsPanel from '@/libs/modules/facets-panel/global-facets-panel';
 
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
 type PageProps = {

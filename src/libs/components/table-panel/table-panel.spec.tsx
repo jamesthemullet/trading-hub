@@ -3,7 +3,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { ReturnedCategoryRuleSet } from '@/libs/api';
+import type { ReturnedCategoryRuleSet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { TablePanel } from './table-panel';

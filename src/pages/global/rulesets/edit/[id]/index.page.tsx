@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import { RuleSet } from '@/libs/api';
+import type { RuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';

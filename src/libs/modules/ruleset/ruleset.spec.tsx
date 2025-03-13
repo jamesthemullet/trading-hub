@@ -1,10 +1,12 @@
 import '@testing-library/jest-dom';
 
-import { act, Screen, screen, waitFor } from '@testing-library/react';
-import userEvent, { UserEvent } from '@testing-library/user-event';
+import type { Screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import {
+import type {
   BoostsBuries,
   MerchandisingRules,
   SearchPreviewResponseBeta,

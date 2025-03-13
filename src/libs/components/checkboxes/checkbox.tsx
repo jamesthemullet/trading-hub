@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 import { Input, Label, LabelText } from './checkboxes.styles';
 

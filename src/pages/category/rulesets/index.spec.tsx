@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { ReturnedCategoryRuleSet } from '@/libs/api';
+import type { ReturnedCategoryRuleSet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';

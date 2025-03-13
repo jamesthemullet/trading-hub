@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { NumericBoostBury } from '../../api';
+import type { NumericBoostBury } from '../../api';
 import { Label, Text } from '../typography/typography.styles';
 import {
   AttributeHeading,

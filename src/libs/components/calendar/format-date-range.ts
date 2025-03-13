@@ -1,4 +1,4 @@
-import { DatesRangeValue } from '@mantine/dates';
+import type { DatesRangeValue } from '@mantine/dates';
 
 import dayjs from 'dayjs';
 

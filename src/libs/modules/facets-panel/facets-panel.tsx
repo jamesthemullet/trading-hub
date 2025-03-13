@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import {
+import type {
   CountryCode,
   ExcludedFacets,
   MerchandisingRules,
@@ -44,7 +44,7 @@ import {
   ScopeWrapper,
   SectionWrapper,
 } from './facets-panel.styles';
-import {
+import type {
   Action,
   FacetDisplayType,
   FacetRowDisplayValue,

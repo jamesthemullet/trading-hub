@@ -9,7 +9,8 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { Props, SearchKeywords } from './search-keywords';
+import type { Props } from './search-keywords';
+import { SearchKeywords } from './search-keywords';
 
 const shorterSearchTermsList = ['keyword1', 'keyword2', 'keyword3'];
 

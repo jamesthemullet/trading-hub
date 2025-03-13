@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import { CountryCode, ExcludedFacets, ReturnedFacet } from '@/libs/api';
+import type { CountryCode, ExcludedFacets, ReturnedFacet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';

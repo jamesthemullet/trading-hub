@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
-import { CountryCode } from '@/libs/api';
+import type { CountryCode } from '@/libs/api';
 import {
   DataTable,
   ErrorMessage,

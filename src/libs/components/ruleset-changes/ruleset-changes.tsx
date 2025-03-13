@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { Dispatch, useCallback, useEffect, useState } from 'react';
+import type { Dispatch } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
 import type {
@@ -14,7 +15,7 @@ import { Checkbox } from '../checkboxes/checkbox';
 import { MissingProduct, Product } from '../product/product';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
-import { Action } from '../types';
+import type { Action } from '../types';
 import { Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';

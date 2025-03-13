@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import { ReturnedGlobalFacet } from '@/libs/api';
+import type { ReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 
 import { useAttributeValuesRowsSelector } from './use-attribute-values-rows-selector';

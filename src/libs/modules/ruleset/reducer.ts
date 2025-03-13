@@ -1,10 +1,10 @@
-import {
+import type {
   AlphanumericBoostBury,
   IncludeExclude,
   NumericBoostBury,
   RuleSet,
 } from '@/libs/api';
-import { Action } from '@/libs/components/types';
+import type { Action } from '@/libs/components/types';
 
 export const rulesetReducer = (state: RuleSet, action: Action) => {
   const { rules } = state;

@@ -2,7 +2,7 @@ import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { RuleSet } from '@/libs/api';
+import type { RuleSet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { BulkActions } from './index';

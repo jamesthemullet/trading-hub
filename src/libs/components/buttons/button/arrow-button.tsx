@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { ButtonHTMLAttributes, ElementType } from 'react';
+import type { ButtonHTMLAttributes, ElementType } from 'react';
 
 import { color } from '../../utils/constants';
 

@@ -1,4 +1,4 @@
-import { GlobalOnlyFacetConfig, ReturnedGlobalFacet } from '@/libs/api';
+import type { GlobalOnlyFacetConfig, ReturnedGlobalFacet } from '@/libs/api';
 
 type MergeGroup = Required<
   NonNullable<GlobalOnlyFacetConfig['merged']>[number]

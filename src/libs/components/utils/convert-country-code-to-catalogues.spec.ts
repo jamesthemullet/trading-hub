@@ -1,4 +1,4 @@
-import { CountryCode } from '@/libs/api';
+import type { CountryCode } from '@/libs/api';
 
 import {
   convertCategoryIdToCatalogue,
