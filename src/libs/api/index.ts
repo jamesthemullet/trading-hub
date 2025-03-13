@@ -11,3 +11,8 @@ export const api = () => {
 };
 
 export const search = () => api().search;
+
+if (typeof window !== 'undefined') {
+  // eslint-disable-next-line functional/immutable-data
+  (window as typeof window & { api: unknown }).api = api;
+}
