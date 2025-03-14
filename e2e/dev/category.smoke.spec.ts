@@ -76,7 +76,7 @@ test.describe('Category Ranking', () => {
     await page.waitForTimeout(2000);
 
     await expect(
-      page.getByRole('heading', { name: 'Baby Sizes' })
+      page.getByRole('button', { name: 'Baby Sizes', exact: true })
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'close modal' }).click();
