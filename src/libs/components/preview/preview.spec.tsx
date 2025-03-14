@@ -1,4 +1,5 @@
-import { act, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import type { Facet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -111,6 +112,42 @@ const mockFacets: Facet[] = [
       },
     ],
   },
+  {
+    id: 'Colour',
+    order: 3,
+    data: [
+      {
+        name: 'Blue',
+        count: 66,
+        disabled: false,
+        selected: false,
+      },
+    ],
+  },
+  {
+    id: 'Size',
+    order: 4,
+    data: [
+      {
+        name: 'XS',
+        count: 66,
+        disabled: false,
+        selected: false,
+      },
+    ],
+  },
+  {
+    id: 'Style',
+    order: 5,
+    data: [
+      {
+        name: 'Everyday socks',
+        count: 66,
+        disabled: false,
+        selected: false,
+      },
+    ],
+  },
 ];
 
 const mockCategoryReturnValue = {
@@ -150,6 +187,7 @@ describe('Preview', () => {
     countryCode: 'UK',
     facetConfig: [],
     merchandisingRules: mockMerchandisingRules,
+    previewTitle: 'Preview Title',
   };
 
   beforeEach(() => {
@@ -161,7 +199,43 @@ describe('Preview', () => {
   it('should render correctly', () => {
     renderWithProviders(<Preview {...mockProps} />);
 
-    expect(screen.getByText('Preview')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Preview' })
+    ).toBeInTheDocument();
+  });
+
+  it('should use fallback image on error', () => {
+    renderWithProviders(<Preview {...mockProps} />);
+
+    const image = screen.getAllByTestId('productImage')[0];
+
+    fireEvent.error(image);
+
+    expect(image).toHaveAttribute(
+      'src',
+      'https://dummyimage.com/307x400/cccccc/ffffff?text=missing+image'
+    );
+  });
+
+  it('should show the number of products', () => {
+    renderWithProviders(<Preview {...mockProps} />);
+
+    expect(screen.getByText('1 to 1 of 1 items')).toBeInTheDocument();
+  });
+
+  it('should show up to 140 products', () => {
+    jest.mocked(usePreview).mockReturnValue({
+      ...mockCategoryReturnValue,
+      data: {
+        ...mockCategoryReturnValue.data,
+        pagination: {
+          totalItems: 150,
+        },
+      },
+    });
+    renderWithProviders(<Preview {...mockProps} />);
+
+    expect(screen.getByText('1 to 140 of 150 items')).toBeInTheDocument();
   });
 
   it('calls the api with the supplied facet config', () => {
@@ -242,19 +316,93 @@ describe('Preview', () => {
   it('should show more facets', () => {
     renderWithProviders(<Preview {...mockProps} />);
 
-    const viewMoreButton = screen.getByText('View more');
+    expect(
+      screen.queryByRole('button', { name: 'Style' })
+    ).not.toBeInTheDocument();
+    const viewMoreButton = screen.getByRole('button', {
+      name: 'All Filters',
+    });
 
     act(() => {
       viewMoreButton.click();
     });
 
-    expect(screen.getByText('Vest Tops (2)')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Style' })).toBeInTheDocument();
+  });
+
+  it('should open and close facet values', async () => {
+    renderWithProviders(<Preview {...mockProps} />);
+
+    const facetButton = screen.getByRole('button', {
+      name: 'Product Type',
+    });
+
+    act(() => {
+      facetButton.click();
+    });
+
+    expect(screen.getByText('Tops')).toBeVisible();
+
+    act(() => {
+      facetButton.click();
+    });
+
+    expect(screen.queryByText('Tops')).not.toBeInTheDocument();
   });
 
   it('should show price facet info', () => {
     renderWithProviders(<Preview {...mockProps} />);
 
-    expect(screen.getByText('£5 - £30 (67)')).toBeInTheDocument();
+    const priceButton = screen.getByRole('button', {
+      name: 'Price',
+    });
+
+    act(() => {
+      priceButton.click();
+    });
+
+    expect(screen.getByText('£5')).toBeInTheDocument();
+    expect(screen.getByText('£30')).toBeInTheDocument();
+  });
+
+  it('should localise price facet info', () => {
+    renderWithProviders(<Preview {...mockProps} countryCode="IE" />);
+
+    const priceButton = screen.getByRole('button', {
+      name: 'Price',
+    });
+
+    act(() => {
+      priceButton.click();
+    });
+
+    expect(screen.getByText('€5')).toBeInTheDocument();
+    expect(screen.getByText('€30')).toBeInTheDocument();
+  });
+
+  it('should filter facet values', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Preview {...mockProps} />);
+
+    const facetButton = screen.getByRole('button', {
+      name: 'Product Type',
+    });
+
+    act(() => {
+      facetButton.click();
+    });
+
+    expect(screen.getByText('Tops')).toBeVisible();
+    expect(screen.getByText('Socks')).toBeVisible();
+
+    const searchProduct = screen.getByPlaceholderText('Search');
+
+    await user.type(searchProduct, 'tops');
+
+    await waitFor(() => {
+      expect(screen.getByText('Tops')).toBeVisible();
+    });
+    expect(screen.queryByText('Socks')).not.toBeInTheDocument();
   });
 
   it('should show a loader when making changes', () => {

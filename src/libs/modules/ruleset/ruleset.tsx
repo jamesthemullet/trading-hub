@@ -455,6 +455,7 @@ export const Ruleset = ({
           merchandisingRules={merchandisingRules}
           facetConfig={rulesetFacets || []}
           countryCode={selectedPreviewCountryCode}
+          previewTitle={previewValue}
         />
       )}
 

@@ -1,5 +1,5 @@
 import type { Screen } from '@testing-library/react';
-import { act, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -74,6 +74,19 @@ describe('Product', () => {
 
       expect(screen.getByTestId('product title')).toHaveTextContent(
         'product brand product title'
+      );
+    });
+
+    it('should use fallback image on error', () => {
+      render(<Product {...productProps} />);
+
+      const image = screen.getByTestId('productImage');
+
+      fireEvent.error(image);
+
+      expect(image).toHaveAttribute(
+        'src',
+        'https://dummyimage.com/300x400/cccccc/ffffff?text=missing+image'
       );
     });
 

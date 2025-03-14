@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import type { SvgProps } from '../svg/render-svg';
 import { RenderSvg } from '../svg/render-svg';
 
-export type IconSizes = 16 | 24 | 32 | 40 | 48 | 56 | 64 | 80;
+export type IconSizes = 16 | 20 | 24 | 32 | 40 | 48 | 56 | 64 | 80;
 export type IconProps = SvgProps & {
   width?: never;
   height?: never;

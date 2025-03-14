@@ -448,7 +448,7 @@ describe('Search Facet Panel', () => {
     });
 
     const previewText = await screen.findByText(
-      'Search across the site to preview the rule influence'
+      'View rule changes made on the website below'
     );
 
     expect(previewText).toBeInTheDocument();

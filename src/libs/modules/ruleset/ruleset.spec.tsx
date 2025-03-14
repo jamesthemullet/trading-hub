@@ -1071,7 +1071,7 @@ describe('Ruleset', () => {
       });
 
       expect(
-        screen.getByText('Search across the site to preview the rule influence')
+        screen.getByText('View rule changes made on the website below')
       ).toBeInTheDocument();
     });
 
@@ -1627,7 +1627,7 @@ describe('Ruleset', () => {
       });
 
       expect(
-        screen.getByText('Search across the site to preview the rule influence')
+        screen.getByText('View rule changes made on the website below')
       ).toBeInTheDocument();
 
       const closeButton = screen.getByLabelText('close modal');
@@ -1637,9 +1637,7 @@ describe('Ruleset', () => {
       });
 
       expect(
-        screen.queryByText(
-          'Search across the site to preview the rule influence'
-        )
+        screen.queryByText('View rule changes made on the website below')
       ).not.toBeInTheDocument();
     });
 

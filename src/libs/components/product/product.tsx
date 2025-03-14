@@ -39,7 +39,7 @@ import {
   SupplementaryInfo,
 } from './product.styles';
 
-export const ProductDetails = ({
+const ProductDetails = ({
   imageUrl,
   brand,
   isBrandStrong,
@@ -63,11 +63,17 @@ export const ProductDetails = ({
         <Image
           src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
           alt=""
+          data-testid="productImage"
           width={100}
           height={176}
           style={{ objectFit: 'contain' }}
           priority
           sizes="100%"
+          onError={(element) =>
+            // eslint-disable-next-line functional/immutable-data
+            (element.currentTarget.src =
+              'https://dummyimage.com/300x400/cccccc/ffffff?text=missing+image')
+          }
         />
         {isOutOfStock && <OutOfStockMessage>Out of stock</OutOfStockMessage>}
       </ProductCard>
@@ -78,9 +84,9 @@ export const ProductDetails = ({
         <Text>{price}</Text>
         <Text data-testid="product id">ID: {productId}</Text>
       </ProductInfo>
-      {hasSupplementaryInfo && (
+      {hasSupplementaryInfo && ranking && (
         <SupplementaryInfo>
-          {ranking?.map((item) => (
+          {ranking.map((item) => (
             <Text key={item.property}>
               {item.property} <span>{item.values[0]}</span>
             </Text>

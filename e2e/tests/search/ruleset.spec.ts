@@ -125,13 +125,13 @@ test.describe('Keyword search', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(
-      page.getByText('Search across the site to preview the rule influence')
+      page.getByText('View rule changes made on the website below')
     ).toBeVisible();
 
-    await expect(page.getByRole('heading', { name: 'Price' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Price' })).toBeVisible();
 
     await expect(
-      page.getByText('GOODMOVE Performance Cuffed Joggers').nth(1)
+      page.getByLabel('Preview modal').getByText('Performance Cuffed Joggers')
     ).toBeVisible();
   });
 
@@ -155,13 +155,15 @@ test.describe('Keyword search', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(
-      page.getByText('Search across the site to preview the rule influence')
+      page.getByText('View rule changes made on the website below')
     ).toBeVisible();
 
-    await expect(page.getByRole('heading', { name: 'Price' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Price' })).toBeVisible();
 
     await expect(
-      page.getByText('M&S Collection Cotton Rich Straight Leg Joggers').nth(1)
+      page
+        .getByLabel('Preview modal')
+        .getByText('Cotton Rich Straight Leg Joggers')
     ).toBeVisible();
   });
 

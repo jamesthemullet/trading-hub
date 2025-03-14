@@ -367,7 +367,7 @@ describe('Facet Panel', () => {
     });
 
     const previewText = await screen.findByText(
-      'Search across the site to preview the rule influence'
+      'View rule changes made on the website below'
     );
 
     expect(previewText).toBeInTheDocument();
@@ -383,7 +383,7 @@ describe('Facet Panel', () => {
     });
 
     expect(
-      screen.queryByText('Search across the site to preview the rule influence')
+      screen.queryByText('View rule changes made on the website below')
     ).not.toBeInTheDocument();
   });
 
@@ -413,7 +413,7 @@ describe('Facet Panel', () => {
     });
 
     const previewText = await screen.findByText(
-      'Search across the site to preview the rule influence'
+      'View rule changes made on the website below'
     );
 
     expect(previewText).toBeInTheDocument();
@@ -429,7 +429,7 @@ describe('Facet Panel', () => {
     });
 
     expect(
-      screen.queryByText('Search across the site to preview the rule influence')
+      screen.queryByText('View rule changes made on the website below')
     ).not.toBeInTheDocument();
   });
 

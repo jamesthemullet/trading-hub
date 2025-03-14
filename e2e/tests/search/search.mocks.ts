@@ -517,7 +517,7 @@ export const mockPreviewIE: SearchPreviewResponseBeta = {
     {
       id: '60120220',
       productId: '60120220',
-      title: 'Cotton Rich Straight Leg Joggers',
+      title: 'Straight Leg Joggers',
       url: '/cotton-rich-straight-leg-joggers/p/clp22511885?color=NAVY&image=SD_01_T57_6660_F0_X_EC_90',
       price: '€18.00-€20.00',
       brand: "Nobody's Child",

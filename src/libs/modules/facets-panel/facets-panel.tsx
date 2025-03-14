@@ -335,6 +335,7 @@ export const FacetsPanel = ({
           facetConfig={includedFacets}
           excludedFacets={excludedFacets}
           countryCode={selectedPreviewCountryCode || 'UK'}
+          previewTitle={previewValue}
         />
       )}
 
