@@ -61,7 +61,7 @@ const Count = styled.span`
 `;
 
 const ViewAllButton = styled(Button)`
-  width: 110px;
+  min-width: 110px;
   margin-left: ${spacing(1)};
 `;
 
@@ -259,7 +259,11 @@ export const SearchKeywords = ({
             </StyledForm>
           </InputBoxWrapper>
           {showViewAllButton && (
-            <ViewAllButton onClick={() => openModal()} theme="secondary">
+            <ViewAllButton
+              onClick={() => openModal()}
+              theme="secondary"
+              isInline={true}
+            >
               View all
             </ViewAllButton>
           )}

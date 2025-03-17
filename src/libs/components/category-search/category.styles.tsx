@@ -102,7 +102,7 @@ export const StyledIcon = styled(Icon)`
 `;
 
 export const ViewAllButton = styled(Button)`
-  width: 110px;
+  min-width: 110px;
   margin-top: ${spacing(1)};
   margin-left: ${spacing(1)};
 `;

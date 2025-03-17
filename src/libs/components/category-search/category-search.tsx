@@ -252,7 +252,11 @@ export const CategorySearch = ({
           )}
         </SearchWrapper>
         {selectedCategories.length > 1 && (
-          <ViewAllButton onClick={() => setIsModalOpen(true)} theme="secondary">
+          <ViewAllButton
+            onClick={() => setIsModalOpen(true)}
+            theme="secondary"
+            isInline={true}
+          >
             View all
           </ViewAllButton>
         )}
