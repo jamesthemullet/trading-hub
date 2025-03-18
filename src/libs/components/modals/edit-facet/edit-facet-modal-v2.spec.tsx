@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { ReturnedGlobalFacet } from '@/libs/api';
+import type { CountryCode, ReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import { attributeValuesMock } from '@/pages/api/search/mocks';
@@ -42,6 +42,8 @@ const facetMock = {
 const onCloseSpy = jest.fn();
 const onSaveSpy = jest.fn();
 
+const countryCode: CountryCode = 'UK';
+
 const mockDefaultGlobalFacetProps = {
   onClose: onCloseSpy,
   onSave: onSaveSpy,
@@ -50,6 +52,7 @@ const mockDefaultGlobalFacetProps = {
   displayValueEditEnabled: true,
   removeFacetValueFromMergeGroupEnabled: true,
   category: 'global',
+  countryCode,
 };
 
 const mockDefaultCategoryFacetProps = {
@@ -59,7 +62,8 @@ const mockDefaultCategoryFacetProps = {
   mergeEnabled: false,
   displayValueEditEnabled: true,
   removeFacetValueFromMergeGroupEnabled: false,
-  category: 'SubCategory_507',
+  categories: ['SubCategory_507'],
+  countryCode,
 };
 
 const mockUpdateGlobalFacet = jest.fn(() =>
@@ -87,10 +91,6 @@ describe('ModalEditValues', () => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
       error: '',
-      pagination: {
-        totalItems: 5,
-      },
-      refetch: jest.fn(),
       isLoading: false,
     });
   });
@@ -381,10 +381,6 @@ describe('ModalEditValues', () => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
       error: '',
-      pagination: {
-        totalItems: 5,
-      },
-      refetch: jest.fn(),
       isLoading: true,
     });
 
@@ -409,10 +405,6 @@ describe('ModalEditValues', () => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: [],
       error: 'Unknown error',
-      pagination: {
-        totalItems: 5,
-      },
-      refetch: jest.fn(),
       isLoading: false,
     });
 
@@ -427,7 +419,7 @@ describe('ModalEditValues', () => {
           boosted: ['Silk', 'More Silk'],
           excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
         }}
-        category={undefined}
+        categories={undefined}
       />
     );
 
@@ -450,7 +442,7 @@ describe('ModalEditValues', () => {
           boosted: ['Silk', 'More Silk'],
           excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
         }}
-        category={undefined}
+        categories={undefined}
       />
     );
 
@@ -1337,7 +1329,6 @@ describe('ModalEditValues', () => {
         <EditFacetModalV2
           onClose={onCloseSpy}
           onSave={onSaveSpy}
-          category="global"
           facet={{
             displayValue: 'color',
             indexPropertyName: 'color',
@@ -1352,6 +1343,7 @@ describe('ModalEditValues', () => {
               },
             ],
           }}
+          countryCode="UK"
         />
       );
       // create new

@@ -478,9 +478,8 @@ export const FacetsPanel = ({
             }
           }}
           facet={selectedFacet}
-          category={
-            facetType === 'category' ? selectedCategories[0] : undefined
-          }
+          categories={facetType === 'category' ? selectedCategories : undefined}
+          countryCode={countryCode}
         />
       )}
 

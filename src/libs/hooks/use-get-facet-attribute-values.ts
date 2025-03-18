@@ -1,39 +1,66 @@
 import { useEffect, useState } from 'react';
 
-import type { AttributeValuesResponse, Pagination } from '@/libs/api';
+import type { AttributeValuesResponse, CountryCode } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { uniqBy } from 'lodash';
+
+import {
+  convertCategoryIdToCatalogue,
+  convertCountryCodeToCatalogues,
+} from '../components/utils/convert-country-code-to-catalogues';
 import { handleError } from './utils/error';
 
-export const useGetFacetAttributeValues = (
-  facetId: string,
-  searchQuery?: string,
-  categoryId?: string
-) => {
-  const [shouldRefetch, refetch] = useState({});
+type Props = {
+  countryCode: CountryCode;
+  facetId: string;
+  query: string;
+  categories?: string[];
+};
+
+export const useGetFacetAttributeValues = ({
+  countryCode,
+  facetId,
+  categories,
+  query,
+}: Props) => {
   const [attributeValues, setAttributeValues] = useState<
     AttributeValuesResponse['values']
   >([]);
   const [error, setError] = useState('');
-  const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const asyncCall = async () => {
       setIsLoading(true);
       try {
-        const result =
-          await search().betaMerchandisingFacetAttributeValuesDetail(facetId, {
-            categoryId,
-            ...(searchQuery && { q: searchQuery }),
-            start: 0,
-            rows: 2000,
-          });
+        const catalogues = convertCountryCodeToCatalogues(countryCode);
+        const promises = categories
+          ? categories.map((categoryId) =>
+              search()
+                .betaMerchandisingFacetAttributeValuesDetail(facetId, {
+                  categoryId,
+                  ...(query && { q: query }),
+                  start: 0,
+                  rows: 2000,
+                  catalogue: convertCategoryIdToCatalogue(categoryId),
+                })
+                .then((response) => response.data.values)
+            )
+          : catalogues.map((catalogue) =>
+              search()
+                .betaMerchandisingFacetAttributeValuesDetail(facetId, {
+                  ...(query && { q: query }),
+                  start: 0,
+                  rows: 2000,
+                  catalogue,
+                })
+                .then((response) => response.data.values)
+            );
 
-        setAttributeValues(result.data.values);
-        if (result.data.pagination) {
-          setPagination(result.data.pagination);
-        }
+        const results = await Promise.all(promises);
+
+        setAttributeValues(uniqBy(results.flat(), 'displayValue'));
         setIsLoading(false);
       } catch (error) {
         setError(handleError(error));
@@ -41,13 +68,11 @@ export const useGetFacetAttributeValues = (
       }
     };
     void asyncCall();
-  }, [facetId, categoryId, shouldRefetch, searchQuery, error]);
+  }, [facetId, categories, query, countryCode]);
 
   return {
     attributeValues,
     error,
-    pagination: pagination,
-    refetch: () => refetch({}),
     isLoading,
   };
 };

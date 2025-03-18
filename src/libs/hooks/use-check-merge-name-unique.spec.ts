@@ -2,21 +2,46 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { attributeValuesMock } from '@/pages/api/search/mocks';
-
 import { useCheckMergeNameUnique } from './use-check-merge-name-unique';
 
 const baseUrl = 'http://localhost';
 
+const IE_Values = [
+  { displayValue: 'Green' },
+  { displayValue: 'White' },
+  { displayValue: 'Orange' },
+];
+
+const UK_Values = [
+  { displayValue: 'Blue' },
+  { displayValue: 'White' },
+  { displayValue: 'Red' },
+];
+
 const handlers = [
   http.get(
     `${baseUrl}/search/beta/merchandising/facet/color-id/attributeValues`,
-    () => {
+    ({ request }) => {
+      const url = new URL(request.url);
+      const catalogue = url.searchParams.get('catalogue');
+
+      if (catalogue === 'MANDSIE') {
+        return HttpResponse.json(
+          {
+            values: IE_Values,
+            pagination: {
+              totalItems: 3,
+            },
+          },
+          { status: 200 }
+        );
+      }
+
       return HttpResponse.json(
         {
-          values: attributeValuesMock,
+          values: UK_Values,
           pagination: {
-            totalItems: 5,
+            totalItems: 3,
           },
         },
         { status: 200 }
@@ -45,18 +70,15 @@ describe('useGetFacetAttributeValues', () => {
   it('should render the hook', async () => {
     const { result } = renderHook(() => useCheckMergeNameUnique());
 
-    act(() => {
-      result.current.checkMergeNameUnique({
+    await act(async () => {
+      const { isUniqueValue } = await result.current.checkMergeNameUnique({
         facetId: 'color-id',
-        searchQuery: 'A unique name',
+        searchQuery: 'Red',
+        countryCode: 'UK',
       });
-    });
 
-    await waitFor(() => {
-      expect(typeof result.current.checkMergeNameUnique).toBe('function');
+      expect(isUniqueValue).toBe(false);
     });
-
-    expect(result.current.error).toBe('');
   });
 
   it('should return error', async () => {
@@ -78,10 +100,10 @@ describe('useGetFacetAttributeValues', () => {
       result.current.checkMergeNameUnique({
         facetId: 'color-id',
         searchQuery: 'test',
+        countryCode: 'UK',
       });
     });
 
-    // Wait for the hook to update
     await waitFor(() =>
       expect(result.current.error).toEqual(
         'Failed to get Facet Attribute Values'
@@ -93,13 +115,43 @@ describe('useGetFacetAttributeValues', () => {
     const { result } = renderHook(() => useCheckMergeNameUnique());
 
     await act(async () => {
-      const check = await result.current.checkMergeNameUnique({
+      const { isUniqueValue } = await result.current.checkMergeNameUnique({
         facetId: 'color-id',
         searchQuery: 'test 1',
         localAttributeValues: ['test 1'],
+        countryCode: 'UK',
       });
 
-      expect(check.isUniqueValue).toBe(false);
+      expect(isUniqueValue).toBe(false);
+    });
+  });
+
+  it('should work with multiple categories', async () => {
+    const { result } = renderHook(() => useCheckMergeNameUnique());
+
+    await act(async () => {
+      const { isUniqueValue } = await result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'Purple',
+        categories: ['IE_Cat1', 'Cat2'],
+        countryCode: 'UK_IE',
+      });
+
+      expect(isUniqueValue).toBe(true);
+    });
+  });
+
+  it('should work with multiple countries', async () => {
+    const { result } = renderHook(() => useCheckMergeNameUnique());
+
+    await act(async () => {
+      const { isUniqueValue } = await result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'Green',
+        countryCode: 'UK_IE',
+      });
+
+      expect(isUniqueValue).toBe(false);
     });
   });
 
@@ -107,13 +159,14 @@ describe('useGetFacetAttributeValues', () => {
     const { result } = renderHook(() => useCheckMergeNameUnique());
 
     await act(async () => {
-      const check = await result.current.checkMergeNameUnique({
+      const { isUniqueValue } = await result.current.checkMergeNameUnique({
         facetId: 'color-id',
-        searchQuery: 'Cotton',
-        exceptions: ['Cotton'],
+        searchQuery: 'Red',
+        exceptions: ['Red'],
+        countryCode: 'UK',
       });
 
-      expect(check.isUniqueValue).toBe(true);
+      expect(isUniqueValue).toBe(true);
     });
   });
 });

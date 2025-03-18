@@ -28,10 +28,6 @@ const useGetFacetAttributeValuesReturnValueMock: ReturnType<
   isLoading: false,
   attributeValues: [],
   error: '',
-  pagination: {
-    totalItems: 0,
-  },
-  refetch: jest.fn(),
 };
 
 describe('useAttributeValuesRowsSelector', () => {
@@ -52,9 +48,6 @@ describe('useAttributeValuesRowsSelector', () => {
           displayValue: 'lime',
         },
       ],
-      pagination: {
-        totalItems: 2,
-      },
     });
     const { result } = renderHook(() =>
       useAttributeValuesRowsSelector(
@@ -71,7 +64,8 @@ describe('useAttributeValuesRowsSelector', () => {
             },
           ],
         },
-        'color'
+        'color',
+        'UK'
       )
     );
 
@@ -121,9 +115,6 @@ describe('useAttributeValuesRowsSelector', () => {
           displayValue: 'greeen',
         },
       ],
-      pagination: {
-        totalItems: 2,
-      },
     });
     const { result } = renderHook(() =>
       useAttributeValuesRowsSelector(
@@ -144,7 +135,8 @@ describe('useAttributeValuesRowsSelector', () => {
             },
           ],
         },
-        'ee'
+        'ee',
+        'UK'
       )
     );
 
@@ -181,9 +173,6 @@ describe('useAttributeValuesRowsSelector', () => {
           displayValue: 'red',
         },
       ],
-      pagination: {
-        totalItems: 2,
-      },
     });
     const { result } = renderHook(() =>
       useAttributeValuesRowsSelector(
@@ -192,7 +181,8 @@ describe('useAttributeValuesRowsSelector', () => {
           boosted: undefined,
           excludedValues: undefined,
         },
-        'color'
+        'color',
+        'UK'
       )
     );
 
@@ -218,9 +208,6 @@ describe('useAttributeValuesRowsSelector', () => {
           displayValue: 'Cotton',
         },
       ],
-      pagination: {
-        totalItems: 1,
-      },
     });
 
     const { result } = renderHook(() =>
@@ -235,7 +222,8 @@ describe('useAttributeValuesRowsSelector', () => {
             },
           ],
         },
-        ''
+        '',
+        'UK'
       )
     );
 
@@ -264,9 +252,6 @@ describe('useAttributeValuesRowsSelector', () => {
           displayValue: 'Cotton',
         },
       ],
-      pagination: {
-        totalItems: 1,
-      },
     });
 
     const { result } = renderHook(() =>
@@ -276,7 +261,8 @@ describe('useAttributeValuesRowsSelector', () => {
           boosted: ['Cotton'],
           merged: undefined,
         },
-        ''
+        '',
+        'UK'
       )
     );
 
@@ -304,9 +290,6 @@ describe('useAttributeValuesRowsSelector', () => {
           displayValue: 'Cotton',
         },
       ],
-      pagination: {
-        totalItems: 1,
-      },
     });
 
     const { result } = renderHook(() =>
@@ -321,7 +304,8 @@ describe('useAttributeValuesRowsSelector', () => {
             },
           ],
         },
-        ''
+        '',
+        'UK'
       )
     );
 
@@ -374,9 +358,6 @@ describe('useAttributeValuesRowsSelector', () => {
           displayValue: 'missing 2',
         },
       ],
-      pagination: {
-        totalItems: 2,
-      },
     });
     const { result } = renderHook(() =>
       useAttributeValuesRowsSelector(
@@ -394,7 +375,8 @@ describe('useAttributeValuesRowsSelector', () => {
             },
           ],
         },
-        ''
+        '',
+        'UK'
       )
     );
 

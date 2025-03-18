@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { ReturnedGlobalFacet } from '@/libs/api';
+import type { CountryCode, ReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 
 import { uniq } from 'lodash';
@@ -38,13 +38,19 @@ const getMergeType = (
 export const useAttributeValuesRowsSelector = (
   facet: ReturnedGlobalFacet,
   searchQuery: string,
-  categoryId?: string
+  countryCode: CountryCode,
+  categories?: string[]
 ) => {
   const {
     attributeValues,
     error: attributeValuesError,
     isLoading,
-  } = useGetFacetAttributeValues(facet.id, searchQuery, categoryId);
+  } = useGetFacetAttributeValues({
+    facetId: facet.id,
+    query: searchQuery,
+    categories,
+    countryCode,
+  });
 
   const attributeValuesState = useMemo(() => {
     const attributeToMergeGroupMap = getAttributeToMergeGroupMap(

@@ -2,6 +2,7 @@ import { useReducer } from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import type { CountryCode } from '@/libs/api';
 import { useCheckMergeNameUnique, useGlobalFacetUpdate } from '@/libs/hooks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -42,15 +43,18 @@ const facetMock = {
   lastChanged: { user: 'Bob', date: '2021-10-01' },
 };
 
+const countryCode: CountryCode = 'UK';
+
 const mockDefaultCategoryProps = {
   facet: facetMock,
-  category: 'SubCategory_507',
+  categories: ['SubCategory_507'],
   mergeEnabled: false,
   displayValueEditEnabled: false,
   removeFacetValueFromMergeGroupEnabled: false,
   defaultMergedDisplayValue: 'Name your merge',
   dispatch: dispatchMock,
   handleDisableSaveButton: jest.fn(),
+  countryCode,
 };
 
 const mockDefaultGlobalProps = {
@@ -62,6 +66,7 @@ const mockDefaultGlobalProps = {
   defaultMergedDisplayValue: 'Name your merge',
   dispatch: dispatchMock,
   handleDisableSaveButton: jest.fn(),
+  countryCode,
 };
 
 const useAttributeValuesRowsSelectorReturnMock: ReturnType<
@@ -143,7 +148,8 @@ describe('Edit Facet Modal Content', () => {
     expect(useAttributeValuesRowsSelector).toHaveBeenCalledWith(
       facetMock,
       '',
-      'SubCategory_507'
+      'UK',
+      ['SubCategory_507']
     );
 
     expect(screen.getAllByTestId('attribute-value-skeleton')[0]).toBeVisible();
@@ -790,10 +796,11 @@ describe('Edit Facet Modal Content', () => {
       expect(useAttributeValuesRowsSelector).toHaveBeenCalledTimes(2);
     });
 
-    expect(useAttributeValuesRowsSelector).toHaveBeenCalledWith(
+    expect(useAttributeValuesRowsSelector).toHaveBeenLastCalledWith(
       facetMock,
       'blue',
-      'SubCategory_507'
+      'UK',
+      ['SubCategory_507']
     );
   });
 

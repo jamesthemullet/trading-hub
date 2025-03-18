@@ -3,7 +3,7 @@ import type { Dispatch } from 'react';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
-import type { ReturnedGlobalFacet } from '@/libs/api';
+import type { CountryCode, ReturnedGlobalFacet } from '@/libs/api';
 import {
   ErrorMessage,
   Header3,
@@ -181,7 +181,8 @@ export type Action =
 
 const EditModalFacetContent = ({
   facet,
-  category,
+  categories,
+  countryCode,
   mergeEnabled,
   removeFacetValueFromMergeGroupEnabled,
   displayValueEditEnabled,
@@ -190,13 +191,14 @@ const EditModalFacetContent = ({
   handleDisableSaveButton,
 }: {
   facet: ReturnedGlobalFacet;
-  category: string | undefined;
+  countryCode: CountryCode;
   mergeEnabled: boolean;
   removeFacetValueFromMergeGroupEnabled: boolean;
   displayValueEditEnabled: boolean;
   defaultMergedDisplayValue: string;
   dispatch: Dispatch<Action>;
   handleDisableSaveButton: (disable: boolean) => void;
+  categories?: string[];
 }) => {
   const [rowError, setRowError] = useState<{
     id: string;
@@ -217,7 +219,12 @@ const EditModalFacetContent = ({
     attributeValuesState,
     error: attributeValuesError,
     isLoading,
-  } = useAttributeValuesRowsSelector(facet, searchQuery, category);
+  } = useAttributeValuesRowsSelector(
+    facet,
+    searchQuery,
+    countryCode,
+    categories
+  );
 
   const { checkMergeNameUnique } = useCheckMergeNameUnique();
 
@@ -271,7 +278,8 @@ const EditModalFacetContent = ({
       const { isUniqueValue } = await checkMergeNameUnique({
         facetId: facet.id,
         searchQuery: trimmedNewValue,
-        categoryId: category,
+        categories,
+        countryCode,
         localAttributeValues: attributeValuesState.map(
           (attr) => attr.displayValue
         ),

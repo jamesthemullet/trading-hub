@@ -160,10 +160,6 @@ describe('Global Facet Management Editing', () => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
       error: '',
-      pagination: {
-        totalItems: 5,
-      },
-      refetch: jest.fn(),
       isLoading: false,
     });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);

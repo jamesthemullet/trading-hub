@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useMemo, useReducer, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import type { ReturnedGlobalFacet } from '@/libs/api';
+import type { CountryCode, ReturnedGlobalFacet } from '@/libs/api';
 import { Button } from '@/libs/components/buttons/button/button';
 import { color } from '@/libs/components/utils/constants';
 import { spacing } from '@/libs/components/utils/spacing';
@@ -45,17 +45,19 @@ export const EditFacetModalV2 = ({
   mergeEnabled = true,
   removeFacetValueFromMergeGroupEnabled = true,
   saveButtonLabel = 'Save',
-  category,
+  categories,
+  countryCode,
   displayValueEditEnabled = true,
 }: {
   onClose: () => void;
   onSave: (facet: ReturnedGlobalFacet) => void;
   facet: ReturnedGlobalFacet;
+  countryCode: CountryCode;
   mergeEnabled?: boolean;
   removeFacetValueFromMergeGroupEnabled?: boolean;
   displayValueEditEnabled?: boolean;
   saveButtonLabel?: string;
-  category: string | undefined;
+  categories?: string[];
 }) => {
   const [isSaveDisabled, setIsSaveDisabled] = useState(false);
   const processedFacet = useMemo(() => {
@@ -92,7 +94,8 @@ export const EditFacetModalV2 = ({
           <ModalContainer>
             <EditModalFacetContent
               facet={facetLocalState}
-              category={category}
+              categories={categories}
+              countryCode={countryCode}
               mergeEnabled={mergeEnabled}
               removeFacetValueFromMergeGroupEnabled={
                 removeFacetValueFromMergeGroupEnabled

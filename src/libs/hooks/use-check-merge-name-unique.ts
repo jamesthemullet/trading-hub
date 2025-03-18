@@ -1,6 +1,14 @@
 import { useState } from 'react';
 
+import type { CountryCode } from '@/libs/api';
 import { search } from '@/libs/api';
+
+import { uniqBy } from 'lodash';
+
+import {
+  convertCategoryIdToCatalogue,
+  convertCountryCodeToCatalogues,
+} from '../components/utils/convert-country-code-to-catalogues';
 
 export const useCheckMergeNameUnique = () => {
   const [error, setError] = useState('');
@@ -8,30 +16,50 @@ export const useCheckMergeNameUnique = () => {
   const checkMergeNameUnique = async ({
     facetId,
     searchQuery,
-    categoryId,
+    categories,
+    countryCode,
     exceptions,
     localAttributeValues = [],
   }: {
     facetId: string;
     searchQuery: string;
+    countryCode: CountryCode;
     localAttributeValues?: string[];
-    categoryId?: string;
+    categories?: string[];
     exceptions?: (string | undefined)[];
   }) => {
     try {
-      const result = await search().betaMerchandisingFacetAttributeValuesDetail(
-        facetId,
-        {
-          categoryId,
-          q: searchQuery,
-          start: 0,
-          rows: 100,
-        }
-      );
+      const catalogues = convertCountryCodeToCatalogues(countryCode);
+      const promises = categories
+        ? categories.map((categoryId) =>
+            search()
+              .betaMerchandisingFacetAttributeValuesDetail(facetId, {
+                categoryId,
+                ...(searchQuery && { q: searchQuery }),
+                start: 0,
+                rows: 2000,
+                catalogue: convertCategoryIdToCatalogue(categoryId),
+              })
+              .then((response) => response.data.values)
+          )
+        : catalogues.map((catalogue) =>
+            search()
+              .betaMerchandisingFacetAttributeValuesDetail(facetId, {
+                ...(searchQuery && { q: searchQuery }),
+                start: 0,
+                rows: 2000,
+                catalogue,
+              })
+              .then((response) => response.data.values)
+          );
+
+      const results = await Promise.all(promises);
+
+      const result = uniqBy(results.flat(), 'displayValue');
 
       return {
         isUniqueValue: Boolean(
-          (!result.data.values.some(
+          (!result.some(
             (item) => item.displayValue.trim() === searchQuery.trim()
           ) &&
             !localAttributeValues.some(

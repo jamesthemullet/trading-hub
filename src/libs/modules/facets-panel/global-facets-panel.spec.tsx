@@ -93,10 +93,6 @@ describe('Global Facet Panel', () => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
       error: '',
-      pagination: {
-        totalItems: 5,
-      },
-      refetch: jest.fn(),
       isLoading: false,
     });
   });
