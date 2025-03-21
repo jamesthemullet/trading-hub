@@ -10,8 +10,7 @@ export const useFacetsFilter = (facets: FacetRowDisplayValue[]) => {
 
     return facets.filter(
       (facet) =>
-        (facet.displayValue &&
-          facet.displayValue.toLowerCase().includes(search.toLowerCase())) ||
+        facet.displayValue?.toLowerCase().includes(search.toLowerCase()) ||
         facet.indexPropertyName.toLowerCase().includes(search.toLowerCase())
     );
   }, [facets, search]);

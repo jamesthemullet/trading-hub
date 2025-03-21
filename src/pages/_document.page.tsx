@@ -124,8 +124,7 @@ const checkNewRelicConnection = async () => {
   if (
     process.env.NEW_RELIC_APP_NAME &&
     process.env.NEW_RELIC_LICENSE_KEY &&
-    newrelic.agent &&
-    newrelic.agent.collector &&
+    newrelic.agent?.collector &&
     newrelic.agent.collector.isConnected() === false
   ) {
     return new Promise((resolve) => {

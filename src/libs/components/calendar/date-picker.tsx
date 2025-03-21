@@ -118,8 +118,7 @@ export const DatePicker = (
 
   const handleSetEndTime = (time: string) => {
     if (
-      value &&
-      value[0] &&
+      value?.[0] &&
       value[1] &&
       startTime &&
       dayjs(value[0]).format('DD-MM-YYYY') ===

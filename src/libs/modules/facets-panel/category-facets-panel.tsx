@@ -59,7 +59,7 @@ const CategoryFacetsPanel = ({
 
   const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
     'UK' | 'IE'
-  >(categoryIds && categoryIds[0]?.includes('IE_') ? 'IE' : 'UK');
+  >(categoryIds?.[0]?.includes('IE_') ? 'IE' : 'UK');
 
   const [dateTime, setDateTime] = useState<[Date | null, Date | null]>([
     null,

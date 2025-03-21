@@ -173,8 +173,7 @@ export const FacetsPanel = ({
   const [duplicationError, setDuplicationError] = useState('');
 
   const [previewValue, setPreviewValue] = useState<string | undefined>(
-    (selectedCategories && selectedCategories[0]) ||
-      (searchTerms && searchTerms[0])
+    selectedCategories?.[0] || searchTerms?.[0]
   );
 
   const { setSearch, filteredFacets } = useFacetsFilter(facetsState);

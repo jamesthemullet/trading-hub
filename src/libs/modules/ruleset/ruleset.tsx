@@ -251,7 +251,7 @@ export const Ruleset = ({
   const [duplicationError, setDuplicationError] = useState('');
 
   const defaultPreviewCountryCode =
-    (categoryIds && categoryIds[0].includes('IE_')) ||
+    categoryIds?.[0].includes('IE_') ||
     (rulesetType === 'search' && countryCode === 'IE')
       ? 'IE'
       : 'UK';
@@ -286,7 +286,7 @@ export const Ruleset = ({
   };
 
   const [previewValue, setPreviewValue] = useState(
-    (categoryIds && categoryIds[0]) || (searchTerms && searchTerms[0])
+    categoryIds?.[0] || searchTerms?.[0]
   );
 
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);

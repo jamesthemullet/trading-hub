@@ -210,7 +210,7 @@ export const facetReducer = (
         merge.mergedValues?.includes(action.payload.id)
       );
 
-      if (group && group.mergedValues) {
+      if (group?.mergedValues) {
         const groupValues = group.mergedValues;
         return {
           ...state,
