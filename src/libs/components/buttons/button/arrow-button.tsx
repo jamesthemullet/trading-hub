@@ -58,6 +58,6 @@ export const ArrowButton = ({
       {...(isDisabled && { disabled: isDisabled })}
       direction={direction}
       {...restWithoutChildren}
-    ></StyledArrowButton>
+    />
   );
 };

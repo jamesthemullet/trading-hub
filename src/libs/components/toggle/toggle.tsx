@@ -74,7 +74,7 @@ export const Toggle = (
   return (
     <ToggleSwitch title="Toggle">
       <input type="checkbox" {...props} />
-      <span></span>
+      <span />
     </ToggleSwitch>
   );
 };

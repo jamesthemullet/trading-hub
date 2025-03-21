@@ -74,6 +74,7 @@ const eslint = [
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/await-thenable': 'error',
+      'react/self-closing-comp': 'error',
       'functional/no-mixed-types': 'off',
       'functional/no-throw-statements': 'off',
       'functional/no-expression-statements': 'off',

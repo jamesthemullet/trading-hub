@@ -33,5 +33,5 @@ export const LoginCheck = ({
       window.removeEventListener('visibilitychange', visibilityHandler, false);
   }, [update]);
 
-  return <div></div>;
+  return <div />;
 };

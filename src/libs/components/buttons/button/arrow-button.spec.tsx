@@ -12,7 +12,7 @@ describe('ArrowButton', () => {
   });
 
   it('should render button with up arrow', () => {
-    render(<ArrowButton direction="down"></ArrowButton>);
+    render(<ArrowButton direction="down" />);
 
     expect(screen.getByRole('button')).toBeInTheDocument();
     expect(screen.getByRole('button')).toHaveStyle(
@@ -22,7 +22,7 @@ describe('ArrowButton', () => {
 
   it('should call an onclick handler', async () => {
     const mockClickHandler = jest.fn();
-    render(<ArrowButton onClick={mockClickHandler}></ArrowButton>);
+    render(<ArrowButton onClick={mockClickHandler} />);
 
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByRole('button'));
@@ -32,9 +32,7 @@ describe('ArrowButton', () => {
 
   it('should not call an onclick handler when disabled', async () => {
     const mockClickHandler = jest.fn();
-    render(
-      <ArrowButton onClick={mockClickHandler} isDisabled={true}></ArrowButton>
-    );
+    render(<ArrowButton onClick={mockClickHandler} isDisabled={true} />);
 
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByRole('button'));

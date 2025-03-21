@@ -84,9 +84,9 @@ const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
       </Example>
       <Example>
         <h2>Arrow Button</h2>
-        <ArrowButton direction="up"></ArrowButton>
-        <ArrowButton direction="down"></ArrowButton>
-        <ArrowButton isDisabled></ArrowButton>
+        <ArrowButton direction="up" />
+        <ArrowButton direction="down" />
+        <ArrowButton isDisabled />
       </Example>
       <Example>
         <h2>New arrow icons</h2>
