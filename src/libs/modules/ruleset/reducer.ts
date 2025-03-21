@@ -151,10 +151,19 @@ export const rulesetReducer = (state: RuleSet, action: Action) => {
     case 'alphanumericIncludeExcludeAttribute': {
       const { payload } = action;
 
-      const update = (values: IncludeExclude[]) =>
-        payload.change === 'remove'
-          ? values.filter((_el, index) => index !== payload.index)
-          : [...values, payload.data];
+      const update = (values: IncludeExclude[]) => {
+        switch (payload.change) {
+          case 'remove':
+            return values.filter((_el, index) => index !== payload.index);
+          case 'modify':
+            return values.map((attr, index) =>
+              index === payload.index ? payload.data : attr
+            );
+          case 'add':
+          default:
+            return [...values, payload.data];
+        }
+      };
 
       return payload.operation === 'include'
         ? {

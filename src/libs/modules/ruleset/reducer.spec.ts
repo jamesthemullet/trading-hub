@@ -576,6 +576,37 @@ describe('Ruleset reducer', () => {
 
         expect(reducerState.rules.excludes.alphanumeric?.length).toBe(0);
       });
+
+      it('should modify an include as an alphanumeric attribute', () => {
+        const reducerState = rulesetReducer(
+          {
+            ...defaultState,
+            rules: {
+              ...defaultState.rules,
+              includes: {
+                alphanumeric: [
+                  mockAlphaNumericIncludeExcludeAttribute,
+                  mockAlphaNumericIncludeExcludeAttribute,
+                ],
+              },
+            },
+          },
+          {
+            type: 'alphanumericIncludeExcludeAttribute',
+            payload: {
+              operation: 'include',
+              change: 'modify',
+              index: 1,
+              data: { fields: [{ field: 'foo', values: ['bar, bags'] }] },
+            },
+          }
+        );
+
+        expect(reducerState.rules.includes.alphanumeric?.length).toBe(2);
+        expect(
+          reducerState.rules.includes.alphanumeric?.[1].fields[0].values
+        ).toEqual(['bar, bags']);
+      });
     });
   });
 
