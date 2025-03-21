@@ -182,7 +182,7 @@ export const Product = ({
       (value && parseInt(value) < 1)
     ) {
       if (totalPinnedProducts === 0) {
-        setError(`Please choose a position sequentially starting from 1`);
+        setError('Please choose a position sequentially starting from 1');
       } else {
         setError(
           `Please choose a position between 1 and ${totalPinnedProducts + diff}`

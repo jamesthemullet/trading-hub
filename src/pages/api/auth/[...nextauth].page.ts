@@ -32,12 +32,7 @@ async function refreshAccessToken(token: JWT, envSettings: AuthEnvironment) {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body:
-      `grant_type=refresh_token` +
-      `&client_secret=${envSettings.clientSecret}` +
-      `&refresh_token=${token.refreshToken}` +
-      `&client_id=${envSettings.clientId}` +
-      '&response_type=code',
+    body: `grant_type=refresh_token&client_secret=${envSettings.clientSecret}&refresh_token=${token.refreshToken}&client_id=${envSettings.clientId}&response_type=code`,
   });
   const refreshedTokens = await req.json();
   return {

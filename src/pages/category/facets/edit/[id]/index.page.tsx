@@ -52,7 +52,7 @@ const Page = ({ id }: { id: string }) => {
       countryCode,
     });
     if (response && response.status !== 'error') {
-      return router.push(`/category/facets/`);
+      return router.push('/category/facets/');
     }
   };
 
@@ -76,7 +76,7 @@ const Page = ({ id }: { id: string }) => {
   return (
     <>
       <Head>
-        <title>{`Merchandising Hub | M&S | Edit Category Ruleset Facets`}</title>
+        <title>Merchandising Hub | M&S | Edit Category Ruleset Facets</title>
       </Head>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
 

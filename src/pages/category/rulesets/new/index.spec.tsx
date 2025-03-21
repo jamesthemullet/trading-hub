@@ -243,7 +243,7 @@ describe('Index', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(`/category/rulesets`);
+    expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets');
   });
 
   it('creates a new rule set and does not redirect if no id given for the edit page', async () => {

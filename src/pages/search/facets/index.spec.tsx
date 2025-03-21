@@ -26,7 +26,7 @@ jest.mock('next/router', () => ({
 }));
 
 const server = setupServer(
-  http.get(`/api/search/beta/merchandising/keyword/ruleset`, (ctx) => {
+  http.get('/api/search/beta/merchandising/keyword/ruleset', (ctx) => {
     const url = new URL(ctx.request.url);
     const countryCode = url.searchParams.get('countryCode');
     const data = useSearchRulesetList(
@@ -54,11 +54,11 @@ const server = setupServer(
       { status: 200 }
     );
   }),
-  http.delete(`/api/search/beta/merchandising/keyword/ruleset/:id`, (ctx) => {
+  http.delete('/api/search/beta/merchandising/keyword/ruleset/:id', (ctx) => {
     mockRuleSetDelete({ rulesetId: ctx.params.id });
     return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
   }),
-  http.get(`/api/search/beta/merchandising/keyword/ruleset/:id`, (ctx) => {
+  http.get('/api/search/beta/merchandising/keyword/ruleset/:id', (ctx) => {
     const data = useSearchRulesetList();
     const ruleSetReturned = data.ruleSets.find(
       (ruleSet: any) => ruleSet.id === ctx.params.id
@@ -66,7 +66,7 @@ const server = setupServer(
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
   http.put(
-    `/api/search/beta/merchandising/keyword/ruleset/:id`,
+    '/api/search/beta/merchandising/keyword/ruleset/:id',
     async (ctx) => {
       const data = useSearchRulesetList();
       const ruleSetReturned: ReturnedKeywordRuleSet = data.ruleSets.find(
@@ -90,7 +90,7 @@ const server = setupServer(
       );
     }
   ),
-  http.post(`/api/search/beta/merchandising/keyword/ruleset`, async (ctx) => {
+  http.post('/api/search/beta/merchandising/keyword/ruleset', async (ctx) => {
     const ruleSet = (await ctx.request.json()) as KeywordRuleSet;
     mockRuleSetCreate({
       merchandisingRules: ruleSet.rules,

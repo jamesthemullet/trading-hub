@@ -73,7 +73,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>{`Merchandising Hub | M&S | Create Category Ruleset`}</title>
+        <title>Merchandising Hub | M&S | Create Category Ruleset</title>
       </Head>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'New']} />
 

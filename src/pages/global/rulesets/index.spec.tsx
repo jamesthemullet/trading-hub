@@ -37,7 +37,7 @@ const MOCK_CATEGORY_ID = 'Cat123';
 const mockPush = jest.fn();
 
 const server = setupServer(
-  http.get(`/api/search/beta/merchandising/global/ruleset`, (ctx) => {
+  http.get('/api/search/beta/merchandising/global/ruleset', (ctx) => {
     const url = new URL(ctx.request.url);
     const countryCode = url.searchParams.get('countryCode');
     const data = useRuleSet(
@@ -60,18 +60,18 @@ const server = setupServer(
       { status: 200 }
     );
   }),
-  http.delete(`/api/search/beta/merchandising/global/ruleset/:id`, (ctx) => {
+  http.delete('/api/search/beta/merchandising/global/ruleset/:id', (ctx) => {
     mockRuleSetDelete({ rulesetId: ctx.params.id });
     return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
   }),
-  http.get(`/api/search/beta/merchandising/global/ruleset/:id`, (ctx) => {
+  http.get('/api/search/beta/merchandising/global/ruleset/:id', (ctx) => {
     const data = useRuleSet();
     const ruleSetReturned = data.globalRuleSets.find(
       (ruleSet: any) => ruleSet.id === ctx.params.id
     );
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
-  http.put(`/api/search/beta/merchandising/global/ruleset/:id`, async (ctx) => {
+  http.put('/api/search/beta/merchandising/global/ruleset/:id', async (ctx) => {
     const data = useRuleSet();
     const ruleSetReturned = data.globalRuleSets.find(
       (ruleSet: any) => ruleSet.id === ctx.params.id
@@ -83,7 +83,7 @@ const server = setupServer(
       { status: 200 }
     );
   }),
-  http.post(`/api/search/beta/merchandising/global/ruleset`, async (ctx) => {
+  http.post('/api/search/beta/merchandising/global/ruleset', async (ctx) => {
     const ruleSet = (await ctx.request.json()) as object;
     return HttpResponse.json(
       {

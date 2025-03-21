@@ -60,6 +60,6 @@ describe('useGlobalRuleSetDelete', () => {
     });
 
     expect(deleteRuleSetMock).toHaveBeenCalled();
-    expect(result.current.error).toEqual(`Error undefined undefined`);
+    expect(result.current.error).toEqual('Error undefined undefined');
   });
 });

@@ -118,6 +118,6 @@ describe('Index', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith(`/search/rulesets`);
+    expect(mockRouter.push).toHaveBeenCalledWith('/search/rulesets');
   });
 });

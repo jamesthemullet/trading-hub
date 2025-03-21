@@ -75,7 +75,7 @@ const handlers = [
     }
   ),
 
-  http.post(`/search/beta/merchandising/preview`, () => {
+  http.post('/search/beta/merchandising/preview', () => {
     const { data, status } = getRuleSetPreviewMock();
     return HttpResponse.json(data, status);
   }),

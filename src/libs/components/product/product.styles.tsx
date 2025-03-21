@@ -181,7 +181,7 @@ export const ProductMenuButton = styled(Text)<{ icon: string; size?: string }>`
     background: no-repeat 0 0;
     background-image: ${({ icon }) =>
       `url(/trading-hub/asset/icon-${icon}.svg)`};
-    background-size: ${({ size }) => (size ? size : `20px 20px`)};
+    background-size: ${({ size }) => (size ? size : '20px 20px')};
     width: 25px;
     height: 20px;
   }

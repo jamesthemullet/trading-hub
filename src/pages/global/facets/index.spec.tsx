@@ -45,7 +45,7 @@ const NEW_RULE_BUTTON_TEXT = 'Add new rule';
 const mockId = 'ewfw-e3f23-f23f2-3cwef3';
 
 const server = setupServer(
-  http.get(`/api/search/beta/merchandising/global/ruleset`, (ctx) => {
+  http.get('/api/search/beta/merchandising/global/ruleset', (ctx) => {
     const url = new URL(ctx.request.url);
     const countryCode = url.searchParams.get('countryCode');
     const data = useRuleSet(
@@ -74,7 +74,7 @@ const server = setupServer(
       { status: 200 }
     );
   }),
-  http.delete(`/api/search/beta/merchandising/global/ruleset/:id`, (ctx) => {
+  http.delete('/api/search/beta/merchandising/global/ruleset/:id', (ctx) => {
     if (deleteGlobalRuleSet.error !== '') {
       const response = HttpResponse.json(
         {
@@ -89,14 +89,14 @@ const server = setupServer(
     mockRuleSetDelete({ rulesetId: ctx.params.id });
     return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
   }),
-  http.get(`/api/search/beta/merchandising/global/ruleset/:id`, (ctx) => {
+  http.get('/api/search/beta/merchandising/global/ruleset/:id', (ctx) => {
     const data = useRuleSet();
     const ruleSetReturned = data.globalRuleSets.find(
       (ruleSet: any) => ruleSet.id === ctx.params.id
     );
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
-  http.put(`/api/search/beta/merchandising/global/ruleset/:id`, async (ctx) => {
+  http.put('/api/search/beta/merchandising/global/ruleset/:id', async (ctx) => {
     if (updateGlobalRuleSet.error !== '') {
       const response = HttpResponse.json(
         {
@@ -119,7 +119,7 @@ const server = setupServer(
       { status: 200 }
     );
   }),
-  http.post(`/api/search/beta/merchandising/global/ruleset`, async (ctx) => {
+  http.post('/api/search/beta/merchandising/global/ruleset', async (ctx) => {
     const ruleSet = (await ctx.request.json()) as object;
     return HttpResponse.json(
       {

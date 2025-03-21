@@ -321,7 +321,7 @@ export const CategorySearch = ({
                     >
                       <Image
                         alt=""
-                        src={`/trading-hub/asset/icon-remove-selected-chip.svg`}
+                        src="/trading-hub/asset/icon-remove-selected-chip.svg"
                         width={16}
                         height={16}
                       />
@@ -350,7 +350,7 @@ export const CategorySearch = ({
                       >
                         <Image
                           alt=""
-                          src={`/trading-hub/asset/icon-remove-chip.svg`}
+                          src="/trading-hub/asset/icon-remove-chip.svg"
                           width={16}
                           height={16}
                         />

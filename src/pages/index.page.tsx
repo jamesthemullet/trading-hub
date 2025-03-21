@@ -15,7 +15,7 @@ const Index = () => {
   return (
     <>
       <Head>
-        <title>{`Merchandising Hub | M&S`}</title>
+        <title>Merchandising Hub | M&S</title>
       </Head>
       <h1>
         {session && session.status === 'authenticated' ? (

@@ -148,7 +148,7 @@ export const DateTimePickerModal = ({
           >
             <Image
               alt=""
-              src={`/trading-hub/asset/icon-blank-calendar.svg`}
+              src="/trading-hub/asset/icon-blank-calendar.svg"
               width={20}
               height={20}
             />

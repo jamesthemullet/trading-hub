@@ -577,7 +577,7 @@ const EditModalFacetContent = ({
           attributeValuesState.map((attribute) => (
             <SkeletonRow
               key={`attribute-value-skeleton-${attribute.displayValue}`}
-              data-testid={`attribute-value-skeleton`}
+              data-testid="attribute-value-skeleton"
               aria-busy="true"
             />
           ))

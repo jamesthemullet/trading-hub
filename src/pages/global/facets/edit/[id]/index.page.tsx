@@ -63,7 +63,7 @@ const Page = ({ id }: PageProps) => {
     });
 
     if (response) {
-      return router.push(`/global/facets/`);
+      return router.push('/global/facets/');
     }
   };
 

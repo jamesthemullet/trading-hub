@@ -52,7 +52,7 @@ const Page = ({ id }: { id: string }) => {
     });
 
     if (response) {
-      return router.push(`/search/facets/`);
+      return router.push('/search/facets/');
     }
   };
 
@@ -72,7 +72,7 @@ const Page = ({ id }: { id: string }) => {
   return (
     <>
       <Head>
-        <title>{`Merchandising Hub | M&S | Edit Search Facets`}</title>
+        <title>Merchandising Hub | M&S | Edit Search Facets</title>
       </Head>
       <Heading breadcrumbs={['Search', 'Facet Management', 'Editor']} />
 

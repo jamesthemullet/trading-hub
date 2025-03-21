@@ -24,7 +24,7 @@ jest.mock('next/router', () => ({
 }));
 
 const server = setupServer(
-  http.get(`/api/search/beta/merchandising/category/ruleset`, (ctx) => {
+  http.get('/api/search/beta/merchandising/category/ruleset', (ctx) => {
     const url = new URL(ctx.request.url);
     const countryCode = url.searchParams.get('countryCode');
     const data = useRuleSet(
@@ -53,11 +53,11 @@ const server = setupServer(
       { status: 200 }
     );
   }),
-  http.delete(`/api/search/beta/merchandising/category/ruleset/:id`, (ctx) => {
+  http.delete('/api/search/beta/merchandising/category/ruleset/:id', (ctx) => {
     mockRuleSetDelete({ rulesetId: ctx.params.id });
     return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
   }),
-  http.get(`/api/search/beta/merchandising/category/ruleset/:id`, (ctx) => {
+  http.get('/api/search/beta/merchandising/category/ruleset/:id', (ctx) => {
     const data = useRuleSet();
     const ruleSetReturned = data.categoryRuleSets.find(
       (ruleSet: any) => ruleSet.id === ctx.params.id
@@ -65,7 +65,7 @@ const server = setupServer(
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
   http.put(
-    `/api/search/beta/merchandising/category/ruleset/:id`,
+    '/api/search/beta/merchandising/category/ruleset/:id',
     async (ctx) => {
       const data = useRuleSet();
       const ruleSetReturned = data.categoryRuleSets.find(
@@ -79,7 +79,7 @@ const server = setupServer(
       );
     }
   ),
-  http.post(`/api/search/beta/merchandising/category/ruleset`, async (ctx) => {
+  http.post('/api/search/beta/merchandising/category/ruleset', async (ctx) => {
     const ruleSet = (await ctx.request.json()) as object;
     createRuleset(ruleSet);
     return HttpResponse.json(
@@ -204,10 +204,10 @@ describe('Index', () => {
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [
         {
-          id: `1`,
+          id: '1',
           categoriesInfo: [
             {
-              id: `1`,
+              id: '1',
             },
           ],
           isEnabled: true,
@@ -219,10 +219,10 @@ describe('Index', () => {
           facets: [],
         },
         {
-          id: `2`,
+          id: '2',
           categoriesInfo: [
             {
-              id: `2`,
+              id: '2',
             },
           ],
           isEnabled: true,

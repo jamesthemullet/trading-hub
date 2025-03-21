@@ -23,7 +23,7 @@ jest.mock('next/router', () => ({
 }));
 
 const server = setupServer(
-  http.get(`/api/search/beta/merchandising/keyword/redirect`, (ctx) => {
+  http.get('/api/search/beta/merchandising/keyword/redirect', (ctx) => {
     const url = new URL(ctx.request.url);
     const countryCode = url.searchParams.get('countryCode');
     const data = useSearchRedirectList(
@@ -51,11 +51,11 @@ const server = setupServer(
       { status: 200 }
     );
   }),
-  http.delete(`/api/search/beta/merchandising/keyword/redirect/:id`, (ctx) => {
+  http.delete('/api/search/beta/merchandising/keyword/redirect/:id', (ctx) => {
     mockRedirectDelete({ redirectId: ctx.params.id });
     return HttpResponse.json({ id: ctx.params.id }, { status: 200 });
   }),
-  http.get(`/api/search/beta/merchandising/keyword/redirect/:id`, (ctx) => {
+  http.get('/api/search/beta/merchandising/keyword/redirect/:id', (ctx) => {
     const data = useSearchRedirectList();
     const ruleSetReturned = data.redirects.find(
       (ruleSet: any) => ruleSet.id === ctx.params.id
@@ -63,7 +63,7 @@ const server = setupServer(
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
   http.put(
-    `/api/search/beta/merchandising/keyword/redirect/:id`,
+    '/api/search/beta/merchandising/keyword/redirect/:id',
     async (ctx) => {
       const data = useSearchRedirectList();
       const redirectReturned = data.redirects.find(
@@ -83,7 +83,7 @@ const server = setupServer(
       );
     }
   ),
-  http.post(`/api/search/beta/merchandising/keyword/redirect`, async (ctx) => {
+  http.post('/api/search/beta/merchandising/keyword/redirect', async (ctx) => {
     const redirect = (await ctx.request.json()) as object;
     const response = {
       redirect: {

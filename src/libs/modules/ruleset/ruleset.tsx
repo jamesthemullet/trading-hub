@@ -675,7 +675,7 @@ export const Ruleset = ({
                       }}
                     >
                       <Image
-                        src={`/trading-hub/asset/icon-ie-flag.svg`}
+                        src="/trading-hub/asset/icon-ie-flag.svg"
                         width={20}
                         height={20}
                         alt="IE flag"
@@ -690,7 +690,7 @@ export const Ruleset = ({
                       }}
                     >
                       <Image
-                        src={`/trading-hub/asset/icon-uk-flag.svg`}
+                        src="/trading-hub/asset/icon-uk-flag.svg"
                         width={20}
                         height={20}
                         alt="UK flag"

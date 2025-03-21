@@ -467,7 +467,7 @@ export const DataTable = ({
                           <SchedulingDetailLeftSide>
                             <Image
                               alt=""
-                              src={`/trading-hub/asset/icon-calendar.svg`}
+                              src="/trading-hub/asset/icon-calendar.svg"
                               width={24}
                               height={24}
                             />
@@ -497,7 +497,7 @@ export const DataTable = ({
                           <>
                             <Image
                               alt=""
-                              src={`/trading-hub/asset/icon-calendar.svg`}
+                              src="/trading-hub/asset/icon-calendar.svg"
                               width={24}
                               height={24}
                             />
@@ -597,7 +597,7 @@ export const DataTable = ({
                         <>
                           <Image
                             alt=""
-                            src={`/trading-hub/asset/icon-calendar.svg`}
+                            src="/trading-hub/asset/icon-calendar.svg"
                             width={24}
                             height={24}
                           />

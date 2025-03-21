@@ -327,7 +327,7 @@ export const SearchKeywords = ({
                     >
                       <Image
                         alt=""
-                        src={`/trading-hub/asset/icon-remove-selected-chip.svg`}
+                        src="/trading-hub/asset/icon-remove-selected-chip.svg"
                         width={16}
                         height={16}
                       />
@@ -353,7 +353,7 @@ export const SearchKeywords = ({
                     >
                       <Image
                         alt=""
-                        src={`/trading-hub/asset/icon-remove-chip.svg`}
+                        src="/trading-hub/asset/icon-remove-chip.svg"
                         width={16}
                         height={16}
                       />
@@ -391,7 +391,7 @@ export const SearchKeywords = ({
               <ErrorContainer>
                 <Image
                   alt=""
-                  src={`/trading-hub/asset/icon-warning.svg`}
+                  src="/trading-hub/asset/icon-warning.svg"
                   width={20}
                   height={20}
                 />

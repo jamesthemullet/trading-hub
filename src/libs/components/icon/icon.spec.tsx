@@ -82,7 +82,7 @@ describe('Icon component', () => {
     render(<Icon name="TickSuccess" color={'#fff'} />);
     const icon = screen.getByRole('presentation');
 
-    expect(icon).toHaveStyle(`background: #fff`);
+    expect(icon).toHaveStyle('background: #fff');
   });
 
   it('should not render an coloured icon when colour is passed but icon mapping says we can not', () => {
