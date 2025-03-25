@@ -622,6 +622,7 @@ describe('Facet Panel', () => {
 
     it('should close the modal on click of the close button', async () => {
       const user = userEvent.setup({ delay: null });
+      const refreshMock = jest.fn();
 
       renderWithProviders(
         <FacetsPanel
@@ -636,6 +637,7 @@ describe('Facet Panel', () => {
           includedFacets={mockIncludedFacets}
           excludedFacets={mockExcludedFacets}
           dispatch={dispatchSpy}
+          refreshData={refreshMock}
         />
       );
 
@@ -652,7 +654,7 @@ describe('Facet Panel', () => {
         })
       ).toBeVisible();
 
-      const closeButton = screen.getByLabelText('Close attributes modal');
+      const closeButton = screen.getAllByRole('button', { name: 'Cancel' })[1];
 
       act(() => {
         user.click(closeButton);
@@ -666,53 +668,7 @@ describe('Facet Panel', () => {
           })
         ).not.toBeVisible();
       });
-    });
-  });
-
-  it('should call handleGlobalFacetUpdate on save', async () => {
-    const user = userEvent.setup();
-
-    renderWithProviders(
-      <FacetsPanel
-        title="Facet Rule Editor"
-        facetType="global"
-        countryCode="UK"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        setDateTime={setDateTimeSpy}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-      />
-    );
-
-    const editFacetValuesButton = screen.getAllByText('Edit values')[0];
-    await user.click(editFacetValuesButton);
-
-    expect(
-      screen.getByRole('heading', {
-        level: 3,
-        name: 'Facet value settings of: color',
-      })
-    ).toBeVisible();
-
-    const saveButton = screen.getByRole('button', { name: 'Save' });
-
-    await user.click(saveButton);
-
-    await waitFor(() => {
-      expect(onSaveSpy).toHaveBeenCalled();
-    });
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', {
-          level: 3,
-          name: 'Facet value settings of: color',
-        })
-      ).toBeInTheDocument();
+      expect(refreshMock).toHaveBeenCalled();
     });
   });
 });

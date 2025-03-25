@@ -73,6 +73,7 @@ export type EditableLabelProps = {
   onDisplayValueChange: (newValue: string) => void;
   shouldOpenFromParent?: boolean;
   canCancelEdit?: boolean;
+  onCancel?: () => void;
   error?: string | null;
   disallowedValues?: string[];
 };
@@ -82,6 +83,7 @@ export const EditableLabel = ({
   onDisplayValueChange,
   shouldOpenFromParent,
   canCancelEdit,
+  onCancel,
   error,
   disallowedValues,
 }: EditableLabelProps) => {
@@ -146,6 +148,7 @@ export const EditableLabel = ({
                 if (event.key === 'Escape' && canCancelEdit) {
                   setValue(originalValue);
                   setIsEditMode(false);
+                  if (onCancel) onCancel();
                 }
               }}
               aria-label={`Edit ${displayValue} input field`}
@@ -183,6 +186,7 @@ export const EditableLabel = ({
                 onClick={() => {
                   setValue(originalValue);
                   setIsEditMode(false);
+                  if (onCancel) onCancel();
                 }}
                 aria-label={`Cancel ${displayValue} change`}
               >

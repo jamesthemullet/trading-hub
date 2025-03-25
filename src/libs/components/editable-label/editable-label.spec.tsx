@@ -34,11 +34,13 @@ describe('editable-label', () => {
 
     it('should not call onDisplayValueChange when cancel button is clicked', async () => {
       const onDisplayValueChange = jest.fn();
+      const mockCancel = jest.fn();
       renderWithProviders(
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
           canCancelEdit={true}
+          onCancel={mockCancel}
         />
       );
 
@@ -63,6 +65,7 @@ describe('editable-label', () => {
       expect(label).toHaveTextContent('color');
 
       expect(onDisplayValueChange).not.toHaveBeenCalled();
+      expect(mockCancel).toHaveBeenCalled();
     });
 
     it('should call onDisplayValueChange when save button is clicked', async () => {
@@ -169,11 +172,13 @@ describe('editable-label', () => {
 
     it('should not call onDisplayValueChange when escape key is pressed', async () => {
       const onDisplayValueChange = jest.fn();
+      const mockCancel = jest.fn();
       renderWithProviders(
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
           canCancelEdit={true}
+          onCancel={mockCancel}
         />
       );
 
@@ -201,6 +206,7 @@ describe('editable-label', () => {
       expect(label).toHaveTextContent('color');
 
       expect(onDisplayValueChange).not.toHaveBeenCalled();
+      expect(mockCancel).toHaveBeenCalled();
     });
   });
 });

@@ -125,11 +125,15 @@ test.describe('global facets', () => {
       page.getByRole('heading', { name: 'Facet value settings of: Age' })
     ).toBeVisible();
 
-    await expect(page.getByTestId('attribute 1 3+ years')).toBeVisible();
+    await expect(
+      page.getByTestId('included attribute 1 3+ years')
+    ).toBeVisible();
 
     await page.getByLabel('Move 3+ years row down').click();
 
-    await expect(page.getByTestId('attribute 2 3+ years')).toBeVisible();
+    await expect(
+      page.getByTestId('included attribute 2 3+ years')
+    ).toBeVisible();
 
     await page
       .getByTestId(
@@ -139,7 +143,7 @@ test.describe('global facets', () => {
     await page.getByLabel('include Not suitable under 36 mth').click();
 
     await expect(
-      page.getByTestId('attribute 3 Not suitable under 36 mth')
+      page.getByTestId('included attribute 3 Not suitable under 36 mth')
     ).toBeVisible();
 
     await page
@@ -147,7 +151,9 @@ test.describe('global facets', () => {
       .click();
     await page.getByLabel('exclude 3-5 years').click();
 
-    await expect(page.getByTestId('attribute 6 3-5 years')).toBeVisible();
+    await expect(
+      page.getByTestId('excluded attribute 1 3-5 years')
+    ).toBeVisible();
   });
 
   test('merges facet values', async ({ page }) => {
@@ -181,9 +187,9 @@ test.describe('global facets', () => {
     await page.getByLabel('Select A merged group name to merge').click();
     await page.getByLabel('Select Not suitable under 36 mth to merge').click();
 
-    await expect(page.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Merge (2)' }).click();
+    await page.getByRole('button', { name: 'Merge (3)' }).click();
 
     await page.getByLabel('Edit Name your merge input field').click();
     await page

@@ -1,7 +1,5 @@
-import styled from '@emotion/styled';
 import type { Dispatch } from 'react';
 import { useEffect, useState } from 'react';
-import { Skeleton } from '@mantine/core';
 
 import type { CountryCode, ReturnedGlobalFacet } from '@/libs/api';
 import {
@@ -22,93 +20,24 @@ import { FilteredResultsPanel } from '../../filtered-results-panel/filtered-resu
 import { Search } from '../../search/search';
 import {
   FacetAttributeValuesTableRow,
-  TableCol,
   TableHeading,
 } from '../../table/table.styles';
-import { color } from '../../utils/constants';
-import { spacing } from '../../utils/spacing';
+import { HeadingContainer, ModalAttributesTable } from '../modal.styles';
 import {
-  HeadingContainer,
-  ModalAttributesTable,
-  ModalStickyHeader,
-} from '../modal.styles';
+  AttributesModalHeader,
+  AttributeWrapper,
+  BodyContainer,
+  Col,
+  FlexColumnCol,
+  MergeAndSearchContainer,
+  MergedValue,
+  OrderArrowsContainer,
+  RemoveMergedFacet,
+  SkeletonRow,
+  StyledError,
+} from './edit-facet-modal-content.styles';
 import type { AttributeRowDisplayValue } from './types';
 import { useAttributeValuesRowsSelector } from './use-attribute-values-rows-selector';
-
-const Col = styled(TableCol)`
-  padding: 0;
-`;
-
-const FlexColumnCol = styled(Col)`
-  display: flex;
-  flex-direction: column;
-`;
-
-const AttributesModalHeader = styled(ModalStickyHeader)`
-  padding: ${spacing(3)};
-  padding-bottom: 0;
-`;
-
-const BodyContainer = styled.div`
-  margin: 0 ${spacing(3)};
-`;
-
-const MergeAndSearchContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: ${spacing(2)};
-  padding: ${spacing(2)} 0;
-  p {
-    flex: 80;
-  }
-  button {
-    flex: 20;
-  }
-  div {
-    flex: 40;
-  }
-`;
-
-const SkeletonRow = styled(Skeleton)`
-  width: 100%;
-  height: 75px;
-  margin-bottom: ${spacing(1)};
-`;
-
-const OrderArrowsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  max-width: ${spacing(12)};
-  margin-right: ${spacing(2)};
-`;
-
-const AttributeWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${spacing(2)};
-`;
-
-const MergedValue = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${spacing(1)};
-`;
-
-const RemoveMergedFacet = styled.button`
-  background: url('/trading-hub/asset/icon-close-black.svg');
-  width: 18px;
-  height: 18px;
-  display: inline-block;
-  border: none;
-`;
-
-const StyledError = styled(Text)`
-  color: ${color.saleRed};
-  margin-top: ${spacing(0.5)};
-`;
 
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null;

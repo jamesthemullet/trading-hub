@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Modal } from '@mantine/core';
 
 import type {
   CountryCode,
@@ -26,7 +27,7 @@ import { EditFacetModalV2 } from '@/libs/components/modals/edit-facet/edit-facet
 import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
 import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
-import { useFacetsFilter, useGlobalFacetUpdate } from '@/libs/hooks';
+import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import {
@@ -49,6 +50,7 @@ import type {
   FacetDisplayType,
   FacetRowDisplayValue,
 } from './facets-panel-reducer';
+import { GlobalFacetPanelModal } from './global-facets-panel-modal';
 
 export const COLUMNS: {
   label: string;
@@ -258,8 +260,6 @@ export const FacetsPanel = ({
     setSelectedPreviewCountryCode?.(category?.includes('IE_') ? 'IE' : 'UK');
   };
 
-  const { handleGlobalFacetUpdate } = useGlobalFacetUpdate();
-
   const FacetRow = (facet: FacetRowDisplayValue) => {
     const { displayValue, displayType, meta } = facet;
 
@@ -449,32 +449,48 @@ export const FacetsPanel = ({
         {filteredFacets.map(FacetRow)}
       </AttributesTable>
 
-      {isEditValuesModalOpen && selectedFacet && (
+      {facetType === 'global' && selectedFacet && isEditValuesModalOpen && (
+        <Modal.Root
+          opened={true}
+          onClose={onClose}
+          centered
+          size={1150}
+          padding={0}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Edit facet values modal"
+        >
+          <Modal.Overlay blur={3} />
+          <Modal.Content>
+            <Modal.Body>
+              <GlobalFacetPanelModal
+                countryCode={countryCode}
+                facet={selectedFacet}
+                onClose={() => {
+                  if (refreshData) refreshData();
+                  onClose();
+                }}
+              />
+            </Modal.Body>
+          </Modal.Content>
+        </Modal.Root>
+      )}
+
+      {facetType !== 'global' && isEditValuesModalOpen && selectedFacet && (
         <EditFacetModalV2
           onClose={onClose}
-          mergeEnabled={facetType === 'global'}
-          removeFacetValueFromMergeGroupEnabled={facetType === 'global'}
-          displayValueEditEnabled={facetType === 'global'}
-          saveButtonLabel={facetType === 'global' ? 'Save' : 'Done'}
+          mergeEnabled={false}
+          removeFacetValueFromMergeGroupEnabled={false}
+          displayValueEditEnabled={false}
+          saveButtonLabel="Done"
           onSave={async (facet) => {
+            // istanbul ignore next - for undefined value
             const facetBoosted = facet.boosted ?? [];
+            // istanbul ignore next - for undefined value
             const facetExcludedValues = facet.excludedValues ?? [];
 
-            if (facetType === 'global') {
-              const response = await handleGlobalFacetUpdate({
-                facetId: facet.id,
-                data: facet,
-              });
-              if ('status' in response && response.status === 'error') {
-                return;
-              }
-              if (response && refreshData) {
-                refreshData();
-              }
-            } else {
-              updatedValues?.(facetBoosted, facetExcludedValues, facet.id);
-              onClose();
-            }
+            updatedValues?.(facetBoosted, facetExcludedValues, facet.id);
+            onClose();
           }}
           facet={selectedFacet}
           categories={facetType === 'category' ? selectedCategories : undefined}
