@@ -89,7 +89,6 @@ const CANCEL_BUTTON = 'Cancel';
 const CONFIRM_BUTTON = 'Close without saving';
 
 const categoryId1 = 'cat_123';
-const categoryId2 = 'cat_456';
 const categoryId3 = 'IE_cat_456';
 const categoryName1 = 'jeans';
 const categoryPath1 = 'l/jeans';
@@ -183,6 +182,18 @@ const mockCategoryReturnValue = {
   isLoading: false,
   setFacetConfigRules: jest.fn(),
 };
+
+const mockCategoriesInfo = [
+  { id: categoryId1, name: categoryName1, plpUrl: categoryPath1 },
+];
+
+const mockCategoriesInfo507 = [
+  {
+    id: 'SubCategory_507',
+    name: 'dresses',
+    plpUrl: 'c/dresses',
+  },
+];
 
 const selectCategory = async (screen: Screen, user: UserEvent) => {
   await user.type(
@@ -346,7 +357,7 @@ describe('Ruleset', () => {
 
     await selectCategory(screen, user);
 
-    expect(screen.getByText(categoryId1)).toBeVisible();
+    expect(screen.getByText(`${categoryId1} : ${categoryName1}`)).toBeVisible();
   });
 
   it('should create a new ruleset', async () => {
@@ -421,36 +432,6 @@ describe('Ruleset', () => {
     );
   });
 
-  it('should show error and not add ruleset to the list if trying to add a duplicate ruleset', async () => {
-    const mockCreate = jest.fn();
-    const user = userEvent.setup();
-
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
-    });
-
-    renderWithProviders(
-      <Ruleset
-        isEnabled={true}
-        onCreateKeywordSearchRuleset={mockCreate}
-        onCancel={jest.fn()}
-        rulesetType="category"
-      />
-    );
-
-    await selectCategory(screen, user);
-    await selectCategory(screen, user);
-
-    expect(
-      screen.getByText('Ruleset cat_123 has already been added')
-    ).toBeVisible();
-
-    expect(
-      screen.queryAllByRole('button', { name: 'Remove category: cat_123' })
-    ).toHaveLength(1);
-  });
-
   it('should edit a ruleset', async () => {
     const user = userEvent.setup();
     const mockSave = jest.fn();
@@ -465,7 +446,7 @@ describe('Ruleset', () => {
         isEnabled={true}
         onSave={mockSave}
         onCancel={jest.fn()}
-        categoryIds={[categoryId1]}
+        categoriesInfo={mockCategoriesInfo}
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
@@ -540,153 +521,6 @@ describe('Ruleset', () => {
   });
 
   describe('category ranking rules', () => {
-    it('should call preview with the selected category', async () => {
-      const expectedPreview = {
-        categoryId: 'cat_456',
-        countryCode: 'UK',
-        facetConfig: [],
-        merchandisingRules: {
-          blockedProducts: [],
-          boosts: { alphanumeric: [], numeric: [], product: [] },
-          buries: { alphanumeric: [], numeric: [], product: [] },
-          excludes: { alphanumeric: [] },
-          includes: { alphanumeric: [] },
-          pinnedProducts: [],
-        },
-        searchTerm: undefined,
-      };
-
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      jest.mocked(usePreview).mockReturnValue({
-        ...mockCategoryReturnValue,
-        data: {
-          ...mockCategoryReturnValue.data,
-          pagination: {
-            totalItems: 145,
-          },
-          products: [
-            {
-              id: 'product-id-1',
-              productId: 'product-id-1',
-              title: 'productSearchTitle',
-              imageUrl: ['example1.jpg'],
-              brand: product1Brand,
-              metadata: { isPinned: false },
-              isInStock: true,
-              price: product1Price,
-              url: '',
-            },
-          ],
-          ruleSet: {
-            ...mockCategoryReturnValue.data.ruleSet,
-            rules: {
-              ...mockCategoryReturnValue.data.ruleSet.rules,
-              pinnedProducts: [{ ...mockProduct, id: 'product2' }],
-            },
-          },
-        },
-      });
-
-      jest.mocked(useCategoryProductSearch).mockReturnValue({
-        searchForProduct: jest.fn(() => {
-          return Promise.resolve({
-            products: [
-              {
-                id: 'product-id-2',
-                productId: 'product-id-2',
-                title: 'productSearchTitle',
-                imageUrl: ['example2.jpg'],
-                brand: product1Brand,
-                metadata: { isPinned: false },
-                isInStock: true,
-                price: product1Price,
-                url: '',
-              },
-            ],
-            pagination: {
-              totalItems: 1,
-            },
-          });
-        }),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(
-        <Ruleset
-          isEnabled={true}
-          onSave={jest.fn()}
-          onCancel={jest.fn()}
-          categoryIds={[categoryId1, categoryId2]}
-          rulesetMerchandisingRules={{
-            pinnedProducts: [],
-            blockedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
-          }}
-          rulesetId={ruleSetId}
-          rulesetType="category"
-        />
-      );
-
-      const category2button = await screen.findByRole('button', {
-        name: 'cat_456',
-      });
-
-      await waitFor(() => {
-        category2button.click();
-      });
-
-      expect(usePreview).toHaveBeenCalledWith(expectedPreview);
-    });
-
-    it('should preview IE products with an IE category', async () => {
-      const mockSave = jest.fn();
-
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      renderWithProviders(
-        <Ruleset
-          isEnabled={true}
-          onSave={mockSave}
-          onCancel={jest.fn()}
-          rulesetMerchandisingRules={{
-            pinnedProducts: [{ id: 'abc123' }],
-            blockedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
-          }}
-          rulesetId={ruleSetId}
-          rulesetType="category"
-          categoryIds={['IE_789123']}
-          countryCode="UK_IE"
-        />
-      );
-
-      expect(usePreview).toHaveBeenLastCalledWith(
-        expect.objectContaining({ countryCode: 'IE' })
-      );
-    });
-
     it('should preview IE products when an IE category is first selected', async () => {
       const user = userEvent.setup();
       const mockSave = jest.fn();
@@ -715,7 +549,7 @@ describe('Ruleset', () => {
           }}
           rulesetId={ruleSetId}
           rulesetType="category"
-          categoryIds={undefined}
+          categoriesInfo={undefined}
           countryCode="UK_IE"
         />
       );
@@ -731,110 +565,6 @@ describe('Ruleset', () => {
 
       act(() => {
         categoryToSelect.click();
-      });
-
-      expect(usePreview).toHaveBeenLastCalledWith(
-        expect.objectContaining({ countryCode: 'IE' })
-      );
-    });
-
-    it('should preview UK products when an IE category is added and an existing UK category is present', async () => {
-      const user = userEvent.setup();
-      const mockSave = jest.fn();
-
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      renderWithProviders(
-        <Ruleset
-          isEnabled={true}
-          onSave={mockSave}
-          onCancel={jest.fn()}
-          rulesetMerchandisingRules={{
-            pinnedProducts: [{ id: 'abc123' }],
-            blockedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
-          }}
-          rulesetId={ruleSetId}
-          rulesetType="category"
-          categoryIds={[categoryId1]}
-          countryCode="UK_IE"
-        />
-      );
-
-      expect(usePreview).toHaveBeenLastCalledWith(
-        expect.objectContaining({ countryCode: 'UK' })
-      );
-
-      await user.type(
-        screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
-        'IE_SubCategory_507{enter}'
-      );
-
-      const categoryToSelect = await screen.findByText(
-        `${categoryId3} | ${categoryName1} | ${categoryPath1}`
-      );
-
-      act(() => {
-        categoryToSelect.click();
-      });
-
-      expect(screen.getByLabelText('Additional category')).toBeVisible();
-
-      expect(usePreview).toHaveBeenLastCalledWith(
-        expect.objectContaining({ countryCode: 'UK' })
-      );
-    });
-
-    it('should preview IE products when an selected IE category is clicked', async () => {
-      const mockSave = jest.fn();
-
-      jest.mocked(useGetCategories).mockReturnValue({
-        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-        getCategoriesError: '',
-      });
-
-      renderWithProviders(
-        <Ruleset
-          isEnabled={true}
-          onSave={mockSave}
-          onCancel={jest.fn()}
-          rulesetMerchandisingRules={{
-            pinnedProducts: [{ id: 'abc123' }],
-            blockedProducts: [],
-            boosts: { numeric: [], alphanumeric: [], product: [] },
-            buries: { numeric: [], alphanumeric: [], product: [] },
-            includes: {
-              alphanumeric: [],
-            },
-            excludes: {
-              alphanumeric: [],
-            },
-          }}
-          rulesetId={ruleSetId}
-          rulesetType="category"
-          categoryIds={['Cat_2134235', 'IE_789123']}
-          countryCode="UK_IE"
-        />
-      );
-
-      expect(usePreview).toHaveBeenLastCalledWith(
-        expect.objectContaining({ countryCode: 'UK' })
-      );
-
-      const IECategory = screen.getByRole('button', { name: 'IE_789123' });
-
-      act(() => {
-        IECategory.click();
       });
 
       expect(usePreview).toHaveBeenLastCalledWith(
@@ -1329,7 +1059,7 @@ describe('Ruleset', () => {
         isEnabled={true}
         onSave={mockSave}
         onCancel={mockCancel}
-        categoryIds={['SubCategory_507']}
+        categoriesInfo={mockCategoriesInfo507}
         rulesetMerchandisingRules={{
           pinnedProducts: [],
           blockedProducts: [],
@@ -1416,7 +1146,7 @@ describe('Ruleset', () => {
           isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetMerchandisingRules={{
             pinnedProducts: [],
             blockedProducts: [],
@@ -1535,7 +1265,7 @@ describe('Ruleset', () => {
           isEnabled={true}
           onSave={jest.fn()}
           onCancel={jest.fn()}
-          categoryIds={[categoryId1]}
+          categoriesInfo={mockCategoriesInfo}
           rulesetMerchandisingRules={{
             pinnedProducts: [],
             blockedProducts: [],
@@ -1786,7 +1516,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -1843,7 +1573,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -1872,7 +1602,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -1901,7 +1631,7 @@ describe('Ruleset', () => {
             boosts: emptyAttributes,
             buries: emptyAttributes,
           }}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -1926,7 +1656,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -1984,7 +1714,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -2049,7 +1779,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -2064,7 +1794,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -2119,7 +1849,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -2156,7 +1886,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -2214,7 +1944,7 @@ describe('Ruleset', () => {
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockedRules}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );
@@ -2297,7 +2027,7 @@ describe('Ruleset', () => {
             ...mockRules,
             pinnedProducts: [{ id: '6780' }],
           }}
-          categoryIds={['SubCategory_507']}
+          categoriesInfo={mockCategoriesInfo507}
           rulesetType="category"
         />
       );

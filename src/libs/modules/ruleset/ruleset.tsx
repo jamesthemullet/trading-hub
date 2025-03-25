@@ -198,7 +198,7 @@ export const Ruleset = ({
   onCreate,
   onCreateKeywordSearchRuleset,
   onSave,
-  categoryIds,
+  categoriesInfo,
   rulesetFacets,
   rulesetExcludedFacets,
   rulesetId,
@@ -226,7 +226,11 @@ export const Ruleset = ({
     args: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet
   ) => void;
   onCreateKeywordSearchRuleset?: (args: KeywordRuleSet) => void;
-  categoryIds?: Array<string>;
+  categoriesInfo?: Array<{
+    id: string;
+    name?: string;
+    plpUrl?: string;
+  }>;
   rulesetFacets?: Array<RuleSetFacetConfigWithId>;
   rulesetExcludedFacets?: ExcludedFacets;
   rulesetId?: string;
@@ -238,9 +242,19 @@ export const Ruleset = ({
   countryCode?: CountryCode;
   writeEnabled?: boolean;
 }) => {
+  const categoryIds = categoriesInfo?.map((category) => category.id);
+
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     categoryIds || []
   );
+  const [selectedCategoriesInfo, setSelectedCategoriesInfo] = useState<
+    {
+      id?: string;
+      name?: string;
+      plpUrl?: string;
+    }[]
+  >(categoriesInfo || []);
+
   const [rulesetSearchTerms, setRulesetSearchTerms] = useState(
     searchTerms || []
   );
@@ -262,26 +276,29 @@ export const Ruleset = ({
 
   const router = useRouter();
 
-  const onSelectCategory = (category: string) => {
-    const hasDuplicates = checkForDuplicates(
-      [...selectedCategories],
-      category,
-      'ruleset'
-    );
+  const onSelectCategory = (category: {
+    identifier: string;
+    name: string;
+    path: string;
+  }) => {
+    setSelectedCategories([...selectedCategories, category.identifier]);
+    setSelectedCategoriesInfo([
+      ...selectedCategoriesInfo,
+      {
+        id: category.identifier,
+        name: category.name,
+        plpUrl: category.path,
+      },
+    ]);
 
-    if (hasDuplicates) {
-      setDuplicationError(hasDuplicates);
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-
-      if (!selectedCategories.length) {
-        setPreviewValue(category);
-        setSelectedPreviewCountryCode(category.includes('IE_') ? 'IE' : 'UK');
-      }
-      if (!hasChanges) {
-        setHasChanges(true);
-      }
-      setDuplicationError('');
+    if (!selectedCategories.length) {
+      setPreviewValue(category.identifier);
+      setSelectedPreviewCountryCode(
+        category.identifier.includes('IE_') ? 'IE' : 'UK'
+      );
+    }
+    if (!hasChanges) {
+      setHasChanges(true);
     }
   };
 
@@ -455,7 +472,6 @@ export const Ruleset = ({
           merchandisingRules={merchandisingRules}
           facetConfig={rulesetFacets || []}
           countryCode={selectedPreviewCountryCode}
-          previewTitle={previewValue}
         />
       )}
 
@@ -515,8 +531,14 @@ export const Ruleset = ({
                       (categoryName) => categoryName !== category
                     )
                   );
+                  setSelectedCategoriesInfo(
+                    selectedCategoriesInfo.filter(
+                      (categoryInfo) => categoryInfo.id !== category
+                    )
+                  );
                 }}
                 onSelectCategory={onSelectCategory}
+                selectedCategoriesInfo={selectedCategoriesInfo}
                 countryCode={ruleset.countryCode}
                 previewCategory={previewValue}
                 selectPreviewCategory={(category: string | undefined) => {

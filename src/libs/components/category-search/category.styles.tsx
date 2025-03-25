@@ -69,6 +69,11 @@ export const SelectedCategories = styled.div`
   & > li {
     margin-right: ${spacing(1)};
   }
+
+  p {
+    height: 36px;
+    padding: 2px 8px;
+  }
 `;
 
 export const SearchForm = styled.form`
@@ -92,6 +97,10 @@ export const SearchInput = styled.input`
 export const SearchValue = styled.button`
   border: none;
   background: none;
+
+  &:disabled {
+    cursor: auto;
+  }
 `;
 
 export const StyledIcon = styled(Icon)`

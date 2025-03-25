@@ -91,6 +91,11 @@ interface FacetsPanelProps {
   excludedFacets: ExcludedFacets;
   selectedPreviewCountryCode?: 'UK' | 'IE';
   writeEnabled?: boolean;
+  selectedCategoriesInfo?: Array<{
+    id?: string;
+    name?: string;
+    plpUrl?: string;
+  }>;
   dispatch: (action: Action) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -108,6 +113,13 @@ interface FacetsPanelProps {
     id: string
   ) => void;
   setSelectedCategories?: (category: string[]) => void;
+  setSelectedCategoriesInfo?: (
+    category: {
+      id?: string;
+      name?: string;
+      plpUrl?: string;
+    }[]
+  ) => void;
   setSelectedPreviewCountryCode?: (countryCode: 'UK' | 'IE') => void;
   setSearchTerms?: (searchTerms: string[]) => void;
   refreshData?: () => void;
@@ -129,6 +141,7 @@ export const FacetsPanel = ({
   excludedFacets,
   selectedPreviewCountryCode,
   writeEnabled,
+  selectedCategoriesInfo,
   dispatch,
   onSave,
   onCancel,
@@ -136,6 +149,7 @@ export const FacetsPanel = ({
   setDateTime,
   updatedValues,
   setSelectedCategories,
+  setSelectedCategoriesInfo,
   setSelectedPreviewCountryCode,
   setSearchTerms,
   refreshData,
@@ -222,20 +236,44 @@ export const FacetsPanel = ({
     setSelectedCategories?.(
       selectedCategories.filter((categoryName) => categoryName !== category)
     );
+
+    if (selectedCategoriesInfo && setSelectedCategoriesInfo) {
+      setSelectedCategoriesInfo(
+        selectedCategoriesInfo?.filter(
+          (categoriesInfo) => categoriesInfo.id !== category
+        )
+      );
+    }
   };
 
-  const onSelectCategory = (category: string) => {
+  const onSelectCategory = (category: {
+    identifier: string;
+    name: string;
+    path: string;
+  }) => {
     const hasDuplicates = checkForDuplicates(
       [...selectedCategories],
-      category,
+      category.identifier,
       'ruleset'
     );
 
     if (hasDuplicates) {
       setDuplicationError(hasDuplicates);
     } else {
-      setSelectedCategories?.([...selectedCategories, category]);
-      setSelectedPreviewCountryCode?.(category.includes('IE_') ? 'IE' : 'UK');
+      setSelectedCategories?.([...selectedCategories, category.identifier]);
+      if (selectedCategoriesInfo && setSelectedCategoriesInfo) {
+        setSelectedCategoriesInfo([
+          ...selectedCategoriesInfo,
+          {
+            id: category.identifier,
+            name: category.name,
+            plpUrl: category.path,
+          },
+        ]);
+      }
+      setSelectedPreviewCountryCode?.(
+        category.identifier.includes('IE_') ? 'IE' : 'UK'
+      );
     }
   };
 
@@ -382,6 +420,7 @@ export const FacetsPanel = ({
               previewCategory={previewValue}
               onClearSelection={onClearSelection}
               onSelectCategory={onSelectCategory}
+              selectedCategoriesInfo={selectedCategoriesInfo}
               selectPreviewCategory={onSelectPreviewCategory}
               error={duplicationError}
             />

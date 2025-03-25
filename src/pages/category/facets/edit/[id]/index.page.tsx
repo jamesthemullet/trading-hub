@@ -102,9 +102,7 @@ const Page = ({ id }: { id: string }) => {
           endDate={ruleSetDetail.endDate}
           isLoading={isLoading}
           countryCode={ruleSetDetail.countryCode || 'UK_IE'}
-          categoryIds={ruleSetDetail.categoriesInfo.map(
-            (category) => category.id
-          )}
+          categoriesInfo={ruleSetDetail.categoriesInfo}
           onSave={handleSave}
           onCancel={handleCancel}
           refreshData={refreshRuleset}

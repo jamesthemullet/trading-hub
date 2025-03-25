@@ -91,7 +91,7 @@ const Page = () => {
         }}
         isLoading={false}
         countryCode={'UK_IE'}
-        categoryIds={[]}
+        categoriesInfo={[]}
         onSave={handleSave}
         onCancel={handleCancel}
         writeEnabled={hasWriteAccess}

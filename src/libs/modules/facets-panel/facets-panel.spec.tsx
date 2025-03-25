@@ -238,6 +238,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -288,6 +290,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -328,6 +332,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -353,6 +359,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -446,6 +454,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -476,6 +486,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -503,6 +515,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -550,6 +564,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -574,6 +590,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 
@@ -637,6 +655,8 @@ describe('Facet Panel', () => {
           includedFacets={mockIncludedFacets}
           excludedFacets={mockExcludedFacets}
           dispatch={dispatchSpy}
+          selectedCategoriesInfo={[]}
+          setSelectedCategoriesInfo={jest.fn()}
           refreshData={refreshMock}
         />
       );

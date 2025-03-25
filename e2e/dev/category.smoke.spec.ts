@@ -257,6 +257,8 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'select market' }).click();
     await page.getByRole('button', { name: 'select IE market only' }).click();
 
+    await page.getByRole('button', { name: 'View all' }).click();
+
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Scarves');
 
@@ -269,6 +271,8 @@ test.describe('Category Ranking', () => {
     await expect(
       page.getByText('Scarf', { exact: false }).first()
     ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await page.getByRole('button', { name: 'Save' }).click();
     await page.waitForLoadState('networkidle');

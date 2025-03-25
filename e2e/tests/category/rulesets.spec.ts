@@ -228,24 +228,25 @@ test.describe('Category rulesets', () => {
     await page.getByPlaceholder('Search...').fill('Dresses');
     await page.getByText('SubCategory_429 | Dresses | l/women/dresses').click();
 
-    await page.getByPlaceholder('Search...').click();
+    await page
+      .getByRole('button', { name: 'Remove category: SubCategory_429' })
+      .click();
+
     await page.getByPlaceholder('Search...').fill('Dresses');
     await page
-      .getByText('IE_SubCategory_1002041 | Dresses | ie/l/women/dresses')
+      .getByText('IE_SubCategory_7585102 | Dresses | ie/l/baby/dresses')
       .click();
 
     await page.getByRole('button', { name: 'View all' }).click();
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Dresses');
     await page
-      .getByText('IE_SubCategory_7585102 | Dresses | ie/l/baby/dresses')
+      .getByText('IE_SubCategory_1002041 | Dresses | ie/l/women/dresses')
       .click();
+
+    await page.getByPlaceholder('Search...').click();
 
     await page.getByRole('button', { name: 'Close' }).click();
-
-    await page
-      .getByRole('button', { name: 'Remove category: IE_SubCategory_1002041' })
-      .click();
   });
 
   test('deletes a ruleset', async ({ page }) => {

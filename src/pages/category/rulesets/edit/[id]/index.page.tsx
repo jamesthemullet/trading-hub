@@ -17,6 +17,7 @@ type PageProps = {
 
 const Page = ({ id }: PageProps) => {
   const { ruleSetDetail, isLoading } = useRuleSetDetail(id);
+
   const { updateCategoryRuleSet, isSaving, error } = useUpdateRuleSet();
   const router = useRouter();
 
@@ -74,9 +75,7 @@ const Page = ({ id }: PageProps) => {
             isEnabled={ruleSetDetail.isEnabled}
             onSave={saveRuleSet}
             onCancel={() => router.push('/category/rulesets')}
-            categoryIds={ruleSetDetail.categoriesInfo.map(
-              (category) => category.id
-            )}
+            categoriesInfo={ruleSetDetail.categoriesInfo}
             rulesetFacets={ruleSetDetail.facets}
             rulesetExcludedFacets={ruleSetDetail.excludedFacets}
             rulesetId={ruleSetDetail.id}

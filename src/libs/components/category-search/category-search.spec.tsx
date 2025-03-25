@@ -18,6 +18,7 @@ const mockProps = {
   },
   searchValue: '',
   selectedCategories: [],
+  selectedCategoriesInfo: [],
   onClearSelection: jest.fn(),
   onSubmit: jest.fn(),
   onSearchChange: jest.fn(),
@@ -110,9 +111,7 @@ describe('CategorySearch', () => {
       resultsButton.click();
     });
 
-    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(
-      mockCategory.identifier
-    );
+    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(mockCategory);
   });
 
   it('should preview a category if it is a first added', async () => {
@@ -139,9 +138,7 @@ describe('CategorySearch', () => {
       resultsButton.click();
     });
 
-    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(
-      mockCategory.identifier
-    );
+    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(mockCategory);
     expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(
       mockCategory.identifier
     );
@@ -216,12 +213,20 @@ describe('CategorySearch', () => {
       resultsButton.click();
     });
 
-    expect(mockProps.onSelectCategory).toHaveBeenCalledWith('SubCategory_507');
+    expect(mockProps.onSelectCategory).toHaveBeenCalledWith({
+      identifier: 'SubCategory_507',
+      name: 'Thermals',
+      path: '',
+    });
   });
 
   it('should show selected category', () => {
     renderWithProviders(
-      <CategorySearch {...mockProps} selectedCategories={[mockCategoryId]} />
+      <CategorySearch
+        {...mockProps}
+        selectedCategories={[mockCategoryId]}
+        previewCategory="SubCategory_507"
+      />
     );
 
     expect(screen.getByText(mockCategory.identifier)).toBeInTheDocument();
@@ -229,12 +234,16 @@ describe('CategorySearch', () => {
 
   it('should clear a selected category', async () => {
     renderWithProviders(
-      <CategorySearch {...mockProps} selectedCategories={[mockCategoryId]} />
+      <CategorySearch
+        {...mockProps}
+        selectedCategories={[mockCategoryId]}
+        previewCategory="SubCategory_507"
+      />
     );
 
-    const clearButton = await screen.findByLabelText(
-      `Remove category: ${mockCategoryId}`
-    );
+    const clearButton = screen.getByRole('button', {
+      name: `Remove category: ${mockCategoryId}`,
+    });
 
     act(() => {
       clearButton.click();
@@ -252,8 +261,20 @@ describe('CategorySearch', () => {
       />
     );
 
-    const dressCategory = await screen.findByRole('button', {
-      name: mockCategoryId2,
+    const modalButton = await screen.findByRole('button', {
+      name: 'View all',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    const dressCategory = screen.getByRole('button', {
+      name: `Additional category ${mockCategoryId2}`,
     });
 
     act(() => {
@@ -264,8 +285,8 @@ describe('CategorySearch', () => {
       mockCategoryId2
     );
 
-    const removeDressCategory = await screen.findByRole('button', {
-      name: `Remove category: ${mockCategoryId2}`,
+    const removeDressCategory = screen.getByRole('button', {
+      name: `Remove category from modal: ${mockCategoryId2}`,
     });
 
     act(() => {
@@ -392,7 +413,7 @@ describe('CategorySearch', () => {
       const category2 = await within(
         await screen.findByLabelText('Category search modal')
       ).findByRole('button', {
-        name: mockCategoryId2,
+        name: `Additional category ${mockCategoryId2}`,
       });
 
       act(() => {
@@ -536,5 +557,40 @@ describe('CategorySearch', () => {
     });
 
     expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(undefined);
+  });
+
+  it('should show a tooltip when hovering over a category', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <CategorySearch
+        {...mockProps}
+        selectedCategories={['SubCategory_507']}
+        selectedCategoriesInfo={[
+          {
+            id: 'SubCategory_507',
+            name: 'Dresses',
+            plpUrl: '/l/dresses',
+          },
+        ]}
+        previewCategory={mockCategoryId}
+      />
+    );
+
+    expect(screen.queryByText('/l/dresses')).not.toBeVisible();
+    const category = screen.getByLabelText('Preview category');
+    const parentContainer = category.parentElement
+      ?.parentElement as HTMLElement;
+
+    user.hover(category);
+
+    await waitFor(() => {
+      expect(screen.getByText('/l/dresses')).toBeVisible();
+    });
+
+    user.hover(parentContainer);
+
+    await waitFor(() => {
+      expect(screen.queryByText('/l/dresses')).not.toBeVisible();
+    });
   });
 });

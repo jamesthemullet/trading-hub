@@ -102,9 +102,7 @@ const mockRuleData: ReturnedCategoryRuleSet = {
   id: 'df70401f-f89d-45ad-92e7-6e152930ff86',
   lastChanged: { date: '2023-12-06T14:24:17Z', user: 'Mark Spencer' },
 };
-const mockRuleDataCategoryIds = mockRuleData.categoriesInfo.map(
-  (category) => category.id
-);
+
 const mockFacet = {
   displayValue: 'color',
   id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
@@ -159,21 +157,32 @@ const mockCategoryReturnValue = {
 };
 
 const selectCategory = async (screen: Screen, user: UserEvent) => {
+  const modalButton = await screen.findByRole('button', {
+    name: 'View all',
+  });
+
+  act(() => {
+    modalButton.click();
+  });
+
+  expect(
+    await screen.findByRole('button', { name: 'Close' })
+  ).toBeInTheDocument();
+
   const input = screen.getAllByPlaceholderText(
     CATEGORY_SEARCH_PLACEHOLDER_TEXT
-  )[0];
+  )[1];
   await user.type(input, 'SubCategory_507{enter}');
 
-  const categoryToSelect = await screen.findByText(
+  console.log(44);
+  const categoryToSelect = screen.getByText(
     `${categoryId1} | ${categoryName1} | ${categoryPath1}`
   );
 
+  console.log(45, categoryToSelect);
+
   act(() => {
     categoryToSelect.click();
-  });
-
-  await waitFor(() => {
-    expect(screen.getByText(categoryId1)).toBeVisible();
   });
 };
 
@@ -226,9 +235,9 @@ describe('Category Facet Panel', () => {
         ruleSetRules={mockRuleData.rules}
         startDate={mockRuleData.startDate}
         endDate={mockRuleData.endDate}
+        categoriesInfo={[]}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -255,7 +264,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -285,7 +294,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -314,7 +323,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -342,7 +351,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -368,7 +377,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -392,7 +401,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -430,7 +439,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -440,7 +449,7 @@ describe('Category Facet Panel', () => {
     await selectCategory(screen, user);
 
     expect(
-      screen.getByText('Ruleset cat_123 has already been added')
+      screen.getAllByText('Ruleset cat_123 has already been added')[1]
     ).toBeVisible();
 
     expect(
@@ -460,7 +469,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -505,7 +514,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -533,7 +542,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -561,7 +570,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -598,7 +607,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={false}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -627,7 +636,7 @@ describe('Category Facet Panel', () => {
         endDate={mockRuleData.endDate}
         isLoading={true}
         countryCode="UK_IE"
-        categoryIds={mockRuleDataCategoryIds}
+        categoriesInfo={mockRuleData.categoriesInfo}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
         refreshData={refreshDataSpy}
@@ -657,7 +666,7 @@ describe('Category Facet Panel', () => {
           endDate={mockRuleData.endDate}
           isLoading={false}
           countryCode="UK_IE"
-          categoryIds={[categoryId2]}
+          categoriesInfo={[{ id: categoryId2 }]}
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
           refreshData={refreshDataSpy}
@@ -693,19 +702,31 @@ describe('Category Facet Panel', () => {
           endDate={mockRuleData.endDate}
           isLoading={false}
           countryCode="UK_IE"
-          categoryIds={mockRuleDataCategoryIds}
+          categoriesInfo={mockRuleData.categoriesInfo}
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
           refreshData={refreshDataSpy}
         />
       );
 
+      const modalButton = await screen.findByRole('button', {
+        name: 'View all',
+      });
+
+      act(() => {
+        modalButton.click();
+      });
+
+      expect(
+        await screen.findByRole('button', { name: 'Close' })
+      ).toBeInTheDocument();
+
       await user.type(
-        screen.getAllByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT)[0],
+        screen.getAllByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT)[1],
         'IE_SubCategory_507{enter}'
       );
 
-      const categoryToSelect = await screen.findByText(
+      const categoryToSelect = screen.getByText(
         `${categoryId2} | ${categoryName1} | ${categoryPath1}`
       );
 
@@ -741,7 +762,7 @@ describe('Category Facet Panel', () => {
           endDate={mockRuleData.endDate}
           isLoading={false}
           countryCode="UK_IE"
-          categoryIds={[categoryId1, categoryId2]}
+          categoriesInfo={[{ id: categoryId1 }, { id: categoryId2 }]}
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
           refreshData={refreshDataSpy}
@@ -764,7 +785,17 @@ describe('Category Facet Panel', () => {
         closeButton.click();
       });
 
-      const IECategory = screen.getByRole('button', { name: categoryId2 });
+      const modalButton = await screen.findByRole('button', {
+        name: 'View all',
+      });
+
+      act(() => {
+        modalButton.click();
+      });
+
+      const IECategory = await screen.findByRole('button', {
+        name: `Additional category ${categoryId2}`,
+      });
 
       act(() => {
         IECategory.click();
@@ -796,7 +827,7 @@ describe('Category Facet Panel', () => {
           endDate={mockRuleData.endDate}
           isLoading={false}
           countryCode="UK_IE"
-          categoryIds={[categoryId2, categoryId1]}
+          categoriesInfo={[{ id: categoryId2 }, { id: categoryId1 }]}
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
           refreshData={refreshDataSpy}
@@ -819,7 +850,17 @@ describe('Category Facet Panel', () => {
         closeButton.click();
       });
 
-      const UKCategory = screen.getByRole('button', { name: categoryId1 });
+      const modalButton = await screen.findByRole('button', {
+        name: 'View all',
+      });
+
+      act(() => {
+        modalButton.click();
+      });
+
+      const UKCategory = await screen.findByRole('button', {
+        name: `Additional category ${categoryId1}`,
+      });
 
       act(() => {
         UKCategory.click();

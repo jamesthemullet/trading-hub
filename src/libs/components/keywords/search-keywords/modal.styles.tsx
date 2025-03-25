@@ -31,18 +31,16 @@ export const KeyWordPill = styled.li<{ isSelected: boolean }>`
   background-color: ${({ isSelected }) =>
     isSelected ? color.selectionBox : '#fff'};
   color: ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
-  border: 2px solid
-    ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
+  border: 2px solid ${color.selectionBox};
   border-radius: 6px;
-  padding: 8px;
+  padding: 6px 8px;
   font-weight: 600;
   display: inline;
   text-align: center;
   font-size: 16px;
   display: flex;
-  align-items: center;
-  height: 36px;
   margin-right: ${spacing(1)};
+  position: relative;
 
   button {
     color: ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
@@ -50,6 +48,19 @@ export const KeyWordPill = styled.li<{ isSelected: boolean }>`
     &:focus {
       outline: solid
         ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
+    }
+  }
+
+  p {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    text-align: left;
+    height: 100%;
+
+    span:nth-of-type(2) {
+      font-size: 14px;
+      font-weight: 400;
     }
   }
 `;
@@ -64,6 +75,7 @@ export const RemoveKeyWordPill = styled.button`
   width: 18px;
   height: 18px;
   padding: 0;
+  margin-top: ${spacing(0.5)};
   margin-left: ${spacing(1)};
   background: none;
   outline: none;
@@ -131,4 +143,16 @@ export const ErrorText = styled.p`
 
 export const StyledCloseButton = styled(Button)`
   margin-left: auto;
+`;
+
+export const Popover = styled.div<{ isOpen: string | undefined }>`
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  position: absolute;
+  background-color: #fff;
+  border-radius: 4px;
+  z-index: 1;
+  padding: ${spacing(1)} ${spacing(2)};
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0px 2px 4px 0px #0000003d;
 `;

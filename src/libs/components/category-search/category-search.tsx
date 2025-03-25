@@ -10,6 +10,7 @@ import Image from 'next/image';
 import {
   KeyWordPill,
   ModalFooter,
+  Popover,
   RemoveKeyWordPill,
   StyledCloseButton,
 } from '../keywords/search-keywords/modal.styles';
@@ -41,10 +42,19 @@ const SEARCH_DEBOUNCE_WAIT = 500;
 
 type Props = {
   onClearSelection: (category: string) => void;
-  onSelectCategory: (category: string) => void;
+  onSelectCategory: (category: {
+    identifier: string;
+    name: string;
+    path: string;
+  }) => void;
   previewCategory: string | undefined;
   selectedCategories: string[];
   selectPreviewCategory: (category: string | undefined) => void;
+  selectedCategoriesInfo?: Array<{
+    id?: string;
+    name?: string;
+    plpUrl?: string;
+  }>;
   countryCode?: CountryCode;
   error?: string;
 };
@@ -55,11 +65,13 @@ export const CategorySearch = ({
   previewCategory,
   selectedCategories,
   selectPreviewCategory,
+  selectedCategoriesInfo,
   countryCode = 'UK_IE',
   error,
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { getCategories } = useGetCategories();
   const [categoryResults, setCategoryResults] = useState<{
     /**
@@ -83,6 +95,8 @@ export const CategorySearch = ({
     categories: [],
     pagination: {},
   });
+
+  const [visibleTooltip, setVisibleTooltip] = useState<string | undefined>();
 
   useEffect(() => {
     setCategoryResults({
@@ -148,21 +162,19 @@ export const CategorySearch = ({
     }
   };
 
-  const visibleCategories = [...selectedCategories]
-    .sort((a, b) =>
-      a === previewCategory ? -1 : b === previewCategory ? 1 : 0
-    )
-    .slice(0, 2);
-
   const additionalCategories = selectedCategories.filter(
     (category) => category !== previewCategory
   );
 
-  const onAddCategory = (category: string) => {
+  const onAddCategory = (category: {
+    identifier: string;
+    name: string;
+    path: string;
+  }) => {
     onSelectCategory(category);
 
     if (selectedCategories.length === 0) {
-      selectPreviewCategory(category);
+      selectPreviewCategory(category.identifier);
     }
   };
 
@@ -170,7 +182,7 @@ export const CategorySearch = ({
     <Row
       key={`row-${category.identifier}-${category.name}-${category.path}`}
       onClick={() => {
-        onAddCategory(category.identifier);
+        onAddCategory(category);
         setSearchValue('');
         setCategoryResults({
           categories: [],
@@ -186,39 +198,39 @@ export const CategorySearch = ({
     </Row>
   );
 
+  const getCurrentPath = (category: string) => {
+    return selectedCategoriesInfo?.find((c) => c.id === category)?.plpUrl;
+  };
+
+  const getCurrentName = (category: string) => {
+    return selectedCategoriesInfo?.find((c) => c.id === category)?.name;
+  };
+
   return (
     <Wrapper>
       <CategoryTitle>Category</CategoryTitle>
       <SearchBox>
-        <SearchWrapper hasModal={selectedCategories.length > 1}>
+        <SearchWrapper hasModal={selectedCategories.length > 0}>
           <SelectedCategories>
-            {visibleCategories.map((category) => {
-              const isPreviewCategory = category === previewCategory;
-              return (
+            {previewCategory && (
+              <div style={{ position: 'relative' }}>
                 <KeyWordPill
-                  key={category}
-                  isSelected={isPreviewCategory}
-                  aria-label={
-                    isPreviewCategory
-                      ? 'Preview category'
-                      : 'Additional category'
-                  }
+                  isSelected={true}
+                  aria-label="Preview category"
                   as="p"
                   role="button"
+                  onMouseEnter={() => setVisibleTooltip(previewCategory)}
+                  onMouseLeave={() => setVisibleTooltip(undefined)}
                 >
-                  {isPreviewCategory ? (
-                    category
-                  ) : (
-                    <SearchValue
-                      onClick={() => selectPreviewCategory(category)}
-                    >
-                      {category}
-                    </SearchValue>
-                  )}
+                  <SearchValue disabled={true}>
+                    {previewCategory}
+                    {getCurrentName(previewCategory) &&
+                      ` : ${getCurrentName(previewCategory)}`}
+                  </SearchValue>
                   <RemoveKeyWordPill
                     onClick={() => {
-                      onClearSelection(category);
-                      if (isPreviewCategory) {
+                      onClearSelection(previewCategory);
+                      if (previewCategory) {
                         selectPreviewCategory(
                           additionalCategories.length
                             ? additionalCategories[0]
@@ -226,20 +238,25 @@ export const CategorySearch = ({
                         );
                       }
                     }}
-                    aria-label={`Remove category: ${category}`}
+                    aria-label={`Remove category: ${previewCategory}`}
                   >
                     <Image
                       alt=""
-                      src={`/trading-hub/asset/icon-remove-${category === previewCategory ? 'selected-' : ''}chip.svg`}
+                      src={`/trading-hub/asset/icon-remove-selected-chip.svg`}
                       width={16}
                       height={16}
                     />
                   </RemoveKeyWordPill>
                 </KeyWordPill>
-              );
-            })}
+                {getCurrentPath(previewCategory) && (
+                  <Popover isOpen={visibleTooltip} role="tooltip">
+                    {getCurrentPath(previewCategory)}
+                  </Popover>
+                )}
+              </div>
+            )}
           </SelectedCategories>
-          {selectedCategories.length < 2 && (
+          {selectedCategories.length === 0 && (
             <SearchForm onSubmit={onSubmit}>
               <SearchInput
                 placeholder="Search..."
@@ -251,7 +268,7 @@ export const CategorySearch = ({
             </SearchForm>
           )}
         </SearchWrapper>
-        {selectedCategories.length > 1 && (
+        {selectedCategories.length > 0 && (
           <ViewAllButton
             onClick={() => setIsModalOpen(true)}
             theme="secondary"
@@ -306,8 +323,16 @@ export const CategorySearch = ({
               {previewCategory && (
                 <ModalSelectedCategory>
                   <Label as="h4">Selected: </Label>
-                  <KeyWordPill isSelected as="p">
-                    {previewCategory}
+                  <KeyWordPill isSelected as="div">
+                    <p>
+                      <span>
+                        {previewCategory}
+                        {getCurrentName(previewCategory) &&
+                          ` : ${getCurrentName(previewCategory)}`}
+                      </span>
+                      <span>{getCurrentPath(previewCategory)}</span>
+                    </p>
+
                     <RemoveKeyWordPill
                       onClick={() => {
                         onClearSelection(previewCategory);
@@ -337,12 +362,19 @@ export const CategorySearch = ({
                     <KeyWordPill
                       isSelected={false}
                       key={`category-${category}`}
-                      as="p"
                     >
                       <SearchValue
                         onClick={() => selectPreviewCategory(category)}
+                        aria-label={`Additional category ${category}`}
                       >
-                        {category}
+                        <p>
+                          <span>
+                            {category}
+                            {getCurrentName(category) &&
+                              ` : ${getCurrentName(category)}`}
+                          </span>
+                          <span>{getCurrentPath(category)}</span>
+                        </p>
                       </SearchValue>
                       <RemoveKeyWordPill
                         onClick={() => onClearSelection(category)}

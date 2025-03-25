@@ -21,11 +21,15 @@ type CategoryFacetsPanelProps = {
   ruleSetRules?: MerchandisingRules;
   isLoading: boolean;
   countryCode: CountryCode;
-  categoryIds: string[];
   startDate?: string;
   endDate?: string;
   isNewRuleset?: boolean;
   writeEnabled?: boolean;
+  categoriesInfo: Array<{
+    id: string;
+    name?: string;
+    plpUrl?: string;
+  }>;
   onSave: (value: {
     categoryIds: string[];
     includedFacets: ReturnedFacet[];
@@ -43,19 +47,27 @@ const CategoryFacetsPanel = ({
   ruleSetRules,
   isLoading,
   countryCode,
-  categoryIds,
   startDate,
   endDate,
   isNewRuleset,
   writeEnabled = true,
+  categoriesInfo,
   onSave,
   onCancel,
   refreshData,
 }: CategoryFacetsPanelProps) => {
-  const [stateInitialised, setStateInitialised] = useState(false);
+  const categoryIds = categoriesInfo?.map((category) => category.id);
 
   const [selectedCategories, setSelectedCategories] =
     useState<Array<string>>(categoryIds);
+  const [selectedCategoriesInfo, setSelectedCategoriesInfo] = useState<
+    {
+      id?: string;
+      name?: string;
+      plpUrl?: string;
+    }[]
+  >(categoriesInfo);
+  const [stateInitialised, setStateInitialised] = useState(false);
 
   const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
     'UK' | 'IE'
@@ -213,7 +225,9 @@ const CategoryFacetsPanel = ({
           includedFacets={includedFacets}
           excludedFacets={excludedFacets}
           selectedPreviewCountryCode={selectedPreviewCountryCode}
+          selectedCategoriesInfo={selectedCategoriesInfo}
           setSelectedPreviewCountryCode={setSelectedPreviewCountryCode}
+          setSelectedCategoriesInfo={setSelectedCategoriesInfo}
           onSave={handleSave}
           onCancel={onCancel}
           setDateTime={setDateTime}
