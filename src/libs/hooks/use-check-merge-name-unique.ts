@@ -33,7 +33,7 @@ export const useCheckMergeNameUnique = () => {
       const promises = categories
         ? categories.map((categoryId) =>
             search()
-              .betaMerchandisingFacetAttributeValuesDetail(facetId, {
+              .betaMerchandisingFacetAttributeValuesList(facetId, {
                 categoryId,
                 ...(searchQuery && { q: searchQuery }),
                 start: 0,
@@ -44,7 +44,7 @@ export const useCheckMergeNameUnique = () => {
           )
         : catalogues.map((catalogue) =>
             search()
-              .betaMerchandisingFacetAttributeValuesDetail(facetId, {
+              .betaMerchandisingFacetAttributeValuesList(facetId, {
                 ...(searchQuery && { q: searchQuery }),
                 start: 0,
                 rows: 2000,

@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "npm run codegen && next dev",
-    "codegen": "swagger-typescript-api --path src/libs/api/api.yml --output src/libs/api/generated --name open-api.ts --extract-response-body --clean-output --another-array-type --sort-types --union-enums --extract-enums --enum-names-as-values --route-types",
+    "codegen": "swagger-typescript-api generate --path src/libs/api/api.yml --output src/libs/api/generated/ --name open-api.ts --extract-response-body --extract-response-error --extract-enums --generate-union-enums ",
     "build": "npm run codegen && next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
     "start": "NODE_OPTIONS='-r newrelic' next start",
     "lint": "next lint",
@@ -103,7 +103,7 @@
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "7.0.1",
     "prettier": "3.5.3",
-    "swagger-typescript-api": "13.0.23",
+    "swagger-typescript-api": "13.0.28",
     "ts-node": "10.9.2",
     "typescript": "5.8.2",
     "typescript-eslint": "8.28.0"

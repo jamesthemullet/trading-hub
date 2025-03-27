@@ -38,7 +38,7 @@ export const useGetFacetAttributeValues = ({
         const promises = categories
           ? categories.map((categoryId) =>
               search()
-                .betaMerchandisingFacetAttributeValuesDetail(facetId, {
+                .betaMerchandisingFacetAttributeValuesList(facetId, {
                   categoryId,
                   ...(query && { q: query }),
                   start: 0,
@@ -49,7 +49,7 @@ export const useGetFacetAttributeValues = ({
             )
           : catalogues.map((catalogue) =>
               search()
-                .betaMerchandisingFacetAttributeValuesDetail(facetId, {
+                .betaMerchandisingFacetAttributeValuesList(facetId, {
                   ...(query && { q: query }),
                   start: 0,
                   rows: 2000,
