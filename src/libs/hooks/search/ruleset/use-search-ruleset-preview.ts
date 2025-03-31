@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Product, ReturnedKeywordRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import { handleError } from '../../utils/error';
+
 export const useSearchRuleSetPreview = (id: string) => {
   const api = useMemo(() => search(), []);
   const [ruleSet, setRuleSet] = useState<ReturnedKeywordRuleSet>({
@@ -72,9 +74,8 @@ export const useSearchRuleSetPreview = (id: string) => {
         setProducts(previewData.products);
         setError('');
       } catch (error) {
-        console.log('error', error);
         if (error && typeof error === 'object' && 'status' in error) {
-          setError(`POST status ${error.status} ${JSON.stringify(error)}`);
+          setError(handleError(error));
           setIsLoading(false);
           return;
         }

@@ -61,6 +61,7 @@ const mockPreviewData = {
 
 const badResponse = {
   status: 'Bad error',
+  message: 'Something went wrong',
 };
 
 const getRuleSetPreviewMock = jest.fn();
@@ -156,7 +157,7 @@ describe('useSearchRuleSetPreview', () => {
     const expectedData = {
       products: [],
       ruleSet: mockRuleData,
-      error: 'POST status 500 {"data":null,"error":{"status":"Bad error"}}',
+      error: 'Error Something went wrong Bad error',
       isLoading: false,
     };
 
