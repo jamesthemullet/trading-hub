@@ -109,6 +109,16 @@ The redirect for prod is: https://merchandising-hub.search.marksandspencer.app/a
 For dev: https://dev-merchandising-hub.search.marksandspencer.app/api/auth/callback/azure-ad
 For localhost: http://localhost:3000/api/auth/callback/azure-ad
 
+#### Scenario: Deploy to Azure Web App failed
+
+> The provided client secret keys for app '\*\*\*' are expired. Visit the Azure portal to create new keys for your app
+
+Renew service principle password and replace `SP_PASSWORD` value in github actions
+
+Dev: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/2c640eb1-36ce-4c8a-be67-0559df1722f5
+
+Prod: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/79325e76-57c8-4d1d-83b9-08e3a5a14760
+
 ### Incident management
 
 [Pagerduty Merchandising Hub Escalation](https://mands.pagerduty.com/escalation_policies#P4WPYI5)
