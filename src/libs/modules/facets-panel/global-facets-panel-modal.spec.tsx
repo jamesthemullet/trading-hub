@@ -1030,6 +1030,61 @@ describe('GlobalFacetPanelModalContent', () => {
       });
     });
 
+    it('should not allow saving when a merge is named the default value', async () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            ...mockFacet,
+            merged: [
+              {
+                displayValue: 'Foo',
+                mergedValues: [
+                  attributeValuesMock[2].displayValue,
+                  attributeValuesMock[3].displayValue,
+                ],
+              },
+            ],
+            boosted: [],
+            excludedValues: [],
+          }}
+          countryCode="UK"
+          onClose={jest.fn()}
+        />
+      );
+
+      const checkbox1 = screen.getByLabelText(
+        `Select ${attributeValuesMock[0].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox1.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+
+      const checkbox2 = screen.getByLabelText(
+        `Select ${attributeValuesMock[1].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox2.click();
+      });
+
+      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
+
+      act(() => {
+        mergeButton.click();
+      });
+
+      expect(
+        screen.getByText('Please name your merge to continue')
+      ).toBeVisible();
+
+      const saveButton = screen.getByRole('button', { name: 'Save' });
+      expect(saveButton).toBeDisabled();
+    });
+
     it('should merge all values', async () => {
       const newMergeName = 'New Merge Name';
 

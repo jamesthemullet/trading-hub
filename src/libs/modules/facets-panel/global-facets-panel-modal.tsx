@@ -723,7 +723,9 @@ export const GlobalFacetPanelModalContent = ({
       </ModalContainer>
       <ModalFooter>
         <Button onClick={onClose}>Cancel</Button>{' '}
-        <Button onClick={onSave}>Save</Button>
+        <Button onClick={onSave} disabled={!!rowError}>
+          Save
+        </Button>
       </ModalFooter>
     </>
   );
