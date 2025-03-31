@@ -1369,7 +1369,7 @@ describe('GlobalFacetPanelModalContent', () => {
       });
     });
 
-    it('should allow renmaing the merge group to a merged attribute', async () => {
+    it('should allow renaming the merge group to a merged attribute', async () => {
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1422,6 +1422,65 @@ describe('GlobalFacetPanelModalContent', () => {
         );
         expect(updatedRow).toBeVisible();
       });
+    });
+
+    it('should not allow naming the merge group to the same name of a merged attribute in another merge group regardless of case', async () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            ...mockFacet,
+            merged: [
+              { displayValue: 'Also merged', mergedValues: ['Foo', 'Bar'] },
+            ],
+            boosted: [],
+            excludedValues: [],
+          }}
+          countryCode="UK"
+          onClose={jest.fn()}
+        />
+      );
+
+      const checkbox1 = screen.getByLabelText(
+        `Select ${attributeValuesMock[0].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox1.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+
+      const checkbox2 = screen.getByLabelText(
+        `Select ${attributeValuesMock[1].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox2.click();
+      });
+
+      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
+
+      act(() => {
+        mergeButton.click();
+      });
+
+      expect(
+        screen.getByText('Please name your merge to continue')
+      ).toBeVisible();
+
+      const inputField = await screen.findByLabelText(
+        `Edit ${DEFAULT_MERGE_DISPLAY_NAME} input field`
+      );
+
+      await waitFor(async () => {
+        await userEvent.clear(inputField);
+        await userEvent.type(inputField, 'FOO');
+        await userEvent.keyboard('{enter}');
+      });
+
+      const errorMessage = screen.getByText('FOO is not a unique value');
+      expect(errorMessage).toBeVisible();
     });
 
     it('should remove a value from a merge group', async () => {

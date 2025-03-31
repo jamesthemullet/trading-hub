@@ -279,6 +279,25 @@ export const GlobalFacetPanelModalContent = ({
           (val) => val.displayValue === oldvalue
         );
 
+        const otherMergeGroups = merged!.toSpliced(existingMergeGroup);
+
+        const isInOtherMergeGroups = otherMergeGroups
+          .map((group) =>
+            group.mergedValues?.map(
+              (val) => val.toLowerCase() === trimmedNewValue.toLowerCase()
+            )
+          )
+          .flat()
+          .some((val) => !!val);
+
+        if (isInOtherMergeGroups) {
+          setRowError({
+            attribute: oldvalue,
+            error: `${trimmedNewValue} is not a unique value`,
+          });
+          return;
+        }
+
         const { isUniqueValue } = await checkMergeNameUnique({
           facetId: facet.id,
           searchQuery: trimmedNewValue,
