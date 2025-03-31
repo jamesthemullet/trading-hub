@@ -126,7 +126,7 @@ export const GlobalFacetPanelModalContent = ({
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [nonBoostedExludedValues, setNonBoostedExludedValues] = useState(
+  const [nonBoostedExcludedValues, setNonBoostedExcludedValues] = useState(
     attributeValues.filter(
       ({ displayValue }) =>
         !facet.boosted?.includes(displayValue) &&
@@ -178,7 +178,7 @@ export const GlobalFacetPanelModalContent = ({
       (val) => !selectedFacetAttributes.includes(val.displayValue)
     );
 
-    const updatedNonBoostedExludedValues = nonBoostedExludedValues.filter(
+    const updatedNonBoostedExcludedValues = nonBoostedExcludedValues.filter(
       (val) => !selectedFacetAttributes.includes(val.displayValue)
     );
 
@@ -210,12 +210,12 @@ export const GlobalFacetPanelModalContent = ({
       setExcludedValues(updatedExcludes);
     }
     if (!isFirstAttributeBoosted && !isFirstAttributeExcluded) {
-      setNonBoostedExludedValues([
-        ...updatedNonBoostedExludedValues,
+      setNonBoostedExcludedValues([
+        ...updatedNonBoostedExcludedValues,
         ...selectedFacetAttributes.map((res) => ({ displayValue: res })),
       ]);
     } else {
-      setNonBoostedExludedValues(updatedNonBoostedExludedValues);
+      setNonBoostedExcludedValues(updatedNonBoostedExcludedValues);
     }
     setSelectedFacetAttributes([]);
 
@@ -268,15 +268,15 @@ export const GlobalFacetPanelModalContent = ({
       };
 
       const handleDisplayNameChange = async (
-        oldvalue: string,
+        oldValue: string,
         newValue: string
       ) => {
-        if (oldvalue === newValue) return;
+        if (oldValue === newValue) return;
 
         const trimmedNewValue = newValue.trim();
 
         const existingMergeGroup = merged!.findIndex(
-          (val) => val.displayValue === oldvalue
+          (val) => val.displayValue === oldValue
         );
 
         const otherMergeGroups = merged!.toSpliced(existingMergeGroup);
@@ -292,7 +292,7 @@ export const GlobalFacetPanelModalContent = ({
 
         if (isInOtherMergeGroups) {
           setRowError({
-            attribute: oldvalue,
+            attribute: oldValue,
             error: `${trimmedNewValue} is not a unique value`,
           });
           return;
@@ -310,7 +310,7 @@ export const GlobalFacetPanelModalContent = ({
 
         if (!isUniqueValue) {
           setRowError({
-            attribute: oldvalue,
+            attribute: oldValue,
             error: `${trimmedNewValue} is not a unique value`,
           });
           return;
@@ -327,7 +327,7 @@ export const GlobalFacetPanelModalContent = ({
         } else {
           setMerged([
             ...merged!,
-            { displayValue: newValue, mergedValues: [oldvalue] },
+            { displayValue: newValue, mergedValues: [oldValue] },
           ]);
         }
 
@@ -410,15 +410,15 @@ export const GlobalFacetPanelModalContent = ({
                   (val) => !attributes.includes(val.displayValue)
                 )
               );
-              setNonBoostedExludedValues(
-                nonBoostedExludedValues.filter(
+              setNonBoostedExcludedValues(
+                nonBoostedExcludedValues.filter(
                   (val) => !attributes.includes(val.displayValue)
                 )
               );
             }
             if (status === 'algoControl') {
-              setNonBoostedExludedValues([
-                ...nonBoostedExludedValues,
+              setNonBoostedExcludedValues([
+                ...nonBoostedExcludedValues,
                 ...attributeValues,
               ]);
               setExcludedValues(
@@ -439,8 +439,8 @@ export const GlobalFacetPanelModalContent = ({
                   (val) => !attributes.includes(val.displayValue)
                 )
               );
-              setNonBoostedExludedValues(
-                nonBoostedExludedValues.filter(
+              setNonBoostedExcludedValues(
+                nonBoostedExcludedValues.filter(
                   (val) => !attributes.includes(val.displayValue)
                 )
               );
@@ -644,7 +644,7 @@ export const GlobalFacetPanelModalContent = ({
       excludedValues,
       facet.id,
       merged,
-      nonBoostedExludedValues,
+      nonBoostedExcludedValues,
       rowError,
       searchQuery,
       selectedFacetAttributes,
@@ -656,8 +656,8 @@ export const GlobalFacetPanelModalContent = ({
   }, [boostedValues, listValues]);
 
   const defaultValuesRows = useMemo(() => {
-    return listValues(nonBoostedExludedValues, 'algoControl');
-  }, [nonBoostedExludedValues, listValues]);
+    return listValues(nonBoostedExcludedValues, 'algoControl');
+  }, [nonBoostedExcludedValues, listValues]);
 
   const excludedValuesRows = useMemo(() => {
     return listValues(excludedValues, 'excluded');
@@ -666,7 +666,7 @@ export const GlobalFacetPanelModalContent = ({
   const hasSelectedAllAttributes =
     selectedFacetAttributes.length ===
     excludedValues.length +
-      nonBoostedExludedValues.length +
+      nonBoostedExcludedValues.length +
       boostedValues.length;
 
   return (
@@ -737,7 +737,13 @@ export const GlobalFacetPanelModalContent = ({
 
           {excludedValuesRows}
 
-          <FilteredResultsPanel filteredFacets={attributeValues.length} />
+          <FilteredResultsPanel
+            filteredFacets={
+              attributeValues.filter((attribute) =>
+                attribute.displayValue.includes(searchQuery)
+              ).length
+            }
+          />
         </BodyContainer>
       </ModalContainer>
       <ModalFooter>
