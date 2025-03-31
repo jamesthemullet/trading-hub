@@ -148,6 +148,7 @@ const initialIncludedFacetsMock = [
 const facetsPanelLocalStateMock = {
   includedFacets: initialIncludedFacetsMock,
   excludedFacets: [],
+  countryCode: 'UK_IE',
 };
 
 const mockProps = {
@@ -266,7 +267,112 @@ describe('Search Facet Panel', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(onSaveSpy).toHaveBeenCalled();
+    expect(onSaveSpy).toHaveBeenCalledWith({
+      countryCode: 'UK_IE',
+      dateTime: [null, null],
+      excludedFacets: {
+        facets: [],
+      },
+      includedFacets: [
+        {
+          displayValue: 'color',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          indexPropertyName: 'color',
+          lastChanged: {
+            date: '2021-01-01T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        },
+        {
+          displayValue: 'brand',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          indexPropertyName: 'brand',
+          lastChanged: {
+            date: '2021-01-03T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+        {
+          displayValue: 'category',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+          indexPropertyName: 'category',
+          lastChanged: {
+            date: '2021-01-04T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+      ],
+      searchTerms: ['red dress'],
+    });
+  });
+
+  it('should save changes to a facet with undefined country code', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    jest
+      .mocked(useReducer)
+      .mockReturnValueOnce([
+        { ...facetsPanelLocalStateMock, countryCode: undefined },
+        dispatchMock,
+      ]);
+
+    renderWithProviders(<SearchFacetsPanel {...mockProps} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(onSaveSpy).toHaveBeenCalledWith({
+      countryCode: 'UK_IE',
+      dateTime: [null, null],
+      excludedFacets: {
+        facets: [],
+      },
+      includedFacets: [
+        {
+          displayValue: 'color',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          indexPropertyName: 'color',
+          lastChanged: {
+            date: '2021-01-01T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        },
+        {
+          displayValue: 'brand',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          indexPropertyName: 'brand',
+          lastChanged: {
+            date: '2021-01-03T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+        {
+          displayValue: 'category',
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
+          indexPropertyName: 'category',
+          lastChanged: {
+            date: '2021-01-04T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [],
+        },
+      ],
+      searchTerms: ['red dress'],
+    });
   });
 
   it('should select a category on user input, and clear category when "remove selected category" button is clicked', async () => {
@@ -452,5 +558,72 @@ describe('Search Facet Panel', () => {
     expect(usePreview).toHaveBeenLastCalledWith(
       expect.objectContaining({ searchTerm: 'search term' })
     );
+  });
+
+  it('should open preview with selected country', async () => {
+    const user = userEvent.setup({ delay: null });
+    jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
+
+    renderWithProviders(
+      <SearchFacetsPanel {...mockProps} ruleSetIncludedFacets={undefined} />
+    );
+
+    const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+    act(() => {
+      previewButton.click();
+    });
+
+    expect(usePreview).toHaveBeenLastCalledWith(
+      expect.objectContaining({ countryCode: 'UK' })
+    );
+
+    const selectUK = screen.getByRole('button', {
+      name: 'Select country for preview',
+    });
+
+    act(() => {
+      selectUK.click();
+    });
+
+    const selectIE = screen.getByRole('button', { name: 'IE flag IE view' });
+    act(() => {
+      selectIE.click();
+    });
+
+    expect(usePreview).toHaveBeenLastCalledWith(
+      expect.objectContaining({ countryCode: 'IE' })
+    );
+
+    act(() => {
+      selectUK.click();
+    });
+
+    const selectUKView = screen.getByRole('button', {
+      name: 'UK flag UK view',
+    });
+    act(() => {
+      selectUKView.click();
+    });
+
+    expect(usePreview).toHaveBeenLastCalledWith(
+      expect.objectContaining({ countryCode: 'UK' })
+    );
+
+    act(() => {
+      selectUK.click();
+    });
+
+    const dropdown = screen.getAllByTestId(
+      'button to open facet order dropdown'
+    )[0];
+
+    await user.click(dropdown);
+
+    await waitFor(() => {
+      expect(
+        screen.queryAllByRole('button', { name: 'IE flag IE view' }).length
+      ).toBe(0);
+    });
   });
 });

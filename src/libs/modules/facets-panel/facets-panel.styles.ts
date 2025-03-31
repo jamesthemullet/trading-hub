@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { spacing, Text } from '@/libs/components';
+import { Dropdown, spacing, Text } from '@/libs/components';
 import { TableCol, TableRow } from '@/libs/components/table/table.styles';
 import { color } from '@/libs/components/utils/constants';
 
@@ -148,4 +148,18 @@ export const OrderArrowsContainer = styled.div`
 export const CountrySelectorLabel = styled(Text)`
   margin-bottom: ${spacing(1)};
   line-height: 1.6rem;
+`;
+
+export const CountryPreviewDropdown = styled(Dropdown)`
+  width: 155px;
+  height: 54px;
+
+  img {
+    margin-left: -${spacing(2)};
+    margin-right: ${spacing(1)};
+  }
+
+  span {
+    padding-left: 0;
+  }
 `;

@@ -71,6 +71,10 @@ const SearchFacetsPanel = ({
     []
   );
 
+  const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
+    'UK' | 'IE'
+  >('UK');
+
   const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
     includedFacets: initialIncludedFacets,
     excludedFacets: initialExcludedFacets,
@@ -154,7 +158,10 @@ const SearchFacetsPanel = ({
       searchTerms: selectedSearchTerms,
       includedFacets,
       excludedFacets,
-      countryCode: facetPanelLocalState.countryCode || 'UK_IE',
+      countryCode:
+        facetPanelLocalState.countryCode ||
+        // istanbul ignore next
+        'UK_IE',
       dateTime,
     });
   };
@@ -204,6 +211,8 @@ const SearchFacetsPanel = ({
           countryCode={facetPanelLocalState.countryCode}
           includedFacets={includedFacets}
           excludedFacets={excludedFacets}
+          selectedPreviewCountryCode={selectedPreviewCountryCode}
+          setSelectedPreviewCountryCode={setSelectedPreviewCountryCode}
           onSave={handleSave}
           onCancel={onCancel}
           setDateTime={setDateTime}

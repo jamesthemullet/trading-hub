@@ -10,6 +10,8 @@ import type {
 import {
   Button,
   CategorySearch,
+  DropdownContent,
+  DropdownItem,
   ErrorMessage,
   ProductGridHeader,
   Search,
@@ -30,10 +32,13 @@ import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates
 import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
+import Image from 'next/image';
+
 import {
   AddFacetPanel,
   AttributesTable,
   Col,
+  CountryPreviewDropdown,
   CountrySelectorLabel,
   Duration,
   LabelContainer,
@@ -187,6 +192,7 @@ export const FacetsPanel = ({
 
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
   const [duplicationError, setDuplicationError] = useState('');
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
   const [previewValue, setPreviewValue] = useState<string | undefined>(
     selectedCategories?.[0] || searchTerms?.[0]
@@ -409,6 +415,8 @@ export const FacetsPanel = ({
             <CountrySelectorDropdown
               onChange={(country) => {
                 dispatch({ type: 'changeCountry', payload: country });
+                if (country !== 'UK_IE')
+                  setSelectedPreviewCountryCode?.(country);
               }}
               selectedCountryCode={countryCode}
             />
@@ -451,6 +459,57 @@ export const FacetsPanel = ({
                 ]}
               />
             </Duration>
+          )}
+
+          {facetType === 'search' && countryCode === 'UK_IE' && (
+            <div>
+              <CountrySelectorLabel>Preview Country</CountrySelectorLabel>
+              <CountryPreviewDropdown
+                label={`${selectedPreviewCountryCode} view`}
+                isOpen={isCountryDropdownOpen}
+                icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}
+                onOpen={() => {
+                  setIsCountryDropdownOpen(true);
+                }}
+                onClose={() => {
+                  setIsCountryDropdownOpen(false);
+                }}
+                aria-label="Select country for preview"
+              >
+                <DropdownContent isLeftAligned>
+                  <DropdownItem
+                    as="button"
+                    onClick={() => {
+                      setSelectedPreviewCountryCode?.('IE');
+                      setIsCountryDropdownOpen(false);
+                    }}
+                  >
+                    <Image
+                      src="/trading-hub/asset/icon-ie-flag.svg"
+                      width={20}
+                      height={20}
+                      alt="IE flag"
+                    />
+                    &nbsp; IE view
+                  </DropdownItem>
+                  <DropdownItem
+                    as="button"
+                    onClick={() => {
+                      setSelectedPreviewCountryCode?.('UK');
+                      setIsCountryDropdownOpen(false);
+                    }}
+                  >
+                    <Image
+                      src="/trading-hub/asset/icon-uk-flag.svg"
+                      width={20}
+                      height={20}
+                      alt="UK flag"
+                    />
+                    &nbsp; UK view
+                  </DropdownItem>
+                </DropdownContent>
+              </CountryPreviewDropdown>
+            </div>
           )}
         </ScopeWrapper>
         {duplicationError && (
