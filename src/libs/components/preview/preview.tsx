@@ -523,7 +523,7 @@ export const Preview = ({
                                 'https://dummyimage.com/307x400/cccccc/ffffff?text=missing+image')
                             }
                           />
-                          {isInStock && (
+                          {!isInStock && (
                             <ProductOutOfStock>Out of stock</ProductOutOfStock>
                           )}
                         </ProductImage>

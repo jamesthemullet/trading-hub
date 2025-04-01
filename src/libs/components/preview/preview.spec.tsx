@@ -238,6 +238,19 @@ describe('Preview', () => {
     expect(screen.getByText('1 to 140 of 150 items')).toBeInTheDocument();
   });
 
+  it('should show out of stock products', () => {
+    jest.mocked(usePreview).mockReturnValue({
+      ...mockCategoryReturnValue,
+      data: {
+        ...mockCategoryReturnValue.data,
+        products: [{ ...mockProduct, isInStock: false }],
+      },
+    });
+    renderWithProviders(<Preview {...mockProps} />);
+
+    expect(screen.getByText('Out of stock')).toBeVisible();
+  });
+
   it('calls the api with the supplied facet config', () => {
     const mockFacetConfig = [{ id: 'mockId', boosted: ['Red', 'Yellow'] }];
     renderWithProviders(
