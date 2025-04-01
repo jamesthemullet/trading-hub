@@ -60,19 +60,19 @@
     "@jest/globals": "29.7.0",
     "@next/eslint-plugin-next": "15.2.4",
     "@playwright/test": "1.51.1",
-    "@swc/core": "1.11.13",
+    "@swc/core": "1.11.15",
     "@swc/jest": "0.2.37",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.2.0",
     "@testing-library/user-event": "14.6.1",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.16",
-    "@types/node": "22.13.14",
+    "@types/node": "22.13.16",
     "@types/pluralize": "0.0.33",
     "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
-    "@typescript-eslint/eslint-plugin": "8.28.0",
-    "@typescript-eslint/parser": "8.28.0",
+    "@typescript-eslint/eslint-plugin": "8.29.0",
+    "@typescript-eslint/parser": "8.29.0",
     "all-contributors-cli": "6.26.1",
     "babel-jest": "29.7.0",
     "dotenv": "16.4.7",
@@ -106,6 +106,6 @@
     "swagger-typescript-api": "13.0.28",
     "ts-node": "10.9.2",
     "typescript": "5.8.2",
-    "typescript-eslint": "8.28.0"
+    "typescript-eslint": "8.29.0"
   }
 }
