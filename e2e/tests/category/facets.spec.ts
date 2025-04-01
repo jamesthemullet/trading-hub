@@ -1,4 +1,3 @@
-/* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable testing-library/prefer-screen-queries */
 
 import { expect, test } from '@playwright/test';
@@ -187,7 +186,9 @@ test.describe('Category rulesets', () => {
     await page.getByRole('button', { name: 'Edit values' }).first().click();
     await page.waitForLoadState('networkidle');
 
-    await expect(page.getByTestId('attribute 1 SMOKE')).toBeVisible();
+    await expect(
+      page.getByTestId('algoControl attribute 0 SMOKE')
+    ).toBeVisible();
 
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')

@@ -42,12 +42,9 @@ export const EditFacetModalV2 = ({
   onClose,
   onSave,
   facet,
-  mergeEnabled = true,
-  removeFacetValueFromMergeGroupEnabled = true,
   saveButtonLabel = 'Save',
   categories,
   countryCode,
-  displayValueEditEnabled = true,
 }: {
   onClose: () => void;
   onSave: (facet: ReturnedGlobalFacet) => void;
@@ -96,11 +93,9 @@ export const EditFacetModalV2 = ({
               facet={facetLocalState}
               categories={categories}
               countryCode={countryCode}
-              mergeEnabled={mergeEnabled}
-              removeFacetValueFromMergeGroupEnabled={
-                removeFacetValueFromMergeGroupEnabled
-              }
-              displayValueEditEnabled={displayValueEditEnabled}
+              mergeEnabled={false}
+              removeFacetValueFromMergeGroupEnabled={false}
+              displayValueEditEnabled={false}
               defaultMergedDisplayValue={defaultMergedDisplayValue}
               dispatch={dispatch}
               handleDisableSaveButton={setIsSaveDisabled}

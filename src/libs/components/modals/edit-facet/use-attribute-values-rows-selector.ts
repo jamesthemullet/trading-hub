@@ -187,6 +187,7 @@ export const useAttributeValuesRowsSelector = (
   }, [attributeValues, searchQuery, facet]);
 
   return {
+    attributeValues,
     attributeValuesState,
     error: attributeValuesError,
     isLoading,

@@ -127,320 +127,6 @@ describe('facetReducer', () => {
     });
   });
 
-  describe('RENAME_DISPLAY_VALUE', () => {
-    it('should rename display value that was not renamed before', () => {
-      const state: ReturnedGlobalFacet = {
-        ...mockReturnedGlobalFacetState,
-      };
-      const action = {
-        type: 'RENAME_DISPLAY_VALUE' as const,
-        payload: {
-          id: 'color',
-          newDisplayValue: 'colour',
-        },
-      };
-      const result = facetReducer(state, action);
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: 'colour',
-            mergedValues: ['color'],
-          },
-        ],
-      });
-    });
-
-    it('should rename display value that was renamed before', () => {
-      const state: ReturnedGlobalFacet = {
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: 'color',
-            mergedValues: ['color'],
-          },
-          {
-            displayValue: 'purple',
-            mergedValues: ['violet'],
-          },
-        ],
-      };
-      const action = {
-        type: 'RENAME_DISPLAY_VALUE' as const,
-        payload: {
-          id: 'color',
-          newDisplayValue: 'colour',
-        },
-      };
-      const result = facetReducer(state, action);
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: 'colour',
-            mergedValues: ['color'],
-          },
-          {
-            displayValue: 'purple',
-            mergedValues: ['violet'],
-          },
-        ],
-      });
-    });
-  });
-
-  describe('MERGE_SELECTED_ATTRIBUTE_VALUES', () => {
-    it('should merge selected attribute values', () => {
-      const state: ReturnedGlobalFacet = {
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: undefined,
-            mergedValues: undefined,
-          },
-          {
-            displayValue: 'navy',
-            mergedValues: ['blue'],
-          },
-          {
-            displayValue: 'emerald',
-            mergedValues: ['lime'],
-          },
-        ],
-      };
-      const action = {
-        type: 'MERGE_SELECTED_ATTRIBUTE_VALUES' as const,
-        payload: {
-          selectedFacetAttributeValues: ['emerald', 'green'],
-          displayValue: 'new display value',
-        },
-      };
-      const result = facetReducer(state, action);
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: undefined,
-            mergedValues: undefined,
-          },
-          {
-            displayValue: 'navy',
-            mergedValues: ['blue'],
-          },
-          {
-            displayValue: 'new display value',
-            mergedValues: ['lime', 'green'],
-          },
-        ],
-      });
-    });
-
-    it('should merge selected attribute values when merged is undefined', () => {
-      const state: ReturnedGlobalFacet = {
-        ...mockReturnedGlobalFacetState,
-        merged: undefined,
-      };
-      const action = {
-        type: 'MERGE_SELECTED_ATTRIBUTE_VALUES' as const,
-        payload: {
-          selectedFacetAttributeValues: ['emerald', 'green'],
-          displayValue: 'new display value',
-        },
-      };
-      const result = facetReducer(state, action);
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: 'new display value',
-            mergedValues: ['emerald', 'green'],
-          },
-        ],
-      });
-    });
-
-    it('should merge selected attribute values when boosted is undefined', () => {
-      const state: ReturnedGlobalFacet = {
-        ...mockReturnedGlobalFacetState,
-        boosted: undefined,
-        merged: [
-          {
-            displayValue: undefined,
-            mergedValues: undefined,
-          },
-          {
-            displayValue: 'navy',
-            mergedValues: ['blue'],
-          },
-          {
-            displayValue: 'emerald',
-            mergedValues: ['lime'],
-          },
-        ],
-      };
-      const action = {
-        type: 'MERGE_SELECTED_ATTRIBUTE_VALUES' as const,
-        payload: {
-          selectedFacetAttributeValues: ['emerald', 'green'],
-          displayValue: 'new display value',
-        },
-      };
-      const result = facetReducer(state, action);
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        boosted: undefined,
-        merged: [
-          {
-            displayValue: undefined,
-            mergedValues: undefined,
-          },
-          {
-            displayValue: 'navy',
-            mergedValues: ['blue'],
-          },
-          {
-            displayValue: 'new display value',
-            mergedValues: ['lime', 'green'],
-          },
-        ],
-      });
-    });
-
-    it('should merge selected boosted and default attribute, keeping merge group boosted', () => {
-      const state = {
-        ...mockReturnedGlobalFacetState,
-        boosted: ['Silk'],
-        excludedValues: ['Merged 1', 'Merged 2'],
-        merged: [
-          {
-            displayValue: 'test merged group',
-            mergedValues: ['Merged 1', 'Merged 2'],
-          },
-        ],
-      };
-      const action = {
-        type: 'MERGE_SELECTED_ATTRIBUTE_VALUES' as const,
-        payload: {
-          selectedFacetAttributeValues: [
-            'Silk',
-            'Other Merged 1',
-            'Other Merged 2',
-          ],
-          displayValue: 'Name your merge',
-        },
-      };
-
-      const result = facetReducer(state, action);
-
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        boosted: ['Silk', 'Other Merged 1', 'Other Merged 2'],
-        excludedValues: ['Merged 1', 'Merged 2'],
-        merged: [
-          {
-            displayValue: 'test merged group',
-            mergedValues: ['Merged 1', 'Merged 2'],
-          },
-          {
-            displayValue: 'Name your merge',
-            mergedValues: ['Silk', 'Other Merged 1', 'Other Merged 2'],
-          },
-        ],
-      });
-    });
-  });
-
-  describe('REMOVE_MERGED_VALUE', () => {
-    it('should remove merged value', () => {
-      const state: ReturnedGlobalFacet = {
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: 'navy',
-            mergedValues: ['blue', 'light blue'],
-          },
-          {
-            displayValue: 'emerald',
-            mergedValues: ['green', 'lime', 'dark green'],
-          },
-        ],
-      };
-      const action = {
-        type: 'REMOVE_MERGED_VALUE' as const,
-        payload: {
-          mergeGroupDisplayName: 'emerald',
-          attributeToRemove: 'green',
-        },
-      };
-      const result = facetReducer(state, action);
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: 'navy',
-            mergedValues: ['blue', 'light blue'],
-          },
-          {
-            displayValue: 'emerald',
-            mergedValues: ['lime', 'dark green'],
-          },
-        ],
-      });
-    });
-
-    it('should remove object from merged when the penultimate value is removed', () => {
-      const state: ReturnedGlobalFacet = {
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: 'navy',
-            mergedValues: ['blue', 'light blue'],
-          },
-          {
-            displayValue: 'emerald',
-            mergedValues: ['green', 'lime'],
-          },
-        ],
-      };
-      const action = {
-        type: 'REMOVE_MERGED_VALUE' as const,
-        payload: {
-          mergeGroupDisplayName: 'emerald',
-          attributeToRemove: 'green',
-        },
-      };
-      const result = facetReducer(state, action);
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        merged: [
-          {
-            displayValue: 'navy',
-            mergedValues: ['blue', 'light blue'],
-          },
-        ],
-      });
-    });
-
-    it('should remove merged value when merged is undefined', () => {
-      const state: ReturnedGlobalFacet = {
-        ...mockReturnedGlobalFacetState,
-        merged: undefined,
-      };
-      const action = {
-        type: 'REMOVE_MERGED_VALUE' as const,
-        payload: {
-          mergeGroupDisplayName: 'emerald',
-          attributeToRemove: 'green',
-        },
-      };
-      const result = facetReducer(state, action);
-      expect(result).toEqual({
-        ...mockReturnedGlobalFacetState,
-        merged: undefined,
-      });
-    });
-  });
-
   describe('CHANGE_DISPLAY_TYPE', () => {
     it('should change display type to boosted', () => {
       const state: ReturnedGlobalFacet = {
@@ -512,6 +198,39 @@ describe('facetReducer', () => {
         ...mockReturnedGlobalFacetState,
         boosted: [],
         excludedValues: ['1'],
+      });
+    });
+
+    it('should change display type from boosted to excluded with a merge group', () => {
+      const state: ReturnedGlobalFacet = {
+        ...mockReturnedGlobalFacetState,
+        boosted: ['1'],
+        excludedValues: [],
+        merged: [
+          {
+            displayValue: 'group',
+            mergedValues: ['1'],
+          },
+        ],
+      };
+      const action = {
+        type: 'CHANGE_DISPLAY_TYPE' as const,
+        payload: {
+          id: '1',
+          newDisplayType: 'excluded' as const,
+        },
+      };
+      const result = facetReducer(state, action);
+      expect(result).toEqual({
+        ...mockReturnedGlobalFacetState,
+        boosted: [],
+        excludedValues: ['1'],
+        merged: [
+          {
+            displayValue: 'group',
+            mergedValues: ['1'],
+          },
+        ],
       });
     });
 
