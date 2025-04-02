@@ -1579,4 +1579,85 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(mergeGroup).not.toBeVisible();
     });
   });
+
+  it('should display the correct amount of filtered items when the merge group name matches the filter', async () => {
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(
+      <GlobalFacetPanelModalContent
+        attributeValues={attributeValuesMock}
+        facet={{
+          ...mockFacet,
+          merged: [
+            {
+              displayValue: 'Foo',
+              mergedValues: [
+                attributeValuesMock[0].displayValue,
+                attributeValuesMock[1].displayValue,
+              ],
+            },
+          ],
+          boosted: [],
+          excludedValues: [],
+        }}
+        countryCode="UK"
+        onClose={jest.fn()}
+      />
+    );
+
+    const searchInput = screen.getByPlaceholderText('Search...');
+
+    await user.type(searchInput, 'foo');
+
+    await waitFor(() => {
+      expect(screen.getByText('1 result')).toBeInTheDocument();
+    });
+  });
+
+  it('should display the correct amount of filtered items when the attribute values matches the filter', async () => {
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(
+      <GlobalFacetPanelModalContent
+        attributeValues={attributeValuesMock}
+        facet={mockFacet}
+        countryCode="UK"
+        onClose={jest.fn()}
+      />
+    );
+
+    const searchInput = screen.getByPlaceholderText('Search...');
+
+    await user.type(searchInput, '13');
+
+    await waitFor(() => {
+      expect(screen.getByText('2 results')).toBeInTheDocument();
+    });
+  });
+
+  it('should display the correct amount of filtered items when the merged value group includes it', async () => {
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(
+      <GlobalFacetPanelModalContent
+        attributeValues={attributeValuesMock}
+        facet={{
+          ...mockFacet,
+          merged: [
+            {
+              displayValue: 'Foo',
+              mergedValues: ['white wine', 'red wine'],
+            },
+          ],
+        }}
+        countryCode="UK"
+        onClose={jest.fn()}
+      />
+    );
+
+    const searchInput = screen.getByPlaceholderText('Search...');
+
+    await user.type(searchInput, 'wine');
+
+    await waitFor(() => {
+      expect(screen.getByText('1 result')).toBeInTheDocument();
+    });
+  });
 });

@@ -669,6 +669,29 @@ export const GlobalFacetPanelModalContent = ({
       nonBoostedExcludedValues.length +
       boostedValues.length;
 
+  const filteredAttributeValues = attributeValues.filter((attribute) =>
+    attribute.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredAttributeValuesNotInAMergeGroup =
+    filteredAttributeValues.filter(
+      (attribute) =>
+        !merged?.some((group) =>
+          group.mergedValues?.includes(attribute.displayValue)
+        )
+    );
+
+  const filteredMergeGroups = merged!.filter(
+    (group) =>
+      group.displayValue?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      group.mergedValues?.some((val) =>
+        val.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+  );
+
+  const totalFilteredResults =
+    filteredAttributeValuesNotInAMergeGroup.length + filteredMergeGroups.length;
+
   return (
     <>
       <ModalContainer>
@@ -737,13 +760,7 @@ export const GlobalFacetPanelModalContent = ({
 
           {excludedValuesRows}
 
-          <FilteredResultsPanel
-            filteredFacets={
-              attributeValues.filter((attribute) =>
-                attribute.displayValue.includes(searchQuery)
-              ).length
-            }
-          />
+          <FilteredResultsPanel filteredFacets={totalFilteredResults} />
         </BodyContainer>
       </ModalContainer>
       <ModalFooter>
