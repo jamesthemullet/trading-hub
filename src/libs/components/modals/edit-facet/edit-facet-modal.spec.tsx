@@ -9,7 +9,7 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import * as lodash from 'lodash';
 
-import { EditFacetModalV2 } from './edit-facet-modal-v2';
+import { EditFacetModal } from './edit-facet-modal';
 
 jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
   ...jest.requireActual('@/libs/hooks/use-get-facet-attribute-values'),
@@ -92,9 +92,7 @@ describe('ModalEditValues', () => {
   });
 
   it('should render edit values modal', async () => {
-    renderWithProviders(
-      <EditFacetModalV2 {...mockDefaultCategoryFacetProps} />
-    );
+    renderWithProviders(<EditFacetModal {...mockDefaultCategoryFacetProps} />);
 
     expect(
       await screen.findByText('Facet value settings of: color')
@@ -102,9 +100,7 @@ describe('ModalEditValues', () => {
   });
 
   it('should close the modal', async () => {
-    renderWithProviders(
-      <EditFacetModalV2 {...mockDefaultCategoryFacetProps} />
-    );
+    renderWithProviders(<EditFacetModal {...mockDefaultCategoryFacetProps} />);
 
     const closeButton = await screen.findByLabelText('Close attributes modal');
 
@@ -114,9 +110,7 @@ describe('ModalEditValues', () => {
   });
 
   it('should save the modal', async () => {
-    renderWithProviders(
-      <EditFacetModalV2 {...mockDefaultCategoryFacetProps} />
-    );
+    renderWithProviders(<EditFacetModal {...mockDefaultCategoryFacetProps} />);
 
     const saveButton = await screen.findByText('Save');
 
@@ -127,7 +121,7 @@ describe('ModalEditValues', () => {
 
   it('should remove duplicated values', async () => {
     renderWithProviders(
-      <EditFacetModalV2
+      <EditFacetModal
         {...mockDefaultCategoryFacetProps}
         facet={{
           ...facetMock,
@@ -159,7 +153,7 @@ describe('ModalEditValues', () => {
     });
 
     renderWithProviders(
-      <EditFacetModalV2
+      <EditFacetModal
         {...mockDefaultCategoryFacetProps}
         facet={{
           displayValue: 'color',
@@ -183,7 +177,7 @@ describe('ModalEditValues', () => {
     });
 
     renderWithProviders(
-      <EditFacetModalV2
+      <EditFacetModal
         {...mockDefaultCategoryFacetProps}
         facet={{
           displayValue: 'color',
@@ -206,7 +200,7 @@ describe('ModalEditValues', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(
-      <EditFacetModalV2
+      <EditFacetModal
         {...mockDefaultCategoryFacetProps}
         facet={{
           displayValue: 'color',
@@ -229,7 +223,7 @@ describe('ModalEditValues', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(
-      <EditFacetModalV2
+      <EditFacetModal
         {...mockDefaultCategoryFacetProps}
         facet={{
           displayValue: 'color',

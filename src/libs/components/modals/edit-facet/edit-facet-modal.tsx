@@ -38,7 +38,7 @@ const ModalFooter = styled.div`
 
 const defaultMergedDisplayValue = 'Name your merge';
 
-export const EditFacetModalV2 = ({
+export const EditFacetModal = ({
   onClose,
   onSave,
   facet,

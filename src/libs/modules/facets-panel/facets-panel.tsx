@@ -25,7 +25,7 @@ import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-sel
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import { EditFacetModalV2 } from '@/libs/components/modals/edit-facet/edit-facet-modal-v2';
+import { EditFacetModal } from '@/libs/components/modals/edit-facet/edit-facet-modal';
 import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
 import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
@@ -575,7 +575,7 @@ export const FacetsPanel = ({
       )}
 
       {facetType !== 'global' && isEditValuesModalOpen && selectedFacet && (
-        <EditFacetModalV2
+        <EditFacetModal
           onClose={onClose}
           mergeEnabled={false}
           removeFacetValueFromMergeGroupEnabled={false}
