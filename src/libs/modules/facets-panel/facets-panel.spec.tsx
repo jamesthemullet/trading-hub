@@ -691,4 +691,52 @@ describe('Facet Panel', () => {
       expect(refreshMock).toHaveBeenCalled();
     });
   });
+
+  it('should not allow renaming a row to an existing value', async () => {
+    renderWithProviders(
+      <FacetsPanel
+        title="Facet Rule Editor"
+        facetType="global"
+        countryCode="UK"
+        selectedPreviewCountryCode="UK"
+        onFacetDataChange={jest.fn()}
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        setDateTime={setDateTimeSpy}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
+        selectedCategoriesInfo={[]}
+        setSelectedCategoriesInfo={jest.fn()}
+      />
+    );
+
+    const editButton = await screen.findByLabelText(
+      `Edit display name for color`
+    );
+
+    act(() => {
+      editButton.click();
+    });
+
+    const inputField = await screen.findByLabelText(`Edit color input field`);
+
+    expect(inputField).toHaveValue('color');
+
+    await waitFor(async () => {
+      await userEvent.clear(inputField);
+      await userEvent.type(inputField, 'brand');
+      await userEvent.keyboard('{enter}');
+    });
+
+    const errorMessage = screen.getByText(`brand is not a unique value`);
+    expect(errorMessage).toBeVisible();
+
+    const cancelButton = screen.getByLabelText(`Cancel color change`);
+    act(() => {
+      cancelButton.click();
+    });
+    expect(errorMessage).not.toBeVisible();
+  });
 });

@@ -30,7 +30,6 @@ import {
   OrderArrowsContainer,
   RemoveMergedFacet,
   SkeletonRow,
-  StyledError,
 } from '@/libs/components/modals/edit-facet/edit-facet-modal-content.styles';
 import {
   HeadingContainer,
@@ -119,11 +118,6 @@ export const GlobalFacetPanelModalContent = ({
 
   const [merged, setMerged] = useState<MergeGroup>(facet.merged || []);
 
-  const [rowError, setRowError] = useState<{
-    attribute: string;
-    error: string;
-  } | null>(null);
-
   const [searchQuery, setSearchQuery] = useState('');
 
   const [nonBoostedExcludedValues, setNonBoostedExcludedValues] = useState(
@@ -140,9 +134,25 @@ export const GlobalFacetPanelModalContent = ({
     facet.excludedValues?.map((value) => ({ displayValue: value })) || []
   );
 
+  const [errorStates, setErrorStates] = useState<
+    Record<string, { message: string }>
+  >({});
+
+  const setError = (id: string, message: string) => {
+    setErrorStates((prev) => ({
+      ...Object.fromEntries(Object.entries(prev).filter(([key]) => key !== id)),
+      ...(message && { [id]: { message } }),
+    }));
+  };
+
   const { checkMergeNameUnique } = useCheckMergeNameUnique();
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
     useGlobalFacetUpdate();
+
+  const disallowedValues = [
+    ...merged!.map((val) => val.displayValue!),
+    DEFAULT_MERGE_DISPLAY_NAME,
+  ];
 
   const onSave = async () => {
     const response = await handleGlobalFacetUpdate({
@@ -219,10 +229,7 @@ export const GlobalFacetPanelModalContent = ({
     }
     setSelectedFacetAttributes([]);
 
-    setRowError({
-      attribute: DEFAULT_MERGE_DISPLAY_NAME,
-      error: 'Please name your merge to continue',
-    });
+    setError(DEFAULT_MERGE_DISPLAY_NAME, 'Please name your merge to continue');
   };
 
   const { callback: handleSearch } = useDebounce(
@@ -291,10 +298,7 @@ export const GlobalFacetPanelModalContent = ({
           .some((val) => !!val);
 
         if (isInOtherMergeGroups) {
-          setRowError({
-            attribute: oldValue,
-            error: `${trimmedNewValue} is not a unique value`,
-          });
+          setError(oldValue, `${trimmedNewValue} is not a unique value`);
           return;
         }
 
@@ -309,10 +313,7 @@ export const GlobalFacetPanelModalContent = ({
         });
 
         if (!isUniqueValue) {
-          setRowError({
-            attribute: oldValue,
-            error: `${trimmedNewValue} is not a unique value`,
-          });
+          setError(oldValue, `${trimmedNewValue} is not a unique value`);
           return;
         }
 
@@ -331,7 +332,7 @@ export const GlobalFacetPanelModalContent = ({
           ]);
         }
 
-        setRowError(null);
+        setError(oldValue, '');
       };
 
       values.map((value) => {
@@ -447,6 +448,10 @@ export const GlobalFacetPanelModalContent = ({
             }
           };
 
+          const errorState = errorStates[displayName] || {
+            message: '',
+          };
+
           return (
             <FacetAttributeValuesTableRow
               key={`${displayType}-${displayName}`}
@@ -496,25 +501,28 @@ export const GlobalFacetPanelModalContent = ({
               <FlexColumnCol>
                 <EditableLabel
                   displayValue={displayName}
-                  error={
-                    rowError && rowError.attribute === displayName
-                      ? rowError.error
-                      : undefined
-                  }
-                  onCancel={() => setRowError(null)}
+                  onCancel={() => setError(displayName, '')}
                   onDisplayValueChange={(newValue) => {
                     handleDisplayNameChange(displayName, newValue);
                   }}
-                  disallowedValues={[
-                    ...merged!.map((val) => val.displayValue!),
-                    DEFAULT_MERGE_DISPLAY_NAME,
-                  ]}
                   canCancelEdit={displayName !== DEFAULT_MERGE_DISPLAY_NAME}
+                  showErrorState={!!errorStates[displayName]?.message}
+                  setError={(message) => setError(displayName, message)}
+                  disallowedErrorMessage={errorState.message}
+                  handleUpdatedValue={(event) => {
+                    event.stopPropagation();
+                    if (event.target.value === '') {
+                      setError(displayName, 'You must supply a value');
+                    } else if (disallowedValues?.includes(event.target.value)) {
+                      setError(
+                        displayName,
+                        `${event.target.value} is not a unique value`
+                      );
+                    } else {
+                      setError(displayName, '');
+                    }
+                  }}
                 />
-
-                {rowError && rowError.attribute === displayName && (
-                  <StyledError>{rowError.error}</StyledError>
-                )}
               </FlexColumnCol>
 
               <Col>
@@ -645,7 +653,7 @@ export const GlobalFacetPanelModalContent = ({
       facet.id,
       merged,
       nonBoostedExcludedValues,
-      rowError,
+      errorStates,
       searchQuery,
       selectedFacetAttributes,
     ]
@@ -765,7 +773,10 @@ export const GlobalFacetPanelModalContent = ({
       </ModalContainer>
       <ModalFooter>
         <Button onClick={onClose}>Cancel</Button>{' '}
-        <Button onClick={onSave} disabled={!!rowError}>
+        <Button
+          onClick={onSave}
+          disabled={Object.values(errorStates).some((state) => state)}
+        >
           Save
         </Button>
       </ModalFooter>

@@ -35,7 +35,6 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import Image from 'next/image';
 
 import {
-  AddFacetPanel,
   AttributesTable,
   Col,
   CountryPreviewDropdown,
@@ -198,6 +197,17 @@ export const FacetsPanel = ({
     selectedCategories?.[0] || searchTerms?.[0]
   );
 
+  const [errorStates, setErrorStates] = useState<
+    Record<string, { message: string }>
+  >({});
+
+  const setError = (id: string, message: string) => {
+    setErrorStates((prev) => ({
+      ...Object.fromEntries(Object.entries(prev).filter(([key]) => key !== id)),
+      ...(message && { [id]: { message } }),
+    }));
+  };
+
   const { setSearch, filteredFacets } = useFacetsFilter(facetsState);
 
   const { callback: handleSearch } = useDebounce((val: string) => {
@@ -304,14 +314,17 @@ export const FacetsPanel = ({
     setSelectedPreviewCountryCode?.(category?.includes('IE_') ? 'IE' : 'UK');
   };
 
+  const disallowedValues = facetsState.map((facet) => facet.displayValue);
+
   const FacetRow = (facet: FacetRowDisplayValue) => {
-    const { displayValue, displayType, meta } = facet;
+    const { displayValue, displayType, meta, id } = facet;
+    const errorState = errorStates[id] || { message: '' };
 
     return (
       <Row
         optionSelected={displayType}
         data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
-        key={facet.id}
+        key={id}
       >
         <Col>
           <Text>{facet.indexPropertyName}</Text>
@@ -319,11 +332,26 @@ export const FacetsPanel = ({
         <Col>
           {onFacetDataChange && facetType === 'global' ? (
             <EditableLabel
-              displayValue={facet.displayValue}
+              displayValue={displayValue}
+              onCancel={() => setError(id, '')}
               onDisplayValueChange={(newValue) =>
                 onFacetDataChange({ value: newValue, facet })
               }
               canCancelEdit={true}
+              showErrorState={!!errorState.message}
+              setError={(message) => setError(id, message)}
+              disallowedValues={facetsState.map((facet) => facet.displayValue)}
+              disallowedErrorMessage={errorState.message}
+              handleUpdatedValue={(event) => {
+                event.stopPropagation();
+                if (event.target.value === '') {
+                  setError(id, 'You must supply a value');
+                } else if (disallowedValues?.includes(event.target.value)) {
+                  setError(id, `${event.target.value} is not a unique value`);
+                } else {
+                  setError(id, '');
+                }
+              }}
             />
           ) : (
             <Text>{facet.displayValue}</Text>
@@ -515,14 +543,6 @@ export const FacetsPanel = ({
         {duplicationError && (
           <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
         )}
-      </SectionWrapper>
-      <SectionWrapper>
-        <AddFacetPanel>
-          <div>
-            <LowerHeading isStrong>Preview and manage facets</LowerHeading>
-            <Text>(sort by algo control)</Text>
-          </div>
-        </AddFacetPanel>
       </SectionWrapper>
 
       {(selectedCategories.length > 0 ||

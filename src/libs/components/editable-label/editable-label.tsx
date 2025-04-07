@@ -9,8 +9,14 @@ import { color } from '../utils/constants';
 
 const DisplayName = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   padding-right: ${spacing(2)};
+`;
+
+const NameContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const EditConfirmationButtons = styled.div`
@@ -71,159 +77,136 @@ const StyledError = styled(Text)`
 export type EditableLabelProps = {
   displayValue: string;
   onDisplayValueChange: (newValue: string) => void;
-  shouldOpenFromParent?: boolean;
+  setError: (message: string) => void;
+  showErrorState: boolean;
+  handleUpdatedValue: (event: React.ChangeEvent<HTMLInputElement>) => void;
   canCancelEdit?: boolean;
   onCancel?: () => void;
-  error?: string | null;
   disallowedValues?: string[];
+  disallowedErrorMessage?: string;
 };
 
 export const EditableLabel = ({
   displayValue,
   onDisplayValueChange,
-  shouldOpenFromParent,
+  setError,
+  showErrorState,
+  handleUpdatedValue,
   canCancelEdit,
   onCancel,
-  error,
-  disallowedValues,
+  disallowedErrorMessage,
 }: EditableLabelProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalValue] = useState(displayValue);
   const [value, setValue] = useState(displayValue);
-  const [showErrorState, setShowErrorState] = useState(false);
-  const [disallowedErrorMessage, setDisallowedErrorMessage] = useState('');
 
   useEffect(() => {
-    if (shouldOpenFromParent) {
+    if (showErrorState) {
       setIsEditMode(true);
-      setValue(displayValue);
-    } else {
-      setIsEditMode(false);
     }
-  }, [shouldOpenFromParent, displayValue]);
-
-  useEffect(() => {
-    if (error) {
-      setShowErrorState(true);
-      setIsEditMode(true);
-    } else {
-      setShowErrorState(false);
-    }
-  }, [error, disallowedValues]);
+  }, [showErrorState, displayValue]);
 
   return (
     <DisplayName>
-      {isEditMode ? (
-        <>
-          <InputContainer>
-            <StyledInput
-              id={'input'}
-              ref={(inputRef) => {
-                inputRef?.focus();
-              }}
-              onChange={(event) => {
-                event.stopPropagation();
-                if (
-                  value &&
-                  (event.target.value === '' ||
-                    disallowedValues?.includes(event.target.value))
-                ) {
-                  setShowErrorState(true);
-                  setDisallowedErrorMessage(
-                    `${event.target.value} is not a unique value`
-                  );
-                } else {
-                  setShowErrorState(false);
-                  setDisallowedErrorMessage('');
-                }
-                setValue(event.target.value);
-              }}
-              label=""
-              value={value}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' && !showErrorState) {
-                  setIsEditMode(false);
-                  onDisplayValueChange(value);
-                }
-                if (event.key === 'Escape' && canCancelEdit) {
-                  setValue(originalValue);
-                  setIsEditMode(false);
-                  if (onCancel) onCancel();
-                }
-              }}
-              aria-label={`Edit ${displayValue} input field`}
-              showErrorState={showErrorState}
-            />
-
-            {showErrorState && (
-              <StyledIcon
-                width={20}
-                height={20}
-                src="/trading-hub/asset/icon-warning.svg"
-                alt=""
+      <NameContainer>
+        {isEditMode ? (
+          <>
+            <InputContainer>
+              <StyledInput
+                id={'input'}
+                ref={(inputRef) => {
+                  inputRef?.focus();
+                }}
+                onChange={(event) => {
+                  handleUpdatedValue(event);
+                  setValue(event.target.value);
+                }}
+                label=""
+                value={value}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && !showErrorState) {
+                    setIsEditMode(false);
+                    onDisplayValueChange(value);
+                  }
+                  if (event.key === 'Escape' && canCancelEdit) {
+                    setValue(originalValue);
+                    setIsEditMode(false);
+                    if (onCancel) onCancel();
+                  }
+                }}
+                aria-label={`Edit ${displayValue} input field`}
+                showErrorState={showErrorState}
               />
-            )}
-          </InputContainer>
 
-          <EditConfirmationButtons>
-            <EditButton
-              onClick={() => {
-                onDisplayValueChange(value);
-                setIsEditMode(false);
-              }}
-              aria-label={`Save ${displayValue} change`}
-              isDisabled={showErrorState}
-            >
-              <Image
-                width={20}
-                height={20}
-                src="/trading-hub/asset/icon-tick-in-circle.svg"
-                alt=""
-              />
-            </EditButton>
-            {canCancelEdit && (
+              {showErrorState && (
+                <StyledIcon
+                  width={20}
+                  height={20}
+                  src="/trading-hub/asset/icon-warning.svg"
+                  alt=""
+                />
+              )}
+            </InputContainer>
+
+            <EditConfirmationButtons>
               <EditButton
                 onClick={() => {
-                  setValue(originalValue);
+                  onDisplayValueChange(value);
                   setIsEditMode(false);
-                  if (onCancel) onCancel();
                 }}
-                aria-label={`Cancel ${displayValue} change`}
+                aria-label={`Save ${displayValue} change`}
+                isDisabled={showErrorState}
               >
                 <Image
                   width={20}
                   height={20}
-                  src="/trading-hub/asset/icon-cross-in-circle.svg"
+                  src="/trading-hub/asset/icon-tick-in-circle.svg"
                   alt=""
                 />
               </EditButton>
-            )}
-          </EditConfirmationButtons>
-        </>
-      ) : (
-        <>
-          <StyledText data-testid={`Label for ${displayValue}`}>
-            {displayValue}
-          </StyledText>
+              {canCancelEdit && (
+                <EditButton
+                  onClick={() => {
+                    setValue(originalValue);
+                    setIsEditMode(false);
+                    setError('');
+                    if (onCancel) onCancel();
+                  }}
+                  aria-label={`Cancel ${displayValue} change`}
+                >
+                  <Image
+                    width={20}
+                    height={20}
+                    src="/trading-hub/asset/icon-cross-in-circle.svg"
+                    alt=""
+                  />
+                </EditButton>
+              )}
+            </EditConfirmationButtons>
+          </>
+        ) : (
+          <>
+            <StyledText data-testid={`Label for ${displayValue}`}>
+              {displayValue}
+            </StyledText>
 
-          <EditButton
-            onClick={() => {
-              setIsEditMode(true);
-            }}
-            aria-label={`Edit display name for ${displayValue}`}
-          >
-            <Image
-              width={20}
-              height={20}
-              src="/trading-hub/asset/icon-edit-pencil.svg"
-              alt=""
-            />
-          </EditButton>
-        </>
-      )}
-      {showErrorState && !error && (
-        <StyledError>{disallowedErrorMessage}</StyledError>
-      )}
+            <EditButton
+              onClick={() => {
+                setIsEditMode(true);
+              }}
+              aria-label={`Edit display name for ${displayValue}`}
+            >
+              <Image
+                width={20}
+                height={20}
+                src="/trading-hub/asset/icon-edit-pencil.svg"
+                alt=""
+              />
+            </EditButton>
+          </>
+        )}
+      </NameContainer>
+      {showErrorState && <StyledError>{disallowedErrorMessage}</StyledError>}
     </DisplayName>
   );
 };

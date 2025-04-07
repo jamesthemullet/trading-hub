@@ -1,13 +1,11 @@
 import { Skeleton } from '@mantine/core';
 
-import { Text } from '@/libs/components';
 import { TableHeading } from '@/libs/components/table/table.styles';
 
 import { COLUMNS } from './facets-panel';
 import {
   ActionContainer,
   Actions,
-  AddFacetPanel,
   AttributesTable,
   Col,
   LowerHeading,
@@ -29,17 +27,6 @@ export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <Skeleton height={96} width={'100%'} />
-      </SectionWrapper>
-      <SectionWrapper>
-        <AddFacetPanel>
-          <div>
-            <LowerHeading isStrong>Preview and manage facets</LowerHeading>
-            <Text>(sort by algo control)</Text>
-          </div>
-          <div>
-            <Skeleton miw={133} height={43} />
-          </div>
-        </AddFacetPanel>
       </SectionWrapper>
       <SectionWrapper>
         <Skeleton height={41} />

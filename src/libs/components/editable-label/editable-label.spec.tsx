@@ -26,6 +26,9 @@ describe('editable-label', () => {
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
+          setError={jest.fn()}
+          showErrorState={false}
+          handleUpdatedValue={jest.fn()}
         />
       );
 
@@ -41,6 +44,9 @@ describe('editable-label', () => {
           displayValue="color"
           canCancelEdit={true}
           onCancel={mockCancel}
+          setError={jest.fn()}
+          handleUpdatedValue={jest.fn()}
+          showErrorState={false}
         />
       );
 
@@ -74,6 +80,9 @@ describe('editable-label', () => {
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
+          setError={jest.fn()}
+          showErrorState={false}
+          handleUpdatedValue={jest.fn()}
         />
       );
 
@@ -117,6 +126,9 @@ describe('editable-label', () => {
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
+          setError={jest.fn()}
+          showErrorState={false}
+          handleUpdatedValue={jest.fn()}
         />
       );
 
@@ -155,8 +167,9 @@ describe('editable-label', () => {
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
-          shouldOpenFromParent={true}
-          error="Invalid input"
+          setError={jest.fn()}
+          showErrorState={true}
+          handleUpdatedValue={jest.fn()}
         />
       );
 
@@ -179,6 +192,9 @@ describe('editable-label', () => {
           displayValue="color"
           canCancelEdit={true}
           onCancel={mockCancel}
+          setError={jest.fn()}
+          showErrorState={false}
+          handleUpdatedValue={jest.fn()}
         />
       );
 

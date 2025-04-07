@@ -395,11 +395,10 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should not allow renaming a row to an existing value', async () => {
-      jest.mocked(useCheckMergeNameUnique).mockReturnValueOnce({
-        checkMergeNameUnique: () =>
-          Promise.resolve({
-            isUniqueValue: false,
-          }),
+      jest.mocked(useCheckMergeNameUnique).mockReturnValue({
+        checkMergeNameUnique: jest.fn().mockResolvedValue({
+          isUniqueValue: false,
+        }),
         error: '',
       });
 

@@ -174,12 +174,9 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
   )[1];
   await user.type(input, 'SubCategory_507{enter}');
 
-  console.log(44);
   const categoryToSelect = screen.getByText(
     `${categoryId1} | ${categoryName1} | ${categoryPath1}`
   );
-
-  console.log(45, categoryToSelect);
 
   act(() => {
     categoryToSelect.click();
