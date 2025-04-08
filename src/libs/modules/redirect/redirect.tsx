@@ -35,12 +35,23 @@ const Row = styled.div`
   margin-top: ${spacing(4)};
 `;
 
+const FullInputRow = styled.div`
+  margin-top: ${spacing(4)};
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledLabel = styled.label`
+  font-size: 14px;
+  margin-bottom: ${spacing(1)};
+`;
+
 const Input = styled.input`
   background-color: ${color.backgroundGrey};
   border: none;
   border-bottom: 1px solid ${color.grey};
   min-height: 64px;
-  max-width: 1024px;
+  max-width: 1038px;
   width: 100%;
 `;
 
@@ -243,22 +254,28 @@ export const Redirect = ({
         {duplicationError && (
           <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
         )}
-        <Row>
-          <Text>Destination URL*</Text>
+        <FullInputRow>
+          <StyledLabel htmlFor="destination-url-input">
+            Destination URL*
+          </StyledLabel>
           <Input
+            id="destination-url-input"
             placeholder="c/"
             value={redirect.destinationUrl}
             onChange={(e) => onUpdate('destinationUrl', e.target.value)}
           />
-        </Row>
-        <Row>
-          <Text>Rule Title</Text>
+        </FullInputRow>
+        <FullInputRow>
+          <StyledLabel htmlFor="rule-title-input">
+            <Text>Rule Title</Text>
+          </StyledLabel>
           <Input
+            id="rule-title-input"
             placeholder="Enter redirect title"
             value={redirect.ruleTitle}
             onChange={(e) => onUpdate('ruleTitle', e.target.value)}
           />
-        </Row>
+        </FullInputRow>
       </RedirectContent>
     </>
   );

@@ -103,7 +103,12 @@ export const Navigation = () => {
 
   return (
     <NavigationWrapper>
-      <Logo src="/trading-hub/asset/logo-no-date.svg" alt="M&S" />
+      <Logo
+        src="/trading-hub/asset/logo-no-date.svg"
+        alt="M&S"
+        height={18}
+        width={47}
+      />
       <List>
         <ListItem>
           <NavigationMenu menuItems={menuItems} />

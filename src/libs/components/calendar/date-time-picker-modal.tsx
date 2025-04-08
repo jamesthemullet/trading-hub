@@ -145,6 +145,7 @@ export const DateTimePickerModal = ({
               setTempDateRange(dateRange);
               open();
             }}
+            aria-label="Open Datepicker"
           >
             <Image
               alt=""

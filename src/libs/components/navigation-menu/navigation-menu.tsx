@@ -102,9 +102,19 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
             isOpen={openMenu === index + 1}
           >
             {pathname.includes(menuItem.path) ? (
-              <Icon src={menuItem.activeIcon} alt={menuItem.alt} />
+              <Icon
+                src={menuItem.activeIcon}
+                alt={menuItem.alt}
+                height={25}
+                width={25}
+              />
             ) : (
-              <Icon src={menuItem.icon} alt={menuItem.alt} />
+              <Icon
+                src={menuItem.icon}
+                alt={menuItem.alt}
+                height={25}
+                width={25}
+              />
             )}
           </StyledLink>
           <SubMenu isVisible={openMenu === index + 1}>

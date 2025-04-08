@@ -9,7 +9,7 @@ const Row = styled.label<{ hasDivider: boolean }>`
     hasDivider ? `solid 1px ${color.grey}` : 'none'};
   padding: ${spacing(2)};
   display: flex;
-  align-items: center;
+  align-items: baseline;
   cursor: pointer;
 `;
 
@@ -66,17 +66,15 @@ export const RadioButtons = ({
     {values.length ? (
       values.map(({ name, isSelected }) => (
         <Row key={name} hasDivider={hasDivider}>
-          <label htmlFor={name} aria-label={name} style={{ cursor: 'pointer' }}>
-            <Input
-              type="radio"
-              id={name}
-              checked={isSelected}
-              onChange={() => onSelect(name)}
-            />
-            <Label as="span" isStrong={isBold}>
-              {name}
-            </Label>
-          </label>
+          <Input
+            type="radio"
+            id={name}
+            checked={isSelected}
+            onChange={() => onSelect(name)}
+          />
+          <Label aria-label={name} as="span" isStrong={isBold}>
+            {name}
+          </Label>
         </Row>
       ))
     ) : (
