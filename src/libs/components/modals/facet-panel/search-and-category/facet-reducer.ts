@@ -1,7 +1,7 @@
 import type { ReturnedGlobalFacet } from '@/libs/api';
 
-import type { AttributeDisplayType } from './types';
-import { toArrayWithSwappedElements } from './utils/swap-array-elements';
+import type { AttributeDisplayType } from '../types';
+import { toArrayWithSwappedElements } from '../utils/swap-array-elements';
 
 type MoveRowUpAction = {
   type: 'MOVE_BOOSTED_ROW_UP';

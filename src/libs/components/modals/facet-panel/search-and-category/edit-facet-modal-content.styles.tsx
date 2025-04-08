@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { Skeleton } from '@mantine/core';
 
-import { TableCol } from '../../table/table.styles';
-import { Text } from '../../typography/typography.styles';
-import { color } from '../../utils/constants';
-import { spacing } from '../../utils/spacing';
-import { ModalStickyHeader } from '../modal.styles';
+import { TableCol } from '../../../table/table.styles';
+import { Text } from '../../../typography/typography.styles';
+import { color } from '../../../utils/constants';
+import { spacing } from '../../../utils/spacing';
+import { ModalStickyHeader } from '../../modal.styles';
 
 export const Col = styled(TableCol)`
   padding: 0;

@@ -9,9 +9,9 @@ import type {
   AttributeDisplayType,
   AttributeRowDisplayValue,
   BaseDisplayValueMeta,
-} from './types';
-import type { AttributeToMergeGroupMap } from './utils/get-attribute-to-merge-group-map';
-import { getAttributeToMergeGroupMap } from './utils/get-attribute-to-merge-group-map';
+} from '../types';
+import type { AttributeToMergeGroupMap } from '../utils/get-attribute-to-merge-group-map';
+import { getAttributeToMergeGroupMap } from '../utils/get-attribute-to-merge-group-map';
 
 const defaultMeta: BaseDisplayValueMeta = {
   isBeginningOfDisplayTypeGroup: false,

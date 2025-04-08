@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 
+import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
 export const ModalAttributesTable = styled.div`
@@ -48,5 +49,27 @@ export const HeadingAndCloseButton = styled.div`
     &:hover {
       background: none;
     }
+  }
+`;
+
+export const ModalContainer = styled.div`
+  height: 100%;
+  min-width: 860px;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ModalFooter = styled.div`
+  background-color: #fff;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  border-top: solid 1px ${color.grey};
+  padding: ${spacing(1)};
+  display: flex;
+  justify-content: flex-end;
+  gap: ${spacing(2)};
+  button {
+    width: 160px;
   }
 `;

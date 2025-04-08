@@ -30,7 +30,7 @@ import {
   OrderArrowsContainer,
   RemoveMergedFacet,
   SkeletonRow,
-} from '@/libs/components/modals/edit-facet/edit-facet-modal-content.styles';
+} from '@/libs/components/modals/facet-panel/search-and-category/edit-facet-modal-content.styles';
 import {
   HeadingContainer,
   ModalAttributesTable,
@@ -47,7 +47,7 @@ import {
 } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
-import type { FacetDisplayType } from './facets-panel-reducer';
+import type { FacetDisplayType } from '../../../../modules/facets-panel/facets-panel-reducer';
 
 const ModalContainer = styled.div`
   height: 100%;

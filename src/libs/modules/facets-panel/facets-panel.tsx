@@ -25,7 +25,8 @@ import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-sel
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import { EditFacetModal } from '@/libs/components/modals/edit-facet/edit-facet-modal';
+import { GlobalFacetPanelModal } from '@/libs/components/modals/facet-panel/global/global-facets-panel-modal';
+import { SearchAndCategoryFacetsPanelModal } from '@/libs/components/modals/facet-panel/search-and-category/search-and-category-facets-panel-modal';
 import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
 import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
@@ -54,7 +55,6 @@ import type {
   FacetDisplayType,
   FacetRowDisplayValue,
 } from './facets-panel-reducer';
-import { GlobalFacetPanelModal } from './global-facets-panel-modal';
 
 export const COLUMNS: {
   label: string;
@@ -314,6 +314,15 @@ export const FacetsPanel = ({
     setSelectedPreviewCountryCode?.(category?.includes('IE_') ? 'IE' : 'UK');
   };
 
+  const onModalSave = (facet: ReturnedFacet) => {
+    // istanbul ignore next - for undefined value
+    const facetBoosted = facet.boosted ?? [];
+    // istanbul ignore next - for undefined value
+    const facetExcludedValues = facet.excludedValues ?? [];
+
+    updatedValues?.(facetBoosted, facetExcludedValues, facet.id);
+    onClose();
+  };
   const disallowedValues = facetsState.map((facet) => facet.displayValue);
 
   const FacetRow = (facet: FacetRowDisplayValue) => {
@@ -595,21 +604,10 @@ export const FacetsPanel = ({
       )}
 
       {facetType !== 'global' && isEditValuesModalOpen && selectedFacet && (
-        <EditFacetModal
+        <SearchAndCategoryFacetsPanelModal
           onClose={onClose}
-          mergeEnabled={false}
-          removeFacetValueFromMergeGroupEnabled={false}
-          displayValueEditEnabled={false}
           saveButtonLabel="Done"
-          onSave={async (facet) => {
-            // istanbul ignore next - for undefined value
-            const facetBoosted = facet.boosted ?? [];
-            // istanbul ignore next - for undefined value
-            const facetExcludedValues = facet.excludedValues ?? [];
-
-            updatedValues?.(facetBoosted, facetExcludedValues, facet.id);
-            onClose();
-          }}
+          onSave={onModalSave}
           facet={selectedFacet}
           categories={facetType === 'category' ? selectedCategories : undefined}
           countryCode={countryCode}

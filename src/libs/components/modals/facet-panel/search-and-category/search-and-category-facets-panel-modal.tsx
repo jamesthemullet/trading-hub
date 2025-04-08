@@ -1,11 +1,14 @@
-import type { Dispatch } from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useReducer, useState } from 'react';
+import { Modal } from '@mantine/core';
 
 import type {
   AttributeValuesResponse,
   CountryCode,
   ReturnedGlobalFacet,
 } from '@/libs/api';
+import { Button } from '@/libs/components/buttons/button/button';
+import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { Search } from '@/libs/components/search/search';
 import {
   ErrorMessage,
   Header3,
@@ -14,15 +17,20 @@ import {
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import type { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-reducer';
 
-import { ArrowButton } from '../../buttons/button/arrow-button';
-import { FacetOrderDropdown } from '../../dropdowns/facet-order-dropdown/facet-order-dropdown';
-import { FilteredResultsPanel } from '../../filtered-results-panel/filtered-results-panel';
-import { Search } from '../../search/search';
+import { intersection, without } from 'lodash';
+
+import { ArrowButton } from '../../../buttons/button/arrow-button';
+import { FacetOrderDropdown } from '../../../dropdowns/facet-order-dropdown/facet-order-dropdown';
 import {
   FacetAttributeValuesTableRow,
   TableHeading,
-} from '../../table/table.styles';
-import { HeadingContainer, ModalAttributesTable } from '../modal.styles';
+} from '../../../table/table.styles';
+import {
+  HeadingContainer,
+  ModalAttributesTable,
+  ModalContainer,
+  ModalFooter,
+} from '../../modal.styles';
 import {
   AttributesModalHeader,
   AttributeWrapper,
@@ -34,7 +42,10 @@ import {
   OrderArrowsContainer,
   SkeletonRow,
 } from './edit-facet-modal-content.styles';
+import { facetReducer } from './facet-reducer';
 import { useAttributeValuesRowsSelector } from './use-attribute-values-rows-selector';
+
+const MODAL_WIDTH = 1150;
 
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null;
@@ -87,44 +98,62 @@ type FormattedRow = {
   isMergeGroup: boolean;
 };
 
-const EditModalFacetContent = ({
+export const SearchAndCategoryFacetsPanelModal = ({
+  onClose,
+  onSave,
   facet,
+  saveButtonLabel = 'Save',
   categories,
   countryCode,
-  dispatch,
 }: {
+  onClose: () => void;
+  onSave: (facet: ReturnedGlobalFacet) => void;
   facet: ReturnedGlobalFacet;
   countryCode: CountryCode;
-  mergeEnabled?: boolean;
-  removeFacetValueFromMergeGroupEnabled: boolean;
-  displayValueEditEnabled: boolean;
-  defaultMergedDisplayValue: string;
-  dispatch: Dispatch<Action>;
-  handleDisableSaveButton: (disable: boolean) => void;
+  saveButtonLabel?: string;
   categories?: string[];
 }) => {
+  const [isSaveDisabled] = useState(false);
+  const processedFacet = useMemo(() => {
+    const intersectedValues = intersection(facet.boosted, facet.excludedValues);
+
+    const boosted = without(facet.boosted, ...intersectedValues);
+
+    return {
+      ...facet,
+      ...(boosted.length > 0 && { boosted }),
+    };
+  }, [facet]);
+
+  const [facetLocalState, dispatch] = useReducer(facetReducer, processedFacet);
+
+  const handleSave = async () => {
+    onSave(facetLocalState);
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const {
-    attributeValues,
     attributeValuesState,
     error: attributeValuesError,
     isLoading,
   } = useAttributeValuesRowsSelector(
-    facet,
+    facetLocalState,
     searchQuery,
     countryCode,
     categories
   );
 
-  const nonBoostedExcludedValues = attributeValues.filter(
-    ({ displayValue }) =>
-      !facet.boosted?.includes(displayValue) &&
-      !facet.excludedValues?.includes(displayValue)
-  );
-  const boostedValues = facet.boosted!.map((value) => ({
-    displayValue: value,
-  }));
+  const nonBoostedExcludedValues = attributeValuesState
+    .filter((value) => value.displayType === 'default')
+    .map((value) => ({
+      displayValue: value.displayValue,
+    }));
+  const boostedValues = attributeValuesState
+    .filter((value) => value.displayType === 'boosted')
+    .map((value) => ({
+      displayValue: value.displayValue,
+    }));
 
   const excludedValues = facet.excludedValues!.map((value) => ({
     displayValue: value,
@@ -220,7 +249,9 @@ const EditModalFacetContent = ({
               </Col>
 
               <FlexColumnCol>
-                <Text>{displayName}</Text>
+                <Text data-testid={`Label for ${displayName}`}>
+                  {displayName}
+                </Text>
               </FlexColumnCol>
 
               <Col>
@@ -299,62 +330,91 @@ const EditModalFacetContent = ({
   }, [excludedValues, listValues]);
 
   return (
-    <>
-      <AttributesModalHeader>
-        <HeadingContainer>
-          <Text isStrong as={Header3}>
-            Facet value settings of: {facet.displayValue}
-          </Text>
-        </HeadingContainer>
+    <Modal.Root
+      opened={true}
+      onClose={onClose}
+      centered
+      size={MODAL_WIDTH}
+      padding={0}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Edit facet values modal"
+    >
+      <Modal.Overlay blur={3} />
+      <Modal.Content>
+        <Modal.Body>
+          <ModalContainer>
+            <AttributesModalHeader>
+              <HeadingContainer>
+                <Text isStrong as={Header3}>
+                  Facet value settings of: {facet.displayValue}
+                </Text>
+              </HeadingContainer>
 
-        {attributeValuesError && (
-          <ErrorMessage>
-            Error whilst retrieving values: {attributeValuesError}
-          </ErrorMessage>
-        )}
+              {attributeValuesError && (
+                <ErrorMessage>
+                  Error whilst retrieving values: {attributeValuesError}
+                </ErrorMessage>
+              )}
 
-        <MergeAndSearchContainer>
-          <Text isStrong>All values listed</Text>
+              <MergeAndSearchContainer>
+                <Text isStrong>All values listed</Text>
 
-          <Search onChange={handleSearch} />
-        </MergeAndSearchContainer>
+                <Search onChange={handleSearch} />
+              </MergeAndSearchContainer>
 
-        <ModalAttributesTable>
-          <FacetAttributeValuesTableRow>
-            {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-              <Col key={`add-facet-modal-column-${label}`}>
-                <TableHeading as="p" isStrong={true}>
-                  {label}
-                </TableHeading>
-              </Col>
-            ))}
-          </FacetAttributeValuesTableRow>
-        </ModalAttributesTable>
-      </AttributesModalHeader>
+              <ModalAttributesTable>
+                <FacetAttributeValuesTableRow>
+                  {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
+                    <Col key={`add-facet-modal-column-${label}`}>
+                      <TableHeading as="p" isStrong={true}>
+                        {label}
+                      </TableHeading>
+                    </Col>
+                  ))}
+                </FacetAttributeValuesTableRow>
+              </ModalAttributesTable>
+            </AttributesModalHeader>
 
-      <BodyContainer>
-        {isLoading ? (
-          attributeValuesState.map((attribute) => (
-            <SkeletonRow
-              key={`attribute-value-skeleton-${attribute.displayValue}`}
-              data-testid="attribute-value-skeleton"
-              aria-busy="true"
-            />
-          ))
-        ) : (
-          <ModalAttributesTable>
-            {boostedValuesRows}
+            <BodyContainer>
+              {isLoading ? (
+                attributeValuesState.map((attribute) => (
+                  <SkeletonRow
+                    key={`attribute-value-skeleton-${attribute.displayValue}`}
+                    data-testid="attribute-value-skeleton"
+                    aria-busy="true"
+                  />
+                ))
+              ) : (
+                <ModalAttributesTable>
+                  {boostedValuesRows}
 
-            {defaultValuesRows}
+                  {defaultValuesRows}
 
-            {excludedValuesRows}
-          </ModalAttributesTable>
-        )}
+                  {excludedValuesRows}
+                </ModalAttributesTable>
+              )}
 
-        <FilteredResultsPanel filteredFacets={attributeValuesState.length} />
-      </BodyContainer>
-    </>
+              <FilteredResultsPanel
+                filteredFacets={attributeValuesState.length}
+              />
+            </BodyContainer>
+          </ModalContainer>
+        </Modal.Body>
+
+        <ModalFooter>
+          <Button onClick={onClose} aria-label="Close attributes modal">
+            Cancel
+          </Button>{' '}
+          <Button
+            onClick={handleSave}
+            isDisabled={isSaveDisabled}
+            aria-label="Save changes to attributes"
+          >
+            {saveButtonLabel}
+          </Button>
+        </ModalFooter>
+      </Modal.Content>
+    </Modal.Root>
   );
 };
-
-export default EditModalFacetContent;
