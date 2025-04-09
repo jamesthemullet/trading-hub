@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import type { AttributeValuesResponse, CountryCode } from '@/libs/api';
+import type {
+  MerchandisingAttributeValuesResponse,
+  MerchandisingCountryCode,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { uniqBy } from 'lodash';
@@ -12,7 +15,7 @@ import {
 import { handleError } from './utils/error';
 
 type Props = {
-  countryCode: CountryCode;
+  countryCode: MerchandisingCountryCode;
   facetId: string;
   query: string;
   categories?: string[];
@@ -25,7 +28,7 @@ export const useGetFacetAttributeValues = ({
   query,
 }: Props) => {
   const [attributeValues, setAttributeValues] = useState<
-    AttributeValuesResponse['values']
+    MerchandisingAttributeValuesResponse['values']
   >([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);

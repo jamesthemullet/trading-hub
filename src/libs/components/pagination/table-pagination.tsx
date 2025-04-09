@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
-import type { Pagination as PaginationType } from '@/libs/api/generated/open-api';
+import type { MerchandisingPagination as PaginationType } from '@/libs/api/generated/open-api';
 
 import { Dropdown } from '../dropdowns/dropdown/dropdown';
 import { spacing } from '../utils/spacing';

@@ -1,7 +1,7 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { Facet } from '@/libs/api';
+import type { MerchandisingFacet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { usePreview } from '../../hooks/use-preview';
@@ -39,7 +39,7 @@ const mockProduct = {
   url: '',
 };
 
-const mockFacets: Facet[] = [
+const mockFacets: MerchandisingFacet[] = [
   {
     id: 'Product Type',
     order: 0,

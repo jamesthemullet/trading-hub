@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { CategoryRuleSet } from '@/libs/api';
+import type { MerchandisingCategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { handleError } from './utils/error';
@@ -20,12 +20,12 @@ export const useUpdateRuleSet = () => {
       ruleSetId,
       rules,
       startDate,
-    }: CategoryRuleSet & { ruleSetId: string }) => {
+    }: MerchandisingCategoryRuleSet & { ruleSetId: string }) => {
       setError('');
       setIsSaving(true);
 
       try {
-        const body: CategoryRuleSet = {
+        const body: MerchandisingCategoryRuleSet = {
           categoryIds,
           countryCode,
           facets,

@@ -1,18 +1,18 @@
 // istanbul ignore file
 import type {
-  AttributesResponse,
-  AttributeValuesResponse,
   BetaMerchandisingFacetListData,
-  BoostsBuries,
-  IncludesExcludes,
-  KeywordRedirect,
-  ProductBoostBury,
-  ReturnedKeywordRedirect,
+  MerchandisingAttributesResponse,
+  MerchandisingAttributeValuesResponse,
+  MerchandisingBoostsBuries,
+  MerchandisingIncludesExcludes,
+  MerchandisingKeywordRedirect,
+  MerchandisingProductBoostBury,
+  MerchandisingReturnedKeywordRedirect,
 } from '@/libs/api';
 
 import type { NextApiRequest } from 'next';
 
-export const mockProducts: ProductBoostBury[] = [
+export const mockProducts: MerchandisingProductBoostBury[] = [
   {
     id: '2',
     weight: 0.7,
@@ -23,7 +23,7 @@ export const mockProducts: ProductBoostBury[] = [
   },
 ];
 
-export const boostMock: BoostsBuries = {
+export const boostMock: MerchandisingBoostsBuries = {
   numeric: [
     {
       field: 'averageRating',
@@ -61,7 +61,7 @@ export const boostMock: BoostsBuries = {
   ],
 };
 
-export const buriesMock: BoostsBuries = {
+export const buriesMock: MerchandisingBoostsBuries = {
   numeric: [
     {
       field: 'daysSinceLaunch',
@@ -90,7 +90,7 @@ export const buriesMock: BoostsBuries = {
   product: mockProducts,
 };
 
-export const includesMock: IncludesExcludes = {
+export const includesMock: MerchandisingIncludesExcludes = {
   alphanumeric: [
     {
       fields: [
@@ -107,7 +107,7 @@ export const includesMock: IncludesExcludes = {
   ],
 };
 
-export const excludesMock: IncludesExcludes = {
+export const excludesMock: MerchandisingIncludesExcludes = {
   alphanumeric: [
     {
       fields: [
@@ -184,7 +184,7 @@ export const facetsListMock: BetaMerchandisingFacetListData = {
   ],
 };
 
-export const attributesMock: AttributesResponse = {
+export const attributesMock: MerchandisingAttributesResponse = {
   attributes: [
     {
       type: 'alphanumeric',
@@ -209,43 +209,44 @@ export const attributesMock: AttributesResponse = {
   ],
 };
 
-export const attributeValuesMock: AttributeValuesResponse['values'] = [
-  {
-    displayValue: 'Cotton',
-  },
-  {
-    displayValue: 'Duck Down',
-  },
-  {
-    displayValue: 'Duck Down And Feather',
-  },
-  {
-    displayValue: 'Ducky Downy',
-  },
-  {
-    displayValue: 'Ducky Downy And Feathery',
-  },
-  {
-    displayValue: 'Silk',
-  },
-  {
-    displayValue: 'Merged 1',
-  },
-  {
-    displayValue: 'Merged 2',
-  },
-  {
-    displayValue: 'Other Merged 1',
-  },
-  {
-    displayValue: 'Other Merged 2',
-  },
-  {
-    displayValue: 'More Silk',
-  },
-];
+export const attributeValuesMock: MerchandisingAttributeValuesResponse['values'] =
+  [
+    {
+      displayValue: 'Cotton',
+    },
+    {
+      displayValue: 'Duck Down',
+    },
+    {
+      displayValue: 'Duck Down And Feather',
+    },
+    {
+      displayValue: 'Ducky Downy',
+    },
+    {
+      displayValue: 'Ducky Downy And Feathery',
+    },
+    {
+      displayValue: 'Silk',
+    },
+    {
+      displayValue: 'Merged 1',
+    },
+    {
+      displayValue: 'Merged 2',
+    },
+    {
+      displayValue: 'Other Merged 1',
+    },
+    {
+      displayValue: 'Other Merged 2',
+    },
+    {
+      displayValue: 'More Silk',
+    },
+  ];
 
-export const redirectMock: KeywordRedirect = {
+export const redirectMock: MerchandisingKeywordRedirect = {
   destinationUrl: 'l/women/dresses',
   endDate: '2024-08-01T09:37:06.109Z',
   isEnabled: true,
@@ -255,7 +256,7 @@ export const redirectMock: KeywordRedirect = {
   type: 'redirectTerm',
 };
 
-export const returnedRedirectMock: ReturnedKeywordRedirect = {
+export const returnedRedirectMock: MerchandisingReturnedKeywordRedirect = {
   ...redirectMock,
   id: '9a32d206-6b7f-47a2-8f83-578429d2a024',
   lastChanged: {

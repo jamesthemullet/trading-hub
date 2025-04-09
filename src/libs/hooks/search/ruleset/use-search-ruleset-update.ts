@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { KeywordRuleSet } from '@/libs/api';
+import type { MerchandisingKeywordRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
@@ -19,12 +19,12 @@ export const useSearchRuleSetUpdate = () => {
       countryCode,
       excludedFacets,
       isEnabled,
-    }: KeywordRuleSet & { ruleSetId: string }) => {
+    }: MerchandisingKeywordRuleSet & { ruleSetId: string }) => {
       setError('');
       setIsSaving(true);
 
       try {
-        const body: KeywordRuleSet = {
+        const body: MerchandisingKeywordRuleSet = {
           searchTerms,
           facets,
           isEnabled,

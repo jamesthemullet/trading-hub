@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
-  ExcludedFacets,
-  Facet,
+  MerchandisingExcludedFacets,
+  MerchandisingFacet,
   MerchandisingRules,
-  RuleSetFacetConfigWithId,
+  MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { Dropdown, Loader, Search } from '@/libs/components';
 import { usePreview } from '@/libs/hooks';
@@ -20,13 +20,13 @@ import { spacing } from '../utils/spacing';
 
 export type Props = {
   countryCode: 'UK' | 'IE';
-  facetConfig: RuleSetFacetConfigWithId[];
+  facetConfig: MerchandisingRuleSetFacetConfigWithId[];
   merchandisingRules: MerchandisingRules;
   onClose: () => void;
   categoryId?: string;
   searchTerm?: string;
   previewTitle?: string;
-  excludedFacets?: ExcludedFacets;
+  excludedFacets?: MerchandisingExcludedFacets;
 };
 
 const Wrapper = styled.div`
@@ -292,7 +292,7 @@ const FacetInfo = ({
   setIsDropdownOpen,
 }: {
   currency: string;
-  facet: Facet;
+  facet: MerchandisingFacet;
   isDropdownOpen: boolean;
   setIsDropdownOpen: (id: string) => void;
 }) => {
@@ -468,7 +468,7 @@ export const Preview = ({
               <Facets>
                 {data.facets
                   .slice(0, showAllFacets ? data.facets.length : 5)
-                  .map((facet: Facet) => (
+                  .map((facet: MerchandisingFacet) => (
                     <FacetInfo
                       key={facet.id}
                       facet={facet}

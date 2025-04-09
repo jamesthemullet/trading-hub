@@ -1,6 +1,10 @@
 import { useRouter } from 'next/router';
 
-import type { CountryCode, ExcludedFacets, ReturnedFacet } from '@/libs/api';
+import type {
+  MerchandisingCountryCode,
+  MerchandisingExcludedFacets,
+  MerchandisingReturnedFacet,
+} from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';
@@ -22,9 +26,9 @@ const Page = () => {
     dateTime,
   }: {
     categoryIds: string[];
-    includedFacets: ReturnedFacet[];
-    excludedFacets: ExcludedFacets;
-    countryCode: CountryCode;
+    includedFacets: MerchandisingReturnedFacet[];
+    excludedFacets: MerchandisingExcludedFacets;
+    countryCode: MerchandisingCountryCode;
     dateTime?: [Date | null, Date | null];
   }) => {
     const defaultMerchandisingRules = {

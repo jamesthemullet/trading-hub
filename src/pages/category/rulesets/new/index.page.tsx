@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import type { CategoryRuleSet } from '@/libs/api';
+import type { MerchandisingCategoryRuleSet } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';
@@ -20,7 +20,8 @@ const NewRuleSetPage = () => {
     startDate,
     endDate,
     countryCode,
-  }: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet) => {
+  }: Required<Pick<MerchandisingCategoryRuleSet, 'facets'>> &
+    MerchandisingCategoryRuleSet) => {
     const resp = await createRuleset({
       facets: facets,
       isEnabled: true,

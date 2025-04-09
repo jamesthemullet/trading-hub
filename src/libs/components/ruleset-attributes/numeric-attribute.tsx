@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import type { NumericBoostBury } from '../../api';
+import type { MerchandisingNumericBoostBury } from '../../api';
 import { Label, Text } from '../typography/typography.styles';
 import {
   AttributeHeading,
@@ -25,8 +25,8 @@ export const NumericAttribute = ({
   operation: 'boost' | 'bury' | 'include' | 'exclude';
   weight: number;
   isEditMode?: boolean;
-  onDelete?: ({ field, weight }: NumericBoostBury) => void;
-  onEdit?: (args: { field: NumericBoostBury }) => void;
+  onDelete?: ({ field, weight }: MerchandisingNumericBoostBury) => void;
+  onEdit?: (args: { field: MerchandisingNumericBoostBury }) => void;
   setWeight?: (weight: number) => void;
 }) => {
   const handleStartChanges = () => {

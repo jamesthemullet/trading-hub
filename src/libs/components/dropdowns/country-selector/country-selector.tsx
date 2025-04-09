@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import type { CountryCode } from '@/libs/api';
+import type { MerchandisingCountryCode } from '@/libs/api';
 import { useOnOutsideClick } from '@/libs/hooks';
 
 import Image from 'next/image';
@@ -33,8 +33,8 @@ export const CountrySelectorDropdown = ({
   onChange,
   selectedCountryCode,
 }: {
-  onChange: (country: CountryCode) => void;
-  selectedCountryCode?: CountryCode;
+  onChange: (country: MerchandisingCountryCode) => void;
+  selectedCountryCode?: MerchandisingCountryCode;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -42,7 +42,7 @@ export const CountrySelectorDropdown = ({
     index: number,
     label: string,
     selected: boolean,
-    countryCode: CountryCode
+    countryCode: MerchandisingCountryCode
   ) => ({
     index,
     label,

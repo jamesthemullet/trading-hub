@@ -1,7 +1,7 @@
 import type {
-  KeywordRedirect,
-  ReturnedKeywordRedirect,
-  ReturnedKeywordRedirects,
+  MerchandisingKeywordRedirect,
+  MerchandisingReturnedKeywordRedirect,
+  MerchandisingReturnedKeywordRedirects,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 import { Heading } from '@/libs/components';
@@ -14,9 +14,9 @@ import { useAccess } from '@/libs/hooks/use-access';
 import Head from 'next/head';
 
 const mapping: RuleSetMapping<
-  ReturnedKeywordRedirects,
-  ReturnedKeywordRedirect,
-  KeywordRedirect
+  MerchandisingReturnedKeywordRedirects,
+  MerchandisingReturnedKeywordRedirect,
+  MerchandisingKeywordRedirect
 > = {
   queryAllRuleSets: search().betaMerchandisingKeywordRedirectList,
   deleteRuleSetById: search().betaMerchandisingKeywordRedirectDelete,

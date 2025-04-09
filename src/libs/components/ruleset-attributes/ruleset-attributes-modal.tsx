@@ -2,10 +2,10 @@ import type { Dispatch } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
-  AlphanumericBoostBury,
-  CountryCode,
-  IncludeExclude,
-  NumericBoostBury,
+  MerchandisingAlphanumericBoostBury,
+  MerchandisingCountryCode,
+  MerchandisingIncludeExclude,
+  MerchandisingNumericBoostBury,
 } from '@/libs/api';
 
 import type { Action, AttributeEdit, RulesetAttribute } from '../types';
@@ -15,7 +15,7 @@ const MODAL_WIDTH = 435;
 
 interface RulesetAttributesModalProps {
   isModalOpen: boolean;
-  countryCode: CountryCode;
+  countryCode: MerchandisingCountryCode;
   categories?: string[];
   searchTerms?: string[];
   editData: AttributeEdit | null;
@@ -38,7 +38,8 @@ export const RulesetAttributesModal = ({
         (attribute.operation === 'boost' || attribute.operation === 'bury')
       ) {
         if (attribute.operation === editData.operation) {
-          const data = attribute.attribute as AlphanumericBoostBury;
+          const data =
+            attribute.attribute as MerchandisingAlphanumericBoostBury;
           dispatch({
             type: 'alphanumericBoostBuryAttribute',
             payload: {
@@ -49,7 +50,8 @@ export const RulesetAttributesModal = ({
             },
           });
         } else {
-          const data = attribute.attribute as AlphanumericBoostBury;
+          const data =
+            attribute.attribute as MerchandisingAlphanumericBoostBury;
           dispatch({
             type: 'alphanumericBoostBuryAttribute',
             payload: {
@@ -92,7 +94,7 @@ export const RulesetAttributesModal = ({
         (attribute.operation === 'include' || attribute.operation === 'exclude')
       ) {
         if (attribute.operation === editData.operation) {
-          const data = attribute.attribute as IncludeExclude;
+          const data = attribute.attribute as MerchandisingIncludeExclude;
           dispatch({
             type: 'alphanumericIncludeExcludeAttribute',
             payload: {
@@ -105,7 +107,7 @@ export const RulesetAttributesModal = ({
             },
           });
         } else {
-          const data = attribute.attribute as IncludeExclude;
+          const data = attribute.attribute as MerchandisingIncludeExclude;
           dispatch({
             type: 'alphanumericIncludeExcludeAttribute',
             payload: {
@@ -150,7 +152,7 @@ export const RulesetAttributesModal = ({
         (attribute.operation === 'boost' || attribute.operation === 'bury')
       ) {
         if (attribute.operation === editData.operation) {
-          const data = attribute.attribute as NumericBoostBury;
+          const data = attribute.attribute as MerchandisingNumericBoostBury;
           dispatch({
             type: 'numericAttribute',
             payload: {
@@ -161,7 +163,7 @@ export const RulesetAttributesModal = ({
             },
           });
         } else {
-          const data = attribute.attribute as NumericBoostBury;
+          const data = attribute.attribute as MerchandisingNumericBoostBury;
           dispatch({
             type: 'numericAttribute',
             payload: {
@@ -190,7 +192,7 @@ export const RulesetAttributesModal = ({
         attribute.type === 'numeric' &&
         (attribute.operation === 'boost' || attribute.operation === 'bury')
       ) {
-        const data = attribute.attribute as NumericBoostBury;
+        const data = attribute.attribute as MerchandisingNumericBoostBury;
         dispatch({
           type: 'numericAttribute',
           payload: {
@@ -206,7 +208,7 @@ export const RulesetAttributesModal = ({
         attribute.type === 'alphanumeric' &&
         (attribute.operation === 'boost' || attribute.operation === 'bury')
       ) {
-        const data = attribute.attribute as AlphanumericBoostBury;
+        const data = attribute.attribute as MerchandisingAlphanumericBoostBury;
         dispatch({
           type: 'alphanumericBoostBuryAttribute',
           payload: {
@@ -222,7 +224,7 @@ export const RulesetAttributesModal = ({
         attribute.type === 'alphanumeric' &&
         (attribute.operation === 'include' || attribute.operation === 'exclude')
       ) {
-        const data = attribute.attribute as IncludeExclude;
+        const data = attribute.attribute as MerchandisingIncludeExclude;
         dispatch({
           type: 'alphanumericIncludeExcludeAttribute',
           payload: {

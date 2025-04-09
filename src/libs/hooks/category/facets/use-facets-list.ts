@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type {
   BetaMerchandisingAttributesListParamsCatalogueEnum,
-  CountryCode,
-  ReturnedGlobalFacet,
+  MerchandisingCountryCode,
+  MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 import { convertCountryCodeToCatalogues } from '@/libs/components/utils/convert-country-code-to-catalogues';
@@ -20,10 +20,12 @@ export const useFacetsList = ({
   query: string[];
   queryBy: 'categoryIds' | 'searchTerms';
   enabled: boolean;
-  countryCode: CountryCode;
+  countryCode: MerchandisingCountryCode;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [facetsList, setFacetsList] = useState<ReturnedGlobalFacet[]>([]);
+  const [facetsList, setFacetsList] = useState<
+    MerchandisingReturnedGlobalFacet[]
+  >([]);
   const [error, setError] = useState('');
 
   const requestData = useCallback(
@@ -71,7 +73,7 @@ export const useFacetsList = ({
   const asyncCall = useCallback(
     async (
       query: string[],
-      country: CountryCode,
+      country: MerchandisingCountryCode,
       queryBy: 'categoryIds' | 'searchTerms'
     ) => {
       try {

@@ -1,36 +1,37 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import type { ReturnedGlobalRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
 export const useGlobalRuleSetDetail = (id: string) => {
   const api = useMemo(() => search(), []);
-  const [globalRuleSet, setGlobalRuleSet] = useState<ReturnedGlobalRuleSet>({
-    id: '',
-    isEnabled: false,
-    lastChanged: {
-      date: '',
-      user: '',
-    },
-    rules: {
-      pinnedProducts: [],
-      blockedProducts: [],
-      boosts: { alphanumeric: [], numeric: [], product: [] },
-      buries: {
-        alphanumeric: [],
-        numeric: [],
-        product: [],
+  const [globalRuleSet, setGlobalRuleSet] =
+    useState<MerchandisingReturnedGlobalRuleSet>({
+      id: '',
+      isEnabled: false,
+      lastChanged: {
+        date: '',
+        user: '',
       },
-      includes: {
-        alphanumeric: [],
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [],
+        },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       },
-      excludes: {
-        alphanumeric: [],
-      },
-    },
-    facets: [],
-  });
+      facets: [],
+    });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 

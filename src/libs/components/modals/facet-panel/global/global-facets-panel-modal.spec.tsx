@@ -1,7 +1,10 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { AttributeValuesResponse, ReturnedGlobalFacet } from '@/libs/api';
+import type {
+  MerchandisingAttributeValuesResponse,
+  MerchandisingReturnedGlobalFacet,
+} from '@/libs/api';
 import {
   useCheckMergeNameUnique,
   useGetFacetAttributeValues,
@@ -16,7 +19,7 @@ import {
 } from './global-facets-panel-modal';
 
 const mockUpdateGlobalFacet = jest.fn(() =>
-  Promise.resolve({} as ReturnedGlobalFacet | { status: string })
+  Promise.resolve({} as MerchandisingReturnedGlobalFacet | { status: string })
 );
 const updateGlobalFacet = {
   handleGlobalFacetUpdate: mockUpdateGlobalFacet,
@@ -35,7 +38,7 @@ jest.mock('@/libs/hooks/use-check-merge-name-unique', () => ({
   useCheckMergeNameUnique: jest.fn(),
 }));
 
-const mockFacet: ReturnedGlobalFacet = {
+const mockFacet: MerchandisingReturnedGlobalFacet = {
   id: '4f8d4800-3eb0-11ef-9a6a-000000000000',
   indexPropertyName: 'alcoholContent',
   displayValue: 'Alcohol Percentage',
@@ -53,7 +56,7 @@ const mockFacet: ReturnedGlobalFacet = {
   ],
 };
 
-const attributeValuesMock: AttributeValuesResponse['values'] = [
+const attributeValuesMock: MerchandisingAttributeValuesResponse['values'] = [
   {
     displayValue: '13 - 14.4',
   },

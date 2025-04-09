@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import type { AttributesResponse } from '@/libs/api';
+import type { MerchandisingAttributesResponse } from '@/libs/api';
 import { search } from '@/libs/api';
 
 export const useGetFacetAttributes = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [attributesList, setAttributesList] = useState<AttributesResponse>({
-    attributes: [],
-  });
+  const [attributesList, setAttributesList] =
+    useState<MerchandisingAttributesResponse>({
+      attributes: [],
+    });
   const [error, setError] = useState('');
 
   useEffect(() => {

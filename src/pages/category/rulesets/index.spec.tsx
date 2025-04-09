@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedCategoryRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
@@ -484,7 +484,7 @@ describe('Index', () => {
   it('should duplicate a ruleset', async () => {
     const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    const mockRuleset: ReturnedCategoryRuleSet = {
+    const mockRuleset: MerchandisingReturnedCategoryRuleSet = {
       id: mockId,
       countryCode: 'UK',
       categoriesInfo: [

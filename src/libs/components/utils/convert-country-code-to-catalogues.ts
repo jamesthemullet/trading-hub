@@ -1,10 +1,10 @@
 import type {
   BetaMerchandisingAttributesListParamsCatalogueEnum,
-  CountryCode,
+  MerchandisingCountryCode,
 } from '@/libs/api';
 
 export const convertCountryCodeToCatalogues = (
-  countryCode: CountryCode
+  countryCode: MerchandisingCountryCode
 ): BetaMerchandisingAttributesListParamsCatalogueEnum[] => {
   switch (countryCode) {
     case 'UK':

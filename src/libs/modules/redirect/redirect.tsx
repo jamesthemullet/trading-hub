@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import type {
-  CountryCode,
-  KeywordRedirect,
-  ReturnedKeywordRedirect,
+  MerchandisingCountryCode,
+  MerchandisingKeywordRedirect,
+  MerchandisingReturnedKeywordRedirect,
 } from '@/libs/api';
 import {
   ErrorMessage,
@@ -77,10 +77,10 @@ const InfluenceLabel = styled(Text)`
 `;
 
 type Props = {
-  onCreate?: (args: KeywordRedirect) => void;
-  onSave?: (args: KeywordRedirect) => void;
+  onCreate?: (args: MerchandisingKeywordRedirect) => void;
+  onSave?: (args: MerchandisingKeywordRedirect) => void;
   onCancel: () => void;
-  redirect?: ReturnedKeywordRedirect;
+  redirect?: MerchandisingReturnedKeywordRedirect;
   title: string;
   writeEnabled?: boolean;
 };
@@ -93,7 +93,7 @@ export const Redirect = ({
   title,
   writeEnabled = true,
 }: Props) => {
-  const [redirect, setRedirect] = useState<KeywordRedirect>(
+  const [redirect, setRedirect] = useState<MerchandisingKeywordRedirect>(
     savedRedirect
       ? {
           destinationUrl: savedRedirect.destinationUrl,
@@ -218,7 +218,7 @@ export const Redirect = ({
           <div>
             <InfluenceLabel>Influence</InfluenceLabel>
             <CountrySelectorDropdown
-              onChange={(country: CountryCode) =>
+              onChange={(country: MerchandisingCountryCode) =>
                 onUpdate('countryCode', country)
               }
               selectedCountryCode={redirect.countryCode}

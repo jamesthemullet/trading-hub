@@ -5,7 +5,10 @@ import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { KeywordRuleSet, ReturnedKeywordRuleSet } from '@/libs/api';
+import type {
+  MerchandisingKeywordRuleSet,
+  MerchandisingReturnedKeywordRuleSet,
+} from '@/libs/api';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -69,10 +72,9 @@ const server = setupServer(
     '/api/search/beta/merchandising/keyword/ruleset/:id',
     async (ctx) => {
       const data = useSearchRulesetList();
-      const ruleSetReturned: ReturnedKeywordRuleSet = data.ruleSets.find(
-        (ruleSet: any) => ruleSet.id === ctx.params.id
-      );
-      const rules = (await ctx.request.json()) as KeywordRuleSet;
+      const ruleSetReturned: MerchandisingReturnedKeywordRuleSet =
+        data.ruleSets.find((ruleSet: any) => ruleSet.id === ctx.params.id);
+      const rules = (await ctx.request.json()) as MerchandisingKeywordRuleSet;
       mockUpdateRuleSet({
         searchTerms: ruleSetReturned.searchTerms,
         ruleSetId: ruleSetReturned.id,
@@ -91,7 +93,7 @@ const server = setupServer(
     }
   ),
   http.post('/api/search/beta/merchandising/keyword/ruleset', async (ctx) => {
-    const ruleSet = (await ctx.request.json()) as KeywordRuleSet;
+    const ruleSet = (await ctx.request.json()) as MerchandisingKeywordRuleSet;
     mockRuleSetCreate({
       merchandisingRules: ruleSet.rules,
       searchTerms: ruleSet.searchTerms,

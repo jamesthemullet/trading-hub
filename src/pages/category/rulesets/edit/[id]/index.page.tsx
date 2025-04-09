@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import type { RuleSet } from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetDetail } from '@/libs/hooks/category/rulesets/use-rule-set-detail';
@@ -28,7 +28,7 @@ const Page = ({ id }: PageProps) => {
   }: {
     categoryIds?: Array<string>;
     ruleSetId: string;
-    ruleSet: RuleSet;
+    ruleSet: MerchandisingRuleSet;
   }) => {
     // istanbul ignore next
     if (!categoryIds?.[0]) return;

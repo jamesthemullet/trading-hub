@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { KeywordRedirect } from '@/libs/api';
+import type { MerchandisingKeywordRedirect } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
@@ -14,7 +14,7 @@ export const useRedirectUpdate = () => {
       redirectId,
     }: {
       redirectId: string;
-      redirect: KeywordRedirect;
+      redirect: MerchandisingKeywordRedirect;
     }) => {
       setError('');
       setIsSaving(true);

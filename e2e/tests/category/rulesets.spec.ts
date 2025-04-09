@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/prefer-screen-queries */
-import { ReturnedCategoryRuleSets } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSets } from '@/libs/api';
 
 import { expect, test } from '@playwright/test';
 
@@ -265,7 +265,7 @@ test.describe('Category rulesets', () => {
     await page.route(
       '*/**/api/search/beta/merchandising/category/ruleset?q=&start=0&rows=10',
       async (route) => {
-        const json: ReturnedCategoryRuleSets = {
+        const json: MerchandisingReturnedCategoryRuleSets = {
           pagination: { totalItems: 6 },
           ruleSets: mockCategoryRulesets.ruleSets.filter(
             (ruleset) => ruleset.id !== '22ce8ae9-a7b3-4a52-bea4-e31ebf1f5f10'

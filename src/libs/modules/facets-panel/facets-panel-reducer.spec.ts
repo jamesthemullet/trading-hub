@@ -1,4 +1,4 @@
-import type { CountryCode } from '@/libs/api';
+import type { MerchandisingCountryCode } from '@/libs/api';
 
 import type { FacetPanelState } from './facets-panel-reducer';
 import { facetsPanelReducer } from './facets-panel-reducer';
@@ -156,7 +156,7 @@ describe('facetsPanelReducer', () => {
       };
       const action = {
         type: 'changeCountry' as const,
-        payload: 'UK' as CountryCode,
+        payload: 'UK' as MerchandisingCountryCode,
       };
       const result = facetsPanelReducer(state, action);
       expect(result).toEqual({

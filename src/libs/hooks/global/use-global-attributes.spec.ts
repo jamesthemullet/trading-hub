@@ -2,13 +2,13 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { AttributesResponse } from '@/libs/api';
+import type { MerchandisingAttributesResponse } from '@/libs/api';
 
 import { useGlobalAttributes } from './use-global-attributes';
 
 const baseUrl = 'http://localhost';
 
-const mockedResponse: AttributesResponse = {
+const mockedResponse: MerchandisingAttributesResponse = {
   attributes: [
     {
       type: 'alphanumeric',

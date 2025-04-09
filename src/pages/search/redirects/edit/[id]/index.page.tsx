@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import type { KeywordRedirect } from '@/libs/api';
+import type { MerchandisingKeywordRedirect } from '@/libs/api';
 import { CentredError, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
@@ -20,7 +20,7 @@ const EditRedirect = ({ id }: Props) => {
 
   const { updateRedirect } = useRedirectUpdate();
 
-  const onSaveRedirect = async (redirect: KeywordRedirect) => {
+  const onSaveRedirect = async (redirect: MerchandisingKeywordRedirect) => {
     const response = await updateRedirect({ redirect, redirectId: id });
 
     if (response) {

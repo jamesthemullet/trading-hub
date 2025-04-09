@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { SearchPreviewResponseBeta } from '@/libs/api';
+import type { MerchandisingSearchPreviewResponseBeta } from '@/libs/api';
 
 import { usePreview } from './use-preview';
 
@@ -22,7 +22,7 @@ const mockMerchandisingRules = {
   },
 };
 
-const mockSearchData: SearchPreviewResponseBeta = {
+const mockSearchData: MerchandisingSearchPreviewResponseBeta = {
   products: [
     {
       id: '60275024',
@@ -293,7 +293,7 @@ describe('useRuleSet', () => {
       status: { status: 200 },
     });
 
-    const newMocks: SearchPreviewResponseBeta = {
+    const newMocks: MerchandisingSearchPreviewResponseBeta = {
       ...mockSearchData,
       products: [...mockSearchData.products, mockSearchData.products[0]],
       pagination: {

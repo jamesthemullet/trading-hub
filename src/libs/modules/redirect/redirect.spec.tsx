@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { ReturnedKeywordRedirect } from '@/libs/api';
+import type { MerchandisingReturnedKeywordRedirect } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { Redirect } from './redirect';
@@ -177,7 +177,7 @@ describe('Redirect', () => {
   it('saves a redirect', async () => {
     const mockSave = jest.fn();
 
-    const existingRedirect: ReturnedKeywordRedirect = {
+    const existingRedirect: MerchandisingReturnedKeywordRedirect = {
       destinationUrl: 'l/womens/dresses',
       type: 'redirectTerm',
       keywords: ['keyword'],
@@ -219,7 +219,7 @@ describe('Redirect', () => {
   it('loads a redirect', async () => {
     const mockSave = jest.fn();
 
-    const existingRedirect: ReturnedKeywordRedirect = {
+    const existingRedirect: MerchandisingReturnedKeywordRedirect = {
       destinationUrl: 'l/womens/dresses',
       type: 'redirectTerm',
       keywords: ['keyword'],
@@ -261,7 +261,7 @@ describe('Redirect', () => {
     it('should show datepicker', async () => {
       const mockSave = jest.fn();
 
-      const existingRedirect: ReturnedKeywordRedirect = {
+      const existingRedirect: MerchandisingReturnedKeywordRedirect = {
         destinationUrl: 'l/womens/dresses',
         type: 'redirectTerm',
         keywords: ['keyword'],
@@ -291,7 +291,7 @@ describe('Redirect', () => {
     it('should not show the date if no start date or end date', async () => {
       const mockSave = jest.fn();
 
-      const existingRedirect: ReturnedKeywordRedirect = {
+      const existingRedirect: MerchandisingReturnedKeywordRedirect = {
         destinationUrl: 'l/womens/dresses',
         type: 'redirectTerm',
         keywords: ['keyword'],
@@ -322,7 +322,7 @@ describe('Redirect', () => {
     it('should add a date range', async () => {
       const mockSave = jest.fn();
 
-      const existingRedirect: ReturnedKeywordRedirect = {
+      const existingRedirect: MerchandisingReturnedKeywordRedirect = {
         destinationUrl: 'l/womens/dresses',
         type: 'redirectTerm',
         keywords: ['keyword'],
@@ -394,7 +394,7 @@ describe('Redirect', () => {
       const user = userEvent.setup({ delay: null });
       const mockSave = jest.fn();
 
-      const existingRedirect: ReturnedKeywordRedirect = {
+      const existingRedirect: MerchandisingReturnedKeywordRedirect = {
         destinationUrl: 'l/womens/dresses',
         type: 'redirectTerm',
         keywords: ['keyword'],

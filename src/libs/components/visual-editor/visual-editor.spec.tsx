@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import type { Product } from '../../api';
+import type { MerchandisingProduct } from '../../api';
 import { VisualEditor } from './visual-editor';
 
 describe('VisualEditor', () => {
@@ -12,7 +12,7 @@ describe('VisualEditor', () => {
   const product3Title = 'third product';
   const product1Brand = 'foo';
 
-  const products: Product[] = [
+  const products: MerchandisingProduct[] = [
     {
       id: product1Id,
       productId: product1Id,

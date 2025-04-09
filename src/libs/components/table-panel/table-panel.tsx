@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
-import type { CountryCode } from '@/libs/api';
+import type { MerchandisingCountryCode } from '@/libs/api';
 import {
   DataTable,
   ErrorMessage,
@@ -71,7 +71,9 @@ export const TablePanel = <
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [countryCode, setCountryCode] = useState<CountryCode | undefined>();
+  const [countryCode, setCountryCode] = useState<
+    MerchandisingCountryCode | undefined
+  >();
 
   const [searchInputValue, setSearchInputValue] = useState<string>(
     router.query.searchQuery?.toString() || ''

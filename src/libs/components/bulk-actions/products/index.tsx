@@ -2,7 +2,7 @@ import type { Dispatch } from 'react';
 import { useState } from 'react';
 import { Divider, Modal } from '@mantine/core';
 
-import type { RuleSet } from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 
 import pluralize from 'pluralize';
 
@@ -24,7 +24,7 @@ import {
 type BulkActionsTypes = {
   dispatch: Dispatch<Action>;
   hasRestore: boolean;
-  ruleset: RuleSet;
+  ruleset: MerchandisingRuleSet;
   selectedProducts: string[];
   onReset: () => void;
 };

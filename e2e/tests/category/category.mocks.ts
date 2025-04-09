@@ -1,15 +1,15 @@
-import {
-  AttributesResponse,
-  AttributeValuesResponse,
+import type {
   BetaMerchandisingFacetListData,
-  Categories,
-  ProductSearchResponse,
-  ReturnedCategoryRuleSet,
-  ReturnedCategoryRuleSets,
-  SearchPreviewResponseBeta,
+  MerchandisingAttributesResponse,
+  MerchandisingAttributeValuesResponse,
+  MerchandisingCategories,
+  MerchandisingProductSearchResponse,
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingReturnedCategoryRuleSets,
+  MerchandisingSearchPreviewResponseBeta,
 } from '@/libs/api';
 
-export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
+export const mockCategoryRulesets: MerchandisingReturnedCategoryRuleSets = {
   ruleSets: [
     {
       id: '5e1002e8-bb08-4215-b26f-b5f6814b010a',
@@ -303,7 +303,7 @@ export const mockCategoryRulesets: ReturnedCategoryRuleSets = {
   pagination: { totalItems: 7 },
 };
 
-export const mockCategoryRuleset: ReturnedCategoryRuleSet = {
+export const mockCategoryRuleset: MerchandisingReturnedCategoryRuleSet = {
   id: '5e1002e8-bb08-4215-b26f-b5f6814b010a',
   isEnabled: true,
   rules: {
@@ -359,7 +359,7 @@ export const mockCategoryRuleset: ReturnedCategoryRuleSet = {
   countryCode: 'UK_IE',
 };
 
-export const mockCategoryList: Categories = {
+export const mockCategoryList: MerchandisingCategories = {
   categories: [
     { identifier: 'SubCategory_429', name: 'Dresses', path: 'l/women/dresses' },
     {
@@ -381,7 +381,7 @@ export const mockCategoryList: Categories = {
   pagination: { totalItems: 4 },
 };
 
-export const mockIECategoryList: Categories = {
+export const mockIECategoryList: MerchandisingCategories = {
   categories: [
     {
       identifier: 'IE_SubCategory_1002041',
@@ -407,7 +407,7 @@ export const mockIECategoryList: Categories = {
   pagination: { totalItems: 3 },
 };
 
-export const mockPreview: SearchPreviewResponseBeta = {
+export const mockPreview: MerchandisingSearchPreviewResponseBeta = {
   category: 'SubCategory_429',
   ruleSet: {
     rules: {
@@ -1334,7 +1334,7 @@ export const mockPreview: SearchPreviewResponseBeta = {
   pagination: { totalItems: 10 },
 };
 
-export const mockProducts: ProductSearchResponse = {
+export const mockProducts: MerchandisingProductSearchResponse = {
   products: [
     {
       id: '60529550',
@@ -1646,7 +1646,7 @@ export const mockFacets: BetaMerchandisingFacetListData = {
   ],
 };
 
-export const mockAttributeValue: AttributeValuesResponse = {
+export const mockAttributeValue: MerchandisingAttributeValuesResponse = {
   values: [
     { displayValue: 'CHAMPAGNE' },
     { displayValue: 'NO COLOUR' },
@@ -1655,7 +1655,7 @@ export const mockAttributeValue: AttributeValuesResponse = {
   pagination: { totalItems: 3 },
 };
 
-export const mockCategoryNumericAttributes: AttributesResponse = {
+export const mockCategoryNumericAttributes: MerchandisingAttributesResponse = {
   attributes: [
     {
       name: 'predictions.salesIn1Day.normalisedValue',
@@ -1668,37 +1668,38 @@ export const mockCategoryNumericAttributes: AttributesResponse = {
   ],
 };
 
-export const mockCategoryAlphanumericAttributes: AttributesResponse = {
-  attributes: [
-    {
-      name: 'offerFlag',
-      type: 'alphanumeric',
-      values: [
-        {
-          value: '0',
-        },
-        {
-          value: '1',
-        },
-      ],
-    },
-    {
-      name: 'fit',
-      type: 'alphanumeric',
-      values: [
-        {
-          value: 'Regular fit',
-        },
-        {
-          value: 'Relaxed fit',
-        },
-        {
-          value: 'Fitted',
-        },
-        {
-          value: 'Straight leg',
-        },
-      ],
-    },
-  ],
-};
+export const mockCategoryAlphanumericAttributes: MerchandisingAttributesResponse =
+  {
+    attributes: [
+      {
+        name: 'offerFlag',
+        type: 'alphanumeric',
+        values: [
+          {
+            value: '0',
+          },
+          {
+            value: '1',
+          },
+        ],
+      },
+      {
+        name: 'fit',
+        type: 'alphanumeric',
+        values: [
+          {
+            value: 'Regular fit',
+          },
+          {
+            value: 'Relaxed fit',
+          },
+          {
+            value: 'Fitted',
+          },
+          {
+            value: 'Straight leg',
+          },
+        ],
+      },
+    ],
+  };

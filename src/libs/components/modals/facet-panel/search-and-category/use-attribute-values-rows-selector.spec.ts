@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import type { ReturnedGlobalFacet } from '@/libs/api';
+import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 
 import { useAttributeValuesRowsSelector } from './use-attribute-values-rows-selector';
@@ -10,7 +10,7 @@ jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
   useGetFacetAttributeValues: jest.fn(),
 }));
 
-const mockReturnedGlobalFacetState: ReturnedGlobalFacet = {
+const mockReturnedGlobalFacetState: MerchandisingReturnedGlobalFacet = {
   id: 'color',
   lastChanged: {
     date: '2021-10-01',

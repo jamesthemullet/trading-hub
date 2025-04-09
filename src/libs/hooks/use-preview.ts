@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import type {
-  ExcludedFacets,
+  MerchandisingExcludedFacets,
   MerchandisingRules,
-  RuleSetFacetConfigWithId,
-  SearchPreviewResponseBeta,
+  MerchandisingRuleSetFacetConfigWithId,
+  MerchandisingSearchPreviewResponseBeta,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
@@ -20,18 +20,18 @@ export const usePreview = ({
   excludedFacets,
 }: {
   countryCode: 'UK' | 'IE';
-  facetConfig: Array<RuleSetFacetConfigWithId>;
+  facetConfig: Array<MerchandisingRuleSetFacetConfigWithId>;
   merchandisingRules: MerchandisingRules;
   categoryId?: string;
   searchTerm?: string;
-  excludedFacets?: ExcludedFacets;
+  excludedFacets?: MerchandisingExcludedFacets;
 }) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const [facetConfigRules, setFacetConfigRules] =
-    useState<Array<RuleSetFacetConfigWithId>>(facetConfig);
-  const [data, setData] = useState<SearchPreviewResponseBeta>({
+    useState<Array<MerchandisingRuleSetFacetConfigWithId>>(facetConfig);
+  const [data, setData] = useState<MerchandisingSearchPreviewResponseBeta>({
     category: '',
     products: [],
     ruleSet: {
@@ -96,7 +96,8 @@ export const usePreview = ({
           }
         );
 
-        const previewData: SearchPreviewResponseBeta = searchPreview.data;
+        const previewData: MerchandisingSearchPreviewResponseBeta =
+          searchPreview.data;
 
         setData(previewData);
 
@@ -124,7 +125,7 @@ export const usePreview = ({
     data,
     error,
     isLoading,
-    setFacetConfigRules: (facets: RuleSetFacetConfigWithId[]) =>
+    setFacetConfigRules: (facets: MerchandisingRuleSetFacetConfigWithId[]) =>
       setFacetConfigRules(facets),
   };
 };

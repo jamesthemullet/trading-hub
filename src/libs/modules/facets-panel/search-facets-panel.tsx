@@ -1,11 +1,11 @@
 import { useEffect, useReducer, useState } from 'react';
 
 import type {
-  CountryCode,
-  ExcludedFacets,
+  MerchandisingCountryCode,
+  MerchandisingExcludedFacets,
+  MerchandisingReturnedFacet,
   MerchandisingRules,
-  ReturnedFacet,
-  RuleSetFacetConfigWithId,
+  MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { ErrorMessage } from '@/libs/components';
 import { useFacetsList } from '@/libs/hooks';
@@ -16,10 +16,10 @@ import { facetsPanelReducer } from './facets-panel-reducer';
 import { useFacetsRowsSelector } from './use-facets-panel-rows-selector';
 
 type SearchFacetsPanelProps = {
-  ruleSetIncludedFacets: RuleSetFacetConfigWithId[] | undefined;
-  ruleSetExcludedFacets: ExcludedFacets | undefined;
+  ruleSetIncludedFacets: MerchandisingRuleSetFacetConfigWithId[] | undefined;
+  ruleSetExcludedFacets: MerchandisingExcludedFacets | undefined;
   isLoading: boolean;
-  countryCode: CountryCode;
+  countryCode: MerchandisingCountryCode;
   searchTerms: string[];
   ruleSetRules?: MerchandisingRules;
   startDate?: string;
@@ -28,9 +28,9 @@ type SearchFacetsPanelProps = {
   writeEnabled?: boolean;
   onSave: (value: {
     searchTerms: string[];
-    includedFacets: ReturnedFacet[];
-    excludedFacets: ExcludedFacets;
-    countryCode: CountryCode;
+    includedFacets: MerchandisingReturnedFacet[];
+    excludedFacets: MerchandisingExcludedFacets;
+    countryCode: MerchandisingCountryCode;
     dateTime?: [Date | null, Date | null];
   }) => void;
   onCancel: () => void;
@@ -62,7 +62,9 @@ const SearchFacetsPanel = ({
     null,
   ]);
 
-  const [facetsData, setFacetsData] = useState<ReturnedFacet[]>([]);
+  const [facetsData, setFacetsData] = useState<MerchandisingReturnedFacet[]>(
+    []
+  );
 
   const [initialIncludedFacets, setInitialIncludedFacets] = useState<string[]>(
     []

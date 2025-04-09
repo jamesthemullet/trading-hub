@@ -1,7 +1,10 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { CountryCode, ReturnedGlobalFacet } from '@/libs/api';
+import type {
+  MerchandisingCountryCode,
+  MerchandisingReturnedGlobalFacet,
+} from '@/libs/api';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { attributeValuesMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -39,7 +42,7 @@ const facetMock = {
 const onCloseSpy = jest.fn();
 const onSaveSpy = jest.fn();
 
-const countryCode: CountryCode = 'UK';
+const countryCode: MerchandisingCountryCode = 'UK';
 
 const mockDefaultCategoryFacetProps = {
   onClose: onCloseSpy,
@@ -53,7 +56,7 @@ const mockDefaultCategoryFacetProps = {
 };
 
 const mockUpdateGlobalFacet = jest.fn(() =>
-  Promise.resolve({} as ReturnedGlobalFacet | { status: string })
+  Promise.resolve({} as MerchandisingReturnedGlobalFacet | { status: string })
 );
 const updateGlobalFacet = {
   handleGlobalFacetUpdate: mockUpdateGlobalFacet,

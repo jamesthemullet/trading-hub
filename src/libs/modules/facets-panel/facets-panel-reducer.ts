@@ -1,4 +1,7 @@
-import type { CountryCode, ReturnedFacet } from '@/libs/api';
+import type {
+  MerchandisingCountryCode,
+  MerchandisingReturnedFacet,
+} from '@/libs/api';
 import { toArrayWithSwappedElements } from '@/libs/components/modals/facet-panel/utils/swap-array-elements';
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
@@ -7,7 +10,7 @@ export type BaseDisplayValueMeta = {
   isBeginningOfDisplayTypeGroup: boolean;
   isEndOfDisplayTypeGroup: boolean;
 };
-export type FacetRowDisplayValue = ReturnedFacet & {
+export type FacetRowDisplayValue = MerchandisingReturnedFacet & {
   meta?: BaseDisplayValueMeta;
   displayType: FacetDisplayType;
 };
@@ -41,7 +44,7 @@ type InitialiseStateAction = {
 
 type ChangeCountryAction = {
   type: 'changeCountry';
-  payload: CountryCode;
+  payload: MerchandisingCountryCode;
 };
 
 export type Action =
@@ -54,7 +57,7 @@ export type Action =
 export type FacetPanelState = {
   excludedFacets: string[];
   includedFacets: string[];
-  countryCode: CountryCode;
+  countryCode: MerchandisingCountryCode;
 };
 
 export const facetsPanelReducer = (

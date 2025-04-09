@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import type { RuleSet } from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import { CentredError, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
@@ -26,7 +26,7 @@ const Page = ({ id }: PageProps) => {
   }: {
     searchTerms?: Array<string>;
     ruleSetId: string;
-    ruleSet: RuleSet;
+    ruleSet: MerchandisingRuleSet;
   }) => {
     // istanbul ignore next
     if (!searchTerms?.[0]) return;

@@ -3,9 +3,9 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type {
-  CountryCode,
-  ReturnedKeywordRuleSet,
-  SearchPreviewResponseBeta,
+  MerchandisingCountryCode,
+  MerchandisingReturnedKeywordRuleSet,
+  MerchandisingSearchPreviewResponseBeta,
 } from '@/libs/api';
 import {
   useFacetsList,
@@ -42,7 +42,7 @@ jest.mock('react', () => ({
 
 const mockSearchTerms = ['red dress'];
 
-const mockRuleData: ReturnedKeywordRuleSet = {
+const mockRuleData: MerchandisingReturnedKeywordRuleSet = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],
@@ -87,7 +87,7 @@ const mockFacet = {
   merged: [],
 };
 
-const mockData: SearchPreviewResponseBeta = {
+const mockData: MerchandisingSearchPreviewResponseBeta = {
   searchTerm: 'foo',
   externalChanges: mockMerchandisingRulesWithInfo,
   facets: [
@@ -158,7 +158,7 @@ const mockProps = {
   startDate: mockRuleData.startDate,
   endDate: mockRuleData.endDate,
   isLoading: false,
-  countryCode: 'UK_IE' as CountryCode,
+  countryCode: 'UK_IE' as MerchandisingCountryCode,
   searchTerms: mockSearchTerms,
   onSave: onSaveSpy,
   onCancel: onCancelSpy,

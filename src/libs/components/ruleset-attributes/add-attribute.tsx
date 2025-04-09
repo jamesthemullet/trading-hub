@@ -1,7 +1,10 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import type { AttributeResponseItem, AttributesResponse } from '@/libs/api';
+import type {
+  MerchandisingAttributeResponseItem,
+  MerchandisingAttributesResponse,
+} from '@/libs/api';
 
 import { Button } from '../buttons/button/button';
 import { Checkboxes } from '../checkboxes/checkboxes';
@@ -176,8 +179,8 @@ const SectionLabel = ({
 type Props = {
   onCancel: () => void;
   onSelect: (attribute: RulesetAttribute) => void;
-  numericAttributes: AttributesResponse['attributes'];
-  alphanumericAttributes: AttributesResponse['attributes'];
+  numericAttributes: MerchandisingAttributesResponse['attributes'];
+  alphanumericAttributes: MerchandisingAttributesResponse['attributes'];
   isEditMode: boolean;
   editData: AttributeEdit | null;
 };
@@ -373,12 +376,12 @@ export const AddAttribute = ({
               hasDivider
               isBold
               values={numericAttributes
-                .filter((attribute: AttributeResponseItem) =>
+                .filter((attribute: MerchandisingAttributeResponseItem) =>
                   attribute.name
                     .toLowerCase()
                     .includes(numbericSearchValue.toLowerCase())
                 )
-                .map((attribute: AttributeResponseItem) => ({
+                .map((attribute: MerchandisingAttributeResponseItem) => ({
                   name: attribute.name,
                   isSelected: selectedNumericField === attribute.name,
                 }))}
@@ -446,12 +449,12 @@ export const AddAttribute = ({
               <Label isStrong>Relevant attributes</Label>
             </ModalAttributeHeader>
             {alphanumericAttributes
-              .filter((attribute: AttributeResponseItem) =>
+              .filter((attribute: MerchandisingAttributeResponseItem) =>
                 attribute.name
                   .toLowerCase()
                   .includes(alphanumericSearchValue.toLowerCase())
               )
-              .map((attribute: AttributeResponseItem) => (
+              .map((attribute: MerchandisingAttributeResponseItem) => (
                 <ModalSection key={attribute.name}>
                   <NextStep
                     as="button"

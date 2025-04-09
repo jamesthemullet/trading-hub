@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { FacetConfig } from '@/libs/api';
+import type { MerchandisingFacetConfig } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
@@ -8,7 +8,13 @@ export const useGlobalFacetUpdate = () => {
   const [error, setError] = useState('');
 
   const handleGlobalFacetUpdate = useCallback(
-    async ({ facetId, data }: { facetId: string; data: FacetConfig }) => {
+    async ({
+      facetId,
+      data,
+    }: {
+      facetId: string;
+      data: MerchandisingFacetConfig;
+    }) => {
       try {
         const response = await search().betaMerchandisingFacetUpdate(
           facetId,

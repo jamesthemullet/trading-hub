@@ -3,8 +3,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/router';
 
 import type {
-  ReturnedCategoryRuleSet,
-  ReturnedCategoryRuleSets,
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingReturnedCategoryRuleSets,
 } from '@/libs/api';
 
 import { useRuleSetRowsState } from './use-rule-set-rows-state';
@@ -12,7 +12,7 @@ import { useRuleSetRowsState } from './use-rule-set-rows-state';
 const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 const categoryId = 'cat_123';
 
-const mockRuleSet: ReturnedCategoryRuleSet = {
+const mockRuleSet: MerchandisingReturnedCategoryRuleSet = {
   id: ruleSetId,
   isEnabled: true,
   lastChanged: {
@@ -39,7 +39,7 @@ const mockRuleSet: ReturnedCategoryRuleSet = {
   },
 };
 
-const mockResponse: ReturnedCategoryRuleSets = {
+const mockResponse: MerchandisingReturnedCategoryRuleSets = {
   ruleSets: [mockRuleSet],
   pagination: {
     totalItems: 10,

@@ -1,4 +1,4 @@
-import type { CountryCode } from '@/libs/api';
+import type { MerchandisingCountryCode } from '@/libs/api';
 import { useAttributes } from '@/libs/hooks';
 
 import type { AttributeEdit, RulesetAttribute } from '../types';
@@ -8,7 +8,7 @@ import { AddAttribute } from './add-attribute';
 type Props = {
   onCancel: () => void;
   onSelect: (attribute: RulesetAttribute) => void;
-  countryCode: CountryCode;
+  countryCode: MerchandisingCountryCode;
   categories?: string[];
   searchTerms?: string[];
   isEditMode: boolean;

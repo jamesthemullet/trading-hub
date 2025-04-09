@@ -1,7 +1,7 @@
 import type {
-  KeywordRuleSet,
-  ReturnedKeywordRuleSet,
-  ReturnedKeywordRuleSets,
+  MerchandisingKeywordRuleSet,
+  MerchandisingReturnedKeywordRuleSet,
+  MerchandisingReturnedKeywordRuleSets,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 import { Heading } from '@/libs/components';
@@ -14,9 +14,9 @@ import { useAccess } from '@/libs/hooks/use-access';
 import Head from 'next/head';
 
 const mapping: RuleSetMapping<
-  ReturnedKeywordRuleSets,
-  ReturnedKeywordRuleSet,
-  KeywordRuleSet
+  MerchandisingReturnedKeywordRuleSets,
+  MerchandisingReturnedKeywordRuleSet,
+  MerchandisingKeywordRuleSet
 > = {
   queryAllRuleSets: search().betaMerchandisingKeywordRulesetList,
   deleteRuleSetById: search().betaMerchandisingKeywordRulesetDelete,

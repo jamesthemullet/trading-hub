@@ -2,13 +2,13 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedKeywordRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedKeywordRuleSet } from '@/libs/api';
 
 import { useSearchRuleSetPreview } from './use-search-ruleset-preview';
 
 const baseUrl = 'http://localhost';
 const mockRulesetId = 'abc123';
-const mockRuleData: ReturnedKeywordRuleSet = {
+const mockRuleData: MerchandisingReturnedKeywordRuleSet = {
   id: 'abcdcae5-c3c4-455b-aeff-b7d2af65b702',
   rules: {
     pinnedProducts: [],
@@ -103,7 +103,7 @@ describe('useSearchRuleSetPreview', () => {
   });
 
   it('should render the hook', async () => {
-    const mockResponse: ReturnedKeywordRuleSet = mockRuleData;
+    const mockResponse: MerchandisingReturnedKeywordRuleSet = mockRuleData;
     getRuleSetMock.mockReturnValueOnce({
       data: mockResponse,
       status: { status: 200 },
@@ -142,7 +142,7 @@ describe('useSearchRuleSetPreview', () => {
   });
 
   it('should return an error when the search api call fails', async () => {
-    const mockResponse: ReturnedKeywordRuleSet = mockRuleData;
+    const mockResponse: MerchandisingReturnedKeywordRuleSet = mockRuleData;
     getRuleSetMock.mockReturnValueOnce({
       data: mockResponse,
       status: { status: 200 },

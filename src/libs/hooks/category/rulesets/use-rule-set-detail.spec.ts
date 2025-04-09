@@ -2,13 +2,13 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedCategoryRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 
 import { useRuleSetDetail } from './use-rule-set-detail';
 
 const baseUrl = 'http://localhost';
 const mockCategoryId = 'abc123';
-const mockRuleData: ReturnedCategoryRuleSet = {
+const mockRuleData: MerchandisingReturnedCategoryRuleSet = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],
@@ -64,7 +64,7 @@ describe('useRuleSetDetail', () => {
   });
 
   it('should render the hook', async () => {
-    const mockResponse: ReturnedCategoryRuleSet = mockRuleData;
+    const mockResponse: MerchandisingReturnedCategoryRuleSet = mockRuleData;
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: mockResponse,
       status: { status: 200 },
@@ -153,7 +153,7 @@ describe('useRuleSetDetail', () => {
   });
 
   it('should refresh the ruleset', async () => {
-    const mockResponse: ReturnedCategoryRuleSet = mockRuleData;
+    const mockResponse: MerchandisingReturnedCategoryRuleSet = mockRuleData;
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: mockResponse,
       status: { status: 200 },

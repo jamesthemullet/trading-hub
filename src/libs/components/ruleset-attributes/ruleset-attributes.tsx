@@ -3,11 +3,11 @@ import type { Dispatch } from 'react';
 import { useState } from 'react';
 
 import type {
-  AlphanumericBoostBury,
-  CountryCode,
-  IncludeExclude,
+  MerchandisingAlphanumericBoostBury,
+  MerchandisingCountryCode,
+  MerchandisingIncludeExclude,
+  MerchandisingNumericBoostBury,
   MerchandisingRules,
-  NumericBoostBury,
 } from '@/libs/api';
 
 import pluralize from 'pluralize';
@@ -47,7 +47,7 @@ const RuleSetAttributesContainer = styled.div`
 `;
 
 export type Props = {
-  countryCode: CountryCode;
+  countryCode: MerchandisingCountryCode;
   categories?: string[];
   searchTerms?: string[];
   merchandisingRules: MerchandisingRules;
@@ -122,7 +122,10 @@ export const RulesetAttributes = ({
                 fields={fields}
                 operation="boost"
                 weight={weight}
-                onDelete={({ fields, weight }: AlphanumericBoostBury) =>
+                onDelete={({
+                  fields,
+                  weight,
+                }: MerchandisingAlphanumericBoostBury) =>
                   dispatch({
                     type: 'alphanumericBoostBuryAttribute',
                     payload: {
@@ -157,7 +160,10 @@ export const RulesetAttributes = ({
                 fields={fields}
                 operation="bury"
                 weight={weight}
-                onDelete={({ fields, weight }: AlphanumericBoostBury) =>
+                onDelete={({
+                  fields,
+                  weight,
+                }: MerchandisingAlphanumericBoostBury) =>
                   dispatch({
                     type: 'alphanumericBoostBuryAttribute',
                     payload: {
@@ -190,7 +196,7 @@ export const RulesetAttributes = ({
                 isEditable
                 fields={fields}
                 operation="include"
-                onDelete={({ fields }: IncludeExclude) =>
+                onDelete={({ fields }: MerchandisingIncludeExclude) =>
                   dispatch({
                     type: 'alphanumericIncludeExcludeAttribute',
                     payload: {
@@ -221,7 +227,7 @@ export const RulesetAttributes = ({
                 isEditable
                 fields={fields}
                 operation="exclude"
-                onDelete={({ fields }: IncludeExclude) =>
+                onDelete={({ fields }: MerchandisingIncludeExclude) =>
                   dispatch({
                     type: 'alphanumericIncludeExcludeAttribute',
                     payload: {
@@ -259,7 +265,7 @@ export const RulesetAttributes = ({
                 operation="boost"
                 name={field}
                 weight={weight}
-                onDelete={({ field, weight }: NumericBoostBury) =>
+                onDelete={({ field, weight }: MerchandisingNumericBoostBury) =>
                   dispatch({
                     type: 'numericAttribute',
                     payload: {
@@ -293,7 +299,7 @@ export const RulesetAttributes = ({
                 operation="bury"
                 name={field}
                 weight={weight}
-                onDelete={({ field, weight }: NumericBoostBury) =>
+                onDelete={({ field, weight }: MerchandisingNumericBoostBury) =>
                   dispatch({
                     type: 'numericAttribute',
                     payload: {

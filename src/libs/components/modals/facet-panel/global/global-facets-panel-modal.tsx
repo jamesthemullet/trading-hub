@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { useCallback, useMemo, useState } from 'react';
 
-import type { GlobalOnlyFacetConfig } from '@/libs/api';
-import {
-  type AttributeValuesResponse,
-  type CountryCode,
-  type ReturnedGlobalFacet,
+import type {
+  MerchandisingAttributeValuesResponse,
+  MerchandisingCountryCode,
+  MerchandisingGlobalOnlyFacetConfig,
+  MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import {
   Button,
@@ -97,12 +97,12 @@ type FormattedRow = {
   isMergeGroup: boolean;
 };
 
-type MergeGroup = GlobalOnlyFacetConfig['merged'];
+type MergeGroup = MerchandisingGlobalOnlyFacetConfig['merged'];
 
 type ContentProps = {
-  attributeValues: AttributeValuesResponse['values'];
-  countryCode: CountryCode;
-  facet: ReturnedGlobalFacet;
+  attributeValues: MerchandisingAttributeValuesResponse['values'];
+  countryCode: MerchandisingCountryCode;
+  facet: MerchandisingReturnedGlobalFacet;
   onClose: () => void;
 };
 
@@ -241,7 +241,7 @@ export const GlobalFacetPanelModalContent = ({
 
   const listValues = useCallback(
     (
-      values: AttributeValuesResponse['values'],
+      values: MerchandisingAttributeValuesResponse['values'],
       displayType: FacetDisplayType
     ) => {
       const rows: FormattedRow[] = [];
@@ -785,8 +785,8 @@ export const GlobalFacetPanelModalContent = ({
 };
 
 type Props = {
-  countryCode: CountryCode;
-  facet: ReturnedGlobalFacet;
+  countryCode: MerchandisingCountryCode;
+  facet: MerchandisingReturnedGlobalFacet;
   onClose: () => void;
 };
 

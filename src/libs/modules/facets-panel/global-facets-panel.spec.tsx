@@ -2,7 +2,7 @@ import { useReducer } from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { ReturnedCategoryRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -31,7 +31,7 @@ jest.mock('react', () => ({
 
 const categoryId1 = 'cat_123';
 
-const mockRuleData: ReturnedCategoryRuleSet = {
+const mockRuleData: MerchandisingReturnedCategoryRuleSet = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],

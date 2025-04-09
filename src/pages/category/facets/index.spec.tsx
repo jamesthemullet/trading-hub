@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedCategoryRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as FacetManagementPage } from './index.page';
@@ -266,7 +266,7 @@ describe('Category facet management', () => {
           },
           rules: mockMerchandisingRules,
         },
-      ] as ReturnedCategoryRuleSet[],
+      ] as MerchandisingReturnedCategoryRuleSet[],
       pagination: {
         totalItems: 0,
       },
@@ -543,7 +543,7 @@ describe('Category facet management', () => {
         boosted: ['Tiny', 'Newborn', '1 Months', '0-3 Months'],
       },
     ];
-    const mockRuleset: ReturnedCategoryRuleSet = {
+    const mockRuleset: MerchandisingReturnedCategoryRuleSet = {
       id: mockId,
       categoriesInfo: [
         {
@@ -676,7 +676,7 @@ describe('Category facet management', () => {
   it('should add an empty facet array to a duplicated ruleset which does not have any set', async () => {
     const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    const mockRuleset: ReturnedCategoryRuleSet = {
+    const mockRuleset: MerchandisingReturnedCategoryRuleSet = {
       id: mockId,
       categoriesInfo: [
         {

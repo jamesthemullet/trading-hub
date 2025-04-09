@@ -1,6 +1,9 @@
-import { ReturnedKeywordRedirect, ReturnedKeywordRedirects } from '@/libs/api';
+import type {
+  MerchandisingReturnedKeywordRedirect,
+  MerchandisingReturnedKeywordRedirects,
+} from '@/libs/api';
 
-export const mockRedirectsList: ReturnedKeywordRedirects = {
+export const mockRedirectsList: MerchandisingReturnedKeywordRedirects = {
   redirects: [
     {
       id: '2cf46391-1780-4016-9d20-5fd28b571579',
@@ -21,7 +24,7 @@ export const mockRedirectsList: ReturnedKeywordRedirects = {
   },
 };
 
-export const mockRedirect: ReturnedKeywordRedirect = {
+export const mockRedirect: MerchandisingReturnedKeywordRedirect = {
   id: '2cf46391-1780-4016-9d20-5fd28b571579',
   type: 'redirectTerm',
   isEnabled: true,

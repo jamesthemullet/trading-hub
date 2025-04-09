@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
 
-import type { CountryCode, ReturnedGlobalFacet } from '@/libs/api';
+import type {
+  MerchandisingCountryCode,
+  MerchandisingReturnedGlobalFacet,
+} from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 
 import { uniq } from 'lodash';
@@ -36,9 +39,9 @@ const getMergeType = (
 };
 
 export const useAttributeValuesRowsSelector = (
-  facet: ReturnedGlobalFacet,
+  facet: MerchandisingReturnedGlobalFacet,
   searchQuery: string,
-  countryCode: CountryCode,
+  countryCode: MerchandisingCountryCode,
   categories?: string[]
 ) => {
   const {

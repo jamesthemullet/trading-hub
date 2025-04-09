@@ -1,4 +1,4 @@
-import type { ErrorResponse } from '@/libs/api';
+import type { MerchandisingErrorResponse } from '@/libs/api';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
@@ -9,7 +9,9 @@ export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
 };
 
-const isErrorSchemaCompatible = (err: unknown): err is ErrorResponse => {
+const isErrorSchemaCompatible = (
+  err: unknown
+): err is MerchandisingErrorResponse => {
   if (
     err &&
     typeof err === 'object' &&

@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import type { Product, ReturnedKeywordRuleSet } from '@/libs/api';
+import type {
+  MerchandisingProduct,
+  MerchandisingReturnedKeywordRuleSet,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { handleError } from '../../utils/error';
 
 export const useSearchRuleSetPreview = (id: string) => {
   const api = useMemo(() => search(), []);
-  const [ruleSet, setRuleSet] = useState<ReturnedKeywordRuleSet>({
+  const [ruleSet, setRuleSet] = useState<MerchandisingReturnedKeywordRuleSet>({
     searchTerms: [],
     id: '',
     isEnabled: false,
@@ -33,7 +36,7 @@ export const useSearchRuleSetPreview = (id: string) => {
     },
     facets: [],
   });
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<MerchandisingProduct[]>([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 

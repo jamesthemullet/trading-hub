@@ -2,13 +2,13 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedGlobalRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api';
 
 import { useGlobalRuleSetDetail } from './use-global-rule-set-detail';
 
 const baseUrl = 'http://localhost';
 const mockCategoryId = 'abc123';
-const mockRuleData: ReturnedGlobalRuleSet = {
+const mockRuleData: MerchandisingReturnedGlobalRuleSet = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],
@@ -63,7 +63,7 @@ describe('useGlobalRuleSetDetail', () => {
   });
 
   it('should render the hook', async () => {
-    const mockResponse: ReturnedGlobalRuleSet = mockRuleData;
+    const mockResponse: MerchandisingReturnedGlobalRuleSet = mockRuleData;
     getRuleSetPreviewMock.mockReturnValueOnce({
       data: mockResponse,
       status: { status: 200 },

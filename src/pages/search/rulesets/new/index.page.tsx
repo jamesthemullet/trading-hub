@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import type { KeywordRuleSet } from '@/libs/api';
+import type { MerchandisingKeywordRuleSet } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useSearchRuleSetCreate } from '@/libs/hooks';
@@ -19,7 +19,7 @@ const NewRuleSetPage = () => {
     startDate,
     endDate,
     countryCode,
-  }: KeywordRuleSet) => {
+  }: MerchandisingKeywordRuleSet) => {
     const resp = await createRuleset({
       searchTerms,
       merchandisingRules: rules,

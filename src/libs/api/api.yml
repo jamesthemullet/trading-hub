@@ -2,6 +2,7 @@
 #
 # copied from https://github.com/DigitalInnovation/search-service/blob/develop/search-service-app/src/main/resources/static/search-merchandising.yml
 #
+
 openapi: 3.0.3
 info:
   title: Trading Hub API
@@ -50,19 +51,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Categories'
+                $ref: '#/components/schemas/MerchandisingCategories'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -70,13 +71,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/attributes:
     get:
       security:
@@ -103,7 +104,7 @@ paths:
         - in: query
           name: type
           schema:
-            $ref: '#/components/schemas/AttributeType'
+            $ref: '#/components/schemas/MerchandisingAttributeType'
           required: false
           description: The type of attributes to retrieve
         - in: query
@@ -118,19 +119,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AttributesResponse'
+                $ref: '#/components/schemas/MerchandisingAttributesResponse'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -138,13 +139,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/category/ruleset:
     get:
       security:
@@ -180,19 +181,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedCategoryRuleSets'
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSets'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -200,13 +201,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
       security:
         - bearerAuth: []
@@ -217,26 +218,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CategoryRuleSet'
+              $ref: '#/components/schemas/MerchandisingCategoryRuleSet'
       responses:
         '200':
           description: A JSON representation of merchandising rules
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -244,13 +245,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/category/ruleset/{ruleSetId}:
     put:
       security:
@@ -263,7 +264,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CategoryRuleSet'
+              $ref: '#/components/schemas/MerchandisingCategoryRuleSet'
       parameters:
         - in: path
           name: ruleSetId
@@ -277,19 +278,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -297,13 +298,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     get:
       security:
         - bearerAuth: []
@@ -324,19 +325,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -344,19 +345,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '404':
           description: RuleSet was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedNotFound'
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
     delete:
       security:
         - bearerAuth: []
@@ -381,13 +382,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
 
   /search/beta/merchandising/preview:
     post:
@@ -425,26 +426,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RuleSet'
+              $ref: '#/components/schemas/MerchandisingRuleSet'
       responses:
         '200':
           description: A JSON representation of products
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchPreviewResponseBeta'
+                $ref: '#/components/schemas/MerchandisingSearchPreviewResponseBeta'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -452,13 +453,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/ruleset:
     get:
       security:
@@ -494,19 +495,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedKeywordRuleSets'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSets'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -514,13 +515,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
       security:
         - bearerAuth: []
@@ -531,26 +532,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/KeywordRuleSet'
+              $ref: '#/components/schemas/MerchandisingKeywordRuleSet'
       responses:
         '200':
           description: A JSON representation of merchandising rules
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedKeywordRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -558,13 +559,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/ruleset/{ruleSetId}:
     put:
       security:
@@ -577,7 +578,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/KeywordRuleSet'
+              $ref: '#/components/schemas/MerchandisingKeywordRuleSet'
       parameters:
         - in: path
           name: ruleSetId
@@ -591,19 +592,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedKeywordRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -611,13 +612,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     get:
       security:
         - bearerAuth: []
@@ -638,19 +639,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedKeywordRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -658,19 +659,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '404':
           description: RuleSet was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedNotFound'
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
     delete:
       security:
         - bearerAuth: []
@@ -695,13 +696,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/global/ruleset:
     get:
       security:
@@ -736,19 +737,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedGlobalRuleSets'
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSets'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -756,13 +757,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
       security:
         - bearerAuth: []
@@ -773,26 +774,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RuleSet'
+              $ref: '#/components/schemas/MerchandisingRuleSet'
       responses:
         '200':
           description: A JSON representation of merchandising rules
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -800,13 +801,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/global/ruleset/{ruleSetId}:
     put:
       security:
@@ -819,7 +820,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RuleSet'
+              $ref: '#/components/schemas/MerchandisingRuleSet'
       parameters:
         - in: path
           name: ruleSetId
@@ -833,19 +834,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -853,13 +854,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     get:
       security:
         - bearerAuth: []
@@ -880,19 +881,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -900,19 +901,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '404':
           description: RuleSet was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedNotFound'
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
     delete:
       security:
         - bearerAuth: []
@@ -937,13 +938,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   '/search/beta/merchandising/facet':
     get:
       security:
@@ -977,19 +978,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FacetsList'
+                $ref: '#/components/schemas/MerchandisingFacetsList'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -997,13 +998,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
       security:
         - bearerAuth: []
@@ -1016,26 +1017,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FacetConfig'
+              $ref: '#/components/schemas/MerchandisingFacetConfig'
       responses:
         '200':
           description: A JSON representation of the facet
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedGlobalFacet'
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1043,13 +1044,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   '/search/beta/merchandising/facet/{facetId}':
     get:
       security:
@@ -1070,19 +1071,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedGlobalFacet'
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1090,19 +1091,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     put:
       tags:
         - Search Merchandising API - Facets
@@ -1118,26 +1119,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FacetConfig'
+              $ref: '#/components/schemas/MerchandisingFacetConfig'
       responses:
         '200':
           description: A JSON representation of the facet
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedGlobalFacet'
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1145,13 +1146,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/facet/{facetId}/attributeValues:
     get:
       security:
@@ -1198,25 +1199,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AttributeValuesResponse'
+                $ref: '#/components/schemas/MerchandisingAttributeValuesResponse'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '404':
           description: Not found (invalid facetId)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1224,13 +1225,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/product:
     post:
       security:
@@ -1298,19 +1299,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductSearchResponse'
+                $ref: '#/components/schemas/MerchandisingProductSearchResponse'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1318,13 +1319,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/redirect:
     get:
       security:
@@ -1359,19 +1360,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedKeywordRedirects'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirects'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1379,13 +1380,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
       security:
         - bearerAuth: []
@@ -1396,26 +1397,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/KeywordRedirect'
+              $ref: '#/components/schemas/MerchandisingKeywordRedirect'
       responses:
         '200':
           description: A JSON representation of redirect rules
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedKeywordRedirect'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1423,13 +1424,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/redirect/{redirectId}:
     get:
       security:
@@ -1451,19 +1452,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedKeywordRedirect'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '404':
@@ -1471,19 +1472,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedNotFound'
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
         '403':
           description: Insufficient privileges
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     put:
       security:
         - bearerAuth: []
@@ -1495,7 +1496,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/KeywordRedirect'
+              $ref: '#/components/schemas/MerchandisingKeywordRedirect'
       parameters:
         - in: path
           name: redirectId
@@ -1509,19 +1510,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReturnedKeywordRedirect'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1529,13 +1530,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
     delete:
       security:
         - bearerAuth: []
@@ -1558,7 +1559,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '401':
           description: Unauthorized e.g. no bearer token specified
         '403':
@@ -1566,19 +1567,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
         '500':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
 components:
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
@@ -1586,7 +1587,7 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    RuleSetFacetConfigWithId:
+    MerchandisingRuleSetFacetConfigWithId:
       allOf:
         - type: object
           properties:
@@ -1594,8 +1595,8 @@ components:
               type: string
           required:
             - id
-        - $ref: '#/components/schemas/RuleSetFacetConfig'
-    RuleSetFacetConfig:
+        - $ref: '#/components/schemas/MerchandisingRuleSetFacetConfig'
+    MerchandisingRuleSetFacetConfig:
       type: object
       properties:
         excludedValues:
@@ -1608,7 +1609,7 @@ components:
           items:
             type: string
           description: Array of values (in order) that should appear at the top of the list of filters. Un specified values will appear after these and be in order of most matching documents.
-    GlobalOnlyFacetConfig:
+    MerchandisingGlobalOnlyFacetConfig:
       type: object
       properties:
         indexPropertyName:
@@ -1633,21 +1634,21 @@ components:
       required:
         - displayValue
         - indexPropertyName
-    ExcludedFacets:
+    MerchandisingExcludedFacets:
       type: object
       properties:
         facets:
           type: array
           items:
-            $ref: '#/components/schemas/ExcludedFacet'
+            $ref: '#/components/schemas/MerchandisingExcludedFacet'
           description: An array of the facets to exclude.
-    ExcludedFacet:
+    MerchandisingExcludedFacet:
       type: object
       properties:
         id:
           type: string
           description: An excluded facet.
-    AttributeValuesResponse:
+    MerchandisingAttributeValuesResponse:
       type: object
       properties:
         values:
@@ -1660,50 +1661,50 @@ components:
             required:
               - displayValue
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - values
         - pagination
-    ReturnedGlobalRuleSets:
+    MerchandisingReturnedGlobalRuleSets:
       type: object
       properties:
         ruleSets:
           type: array
           items:
-            $ref: '#/components/schemas/ReturnedGlobalRuleSet'
+            $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - ruleSets
         - pagination
-    ReturnedCategoryRuleSets:
+    MerchandisingReturnedCategoryRuleSets:
       type: object
       properties:
         ruleSets:
           type: array
           items:
-            $ref: '#/components/schemas/ReturnedCategoryRuleSet'
+            $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - ruleSets
         - pagination
-    ReturnedKeywordRedirects:
+    MerchandisingReturnedKeywordRedirects:
       type: object
       properties:
         redirects:
           type: array
           items:
-            $ref: '#/components/schemas/ReturnedKeywordRedirect'
+            $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - redirects
         - pagination
-    ReturnedKeywordRedirect:
+    MerchandisingReturnedKeywordRedirect:
       type: object
       allOf:
-        - $ref: '#/components/schemas/KeywordRedirect'
+        - $ref: '#/components/schemas/MerchandisingKeywordRedirect'
       properties:
         id:
           type: string
@@ -1721,11 +1722,11 @@ components:
       required:
         - id
         - lastChanged
-    KeywordRedirect:
+    MerchandisingKeywordRedirect:
       type: object
       properties:
         countryCode:
-          $ref: '#/components/schemas/CountryCode'
+          $ref: '#/components/schemas/MerchandisingCountryCode'
         isEnabled:
           type: boolean
         keywords:
@@ -1753,7 +1754,7 @@ components:
         - keywords
         - destinationUrl
         - type
-    CategorySpecification:
+    MerchandisingCategorySpecification:
       type: object
       properties:
         categoryIds:
@@ -1762,25 +1763,25 @@ components:
             type: string
       required:
         - categoryIds
-    CategoryRuleSet:
+    MerchandisingCategoryRuleSet:
       allOf:
-        - $ref: '#/components/schemas/RuleSet'
-        - $ref: '#/components/schemas/CategorySpecification'
-    ReturnedKeywordRuleSets:
+        - $ref: '#/components/schemas/MerchandisingRuleSet'
+        - $ref: '#/components/schemas/MerchandisingCategorySpecification'
+    MerchandisingReturnedKeywordRuleSets:
       type: object
       properties:
         ruleSets:
           type: array
           items:
-            $ref: '#/components/schemas/ReturnedKeywordRuleSet'
+            $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - ruleSets
         - pagination
-    KeywordRuleSet:
+    MerchandisingKeywordRuleSet:
       allOf:
-        - $ref: '#/components/schemas/RuleSet'
+        - $ref: '#/components/schemas/MerchandisingRuleSet'
         - type: object
           properties:
             searchTerms:
@@ -1789,11 +1790,11 @@ components:
                 type: string
           required:
             - searchTerms
-    RuleSet:
+    MerchandisingRuleSet:
       type: object
       properties:
         countryCode:
-          $ref: '#/components/schemas/CountryCode'
+          $ref: '#/components/schemas/MerchandisingCountryCode'
         isEnabled:
           type: boolean
         startDate:
@@ -1809,20 +1810,20 @@ components:
         facets:
           type: array
           items:
-            $ref: '#/components/schemas/RuleSetFacetConfigWithId'
+            $ref: '#/components/schemas/MerchandisingRuleSetFacetConfigWithId'
           description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
         excludedFacets:
-          $ref: '#/components/schemas/ExcludedFacets'
+          $ref: '#/components/schemas/MerchandisingExcludedFacets'
       required:
         - rules
         - isEnabled
-    ReturnedCategoryRuleSet:
+    MerchandisingReturnedCategoryRuleSet:
       allOf:
-        - $ref: '#/components/schemas/RuleSet'
+        - $ref: '#/components/schemas/MerchandisingRuleSet'
         - type: object
           properties:
             countryCode:
-              $ref: '#/components/schemas/CountryCode'
+              $ref: '#/components/schemas/MerchandisingCountryCode'
             categoriesInfo:
               type: array
               items:
@@ -1861,9 +1862,9 @@ components:
             - id
             - categoriesInfo
             - lastChanged
-    ReturnedKeywordRuleSet:
+    MerchandisingReturnedKeywordRuleSet:
       allOf:
-        - $ref: '#/components/schemas/KeywordRuleSet'
+        - $ref: '#/components/schemas/MerchandisingKeywordRuleSet'
         - type: object
           properties:
             id:
@@ -1882,13 +1883,13 @@ components:
           required:
             - id
             - lastChanged
-    ReturnedRuleSet:
+    MerchandisingReturnedRuleSet:
       deprecated: true
       allOf:
-        - $ref: '#/components/schemas/ReturnedCategoryRuleSet'
-    ReturnedGlobalRuleSet:
+        - $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
+    MerchandisingReturnedGlobalRuleSet:
       allOf:
-        - $ref: '#/components/schemas/RuleSet'
+        - $ref: '#/components/schemas/MerchandisingRuleSet'
         - type: object
           properties:
             id:
@@ -1907,7 +1908,7 @@ components:
           required:
             - id
             - lastChanged
-    ReturnedNotFound:
+    MerchandisingReturnedNotFound:
       type: object
       properties:
         status:
@@ -1917,25 +1918,25 @@ components:
       required:
         - message
         - status
-    FacetsList:
+    MerchandisingFacetsList:
       type: object
       properties:
         facets:
           type: array
           items:
-            $ref: '#/components/schemas/ReturnedGlobalFacet'
+            $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
       required:
         - facets
-    FacetConfig:
+    MerchandisingFacetConfig:
       type: object
       allOf:
-        - $ref: '#/components/schemas/RuleSetFacetConfig'
-        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
-    ReturnedGlobalFacet:
+        - $ref: '#/components/schemas/MerchandisingRuleSetFacetConfig'
+        - $ref: '#/components/schemas/MerchandisingGlobalOnlyFacetConfig'
+    MerchandisingReturnedGlobalFacet:
       type: object
       allOf:
-        - $ref: '#/components/schemas/GlobalOnlyFacetConfig'
-        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - $ref: '#/components/schemas/MerchandisingGlobalOnlyFacetConfig'
+        - $ref: '#/components/schemas/MerchandisingRuleSetFacetConfig'
         - type: object
           properties:
             id:
@@ -1954,10 +1955,10 @@ components:
           required:
             - id
             - lastChanged
-    ReturnedRuleSetFacet:
+    MerchandisingReturnedRuleSetFacet:
       type: object
       allOf:
-        - $ref: '#/components/schemas/RuleSetFacetConfig'
+        - $ref: '#/components/schemas/MerchandisingRuleSetFacetConfig'
         - type: object
           properties:
             id:
@@ -1987,14 +1988,14 @@ components:
             - lastChanged
             - displayValue
             - indexPropertyName
-    ReturnedFacet:
+    MerchandisingReturnedFacet:
       type: object
       oneOf:
-        - $ref: '#/components/schemas/ReturnedGlobalFacet'
-        - $ref: '#/components/schemas/ReturnedRuleSetFacet'
-    SearchPreviewResponseBeta:
+        - $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
+        - $ref: '#/components/schemas/MerchandisingReturnedRuleSetFacet'
+    MerchandisingSearchPreviewResponseBeta:
       allOf:
-        - $ref: '#/components/schemas/Facets'
+        - $ref: '#/components/schemas/MerchandisingFacets'
         - type: object
           properties:
             category:
@@ -2004,7 +2005,7 @@ components:
             products:
               type: array
               items:
-                $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/MerchandisingProduct'
             ruleSet:
               type: object
               properties:
@@ -2013,7 +2014,7 @@ components:
                 facets:
                   type: array
                   items:
-                    $ref: '#/components/schemas/RuleSetFacetConfigWithId'
+                    $ref: '#/components/schemas/MerchandisingRuleSetFacetConfigWithId'
                   description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
               required:
                 - rules
@@ -2021,26 +2022,26 @@ components:
             externalChanges:
               $ref: '#/components/schemas/MerchandisingRulesWithInfo'
             pagination:
-              $ref: '#/components/schemas/Pagination'
+              $ref: '#/components/schemas/MerchandisingPagination'
           required:
             - products
             - ruleSet
             - facets
             - externalChanges
             - pagination
-    ProductSearchResponse:
+    MerchandisingProductSearchResponse:
       type: object
       properties:
         products:
           type: array
           items:
-            $ref: '#/components/schemas/Product'
+            $ref: '#/components/schemas/MerchandisingProduct'
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - products
         - pagination
-    Product:
+    MerchandisingProduct:
       type: object
       properties:
         id:
@@ -2048,7 +2049,7 @@ components:
         productId:
           type: string
         metadata:
-          $ref: '#/components/schemas/ProductMetadata'
+          $ref: '#/components/schemas/MerchandisingProductMetadata'
         url:
           type: string
         price:
@@ -2071,7 +2072,7 @@ components:
         - imageUrl
         - title
         - isInStock
-    ProductMetadata:
+    MerchandisingProductMetadata:
       type: object
       properties:
         isPinned:
@@ -2090,25 +2091,25 @@ components:
             excludedBecause:
               type: array
               items:
-                $ref: '#/components/schemas/RuleDescription'
+                $ref: '#/components/schemas/MerchandisingRuleDescription'
             boostedBecause:
               type: array
               items:
-                $ref: '#/components/schemas/RuleDescription'
+                $ref: '#/components/schemas/MerchandisingRuleDescription'
             buriedBecause:
               type: array
               items:
-                $ref: '#/components/schemas/RuleDescription'
+                $ref: '#/components/schemas/MerchandisingRuleDescription'
         ranking:
           type: array
           items:
-            $ref: '#/components/schemas/RankingAttribute'
+            $ref: '#/components/schemas/MerchandisingRankingAttribute'
       required:
         - isPinned
-    RuleDescription:
+    MerchandisingRuleDescription:
       type: object
       allOf:
-        - $ref: '#/components/schemas/RankingAttribute'
+        - $ref: '#/components/schemas/MerchandisingRankingAttribute'
         - properties:
             effect:
               type: string
@@ -2121,7 +2122,7 @@ components:
         - effect
         - property
         - values
-    RankingAttribute:
+    MerchandisingRankingAttribute:
       type: object
       properties:
         property:
@@ -2140,22 +2141,22 @@ components:
           type: array
           items:
             allOf:
-              - $ref: '#/components/schemas/PinnedProduct'
-              - $ref: '#/components/schemas/Product'
+              - $ref: '#/components/schemas/MerchandisingPinnedProduct'
+              - $ref: '#/components/schemas/MerchandisingProduct'
         blockedProducts:
           type: array
           items:
             allOf:
-              - $ref: '#/components/schemas/BlockedProduct'
-              - $ref: '#/components/schemas/Product'
+              - $ref: '#/components/schemas/MerchandisingBlockedProduct'
+              - $ref: '#/components/schemas/MerchandisingProduct'
         boosts:
-          $ref: '#/components/schemas/BoostsBuriesWithInfo'
+          $ref: '#/components/schemas/MerchandisingBoostsBuriesWithInfo'
         buries:
-          $ref: '#/components/schemas/BoostsBuriesWithInfo'
+          $ref: '#/components/schemas/MerchandisingBoostsBuriesWithInfo'
         includes:
-          $ref: '#/components/schemas/IncludesExcludes'
+          $ref: '#/components/schemas/MerchandisingIncludesExcludes'
         excludes:
-          $ref: '#/components/schemas/IncludesExcludes'
+          $ref: '#/components/schemas/MerchandisingIncludesExcludes'
       required:
         - pinnedProducts
         - boosts
@@ -2166,19 +2167,19 @@ components:
         pinnedProducts:
           type: array
           items:
-            $ref: '#/components/schemas/PinnedProduct'
+            $ref: '#/components/schemas/MerchandisingPinnedProduct'
         blockedProducts:
           type: array
           items:
-            $ref: '#/components/schemas/BlockedProduct'
+            $ref: '#/components/schemas/MerchandisingBlockedProduct'
         boosts:
-          $ref: '#/components/schemas/BoostsBuries'
+          $ref: '#/components/schemas/MerchandisingBoostsBuries'
         buries:
-          $ref: '#/components/schemas/BoostsBuries'
+          $ref: '#/components/schemas/MerchandisingBoostsBuries'
         includes:
-          $ref: '#/components/schemas/IncludesExcludes'
+          $ref: '#/components/schemas/MerchandisingIncludesExcludes'
         excludes:
-          $ref: '#/components/schemas/IncludesExcludes'
+          $ref: '#/components/schemas/MerchandisingIncludesExcludes'
       required:
         - pinnedProducts
         - blockedProducts
@@ -2186,68 +2187,68 @@ components:
         - buries
         - includes
         - excludes
-    PinnedProduct:
+    MerchandisingPinnedProduct:
       type: object
       properties:
         id:
           type: string
       required:
         - id
-    BlockedProduct:
+    MerchandisingBlockedProduct:
       type: object
       properties:
         id:
           type: string
       required:
         - id
-    IncludesExcludes:
+    MerchandisingIncludesExcludes:
       type: object
       properties:
         alphanumeric:
           type: array
           items:
-            $ref: '#/components/schemas/IncludeExclude'
-    BoostsBuries:
+            $ref: '#/components/schemas/MerchandisingIncludeExclude'
+    MerchandisingBoostsBuries:
       type: object
       properties:
         numeric:
           type: array
           items:
-            $ref: '#/components/schemas/NumericBoostBury'
+            $ref: '#/components/schemas/MerchandisingNumericBoostBury'
         alphanumeric:
           type: array
           items:
-            $ref: '#/components/schemas/AlphanumericBoostBury'
+            $ref: '#/components/schemas/MerchandisingAlphanumericBoostBury'
         product:
           type: array
           items:
-            $ref: '#/components/schemas/ProductBoostBury'
+            $ref: '#/components/schemas/MerchandisingProductBoostBury'
       required:
         - numeric
         - alphanumeric
         - product
-    BoostsBuriesWithInfo:
+    MerchandisingBoostsBuriesWithInfo:
       type: object
       properties:
         numeric:
           type: array
           items:
-            $ref: '#/components/schemas/NumericBoostBury'
+            $ref: '#/components/schemas/MerchandisingNumericBoostBury'
         alphanumeric:
           type: array
           items:
-            $ref: '#/components/schemas/AlphanumericBoostBury'
+            $ref: '#/components/schemas/MerchandisingAlphanumericBoostBury'
         product:
           type: array
           items:
             allOf:
-              - $ref: '#/components/schemas/ProductBoostBury'
-              - $ref: '#/components/schemas/Product'
+              - $ref: '#/components/schemas/MerchandisingProductBoostBury'
+              - $ref: '#/components/schemas/MerchandisingProduct'
       required:
         - numeric
         - alphanumeric
         - product
-    ProductBoostBury:
+    MerchandisingProductBoostBury:
       type: object
       properties:
         id:
@@ -2258,7 +2259,7 @@ components:
       required:
         - id
         - weight
-    NumericBoostBury:
+    MerchandisingNumericBoostBury:
       type: object
       properties:
         field:
@@ -2269,20 +2270,20 @@ components:
       required:
         - field
         - weight
-    AlphanumericBoostBury:
+    MerchandisingAlphanumericBoostBury:
       type: object
       properties:
         fields:
           type: array
           items:
-            $ref: '#/components/schemas/AlphanumericBoostBuryField'
+            $ref: '#/components/schemas/MerchandisingAlphanumericBoostBuryField'
         weight:
           type: number
           format: double
       required:
         - fields
         - weight
-    AlphanumericBoostBuryField:
+    MerchandisingAlphanumericBoostBuryField:
       type: object
       properties:
         field:
@@ -2294,16 +2295,16 @@ components:
       required:
         - field
         - values
-    IncludeExclude:
+    MerchandisingIncludeExclude:
       type: object
       properties:
         fields:
           type: array
           items:
-            $ref: '#/components/schemas/AlphanumericBoostBuryField'
+            $ref: '#/components/schemas/MerchandisingAlphanumericBoostBuryField'
       required:
         - fields
-    ErrorResponse:
+    MerchandisingErrorResponse:
       type: object
       properties:
         status:
@@ -2313,16 +2314,16 @@ components:
       required:
         - status
         - message
-    Facets:
+    MerchandisingFacets:
       type: object
       properties:
         facets:
           type: array
           items:
-            $ref: '#/components/schemas/Facet'
+            $ref: '#/components/schemas/MerchandisingFacet'
       required:
         - facets
-    Facet:
+    MerchandisingFacet:
       type: object
       properties:
         id:
@@ -2331,27 +2332,27 @@ components:
           type: integer
           format: int32
         data:
-          $ref: '#/components/schemas/FacetData'
+          $ref: '#/components/schemas/MerchandisingFacetData'
       required:
         - id
         - data
-    FacetData:
+    MerchandisingFacetData:
       type: array
       items:
-        $ref: '#/components/schemas/FacetItem'
-    FacetItem:
+        $ref: '#/components/schemas/MerchandisingFacetItem'
+    MerchandisingFacetItem:
       type: object
       oneOf:
-        - $ref: '#/components/schemas/PriceFacetData'
-        - $ref: '#/components/schemas/CommonFacetData'
-        - $ref: '#/components/schemas/ColourFacetData'
-        - $ref: '#/components/schemas/CategoryFacetData'
-    Pagination:
+        - $ref: '#/components/schemas/MerchandisingPriceFacetData'
+        - $ref: '#/components/schemas/MerchandisingCommonFacetData'
+        - $ref: '#/components/schemas/MerchandisingColourFacetData'
+        - $ref: '#/components/schemas/MerchandisingCategoryFacetData'
+    MerchandisingPagination:
       type: object
       properties:
         totalItems:
           type: integer
-    Category:
+    MerchandisingCategory:
       type: object
       properties:
         identifier:
@@ -2360,32 +2361,32 @@ components:
           type: string
         path:
           type: string
-    Categories:
+    MerchandisingCategories:
       type: object
       properties:
         categories:
           type: array
           items:
-            $ref: '#/components/schemas/Category'
+            $ref: '#/components/schemas/MerchandisingCategory'
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - categories
         - pagination
-    AttributesResponse:
+    MerchandisingAttributesResponse:
       type: object
       properties:
         attributes:
           type: array
           items:
-            $ref: '#/components/schemas/AttributeResponseItem'
+            $ref: '#/components/schemas/MerchandisingAttributeResponseItem'
       required:
         - attributes
-    AttributeResponseItem:
+    MerchandisingAttributeResponseItem:
       type: object
       properties:
         type:
-          $ref: '#/components/schemas/AttributeType'
+          $ref: '#/components/schemas/MerchandisingAttributeType'
         name:
           type: string
         values:
@@ -2400,13 +2401,13 @@ components:
       required:
         - type
         - name
-    AttributeType:
+    MerchandisingAttributeType:
       type: string
       enum: ['alphanumeric', 'numeric']
-    CountryCode:
+    MerchandisingCountryCode:
       type: string
       enum: ['UK', 'IE', 'UK_IE']
-    CommonFacetData:
+    MerchandisingCommonFacetData:
       type: object
       properties:
         name:
@@ -2424,7 +2425,7 @@ components:
         - count
         - selected
         - disabled
-    CategoryFacetData:
+    MerchandisingCategoryFacetData:
       type: object
       properties:
         count:
@@ -2441,7 +2442,7 @@ components:
         - cat_id
         - count
         - selected
-    ColourFacetData:
+    MerchandisingColourFacetData:
       type: object
       properties:
         count:
@@ -2471,7 +2472,7 @@ components:
         - iconValue
         - selected
         - hasHexCode
-    PriceFacetData:
+    MerchandisingPriceFacetData:
       type: object
       properties:
         minimum:

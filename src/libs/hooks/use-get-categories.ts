@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { CountryCode } from '../api';
+import type { MerchandisingCountryCode } from '../api';
 import { search } from '../api';
 import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
 
@@ -17,7 +17,7 @@ export const useGetCategories = () => {
       query?: string;
       start: number;
       rows: number;
-      countryCode: CountryCode;
+      countryCode: MerchandisingCountryCode;
     }) => {
       setGetCategoriesError('');
 

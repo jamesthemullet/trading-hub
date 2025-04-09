@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
 import type {
-  CountryCode,
+  MerchandisingCountryCode,
+  MerchandisingProduct as ProductType,
   MerchandisingRules,
-  Product as ProductType,
 } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 
@@ -71,7 +71,7 @@ const ProductsLoader = ({
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
   products: ProductRule[];
-  countryCode?: CountryCode;
+  countryCode?: MerchandisingCountryCode;
   onSelectAll: (args: string[]) => void;
   onSelectProduct: ({
     id,
@@ -236,7 +236,7 @@ export type RulesetChangesProps = {
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
   dispatch: Dispatch<Action>;
-  countryCode?: CountryCode;
+  countryCode?: MerchandisingCountryCode;
 
   onSelectAll: (args: string[]) => void;
   onSelectProduct: ({

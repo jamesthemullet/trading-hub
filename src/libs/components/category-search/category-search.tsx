@@ -1,7 +1,11 @@
 import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import type { Category, CountryCode, Pagination } from '@/libs/api';
+import type {
+  MerchandisingCategory,
+  MerchandisingCountryCode,
+  MerchandisingPagination,
+} from '@/libs/api';
 import { useGetCategories } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -55,7 +59,7 @@ type Props = {
     name?: string;
     plpUrl?: string;
   }>;
-  countryCode?: CountryCode;
+  countryCode?: MerchandisingCountryCode;
   error?: string;
 };
 
@@ -89,8 +93,8 @@ export const CategorySearch = ({
      * }
      * where undefined is replaced with empty string
      */
-    categories: Array<Required<Category>>;
-    pagination: Pagination;
+    categories: Array<Required<MerchandisingCategory>>;
+    pagination: MerchandisingPagination;
   }>({
     categories: [],
     pagination: {},
@@ -106,7 +110,10 @@ export const CategorySearch = ({
     setSearchValue('');
   }, [countryCode]);
 
-  const searchCategories = async (query: string, countryCode: CountryCode) => {
+  const searchCategories = async (
+    query: string,
+    countryCode: MerchandisingCountryCode
+  ) => {
     const resp = await getCategories({
       query,
       rows: 5,
@@ -178,7 +185,7 @@ export const CategorySearch = ({
     }
   };
 
-  const CategoryRow = (category: Required<Category>) => (
+  const CategoryRow = (category: Required<MerchandisingCategory>) => (
     <Row
       key={`row-${category.identifier}-${category.name}-${category.path}`}
       onClick={() => {

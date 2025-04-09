@@ -1,4 +1,4 @@
-import type { ErrorResponse } from '@/libs/api';
+import type { MerchandisingErrorResponse } from '@/libs/api';
 
 const sendErrorToNewRelic = (err: unknown) => {
   if (window && window.newrelic) {
@@ -19,7 +19,7 @@ const sendErrorToNewRelic = (err: unknown) => {
 
 const validateErrorResponse = (err: unknown) => {
   if (err && typeof err === 'object' && 'error' in err) {
-    return `Error ${(err.error as ErrorResponse)?.message} ${(err.error as ErrorResponse)?.status}`;
+    return `Error ${(err.error as MerchandisingErrorResponse)?.message} ${(err.error as MerchandisingErrorResponse)?.status}`;
   }
   return 'Unknown error';
 };

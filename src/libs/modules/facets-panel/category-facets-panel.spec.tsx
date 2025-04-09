@@ -5,8 +5,8 @@ import type { UserEvent } from '@testing-library/user-event';
 import userEvent from '@testing-library/user-event';
 
 import type {
-  ReturnedCategoryRuleSet,
-  SearchPreviewResponseBeta,
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingSearchPreviewResponseBeta,
 } from '@/libs/api';
 import {
   useFacetsList,
@@ -66,7 +66,7 @@ const mockGetCategories = {
   pagination: { totalItems: 20 },
 };
 
-const mockRuleData: ReturnedCategoryRuleSet = {
+const mockRuleData: MerchandisingReturnedCategoryRuleSet = {
   rules: {
     pinnedProducts: [{ id: 'xyz0' }],
     blockedProducts: [],
@@ -111,7 +111,7 @@ const mockFacet = {
   merged: [],
 };
 
-const mockData: SearchPreviewResponseBeta = {
+const mockData: MerchandisingSearchPreviewResponseBeta = {
   category: categoryId1,
   externalChanges: mockMerchandisingRulesWithInfo,
   facets: [

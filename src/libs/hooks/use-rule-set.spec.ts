@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ReturnedCategoryRuleSets } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSets } from '@/libs/api';
 
 import { useRuleSet } from './use-rule-set';
 
@@ -44,7 +44,7 @@ describe('useRuleSet', () => {
   });
 
   it('should render the hook', async () => {
-    const mockResponse: ReturnedCategoryRuleSets = {
+    const mockResponse: MerchandisingReturnedCategoryRuleSets = {
       ruleSets: [],
       pagination: {
         totalItems: 10,
@@ -63,7 +63,7 @@ describe('useRuleSet', () => {
   });
 
   it('should refetch data', async () => {
-    const mockResponse: ReturnedCategoryRuleSets = {
+    const mockResponse: MerchandisingReturnedCategoryRuleSets = {
       ruleSets: [],
       pagination: {
         totalItems: 10,

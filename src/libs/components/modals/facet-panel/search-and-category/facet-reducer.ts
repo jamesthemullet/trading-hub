@@ -1,4 +1,4 @@
-import type { ReturnedGlobalFacet } from '@/libs/api';
+import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 
 import type { AttributeDisplayType } from '../types';
 import { toArrayWithSwappedElements } from '../utils/swap-array-elements';
@@ -31,9 +31,9 @@ export type Action =
   | ChangeDisplayTypeAction;
 
 export const facetReducer = (
-  state: ReturnedGlobalFacet,
+  state: MerchandisingReturnedGlobalFacet,
   action: Action
-): ReturnedGlobalFacet => {
+): MerchandisingReturnedGlobalFacet => {
   switch (action.type) {
     case 'MOVE_BOOSTED_ROW_UP': {
       const currentBoosted = state.boosted ?? [];

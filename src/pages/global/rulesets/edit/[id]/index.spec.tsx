@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import type { ReturnedGlobalRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api';
 import { useGlobalRuleSetDetail } from '@/libs/hooks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 
@@ -26,7 +26,7 @@ jest.mock('@/libs/hooks/global/rulesets/use-global-rule-set-update', () => ({
   },
 }));
 
-const mockRuleData: ReturnedGlobalRuleSet = {
+const mockRuleData: MerchandisingReturnedGlobalRuleSet = {
   rules: {
     pinnedProducts: [],
     blockedProducts: [],

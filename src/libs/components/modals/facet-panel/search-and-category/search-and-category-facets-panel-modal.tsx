@@ -2,9 +2,9 @@ import { useCallback, useMemo, useReducer, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
-  AttributeValuesResponse,
-  CountryCode,
-  ReturnedGlobalFacet,
+  MerchandisingAttributeValuesResponse,
+  MerchandisingCountryCode,
+  MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import { Button } from '@/libs/components/buttons/button/button';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
@@ -107,9 +107,9 @@ export const SearchAndCategoryFacetsPanelModal = ({
   countryCode,
 }: {
   onClose: () => void;
-  onSave: (facet: ReturnedGlobalFacet) => void;
-  facet: ReturnedGlobalFacet;
-  countryCode: CountryCode;
+  onSave: (facet: MerchandisingReturnedGlobalFacet) => void;
+  facet: MerchandisingReturnedGlobalFacet;
+  countryCode: MerchandisingCountryCode;
   saveButtonLabel?: string;
   categories?: string[];
 }) => {
@@ -168,7 +168,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
 
   const listValues = useCallback(
     (
-      values: AttributeValuesResponse['values'],
+      values: MerchandisingAttributeValuesResponse['values'],
       displayType: FacetDisplayType
     ) => {
       const rows: FormattedRow[] = [];

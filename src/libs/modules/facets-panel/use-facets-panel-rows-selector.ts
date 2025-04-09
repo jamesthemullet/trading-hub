@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { ReturnedFacet } from '@/libs/api';
+import type { MerchandisingReturnedFacet } from '@/libs/api';
 
 import type {
   FacetDisplayType,
@@ -12,7 +12,7 @@ const truthy = <T>(x: T | undefined): x is T => x !== undefined;
 
 export const useFacetsRowsSelector = (
   panelState: FacetPanelState,
-  facetsData: ReturnedFacet[]
+  facetsData: MerchandisingReturnedFacet[]
 ) => {
   const facetsState = useMemo(() => {
     const includedFacets = panelState.includedFacets;
@@ -25,7 +25,7 @@ export const useFacetsRowsSelector = (
     });
 
     const displayTypeMapper =
-      (displayType: FacetDisplayType) => (row: ReturnedFacet) => {
+      (displayType: FacetDisplayType) => (row: MerchandisingReturnedFacet) => {
         return {
           ...row,
           displayType,
@@ -70,7 +70,7 @@ export const useFacetsRowsSelector = (
     return rows;
   }, [facetsData, panelState]);
 
-  const includedFacets = useMemo<ReturnedFacet[]>(
+  const includedFacets = useMemo<MerchandisingReturnedFacet[]>(
     () =>
       facetsState
         .filter((facet) => facet.displayType === 'included')

@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { CountryCode, MerchandisingRules } from '@/libs/api';
+import type { MerchandisingCountryCode, MerchandisingRules } from '@/libs/api';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import {
   boostMock,
@@ -104,7 +104,7 @@ const mockIncludeExcludeRules: MerchandisingRules = {
 
 const mockDispatch = jest.fn();
 
-const mockCountryCode: CountryCode = 'UK';
+const mockCountryCode: MerchandisingCountryCode = 'UK';
 
 const mockProps = {
   merchandisingRules: mockRules,

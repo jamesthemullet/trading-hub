@@ -4,13 +4,13 @@ import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
-  CategoryRuleSet,
-  CountryCode,
-  ExcludedFacets,
-  KeywordRuleSet,
+  MerchandisingCategoryRuleSet,
+  MerchandisingCountryCode,
+  MerchandisingExcludedFacets,
+  MerchandisingKeywordRuleSet,
   MerchandisingRules,
-  RuleSet,
-  RuleSetFacetConfigWithId,
+  MerchandisingRuleSet,
+  MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
   BulkActions,
@@ -217,29 +217,30 @@ export const Ruleset = ({
     searchTerms,
   }: {
     ruleSetId: string;
-    ruleSet: RuleSet;
+    ruleSet: MerchandisingRuleSet;
     categoryIds?: Array<string>;
     searchTerms?: Array<string>;
   }) => void;
   onCancel: () => void;
   onCreate?: (
-    args: Required<Pick<CategoryRuleSet, 'facets'>> & CategoryRuleSet
+    args: Required<Pick<MerchandisingCategoryRuleSet, 'facets'>> &
+      MerchandisingCategoryRuleSet
   ) => void;
-  onCreateKeywordSearchRuleset?: (args: KeywordRuleSet) => void;
+  onCreateKeywordSearchRuleset?: (args: MerchandisingKeywordRuleSet) => void;
   categoriesInfo?: Array<{
     id: string;
     name?: string;
     plpUrl?: string;
   }>;
-  rulesetFacets?: Array<RuleSetFacetConfigWithId>;
-  rulesetExcludedFacets?: ExcludedFacets;
+  rulesetFacets?: Array<MerchandisingRuleSetFacetConfigWithId>;
+  rulesetExcludedFacets?: MerchandisingExcludedFacets;
   rulesetId?: string;
   rulesetMerchandisingRules?: MerchandisingRules;
   rulesetType: 'global' | 'category' | 'search';
   searchTerms?: string[];
   startDate?: string;
   endDate?: string;
-  countryCode?: CountryCode;
+  countryCode?: MerchandisingCountryCode;
   writeEnabled?: boolean;
 }) => {
   const categoryIds = categoriesInfo?.map((category) => category.id);

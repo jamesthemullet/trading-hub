@@ -1,41 +1,42 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import type { ReturnedCategoryRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
 export const useRuleSetDetail = (id: string) => {
   const [shouldRefetch, refetch] = useState({});
   const api = useMemo(() => search(), []);
-  const [ruleSetDetail, setRuleSetDetail] = useState<ReturnedCategoryRuleSet>({
-    categoriesInfo: [
-      {
-        id: '',
+  const [ruleSetDetail, setRuleSetDetail] =
+    useState<MerchandisingReturnedCategoryRuleSet>({
+      categoriesInfo: [
+        {
+          id: '',
+        },
+      ],
+      id: '',
+      isEnabled: false,
+      lastChanged: {
+        date: '',
+        user: '',
       },
-    ],
-    id: '',
-    isEnabled: false,
-    lastChanged: {
-      date: '',
-      user: '',
-    },
-    rules: {
-      pinnedProducts: [],
-      blockedProducts: [],
-      boosts: { alphanumeric: [], numeric: [], product: [] },
-      buries: {
-        alphanumeric: [],
-        numeric: [],
-        product: [],
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: {
+          alphanumeric: [],
+          numeric: [],
+          product: [],
+        },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
       },
-      includes: {
-        alphanumeric: [],
-      },
-      excludes: {
-        alphanumeric: [],
-      },
-    },
-  });
+    });
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);

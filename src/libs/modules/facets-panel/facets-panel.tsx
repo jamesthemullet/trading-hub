@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
-  CountryCode,
-  ExcludedFacets,
+  MerchandisingCountryCode,
+  MerchandisingExcludedFacets,
+  MerchandisingReturnedFacet,
   MerchandisingRules,
-  ReturnedFacet,
 } from '@/libs/api';
 import {
   Button,
@@ -90,9 +90,9 @@ interface FacetsPanelProps {
   facetsState: FacetRowDisplayValue[];
   selectedCategories?: string[];
   searchTerms?: string[];
-  countryCode: CountryCode;
-  includedFacets: ReturnedFacet[];
-  excludedFacets: ExcludedFacets;
+  countryCode: MerchandisingCountryCode;
+  includedFacets: MerchandisingReturnedFacet[];
+  excludedFacets: MerchandisingExcludedFacets;
   selectedPreviewCountryCode?: 'UK' | 'IE';
   writeEnabled?: boolean;
   selectedCategoriesInfo?: Array<{
@@ -108,7 +108,7 @@ interface FacetsPanelProps {
     facet,
   }: {
     value: string | 'included' | 'excluded' | 'algoControl';
-    facet: ReturnedFacet;
+    facet: MerchandisingReturnedFacet;
   }) => void;
   setDateTime?: (dateTime: [Date | null, Date | null]) => void;
   updatedValues?: (
@@ -185,9 +185,9 @@ export const FacetsPanel = ({
         }
   );
 
-  const [selectedFacet, setSelectedFacet] = useState<ReturnedFacet | undefined>(
-    undefined
-  );
+  const [selectedFacet, setSelectedFacet] = useState<
+    MerchandisingReturnedFacet | undefined
+  >(undefined);
 
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
   const [duplicationError, setDuplicationError] = useState('');
@@ -218,7 +218,7 @@ export const FacetsPanel = ({
     setIsEditValuesModalOpen(false);
   };
 
-  const handleOpenFacetEditModal = (facet: ReturnedFacet) => {
+  const handleOpenFacetEditModal = (facet: MerchandisingReturnedFacet) => {
     setIsEditValuesModalOpen(true);
     setSelectedFacet(facet);
   };
@@ -314,7 +314,7 @@ export const FacetsPanel = ({
     setSelectedPreviewCountryCode?.(category?.includes('IE_') ? 'IE' : 'UK');
   };
 
-  const onModalSave = (facet: ReturnedFacet) => {
+  const onModalSave = (facet: MerchandisingReturnedFacet) => {
     // istanbul ignore next - for undefined value
     const facetBoosted = facet.boosted ?? [];
     // istanbul ignore next - for undefined value

@@ -1,12 +1,15 @@
-import type { GlobalOnlyFacetConfig, ReturnedGlobalFacet } from '@/libs/api';
+import type {
+  MerchandisingGlobalOnlyFacetConfig,
+  MerchandisingReturnedGlobalFacet,
+} from '@/libs/api';
 
 type MergeGroup = Required<
-  NonNullable<GlobalOnlyFacetConfig['merged']>[number]
+  NonNullable<MerchandisingGlobalOnlyFacetConfig['merged']>[number]
 >;
 export type AttributeToMergeGroupMap = Record<string, MergeGroup>;
 
 export const getAttributeToMergeGroupMap = (
-  merged: NonNullable<ReturnedGlobalFacet['merged']>
+  merged: NonNullable<MerchandisingReturnedGlobalFacet['merged']>
 ) => {
   return merged.reduce<AttributeToMergeGroupMap>((acc, merged) => {
     const mergedValues = merged.mergedValues ?? [];

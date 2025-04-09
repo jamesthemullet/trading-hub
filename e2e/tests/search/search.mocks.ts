@@ -1,12 +1,12 @@
-import {
-  AttributesResponse,
-  ProductSearchResponse,
-  ReturnedKeywordRuleSet,
-  ReturnedKeywordRuleSets,
-  SearchPreviewResponseBeta,
+import type {
+  MerchandisingAttributesResponse,
+  MerchandisingProductSearchResponse,
+  MerchandisingReturnedKeywordRuleSet,
+  MerchandisingReturnedKeywordRuleSets,
+  MerchandisingSearchPreviewResponseBeta,
 } from '@/libs/api';
 
-export const mockRulesetsList: ReturnedKeywordRuleSets = {
+export const mockRulesetsList: MerchandisingReturnedKeywordRuleSets = {
   ruleSets: [
     {
       id: '2b948868-cbe2-4d21-8b8a-0fd713516add',
@@ -213,7 +213,7 @@ export const mockRulesetsList: ReturnedKeywordRuleSets = {
   },
 };
 
-export const mockPreview: SearchPreviewResponseBeta = {
+export const mockPreview: MerchandisingSearchPreviewResponseBeta = {
   searchTerm: 'joggers',
   products: [
     {
@@ -490,7 +490,7 @@ export const mockPreview: SearchPreviewResponseBeta = {
   pagination: { totalItems: 3 },
 };
 
-export const mockPreviewIE: SearchPreviewResponseBeta = {
+export const mockPreviewIE: MerchandisingSearchPreviewResponseBeta = {
   searchTerm: 'joggers',
   products: [
     {
@@ -778,7 +778,7 @@ export const mockPreviewIE: SearchPreviewResponseBeta = {
   pagination: { totalItems: 3 },
 };
 
-export const mockRuleSet: ReturnedKeywordRuleSet = {
+export const mockRuleSet: MerchandisingReturnedKeywordRuleSet = {
   id: 'abcdcae5-c3c4-455b-aeff-b7d2af65b702',
   isEnabled: true,
   rules: {
@@ -810,7 +810,7 @@ export const mockRuleSet: ReturnedKeywordRuleSet = {
   endDate: '2024-12-19T04:20:03Z',
 };
 
-export const mockProducts: ProductSearchResponse = {
+export const mockProducts: MerchandisingProductSearchResponse = {
   products: [
     {
       id: '60529550',
@@ -1048,7 +1048,7 @@ export const mockProducts: ProductSearchResponse = {
   pagination: { totalItems: 130 },
 };
 
-export const mockCategoryNumericAttributes: AttributesResponse = {
+export const mockCategoryNumericAttributes: MerchandisingAttributesResponse = {
   attributes: [
     {
       name: 'predictions.salesIn1Day.normalisedValue',
@@ -1061,37 +1061,38 @@ export const mockCategoryNumericAttributes: AttributesResponse = {
   ],
 };
 
-export const mockCategoryAlphanumericAttributes: AttributesResponse = {
-  attributes: [
-    {
-      name: 'offerFlag',
-      type: 'alphanumeric',
-      values: [
-        {
-          value: '0',
-        },
-        {
-          value: '1',
-        },
-      ],
-    },
-    {
-      name: 'fit',
-      type: 'alphanumeric',
-      values: [
-        {
-          value: 'Regular fit',
-        },
-        {
-          value: 'Relaxed fit',
-        },
-        {
-          value: 'Fitted',
-        },
-        {
-          value: 'Straight leg',
-        },
-      ],
-    },
-  ],
-};
+export const mockCategoryAlphanumericAttributes: MerchandisingAttributesResponse =
+  {
+    attributes: [
+      {
+        name: 'offerFlag',
+        type: 'alphanumeric',
+        values: [
+          {
+            value: '0',
+          },
+          {
+            value: '1',
+          },
+        ],
+      },
+      {
+        name: 'fit',
+        type: 'alphanumeric',
+        values: [
+          {
+            value: 'Regular fit',
+          },
+          {
+            value: 'Relaxed fit',
+          },
+          {
+            value: 'Fitted',
+          },
+          {
+            value: 'Straight leg',
+          },
+        ],
+      },
+    ],
+  };

@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 
-import type { AttributesResponse, AttributeType } from '@/libs/api';
+import type {
+  MerchandisingAttributesResponse,
+  MerchandisingAttributeType,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 
-export const useGlobalAttributes = (type?: AttributeType) => {
+export const useGlobalAttributes = (type?: MerchandisingAttributeType) => {
   const [isLoading, setIsLoading] = useState(false);
   const [attributes, setAttributes] = useState<
-    AttributesResponse['attributes']
+    MerchandisingAttributesResponse['attributes']
   >([]);
   const [error, setError] = useState('');
 

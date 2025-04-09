@@ -1,14 +1,14 @@
 import type {
-  AlphanumericBoostBury,
-  IncludeExclude,
-  NumericBoostBury,
-  RuleSet,
+  MerchandisingAlphanumericBoostBury,
+  MerchandisingIncludeExclude,
+  MerchandisingNumericBoostBury,
+  MerchandisingRuleSet,
 } from '@/libs/api';
 
 import { rulesetReducer } from './reducer';
 
 describe('Ruleset reducer', () => {
-  const defaultState: RuleSet = {
+  const defaultState: MerchandisingRuleSet = {
     isEnabled: true,
     rules: {
       pinnedProducts: [],
@@ -33,15 +33,15 @@ describe('Ruleset reducer', () => {
   };
 
   const mockProductId: string = '123';
-  const mockNumericAttribute: NumericBoostBury = {
+  const mockNumericAttribute: MerchandisingNumericBoostBury = {
     field: 'foo',
     weight: 100,
   };
-  const mockAlphaNumericAttribute: AlphanumericBoostBury = {
+  const mockAlphaNumericAttribute: MerchandisingAlphanumericBoostBury = {
     fields: [{ field: 'foo', values: ['bar', 'baz'] }],
     weight: 100,
   };
-  const mockAlphaNumericIncludeExcludeAttribute: IncludeExclude = {
+  const mockAlphaNumericIncludeExcludeAttribute: MerchandisingIncludeExclude = {
     fields: [{ field: 'foo', values: ['bar'] }],
   };
 

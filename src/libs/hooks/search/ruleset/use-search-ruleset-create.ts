@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
 
 import type {
-  CountryCode,
-  ExcludedFacets,
-  KeywordRuleSet,
+  MerchandisingCountryCode,
+  MerchandisingExcludedFacets,
+  MerchandisingKeywordRuleSet,
+  MerchandisingReturnedFacet,
   MerchandisingRules,
-  ReturnedFacet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
@@ -25,16 +25,16 @@ export const useSearchRuleSetCreate = () => {
     }: {
       searchTerms: string[];
       merchandisingRules: MerchandisingRules;
-      includedFacets: ReturnedFacet[];
-      excludedFacets: ExcludedFacets;
+      includedFacets: MerchandisingReturnedFacet[];
+      excludedFacets: MerchandisingExcludedFacets;
       startDate?: string;
       endDate?: string;
-      countryCode?: CountryCode;
+      countryCode?: MerchandisingCountryCode;
     }) => {
       setError('');
 
       try {
-        const body: KeywordRuleSet = {
+        const body: MerchandisingKeywordRuleSet = {
           searchTerms,
           isEnabled: false,
           rules: merchandisingRules,

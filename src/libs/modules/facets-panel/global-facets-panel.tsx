@@ -1,11 +1,11 @@
 import { useEffect, useReducer, useState } from 'react';
 
 import type {
-  CountryCode,
-  ExcludedFacets,
+  MerchandisingCountryCode,
+  MerchandisingExcludedFacets,
+  MerchandisingReturnedFacet,
   MerchandisingRules,
-  ReturnedFacet,
-  RuleSetFacetConfigWithId,
+  MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { ErrorMessage } from '@/libs/components';
 import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
@@ -16,16 +16,16 @@ import { facetsPanelReducer } from './facets-panel-reducer';
 import { useFacetsRowsSelector } from './use-facets-panel-rows-selector';
 
 type GlobalFacetsPanelProps = {
-  ruleSetIncludedFacets?: RuleSetFacetConfigWithId[];
-  ruleSetExcludedFacets?: ExcludedFacets;
+  ruleSetIncludedFacets?: MerchandisingRuleSetFacetConfigWithId[];
+  ruleSetExcludedFacets?: MerchandisingExcludedFacets;
   ruleSetRules?: MerchandisingRules;
   isLoading: boolean;
-  countryCode: CountryCode;
+  countryCode: MerchandisingCountryCode;
   writeEnabled?: boolean;
   onSave: (value: {
-    includedFacets: ReturnedFacet[];
-    excludedFacets: ExcludedFacets;
-    countryCode: CountryCode;
+    includedFacets: MerchandisingReturnedFacet[];
+    excludedFacets: MerchandisingExcludedFacets;
+    countryCode: MerchandisingCountryCode;
   }) => void;
   onCancel: () => void;
 };
@@ -49,7 +49,9 @@ const GlobalFacetsPanel = ({
   const { handleGlobalFacetUpdate, error: updatingGlobalFacetError } =
     useGlobalFacetUpdate();
 
-  const [facetsData, setFacetsData] = useState<ReturnedFacet[]>([]);
+  const [facetsData, setFacetsData] = useState<MerchandisingReturnedFacet[]>(
+    []
+  );
 
   const [initialIncludedFacets, setInitialIncludedFacets] = useState<string[]>(
     []
@@ -118,7 +120,7 @@ const GlobalFacetsPanel = ({
     facet,
   }: {
     value: string | 'included' | 'excluded';
-    facet: ReturnedFacet;
+    facet: MerchandisingReturnedFacet;
   }) => {
     const response = await handleGlobalFacetUpdate({
       facetId: facet.id,

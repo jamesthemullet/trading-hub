@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import type { KeywordRedirect } from '@/libs/api';
+import type { MerchandisingKeywordRedirect } from '@/libs/api';
 import { CentredError, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRedirectCreate } from '@/libs/hooks';
@@ -13,7 +13,7 @@ const CreateRedirect = () => {
   const { createRedirect, isSaving, error } = useRedirectCreate();
   const router = useRouter();
 
-  const createNewRedirect = async (redirect: KeywordRedirect) => {
+  const createNewRedirect = async (redirect: MerchandisingKeywordRedirect) => {
     const response = await createRedirect({ redirect });
 
     if (response) {

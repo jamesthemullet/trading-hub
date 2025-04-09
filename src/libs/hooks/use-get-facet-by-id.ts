@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import type { ReturnedFacet } from '@/libs/api';
+import type { MerchandisingReturnedFacet } from '@/libs/api';
 import { search } from '@/libs/api';
 
 export const useGetFacetsById = (facetId: string) => {
-  const [facet, setFacet] = useState<ReturnedFacet>();
+  const [facet, setFacet] = useState<MerchandisingReturnedFacet>();
   const [error, setError] = useState('');
 
   useEffect(() => {

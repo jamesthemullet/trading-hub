@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
 import type {
-  AlphanumericBoostBury,
-  AlphanumericBoostBuryField,
+  MerchandisingAlphanumericBoostBury,
+  MerchandisingAlphanumericBoostBuryField,
 } from '../../api';
 import { Label, Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
@@ -27,15 +27,17 @@ export const AlphanumericAttribute = ({
   onDelete,
   onEdit,
 }: {
-  fields: Array<AlphanumericBoostBuryField>;
+  fields: Array<MerchandisingAlphanumericBoostBuryField>;
   operation: 'boost' | 'bury' | 'include' | 'exclude';
   weight?: number;
   isEditable?: boolean;
   isEditMode?: boolean;
   canEditWeight?: boolean;
   setWeight?: (weight: number) => void;
-  onDelete?: (args: AlphanumericBoostBury) => void;
-  onEdit?: (args: { fields: AlphanumericBoostBuryField[] }) => void;
+  onDelete?: (args: MerchandisingAlphanumericBoostBury) => void;
+  onEdit?: (args: {
+    fields: MerchandisingAlphanumericBoostBuryField[];
+  }) => void;
 }) => {
   const handleStartChanges = () => {
     onEdit?.({ fields });

@@ -7,9 +7,9 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import type {
-  BoostsBuries,
+  MerchandisingBoostsBuries,
   MerchandisingRules,
-  SearchPreviewResponseBeta,
+  MerchandisingSearchPreviewResponseBeta,
 } from '@/libs/api';
 import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 
@@ -143,7 +143,7 @@ const mockMerchandisingRules = {
   },
 };
 
-const mockData: SearchPreviewResponseBeta = {
+const mockData: MerchandisingSearchPreviewResponseBeta = {
   category: categoryId1,
   externalChanges: mockMerchandisingRulesWithInfo,
   facets: [],
@@ -1425,7 +1425,7 @@ describe('Ruleset', () => {
       },
     };
 
-    const emptyAttributes: BoostsBuries = {
+    const emptyAttributes: MerchandisingBoostsBuries = {
       numeric: [],
       alphanumeric: [],
       product: [],

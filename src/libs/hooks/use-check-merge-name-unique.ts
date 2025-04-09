@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { CountryCode } from '@/libs/api';
+import type { MerchandisingCountryCode } from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { uniqBy } from 'lodash';
@@ -23,7 +23,7 @@ export const useCheckMergeNameUnique = () => {
   }: {
     facetId: string;
     searchQuery: string;
-    countryCode: CountryCode;
+    countryCode: MerchandisingCountryCode;
     localAttributeValues?: string[];
     categories?: string[];
     exceptions?: (string | undefined)[];

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import type {
-  CountryCode,
-  Pagination,
-  ReturnedCategoryRuleSet,
-  ReturnedGlobalRuleSet,
+  MerchandisingCountryCode,
+  MerchandisingPagination,
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingReturnedGlobalRuleSet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
@@ -18,15 +18,17 @@ export const useRuleSet = (
 ) => {
   const [shouldRefetch, refetch] = useState({});
   const [categoryRuleSets, setCategoryRuleSets] = useState<
-    Array<ReturnedCategoryRuleSet>
+    Array<MerchandisingReturnedCategoryRuleSet>
   >([]);
   const [globalRuleSets, setGlobalRuleSets] = useState<
-    Array<ReturnedGlobalRuleSet>
+    Array<MerchandisingReturnedGlobalRuleSet>
   >([]);
-  const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
+  const [pagination, setPagination] = useState<MerchandisingPagination>({
+    totalItems: 0,
+  });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [countryCode, setCountryCode] = useState<CountryCode>();
+  const [countryCode, setCountryCode] = useState<MerchandisingCountryCode>();
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -45,7 +47,7 @@ export const useRuleSet = (
 
         if (ruleSetType === 'category') {
           setCategoryRuleSets(
-            result.data.ruleSets as ReturnedCategoryRuleSet[]
+            result.data.ruleSets as MerchandisingReturnedCategoryRuleSet[]
           );
         }
         if (ruleSetType === 'global') {
@@ -77,7 +79,11 @@ export const useRuleSet = (
     error,
     globalRuleSets,
     pagination: pagination,
-    refetchRuleSetList: ({ countryCode }: { countryCode?: CountryCode }) => {
+    refetchRuleSetList: ({
+      countryCode,
+    }: {
+      countryCode?: MerchandisingCountryCode;
+    }) => {
       setCountryCode(countryCode);
       refetch({});
     },

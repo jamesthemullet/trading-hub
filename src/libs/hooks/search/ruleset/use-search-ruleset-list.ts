@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import type {
-  CountryCode,
-  Pagination,
-  ReturnedKeywordRuleSet,
+  MerchandisingCountryCode,
+  MerchandisingPagination,
+  MerchandisingReturnedKeywordRuleSet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
@@ -13,10 +13,14 @@ export const useSearchRulesetList = (
   rows: number
 ) => {
   const [shouldRefetch, refetch] = useState({});
-  const [ruleSets, setRuleSets] = useState<Array<ReturnedKeywordRuleSet>>([]);
-  const [pagination, setPagination] = useState<Pagination>({ totalItems: 0 });
+  const [ruleSets, setRuleSets] = useState<
+    Array<MerchandisingReturnedKeywordRuleSet>
+  >([]);
+  const [pagination, setPagination] = useState<MerchandisingPagination>({
+    totalItems: 0,
+  });
   const [error, setError] = useState('');
-  const [countryCode, setCountryCode] = useState<CountryCode>();
+  const [countryCode, setCountryCode] = useState<MerchandisingCountryCode>();
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -43,7 +47,11 @@ export const useSearchRulesetList = (
   return {
     error,
     pagination,
-    refetchRuleSetList: ({ countryCode }: { countryCode?: CountryCode }) => {
+    refetchRuleSetList: ({
+      countryCode,
+    }: {
+      countryCode?: MerchandisingCountryCode;
+    }) => {
       setCountryCode(countryCode);
       refetch({});
     },

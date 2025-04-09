@@ -1,14 +1,14 @@
 import type {
-  AttributesResponse,
-  AttributeValuesResponse,
-  FacetsList,
-  ProductSearchResponse,
-  ReturnedGlobalFacet,
-  ReturnedGlobalRuleSet,
-  ReturnedGlobalRuleSets,
+  MerchandisingAttributesResponse,
+  MerchandisingAttributeValuesResponse,
+  MerchandisingFacetsList,
+  MerchandisingProductSearchResponse,
+  MerchandisingReturnedGlobalFacet,
+  MerchandisingReturnedGlobalRuleSet,
+  MerchandisingReturnedGlobalRuleSets,
 } from '@/libs/api';
 
-export const mockGlobalRulesets: ReturnedGlobalRuleSets = {
+export const mockGlobalRulesets: MerchandisingReturnedGlobalRuleSets = {
   ruleSets: [
     {
       id: 'b118cd93-1767-447b-ace5-74084bcf56eb',
@@ -37,7 +37,7 @@ export const mockGlobalRulesets: ReturnedGlobalRuleSets = {
   pagination: { totalItems: 1 },
 };
 
-export const mockGlobalRuleset: ReturnedGlobalRuleSet = {
+export const mockGlobalRuleset: MerchandisingReturnedGlobalRuleSet = {
   id: '847f1f8b-dc75-4e97-9364-cecc9b66651c',
   isEnabled: false,
   rules: {
@@ -53,7 +53,7 @@ export const mockGlobalRuleset: ReturnedGlobalRuleSet = {
   lastChanged: { date: '2024-09-19T15:39:49Z', user: 'Graham Licence' },
 };
 
-export const mockGlobalFacet: FacetsList = {
+export const mockGlobalFacet: MerchandisingFacetsList = {
   facets: [
     {
       id: 'f62d4de1-563e-11ef-a364-000000000000',
@@ -313,7 +313,7 @@ export const mockGlobalFacet: FacetsList = {
   ],
 };
 
-export const mockEditedFacet: ReturnedGlobalFacet = {
+export const mockEditedFacet: MerchandisingReturnedGlobalFacet = {
   id: 'f0bc2d42-563e-11ef-a364-000000000000',
   indexPropertyName: 'recommendedAgeRange',
   displayValue: 'Hue',
@@ -323,7 +323,7 @@ export const mockEditedFacet: ReturnedGlobalFacet = {
   merged: [],
 };
 
-export const mockProducts: ProductSearchResponse = {
+export const mockProducts: MerchandisingProductSearchResponse = {
   products: [
     {
       id: '22531022',
@@ -539,7 +539,7 @@ export const mockProducts: ProductSearchResponse = {
   pagination: { totalItems: 130 },
 };
 
-export const mockCategoryNumericAttributes: AttributesResponse = {
+export const mockCategoryNumericAttributes: MerchandisingAttributesResponse = {
   attributes: [
     {
       name: 'predictions.salesIn1Day.normalisedValue',
@@ -552,42 +552,43 @@ export const mockCategoryNumericAttributes: AttributesResponse = {
   ],
 };
 
-export const mockCategoryAlphanumericAttributes: AttributesResponse = {
-  attributes: [
-    {
-      name: 'offerFlag',
-      type: 'alphanumeric',
-      values: [
-        {
-          value: '0',
-        },
-        {
-          value: '1',
-        },
-      ],
-    },
-    {
-      name: 'fit',
-      type: 'alphanumeric',
-      values: [
-        {
-          value: 'Regular fit',
-        },
-        {
-          value: 'Relaxed fit',
-        },
-        {
-          value: 'Fitted',
-        },
-        {
-          value: 'Straight leg',
-        },
-      ],
-    },
-  ],
-};
+export const mockCategoryAlphanumericAttributes: MerchandisingAttributesResponse =
+  {
+    attributes: [
+      {
+        name: 'offerFlag',
+        type: 'alphanumeric',
+        values: [
+          {
+            value: '0',
+          },
+          {
+            value: '1',
+          },
+        ],
+      },
+      {
+        name: 'fit',
+        type: 'alphanumeric',
+        values: [
+          {
+            value: 'Regular fit',
+          },
+          {
+            value: 'Relaxed fit',
+          },
+          {
+            value: 'Fitted',
+          },
+          {
+            value: 'Straight leg',
+          },
+        ],
+      },
+    ],
+  };
 
-export const mockAttributeValues: AttributeValuesResponse = {
+export const mockAttributeValues: MerchandisingAttributeValuesResponse = {
   values: [
     {
       displayValue: 'All ages',

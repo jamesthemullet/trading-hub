@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import type { ProductSearchResponse } from '@/libs/api';
+import type { MerchandisingProductSearchResponse } from '@/libs/api';
 
 import { useCategoryProductSearch } from './use-category-product-search';
 
@@ -68,7 +68,7 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should render the hook', async () => {
-    const mockResponse: ProductSearchResponse = {
+    const mockResponse: MerchandisingProductSearchResponse = {
       products: [],
       pagination: {
         totalItems: 3,
@@ -95,7 +95,7 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('searches by categoryId', async () => {
-    const mockResponse: ProductSearchResponse = {
+    const mockResponse: MerchandisingProductSearchResponse = {
       products: [mockProduct],
       pagination: {
         totalItems: 3,
@@ -132,13 +132,13 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should make two requests if requesting data for IE and UK', async () => {
-    const mockResponse: ProductSearchResponse = {
+    const mockResponse: MerchandisingProductSearchResponse = {
       products: [mockProduct, mockProduct],
       pagination: {
         totalItems: 2,
       },
     };
-    const mockResponse2: ProductSearchResponse = {
+    const mockResponse2: MerchandisingProductSearchResponse = {
       products: [mockProduct],
       pagination: {
         totalItems: 1,
@@ -171,13 +171,13 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should handle undefined pagination totals', async () => {
-    const mockResponse: ProductSearchResponse = {
+    const mockResponse: MerchandisingProductSearchResponse = {
       products: [mockProduct, mockProduct],
       pagination: {
         totalItems: undefined,
       },
     };
-    const mockResponse2: ProductSearchResponse = {
+    const mockResponse2: MerchandisingProductSearchResponse = {
       products: [mockProduct],
       pagination: {
         totalItems: 1,
@@ -210,7 +210,7 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should not make two requests if requesting data for IE and UK with only an IE category', async () => {
-    const mockResponse: ProductSearchResponse = {
+    const mockResponse: MerchandisingProductSearchResponse = {
       products: [],
       pagination: {
         totalItems: 3,
@@ -238,7 +238,7 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('should handle pagination totalItems being undefined', async () => {
-    const mockResponse: ProductSearchResponse = {
+    const mockResponse: MerchandisingProductSearchResponse = {
       products: [],
       pagination: {
         totalItems: undefined,
@@ -265,7 +265,7 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('searches by merchandising search term', async () => {
-    const mockResponse: ProductSearchResponse = {
+    const mockResponse: MerchandisingProductSearchResponse = {
       products: [],
       pagination: {
         totalItems: 3,
@@ -300,7 +300,7 @@ describe('useCategoryProductSearch', () => {
   });
 
   it('searches by productIds', async () => {
-    const mockResponse: ProductSearchResponse = {
+    const mockResponse: MerchandisingProductSearchResponse = {
       products: [],
       pagination: {
         totalItems: 3,

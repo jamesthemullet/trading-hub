@@ -1,7 +1,7 @@
 import type {
-  ReturnedGlobalRuleSet,
-  ReturnedGlobalRuleSets,
-  RuleSet,
+  MerchandisingReturnedGlobalRuleSet,
+  MerchandisingReturnedGlobalRuleSets,
+  MerchandisingRuleSet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
@@ -14,9 +14,9 @@ import { useAccess } from '@/libs/hooks/use-access';
 import Head from 'next/head';
 
 const mapping: RuleSetMapping<
-  ReturnedGlobalRuleSets,
-  ReturnedGlobalRuleSet,
-  RuleSet
+  MerchandisingReturnedGlobalRuleSets,
+  MerchandisingReturnedGlobalRuleSet,
+  MerchandisingRuleSet
 > = {
   queryAllRuleSets: search().betaMerchandisingGlobalRulesetList,
   deleteRuleSetById: search().betaMerchandisingGlobalRulesetDelete,

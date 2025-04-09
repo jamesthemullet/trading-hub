@@ -9,7 +9,10 @@ import { Skeleton } from '@mantine/core';
 
 import Image from 'next/image';
 
-import type { Product as ProductType, RankingAttribute } from '../../api';
+import type {
+  MerchandisingProduct as ProductType,
+  MerchandisingRankingAttribute,
+} from '../../api';
 import { Button } from '../buttons/button/button';
 import { Checkbox } from '../checkboxes/checkbox';
 import type { Action } from '../types';
@@ -55,7 +58,7 @@ const ProductDetails = ({
   isBrandStrong?: boolean;
   isSearchResult?: boolean;
   hasSupplementaryInfo?: boolean;
-  ranking?: Array<RankingAttribute>;
+  ranking?: Array<MerchandisingRankingAttribute>;
 }) => {
   return (
     <>
@@ -217,9 +220,7 @@ export const Product = ({
           label={`Select ${title}`}
           disabled={isSelectionDisabled}
           checked={isSelected}
-          onChange={() =>
-            onSelectProduct && onSelectProduct({ id, isSelected })
-          }
+          onChange={() => onSelectProduct?.({ id, isSelected })}
         />
         <ProductInfoWrapper>
           {(isProductNumberEnabled ?? true) && (

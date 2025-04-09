@@ -1,7 +1,7 @@
 import type {
-  CategoryRuleSet,
-  ReturnedCategoryRuleSet,
-  ReturnedCategoryRuleSets,
+  MerchandisingCategoryRuleSet,
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingReturnedCategoryRuleSets,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 import { Heading } from '@/libs/components';
@@ -15,9 +15,9 @@ import { useAccess } from '@/libs/hooks/use-access';
 import Head from 'next/head';
 
 const mapping: RuleSetMapping<
-  ReturnedCategoryRuleSets,
-  ReturnedCategoryRuleSet,
-  CategoryRuleSet
+  MerchandisingReturnedCategoryRuleSets,
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingCategoryRuleSet
 > = {
   queryAllRuleSets: search().betaMerchandisingCategoryRulesetList,
   deleteRuleSetById: search().betaMerchandisingCategoryRulesetDelete,

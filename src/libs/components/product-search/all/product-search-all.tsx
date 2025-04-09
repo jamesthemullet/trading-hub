@@ -3,9 +3,9 @@ import type { Dispatch } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import type {
-  CountryCode,
+  MerchandisingCountryCode,
+  MerchandisingProduct as ProductType,
   MerchandisingRules,
-  Product as ProductType,
 } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -65,7 +65,7 @@ const SelectAll = styled.div`
 `;
 
 export type ProductSearchProps = {
-  countryCode?: CountryCode;
+  countryCode?: MerchandisingCountryCode;
   isSelectionDisabled: boolean;
   dispatch: Dispatch<Action>;
   onSelectProduct: ({

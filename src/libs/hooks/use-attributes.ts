@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import type {
-  AttributeResponseItem,
-  AttributesResponse,
-  AttributeType,
-  CountryCode,
+  MerchandisingAttributeResponseItem,
+  MerchandisingAttributesResponse,
+  MerchandisingAttributeType,
+  MerchandisingCountryCode,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
@@ -16,8 +16,8 @@ import {
 } from '../components/utils/convert-country-code-to-catalogues';
 
 type Props = {
-  countryCode: CountryCode;
-  type: AttributeType;
+  countryCode: MerchandisingCountryCode;
+  type: MerchandisingAttributeType;
   categories?: string[];
   searchTerms?: string[];
 };
@@ -29,7 +29,7 @@ export const useAttributes = ({
   type,
 }: Props) => {
   const [attributes, setAttributes] = useState<
-    AttributesResponse['attributes']
+    MerchandisingAttributesResponse['attributes']
   >([]);
   const [fetchError, setFetchError] = useState('');
 
@@ -62,7 +62,7 @@ export const useAttributes = ({
         const results = await Promise.all(promises);
 
         // merge and combine values of each attribute
-        const mergedAttributes: Array<AttributeResponseItem> = [];
+        const mergedAttributes: Array<MerchandisingAttributeResponseItem> = [];
         results.map((returnedAttributes) => {
           returnedAttributes.map((attr) => {
             const index = mergedAttributes.findIndex(

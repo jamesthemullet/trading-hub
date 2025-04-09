@@ -1,22 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import type { ReturnedKeywordRedirect } from '@/libs/api';
+import type { MerchandisingReturnedKeywordRedirect } from '@/libs/api';
 import { search } from '@/libs/api';
 
 export const useRedirectDetail = (id: string) => {
   const api = useMemo(() => search(), []);
 
-  const [redirect, setRedirect] = useState<ReturnedKeywordRedirect>({
-    keywords: [],
-    destinationUrl: '',
-    isEnabled: false,
-    type: 'redirectTerm',
-    id,
-    lastChanged: {
-      user: '',
-      date: '',
-    },
-  });
+  const [redirect, setRedirect] =
+    useState<MerchandisingReturnedKeywordRedirect>({
+      keywords: [],
+      destinationUrl: '',
+      isEnabled: false,
+      type: 'redirectTerm',
+      id,
+      lastChanged: {
+        user: '',
+        date: '',
+      },
+    });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 

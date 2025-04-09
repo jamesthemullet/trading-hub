@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { CountryCode, MerchandisingRules } from '@/libs/api';
+import type { MerchandisingCountryCode, MerchandisingRules } from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { uniqBy } from 'lodash';
@@ -26,7 +26,7 @@ export const useCategoryProductSearch = () => {
       merchandisingRules,
     }: {
       merchandisingRules: MerchandisingRules;
-      countryCode: CountryCode;
+      countryCode: MerchandisingCountryCode;
       categories?: string[];
       productIds?: string[];
       query?: string;

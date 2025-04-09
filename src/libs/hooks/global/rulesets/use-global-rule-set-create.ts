@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { handleError } from '@/libs/hooks/utils/error';
 
-import type { RuleSet } from '../../../api';
+import type { MerchandisingRuleSet } from '../../../api';
 import { search } from '../../../api';
 
 export const useGlobalRuleSetCreate = () => {
@@ -12,7 +12,7 @@ export const useGlobalRuleSetCreate = () => {
     setError('');
 
     try {
-      const body: RuleSet = {
+      const body: MerchandisingRuleSet = {
         facets: [],
         isEnabled: false,
         rules: {

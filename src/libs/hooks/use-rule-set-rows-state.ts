@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import type { Pagination } from '@/libs/api';
+import type { MerchandisingPagination } from '@/libs/api';
 import type {
   CreateRowFn,
   DeleteRowFn,
@@ -40,7 +40,7 @@ export const useRuleSetRowsState = <
 ): RowsApi => {
   const router = useRouter();
   const [rowsState, setRowsState] = useState<{
-    pagination: Pagination;
+    pagination: MerchandisingPagination;
     rows: Row[];
   }>({
     pagination: {

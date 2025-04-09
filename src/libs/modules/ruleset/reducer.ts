@@ -1,12 +1,12 @@
 import type {
-  AlphanumericBoostBury,
-  IncludeExclude,
-  NumericBoostBury,
-  RuleSet,
+  MerchandisingAlphanumericBoostBury,
+  MerchandisingIncludeExclude,
+  MerchandisingNumericBoostBury,
+  MerchandisingRuleSet,
 } from '@/libs/api';
 import type { Action } from '@/libs/components/types';
 
-export const rulesetReducer = (state: RuleSet, action: Action) => {
+export const rulesetReducer = (state: MerchandisingRuleSet, action: Action) => {
   const { rules } = state;
   switch (action.type) {
     case 'product': {
@@ -78,7 +78,7 @@ export const rulesetReducer = (state: RuleSet, action: Action) => {
     case 'numericAttribute': {
       const { payload } = action;
 
-      const update = (values: NumericBoostBury[]) =>
+      const update = (values: MerchandisingNumericBoostBury[]) =>
         payload.change === 'remove'
           ? values.filter((_el, index) => index !== payload.index)
           : payload.change === 'modify'
@@ -112,7 +112,7 @@ export const rulesetReducer = (state: RuleSet, action: Action) => {
     case 'alphanumericBoostBuryAttribute': {
       const { payload } = action;
 
-      const update = (values: AlphanumericBoostBury[]) => {
+      const update = (values: MerchandisingAlphanumericBoostBury[]) => {
         switch (payload.change) {
           case 'remove':
             return values.filter((_el, index) => index !== payload.index);
@@ -151,7 +151,7 @@ export const rulesetReducer = (state: RuleSet, action: Action) => {
     case 'alphanumericIncludeExcludeAttribute': {
       const { payload } = action;
 
-      const update = (values: IncludeExclude[]) => {
+      const update = (values: MerchandisingIncludeExclude[]) => {
         switch (payload.change) {
           case 'remove':
             return values.filter((_el, index) => index !== payload.index);

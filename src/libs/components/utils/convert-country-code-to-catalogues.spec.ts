@@ -1,4 +1,4 @@
-import type { CountryCode } from '@/libs/api';
+import type { MerchandisingCountryCode } from '@/libs/api';
 
 import {
   convertCategoryIdToCatalogue,
@@ -14,7 +14,7 @@ describe('convertCountryCodeToCatalogues', () => {
     'should convert %s country code to %s catalogue(s)',
     (countryCode, expectedCatalogues) => {
       const catalogues = convertCountryCodeToCatalogues(
-        countryCode as CountryCode
+        countryCode as MerchandisingCountryCode
       );
       expect(catalogues).toStrictEqual(expectedCatalogues);
     }

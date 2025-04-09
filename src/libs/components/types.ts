@@ -1,25 +1,25 @@
 import type {
-  AlphanumericBoostBury,
-  AlphanumericBoostBuryField,
-  AttributeType,
-  CountryCode,
-  ErrorResponse,
   HttpResponse,
-  IncludeExclude,
-  NumericBoostBury,
-  Pagination,
-  ReturnedNotFound,
+  MerchandisingAlphanumericBoostBury,
+  MerchandisingAlphanumericBoostBuryField,
+  MerchandisingAttributeType,
+  MerchandisingCountryCode,
+  MerchandisingErrorResponse,
+  MerchandisingIncludeExclude,
+  MerchandisingNumericBoostBury,
+  MerchandisingPagination,
+  MerchandisingReturnedNotFound,
 } from '../api';
 
 export type RulesetAttribute = {
   attribute: {
-    fields?: Array<AlphanumericBoostBuryField>;
+    fields?: Array<MerchandisingAlphanumericBoostBuryField>;
     weight?: number;
     field?: string;
   };
   change: 'add' | 'remove' | 'modify';
   operation: 'boost' | 'bury' | 'include' | 'exclude';
-  type: AttributeType;
+  type: MerchandisingAttributeType;
   index?: number;
 };
 
@@ -32,50 +32,50 @@ type ProductPayload = {
   position?: number;
 };
 
-type NumericAttributePayload = {
+type MerchandisingNumericAttributePayload = {
   operation: 'boost' | 'bury';
   change: Change;
   index: number;
-  data: NumericBoostBury;
+  data: MerchandisingNumericBoostBury;
 };
 
-type AlphanumericBoostBuryAttributePayload = {
+type MerchandisingAlphanumericBoostBuryAttributePayload = {
   operation: 'boost' | 'bury';
   change: Change;
   index: number;
-  data: AlphanumericBoostBury;
+  data: MerchandisingAlphanumericBoostBury;
 };
 
 export type NumericAttributeEdit = {
-  field: NumericBoostBury;
+  field: MerchandisingNumericBoostBury;
   weight: number;
   index: number;
   operation: 'boost' | 'bury';
   type: 'numericBoostBury';
 };
-export type AlphanumericBoostBuryAttributeEdit = {
-  fields: AlphanumericBoostBuryField[];
+export type MerchandisingAlphanumericBoostBuryAttributeEdit = {
+  fields: MerchandisingAlphanumericBoostBuryField[];
   weight: number;
   index: number;
   operation: 'boost' | 'bury';
   type: 'alphanumericBoostBury';
 };
-export type AlphanumericIncludeExcludeAttributeEdit = {
-  fields: AlphanumericBoostBuryField[];
+export type MerchandisingAlphanumericIncludeExcludeAttributeEdit = {
+  fields: MerchandisingAlphanumericBoostBuryField[];
   index: number;
   operation: 'include' | 'exclude';
   type: 'alphanumericIncludeExclude';
 };
 export type AttributeEdit =
   | NumericAttributeEdit
-  | AlphanumericBoostBuryAttributeEdit
-  | AlphanumericIncludeExcludeAttributeEdit;
+  | MerchandisingAlphanumericBoostBuryAttributeEdit
+  | MerchandisingAlphanumericIncludeExcludeAttributeEdit;
 
-type AlphanumericIncludeExcludeAttributePayload = {
+type MerchandisingAlphanumericIncludeExcludeAttributePayload = {
   operation: 'include' | 'exclude';
   change: Change;
   index: number;
-  data: IncludeExclude;
+  data: MerchandisingIncludeExclude;
 };
 
 type DateValue = Date | null;
@@ -89,14 +89,14 @@ export type Action =
       type: 'product';
       payload: ProductPayload;
     }
-  | { type: 'numericAttribute'; payload: NumericAttributePayload }
+  | { type: 'numericAttribute'; payload: MerchandisingNumericAttributePayload }
   | {
       type: 'alphanumericBoostBuryAttribute';
-      payload: AlphanumericBoostBuryAttributePayload;
+      payload: MerchandisingAlphanumericBoostBuryAttributePayload;
     }
   | {
       type: 'alphanumericIncludeExcludeAttribute';
-      payload: AlphanumericIncludeExcludeAttributePayload;
+      payload: MerchandisingAlphanumericIncludeExcludeAttributePayload;
     }
   | {
       type: 'dateTime';
@@ -104,7 +104,7 @@ export type Action =
     }
   | {
       type: 'changeCountry';
-      payload: CountryCode;
+      payload: MerchandisingCountryCode;
     };
 
 export type Row = {
@@ -127,7 +127,7 @@ export type GetRowsFn = (
   currentPage: number,
   currentPageSize: number,
   query: string,
-  countryCode?: CountryCode
+  countryCode?: MerchandisingCountryCode
 ) => Promise<void>;
 export type DeleteRowFn = (row: { id: string }) => Promise<void>;
 export type CreateRowFn = (
@@ -139,22 +139,34 @@ export type ToggleRowFn = (row: { id: string }) => Promise<void>;
 export type RuleSetMapping<A, T, N> = {
   getEmptyRuleSet: () => N;
   queryAllRuleSets: (query: {
-    countryCode?: CountryCode;
+    countryCode?: MerchandisingCountryCode;
     q?: string;
     rows: number;
     start: number;
-  }) => Promise<HttpResponse<A, void | ErrorResponse>>;
+  }) => Promise<HttpResponse<A, void | MerchandisingErrorResponse>>;
   deleteRuleSetById: (
     id: string
-  ) => Promise<HttpResponse<T, void | ErrorResponse | ReturnedNotFound>>;
+  ) => Promise<
+    HttpResponse<
+      T,
+      void | MerchandisingErrorResponse | MerchandisingReturnedNotFound
+    >
+  >;
   queryRuleSetById: (
     id: string
-  ) => Promise<HttpResponse<T, void | ErrorResponse | ReturnedNotFound>>;
+  ) => Promise<
+    HttpResponse<
+      T,
+      void | MerchandisingErrorResponse | MerchandisingReturnedNotFound
+    >
+  >;
   updateRuleSetById: (
     id: string,
     data: N
-  ) => Promise<HttpResponse<T, void | ErrorResponse>>;
-  newRuleSet: (data: N) => Promise<HttpResponse<T, void | ErrorResponse>>;
+  ) => Promise<HttpResponse<T, void | MerchandisingErrorResponse>>;
+  newRuleSet: (
+    data: N
+  ) => Promise<HttpResponse<T, void | MerchandisingErrorResponse>>;
   ruleSetToRow: (
     ruleSet: T,
     context: { searchQuery?: string; featureFlags?: object }
@@ -173,6 +185,6 @@ export type RowsApi = {
   isLoading: boolean;
   rowsState: {
     rows: Row[];
-    pagination: Pagination;
+    pagination: MerchandisingPagination;
   };
 };

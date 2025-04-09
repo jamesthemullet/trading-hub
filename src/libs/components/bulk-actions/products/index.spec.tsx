@@ -2,12 +2,12 @@ import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { RuleSet } from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { BulkActions } from './index';
 
-const mockRules: RuleSet = {
+const mockRules: MerchandisingRuleSet = {
   rules: {
     pinnedProducts: [],
     boosts: { alphanumeric: [], numeric: [], product: [] },

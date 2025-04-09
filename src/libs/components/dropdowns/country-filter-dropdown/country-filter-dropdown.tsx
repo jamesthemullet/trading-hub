@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import type { CountryCode } from '@/libs/api';
+import type { MerchandisingCountryCode } from '@/libs/api';
 import { useOnOutsideClick } from '@/libs/hooks';
 
 import {
@@ -28,7 +28,7 @@ const DropdownWrapperNoBorder = styled(DropdownWrapper)`
 export const CountryFilterDropdown = ({
   onChange,
 }: {
-  onChange: (country?: CountryCode) => void;
+  onChange: (country?: MerchandisingCountryCode) => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -36,7 +36,7 @@ export const CountryFilterDropdown = ({
     index: number,
     label: string,
     selected: boolean,
-    countryCodeSelected?: CountryCode
+    countryCodeSelected?: MerchandisingCountryCode
   ) => ({
     index,
     label,

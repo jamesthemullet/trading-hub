@@ -1,8 +1,8 @@
-import type { ReturnedGlobalFacet } from '@/libs/api';
+import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 
 import { facetReducer } from './facet-reducer';
 
-const mockReturnedGlobalFacetState: ReturnedGlobalFacet = {
+const mockReturnedGlobalFacetState: MerchandisingReturnedGlobalFacet = {
   id: 'color',
   lastChanged: {
     date: '2021-10-01',
@@ -17,7 +17,7 @@ const mockReturnedGlobalFacetState: ReturnedGlobalFacet = {
 describe('facetReducer', () => {
   describe('MOVE_BOOSTED_ROW_UP', () => {
     it('should move boosted row up', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '2', '3'],
       };
@@ -35,7 +35,7 @@ describe('facetReducer', () => {
     });
 
     it('should not move boosted row up if it is already at the top', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '2', '3'],
       };
@@ -53,7 +53,7 @@ describe('facetReducer', () => {
     });
 
     it('should work with boosted equal to undefined', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: undefined,
       };
@@ -73,7 +73,7 @@ describe('facetReducer', () => {
 
   describe('MOVE_BOOSTED_ROW_DOWN', () => {
     it('should move boosted row down', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '2', '3'],
       };
@@ -91,7 +91,7 @@ describe('facetReducer', () => {
     });
 
     it('should not move boosted row down if it is already at the bottom', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '2', '3'],
       };
@@ -109,7 +109,7 @@ describe('facetReducer', () => {
     });
 
     it('should work with boosted equal to undefined', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: undefined,
       };
@@ -129,7 +129,7 @@ describe('facetReducer', () => {
 
   describe('CHANGE_DISPLAY_TYPE', () => {
     it('should change display type to boosted', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: [],
       };
@@ -149,7 +149,7 @@ describe('facetReducer', () => {
     });
 
     it('should change group to boosted', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: [],
         merged: [
@@ -181,7 +181,7 @@ describe('facetReducer', () => {
     });
 
     it('should change display type from boosted to excluded', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1'],
         excludedValues: [],
@@ -202,7 +202,7 @@ describe('facetReducer', () => {
     });
 
     it('should change display type from boosted to excluded with a merge group', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1'],
         excludedValues: [],
@@ -235,7 +235,7 @@ describe('facetReducer', () => {
     });
 
     it('should change display type from excluded to default', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: ['2', '4'],
         excludedValues: ['1', '3'],
@@ -256,7 +256,7 @@ describe('facetReducer', () => {
     });
 
     it('should change display type when boosted is undefined and excludedValues is undefined', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: undefined,
         excludedValues: undefined,
@@ -277,7 +277,7 @@ describe('facetReducer', () => {
     });
 
     it('should change display type of merge group from excluded to boosted', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: [],
         excludedValues: ['1', '2'],
@@ -310,7 +310,7 @@ describe('facetReducer', () => {
     });
 
     it('should change display type of merge group from default to excluded', () => {
-      const state: ReturnedGlobalFacet = {
+      const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
         boosted: [],
         excludedValues: [],

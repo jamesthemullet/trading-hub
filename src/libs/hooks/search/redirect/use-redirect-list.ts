@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import type { CountryCode, ReturnedKeywordRedirects } from '@/libs/api';
+import type {
+  MerchandisingCountryCode,
+  MerchandisingReturnedKeywordRedirects,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 
 export const useSearchRedirectList = (
@@ -9,12 +12,13 @@ export const useSearchRedirectList = (
   rows: number
 ) => {
   const [shouldRefetch, refetch] = useState({});
-  const [keywordList, setKeywordList] = useState<ReturnedKeywordRedirects>({
-    pagination: { totalItems: 0 },
-    redirects: [],
-  });
+  const [keywordList, setKeywordList] =
+    useState<MerchandisingReturnedKeywordRedirects>({
+      pagination: { totalItems: 0 },
+      redirects: [],
+    });
   const [error, setError] = useState('');
-  const [countryCode, setCountryCode] = useState<CountryCode>();
+  const [countryCode, setCountryCode] = useState<MerchandisingCountryCode>();
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -38,7 +42,11 @@ export const useSearchRedirectList = (
   return {
     error,
     pagination: keywordList.pagination,
-    refetchRedirectList: ({ countryCode }: { countryCode?: CountryCode }) => {
+    refetchRedirectList: ({
+      countryCode,
+    }: {
+      countryCode?: MerchandisingCountryCode;
+    }) => {
       setCountryCode(countryCode);
       refetch({});
     },

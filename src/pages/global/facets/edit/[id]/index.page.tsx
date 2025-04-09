@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
-  CountryCode,
-  ExcludedFacets,
-  ReturnedFacet,
-  RuleSetFacetConfigWithId,
+  MerchandisingCountryCode,
+  MerchandisingExcludedFacets,
+  MerchandisingReturnedFacet,
+  MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
@@ -30,7 +30,7 @@ const Page = ({ id }: PageProps) => {
   } = useGlobalRuleSetDetail(id);
 
   const [facetsFromGlobalRuleSet, setFacetsFromGlobalRuleSet] = useState<
-    RuleSetFacetConfigWithId[] | []
+    MerchandisingRuleSetFacetConfigWithId[] | []
   >([]);
 
   useEffect(() => {
@@ -47,9 +47,9 @@ const Page = ({ id }: PageProps) => {
     excludedFacets,
     countryCode,
   }: {
-    includedFacets: ReturnedFacet[];
-    excludedFacets: ExcludedFacets;
-    countryCode: CountryCode;
+    includedFacets: MerchandisingReturnedFacet[];
+    excludedFacets: MerchandisingExcludedFacets;
+    countryCode: MerchandisingCountryCode;
   }) => {
     const response = await saveGlobalRuleset({
       ruleSetId: globalRuleSet.id,

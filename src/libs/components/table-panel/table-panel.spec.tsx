@@ -3,7 +3,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import type { ReturnedCategoryRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { TablePanel } from './table-panel';
@@ -40,7 +40,7 @@ const mockRules = {
   },
 };
 
-const mockRow1: ReturnedCategoryRuleSet = {
+const mockRow1: MerchandisingReturnedCategoryRuleSet = {
   id: mockId1,
   isEnabled: true,
   lastChanged: {
@@ -58,7 +58,7 @@ const mockRow1: ReturnedCategoryRuleSet = {
   ],
 };
 
-const mockRow2: ReturnedCategoryRuleSet = {
+const mockRow2: MerchandisingReturnedCategoryRuleSet = {
   id: mockId2,
   isEnabled: true,
   lastChanged: {
@@ -75,7 +75,7 @@ const mockRow2: ReturnedCategoryRuleSet = {
   ],
 };
 
-const mockRuleSet: ReturnedCategoryRuleSet = {
+const mockRuleSet: MerchandisingReturnedCategoryRuleSet = {
   id: MOCK_CATEGORY_ID,
   isEnabled: true,
   lastChanged: {
@@ -718,7 +718,7 @@ describe('TablePanel', () => {
                     plpUrl: '/jeans',
                   },
                 ],
-              }) satisfies ReturnedCategoryRuleSet
+              }) satisfies MerchandisingReturnedCategoryRuleSet
           ),
           pagination: {
             totalItems: undefined,
@@ -820,7 +820,7 @@ describe('TablePanel', () => {
   describe('schedule functionality', () => {
     it('displays schedule if a ruleset has a start and end date', async () => {
       const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      const mockRuleset: ReturnedCategoryRuleSet = {
+      const mockRuleset: MerchandisingReturnedCategoryRuleSet = {
         id: mockId,
         isEnabled: true,
         lastChanged: {

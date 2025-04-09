@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { SearchPreviewResponseBeta } from '@/libs/api';
+import type { MerchandisingSearchPreviewResponseBeta } from '@/libs/api';
 import {
   useGetCategories,
   useGetFacetAttributeValues,
@@ -63,7 +63,7 @@ const mockFacet = {
   merged: [],
 };
 
-const mockData: SearchPreviewResponseBeta = {
+const mockData: MerchandisingSearchPreviewResponseBeta = {
   category: categoryId1,
   externalChanges: mockMerchandisingRulesWithInfo,
   facets: [

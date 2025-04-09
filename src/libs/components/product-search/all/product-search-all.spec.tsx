@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { Product } from '@/libs/api';
+import type { MerchandisingProduct } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
@@ -480,7 +480,7 @@ describe('ProductSearchAll', () => {
                 isInStock: true,
                 price: '£5',
                 url: '',
-              }) satisfies Product
+              }) satisfies MerchandisingProduct
           ),
           pagination: {
             totalItems: 10,
