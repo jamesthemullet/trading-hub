@@ -6,6 +6,7 @@ import { logger } from '@/libs/components/logger/logger';
 import newrelic from 'newrelic';
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
+import Script from 'next/script';
 
 import { fonts } from '../libs/components';
 import { color } from '../libs/components/utils/constants';
@@ -170,7 +171,8 @@ class RootDocument extends Document<MerchHubInitialProps> {
     return (
       <Html lang="en">
         <Head>
-          <script
+          <Script
+            id="browser-timing-header"
             type="text/javascript"
             dangerouslySetInnerHTML={{ __html: this.props.browserTimingHeader }}
           />
