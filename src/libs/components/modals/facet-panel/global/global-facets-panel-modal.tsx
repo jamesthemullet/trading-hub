@@ -89,8 +89,6 @@ const EDITFACETVALUESMODALCOLUMNS: {
   },
 ];
 
-export const DEFAULT_MERGE_DISPLAY_NAME = 'Name your merge';
-
 type FormattedRow = {
   displayName: string;
   attributes: string[];
@@ -137,6 +135,7 @@ export const GlobalFacetPanelModalContent = ({
   const [errorStates, setErrorStates] = useState<
     Record<string, { message: string }>
   >({});
+  const [editingValues, setEditingValues] = useState<string[]>([]);
 
   const setError = (id: string, message: string) => {
     setErrorStates((prev) => ({
@@ -148,11 +147,6 @@ export const GlobalFacetPanelModalContent = ({
   const { checkMergeNameUnique } = useCheckMergeNameUnique();
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
     useGlobalFacetUpdate();
-
-  const disallowedValues = [
-    ...merged!.map((val) => val.displayValue!),
-    DEFAULT_MERGE_DISPLAY_NAME,
-  ];
 
   const onSave = async () => {
     const response = await handleGlobalFacetUpdate({
@@ -199,7 +193,7 @@ export const GlobalFacetPanelModalContent = ({
     setMerged([
       ...updatedMerges,
       {
-        displayValue: DEFAULT_MERGE_DISPLAY_NAME,
+        displayValue: selectedFacetAttributes[0],
         mergedValues: selectedFacetAttributes,
       },
     ]);
@@ -229,7 +223,7 @@ export const GlobalFacetPanelModalContent = ({
     }
     setSelectedFacetAttributes([]);
 
-    setError(DEFAULT_MERGE_DISPLAY_NAME, 'Please name your merge to continue');
+    setEditingValues((prev) => [...prev, selectedFacetAttributes[0]]);
   };
 
   const { callback: handleSearch } = useDebounce(
@@ -504,20 +498,19 @@ export const GlobalFacetPanelModalContent = ({
                   onCancel={() => setError(displayName, '')}
                   onDisplayValueChange={(newValue) => {
                     handleDisplayNameChange(displayName, newValue);
+                    setEditingValues((prev) =>
+                      prev.filter((val) => val !== displayName)
+                    );
                   }}
-                  canCancelEdit={displayName !== DEFAULT_MERGE_DISPLAY_NAME}
+                  canCancelEdit
                   showErrorState={!!errorStates[displayName]?.message}
+                  showEditState={editingValues.includes(displayName)}
                   setError={(message) => setError(displayName, message)}
                   disallowedErrorMessage={errorState.message}
                   handleUpdatedValue={(event) => {
                     event.stopPropagation();
                     if (event.target.value === '') {
                       setError(displayName, 'You must supply a value');
-                    } else if (disallowedValues?.includes(event.target.value)) {
-                      setError(
-                        displayName,
-                        `${event.target.value} is not a unique value`
-                      );
                     } else {
                       setError(displayName, '');
                     }
@@ -656,6 +649,7 @@ export const GlobalFacetPanelModalContent = ({
       errorStates,
       searchQuery,
       selectedFacetAttributes,
+      editingValues,
     ]
   );
 

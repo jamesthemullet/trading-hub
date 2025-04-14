@@ -171,12 +171,12 @@ test.describe('global facets', () => {
 
     await page.getByRole('button', { name: 'Merge (2)' }).click();
 
-    await page.getByLabel('Edit Name your merge input field').click();
+    await page.getByLabel('Edit 0-2 Years input field').click();
     await page
-      .getByLabel('Edit Name your merge input field')
+      .getByLabel('Edit 0-2 Years input field')
       .fill('A merged group name');
 
-    await page.getByLabel('Save Name your merge change').click();
+    await page.getByLabel('Save 0-2 Years change').click();
 
     await page.waitForTimeout(3000);
 
@@ -184,19 +184,19 @@ test.describe('global facets', () => {
       page.getByLabel('Edit display name for A merged group name')
     ).toBeVisible();
 
-    await page.getByLabel('Select A merged group name to merge').click();
     await page.getByLabel('Select Not suitable under 36 mth to merge').click();
+    await page.getByLabel('Select A merged group name to merge').click();
 
     await expect(page.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Merge (3)' }).click();
 
-    await page.getByLabel('Edit Name your merge input field').click();
+    await page.getByLabel('Edit Not suitable under 36 mth input field').click();
     await page
-      .getByLabel('Edit Name your merge input field')
+      .getByLabel('Edit Not suitable under 36 mth input field')
       .fill('A merge into a merged group name');
 
-    await page.getByLabel('Save Name your merge change').click();
+    await page.getByLabel('Save Not suitable under 36 mth change').click();
 
     await page.waitForTimeout(3000);
 

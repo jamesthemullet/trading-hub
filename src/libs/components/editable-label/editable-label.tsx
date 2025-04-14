@@ -79,6 +79,7 @@ export type EditableLabelProps = {
   onDisplayValueChange: (newValue: string) => void;
   setError: (message: string) => void;
   showErrorState: boolean;
+  showEditState?: boolean;
   handleUpdatedValue: (event: React.ChangeEvent<HTMLInputElement>) => void;
   canCancelEdit?: boolean;
   onCancel?: () => void;
@@ -91,6 +92,7 @@ export const EditableLabel = ({
   onDisplayValueChange,
   setError,
   showErrorState,
+  showEditState,
   handleUpdatedValue,
   canCancelEdit,
   onCancel,
@@ -101,10 +103,10 @@ export const EditableLabel = ({
   const [value, setValue] = useState(displayValue);
 
   useEffect(() => {
-    if (showErrorState) {
+    if (showErrorState || showEditState) {
       setIsEditMode(true);
     }
-  }, [showErrorState, displayValue]);
+  }, [showErrorState, showEditState, displayValue]);
 
   return (
     <DisplayName>

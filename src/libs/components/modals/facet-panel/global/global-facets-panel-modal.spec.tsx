@@ -13,7 +13,6 @@ import {
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import {
-  DEFAULT_MERGE_DISPLAY_NAME,
   GlobalFacetPanelModal,
   GlobalFacetPanelModalContent,
 } from './global-facets-panel-modal';
@@ -446,52 +445,6 @@ describe('GlobalFacetPanelModalContent', () => {
         cancelButton.click();
       });
       expect(errorMessage).not.toBeVisible();
-    });
-
-    it('should not allow renaming a row to the default value', async () => {
-      jest.mocked(useCheckMergeNameUnique).mockReturnValueOnce({
-        checkMergeNameUnique: () =>
-          Promise.resolve({
-            isUniqueValue: true,
-          }),
-        error: '',
-      });
-
-      renderWithProviders(
-        <GlobalFacetPanelModalContent
-          attributeValues={attributeValuesMock}
-          facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
-          onClose={jest.fn()}
-        />
-      );
-
-      const editButton = await screen.findByLabelText(
-        `Edit display name for ${attributeValuesMock[0].displayValue}`
-      );
-
-      act(() => {
-        editButton.click();
-      });
-
-      const inputField = await screen.findByLabelText(
-        `Edit ${attributeValuesMock[0].displayValue} input field`
-      );
-
-      expect(inputField).toHaveValue(attributeValuesMock[0].displayValue);
-
-      await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, DEFAULT_MERGE_DISPLAY_NAME);
-        await userEvent.keyboard('{enter}');
-      });
-
-      await waitFor(() => {
-        const errorMessage = screen.getByText(
-          `${DEFAULT_MERGE_DISPLAY_NAME} is not a unique value`
-        );
-        expect(errorMessage).toBeVisible();
-      });
     });
 
     it('should open actions dropdown and make no changes if algo control is chosen', async () => {
@@ -1013,12 +966,8 @@ describe('GlobalFacetPanelModalContent', () => {
         mergeButton.click();
       });
 
-      expect(
-        screen.getByText('Please name your merge to continue')
-      ).toBeVisible();
-
       const inputField = await screen.findByLabelText(
-        `Edit ${DEFAULT_MERGE_DISPLAY_NAME} input field`
+        `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
       await waitFor(async () => {
@@ -1030,61 +979,6 @@ describe('GlobalFacetPanelModalContent', () => {
         const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
         expect(updatedRow).toBeVisible();
       });
-    });
-
-    it('should not allow saving when a merge is named the default value', async () => {
-      renderWithProviders(
-        <GlobalFacetPanelModalContent
-          attributeValues={attributeValuesMock}
-          facet={{
-            ...mockFacet,
-            merged: [
-              {
-                displayValue: 'Foo',
-                mergedValues: [
-                  attributeValuesMock[2].displayValue,
-                  attributeValuesMock[3].displayValue,
-                ],
-              },
-            ],
-            boosted: [],
-            excludedValues: [],
-          }}
-          countryCode="UK"
-          onClose={jest.fn()}
-        />
-      );
-
-      const checkbox1 = screen.getByLabelText(
-        `Select ${attributeValuesMock[0].displayValue} to merge`
-      );
-
-      act(() => {
-        checkbox1.click();
-      });
-
-      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
-
-      const checkbox2 = screen.getByLabelText(
-        `Select ${attributeValuesMock[1].displayValue} to merge`
-      );
-
-      act(() => {
-        checkbox2.click();
-      });
-
-      const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
-
-      act(() => {
-        mergeButton.click();
-      });
-
-      expect(
-        screen.getByText('Please name your merge to continue')
-      ).toBeVisible();
-
-      const saveButton = screen.getByRole('button', { name: 'Save' });
-      expect(saveButton).toBeDisabled();
     });
 
     it('should merge all values', async () => {
@@ -1111,12 +1005,8 @@ describe('GlobalFacetPanelModalContent', () => {
         mergeButton.click();
       });
 
-      expect(
-        screen.getByText('Please name your merge to continue')
-      ).toBeVisible();
-
       const inputField = await screen.findByLabelText(
-        `Edit ${DEFAULT_MERGE_DISPLAY_NAME} input field`
+        `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
       await waitFor(async () => {
@@ -1232,12 +1122,8 @@ describe('GlobalFacetPanelModalContent', () => {
         mergeButton.click();
       });
 
-      expect(
-        screen.getByText('Please name your merge to continue')
-      ).toBeVisible();
-
       const inputField = await screen.findByLabelText(
-        `Edit ${DEFAULT_MERGE_DISPLAY_NAME} input field`
+        `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
       await waitFor(async () => {
@@ -1292,12 +1178,8 @@ describe('GlobalFacetPanelModalContent', () => {
         mergeButton.click();
       });
 
-      expect(
-        screen.getByText('Please name your merge to continue')
-      ).toBeVisible();
-
       const inputField = await screen.findByLabelText(
-        `Edit ${DEFAULT_MERGE_DISPLAY_NAME} input field`
+        `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
       await waitFor(async () => {
@@ -1352,12 +1234,8 @@ describe('GlobalFacetPanelModalContent', () => {
         mergeButton.click();
       });
 
-      expect(
-        screen.getByText('Please name your merge to continue')
-      ).toBeVisible();
-
       const inputField = await screen.findByLabelText(
-        `Edit ${DEFAULT_MERGE_DISPLAY_NAME} input field`
+        `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
       await waitFor(async () => {
@@ -1405,22 +1283,18 @@ describe('GlobalFacetPanelModalContent', () => {
         mergeButton.click();
       });
 
-      expect(
-        screen.getByText('Please name your merge to continue')
-      ).toBeVisible();
-
       const inputField = await screen.findByLabelText(
-        `Edit ${DEFAULT_MERGE_DISPLAY_NAME} input field`
+        `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
       await waitFor(async () => {
         await userEvent.clear(inputField);
-        await userEvent.type(inputField, attributeValuesMock[0].displayValue);
+        await userEvent.type(inputField, attributeValuesMock[1].displayValue);
         await userEvent.keyboard('{enter}');
       });
       await waitFor(() => {
         const updatedRow = screen.getByTestId(
-          `Label for ${attributeValuesMock[0].displayValue}`
+          `Label for ${attributeValuesMock[1].displayValue}`
         );
         expect(updatedRow).toBeVisible();
       });
@@ -1467,12 +1341,8 @@ describe('GlobalFacetPanelModalContent', () => {
         mergeButton.click();
       });
 
-      expect(
-        screen.getByText('Please name your merge to continue')
-      ).toBeVisible();
-
       const inputField = await screen.findByLabelText(
-        `Edit ${DEFAULT_MERGE_DISPLAY_NAME} input field`
+        `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
       await waitFor(async () => {
