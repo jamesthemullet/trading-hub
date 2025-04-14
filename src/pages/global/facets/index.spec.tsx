@@ -298,11 +298,22 @@ describe('Global Facet Management', () => {
   });
 
   it('should enable or disable a global ruleset', async () => {
+    const user = userEvent.setup();
     renderWithProviders(<FacetManagementPage />);
 
     const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Apply global changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Apply action' }));
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
       ruleSetId: mockId,
@@ -385,6 +396,7 @@ describe('Global Facet Management', () => {
     });
 
     it('should display an error message when updating a global ruleset fails', async () => {
+      const user = userEvent.setup();
       updateGlobalRuleSet.error = 'An error occurred';
       jest.mocked(useRuleSet).mockReturnValue({
         globalRuleSets: [
@@ -414,6 +426,16 @@ describe('Global Facet Management', () => {
       const rulesetToggle = await screen.findAllByTitle('Toggle');
 
       await userEvent.click(rulesetToggle[0]);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            name: 'Apply global changes',
+          })
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Apply action' }));
 
       await waitFor(() => {
         expect(

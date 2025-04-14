@@ -300,6 +300,7 @@ describe('TablePanel', () => {
 
   describe('toggle functionality', () => {
     it('should enable or disable a row', async () => {
+      const user = userEvent.setup();
       jest.mocked(mappingMock.queryRuleSetById).mockResolvedValue({
         data: mockRow1,
         status: 200,
@@ -324,13 +325,54 @@ describe('TablePanel', () => {
       const rulesetToggle = await screen.findAllByTitle('Toggle');
       await userEvent.click(rulesetToggle[0]);
 
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            name: 'Apply global changes',
+          })
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Apply action' }));
+
       expect(mappingMock.updateRuleSetById).toHaveBeenCalledWith(mockId1, {
         ...mockRow1,
         isEnabled: !mockRow1.isEnabled,
       });
     });
 
+    it('should close the confirmation modal when cancel button on modal clicked', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <TablePanel
+          basePath="/category/rulesets"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="global"
+        />
+      );
+
+      const rulesetToggle = await screen.findAllByTitle('Toggle');
+      await userEvent.click(rulesetToggle[0]);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            name: 'Apply global changes',
+          })
+        ).toBeVisible();
+      });
+
+      await user.click(
+        screen.getByRole('button', { name: 'Close confirmation modal' })
+      );
+
+      expect(mappingMock.updateRuleSetById).not.toHaveBeenCalled();
+    });
+
     it('should display an error message when toggling row fails', async () => {
+      const user = userEvent.setup();
       jest.mocked(mappingMock.queryRuleSetById).mockRejectedValue({
         error: {
           status: 500,
@@ -348,6 +390,16 @@ describe('TablePanel', () => {
       );
       const rulesetToggle = await screen.findAllByTitle('Toggle');
       await userEvent.click(rulesetToggle[0]);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            name: 'Apply global changes',
+          })
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Apply action' }));
 
       expect(
         await screen.findByText(

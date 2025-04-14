@@ -1,4 +1,6 @@
+import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import { Divider, Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type {
@@ -7,7 +9,14 @@ import type {
   MerchandisingReturnedFacet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import { ErrorMessage, Heading } from '@/libs/components';
+import {
+  Button,
+  ErrorMessage,
+  Header3,
+  Heading,
+  spacing,
+  Text,
+} from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -16,18 +25,43 @@ import GlobalFacetsPanel from '@/libs/modules/facets-panel/global-facets-panel';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
+const Buttons = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: right;
+  margin-top: ${spacing(1)};
+
+  button {
+    width: auto;
+    margin-left: ${spacing(2)};
+  }
+`;
+
 type PageProps = {
   id: string;
 };
 
 const Page = ({ id }: PageProps) => {
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     globalRuleSet,
     error: globalRulesetError,
     isLoading,
   } = useGlobalRuleSetDetail(id);
+
+  const [includedFacetsToSave, setIncludedFacetsToSave] = useState<
+    MerchandisingReturnedFacet[]
+  >([]);
+  const [excludedFacetsToSave, setExcludedFacetsToSave] = useState<
+    MerchandisingExcludedFacets | undefined
+  >();
+
+  const [countryCodeToSave, setCountryCodeToSave] =
+    useState<MerchandisingCountryCode>('UK_IE');
+
+  const onCloseModal = () => setIsModalOpen(false);
 
   const [facetsFromGlobalRuleSet, setFacetsFromGlobalRuleSet] = useState<
     MerchandisingRuleSetFacetConfigWithId[] | []
@@ -42,23 +76,15 @@ const Page = ({ id }: PageProps) => {
   const { saveGlobalRuleset, error: savingGlobalRulesetError } =
     useGlobalRuleSetUpdate();
 
-  const handleSave = async ({
-    includedFacets,
-    excludedFacets,
-    countryCode,
-  }: {
-    includedFacets: MerchandisingReturnedFacet[];
-    excludedFacets: MerchandisingExcludedFacets;
-    countryCode: MerchandisingCountryCode;
-  }) => {
+  const handleSave = async () => {
     const response = await saveGlobalRuleset({
       ruleSetId: globalRuleSet.id,
       ruleSet: {
-        facets: includedFacets,
+        facets: includedFacetsToSave,
         rules: globalRuleSet.rules,
         isEnabled: globalRuleSet.isEnabled,
-        excludedFacets,
-        countryCode,
+        excludedFacets: excludedFacetsToSave,
+        countryCode: countryCodeToSave,
       },
     });
 
@@ -106,13 +132,61 @@ const Page = ({ id }: PageProps) => {
               ruleSetExcludedFacets={globalRuleSet.excludedFacets}
               isLoading={isLoading}
               countryCode={globalRuleSet.countryCode || 'UK_IE'}
-              onSave={handleSave}
+              onSave={({ countryCode, includedFacets, excludedFacets }) => {
+                setCountryCodeToSave(countryCode);
+                setIncludedFacetsToSave(includedFacets);
+                setExcludedFacetsToSave(excludedFacets);
+                setIsModalOpen(true);
+              }}
               onCancel={handleCancel}
               writeEnabled={hasWriteAccess}
             />
           </>
         )}
       </main>
+      <Modal.Root
+        centered
+        opened={isModalOpen}
+        onClose={onCloseModal}
+        padding={10}
+        role="dialog"
+        aria-modal="true"
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <Modal.Body>
+            <Header3>Apply global changes</Header3>
+
+            <Text withMargin>
+              This action will apply live changes on the M&S website and app. Do
+              you want to proceed?
+            </Text>
+
+            <Divider />
+
+            <Buttons>
+              <Button
+                onClick={onCloseModal}
+                theme="secondary"
+                aria-label="Close confirmation modal"
+              >
+                Cancel
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  handleSave();
+                }}
+                theme="primary"
+                data-autofocus
+              >
+                Apply action
+              </Button>
+            </Buttons>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
     </>
   );
 };

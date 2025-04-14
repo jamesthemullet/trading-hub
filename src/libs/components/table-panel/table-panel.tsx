@@ -1,16 +1,19 @@
 import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { Skeleton } from '@mantine/core';
+import { Divider, Modal, Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
 import {
+  Button,
   DataTable,
   ErrorMessage,
+  Header3,
   Search,
   spacing,
   TablePagination,
+  Text,
 } from '@/libs/components';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
@@ -30,6 +33,18 @@ const SkeletonButtonWrapper = styled.div`
   margin-left: auto;
   margin-top: ${spacing(1)};
   margin-right: ${spacing(2)};
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: right;
+  margin-top: ${spacing(1)};
+
+  button {
+    width: auto;
+    margin-left: ${spacing(2)};
+  }
 `;
 
 export const TablePanel = <
@@ -71,6 +86,9 @@ export const TablePanel = <
   const pageSizes = [10, 20, 50, 100];
   const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [idToUpdate, setIdToUpdate] = useState<string>('');
   const [countryCode, setCountryCode] = useState<
     MerchandisingCountryCode | undefined
   >();
@@ -122,6 +140,17 @@ export const TablePanel = <
     handleSearch(e);
   };
 
+  const onToggleRow = ({ id }: { id: string }) => {
+    if (ruleType === 'global') {
+      setIsModalOpen(true);
+      setIdToUpdate(id);
+    } else {
+      toggleRow({ id });
+    }
+  };
+
+  const onCloseModal = () => setIsModalOpen(false);
+
   return (
     <PageWrapper>
       <ToolsContainer>
@@ -148,7 +177,7 @@ export const TablePanel = <
         currentPageSize={currentPageSize}
         onDeleteRuleSet={deleteRow}
         onDuplicate={isDuplicateEnabled ? duplicateRow : undefined}
-        onToggleRuleSet={toggleRow}
+        onToggleRuleSet={onToggleRow}
         ruleType={ruleType}
         query={searchInputValue}
         isLoading={isLoading}
@@ -163,6 +192,49 @@ export const TablePanel = <
         currentPageSize={currentPageSize}
         isLoading={isLoading}
       />
+      <Modal.Root
+        centered
+        opened={isModalOpen}
+        onClose={onCloseModal}
+        padding={10}
+        role="dialog"
+        aria-modal="true"
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <Modal.Body>
+            <Header3>Apply global changes</Header3>
+
+            <Text withMargin>
+              This action will apply live changes on the M&S website and app. Do
+              you want to proceed?
+            </Text>
+
+            <Divider />
+
+            <Buttons>
+              <Button
+                onClick={onCloseModal}
+                theme="secondary"
+                aria-label="Close confirmation modal"
+              >
+                Cancel
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  toggleRow({ id: idToUpdate });
+                }}
+                theme="primary"
+                data-autofocus
+              >
+                Apply action
+              </Button>
+            </Buttons>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
     </PageWrapper>
   );
 };

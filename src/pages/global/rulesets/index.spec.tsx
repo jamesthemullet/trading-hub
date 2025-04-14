@@ -257,6 +257,7 @@ describe('Index', () => {
   });
 
   it('should enable or disable a ruleset', async () => {
+    const user = userEvent.setup();
     const mockId = 'ewfw-e3f23-f23f2-3cwef3';
     jest.mocked(useRuleSet).mockReturnValue({
       categoryRuleSets: [],
@@ -287,6 +288,16 @@ describe('Index', () => {
     const rulesetToggle = await screen.findAllByTitle('Toggle');
 
     await userEvent.click(rulesetToggle[0]);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Apply global changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Apply action' }));
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       ruleSetId: mockId,

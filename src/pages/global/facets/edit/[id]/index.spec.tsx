@@ -231,6 +231,16 @@ describe('Global Facet Management Editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Apply global changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Apply action' }));
+
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
       ruleSetId: '123',
       ruleSet: {
@@ -291,6 +301,28 @@ describe('Global Facet Management Editing', () => {
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global/facets/');
+  });
+
+  it('should close the confirmation modal when cancel button on modal clicked', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Apply global changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(
+      screen.getByRole('button', { name: 'Close confirmation modal' })
+    );
+
+    expect(mockUpdateGlobalRuleSet).not.toHaveBeenCalled();
   });
 
   it('should render skeleton when loading', () => {

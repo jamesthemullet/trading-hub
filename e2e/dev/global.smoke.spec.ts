@@ -31,6 +31,17 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Apply global changes',
+      })
+    ).toBeVisible();
+
+    await page
+      .getByRole('button', { name: 'Apply action', exact: true })
+      .click();
+
     await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Global Facet Management' })
@@ -43,6 +54,16 @@ test.describe('Global Ranking', () => {
     await expect(checkbox).not.toBeChecked();
 
     await page.locator('label[title="Toggle"]').first().click();
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Apply global changes',
+      })
+    ).toBeVisible();
+
+    await page
+      .getByRole('button', { name: 'Apply action', exact: true })
+      .click();
 
     await expect(checkbox).toBeChecked();
 
@@ -61,6 +82,16 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Apply global changes',
+      })
+    ).toBeVisible();
+
+    await page
+      .getByRole('button', { name: 'Apply action', exact: true })
+      .click();
 
     await page.waitForLoadState('networkidle');
   });
@@ -103,6 +134,16 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Save', exact: true }).click();
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Apply global changes',
+      })
+    ).toBeVisible();
+
+    await page
+      .getByRole('button', { name: 'Apply action', exact: true })
+      .click();
   });
 
   test('keeps changes for facets and products', async ({ page }) => {

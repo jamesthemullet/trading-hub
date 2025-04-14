@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -96,10 +96,12 @@ describe('Index', () => {
   });
 
   it('should save ruleset', async () => {
-    jest.mocked(useGlobalRuleSetDetail).mockReturnValueOnce({
-      globalRuleSet: mockRuleData,
-      isLoading: false,
-      error: '',
+    jest.mocked(useGlobalRuleSetDetail).mockImplementation(() => {
+      return {
+        globalRuleSet: mockRuleData,
+        isLoading: false,
+        error: '',
+      };
     });
     const expectedRuleSet = {
       ruleSet: {
@@ -127,15 +129,27 @@ describe('Index', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Apply global changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Apply action' }));
+
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
     expect(mockRouter.push).toHaveBeenCalledWith('/global/rulesets');
   });
 
   it('should not save ruleset with server errors', async () => {
-    jest.mocked(useGlobalRuleSetDetail).mockReturnValueOnce({
-      globalRuleSet: mockRuleData,
-      isLoading: false,
-      error: '',
+    jest.mocked(useGlobalRuleSetDetail).mockImplementation(() => {
+      return {
+        globalRuleSet: mockRuleData,
+        isLoading: false,
+        error: '',
+      };
     });
     mockError = 'Error message';
     mockUpdateGlobalRuleSet = jest.fn(() =>
@@ -168,6 +182,16 @@ describe('Index', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Apply global changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Apply action' }));
+
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
 
     expect(screen.getByText('Error message')).toBeVisible();
@@ -186,6 +210,36 @@ describe('Index', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global/rulesets');
+  });
+
+  it('should close the confirmation modal when cancel button on modal clicked', async () => {
+    jest.mocked(useGlobalRuleSetDetail).mockImplementation(() => {
+      return {
+        globalRuleSet: mockRuleData,
+        isLoading: false,
+        error: '',
+      };
+    });
+
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Apply global changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(
+      screen.getByRole('button', { name: 'Close confirmation modal' })
+    );
+
+    expect(mockUpdateGlobalRuleSet).not.toHaveBeenCalled();
   });
 
   it('loads the mock data', async () => {
