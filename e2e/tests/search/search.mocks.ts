@@ -57,6 +57,7 @@ export const mockRulesetsList: MerchandisingReturnedKeywordRuleSets = {
       },
       startDate: '2024-09-12T14:17:54Z',
       endDate: '2024-12-19T04:20:03Z',
+      countryCode: 'UK_IE',
     },
     {
       id: '3394effe-ceda-4bc6-a1d6-ec09673a0549',
@@ -123,6 +124,7 @@ export const mockRulesetsList: MerchandisingReturnedKeywordRuleSets = {
           { id: '1e742a80-3240-11ef-aa09-000000000000' },
         ],
       },
+      countryCode: 'UK_IE',
     },
     {
       id: 'abcdcae5-c3c4-455b-aeff-b7d2af65b702',
@@ -169,6 +171,7 @@ export const mockRulesetsList: MerchandisingReturnedKeywordRuleSets = {
       excludedFacets: {
         facets: [],
       },
+      countryCode: 'UK_IE',
     },
     {
       id: '371733d3-d93a-4220-bcb9-e52cdbbf7245',
@@ -206,6 +209,7 @@ export const mockRulesetsList: MerchandisingReturnedKeywordRuleSets = {
       excludedFacets: {
         facets: [],
       },
+      countryCode: 'UK_IE',
     },
   ],
   pagination: {
@@ -808,6 +812,7 @@ export const mockRuleSet: MerchandisingReturnedKeywordRuleSet = {
   excludedFacets: { facets: [] },
   startDate: '2024-09-12T14:17:54Z',
   endDate: '2024-12-19T04:20:03Z',
+  countryCode: 'UK_IE',
 };
 
 export const mockProducts: MerchandisingProductSearchResponse = {

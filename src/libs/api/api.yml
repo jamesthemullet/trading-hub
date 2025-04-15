@@ -1176,6 +1176,14 @@ paths:
           required: false
           description: view the facets in the context of this rule set
         - in: query
+          name: searchTerm
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+          description: Filter values based on their relevance to this keyword search term, not supported with categoryId
+        - in: query
           name: q
           schema:
             type: string

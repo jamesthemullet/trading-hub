@@ -394,6 +394,23 @@ describe('CategorySearch', () => {
             mockCategoryId2,
             mockCategoryId3,
           ]}
+          selectedCategoriesInfo={[
+            {
+              id: mockCategoryId,
+              name: 'mockCategoryId',
+              plpUrl: 'foo/bar',
+            },
+            {
+              id: mockCategoryId2,
+              name: 'mockCategoryId2',
+              plpUrl: 'foo/bar',
+            },
+            {
+              id: mockCategoryId3,
+              name: 'mockCategoryId3',
+              plpUrl: 'foo/bar',
+            },
+          ]}
           previewCategory={mockCategoryId}
         />
       );
