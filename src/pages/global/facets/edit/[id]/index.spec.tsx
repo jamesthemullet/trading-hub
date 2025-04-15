@@ -697,13 +697,17 @@ describe('Global Facet Management Editing', () => {
 
       renderWithProviders(<Page id={ruleSetId} />);
 
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+
       await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-      expect(
-        await screen.findByText(
-          'Error whilst saving global ruleset: Failed to update rule set'
-        )
-      ).toBeVisible();
+      await waitFor(async () => {
+        expect(
+          await screen.findByText(
+            'Error whilst saving global ruleset: Failed to update rule set'
+          )
+        ).toBeVisible();
+      });
     });
   });
 });
