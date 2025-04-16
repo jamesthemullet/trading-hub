@@ -41,8 +41,19 @@ jobs:
       - name: Lint
         run: npm run lint
 
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare node and install dependencies
+        uses: ./.github/actions/prepare
+
       - name: Test
-        run: npm test --coverage
+        run: npm run codegen && npm test --coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -50,6 +61,7 @@ jobs:
   build:
     name: Build and upload the app
     runs-on: ubuntu-latest
+    needs: code-quality
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,6 +90,7 @@ jobs:
   comment-deployment-message:
     if: ${{ github.event_name == 'pull_request' }}
     name: Comment deployment message
+    needs: deploy-pr-env
     runs-on: ubuntu-latest
     steps:
       - name: Find Comment
@@ -154,16 +167,20 @@ jobs:
 
       - name: Deploy artifact to PR environment
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        shell: bash
-        run: |
-          set -x
-          resource_group_name=dev-${{ steps.dynamic-env-name.outputs.dynamic-env-name }}-v1-eun-layer3-rg
-          app_name=${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
-          echo deploying $app_name to $resource_group_name
-          az webapp deployment source config-zip \
-            --resource-group $resource_group_name \
-            --name $app_name \
-            --src ./next.zip --timeout 360
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_seconds: 360
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            set -x
+            resource_group_name=dev-${{ steps.dynamic-env-name.outputs.dynamic-env-name }}-v1-eun-layer3-rg
+            app_name=${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
+            echo deploying $app_name to $resource_group_name
+            az webapp deployment source config-zip \
+              --resource-group $resource_group_name \
+              --name $app_name \
+              --src ./next.zip --timeout 360
 
       - name: Find deployment comment
         if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
@@ -224,9 +241,10 @@ jobs:
       - name: Cancel build due to failure
         if: ${{ failure() }}
         uses: andymckay/cancel-action@0.5
+
   end-to-end-tests:
     runs-on: ubuntu-latest
-    needs: build
+    needs: code-quality
     name: E2E Tests
     env:
       E2E_TEST_USER_TOKEN: ${{ secrets.E2E_TEST_USER_TOKEN }}
