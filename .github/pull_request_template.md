@@ -15,5 +15,6 @@ https://jira-marksandspencer-app.atlassian.net/browse/PSP-XXXX
 
 ## Required checklist (before asking for a review)
 
-- [x] I have added a description to `Describe your changes` above.
-- [x] I have performed a self-review.
+- [ ] I have added a description to `Describe your changes` above.
+- [ ] I have reviewed my code for quality & security issues.
+- [ ] There are tests that prove my code works as intended
