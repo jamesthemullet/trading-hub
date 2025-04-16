@@ -7,7 +7,7 @@ metadata:
   annotations:
     github.com/project-slug: DigitalInnovation/trading-hub
     backstage.io/techdocs-ref: url:https://github.com/DigitalInnovation/trading-hub/blob/main/README.md
-    mnscorp.net/support-url: 'https://teams.microsoft.com/l/channel/19%3A97850800ac8249a6addfd0fe89b3a2f9%40thread.tacv2/Search%20and%20Sort?groupId=35b5a720-9567-4df6-b358-fb03a3d22589&tenantId=bd5c6713-7399-4b31-be79-78f2d078e543'
+    mnscorp.net/support-url: 'https://teams.microsoft.com/l/channel/19%3A7be4c038edd448038529c7cc8147aa7c%40thread.tacv2/%5BSquad%5D%20Merchandising%20Hub%20-%20Product?groupId=09be67e3-2208-45f2-9eaf-41d6c22743bb&tenantId=bd5c6713-7399-4b31-be79-78f2d078e543'
 
 spec:
   type: website
