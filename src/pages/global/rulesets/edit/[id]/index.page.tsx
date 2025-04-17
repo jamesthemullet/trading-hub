@@ -73,7 +73,7 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit global ruleset</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
         />
@@ -106,7 +106,7 @@ const Page = ({ id }: PageProps) => {
             writeEnabled={hasWriteAccess}
           />
         )}
-      </main>
+      </>
       <Modal.Root
         centered
         opened={isModalOpen}

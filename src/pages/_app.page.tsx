@@ -1,6 +1,7 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
+import styled from '@emotion/styled';
 import { useCookies } from 'react-cookie';
 import { MantineProvider } from '@mantine/core';
 
@@ -11,7 +12,19 @@ import type { AppProps } from 'next/app';
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 
-import { Layout, Navigation } from '../libs/components/navigation/navigation';
+import { Navigation } from '../libs/components/navigation/navigation';
+
+const Layout = styled.div`
+  display: flex;
+  height: 100vh;
+`;
+
+const StyledMain = styled.main`
+  margin-left: 90px;
+  width: 100%;
+  overflow-y: auto;
+  height: 100vh;
+`;
 
 export default function App({
   Component,
@@ -43,7 +56,9 @@ export default function App({
             <Navigation
               autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
             />
-            <Component {...pageProps} />
+            <StyledMain>
+              <Component {...pageProps} />
+            </StyledMain>
           </Layout>
         </MantineProvider>
       </SessionProvider>

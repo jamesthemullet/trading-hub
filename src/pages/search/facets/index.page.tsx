@@ -96,7 +96,7 @@ const FacetManagementPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Search Facet Management</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={[
             'Search & Merchandising',
@@ -113,7 +113,7 @@ const FacetManagementPage = () => {
           ruleType="searchRanking"
           writeEnabled={hasWriteAccess}
         />
-      </main>
+      </>
     </>
   );
 };

@@ -48,7 +48,7 @@ const NewRuleSetPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create Category Ruleset</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']}
         />
@@ -60,7 +60,7 @@ const NewRuleSetPage = () => {
           rulesetType="category"
           writeEnabled={hasWriteAccess}
         />
-      </main>
+      </>
     </>
   );
 };

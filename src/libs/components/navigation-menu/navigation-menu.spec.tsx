@@ -20,6 +20,7 @@ const menuItems = [
       { href: '/category/facets', text: 'Facets' },
     ],
     alt: 'Category Ranking Rules',
+    shortTitle: 'Categories',
   },
   {
     title: 'Search Ranking Rules',
@@ -28,20 +29,31 @@ const menuItems = [
     activeIcon: '/trading-hub/asset/menu-search-v2-active.svg',
     subLinks: [
       { href: '/search/rulesets', text: 'Ranking rules' },
-      { href: '/search/redirects', text: 'Redirect' },
+      { href: '/search/facets', text: 'Facets' },
     ],
     alt: 'Search Ranking Rules',
+    shortTitle: 'Search',
+  },
+  {
+    title: 'Redirect Rules',
+    path: '/redirect',
+    icon: '/trading-hub/asset/menu-redirect-arrow.svg',
+    activeIcon: '/trading-hub/asset/menu-redirect-arrow-active.svg',
+    subLinks: [{ href: '/redirects', text: 'Redirect rules' }],
+    alt: 'Redirect Rules',
+    shortTitle: 'Redirect',
   },
   {
     title: 'Setup',
     path: '/global/',
-    icon: '/trading-hub/asset/menu-setup-v2.svg',
-    activeIcon: '/trading-hub/asset/menu-setup-v2-active.svg',
+    icon: '/trading-hub/asset/menu-globe.svg',
+    activeIcon: '/trading-hub/asset/menu-globe-active.svg',
     subLinks: [
       { href: '/global/rulesets', text: 'Global Category Ranking' },
       { href: '/global/facets', text: 'Global Facet Management' },
     ],
     alt: 'Setup',
+    shortTitle: 'Global',
   },
 ];
 
@@ -86,9 +98,10 @@ describe('NavigationMenu', () => {
     ['Category Ranking Rules', ['Ranking rules', 'Facets'], 'Category Ranking'],
     [
       'Search Ranking Rules',
-      ['Ranking rules', 'Redirect'],
+      ['Ranking rules', 'Facets'],
       'Search optimisation',
     ],
+    ['Redirect Rules', ['Redirect rules'], 'Redirects'],
     [
       'Setup',
       ['Global Category Ranking', 'Global Facet Management'],

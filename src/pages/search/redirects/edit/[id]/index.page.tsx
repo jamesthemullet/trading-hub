@@ -40,7 +40,7 @@ const EditRedirect = ({ id }: Props) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit redirect</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={[
             'Search & Merchandising',
@@ -62,7 +62,7 @@ const EditRedirect = ({ id }: Props) => {
         )}
 
         {isLoading && <Loader />}
-      </main>
+      </>
     </>
   );
 };

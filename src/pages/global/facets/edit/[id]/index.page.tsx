@@ -108,7 +108,7 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit global facets</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
         />
@@ -143,7 +143,7 @@ const Page = ({ id }: PageProps) => {
             />
           </>
         )}
-      </main>
+      </>
       <Modal.Root
         centered
         opened={isModalOpen}

@@ -57,7 +57,7 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit search ranking rule</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={[
             'Search & Merchandising',
@@ -87,7 +87,7 @@ const Page = ({ id }: PageProps) => {
         )}
 
         {isSaving && <Loader />}
-      </main>
+      </>
     </>
   );
 };

@@ -78,7 +78,7 @@ const NewRuleSetPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create search ranking rule</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={[
             'Search & Merchandising',
@@ -100,7 +100,7 @@ const NewRuleSetPage = () => {
           onCancel={handleCancel}
           writeEnabled={hasWriteAccess}
         />
-      </main>
+      </>
     </>
   );
 };

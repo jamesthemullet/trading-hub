@@ -104,7 +104,7 @@ const RuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Category ranking rules</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={[
             'Search & Merchandising',
@@ -121,7 +121,7 @@ const RuleSets = () => {
           ruleType="categoryRanking"
           writeEnabled={hasWriteAccess}
         />
-      </main>
+      </>
     </>
   );
 };

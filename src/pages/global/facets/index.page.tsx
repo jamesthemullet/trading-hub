@@ -82,7 +82,7 @@ const FacetManagementPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Global Facet Management</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={[
             'Search & Merchandising',
@@ -100,7 +100,7 @@ const FacetManagementPage = () => {
           isDuplicateEnabled={false}
           writeEnabled={hasWriteAccess}
         />
-      </main>
+      </>
     </>
   );
 };

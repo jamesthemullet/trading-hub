@@ -33,7 +33,7 @@ const CreateRedirect = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create redirect</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={[
             'Search & Merchandising',
@@ -52,7 +52,7 @@ const CreateRedirect = () => {
         />
 
         {isSaving && <Loader />}
-      </main>
+      </>
     </>
   );
 };

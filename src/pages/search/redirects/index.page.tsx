@@ -89,7 +89,7 @@ const RedirectRuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Keyword Redirect</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={['Search & Merchandising', 'Site search', 'Redirects']}
         />
@@ -103,7 +103,7 @@ const RedirectRuleSets = () => {
           ruleType="redirect"
           writeEnabled={hasWriteAccess}
         />
-      </main>
+      </>
     </>
   );
 };

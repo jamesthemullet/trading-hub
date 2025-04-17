@@ -10,6 +10,10 @@ import { spacing } from '../utils/spacing';
 
 const navigationLightGreen = '#216d58';
 
+const MenuItem = styled.div`
+  width: 100%;
+`;
+
 const StyledLink = styled.a<{ isOpen?: boolean }>`
   text-decoration: none;
   font-size: 12px;
@@ -19,11 +23,17 @@ const StyledLink = styled.a<{ isOpen?: boolean }>`
   border: none;
   display: flex;
   min-height: 64px;
-  width: 64px;
   justify-content: center;
   align-items: center;
   position: relative;
   z-index: 11;
+  flex-direction: column;
+  padding: ${spacing(1)};
+  width: 100%;
+
+  p {
+    color: #fff;
+  }
 
   &:hover,
   &:focus {
@@ -48,15 +58,18 @@ const SubLink = styled(Link)`
 const Icon = styled.img``;
 
 const SubMenu = styled.div<{ isVisible?: boolean }>`
+  height: 100%;
   background-color: ${navigationLightGreen};
-  width: 300px;
-  height: 100vh;
-  position: fixed;
-  left: 64px;
-  top: 0;
   padding-top: ${spacing(2)};
+  position: fixed;
+  width: 300px;
+  left: 90px;
+  top: 0;
   transition: transform 0.1s ease-in 0s;
-  transform: translate(${({ isVisible }) => (isVisible ? 0 : '-364px')}, 0px);
+  transform: translate(
+    ${({ isVisible }) => (isVisible ? '0px' : '-300px')},
+    0px
+  );
 
   & h3,
   & > a {
@@ -83,6 +96,7 @@ type MenuItems = {
       text: string;
     }[];
     alt: string;
+    shortTitle: string;
   }[];
 };
 
@@ -93,7 +107,7 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
   return (
     <>
       {menuItems.map((menuItem, index) => (
-        <div key={menuItem.title}>
+        <MenuItem key={menuItem.title}>
           <StyledLink
             as="button"
             title={menuItem.title}
@@ -101,7 +115,9 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
             onClick={() => setOpenMenu(openMenu === index + 1 ? 0 : index + 1)}
             isOpen={openMenu === index + 1}
           >
-            {pathname.includes(menuItem.path) ? (
+            {pathname === menuItem.path ||
+            (pathname.includes(menuItem.path) &&
+              !pathname.includes('redirect')) ? (
               <Icon
                 src={menuItem.activeIcon}
                 alt={menuItem.alt}
@@ -116,6 +132,7 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
                 width={25}
               />
             )}
+            <Text>{menuItem.shortTitle}</Text>
           </StyledLink>
           <SubMenu isVisible={openMenu === index + 1}>
             <Header3>{menuItem.title}</Header3>
@@ -129,7 +146,7 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
               </SubLink>
             ))}
           </SubMenu>
-        </div>
+        </MenuItem>
       ))}
     </>
   );

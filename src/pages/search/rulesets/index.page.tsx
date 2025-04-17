@@ -96,7 +96,7 @@ const SearchRuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Search ranking rules</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={[
             'Search & Merchandising',
@@ -113,7 +113,7 @@ const SearchRuleSets = () => {
           ruleType="searchRanking"
           writeEnabled={hasWriteAccess}
         />
-      </main>
+      </>
     </>
   );
 };

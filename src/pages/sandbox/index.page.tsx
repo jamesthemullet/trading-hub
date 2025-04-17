@@ -73,7 +73,7 @@ const KeywordMockWithValues = () => {
 
 const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
   return (
-    <div>
+    <>
       <h1>Sandbox examples</h1>
       <Example>
         <h3>Running on Node version {nodeVersion}</h3>
@@ -101,7 +101,7 @@ const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
         <h2>Search keywords Mock With Values</h2>
         <KeywordMockWithValues />
       </Example>
-    </div>
+    </>
   );
 };
 

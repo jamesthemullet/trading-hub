@@ -36,7 +36,7 @@ const StyleGuide = () => {
   return (
     <Container>
       <Header1 style={{ width: '100%', marginBottom: '8px' }}>
-        Styleguide
+        Style guide
       </Header1>
       <Header2 style={{ width: '100%', marginBottom: '8px' }}>Headings</Header2>
       <Guide>

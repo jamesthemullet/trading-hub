@@ -100,23 +100,33 @@ describe('Navigation', () => {
       '/category/rulesets',
       '/trading-hub/asset/menu-category-ranking-v2-active.svg',
       '/trading-hub/asset/menu-search-v2.svg',
-      '/trading-hub/asset/menu-setup-v2.svg',
+      '/trading-hub/asset/menu-redirect-arrow.svg',
+      '/trading-hub/asset/menu-globe.svg',
     ],
     [
       '/search/rulesets',
       '/trading-hub/asset/menu-category-ranking-v2.svg',
       '/trading-hub/asset/menu-search-v2-active.svg',
-      '/trading-hub/asset/menu-setup-v2.svg',
+      '/trading-hub/asset/menu-redirect-arrow.svg',
+      '/trading-hub/asset/menu-globe.svg',
+    ],
+    [
+      '/search/redirects',
+      '/trading-hub/asset/menu-category-ranking-v2.svg',
+      '/trading-hub/asset/menu-search-v2.svg',
+      '/trading-hub/asset/menu-redirect-arrow-active.svg',
+      '/trading-hub/asset/menu-globe.svg',
     ],
     [
       '/global/rulesets',
       '/trading-hub/asset/menu-category-ranking-v2.svg',
       '/trading-hub/asset/menu-search-v2.svg',
-      '/trading-hub/asset/menu-setup-v2-active.svg',
+      '/trading-hub/asset/menu-redirect-arrow.svg',
+      '/trading-hub/asset/menu-globe-active.svg',
     ],
   ])(
     'should activate the category menu icon',
-    async (url, icon1, icon2, icon3) => {
+    async (url, icon1, icon2, icon3, icon4) => {
       jest.mocked(usePathname).mockReturnValue(url);
 
       render(<Navigation autoLogin />);
@@ -130,8 +140,12 @@ describe('Navigation', () => {
       ).toHaveAttribute('src', icon2);
 
       expect(
-        (await screen.findByLabelText('Setup')).childNodes[0]
+        (await screen.findByLabelText('Redirect Rules')).childNodes[0]
       ).toHaveAttribute('src', icon3);
+
+      expect(
+        (await screen.findByLabelText('Global Ranking Rules')).childNodes[0]
+      ).toHaveAttribute('src', icon4);
     }
   );
 });

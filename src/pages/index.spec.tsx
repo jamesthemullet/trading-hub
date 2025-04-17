@@ -22,7 +22,7 @@ describe('Index', () => {
     jest.resetAllMocks();
   });
 
-  it('renders index page', () => {
+  it('renders the index page', () => {
     process.env.NEXT_PUBLIC_AUTO_LOGIN = 'false';
     render(
       <SessionProvider session={null}>
@@ -30,13 +30,12 @@ describe('Index', () => {
       </SessionProvider>
     );
 
-    const expectedWelcomeIntroText = 'Unauthorised,';
+    const expectedWelcomeIntroText = 'Unauthorised, please';
     const headingElement = screen.getByText(expectedWelcomeIntroText);
 
     expect(headingElement).toBeVisible();
-    expect(headingElement).toHaveTextContent(
-      `${expectedWelcomeIntroText} Sign in`
-    );
+    expect(headingElement).toHaveTextContent(`${expectedWelcomeIntroText}`);
+    expect(screen.getByRole('button', { name: 'Sign in' })).toBeVisible();
 
     delete process.env.NEXT_PUBLIC_AUTO_LOGIN;
   });

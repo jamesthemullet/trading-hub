@@ -82,7 +82,7 @@ const RuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Global category ranking rules</title>
       </Head>
-      <main>
+      <>
         <Heading
           breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
         />
@@ -97,7 +97,7 @@ const RuleSets = () => {
           isDuplicateEnabled={false}
           writeEnabled={hasWriteAccess}
         />
-      </main>
+      </>
     </>
   );
 };

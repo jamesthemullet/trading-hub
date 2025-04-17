@@ -9,55 +9,52 @@ import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
 const NavigationWrapper = styled.nav`
-  width: ${spacing(8)};
   background-color: ${color.darkHeritageGreen};
   color: #fff;
-  height: 100vh;
+  z-index: 12;
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 11;
+`;
 
-  &::before {
-    content: '';
-    width: ${spacing(8)};
-    height: 100vh;
-    background-color: ${color.darkHeritageGreen};
-    display: block;
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    left: 0;
-  }
+const LogoWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  height: 70px;
+  align-items: center;
+  padding: ${spacing(3)} ${spacing(2)};
+  background-color: ${color.darkHeritageGreen};
+  z-index: 11;
+  position: relative;
 `;
 
 const List = styled.ul`
   list-style: none;
   margin: 0;
-  padding: ${spacing(4)} 0 0;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   height: calc(100vh - 70px);
 `;
 
 const ListItem = styled.li`
-  margin-bottom: ${spacing(2)};
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: ${color.darkHeritageGreen};
+  position: relative;
 
   &:last-of-type {
     margin-top: auto;
+    flex-grow: 1;
+    justify-content: flex-end;
+    padding-bottom: ${spacing(2)};
   }
 `;
 
 const Logo = styled.img`
-  margin-top: ${spacing(3)};
-  margin-left: ${spacing(1)};
+  margin: ${spacing(3)} auto;
   position: relative;
-  z-index: 11;
-`;
-
-export const Layout = styled.div`
-  padding-left: ${spacing(8)};
+  display: block;
 `;
 
 export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
@@ -75,6 +72,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
         { href: '/category/facets', text: 'Facets' },
       ],
       alt: 'Category Ranking Rules',
+      shortTitle: 'Categories',
     },
     {
       title: 'Search Ranking Rules',
@@ -84,31 +82,43 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
       subLinks: [
         { href: '/search/rulesets', text: 'Ranking rules' },
         { href: '/search/facets', text: 'Facets' },
-        { href: '/search/redirects', text: 'Redirect' },
       ],
       alt: 'Search Ranking Rules',
+      shortTitle: 'Search',
     },
     {
-      title: 'Setup',
+      title: 'Redirect Rules',
+      path: '/search/redirects',
+      icon: '/trading-hub/asset/menu-redirect-arrow.svg',
+      activeIcon: '/trading-hub/asset/menu-redirect-arrow-active.svg',
+      subLinks: [{ href: '/search/redirects', text: 'Redirect rules' }],
+      alt: 'Redirect Rules',
+      shortTitle: 'Redirect',
+    },
+    {
+      title: 'Global Ranking Rules',
       path: '/global/',
-      icon: '/trading-hub/asset/menu-setup-v2.svg',
-      activeIcon: '/trading-hub/asset/menu-setup-v2-active.svg',
+      icon: '/trading-hub/asset/menu-globe.svg',
+      activeIcon: '/trading-hub/asset/menu-globe-active.svg',
       subLinks: [
         { href: '/global/rulesets', text: 'Global Category Ranking' },
         { href: '/global/facets', text: 'Global Facet Management' },
       ],
       alt: 'Setup',
+      shortTitle: 'Global',
     },
   ];
 
   return (
     <NavigationWrapper>
-      <Logo
-        src="/trading-hub/asset/logo-no-date.svg"
-        alt="M&S"
-        height={18}
-        width={47}
-      />
+      <LogoWrapper>
+        <Logo
+          src="/trading-hub/asset/logo-no-date.svg"
+          alt="M&S"
+          height={18}
+          width={47}
+        />
+      </LogoWrapper>
       <List>
         <ListItem>
           <NavigationMenu menuItems={menuItems} />

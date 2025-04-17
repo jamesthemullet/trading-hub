@@ -1,12 +1,21 @@
 import styled from '@emotion/styled';
 
-import { Text } from '@/libs/components';
+import { Button, spacing, Text } from '@/libs/components';
 
 import Head from 'next/head';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
-const Wrapper = styled.div`
-  padding: 20px;
+const Container = styled.div`
+  padding: ${spacing(2)};
+
+  p,
+  h1 {
+    margin-bottom: ${spacing(2)};
+  }
+`;
+
+const StyledText = styled(Text)`
+  font-size: 16px;
 `;
 
 const Index = () => {
@@ -19,25 +28,28 @@ const Index = () => {
       <Head>
         <title>Merchandising Hub | M&S</title>
       </Head>
-      <h1>
+      <Container>
+        <h1>Trading Hub</h1>
         {session && session.status === 'authenticated' ? (
-          <Wrapper>
-            <Text>Hello, {session.data.user?.email}</Text>
+          <>
+            <StyledText>Hello, {session.data.user?.email}</StyledText>
             {hasAutoLogin && (
-              <Text>
-                <button onClick={() => signOut()}>Sign out</button>
-              </Text>
+              <Button isInline isPrimary onClick={() => signOut()}>
+                Sign out
+              </Button>
             )}
-          </Wrapper>
+          </>
         ) : (
-          <Wrapper>
-            Unauthorised,{' '}
+          <>
+            <StyledText>Unauthorised, please </StyledText>
             {hasAutoLogin && (
-              <button onClick={() => signIn('azure-ad')}>Sign in</button>
+              <Button isInline isPrimary onClick={() => signIn('azure-ad')}>
+                Sign in
+              </Button>
             )}
-          </Wrapper>
+          </>
         )}
-      </h1>
+      </Container>
     </>
   );
 };
