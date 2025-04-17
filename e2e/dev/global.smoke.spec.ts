@@ -161,7 +161,7 @@ test.describe('Global Ranking', () => {
       page.getByTestId('Row showing Absorbency Level 1 as included')
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Setup' }).click();
+    await page.getByRole('button', { name: 'Global Ranking Rules' }).click();
     await page.getByRole('link', { name: 'Global Category Ranking' }).click();
 
     await expect(

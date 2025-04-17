@@ -104,7 +104,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
         { href: '/global/rulesets', text: 'Global Category Ranking' },
         { href: '/global/facets', text: 'Global Facet Management' },
       ],
-      alt: 'Setup',
+      alt: 'Global Ranking Rules',
       shortTitle: 'Global',
     },
   ];
