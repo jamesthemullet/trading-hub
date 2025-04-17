@@ -32,6 +32,7 @@ const config: Config = {
     '<rootDir>/.next',
     '/node_modules/',
     'coverage',
+    '/config/',
     'test',
     'e2e',
     'playwright-report',
