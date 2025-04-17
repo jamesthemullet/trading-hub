@@ -60,7 +60,7 @@ export const Layout = styled.div`
   padding-left: ${spacing(8)};
 `;
 
-export const Navigation = () => {
+export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
   const session = useSession();
   const isLoggedIn = session && session.status === 'authenticated';
 
@@ -114,23 +114,25 @@ export const Navigation = () => {
           <NavigationMenu menuItems={menuItems} />
         </ListItem>
         <ListItem>
-          <Link
-            href="/"
-            onClick={() => (isLoggedIn ? signOut() : signIn())}
-            style={{ textDecoration: 'none' }}
-          >
-            <Text
-              style={{
-                color: '#fff',
-                zIndex: 100,
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
+          {!autoLogin && (
+            <Link
+              href="/"
+              onClick={() => (isLoggedIn ? signOut() : signIn())}
+              style={{ textDecoration: 'none' }}
             >
-              {isLoggedIn ? 'Logout' : 'Login'}
-            </Text>
-          </Link>
+              <Text
+                style={{
+                  color: '#fff',
+                  zIndex: 100,
+                  position: 'relative',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                {isLoggedIn ? 'Sign out' : 'Sign in'}
+              </Text>
+            </Link>
+          )}
         </ListItem>
       </List>
     </NavigationWrapper>

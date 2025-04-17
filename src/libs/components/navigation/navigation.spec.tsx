@@ -28,22 +28,28 @@ describe('Navigation', () => {
   });
 
   it('should render trading hub navigation', () => {
-    render(<Navigation />);
+    render(<Navigation autoLogin />);
 
     expect(screen.getByTitle('Category Ranking Rules')).toBeInTheDocument();
   });
 
-  it('should show Login when signed out', () => {
-    render(<Navigation />);
+  it('should not show login button when auto login enabled', () => {
+    render(<Navigation autoLogin />);
 
-    expect(screen.getByText('Login')).toBeVisible();
+    expect(screen.queryByText('Login')).not.toBeInTheDocument();
   });
 
-  it('should call auth Login when signed out', async () => {
-    render(<Navigation />);
+  it('should show Sign in when signed out', () => {
+    render(<Navigation autoLogin={false} />);
+
+    expect(screen.getByText('Sign in')).toBeVisible();
+  });
+
+  it('should call auth Sign in when signed out', async () => {
+    render(<Navigation autoLogin={false} />);
 
     const user = userEvent.setup({ delay: null });
-    await user.click(screen.getByText('Login'));
+    await user.click(screen.getByText('Sign in'));
 
     expect(signIn).toHaveBeenCalled();
   });
@@ -62,9 +68,9 @@ describe('Navigation', () => {
       status: 'authenticated',
       update: jest.fn(),
     });
-    render(<Navigation />);
+    render(<Navigation autoLogin={false} />);
 
-    expect(screen.getByText('Logout')).toBeVisible();
+    expect(screen.getByText('Sign out')).toBeVisible();
   });
 
   it('should call auth logout when signed in', async () => {
@@ -81,10 +87,10 @@ describe('Navigation', () => {
       status: 'authenticated',
       update: jest.fn(),
     });
-    render(<Navigation />);
+    render(<Navigation autoLogin={false} />);
 
     const user = userEvent.setup({ delay: null });
-    await user.click(screen.getByText('Logout'));
+    await user.click(screen.getByText('Sign out'));
 
     expect(signOut).toHaveBeenCalled();
   });
@@ -113,7 +119,7 @@ describe('Navigation', () => {
     async (url, icon1, icon2, icon3) => {
       jest.mocked(usePathname).mockReturnValue(url);
 
-      render(<Navigation />);
+      render(<Navigation autoLogin />);
 
       expect(
         (await screen.findByLabelText('Category Ranking Rules')).childNodes[0]

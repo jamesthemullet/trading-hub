@@ -23,6 +23,7 @@ describe('Index', () => {
   });
 
   it('renders index page', () => {
+    process.env.NEXT_PUBLIC_AUTO_LOGIN = 'false';
     render(
       <SessionProvider session={null}>
         <Index />
@@ -36,6 +37,8 @@ describe('Index', () => {
     expect(headingElement).toHaveTextContent(
       `${expectedWelcomeIntroText} Sign in`
     );
+
+    delete process.env.NEXT_PUBLIC_AUTO_LOGIN;
   });
 
   it('renders index page with authenticated user', () => {
@@ -65,6 +68,8 @@ describe('Index', () => {
   });
 
   it('calls sign in when user clicks sign in button', () => {
+    process.env.NEXT_PUBLIC_AUTO_LOGIN = 'false';
+
     render(
       <SessionProvider session={null}>
         <Index />
@@ -86,9 +91,12 @@ describe('Index', () => {
     expect(signIn).toHaveBeenCalledWith('azure-ad');
     expect(signOut).not.toHaveBeenCalled();
     expect(signIn).toHaveBeenCalledTimes(1);
+    delete process.env.NEXT_PUBLIC_AUTO_LOGIN;
   });
 
   it('calls sign out when user clicks sign out button', () => {
+    process.env.NEXT_PUBLIC_AUTO_LOGIN = 'false';
+
     render(
       <SessionProvider
         session={{
@@ -115,6 +123,8 @@ describe('Index', () => {
 
     expect(signOut).toHaveBeenCalledTimes(1);
     expect(signIn).not.toHaveBeenCalled();
+
+    delete process.env.NEXT_PUBLIC_AUTO_LOGIN;
   });
 
   it('loads the home page site stripe in get server side props', async () => {

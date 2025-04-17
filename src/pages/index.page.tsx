@@ -12,6 +12,8 @@ const Wrapper = styled.div`
 const Index = () => {
   const session = useSession();
 
+  const hasAutoLogin = process.env.NEXT_PUBLIC_AUTO_LOGIN === 'false';
+
   return (
     <>
       <Head>
@@ -21,14 +23,18 @@ const Index = () => {
         {session && session.status === 'authenticated' ? (
           <Wrapper>
             <Text>Hello, {session.data.user?.email}</Text>
-            <Text>
-              <button onClick={() => signOut()}>Sign out</button>
-            </Text>
+            {hasAutoLogin && (
+              <Text>
+                <button onClick={() => signOut()}>Sign out</button>
+              </Text>
+            )}
           </Wrapper>
         ) : (
           <Wrapper>
             Unauthorised,{' '}
-            <button onClick={() => signIn('azure-ad')}>Sign in</button>
+            {hasAutoLogin && (
+              <button onClick={() => signIn('azure-ad')}>Sign in</button>
+            )}
           </Wrapper>
         )}
       </h1>

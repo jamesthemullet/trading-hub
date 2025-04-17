@@ -40,7 +40,9 @@ export default function App({
             autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
           />
           <Layout>
-            <Navigation />
+            <Navigation
+              autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
+            />
             <Component {...pageProps} />
           </Layout>
         </MantineProvider>
