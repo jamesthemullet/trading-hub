@@ -1,37 +1,17 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
-import { Divider, Modal } from '@mantine/core';
+import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
-import {
-  Button,
-  ErrorMessage,
-  Header3,
-  Heading,
-  Loader,
-  spacing,
-  Text,
-} from '@/libs/components';
+import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import ConfirmationModal from '@/libs/components/modals/confirmation-modal/confirmation-modal';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-
-const Buttons = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: right;
-  margin-top: ${spacing(1)};
-
-  button {
-    width: auto;
-    margin-left: ${spacing(2)};
-  }
-`;
 
 type PageProps = {
   id: string;
@@ -67,6 +47,11 @@ const Page = ({ id }: PageProps) => {
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
+
+  const handleModalConfirm = async () => {
+    setIsModalOpen(false);
+    saveRuleSet();
+  };
 
   return (
     <>
@@ -117,37 +102,10 @@ const Page = ({ id }: PageProps) => {
       >
         <Modal.Overlay blur={3} />
         <Modal.Content>
-          <Modal.Body>
-            <Header3>Apply global changes</Header3>
-
-            <Text withMargin>
-              This action will apply live changes on the M&S website and app. Do
-              you want to proceed?
-            </Text>
-
-            <Divider />
-
-            <Buttons>
-              <Button
-                onClick={onCloseModal}
-                theme="secondary"
-                aria-label="Close confirmation modal"
-              >
-                Cancel
-              </Button>
-
-              <Button
-                onClick={() => {
-                  setIsModalOpen(false);
-                  saveRuleSet();
-                }}
-                theme="primary"
-                data-autofocus
-              >
-                Apply action
-              </Button>
-            </Buttons>
-          </Modal.Body>
+          <ConfirmationModal
+            onCloseModal={onCloseModal}
+            handleModalConfirm={handleModalConfirm}
+          />
         </Modal.Content>
       </Modal.Root>
     </>

@@ -1,19 +1,16 @@
 import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { Divider, Modal, Skeleton } from '@mantine/core';
+import { Modal, Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
 import {
-  Button,
   DataTable,
   ErrorMessage,
-  Header3,
   Search,
   spacing,
   TablePagination,
-  Text,
 } from '@/libs/components';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
@@ -27,24 +24,13 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import Link from 'next/link';
 
 import { useRuleSetRowsState } from '../../hooks/use-rule-set-rows-state';
+import ConfirmationModal from '../modals/confirmation-modal/confirmation-modal';
 import type { RuleSetMapping } from '../types';
 
 const SkeletonButtonWrapper = styled.div`
   margin-left: auto;
   margin-top: ${spacing(1)};
   margin-right: ${spacing(2)};
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: right;
-  margin-top: ${spacing(1)};
-
-  button {
-    width: auto;
-    margin-left: ${spacing(2)};
-  }
 `;
 
 export const TablePanel = <
@@ -151,6 +137,11 @@ export const TablePanel = <
 
   const onCloseModal = () => setIsModalOpen(false);
 
+  const handleModalConfirm = async () => {
+    setIsModalOpen(false);
+    toggleRow({ id: idToUpdate });
+  };
+
   return (
     <PageWrapper>
       <ToolsContainer>
@@ -202,37 +193,10 @@ export const TablePanel = <
       >
         <Modal.Overlay blur={3} />
         <Modal.Content>
-          <Modal.Body>
-            <Header3>Apply global changes</Header3>
-
-            <Text withMargin>
-              This action will apply live changes on the M&S website and app. Do
-              you want to proceed?
-            </Text>
-
-            <Divider />
-
-            <Buttons>
-              <Button
-                onClick={onCloseModal}
-                theme="secondary"
-                aria-label="Close confirmation modal"
-              >
-                Cancel
-              </Button>
-
-              <Button
-                onClick={() => {
-                  setIsModalOpen(false);
-                  toggleRow({ id: idToUpdate });
-                }}
-                theme="primary"
-                data-autofocus
-              >
-                Apply action
-              </Button>
-            </Buttons>
-          </Modal.Body>
+          <ConfirmationModal
+            onCloseModal={onCloseModal}
+            handleModalConfirm={handleModalConfirm}
+          />
         </Modal.Content>
       </Modal.Root>
     </PageWrapper>
