@@ -666,6 +666,8 @@ export const DataTable = ({
                   theme="tertiary"
                   data-testid="Delete rule"
                   data-autofocus
+                  data-umami-event={`delete-${ruleType}-rule`}
+                  data-umami-event-ruleset={ruleSetIdToEdit}
                 >
                   Delete
                 </Button>
@@ -680,6 +682,8 @@ export const DataTable = ({
                   }}
                   theme="tertiary"
                   data-autofocus
+                  data-umami-event={`create-duplicate-${ruleType}-rule`}
+                  data-umami-event-ruleset={ruleSetIdToEdit}
                 >
                   Confirm
                 </Button>

@@ -108,7 +108,7 @@ npm run test:e2e
 
 #### Mock tests
 
-There are in depth e2e tests using mock data to test page interations when editing a ruleset, these should be used for testing page behaviour before changes are saved
+There are in depth e2e tests using mock data to test page interactions when editing a ruleset, these should be used for testing page behaviour before changes are saved
 
 These can be run by selecting the "mock" project in playwright
 

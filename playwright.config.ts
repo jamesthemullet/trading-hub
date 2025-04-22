@@ -38,6 +38,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 1080 },
+        userAgent: 'smoke-test-playwright',
       },
       testIgnore: /.*smoke.spec.ts/,
     },
@@ -46,6 +47,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 1080 },
+        userAgent: 'smoke-test-playwright',
       },
       testMatch: /dev\/.*smoke.spec.ts/,
     },
@@ -55,6 +57,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 1080 },
         baseURL: 'https://merchandising-hub.search.marksandspencer.app',
+        userAgent: 'smoke-test-playwright',
       },
       testMatch: /prod\/.*smoke.spec.ts/,
     },

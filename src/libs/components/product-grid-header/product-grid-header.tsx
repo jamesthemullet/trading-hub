@@ -37,6 +37,7 @@ type Props = {
   onSave: () => void;
   shouldHidePreview: boolean;
   title: string;
+  rulesetType: string;
   writeEnabled?: boolean;
 };
 
@@ -50,6 +51,7 @@ export const ProductGridHeader = ({
   onSave,
   shouldHidePreview,
   title,
+  rulesetType,
   writeEnabled = true,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
@@ -80,6 +82,7 @@ export const ProductGridHeader = ({
               theme="primary"
               isDisabled={isSaveButtonDisabled}
               onClick={onSave}
+              data-umami-event={`${isNewRuleSet ? 'create' : 'edit'}-${rulesetType}-rule`}
             >
               {isNewRuleSet ? 'Create' : 'Save'}
             </Button>

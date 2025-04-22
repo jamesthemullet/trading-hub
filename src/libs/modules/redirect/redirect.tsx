@@ -176,6 +176,7 @@ export const Redirect = ({
         shouldHidePreview={true}
         isNewRuleSet={!!onCreate}
         hasChanges={false}
+        rulesetType="redirect"
       />
       <RedirectType>
         <RedirectContent>

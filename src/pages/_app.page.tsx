@@ -9,6 +9,7 @@ import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { LoginCheck } from '@/libs/components/login/login-check';
 
 import type { AppProps } from 'next/app';
+import Script from 'next/script';
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 
@@ -37,31 +38,42 @@ export default function App({
   ]);
 
   return (
-    <FeatureFlagContext.Provider
-      value={{
-        hasAuthorization: cookies.flagAuthorization,
-        authorizationRoleOverride: cookies.flagAuthorizationRoleOverride || {
-          catOverride: 'No Override',
-          searchOverride: 'No Override',
-          globalOverride: 'No Override',
-        },
-      }}
-    >
-      <SessionProvider session={session}>
-        <MantineProvider>
-          <LoginCheck
-            autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
+    <>
+      {typeof window !== 'undefined' &&
+        navigator.userAgent !== 'smoke-test-playwright' &&
+        process.env.NODE_ENV !== 'development' && (
+          <Script
+            defer
+            src="https://cloud.umami.is/script.js"
+            data-website-id="35c4c416-e422-4130-9b76-b344be44cefa"
           />
-          <Layout>
-            <Navigation
+        )}
+      <FeatureFlagContext.Provider
+        value={{
+          hasAuthorization: cookies.flagAuthorization,
+          authorizationRoleOverride: cookies.flagAuthorizationRoleOverride || {
+            catOverride: 'No Override',
+            searchOverride: 'No Override',
+            globalOverride: 'No Override',
+          },
+        }}
+      >
+        <SessionProvider session={session}>
+          <MantineProvider>
+            <LoginCheck
               autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
             />
-            <StyledMain>
-              <Component {...pageProps} />
-            </StyledMain>
-          </Layout>
-        </MantineProvider>
-      </SessionProvider>
-    </FeatureFlagContext.Provider>
+            <Layout>
+              <Navigation
+                autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
+              />
+              <StyledMain>
+                <Component {...pageProps} />
+              </StyledMain>
+            </Layout>
+          </MantineProvider>
+        </SessionProvider>
+      </FeatureFlagContext.Provider>
+    </>
   );
 }

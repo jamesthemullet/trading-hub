@@ -25,6 +25,9 @@ const validateErrorResponse = (err: unknown) => {
 };
 
 export const handleError = (err: unknown) => {
-  sendErrorToNewRelic(err);
+  if (window) {
+    window.umami?.track(`error: ${err}`, 'click');
+    sendErrorToNewRelic(err);
+  }
   return validateErrorResponse(err);
 };

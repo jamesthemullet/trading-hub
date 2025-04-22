@@ -502,6 +502,7 @@ export const Ruleset = ({
         }}
         shouldHidePreview={rulesetType === 'global'}
         title="Product Grid"
+        rulesetType={rulesetType}
       />
 
       <CategoryPanel rulesetType={rulesetType}>

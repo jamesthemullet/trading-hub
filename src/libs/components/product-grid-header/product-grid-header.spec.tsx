@@ -16,6 +16,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
+        rulesetType="search"
       />
     );
 
@@ -36,6 +37,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         writeEnabled={false}
+        rulesetType="search"
       />
     );
 
@@ -59,6 +61,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={true}
         shouldHidePreview={false}
         title="Title"
+        rulesetType="search"
       />
     );
 
@@ -78,6 +81,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
+        rulesetType="search"
       />
     );
 
@@ -103,6 +107,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
+        rulesetType="global"
       />
     );
 
@@ -128,6 +133,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
+        rulesetType="global"
       />
     );
 
@@ -153,6 +159,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
+        rulesetType="global"
       />
     );
 
@@ -184,6 +191,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
+        rulesetType="category"
       />
     );
 
@@ -208,6 +216,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
+        rulesetType="category"
       />
     );
 
@@ -239,6 +248,7 @@ describe('ProductGridHeader', () => {
         isNewRuleSet={false}
         shouldHidePreview={true}
         title="Title"
+        rulesetType="redirect"
       />
     );
 
