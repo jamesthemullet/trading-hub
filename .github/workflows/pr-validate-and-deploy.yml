@@ -177,10 +177,12 @@ jobs:
             resource_group_name=dev-${{ steps.dynamic-env-name.outputs.dynamic-env-name }}-v1-eun-layer3-rg
             app_name=${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
             echo deploying $app_name to $resource_group_name
-            az webapp deployment source config-zip \
+            az webapp deploy \
               --resource-group $resource_group_name \
               --name $app_name \
-              --src ./next.zip --timeout 360
+              --src-path ./next.zip --timeout 360 \
+              --type zip \
+              --async true
 
       - name: Find deployment comment
         if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
