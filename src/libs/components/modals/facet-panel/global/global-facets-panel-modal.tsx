@@ -21,14 +21,11 @@ import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import {
   AttributesModalHeader,
-  AttributeWrapper,
   BodyContainer,
   Col,
   FlexColumnCol,
   MergeAndSearchContainer,
-  MergedValue,
   OrderArrowsContainer,
-  RemoveMergedFacet,
   SkeletonRow,
 } from '@/libs/components/modals/facet-panel/search-and-category/edit-facet-modal-content.styles';
 import {
@@ -48,6 +45,7 @@ import {
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import type { FacetDisplayType } from '../../../../modules/facets-panel/facets-panel-reducer';
+import { GlobalFacetAttribute } from './global-facet-attribute';
 
 const ModalContainer = styled.div`
   height: 100%;
@@ -462,34 +460,12 @@ export const GlobalFacetPanelModalContent = ({
                 />
               </Col>
               <Col>
-                <AttributeWrapper>
-                  {attributes.length > 1 ? (
-                    <div>
-                      <Text isStrong>Merged Value Group</Text>
-
-                      {attributes.map((value, index) => {
-                        return (
-                          <MergedValue key={`${index}-${value}`}>
-                            <Text>{value}</Text>{' '}
-                            {isMergeGroup && value !== displayName && (
-                              <RemoveMergedFacet
-                                onClick={() => {
-                                  handleRemoveFromMerge({
-                                    valueToRemove: value,
-                                    mergeDisplayName: displayName,
-                                  });
-                                }}
-                                aria-label={`Remove merged facet for ${value}`}
-                              />
-                            )}
-                          </MergedValue>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <Text>{attributes[0]}</Text>
-                  )}
-                </AttributeWrapper>
+                <GlobalFacetAttribute
+                  attributes={attributes}
+                  isMergeGroup={isMergeGroup}
+                  displayName={displayName}
+                  handleRemoveFromMerge={handleRemoveFromMerge}
+                />
               </Col>
 
               <FlexColumnCol>

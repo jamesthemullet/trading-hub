@@ -1532,4 +1532,88 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(screen.getByText('1 result')).toBeInTheDocument();
     });
   });
+
+  it('should only display 4 merged values', () => {
+    const mockOnClose = jest.fn();
+    mockUpdateGlobalFacet.mockResolvedValueOnce(mockFacet);
+
+    renderWithProviders(
+      <GlobalFacetPanelModalContent
+        attributeValues={attributeValuesMock}
+        facet={{
+          id: mockFacet.id,
+          indexPropertyName: mockFacet.indexPropertyName,
+          displayValue: mockFacet.displayValue,
+          lastChanged: mockFacet.lastChanged,
+          merged: [
+            {
+              displayValue: 'Foo',
+              mergedValues: [
+                attributeValuesMock[0].displayValue,
+                attributeValuesMock[1].displayValue,
+                attributeValuesMock[2].displayValue,
+                attributeValuesMock[3].displayValue,
+                attributeValuesMock[4].displayValue,
+              ],
+            },
+          ],
+        }}
+        countryCode="UK"
+        onClose={mockOnClose}
+      />
+    );
+
+    expect(screen.getByText('Merged Value Group')).toBeVisible();
+
+    expect(screen.getByText(attributeValuesMock[3].displayValue)).toBeVisible();
+    expect(
+      screen.queryByText(attributeValuesMock[4].displayValue)
+    ).not.toBeInTheDocument();
+  });
+
+  it('should display all of the merged values when the group is expanded', async () => {
+    const user = userEvent.setup({ delay: null });
+    const mockOnClose = jest.fn();
+    mockUpdateGlobalFacet.mockResolvedValueOnce(mockFacet);
+
+    renderWithProviders(
+      <GlobalFacetPanelModalContent
+        attributeValues={attributeValuesMock}
+        facet={{
+          id: mockFacet.id,
+          indexPropertyName: mockFacet.indexPropertyName,
+          displayValue: mockFacet.displayValue,
+          lastChanged: mockFacet.lastChanged,
+          merged: [
+            {
+              displayValue: 'Foo',
+              mergedValues: [
+                attributeValuesMock[0].displayValue,
+                attributeValuesMock[1].displayValue,
+                attributeValuesMock[2].displayValue,
+                attributeValuesMock[3].displayValue,
+                attributeValuesMock[4].displayValue,
+              ],
+            },
+          ],
+        }}
+        countryCode="UK"
+        onClose={mockOnClose}
+      />
+    );
+
+    expect(screen.getByText('Merged Value Group')).toBeVisible();
+
+    expect(
+      screen.queryByText(attributeValuesMock[4].displayValue)
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Show More' }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(attributeValuesMock[4].displayValue)
+      ).toBeVisible();
+    });
+  });
 });
