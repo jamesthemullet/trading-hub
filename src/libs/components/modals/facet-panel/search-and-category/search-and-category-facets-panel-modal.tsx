@@ -98,6 +98,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
   saveButtonLabel = 'Save',
   categories,
   countryCode,
+  writeEnabled,
   searchTerms,
 }: {
   onClose: () => void;
@@ -106,6 +107,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
   countryCode: MerchandisingCountryCode;
   saveButtonLabel?: string;
   categories?: string[];
+  writeEnabled: boolean;
   searchTerms?: string[];
 }) => {
   const [isSaveDisabled] = useState(false);
@@ -245,13 +247,14 @@ export const SearchAndCategoryFacetsPanelModal = ({
                   });
                 }}
                 attribute={displayValue}
+                writeEnabled={writeEnabled}
               />
             </Col>
           </FacetAttributeValuesTableRow>
         );
       });
     },
-    [dispatch, searchQuery]
+    [dispatch, searchQuery, writeEnabled]
   );
 
   const boostedValuesRows = useMemo(() => {

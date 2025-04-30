@@ -109,10 +109,12 @@ const mockCountryCode: MerchandisingCountryCode = 'UK';
 const mockProps = {
   merchandisingRules: mockRules,
   countryCode: mockCountryCode,
+  writeEnabled: true,
 };
 const mockIncludeExcludeProps = {
   merchandisingRules: mockIncludeExcludeRules,
   countryCode: mockCountryCode,
+  writeEnabled: true,
 };
 
 describe('RulesetAttributes', () => {
@@ -429,6 +431,7 @@ describe('RulesetAttributes', () => {
         countryCode={mockCountryCode}
         merchandisingRules={merchandisingRules}
         dispatch={mockDispatch}
+        writeEnabled={true}
       />
     );
 
@@ -1712,6 +1715,7 @@ describe('RulesetAttributes', () => {
           }}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          writeEnabled={true}
         />
       );
 
@@ -1752,6 +1756,7 @@ describe('RulesetAttributes', () => {
           }}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          writeEnabled={true}
         />
       );
 

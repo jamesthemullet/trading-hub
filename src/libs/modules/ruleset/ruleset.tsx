@@ -485,7 +485,7 @@ export const Ruleset = ({
           (!!rulesetSearchTerms.length &&
             merchandisingRules.pinnedProducts.length <=
               MAX_PINNED_PRODUCTS_ALLOWED) ||
-          rulesetType === 'global'
+          (writeEnabled && rulesetType === 'global')
         }
         onSave={() => {
           onSaveRuleset();
@@ -503,6 +503,7 @@ export const Ruleset = ({
         shouldHidePreview={rulesetType === 'global'}
         title="Product Grid"
         rulesetType={rulesetType}
+        writeEnabled={writeEnabled}
       />
 
       <CategoryPanel rulesetType={rulesetType}>
@@ -519,6 +520,7 @@ export const Ruleset = ({
               }
             }}
             selectedCountryCode={ruleset.countryCode}
+            writeEnabled={writeEnabled}
           />
         </InfluenceWrapper>
 
@@ -660,6 +662,7 @@ export const Ruleset = ({
                   }
                   dispatch={dispatch}
                   searchTerms={rulesetSearchTerms}
+                  writeEnabled={writeEnabled}
                 />
               )}
             </ProductSearchTabContent>

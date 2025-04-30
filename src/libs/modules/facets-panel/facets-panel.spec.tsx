@@ -167,6 +167,7 @@ describe('Facet Panel', () => {
   it('should render the facet management editing page', async () => {
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="category"
         countryCode="UK_IE"
@@ -194,6 +195,7 @@ describe('Facet Panel', () => {
   it('should not render preview button or add new facets button, if global facets page', async () => {
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="global"
         countryCode="UK_IE"
@@ -219,6 +221,7 @@ describe('Facet Panel', () => {
   it('should not enable preview button if no categories selected', async () => {
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="category"
         countryCode="UK_IE"
@@ -241,6 +244,7 @@ describe('Facet Panel', () => {
   it('should not enable preview button if no search terms added', async () => {
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="search"
         countryCode="UK_IE"
@@ -261,6 +265,7 @@ describe('Facet Panel', () => {
   it('should render column headings', () => {
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="category"
         countryCode="UK_IE"
@@ -288,6 +293,7 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="category"
         countryCode="UK_IE"
@@ -320,6 +326,7 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="category"
         countryCode="UK_IE"
@@ -350,6 +357,7 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="category"
         countryCode="UK"
@@ -397,6 +405,7 @@ describe('Facet Panel', () => {
   it('should show the schedule date picker', async () => {
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="category"
         countryCode="UK"
@@ -421,6 +430,7 @@ describe('Facet Panel', () => {
   it('should show a previously saved scheduled date', async () => {
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="category"
         countryCode="UK"
@@ -452,6 +462,7 @@ describe('Facet Panel', () => {
 
       renderWithProviders(
         <FacetsPanel
+          writeEnabled={true}
           title="Facet Rule Editor"
           facetType="global"
           countryCode="UK"
@@ -490,6 +501,7 @@ describe('Facet Panel', () => {
 
       renderWithProviders(
         <FacetsPanel
+          writeEnabled={true}
           title="Facet Rule Editor"
           facetType="global"
           countryCode="UK"
@@ -541,6 +553,7 @@ describe('Facet Panel', () => {
   it('should not allow renaming a row to an existing value', async () => {
     renderWithProviders(
       <FacetsPanel
+        writeEnabled={true}
         title="Facet Rule Editor"
         facetType="global"
         countryCode="UK"

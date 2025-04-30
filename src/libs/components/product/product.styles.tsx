@@ -135,6 +135,11 @@ export const ProductMenuToggle = styled.button`
   padding: 0;
   height: 20px;
   margin-left: auto;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
 `;
 
 export const ProductMenuOverlay = styled.button`

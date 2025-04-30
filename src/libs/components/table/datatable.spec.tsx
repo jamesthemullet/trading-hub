@@ -148,7 +148,6 @@ describe('DataTable', () => {
   });
 
   it('should render correctly with no write access', async () => {
-    const user = userEvent.setup();
     renderWithProviders(
       <DataTable
         isLoading={false}
@@ -165,13 +164,7 @@ describe('DataTable', () => {
     expect(screen.getByText('Bob')).toBeInTheDocument();
     expect(screen.getByText('path/to/SubCategory_123')).toBeInTheDocument();
 
-    await user.click(screen.getAllByTitle('More options')[0]);
-
-    await waitFor(() => {
-      expect(
-        screen.queryByRole('button', { name: 'Delete' })
-      ).not.toBeInTheDocument();
-    });
+    expect(screen.queryByTitle('More options')).not.toBeInTheDocument();
   });
 
   it('should render correctly with six headings', () => {
@@ -386,7 +379,6 @@ describe('DataTable', () => {
     });
 
     it('should not show duplicate option for writeEnabled=false', async () => {
-      const user = userEvent.setup();
       const mockDelete = jest.fn();
       const mockDuplicate = jest.fn();
       renderWithProviders(
@@ -401,10 +393,7 @@ describe('DataTable', () => {
         />
       );
 
-      await user.click(screen.getAllByTitle('More options')[0]);
-      expect(
-        screen.queryByRole('button', { name: 'Duplicate' })
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTitle('More options')).not.toBeInTheDocument();
     });
 
     it('should duplicate a redirect', async () => {

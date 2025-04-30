@@ -122,20 +122,9 @@ export const TableDateContainer = styled.div`
   }
 `;
 
-export const TableOptionButton = styled.button<{ isOpen: boolean }>`
-  position: relative;
-  width: 50px;
-  border: none;
-  border-radius: 0;
-  background-color: #f5f5f5;
-  transition: background-color 0.1s ease-in;
-
-  &:hover {
-    background-color: #e3e3e3;
-  }
-`;
-
-export const TableActionsButton = styled(Link)`
+export const TableActionsButton = styled(Link, {
+  shouldForwardProp: (prop) => prop !== 'hasDropdown',
+})<{ hasDropdown: boolean }>`
   border: none;
   color: #000;
   background-color: #f5f5f5;
@@ -143,10 +132,11 @@ export const TableActionsButton = styled(Link)`
   text-decoration: none;
   padding: ${spacing(1)} ${spacing(2)};
   width: 100%;
-  border-radius: 4px 0 0 4px;
-  border-top: solid 1px ${color.accessibilityGrey};
-  border-bottom: solid 1px ${color.accessibilityGrey};
-  border-left: solid 1px ${color.accessibilityGrey};
+  border-radius: 4px;
+  border: solid 1px ${color.accessibilityGrey};
+
+  ${({ hasDropdown }) =>
+    hasDropdown && 'border-right: none;border-radius: 4px 0 0 4px;'}
 
   &:hover {
     background-color: #e3e3e3;

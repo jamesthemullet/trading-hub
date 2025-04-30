@@ -64,7 +64,8 @@ const NewRuleSetPage = () => {
     router.push('/search/facets');
   };
 
-  const { hasReadAccess, requiredReadRole } = useAccess('Search');
+  const { hasReadAccess, requiredReadRole, hasWriteAccess } =
+    useAccess('Search');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -89,6 +90,7 @@ const NewRuleSetPage = () => {
           isNewRuleset={true}
           onCancel={handleCancel}
           onSave={handleSave}
+          writeEnabled={hasWriteAccess}
         />
       </>
     </>

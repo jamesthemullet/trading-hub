@@ -88,6 +88,7 @@ const defaultFacetProps: Props = {
   isNewRuleset: true,
   onCancel: () => jest.fn(),
   onSave: () => jest.fn(),
+  writeEnabled: true,
 };
 
 describe('Facets', () => {

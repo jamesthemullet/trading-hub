@@ -20,11 +20,13 @@ export const FacetOrderDropdown = ({
   attribute,
   hasAlgoControl = false,
   onChange,
+  writeEnabled,
 }: {
   status?: FacetDisplayType;
   attribute?: string;
   hasAlgoControl?: boolean;
   onChange: (status: FacetDisplayType) => void;
+  writeEnabled: boolean;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState<
@@ -106,6 +108,19 @@ export const FacetOrderDropdown = ({
       return onClose();
     }
   };
+
+  if (!writeEnabled) {
+    return (
+      <DropdownWrapper isDropdownOpen={false}>
+        <DropdownHeading>
+          {dropdownHeading?.src && (
+            <Image src={dropdownHeading.src} alt="" width={24} height={24} />
+          )}
+          {dropdownHeading?.label}
+        </DropdownHeading>
+      </DropdownWrapper>
+    );
+  }
 
   return (
     <DropdownWrapper

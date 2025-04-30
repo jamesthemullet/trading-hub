@@ -62,7 +62,8 @@ const Page = ({ id }: { id: string }) => {
 
   const { ruleSet, error, isLoading } = useSearchRuleSetPreview(id);
 
-  const { hasReadAccess, requiredReadRole } = useAccess('Search');
+  const { hasReadAccess, requiredReadRole, hasWriteAccess } =
+    useAccess('Search');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -94,6 +95,7 @@ const Page = ({ id }: { id: string }) => {
           isNewRuleset={false}
           onCancel={handleCancel}
           onSave={handleSave}
+          writeEnabled={hasWriteAccess}
         />
       )}
     </>

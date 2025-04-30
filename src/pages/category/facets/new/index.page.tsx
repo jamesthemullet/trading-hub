@@ -65,7 +65,7 @@ const Page = () => {
     router.push('/category/facets');
   };
 
-  const { hasReadAccess, requiredReadRole } = useAccess('Cat');
+  const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Cat');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -89,6 +89,7 @@ const Page = () => {
         isNewRuleset={true}
         onCancel={handleCancel}
         onSave={handleSave}
+        writeEnabled={hasWriteAccess}
       />
     </>
   );

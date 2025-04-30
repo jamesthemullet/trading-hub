@@ -541,24 +541,29 @@ export const DataTable = ({
                         onKeyDown={handleOnKeyDown}
                         ref={dropdownWrapperRef}
                       >
-                        <TableActionsButton href={url}>
+                        <TableActionsButton
+                          href={url}
+                          hasDropdown={writeEnabled}
+                        >
                           {writeEnabled ? 'Edit' : 'View'}
                         </TableActionsButton>
-                        <ArrowContainer
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
+                        {writeEnabled && (
+                          <ArrowContainer
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.stopPropagation();
+                                handleOptionToggle(id);
+                              }
+                            }}
+                            onMouseDown={(e) => {
                               e.stopPropagation();
                               handleOptionToggle(id);
-                            }
-                          }}
-                          onMouseDown={(e) => {
-                            e.stopPropagation();
-                            handleOptionToggle(id);
-                          }}
-                          title="More options"
-                        >
-                          <Arrow isDropdownOpen={isOptionDropdownOpen} />
-                        </ArrowContainer>
+                            }}
+                            title="More options"
+                          >
+                            <Arrow isDropdownOpen={isOptionDropdownOpen} />
+                          </ArrowContainer>
+                        )}
                         {isOptionDropdownOpen && (
                           <DropdownOptions>
                             {writeEnabled && (

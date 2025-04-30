@@ -38,7 +38,7 @@ type Props = {
   shouldHidePreview: boolean;
   title: string;
   rulesetType: string;
-  writeEnabled?: boolean;
+  writeEnabled: boolean;
 };
 
 export const ProductGridHeader = ({
@@ -52,7 +52,7 @@ export const ProductGridHeader = ({
   shouldHidePreview,
   title,
   rulesetType,
-  writeEnabled = true,
+  writeEnabled,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -71,7 +71,7 @@ export const ProductGridHeader = ({
       <RuleSetOptions>
         <h1>{title}</h1>
         <Actions>
-          {writeEnabled && <Button onClick={onCancelChange}>Cancel</Button>}
+          <Button onClick={onCancelChange}>Cancel</Button>
           {!shouldHidePreview && (
             <Button onClick={onPreview} isDisabled={!hasPreview}>
               Preview

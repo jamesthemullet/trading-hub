@@ -81,6 +81,7 @@ export type Props = {
   isNewRuleset: boolean;
   onCancel: () => void;
   onSave: (args: SaveType) => void;
+  writeEnabled: boolean;
   currentRuleset?: MerchandisingRuleSet;
   categoriesInfo?: Array<{
     id: string;
@@ -98,6 +99,7 @@ export const Facets = ({
   searchTerms,
   onCancel,
   onSave,
+  writeEnabled,
 }: Props) => {
   const [ruleset, dispatch] = useReducer(
     rulesetReducer,
@@ -276,9 +278,10 @@ export const Facets = ({
                 });
               }}
               hasAlgoControl
+              writeEnabled={writeEnabled}
             />
 
-            {displayType === 'included' && (
+            {displayType === 'included' && writeEnabled && (
               <OrderArrowsContainer>
                 <ArrowButton
                   direction="up"
@@ -314,7 +317,7 @@ export const Facets = ({
           </OrderColumn>
         </Col>
         <Col>
-          {displayType === 'included' && (
+          {displayType === 'included' && writeEnabled && (
             <Button
               onClick={() => {
                 setIsFacetValuesModalOpen(true);
@@ -395,6 +398,7 @@ export const Facets = ({
         title="Facet Rule Editor"
         shouldHidePreview={false}
         rulesetType={facetType}
+        writeEnabled={writeEnabled}
       />
 
       {getFacetsDataError && (
@@ -416,6 +420,7 @@ export const Facets = ({
                 }
               }}
               selectedCountryCode={ruleset.countryCode}
+              writeEnabled={writeEnabled}
             />
           </div>
           {facetType === 'category' && (
@@ -588,6 +593,7 @@ export const Facets = ({
           facet={selectedFacet}
           categories={facetType === 'category' ? selectedCategories : undefined}
           countryCode={ruleset.countryCode!}
+          writeEnabled={writeEnabled}
         />
       )}
 

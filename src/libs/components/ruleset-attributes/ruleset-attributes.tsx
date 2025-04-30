@@ -52,6 +52,7 @@ export type Props = {
   searchTerms?: string[];
   merchandisingRules: MerchandisingRules;
   dispatch: Dispatch<Action>;
+  writeEnabled: boolean;
 };
 
 export const RulesetAttributes = ({
@@ -60,6 +61,7 @@ export const RulesetAttributes = ({
   merchandisingRules,
   dispatch,
   searchTerms,
+  writeEnabled,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -97,10 +99,12 @@ export const RulesetAttributes = ({
 
   return (
     <Wrapper>
-      <CreateNew onClick={() => setIsModalOpen(!isModalOpen)}>
-        <Icon alt="" src="/trading-hub/asset/icon-plus-simple.svg" />
-        Create new attribute rule
-      </CreateNew>
+      {writeEnabled && (
+        <CreateNew onClick={() => setIsModalOpen(!isModalOpen)}>
+          <Icon alt="" src="/trading-hub/asset/icon-plus-simple.svg" />
+          Create new attribute rule
+        </CreateNew>
+      )}
       {countOfAttributeChanges > 0 && (
         <RuleSetAttributesContainer data-testid="Ruleset attributes">
           <AttributeCount>
@@ -117,7 +121,7 @@ export const RulesetAttributes = ({
             alphanumericBoost.map(({ fields, weight }, index) => (
               <AlphanumericAttribute
                 key={fields[0].field}
-                isEditable
+                isEditable={writeEnabled}
                 canEditWeight
                 fields={fields}
                 operation="boost"
@@ -155,7 +159,7 @@ export const RulesetAttributes = ({
             alphanumericBuries.map(({ fields, weight }, index) => (
               <AlphanumericAttribute
                 key={fields[0].field}
-                isEditable
+                isEditable={writeEnabled}
                 canEditWeight
                 fields={fields}
                 operation="bury"
@@ -193,7 +197,7 @@ export const RulesetAttributes = ({
             alphanumericIncludes.map(({ fields }, index) => (
               <AlphanumericAttribute
                 key={fields[0].field}
-                isEditable
+                isEditable={writeEnabled}
                 fields={fields}
                 operation="include"
                 onDelete={({ fields }: MerchandisingIncludeExclude) =>
@@ -224,7 +228,7 @@ export const RulesetAttributes = ({
             alphanumericExcludes.map(({ fields }, index) => (
               <AlphanumericAttribute
                 key={fields[0].field}
-                isEditable
+                isEditable={writeEnabled}
                 fields={fields}
                 operation="exclude"
                 onDelete={({ fields }: MerchandisingIncludeExclude) =>
@@ -261,7 +265,7 @@ export const RulesetAttributes = ({
             numericBoosts.map(({ field, weight }, index) => (
               <NumericAttribute
                 key={field}
-                isEditable
+                isEditable={writeEnabled}
                 operation="boost"
                 name={field}
                 weight={weight}
@@ -295,7 +299,7 @@ export const RulesetAttributes = ({
             numericBury.map(({ field, weight }, index) => (
               <NumericAttribute
                 key={field}
-                isEditable
+                isEditable={writeEnabled}
                 operation="bury"
                 name={field}
                 weight={weight}

@@ -32,9 +32,11 @@ const DropdownWrapperNoBorder = styled(DropdownWrapper)`
 export const CountrySelectorDropdown = ({
   onChange,
   selectedCountryCode,
+  writeEnabled,
 }: {
   onChange: (country: MerchandisingCountryCode) => void;
   selectedCountryCode?: MerchandisingCountryCode;
+  writeEnabled: boolean;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -108,6 +110,7 @@ export const CountrySelectorDropdown = ({
         aria-haspopup="listbox"
         aria-expanded={isDropdownOpen}
         aria-label="select market"
+        disabled={!writeEnabled}
       >
         <DropdownHeading>
           {dropdownHeading?.flagsToShow.map((flag) => (
@@ -121,9 +124,11 @@ export const CountrySelectorDropdown = ({
           ))}
           {dropdownHeading?.label}
         </DropdownHeading>
-        <ArrowContainer borderLeft={false}>
-          <Arrow isDropdownOpen={isDropdownOpen} />
-        </ArrowContainer>
+        {writeEnabled && (
+          <ArrowContainer borderLeft={false}>
+            <Arrow isDropdownOpen={isDropdownOpen} />
+          </ArrowContainer>
+        )}
       </DropdownButton>
 
       <DropdownContainer isDropdownOpen={isDropdownOpen}>

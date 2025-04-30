@@ -53,6 +53,7 @@ const mockDefaultCategoryFacetProps = {
   removeFacetValueFromMergeGroupEnabled: false,
   categories: ['SubCategory_507'],
   countryCode,
+  writeEnabled: true,
 };
 
 const mockUpdateGlobalFacet = jest.fn(() =>

@@ -83,7 +83,7 @@ interface FacetsPanelProps {
   includedFacets: MerchandisingReturnedFacet[];
   excludedFacets: MerchandisingExcludedFacets;
   selectedPreviewCountryCode?: 'UK' | 'IE';
-  writeEnabled?: boolean;
+  writeEnabled: boolean;
   selectedCategoriesInfo?: Array<{
     id?: string;
     name?: string;
@@ -208,7 +208,7 @@ export const FacetsPanel = ({
           <Text>{facet.indexPropertyName}</Text>
         </Col>
         <Col>
-          {onFacetDataChange && facetType === 'global' ? (
+          {onFacetDataChange && facetType === 'global' && writeEnabled ? (
             <EditableLabel
               displayValue={displayValue}
               onCancel={() => setError(id, '')}
@@ -241,30 +241,36 @@ export const FacetsPanel = ({
               status={displayType}
               onChange={handleOrderChange(facet)}
               hasAlgoControl
+              writeEnabled={writeEnabled}
             />
 
-            {displayType === 'included' && displayRowOrderControls && (
-              <OrderArrowsContainer>
-                <ArrowButton
-                  direction="up"
-                  aria-label={`Move ${displayValue} row up`}
-                  onClick={handleMoveRowUp(facet)}
-                  isDisabled={meta?.isBeginningOfDisplayTypeGroup}
-                />
+            {displayType === 'included' &&
+              displayRowOrderControls &&
+              writeEnabled && (
+                <OrderArrowsContainer>
+                  <ArrowButton
+                    direction="up"
+                    aria-label={`Move ${displayValue} row up`}
+                    onClick={handleMoveRowUp(facet)}
+                    isDisabled={meta?.isBeginningOfDisplayTypeGroup}
+                  />
 
-                <ArrowButton
-                  direction="down"
-                  aria-label={`Move ${displayValue} row down`}
-                  onClick={handleMoveRowDown(facet)}
-                  isDisabled={meta?.isEndOfDisplayTypeGroup}
-                />
-              </OrderArrowsContainer>
-            )}
+                  <ArrowButton
+                    direction="down"
+                    aria-label={`Move ${displayValue} row down`}
+                    onClick={handleMoveRowDown(facet)}
+                    isDisabled={meta?.isEndOfDisplayTypeGroup}
+                  />
+                </OrderArrowsContainer>
+              )}
           </OrderColumn>
         </Col>
         <Col>
           {(facetType === 'global' || displayType === 'included') && (
-            <Button onClick={() => handleOpenFacetEditModal(facet)}>
+            <Button
+              onClick={() => handleOpenFacetEditModal(facet)}
+              disabled={!writeEnabled}
+            >
               Edit values
             </Button>
           )}
@@ -302,6 +308,7 @@ export const FacetsPanel = ({
                 dispatch({ type: 'changeCountry', payload: country });
               }}
               selectedCountryCode={countryCode}
+              writeEnabled={writeEnabled}
             />
           </div>
 
@@ -366,6 +373,7 @@ export const FacetsPanel = ({
                   if (refreshData) refreshData();
                   onClose();
                 }}
+                writeEnabled={writeEnabled}
               />
             </Modal.Body>
           </Modal.Content>

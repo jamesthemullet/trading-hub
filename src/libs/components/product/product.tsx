@@ -250,6 +250,7 @@ export const Product = ({
         <ProductMenuToggle
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
+          disabled={isSelectionDisabled}
         >
           <Image
             alt=""

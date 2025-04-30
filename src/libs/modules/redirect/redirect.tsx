@@ -177,6 +177,7 @@ export const Redirect = ({
         isNewRuleSet={!!onCreate}
         hasChanges={false}
         rulesetType="redirect"
+        writeEnabled={writeEnabled}
       />
       <RedirectType>
         <RedirectContent>
@@ -223,6 +224,7 @@ export const Redirect = ({
                 onUpdate('countryCode', country)
               }
               selectedCountryCode={redirect.countryCode}
+              writeEnabled={writeEnabled}
             />
           </div>
           <SearchKeywords

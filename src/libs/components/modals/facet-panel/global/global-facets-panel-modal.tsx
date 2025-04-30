@@ -100,6 +100,7 @@ type ContentProps = {
   countryCode: MerchandisingCountryCode;
   facet: MerchandisingReturnedGlobalFacet;
   onClose: () => void;
+  writeEnabled: boolean;
 };
 
 export const GlobalFacetPanelModalContent = ({
@@ -107,6 +108,7 @@ export const GlobalFacetPanelModalContent = ({
   attributeValues,
   facet,
   onClose,
+  writeEnabled,
 }: ContentProps) => {
   const [selectedFacetAttributes, setSelectedFacetAttributes] = useState<
     string[]
@@ -607,6 +609,7 @@ export const GlobalFacetPanelModalContent = ({
                   status={displayType}
                   onChange={onOrderChange}
                   attribute={displayName}
+                  writeEnabled={writeEnabled}
                 />
               </Col>
             </FacetAttributeValuesTableRow>
@@ -626,6 +629,7 @@ export const GlobalFacetPanelModalContent = ({
       searchQuery,
       selectedFacetAttributes,
       editingValues,
+      writeEnabled,
     ]
   );
 
@@ -758,12 +762,14 @@ type Props = {
   countryCode: MerchandisingCountryCode;
   facet: MerchandisingReturnedGlobalFacet;
   onClose: () => void;
+  writeEnabled: boolean;
 };
 
 export const GlobalFacetPanelModal = ({
   countryCode,
   facet,
   onClose,
+  writeEnabled,
 }: Props) => {
   const {
     attributeValues,
@@ -821,6 +827,7 @@ export const GlobalFacetPanelModal = ({
       countryCode={countryCode}
       facet={facet}
       onClose={onClose}
+      writeEnabled={writeEnabled}
     />
   );
 };

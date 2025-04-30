@@ -27,6 +27,7 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   align-items: center;
   border-radius: 4px;
   border: 1px solid #b1b1b1;
+  background-color: ${color.backgroundGrey};
   display: flex;
   height: ${sizing(5)};
   justify-content: space-between;
@@ -40,6 +41,14 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
 
   &:hover {
     background-color: ${color.lightGrey};
+  }
+
+  &:disabled {
+    cursor: default;
+
+    &:hover {
+      background-color: ${color.backgroundGrey};
+    }
   }
 `;
 

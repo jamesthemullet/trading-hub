@@ -66,7 +66,7 @@ const Page = ({ id }: { id: string }) => {
     error: getRulesetDetailError,
   } = useRuleSetDetail(id);
 
-  const { hasReadAccess, requiredReadRole } = useAccess('Cat');
+  const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Cat');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -100,6 +100,7 @@ const Page = ({ id }: { id: string }) => {
           currentRuleset={ruleSetDetail}
           onCancel={handleCancel}
           onSave={handleSave}
+          writeEnabled={hasWriteAccess}
         />
       )}
     </>

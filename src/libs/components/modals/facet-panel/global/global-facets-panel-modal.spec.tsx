@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import type {
   MerchandisingAttributeValuesResponse,
+  MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import {
@@ -73,6 +74,11 @@ const attributeValuesMock: MerchandisingAttributeValuesResponse['values'] = [
   },
 ];
 
+const defaultProps = {
+  writeEnabled: true,
+  countryCode: 'UK' as MerchandisingCountryCode,
+};
+
 describe('GlobalFacetPanelModal', () => {
   beforeEach(() => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
@@ -90,7 +96,7 @@ describe('GlobalFacetPanelModal', () => {
     renderWithProviders(
       <GlobalFacetPanelModal
         facet={mockFacet}
-        countryCode="UK"
+        {...defaultProps}
         onClose={jest.fn()}
       />
     );
@@ -112,7 +118,7 @@ describe('GlobalFacetPanelModal', () => {
     renderWithProviders(
       <GlobalFacetPanelModal
         facet={mockFacet}
-        countryCode="UK"
+        {...defaultProps}
         onClose={jest.fn()}
       />
     );
@@ -128,7 +134,7 @@ describe('GlobalFacetPanelModal', () => {
     renderWithProviders(
       <GlobalFacetPanelModal
         facet={mockFacet}
-        countryCode="UK"
+        {...defaultProps}
         onClose={mockClose}
       />
     );
@@ -165,7 +171,7 @@ describe('GlobalFacetPanelModalContent', () => {
       <GlobalFacetPanelModalContent
         attributeValues={attributeValuesMock}
         facet={mockFacet}
-        countryCode="UK"
+        {...defaultProps}
         onClose={mockOnClose}
       />
     );
@@ -185,7 +191,7 @@ describe('GlobalFacetPanelModalContent', () => {
       <GlobalFacetPanelModalContent
         attributeValues={attributeValuesMock}
         facet={mockFacet}
-        countryCode="UK"
+        {...defaultProps}
         onClose={mockOnClose}
       />
     );
@@ -214,8 +220,9 @@ describe('GlobalFacetPanelModalContent', () => {
           displayValue: mockFacet.displayValue,
           lastChanged: mockFacet.lastChanged,
         }}
-        countryCode="UK"
+        {...defaultProps}
         onClose={mockOnClose}
+        writeEnabled={true}
       />
     );
 
@@ -242,8 +249,9 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [attributeValuesMock[0].displayValue],
             excludedValues: [attributeValuesMock[2].displayValue],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={mockOnClose}
+          writeEnabled={true}
         />
       );
 
@@ -285,7 +293,7 @@ describe('GlobalFacetPanelModalContent', () => {
               },
             ],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={mockOnClose}
         />
       );
@@ -300,7 +308,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
           facet={{ ...mockFacet, merged: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -327,7 +335,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -356,14 +364,14 @@ describe('GlobalFacetPanelModalContent', () => {
         const updatedRow = screen.getByTestId(`Label for ${newRowName}`);
         expect(updatedRow).toBeVisible();
       });
-    });
+    }, 1000);
 
     it('should allow renaming to the same name', async () => {
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -408,7 +416,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -452,7 +460,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -487,7 +495,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -522,7 +530,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -562,7 +570,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [],
             excludedValues: [attributeValuesMock[0].displayValue],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -602,7 +610,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [attributeValuesMock[0].displayValue],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -642,7 +650,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [],
             excludedValues: [attributeValuesMock[0].displayValue],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -682,7 +690,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [attributeValuesMock[0].displayValue],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -727,7 +735,7 @@ describe('GlobalFacetPanelModalContent', () => {
             ],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -776,7 +784,7 @@ describe('GlobalFacetPanelModalContent', () => {
             ],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -840,7 +848,7 @@ describe('GlobalFacetPanelModalContent', () => {
             ],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -889,7 +897,7 @@ describe('GlobalFacetPanelModalContent', () => {
             ],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -937,7 +945,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -988,7 +996,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1025,7 +1033,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0], attributeValuesMock[1]]}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1054,7 +1062,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0], attributeValuesMock[1]]}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1095,7 +1103,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1149,7 +1157,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [attributeValuesMock[0].displayValue],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1205,7 +1213,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [],
             excludedValues: [attributeValuesMock[0].displayValue],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1254,7 +1262,7 @@ describe('GlobalFacetPanelModalContent', () => {
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
           facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1312,7 +1320,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1381,7 +1389,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1422,7 +1430,7 @@ describe('GlobalFacetPanelModalContent', () => {
             boosted: [],
             excludedValues: [],
           }}
-          countryCode="UK"
+          {...defaultProps}
           onClose={jest.fn()}
         />
       );
@@ -1471,7 +1479,7 @@ describe('GlobalFacetPanelModalContent', () => {
           boosted: [],
           excludedValues: [],
         }}
-        countryCode="UK"
+        {...defaultProps}
         onClose={jest.fn()}
       />
     );
@@ -1491,7 +1499,7 @@ describe('GlobalFacetPanelModalContent', () => {
       <GlobalFacetPanelModalContent
         attributeValues={attributeValuesMock}
         facet={mockFacet}
-        countryCode="UK"
+        {...defaultProps}
         onClose={jest.fn()}
       />
     );
@@ -1519,7 +1527,7 @@ describe('GlobalFacetPanelModalContent', () => {
             },
           ],
         }}
-        countryCode="UK"
+        {...defaultProps}
         onClose={jest.fn()}
       />
     );

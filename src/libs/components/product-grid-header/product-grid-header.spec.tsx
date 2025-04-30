@@ -17,6 +17,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="search"
+        writeEnabled={true}
       />
     );
 
@@ -24,7 +25,7 @@ describe('ProductGridHeader', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 
-  it('should not display action buttons when writeEnabled=false', () => {
+  it('should only display cancel button when writeEnabled=false', () => {
     renderWithProviders(
       <ProductGridHeader
         canSave={false}
@@ -44,9 +45,7 @@ describe('ProductGridHeader', () => {
     expect(
       screen.queryByRole('button', { name: 'Save' })
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Cancel' })
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
 
   it('should show Create for new rulesets', () => {
@@ -62,6 +61,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="search"
+        writeEnabled={true}
       />
     );
 
@@ -82,6 +82,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="search"
+        writeEnabled={true}
       />
     );
 
@@ -108,6 +109,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="global"
+        writeEnabled={true}
       />
     );
 
@@ -134,6 +136,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="global"
+        writeEnabled={true}
       />
     );
 
@@ -160,6 +163,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="global"
+        writeEnabled={true}
       />
     );
 
@@ -192,6 +196,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="category"
+        writeEnabled={true}
       />
     );
 
@@ -217,6 +222,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="category"
+        writeEnabled={true}
       />
     );
 
@@ -249,6 +255,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={true}
         title="Title"
         rulesetType="redirect"
+        writeEnabled={true}
       />
     );
 

@@ -5,7 +5,13 @@ import { CountrySelectorDropdown } from './country-selector';
 
 describe('Country Selection Dropdown', () => {
   it('should render the dropdown', () => {
-    render(<CountrySelectorDropdown onChange={jest.fn()} />);
+    render(
+      <CountrySelectorDropdown
+        selectedCountryCode="UK_IE"
+        writeEnabled={true}
+        onChange={jest.fn()}
+      />
+    );
 
     expect(screen.getByRole('button', { name: 'select market' })).toBeVisible();
     expect(screen.queryByLabelText('select UK market only')).not.toBeVisible();
@@ -14,7 +20,9 @@ describe('Country Selection Dropdown', () => {
 
   it('should open the dropdown and display the options when button is clicked', async () => {
     const user = userEvent.setup();
-    render(<CountrySelectorDropdown onChange={jest.fn()} />);
+    render(
+      <CountrySelectorDropdown writeEnabled={true} onChange={jest.fn()} />
+    );
 
     const dropdownButton = screen.getByRole('button', {
       name: 'select market',
@@ -32,7 +40,7 @@ describe('Country Selection Dropdown', () => {
   it('should change the selected option when an option is clicked, and close the dropdown', async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
-    render(<CountrySelectorDropdown onChange={onChange} />);
+    render(<CountrySelectorDropdown writeEnabled={true} onChange={onChange} />);
 
     const dropdownButton = screen.getByRole('button', {
       name: 'select market',
@@ -49,7 +57,9 @@ describe('Country Selection Dropdown', () => {
 
   it('should close dropdown when button is clicked again when already open', async () => {
     const user = userEvent.setup();
-    render(<CountrySelectorDropdown onChange={jest.fn()} />);
+    render(
+      <CountrySelectorDropdown writeEnabled={true} onChange={jest.fn()} />
+    );
 
     const dropdownButton = screen.getByRole('button', {
       name: 'select market',
@@ -66,7 +76,9 @@ describe('Country Selection Dropdown', () => {
 
   it('should close the dropdown when Escape key is pressed', async () => {
     const user = userEvent.setup();
-    render(<CountrySelectorDropdown onChange={jest.fn()} />);
+    render(
+      <CountrySelectorDropdown writeEnabled={true} onChange={jest.fn()} />
+    );
 
     const dropdownButton = screen.getByRole('button', {
       name: 'select market',

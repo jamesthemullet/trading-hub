@@ -143,7 +143,7 @@ describe('Search Facet Management Page', () => {
     jest.resetAllMocks();
   });
 
-  it('displays the list of rules', () => {
+  it('displays the list of rules', async () => {
     jest.mocked(useSearchRulesetList).mockReturnValue({
       ruleSets: [],
       pagination: {
@@ -155,9 +155,14 @@ describe('Search Facet Management Page', () => {
     });
     renderWithProviders(<FacetManagementPage />);
 
-    expect(
-      screen.getByRole('heading', { name: 'Search Facet Management', level: 1 })
-    ).toBeVisible();
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Search Facet Management',
+          level: 1,
+        })
+      ).toBeVisible();
+    });
   });
 
   it('should render the access denied page', async () => {
