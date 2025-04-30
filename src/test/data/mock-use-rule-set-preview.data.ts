@@ -1,3 +1,5 @@
+import { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
+
 export const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
 export const categoryId = 'SubCategory_428';
 export const product1Id = 'a1';
@@ -11,58 +13,59 @@ export const product2Brand = 'M&S';
 export const product1Price = '£5';
 export const product2Price = '£10';
 
-export const mockUseRuleSetPreviewData = {
-  ruleSetDetail: {
-    categoryIds: [categoryId],
-    categoryName: 'Cat Name',
-    id: ruleSetId,
-    categoriesInfo: [
-      {
-        id: categoryId,
-      },
-    ],
-    isEnabled: false,
-    lastChanged: {
-      date: '',
-      user: '',
+const mockRuleData: MerchandisingReturnedCategoryRuleSet = {
+  id: ruleSetId,
+  countryCode: 'UK_IE',
+  categoriesInfo: [
+    {
+      id: categoryId,
     },
-    rules: {
-      pinnedProducts: [{ id: product1Id }],
-      blockedProducts: [],
-      boosts: { numeric: [], alphanumeric: [], product: [] },
-      buries: { numeric: [], alphanumeric: [], product: [] },
-      includes: {
-        alphanumeric: [],
-      },
-      excludes: {
-        alphanumeric: [],
-      },
+  ],
+  isEnabled: false,
+  lastChanged: {
+    date: '',
+    user: '',
+  },
+  rules: {
+    pinnedProducts: [{ id: product1Id }],
+    blockedProducts: [],
+    boosts: { numeric: [], alphanumeric: [], product: [] },
+    buries: { numeric: [], alphanumeric: [], product: [] },
+    includes: {
+      alphanumeric: [],
     },
-    facets: [
-      {
-        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-        boosted: ['test include'],
-        excludedValues: ['test exclude'],
-      },
-      {
-        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-        boosted: [],
-        excludedValues: [],
-      },
-      {
-        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-        boosted: [],
-        excludedValues: [],
-      },
-    ],
-    excludedFacets: {
-      facets: [
-        {
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-        },
-      ],
+    excludes: {
+      alphanumeric: [],
     },
   },
+  facets: [
+    {
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+      boosted: ['test include'],
+      excludedValues: ['test exclude'],
+    },
+    {
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+      boosted: [],
+      excludedValues: [],
+    },
+    {
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+      boosted: [],
+      excludedValues: [],
+    },
+  ],
+  excludedFacets: {
+    facets: [
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+      },
+    ],
+  },
+};
+
+export const mockUseRuleSetPreviewData = {
+  ruleSetDetail: mockRuleData,
   products: [
     {
       id: product1Id,

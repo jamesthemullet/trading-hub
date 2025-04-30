@@ -1,12 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type {
-  MerchandisingCountryCode,
-  MerchandisingExcludedFacets,
-  MerchandisingKeywordRuleSet,
-  MerchandisingReturnedFacet,
-  MerchandisingRules,
-} from '@/libs/api';
+import type { MerchandisingKeywordRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
@@ -16,33 +10,25 @@ export const useSearchRuleSetCreate = () => {
   const createRuleset = useCallback(
     async ({
       searchTerms,
-      merchandisingRules,
-      includedFacets,
+      rules,
+      facets,
       excludedFacets,
       startDate,
       endDate,
       countryCode,
-    }: {
-      searchTerms: string[];
-      merchandisingRules: MerchandisingRules;
-      includedFacets: MerchandisingReturnedFacet[];
-      excludedFacets: MerchandisingExcludedFacets;
-      startDate?: string;
-      endDate?: string;
-      countryCode?: MerchandisingCountryCode;
-    }) => {
+    }: MerchandisingKeywordRuleSet) => {
       setError('');
 
       try {
         const body: MerchandisingKeywordRuleSet = {
           searchTerms,
           isEnabled: false,
-          rules: merchandisingRules,
+          rules,
           startDate,
           endDate,
           countryCode,
           excludedFacets,
-          facets: includedFacets,
+          facets,
         };
         const response =
           await search().betaMerchandisingKeywordRulesetCreate(body);

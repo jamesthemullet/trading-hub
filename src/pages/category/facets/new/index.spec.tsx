@@ -174,19 +174,9 @@ describe('Category Facet Management New', () => {
       countryCode: 'UK_IE',
       facets: [
         {
-          displayValue: 'color',
-          indexPropertyName: 'color',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          lastChanged: {
-            date: '2021-01-01T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
+          boosted: [],
+          excludedValues: [],
         },
       ],
       isEnabled: true,

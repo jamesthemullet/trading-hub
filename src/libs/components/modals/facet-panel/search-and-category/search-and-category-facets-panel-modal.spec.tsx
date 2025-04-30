@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type {
@@ -177,16 +177,14 @@ describe('ModalEditValues', () => {
         {...mockDefaultCategoryFacetProps}
         facet={{
           displayValue: 'color',
-          indexPropertyName: 'color',
           id: '1',
-          lastChanged: { user: 'Bob', date: '2021-10-01' },
           boosted: ['Silk', 'More Silk'],
           excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
         }}
       />
     );
 
-    expect(screen.getAllByTestId('attribute-value-skeleton')).toHaveLength(13);
+    expect(screen.getAllByTestId('attribute-value-skeleton')).toHaveLength(11);
   });
 
   it('should display error message when retrieving attributes fails', async () => {
@@ -201,9 +199,7 @@ describe('ModalEditValues', () => {
         {...mockDefaultCategoryFacetProps}
         facet={{
           displayValue: 'color',
-          indexPropertyName: 'color',
           id: '1',
-          lastChanged: { user: 'Bob', date: '2021-10-01' },
           boosted: ['Silk', 'More Silk'],
           excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
         }}
@@ -224,9 +220,7 @@ describe('ModalEditValues', () => {
         {...mockDefaultCategoryFacetProps}
         facet={{
           displayValue: 'color',
-          indexPropertyName: 'color',
           id: '1',
-          lastChanged: { user: 'Bob', date: '2021-10-01' },
           boosted: ['Silk', 'More Silk'],
           excludedValues: ['Cotton', 'Duck Down', 'Duck Down And Feather'],
         }}
@@ -239,7 +233,7 @@ describe('ModalEditValues', () => {
     expect(onCloseSpy).toHaveBeenCalled();
   });
 
-  describe('moving rows', () => {
+  describe('facet value rows', () => {
     it('should move boosted row down', async () => {
       (lodash.without as jest.Mock).mockReturnValue(['Cotton', 'Silk']);
 
@@ -273,88 +267,28 @@ describe('ModalEditValues', () => {
         expect(screen.getByLabelText('Move Silk row up')).toBeDisabled();
       });
     });
-  });
 
-  describe('merged groups', () => {
-    it('should render merge group without remove button', async () => {
-      renderWithProviders(
-        <SearchAndCategoryFacetsPanelModal
-          {...mockDefaultCategoryFacetProps}
-          facet={{
-            ...facetMock,
-            merged: [{ displayValue: 'red', mergedValues: ['red', 'blue'] }],
-            excludedValues: ['red', 'blue'],
-          }}
-          categories={undefined}
-        />
-      );
-
-      expect(await screen.findByTestId('Merged value red label')).toBeVisible();
-    });
-
-    it('should update included/excluded values for category facets, for both newly amended facets and existing unchanged facets', async () => {
-      const user = userEvent.setup({ delay: null });
+    it('should dispatch CHANGE_DISPLAY_TYPE', async () => {
+      (lodash.without as jest.Mock).mockReturnValue(['Cotton', 'Silk']);
 
       renderWithProviders(
         <SearchAndCategoryFacetsPanelModal
           {...mockDefaultCategoryFacetProps}
-          facet={{
-            displayValue: 'color',
-            indexPropertyName: 'color',
-            id: '1',
-            lastChanged: { user: 'Bob', date: '2021-10-01' },
-            merged: [
-              {
-                displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
-              },
-            ],
-            excludedValues: [],
-            boosted: [],
-          }}
+          facet={{ ...facetMock, boosted: ['Cotton', 'Silk'] }}
         />
       );
-      await user.click(
-        screen.getByTestId('button to open facet order dropdown for Silk')
-      );
-      await user.click(screen.getByLabelText('exclude Silk'));
-      await user.click(
-        screen.getByTestId('button to open facet order dropdown for More Silk')
-      );
-      await user.click(screen.getByLabelText('include More Silk'));
-      await user.click(
-        screen.getByTestId('button to open facet order dropdown for Duck Down')
-      );
-      await user.click(screen.getByLabelText('exclude Duck Down'));
-      await user.click(
-        screen.getByTestId(
-          'button to open facet order dropdown for Ducky Downy And Feathery'
-        )
-      );
-      await user.click(
-        screen.getByLabelText('include Ducky Downy And Feathery')
-      );
-      act(() => {
-        screen
-          .getByRole('button', { name: 'Save changes to attributes' })
-          .click();
-      });
-      await waitFor(async () =>
-        expect(onSaveSpy).toHaveBeenCalledWith({
-          boosted: ['blue', 'green', 'More Silk', 'Ducky Downy And Feathery'],
-          displayValue: 'color',
-          id: '1',
-          indexPropertyName: 'color',
-          lastChanged: { date: '2021-10-01', user: 'Bob' },
-          excludedValues: ['Silk', 'Duck Down'],
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
-        })
-      );
+
+      const boostedValue = screen.getByTestId('included attribute 0 Cotton');
+
+      expect(boostedValue).toBeVisible();
+
+      const dropdownHeader = screen.getAllByText('Include only')[0];
+      await userEvent.click(dropdownHeader);
+
+      const algoControlOption = screen.getByLabelText('exclude Cotton');
+      await userEvent.click(algoControlOption);
+
+      expect(boostedValue).not.toBeVisible();
     });
   });
 });

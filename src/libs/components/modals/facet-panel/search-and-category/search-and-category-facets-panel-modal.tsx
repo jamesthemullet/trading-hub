@@ -4,7 +4,7 @@ import { Modal } from '@mantine/core';
 import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingCountryCode,
-  MerchandisingReturnedGlobalFacet,
+  MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { Button } from '@/libs/components/buttons/button/button';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
@@ -14,6 +14,7 @@ import {
   Header3,
   Text,
 } from '@/libs/components/typography/typography.styles';
+import { useGetFacetAttributeValues } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import type { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-reducer';
 
@@ -38,12 +39,10 @@ import {
   Col,
   FlexColumnCol,
   MergeAndSearchContainer,
-  MergedValue,
   OrderArrowsContainer,
   SkeletonRow,
 } from './edit-facet-modal-content.styles';
 import { facetReducer } from './facet-reducer';
-import { useAttributeValuesRowsSelector } from './use-attribute-values-rows-selector';
 
 const MODAL_WIDTH = 1150;
 
@@ -92,12 +91,6 @@ export type Action =
       payload: changeDisplayType;
     };
 
-type FormattedRow = {
-  displayName: string;
-  attributes: string[];
-  isMergeGroup: boolean;
-};
-
 export const SearchAndCategoryFacetsPanelModal = ({
   onClose,
   onSave,
@@ -105,13 +98,15 @@ export const SearchAndCategoryFacetsPanelModal = ({
   saveButtonLabel = 'Save',
   categories,
   countryCode,
+  searchTerms,
 }: {
   onClose: () => void;
-  onSave: (facet: MerchandisingReturnedGlobalFacet) => void;
-  facet: MerchandisingReturnedGlobalFacet;
+  onSave: (facet: MerchandisingRuleSetFacetConfigWithId) => void;
+  facet: MerchandisingRuleSetFacetConfigWithId & { displayValue: string };
   countryCode: MerchandisingCountryCode;
   saveButtonLabel?: string;
   categories?: string[];
+  searchTerms?: string[];
 }) => {
   const [isSaveDisabled] = useState(false);
   const processedFacet = useMemo(() => {
@@ -134,30 +129,29 @@ export const SearchAndCategoryFacetsPanelModal = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const {
-    attributeValuesState,
+    attributeValues,
     error: attributeValuesError,
     isLoading,
-  } = useAttributeValuesRowsSelector(
-    facetLocalState,
-    searchQuery,
+  } = useGetFacetAttributeValues({
+    facetId: facet.id,
+    query: searchQuery,
+    categories,
+    searchTerms,
     countryCode,
-    categories
-  );
+  });
 
-  const nonBoostedExcludedValues = attributeValuesState
-    .filter((value) => value.displayType === 'default')
-    .map((value) => ({
-      displayValue: value.displayValue,
-    }));
-  const boostedValues = attributeValuesState
-    .filter((value) => value.displayType === 'boosted')
-    .map((value) => ({
-      displayValue: value.displayValue,
-    }));
-
-  const excludedValues = facet.excludedValues!.map((value) => ({
+  const algoControlValues = attributeValues
+    .filter((value) => !facetLocalState.boosted!.includes(value.displayValue))
+    .filter(
+      (value) => !facetLocalState.excludedValues?.includes(value.displayValue)
+    );
+  const boostedValues = facetLocalState.boosted!.map((value) => ({
     displayValue: value,
   }));
+
+  const excludedValues = attributeValues.filter((value) =>
+    facetLocalState.excludedValues?.includes(value.displayValue)
+  );
 
   const { callback: handleSearch } = useDebounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,150 +165,93 @@ export const SearchAndCategoryFacetsPanelModal = ({
       values: MerchandisingAttributeValuesResponse['values'],
       displayType: FacetDisplayType
     ) => {
-      const rows: FormattedRow[] = [];
+      const filteredRows = values.filter((row) =>
+        row.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
-      values.map((value) => {
-        const isInMergeGroup = facet.merged?.some((v) =>
-          v.mergedValues?.includes(value.displayValue)
+      return filteredRows.map(({ displayValue }, index) => {
+        return (
+          <FacetAttributeValuesTableRow
+            key={`${displayType}-${displayValue}`}
+            isPinned={displayType === 'included'}
+            isExcluded={displayType === 'excluded'}
+            data-testid={`${displayType} attribute ${index} ${displayValue}`}
+          >
+            <Col />
+            <Col>
+              <AttributeWrapper>
+                <Text>{displayValue}</Text>
+              </AttributeWrapper>
+            </Col>
+
+            <FlexColumnCol>
+              <Text data-testid={`Label for ${displayValue}`}>
+                {displayValue}
+              </Text>
+            </FlexColumnCol>
+
+            <Col>
+              {displayType === 'included' && (
+                <OrderArrowsContainer>
+                  <ArrowButton
+                    direction="up"
+                    aria-label={`Move ${displayValue} row up`}
+                    isDisabled={index === 0 || !!searchQuery}
+                    onClick={() => {
+                      dispatch({
+                        type: 'MOVE_BOOSTED_ROW_UP',
+                        payload: { id: displayValue },
+                      });
+                    }}
+                  />
+
+                  <ArrowButton
+                    direction="down"
+                    aria-label={`Move ${displayValue} row down`}
+                    isDisabled={
+                      index === filteredRows.length - 1 || !!searchQuery
+                    }
+                    onClick={() => {
+                      dispatch({
+                        type: 'MOVE_BOOSTED_ROW_DOWN',
+                        payload: { id: displayValue },
+                      });
+                    }}
+                  />
+                </OrderArrowsContainer>
+              )}
+            </Col>
+
+            <Col>
+              <FacetOrderDropdown
+                hasAlgoControl
+                status={displayType}
+                onChange={(newDisplayType: FacetDisplayType) => {
+                  const displayTypeMapping = {
+                    algoControl: 'default',
+                    included: 'boosted',
+                    excluded: 'excluded',
+                  };
+
+                  dispatch({
+                    type: 'CHANGE_DISPLAY_TYPE',
+                    payload: {
+                      id: displayValue,
+                      // TODO refactor after fix
+                      newDisplayType: displayTypeMapping[
+                        newDisplayType
+                      ] as changeDisplayType['newDisplayType'],
+                    },
+                  });
+                }}
+                attribute={displayValue}
+              />
+            </Col>
+          </FacetAttributeValuesTableRow>
         );
-
-        if (isInMergeGroup) {
-          const mergeGroup = facet.merged?.filter((v) =>
-            v.mergedValues?.includes(value.displayValue)
-          )[0];
-
-          const rowsIndex = rows.findIndex(
-            (row) => row.displayName === mergeGroup?.displayValue
-          );
-
-          if (
-            rowsIndex === -1 &&
-            mergeGroup?.displayValue &&
-            mergeGroup?.mergedValues
-          ) {
-            // eslint-disable-next-line functional/immutable-data
-            rows.push({
-              attributes: mergeGroup.mergedValues,
-              displayName: mergeGroup.displayValue,
-              isMergeGroup: true,
-            });
-          }
-        } else {
-          // eslint-disable-next-line functional/immutable-data
-          rows.push({
-            attributes: [value.displayValue],
-            displayName: value.displayValue,
-            isMergeGroup: false,
-          });
-        }
       });
-
-      const filteredRows = rows.filter(
-        (row) =>
-          row.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.attributes.some((val) =>
-            val.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-      );
-
-      return filteredRows.map(
-        ({ displayName, attributes, isMergeGroup }, index) => {
-          return (
-            <FacetAttributeValuesTableRow
-              key={`${displayType}-${displayName}`}
-              isPinned={displayType === 'included'}
-              isExcluded={displayType === 'excluded'}
-              data-testid={`${displayType} attribute ${index} ${displayName}`}
-            >
-              <Col />
-              <Col>
-                <AttributeWrapper>
-                  {isMergeGroup ? (
-                    <div>
-                      <Text isStrong>Merged Value Group</Text>
-
-                      {attributes.map((value, index) => (
-                        <MergedValue
-                          data-testid={`Merged value ${value} label`}
-                          key={`${index}-${value}`}
-                        >
-                          <Text>{value}</Text>
-                        </MergedValue>
-                      ))}
-                    </div>
-                  ) : (
-                    <Text>{attributes[0]}</Text>
-                  )}
-                </AttributeWrapper>
-              </Col>
-
-              <FlexColumnCol>
-                <Text data-testid={`Label for ${displayName}`}>
-                  {displayName}
-                </Text>
-              </FlexColumnCol>
-
-              <Col>
-                {displayType === 'included' && (
-                  <OrderArrowsContainer>
-                    <ArrowButton
-                      direction="up"
-                      aria-label={`Move ${displayName} row up`}
-                      isDisabled={index === 0 || !!searchQuery}
-                      onClick={() => {
-                        dispatch({
-                          type: 'MOVE_BOOSTED_ROW_UP',
-                          payload: { id: displayName },
-                        });
-                      }}
-                    />
-
-                    <ArrowButton
-                      direction="down"
-                      aria-label={`Move ${displayName} row down`}
-                      isDisabled={index === rows.length - 1 || !!searchQuery}
-                      onClick={() => {
-                        dispatch({
-                          type: 'MOVE_BOOSTED_ROW_DOWN',
-                          payload: { id: displayName },
-                        });
-                      }}
-                    />
-                  </OrderArrowsContainer>
-                )}
-              </Col>
-
-              <Col>
-                <FacetOrderDropdown
-                  hasAlgoControl
-                  status={displayType}
-                  onChange={(newDisplayType: FacetDisplayType) => {
-                    const displayTypeMapping = {
-                      algoControl: 'default',
-                      included: 'boosted',
-                      excluded: 'excluded',
-                    };
-
-                    dispatch({
-                      type: 'CHANGE_DISPLAY_TYPE',
-                      payload: {
-                        id: displayName,
-                        // TODO refactor after fix
-                        newDisplayType: displayTypeMapping[
-                          newDisplayType
-                        ] as changeDisplayType['newDisplayType'],
-                      },
-                    });
-                  }}
-                  attribute={displayName}
-                />
-              </Col>
-            </FacetAttributeValuesTableRow>
-          );
-        }
-      );
     },
-    [dispatch, facet.merged, searchQuery]
+    [dispatch, searchQuery]
   );
 
   const boostedValuesRows = useMemo(() => {
@@ -322,8 +259,8 @@ export const SearchAndCategoryFacetsPanelModal = ({
   }, [boostedValues, listValues]);
 
   const defaultValuesRows = useMemo(() => {
-    return listValues(nonBoostedExcludedValues, 'algoControl');
-  }, [nonBoostedExcludedValues, listValues]);
+    return listValues(algoControlValues, 'algoControl');
+  }, [algoControlValues, listValues]);
 
   const excludedValuesRows = useMemo(() => {
     return listValues(excludedValues, 'excluded');
@@ -378,7 +315,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
 
             <BodyContainer>
               {isLoading ? (
-                attributeValuesState.map((attribute) => (
+                attributeValues.map((attribute) => (
                   <SkeletonRow
                     key={`attribute-value-skeleton-${attribute.displayValue}`}
                     data-testid="attribute-value-skeleton"
@@ -395,9 +332,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
                 </ModalAttributesTable>
               )}
 
-              <FilteredResultsPanel
-                filteredFacets={attributeValuesState.length}
-              />
+              <FilteredResultsPanel filteredFacets={attributeValues.length} />
             </BodyContainer>
           </ModalContainer>
         </Modal.Body>

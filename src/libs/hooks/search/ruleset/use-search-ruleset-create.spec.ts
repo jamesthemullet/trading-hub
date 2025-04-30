@@ -56,10 +56,11 @@ describe('useSearchRuleSetCreate', () => {
     } = renderHook(() => useSearchRuleSetCreate());
     const resp = await current.createRuleset({
       searchTerms: mockSearchTerms,
-      merchandisingRules: mockMerchandisingRules,
-      includedFacets: [],
+      rules: mockMerchandisingRules,
+      facets: [],
       excludedFacets: { facets: [] },
       countryCode: 'UK_IE',
+      isEnabled: true,
     });
 
     expect(resp).toEqual(mockResponse);
@@ -75,10 +76,11 @@ describe('useSearchRuleSetCreate', () => {
     await act(async () => {
       await result.current.createRuleset({
         searchTerms: mockSearchTerms,
-        merchandisingRules: mockMerchandisingRules,
-        includedFacets: [],
+        rules: mockMerchandisingRules,
+        facets: [],
         excludedFacets: { facets: [] },
         countryCode: 'UK_IE',
+        isEnabled: true,
       });
     });
 

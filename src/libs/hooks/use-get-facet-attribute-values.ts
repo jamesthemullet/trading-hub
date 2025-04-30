@@ -19,12 +19,14 @@ type Props = {
   facetId: string;
   query: string;
   categories?: string[];
+  searchTerms?: string[];
 };
 
 export const useGetFacetAttributeValues = ({
   countryCode,
   facetId,
   categories,
+  searchTerms,
   query,
 }: Props) => {
   const [attributeValues, setAttributeValues] = useState<
@@ -57,6 +59,7 @@ export const useGetFacetAttributeValues = ({
                   start: 0,
                   rows: 2000,
                   catalogue,
+                  searchTerm: searchTerms,
                 })
                 .then((response) => response.data.values)
             );
@@ -71,7 +74,7 @@ export const useGetFacetAttributeValues = ({
       }
     };
     void asyncCall();
-  }, [facetId, categories, query, countryCode]);
+  }, [facetId, categories, query, countryCode, searchTerms]);
 
   return {
     attributeValues,

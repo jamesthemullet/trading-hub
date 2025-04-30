@@ -1,14 +1,8 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { MerchandisingSearchPreviewResponseBeta } from '@/libs/api';
-import {
-  useGetCategories,
-  useGetFacetAttributeValues,
-  usePreview,
-} from '@/libs/hooks';
+import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
-import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { FacetsPanel } from './facets-panel';
@@ -54,60 +48,6 @@ const mockDefaultOrderData = [
   { defaultOrder: 'Include only' },
   { defaultOrder: 'Include only' },
 ];
-
-const mockFacet = {
-  displayValue: 'color',
-  id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-  indexPropertyName: 'color',
-  lastChanged: { date: '2021-01-01T08:34:15Z', user: 'Test User' },
-  merged: [],
-};
-
-const mockData: MerchandisingSearchPreviewResponseBeta = {
-  category: categoryId1,
-  externalChanges: mockMerchandisingRulesWithInfo,
-  facets: [
-    {
-      id: 'brand',
-      order: 0,
-      data: [
-        {
-          name: 'M&S Collection',
-          count: 122,
-          selected: false,
-          disabled: false,
-        },
-        {
-          name: 'Autograph',
-          count: 7,
-          selected: false,
-          disabled: false,
-        },
-        {
-          name: 'GOODMOVE',
-          count: 4,
-          selected: false,
-          disabled: false,
-        },
-      ],
-    },
-  ],
-  pagination: {
-    totalItems: 1,
-  },
-  ruleSet: {
-    facets: [mockFacet],
-    rules: mockMerchandisingRulesWithInfo,
-  },
-  products: [],
-};
-
-const mockCategoryReturnValue = {
-  data: mockData,
-  error: '',
-  isLoading: false,
-  setFacetConfigRules: jest.fn(),
-};
 
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
@@ -341,100 +281,6 @@ describe('Facet Panel', () => {
     expect(screen.getByText('Display name')).toBeVisible();
     expect(screen.getByText('Order')).toBeVisible();
     expect(screen.getByText('Value options')).toBeVisible();
-  });
-
-  it('should preview changes to a category facet', async () => {
-    jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
-
-    renderWithProviders(
-      <FacetsPanel
-        title="Facet Rule Editor"
-        facetType="category"
-        countryCode="UK_IE"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        onFacetDataChange={jest.fn()}
-        selectedCategories={[categoryId1]}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
-      />
-    );
-
-    const previewButton = screen.getByRole('button', { name: 'Preview' });
-
-    act(() => {
-      previewButton.click();
-    });
-
-    const previewText = await screen.findByText(
-      'View rule changes made on the website below'
-    );
-
-    expect(previewText).toBeInTheDocument();
-
-    expect(usePreview).toHaveBeenCalledWith(
-      expect.objectContaining({ countryCode: 'UK' })
-    );
-
-    const closeButton = screen.getByLabelText('close modal');
-
-    act(() => {
-      closeButton.click();
-    });
-
-    expect(
-      screen.queryByText('View rule changes made on the website below')
-    ).not.toBeInTheDocument();
-  });
-
-  it('should preview changes to a search facet', async () => {
-    jest.mocked(usePreview).mockReturnValue(mockCategoryReturnValue);
-
-    renderWithProviders(
-      <FacetsPanel
-        title="Facet Rule Editor"
-        facetType="search"
-        countryCode="UK_IE"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        onFacetDataChange={jest.fn()}
-        searchTerms={['red']}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-      />
-    );
-
-    const previewButton = screen.getByRole('button', { name: 'Preview' });
-
-    act(() => {
-      previewButton.click();
-    });
-
-    const previewText = await screen.findByText(
-      'View rule changes made on the website below'
-    );
-
-    expect(previewText).toBeInTheDocument();
-
-    expect(usePreview).toHaveBeenCalledWith(
-      expect.objectContaining({ countryCode: 'UK' })
-    );
-
-    const closeButton = screen.getByLabelText('close modal');
-
-    act(() => {
-      closeButton.click();
-    });
-
-    expect(
-      screen.queryByText('View rule changes made on the website below')
-    ).not.toBeInTheDocument();
   });
 
   it('should handle order change when button down is clicked', async () => {

@@ -225,45 +225,19 @@ describe('Category Facet Management Editing', () => {
       isEnabled: false,
       facets: [
         {
-          displayValue: 'color',
           boosted: ['test include'],
           excludedValues: ['test exclude'],
-          indexPropertyName: 'color',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          lastChanged: {
-            date: '2021-01-01T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
         },
         {
-          displayValue: 'size',
           boosted: [],
           excludedValues: [],
-          indexPropertyName: 'size',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-          lastChanged: {
-            date: '2021-01-02T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
         },
         {
-          displayValue: 'brand',
           boosted: [],
           excludedValues: [],
-          indexPropertyName: 'brand',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-          lastChanged: {
-            date: '2021-01-03T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
         },
       ],
     });
@@ -323,45 +297,19 @@ describe('Category Facet Management Editing', () => {
       isEnabled: false,
       facets: [
         {
-          displayValue: 'color',
           boosted: ['test include'],
           excludedValues: ['test exclude'],
-          indexPropertyName: 'color',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          lastChanged: {
-            date: '2021-01-01T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
         },
         {
-          displayValue: 'size',
           boosted: [],
           excludedValues: [],
-          indexPropertyName: 'size',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-          lastChanged: {
-            date: '2021-01-02T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
         },
         {
-          displayValue: 'brand',
           boosted: [],
           excludedValues: [],
-          indexPropertyName: 'brand',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-          lastChanged: {
-            date: '2021-01-03T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
         },
       ],
     });
@@ -599,45 +547,19 @@ describe('Category Facet Management Editing', () => {
       isEnabled: false,
       facets: [
         {
-          displayValue: 'color',
           boosted: ['test include'],
           excludedValues: ['test exclude'],
-          indexPropertyName: 'color',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          lastChanged: {
-            date: '2021-01-01T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
         },
         {
-          displayValue: 'size',
           boosted: [],
           excludedValues: [],
-          indexPropertyName: 'size',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-          lastChanged: {
-            date: '2021-01-02T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
         },
         {
-          displayValue: 'brand',
           boosted: [],
           excludedValues: [],
-          indexPropertyName: 'brand',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-          lastChanged: {
-            date: '2021-01-03T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [],
         },
       ],
     });
@@ -709,45 +631,19 @@ describe('Category Facet Management Editing', () => {
         isEnabled: false,
         facets: [
           {
-            displayValue: 'color',
             boosted: ['test include', 'More Silk'],
             excludedValues: ['test exclude'],
-            indexPropertyName: 'color',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-            lastChanged: {
-              date: '2021-01-01T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [
-              {
-                displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
-              },
-            ],
           },
           {
-            displayValue: 'size',
             boosted: [],
             excludedValues: [],
-            indexPropertyName: 'size',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-            lastChanged: {
-              date: '2021-01-02T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
           },
           {
-            displayValue: 'brand',
             boosted: [],
             excludedValues: [],
-            indexPropertyName: 'brand',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-            lastChanged: {
-              date: '2021-01-03T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
           },
         ],
       });
@@ -861,45 +757,19 @@ describe('Category Facet Management Editing', () => {
         isEnabled: false,
         facets: [
           {
-            displayValue: 'color',
             boosted: ['test include'],
             excludedValues: ['test exclude'],
-            indexPropertyName: 'color',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-            lastChanged: {
-              date: '2021-01-01T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [
-              {
-                displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
-              },
-            ],
           },
           {
-            displayValue: 'size',
             boosted: [],
             excludedValues: [],
-            indexPropertyName: 'size',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-            lastChanged: {
-              date: '2021-01-02T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
           },
           {
-            displayValue: 'brand',
             boosted: [],
             excludedValues: [],
-            indexPropertyName: 'brand',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-            lastChanged: {
-              date: '2021-01-03T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
           },
         ],
       });
@@ -966,7 +836,7 @@ describe('Category Facet Management Editing', () => {
 
       expect(
         screen.getByText(
-          'Error whilst retrieving facet list: Error fetching facet list'
+          'Error retrieving facet list: Error fetching facet list'
         )
       ).toBeVisible();
     });

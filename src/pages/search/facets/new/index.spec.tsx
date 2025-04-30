@@ -125,21 +125,11 @@ describe('Search Facet Management New', () => {
     expect(createRuleset).toHaveBeenCalledWith({
       searchTerms: ['red dress'],
       countryCode: 'UK_IE',
-      includedFacets: [
+      facets: [
         {
-          displayValue: 'color',
-          indexPropertyName: 'color',
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          lastChanged: {
-            date: '2021-01-01T08:34:15Z',
-            user: 'Test User',
-          },
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
+          boosted: [],
+          excludedValues: [],
         },
       ],
       excludedFacets: {
@@ -149,7 +139,8 @@ describe('Search Facet Management New', () => {
           },
         ],
       },
-      merchandisingRules: {
+      isEnabled: true,
+      rules: {
         blockedProducts: [],
         boosts: { alphanumeric: [], numeric: [], product: [] },
         buries: { alphanumeric: [], numeric: [], product: [] },
@@ -239,11 +230,12 @@ describe('Search Facet Management New', () => {
         endDate: '2022-04-17T23:59:00.000Z',
         startDate: '2022-04-16T00:00:00.000Z',
         countryCode: 'UK_IE',
-        includedFacets: [],
+        facets: [],
         excludedFacets: {
           facets: [],
         },
-        merchandisingRules: {
+        isEnabled: true,
+        rules: {
           blockedProducts: [],
           boosts: { alphanumeric: [], numeric: [], product: [] },
           buries: { alphanumeric: [], numeric: [], product: [] },

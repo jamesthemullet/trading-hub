@@ -22,8 +22,9 @@ const NewRuleSetPage = () => {
   }: MerchandisingKeywordRuleSet) => {
     const resp = await createRuleset({
       searchTerms,
-      merchandisingRules: rules,
-      includedFacets: [],
+      rules,
+      isEnabled: true,
+      facets: [],
       excludedFacets: { facets: [] },
       startDate,
       endDate,

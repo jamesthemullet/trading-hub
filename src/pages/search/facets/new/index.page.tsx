@@ -1,15 +1,11 @@
 import { useRouter } from 'next/router';
 
-import type {
-  MerchandisingCountryCode,
-  MerchandisingExcludedFacets,
-  MerchandisingReturnedFacet,
-} from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useSearchRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import SearchFacetsPanel from '@/libs/modules/facets-panel/search-facets-panel';
+import { Facets } from '@/libs/modules/facets-panel/facets';
 
 import Head from 'next/head';
 
@@ -18,18 +14,17 @@ const NewRuleSetPage = () => {
   const router = useRouter();
 
   const handleSave = async ({
-    searchTerms,
-    includedFacets,
+    facets,
     excludedFacets,
     countryCode,
-    dateTime,
-  }: {
-    searchTerms: string[];
-    includedFacets: MerchandisingReturnedFacet[];
-    excludedFacets: MerchandisingExcludedFacets;
-    countryCode: MerchandisingCountryCode;
-    dateTime?: [Date | null, Date | null];
-  }) => {
+    searchTerms,
+    startDate,
+    endDate,
+  }: MerchandisingRuleSet & { searchTerms?: string[] }) => {
+    // istanbul ignore next
+    if (!searchTerms) {
+      return;
+    }
     const defaultMerchandisingRules = {
       pinnedProducts: [],
       blockedProducts: [],
@@ -49,12 +44,15 @@ const NewRuleSetPage = () => {
 
     const resp = await createRuleset({
       searchTerms,
-      merchandisingRules: defaultMerchandisingRules,
-      includedFacets,
+      rules: defaultMerchandisingRules,
+      facets,
       excludedFacets,
-      ...(dateTime?.[0] && { startDate: new Date(dateTime[0]).toISOString() }),
-      ...(dateTime?.[1] && { endDate: new Date(dateTime[1]).toISOString() }),
+      ...(startDate && { startDate: new Date(startDate).toISOString() }),
+      ...(endDate && {
+        endDate: new Date(endDate).toISOString(),
+      }),
       countryCode,
+      isEnabled: true,
     });
 
     if (resp) {
@@ -66,8 +64,7 @@ const NewRuleSetPage = () => {
     router.push('/search/facets');
   };
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } =
-    useAccess('Search');
+  const { hasReadAccess, requiredReadRole } = useAccess('Search');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -87,18 +84,11 @@ const NewRuleSetPage = () => {
           ]}
         />
 
-        <SearchFacetsPanel
-          isNewRuleset
-          ruleSetIncludedFacets={[]}
-          ruleSetExcludedFacets={{
-            facets: [],
-          }}
-          isLoading={false}
-          countryCode={'UK_IE'}
-          searchTerms={[]}
-          onSave={handleSave}
+        <Facets
+          facetType="search"
+          isNewRuleset={true}
           onCancel={handleCancel}
-          writeEnabled={hasWriteAccess}
+          onSave={handleSave}
         />
       </>
     </>

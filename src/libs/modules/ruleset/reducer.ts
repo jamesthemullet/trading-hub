@@ -208,5 +208,68 @@ export const rulesetReducer = (state: MerchandisingRuleSet, action: Action) => {
         countryCode: payload,
       };
     }
+    case 'facetChangeDisplayType': {
+      const { payload } = action;
+      const { id, oldType, newType } = payload;
+
+      const updatedFacets =
+        oldType === 'included'
+          ? state.facets?.filter((facet) => facet.id !== id)
+          : state.facets;
+      const facets =
+        newType === 'included'
+          ? [...updatedFacets!, { id, boosted: [], excludedValues: [] }]
+          : updatedFacets;
+
+      const updatedExcludedFacetsFacets =
+        oldType === 'excluded'
+          ? state.excludedFacets?.facets?.filter((facet) => facet.id !== id)
+          : state.excludedFacets?.facets;
+      const excludedFacetsFacets =
+        newType === 'excluded'
+          ? [...updatedExcludedFacetsFacets!, { id }]
+          : updatedExcludedFacetsFacets;
+
+      return {
+        ...state,
+        facets,
+        excludedFacets: {
+          facets: excludedFacetsFacets,
+        },
+      };
+    }
+    case 'facetChangePosition': {
+      const { payload } = action;
+      const { id, position } = payload;
+
+      const facet = state.facets?.find((facet) => facet.id === id);
+      const facets = state.facets!.filter((facet) => facet.id !== id);
+
+      return {
+        ...state,
+        facets: facets.toSpliced(position, 0, facet!),
+      };
+    }
+
+    case 'facetUpdateValues': {
+      const { payload } = action;
+      const { id, boosted, excludedValues } = payload;
+
+      const updatedFacets = state.facets?.map((facet) => {
+        if (facet.id === id) {
+          return {
+            ...facet,
+            boosted,
+            excludedValues,
+          };
+        }
+        return facet;
+      });
+
+      return {
+        ...state,
+        facets: updatedFacets,
+      };
+    }
   }
 };

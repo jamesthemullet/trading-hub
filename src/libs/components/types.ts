@@ -10,6 +10,7 @@ import type {
   MerchandisingPagination,
   MerchandisingReturnedNotFound,
 } from '../api';
+import type { FacetDisplayType } from '../modules/facets-panel/facets';
 
 export type RulesetAttribute = {
   attribute: {
@@ -105,6 +106,29 @@ export type Action =
   | {
       type: 'changeCountry';
       payload: MerchandisingCountryCode;
+    }
+  | {
+      type: 'facetChangeDisplayType';
+      payload: {
+        oldType: FacetDisplayType;
+        newType: FacetDisplayType;
+        id: string;
+      };
+    }
+  | {
+      type: 'facetChangePosition';
+      payload: {
+        id: string;
+        position: number;
+      };
+    }
+  | {
+      type: 'facetUpdateValues';
+      payload: {
+        id: string;
+        boosted: string[];
+        excludedValues: string[];
+      };
     };
 
 export type Row = {

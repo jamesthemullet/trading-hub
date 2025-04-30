@@ -9,13 +9,8 @@ import type {
 } from '@/libs/api';
 import {
   Button,
-  CategorySearch,
-  DropdownContent,
-  DropdownItem,
-  ErrorMessage,
   ProductGridHeader,
   Search,
-  SearchKeywords,
   SelectedCategory,
   Text,
 } from '@/libs/components';
@@ -26,19 +21,13 @@ import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-drop
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { GlobalFacetPanelModal } from '@/libs/components/modals/facet-panel/global/global-facets-panel-modal';
-import { SearchAndCategoryFacetsPanelModal } from '@/libs/components/modals/facet-panel/search-and-category/search-and-category-facets-panel-modal';
-import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
-import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
-
-import Image from 'next/image';
 
 import {
   AttributesTable,
   Col,
-  CountryPreviewDropdown,
   CountrySelectorLabel,
   Duration,
   LabelContainer,
@@ -131,71 +120,26 @@ interface FacetsPanelProps {
 
 export const FacetsPanel = ({
   displayRowOrderControls = false,
-  selectedCategories = [],
-  searchTerms = [],
   title,
   facetType,
   isNewRuleset,
   endDate,
-  rulesetMerchandisingRules,
   startDate,
   facetsState,
   countryCode,
-  includedFacets,
-  excludedFacets,
-  selectedPreviewCountryCode,
   writeEnabled,
-  selectedCategoriesInfo,
   dispatch,
   onSave,
   onCancel,
   onFacetDataChange,
   setDateTime,
-  updatedValues,
-  setSelectedCategories,
-  setSelectedCategoriesInfo,
-  setSelectedPreviewCountryCode,
-  setSearchTerms,
   refreshData,
 }: FacetsPanelProps) => {
-  const [showPreview, setShowPreview] = useState(false);
-
-  const [merchandisingRules] = useState<MerchandisingRules>(
-    rulesetMerchandisingRules
-      ? rulesetMerchandisingRules
-      : {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: {
-            alphanumeric: [],
-            numeric: [],
-            product: [],
-          },
-          buries: {
-            alphanumeric: [],
-            numeric: [],
-            product: [],
-          },
-          includes: {
-            alphanumeric: [],
-          },
-          excludes: {
-            alphanumeric: [],
-          },
-        }
-  );
-
   const [selectedFacet, setSelectedFacet] = useState<
     MerchandisingReturnedFacet | undefined
   >(undefined);
 
   const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
-  const [duplicationError, setDuplicationError] = useState('');
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
-
-  const [previewValue, setPreviewValue] = useState<string | undefined>(
-    selectedCategories?.[0] || searchTerms?.[0]
-  );
 
   const [errorStates, setErrorStates] = useState<
     Record<string, { message: string }>
@@ -248,81 +192,6 @@ export const FacetsPanel = ({
     });
   };
 
-  const onClearSelection = (category: string) => {
-    setSelectedCategories?.(
-      selectedCategories.filter((categoryName) => categoryName !== category)
-    );
-
-    if (selectedCategoriesInfo && setSelectedCategoriesInfo) {
-      setSelectedCategoriesInfo(
-        selectedCategoriesInfo?.filter(
-          (categoriesInfo) => categoriesInfo.id !== category
-        )
-      );
-    }
-  };
-
-  const onSelectCategory = (category: {
-    identifier: string;
-    name: string;
-    path: string;
-  }) => {
-    const hasDuplicates = checkForDuplicates(
-      [...selectedCategories],
-      category.identifier,
-      'ruleset'
-    );
-
-    if (hasDuplicates) {
-      setDuplicationError(hasDuplicates);
-    } else {
-      setSelectedCategories?.([...selectedCategories, category.identifier]);
-      if (selectedCategoriesInfo && setSelectedCategoriesInfo) {
-        setSelectedCategoriesInfo([
-          ...selectedCategoriesInfo,
-          {
-            id: category.identifier,
-            name: category.name,
-            plpUrl: category.path,
-          },
-        ]);
-      }
-      setSelectedPreviewCountryCode?.(
-        category.identifier.includes('IE_') ? 'IE' : 'UK'
-      );
-    }
-  };
-
-  const onRemoveSearchTerm = (term: string) => {
-    setSearchTerms?.(searchTerms.filter((searchTerm) => searchTerm !== term));
-  };
-
-  const onAddSearchTerm = (term: string) => {
-    const hasDuplicates = checkForDuplicates(searchTerms, term, 'keyword');
-
-    if (hasDuplicates) {
-      setDuplicationError(hasDuplicates);
-    } else {
-      setSearchTerms?.([...searchTerms, term]);
-      setPreviewValue(term);
-      setDuplicationError('');
-    }
-  };
-
-  const onSelectPreviewCategory = (category: string | undefined) => {
-    setPreviewValue(category);
-    setSelectedPreviewCountryCode?.(category?.includes('IE_') ? 'IE' : 'UK');
-  };
-
-  const onModalSave = (facet: MerchandisingReturnedFacet) => {
-    // istanbul ignore next - for undefined value
-    const facetBoosted = facet.boosted ?? [];
-    // istanbul ignore next - for undefined value
-    const facetExcludedValues = facet.excludedValues ?? [];
-
-    updatedValues?.(facetBoosted, facetExcludedValues, facet.id);
-    onClose();
-  };
   const disallowedValues = facetsState.map((facet) => facet.displayValue);
 
   const FacetRow = (facet: FacetRowDisplayValue) => {
@@ -406,36 +275,14 @@ export const FacetsPanel = ({
 
   return (
     <>
-      {showPreview && (
-        <Preview
-          onClose={() => setShowPreview(!showPreview)}
-          categoryId={facetType === 'category' ? previewValue : undefined}
-          searchTerm={facetType === 'search' ? previewValue : undefined}
-          merchandisingRules={merchandisingRules}
-          facetConfig={includedFacets}
-          excludedFacets={excludedFacets}
-          countryCode={selectedPreviewCountryCode || 'UK'}
-          previewTitle={previewValue}
-        />
-      )}
-
       <ProductGridHeader
-        canSave={
-          (writeEnabled && !!selectedCategories.length) ||
-          !!searchTerms.length ||
-          facetType === 'global'
-        }
+        canSave={true}
         onSave={() => {
-          if (
-            selectedCategories.length > 0 ||
-            searchTerms.length > 0 ||
-            facetType === 'global'
-          ) {
+          if (facetType === 'global') {
             onSave();
           }
         }}
-        hasPreview={!!selectedCategories.length || !!searchTerms.length}
-        onPreview={() => setShowPreview(!showPreview)}
+        hasPreview={false}
         isNewRuleSet={!!isNewRuleset}
         hasChanges
         onCancel={onCancel}
@@ -453,38 +300,15 @@ export const FacetsPanel = ({
             <CountrySelectorDropdown
               onChange={(country) => {
                 dispatch({ type: 'changeCountry', payload: country });
-                if (country !== 'UK_IE')
-                  setSelectedPreviewCountryCode?.(country);
               }}
               selectedCountryCode={countryCode}
             />
           </div>
-          {facetType === 'category' && (
-            <CategorySearch
-              selectedCategories={selectedCategories}
-              countryCode={countryCode}
-              previewCategory={previewValue}
-              onClearSelection={onClearSelection}
-              onSelectCategory={onSelectCategory}
-              selectedCategoriesInfo={selectedCategoriesInfo}
-              selectPreviewCategory={onSelectPreviewCategory}
-              error={duplicationError}
-            />
-          )}
+
           {facetType === 'global' && (
             <SelectedCategory label="Applies to all pages in marksandspencer.com" />
           )}
-          {facetType === 'search' && (
-            <SearchKeywords
-              title="Search Keywords"
-              searchTerms={searchTerms}
-              addSearchTerm={onAddSearchTerm}
-              removeSearchTerm={onRemoveSearchTerm}
-              previewSearchTerm={previewValue}
-              selectPreviewSearchTerm={setPreviewValue}
-              error={duplicationError}
-            />
-          )}
+
           {facetType !== 'global' && setDateTime && (
             <Duration>
               <LabelContainer>Duration</LabelContainer>
@@ -498,66 +322,10 @@ export const FacetsPanel = ({
               />
             </Duration>
           )}
-
-          {facetType === 'search' && countryCode === 'UK_IE' && (
-            <div>
-              <CountrySelectorLabel>Preview Country</CountrySelectorLabel>
-              <CountryPreviewDropdown
-                label={`${selectedPreviewCountryCode} view`}
-                isOpen={isCountryDropdownOpen}
-                icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}
-                onOpen={() => {
-                  setIsCountryDropdownOpen(true);
-                }}
-                onClose={() => {
-                  setIsCountryDropdownOpen(false);
-                }}
-                aria-label="Select country for preview"
-              >
-                <DropdownContent isLeftAligned>
-                  <DropdownItem
-                    as="button"
-                    onClick={() => {
-                      setSelectedPreviewCountryCode?.('IE');
-                      setIsCountryDropdownOpen(false);
-                    }}
-                  >
-                    <Image
-                      src="/trading-hub/asset/icon-ie-flag.svg"
-                      width={20}
-                      height={20}
-                      alt="IE flag"
-                    />
-                    &nbsp; IE view
-                  </DropdownItem>
-                  <DropdownItem
-                    as="button"
-                    onClick={() => {
-                      setSelectedPreviewCountryCode?.('UK');
-                      setIsCountryDropdownOpen(false);
-                    }}
-                  >
-                    <Image
-                      src="/trading-hub/asset/icon-uk-flag.svg"
-                      width={20}
-                      height={20}
-                      alt="UK flag"
-                    />
-                    &nbsp; UK view
-                  </DropdownItem>
-                </DropdownContent>
-              </CountryPreviewDropdown>
-            </div>
-          )}
         </ScopeWrapper>
-        {duplicationError && (
-          <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
-        )}
       </SectionWrapper>
 
-      {(selectedCategories.length > 0 ||
-        searchTerms.length > 0 ||
-        facetType === 'global') && (
+      {facetType === 'global' && (
         <SectionWrapper>
           <Search onChange={(e) => handleSearch(e.target.value.trim())} />
         </SectionWrapper>
@@ -602,17 +370,6 @@ export const FacetsPanel = ({
             </Modal.Body>
           </Modal.Content>
         </Modal.Root>
-      )}
-
-      {facetType !== 'global' && isEditValuesModalOpen && selectedFacet && (
-        <SearchAndCategoryFacetsPanelModal
-          onClose={onClose}
-          saveButtonLabel="Done"
-          onSave={onModalSave}
-          facet={selectedFacet}
-          categories={facetType === 'category' ? selectedCategories : undefined}
-          countryCode={countryCode}
-        />
       )}
 
       {filteredFacets.length === 0 && (

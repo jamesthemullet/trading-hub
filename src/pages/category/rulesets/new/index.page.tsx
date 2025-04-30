@@ -23,7 +23,7 @@ const NewRuleSetPage = () => {
   }: Required<Pick<MerchandisingCategoryRuleSet, 'facets'>> &
     MerchandisingCategoryRuleSet) => {
     const resp = await createRuleset({
-      facets: facets,
+      facets,
       isEnabled: true,
       categoryIds,
       rules,

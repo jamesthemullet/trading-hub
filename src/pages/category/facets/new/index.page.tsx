@@ -1,36 +1,31 @@
 import { useRouter } from 'next/router';
 
-import type {
-  MerchandisingCountryCode,
-  MerchandisingExcludedFacets,
-  MerchandisingReturnedFacet,
-} from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import CategoryFacetsPanel from '@/libs/modules/facets-panel/category-facets-panel';
+import { Facets } from '@/libs/modules/facets-panel/facets';
 
 import Head from 'next/head';
 
 const Page = () => {
   const router = useRouter();
 
-  const { createRuleset, error: crateRuleSetError } = useRuleSetCreate();
+  const { createRuleset, error: createRuleSetError } = useRuleSetCreate();
 
   const handleSave = async ({
-    categoryIds,
-    includedFacets,
+    facets,
     excludedFacets,
     countryCode,
-    dateTime,
-  }: {
-    categoryIds: string[];
-    includedFacets: MerchandisingReturnedFacet[];
-    excludedFacets: MerchandisingExcludedFacets;
-    countryCode: MerchandisingCountryCode;
-    dateTime?: [Date | null, Date | null];
-  }) => {
+    categoryIds,
+    startDate,
+    endDate,
+  }: MerchandisingRuleSet & { categoryIds?: string[] }) => {
+    // istanbul ignore next
+    if (!categoryIds) {
+      return;
+    }
     const defaultMerchandisingRules = {
       pinnedProducts: [],
       blockedProducts: [],
@@ -51,12 +46,14 @@ const Page = () => {
     const resp = await createRuleset({
       excludedFacets,
       categoryIds,
-      facets: includedFacets,
+      facets,
       countryCode,
       rules: defaultMerchandisingRules,
       isEnabled: true,
-      ...(dateTime?.[0] && { startDate: new Date(dateTime[0]).toISOString() }),
-      ...(dateTime?.[1] && { endDate: new Date(dateTime[1]).toISOString() }),
+      ...(startDate && { startDate: new Date(startDate).toISOString() }),
+      ...(endDate && {
+        endDate: new Date(endDate).toISOString(),
+      }),
     });
 
     if (resp) {
@@ -68,7 +65,7 @@ const Page = () => {
     router.push('/category/facets');
   };
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
+  const { hasReadAccess, requiredReadRole } = useAccess('Cat');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -81,24 +78,17 @@ const Page = () => {
       </Head>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'New']} />
 
-      {crateRuleSetError && (
+      {createRuleSetError && (
         <ErrorMessage>
-          Error whilst creating new category rule set: {crateRuleSetError}
+          Error whilst creating new category rule set: {createRuleSetError}
         </ErrorMessage>
       )}
 
-      <CategoryFacetsPanel
-        isNewRuleset
-        ruleSetIncludedFacets={[]}
-        ruleSetExcludedFacets={{
-          facets: [],
-        }}
-        isLoading={false}
-        countryCode={'UK_IE'}
-        categoriesInfo={[]}
-        onSave={handleSave}
+      <Facets
+        facetType="category"
+        isNewRuleset={true}
         onCancel={handleCancel}
-        writeEnabled={hasWriteAccess}
+        onSave={handleSave}
       />
     </>
   );

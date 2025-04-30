@@ -1,3 +1,5 @@
+import { MerchandisingReturnedKeywordRuleSet } from '@/libs/api';
+
 const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
 const product1Id = 'a1';
 const product2Id = 'b2';
@@ -10,52 +12,57 @@ const product2Brand = 'M&S';
 const product1Price = '£5';
 const product2Price = '£10';
 
-export const mockUseSearchRuleSetPreviewData = {
-  ruleSet: {
-    searchTerms: ['foo', 'bar'],
-    id: ruleSetId,
-    isEnabled: false,
-    lastChanged: {
-      date: '',
-      user: '',
+const mockRuleData: MerchandisingReturnedKeywordRuleSet = {
+  searchTerms: ['foo', 'bar'],
+  countryCode: 'UK_IE',
+  id: ruleSetId,
+  isEnabled: false,
+  lastChanged: {
+    date: '',
+    user: '',
+  },
+  rules: {
+    pinnedProducts: [{ id: product1Id }],
+    blockedProducts: [],
+    boosts: { numeric: [], alphanumeric: [], product: [] },
+    buries: { numeric: [], alphanumeric: [], product: [] },
+    includes: {
+      alphanumeric: [],
     },
-    rules: {
-      pinnedProducts: [{ id: product1Id }],
-      blockedProducts: [],
-      boosts: { numeric: [], alphanumeric: [], product: [] },
-      buries: { numeric: [], alphanumeric: [], product: [] },
-      includes: {
-        alphanumeric: [],
-      },
-      excludes: {
-        alphanumeric: [],
-      },
-    },
-    facets: [
-      {
-        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-        excludedValues: ['Brown'],
-        boosted: ['Pink', 'Navy', 'Grey', 'Blue', 'Green'],
-      },
-      {
-        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-        excludedValues: [],
-        boosted: [],
-      },
-      {
-        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-        excludedValues: [],
-        boosted: [],
-      },
-    ],
-    excludedFacets: {
-      facets: [
-        {
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-        },
-      ],
+    excludes: {
+      alphanumeric: [],
     },
   },
+
+  facets: [
+    {
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+      excludedValues: ['Brown'],
+      boosted: ['Pink', 'Navy', 'Grey', 'Blue', 'Green'],
+    },
+    {
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+      excludedValues: [],
+      boosted: [],
+    },
+    {
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+      excludedValues: [],
+      boosted: [],
+    },
+  ],
+  excludedFacets: {
+    facets: [
+      {
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+      },
+    ],
+  },
+};
+
+export const mockUseSearchRuleSetPreviewData = {
+  ruleSet: mockRuleData,
+
   products: [
     {
       id: product1Id,

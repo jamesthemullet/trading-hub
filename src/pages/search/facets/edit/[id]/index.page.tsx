@@ -1,16 +1,12 @@
 import { useRouter } from 'next/router';
 
-import type {
-  MerchandisingCountryCode,
-  MerchandisingExcludedFacets,
-  MerchandisingReturnedFacet,
-} from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
+import { Facets } from '@/libs/modules/facets-panel/facets';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
-import SearchFacetsPanel from '@/libs/modules/facets-panel/search-facets-panel';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -29,30 +25,30 @@ const Page = ({ id }: { id: string }) => {
   const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
 
   const handleSave = async ({
-    searchTerms,
-    includedFacets,
+    facets,
     excludedFacets,
     countryCode,
-    dateTime,
-  }: {
-    searchTerms: string[];
-    includedFacets: MerchandisingReturnedFacet[];
-    excludedFacets: MerchandisingExcludedFacets;
-    countryCode: MerchandisingCountryCode;
-    dateTime?: [Date | null, Date | null];
-  }) => {
+    searchTerms,
+    startDate,
+    endDate,
+  }: MerchandisingRuleSet & { searchTerms?: string[] }) => {
+    // istanbul ignore next
+    if (!searchTerms) {
+      return;
+    }
+
     const response = await updateRuleSet({
       searchTerms,
       rules: ruleSet.rules,
-      ...(dateTime?.[0] && { startDate: new Date(dateTime[0]).toISOString() }),
-      ...(dateTime?.[1] && {
-        endDate: new Date(dateTime[1]).toISOString(),
+      facets,
+      isEnabled: ruleSet.isEnabled,
+      ...(startDate && { startDate: new Date(startDate).toISOString() }),
+      ...(endDate && {
+        endDate: new Date(endDate).toISOString(),
       }),
       ruleSetId: id,
-      facets: includedFacets,
-      countryCode,
       excludedFacets,
-      isEnabled: ruleSet.isEnabled,
+      countryCode,
     });
 
     if (response) {
@@ -66,8 +62,7 @@ const Page = ({ id }: { id: string }) => {
 
   const { ruleSet, error, isLoading } = useSearchRuleSetPreview(id);
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } =
-    useAccess('Search');
+  const { hasReadAccess, requiredReadRole } = useAccess('Search');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -92,18 +87,13 @@ const Page = ({ id }: { id: string }) => {
       {isLoading ? (
         <FacetsPanelSkeleton title="Facet Rule Editor" aria-busy="true" />
       ) : (
-        <SearchFacetsPanel
-          ruleSetIncludedFacets={ruleSet.facets}
-          ruleSetExcludedFacets={ruleSet.excludedFacets}
-          ruleSetRules={ruleSet.rules}
-          startDate={ruleSet.startDate}
-          endDate={ruleSet.endDate}
-          isLoading={isLoading}
-          countryCode={ruleSet.countryCode || 'UK_IE'}
+        <Facets
+          facetType="search"
+          currentRuleset={ruleSet}
           searchTerms={ruleSet.searchTerms}
-          onSave={handleSave}
+          isNewRuleset={false}
           onCancel={handleCancel}
-          writeEnabled={hasWriteAccess}
+          onSave={handleSave}
         />
       )}
     </>

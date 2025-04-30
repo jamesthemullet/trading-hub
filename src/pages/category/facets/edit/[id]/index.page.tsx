@@ -1,15 +1,11 @@
 import { useRouter } from 'next/router';
 
-import type {
-  MerchandisingCountryCode,
-  MerchandisingExcludedFacets,
-  MerchandisingReturnedFacet,
-} from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import CategoryFacetsPanel from '@/libs/modules/facets-panel/category-facets-panel';
+import { Facets } from '@/libs/modules/facets-panel/facets';
 import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -30,26 +26,26 @@ const Page = ({ id }: { id: string }) => {
     useUpdateRuleSet();
 
   const handleSave = async ({
-    categoryIds,
-    includedFacets,
+    facets,
     excludedFacets,
     countryCode,
-    dateTime,
-  }: {
-    categoryIds: string[];
-    includedFacets: MerchandisingReturnedFacet[];
-    excludedFacets: MerchandisingExcludedFacets;
-    countryCode: MerchandisingCountryCode;
-    dateTime?: [Date | null, Date | null];
-  }) => {
+    categoryIds,
+    startDate,
+    endDate,
+  }: MerchandisingRuleSet & { categoryIds?: string[] }) => {
+    // istanbul ignore next
+    if (!categoryIds) {
+      return;
+    }
+
     const response = await updateCategoryRuleSet({
       categoryIds,
       rules: ruleSetDetail.rules,
-      facets: includedFacets,
+      facets,
       isEnabled: ruleSetDetail.isEnabled,
-      ...(dateTime?.[0] && { startDate: new Date(dateTime[0]).toISOString() }),
-      ...(dateTime?.[1] && {
-        endDate: new Date(dateTime[1]).toISOString(),
+      ...(startDate && { startDate: new Date(startDate).toISOString() }),
+      ...(endDate && {
+        endDate: new Date(endDate).toISOString(),
       }),
       ruleSetId: id,
       excludedFacets,
@@ -67,11 +63,10 @@ const Page = ({ id }: { id: string }) => {
   const {
     ruleSetDetail,
     isLoading,
-    refreshRuleset,
     error: getRulesetDetailError,
   } = useRuleSetDetail(id);
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
+  const { hasReadAccess, requiredReadRole } = useAccess('Cat');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -98,19 +93,13 @@ const Page = ({ id }: { id: string }) => {
       {isLoading ? (
         <FacetsPanelSkeleton title="Facet Rule Editor" aria-busy="true" />
       ) : (
-        <CategoryFacetsPanel
-          ruleSetIncludedFacets={ruleSetDetail.facets}
-          ruleSetExcludedFacets={ruleSetDetail.excludedFacets}
-          ruleSetRules={ruleSetDetail.rules}
-          startDate={ruleSetDetail.startDate}
-          endDate={ruleSetDetail.endDate}
-          isLoading={isLoading}
-          countryCode={ruleSetDetail.countryCode || 'UK_IE'}
+        <Facets
+          facetType="category"
           categoriesInfo={ruleSetDetail.categoriesInfo}
-          onSave={handleSave}
+          isNewRuleset={false}
+          currentRuleset={ruleSetDetail}
           onCancel={handleCancel}
-          refreshData={refreshRuleset}
-          writeEnabled={hasWriteAccess}
+          onSave={handleSave}
         />
       )}
     </>

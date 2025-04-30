@@ -229,6 +229,16 @@ describe('Global Facet Management Editing', () => {
 
     renderWithProviders(<Page id={ruleSetId} />);
 
+    const dropdownButton = screen.getByRole('button', {
+      name: 'select market',
+    });
+
+    await user.click(dropdownButton);
+
+    const selectUKIE = screen.getByLabelText('select UK market only');
+
+    await user.click(selectUKIE);
+
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => {
@@ -296,7 +306,7 @@ describe('Global Facet Management Editing', () => {
           ],
         },
         isEnabled: true,
-        countryCode: 'UK_IE',
+        countryCode: 'UK',
       },
     });
 

@@ -1,4 +1,4 @@
-import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
+import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
 
 import type { AttributeDisplayType } from '../types';
 import { toArrayWithSwappedElements } from '../utils/swap-array-elements';
@@ -31,20 +31,23 @@ export type Action =
   | ChangeDisplayTypeAction;
 
 export const facetReducer = (
-  state: MerchandisingReturnedGlobalFacet,
+  state: MerchandisingRuleSetFacetConfigWithId & { displayValue: string },
   action: Action
-): MerchandisingReturnedGlobalFacet => {
+): MerchandisingRuleSetFacetConfigWithId & { displayValue: string } => {
   switch (action.type) {
     case 'MOVE_BOOSTED_ROW_UP': {
       const currentBoosted = state.boosted ?? [];
       const currentIndex = currentBoosted.indexOf(action.payload.id);
+      const updatedBoosted = currentBoosted.filter(
+        (val) => val !== action.payload.id
+      );
       return currentIndex > 0
         ? {
             ...state,
-            boosted: toArrayWithSwappedElements(
-              currentBoosted,
-              currentIndex,
-              currentIndex - 1
+            boosted: updatedBoosted.toSpliced(
+              currentIndex - 1,
+              0,
+              action.payload.id
             ),
           }
         : state;
@@ -66,40 +69,17 @@ export const facetReducer = (
     case 'CHANGE_DISPLAY_TYPE': {
       const currentBoosted = state.boosted ?? [];
       const currentExcludedValues = state.excludedValues ?? [];
-      const currentMerged = state.merged ?? [];
-
-      const group = currentMerged.find((merge) =>
-        merge.mergedValues?.includes(action.payload.id)
-      );
-
-      if (group?.mergedValues) {
-        const groupValues = group.mergedValues;
-        return {
-          ...state,
-          boosted:
-            action.payload.newDisplayType === 'boosted'
-              ? [...currentBoosted, ...groupValues]
-              : currentBoosted.filter((val) => !groupValues.includes(val)),
-          excludedValues:
-            action.payload.newDisplayType === 'excluded'
-              ? [...currentExcludedValues, ...groupValues]
-              : currentExcludedValues.filter(
-                  (val) => !groupValues.includes(val)
-                ),
-        };
-      } else {
-        return {
-          ...state,
-          boosted:
-            action.payload.newDisplayType !== 'boosted'
-              ? state.boosted?.filter((val) => val !== action.payload.id)
-              : [...currentBoosted, action.payload.id],
-          excludedValues:
-            action.payload.newDisplayType !== 'excluded'
-              ? state.excludedValues?.filter((val) => val !== action.payload.id)
-              : [...currentExcludedValues, action.payload.id],
-        };
-      }
+      return {
+        ...state,
+        boosted:
+          action.payload.newDisplayType !== 'boosted'
+            ? state.boosted?.filter((val) => val !== action.payload.id)
+            : [...currentBoosted, action.payload.id],
+        excludedValues:
+          action.payload.newDisplayType !== 'excluded'
+            ? state.excludedValues?.filter((val) => val !== action.payload.id)
+            : [...currentExcludedValues, action.payload.id],
+      };
     }
   }
 };
