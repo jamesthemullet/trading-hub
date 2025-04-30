@@ -1,10 +1,8 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, cloneElement, isValidElement } from 'react';
 
 import { color } from '../utils/constants';
-import { mediaQuery } from '../utils/media-query.styles';
 import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
 import { List } from './list';
@@ -12,13 +10,12 @@ import { VisuallyHide } from './visually-hide';
 
 export type BreadcrumbProps = {
   children: ReactNode;
-  shouldUnderlineLastElement?: boolean;
 };
 
 const StyledList = styled(List)`
-  position: relative;
+  margin: 0 ${spacing(1)};
+  overflow: visible;
   white-space: nowrap;
-  overflow: hidden;
 
   li + li::before {
     display: inline-block;
@@ -28,67 +25,22 @@ const StyledList = styled(List)`
     height: ${sizing(2)};
     content: '';
   }
+
   li + li:nth-last-of-type(2)::before {
-    margin: 0 ${spacing(1)} 0 0.2rem;
-  }
-
-  ${mediaQuery('md')} {
     margin: 0 ${spacing(1)};
-    overflow: visible;
-    li + li:nth-last-of-type(2)::before {
-      margin: 0 ${spacing(1)};
-    }
   }
 `;
 
-const StyledListItem = styled.li<
-  Pick<BreadcrumbProps, 'shouldUnderlineLastElement'> & {
-    listLength: number;
-  }
->`
-  display: none;
-
-  &:nth-last-of-type(2),
-  &:nth-last-of-type(1) {
-    display: inline-block;
-  }
-
-  ${mediaQuery('md')} {
-    display: inline-block;
-
-    &:nth-last-of-type(2) {
-      a {
-        padding-left: 0;
-        background: none;
-      }
-    }
-  }
-  a {
-    text-decoration: none;
-    :hover {
-      text-decoration: none;
-    }
-  }
-  ${({ shouldUnderlineLastElement }) =>
-    shouldUnderlineLastElement &&
-    css`
-      :last-child {
-        a {
-          text-decoration: underline;
-        }
-      }
-    `}
+const StyledListItem = styled.li`
+  display: inline-block;
 `;
 
-export const Breadcrumb = ({
-  children,
-  shouldUnderlineLastElement = false,
-}: BreadcrumbProps) => {
+export const Breadcrumb = ({ children }: BreadcrumbProps) => {
   const props = { 'aria-current': 'page' };
   return (
     <nav aria-label="breadcrumb">
       <VisuallyHide as="p">You are here:</VisuallyHide>
-      <StyledList isUnstyled>
+      <StyledList>
         {Children.map(children, (child, index) => {
           const element =
             isValidElement(child) && index === Children.count(children) - 1
@@ -96,14 +48,7 @@ export const Breadcrumb = ({
                   ...props,
                 })
               : child;
-          return (
-            <StyledListItem
-              shouldUnderlineLastElement={shouldUnderlineLastElement}
-              listLength={Children.count(children)}
-            >
-              {element}
-            </StyledListItem>
-          );
+          return <StyledListItem>{element}</StyledListItem>;
         })}
       </StyledList>
     </nav>

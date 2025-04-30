@@ -22,9 +22,8 @@ describe('Breadcrumb', () => {
     );
 
     const listItem = screen.getByText('Home').parentElement;
-    expect(listItem).toHaveStyle('display: inline-block;');
     expect(listItem?.parentElement).toHaveStyle(`
-      margin: 0;
+      margin: 0px 0.5rem;
       padding: 0;
     `);
   });
@@ -42,93 +41,28 @@ describe('Breadcrumb', () => {
     expect(listItems[1]).toHaveAttribute('aria-current', 'page');
   });
 
-  describe('when underlineLastElement is true', () => {
-    it('should render the last link with underline', () => {
-      render(
-        <Breadcrumb shouldUnderlineLastElement>
-          <a href="/home">Home</a>
-          <a href="/women">Women</a>
-          <a href="/jeans">Jeans</a>
-        </Breadcrumb>
-      );
+  it('displays all links when passed more than two links', () => {
+    render(
+      <Breadcrumb>
+        <a href="/home">Home</a>
+        <a href="/women">Women</a>
+        <a href="/jeans">Jeans</a>
+      </Breadcrumb>
+    );
 
-      const link = screen.getByText('Jeans');
-      expect(link).toHaveStyle('text-decoration: underline');
-    });
+    expect(screen.getByText('Women')).toBeVisible();
+    expect(screen.getByText('Jeans')).toBeVisible();
   });
 
-  describe('when listLength is <=2', () => {
-    it('should not render the last link with "/" listLength is >=2', () => {
-      render(
-        <Breadcrumb>
-          <a href="/home">Home</a>
-          <a href="/women">Women</a>
-          <a href="/jeans">Jeans</a>
-        </Breadcrumb>
-      );
+  it('displays only two links when passed two links', () => {
+    render(
+      <Breadcrumb>
+        <a href="/home">Home</a>
+        <a href="/women">Women</a>
+      </Breadcrumb>
+    );
 
-      const listItem = screen.getByText('Home').parentElement;
-      expect(listItem).toHaveStyle('display: none;');
-      const listItemTwo = screen.getByText('Women').parentElement;
-      expect(listItemTwo).toHaveStyle('display: inline-block;');
-    });
-
-    it('should render the last link with "/" listLength is <=2', () => {
-      render(
-        <Breadcrumb>
-          <a href="/women">Women</a>
-          <a href="/jeans">Jeans</a>
-        </Breadcrumb>
-      );
-      const listItem = screen.getByText('Women').parentElement;
-      expect(listItem).toHaveStyle('display: inline-block;');
-    });
-  });
-
-  describe('when more than two links are rendered on mobile', () => {
-    it('only displays the last two links', () => {
-      render(
-        <Breadcrumb>
-          <a href="/home">Home</a>
-          <a href="/women">Women</a>
-          <a href="/jeans">Jeans</a>
-        </Breadcrumb>
-      );
-      expect(screen.getByText('Home')).not.toBeVisible();
-      expect(screen.getByText('Women')).toBeVisible();
-      expect(screen.getByText('Jeans')).toBeVisible();
-    });
-  });
-
-  describe('On breakpoints > sm', () => {
-    it('displays all links when passed more than two links', () => {
-      render(
-        <Breadcrumb>
-          <a href="/home">Home</a>
-          <a href="/women">Women</a>
-          <a href="/jeans">Jeans</a>
-        </Breadcrumb>
-      );
-
-      expect(screen.getByText('Home').closest('li')).toHaveStyleRule(
-        'display',
-        'inline-block',
-        { media: '(min-width: 768px)' }
-      );
-      expect(screen.getByText('Women')).toBeVisible();
-      expect(screen.getByText('Jeans')).toBeVisible();
-    });
-
-    it('displays only two links when passed two links', () => {
-      render(
-        <Breadcrumb>
-          <a href="/home">Home</a>
-          <a href="/women">Women</a>
-        </Breadcrumb>
-      );
-
-      expect(screen.getByText('Home')).toBeVisible();
-      expect(screen.getByText('Women')).toBeVisible();
-    });
+    expect(screen.getByText('Home')).toBeVisible();
+    expect(screen.getByText('Women')).toBeVisible();
   });
 });
