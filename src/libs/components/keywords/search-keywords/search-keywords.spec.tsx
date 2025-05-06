@@ -31,6 +31,7 @@ const mockProps: Props = {
   removeSearchTerm: jest.fn(),
   previewSearchTerm: undefined,
   selectPreviewSearchTerm: jest.fn(),
+  writeEnabled: true,
 };
 
 describe('Search Keywords', () => {
@@ -48,6 +49,21 @@ describe('Search Keywords', () => {
     expect(screen.getByText('keyword2')).toBeVisible();
     expect(screen.getByText('keyword3')).toBeVisible();
     expect(screen.queryByText('keyword4')).not.toBeInTheDocument();
+  });
+
+  it('should not be editable in read only mode', () => {
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={shorterSearchTermsList}
+        writeEnabled={false}
+      />
+    );
+
+    expect(screen.queryByLabelText('Add keyword')).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Remove keyword: keyword1')
+    ).not.toBeInTheDocument();
   });
 
   it('should add a new keyword to the list without the modal being open', async () => {

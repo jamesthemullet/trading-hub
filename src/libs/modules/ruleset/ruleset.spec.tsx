@@ -210,6 +210,11 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
   });
 };
 
+const defaultProps = {
+  isEnabled: true,
+  writeEnabled: true,
+};
+
 describe('Ruleset', () => {
   beforeEach(() => {
     const mockCategoryProductSearch = {
@@ -294,7 +299,7 @@ describe('Ruleset', () => {
   it('should render correctly', () => {
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={jest.fn()}
         onCancel={jest.fn()}
         rulesetType="category"
@@ -311,7 +316,7 @@ describe('Ruleset', () => {
     });
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={jest.fn()}
         onCancel={jest.fn()}
         rulesetType="category"
@@ -328,7 +333,7 @@ describe('Ruleset', () => {
     });
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={jest.fn()}
         onCancel={jest.fn()}
         rulesetType="category"
@@ -348,7 +353,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={jest.fn()}
         onCancel={jest.fn()}
         rulesetType="category"
@@ -371,7 +376,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onCreate={mockCreate}
         onCancel={jest.fn()}
         rulesetType="category"
@@ -402,7 +407,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onCreate={mockCreate}
         onCancel={jest.fn()}
         rulesetType="category"
@@ -443,7 +448,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={mockSave}
         onCancel={jest.fn()}
         categoriesInfo={mockCategoriesInfo}
@@ -489,7 +494,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={mockSave}
         onCancel={jest.fn()}
         rulesetMerchandisingRules={{
@@ -532,7 +537,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={mockSave}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -577,7 +582,7 @@ describe('Ruleset', () => {
     it('should remove a search term', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
             pinnedProducts: [{ id: 'abc123' }],
@@ -612,7 +617,7 @@ describe('Ruleset', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
             pinnedProducts: [{ id: 'abc123' }],
@@ -653,7 +658,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={mockSave}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -714,7 +719,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onCreateKeywordSearchRuleset={mockCreate}
           onCancel={jest.fn()}
           rulesetType="search"
@@ -746,7 +751,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onCreateKeywordSearchRuleset={mockCreate}
           onCancel={jest.fn()}
           rulesetType="search"
@@ -782,7 +787,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetType="search"
@@ -816,7 +821,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={mockSave}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -874,7 +879,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={mockSave}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -944,7 +949,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={mockSave}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -997,7 +1002,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={mockSave}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -1056,7 +1061,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={mockSave}
         onCancel={mockCancel}
         categoriesInfo={mockCategoriesInfo507}
@@ -1107,7 +1112,7 @@ describe('Ruleset', () => {
 
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={mockSave}
         onCancel={jest.fn()}
         rulesetType="category"
@@ -1143,7 +1148,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           categoriesInfo={mockCategoriesInfo507}
@@ -1262,7 +1267,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           categoriesInfo={mockCategoriesInfo}
@@ -1341,7 +1346,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetType="category"
@@ -1374,7 +1379,7 @@ describe('Ruleset', () => {
     it('Should not show preview on global rulesets', () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetType="global"
@@ -1387,7 +1392,7 @@ describe('Ruleset', () => {
   it('opens changes tab', async () => {
     renderWithProviders(
       <Ruleset
-        isEnabled={true}
+        {...defaultProps}
         onSave={jest.fn()}
         onCancel={jest.fn()}
         rulesetMerchandisingRules={mockMerchandisingRules}
@@ -1508,7 +1513,7 @@ describe('Ruleset', () => {
     it('adds a numeric attribute', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -1565,7 +1570,7 @@ describe('Ruleset', () => {
     it('adds an alphanumeric attribute', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -1594,7 +1599,7 @@ describe('Ruleset', () => {
     it('adds a buried alphanumeric attribute', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -1623,7 +1628,7 @@ describe('Ruleset', () => {
     it('adds an included alphanumeric attribute', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{
@@ -1652,7 +1657,7 @@ describe('Ruleset', () => {
     it('deletes attributes', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
@@ -1710,7 +1715,7 @@ describe('Ruleset', () => {
     it('should set a start and end date', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
@@ -1775,7 +1780,7 @@ describe('Ruleset', () => {
     it('should show checkboxes on products', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
@@ -1790,7 +1795,7 @@ describe('Ruleset', () => {
     it('should select and deselect products', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
@@ -1845,7 +1850,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
@@ -1882,7 +1887,7 @@ describe('Ruleset', () => {
     it('should deselect products from the bulk actions menu', async () => {
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockRules}
@@ -1940,7 +1945,7 @@ describe('Ruleset', () => {
       };
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={mockedRules}
@@ -2020,7 +2025,7 @@ describe('Ruleset', () => {
 
       renderWithProviders(
         <Ruleset
-          isEnabled={true}
+          {...defaultProps}
           onSave={jest.fn()}
           onCancel={jest.fn()}
           rulesetMerchandisingRules={{

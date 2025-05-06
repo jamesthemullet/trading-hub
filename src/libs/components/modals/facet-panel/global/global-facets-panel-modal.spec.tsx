@@ -1568,6 +1568,7 @@ describe('GlobalFacetPanelModalContent', () => {
         }}
         countryCode="UK"
         onClose={mockOnClose}
+        writeEnabled
       />
     );
 
@@ -1607,6 +1608,7 @@ describe('GlobalFacetPanelModalContent', () => {
         }}
         countryCode="UK"
         onClose={mockOnClose}
+        writeEnabled
       />
     );
 

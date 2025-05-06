@@ -105,6 +105,7 @@ export type Props = {
   removeSearchTerm: (keyword: string) => void;
   searchTerms: string[];
   title: string;
+  writeEnabled: boolean;
   previewSearchTerm?: string | undefined;
   selectPreviewSearchTerm?: (keyword: string | undefined) => void;
   error?: string;
@@ -137,6 +138,7 @@ export const SearchKeywords = ({
   selectPreviewSearchTerm,
   title,
   error,
+  writeEnabled,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -220,43 +222,47 @@ export const SearchKeywords = ({
                       {term}
                     </SelectKeywordPill>
                   )}
-                  <RemoveKeyWordPill
-                    onClick={() => {
-                      removeSearchTerm(term);
+                  {writeEnabled && (
+                    <RemoveKeyWordPill
+                      onClick={() => {
+                        removeSearchTerm(term);
 
-                      if (isSelectedSearchTerm) {
-                        selectPreviewSearchTerm(
-                          additionalSearchTerms.length
-                            ? additionalSearchTerms[0]
-                            : undefined
-                        );
-                      }
-                    }}
-                    aria-label={`Remove keyword: ${term}`}
-                  >
-                    <Image
-                      alt=""
-                      src={`/trading-hub/asset/icon-remove-${isSelectedSearchTerm ? 'selected-' : ''}chip.svg`}
-                      width={16}
-                      height={16}
-                    />
-                  </RemoveKeyWordPill>
+                        if (isSelectedSearchTerm) {
+                          selectPreviewSearchTerm(
+                            additionalSearchTerms.length
+                              ? additionalSearchTerms[0]
+                              : undefined
+                          );
+                        }
+                      }}
+                      aria-label={`Remove keyword: ${term}`}
+                    >
+                      <Image
+                        alt=""
+                        src={`/trading-hub/asset/icon-remove-${isSelectedSearchTerm ? 'selected-' : ''}chip.svg`}
+                        width={16}
+                        height={16}
+                      />
+                    </RemoveKeyWordPill>
+                  )}
                 </KeyWordPill>
               ) : null;
             })}
-            <StyledForm onSubmit={onAddKeyword} style={{ display: 'inline' }}>
-              <KeyWordInput
-                aria-label="Add keyword"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value.toLowerCase())}
-                onBlur={() => {
-                  if (inputText) {
-                    addSearchTerm(inputText);
-                    setInputText('');
-                  }
-                }}
-              />
-            </StyledForm>
+            {writeEnabled && (
+              <StyledForm onSubmit={onAddKeyword} style={{ display: 'inline' }}>
+                <KeyWordInput
+                  aria-label="Add keyword"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value.toLowerCase())}
+                  onBlur={() => {
+                    if (inputText) {
+                      addSearchTerm(inputText);
+                      setInputText('');
+                    }
+                  }}
+                />
+              </StyledForm>
+            )}
           </InputBoxWrapper>
           {showViewAllButton && (
             <ViewAllButton
@@ -287,51 +293,57 @@ export const SearchKeywords = ({
           <Modal.Body>
             <ModalContainer>
               <Heading>{title}</Heading>
-              <StyledSearchContainer>
-                <SearchBox
-                  inputProps={{
-                    id: 'searchId',
-                    label: 'search keywords',
-                    isLabelHidden: true,
-                    placeholder: 'Search...',
-                    value: filterValue,
-                    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                      setFilterValue(event.target.value);
-                    },
-                  }}
-                  iconButtonProps={{
-                    id: 'SearchIconInputBtn',
-                  }}
-                />
-              </StyledSearchContainer>
+              {writeEnabled && (
+                <StyledSearchContainer>
+                  <SearchBox
+                    inputProps={{
+                      id: 'searchId',
+                      label: 'search keywords',
+                      isLabelHidden: true,
+                      placeholder: 'Search...',
+                      value: filterValue,
+                      onChange: (
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        setFilterValue(event.target.value);
+                      },
+                    }}
+                    iconButtonProps={{
+                      id: 'SearchIconInputBtn',
+                    }}
+                  />
+                </StyledSearchContainer>
+              )}
               {previewSearchTerm && (
                 <ModalSelectedKeyword aria-label="Preview category">
                   <Label as="h4">Selected: </Label>
                   <KeyWordPill isSelected as="p">
                     {previewSearchTerm}
-                    <RemoveKeyWordPill
-                      onClick={
-                        // istanbul ignore next
-                        () => {
-                          removeSearchTerm(previewSearchTerm);
-                          if (selectPreviewSearchTerm) {
-                            selectPreviewSearchTerm(
-                              additionalSearchTerms.length
-                                ? additionalSearchTerms[0]
-                                : undefined
-                            );
+                    {writeEnabled && (
+                      <RemoveKeyWordPill
+                        onClick={
+                          // istanbul ignore next
+                          () => {
+                            removeSearchTerm(previewSearchTerm);
+                            if (selectPreviewSearchTerm) {
+                              selectPreviewSearchTerm(
+                                additionalSearchTerms.length
+                                  ? additionalSearchTerms[0]
+                                  : undefined
+                              );
+                            }
                           }
                         }
-                      }
-                      aria-label={`Remove keyword from modal: ${previewSearchTerm}`}
-                    >
-                      <Image
-                        alt=""
-                        src="/trading-hub/asset/icon-remove-selected-chip.svg"
-                        width={16}
-                        height={16}
-                      />
-                    </RemoveKeyWordPill>
+                        aria-label={`Remove keyword from modal: ${previewSearchTerm}`}
+                      >
+                        <Image
+                          alt=""
+                          src="/trading-hub/asset/icon-remove-selected-chip.svg"
+                          width={16}
+                          height={16}
+                        />
+                      </RemoveKeyWordPill>
+                    )}
                   </KeyWordPill>
                 </ModalSelectedKeyword>
               )}
@@ -347,39 +359,43 @@ export const SearchKeywords = ({
                     ) : (
                       keyword
                     )}
-                    <RemoveKeyWordPill
-                      onClick={() => removeSearchTerm(keyword)}
-                      aria-label={`Remove keyword: ${keyword}`}
-                    >
-                      <Image
-                        alt=""
-                        src="/trading-hub/asset/icon-remove-chip.svg"
-                        width={16}
-                        height={16}
-                      />
-                    </RemoveKeyWordPill>
+                    {writeEnabled && (
+                      <RemoveKeyWordPill
+                        onClick={() => removeSearchTerm(keyword)}
+                        aria-label={`Remove keyword: ${keyword}`}
+                      >
+                        <Image
+                          alt=""
+                          src="/trading-hub/asset/icon-remove-chip.svg"
+                          width={16}
+                          height={16}
+                        />
+                      </RemoveKeyWordPill>
+                    )}
                   </KeyWordPill>
                 ))}
-                <StyledInput
-                  type="text"
-                  value={inputValue}
-                  onChange={(event) =>
-                    setInputValue(event.target.value.toLowerCase())
-                  }
-                  onKeyDown={(event) => {
-                    setUnfinishedKeyword(false);
-                    if (event.key === 'Enter') {
-                      addSearchTerm(inputValue);
-                      setInputValue('');
+                {writeEnabled && (
+                  <StyledInput
+                    type="text"
+                    value={inputValue}
+                    onChange={(event) =>
+                      setInputValue(event.target.value.toLowerCase())
                     }
-                  }}
-                  aria-label="Add keyword to list"
-                  style={{
-                    flex: '1',
-                    border: 'none',
-                    outline: 'none',
-                  }}
-                />
+                    onKeyDown={(event) => {
+                      setUnfinishedKeyword(false);
+                      if (event.key === 'Enter') {
+                        addSearchTerm(inputValue);
+                        setInputValue('');
+                      }
+                    }}
+                    aria-label="Add keyword to list"
+                    style={{
+                      flex: '1',
+                      border: 'none',
+                      outline: 'none',
+                    }}
+                  />
+                )}
               </KeywordList>
               {error && (
                 <ErrorMessage style={{ padding: 0 }}>{error}</ErrorMessage>

@@ -25,6 +25,7 @@ const mockProps = {
   onSelectCategory: jest.fn(),
   previewCategory: undefined,
   selectPreviewCategory: jest.fn(),
+  writeEnabled: true,
 };
 
 const mockCategoryId = 'SubCategory_507';
@@ -60,6 +61,14 @@ describe('CategorySearch', () => {
     renderWithProviders(<CategorySearch {...mockProps} />);
 
     expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
+  });
+
+  it('should not be editable in read only mode', () => {
+    renderWithProviders(<CategorySearch {...mockProps} writeEnabled={false} />);
+
+    expect(
+      screen.queryByPlaceholderText(INPUT_PLACEHOLDER_TEXT)
+    ).not.toBeInTheDocument();
   });
 
   it('should search while typing', async () => {

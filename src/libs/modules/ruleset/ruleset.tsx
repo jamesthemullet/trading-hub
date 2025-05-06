@@ -207,7 +207,7 @@ export const Ruleset = ({
   searchTerms,
   startDate,
   countryCode,
-  writeEnabled = true,
+  writeEnabled,
 }: {
   isEnabled: boolean;
   onSave?: ({
@@ -241,7 +241,7 @@ export const Ruleset = ({
   startDate?: string;
   endDate?: string;
   countryCode?: MerchandisingCountryCode;
-  writeEnabled?: boolean;
+  writeEnabled: boolean;
 }) => {
   const categoryIds = categoriesInfo?.map((category) => category.id);
 
@@ -552,6 +552,7 @@ export const Ruleset = ({
                   );
                 }}
                 error={duplicationError}
+                writeEnabled={writeEnabled}
               />
             </CategorySearchWrapper>
           )}
@@ -566,6 +567,7 @@ export const Ruleset = ({
                 previewSearchTerm={previewValue}
                 selectPreviewSearchTerm={setPreviewValue}
                 error={duplicationError}
+                writeEnabled={writeEnabled}
               />
             </KeywordSearchWrapper>
           )}
@@ -594,6 +596,7 @@ export const Ruleset = ({
                 ruleset.startDate ? new Date(ruleset.startDate) : null,
                 ruleset.endDate ? new Date(ruleset.endDate) : null,
               ]}
+              writeEnabled={writeEnabled}
             />
           </Duration>
         )}

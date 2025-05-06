@@ -247,7 +247,7 @@ type Props = {
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
   onDuplicate?: (id: string) => void;
   query?: string;
-  writeEnabled?: boolean;
+  writeEnabled: boolean;
   currentPageSize?: number;
 };
 
@@ -259,7 +259,7 @@ export const DataTable = ({
   onDuplicate,
   onToggleRuleSet,
   query,
-  writeEnabled = true,
+  writeEnabled,
   isLoading,
   currentPageSize,
 }: Props) => {

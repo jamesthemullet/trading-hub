@@ -433,6 +433,7 @@ export const Facets = ({
               selectedCategoriesInfo={selectedCategoriesInfo}
               selectPreviewCategory={setPreviewValue}
               error={duplicationError}
+              writeEnabled={writeEnabled}
             />
           )}
           {facetType === 'search' && (
@@ -444,6 +445,7 @@ export const Facets = ({
               previewSearchTerm={previewValue}
               selectPreviewSearchTerm={setPreviewValue}
               error={duplicationError}
+              writeEnabled={writeEnabled}
             />
           )}
           <Duration>
@@ -462,6 +464,7 @@ export const Facets = ({
                 ruleset.startDate ? new Date(ruleset.startDate) : null,
                 ruleset.endDate ? new Date(ruleset.endDate) : null,
               ]}
+              writeEnabled={writeEnabled}
             />
           </Duration>
 

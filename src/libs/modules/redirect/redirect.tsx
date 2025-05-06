@@ -82,7 +82,7 @@ type Props = {
   onCancel: () => void;
   redirect?: MerchandisingReturnedKeywordRedirect;
   title: string;
-  writeEnabled?: boolean;
+  writeEnabled: boolean;
 };
 
 export const Redirect = ({
@@ -91,7 +91,7 @@ export const Redirect = ({
   onSave,
   redirect: savedRedirect,
   title,
-  writeEnabled = true,
+  writeEnabled,
 }: Props) => {
   const [redirect, setRedirect] = useState<MerchandisingKeywordRedirect>(
     savedRedirect
@@ -235,6 +235,7 @@ export const Redirect = ({
             addSearchTerm={onAddKeyword}
             removeSearchTerm={onRemoveKeyword}
             error={duplicationError}
+            writeEnabled={writeEnabled}
           />
           <Duration>
             <LabelContainer>Duration</LabelContainer>
@@ -251,6 +252,7 @@ export const Redirect = ({
                   endDate: endDate ? endDate.toISOString() : '',
                 });
               }}
+              writeEnabled={writeEnabled}
             />
           </Duration>
         </Row>
@@ -265,7 +267,10 @@ export const Redirect = ({
             id="destination-url-input"
             placeholder="c/"
             value={redirect.destinationUrl}
-            onChange={(e) => onUpdate('destinationUrl', e.target.value)}
+            {...(writeEnabled && {
+              onChange: (e) => onUpdate('destinationUrl', e.target.value),
+            })}
+            readOnly={!writeEnabled}
           />
         </FullInputRow>
         <FullInputRow>
@@ -276,7 +281,10 @@ export const Redirect = ({
             id="rule-title-input"
             placeholder="Enter redirect title"
             value={redirect.ruleTitle}
-            onChange={(e) => onUpdate('ruleTitle', e.target.value)}
+            {...(writeEnabled && {
+              onChange: (e) => onUpdate('ruleTitle', e.target.value),
+            })}
+            readOnly={!writeEnabled}
           />
         </FullInputRow>
       </RedirectContent>

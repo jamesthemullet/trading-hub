@@ -30,6 +30,7 @@ const KeywordMock = () => {
       removeSearchTerm={onRemoveSearchTerm}
       previewSearchTerm={previewValue}
       selectPreviewSearchTerm={setPreviewValue}
+      writeEnabled
     />
   );
 };
@@ -67,6 +68,7 @@ const KeywordMockWithValues = () => {
       removeSearchTerm={onRemoveSearchTerm}
       previewSearchTerm={previewValue}
       selectPreviewSearchTerm={setPreviewValue}
+      writeEnabled
     />
   );
 };
@@ -77,10 +79,6 @@ const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
       <h1>Sandbox examples</h1>
       <Example>
         <h3>Running on Node version {nodeVersion}</h3>
-      </Example>
-      <Example>
-        <h2>Calendar Component(Modal)</h2>
-        <DateTimePickerModal onUpdateDateTimeRange={() => {}} />
       </Example>
       <Example>
         <h2>Arrow Button</h2>

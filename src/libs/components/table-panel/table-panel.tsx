@@ -45,7 +45,7 @@ export const TablePanel = <
   addNewButtonLabel = 'Add new rule',
   newRowCreateMode = 'redirect-to-new',
   isDuplicateEnabled = true,
-  writeEnabled = true,
+  writeEnabled,
 }: {
   basePath: string;
   headings: string[];
@@ -54,7 +54,7 @@ export const TablePanel = <
   addNewButtonLabel?: string;
   newRowCreateMode?: 'create-then-redirect' | 'redirect-to-new';
   isDuplicateEnabled?: boolean;
-  writeEnabled?: boolean;
+  writeEnabled: boolean;
 }) => {
   const {
     getRows,

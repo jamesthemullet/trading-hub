@@ -94,6 +94,12 @@ const countryRows = [
   },
 ];
 
+const defaultProps = {
+  writeEnabled: true,
+  isLoading: false,
+  headings,
+};
+
 describe('DataTable', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -102,8 +108,7 @@ describe('DataTable', () => {
   it('should render correctly', () => {
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -118,8 +123,8 @@ describe('DataTable', () => {
   it('should render loading skeleton correctly', () => {
     renderWithProviders(
       <DataTable
+        {...defaultProps}
         isLoading={true}
-        headings={headings}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -133,9 +138,9 @@ describe('DataTable', () => {
   it('should render loading skeleton with specific page size', () => {
     renderWithProviders(
       <DataTable
+        {...defaultProps}
         isLoading={true}
         currentPageSize={20}
-        headings={headings}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -150,9 +155,8 @@ describe('DataTable', () => {
   it('should render correctly with no write access', async () => {
     renderWithProviders(
       <DataTable
-        isLoading={false}
+        {...defaultProps}
         currentPageSize={20}
-        headings={headings}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -170,7 +174,7 @@ describe('DataTable', () => {
   it('should render correctly with six headings', () => {
     renderWithProviders(
       <DataTable
-        isLoading={false}
+        {...defaultProps}
         headings={sixHeadings}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
@@ -185,7 +189,7 @@ describe('DataTable', () => {
   it('should render correctly with seven headings', () => {
     renderWithProviders(
       <DataTable
-        isLoading={false}
+        {...defaultProps}
         headings={sevenHeadings}
         rows={schedulingRows}
         onDeleteRuleSet={jest.fn()}
@@ -200,7 +204,7 @@ describe('DataTable', () => {
   it('should show "No end date" when no set', () => {
     renderWithProviders(
       <DataTable
-        isLoading={false}
+        {...defaultProps}
         headings={sevenHeadings}
         rows={[
           {
@@ -223,7 +227,7 @@ describe('DataTable', () => {
   it('should render correctly with max headings', () => {
     renderWithProviders(
       <DataTable
-        isLoading={false}
+        {...defaultProps}
         headings={maxHeadings}
         rows={schedulingRows}
         onDeleteRuleSet={jest.fn()}
@@ -242,7 +246,7 @@ describe('DataTable', () => {
       const mockDelete = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={rows}
           onDeleteRuleSet={mockDelete}
@@ -275,7 +279,7 @@ describe('DataTable', () => {
       const mockDelete = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={rows}
           onDeleteRuleSet={mockDelete}
@@ -316,7 +320,7 @@ describe('DataTable', () => {
       const mockDelete = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={rows}
           onDeleteRuleSet={mockDelete}
@@ -353,7 +357,7 @@ describe('DataTable', () => {
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={rows}
           onDeleteRuleSet={mockDelete}
@@ -383,7 +387,7 @@ describe('DataTable', () => {
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={rows}
           onDeleteRuleSet={mockDelete}
@@ -402,7 +406,7 @@ describe('DataTable', () => {
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={rows}
           onDeleteRuleSet={mockDelete}
@@ -435,7 +439,7 @@ describe('DataTable', () => {
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={rows}
           onDeleteRuleSet={mockDelete}
@@ -469,7 +473,7 @@ describe('DataTable', () => {
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={[{ ...rows[0], searchTerms: ['foo', 'bar'] }]}
           onDeleteRuleSet={mockDelete}
@@ -495,7 +499,7 @@ describe('DataTable', () => {
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={[{ ...rows[0], searchTerms: ['one', 'two', 'three', 'four'] }]}
           onDeleteRuleSet={mockDelete}
@@ -521,7 +525,7 @@ describe('DataTable', () => {
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={[
             {
@@ -555,7 +559,7 @@ describe('DataTable', () => {
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
-          isLoading={false}
+          {...defaultProps}
           headings={headings}
           rows={[
             {
@@ -591,8 +595,7 @@ describe('DataTable', () => {
     const mockDelete = jest.fn();
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={rows}
         onDeleteRuleSet={mockDelete}
         ruleType="categoryRanking"
@@ -613,8 +616,7 @@ describe('DataTable', () => {
     const mockDelete = jest.fn();
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={rows}
         onDeleteRuleSet={mockDelete}
         ruleType="categoryRanking"
@@ -634,8 +636,7 @@ describe('DataTable', () => {
     const user = userEvent.setup();
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -658,8 +659,7 @@ describe('DataTable', () => {
     const user = userEvent.setup();
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -681,8 +681,7 @@ describe('DataTable', () => {
   it('should not show country flag if the country is not UK or IE', () => {
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={countryRows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -709,8 +708,7 @@ describe('DataTable', () => {
 
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={ukIeRows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -737,8 +735,7 @@ describe('DataTable', () => {
 
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={ukRows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -752,8 +749,7 @@ describe('DataTable', () => {
     const user = userEvent.setup();
     renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={rows}
         onDeleteRuleSet={jest.fn()}
         ruleType="categoryRanking"
@@ -773,8 +769,7 @@ describe('DataTable', () => {
   it('should show query text in a b tag', async () => {
     const { container } = renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={[{ ...rows[0], identifier: 'foo | bar' }]}
         onDeleteRuleSet={jest.fn()}
         onDuplicate={jest.fn()}
@@ -788,8 +783,7 @@ describe('DataTable', () => {
   it('should show capitalised query text in a b tag for a lowercase identifier', async () => {
     const { container } = renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={[{ ...rows[0], identifier: 'foo | bar' }]}
         onDeleteRuleSet={jest.fn()}
         onDuplicate={jest.fn()}
@@ -803,8 +797,7 @@ describe('DataTable', () => {
   it('should show last edited user name that matches query text in a b tag', async () => {
     const { container } = renderWithProviders(
       <DataTable
-        isLoading={false}
-        headings={headings}
+        {...defaultProps}
         rows={[
           { ...rows[0], lastChanged: { date: '2021-10-01', user: 'Mr Foo' } },
         ]}

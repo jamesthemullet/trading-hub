@@ -154,6 +154,7 @@ describe('TablePanel', () => {
   it('should render the component', async () => {
     renderWithProviders(
       <TablePanel
+        writeEnabled
         basePath="/category/rulesets"
         headings={headings}
         mapping={mappingMock}
@@ -168,6 +169,7 @@ describe('TablePanel', () => {
   it('should render the component with no access', async () => {
     renderWithProviders(
       <TablePanel
+        writeEnabled
         basePath="/category/rulesets"
         headings={headings}
         mapping={mappingMock}
@@ -192,6 +194,7 @@ describe('TablePanel', () => {
 
     renderWithProviders(
       <TablePanel
+        writeEnabled
         basePath="/category/rulesets"
         headings={headings}
         mapping={mappingMock}
@@ -227,6 +230,7 @@ describe('TablePanel', () => {
 
     renderWithProviders(
       <TablePanel
+        writeEnabled
         basePath="/category/rulesets"
         headings={headings}
         mapping={mappingMock}
@@ -254,6 +258,7 @@ describe('TablePanel', () => {
 
     renderWithProviders(
       <TablePanel
+        writeEnabled
         basePath="/category/rulesets"
         headings={headings}
         mapping={mappingMock}
@@ -282,6 +287,7 @@ describe('TablePanel', () => {
 
     renderWithProviders(
       <TablePanel
+        writeEnabled
         basePath="/category/rulesets"
         headings={headings}
         mapping={mappingMock}
@@ -315,6 +321,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -346,6 +353,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -382,6 +390,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -423,6 +432,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -467,6 +477,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -494,6 +505,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -533,6 +545,7 @@ describe('TablePanel', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -565,6 +578,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -599,6 +613,7 @@ describe('TablePanel', () => {
     it('should display country flags and filter', async () => {
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -616,6 +631,7 @@ describe('TablePanel', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -663,6 +679,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -713,6 +730,7 @@ describe('TablePanel', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -780,6 +798,7 @@ describe('TablePanel', () => {
       });
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -813,6 +832,7 @@ describe('TablePanel', () => {
 
       const { rerender } = renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -828,6 +848,7 @@ describe('TablePanel', () => {
 
       rerender(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -845,6 +866,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}
@@ -907,6 +929,7 @@ describe('TablePanel', () => {
       });
       renderWithProviders(
         <TablePanel
+          writeEnabled
           basePath="/category/rulesets"
           headings={headings}
           mapping={mappingMock}

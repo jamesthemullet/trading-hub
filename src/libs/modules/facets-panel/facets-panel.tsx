@@ -326,6 +326,7 @@ export const FacetsPanel = ({
                   startDate ? new Date(startDate) : null,
                   endDate ? new Date(endDate) : null,
                 ]}
+                writeEnabled={writeEnabled}
               />
             </Duration>
           )}

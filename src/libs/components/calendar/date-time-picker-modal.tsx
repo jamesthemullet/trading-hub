@@ -76,9 +76,11 @@ export const DateTimePickerModal = ({
   onUpdateDateTimeRange,
   label,
   showCalendarIcon,
+  writeEnabled,
 }: {
   dateTime?: [Date | null, Date | null];
   onUpdateDateTimeRange: (dateTime: [Date | null, Date | null]) => void;
+  writeEnabled: boolean;
   label?: string;
   showCalendarIcon?: boolean;
 }) => {
@@ -119,6 +121,11 @@ export const DateTimePickerModal = ({
     close();
   };
 
+  const openDatePicker = () => {
+    setTempDateRange(dateRange);
+    open();
+  };
+
   return (
     <>
       <StyledInputContainer>
@@ -132,19 +139,14 @@ export const DateTimePickerModal = ({
             endTime,
             true
           )}
-          onClick={() => {
-            setTempDateRange(dateRange);
-            open();
-          }}
+          {...(writeEnabled && { onClick: openDatePicker })}
           isLabelHidden={true}
+          readOnly={!writeEnabled}
         />
 
         {showCalendarIcon && (
           <ButtonImage
-            onClick={() => {
-              setTempDateRange(dateRange);
-              open();
-            }}
+            {...(writeEnabled && { onClick: openDatePicker })}
             aria-label="Open Datepicker"
           >
             <Image

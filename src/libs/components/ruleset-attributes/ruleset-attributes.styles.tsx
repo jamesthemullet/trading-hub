@@ -55,7 +55,8 @@ export const AttributeValuePill = styled.li`
   display: flex;
   align-items: center;
   height: 36px;
-  margin-right: ${spacing(1)} button {
+  margin-right: ${spacing(1)};
+  button {
     color: #000;
 
     &:focus {

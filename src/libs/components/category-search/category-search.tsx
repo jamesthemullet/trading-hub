@@ -54,6 +54,7 @@ type Props = {
   previewCategory: string | undefined;
   selectedCategories: string[];
   selectPreviewCategory: (category: string | undefined) => void;
+  writeEnabled: boolean;
   selectedCategoriesInfo?: Array<{
     id?: string;
     name?: string;
@@ -72,6 +73,7 @@ export const CategorySearch = ({
   selectedCategoriesInfo,
   countryCode = 'UK_IE',
   error,
+  writeEnabled,
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -234,26 +236,28 @@ export const CategorySearch = ({
                     {getCurrentName(previewCategory) &&
                       ` : ${getCurrentName(previewCategory)}`}
                   </SearchValue>
-                  <RemoveKeyWordPill
-                    onClick={() => {
-                      onClearSelection(previewCategory);
-                      if (previewCategory) {
-                        selectPreviewCategory(
-                          additionalCategories.length
-                            ? additionalCategories[0]
-                            : undefined
-                        );
-                      }
-                    }}
-                    aria-label={`Remove category: ${previewCategory}`}
-                  >
-                    <Image
-                      alt=""
-                      src={`/trading-hub/asset/icon-remove-selected-chip.svg`}
-                      width={16}
-                      height={16}
-                    />
-                  </RemoveKeyWordPill>
+                  {writeEnabled && (
+                    <RemoveKeyWordPill
+                      onClick={() => {
+                        onClearSelection(previewCategory);
+                        if (previewCategory) {
+                          selectPreviewCategory(
+                            additionalCategories.length
+                              ? additionalCategories[0]
+                              : undefined
+                          );
+                        }
+                      }}
+                      aria-label={`Remove category: ${previewCategory}`}
+                    >
+                      <Image
+                        alt=""
+                        src={`/trading-hub/asset/icon-remove-selected-chip.svg`}
+                        width={16}
+                        height={16}
+                      />
+                    </RemoveKeyWordPill>
+                  )}
                 </KeyWordPill>
                 {getCurrentPath(previewCategory) && (
                   <Popover isOpen={visibleTooltip} role="tooltip">
@@ -263,7 +267,7 @@ export const CategorySearch = ({
               </div>
             )}
           </SelectedCategories>
-          {selectedCategories.length === 0 && (
+          {selectedCategories.length === 0 && writeEnabled && (
             <SearchForm onSubmit={onSubmit}>
               <SearchInput
                 placeholder="Search..."
@@ -308,18 +312,20 @@ export const CategorySearch = ({
             <ModalWrapper>
               <Header3>Category</Header3>
 
-              <SearchBox>
-                <SearchWrapper hasModal>
-                  <SearchForm onSubmit={onSubmit}>
-                    <SearchInput
-                      placeholder="Search..."
-                      value={searchValue}
-                      onChange={onSearchChange}
-                    />
-                    <StyledIcon name="Search" size={32} />
-                  </SearchForm>
-                </SearchWrapper>
-              </SearchBox>
+              {writeEnabled && (
+                <SearchBox>
+                  <SearchWrapper hasModal>
+                    <SearchForm onSubmit={onSubmit}>
+                      <SearchInput
+                        placeholder="Search..."
+                        value={searchValue}
+                        onChange={onSearchChange}
+                      />
+                      <StyledIcon name="Search" size={32} />
+                    </SearchForm>
+                  </SearchWrapper>
+                </SearchBox>
+              )}
 
               {categoryResults.categories.length > 0 && (
                 <Container>
@@ -340,24 +346,26 @@ export const CategorySearch = ({
                       <span>{getCurrentPath(previewCategory)}</span>
                     </p>
 
-                    <RemoveKeyWordPill
-                      onClick={() => {
-                        onClearSelection(previewCategory);
-                        selectPreviewCategory(
-                          additionalCategories.length
-                            ? additionalCategories[0]
-                            : undefined
-                        );
-                      }}
-                      aria-label={`Remove category from modal: ${previewCategory}`}
-                    >
-                      <Image
-                        alt=""
-                        src="/trading-hub/asset/icon-remove-selected-chip.svg"
-                        width={16}
-                        height={16}
-                      />
-                    </RemoveKeyWordPill>
+                    {writeEnabled && (
+                      <RemoveKeyWordPill
+                        onClick={() => {
+                          onClearSelection(previewCategory);
+                          selectPreviewCategory(
+                            additionalCategories.length
+                              ? additionalCategories[0]
+                              : undefined
+                          );
+                        }}
+                        aria-label={`Remove category from modal: ${previewCategory}`}
+                      >
+                        <Image
+                          alt=""
+                          src="/trading-hub/asset/icon-remove-selected-chip.svg"
+                          width={16}
+                          height={16}
+                        />
+                      </RemoveKeyWordPill>
+                    )}
                   </KeyWordPill>
                 </ModalSelectedCategory>
               )}
@@ -383,17 +391,19 @@ export const CategorySearch = ({
                           <span>{getCurrentPath(category)}</span>
                         </p>
                       </SearchValue>
-                      <RemoveKeyWordPill
-                        onClick={() => onClearSelection(category)}
-                        aria-label={`Remove category from modal: ${category}`}
-                      >
-                        <Image
-                          alt=""
-                          src="/trading-hub/asset/icon-remove-chip.svg"
-                          width={16}
-                          height={16}
-                        />
-                      </RemoveKeyWordPill>
+                      {writeEnabled && (
+                        <RemoveKeyWordPill
+                          onClick={() => onClearSelection(category)}
+                          aria-label={`Remove category from modal: ${category}`}
+                        >
+                          <Image
+                            alt=""
+                            src="/trading-hub/asset/icon-remove-chip.svg"
+                            width={16}
+                            height={16}
+                          />
+                        </RemoveKeyWordPill>
+                      )}
                     </KeyWordPill>
                   ))}
               </ModalCategoriesList>
