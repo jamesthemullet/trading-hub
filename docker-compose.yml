@@ -98,7 +98,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   elastic-dev:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.1
     restart: always
     environment:
       - ELASTIC_PASSWORD=changeme
@@ -120,7 +120,7 @@ services:
       start_period: 60s
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.18.0
+    image: docker.elastic.co/kibana/kibana:8.18.1
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=http://elastic-dev:9200
