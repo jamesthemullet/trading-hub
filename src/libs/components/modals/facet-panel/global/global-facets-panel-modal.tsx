@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useCallback, useMemo, useState } from 'react';
+import { Modal } from '@mantine/core';
 
 import type {
   MerchandisingAttributeValuesResponse,
@@ -45,6 +46,7 @@ import {
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import type { FacetDisplayType } from '../../../../modules/facets-panel/facets-panel-reducer';
+import ConfirmationModal from '../../confirmation-modal/confirmation-modal';
 import { GlobalFacetAttribute } from './global-facet-attribute';
 
 const ModalContainer = styled.div`
@@ -137,6 +139,8 @@ export const GlobalFacetPanelModalContent = ({
   >({});
   const [editingValues, setEditingValues] = useState<string[]>([]);
 
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+
   const setError = (id: string, message: string) => {
     setErrorStates((prev) => ({
       ...Object.fromEntries(Object.entries(prev).filter(([key]) => key !== id)),
@@ -165,6 +169,17 @@ export const GlobalFacetPanelModalContent = ({
 
     onClose();
   };
+
+  const handleSave = () => {
+    setIsConfirmationModalOpen(true);
+  };
+
+  const handleModalConfirm = async () => {
+    setIsConfirmationModalOpen(false);
+    await onSave();
+  };
+
+  const onCloseModal = () => setIsConfirmationModalOpen(false);
 
   const handleMerge = () => {
     const isFirstAttributeBoosted = boostedValues.some(
@@ -748,12 +763,28 @@ export const GlobalFacetPanelModalContent = ({
       <ModalFooter>
         <Button onClick={onClose}>Cancel</Button>{' '}
         <Button
-          onClick={onSave}
+          onClick={handleSave}
           disabled={Object.values(errorStates).some((state) => state)}
         >
           Save
         </Button>
       </ModalFooter>
+      <Modal.Root
+        centered
+        opened={isConfirmationModalOpen}
+        onClose={onCloseModal}
+        padding={10}
+        role="dialog"
+        aria-modal="true"
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content>
+          <ConfirmationModal
+            onCloseModal={onCloseModal}
+            handleModalConfirm={handleModalConfirm}
+          />
+        </Modal.Content>
+      </Modal.Root>
     </>
   );
 };

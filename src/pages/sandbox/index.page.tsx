@@ -6,7 +6,6 @@ import styled from '@emotion/styled';
 import { ArrowButton } from '../../libs/components/buttons/button/arrow-button';
 import { SearchKeywords } from '@/libs/components/keywords/search-keywords/search-keywords';
 import { useState } from 'react';
-import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 
 const Example = styled.div`
   padding: 20px;

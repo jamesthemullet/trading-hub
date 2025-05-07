@@ -178,9 +178,59 @@ describe('GlobalFacetPanelModalContent', () => {
 
     const saveButton = screen.getByRole('button', { name: 'Save' });
 
-    saveButton.click();
+    act(() => {
+      saveButton.click();
+    });
+
+    await waitFor(async () => {
+      expect(
+        await screen.findByRole('heading', { name: 'Apply global changes' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Apply action',
+    });
+
+    act(() => {
+      confirmButton.click();
+    });
 
     await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+    expect(mockUpdateGlobalFacet).toHaveBeenCalled();
+  });
+
+  it('should close the confirmation modal when cancel button on modal clicked', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <GlobalFacetPanelModalContent
+        attributeValues={attributeValuesMock}
+        facet={mockFacet}
+        {...defaultProps}
+        onClose={jest.fn()}
+      />
+    );
+
+    const saveButton = screen.getByRole('button', { name: 'Save' });
+
+    act(() => {
+      saveButton.click();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Apply global changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(
+      screen.getByRole('button', { name: 'Close confirmation modal' })
+    );
+
+    expect(mockUpdateGlobalFacet).not.toHaveBeenCalled();
   });
 
   it('should not close on save error', async () => {
@@ -197,7 +247,23 @@ describe('GlobalFacetPanelModalContent', () => {
     );
 
     const saveButton = screen.getByRole('button', { name: 'Save' });
-    saveButton.click();
+    act(() => {
+      saveButton.click();
+    });
+
+    await waitFor(async () => {
+      expect(
+        await screen.findByRole('heading', { name: 'Apply global changes' })
+      ).toBeVisible();
+    });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Apply action',
+    });
+
+    act(() => {
+      confirmButton.click();
+    });
 
     expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
       data: mockFacet,
