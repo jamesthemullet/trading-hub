@@ -81,7 +81,7 @@ test.describe('Keyword search', () => {
       page.getByRole('heading', { name: 'Search ranking rules' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
@@ -116,7 +116,8 @@ test.describe('Keyword search', () => {
   test('previews a ruleset', async ({ page }) => {
     await expect(page.getByTitle('black hiking boots').first()).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
     await page.waitForLoadState('networkidle');
 
@@ -138,7 +139,8 @@ test.describe('Keyword search', () => {
   test('changes the preview when the country changes', async ({ page }) => {
     await expect(page.getByTitle('black hiking boots').first()).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
     await page.waitForLoadState('networkidle');
 
@@ -498,7 +500,7 @@ test.describe('Keyword search', () => {
 
       await page.waitForLoadState('networkidle');
 
-      await page.getByRole('link', { name: 'Add new rule' }).click();
+      await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
       await page.waitForLoadState();
       await expect(
@@ -547,7 +549,8 @@ test.describe('Keyword search', () => {
 
       await page.waitForLoadState('networkidle');
 
-      await page.getByRole('link', { name: 'Edit' }).nth(0).click();
+      await page.getByRole('button', { name: 'More options' }).first().click();
+      await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
 
@@ -592,7 +595,8 @@ test.describe('Keyword search', () => {
 
       await page.waitForLoadState('networkidle');
 
-      await page.getByRole('link', { name: 'Edit' }).nth(0).click();
+      await page.getByRole('button', { name: 'More options' }).first().click();
+      await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
 

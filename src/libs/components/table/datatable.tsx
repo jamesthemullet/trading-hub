@@ -8,18 +8,17 @@ import { format } from 'date-fns';
 import Image from 'next/image';
 
 import { Button } from '../buttons/button/button';
-import { Arrow } from '../dropdowns/dropdown.styles';
+import { Menu } from '../dropdowns/dropdown.styles';
 import { Toggle } from '../toggle/toggle';
 import { Header3, Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
 import { formatCategoriesInfo } from '../utils/format-categories-info';
 import { mediaQuery } from '../utils/media-query';
 import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
+import { TableLink } from './table.styles';
 import {
   DropdownOptions,
   TableActions,
-  TableActionsButton,
   TableCol,
   TableContainer,
   TableDropdown,
@@ -204,15 +203,8 @@ const ArrowContainer = styled.button`
   width: ${sizing(5)};
   box-sizing: border-box;
   cursor: pointer;
-  background-color: #f5f5f5;
-
-  &:hover,
-  &:active {
-    background-color: #e3e3e3;
-  }
-
-  border-radius: 0 4px 4px 0;
-  border: solid 1px ${color.accessibilityGrey};
+  border: none;
+  background: none;
 `;
 
 type Row = {
@@ -238,7 +230,8 @@ type Row = {
   countryCode?: string;
 };
 
-type Props = {
+export type DataTableProps = {
+  basePath: string;
   headings: string[];
   onDeleteRuleSet: ({ id }: { id: string }) => void;
   onToggleRuleSet?: ({ id }: { id: string }) => void;
@@ -252,6 +245,7 @@ type Props = {
 };
 
 export const DataTable = ({
+  basePath,
   headings,
   onDeleteRuleSet,
   rows,
@@ -262,7 +256,7 @@ export const DataTable = ({
   writeEnabled,
   isLoading,
   currentPageSize,
-}: Props) => {
+}: DataTableProps) => {
   const [optionToggle, setOptionToggle] = useState('');
   const [ruleSetIdToEdit, setRuleSetIdToEdit] = useState('');
   const [ruleName, setRuleName] = useState('');
@@ -319,6 +313,8 @@ export const DataTable = ({
           word
         )
       );
+
+  const editViewText = writeEnabled ? 'Edit' : 'View';
 
   return (
     <>
@@ -385,7 +381,6 @@ export const DataTable = ({
                 isEnabled,
                 lastChanged,
                 onToggle,
-                url,
                 categoryPlpUrl,
                 categoriesInfo,
                 searchTerms,
@@ -537,35 +532,43 @@ export const DataTable = ({
                       <Text>{formatByQuery(lastChanged.user)}</Text>
                     </TableCol>
                     <TableCol style={{ padding: '12px 0 0' }}>
-                      <TableActions
-                        onKeyDown={handleOnKeyDown}
-                        ref={dropdownWrapperRef}
-                      >
-                        <TableActionsButton
-                          href={url}
-                          hasDropdown={writeEnabled}
-                        >
-                          {writeEnabled ? 'Edit' : 'View'}
-                        </TableActionsButton>
-                        {writeEnabled && (
-                          <ArrowContainer
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                e.stopPropagation();
-                                handleOptionToggle(id);
-                              }
-                            }}
-                            onMouseDown={(e) => {
+                      <TableActions onKeyDown={handleOnKeyDown}>
+                        <ArrowContainer
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
                               e.stopPropagation();
                               handleOptionToggle(id);
-                            }}
-                            title="More options"
-                          >
-                            <Arrow isDropdownOpen={isOptionDropdownOpen} />
-                          </ArrowContainer>
-                        )}
+                            }
+                          }}
+                          onMouseDown={(e) => {
+                            e.stopPropagation();
+                            handleOptionToggle(id);
+                          }}
+                          title="More options"
+                        >
+                          <Menu />
+                        </ArrowContainer>
                         {isOptionDropdownOpen && (
-                          <DropdownOptions>
+                          <DropdownOptions ref={dropdownWrapperRef}>
+                            {ruleType !== 'redirect' && (
+                              <>
+                                <TableLink
+                                  href={`${basePath}/rulesets/edit/${id}`}
+                                >
+                                  {editViewText} ranking rule
+                                </TableLink>
+                                <TableLink
+                                  href={`${basePath}/facets/edit/${id}`}
+                                >
+                                  {editViewText} facet rule
+                                </TableLink>
+                              </>
+                            )}
+                            {ruleType === 'redirect' && (
+                              <TableLink href={`/search/redirects/edit/${id}`}>
+                                {editViewText} redirect rule
+                              </TableLink>
+                            )}
                             {writeEnabled && (
                               <TableDropdown
                                 title="Delete"

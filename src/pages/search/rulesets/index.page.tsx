@@ -42,23 +42,6 @@ const mapping: RuleSetMapping<
     countryCode,
   }),
   allToArray: (data) => data.ruleSets,
-  getEmptyRuleSet: () => ({
-    searchTerms: [],
-    countryCode: 'UK_IE',
-    endDate: undefined,
-    excludedFacets: undefined,
-    facets: [],
-    isEnabled: false,
-    rules: {
-      pinnedProducts: [],
-      blockedProducts: [],
-      boosts: { numeric: [], alphanumeric: [], product: [] },
-      buries: { numeric: [], alphanumeric: [], product: [] },
-      includes: { alphanumeric: [] },
-      excludes: { alphanumeric: [] },
-    },
-    startDate: undefined,
-  }),
   returnedToRuleSet: (returnedRuleSet) => {
     return {
       searchTerms: returnedRuleSet.searchTerms,
@@ -106,7 +89,7 @@ const SearchRuleSets = () => {
         />
         <PageNameLabel>Search ranking rules</PageNameLabel>
         <TablePanel
-          basePath="/search/rulesets"
+          basePath="/search"
           headings={headings}
           mapping={mapping}
           newRowCreateMode="redirect-to-new"

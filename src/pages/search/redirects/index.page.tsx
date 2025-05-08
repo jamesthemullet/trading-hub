@@ -42,16 +42,6 @@ const mapping: RuleSetMapping<
     countryCode,
   }),
   allToArray: (data) => data.redirects,
-  getEmptyRuleSet: () => ({
-    countryCode: 'UK_IE',
-    destinationUrl: '',
-    endDate: undefined,
-    isEnabled: false,
-    keywords: [],
-    ruleTitle: '',
-    startDate: undefined,
-    type: 'redirectTerm',
-  }),
   returnedToRuleSet: (returnedRuleSet) => {
     return {
       countryCode: returnedRuleSet.countryCode,
@@ -97,7 +87,7 @@ const RedirectRuleSets = () => {
         <PageNameLabel>Keyword Redirect</PageNameLabel>
 
         <TablePanel
-          basePath="/search/redirects"
+          basePath="/search"
           headings={headings}
           mapping={mapping}
           ruleType="redirect"

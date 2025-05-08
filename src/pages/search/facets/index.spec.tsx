@@ -1,4 +1,3 @@
-import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -116,8 +115,6 @@ const server = setupServer(
 const mockPush = jest.fn();
 
 describe('Search Facet Management Page', () => {
-  const mockNewRuleset = 'foo123';
-
   beforeAll(() => {
     server.listen();
   });
@@ -177,27 +174,6 @@ describe('Search Facet Management Page', () => {
         exact: false,
       })
     ).toBeVisible();
-  });
-
-  it('should redirect to new page when add new rule is clicked', async () => {
-    jest.mocked(useSearchRulesetList).mockReturnValue({
-      ruleSets: [],
-      pagination: {
-        totalItems: 0,
-      },
-      error: '',
-      refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
-    });
-
-    renderWithProviders(<FacetManagementPage />);
-
-    const createButton = await screen.findByText('Add new rule');
-    act(() => {
-      createButton.click();
-    });
-
-    expect(mockPush).toHaveBeenCalledWith('/search/facets/new');
   });
 
   it('should search', async () => {
@@ -425,10 +401,6 @@ describe('Search Facet Management Page', () => {
       searchTerms: mockSearchTerms,
       countryCode: 'UK_IE',
     });
-
-    expect(mockPush).toHaveBeenCalledWith(
-      `/search/facets/edit/${mockNewRuleset}`
-    );
   });
 
   it('should delete a ruleset', async () => {

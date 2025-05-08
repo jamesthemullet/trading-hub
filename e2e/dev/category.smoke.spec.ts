@@ -17,13 +17,13 @@ test.describe('Category Ranking', () => {
     ).toBeVisible();
 
     await expect(
-      page.getByRole('link', { name: 'Add new facet' })
+      page.getByRole('link', { name: 'Add facet rule' })
     ).toBeVisible();
     await expect(
       page.getByText('0 results', { exact: true })
     ).not.toBeVisible();
 
-    await page.getByRole('link', { name: 'Add new facet' }).click();
+    await page.getByRole('link', { name: 'Add facet rule' }).click();
 
     await page.waitForLoadState('networkidle');
     await expect(
@@ -60,8 +60,10 @@ test.describe('Category Ranking', () => {
 
     await expect(checkbox).not.toBeChecked();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit facet rule' }).click();
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
 
     await expect(page.getByText('babySize')).toBeVisible();
 
@@ -95,7 +97,8 @@ test.describe('Category Ranking', () => {
       page.getByText(TEST_CATEGORY_IDENTIFIER).first()
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
 
     const product2Id =
@@ -208,7 +211,8 @@ test.describe('Category Ranking', () => {
       '14 Nov 2024 - 19 Nov 2024'
     );
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit facet rule' }).click();
     await page.waitForLoadState('networkidle');
 
     await expect(
@@ -226,7 +230,8 @@ test.describe('Category Ranking', () => {
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Changes4' })).toBeVisible();
   });
@@ -251,8 +256,11 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Confirm' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('heading', { name: 'Product grid' })
+      page.getByText('SubCategory_1842397 - Socks').first()
     ).toBeVisible();
+
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
     await page.getByRole('button', { name: 'select market' }).click();
     await page.getByRole('button', { name: 'select IE market only' }).click();

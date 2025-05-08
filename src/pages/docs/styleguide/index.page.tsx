@@ -167,6 +167,35 @@ const StyleGuide = () => {
           </code>
         </Text>
       </Guide>
+      <Guide />
+      <Guide>
+        <div style={{ width: '60%' }}>
+          <Button theme="filled" isInline>
+            Button
+          </Button>
+        </div>
+        <Text>Filled</Text>
+        <Text>
+          <code>
+            &lt;Button theme=&quot;filled&quot;
+            isInline&gt;Button&lt;/Button&gt;
+          </code>
+        </Text>
+      </Guide>
+      <Guide>
+        <div style={{ width: '60%' }}>
+          <Button theme="outlined" isInline>
+            Button
+          </Button>
+        </div>
+        <Text>Outlined</Text>
+        <Text>
+          <code>
+            &lt;Button theme=&quot;outlined&quot;
+            isInline&gt;Button&lt;/Button&gt;
+          </code>
+        </Text>
+      </Guide>
 
       <Header2 style={{ width: '100%', marginBottom: '8px' }}>Colours</Header2>
       <Guide>

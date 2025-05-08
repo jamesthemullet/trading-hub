@@ -155,22 +155,22 @@ describe('TablePanel', () => {
     renderWithProviders(
       <TablePanel
         writeEnabled
-        basePath="/category/rulesets"
+        basePath="/category"
         headings={headings}
         mapping={mappingMock}
         ruleType="global"
       />
     );
     await waitFor(() => {
-      expect(screen.getByText('Add new rule')).toBeInTheDocument();
+      expect(screen.getByText('Add ranking rule')).toBeInTheDocument();
     });
   });
 
   it('should render the component with no access', async () => {
     renderWithProviders(
       <TablePanel
-        writeEnabled
-        basePath="/category/rulesets"
+        writeEnabled={false}
+        basePath="/category"
         headings={headings}
         mapping={mappingMock}
         ruleType="global"
@@ -181,12 +181,12 @@ describe('TablePanel', () => {
       }
     );
     await waitFor(() => {
-      expect(screen.queryByText('Add new rule')).not.toBeInTheDocument();
+      expect(screen.queryByText('Add ranking rule')).not.toBeInTheDocument();
     });
   });
 
-  it('should call createNewRow when add new rule is clicked and mode is eager', async () => {
-    const NEW_RULE_BUTTON_TEXT = 'Add new rule';
+  it('should call createNewRow when add ranking rule is clicked and mode is eager', async () => {
+    const NEW_RULE_BUTTON_TEXT = 'Add ranking rule';
     jest.mocked(mappingMock.newRuleSet).mockResolvedValue({
       data: mockRuleSet,
       status: 200,
@@ -195,7 +195,7 @@ describe('TablePanel', () => {
     renderWithProviders(
       <TablePanel
         writeEnabled
-        basePath="/category/rulesets"
+        basePath="/category"
         headings={headings}
         mapping={mappingMock}
         newRowCreateMode="create-then-redirect"
@@ -220,7 +220,42 @@ describe('TablePanel', () => {
     });
   });
 
-  it('should call createNewRow when add new rule is clicked and mode is eager and when error is returned it should render it', async () => {
+  it('should call createNewRow when add facet rule is clicked and mode is eager', async () => {
+    const NEW_RULE_BUTTON_TEXT = 'Add facet rule';
+    jest.mocked(mappingMock.newRuleSet).mockResolvedValue({
+      data: mockRuleSet,
+      status: 200,
+    });
+
+    renderWithProviders(
+      <TablePanel
+        writeEnabled
+        basePath="/category"
+        headings={headings}
+        mapping={mappingMock}
+        newRowCreateMode="create-then-redirect"
+        ruleType="global"
+      />
+    );
+
+    const createButton = await screen.findByText(NEW_RULE_BUTTON_TEXT);
+    act(() => {
+      createButton.click();
+    });
+
+    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(mappingMock.newRuleSet).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(useRouter().push).toHaveBeenCalledWith(
+        `/category/facets/edit/${MOCK_CATEGORY_ID}`
+      );
+    });
+  });
+
+  it('should call createNewRow when add ranking rule is clicked and mode is eager and when error is returned it should render it', async () => {
     jest.mocked(mappingMock.newRuleSet).mockRejectedValue({
       error: {
         status: 500,
@@ -231,7 +266,7 @@ describe('TablePanel', () => {
     renderWithProviders(
       <TablePanel
         writeEnabled
-        basePath="/category/rulesets"
+        basePath="/category"
         headings={headings}
         mapping={mappingMock}
         newRowCreateMode="create-then-redirect"
@@ -239,7 +274,7 @@ describe('TablePanel', () => {
       />
     );
 
-    const createButton = await screen.findByText('Add new rule');
+    const createButton = await screen.findByText('Add ranking rule');
     act(() => {
       createButton.click();
     });
@@ -250,30 +285,6 @@ describe('TablePanel', () => {
           'Failed to create new ruleset "Error Error creating new row 500"'
         )
       ).toBeInTheDocument();
-    });
-  });
-
-  it('should call onCreateNewRuleSet when "Add new rule" is clicked', async () => {
-    const user = userEvent.setup();
-
-    renderWithProviders(
-      <TablePanel
-        writeEnabled
-        basePath="/category/rulesets"
-        headings={headings}
-        mapping={mappingMock}
-        ruleType="global"
-      />
-    );
-
-    const addNewRuleButton = await screen.findByText('Add new rule');
-
-    act(() => {
-      user.click(addNewRuleButton);
-    });
-
-    await waitFor(() => {
-      expect(useRouter().push).toHaveBeenCalledWith('/category/rulesets/new');
     });
   });
 
@@ -288,7 +299,7 @@ describe('TablePanel', () => {
     renderWithProviders(
       <TablePanel
         writeEnabled
-        basePath="/category/rulesets"
+        basePath="/category"
         headings={headings}
         mapping={mappingMock}
         ruleType="global"
@@ -306,6 +317,38 @@ describe('TablePanel', () => {
 
   describe('toggle functionality', () => {
     it('should enable or disable a row', async () => {
+      jest.mocked(mappingMock.queryRuleSetById).mockResolvedValue({
+        data: mockRow1,
+        status: 200,
+      });
+      jest.mocked(mappingMock.updateRuleSetById).mockResolvedValue({
+        data: {
+          ...mockRow1,
+          isEnabled: !mockRow1.isEnabled,
+        },
+        status: 200,
+      });
+
+      renderWithProviders(
+        <TablePanel
+          writeEnabled
+          basePath="/category"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="categoryRanking"
+        />
+      );
+
+      const rulesetToggle = await screen.findAllByTitle('Toggle');
+      await userEvent.click(rulesetToggle[0]);
+
+      expect(mappingMock.updateRuleSetById).toHaveBeenCalledWith(mockId1, {
+        ...mockRow1,
+        isEnabled: !mockRow1.isEnabled,
+      });
+    });
+
+    it('should enable or disable a global rule row', async () => {
       const user = userEvent.setup();
       jest.mocked(mappingMock.queryRuleSetById).mockResolvedValue({
         data: mockRow1,
@@ -322,7 +365,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -354,7 +397,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -391,7 +434,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -419,13 +462,13 @@ describe('TablePanel', () => {
   });
 
   describe('duplicate functionality', () => {
-    it('should duplicate row', async () => {
+    it('should duplicate a row', async () => {
       jest.mocked(mappingMock.queryRuleSetById).mockResolvedValue({
         data: mockRow1,
         status: 200,
       });
       jest.mocked(mappingMock.newRuleSet).mockResolvedValue({
-        data: mockRow1,
+        data: { ...mockRow1, id: 'mockId2' },
         status: 200,
       });
       const user = userEvent.setup();
@@ -433,7 +476,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -458,9 +501,6 @@ describe('TablePanel', () => {
         ...mockRow1,
         isEnabled: false,
       });
-      expect(useRouter().push).toHaveBeenCalledWith(
-        '/category/rulesets/edit/ewfw-e3f23-f23f2-3cwef3'
-      );
     });
 
     it('should hide duplicate dropdown button when isDuplicateEnabled is false', async () => {
@@ -478,7 +518,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -506,7 +546,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -546,7 +586,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -564,7 +604,7 @@ describe('TablePanel', () => {
         ).toBeVisible();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Delete' }));
+      await user.click(screen.getByTestId('Delete rule'));
       expect(mappingMock.deleteRuleSetById).toHaveBeenCalledWith(mockId1);
     });
 
@@ -579,7 +619,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -597,7 +637,7 @@ describe('TablePanel', () => {
           })
         ).toBeVisible();
       });
-      await user.click(screen.getByRole('button', { name: 'Delete' }));
+      await user.click(screen.getByTestId('Delete rule'));
 
       await waitFor(() => {
         expect(
@@ -614,7 +654,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -632,7 +672,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -680,7 +720,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -731,7 +771,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -799,7 +839,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -833,7 +873,7 @@ describe('TablePanel', () => {
       const { rerender } = renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -849,7 +889,7 @@ describe('TablePanel', () => {
       rerender(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -867,7 +907,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"
@@ -930,7 +970,7 @@ describe('TablePanel', () => {
       renderWithProviders(
         <TablePanel
           writeEnabled
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mappingMock}
           ruleType="global"

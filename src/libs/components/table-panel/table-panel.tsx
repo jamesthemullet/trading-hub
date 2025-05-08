@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { Modal, Skeleton } from '@mantine/core';
+import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
 import {
+  Button,
   DataTable,
   ErrorMessage,
   Search,
@@ -14,23 +15,22 @@ import {
 } from '@/libs/components';
 import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
-  NewButton,
   PageWrapper,
   ToolsContainer,
 } from '@/libs/components/utils/shared.styles';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
-import Link from 'next/link';
-
 import { useRuleSetRowsState } from '../../hooks/use-rule-set-rows-state';
 import ConfirmationModal from '../modals/confirmation-modal/confirmation-modal';
 import type { RuleSetMapping } from '../types';
 
-const SkeletonButtonWrapper = styled.div`
+const ButtonGroup = styled.div`
+  width: 410px;
+  display: flex;
   margin-left: auto;
-  margin-top: ${spacing(1)};
-  margin-right: ${spacing(2)};
+  gap: ${spacing(2)};
+  justify-content: end;
 `;
 
 export const TablePanel = <
@@ -42,7 +42,6 @@ export const TablePanel = <
   headings,
   mapping,
   ruleType,
-  addNewButtonLabel = 'Add new rule',
   newRowCreateMode = 'redirect-to-new',
   isDuplicateEnabled = true,
   writeEnabled,
@@ -51,7 +50,6 @@ export const TablePanel = <
   headings: string[];
   mapping: RuleSetMapping<A, T, N>;
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
-  addNewButtonLabel?: string;
   newRowCreateMode?: 'create-then-redirect' | 'redirect-to-new';
   isDuplicateEnabled?: boolean;
   writeEnabled: boolean;
@@ -108,9 +106,12 @@ export const TablePanel = <
     300
   );
 
-  const createNewRuleSet = useCallback(async () => {
-    createNewRow(newRowCreateMode);
-  }, [createNewRow, newRowCreateMode]);
+  const createNewRuleSet = useCallback(
+    async (path: string) => {
+      createNewRow(path, newRowCreateMode);
+    },
+    [createNewRow, newRowCreateMode]
+  );
 
   const handlePageChange = (page: number, pageSize: number) => {
     updateQueryParams(router, {
@@ -142,21 +143,76 @@ export const TablePanel = <
     toggleRow({ id: idToUpdate });
   };
 
+  const linkConfig = {
+    categoryRanking: 'category',
+    searchRanking: 'search',
+    global: 'global',
+  };
+
   return (
     <PageWrapper>
       <ToolsContainer>
         <Search value={searchInputValue} onChange={handleSearchInputChange} />
         <CountryFilterDropdown onChange={setCountryCode} />
-        {isLoading ? (
-          <SkeletonButtonWrapper aria-busy="true">
-            <Skeleton height={33} width={110} />
-          </SkeletonButtonWrapper>
-        ) : (
-          writeEnabled && (
-            <NewButton onClick={createNewRuleSet}>
-              <Link href={''}>{addNewButtonLabel}</Link>
-            </NewButton>
-          )
+
+        {writeEnabled && (
+          <>
+            {(ruleType === 'categoryRanking' ||
+              ruleType === 'searchRanking') && (
+              <ButtonGroup>
+                <Button
+                  as="a"
+                  isInline
+                  theme="outlined"
+                  href={`/${linkConfig[ruleType]}/facets/new`}
+                >
+                  Add facet rule
+                </Button>
+
+                <Button
+                  as="a"
+                  isInline
+                  theme="filled"
+                  href={`/${linkConfig[ruleType]}/rulesets/new`}
+                >
+                  Add ranking rule
+                </Button>
+              </ButtonGroup>
+            )}
+            {ruleType === 'global' && (
+              <ButtonGroup>
+                <Button
+                  as="button"
+                  isInline
+                  theme="outlined"
+                  onClick={() => createNewRuleSet('facets')}
+                >
+                  Add facet rule
+                </Button>
+
+                <Button
+                  as="button"
+                  isInline
+                  theme="filled"
+                  onClick={() => createNewRuleSet('rulesets')}
+                >
+                  Add ranking rule
+                </Button>
+              </ButtonGroup>
+            )}
+            {ruleType === 'redirect' && (
+              <ButtonGroup>
+                <Button
+                  as="a"
+                  isInline
+                  theme="filled"
+                  href="/search/redirects/new"
+                >
+                  Add redirect rule
+                </Button>
+              </ButtonGroup>
+            )}
+          </>
         )}
       </ToolsContainer>
 
@@ -173,6 +229,7 @@ export const TablePanel = <
         query={searchInputValue}
         isLoading={isLoading}
         writeEnabled={writeEnabled}
+        basePath={basePath}
       />
 
       <TablePagination

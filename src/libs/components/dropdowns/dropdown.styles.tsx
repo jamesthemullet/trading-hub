@@ -88,6 +88,16 @@ export const Arrow = styled.span<{ isDropdownOpen: boolean }>`
     isDropdownOpen ? 'transform: rotate(180deg);' : ''}
 `;
 
+export const Menu = styled.span`
+  transition: 0.3s;
+  isolation: isolate;
+  background: url('/trading-hub/asset/icon-menu.svg');
+  height: 16px;
+  width: 4px;
+  border: 0;
+  padding: 2px;
+`;
+
 export const DropdownContainer = styled.div<{ isDropdownOpen: boolean }>`
   position: absolute;
   top: 100%;

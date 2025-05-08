@@ -13,13 +13,13 @@ test.describe('Search Ranking', () => {
     ).toBeVisible();
 
     await expect(
-      page.getByRole('link', { name: 'Add new rule' })
+      page.getByRole('link', { name: 'Add facet rule' })
     ).toBeVisible();
     await expect(
       page.getByText('0 results', { exact: true })
     ).not.toBeVisible();
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('link', { name: 'Add facet rule' }).click();
 
     await page.waitForLoadState('networkidle');
     await expect(
@@ -57,7 +57,8 @@ test.describe('Search Ranking', () => {
 
     await expect(checkbox).toBeChecked();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
   });
 
@@ -71,7 +72,8 @@ test.describe('Search Ranking', () => {
     await page.waitForTimeout(2000);
     await expect(page.getByText('Sequin Dress').first()).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
 
     const product2Id =
@@ -145,6 +147,8 @@ test.describe('Search Ranking', () => {
 
     await page.getByRole('button', { name: 'Confirm' }).click();
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();

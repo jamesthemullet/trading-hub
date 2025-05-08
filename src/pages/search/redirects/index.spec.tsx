@@ -1,4 +1,3 @@
-import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -167,27 +166,6 @@ describe('Search Rulesets', () => {
     ).toBeVisible();
   });
 
-  it('should redirect to new page when add new rule is clicked', async () => {
-    jest.mocked(useSearchRedirectList).mockReturnValue({
-      redirects: [],
-      pagination: {
-        totalItems: 0,
-      },
-      error: '',
-      refetchRedirectList: () => jest.fn,
-      setKeywordList: jest.fn(),
-    });
-
-    renderWithProviders(<RedirectRuleSets />);
-
-    const createButton = await screen.findByText('Add new rule');
-    act(() => {
-      createButton.click();
-    });
-
-    expect(mockPush).toHaveBeenCalledWith('/search/redirects/new');
-  });
-
   it('should search', async () => {
     const mockKeywords = ['search', 'terms'];
     const user = userEvent.setup();
@@ -327,10 +305,6 @@ describe('Search Rulesets', () => {
         type: 'redirectTerm',
       },
     });
-
-    expect(mockPush).toHaveBeenCalledWith(
-      `/search/redirects/edit/${mockNewRuleset}`
-    );
   });
 
   it('should delete a ruleset', async () => {

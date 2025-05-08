@@ -92,7 +92,7 @@ const FacetManagementPage = () => {
         />
         <PageNameLabel>Global Facet Management</PageNameLabel>
         <TablePanel
-          basePath="/global/facets"
+          basePath="/global"
           headings={headings}
           mapping={mapping}
           newRowCreateMode="create-then-redirect"

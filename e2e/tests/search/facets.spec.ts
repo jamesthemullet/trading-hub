@@ -71,7 +71,8 @@ test.describe('Search rulesets', () => {
 
     await page.waitForLoadState('networkidle');
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit facet rule' }).click();
 
     await page.waitForLoadState('networkidle');
     await expect(

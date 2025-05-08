@@ -1,4 +1,3 @@
-import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -14,7 +13,10 @@ const mockNewRuleset = 'foo123';
 
 const handleDeleteMock = jest.fn();
 const mockRefetchRuleSetList = jest.fn();
-const createRuleset = jest.fn().mockResolvedValue({ id: mockNewRuleset });
+const createRuleset = jest.fn().mockResolvedValue({
+  id: mockNewRuleset,
+  lastChanged: { user: 'user', date: '2021-01-01' },
+});
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -112,6 +114,10 @@ const server = setupServer(
           },
         ],
         ...ruleSet,
+        lastChanged: {
+          user: 'user',
+          date: '2021-01-01',
+        },
       },
       { status: 200 }
     );
@@ -206,7 +212,7 @@ describe('Category facet management', () => {
     await waitFor(() => {
       expect(screen.getByText('Category Facet Management')).toBeVisible();
     });
-    expect(await screen.findByText('Add new facet')).toBeVisible();
+    expect(await screen.findByText('Add facet rule')).toBeVisible();
     expect(await screen.findByText('1 - identifier-1')).toBeVisible();
   });
 
@@ -222,30 +228,6 @@ describe('Category facet management', () => {
         exact: false,
       })
     ).toBeVisible();
-  });
-
-  it('should redirect to new page when add new rule is clicked', async () => {
-    jest.mocked(useRuleSet).mockReturnValue({
-      categoryRuleSets: [],
-      pagination: {
-        totalItems: 0,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-      globalRuleSets: [],
-      error: '',
-      isLoading: false,
-    });
-
-    renderWithProviders(<FacetManagementPage />);
-
-    const createButton = await screen.findByText('Add new facet');
-    act(() => {
-      createButton.click();
-    });
-
-    expect(mockPush).toHaveBeenCalledWith('/category/facets/new');
   });
 
   it('should open delete modal and close on cancel', async () => {
@@ -573,6 +555,11 @@ describe('Category facet management', () => {
       globalRuleSets: [],
       error: '',
       isLoading: false,
+
+      lastChanged: {
+        user: 'user',
+        date: '2021-01-01',
+      },
     });
 
     renderWithProviders(<FacetManagementPage />);
@@ -599,10 +586,6 @@ describe('Category facet management', () => {
       startDate: '2024-11-15T23:59:00.000Z',
       endDate: '2024-11-15T23:59:00.000Z',
     });
-
-    expect(mockPush).toHaveBeenCalledWith(
-      `/category/facets/edit/${mockNewRuleset}`
-    );
   });
 
   it('displays schedule if a ruleset has a start and end date', async () => {
@@ -723,10 +706,6 @@ describe('Category facet management', () => {
       isEnabled: false,
       categoryIds: ['catId'],
     });
-
-    expect(mockPush).toHaveBeenCalledWith(
-      `/category/facets/edit/${mockNewRuleset}`
-    );
   });
 
   describe('Error messaging', () => {

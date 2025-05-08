@@ -113,7 +113,7 @@ test.describe('Category rulesets', () => {
 
     await page.waitForLoadState('networkidle');
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
     await page.waitForLoadState();
     await expect(
@@ -159,7 +159,7 @@ test.describe('Category rulesets', () => {
 
     await page.waitForLoadState('networkidle');
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
     await page.waitForLoadState();
     await expect(
@@ -217,7 +217,7 @@ test.describe('Category rulesets', () => {
 
     await page.waitForLoadState('networkidle');
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
     await page.waitForLoadState();
     await expect(
@@ -629,7 +629,7 @@ test.describe('Category rulesets', () => {
 
       await page.waitForLoadState('networkidle');
 
-      await page.getByRole('link', { name: 'Add new rule' }).click();
+      await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
       await page.waitForLoadState();
       await expect(
@@ -692,7 +692,8 @@ test.describe('Category rulesets', () => {
 
       await page.waitForLoadState('networkidle');
 
-      await page.getByRole('link', { name: 'Edit' }).nth(0).click();
+      await page.getByRole('button', { name: 'More options' }).first().click();
+      await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
 
@@ -737,7 +738,8 @@ test.describe('Category rulesets', () => {
 
       await page.waitForLoadState('networkidle');
 
-      await page.getByRole('link', { name: 'Edit' }).nth(0).click();
+      await page.getByRole('button', { name: 'More options' }).first().click();
+      await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
 

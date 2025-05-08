@@ -13,13 +13,13 @@ test.describe('Search Redirect', () => {
     ).toBeVisible();
 
     await expect(
-      page.getByRole('link', { name: 'Add new rule' })
+      page.getByRole('link', { name: 'Add redirect rule' })
     ).toBeVisible();
     await expect(
       page.getByText('0 results', { exact: true })
     ).not.toBeVisible();
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('link', { name: 'Add redirect rule' }).click();
 
     await page.waitForLoadState('networkidle');
     await expect(
@@ -58,7 +58,8 @@ test.describe('Search Redirect', () => {
     await page.waitForTimeout(2000);
     await expect(page.getByText('Gravy').first()).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit redirect rule' }).click();
     await page.waitForLoadState('networkidle');
 
     await page.getByPlaceholder('Select date range').click();
@@ -101,6 +102,8 @@ test.describe('Search Redirect', () => {
 
     await page.getByRole('button', { name: 'Confirm' }).click();
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit redirect rule' }).click();
     await expect(
       page.getByRole('heading', { name: 'Edit Keyword Redirect' })
     ).toBeVisible();

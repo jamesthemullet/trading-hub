@@ -13,13 +13,13 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
 
     await expect(
-      page.getByRole('link', { name: 'Add new rule' })
+      page.getByRole('button', { name: 'Add facet rule' })
     ).toBeVisible();
     await expect(
       page.getByText('0 results', { exact: true })
     ).not.toBeVisible();
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('button', { name: 'Add facet rule' }).click();
 
     await page.waitForLoadState('networkidle');
     await expect(
@@ -67,7 +67,8 @@ test.describe('Global Ranking', () => {
 
     await expect(checkbox).toBeChecked();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit facet rule' }).click();
     await page.waitForLoadState('networkidle');
 
     await expect(
@@ -100,7 +101,8 @@ test.describe('Global Ranking', () => {
     await page.goto('/global/rulesets');
     await page.waitForLoadState('networkidle');
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
 
     await page.getByPlaceholder('Search for product').fill('black dress');
@@ -150,7 +152,8 @@ test.describe('Global Ranking', () => {
     await page.goto('/global/facets');
     await page.waitForLoadState('networkidle');
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit facet rule' }).click();
     await page.waitForLoadState('networkidle');
 
     await expect(
@@ -168,7 +171,8 @@ test.describe('Global Ranking', () => {
       page.getByRole('heading', { name: 'Global category ranking rules' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).first().click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
   });

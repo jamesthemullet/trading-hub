@@ -17,7 +17,7 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-const NEW_RULE_BUTTON_TEXT = 'Add new rule';
+const NEW_RULE_BUTTON_TEXT = 'Add ranking rule';
 
 const mockMerchandisingRules = {
   pinnedProducts: [],

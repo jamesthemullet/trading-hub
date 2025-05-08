@@ -52,9 +52,12 @@ export const useRuleSetRowsState = <
   const [isLoading, setIsLoading] = useState(false);
 
   const createNewRow = useCallback<CreateRowFn>(
-    (newRowCreateMode?: 'create-then-redirect' | 'redirect-to-new') => {
+    (
+      path: string,
+      newRowCreateMode?: 'create-then-redirect' | 'redirect-to-new'
+    ) => {
       const asyncCall = async () => {
-        const emptyRuleSet = mapping.getEmptyRuleSet();
+        const emptyRuleSet = mapping.getEmptyRuleSet!();
         if (newRowCreateMode === 'create-then-redirect') {
           setIsLoading(true);
           const [error, result] = await handlePromise(
@@ -69,10 +72,9 @@ export const useRuleSetRowsState = <
           mapping.ruleSetToRow(result.data, {});
           setIsLoading(false);
           const row = mapping.ruleSetToRow(result.data, {});
-          router.push(`${basePath}/edit/${row.id}`);
+          router.push(`${basePath}/${path}/edit/${row.id}`);
           return;
         }
-        router.push(`${basePath}/new`);
       };
       return asyncCall();
     },
@@ -168,13 +170,22 @@ export const useRuleSetRowsState = <
           );
           return;
         }
+
         const row = mapping.ruleSetToRow(result.data, {});
-        router.push(`${basePath}/edit/${row.id}`);
+        setRowsState((rowsState) => {
+          return {
+            ...rowsState,
+            rows: [row, ...rowsState.rows],
+            pagination: {
+              totalItems: (rowsState.pagination.totalItems ?? 0) + 1,
+            },
+          };
+        });
         return;
       };
       return callAsync();
     },
-    [mapping, basePath, router]
+    [mapping]
   );
 
   const toggleRow = useCallback<ToggleRowFn>(

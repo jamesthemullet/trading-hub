@@ -48,23 +48,6 @@ const mapping: RuleSetMapping<
     countryCode,
   }),
   allToArray: (data) => data.ruleSets,
-  getEmptyRuleSet: () => ({
-    categoryIds: [],
-    isEnabled: false,
-    countryCode: 'UK_IE',
-    rules: {
-      pinnedProducts: [],
-      blockedProducts: [],
-      boosts: { numeric: [], alphanumeric: [], product: [] },
-      buries: { numeric: [], alphanumeric: [], product: [] },
-      includes: { alphanumeric: [] },
-      excludes: { alphanumeric: [] },
-    },
-    endDate: undefined,
-    startDate: undefined,
-    facets: [],
-    excludedFacets: undefined,
-  }),
   returnedToRuleSet: (returnedRuleSet) => {
     return {
       categoryIds: returnedRuleSet.categoriesInfo.map(
@@ -116,10 +99,9 @@ const FacetManagementPage = () => {
 
         <PageNameLabel>Category Facet Management</PageNameLabel>
         <TablePanel
-          basePath="/category/facets"
+          basePath="/category"
           headings={headings}
           mapping={mapping}
-          addNewButtonLabel="Add new facet"
           newRowCreateMode="redirect-to-new"
           ruleType="categoryRanking"
           writeEnabled={hasWriteAccess}

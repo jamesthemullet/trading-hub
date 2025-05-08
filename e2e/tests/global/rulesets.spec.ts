@@ -109,7 +109,8 @@ test.describe('global rulesets', () => {
       page.getByRole('heading', { name: 'Global category ranking rules' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
@@ -151,7 +152,8 @@ test.describe('global rulesets', () => {
       page.getByRole('heading', { name: 'Global category ranking rules' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
@@ -188,7 +190,8 @@ test.describe('global rulesets', () => {
       page.getByRole('heading', { name: 'Global category ranking rules' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
@@ -225,7 +228,8 @@ test.describe('global rulesets', () => {
       page.getByRole('heading', { name: 'Global category ranking rules' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
@@ -262,7 +266,8 @@ test.describe('global rulesets', () => {
       page.getByRole('heading', { name: 'Global category ranking rules' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit' }).click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })

@@ -89,7 +89,7 @@ const RuleSets = () => {
 
         <PageNameLabel>Global category ranking rules</PageNameLabel>
         <TablePanel
-          basePath="/global/rulesets"
+          basePath="/global"
           headings={headings}
           mapping={mapping}
           newRowCreateMode="create-then-redirect"

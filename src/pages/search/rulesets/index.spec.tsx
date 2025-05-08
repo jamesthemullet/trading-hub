@@ -1,4 +1,3 @@
-import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -116,8 +115,6 @@ const server = setupServer(
 const mockPush = jest.fn();
 
 describe('Search Rulesets', () => {
-  const mockNewRuleset = 'foo123';
-
   beforeAll(() => {
     server.listen();
   });
@@ -142,7 +139,7 @@ describe('Search Rulesets', () => {
     jest.resetAllMocks();
   });
 
-  it('displays the list of rules', () => {
+  it('displays the list of rules', async () => {
     jest.mocked(useSearchRulesetList).mockReturnValue({
       ruleSets: [],
       pagination: {
@@ -154,9 +151,11 @@ describe('Search Rulesets', () => {
     });
     renderWithProviders(<RuleSets />);
 
-    expect(
-      screen.getByRole('heading', { name: 'Search ranking rules', level: 1 })
-    ).toBeVisible();
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Search ranking rules', level: 1 })
+      ).toBeVisible();
+    });
   });
 
   it('should render the access denied page', async () => {
@@ -171,27 +170,6 @@ describe('Search Rulesets', () => {
         exact: false,
       })
     ).toBeVisible();
-  });
-
-  it('should redirect to new page when add new rule is clicked', async () => {
-    jest.mocked(useSearchRulesetList).mockReturnValue({
-      ruleSets: [],
-      pagination: {
-        totalItems: 0,
-      },
-      error: '',
-      refetchRuleSetList: () => jest.fn,
-      setRuleSets: jest.fn(),
-    });
-
-    renderWithProviders(<RuleSets />);
-
-    const createButton = await screen.findByText('Add new rule');
-    act(() => {
-      createButton.click();
-    });
-
-    expect(mockPush).toHaveBeenCalledWith('/search/rulesets/new');
   });
 
   it('should search', async () => {
@@ -391,6 +369,7 @@ describe('Search Rulesets', () => {
           },
           rules: mockMerchandisingRules,
           facets: [],
+          countryCode: 'UK_IE',
         },
       ],
       error: '',
@@ -421,9 +400,8 @@ describe('Search Rulesets', () => {
       countryCode: 'UK_IE',
     });
 
-    expect(mockPush).toHaveBeenCalledWith(
-      `/search/rulesets/edit/${mockNewRuleset}`
-    );
+    expect(await screen.findAllByAltText('UK rule')).toHaveLength(2);
+    expect(await screen.findAllByAltText('IE rule')).toHaveLength(2);
   });
 
   it('should delete a ruleset', async () => {

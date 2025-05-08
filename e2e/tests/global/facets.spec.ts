@@ -70,7 +70,7 @@ test.describe('global facets', () => {
       page.getByRole('heading', { name: 'Global Facet Management' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('button', { name: 'Add facet rule' }).click();
 
     await expect(
       page.getByText('Applies to all pages in marksandspencer.com')

@@ -18,6 +18,7 @@ const DropdownWrapperNoBorder = styled(DropdownWrapper)`
   border: none;
   border-bottom: 1px solid #b1b1b1;
   border-radius: 1px 1px 0 0;
+  width: 230px;
 
   button {
     border: none;
@@ -91,7 +92,6 @@ export const CountryFilterDropdown = ({
   return (
     <DropdownWrapperNoBorder
       isDropdownOpen={isDropdownOpen}
-      width={316}
       ref={dropdownWrapperRef}
       onKeyDown={handleOnKeyDown}
     >

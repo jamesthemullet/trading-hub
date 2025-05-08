@@ -146,16 +146,18 @@ export const TableActionsButton = styled(Link, {
 export const TableActions = styled.div`
   position: relative;
   display: flex;
-  background-color: #f5f5f5;
+  margin-left: 30px;
 `;
 
 export const DropdownOptions = styled.div`
   position: absolute;
-  top: 40px;
+  top: 20px;
   background-color: #f5f5f5;
   width: 100%;
   z-index: 1;
-  border: solid 1px ${color.accessibilityGrey};
+  left: -120px;
+  border-radius: 5px;
+  width: 165px;
 `;
 
 export const TableDropdown = styled.button`
@@ -168,6 +170,25 @@ export const TableDropdown = styled.button`
   font-family: inherit;
   font-size: inherit;
   text-align: left;
+
+  &:hover,
+  &:active {
+    background-color: #e3e3e3;
+  }
+`;
+
+export const TableLink = styled(Link)`
+  width: 100%;
+  padding: ${spacing(1)} ${spacing(2)};
+  z-index: 1;
+  border: none;
+  border-bottom: solid 1px #999;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: left;
+  display: block;
+  color: #000;
+  text-decoration: none;
 
   &:hover,
   &:active {

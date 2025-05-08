@@ -34,7 +34,7 @@ test.describe('Keyword Redirects', () => {
       page.getByRole('heading', { name: 'Keyword Redirect' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Add new rule' }).click();
+    await page.getByRole('link', { name: 'Add redirect rule' }).click();
 
     await expect(
       page.getByRole('heading', { name: 'Add Keyword Redirect rule' })
@@ -70,7 +70,8 @@ test.describe('Keyword Redirects', () => {
   });
 
   test('Should edit a redirect', async ({ page }) => {
-    await page.getByRole('link', { name: 'Edit' }).click();
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit redirect rule' }).click();
     await expect(
       page.getByRole('radio', { name: 'Redirect Term(s)' })
     ).toBeChecked();
@@ -134,7 +135,7 @@ test.describe('Keyword Redirects', () => {
         page.getByRole('heading', { name: 'Keyword Redirect' })
       ).toBeVisible();
 
-      await page.getByRole('link', { name: 'Add new rule' }).click();
+      await page.getByRole('link', { name: 'Add redirect rule' }).click();
 
       await expect(
         page.getByRole('heading', { name: 'Add Keyword Redirect rule' })
@@ -174,7 +175,8 @@ test.describe('Keyword Redirects', () => {
     });
 
     test('should edit a scheduled redirect', async ({ page }) => {
-      await page.getByRole('link', { name: 'Edit' }).click();
+      await page.getByRole('button', { name: 'More options' }).first().click();
+      await page.getByRole('link', { name: 'Edit redirect rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
 
@@ -212,7 +214,8 @@ test.describe('Keyword Redirects', () => {
     });
 
     test('should delete a scheduled redirect', async ({ page }) => {
-      await page.getByRole('link', { name: 'Edit' }).click();
+      await page.getByRole('button', { name: 'More options' }).first().click();
+      await page.getByRole('link', { name: 'Edit redirect rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
 

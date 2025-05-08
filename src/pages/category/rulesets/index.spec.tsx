@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
@@ -91,6 +91,7 @@ const server = setupServer(
           },
         ],
         ...ruleSet,
+        lastChanged: { user: 'user', date: '2021-01-01' },
       },
       { status: 200 }
     );
@@ -174,30 +175,6 @@ describe('Index', () => {
         exact: false,
       })
     ).toBeVisible();
-  });
-
-  it('should redirect to new page when add new rule is clicked', async () => {
-    jest.mocked(useRuleSet).mockReturnValue({
-      categoryRuleSets: [],
-      pagination: {
-        totalItems: 0,
-      },
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-      globalRuleSets: [],
-      error: '',
-      isLoading: false,
-    });
-
-    renderWithProviders(<RuleSets />);
-
-    const createButton = await screen.findByText('Add new rule');
-    act(() => {
-      createButton.click();
-    });
-
-    expect(mockPush).toHaveBeenCalledWith('/category/rulesets/new');
   });
 
   it('displays schedule if a ruleset has a start and end date', async () => {
@@ -539,10 +516,6 @@ describe('Index', () => {
       endDate: '2024-12-19T04:20:03Z',
       countryCode: 'UK',
     });
-
-    expect(mockPush).toHaveBeenCalledWith(
-      `/category/rulesets/edit/${mockNewRuleset}`
-    );
   });
 
   it('should show errors', async () => {
@@ -584,10 +557,9 @@ describe('Index', () => {
     renderWithProviders(<RuleSets />);
 
     await waitFor(() => {
-      expect(screen.queryAllByText('Add new rule')).toHaveLength(0);
+      expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
     });
 
-    expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
     expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
   });
 

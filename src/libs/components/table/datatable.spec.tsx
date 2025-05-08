@@ -1,8 +1,9 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
+import type { DataTableProps } from './datatable';
 import { DataTable } from './datatable';
 
 const mockToggle = jest.fn();
@@ -94,26 +95,23 @@ const countryRows = [
   },
 ];
 
-const defaultProps = {
+const defaultProps: DataTableProps = {
   writeEnabled: true,
   isLoading: false,
   headings,
+  rows,
+  onDeleteRuleSet: jest.fn(),
+  ruleType: 'categoryRanking',
+  basePath: '/category',
 };
 
 describe('DataTable', () => {
-  beforeEach(() => {
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should render correctly', () => {
-    renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        rows={rows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
-    );
+    renderWithProviders(<DataTable {...defaultProps} />);
 
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
     expect(screen.getByText('Bob')).toBeInTheDocument();
@@ -121,15 +119,7 @@ describe('DataTable', () => {
   });
 
   it('should render loading skeleton correctly', () => {
-    renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        isLoading={true}
-        rows={rows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
-    );
+    renderWithProviders(<DataTable {...defaultProps} isLoading={true} />);
 
     expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
     expect(screen.getByText('Identifier')).toBeVisible();
@@ -137,14 +127,7 @@ describe('DataTable', () => {
 
   it('should render loading skeleton with specific page size', () => {
     renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        isLoading={true}
-        currentPageSize={20}
-        rows={rows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
+      <DataTable {...defaultProps} isLoading={true} currentPageSize={20} />
     );
 
     expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
@@ -153,34 +136,28 @@ describe('DataTable', () => {
   });
 
   it('should render correctly with no write access', async () => {
+    const user = userEvent.setup();
     renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        currentPageSize={20}
-        rows={rows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-        writeEnabled={false}
-      />
+      <DataTable {...defaultProps} currentPageSize={20} writeEnabled={false} />
     );
 
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
     expect(screen.getByText('Bob')).toBeInTheDocument();
     expect(screen.getByText('path/to/SubCategory_123')).toBeInTheDocument();
 
-    expect(screen.queryByTitle('More options')).not.toBeInTheDocument();
+    await user.click(screen.getAllByTitle('More options')[0]);
+    expect(screen.queryByTitle('Delete')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('Duplicate')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'View ranking rule' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'View facet rule' })
+    ).toBeInTheDocument();
   });
 
   it('should render correctly with six headings', () => {
-    renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        headings={sixHeadings}
-        rows={rows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
-    );
+    renderWithProviders(<DataTable {...defaultProps} headings={sixHeadings} />);
 
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
     expect(screen.getByText('Breadcrumb')).toBeInTheDocument();
@@ -192,8 +169,6 @@ describe('DataTable', () => {
         {...defaultProps}
         headings={sevenHeadings}
         rows={schedulingRows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
       />
     );
 
@@ -217,8 +192,6 @@ describe('DataTable', () => {
             startDate: '2022-10-01',
           },
         ]}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
       />
     );
     expect(screen.getAllByText('01 Oct 2022 - No end date')).toHaveLength(3);
@@ -230,8 +203,6 @@ describe('DataTable', () => {
         {...defaultProps}
         headings={maxHeadings}
         rows={schedulingRows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
       />
     );
 
@@ -248,9 +219,7 @@ describe('DataTable', () => {
         <DataTable
           {...defaultProps}
           headings={headings}
-          rows={rows}
           onDeleteRuleSet={mockDelete}
-          ruleType="categoryRanking"
         />
       );
 
@@ -281,9 +250,7 @@ describe('DataTable', () => {
         <DataTable
           {...defaultProps}
           headings={headings}
-          rows={rows}
           onDeleteRuleSet={mockDelete}
-          ruleType="categoryRanking"
         />
       );
 
@@ -293,6 +260,8 @@ describe('DataTable', () => {
         expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
       });
 
+      await user.tab();
+      await user.tab();
       await user.tab();
       await user.keyboard('{Enter}');
       await waitFor(() => {
@@ -322,9 +291,7 @@ describe('DataTable', () => {
         <DataTable
           {...defaultProps}
           headings={headings}
-          rows={rows}
           onDeleteRuleSet={mockDelete}
-          ruleType="categoryRanking"
         />
       );
 
@@ -359,10 +326,8 @@ describe('DataTable', () => {
         <DataTable
           {...defaultProps}
           headings={headings}
-          rows={rows}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          ruleType="categoryRanking"
         />
       );
 
@@ -383,21 +348,24 @@ describe('DataTable', () => {
     });
 
     it('should not show duplicate option for writeEnabled=false', async () => {
+      const user = userEvent.setup();
       const mockDelete = jest.fn();
       const mockDuplicate = jest.fn();
       renderWithProviders(
         <DataTable
           {...defaultProps}
           headings={headings}
-          rows={rows}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          ruleType="categoryRanking"
           writeEnabled={false}
         />
       );
 
-      expect(screen.queryByTitle('More options')).not.toBeInTheDocument();
+      await user.click(screen.getAllByTitle('More options')[0]);
+
+      expect(
+        screen.queryByRole('button', { name: 'Duplicate' })
+      ).not.toBeInTheDocument();
     });
 
     it('should duplicate a redirect', async () => {
@@ -407,8 +375,6 @@ describe('DataTable', () => {
       renderWithProviders(
         <DataTable
           {...defaultProps}
-          headings={headings}
-          rows={rows}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
           ruleType="redirect"
@@ -440,16 +406,15 @@ describe('DataTable', () => {
       renderWithProviders(
         <DataTable
           {...defaultProps}
-          headings={headings}
-          rows={rows}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          ruleType="categoryRanking"
         />
       );
 
       await user.click(screen.getAllByTitle('More options')[0]);
 
+      await user.tab();
+      await user.tab();
       await user.tab();
       await user.tab();
       await user.keyboard('{Enter}');
@@ -526,7 +491,6 @@ describe('DataTable', () => {
       renderWithProviders(
         <DataTable
           {...defaultProps}
-          headings={headings}
           rows={[
             {
               ...rows[0],
@@ -538,7 +502,6 @@ describe('DataTable', () => {
           ]}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          ruleType="categoryRanking"
         />
       );
 
@@ -560,7 +523,6 @@ describe('DataTable', () => {
       renderWithProviders(
         <DataTable
           {...defaultProps}
-          headings={headings}
           rows={[
             {
               ...rows[0],
@@ -574,7 +536,6 @@ describe('DataTable', () => {
           ]}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          ruleType="categoryRanking"
         />
       );
 
@@ -596,9 +557,8 @@ describe('DataTable', () => {
     renderWithProviders(
       <DataTable
         {...defaultProps}
-        rows={rows}
+        headings={headings}
         onDeleteRuleSet={mockDelete}
-        ruleType="categoryRanking"
       />
     );
 
@@ -613,19 +573,14 @@ describe('DataTable', () => {
 
   it('should toggle a rule set using keyboard navigation', async () => {
     const user = userEvent.setup();
-    const mockDelete = jest.fn();
-    renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        rows={rows}
-        onDeleteRuleSet={mockDelete}
-        ruleType="categoryRanking"
-      />
-    );
+    renderWithProviders(<DataTable {...defaultProps} />);
 
     const dropDown = screen.queryAllByTitle('More options')[0];
+
     dropDown.focus();
-    await user.keyboard('{Enter}');
+    await act(async () => {
+      await user.keyboard('{Enter}');
+    });
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
@@ -634,14 +589,7 @@ describe('DataTable', () => {
 
   it('should close the dropdown if already open when clicked', async () => {
     const user = userEvent.setup();
-    renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        rows={rows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
-    );
+    renderWithProviders(<DataTable {...defaultProps} headings={headings} />);
 
     await user.click(screen.getAllByTitle('More options')[0]);
     await waitFor(() => {
@@ -657,14 +605,7 @@ describe('DataTable', () => {
 
   it('should close dropdown when Esc key is pressed', async () => {
     const user = userEvent.setup();
-    renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        rows={rows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
-    );
+    renderWithProviders(<DataTable {...defaultProps} headings={headings} />);
 
     await user.click(screen.getAllByTitle('More options')[0]);
     await waitFor(() => {
@@ -680,12 +621,7 @@ describe('DataTable', () => {
 
   it('should not show country flag if the country is not UK or IE', () => {
     renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        rows={countryRows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
+      <DataTable {...defaultProps} headings={headings} rows={countryRows} />
     );
 
     expect(screen.queryByAltText('UK rule')).not.toBeInTheDocument();
@@ -707,12 +643,7 @@ describe('DataTable', () => {
     ];
 
     renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        rows={ukIeRows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
+      <DataTable {...defaultProps} headings={headings} rows={ukIeRows} />
     );
 
     expect(screen.getByAltText('UK rule')).toBeInTheDocument();
@@ -734,12 +665,7 @@ describe('DataTable', () => {
     ];
 
     renderWithProviders(
-      <DataTable
-        {...defaultProps}
-        rows={ukRows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
-      />
+      <DataTable {...defaultProps} headings={headings} rows={ukRows} />
     );
 
     expect(screen.getByAltText('UK rule')).toBeInTheDocument();
@@ -750,9 +676,7 @@ describe('DataTable', () => {
     renderWithProviders(
       <DataTable
         {...defaultProps}
-        rows={rows}
-        onDeleteRuleSet={jest.fn()}
-        ruleType="categoryRanking"
+        headings={headings}
         onToggleRuleSet={mockToggleRuleSet}
       />
     );
@@ -770,8 +694,8 @@ describe('DataTable', () => {
     const { container } = renderWithProviders(
       <DataTable
         {...defaultProps}
+        headings={headings}
         rows={[{ ...rows[0], identifier: 'foo | bar' }]}
-        onDeleteRuleSet={jest.fn()}
         onDuplicate={jest.fn()}
         ruleType="searchRanking"
         query="bar"
@@ -784,8 +708,8 @@ describe('DataTable', () => {
     const { container } = renderWithProviders(
       <DataTable
         {...defaultProps}
+        headings={headings}
         rows={[{ ...rows[0], identifier: 'foo | bar' }]}
-        onDeleteRuleSet={jest.fn()}
         onDuplicate={jest.fn()}
         ruleType="searchRanking"
         query="FOO"
@@ -798,10 +722,10 @@ describe('DataTable', () => {
     const { container } = renderWithProviders(
       <DataTable
         {...defaultProps}
+        headings={headings}
         rows={[
           { ...rows[0], lastChanged: { date: '2021-10-01', user: 'Mr Foo' } },
         ]}
-        onDeleteRuleSet={jest.fn()}
         onDuplicate={jest.fn()}
         ruleType="searchRanking"
         query="FOO"

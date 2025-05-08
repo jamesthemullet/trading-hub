@@ -86,11 +86,11 @@ describe('useCategoryRuleSetApi', () => {
       });
 
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
-        await result.current.createNewRow('create-then-redirect');
+        await result.current.createNewRow('rulesets', 'create-then-redirect');
       });
 
       expect(mappingMock.newRuleSet).toHaveBeenCalled();
@@ -108,11 +108,11 @@ describe('useCategoryRuleSetApi', () => {
       });
 
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
-        await result.current.createNewRow('create-then-redirect');
+        await result.current.createNewRow('rulesets', 'create-then-redirect');
       });
 
       expect(result.current.error).toEqual(
@@ -252,7 +252,7 @@ describe('useCategoryRuleSetApi', () => {
       lastChanged: { date: '2023-12-28T14:24:17Z', user: 'M&S' },
     };
 
-    it('should update rule set', async () => {
+    it('should duplicate a rule set', async () => {
       mappingMock.queryRuleSetById.mockResolvedValue({
         data: mockRuleSet,
         status: { status: 200 },
@@ -261,19 +261,44 @@ describe('useCategoryRuleSetApi', () => {
         data: ruleSet,
         status: { status: 200 },
       });
-      const {
-        result: { current },
-      } = renderHook(() =>
+      const { result } = renderHook(() =>
+        useRuleSetRowsState(mappingMock, '/search/rulesets')
+      );
+      expect(result.current.rowsState.pagination.totalItems).toBe(0);
+
+      await act(async () => {
+        await result.current.duplicateRow(ruleSetId);
+      });
+
+      expect(result.current.rowsState.pagination.totalItems).toBe(1);
+    });
+
+    it('should duplicate a ruleset with no pagination', async () => {
+      mappingMock.queryRuleSetById.mockResolvedValue({
+        data: mockRuleSet,
+        status: { status: 200 },
+      });
+      mappingMock.queryAllRuleSets.mockResolvedValue({
+        data: { ...mockResponse, pagination: {} },
+        status: { status: 200 },
+      });
+      mappingMock.newRuleSet.mockResolvedValue({
+        data: ruleSet,
+        status: { status: 200 },
+      });
+      const { result } = renderHook(() =>
         useRuleSetRowsState(mappingMock, '/search/rulesets')
       );
 
       await act(async () => {
-        await current.duplicateRow(ruleSetId);
+        await result.current.getRows(1, 10, '', 'UK');
       });
 
-      expect(useRouter().push).toHaveBeenCalledWith(
-        `/search/rulesets/edit/${ruleSetId}`
-      );
+      await act(async () => {
+        await result.current.duplicateRow(ruleSetId);
+      });
+
+      expect(result.current.rowsState.pagination.totalItems).toBe(1);
     });
 
     it('should return error if API returns non 200', async () => {

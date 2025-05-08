@@ -14,10 +14,14 @@ const setTheme = ({
   isDisabled,
   isPrimary,
   isTertiary,
+  isFilled,
+  isOutlined,
 }: {
   isDisabled?: boolean;
   isPrimary?: boolean;
   isTertiary?: boolean;
+  isFilled?: boolean;
+  isOutlined?: boolean;
 }) => {
   if (isTertiary) {
     return css`
@@ -67,6 +71,61 @@ const setTheme = ({
       }
     `;
   }
+  if (isFilled) {
+    return css`
+      &::before {
+        content: '';
+
+        width: 10px;
+        height: 10px;
+        background-image: url('/trading-hub/asset/icon-plus-simple-white.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: inline-block;
+        margin-right: ${spacing(1)};
+      }
+
+      text-align: left;
+      border: ${color.darkHeritageGreen} solid 1px;
+      background: ${color.darkHeritageGreen};
+      color: #fff;
+
+      &:hover {
+        background-color: #10604b;
+      }
+      &:focus {
+        background-color: #226c59;
+      }
+    `;
+  }
+  if (isOutlined) {
+    return css`
+      &::before {
+        content: '';
+
+        width: 10px;
+        height: 10px;
+        background-image: url('/trading-hub/asset/icon-plus-simple-green.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: inline-block;
+        margin-right: ${spacing(1)};
+      }
+
+      text-align: left;
+      border: ${color.darkHeritageGreen} solid 1px;
+      background: #fff;
+      color: ${color.darkHeritageGreen};
+
+      &:hover {
+        background-color: #f0f5f4;
+      }
+      &:focus {
+        background-color: #dee9e6;
+      }
+    `;
+  }
+
   return css`
     color: rgba(29, 29, 27, 1);
     background: #fff;
@@ -88,8 +147,8 @@ const setTheme = ({
 const StyledButton = styled.button<ButtonProps>`
   border: solid 1px ${color.lightGrey};
   border-radius: 4px;
-  ${({ isDisabled, isPrimary, isTertiary }) =>
-    setTheme({ isDisabled, isPrimary, isTertiary })};
+  ${({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled }) =>
+    setTheme({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled })};
   font-size: 16px;
   transition: all 0.1s ease-in;
   transition-property: background-color color border-color;
@@ -108,12 +167,14 @@ const StyledButton = styled.button<ButtonProps>`
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   isPrimary?: boolean;
   isTertiary?: boolean;
+  isFilled?: boolean;
+  isOutlined?: boolean;
   as?: ElementType;
   isDisabled?: boolean;
   href?: string;
   isInline?: boolean;
   onClick?: () => void;
-  theme?: 'primary' | 'secondary' | 'tertiary';
+  theme?: 'primary' | 'secondary' | 'tertiary' | 'filled' | 'outlined';
   type?: 'submit' | 'reset' | 'button' | undefined;
 };
 
@@ -138,6 +199,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...(href && { href })}
         isPrimary={theme === 'primary'}
         isTertiary={theme === 'tertiary'}
+        isFilled={theme === 'filled'}
+        isOutlined={theme === 'outlined'}
         {...(onClick && !isDisabled && { onClick })}
         {...(isDisabled && { disabled: isDisabled })}
         isDisabled={isDisabled}

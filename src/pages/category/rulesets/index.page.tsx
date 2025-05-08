@@ -48,23 +48,6 @@ const mapping: RuleSetMapping<
     countryCode,
   }),
   allToArray: (data) => data.ruleSets,
-  getEmptyRuleSet: () => ({
-    categoryIds: [],
-    isEnabled: false,
-    countryCode: 'UK_IE',
-    rules: {
-      pinnedProducts: [],
-      blockedProducts: [],
-      boosts: { numeric: [], alphanumeric: [], product: [] },
-      buries: { numeric: [], alphanumeric: [], product: [] },
-      includes: { alphanumeric: [] },
-      excludes: { alphanumeric: [] },
-    },
-    endDate: undefined,
-    startDate: undefined,
-    facets: [],
-    excludedFacets: undefined,
-  }),
   returnedToRuleSet: (returnedRuleSet) => {
     return {
       categoryIds: returnedRuleSet.categoriesInfo.map(
@@ -115,7 +98,7 @@ const RuleSets = () => {
 
         <PageNameLabel>Category ranking rules</PageNameLabel>
         <TablePanel
-          basePath="/category/rulesets"
+          basePath="/category"
           headings={headings}
           mapping={mapping}
           ruleType="categoryRanking"

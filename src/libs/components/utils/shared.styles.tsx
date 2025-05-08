@@ -83,6 +83,7 @@ export const PageWrapper = styled.div`
   margin: ${spacing(2)};
   padding-top: ${spacing(1)};
   border-radius: 4px;
+  min-width: 1024px;
 
   ${mediaQuery('xxl')} {
     margin: ${spacing(2)} ${spacing(3)};
@@ -104,14 +105,6 @@ export const ToolsContainer = styled.div`
   gap: ${spacing(2)};
   max-width: 100%;
   align-items: center;
-`;
-
-export const NewButton = styled.div`
-  margin-left: auto;
-
-  & a {
-    color: ${color.focusBlue};
-  }
 `;
 
 export const SectionWrapper = styled.div`
