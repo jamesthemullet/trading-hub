@@ -37,7 +37,8 @@ const eslint = [
     'plugin:jest-formatting/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:jest-dom/recommended',
-    'plugin:jsx-a11y/recommended'
+    'plugin:jsx-a11y/recommended',
+    'plugin:storybook/recommended'
   ),
   {
     plugins: {

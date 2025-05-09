@@ -37,6 +37,7 @@ const config: Config = {
     'e2e',
     'playwright-report',
     '/newrelic.js',
+    '^.*\\.stories\\.[jt]sx?$',
   ],
   moduleNameMapper: {
     '^.+\\.(css|less)$': '<rootDir>/config/css-stub.js',

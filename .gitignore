@@ -65,3 +65,5 @@ test-results.json
 
 # New Relic
 newrelic_agent.log
+
+*storybook.log

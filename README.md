@@ -215,6 +215,15 @@ Take a look at [azure-oauth-app-registration](docs/azure-oauth-app-registration.
 
 An example settings.json file is in the .vscode folder
 
+### Storybook
+
+Storybook is set up for the project, to run it execute:
+
+```bash
+npm run storybook:dev
+```
+It will run on port 6006, you can access it by going to [http://localhost:6006](http://localhost:6006)
+
 ## Deployments
 
 During the 2024/5 golden quarter there is a manual step required for releasing. After merging to main and provided there is no code freeze go to your commit in the [release workflow](https://github.com/DigitalInnovation/trading-hub/actions/workflows/release.yml) and approve the production step, monitor the release and check your changes on production as usual
