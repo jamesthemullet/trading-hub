@@ -22,7 +22,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "ts-check": "tsc  --build --force --verbose tsconfig.json",
-    "pr-validate": "npm run codegen && npm run lint && npm run format:check && npm run ts-check && npm test --coverage && npx playwright test --project=mock",
+    "pr-validate": "npm run codegen && npm run lint && npm run format:check && npm run ts-check && npm test --coverage --maxConcurrency=1 && npx playwright test --project=mock",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "storybook:dev": "storybook dev -p 6006",
