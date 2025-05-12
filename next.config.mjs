@@ -27,6 +27,17 @@ const nextConfig = {
       destination: '/category',
       permanent: false,
     },
+    {
+      source: '/search/rulesets',
+      destination: '/search',
+      permanent: false,
+    },
+
+    {
+      source: '/search/facets',
+      destination: '/search',
+      permanent: false,
+    },
   ],
   webpack: (config) => {
     config.module.rules.push({

@@ -72,13 +72,9 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
     },
     {
       title: 'Search Ranking Rules',
-      path: '/search/',
+      path: '/search',
       icon: '/trading-hub/asset/menu-search-v2.svg',
       activeIcon: '/trading-hub/asset/menu-search-v2-active.svg',
-      subLinks: [
-        { href: '/search/rulesets', text: 'Ranking rules' },
-        { href: '/search/facets', text: 'Facets' },
-      ],
       alt: 'Search Ranking Rules',
       shortTitle: 'Search',
     },

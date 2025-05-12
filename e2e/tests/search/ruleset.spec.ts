@@ -72,14 +72,12 @@ test.describe('Keyword search', () => {
       }
     );
 
-    await page.goto('/search/rulesets');
+    await page.goto('/search');
     await page.waitForLoadState('networkidle');
   });
 
   test('creates a new ruleset', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: 'Search ranking rules' })
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
     await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
@@ -96,9 +94,7 @@ test.describe('Keyword search', () => {
 
     await page.waitForLoadState('networkidle');
 
-    await expect(
-      page.getByRole('heading', { name: 'Search ranking rules' })
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
   });
 
   test('enables a ruleset', async ({ page }) => {
@@ -170,9 +166,7 @@ test.describe('Keyword search', () => {
   });
 
   test('deletes a ruleset', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: 'Search ranking rules' })
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
@@ -493,10 +487,8 @@ test.describe('Keyword search', () => {
 
   test.describe('Scheduling', () => {
     test('Should schedule a ruleset', async ({ page }) => {
-      await page.goto('/search/rulesets');
-      await expect(
-        page.getByRole('heading', { name: 'Search ranking rules' })
-      ).toBeVisible();
+      await page.goto('/search');
+      await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
       await page.waitForLoadState('networkidle');
 
@@ -542,10 +534,8 @@ test.describe('Keyword search', () => {
     });
 
     test('should edit a scheduled ruleset', async ({ page }) => {
-      await page.goto('/search/rulesets');
-      await expect(
-        page.getByRole('heading', { name: 'Search ranking rules' })
-      ).toBeVisible();
+      await page.goto('/search');
+      await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
       await page.waitForLoadState('networkidle');
 
@@ -588,10 +578,8 @@ test.describe('Keyword search', () => {
     });
 
     test('should delete a scheduled ruleset', async ({ page }) => {
-      await page.goto('/search/rulesets');
-      await expect(
-        page.getByRole('heading', { name: 'Search ranking rules' })
-      ).toBeVisible();
+      await page.goto('/search');
+      await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
       await page.waitForLoadState('networkidle');
 

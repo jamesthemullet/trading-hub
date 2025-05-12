@@ -64,10 +64,8 @@ test.describe('Search rulesets', () => {
   });
 
   test('edits ruleset facets for UK', async ({ page }) => {
-    await page.goto('/search/facets');
-    await expect(
-      page.getByRole('heading', { name: 'Search Facet Management' })
-    ).toBeVisible();
+    await page.goto('/search');
+    await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
     await page.waitForLoadState('networkidle');
 

@@ -6,11 +6,9 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('Search Ranking', () => {
   test('creates new ruleset', async ({ page }) => {
-    await page.goto('/search/facets');
+    await page.goto('/search');
     await page.waitForLoadState('networkidle');
-    await expect(
-      page.getByRole('heading', { name: 'Search Facet Management' })
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
     await expect(
       page.getByRole('link', { name: 'Add facet rule' })
@@ -37,9 +35,7 @@ test.describe('Search Ranking', () => {
 
     await page.getByRole('button', { name: 'Create' }).click();
     await page.waitForLoadState('networkidle');
-    await expect(
-      page.getByRole('heading', { name: 'Search Facet Management' })
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Sequin Dress');
@@ -64,7 +60,7 @@ test.describe('Search Ranking', () => {
 
   test('edits a ruleset', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
-    await page.goto('/search/rulesets');
+    await page.goto('/search');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Sequin Dress');
@@ -131,7 +127,7 @@ test.describe('Search Ranking', () => {
   });
 
   test('duplicates and edits a rule', async ({ page }) => {
-    await page.goto('/search/rulesets');
+    await page.goto('/search');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Sequin Dress');
@@ -175,7 +171,7 @@ test.describe('Search Ranking', () => {
   });
 
   test('deletes a ruleset', async ({ page }) => {
-    await page.goto('/search/rulesets');
+    await page.goto('/search');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Sequin Dress');
