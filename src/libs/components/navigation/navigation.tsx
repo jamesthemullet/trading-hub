@@ -91,10 +91,6 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
       path: '/global/',
       icon: '/trading-hub/asset/menu-globe.svg',
       activeIcon: '/trading-hub/asset/menu-globe-active.svg',
-      subLinks: [
-        { href: '/global/rulesets', text: 'Global Category Ranking' },
-        { href: '/global/facets', text: 'Global Facet Management' },
-      ],
       alt: 'Global Ranking Rules',
       shortTitle: 'Global',
     },

@@ -4,8 +4,8 @@ import type {
   MerchandisingRuleSet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
+import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
-import { Heading } from '@/libs/components/heading/heading';
 import { TablePanel } from '@/libs/components/table-panel/table-panel';
 import type { RuleSetMapping } from '@/libs/components/types';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
@@ -28,7 +28,7 @@ const mapping: RuleSetMapping<
     identifier: '*',
     isEnabled,
     lastChanged,
-    url: `/global/facets/edit/${id}`,
+    url: `/global/rulesets/edit/${id}`,
     countryCode,
   }),
   allToArray: (data) => data.ruleSets,
@@ -61,7 +61,7 @@ const mapping: RuleSetMapping<
   },
 };
 
-const FacetManagementPage = () => {
+const RuleSets = () => {
   const headings = [
     'Identifier',
     'Influence',
@@ -80,17 +80,14 @@ const FacetManagementPage = () => {
   return (
     <>
       <Head>
-        <title>Merchandising Hub | M&S | Global Facet Management</title>
+        <title>Merchandising Hub | M&S | Global</title>
       </Head>
       <>
         <Heading
-          breadcrumbs={[
-            'Search & Merchandising',
-            'Categories',
-            'Global Facet Management',
-          ]}
+          breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
         />
-        <PageNameLabel>Global Facet Management</PageNameLabel>
+
+        <PageNameLabel>Global</PageNameLabel>
         <TablePanel
           basePath="/global"
           headings={headings}
@@ -105,4 +102,4 @@ const FacetManagementPage = () => {
   );
 };
 
-export default FacetManagementPage;
+export default RuleSets;

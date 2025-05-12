@@ -38,6 +38,17 @@ const nextConfig = {
       destination: '/search',
       permanent: false,
     },
+    {
+      source: '/global/rulesets',
+      destination: '/global',
+      permanent: false,
+    },
+
+    {
+      source: '/global/facets',
+      destination: '/global',
+      permanent: false,
+    },
   ],
   webpack: (config) => {
     config.module.rules.push({

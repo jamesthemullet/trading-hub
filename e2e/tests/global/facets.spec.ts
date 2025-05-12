@@ -60,15 +60,13 @@ test.describe('global facets', () => {
         await route.fulfill({ status: 200, json });
       }
     );
-    await page.goto('/global/facets');
+    await page.goto('/global');
     await page.waitForLoadState('networkidle');
   });
 
   test('edits a facet name', async ({ page }) => {
-    await page.goto('/global/facets');
-    await expect(
-      page.getByRole('heading', { name: 'Global Facet Management' })
-    ).toBeVisible();
+    await page.goto('/global');
+    await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Add facet rule' }).click();
 
