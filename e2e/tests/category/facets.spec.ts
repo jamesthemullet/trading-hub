@@ -66,9 +66,9 @@ test.describe('Category rulesets', () => {
   });
 
   test('edits ruleset facets for UK', async ({ page }) => {
-    await page.goto('/category/facets');
+    await page.goto('/category');
     await expect(
-      page.getByRole('heading', { name: 'Category Facet Management' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await page.waitForLoadState('networkidle');

@@ -85,18 +85,12 @@ const RuleSets = () => {
   return (
     <>
       <Head>
-        <title>Merchandising Hub | M&S | Category ranking rules</title>
+        <title>Merchandising Hub | M&S | Categories</title>
       </Head>
       <>
-        <Heading
-          breadcrumbs={[
-            'Search & Merchandising',
-            'Categories',
-            'Ranking rules',
-          ]}
-        />
+        <Heading breadcrumbs={['Search & Merchandising', 'Categories']} />
 
-        <PageNameLabel>Category ranking rules</PageNameLabel>
+        <PageNameLabel>Categories</PageNameLabel>
         <TablePanel
           basePath="/category"
           headings={headings}

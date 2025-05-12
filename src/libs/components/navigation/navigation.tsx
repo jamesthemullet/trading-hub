@@ -63,15 +63,11 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
 
   const menuItems = [
     {
-      title: 'Category Ranking Rules',
-      path: '/category/',
+      title: 'Category Rules',
+      path: '/category',
       icon: '/trading-hub/asset/menu-category-ranking-v2.svg',
       activeIcon: '/trading-hub/asset/menu-category-ranking-v2-active.svg',
-      subLinks: [
-        { href: '/category/rulesets', text: 'Ranking rules' },
-        { href: '/category/facets', text: 'Facets' },
-      ],
-      alt: 'Category Ranking Rules',
+      alt: 'Categories',
       shortTitle: 'Categories',
     },
     {
@@ -91,7 +87,6 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
       path: '/search/redirects',
       icon: '/trading-hub/asset/menu-redirect-arrow.svg',
       activeIcon: '/trading-hub/asset/menu-redirect-arrow-active.svg',
-      subLinks: [{ href: '/search/redirects', text: 'Redirect rules' }],
       alt: 'Redirect Rules',
       shortTitle: 'Redirect',
     },

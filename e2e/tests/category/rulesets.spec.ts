@@ -14,7 +14,7 @@ import {
   mockProducts,
 } from './category.mocks';
 
-test.describe('Category rulesets', () => {
+test.describe('Categories', () => {
   test.beforeEach(async ({ page }) => {
     await page.route(
       '*/**/api/search/beta/merchandising/category/ruleset?q=&start=0&rows=10',
@@ -106,9 +106,9 @@ test.describe('Category rulesets', () => {
   });
 
   test('creates a new ruleset', async ({ page }) => {
-    await page.goto('/category/rulesets');
+    await page.goto('/category');
     await expect(
-      page.getByRole('heading', { name: 'Category ranking rules' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await page.waitForLoadState('networkidle');
@@ -152,9 +152,9 @@ test.describe('Category rulesets', () => {
   });
 
   test('creates a new ruleset for ROI', async ({ page }) => {
-    await page.goto('/category/rulesets');
+    await page.goto('/category');
     await expect(
-      page.getByRole('heading', { name: 'Category ranking rules' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await page.waitForLoadState('networkidle');
@@ -210,9 +210,9 @@ test.describe('Category rulesets', () => {
   });
 
   test('should add multiple categories to a ruleset', async ({ page }) => {
-    await page.goto('/category/rulesets');
+    await page.goto('/category');
     await expect(
-      page.getByRole('heading', { name: 'Category ranking rules' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await page.waitForLoadState('networkidle');
@@ -250,9 +250,9 @@ test.describe('Category rulesets', () => {
   });
 
   test('deletes a ruleset', async ({ page }) => {
-    await page.goto('/category/rulesets');
+    await page.goto('/category');
     await expect(
-      page.getByRole('heading', { name: 'Category ranking rules' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await expect(page.getByText('SubCategory_429 -').first()).toBeVisible();
@@ -622,9 +622,9 @@ test.describe('Category rulesets', () => {
 
   test.describe('Scheduling', () => {
     test('Should schedule a ruleset', async ({ page }) => {
-      await page.goto('/category/rulesets');
+      await page.goto('/category');
       await expect(
-        page.getByRole('heading', { name: 'Category ranking rules' })
+        page.getByRole('heading', { name: 'Categories' })
       ).toBeVisible();
 
       await page.waitForLoadState('networkidle');
@@ -685,9 +685,9 @@ test.describe('Category rulesets', () => {
     });
 
     test('should edit a scheduled ruleset', async ({ page }) => {
-      await page.goto('/category/rulesets');
+      await page.goto('/category');
       await expect(
-        page.getByRole('heading', { name: 'Category ranking rules' })
+        page.getByRole('heading', { name: 'Categories' })
       ).toBeVisible();
 
       await page.waitForLoadState('networkidle');
@@ -731,9 +731,9 @@ test.describe('Category rulesets', () => {
     });
 
     test('should delete a scheduled ruleset', async ({ page }) => {
-      await page.goto('/category/rulesets');
+      await page.goto('/category');
       await expect(
-        page.getByRole('heading', { name: 'Category ranking rules' })
+        page.getByRole('heading', { name: 'Categories' })
       ).toBeVisible();
 
       await page.waitForLoadState('networkidle');

@@ -39,7 +39,6 @@ const menuItems = [
     path: '/redirect',
     icon: '/trading-hub/asset/menu-redirect-arrow.svg',
     activeIcon: '/trading-hub/asset/menu-redirect-arrow-active.svg',
-    subLinks: [{ href: '/redirects', text: 'Redirect rules' }],
     alt: 'Redirect Rules',
     shortTitle: 'Redirect',
   },
@@ -101,7 +100,6 @@ describe('NavigationMenu', () => {
       ['Ranking rules', 'Facets'],
       'Search optimisation',
     ],
-    ['Redirect Rules', ['Redirect rules'], 'Redirects'],
     [
       'Setup',
       ['Global Category Ranking', 'Global Facet Management'],

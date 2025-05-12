@@ -14,13 +14,40 @@ const MenuItem = styled.div`
   width: 100%;
 `;
 
-const StyledLink = styled.a<{ isOpen?: boolean }>`
+const StyledButton = styled.button<{ isOpen?: boolean }>`
   text-decoration: none;
   font-size: 12px;
   color: #fff;
   background-color: ${({ isOpen }) =>
     isOpen ? navigationLightGreen : color.darkHeritageGreen};
   border: none;
+  display: flex;
+  min-height: 64px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 11;
+  flex-direction: column;
+  padding: ${spacing(1)};
+  width: 100%;
+
+  p {
+    color: #fff;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: ${navigationLightGreen};
+    outline: none;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  font-size: 12px;
+  color: #fff;
+  border: none;
+  background-color: ${color.darkHeritageGreen};
   display: flex;
   min-height: 64px;
   justify-content: center;
@@ -91,7 +118,7 @@ type MenuItems = {
     path: string;
     icon: string;
     activeIcon: string;
-    subLinks: {
+    subLinks?: {
       href: string;
       text: string;
     }[];
@@ -106,48 +133,57 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
 
   return (
     <>
-      {menuItems.map((menuItem, index) => (
-        <MenuItem key={menuItem.title}>
-          <StyledLink
-            as="button"
-            title={menuItem.title}
-            aria-label={menuItem.title}
-            onClick={() => setOpenMenu(openMenu === index + 1 ? 0 : index + 1)}
-            isOpen={openMenu === index + 1}
-          >
-            {pathname === menuItem.path ||
-            (pathname.includes(menuItem.path) &&
-              !pathname.includes('redirect')) ? (
-              <Icon
-                src={menuItem.activeIcon}
-                alt={menuItem.alt}
-                height={25}
-                width={25}
-              />
-            ) : (
-              <Icon
-                src={menuItem.icon}
-                alt={menuItem.alt}
-                height={25}
-                width={25}
-              />
+      {menuItems.map((menuItem, index) => {
+        const hasSubLinks = menuItem.subLinks;
+        const LinkElement = hasSubLinks ? StyledButton : StyledLink;
+        return (
+          <MenuItem key={menuItem.title}>
+            <LinkElement
+              title={menuItem.title}
+              aria-label={menuItem.title}
+              href={menuItem.path}
+              {...(hasSubLinks && {
+                onClick: () =>
+                  setOpenMenu(openMenu === index + 1 ? 0 : index + 1),
+              })}
+              {...(hasSubLinks && { isOpen: openMenu === index + 1 })}
+            >
+              {pathname === menuItem.path ||
+              (pathname.includes(menuItem.path) &&
+                !pathname.includes('redirect')) ? (
+                <Icon
+                  src={menuItem.activeIcon}
+                  alt={menuItem.alt}
+                  height={25}
+                  width={25}
+                />
+              ) : (
+                <Icon
+                  src={menuItem.icon}
+                  alt={menuItem.alt}
+                  height={25}
+                  width={25}
+                />
+              )}
+              <Text>{menuItem.shortTitle}</Text>
+            </LinkElement>
+            {menuItem.subLinks && (
+              <SubMenu isVisible={openMenu === index + 1}>
+                <Header3>{menuItem.title}</Header3>
+                {menuItem.subLinks.map((subLink) => (
+                  <SubLink
+                    href={subLink.href}
+                    onClick={() => setOpenMenu(0)}
+                    key={subLink.text}
+                  >
+                    <Text>{subLink.text}</Text>
+                  </SubLink>
+                ))}
+              </SubMenu>
             )}
-            <Text>{menuItem.shortTitle}</Text>
-          </StyledLink>
-          <SubMenu isVisible={openMenu === index + 1}>
-            <Header3>{menuItem.title}</Header3>
-            {menuItem.subLinks.map((subLink) => (
-              <SubLink
-                href={subLink.href}
-                onClick={() => setOpenMenu(0)}
-                key={subLink.text}
-              >
-                <Text>{subLink.text}</Text>
-              </SubLink>
-            ))}
-          </SubMenu>
-        </MenuItem>
-      ))}
+          </MenuItem>
+        );
+      })}
     </>
   );
 };

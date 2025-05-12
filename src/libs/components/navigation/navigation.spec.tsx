@@ -30,7 +30,7 @@ describe('Navigation', () => {
   it('should render trading hub navigation', () => {
     render(<Navigation autoLogin />);
 
-    expect(screen.getByTitle('Category Ranking Rules')).toBeInTheDocument();
+    expect(screen.getByTitle('Category Rules')).toBeInTheDocument();
   });
 
   it('should not show login button when auto login enabled', () => {
@@ -132,7 +132,7 @@ describe('Navigation', () => {
       render(<Navigation autoLogin />);
 
       expect(
-        (await screen.findByLabelText('Category Ranking Rules')).childNodes[0]
+        (await screen.findByLabelText('Category Rules')).childNodes[0]
       ).toHaveAttribute('src', icon1);
 
       expect(

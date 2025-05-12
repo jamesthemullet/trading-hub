@@ -15,6 +15,19 @@ const nextConfig = {
       },
     ],
   },
+  redirects: async () => [
+    {
+      source: '/category/rulesets',
+      destination: '/category',
+      permanent: false,
+    },
+
+    {
+      source: '/category/facets',
+      destination: '/category',
+      permanent: false,
+    },
+  ],
   webpack: (config) => {
     config.module.rules.push({
       test: /\.ya?ml$/,

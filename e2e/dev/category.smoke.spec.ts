@@ -10,10 +10,10 @@ const TEST_CATEGORY_IDENTIFIER = 'SubCategory_1842397 - Socks';
 
 test.describe('Category Ranking', () => {
   test('creates new ruleset', async ({ page }) => {
-    await page.goto('/category/facets');
+    await page.goto('/category');
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('heading', { name: 'Category Facet Management' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await expect(
@@ -39,7 +39,7 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Create' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('heading', { name: 'Category Facet Management' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await page.getByPlaceholder('Search...').click();
@@ -197,7 +197,7 @@ test.describe('Category Ranking', () => {
   });
 
   test('keeps changes for facets and products', async ({ page }) => {
-    await page.goto('/category/facets');
+    await page.goto('/category');
     await page.waitForLoadState('networkidle');
 
     await page.getByPlaceholder('Search...').click();
@@ -219,11 +219,10 @@ test.describe('Category Ranking', () => {
       page.getByTestId('Row showing Baby Sizes as included')
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Category Ranking Rules' }).click();
-    await page.getByRole('link', { name: 'Ranking rules' }).click();
+    await page.getByRole('link', { name: 'Category Rules' }).click();
 
     await expect(
-      page.getByRole('heading', { name: 'Category Ranking Rules' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await page.getByPlaceholder('Search...').click();
@@ -286,7 +285,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(
-      page.getByRole('heading', { name: 'Category Ranking Rules' })
+      page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
     await expect(
       page.getByText('IE_SubCategory_1012341 - Scarves')
