@@ -11,7 +11,10 @@ describe('GlobalFacetAttribute', () => {
         attributes={['value1', 'value2']}
         isMergeGroup={false}
         displayName="test"
+        allSelected={false}
+        allDeselected={false}
         handleRemoveFromMerge={jest.fn()}
+        dispatch={jest.fn()}
       />
     );
     expect(screen.getByText('value1')).toBeVisible();

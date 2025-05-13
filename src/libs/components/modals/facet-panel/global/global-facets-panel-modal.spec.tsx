@@ -1526,170 +1526,448 @@ describe('GlobalFacetPanelModalContent', () => {
     });
   });
 
-  it('should display the correct amount of filtered items when the merge group name matches the filter', async () => {
-    const user = userEvent.setup({ delay: null });
-    renderWithProviders(
-      <GlobalFacetPanelModalContent
-        attributeValues={attributeValuesMock}
-        facet={{
-          ...mockFacet,
-          merged: [
-            {
-              displayValue: 'Foo',
-              mergedValues: [
-                attributeValuesMock[0].displayValue,
-                attributeValuesMock[1].displayValue,
-              ],
-            },
-          ],
-          boosted: [],
-          excludedValues: [],
-        }}
-        {...defaultProps}
-        onClose={jest.fn()}
-      />
-    );
+  describe('searching', () => {
+    it('should display the correct amount of filtered items when the merge group name matches the filter', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            ...mockFacet,
+            merged: [
+              {
+                displayValue: 'Foo',
+                mergedValues: [
+                  attributeValuesMock[0].displayValue,
+                  attributeValuesMock[1].displayValue,
+                ],
+              },
+            ],
+            boosted: [],
+            excludedValues: [],
+          }}
+          {...defaultProps}
+          onClose={jest.fn()}
+        />
+      );
 
-    const searchInput = screen.getByPlaceholderText('Search...');
+      const searchInput = screen.getByPlaceholderText('Search...');
 
-    await user.type(searchInput, 'foo');
+      await user.type(searchInput, 'foo');
 
-    await waitFor(() => {
-      expect(screen.getByText('1 result')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('1 result')).toBeInTheDocument();
+      });
+    });
+
+    it('should display the correct amount of filtered items when the attribute values matches the filter', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={mockFacet}
+          {...defaultProps}
+          onClose={jest.fn()}
+        />
+      );
+
+      const searchInput = screen.getByPlaceholderText('Search...');
+
+      await user.type(searchInput, '13');
+
+      await waitFor(() => {
+        expect(screen.getByText('2 results')).toBeInTheDocument();
+      });
+    });
+
+    it('should display the correct amount of filtered items when the merged value group includes it', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            ...mockFacet,
+            merged: [
+              {
+                displayValue: 'Foo',
+                mergedValues: ['white wine', 'red wine'],
+              },
+            ],
+          }}
+          {...defaultProps}
+          onClose={jest.fn()}
+        />
+      );
+
+      const searchInput = screen.getByPlaceholderText('Search...');
+
+      await user.type(searchInput, 'wine');
+
+      await waitFor(() => {
+        expect(screen.getByText('1 result')).toBeInTheDocument();
+      });
     });
   });
 
-  it('should display the correct amount of filtered items when the attribute values matches the filter', async () => {
-    const user = userEvent.setup({ delay: null });
-    renderWithProviders(
-      <GlobalFacetPanelModalContent
-        attributeValues={attributeValuesMock}
-        facet={mockFacet}
-        {...defaultProps}
-        onClose={jest.fn()}
-      />
-    );
+  describe('show more/fewer', () => {
+    it('should only display 4 merged values', () => {
+      const mockOnClose = jest.fn();
+      mockUpdateGlobalFacet.mockResolvedValueOnce(mockFacet);
 
-    const searchInput = screen.getByPlaceholderText('Search...');
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            id: mockFacet.id,
+            indexPropertyName: mockFacet.indexPropertyName,
+            displayValue: mockFacet.displayValue,
+            lastChanged: mockFacet.lastChanged,
+            merged: [
+              {
+                displayValue: 'Foo',
+                mergedValues: [
+                  attributeValuesMock[0].displayValue,
+                  attributeValuesMock[1].displayValue,
+                  attributeValuesMock[2].displayValue,
+                  attributeValuesMock[3].displayValue,
+                  attributeValuesMock[4].displayValue,
+                ],
+              },
+            ],
+          }}
+          countryCode="UK"
+          onClose={mockOnClose}
+          writeEnabled
+        />
+      );
 
-    await user.type(searchInput, '13');
+      expect(screen.getByText('Merged Value Group')).toBeVisible();
 
-    await waitFor(() => {
-      expect(screen.getByText('2 results')).toBeInTheDocument();
-    });
-  });
-
-  it('should display the correct amount of filtered items when the merged value group includes it', async () => {
-    const user = userEvent.setup({ delay: null });
-    renderWithProviders(
-      <GlobalFacetPanelModalContent
-        attributeValues={attributeValuesMock}
-        facet={{
-          ...mockFacet,
-          merged: [
-            {
-              displayValue: 'Foo',
-              mergedValues: ['white wine', 'red wine'],
-            },
-          ],
-        }}
-        {...defaultProps}
-        onClose={jest.fn()}
-      />
-    );
-
-    const searchInput = screen.getByPlaceholderText('Search...');
-
-    await user.type(searchInput, 'wine');
-
-    await waitFor(() => {
-      expect(screen.getByText('1 result')).toBeInTheDocument();
-    });
-  });
-
-  it('should only display 4 merged values', () => {
-    const mockOnClose = jest.fn();
-    mockUpdateGlobalFacet.mockResolvedValueOnce(mockFacet);
-
-    renderWithProviders(
-      <GlobalFacetPanelModalContent
-        attributeValues={attributeValuesMock}
-        facet={{
-          id: mockFacet.id,
-          indexPropertyName: mockFacet.indexPropertyName,
-          displayValue: mockFacet.displayValue,
-          lastChanged: mockFacet.lastChanged,
-          merged: [
-            {
-              displayValue: 'Foo',
-              mergedValues: [
-                attributeValuesMock[0].displayValue,
-                attributeValuesMock[1].displayValue,
-                attributeValuesMock[2].displayValue,
-                attributeValuesMock[3].displayValue,
-                attributeValuesMock[4].displayValue,
-              ],
-            },
-          ],
-        }}
-        countryCode="UK"
-        onClose={mockOnClose}
-        writeEnabled
-      />
-    );
-
-    expect(screen.getByText('Merged Value Group')).toBeVisible();
-
-    expect(screen.getByText(attributeValuesMock[3].displayValue)).toBeVisible();
-    expect(
-      screen.queryByText(attributeValuesMock[4].displayValue)
-    ).not.toBeInTheDocument();
-  });
-
-  it('should display all of the merged values when the group is expanded', async () => {
-    const user = userEvent.setup({ delay: null });
-    const mockOnClose = jest.fn();
-    mockUpdateGlobalFacet.mockResolvedValueOnce(mockFacet);
-
-    renderWithProviders(
-      <GlobalFacetPanelModalContent
-        attributeValues={attributeValuesMock}
-        facet={{
-          id: mockFacet.id,
-          indexPropertyName: mockFacet.indexPropertyName,
-          displayValue: mockFacet.displayValue,
-          lastChanged: mockFacet.lastChanged,
-          merged: [
-            {
-              displayValue: 'Foo',
-              mergedValues: [
-                attributeValuesMock[0].displayValue,
-                attributeValuesMock[1].displayValue,
-                attributeValuesMock[2].displayValue,
-                attributeValuesMock[3].displayValue,
-                attributeValuesMock[4].displayValue,
-              ],
-            },
-          ],
-        }}
-        countryCode="UK"
-        onClose={mockOnClose}
-        writeEnabled
-      />
-    );
-
-    expect(screen.getByText('Merged Value Group')).toBeVisible();
-
-    expect(
-      screen.queryByText(attributeValuesMock[4].displayValue)
-    ).not.toBeInTheDocument();
-
-    await user.click(screen.getByRole('button', { name: 'Show More' }));
-
-    await waitFor(() => {
       expect(
-        screen.getByText(attributeValuesMock[4].displayValue)
+        screen.getByText(attributeValuesMock[3].displayValue)
       ).toBeVisible();
+      expect(
+        screen.queryByText(attributeValuesMock[4].displayValue)
+      ).not.toBeInTheDocument();
+    });
+
+    it('should display all of the merged values when the group is expanded', async () => {
+      const user = userEvent.setup({ delay: null });
+      const mockOnClose = jest.fn();
+      mockUpdateGlobalFacet.mockResolvedValueOnce(mockFacet);
+
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            id: mockFacet.id,
+            indexPropertyName: mockFacet.indexPropertyName,
+            displayValue: mockFacet.displayValue,
+            lastChanged: mockFacet.lastChanged,
+            merged: [
+              {
+                displayValue: 'Foo',
+                mergedValues: [
+                  attributeValuesMock[0].displayValue,
+                  attributeValuesMock[1].displayValue,
+                  attributeValuesMock[2].displayValue,
+                  attributeValuesMock[3].displayValue,
+                  attributeValuesMock[4].displayValue,
+                ],
+              },
+            ],
+          }}
+          countryCode="UK"
+          onClose={mockOnClose}
+          writeEnabled
+        />
+      );
+
+      expect(screen.getByText('Merged Value Group')).toBeVisible();
+
+      expect(
+        screen.queryByText(attributeValuesMock[4].displayValue)
+      ).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: 'Show More' }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(attributeValuesMock[4].displayValue)
+        ).toBeVisible();
+      });
+    });
+  });
+
+  describe('selection of all values', () => {
+    it('should select all values when the checkbox is checked', () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            id: mockFacet.id,
+            indexPropertyName: mockFacet.indexPropertyName,
+            displayValue: mockFacet.displayValue,
+            lastChanged: mockFacet.lastChanged,
+            merged: [
+              {
+                displayValue: 'Foo',
+                mergedValues: [
+                  attributeValuesMock[0].displayValue,
+                  attributeValuesMock[1].displayValue,
+                  attributeValuesMock[2].displayValue,
+                  attributeValuesMock[3].displayValue,
+                  attributeValuesMock[4].displayValue,
+                ],
+              },
+            ],
+          }}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const button = screen.getByLabelText('Select all facet attributes');
+
+      act(() => {
+        button.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
+    });
+
+    it('should select all values when the checkbox is checked and some values are already selected', () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const checkbox1 = screen.getByLabelText(
+        `Select ${attributeValuesMock[0].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox1.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
+
+      const button = screen.getByLabelText('Select all facet attributes');
+
+      act(() => {
+        button.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
+    });
+
+    it('should check the select all checkbox when all values are selected individually', () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const checkbox1 = screen.getByLabelText(
+        `Select ${attributeValuesMock[0].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox1.click();
+      });
+
+      const checkbox2 = screen.getByLabelText(
+        `Select ${attributeValuesMock[1].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox2.click();
+      });
+
+      const checkbox3 = screen.getByLabelText(
+        `Select ${attributeValuesMock[2].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox3.click();
+      });
+
+      const checkbox4 = screen.getByLabelText(
+        `Select ${attributeValuesMock[3].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox4.click();
+      });
+
+      const checkbox5 = screen.getByLabelText(
+        `Select ${attributeValuesMock[4].displayValue} to merge`
+      );
+
+      act(() => {
+        checkbox5.click();
+      });
+
+      const selectAllButton = screen.getByLabelText(
+        'Select all facet attributes'
+      );
+
+      expect(selectAllButton).toBeChecked();
+
+      expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
+    });
+
+    it('should uncheck the select all checkbox when a value is deselected individually', () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const checkbox1 = screen.getByLabelText(
+        `Select ${attributeValuesMock[0].displayValue} to merge`
+      );
+
+      const selectAllButton = screen.getByLabelText(
+        'Select all facet attributes'
+      );
+
+      act(() => {
+        selectAllButton.click();
+      });
+
+      expect(selectAllButton).toBeChecked();
+      expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
+
+      act(() => {
+        checkbox1.click();
+      });
+
+      expect(selectAllButton).not.toBeChecked();
+
+      expect(screen.getByRole('button', { name: 'Merge (4)' })).toBeVisible();
+    });
+
+    it('should deselect all values when the checkbox is unchecked', () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const button = screen.getByLabelText('Select all facet attributes');
+
+      act(() => {
+        button.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
+
+      act(() => {
+        button.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
+    });
+
+    it('should remove the item from selected when removed from a selected merge group', () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            ...mockFacet,
+            merged: [
+              {
+                displayValue: 'Merge Foo',
+                mergedValues: [
+                  attributeValuesMock[0].displayValue,
+                  attributeValuesMock[1].displayValue,
+                  attributeValuesMock[2].displayValue,
+                ],
+              },
+            ],
+            boosted: [],
+            excludedValues: [],
+          }}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const checkbox1 = screen.getByLabelText(`Select Merge Foo to merge`);
+
+      act(() => {
+        checkbox1.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
+
+      const button = screen.getByLabelText(
+        `Remove merged facet for ${attributeValuesMock[0].displayValue}`
+      );
+
+      act(() => {
+        button.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
+    });
+
+    it('should not add the item to selected when removed from an unselected merge group', () => {
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={{
+            ...mockFacet,
+            merged: [
+              {
+                displayValue: 'Foo',
+                mergedValues: [
+                  attributeValuesMock[0].displayValue,
+                  attributeValuesMock[1].displayValue,
+                  attributeValuesMock[2].displayValue,
+                ],
+              },
+            ],
+            boosted: [],
+            excludedValues: [],
+          }}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
+
+      const button = screen.getByLabelText(
+        `Remove merged facet for ${attributeValuesMock[2].displayValue}`
+      );
+
+      act(() => {
+        button.click();
+      });
+
+      expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
     });
   });
 });
