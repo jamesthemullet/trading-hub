@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
+import { useGetFacetAttributeValues } from '@/libs/hooks';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -17,29 +17,6 @@ jest.mock('@/libs/hooks', () => ({
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../libs/hooks/use-get-categories', () => ({
-  useGetCategories: jest.fn(),
-}));
-
-const categoryId1 = 'cat_123';
-const categoryId2 = 'IE_cat123';
-const categoryName1 = 'jeans';
-const categoryPath1 = 'l/jeans';
-const mockGetCategories = {
-  categories: [
-    {
-      identifier: categoryId1,
-      name: categoryName1,
-      path: categoryPath1,
-    },
-    {
-      identifier: categoryId2,
-      name: categoryName1,
-      path: categoryPath1,
-    },
-  ],
-  pagination: { totalItems: 20 },
-};
 
 const mockDefaultOrderData = [
   { defaultOrder: 'Include only' },
@@ -52,7 +29,6 @@ const mockDefaultOrderData = [
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
 const dispatchSpy = jest.fn();
-const setDateTimeSpy = jest.fn();
 
 const mockFacetsState: FacetRowDisplayValue[] = [
   {
@@ -148,11 +124,6 @@ const mockExcludedFacets = {
 
 describe('Facet Panel', () => {
   beforeEach(() => {
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
-    });
-
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
       error: '',
@@ -169,7 +140,6 @@ describe('Facet Panel', () => {
       <FacetsPanel
         writeEnabled={true}
         title="Facet Rule Editor"
-        facetType="category"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
@@ -179,25 +149,22 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
+        refreshData={jest.fn()}
       />
     );
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
-    expect(screen.getByRole('button', { name: 'Preview' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
     expect(
       screen.getByRole('heading', { level: 1, name: 'Facet Rule Editor' })
     ).toBeVisible();
   });
 
-  it('should not render preview button or add new facets button, if global facets page', async () => {
+  it('should not render preview button or add new facets button', async () => {
     renderWithProviders(
       <FacetsPanel
         writeEnabled={true}
         title="Facet Rule Editor"
-        facetType="global"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
@@ -207,6 +174,7 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
+        refreshData={jest.fn()}
       />
     );
 
@@ -218,56 +186,11 @@ describe('Facet Panel', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should not enable preview button if no categories selected', async () => {
-    renderWithProviders(
-      <FacetsPanel
-        writeEnabled={true}
-        title="Facet Rule Editor"
-        facetType="category"
-        countryCode="UK_IE"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
-      />
-    );
-
-    expect(screen.queryByRole('button', { name: 'Preview' })).toBeDisabled();
-  });
-
-  it('should not enable preview button if no search terms added', async () => {
-    renderWithProviders(
-      <FacetsPanel
-        writeEnabled={true}
-        title="Facet Rule Editor"
-        facetType="search"
-        countryCode="UK_IE"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-      />
-    );
-
-    expect(screen.queryByRole('button', { name: 'Preview' })).toBeDisabled();
-  });
-
   it('should render column headings', () => {
     renderWithProviders(
       <FacetsPanel
         writeEnabled={true}
         title="Facet Rule Editor"
-        facetType="category"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
@@ -277,8 +200,7 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
+        refreshData={jest.fn()}
       />
     );
 
@@ -295,7 +217,6 @@ describe('Facet Panel', () => {
       <FacetsPanel
         writeEnabled={true}
         title="Facet Rule Editor"
-        facetType="category"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
@@ -306,8 +227,7 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
+        refreshData={jest.fn()}
       />
     );
 
@@ -328,7 +248,6 @@ describe('Facet Panel', () => {
       <FacetsPanel
         writeEnabled={true}
         title="Facet Rule Editor"
-        facetType="category"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
@@ -339,8 +258,7 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
+        refreshData={jest.fn()}
       />
     );
 
@@ -359,7 +277,6 @@ describe('Facet Panel', () => {
       <FacetsPanel
         writeEnabled={true}
         title="Facet Rule Editor"
-        facetType="category"
         countryCode="UK"
         selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
@@ -369,8 +286,8 @@ describe('Facet Panel', () => {
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
+        refreshData={jest.fn()}
+        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -402,60 +319,6 @@ describe('Facet Panel', () => {
     });
   });
 
-  it('should show the schedule date picker', async () => {
-    renderWithProviders(
-      <FacetsPanel
-        writeEnabled={true}
-        title="Facet Rule Editor"
-        facetType="category"
-        countryCode="UK"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        selectedCategories={[categoryId1]}
-        setDateTime={jest.fn()}
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
-      />
-    );
-
-    expect(screen.getByPlaceholderText('Select date range')).toHaveValue('');
-  });
-
-  it('should show a previously saved scheduled date', async () => {
-    renderWithProviders(
-      <FacetsPanel
-        writeEnabled={true}
-        title="Facet Rule Editor"
-        facetType="category"
-        countryCode="UK"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        selectedCategories={[categoryId1]}
-        onFacetDataChange={jest.fn()}
-        startDate="2024-11-05T00:00:00.000Z"
-        endDate="2024-11-06T00:00:00.000Z"
-        setDateTime={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
-      />
-    );
-
-    expect(screen.getByPlaceholderText('Select date range')).toHaveValue(
-      '05/11/24 00:00 - 06/11/24 00:00'
-    );
-  });
-
   describe('Edit Facet Values Modal', () => {
     it('should open the modal', async () => {
       const user = userEvent.setup();
@@ -464,12 +327,12 @@ describe('Facet Panel', () => {
         <FacetsPanel
           writeEnabled={true}
           title="Facet Rule Editor"
-          facetType="global"
           countryCode="UK"
           selectedPreviewCountryCode="UK"
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
-          setDateTime={setDateTimeSpy}
+          refreshData={jest.fn()}
+          onFacetDataChange={jest.fn()}
           facetsState={mockFacetsState}
           includedFacets={mockIncludedFacets}
           excludedFacets={mockExcludedFacets}
@@ -503,18 +366,15 @@ describe('Facet Panel', () => {
         <FacetsPanel
           writeEnabled={true}
           title="Facet Rule Editor"
-          facetType="global"
           countryCode="UK"
           selectedPreviewCountryCode="UK"
           onSave={onSaveSpy}
           onCancel={onCancelSpy}
-          setDateTime={setDateTimeSpy}
+          onFacetDataChange={jest.fn()}
           facetsState={mockFacetsState}
           includedFacets={mockIncludedFacets}
           excludedFacets={mockExcludedFacets}
           dispatch={dispatchSpy}
-          selectedCategoriesInfo={[]}
-          setSelectedCategoriesInfo={jest.fn()}
           refreshData={refreshMock}
         />
       );
@@ -555,19 +415,16 @@ describe('Facet Panel', () => {
       <FacetsPanel
         writeEnabled={true}
         title="Facet Rule Editor"
-        facetType="global"
         countryCode="UK"
         selectedPreviewCountryCode="UK"
         onFacetDataChange={jest.fn()}
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
-        setDateTime={setDateTimeSpy}
+        refreshData={jest.fn()}
         facetsState={mockFacetsState}
         includedFacets={mockIncludedFacets}
         excludedFacets={mockExcludedFacets}
         dispatch={dispatchSpy}
-        selectedCategoriesInfo={[]}
-        setSelectedCategoriesInfo={jest.fn()}
       />
     );
 

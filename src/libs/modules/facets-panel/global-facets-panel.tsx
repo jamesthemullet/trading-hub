@@ -167,7 +167,6 @@ const GlobalFacetsPanel = ({
       ) : (
         <FacetsPanel
           title="Global Facet Rule Editor"
-          facetType="global"
           canMergeValueAttributes
           facetsState={facetsState}
           rulesetMerchandisingRules={ruleSetRules}
