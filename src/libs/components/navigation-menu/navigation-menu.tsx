@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Header3, Text } from '../typography/typography.styles';
+import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
@@ -14,13 +13,15 @@ const MenuItem = styled.div`
   width: 100%;
 `;
 
-const StyledButton = styled.button<{ isOpen?: boolean }>`
+const StyledLink = styled(Link, {
+  shouldForwardProp: (prop) => prop !== 'isActive',
+})<{ isActive: boolean }>`
   text-decoration: none;
   font-size: 12px;
   color: #fff;
-  background-color: ${({ isOpen }) =>
-    isOpen ? navigationLightGreen : color.darkHeritageGreen};
   border: none;
+  background-color: ${({ isActive }) =>
+    isActive ? navigationLightGreen : color.darkHeritageGreen};
   display: flex;
   min-height: 64px;
   justify-content: center;
@@ -39,118 +40,45 @@ const StyledButton = styled.button<{ isOpen?: boolean }>`
   &:focus {
     background-color: ${navigationLightGreen};
     outline: none;
-  }
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  font-size: 12px;
-  color: #fff;
-  border: none;
-  background-color: ${color.darkHeritageGreen};
-  display: flex;
-  min-height: 64px;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 11;
-  flex-direction: column;
-  padding: ${spacing(1)};
-  width: 100%;
-
-  p {
-    color: #fff;
-  }
-
-  &:hover,
-  &:focus {
-    background-color: ${navigationLightGreen};
-    outline: none;
-  }
-`;
-
-const SubLink = styled(Link)`
-  background-color: ${navigationLightGreen};
-  width: 100%;
-  justify-items: left;
-  display: inline-block;
-  text-decoration: none;
-
-  &:hover,
-  &:focus {
-    background-color: ${color.darkHeritageGreen};
   }
 `;
 
 const Icon = styled.img``;
 
-const SubMenu = styled.div<{ isVisible?: boolean }>`
-  height: 100%;
-  background-color: ${navigationLightGreen};
-  padding-top: ${spacing(2)};
-  position: fixed;
-  width: 300px;
-  left: 90px;
-  top: 0;
-  transition: transform 0.1s ease-in 0s;
-  transform: translate(
-    ${({ isVisible }) => (isVisible ? '0px' : '-300px')},
-    0px
-  );
-
-  & h3,
-  & > a {
-    color: #fff;
-    padding: ${spacing(1)} ${spacing(2)};
-    visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
-  }
-  a {
-    min-height: 34px;
-  }
-  p {
-    color: #fff;
-  }
-`;
+export type MenuItem = {
+  title: string;
+  path: string;
+  pathExcludes?: string;
+  icon: string;
+  activeIcon: string;
+  alt: string;
+  shortTitle: string;
+}[];
 
 type MenuItems = {
-  menuItems: {
-    title: string;
-    path: string;
-    icon: string;
-    activeIcon: string;
-    subLinks?: {
-      href: string;
-      text: string;
-    }[];
-    alt: string;
-    shortTitle: string;
-  }[];
+  menuItems: MenuItem;
 };
 
 export const NavigationMenu = ({ menuItems }: MenuItems) => {
   const pathname = usePathname();
-  const [openMenu, setOpenMenu] = useState(0);
 
   return (
     <>
-      {menuItems.map((menuItem, index) => {
-        const hasSubLinks = menuItem.subLinks;
-        const LinkElement = hasSubLinks ? StyledButton : StyledLink;
+      {menuItems.map((menuItem) => {
+        const isActive = menuItem.pathExcludes
+          ? pathname.includes(menuItem.path) &&
+            !pathname.includes(menuItem.pathExcludes)
+          : pathname.includes(menuItem.path);
+
         return (
           <MenuItem key={menuItem.title}>
-            <LinkElement
+            <StyledLink
+              isActive={isActive}
               title={menuItem.title}
               aria-label={menuItem.title}
               href={menuItem.path}
-              {...(hasSubLinks && {
-                onClick: () =>
-                  setOpenMenu(openMenu === index + 1 ? 0 : index + 1),
-              })}
-              {...(hasSubLinks && { isOpen: openMenu === index + 1 })}
             >
-              {pathname === menuItem.path ||
-              (pathname.includes(menuItem.path) &&
-                !pathname.includes('redirect')) ? (
+              {isActive ? (
                 <Icon
                   src={menuItem.activeIcon}
                   alt={menuItem.alt}
@@ -166,21 +94,7 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
                 />
               )}
               <Text>{menuItem.shortTitle}</Text>
-            </LinkElement>
-            {menuItem.subLinks && (
-              <SubMenu isVisible={openMenu === index + 1}>
-                <Header3>{menuItem.title}</Header3>
-                {menuItem.subLinks.map((subLink) => (
-                  <SubLink
-                    href={subLink.href}
-                    onClick={() => setOpenMenu(0)}
-                    key={subLink.text}
-                  >
-                    <Text>{subLink.text}</Text>
-                  </SubLink>
-                ))}
-              </SubMenu>
-            )}
+            </StyledLink>
           </MenuItem>
         );
       })}

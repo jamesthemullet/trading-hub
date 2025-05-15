@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
+import type { MenuItem } from '../navigation-menu/navigation-menu';
 import { NavigationMenu } from '../navigation-menu/navigation-menu';
 import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
@@ -17,22 +18,14 @@ const NavigationWrapper = styled.nav`
 
 const LogoWrapper = styled.div`
   width: 100%;
-  display: flex;
-  height: 70px;
-  align-items: center;
-  padding: ${spacing(3)} ${spacing(2)};
-  background-color: ${color.darkHeritageGreen};
-  z-index: 11;
-  position: relative;
+  display: block;
 `;
 
 const List = styled.ul`
-  list-style: none;
-  margin: 0;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  height: calc(100vh - 70px);
+  height: calc(100vh - 60px);
 `;
 
 const ListItem = styled.li`
@@ -40,8 +33,6 @@ const ListItem = styled.li`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: ${color.darkHeritageGreen};
-  position: relative;
 
   &:last-of-type {
     margin-top: auto;
@@ -61,7 +52,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
   const session = useSession();
   const isLoggedIn = session && session.status === 'authenticated';
 
-  const menuItems = [
+  const menuItems: MenuItem = [
     {
       title: 'Category Rules',
       path: '/category',
@@ -73,6 +64,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
     {
       title: 'Search Ranking Rules',
       path: '/search',
+      pathExcludes: 'redirects',
       icon: '/trading-hub/asset/menu-search-v2.svg',
       activeIcon: '/trading-hub/asset/menu-search-v2-active.svg',
       alt: 'Search Ranking Rules',
@@ -88,7 +80,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
     },
     {
       title: 'Global Ranking Rules',
-      path: '/global/',
+      path: '/global',
       icon: '/trading-hub/asset/menu-globe.svg',
       activeIcon: '/trading-hub/asset/menu-globe-active.svg',
       alt: 'Global Ranking Rules',

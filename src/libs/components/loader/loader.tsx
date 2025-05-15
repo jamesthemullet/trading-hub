@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   background: #ffffff70;
   z-index: 12;
   top: 0;
-  left: 64px;
+  left: 91px;
 `;
 
 const AnimatedLoader = styled.div`
