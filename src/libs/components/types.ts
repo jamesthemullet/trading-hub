@@ -85,7 +85,7 @@ type DateTime = {
   dateTime: Array<DateValue>;
 };
 
-export type Action =
+export type RuleSetActions =
   | {
       type: 'product';
       payload: ProductPayload;

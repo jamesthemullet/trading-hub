@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { Action } from '../types';
+import type { RuleSetActions } from '../types';
 import type { ProductProps } from './product';
 import { MissingProduct, Product } from './product';
 
@@ -97,7 +97,7 @@ describe('Product', () => {
     });
 
     it('should boost to top', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -119,7 +119,7 @@ describe('Product', () => {
     });
 
     it('should block', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -143,7 +143,7 @@ describe('Product', () => {
     });
 
     it('should bury', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -275,7 +275,7 @@ describe('Product', () => {
     });
 
     it('should pin correctly', async () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -311,7 +311,7 @@ describe('Product', () => {
     });
 
     it('should un-pin', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -333,7 +333,7 @@ describe('Product', () => {
     });
 
     it('should un-block', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -360,7 +360,7 @@ describe('Product', () => {
     });
 
     it('should un-boost', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -387,7 +387,7 @@ describe('Product', () => {
     });
 
     it('should un-bury', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -454,7 +454,7 @@ describe('Product', () => {
     });
 
     it('should un-boost', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -478,7 +478,7 @@ describe('Product', () => {
     });
 
     it('should un-bury', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -502,7 +502,7 @@ describe('Product', () => {
     });
 
     it('should un-pin', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],
@@ -526,7 +526,7 @@ describe('Product', () => {
     });
 
     it('should un-block', () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
           ids: ['id'],

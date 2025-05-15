@@ -137,7 +137,7 @@ describe('facetReducer', () => {
         type: 'CHANGE_DISPLAY_TYPE' as const,
         payload: {
           id: '1',
-          newDisplayType: 'boosted' as const,
+          newDisplayType: 'included' as const,
         },
       };
       const result = facetReducer(state, action);
@@ -163,7 +163,7 @@ describe('facetReducer', () => {
         type: 'CHANGE_DISPLAY_TYPE' as const,
         payload: {
           id: '1',
-          newDisplayType: 'boosted' as const,
+          newDisplayType: 'included' as const,
         },
       };
       const result = facetReducer(state, action);
@@ -244,7 +244,7 @@ describe('facetReducer', () => {
         type: 'CHANGE_DISPLAY_TYPE' as const,
         payload: {
           id: '5',
-          newDisplayType: 'default' as const,
+          newDisplayType: 'algoControl' as const,
         },
       };
       const result = facetReducer(state, action);
@@ -265,7 +265,7 @@ describe('facetReducer', () => {
         type: 'CHANGE_DISPLAY_TYPE' as const,
         payload: {
           id: '1',
-          newDisplayType: 'default' as const,
+          newDisplayType: 'algoControl' as const,
         },
       };
       const result = facetReducer(state, action);

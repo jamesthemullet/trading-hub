@@ -11,7 +11,7 @@ import {
 } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { Action } from '../types';
+import type { RuleSetActions } from '../types';
 
 jest.mock('@/libs/hooks', () => ({
   useAttributes: ({ type }: { type: string }) => {
@@ -444,7 +444,7 @@ describe('RulesetAttributes', () => {
 
   describe('adding and deleting', () => {
     it('adds boosted numeric attribute', async () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         payload: {
           change: 'add',
           index: 0,
@@ -482,7 +482,7 @@ describe('RulesetAttributes', () => {
     });
 
     it('adds buried numeric attribute', async () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         payload: {
           change: 'add',
           index: 0,
@@ -532,7 +532,7 @@ describe('RulesetAttributes', () => {
     });
 
     it('deletes numeric attributes', async () => {
-      const expectedCall1: Action = {
+      const expectedCall1: RuleSetActions = {
         type: 'numericAttribute',
         payload: {
           data: mockRules.boosts.numeric[1],
@@ -541,7 +541,7 @@ describe('RulesetAttributes', () => {
           index: 1,
         },
       };
-      const expectedCall2: Action = {
+      const expectedCall2: RuleSetActions = {
         type: 'numericAttribute',
         payload: {
           data: mockRules.buries.numeric[0],
@@ -575,7 +575,7 @@ describe('RulesetAttributes', () => {
     });
 
     it('adds alphanumeric attributes', async () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         payload: {
           data: {
             fields: [
@@ -635,7 +635,7 @@ describe('RulesetAttributes', () => {
     });
 
     it('deletes alphanumeric attributes', async () => {
-      const expectedCall1: Action = {
+      const expectedCall1: RuleSetActions = {
         payload: {
           data: mockRules.boosts.alphanumeric[0],
           change: 'remove',
@@ -644,7 +644,7 @@ describe('RulesetAttributes', () => {
         },
         type: 'alphanumericBoostBuryAttribute',
       };
-      const expectedCall2: Action = {
+      const expectedCall2: RuleSetActions = {
         payload: {
           data: mockRules.buries.alphanumeric[0],
           change: 'remove',
@@ -1462,7 +1462,7 @@ describe('RulesetAttributes', () => {
 
   describe('global attributes', () => {
     it('can add numeric attributes globally', async () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         payload: {
           data: { field: 'Size', weight: 100 },
           change: 'add',
@@ -1562,7 +1562,7 @@ describe('RulesetAttributes', () => {
 
   describe('include exclude', () => {
     it('includes alphanumeric attributes', async () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         payload: {
           data: {
             fields: [
@@ -1625,7 +1625,7 @@ describe('RulesetAttributes', () => {
     });
 
     it('excludes alphanumeric attributes', async () => {
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         payload: {
           data: {
             fields: [
@@ -1696,7 +1696,7 @@ describe('RulesetAttributes', () => {
           },
         ],
       };
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         payload: {
           data: mock,
           change: 'remove',
@@ -1737,7 +1737,7 @@ describe('RulesetAttributes', () => {
           },
         ],
       };
-      const expectedCall: Action = {
+      const expectedCall: RuleSetActions = {
         payload: {
           data: mock,
           change: 'remove',

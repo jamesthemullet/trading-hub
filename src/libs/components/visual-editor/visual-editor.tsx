@@ -2,11 +2,11 @@ import type { Dispatch } from 'react';
 
 import type { MerchandisingProduct as ProductType } from '../../api';
 import { Product } from '../product/product';
-import type { Action } from '../types';
+import type { RuleSetActions } from '../types';
 import { Layout, ProductBox } from './visual-editor.styles';
 
 type Props = {
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
 
   onSelectProduct: ({
     id,

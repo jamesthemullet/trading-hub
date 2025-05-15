@@ -7,7 +7,7 @@ import type { MerchandisingRuleSet } from '@/libs/api';
 import pluralize from 'pluralize';
 
 import { Button } from '../../buttons/button/button';
-import type { Action } from '../../types';
+import type { RuleSetActions } from '../../types';
 import { Header3, Text } from '../../typography/typography.styles';
 import {
   BulkActionsHeader,
@@ -22,7 +22,7 @@ import {
 } from '../bulk-actions.styles';
 
 type BulkActionsTypes = {
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
   hasRestore: boolean;
   ruleset: MerchandisingRuleSet;
   selectedProducts: string[];

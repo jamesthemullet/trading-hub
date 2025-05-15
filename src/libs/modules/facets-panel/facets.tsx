@@ -149,7 +149,6 @@ export const Facets = ({
   >(undefined);
   const [isFacetValuesModalOpen, setIsFacetValuesModalOpen] = useState(false);
 
-  // TODO: move into reducer
   const [selectedCategoriesInfo, setSelectedCategoriesInfo] = useState<
     {
       id: string;
@@ -159,7 +158,6 @@ export const Facets = ({
   >(categoriesInfo || []);
   const [duplicationError, setDuplicationError] = useState('');
 
-  // TODO: move into reducer
   const [selectedSearchTerms, setSelectedSearchTerms] = useState<Array<string>>(
     searchTerms || []
   );
@@ -235,7 +233,6 @@ export const Facets = ({
     setFilter(val);
   }, 300);
 
-  // TODO: update categorysearch component to get this info from categoriesInfo
   const selectedCategories = selectedCategoriesInfo.map(
     (category) => category.id
   );

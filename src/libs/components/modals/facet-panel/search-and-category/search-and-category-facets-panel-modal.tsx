@@ -64,33 +64,6 @@ const EDITFACETVALUESMODALCOLUMNS: {
   },
 ];
 
-type moveBoostedRowUp = {
-  id: string;
-};
-
-type moveBoostedRowDown = {
-  id: string;
-};
-
-type changeDisplayType = {
-  id: string;
-  newDisplayType: 'boosted' | 'excluded' | 'default';
-};
-
-export type Action =
-  | {
-      type: 'MOVE_BOOSTED_ROW_UP';
-      payload: moveBoostedRowUp;
-    }
-  | {
-      type: 'MOVE_BOOSTED_ROW_DOWN';
-      payload: moveBoostedRowDown;
-    }
-  | {
-      type: 'CHANGE_DISPLAY_TYPE';
-      payload: changeDisplayType;
-    };
-
 export const SearchAndCategoryFacetsPanelModal = ({
   onClose,
   onSave,
@@ -229,20 +202,11 @@ export const SearchAndCategoryFacetsPanelModal = ({
                 hasAlgoControl
                 status={displayType}
                 onChange={(newDisplayType: FacetDisplayType) => {
-                  const displayTypeMapping = {
-                    algoControl: 'default',
-                    included: 'boosted',
-                    excluded: 'excluded',
-                  };
-
                   dispatch({
                     type: 'CHANGE_DISPLAY_TYPE',
                     payload: {
                       id: displayValue,
-                      // TODO refactor after fix
-                      newDisplayType: displayTypeMapping[
-                        newDisplayType
-                      ] as changeDisplayType['newDisplayType'],
+                      newDisplayType,
                     },
                   });
                 }}

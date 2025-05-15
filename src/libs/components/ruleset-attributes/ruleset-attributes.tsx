@@ -13,7 +13,7 @@ import type {
 import pluralize from 'pluralize';
 
 import { Button } from '../buttons/button/button';
-import type { Action, AttributeEdit } from '../types';
+import type { AttributeEdit, RuleSetActions } from '../types';
 import { Label } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
@@ -51,7 +51,7 @@ export type Props = {
   categories?: string[];
   searchTerms?: string[];
   merchandisingRules: MerchandisingRules;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
   writeEnabled: boolean;
 };
 

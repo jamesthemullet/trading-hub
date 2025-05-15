@@ -15,7 +15,7 @@ import type {
 } from '../../api';
 import { Button } from '../buttons/button/button';
 import { Checkbox } from '../checkboxes/checkbox';
-import type { Action } from '../types';
+import type { RuleSetActions } from '../types';
 import { Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import {
@@ -103,7 +103,7 @@ const ProductDetails = ({
 export type ProductProps = ProductType & {
   index: number;
   isPinnable: boolean;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
   pinnedProductsCount?: number;
   onSelectProduct?: ({
     id,
@@ -502,7 +502,7 @@ export const MissingProduct = ({
   isSelectionDisabled,
   ...rest
 }: {
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
   index: number;
   id: string;
   onSelectProduct: ({

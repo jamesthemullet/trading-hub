@@ -15,7 +15,7 @@ import { Checkbox } from '../checkboxes/checkbox';
 import { MissingProduct, Product } from '../product/product';
 import { AlphanumericAttribute } from '../ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '../ruleset-attributes/numeric-attribute';
-import type { Action } from '../types';
+import type { RuleSetActions } from '../types';
 import { Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
@@ -65,7 +65,7 @@ const ProductsLoader = ({
   isSelectionDisabled,
 }: {
   changeType: 'boost' | 'bury' | 'pin' | 'block';
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
   heading: string;
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
@@ -235,7 +235,7 @@ const ProductsLoader = ({
 export type RulesetChangesProps = {
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
   countryCode?: MerchandisingCountryCode;
 
   onSelectAll: (args: string[]) => void;

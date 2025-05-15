@@ -15,7 +15,7 @@ import pluralize from 'pluralize';
 import { Checkbox } from '../../checkboxes/checkbox';
 import { Product } from '../../product/product';
 import { Search } from '../../search/search';
-import type { Action } from '../../types';
+import type { RuleSetActions } from '../../types';
 import { spacing } from '../../utils/spacing';
 
 const ProductSearchRootContainer = styled.div`
@@ -67,7 +67,7 @@ const SelectAll = styled.div`
 export type ProductSearchProps = {
   countryCode?: MerchandisingCountryCode;
   isSelectionDisabled: boolean;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
   onSelectProduct: ({
     id,
     isSelected,

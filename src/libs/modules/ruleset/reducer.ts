@@ -4,9 +4,12 @@ import type {
   MerchandisingNumericBoostBury,
   MerchandisingRuleSet,
 } from '@/libs/api';
-import type { Action } from '@/libs/components/types';
+import type { RuleSetActions } from '@/libs/components/types';
 
-export const rulesetReducer = (state: MerchandisingRuleSet, action: Action) => {
+export const rulesetReducer = (
+  state: MerchandisingRuleSet,
+  action: RuleSetActions
+) => {
   const { rules } = state;
   switch (action.type) {
     case 'product': {

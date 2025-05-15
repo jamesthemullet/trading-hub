@@ -1,6 +1,6 @@
 import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
+import type { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-reducer';
 
-import type { AttributeDisplayType } from '../types';
 import { toArrayWithSwappedElements } from '../utils/swap-array-elements';
 
 type MoveRowUpAction = {
@@ -21,7 +21,7 @@ type ChangeDisplayTypeAction = {
   type: 'CHANGE_DISPLAY_TYPE';
   payload: {
     id: string;
-    newDisplayType: AttributeDisplayType;
+    newDisplayType: FacetDisplayType;
   };
 };
 
@@ -72,7 +72,7 @@ export const facetReducer = (
       return {
         ...state,
         boosted:
-          action.payload.newDisplayType !== 'boosted'
+          action.payload.newDisplayType !== 'included'
             ? state.boosted?.filter((val) => val !== action.payload.id)
             : [...currentBoosted, action.payload.id],
         excludedValues:

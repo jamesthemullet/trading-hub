@@ -8,7 +8,7 @@ import type {
   MerchandisingNumericBoostBury,
 } from '@/libs/api';
 
-import type { Action, AttributeEdit, RulesetAttribute } from '../types';
+import type { AttributeEdit, RuleSetActions, RulesetAttribute } from '../types';
 import { AddSetAttribute } from './add-set-attribute';
 
 const MODAL_WIDTH = 435;
@@ -20,7 +20,7 @@ interface RulesetAttributesModalProps {
   searchTerms?: string[];
   editData: AttributeEdit | null;
   onCloseModal: () => void;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<RuleSetActions>;
 }
 export const RulesetAttributesModal = ({
   isModalOpen,
