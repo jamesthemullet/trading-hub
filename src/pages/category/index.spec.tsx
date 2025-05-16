@@ -143,765 +143,48 @@ describe('Categories', () => {
     jest.resetAllMocks();
   });
 
-  describe('Ranking rules', () => {
-    it('displays the list of rules', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-      renderWithProviders(<Categories />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Categories' })
-        ).toBeVisible();
-      });
+  it('displays the list of rules', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
     });
+    renderWithProviders(<Categories />);
 
-    it('should render the access denied page', async () => {
-      renderWithProviders(<Categories />, [], {
-        featureFlags: {
-          hasAuthorization: true,
-        },
-      });
-
-      expect(
-        screen.getByText('please contact admin on our teams channel', {
-          exact: false,
-        })
-      ).toBeVisible();
-    });
-
-    it('displays schedule if a ruleset has a start and end date', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            id: '1',
-            categoriesInfo: [
-              {
-                id: '1',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-          },
-          {
-            id: '2',
-            categoriesInfo: [
-              {
-                id: '2',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            startDate: '2024-10-14T10:02:38.556Z',
-            endDate: '2024-10-15T10:02:38.556Z',
-            rules: mockMerchandisingRules,
-            facets: [],
-          },
-        ],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 2,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-      renderWithProviders(<Categories />);
-
-      expect(await screen.findByRole('time')).toHaveTextContent(
-        '14 Oct 2024 - 15 Oct 2024'
-      );
-    });
-
-    it('should search', async () => {
-      const user = userEvent.setup();
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        globalRuleSets: [],
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      const search = screen.getByPlaceholderText(/Search\.\.\./i);
-
-      await user.type(search, 'search-search');
-
-      await waitFor(() =>
-        expect(mockPush).toHaveBeenCalledWith({
-          pathname: '/category',
-          query: {
-            searchQuery: 'search-search',
-            currentPage: 1,
-            currentPageSize: 10,
-          },
-        })
-      );
-    });
-
-    it('should delete a ruleset', async () => {
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            id: mockId,
-            categoriesInfo: [
-              {
-                id: 'catId',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-          },
-        ],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      const user = userEvent.setup();
-      renderWithProviders(<Categories />);
-
-      const rulesetDropdown = await screen.findAllByTitle('More options');
-
-      await user.click(rulesetDropdown[0]);
-
-      const deleteButton = screen.getByRole('button', { name: 'Delete' });
-      await user.click(deleteButton);
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', {
-            level: 3,
-            name: 'Do you want to delete this rule?',
-          })
-        ).toBeVisible();
-      });
-
-      await user.click(screen.getByRole('button', { name: 'Cancel' }));
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', {
-            level: 3,
-            name: 'Do you want to delete this rule?',
-          })
-        ).not.toBeVisible();
-      });
-
-      await user.click(screen.getByRole('button', { name: 'Delete' }));
-      expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
-    });
-
-    it('should enable or disable a ruleset', async () => {
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      const mockCatId = 'catId';
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            countryCode: 'UK',
-            id: mockId,
-            categoriesInfo: [
-              {
-                id: mockCatId,
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-            excludedFacets: {},
-          },
-          {
-            id: 'ewfw-e3f23-f23f2-3cwef4',
-            categoriesInfo: [
-              {
-                id: 'catId2',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-          },
-        ],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      const rulesetToggle = await screen.findAllByTitle('Toggle');
-
-      await userEvent.click(rulesetToggle[0]);
-
-      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        categoryIds: [mockCatId],
-        countryCode: 'UK',
-        ruleSetId: mockId,
-        facets: [],
-        excludedFacets: {},
-        isEnabled: false,
-        rules: mockMerchandisingRules,
-      });
-    });
-
-    it('should enable or disable a scheduled ruleset', async () => {
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      const mockCatId = 'catId';
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            id: mockId,
-            categoriesInfo: [
-              {
-                id: mockCatId,
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-            startDate: '2024-10-14T10:02:38.556Z',
-            endDate: '2024-10-15T10:02:38.556Z',
-          },
-          {
-            id: 'ewfw-e3f23-f23f2-3cwef4',
-            categoriesInfo: [
-              {
-                id: 'catId2',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-          },
-        ],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      const rulesetToggle = await screen.findAllByTitle('Toggle');
-
-      await userEvent.click(rulesetToggle[0]);
-
-      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        categoryIds: [mockCatId],
-        ruleSetId: mockId,
-        rules: mockMerchandisingRules,
-        facets: [],
-        isEnabled: false,
-        startDate: '2024-10-14T10:02:38.556Z',
-        endDate: '2024-10-15T10:02:38.556Z',
-      });
-    });
-
-    it('should duplicate a ruleset', async () => {
-      const user = userEvent.setup();
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      const mockRuleset: MerchandisingReturnedCategoryRuleSet = {
-        id: mockId,
-        countryCode: 'UK',
-        categoriesInfo: [
-          {
-            id: 'foo00',
-          },
-        ],
-        isEnabled: true,
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
-        rules: mockMerchandisingRules,
-        excludedFacets: { facets: [] },
-        startDate: '2024-09-12T14:17:54Z',
-        endDate: '2024-12-19T04:20:03Z',
-      };
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [mockRuleset],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        globalRuleSets: [],
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      await user.click((await screen.findAllByTitle('More options'))[0]);
-      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Create a duplicate rule' })
-        ).toBeVisible();
-      });
-
-      const confirmButton = screen.getByRole('button', {
-        name: 'Confirm',
-      });
-      await user.click(confirmButton);
-      expect(createRuleset).toHaveBeenCalledWith({
-        rules: mockRuleset.rules,
-        facets: [],
-        excludedFacets: { facets: [] },
-        categoryIds: ['foo00'],
-        isEnabled: false,
-        startDate: '2024-09-12T14:17:54Z',
-        endDate: '2024-12-19T04:20:03Z',
-        countryCode: 'UK',
-      });
-    });
-
-    it('should show errors', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: 'Failed to fetch',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      expect(
-        await screen.findByText(
-          'Error whilst retrieving ruleset: "Error Failed to fetch 500"'
-        )
-      ).toBeVisible();
-    });
-
-    it('should have loading state', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: true,
-      });
-      renderWithProviders(<Categories />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
-      });
-
-      expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
-    });
-
-    it('should show country flag and filter', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            id: 'ewfw-e3f23-f23f2-3cwef3',
-            categoriesInfo: [
-              {
-                id: 'catId',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-            countryCode: 'IE',
-          },
-        ],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      expect(await screen.findByAltText('IE rule')).toBeVisible();
-      expect(
-        screen.getByRole('button', { name: 'All marksandspencer.com' })
-      ).toBeVisible();
-    });
-
-    it('should refetch the ruleset list when the country is changed', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: mockRefetchRuleSetList,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      const dropdown = screen.getByRole('button', {
-        name: 'All marksandspencer.com',
-      });
-
-      await userEvent.click(dropdown);
-
-      const showUK = screen.getByText('UK only marksandspencer');
-      await userEvent.click(showUK);
-
-      expect(mockRefetchRuleSetList).toHaveBeenCalledWith({
-        countryCode: 'UK',
-      });
-      expect(
-        screen.getByRole('button', { name: 'UK only marksandspencer' })
-      ).toBeVisible();
-
-      const showIE = screen.getByText('IE only marksandspencer');
-      await userEvent.click(showIE);
-
-      expect(mockRefetchRuleSetList).toHaveBeenCalledWith({
-        countryCode: 'IE',
-      });
-      expect(
-        screen.getByRole('button', { name: 'IE only marksandspencer' })
-      ).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Categories' })).toBeVisible();
     });
   });
 
-  describe('Facet rules', () => {
-    it('should render the access denied page', async () => {
-      renderWithProviders(<Categories />, [], {
-        featureFlags: {
-          hasAuthorization: true,
-        },
-      });
-
-      expect(
-        screen.getByText('please contact admin on our teams channel', {
-          exact: false,
-        })
-      ).toBeVisible();
+  it('should render the access denied page', async () => {
+    renderWithProviders(<Categories />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
     });
 
-    it('should open delete modal and close on cancel', async () => {
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            id: mockId,
-            categoriesInfo: [
-              {
-                id: 'foo00',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-          },
-        ] as MerchandisingReturnedCategoryRuleSet[],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        globalRuleSets: [],
-        error: '',
-        isLoading: false,
-      });
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
+  });
 
-      const user = userEvent.setup();
-      renderWithProviders(<Categories />);
-
-      await user.click((await screen.findAllByTitle('More options'))[0]);
-      await user.click(screen.getAllByText('Delete')[0]);
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', {
-            level: 3,
-            name: 'Do you want to delete this rule?',
-          })
-        ).toBeVisible();
-      });
-
-      await user.click(screen.getByTestId('Delete rule'));
-      expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
-    });
-
-    it('should search', async () => {
-      const user = userEvent.setup();
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        globalRuleSets: [],
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      const search = screen.getByPlaceholderText(/Search\.\.\./i);
-
-      await user.type(search, 'search-search');
-
-      await waitFor(() =>
-        expect(mockPush).toHaveBeenCalledWith({
-          pathname: '/category',
-          query: {
-            searchQuery: 'search-search',
-            currentPage: 1,
-            currentPageSize: 10,
-          },
-        })
-      );
-    });
-
-    it('should enable or disable a ruleset', async () => {
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            countryCode: 'UK_IE',
-            categoriesInfo: [
-              {
-                id: 'foo00',
-              },
-            ],
-            id: mockId,
-            ruleSetId: mockId,
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-            excludedFacets: {
-              facets: [
-                {
-                  id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-                },
-              ],
-            },
-          },
-          {
-            countryCode: 'UK_IE',
-            id: 'ewfw-e3f23-f23f2-3cwef4',
-            ruleSetId: 'ewfw-e3f23-f23f2-3cwef4',
-            categoriesInfo: [
-              {
-                id: 'foo00',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-          },
-        ],
-        pagination: {
-          totalItems: 0,
-        },
-        globalRuleSets: [],
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      const rulesetToggle = await screen.findAllByTitle('Toggle');
-
-      await userEvent.click(rulesetToggle[0]);
-
-      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        countryCode: 'UK_IE',
-        categoryIds: ['foo00'],
-        ruleSetId: mockId,
-        rules: mockMerchandisingRules,
-        facets: [],
-        excludedFacets: {
-          facets: [
-            {
-              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
-            },
-          ],
-        },
-        isEnabled: false,
-      });
-    });
-
-    it('should enable or disable a scheduled ruleset', async () => {
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            countryCode: 'UK_IE',
-            categoriesInfo: [
-              {
-                id: 'foo00',
-              },
-            ],
-            id: mockId,
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-            startDate: '2024-10-14T10:02:38.556Z',
-            endDate: '2024-10-15T10:02:38.556Z',
-          },
-          {
-            id: 'ewfw-e3f23-f23f2-3cwef4',
-            categoriesInfo: [
-              {
-                id: 'foo00',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-          },
-        ],
-        pagination: {
-          totalItems: 0,
-        },
-        globalRuleSets: [],
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      const rulesetToggle = await screen.findAllByTitle('Toggle');
-
-      await userEvent.click(rulesetToggle[0]);
-
-      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        countryCode: 'UK_IE',
-        categoryIds: ['foo00'],
-        ruleSetId: mockId,
-        rules: mockMerchandisingRules,
-        facets: [],
-        isEnabled: false,
-        startDate: '2024-10-14T10:02:38.556Z',
-        endDate: '2024-10-15T10:02:38.556Z',
-      });
-    });
-
-    it('should have loading state', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: Array.from({ length: 80 }, (_, i) => ({
-          categoryName: `identifier-${i}`,
-          id: `${i}`,
+  it('displays schedule if a ruleset has a start and end date', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          id: '1',
           categoriesInfo: [
             {
-              id: `${i}`,
+              id: '1',
             },
           ],
           isEnabled: true,
@@ -910,343 +193,455 @@ describe('Categories', () => {
             date: '2021-01-01',
           },
           rules: mockMerchandisingRules,
-          setRuleSets: jest.fn(),
           facets: [],
-        })),
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: true,
-      });
-      renderWithProviders(<Categories />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId('table-pagination-skeleton')
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('should duplicate a ruleset', async () => {
-      const user = userEvent.setup();
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      const mockFacets = [
-        {
-          id: '4f8d4802-3eb0-11ef-9a6a-000000000000',
-          excludedValues: [],
-          boosted: [],
         },
         {
-          id: '1e511220-3240-11ef-aa09-000000000000',
-          excludedValues: [],
-          boosted: [],
-        },
-        {
-          id: 'f04094a0-563e-11ef-a364-000000000000',
-          excludedValues: [
-            '£50.00',
-            '£500.00',
-            '£60.00',
-            '£70.00',
-            '£80.00',
-            '£90.00',
-          ],
-          boosted: ['Tiny', 'Newborn', '1 Months', '0-3 Months'],
-        },
-      ];
-      const mockRuleset: MerchandisingReturnedCategoryRuleSet = {
-        id: mockId,
-        categoriesInfo: [
-          {
-            id: 'foo00',
-          },
-        ],
-        countryCode: 'UK',
-        isEnabled: true,
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
-        facets: mockFacets,
-        excludedFacets: {},
-        rules: mockMerchandisingRules,
-        startDate: '2024-11-15T23:59:00.000Z',
-        endDate: '2024-11-15T23:59:00.000Z',
-      };
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [mockRuleset],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        globalRuleSets: [],
-        error: '',
-        isLoading: false,
-
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
-      });
-
-      renderWithProviders(<Categories />);
-
-      await user.click((await screen.findAllByTitle('More options'))[0]);
-      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Create a duplicate rule' })
-        ).toBeVisible();
-      });
-
-      const confirmButton = screen.getByRole('button', {
-        name: 'Confirm',
-      });
-      await user.click(confirmButton);
-      expect(createRuleset).toHaveBeenCalledWith({
-        rules: mockRuleset.rules,
-        facets: mockFacets,
-        excludedFacets: {},
-        categoryIds: ['foo00'],
-        countryCode: 'UK',
-        isEnabled: false,
-        startDate: '2024-11-15T23:59:00.000Z',
-        endDate: '2024-11-15T23:59:00.000Z',
-      });
-    });
-
-    it('displays schedule if a ruleset has a start and end date', async () => {
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      const mockFacets = [
-        {
-          id: '4f8d4802-3eb0-11ef-9a6a-000000000000',
-          excludedValues: [],
-          boosted: [],
-        },
-        {
-          id: '1e511220-3240-11ef-aa09-000000000000',
-          excludedValues: [],
-          boosted: [],
-        },
-        {
-          id: 'f04094a0-563e-11ef-a364-000000000000',
-          excludedValues: [
-            '£50.00',
-            '£500.00',
-            '£60.00',
-            '£70.00',
-            '£80.00',
-            '£90.00',
-          ],
-          boosted: ['Tiny', 'Newborn', '1 Months', '0-3 Months'],
-        },
-      ];
-      const mockRuleset = {
-        id: mockId,
-        categoriesInfo: [
-          {
-            id: 'foo00',
-          },
-        ],
-        isEnabled: true,
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
-        facets: mockFacets,
-        rules: mockMerchandisingRules,
-      };
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          mockRuleset,
-          {
-            ...mockRuleset,
-            id: 'foo',
-            startDate: '2024-10-14T10:02:38.556Z',
-            endDate: '2024-10-15T10:02:38.556Z',
-          },
-        ],
-        pagination: {
-          totalItems: 2,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        globalRuleSets: [],
-        error: '',
-        isLoading: false,
-      });
-      renderWithProviders(<Categories />);
-
-      expect(await screen.findByRole('time')).toHaveTextContent(
-        '14 Oct 2024 - 15 Oct 2024'
-      );
-    });
-
-    it('should add an empty facet array to a duplicated ruleset which does not have any set', async () => {
-      const user = userEvent.setup();
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      const mockRuleset: MerchandisingReturnedCategoryRuleSet = {
-        id: mockId,
-        categoriesInfo: [
-          {
-            id: 'catId',
-          },
-        ],
-        isEnabled: true,
-        lastChanged: {
-          user: 'user',
-          date: '2021-01-01',
-        },
-        rules: mockMerchandisingRules,
-      };
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [mockRuleset],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        globalRuleSets: [],
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<Categories />);
-
-      await user.click((await screen.findAllByTitle('More options'))[0]);
-      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Create a duplicate rule' })
-        ).toBeVisible();
-      });
-
-      const confirmButton = screen.getByRole('button', {
-        name: 'Confirm',
-      });
-      await user.click(confirmButton);
-      expect(createRuleset).toHaveBeenCalledWith({
-        rules: mockRuleset.rules,
-        facets: [],
-        isEnabled: false,
-        categoryIds: ['catId'],
-      });
-    });
-
-    describe('Error messaging', () => {
-      it('should display an error message when fetching rulesets fails', async () => {
-        jest.mocked(useRuleSet).mockReturnValue({
-          categoryRuleSets: [],
-          globalRuleSets: [],
-          pagination: {
-            totalItems: 0,
-          },
-          refetchRuleSetList: () => jest.fn,
-          setCategoryRuleSets: jest.fn(),
-          setGlobalRuleSets: jest.fn(),
-          error: 'Error fetching ruleset',
-          isLoading: false,
-        });
-
-        renderWithProviders(<Categories />);
-
-        expect(
-          await screen.findByText(
-            'Error whilst retrieving ruleset: "Error Error fetching ruleset 500"'
-          )
-        ).toBeVisible();
-      });
-    });
-
-    it('should display country flag and filter', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [
-          {
-            id: '1234',
-            categoriesInfo: [
-              {
-                id: 'foo00',
-              },
-            ],
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
+          id: '2',
+          categoriesInfo: [
+            {
+              id: '2',
             },
-            rules: mockMerchandisingRules,
-            countryCode: 'IE',
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
           },
-        ],
-        pagination: {
-          totalItems: 0,
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-15T10:02:38.556Z',
+          rules: mockMerchandisingRules,
+          facets: [],
         },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        globalRuleSets: [],
-        error: '',
-        isLoading: false,
-      });
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 2,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<Categories />);
 
-      renderWithProviders(<Categories />);
+    expect(await screen.findByRole('time')).toHaveTextContent(
+      '14 Oct 2024 - 15 Oct 2024'
+    );
+  });
 
-      expect(await screen.findByAltText('IE rule')).toBeVisible();
+  it('should search', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      globalRuleSets: [],
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Categories />);
+
+    const search = screen.getByPlaceholderText(/Search\.\.\./i);
+
+    await user.type(search, 'search-search');
+
+    await waitFor(() =>
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/category',
+        query: {
+          searchQuery: 'search-search',
+          currentPage: 1,
+          currentPageSize: 10,
+        },
+      })
+    );
+  });
+
+  it('should delete a ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          id: mockId,
+          categoriesInfo: [
+            {
+              id: 'catId',
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    const user = userEvent.setup();
+    renderWithProviders(<Categories />);
+
+    const rulesetDropdown = await screen.findAllByTitle('More options');
+
+    await user.click(rulesetDropdown[0]);
+
+    const deleteButton = screen.getByRole('button', { name: 'Delete' });
+    await user.click(deleteButton);
+    await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'All marksandspencer.com' })
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
       ).toBeVisible();
     });
 
-    it('should refetch the ruleset list when the country is changed', async () => {
-      const user = userEvent.setup();
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [],
-        globalRuleSets: [],
-        pagination: {
-          totalItems: 0,
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Do you want to delete this rule?',
+        })
+      ).not.toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
+    expect(mockRuleSetDelete).toHaveBeenCalledWith({ rulesetId: mockId });
+  });
+
+  it('should enable or disable a ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockCatId = 'catId';
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          countryCode: 'UK',
+          id: mockId,
+          categoriesInfo: [
+            {
+              id: mockCatId,
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          excludedFacets: {},
         },
-        refetchRuleSetList: mockRefetchRuleSetList,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
+        {
+          id: 'ewfw-e3f23-f23f2-3cwef4',
+          categoriesInfo: [
+            {
+              id: 'catId2',
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
 
-      renderWithProviders(<Categories />);
+    renderWithProviders(<Categories />);
 
-      const dropdown = screen.getByRole('button', {
-        name: 'All marksandspencer.com',
-      });
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
 
-      await user.click(dropdown);
+    await userEvent.click(rulesetToggle[0]);
 
-      const showUK = screen.getByText('UK only marksandspencer');
-      await user.click(showUK);
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryIds: [mockCatId],
+      countryCode: 'UK',
+      ruleSetId: mockId,
+      facets: [],
+      excludedFacets: {},
+      isEnabled: false,
+      rules: mockMerchandisingRules,
+    });
+  });
 
-      expect(mockRefetchRuleSetList).toHaveBeenCalledWith({
-        countryCode: 'UK',
-      });
+  it('should enable or disable a scheduled ruleset', async () => {
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockCatId = 'catId';
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          id: mockId,
+          categoriesInfo: [
+            {
+              id: mockCatId,
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          startDate: '2024-10-14T10:02:38.556Z',
+          endDate: '2024-10-15T10:02:38.556Z',
+        },
+        {
+          id: 'ewfw-e3f23-f23f2-3cwef4',
+          categoriesInfo: [
+            {
+              id: 'catId2',
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+        },
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Categories />);
+
+    const rulesetToggle = await screen.findAllByTitle('Toggle');
+
+    await userEvent.click(rulesetToggle[0]);
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryIds: [mockCatId],
+      ruleSetId: mockId,
+      rules: mockMerchandisingRules,
+      facets: [],
+      isEnabled: false,
+      startDate: '2024-10-14T10:02:38.556Z',
+      endDate: '2024-10-15T10:02:38.556Z',
+    });
+  });
+
+  it('should duplicate a ruleset', async () => {
+    const user = userEvent.setup();
+    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
+    const mockRuleset: MerchandisingReturnedCategoryRuleSet = {
+      id: mockId,
+      countryCode: 'UK',
+      categoriesInfo: [
+        {
+          id: 'foo00',
+        },
+      ],
+      isEnabled: true,
+      lastChanged: {
+        user: 'user',
+        date: '2021-01-01',
+      },
+      rules: mockMerchandisingRules,
+      excludedFacets: { facets: [] },
+      startDate: '2024-09-12T14:17:54Z',
+      endDate: '2024-12-19T04:20:03Z',
+    };
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [mockRuleset],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      globalRuleSets: [],
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Categories />);
+
+    await user.click((await screen.findAllByTitle('More options'))[0]);
+    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+    await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'UK only marksandspencer' })
-      ).toBeVisible();
-
-      const showIE = screen.getByText('IE only marksandspencer');
-      await userEvent.click(showIE);
-
-      expect(mockRefetchRuleSetList).toHaveBeenCalledWith({
-        countryCode: 'IE',
-      });
-      expect(
-        screen.getByRole('button', { name: 'IE only marksandspencer' })
+        screen.getByRole('heading', { name: 'Create a duplicate rule' })
       ).toBeVisible();
     });
+
+    const confirmButton = screen.getByRole('button', {
+      name: 'Confirm',
+    });
+    await user.click(confirmButton);
+    expect(createRuleset).toHaveBeenCalledWith({
+      rules: mockRuleset.rules,
+      facets: [],
+      excludedFacets: { facets: [] },
+      categoryIds: ['foo00'],
+      isEnabled: false,
+      startDate: '2024-09-12T14:17:54Z',
+      endDate: '2024-12-19T04:20:03Z',
+      countryCode: 'UK',
+    });
+  });
+
+  it('should show errors', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: 'Failed to fetch',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Categories />);
+
+    expect(
+      await screen.findByText(
+        'Error whilst retrieving ruleset: "Error Failed to fetch 500"'
+      )
+    ).toBeVisible();
+  });
+
+  it('should have loading state', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: true,
+    });
+    renderWithProviders(<Categories />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
+    });
+
+    expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
+  });
+
+  it('should show country flag and filter', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [
+        {
+          id: 'ewfw-e3f23-f23f2-3cwef3',
+          categoriesInfo: [
+            {
+              id: 'catId',
+            },
+          ],
+          isEnabled: true,
+          lastChanged: {
+            user: 'user',
+            date: '2021-01-01',
+          },
+          rules: mockMerchandisingRules,
+          facets: [],
+          countryCode: 'IE',
+        },
+      ],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: () => jest.fn,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Categories />);
+
+    expect(await screen.findByAltText('IE rule')).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: 'All marksandspencer.com' })
+    ).toBeVisible();
+  });
+
+  it('should refetch the ruleset list when the country is changed', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: mockRefetchRuleSetList,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Categories />);
+
+    const dropdown = screen.getByRole('button', {
+      name: 'All marksandspencer.com',
+    });
+
+    await userEvent.click(dropdown);
+
+    const showUK = screen.getByText('UK only marksandspencer');
+    await userEvent.click(showUK);
+
+    expect(mockRefetchRuleSetList).toHaveBeenCalledWith({
+      countryCode: 'UK',
+    });
+    expect(
+      screen.getByRole('button', { name: 'UK only marksandspencer' })
+    ).toBeVisible();
+
+    const showIE = screen.getByText('IE only marksandspencer');
+    await userEvent.click(showIE);
+
+    expect(mockRefetchRuleSetList).toHaveBeenCalledWith({
+      countryCode: 'IE',
+    });
+    expect(
+      screen.getByRole('button', { name: 'IE only marksandspencer' })
+    ).toBeVisible();
   });
 });
