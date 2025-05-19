@@ -1,6 +1,6 @@
 # Trading Hub
 
-Merchandising UI for trading teams.
+Merchandising UI for trading teams. Also known as the Merchandising Hub/Merch Hub
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
@@ -20,7 +20,7 @@ An example .env file has been provided.
 cp .env.example .env
 ```
 
-### Running locally
+### Running locally (recommended)
 
 Trading Hub is a NextJS app. You will need [nvm](https://github.com/nvm-sh/nvm/blob/master/README.md#installing-and-updating) and [node](https://nodejs.org/en) installed locally to get started
 
@@ -36,8 +36,11 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+
 ### Running with docker compose
 
+<details>
+<summary>Steps to run with docker</summary>
 You will need docker installed on your laptop. Unfortunately M&S doesn't provide a license, you can either buy your own or use Podman or Rancher which are free alternatives. Docker however being on the market the longest has best developer experience.
 
 #### Building image
@@ -60,93 +63,6 @@ When you are done, execute:
 
 `docker-compose down`
 
-## Contributing
-
-Before you can contribute to this repo, you must be able to sign your commits so they can be verified as a trusted source. See [Onyx docs](https://onyx.engineering.mnscorp.net/contributing/signing-commits.html) for an example of how to set this up.
-
-### Pull requests
-
-There are no precommit hooks, PR checks run against tests, type checking and code formatting.
-
-Reviews are not dismissed on new commits, please rerequest a review if subsequent commits make significant code changes.
-
-### API contract
-
-Our agreed API contract with the backend team is stored in the [search-service](https://github.com/DigitalInnovation/search-service/blob/main/search-service-app/src/main/resources/static/search-merchandising.yml) repo and used for all requests.
-
-You can check or generate the code by running `npm run codegen` which copies the file locally to [api.yml](src/libs/api/api.yml)
-
-### Feature flags
-
-Any new features not ready for production use should be hidden behind a feature flag. We are using a cookie based solution with cookies set on http://localhost:3000/flags
-
-Naming should follow `flagXXX` and default to false
-
-### Tests
-
-```bash
-npm run test
-```
-
-Tests require 100% coverage for all files, watch mode can be enabled by running `npm run test -- --watch`
-
-### E2E tests
-
-#### Running e2e tests locally
-
-Playwright is set up for running e2e tests locally, to run it execute:
-
-```bash
-npm run test:e2e:ui
-```
-
-Click the green run button in the playwright UI, to run it without UI, execute:
-
-```bash
-npm run test:e2e
-```
-
-#### Mock tests
-
-There are in depth e2e tests using mock data to test page interactions when editing a ruleset, these should be used for testing page behaviour before changes are saved
-
-These can be run by selecting the "mock" project in playwright
-
-![Mock tests](./docs/img/mock.png)
-
-#### Smoke tests
-
-There are [smoke tests](https://github.com/DigitalInnovation/trading-hub/actions/workflows/smoke-tests.yml) run each hour during the working day. The focus of these is for any data updates with the backend
-
-These can be run by selecting the "smoke" project in playwright and setting the `SMOKE_TEST_TOKEN` variable
-
-#### Running e2e tests with docker compose
-
-First we need to disable autologin, it is useful for customers but e2e needs to mock the token, in your `.env`:
-
-```bash
-NEXT_PUBLIC_AUTO_LOGIN=false
-E2E_TEST_USER_TOKEN="<ask one of the UI devs for a value>"
-```
-
-Build all images with:
-
-`docker compose build`
-
-To run tests with all logs from all images just execute
-
-`docker compose up`
-
-You can execute
-
-`docker compose up merchandising-hub-e2e`
-
-If you want to see output of just e2e container
-
-
-#### E2E test failing, common problems and solutions
-
-If e2e tests are failing and your PR is not containing any changes that might have caused that, it may be caused by a stale backend docker image. This image needs to be updated whenever there is a contract change between frontend and backend to keep it in sync with generated code that comes from schema located at prod instance.
 
 To update the backend api docker image:
 
@@ -173,16 +89,101 @@ Some machines will not be able to run the docker image locally and will get the 
 2. Run `docker-compose build application-dev `
 3. In trading hub docker, change application-dev image to `search-service-application-dev:latest` (commented out in code)
 4. Build and run docker as per above steps
+</details>
+
+
+## Contributing
+
+Before you can contribute to this repo, you must be able to sign your commits so they can be verified as a trusted source. See [this guide](https://onyx.engineering.mnscorp.net/getting-started/signing-commits.html) for an example of how to set this up.
+
+### Pull requests
+
+There are no precommit hooks, PR checks run against tests, type checking and code formatting.
+
+Reviews are not dismissed on new commits, please rerequest a review if subsequent commits make significant code changes.
+
+### API contract
+
+Our agreed API contract with the backend team is stored in the [search-service](https://github.com/DigitalInnovation/search-service/blob/main/search-service-app/src/main/resources/static/search-merchandising.yml) repo and duplicated in this repo. It is used for all requests.
+
+You can check or generate the code by running `npm run codegen` which uses the local [api.yml](src/libs/api/api.yml) file
+
+### Feature flags
+
+Any new features not ready for production use should be hidden behind a feature flag. We are using a cookie based solution with cookies set on http://localhost:3000/flags
+
+Naming should follow `flagXXX` and default to false
+
+### Tests
+
+```bash
+npm run test
+```
+
+Tests require 100% coverage for all files
+
+```bash
+npm run tdd
+```
+
+Run tests in watch mode for test driven development
+
+### E2E tests
+
+#### Running e2e tests locally
+
+Playwright is set up for running e2e tests locally, to run it execute:
+
+```bash
+npm run test:e2e:ui
+```
+
+Click the green run button in the playwright UI, to run it without UI, execute:
+
+```bash
+npm run test:e2e
+```
+
+#### Mock tests
+
+There are in depth e2e tests using mock data to test page interactions when editing a ruleset, these should be used for testing page behaviour before changes are saved
+
+`NEXT_PUBLIC_AUTO_LOGIN='false'` is needed in the .env file to run tests without redirecting to AD login
+
+These can be run by selecting the "mock" project in playwright
+
+![Mock tests](./docs/img/mock.png)
+
+#### Smoke tests
+
+There are [smoke tests](https://github.com/DigitalInnovation/trading-hub/actions/workflows/smoke-tests.yml) run each hour during the working day. The focus of these is for any data updates with the backend
+
+```bash
+NEXT_PUBLIC_AUTO_LOGIN='false'
+SMOKE_TEST_TOKEN=XXX
+```
+These can be run by selecting the "smoke" project in playwright and setting the auth token (ask team for details)
 
 ### Production tests
 
 Production tests are run to check AD login flow and loading of data to confirm the availability of prod
 
-The yaccount used to login is `y9786775@mnscorp.net`
+```bash
+PROD_TEST_USER='y9786775@mnscorp.net'
+PROD_TEST_USER_PASSWORD='XXX'
+```
+
+The yaccount used to login is `y9786775@mnscorp.net` and the tests log in via AD before running
 
 ### Code formatting
 
-Prettier is used to format files, this can be set up in your IDE or by running `npm run format` before committing.
+Prettier is used to format files, this can be set up in your IDE or by running `npm run format` before committing. Linting can be checked and updated by running `npm run lint:fix`
+
+### PR checks
+
+PR checks can be run locally with `npm run pr-validate` this runs all checks github runs on PRs
+
+`NEXT_PUBLIC_AUTO_LOGIN='false'` should be set for this check
 
 ### Dependencies updates
 

@@ -5,7 +5,7 @@
 1. [App Authentication registration for local development](#reg)
 2. [Running the Auth application ](#running)
 
-## App Authentication registration for local development
+## App Authentication registration for local development (recommended)
 
 1. Navigate to [azure portal](https://portal.azure.com/)
 2. Search for `sp-MandS-V2-NonProduction-Customer&Loyalty-tradehub-TF-Managed`
@@ -45,15 +45,9 @@ Note. Use this method only if you need to debug roles or any settings that would
     ![Image showing .env setup in vscode](img/env.png 'App Registrations')
 13. You can now run trading-hub and try to authenticate yourself using SSO in localhost.
 
-## Running the Auth application <a name="running"></a>
-
-see [How to run your app with onyx auth backend](https://onyx.engineering.mnscorp.net/how-to/auth/how-to-run.html)
-
-The easiest way is to proxy to the remote Onyx auth.
-
 ## Environment variables
 
-Aside from the standard ones needed to run Onyx, you will need:
+Aside from the standard ones needed to run trading hub, you will need:
 
 ```
 NEXTAUTH_SECRET=anystring
