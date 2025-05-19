@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
-import { useCallback, useMemo, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingCountryCode,
-  MerchandisingGlobalOnlyFacetConfig,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import {
@@ -43,8 +42,6 @@ import { GlobalArrowButtons } from './global-arrow-buttons';
 import { globalAttributesReducer } from './global-attribute-reducer';
 import { GlobalEditableLabel } from './global-editable-label';
 import { GlobalFacetAttribute } from './global-facet-attribute';
-
-type MergeGroup = MerchandisingGlobalOnlyFacetConfig['merged'];
 
 const ModalContainer = styled.div`
   height: 100%;
@@ -107,38 +104,12 @@ export const GlobalFacetPanelModalContent = ({
   onClose,
   writeEnabled,
 }: ContentProps) => {
-  const [globalAttributesLocalState, dispatch] = useReducer(
-    globalAttributesReducer,
-    {
-      selectedAttributes: [],
-      allSelected: false,
-      allDeselected: false,
-      disableArrows: false,
-    }
-  );
-
   const [searchQuery, setSearchQuery] = useState('');
-
-  const [nonBoostedExcludedValues, setNonBoostedExcludedValues] = useState(
-    attributeValues.filter(
-      ({ displayValue }) =>
-        !facet.boosted?.includes(displayValue) &&
-        !facet.excludedValues?.includes(displayValue)
-    )
-  );
-  const [boostedValues, setBoostedValues] = useState(
-    facet.boosted?.map((value) => ({ displayValue: value })) || []
-  );
-  const [excludedValues, setExcludedValues] = useState(
-    facet.excludedValues?.map((value) => ({ displayValue: value })) || []
-  );
 
   const [errorStates, setErrorStates] = useState<
     Record<string, { message: string }>
   >({});
-  const [editingValues, setEditingValues] = useState<string[]>([]);
 
-  const [merged, setMerged] = useState<MergeGroup>(facet.merged || []);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const setError = (id: string, message: string) => {
@@ -148,6 +119,40 @@ export const GlobalFacetPanelModalContent = ({
     }));
   };
 
+  const [editingValues, setEditingValues] = useState<string[]>([]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'INITIALISE_STATE',
+      payload: {
+        boostedValues:
+          facet.boosted?.map((value) => ({ displayValue: value })) || [],
+        excludedValues:
+          facet.excludedValues?.map((value) => ({ displayValue: value })) || [],
+        nonBoostedExcludedValues: attributeValues.filter(
+          ({ displayValue }) =>
+            !facet.boosted?.includes(displayValue) &&
+            !facet.excludedValues?.includes(displayValue)
+        ),
+        merged: facet.merged || [],
+      },
+    });
+  }, [facet, attributeValues]);
+
+  const [globalAttributesLocalState, dispatch] = useReducer(
+    globalAttributesReducer,
+    {
+      selectedAttributes: [],
+      allSelected: false,
+      allDeselected: false,
+      disableArrows: false,
+      boostedRows: [],
+      excludedRows: [],
+      nonBoostedExcludedRows: [],
+      merged: [],
+    }
+  );
+
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
     useGlobalFacetUpdate();
 
@@ -156,9 +161,13 @@ export const GlobalFacetPanelModalContent = ({
       facetId: facet.id,
       data: {
         ...facet,
-        merged,
-        excludedValues: excludedValues.map((val) => val.displayValue),
-        boosted: boostedValues.map((val) => val.displayValue),
+        merged: globalAttributesLocalState.merged,
+        excludedValues: globalAttributesLocalState.excludedRows
+          .map((val) => val.attributes)
+          .flat(),
+        boosted: globalAttributesLocalState.boostedRows
+          .map((val) => val.attributes)
+          .flat(),
       },
     });
 
@@ -181,78 +190,46 @@ export const GlobalFacetPanelModalContent = ({
   const onCloseModal = () => setIsConfirmationModalOpen(false);
 
   const handleMerge = () => {
-    const isFirstAttributeBoosted = boostedValues.some(
+    const isFirstAttributeBoosted = globalAttributesLocalState.boostedRows.some(
       (val) =>
-        val.displayValue === globalAttributesLocalState.selectedAttributes[0]
-    );
-    const isFirstAttributeExcluded = excludedValues.some(
-      (val) =>
-        val.displayValue === globalAttributesLocalState.selectedAttributes[0]
-    );
-
-    const updatedBoosts = boostedValues.filter(
-      (val) =>
-        !globalAttributesLocalState.selectedAttributes.includes(
-          val.displayValue
+        val.attributes.includes(
+          globalAttributesLocalState.selectedAttributes[0]
         )
     );
-
-    const updatedExcludes = excludedValues.filter(
-      (val) =>
-        !globalAttributesLocalState.selectedAttributes.includes(
-          val.displayValue
+    const isFirstAttributeExcluded =
+      globalAttributesLocalState.excludedRows.some((val) =>
+        val.attributes.includes(
+          globalAttributesLocalState.selectedAttributes[0]
         )
-    );
+      );
 
-    const updatedNonBoostedExcludedValues = nonBoostedExcludedValues.filter(
-      (val) =>
-        !globalAttributesLocalState.selectedAttributes.includes(
-          val.displayValue
-        )
-    );
+    const allCurrentlyMergedAttributes =
+      globalAttributesLocalState.merged?.flatMap((group) => group.mergedValues);
 
-    const updatedMerges = merged!.filter((group) =>
-      group.mergedValues?.some(
-        (val) => !globalAttributesLocalState.selectedAttributes.includes(val)
-      )
-    );
+    const isInExistingMergeGroup =
+      allCurrentlyMergedAttributes &&
+      globalAttributesLocalState.selectedAttributes?.some((val) =>
+        allCurrentlyMergedAttributes.includes(val)
+      );
 
-    setMerged([
-      ...updatedMerges,
-      {
-        displayValue: globalAttributesLocalState.selectedAttributes[0],
-        mergedValues: globalAttributesLocalState.selectedAttributes,
-      },
-    ]);
-    if (isFirstAttributeBoosted) {
-      setBoostedValues([
-        ...updatedBoosts,
-        ...globalAttributesLocalState.selectedAttributes.map((res) => ({
-          displayValue: res,
-        })),
-      ]);
+    if (isInExistingMergeGroup) {
+      dispatch({
+        type: 'UPDATE_MERGE_GROUP',
+        payload: {
+          attributes: globalAttributesLocalState.selectedAttributes,
+          isFirstAttributeBoosted,
+          isFirstAttributeExcluded,
+        },
+      });
     } else {
-      setBoostedValues(updatedBoosts);
-    }
-    if (isFirstAttributeExcluded) {
-      setExcludedValues([
-        ...updatedExcludes,
-        ...globalAttributesLocalState.selectedAttributes.map((res) => ({
-          displayValue: res,
-        })),
-      ]);
-    } else {
-      setExcludedValues(updatedExcludes);
-    }
-    if (!isFirstAttributeBoosted && !isFirstAttributeExcluded) {
-      setNonBoostedExcludedValues([
-        ...updatedNonBoostedExcludedValues,
-        ...globalAttributesLocalState.selectedAttributes.map((res) => ({
-          displayValue: res,
-        })),
-      ]);
-    } else {
-      setNonBoostedExcludedValues(updatedNonBoostedExcludedValues);
+      dispatch({
+        type: 'CREATE_MERGE_GROUP',
+        payload: {
+          attributes: globalAttributesLocalState.selectedAttributes,
+          isFirstAttributeBoosted,
+          isFirstAttributeExcluded,
+        },
+      });
     }
 
     dispatch({
@@ -273,12 +250,7 @@ export const GlobalFacetPanelModalContent = ({
   );
 
   const listValues = useCallback(
-    (
-      values: MerchandisingAttributeValuesResponse['values'],
-      displayType: FacetDisplayType
-    ) => {
-      const rows: FormattedRow[] = [];
-
+    (values: FormattedRow[], displayType: FacetDisplayType) => {
       const handleRemoveFromMerge = ({
         valueToRemove,
         mergeDisplayName,
@@ -286,64 +258,16 @@ export const GlobalFacetPanelModalContent = ({
         valueToRemove: string;
         mergeDisplayName: string;
       }) => {
-        const mergeGroup = merged!.find((merge) =>
-          merge.mergedValues!.includes(valueToRemove)
-        );
-        const updatedMerges =
-          mergeGroup!.mergedValues!.length > 2
-            ? merged!.map((mergeGroup) =>
-                mergeGroup.displayValue === mergeDisplayName
-                  ? {
-                      displayValue: mergeGroup.displayValue,
-                      mergedValues: mergeGroup.mergedValues!.filter(
-                        (val) => val !== valueToRemove
-                      ),
-                    }
-                  : mergeGroup
-              )
-            : merged!.filter(
-                (group) => group.displayValue !== mergeGroup!.displayValue
-              );
-        setMerged(updatedMerges);
+        dispatch({
+          type: 'REMOVE_FROM_MERGE_GROUP',
+          payload: {
+            valueToRemove,
+            mergeDisplayName,
+          },
+        });
       };
 
-      values.map((value) => {
-        const isInMergeGroup = merged?.some((v) =>
-          v.mergedValues?.includes(value.displayValue)
-        );
-
-        if (isInMergeGroup) {
-          const mergeGroup = merged?.filter((v) =>
-            v.mergedValues?.includes(value.displayValue)
-          )[0];
-
-          const rowsIndex = rows.findIndex(
-            (row) => row.displayName === mergeGroup?.displayValue
-          );
-
-          if (
-            rowsIndex === -1 &&
-            mergeGroup?.displayValue &&
-            mergeGroup?.mergedValues
-          ) {
-            // eslint-disable-next-line functional/immutable-data
-            rows.push({
-              attributes: mergeGroup.mergedValues,
-              displayName: mergeGroup.displayValue,
-              isMergeGroup: true,
-            });
-          }
-        } else {
-          // eslint-disable-next-line functional/immutable-data
-          rows.push({
-            attributes: [value.displayValue],
-            displayName: value.displayValue,
-            isMergeGroup: false,
-          });
-        }
-      });
-
-      const filteredRows = rows.filter(
+      const filteredRows = values.filter(
         (row) =>
           row.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
           row.attributes.some((val) =>
@@ -357,51 +281,33 @@ export const GlobalFacetPanelModalContent = ({
             if (status === displayType) {
               return;
             }
-            const attributeValues = attributes.map((attr) => ({
-              displayValue: attr,
-            }));
 
-            if (status === 'included') {
-              setBoostedValues([...boostedValues, ...attributeValues]);
-              setExcludedValues(
-                excludedValues.filter(
-                  (val) => !attributes.includes(val.displayValue)
-                )
-              );
-              setNonBoostedExcludedValues(
-                nonBoostedExcludedValues.filter(
-                  (val) => !attributes.includes(val.displayValue)
-                )
-              );
+            if (displayType === 'included') {
+              dispatch({
+                type: 'AMEND_BOOSTED_ROW',
+                payload: {
+                  newStatus: status,
+                  displayName,
+                },
+              });
             }
-            if (status === 'algoControl') {
-              setNonBoostedExcludedValues([
-                ...nonBoostedExcludedValues,
-                ...attributeValues,
-              ]);
-              setExcludedValues(
-                excludedValues.filter(
-                  (val) => !attributes.includes(val.displayValue)
-                )
-              );
-              setBoostedValues(
-                boostedValues.filter(
-                  (val) => !attributes.includes(val.displayValue)
-                )
-              );
+            if (displayType === 'algoControl') {
+              dispatch({
+                type: 'AMEND_NONBOOSTEDEXCLUDED_ROW',
+                payload: {
+                  newStatus: status,
+                  displayName,
+                },
+              });
             }
-            if (status === 'excluded') {
-              setExcludedValues([...excludedValues, ...attributeValues]);
-              setBoostedValues(
-                boostedValues.filter(
-                  (val) => !attributes.includes(val.displayValue)
-                )
-              );
-              setNonBoostedExcludedValues(
-                nonBoostedExcludedValues.filter(
-                  (val) => !attributes.includes(val.displayValue)
-                )
-              );
+            if (displayType === 'excluded') {
+              dispatch({
+                type: 'AMEND_EXCLUDED_ROW',
+                payload: {
+                  newStatus: status,
+                  displayName,
+                },
+              });
             }
           };
 
@@ -424,29 +330,32 @@ export const GlobalFacetPanelModalContent = ({
 
               <GlobalEditableLabel
                 displayName={displayName}
-                errorStates={errorStates}
                 editingValues={editingValues}
-                merged={merged}
+                merged={globalAttributesLocalState.merged}
+                boostedRows={globalAttributesLocalState.boostedRows}
+                excludedRows={globalAttributesLocalState.excludedRows}
                 facet={facet}
                 countryCode={countryCode}
+                errorStates={errorStates}
+                dispatch={dispatch}
                 setError={setError}
-                setMerged={setMerged}
                 setEditingValues={setEditingValues}
               />
 
-              {displayType === 'included' && (
-                <GlobalArrowButtons
-                  displayName={displayName}
-                  index={index}
-                  searchQuery={searchQuery}
-                  boostedValues={boostedValues}
-                  attributes={attributes}
-                  merged={merged}
-                  rows={rows}
-                  disableArrows={globalAttributesLocalState.disableArrows}
-                  setBoostedValues={setBoostedValues}
-                />
-              )}
+              <Col>
+                {displayType === 'included' && (
+                  <GlobalArrowButtons
+                    displayName={displayName}
+                    index={index}
+                    searchQuery={searchQuery}
+                    boostedRows={globalAttributesLocalState.boostedRows}
+                    attributes={attributes}
+                    rows={filteredRows}
+                    disableArrows={globalAttributesLocalState.disableArrows}
+                    dispatch={dispatch}
+                  />
+                )}
+              </Col>
 
               <Col>
                 <FacetOrderDropdown
@@ -463,39 +372,41 @@ export const GlobalFacetPanelModalContent = ({
       );
     },
     [
-      boostedValues,
-      excludedValues,
-      nonBoostedExcludedValues,
-      errorStates,
       searchQuery,
       countryCode,
       editingValues,
       facet,
-      merged,
+      errorStates,
       globalAttributesLocalState.allSelected,
       globalAttributesLocalState.allDeselected,
       globalAttributesLocalState.disableArrows,
+      globalAttributesLocalState.boostedRows,
+      globalAttributesLocalState.excludedRows,
+      globalAttributesLocalState.merged,
       writeEnabled,
     ]
   );
 
   const boostedValuesRows = useMemo(() => {
-    return listValues(boostedValues, 'included');
-  }, [boostedValues, listValues]);
+    return listValues(globalAttributesLocalState.boostedRows, 'included');
+  }, [globalAttributesLocalState.boostedRows, listValues]);
 
   const defaultValuesRows = useMemo(() => {
-    return listValues(nonBoostedExcludedValues, 'algoControl');
-  }, [nonBoostedExcludedValues, listValues]);
+    return listValues(
+      globalAttributesLocalState.nonBoostedExcludedRows,
+      'algoControl'
+    );
+  }, [globalAttributesLocalState.nonBoostedExcludedRows, listValues]);
 
   const excludedValuesRows = useMemo(() => {
-    return listValues(excludedValues, 'excluded');
-  }, [excludedValues, listValues]);
+    return listValues(globalAttributesLocalState.excludedRows, 'excluded');
+  }, [globalAttributesLocalState.excludedRows, listValues]);
 
   const hasSelectedAllAttributes =
     globalAttributesLocalState.selectedAttributes.length ===
-    excludedValues.length +
-      nonBoostedExcludedValues.length +
-      boostedValues.length;
+    globalAttributesLocalState.excludedRows.length +
+      globalAttributesLocalState.nonBoostedExcludedRows.length +
+      globalAttributesLocalState.boostedRows.length;
 
   const filteredAttributeValues = attributeValues.filter((attribute) =>
     attribute.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
@@ -504,12 +415,12 @@ export const GlobalFacetPanelModalContent = ({
   const filteredAttributeValuesNotInAMergeGroup =
     filteredAttributeValues.filter(
       (attribute) =>
-        !merged?.some((group) =>
+        !globalAttributesLocalState.merged?.some((group) =>
           group.mergedValues?.includes(attribute.displayValue)
         )
     );
 
-  const filteredMergeGroups = merged!.filter(
+  const filteredMergeGroups = globalAttributesLocalState.merged?.filter(
     (group) =>
       group.displayValue?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       group.mergedValues?.some((val) =>

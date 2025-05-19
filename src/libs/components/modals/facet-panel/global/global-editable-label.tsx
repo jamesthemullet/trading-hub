@@ -1,3 +1,5 @@
+import type { Dispatch } from 'react';
+
 import type {
   MerchandisingCountryCode,
   MerchandisingGlobalOnlyFacetConfig,
@@ -7,6 +9,10 @@ import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 
 import { FlexColumnCol } from '../search-and-category/edit-facet-modal-content.styles';
+import type {
+  FormattedRow,
+  GlobalAttributeReducer,
+} from './global-attribute-reducer';
 
 type MergeGroup = MerchandisingGlobalOnlyFacetConfig['merged'];
 
@@ -15,23 +21,28 @@ export const GlobalEditableLabel = ({
   errorStates,
   editingValues,
   facet,
+  boostedRows,
+  excludedRows,
   countryCode,
   merged,
   setError,
-  setMerged,
+  dispatch,
   setEditingValues,
 }: {
   displayName: string;
   errorStates: Record<string, { message: string }>;
   editingValues: string[];
-
   facet: MerchandisingReturnedGlobalFacet;
+  boostedRows: FormattedRow[];
+  excludedRows: FormattedRow[];
   countryCode: MerchandisingCountryCode;
   merged: MergeGroup | undefined;
   setError: (displayName: string, message: string) => void;
-  setMerged: (value: MergeGroup | undefined) => void;
+  dispatch: Dispatch<GlobalAttributeReducer>;
   setEditingValues: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
+  const allBoostedValues = boostedRows.map((row) => row.displayName);
+  const allExcludedValues = excludedRows.map((row) => row.displayName);
   const { checkMergeNameUnique } = useCheckMergeNameUnique();
   const errorState = errorStates[displayName] || {
     message: '',
@@ -80,19 +91,20 @@ export const GlobalEditableLabel = ({
       return;
     }
 
-    if (existingMergeGroup > -1) {
-      setMerged([
-        ...merged!.map((group, index) =>
-          index === existingMergeGroup
-            ? { ...group, displayValue: newValue }
-            : group
-        ),
-      ]);
-    } else {
-      setMerged([
-        ...merged!,
-        { displayValue: newValue, mergedValues: [oldValue] },
-      ]);
+    dispatch({
+      type: 'AMEND_DISPLAY_NAME',
+      payload: { oldValue: displayName, newValue },
+    });
+
+    if (existingMergeGroup === -1) {
+      dispatch({
+        type: 'CREATE_MERGE_GROUP',
+        payload: {
+          attributes: [newValue],
+          isFirstAttributeBoosted: allBoostedValues?.includes(oldValue),
+          isFirstAttributeExcluded: allExcludedValues?.includes(oldValue),
+        },
+      });
     }
 
     setError(oldValue, '');

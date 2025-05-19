@@ -1308,9 +1308,9 @@ describe('GlobalFacetPanelModalContent', () => {
         mergeButton.click();
       });
 
-      const inputField = await screen.findByLabelText(
-        `Edit ${attributeValuesMock[0].displayValue} input field`
-      );
+      const inputField = screen.getByRole('textbox', {
+        name: `Edit ${attributeValuesMock[0].displayValue} input field`,
+      });
 
       await waitFor(async () => {
         await userEvent.clear(inputField);
@@ -1472,10 +1472,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       expect(
         screen.getByTestId(
-          `algoControl attribute 0 ${attributeValuesMock[0].displayValue}`
+          `algoControl attribute 1 ${attributeValuesMock[0].displayValue}`
         )
       ).toBeVisible();
-      expect(screen.getByTestId('algoControl attribute 1 Foo')).toBeVisible();
+      expect(screen.getByTestId('algoControl attribute 0 Foo')).toBeVisible();
     });
 
     it('should remove the merge group if there is only 1 value left after removing a value', async () => {
@@ -1514,12 +1514,12 @@ describe('GlobalFacetPanelModalContent', () => {
 
       expect(
         screen.getByTestId(
-          `algoControl attribute 0 ${attributeValuesMock[0].displayValue}`
+          `algoControl attribute 1 ${attributeValuesMock[0].displayValue}`
         )
       ).toBeVisible();
       expect(
         screen.getByTestId(
-          `algoControl attribute 1 ${attributeValuesMock[1].displayValue}`
+          `algoControl attribute 0 ${attributeValuesMock[1].displayValue}`
         )
       ).toBeVisible();
       expect(mergeGroup).not.toBeVisible();
@@ -1921,9 +1921,9 @@ describe('GlobalFacetPanelModalContent', () => {
 
       expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
 
-      const button = screen.getByLabelText(
-        `Remove merged facet for ${attributeValuesMock[0].displayValue}`
-      );
+      const button = screen.getByRole('button', {
+        name: `Remove merged facet for ${attributeValuesMock[0].displayValue}`,
+      });
 
       act(() => {
         button.click();
@@ -1959,9 +1959,9 @@ describe('GlobalFacetPanelModalContent', () => {
 
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
 
-      const button = screen.getByLabelText(
-        `Remove merged facet for ${attributeValuesMock[2].displayValue}`
-      );
+      const button = screen.getByRole('button', {
+        name: `Remove merged facet for ${attributeValuesMock[2].displayValue}`,
+      });
 
       act(() => {
         button.click();

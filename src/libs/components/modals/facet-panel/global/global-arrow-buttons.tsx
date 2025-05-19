@@ -1,12 +1,9 @@
-import type { MerchandisingGlobalOnlyFacetConfig } from '@/libs/api';
+import type { Dispatch } from 'react';
+
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 
-import {
-  Col,
-  OrderArrowsContainer,
-} from '../search-and-category/edit-facet-modal-content.styles';
-
-type MergeGroup = MerchandisingGlobalOnlyFacetConfig['merged'];
+import { OrderArrowsContainer } from '../search-and-category/edit-facet-modal-content.styles';
+import type { GlobalAttributeReducer } from './global-attribute-reducer';
 
 type FormattedRow = {
   displayName: string;
@@ -18,121 +15,86 @@ export const GlobalArrowButtons = ({
   displayName,
   index,
   searchQuery,
-  boostedValues,
+  boostedRows,
   attributes,
-  merged,
   rows,
   disableArrows,
-  setBoostedValues,
+  dispatch,
 }: {
   displayName: string;
   index: number;
   searchQuery: string;
-  boostedValues: { displayValue: string }[];
+  boostedRows: FormattedRow[];
   attributes: string[];
-  merged: MergeGroup | undefined;
   rows: FormattedRow[];
   disableArrows: boolean;
-  setBoostedValues: React.Dispatch<
-    React.SetStateAction<{ displayValue: string }[]>
-  >;
+  dispatch: Dispatch<GlobalAttributeReducer>;
 }) => {
   return (
-    <Col>
-      <OrderArrowsContainer>
-        <ArrowButton
-          direction="up"
-          aria-label={`Move ${displayName} row up`}
-          isDisabled={index === 0 || !!searchQuery || disableArrows}
-          onClick={() => {
-            const rowAboveIndex = boostedValues.findIndex(
-              (val) => val.displayValue === attributes[0]
-            );
+    <OrderArrowsContainer>
+      <ArrowButton
+        direction="up"
+        aria-label={`Move ${displayName} row up`}
+        isDisabled={index === 0 || !!searchQuery || disableArrows}
+        onClick={() => {
+          const rowsAboveIndex = boostedRows.findIndex((val) =>
+            val.attributes.includes(attributes[0])
+          );
 
-            const rowAboveMergeGroup = merged
-              ?.map((m) =>
-                m.mergedValues?.includes(
-                  boostedValues[rowAboveIndex - 1].displayValue
-                )
-                  ? m
-                  : /* istanbul ignore next */
-                    null
-              )
-              .filter(Boolean);
+          const newPosition = rowsAboveIndex - 1;
 
-            const newPosition =
-              rowAboveMergeGroup?.length &&
-              rowAboveMergeGroup?.[0]?.mergedValues?.length
-                ? boostedValues.findIndex(
-                    (val) =>
-                      val.displayValue ===
-                      rowAboveMergeGroup?.[0]?.mergedValues?.[0]
-                  )
-                : rowAboveIndex - 1;
+          const updatedBoostedValues = boostedRows.filter(
+            (val) => !val.attributes.includes(attributes[0])
+          );
 
-            const updatedBoostedValues = boostedValues.filter(
-              (val) => !attributes.includes(val.displayValue)
-            );
-            setBoostedValues(
-              updatedBoostedValues.toSpliced(
+          const rowToMove = boostedRows.find((val) =>
+            val.attributes.includes(attributes[0])
+          );
+
+          dispatch({
+            type: 'CHANGE_ROW_ORDER',
+            payload: {
+              newOrder: updatedBoostedValues.toSpliced(
                 newPosition,
                 0,
-                ...attributes.map((attr) => ({
-                  displayValue: attr,
-                }))
-              )
-            );
-          }}
-        />
+                rowToMove!
+              ),
+            },
+          });
+        }}
+      />
 
-        <ArrowButton
-          direction="down"
-          aria-label={`Move ${displayName} row down`}
-          isDisabled={
-            index === rows.length - 1 || !!searchQuery || disableArrows
-          }
-          onClick={() => {
-            const rowBelowIndex =
-              boostedValues.findIndex(
-                (val) => val.displayValue === attributes.slice(-1).pop()
-              ) + 1;
+      <ArrowButton
+        direction="down"
+        aria-label={`Move ${displayName} row down`}
+        isDisabled={index === rows.length - 1 || !!searchQuery || disableArrows}
+        onClick={() => {
+          const rowBelowIndex = boostedRows.findIndex((val) =>
+            val.attributes.includes(attributes[0])
+          );
 
-            const rowBelowMergeGroup = merged
-              ?.map((m) =>
-                m.mergedValues?.includes(
-                  boostedValues[rowBelowIndex].displayValue
-                )
-                  ? m
-                  : /* istanbul ignore next */
-                    null
-              )
-              .filter(Boolean);
+          const updatedBoostedValues = boostedRows.filter(
+            (val) => !val.attributes.includes(attributes[0])
+          );
 
-            const valueToInsertAfter =
-              rowBelowMergeGroup?.[0]?.mergedValues?.slice(-1).pop() ||
-              boostedValues[rowBelowIndex].displayValue;
+          const newPosition = rowBelowIndex + 1;
 
-            const updatedBoostedValues = boostedValues.filter(
-              (val) => !attributes.includes(val.displayValue)
-            );
+          const rowToMove = boostedRows.find((val) =>
+            val.attributes.includes(attributes[0])
+          );
 
-            const newPosition =
-              updatedBoostedValues.findIndex(
-                (val) => val.displayValue === valueToInsertAfter
-              ) + 1;
-
-            setBoostedValues(
-              updatedBoostedValues.toSpliced(
+          dispatch({
+            type: 'CHANGE_ROW_ORDER',
+            payload: {
+              newOrder: updatedBoostedValues.toSpliced(
                 newPosition,
                 0,
-                ...attributes.map((attr) => ({
-                  displayValue: attr,
-                }))
-              )
-            );
-          }}
-        />
-      </OrderArrowsContainer>
-    </Col>
+                rowToMove!
+              ),
+            },
+          });
+        }}
+      />
+    </OrderArrowsContainer>
   );
 };

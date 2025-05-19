@@ -11,14 +11,19 @@ describe('Arrow Buttons', () => {
         displayName="test"
         index={0}
         searchQuery=""
-        boostedValues={[{ displayValue: 'value1' }]}
+        boostedRows={[
+          {
+            displayName: 'value1',
+            attributes: ['value1'],
+            isMergeGroup: false,
+          },
+        ]}
         attributes={['value1']}
-        merged={undefined}
         rows={[
           { displayName: 'test', attributes: ['value1'], isMergeGroup: false },
         ]}
         disableArrows={false}
-        setBoostedValues={jest.fn()}
+        dispatch={jest.fn()}
       />
     );
     expect(screen.getByLabelText('Move test row up')).toBeVisible();

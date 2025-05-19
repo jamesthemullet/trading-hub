@@ -10,7 +10,7 @@ import {
   RemoveMergedFacet,
 } from '@/libs/components/modals/facet-panel/search-and-category/edit-facet-modal-content.styles';
 
-import type { ToggleSelectedAttribute } from './global-attribute-reducer';
+import type { GlobalAttributeReducer } from './global-attribute-reducer';
 
 const StyledText = styled(Text)`
   text-decoration: underline;
@@ -40,7 +40,7 @@ export const GlobalFacetAttribute = ({
     valueToRemove: string;
     mergeDisplayName: string;
   }) => void;
-  dispatch: Dispatch<ToggleSelectedAttribute>;
+  dispatch: Dispatch<GlobalAttributeReducer>;
 }) => {
   const maxVisible = 4;
   const [isChecked, setIsChecked] = useState(false);

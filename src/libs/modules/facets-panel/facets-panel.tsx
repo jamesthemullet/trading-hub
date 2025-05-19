@@ -231,14 +231,12 @@ export const FacetsPanel = ({
           </OrderColumn>
         </Col>
         <Col>
-          {displayType === 'included' && (
-            <Button
-              onClick={() => handleOpenFacetEditModal(facet)}
-              disabled={!writeEnabled}
-            >
-              Edit values
-            </Button>
-          )}
+          <Button
+            onClick={() => handleOpenFacetEditModal(facet)}
+            disabled={!writeEnabled}
+          >
+            Edit values
+          </Button>
         </Col>
       </Row>
     );
