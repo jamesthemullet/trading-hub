@@ -18,4 +18,6 @@ export const color = {
   successGreen: '#2db236',
   improvedFit: '#e86c25',
   focusBlue: '#4273B7',
+  infoBoxBlue: '#EAF5FA',
+  infoBoxBorder: '#194D69',
 };

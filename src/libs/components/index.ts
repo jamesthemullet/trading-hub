@@ -2,7 +2,6 @@ export * from './bulk-actions/products';
 export * from './buttons/button/button';
 export * from './calendar';
 export * from './category-search/category-search';
-export * from './category-search/selected-category';
 export * from './checkboxes/checkboxes';
 export * from './dropdowns/dropdown/dropdown';
 export * from './filter/filter';

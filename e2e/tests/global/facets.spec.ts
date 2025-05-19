@@ -71,7 +71,9 @@ test.describe('global facets', () => {
     await page.getByRole('button', { name: 'Add facet rule' }).click();
 
     await expect(
-      page.getByText('Applies to all pages in marksandspencer.com')
+      page.getByText(
+        'You are currently editing all pages on the M&S website and app'
+      )
     ).toBeVisible();
 
     await page

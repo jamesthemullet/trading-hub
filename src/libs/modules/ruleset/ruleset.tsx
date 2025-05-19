@@ -22,13 +22,13 @@ import {
   Loader,
   ProductGridHeader,
   SearchKeywords,
-  SelectedCategory,
   spacing,
   Tabs,
   Text,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
+import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearchAll } from '@/libs/components/product-search/all/product-search-all';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
@@ -144,10 +144,6 @@ const CategorySearchWrapper = styled.div`
 
 const KeywordSearchWrapper = styled.div`
   min-width: 470px;
-`;
-
-const GlobalInfoWrapper = styled.div`
-  width: 100%;
 `;
 
 const InfluenceWrapper = styled.div`
@@ -524,60 +520,60 @@ export const Ruleset = ({
           />
         </InfluenceWrapper>
 
-        <RulesetIdentifier>
-          {rulesetType === 'category' && (
-            <CategorySearchWrapper>
-              <CategorySearch
-                selectedCategories={selectedCategories}
-                onClearSelection={(category: string) => {
-                  setSelectedCategories(
-                    selectedCategories.filter(
-                      (categoryName) => categoryName !== category
-                    )
-                  );
-                  setSelectedCategoriesInfo(
-                    selectedCategoriesInfo.filter(
-                      (categoryInfo) => categoryInfo.id !== category
-                    )
-                  );
-                }}
-                onSelectCategory={onSelectCategory}
-                selectedCategoriesInfo={selectedCategoriesInfo}
-                countryCode={ruleset.countryCode}
-                previewCategory={previewValue}
-                selectPreviewCategory={(category: string | undefined) => {
-                  setPreviewValue(category);
-                  setSelectedPreviewCountryCode(
-                    category?.includes('IE_') ? 'IE' : 'UK'
-                  );
-                }}
-                error={duplicationError}
-                writeEnabled={writeEnabled}
-              />
-            </CategorySearchWrapper>
-          )}
+        {rulesetType !== 'global' && (
+          <RulesetIdentifier>
+            {rulesetType === 'category' && (
+              <CategorySearchWrapper>
+                <CategorySearch
+                  selectedCategories={selectedCategories}
+                  onClearSelection={(category: string) => {
+                    setSelectedCategories(
+                      selectedCategories.filter(
+                        (categoryName) => categoryName !== category
+                      )
+                    );
+                    setSelectedCategoriesInfo(
+                      selectedCategoriesInfo.filter(
+                        (categoryInfo) => categoryInfo.id !== category
+                      )
+                    );
+                  }}
+                  onSelectCategory={onSelectCategory}
+                  selectedCategoriesInfo={selectedCategoriesInfo}
+                  countryCode={ruleset.countryCode}
+                  previewCategory={previewValue}
+                  selectPreviewCategory={(category: string | undefined) => {
+                    setPreviewValue(category);
+                    setSelectedPreviewCountryCode(
+                      category?.includes('IE_') ? 'IE' : 'UK'
+                    );
+                  }}
+                  error={duplicationError}
+                  writeEnabled={writeEnabled}
+                />
+              </CategorySearchWrapper>
+            )}
 
-          {rulesetType === 'search' && (
-            <KeywordSearchWrapper>
-              <SearchKeywords
-                title="Search Keywords"
-                searchTerms={rulesetSearchTerms}
-                addSearchTerm={onAddSearchTerm}
-                removeSearchTerm={onRemoveSearchTerm}
-                previewSearchTerm={previewValue}
-                selectPreviewSearchTerm={setPreviewValue}
-                error={duplicationError}
-                writeEnabled={writeEnabled}
-              />
-            </KeywordSearchWrapper>
-          )}
+            {rulesetType === 'search' && (
+              <KeywordSearchWrapper>
+                <SearchKeywords
+                  title="Search Keywords"
+                  searchTerms={rulesetSearchTerms}
+                  addSearchTerm={onAddSearchTerm}
+                  removeSearchTerm={onRemoveSearchTerm}
+                  previewSearchTerm={previewValue}
+                  selectPreviewSearchTerm={setPreviewValue}
+                  error={duplicationError}
+                  writeEnabled={writeEnabled}
+                />
+              </KeywordSearchWrapper>
+            )}
+          </RulesetIdentifier>
+        )}
 
-          {rulesetType === 'global' && (
-            <GlobalInfoWrapper>
-              <SelectedCategory label="All pages" />
-            </GlobalInfoWrapper>
-          )}
-        </RulesetIdentifier>
+        {rulesetType === 'global' && (
+          <InfoBox text="You are currently editing all pages on the M&S website and app" />
+        )}
 
         {rulesetType !== 'global' && (
           <Duration>

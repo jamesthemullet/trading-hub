@@ -7,18 +7,13 @@ import type {
   MerchandisingReturnedFacet,
   MerchandisingRules,
 } from '@/libs/api';
-import {
-  Button,
-  ProductGridHeader,
-  Search,
-  SelectedCategory,
-  Text,
-} from '@/libs/components';
+import { Button, ProductGridHeader, Search, Text } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { GlobalFacetPanelModal } from '@/libs/components/modals/facet-panel/global/global-facets-panel-modal';
 import { TableHeading } from '@/libs/components/table/table.styles';
 import { useFacetsFilter } from '@/libs/hooks';
@@ -271,7 +266,7 @@ export const FacetsPanel = ({
             />
           </div>
 
-          <SelectedCategory label="Applies to all pages in marksandspencer.com" />
+          <InfoBox text="You are currently editing all pages on the M&S website and app" />
         </ScopeWrapper>
       </SectionWrapper>
 
