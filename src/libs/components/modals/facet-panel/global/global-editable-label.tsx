@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import { type Dispatch, useState } from 'react';
 
 import type {
   MerchandisingCountryCode,
@@ -18,34 +18,39 @@ type MergeGroup = MerchandisingGlobalOnlyFacetConfig['merged'];
 
 export const GlobalEditableLabel = ({
   displayName,
-  errorStates,
   editingValues,
   facet,
   boostedRows,
   excludedRows,
   countryCode,
   merged,
-  setError,
   dispatch,
   setEditingValues,
 }: {
   displayName: string;
-  errorStates: Record<string, { message: string }>;
   editingValues: string[];
   facet: MerchandisingReturnedGlobalFacet;
   boostedRows: FormattedRow[];
   excludedRows: FormattedRow[];
   countryCode: MerchandisingCountryCode;
   merged: MergeGroup | undefined;
-  setError: (displayName: string, message: string) => void;
   dispatch: Dispatch<GlobalAttributeReducer>;
   setEditingValues: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
+  const [error, setError] = useState<string>('');
   const allBoostedValues = boostedRows.map((row) => row.displayName);
   const allExcludedValues = excludedRows.map((row) => row.displayName);
   const { checkMergeNameUnique } = useCheckMergeNameUnique();
-  const errorState = errorStates[displayName] || {
-    message: '',
+
+  const handleError = (message: string) => {
+    setError(message);
+    dispatch({
+      type: 'SET_ERROR',
+      payload: {
+        displayName,
+        message,
+      },
+    });
   };
 
   const handleDisplayNameChange = async (
@@ -72,7 +77,7 @@ export const GlobalEditableLabel = ({
       .some((val) => !!val);
 
     if (isInOtherMergeGroups) {
-      setError(oldValue, `${trimmedNewValue} is not a unique value`);
+      handleError(`${trimmedNewValue} is not a unique value`);
       return;
     }
 
@@ -87,7 +92,7 @@ export const GlobalEditableLabel = ({
     });
 
     if (!isUniqueValue) {
-      setError(oldValue, `${trimmedNewValue} is not a unique value`);
+      handleError(`${trimmedNewValue} is not a unique value`);
       return;
     }
 
@@ -107,29 +112,32 @@ export const GlobalEditableLabel = ({
       });
     }
 
-    setError(oldValue, '');
+    handleError('');
   };
 
   return (
     <FlexColumnCol>
       <EditableLabel
         displayValue={displayName}
-        onCancel={() => setError(displayName, '')}
+        onCancel={() => handleError('')}
         onDisplayValueChange={(newValue) => {
           handleDisplayNameChange(displayName, newValue);
           setEditingValues((prev) => prev.filter((val) => val !== displayName));
         }}
         canCancelEdit
-        showErrorState={!!errorStates[displayName]?.message}
+        showErrorState={!!error}
         showEditState={editingValues.includes(displayName)}
-        setError={(message) => setError(displayName, message)}
-        disallowedErrorMessage={errorState.message}
+        setError={(message) => handleError(message)}
+        disallowedErrorMessage={error}
         handleUpdatedValue={(event) => {
           event.stopPropagation();
+
           if (event.target.value === '') {
-            setError(displayName, 'You must supply a value');
-          } else {
-            setError(displayName, '');
+            handleError('You must supply a value');
+          }
+
+          if (error && event.target.value !== '') {
+            handleError('');
           }
         }}
       />

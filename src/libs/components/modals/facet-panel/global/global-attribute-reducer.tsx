@@ -109,6 +109,14 @@ type RemoveFromMergeGroup = {
   };
 };
 
+type SetError = {
+  type: 'SET_ERROR';
+  payload: {
+    displayName: string;
+    message: string;
+  };
+};
+
 export type GlobalAttributeReducer =
   | ToggleSelectedAttribute
   | ClearSelectedAttributes
@@ -120,7 +128,8 @@ export type GlobalAttributeReducer =
   | ChangeRowOrder
   | CreateMergeGroup
   | UpdateMergeGroup
-  | RemoveFromMergeGroup;
+  | RemoveFromMergeGroup
+  | SetError;
 
 export type GlobalAttributesState = {
   selectedAttributes: string[];
@@ -134,6 +143,9 @@ export type GlobalAttributesState = {
     displayValue?: string;
     mergedValues?: string[];
   }[];
+  errorStates: {
+    [key: string]: string;
+  };
 };
 
 export const globalAttributesReducer = (
@@ -613,6 +625,22 @@ export const globalAttributesReducer = (
         excludedRows: updatedExcludedRows,
         nonBoostedExcludedRows: updatedNonBoostedExcludedRows,
         merged: updatedMerged.filter((merge) => merge.mergedValues!.length > 1),
+      };
+    }
+    case 'SET_ERROR': {
+      const { displayName, message } = action.payload;
+
+      const updatedErrorStates = { ...state.errorStates };
+
+      if (message === '') {
+        delete updatedErrorStates[displayName];
+      } else {
+        updatedErrorStates[displayName] = message;
+      }
+
+      return {
+        ...state,
+        errorStates: updatedErrorStates,
       };
     }
   }

@@ -45,14 +45,12 @@ describe('Global Editable label', () => {
     renderWithProviders(
       <GlobalEditableLabel
         displayName="test attribute"
-        errorStates={{}}
         editingValues={[]}
         facet={mockFacet}
         boostedRows={[]}
         excludedRows={[]}
         countryCode="UK"
         merged={[]}
-        setError={jest.fn()}
         setEditingValues={jest.fn()}
         dispatch={jest.fn()}
       />
@@ -78,14 +76,12 @@ describe('Global Editable label', () => {
     renderWithProviders(
       <GlobalEditableLabel
         displayName="test attribute"
-        errorStates={{}}
         editingValues={[]}
         facet={mockFacet}
         boostedRows={[]}
         excludedRows={[]}
         countryCode="UK"
         merged={[]}
-        setError={jest.fn()}
         setEditingValues={jest.fn()}
         dispatch={dispatchMock}
       />

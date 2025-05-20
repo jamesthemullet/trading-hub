@@ -106,18 +106,7 @@ export const GlobalFacetPanelModalContent = ({
 }: ContentProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [errorStates, setErrorStates] = useState<
-    Record<string, { message: string }>
-  >({});
-
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-
-  const setError = (id: string, message: string) => {
-    setErrorStates((prev) => ({
-      ...Object.fromEntries(Object.entries(prev).filter(([key]) => key !== id)),
-      ...(message && { [id]: { message } }),
-    }));
-  };
 
   const [editingValues, setEditingValues] = useState<string[]>([]);
 
@@ -150,6 +139,7 @@ export const GlobalFacetPanelModalContent = ({
       excludedRows: [],
       nonBoostedExcludedRows: [],
       merged: [],
+      errorStates: {},
     }
   );
 
@@ -336,9 +326,7 @@ export const GlobalFacetPanelModalContent = ({
                 excludedRows={globalAttributesLocalState.excludedRows}
                 facet={facet}
                 countryCode={countryCode}
-                errorStates={errorStates}
                 dispatch={dispatch}
-                setError={setError}
                 setEditingValues={setEditingValues}
               />
 
@@ -376,7 +364,6 @@ export const GlobalFacetPanelModalContent = ({
       countryCode,
       editingValues,
       facet,
-      errorStates,
       globalAttributesLocalState.allSelected,
       globalAttributesLocalState.allDeselected,
       globalAttributesLocalState.disableArrows,
@@ -518,7 +505,9 @@ export const GlobalFacetPanelModalContent = ({
         <Button onClick={onClose}>Cancel</Button>{' '}
         <Button
           onClick={handleSave}
-          disabled={Object.values(errorStates).some((state) => state)}
+          disabled={Object.values(globalAttributesLocalState.errorStates).some(
+            (state) => state
+          )}
         >
           Save
         </Button>

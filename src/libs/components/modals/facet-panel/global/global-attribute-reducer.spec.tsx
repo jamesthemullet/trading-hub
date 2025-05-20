@@ -12,6 +12,7 @@ const mockInitialState: GlobalAttributesState = {
   excludedRows: [],
   nonBoostedExcludedRows: [],
   merged: [],
+  errorStates: {},
 };
 
 const mockState: GlobalAttributesState = {
@@ -55,6 +56,7 @@ const mockState: GlobalAttributesState = {
       mergedValues: ['Magic tummy control', 'Firm control', 'Light control'],
     },
   ],
+  errorStates: {},
 };
 
 describe('Global Attribute Reducer', () => {
@@ -1111,6 +1113,28 @@ describe('Global Attribute Reducer', () => {
           ],
         },
       ],
+    });
+  });
+
+  describe('SET_ERROR', () => {
+    it('should set error state', () => {
+      const state: GlobalAttributesState = {
+        ...mockState,
+      };
+      const action = {
+        type: 'SET_ERROR' as const,
+        payload: {
+          displayName: 'test',
+          message: 'Error message',
+        },
+      };
+      const result = globalAttributesReducer(state, action);
+      expect(result).toEqual({
+        ...mockState,
+        errorStates: {
+          test: 'Error message',
+        },
+      });
     });
   });
 });
