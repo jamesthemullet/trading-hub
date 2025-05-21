@@ -24,7 +24,6 @@ import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/f
 import { SearchAndCategoryFacetsPanelModal } from '@/libs/components/modals/facet-panel/search-and-category/search-and-category-facets-panel-modal';
 import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
-import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { useFacetsList } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -156,7 +155,6 @@ export const Facets = ({
       plpUrl?: string;
     }[]
   >(categoriesInfo || []);
-  const [duplicationError, setDuplicationError] = useState('');
 
   const [selectedSearchTerms, setSelectedSearchTerms] = useState<Array<string>>(
     searchTerms || []
@@ -175,27 +173,17 @@ export const Facets = ({
     name: string;
     path: string;
   }) => {
-    const hasDuplicates = checkForDuplicates(
-      [...selectedCategories],
-      category.identifier,
-      'ruleset'
+    setSelectedCategoriesInfo([
+      ...selectedCategoriesInfo,
+      {
+        id: category.identifier,
+        name: category.name,
+        plpUrl: category.path,
+      },
+    ]);
+    setSelectedPreviewCountryCode?.(
+      category.identifier.includes('IE_') ? 'IE' : 'UK'
     );
-
-    if (hasDuplicates) {
-      setDuplicationError(hasDuplicates);
-    } else {
-      setSelectedCategoriesInfo([
-        ...selectedCategoriesInfo,
-        {
-          id: category.identifier,
-          name: category.name,
-          plpUrl: category.path,
-        },
-      ]);
-      setSelectedPreviewCountryCode?.(
-        category.identifier.includes('IE_') ? 'IE' : 'UK'
-      );
-    }
   };
 
   const onRemoveSearchTerm = (term: string) => {
@@ -205,19 +193,8 @@ export const Facets = ({
   };
 
   const onAddSearchTerm = (term: string) => {
-    const hasDuplicates = checkForDuplicates(
-      selectedSearchTerms,
-      term,
-      'keyword'
-    );
-
-    if (hasDuplicates) {
-      setDuplicationError(hasDuplicates);
-    } else {
-      setSelectedSearchTerms([...selectedSearchTerms, term]);
-      setPreviewValue(term);
-      setDuplicationError('');
-    }
+    setSelectedSearchTerms([...selectedSearchTerms, term]);
+    setPreviewValue(term);
   };
 
   const handleSave = () => {
@@ -429,7 +406,6 @@ export const Facets = ({
               onSelectCategory={onSelectCategory}
               selectedCategoriesInfo={selectedCategoriesInfo}
               selectPreviewCategory={setPreviewValue}
-              error={duplicationError}
               writeEnabled={writeEnabled}
             />
           )}
@@ -441,7 +417,6 @@ export const Facets = ({
               removeSearchTerm={onRemoveSearchTerm}
               previewSearchTerm={previewValue}
               selectPreviewSearchTerm={setPreviewValue}
-              error={duplicationError}
               writeEnabled={writeEnabled}
             />
           )}
@@ -516,9 +491,6 @@ export const Facets = ({
             </div>
           )}
         </ScopeWrapper>
-        {duplicationError && (
-          <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
-        )}
       </SectionWrapper>
 
       {(selectedCategories.length > 0 || selectedSearchTerms.length > 0) && (

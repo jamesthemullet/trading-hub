@@ -7,7 +7,6 @@ import type {
   MerchandisingReturnedKeywordRedirect,
 } from '@/libs/api';
 import {
-  ErrorMessage,
   ProductGridHeader,
   RadioButtons,
   SearchKeywords,
@@ -17,7 +16,6 @@ import {
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
-import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { color } from '@/libs/components/utils/constants';
 
 const RedirectType = styled.div`
@@ -116,7 +114,6 @@ export const Redirect = ({
           countryCode: 'UK_IE',
         }
   );
-  const [duplicationError, setDuplicationError] = useState('');
 
   const onSaveRedirect = () => {
     if (onCreate) {
@@ -136,20 +133,10 @@ export const Redirect = ({
 
   const onAddKeyword = (keyword: string) => {
     const keywords = [...redirect.keywords, keyword];
-    const hasDuplicates = checkForDuplicates(
-      [...redirect.keywords],
-      keyword,
-      'keyword'
-    );
-    if (hasDuplicates) {
-      setDuplicationError(hasDuplicates);
-    } else {
-      setRedirect({
-        ...redirect,
-        keywords,
-      });
-      setDuplicationError('');
-    }
+    setRedirect({
+      ...redirect,
+      keywords,
+    });
   };
 
   // istanbul ignore next
@@ -234,7 +221,6 @@ export const Redirect = ({
             }
             addSearchTerm={onAddKeyword}
             removeSearchTerm={onRemoveKeyword}
-            error={duplicationError}
             writeEnabled={writeEnabled}
           />
           <Duration>
@@ -256,9 +242,6 @@ export const Redirect = ({
             />
           </Duration>
         </Row>
-        {duplicationError && (
-          <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
-        )}
         <FullInputRow>
           <StyledLabel htmlFor="destination-url-input">
             Destination URL*

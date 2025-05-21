@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { Button } from '../../buttons/button/button';
 import { SearchBox } from '../../search-box/search-box';
 import { ErrorMessage, Label } from '../../typography/typography.styles';
+import { checkForDuplicates } from '../../utils/check-for-duplicates';
 import { color } from '../../utils/constants';
 import { spacing } from '../../utils/spacing';
 import {
@@ -108,7 +109,6 @@ export type Props = {
   writeEnabled: boolean;
   previewSearchTerm?: string | undefined;
   selectPreviewSearchTerm?: (keyword: string | undefined) => void;
-  error?: string;
 };
 
 const calculateWordsToDisplay = (searchTerms: string[], MAX_CHARS: number) => {
@@ -137,13 +137,13 @@ export const SearchKeywords = ({
   searchTerms,
   selectPreviewSearchTerm,
   title,
-  error,
   writeEnabled,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [inputText, setInputText] = useState('');
 
   const [inputValue, setInputValue] = useState('');
+  const [duplicationError, setDuplicationError] = useState('');
 
   const [filterValue, setFilterValue] = useState('');
   const [filteredKeywords, setFilteredKeywords] =
@@ -160,8 +160,19 @@ export const SearchKeywords = ({
 
   const onAddKeyword = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addSearchTerm(inputText);
-    setInputText('');
+    const hasDuplicates = checkForDuplicates(
+      [...searchTerms],
+      inputText,
+      'keyword'
+    );
+
+    if (hasDuplicates) {
+      setDuplicationError(hasDuplicates);
+    } else {
+      addSearchTerm(inputText);
+      setInputText('');
+      setDuplicationError('');
+    }
   };
 
   const { wordsToDisplay, showViewAllButton } = calculateWordsToDisplay(
@@ -274,6 +285,10 @@ export const SearchKeywords = ({
             </ViewAllButton>
           )}
         </SearchBoxContainer>
+
+        {duplicationError && (
+          <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
+        )}
       </SearchKeywordsContainer>
 
       <Modal.Root
@@ -397,8 +412,10 @@ export const SearchKeywords = ({
                   />
                 )}
               </KeywordList>
-              {error && (
-                <ErrorMessage style={{ padding: 0 }}>{error}</ErrorMessage>
+              {duplicationError && (
+                <ErrorMessage style={{ padding: 0 }}>
+                  {duplicationError}
+                </ErrorMessage>
               )}
             </ModalContainer>
           </Modal.Body>

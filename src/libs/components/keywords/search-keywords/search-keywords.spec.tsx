@@ -492,4 +492,26 @@ describe('Search Keywords', () => {
       longerSearchTermsList[3]
     );
   });
+
+  it('should show error when adding a duplicate keyword', async () => {
+    const addSearchTermStub = jest.fn();
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={['new keyword']}
+        addSearchTerm={addSearchTermStub}
+      />
+    );
+
+    await waitFor(async () => {
+      await userEvent.type(
+        screen.getByLabelText('Add keyword'),
+        'new keyword{enter}'
+      );
+    });
+
+    expect(
+      screen.getByText('Keyword new keyword has already been added')
+    ).toBeVisible();
+  });
 });

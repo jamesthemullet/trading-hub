@@ -128,53 +128,36 @@ describe('Redirect', () => {
     const mockCreate = jest.fn();
     const user = userEvent.setup({ delay: null });
 
+    const existingRedirect: MerchandisingReturnedKeywordRedirect = {
+      destinationUrl: 'l/womens/dresses',
+      type: 'redirectTerm',
+      keywords: ['new keyword'],
+      id: 'abc123',
+      lastChanged: {
+        date: '',
+        user: '',
+      },
+      isEnabled: true,
+    };
     renderWithProviders(
       <Redirect
         writeEnabled
         onCancel={() => jest.fn()}
         onCreate={mockCreate}
         title="Add Keyword Redirect rule"
+        redirect={existingRedirect}
       />
     );
 
-    await act(async () => {
+    act(() => {
       user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
     });
 
-    await act(async () => {
-      user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+    await waitFor(async () => {
+      expect(
+        screen.getByText('Keyword new keyword has already been added')
+      ).toBeVisible();
     });
-
-    const redirectUrl = await screen.findByPlaceholderText('c/');
-
-    await act(async () => {
-      user.type(redirectUrl, 'c/redirect-url');
-    });
-
-    const redirectTitle = await screen.findByPlaceholderText(
-      'Enter redirect title'
-    );
-
-    await act(async () => {
-      user.type(redirectTitle, 'title');
-    });
-
-    const toggle = await screen.findAllByLabelText('Redirect Phrase(s)');
-    await act(async () => {
-      user.click(toggle[0]);
-    });
-
-    expect(
-      screen.getByRole('heading', { name: 'Add Keyword Redirect rule' })
-    ).toBeVisible();
-
-    expect(
-      screen.getByText('Keyword new keyword has already been added')
-    ).toBeVisible();
-
-    expect(
-      screen.queryAllByRole('button', { name: 'Remove keyword: new keyword' })
-    ).toHaveLength(1);
   });
 
   it('saves a redirect', async () => {

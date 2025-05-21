@@ -73,12 +73,15 @@ describe('CategorySearch', () => {
 
   it('should search while typing', async () => {
     const user = userEvent.setup();
+    const mockSelectCategory = jest.fn();
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
     });
 
-    renderWithProviders(<CategorySearch {...mockProps} />);
+    renderWithProviders(
+      <CategorySearch {...mockProps} onSelectCategory={mockSelectCategory} />
+    );
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -93,6 +96,11 @@ describe('CategorySearch', () => {
     );
     act(() => {
       resultsButton.click();
+    });
+    expect(mockSelectCategory).toHaveBeenCalledWith({
+      identifier: 'SubCategory_507',
+      name: 'Thermals',
+      path: 'l/lingerie/thermals',
     });
   });
 
@@ -524,6 +532,59 @@ describe('CategorySearch', () => {
       expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(
         mockCategoryId2
       );
+    });
+
+    it('should show error when adding a duplicate keyword', async () => {
+      const user = userEvent.setup();
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+      renderWithProviders(
+        <CategorySearch
+          {...mockProps}
+          selectedCategories={[mockCategoryId]}
+          selectedCategoriesInfo={[
+            {
+              id: mockCategoryId,
+              name: 'Dresses',
+              plpUrl: '/l/dresses',
+            },
+          ]}
+          previewCategory={mockCategoryId}
+        />
+      );
+
+      const modalButton = await screen.findByRole('button', {
+        name: 'View all',
+      });
+
+      act(() => {
+        modalButton.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
+      await user.type(
+        screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+        'SubCat'
+      );
+
+      await waitFor(() =>
+        expect(screen.getByDisplayValue('SubCat')).toBeVisible()
+      );
+      const resultsButton = await screen.findByText(
+        `${mockCategory.identifier} | ${mockCategory.name} | ${mockCategory.path}`
+      );
+      act(() => {
+        resultsButton.click();
+      });
+
+      expect(
+        screen.getByText('Ruleset SubCategory_507 has already been added')
+      ).toBeVisible();
     });
   });
 

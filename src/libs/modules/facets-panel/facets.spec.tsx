@@ -203,7 +203,7 @@ describe('Facets', () => {
     });
 
     expect(
-      screen.getAllByText(`Ruleset ${categoryId2} has already been added`)[1]
+      screen.getByText(`Ruleset ${categoryId2} has already been added`)
     ).toBeVisible();
   });
 

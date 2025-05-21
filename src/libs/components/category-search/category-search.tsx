@@ -24,6 +24,7 @@ import {
   Label,
   Text,
 } from '../typography/typography.styles';
+import { checkForDuplicates } from '../utils/check-for-duplicates';
 import {
   CategoryTitle,
   Container,
@@ -61,7 +62,6 @@ type Props = {
     plpUrl?: string;
   }>;
   countryCode?: MerchandisingCountryCode;
-  error?: string;
 };
 
 export const CategorySearch = ({
@@ -72,7 +72,6 @@ export const CategorySearch = ({
   selectPreviewCategory,
   selectedCategoriesInfo,
   countryCode = 'UK_IE',
-  error,
   writeEnabled,
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
@@ -111,6 +110,8 @@ export const CategorySearch = ({
     });
     setSearchValue('');
   }, [countryCode]);
+
+  const [duplicationError, setDuplicationError] = useState('');
 
   const searchCategories = async (
     query: string,
@@ -180,10 +181,21 @@ export const CategorySearch = ({
     name: string;
     path: string;
   }) => {
-    onSelectCategory(category);
+    const hasDuplicates = checkForDuplicates(
+      [...selectedCategories],
+      category.identifier,
+      'ruleset'
+    );
 
-    if (selectedCategories.length === 0) {
-      selectPreviewCategory(category.identifier);
+    if (hasDuplicates) {
+      setDuplicationError(hasDuplicates);
+    } else {
+      onSelectCategory(category);
+      setDuplicationError('');
+
+      if (selectedCategories.length === 0) {
+        selectPreviewCategory(category.identifier);
+      }
     }
   };
 
@@ -408,8 +420,11 @@ export const CategorySearch = ({
                   ))}
               </ModalCategoriesList>
             </ModalWrapper>
-            {error && (
-              <ErrorMessage style={{ padding: 0 }}>{error}</ErrorMessage>
+
+            {duplicationError && (
+              <ErrorMessage style={{ padding: 0 }}>
+                {duplicationError}
+              </ErrorMessage>
             )}
           </Modal.Body>
           <ModalFooter>

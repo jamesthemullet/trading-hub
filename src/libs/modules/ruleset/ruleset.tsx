@@ -33,7 +33,6 @@ import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearchAll } from '@/libs/components/product-search/all/product-search-all';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
-import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
 import { usePreview } from '@/libs/hooks';
 
@@ -259,7 +258,6 @@ export const Ruleset = ({
   const [currentProductTab, setCurrentProductTab] = useState(0);
   const [hasChanges, setHasChanges] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [duplicationError, setDuplicationError] = useState('');
 
   const defaultPreviewCountryCode =
     categoryIds?.[0].includes('IE_') ||
@@ -375,20 +373,10 @@ export const Ruleset = ({
   });
 
   const onAddSearchTerm = (keyword: string) => {
-    const hasDuplicates = checkForDuplicates(
-      [...rulesetSearchTerms],
-      keyword,
-      'keyword'
-    );
-    if (hasDuplicates) {
-      setDuplicationError(hasDuplicates);
-    } else {
-      setRulesetSearchTerms([...rulesetSearchTerms, keyword]);
+    setRulesetSearchTerms([...rulesetSearchTerms, keyword]);
 
-      if (!rulesetSearchTerms.length) {
-        setPreviewValue(keyword);
-      }
-      setDuplicationError('');
+    if (!rulesetSearchTerms.length) {
+      setPreviewValue(keyword);
     }
   };
 
@@ -548,7 +536,6 @@ export const Ruleset = ({
                       category?.includes('IE_') ? 'IE' : 'UK'
                     );
                   }}
-                  error={duplicationError}
                   writeEnabled={writeEnabled}
                 />
               </CategorySearchWrapper>
@@ -563,7 +550,6 @@ export const Ruleset = ({
                   removeSearchTerm={onRemoveSearchTerm}
                   previewSearchTerm={previewValue}
                   selectPreviewSearchTerm={setPreviewValue}
-                  error={duplicationError}
                   writeEnabled={writeEnabled}
                 />
               </KeywordSearchWrapper>
@@ -597,9 +583,6 @@ export const Ruleset = ({
           </Duration>
         )}
       </CategoryPanel>
-      {duplicationError && (
-        <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
-      )}
       {merchandisingRules.pinnedProducts.length >
         MAX_PINNED_PRODUCTS_ALLOWED && (
         <ErrorMessage style={{ padding: 0 }}>
