@@ -1729,12 +1729,14 @@ describe('GlobalFacetPanelModalContent', () => {
       );
 
       const button = screen.getByLabelText('Select all facet attributes');
+      expect(button).not.toBeChecked();
 
       act(() => {
         button.click();
       });
 
       expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
+      expect(button).toBeChecked();
     });
 
     it('should select all values when the checkbox is checked and some values are already selected', () => {

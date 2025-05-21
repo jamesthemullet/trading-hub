@@ -391,9 +391,13 @@ export const GlobalFacetPanelModalContent = ({
 
   const hasSelectedAllAttributes =
     globalAttributesLocalState.selectedAttributes.length ===
-    globalAttributesLocalState.excludedRows.length +
-      globalAttributesLocalState.nonBoostedExcludedRows.length +
-      globalAttributesLocalState.boostedRows.length;
+    globalAttributesLocalState.excludedRows.flatMap((val) => val.attributes)
+      .length +
+      globalAttributesLocalState.boostedRows.flatMap((val) => val.attributes)
+        .length +
+      globalAttributesLocalState.nonBoostedExcludedRows.flatMap(
+        (val) => val.attributes
+      ).length;
 
   const filteredAttributeValues = attributeValues.filter((attribute) =>
     attribute.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
