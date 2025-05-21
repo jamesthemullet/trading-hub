@@ -34,7 +34,9 @@
     "next-auth.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "newrelic.js"
+    "newrelic.js",
+    ".storybook/*.ts",
+    ".storybook/*.tsx"
   ],
   "exclude": ["node_modules", "playwright-report"]
 }

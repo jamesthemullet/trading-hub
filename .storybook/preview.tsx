@@ -1,10 +1,17 @@
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+
+import { css, Global } from '@emotion/react';
 import React from 'react';
+import { createTheme, MantineProvider } from '@mantine/core';
+
 import type { Preview } from '@storybook/react';
-import { Global, css } from '@emotion/react';
 
-import { resetStyles, fontStyles } from '../src/libs/utils/base-styles';
+import { fontStyles, resetStyles } from '../src/libs/utils/base-styles';
 
-const withGlobalStyles = (Story) => (
+const theme = createTheme({});
+
+const withGlobalStyles = (Story: React.ComponentType) => (
   <>
     <Global
       styles={css`
@@ -15,9 +22,14 @@ const withGlobalStyles = (Story) => (
     <Story />
   </>
 );
+const withMantineProvider = (Story: React.ComponentType) => (
+  <MantineProvider theme={theme}>
+    <Story />
+  </MantineProvider>
+);
 
 const preview: Preview = {
-  decorators: [withGlobalStyles],
+  decorators: [withGlobalStyles, withMantineProvider],
   parameters: {
     controls: {
       matchers: {
