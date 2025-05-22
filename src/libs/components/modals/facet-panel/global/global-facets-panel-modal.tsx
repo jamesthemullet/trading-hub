@@ -323,6 +323,9 @@ export const GlobalFacetPanelModalContent = ({
                 editingValues={editingValues}
                 merged={globalAttributesLocalState.merged}
                 boostedRows={globalAttributesLocalState.boostedRows}
+                nonBoostedExcludedRows={
+                  globalAttributesLocalState.nonBoostedExcludedRows
+                }
                 excludedRows={globalAttributesLocalState.excludedRows}
                 facet={facet}
                 countryCode={countryCode}
@@ -368,6 +371,7 @@ export const GlobalFacetPanelModalContent = ({
       globalAttributesLocalState.allDeselected,
       globalAttributesLocalState.disableArrows,
       globalAttributesLocalState.boostedRows,
+      globalAttributesLocalState.nonBoostedExcludedRows,
       globalAttributesLocalState.excludedRows,
       globalAttributesLocalState.merged,
       writeEnabled,

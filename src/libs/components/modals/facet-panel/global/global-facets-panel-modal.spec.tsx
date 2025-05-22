@@ -560,7 +560,12 @@ describe('GlobalFacetPanelModalContent', () => {
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
-          facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
+          facet={{
+            ...mockFacet,
+            merged: [],
+            boosted: [],
+            excludedValues: ['test attribute'],
+          }}
           {...defaultProps}
           onClose={jest.fn()}
         />

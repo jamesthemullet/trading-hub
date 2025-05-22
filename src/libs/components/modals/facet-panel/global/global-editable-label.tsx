@@ -21,6 +21,7 @@ export const GlobalEditableLabel = ({
   editingValues,
   facet,
   boostedRows,
+  nonBoostedExcludedRows,
   excludedRows,
   countryCode,
   merged,
@@ -31,6 +32,7 @@ export const GlobalEditableLabel = ({
   editingValues: string[];
   facet: MerchandisingReturnedGlobalFacet;
   boostedRows: FormattedRow[];
+  nonBoostedExcludedRows: FormattedRow[];
   excludedRows: FormattedRow[];
   countryCode: MerchandisingCountryCode;
   merged: MergeGroup | undefined;
@@ -89,6 +91,11 @@ export const GlobalEditableLabel = ({
         existingMergeGroup > -1
           ? merged![existingMergeGroup].mergedValues
           : undefined,
+      localAttributeValues: [
+        ...boostedRows.map((row) => row.displayName),
+        ...excludedRows.map((row) => row.displayName),
+        ...nonBoostedExcludedRows.map((row) => row.displayName),
+      ],
     });
 
     if (!isUniqueValue) {

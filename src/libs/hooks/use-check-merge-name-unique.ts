@@ -16,17 +16,17 @@ export const useCheckMergeNameUnique = () => {
   const checkMergeNameUnique = async ({
     facetId,
     searchQuery,
-    categories,
     countryCode,
+    categories,
     exceptions,
     localAttributeValues = [],
   }: {
     facetId: string;
     searchQuery: string;
     countryCode: MerchandisingCountryCode;
-    localAttributeValues?: string[];
     categories?: string[];
     exceptions?: (string | undefined)[];
+    localAttributeValues?: string[];
   }) => {
     try {
       const catalogues = convertCountryCodeToCatalogues(countryCode);
@@ -60,12 +60,18 @@ export const useCheckMergeNameUnique = () => {
       return {
         isUniqueValue: Boolean(
           (!result.some(
-            (item) => item.displayValue.trim() === searchQuery.trim()
+            (item) =>
+              item.displayValue.trim().toLowerCase() ===
+              searchQuery.trim().toLowerCase()
           ) &&
             !localAttributeValues.some(
-              (item) => item.trim() === searchQuery.trim()
+              (item) =>
+                item.trim().toLowerCase() === searchQuery.trim().toLowerCase()
             )) ||
-            exceptions?.some((item) => item?.trim() === searchQuery.trim())
+            exceptions?.some(
+              (item) =>
+                item?.trim().toLowerCase() === searchQuery.trim().toLowerCase()
+            )
         ),
       };
     } catch {

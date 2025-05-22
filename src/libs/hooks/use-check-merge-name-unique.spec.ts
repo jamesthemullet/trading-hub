@@ -141,6 +141,21 @@ describe('useGetFacetAttributeValues', () => {
     });
   });
 
+  it('should return false if the value is not unique for case sensitive values', async () => {
+    const { result } = renderHook(() => useCheckMergeNameUnique());
+
+    await act(async () => {
+      const { isUniqueValue } = await result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'test 1',
+        localAttributeValues: ['Test 1'],
+        countryCode: 'UK',
+      });
+
+      expect(isUniqueValue).toBe(false);
+    });
+  });
+
   it('should work with multiple countries', async () => {
     const { result } = renderHook(() => useCheckMergeNameUnique());
 

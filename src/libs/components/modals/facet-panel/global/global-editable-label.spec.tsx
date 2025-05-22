@@ -48,6 +48,7 @@ describe('Global Editable label', () => {
         editingValues={[]}
         facet={mockFacet}
         boostedRows={[]}
+        nonBoostedExcludedRows={[]}
         excludedRows={[]}
         countryCode="UK"
         merged={[]}
@@ -79,7 +80,14 @@ describe('Global Editable label', () => {
         editingValues={[]}
         facet={mockFacet}
         boostedRows={[]}
-        excludedRows={[]}
+        nonBoostedExcludedRows={[]}
+        excludedRows={[
+          {
+            displayName: 'test attribute 2',
+            attributes: ['test attribute 2'],
+            isMergeGroup: false,
+          },
+        ]}
         countryCode="UK"
         merged={[]}
         setEditingValues={jest.fn()}
