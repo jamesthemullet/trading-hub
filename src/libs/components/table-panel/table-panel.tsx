@@ -18,6 +18,7 @@ import {
   PageWrapper,
   ToolsContainer,
 } from '@/libs/components/utils/shared.styles';
+import { track } from '@/libs/hooks/utils/analytics';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -165,6 +166,7 @@ export const TablePanel = <
                   isInline
                   theme="outlined"
                   href={`/${linkConfig[ruleType]}/facets/new`}
+                  onClick={() => track({ event: `Add ${ruleType} facet rule` })}
                 >
                   Add facet rule
                 </Button>
@@ -174,6 +176,9 @@ export const TablePanel = <
                   isInline
                   theme="filled"
                   href={`/${linkConfig[ruleType]}/rulesets/new`}
+                  onClick={() =>
+                    track({ event: `Add ${ruleType} ranking rule` })
+                  }
                 >
                   Add ranking rule
                 </Button>
@@ -185,7 +190,10 @@ export const TablePanel = <
                   as="button"
                   isInline
                   theme="outlined"
-                  onClick={() => createNewRuleSet('facets')}
+                  onClick={() => {
+                    createNewRuleSet('facets');
+                    track({ event: 'Add global facet rule' });
+                  }}
                 >
                   Add facet rule
                 </Button>
@@ -194,7 +202,10 @@ export const TablePanel = <
                   as="button"
                   isInline
                   theme="filled"
-                  onClick={() => createNewRuleSet('rulesets')}
+                  onClick={() => {
+                    createNewRuleSet('rulesets');
+                    track({ event: 'Add global ranking rule' });
+                  }}
                 >
                   Add ranking rule
                 </Button>
@@ -207,6 +218,7 @@ export const TablePanel = <
                   isInline
                   theme="filled"
                   href="/search/redirects/new"
+                  onClick={() => track({ event: 'Add redirect rule' })}
                 >
                   Add redirect rule
                 </Button>

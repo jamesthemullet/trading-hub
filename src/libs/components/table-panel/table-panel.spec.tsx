@@ -4,12 +4,17 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
+import { track } from '@/libs/hooks/utils/analytics';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { TablePanel } from './table-panel';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
+}));
+jest.mock('@/libs/hooks/utils/analytics', () => ({
+  ...jest.requireActual('@/libs/hooks/utils/analytics'),
+  track: jest.fn(),
 }));
 
 const headings = [
@@ -315,7 +320,85 @@ describe('TablePanel', () => {
     });
   });
 
+  describe('tracking', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'error').mockImplementation(jest.fn());
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should track creating a new category ranking rule', async () => {
+      renderWithProviders(
+        <TablePanel
+          writeEnabled
+          basePath="/category"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="categoryRanking"
+        />
+      );
+
+      const createButton = await screen.findByText('Add ranking rule');
+      act(() => {
+        createButton.click();
+      });
+
+      expect(track).toHaveBeenCalledWith({
+        event: 'Add categoryRanking ranking rule',
+      });
+    });
+
+    it('should track creating a new search facet rule', async () => {
+      renderWithProviders(
+        <TablePanel
+          writeEnabled
+          basePath="/search"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="searchRanking"
+        />
+      );
+
+      const createButton = await screen.findByText('Add facet rule');
+      act(() => {
+        createButton.click();
+      });
+
+      expect(track).toHaveBeenCalledWith({
+        event: 'Add searchRanking facet rule',
+      });
+    });
+
+    it('should track creating a new redirect rule', async () => {
+      renderWithProviders(
+        <TablePanel
+          writeEnabled
+          basePath="/search"
+          headings={headings}
+          mapping={mappingMock}
+          ruleType="redirect"
+        />
+      );
+
+      const createButton = await screen.findByText('Add redirect rule');
+      act(() => {
+        createButton.click();
+      });
+      expect(track).toHaveBeenCalledWith({ event: 'Add redirect rule' });
+    });
+  });
+
   describe('toggle functionality', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'error').mockImplementation(jest.fn());
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('should enable or disable a row', async () => {
       jest.mocked(mappingMock.queryRuleSetById).mockResolvedValue({
         data: mockRow1,
@@ -501,6 +584,7 @@ describe('TablePanel', () => {
         ...mockRow1,
         isEnabled: false,
       });
+      expect(track).toHaveBeenCalledWith({ event: 'Duplicate global ruleset' });
     });
 
     it('should hide duplicate dropdown button when isDuplicateEnabled is false', async () => {
@@ -606,6 +690,7 @@ describe('TablePanel', () => {
 
       await user.click(screen.getByTestId('Delete rule'));
       expect(mappingMock.deleteRuleSetById).toHaveBeenCalledWith(mockId1);
+      expect(track).toHaveBeenCalledWith({ event: 'Delete global ruleset' });
     });
 
     it('should display an error message when deleting a ruleset fails', async () => {

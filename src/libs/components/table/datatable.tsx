@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Modal, Skeleton } from '@mantine/core';
 
 import { useOnOutsideClick } from '@/libs/hooks';
+import { track } from '@/libs/hooks/utils/analytics';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -670,6 +671,7 @@ export const DataTable = ({
                     onDeleteRuleSet({ id: ruleSetIdToEdit });
                     setIsModalOpen(false);
                     setOptionToggle('');
+                    track({ event: `Delete ${ruleType} ruleset` });
                   }}
                   theme="tertiary"
                   data-testid="Delete rule"
@@ -687,6 +689,7 @@ export const DataTable = ({
                     onDuplicate(ruleSetIdToEdit);
                     setIsModalOpen(false);
                     setOptionToggle('');
+                    track({ event: `Duplicate ${ruleType} ruleset` });
                   }}
                   theme="tertiary"
                   data-autofocus

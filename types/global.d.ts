@@ -7,6 +7,7 @@ declare global {
         options?: Record<string, unknown>
       ) => void;
     };
+    clarity: (arg: string, arg: string) => object;
   }
 }
 

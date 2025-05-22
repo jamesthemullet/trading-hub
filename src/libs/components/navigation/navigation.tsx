@@ -108,6 +108,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
               href="/"
               onClick={() => (isLoggedIn ? signOut() : signIn())}
               style={{ textDecoration: 'none' }}
+              prefetch={true}
             >
               <Text
                 style={{
