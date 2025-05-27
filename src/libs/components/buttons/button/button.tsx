@@ -73,18 +73,6 @@ const setTheme = ({
   }
   if (isFilled) {
     return css`
-      &::before {
-        content: '';
-
-        width: 10px;
-        height: 10px;
-        background-image: url('/trading-hub/asset/icon-plus-simple-white.svg');
-        background-repeat: no-repeat;
-        background-size: contain;
-        display: inline-block;
-        margin-right: ${spacing(1)};
-      }
-
       text-align: left;
       border: ${color.darkHeritageGreen} solid 1px;
       background: ${color.darkHeritageGreen};
@@ -100,18 +88,6 @@ const setTheme = ({
   }
   if (isOutlined) {
     return css`
-      &::before {
-        content: '';
-
-        width: 10px;
-        height: 10px;
-        background-image: url('/trading-hub/asset/icon-plus-simple-green.svg');
-        background-repeat: no-repeat;
-        background-size: contain;
-        display: inline-block;
-        margin-right: ${spacing(1)};
-      }
-
       text-align: left;
       border: ${color.darkHeritageGreen} solid 1px;
       background: #fff;
@@ -144,11 +120,25 @@ const setTheme = ({
   `;
 };
 
+const setIcon = ({ icon }: { icon: string }) => css`
+  &::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background-image: url(${`/trading-hub/asset/icon-${icon}.svg`});
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+    margin-right: ${spacing(1)};
+  }
+`;
+
 const StyledButton = styled.button<ButtonProps>`
   border: solid 1px ${color.lightGrey};
   border-radius: 4px;
   ${({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled }) =>
     setTheme({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled })};
+  ${({ icon }) => icon && setIcon({ icon })};
   font-size: 16px;
   transition: all 0.1s ease-in;
   transition-property: background-color color border-color;
@@ -164,6 +154,8 @@ const StyledButton = styled.button<ButtonProps>`
   }
 `;
 
+type Icon = 'plus-simple-green' | 'plus-simple-white';
+
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   isPrimary?: boolean;
   isTertiary?: boolean;
@@ -173,6 +165,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   isDisabled?: boolean;
   href?: string;
   isInline?: boolean;
+  icon?: Icon;
   onClick?: () => void;
   theme?: 'primary' | 'secondary' | 'tertiary' | 'filled' | 'outlined';
   type?: 'submit' | 'reset' | 'button' | undefined;

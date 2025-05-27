@@ -165,6 +165,7 @@ export const TablePanel = <
                   as="a"
                   isInline
                   theme="outlined"
+                  icon="plus-simple-green"
                   href={`/${linkConfig[ruleType]}/facets/new`}
                   onClick={() => track({ event: `Add ${ruleType} facet rule` })}
                 >
@@ -175,6 +176,7 @@ export const TablePanel = <
                   as="a"
                   isInline
                   theme="filled"
+                  icon="plus-simple-white"
                   href={`/${linkConfig[ruleType]}/rulesets/new`}
                   onClick={() =>
                     track({ event: `Add ${ruleType} ranking rule` })
@@ -190,6 +192,7 @@ export const TablePanel = <
                   as="button"
                   isInline
                   theme="outlined"
+                  icon="plus-simple-green"
                   onClick={() => {
                     createNewRuleSet('facets');
                     track({ event: 'Add global facet rule' });
@@ -202,6 +205,7 @@ export const TablePanel = <
                   as="button"
                   isInline
                   theme="filled"
+                  icon="plus-simple-white"
                   onClick={() => {
                     createNewRuleSet('rulesets');
                     track({ event: 'Add global ranking rule' });

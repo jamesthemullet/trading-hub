@@ -30,11 +30,13 @@ test.describe('Category Ranking', () => {
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
 
-    await page.getByLabel('Search for category').click();
-    await page.getByLabel('Search for category').fill(TEST_CATEGORY_ID);
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
+    await page.getByPlaceholder('Search...').click();
+    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await page.getByText(TEST_CATEGORY_NAME).click({ timeout: 500 });
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await page.getByRole('button', { name: 'Create' }).click();
     await page.waitForLoadState('networkidle');
@@ -264,7 +266,7 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'select market' }).click();
     await page.getByRole('button', { name: 'select IE market only' }).click();
 
-    await page.getByRole('button', { name: 'View all' }).click();
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
 
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Scarves');

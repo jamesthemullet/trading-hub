@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
@@ -13,21 +12,9 @@ import {
   DropdownContainer,
   DropdownHeading,
   DropdownOption,
-  DropdownWrapper,
+  DropdownWrapperNoBorder,
+  FlagWrapper,
 } from '../dropdown.styles';
-
-const DropdownWrapperNoBorder = styled(DropdownWrapper)`
-  border: none;
-  border-bottom: 1px solid #b1b1b1;
-  border-radius: 1px 1px 0 0;
-  min-height: 54px;
-
-  button {
-    border: none;
-    border-radius: 1px 1px 0 0;
-    min-height: 54px;
-  }
-`;
 
 export const CountrySelectorDropdown = ({
   onChange,
@@ -113,15 +100,19 @@ export const CountrySelectorDropdown = ({
         disabled={!writeEnabled}
       >
         <DropdownHeading>
-          {dropdownHeading?.flagsToShow.map((flag) => (
-            <Image
-              key={flag}
-              src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
-              width={20}
-              height={20}
-              alt={flag}
-            />
-          ))}
+          {dropdownHeading?.flagsToShow && (
+            <FlagWrapper>
+              {dropdownHeading.flagsToShow.map((flag) => (
+                <Image
+                  key={flag}
+                  src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
+                  width={20}
+                  height={20}
+                  alt={flag}
+                />
+              ))}
+            </FlagWrapper>
+          )}
           {dropdownHeading?.label}
         </DropdownHeading>
         {writeEnabled && (

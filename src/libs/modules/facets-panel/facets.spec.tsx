@@ -119,6 +119,17 @@ describe('Facets', () => {
 
   it('should add and set a category', async () => {
     renderWithProviders(<Facets {...defaultFacetProps} />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     const searchInput = screen.getByPlaceholderText('Search...');
     await userEvent.type(searchInput, 'je');
@@ -133,9 +144,13 @@ describe('Facets', () => {
       });
     });
 
+    act(() => {
+      screen.getByRole('button', { name: 'Close' }).click();
+    });
+
     expect(
-      screen.getByRole('button', { name: 'cat_123 : jeans' })
-    ).toBeVisible();
+      screen.getByRole('button', { name: 'select category' })
+    ).toHaveTextContent(categoryId1);
   });
 
   it('should clear a set category', async () => {
@@ -153,10 +168,21 @@ describe('Facets', () => {
         categoriesInfo={categoriesInfo}
       />
     );
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await waitFor(() => {
       const button = screen.getByRole('button', {
-        name: `Remove category: ${categoryId1}`,
+        name: `Remove category from modal: ${categoryId1}`,
       });
 
       act(() => {
@@ -169,6 +195,17 @@ describe('Facets', () => {
 
   it('should not allow setting a duplicate category', async () => {
     renderWithProviders(<Facets {...defaultFacetProps} />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     const searchInput = screen.getByPlaceholderText('Search...');
     await userEvent.type(searchInput, 'je');
@@ -183,14 +220,7 @@ describe('Facets', () => {
       });
     });
 
-    const viewAllButton = screen.getByRole('button', { name: 'View all' });
-
-    act(() => {
-      viewAllButton.click();
-    });
-
-    const modalSearchInput = screen.getByPlaceholderText('Search...');
-    await userEvent.type(modalSearchInput, 'jeans');
+    await userEvent.type(searchInput, 'jeans');
 
     await waitFor(async () => {
       const modalCategoryToSelect = await screen.findByText(
@@ -286,14 +316,6 @@ describe('Facets', () => {
         categoriesInfo={categoriesInfo}
       />
     );
-
-    await waitFor(() => {
-      const button = screen.getByRole('button', {
-        name: `Remove category: ${categoryId1}`,
-      });
-
-      expect(button).toBeVisible();
-    });
 
     expect(
       screen.getByTestId('Row showing brand as algoControl')
@@ -799,6 +821,17 @@ describe('Facets', () => {
     };
 
     renderWithProviders(<Facets {...defaultFacetProps} onSave={onSaveSpy} />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     const searchInput = screen.getByPlaceholderText('Search...');
     await userEvent.type(searchInput, 'je');

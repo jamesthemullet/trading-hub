@@ -6,11 +6,21 @@ import type {
   MerchandisingCountryCode,
   MerchandisingPagination,
 } from '@/libs/api';
-import { useGetCategories } from '@/libs/hooks';
+import { useGetCategories, useOnOutsideClick } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Image from 'next/image';
 
+import { Button } from '../buttons/button/button';
+import {
+  Arrow,
+  ArrowContainer,
+  DropdownButton,
+  DropdownContainer,
+  DropdownHeading,
+  DropdownOption,
+  DropdownWrapperNoBorder,
+} from '../dropdowns/dropdown.styles';
 import {
   KeyWordPill,
   ModalFooter,
@@ -28,6 +38,8 @@ import { checkForDuplicates } from '../utils/check-for-duplicates';
 import {
   CategoryTitle,
   Container,
+  DropdownText,
+  DropdownWrapper,
   ModalCategoriesList,
   ModalSelectedCategory,
   ModalWrapper,
@@ -37,9 +49,7 @@ import {
   SearchInput,
   SearchValue,
   SearchWrapper,
-  SelectedCategories,
   StyledIcon,
-  ViewAllButton,
   Wrapper,
 } from './category.styles';
 
@@ -56,7 +66,7 @@ type Props = {
   selectedCategories: string[];
   selectPreviewCategory: (category: string | undefined) => void;
   writeEnabled: boolean;
-  selectedCategoriesInfo?: Array<{
+  selectedCategoriesInfo: Array<{
     id?: string;
     name?: string;
     plpUrl?: string;
@@ -102,6 +112,12 @@ export const CategorySearch = ({
   });
 
   const [visibleTooltip, setVisibleTooltip] = useState<string | undefined>();
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dropdownWrapperRef = useOnOutsideClick<HTMLDivElement>({
+    handler: () => setIsDropdownOpen(false),
+  });
 
   useEffect(() => {
     setCategoryResults({
@@ -162,13 +178,9 @@ export const CategorySearch = ({
   };
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && isDropdownOpen) {
       e.preventDefault();
-      setCategoryResults({
-        categories: [],
-        pagination: {},
-      });
-      setSearchValue('');
+      setIsDropdownOpen(false);
     }
   };
 
@@ -230,82 +242,82 @@ export const CategorySearch = ({
   return (
     <Wrapper>
       <CategoryTitle>Category</CategoryTitle>
-      <SearchBox>
-        <SearchWrapper hasModal={selectedCategories.length > 0}>
-          <SelectedCategories>
-            {previewCategory && (
-              <div style={{ position: 'relative' }}>
-                <KeyWordPill
-                  isSelected={true}
-                  aria-label="Preview category"
-                  as="p"
-                  role="button"
+      <DropdownWrapper>
+        <DropdownWrapperNoBorder
+          isDropdownOpen={isDropdownOpen}
+          width={previewCategory ? 256 : 320}
+          ref={dropdownWrapperRef}
+          onKeyDown={handleOnKeyDown}
+        >
+          <DropdownButton
+            isDropdownOpen={isDropdownOpen}
+            onClick={() =>
+              selectedCategories.length > 1
+                ? setIsDropdownOpen(!isDropdownOpen)
+                : setIsModalOpen(true)
+            }
+            aria-haspopup="listbox"
+            aria-expanded={isDropdownOpen}
+            aria-label="select category"
+            disabled={!previewCategory}
+          >
+            <DropdownHeading>
+              {previewCategory ? (
+                <span
                   onMouseEnter={() => setVisibleTooltip(previewCategory)}
                   onMouseLeave={() => setVisibleTooltip(undefined)}
                 >
-                  <SearchValue disabled={true}>
-                    {previewCategory}
-                    {getCurrentName(previewCategory) &&
-                      ` : ${getCurrentName(previewCategory)}`}
-                  </SearchValue>
-                  {writeEnabled && (
-                    <RemoveKeyWordPill
-                      onClick={() => {
-                        onClearSelection(previewCategory);
-                        if (previewCategory) {
-                          selectPreviewCategory(
-                            additionalCategories.length
-                              ? additionalCategories[0]
-                              : undefined
-                          );
-                        }
-                      }}
-                      aria-label={`Remove category: ${previewCategory}`}
-                    >
-                      <Image
-                        alt=""
-                        src={`/trading-hub/asset/icon-remove-selected-chip.svg`}
-                        width={16}
-                        height={16}
-                      />
-                    </RemoveKeyWordPill>
-                  )}
-                </KeyWordPill>
-                {getCurrentPath(previewCategory) && (
-                  <Popover isOpen={visibleTooltip} role="tooltip">
-                    {getCurrentPath(previewCategory)}
-                  </Popover>
-                )}
-              </div>
+                  {previewCategory}
+                </span>
+              ) : (
+                'Add categories to display here'
+              )}
+            </DropdownHeading>
+            {previewCategory && getCurrentPath(previewCategory) && (
+              <Popover
+                isOpen={visibleTooltip}
+                role="tooltip"
+                style={{ top: '-32px' }}
+              >
+                {getCurrentName(previewCategory)}{' '}
+                {getCurrentPath(previewCategory)}
+              </Popover>
             )}
-          </SelectedCategories>
-          {selectedCategories.length === 0 && writeEnabled && (
-            <SearchForm onSubmit={onSubmit}>
-              <SearchInput
-                placeholder="Search..."
-                value={searchValue}
-                onChange={onSearchChange}
-                aria-label="Search for category"
-              />
-              <StyledIcon name="Search" size={32} />
-            </SearchForm>
-          )}
-        </SearchWrapper>
-        {selectedCategories.length > 0 && (
-          <ViewAllButton
-            onClick={() => setIsModalOpen(true)}
-            theme="secondary"
-            isInline={true}
-          >
-            View all
-          </ViewAllButton>
-        )}
-      </SearchBox>
-      {categoryResults.categories.length > 0 && !isModalOpen && (
-        <Container onKeyDown={handleOnKeyDown}>
-          {categoryResults.categories.map(CategoryRow)}
-        </Container>
-      )}
+            <ArrowContainer borderLeft={false}>
+              <Arrow isDropdownOpen={isDropdownOpen} />
+            </ArrowContainer>
+          </DropdownButton>
+
+          <DropdownContainer isDropdownOpen={isDropdownOpen}>
+            {selectedCategoriesInfo
+              .filter((cat) => cat.id !== previewCategory)
+              .map((category) => (
+                <DropdownOption
+                  key={category.id}
+                  hoverColour="#f5f5f5"
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    selectPreviewCategory(category.id);
+                  }}
+                  align="left"
+                >
+                  <DropdownText>
+                    {category.id} {category.name}
+                  </DropdownText>
+                </DropdownOption>
+              ))}
+          </DropdownContainer>
+        </DropdownWrapperNoBorder>
+
+        <Button
+          theme="filled"
+          isInline
+          onClick={() => setIsModalOpen(true)}
+          isDisabled={!writeEnabled}
+        >
+          Edit
+        </Button>
+      </DropdownWrapper>
 
       <Modal.Root
         opened={isModalOpen}

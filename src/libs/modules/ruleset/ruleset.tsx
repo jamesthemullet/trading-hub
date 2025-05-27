@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -44,30 +43,15 @@ import { rulesetReducer } from './reducer';
 
 const MAX_PINNED_PRODUCTS_ALLOWED = 100;
 
-const CategoryPanel = styled.div<{
-  rulesetType: 'global' | 'category' | 'search';
-}>`
+const CategoryPanel = styled.div`
   border-top: 2px solid #005640;
   padding: ${spacing(1)};
-  ${({ rulesetType }) => css`
-    display: grid;
-    grid-template-columns: 220px auto;
-    gap: ${spacing(2)};
-    @media only screen and (min-width: 1200px) {
-      ${rulesetType === 'global' &&
-      /* istanbul ignore next */
-      'grid-template-columns: 220px 490px 320px'};
-      ${rulesetType === 'search' &&
-      /* istanbul ignore next */
-      'grid-template-columns: 220px 470px 320px'};
-      ${rulesetType === 'category' &&
-      'grid-template-columns: 220px 740px 320px'};
-    }
-  `}
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const RulesetIdentifier = styled.div`
-  margin-right: ${spacing(2)};
+  margin-right: ${spacing(1)};
 `;
 
 const MainContainerPanel = styled.div`
@@ -121,6 +105,10 @@ const CountryPreviewDropdown = styled(Dropdown)`
   }
 `;
 
+const FlagImage = styled(Image)`
+  margin-left: -${spacing(1)};
+`;
+
 const TabContent = styled.div`
   height: calc(100vh - 285px);
   overflow: auto;
@@ -137,8 +125,7 @@ const ProductSearchTabContent = styled(TabContent)`
 `;
 
 const CategorySearchWrapper = styled.div`
-  min-width: 600px;
-  width: 100%;
+  margin-right: ${spacing(1)};
 `;
 
 const KeywordSearchWrapper = styled.div`
@@ -490,7 +477,7 @@ export const Ruleset = ({
         writeEnabled={writeEnabled}
       />
 
-      <CategoryPanel rulesetType={rulesetType}>
+      <CategoryPanel>
         <InfluenceWrapper>
           <InfluenceLabel>Influence</InfluenceLabel>
           <CountrySelectorDropdown
@@ -683,7 +670,7 @@ export const Ruleset = ({
                         setIsCountryDropdownOpen(false);
                       }}
                     >
-                      <Image
+                      <FlagImage
                         src="/trading-hub/asset/icon-ie-flag.svg"
                         width={20}
                         height={20}
@@ -698,7 +685,7 @@ export const Ruleset = ({
                         setIsCountryDropdownOpen(false);
                       }}
                     >
-                      <Image
+                      <FlagImage
                         src="/trading-hub/asset/icon-uk-flag.svg"
                         width={20}
                         height={20}

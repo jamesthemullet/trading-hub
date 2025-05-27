@@ -60,15 +60,15 @@ describe('CategorySearch', () => {
   it('should render correctly', () => {
     renderWithProviders(<CategorySearch {...mockProps} />);
 
-    expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
+    expect(
+      screen.getByText('Add categories to display here')
+    ).toBeInTheDocument();
   });
 
   it('should not be editable in read only mode', () => {
     renderWithProviders(<CategorySearch {...mockProps} writeEnabled={false} />);
 
-    expect(
-      screen.queryByPlaceholderText(INPUT_PLACEHOLDER_TEXT)
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Edit' })).toBeDisabled();
   });
 
   it('should search while typing', async () => {
@@ -82,6 +82,18 @@ describe('CategorySearch', () => {
     renderWithProviders(
       <CategorySearch {...mockProps} onSelectCategory={mockSelectCategory} />
     );
+
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -113,6 +125,18 @@ describe('CategorySearch', () => {
 
     renderWithProviders(<CategorySearch {...mockProps} />);
 
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
       'SubCategory_507{enter}'
@@ -129,36 +153,6 @@ describe('CategorySearch', () => {
     });
 
     expect(mockProps.onSelectCategory).toHaveBeenCalledWith(mockCategory);
-  });
-
-  it('should preview a category if it is a first added', async () => {
-    const user = userEvent.setup();
-    jest.mocked(useGetCategories).mockReturnValue({
-      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
-      getCategoriesError: '',
-    });
-
-    renderWithProviders(<CategorySearch {...mockProps} />);
-
-    await user.type(
-      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
-      'SubCategory_507{enter}'
-    );
-
-    expect(screen.getByDisplayValue('SubCategory_507')).toBeVisible();
-
-    const resultsButton = await screen.findByText(
-      `${mockCategory.identifier} | ${mockCategory.name} | ${mockCategory.path}`
-    );
-
-    act(() => {
-      resultsButton.click();
-    });
-
-    expect(mockProps.onSelectCategory).toHaveBeenCalledWith(mockCategory);
-    expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(
-      mockCategory.identifier
-    );
   });
 
   it('should show and remove search results via keyboard', async () => {
@@ -169,6 +163,18 @@ describe('CategorySearch', () => {
     });
 
     renderWithProviders(<CategorySearch {...mockProps} />);
+
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     const input = screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT);
 
@@ -217,6 +223,18 @@ describe('CategorySearch', () => {
 
     renderWithProviders(<CategorySearch {...mockProps} />);
 
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
       'SubCategory_507{enter}'
@@ -237,126 +255,6 @@ describe('CategorySearch', () => {
     });
   });
 
-  it('should show selected category', () => {
-    renderWithProviders(
-      <CategorySearch
-        {...mockProps}
-        selectedCategories={[mockCategoryId]}
-        previewCategory="SubCategory_507"
-      />
-    );
-
-    expect(screen.getByText(mockCategory.identifier)).toBeInTheDocument();
-  });
-
-  it('should clear a selected category', async () => {
-    renderWithProviders(
-      <CategorySearch
-        {...mockProps}
-        selectedCategories={[mockCategoryId]}
-        previewCategory="SubCategory_507"
-      />
-    );
-
-    const clearButton = screen.getByRole('button', {
-      name: `Remove category: ${mockCategoryId}`,
-    });
-
-    act(() => {
-      clearButton.click();
-    });
-
-    expect(mockProps.onClearSelection).toHaveBeenCalled();
-  });
-
-  it('should show and remove multiple categories', async () => {
-    renderWithProviders(
-      <CategorySearch
-        {...mockProps}
-        selectedCategories={[mockCategoryId, mockCategoryId2]}
-        previewCategory={mockCategoryId}
-      />
-    );
-
-    const modalButton = await screen.findByRole('button', {
-      name: 'View all',
-    });
-
-    act(() => {
-      modalButton.click();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
-    });
-
-    const dressCategory = screen.getByRole('button', {
-      name: `Additional category ${mockCategoryId2}`,
-    });
-
-    act(() => {
-      dressCategory.click();
-    });
-
-    expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(
-      mockCategoryId2
-    );
-
-    const removeDressCategory = screen.getByRole('button', {
-      name: `Remove category from modal: ${mockCategoryId2}`,
-    });
-
-    act(() => {
-      removeDressCategory.click();
-    });
-
-    expect(mockProps.onClearSelection).toHaveBeenCalledWith(mockCategoryId2);
-  });
-
-  it('should select an additional category as the preview category if the preview category is removed', async () => {
-    renderWithProviders(
-      <CategorySearch
-        {...mockProps}
-        selectedCategories={[mockCategoryId, mockCategoryId2]}
-        previewCategory={mockCategoryId}
-      />
-    );
-
-    const category1remove = await screen.findAllByRole('button', {
-      name: `Remove category: ${mockCategoryId}`,
-    });
-
-    act(() => {
-      category1remove[0].click();
-    });
-
-    expect(mockProps.onClearSelection).toHaveBeenCalledWith(mockCategoryId);
-    expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(
-      mockCategoryId2
-    );
-  });
-
-  it('should clear the preview category if the preview category is removed and no other categories have been selected', async () => {
-    renderWithProviders(
-      <CategorySearch
-        {...mockProps}
-        selectedCategories={[mockCategoryId]}
-        previewCategory={mockCategoryId}
-      />
-    );
-
-    const category1remove = await screen.findAllByRole('button', {
-      name: `Remove category: ${mockCategoryId}`,
-    });
-
-    act(() => {
-      category1remove[0].click();
-    });
-
-    expect(mockProps.onClearSelection).toHaveBeenCalledWith(mockCategoryId);
-    expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(undefined);
-  });
-
   describe('Category Modal', () => {
     it('should show and close a modal when there are more than one categories', async () => {
       renderWithProviders(
@@ -372,7 +270,7 @@ describe('CategorySearch', () => {
       );
 
       const modalButton = await screen.findByRole('button', {
-        name: 'View all',
+        name: 'Edit',
       });
 
       act(() => {
@@ -433,7 +331,7 @@ describe('CategorySearch', () => {
       );
 
       const modalButton = await screen.findByRole('button', {
-        name: 'View all',
+        name: 'Edit',
       });
 
       act(() => {
@@ -473,7 +371,7 @@ describe('CategorySearch', () => {
       );
 
       const modalButton = await screen.findByRole('button', {
-        name: 'View all',
+        name: 'Edit',
       });
 
       act(() => {
@@ -509,7 +407,7 @@ describe('CategorySearch', () => {
       );
 
       const modalButton = await screen.findByRole('button', {
-        name: 'View all',
+        name: 'Edit',
       });
 
       act(() => {
@@ -556,7 +454,7 @@ describe('CategorySearch', () => {
       );
 
       const modalButton = await screen.findByRole('button', {
-        name: 'View all',
+        name: 'Edit',
       });
 
       act(() => {
@@ -586,98 +484,202 @@ describe('CategorySearch', () => {
         screen.getByText('Ruleset SubCategory_507 has already been added')
       ).toBeVisible();
     });
+
+    it('should clear the preview category from the modal if the preview category is removed and no other categories have been selected', async () => {
+      const TestParentComponent = () => {
+        const [selectedCategories, setSelectedCategories] = useState([
+          mockCategoryId,
+          mockCategoryId2,
+        ]);
+        const [previewCategory, setPreviewCategory] = useState(mockCategoryId);
+
+        return (
+          <CategorySearch
+            {...mockProps}
+            selectedCategories={selectedCategories}
+            previewCategory={previewCategory}
+            onClearSelection={() => {
+              setSelectedCategories([mockCategoryId2]);
+              setPreviewCategory(mockCategoryId2);
+            }}
+          />
+        );
+      };
+
+      renderWithProviders(<TestParentComponent />);
+
+      const modalButton = await screen.findByRole('button', {
+        name: 'Edit',
+      });
+
+      act(() => {
+        modalButton.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
+      const category1remove = await screen.findAllByRole('button', {
+        name: `Remove category from modal: ${mockCategoryId}`,
+      });
+
+      act(() => {
+        category1remove[0].click();
+      });
+
+      expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(
+        mockCategoryId2
+      );
+
+      const category2remove = await screen.findAllByRole('button', {
+        name: `Remove category from modal: ${mockCategoryId2}`,
+      });
+
+      act(() => {
+        category2remove[0].click();
+      });
+
+      expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(undefined);
+    });
   });
 
-  it('should clear the preview category from the modal if the preview category is removed and no other categories have been selected', async () => {
-    const TestParentComponent = () => {
-      const [selectedCategories, setSelectedCategories] = useState([
-        mockCategoryId,
-        mockCategoryId2,
-      ]);
-      const [previewCategory, setPreviewCategory] = useState(mockCategoryId);
-
-      return (
+  describe('Dropdown', () => {
+    it('should show a tooltip when hovering over a category', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
         <CategorySearch
           {...mockProps}
-          selectedCategories={selectedCategories}
-          previewCategory={previewCategory}
-          onClearSelection={() => {
-            setSelectedCategories([mockCategoryId2]);
-            setPreviewCategory(mockCategoryId2);
-          }}
+          selectedCategories={['SubCategory_507']}
+          selectedCategoriesInfo={[
+            {
+              id: 'SubCategory_507',
+              name: 'Dresses',
+              plpUrl: '/l/dresses',
+            },
+          ]}
+          previewCategory={mockCategoryId}
         />
       );
-    };
 
-    renderWithProviders(<TestParentComponent />);
+      expect(screen.queryByText('Dresses /l/dresses')).not.toBeVisible();
+      const category = screen.getByText('SubCategory_507');
 
-    const modalButton = await screen.findByRole('button', {
-      name: 'View all',
+      user.hover(category);
+
+      await waitFor(() => {
+        expect(screen.getByText('Dresses /l/dresses')).toBeVisible();
+      });
+      user.hover(screen.getByText('Category'));
+
+      await waitFor(() => {
+        expect(screen.queryByText('Dresses /l/dresses')).not.toBeVisible();
+      });
     });
 
-    act(() => {
-      modalButton.click();
+    it('open the modal when only one category is in the dropdown', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <CategorySearch
+          {...mockProps}
+          selectedCategories={['SubCategory_507']}
+          selectedCategoriesInfo={[
+            {
+              id: 'SubCategory_507',
+              name: 'Dresses',
+              plpUrl: '/l/dresses',
+            },
+          ]}
+          previewCategory={mockCategoryId}
+        />
+      );
+
+      const dropdownButton = screen.getByRole('button', {
+        name: 'select category',
+      });
+
+      await user.click(dropdownButton);
+
+      await waitFor(async () => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
     });
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    it('select different categories from the dropdown', async () => {
+      const user = userEvent.setup();
+      const mockSelectCategory = jest.fn();
+      renderWithProviders(
+        <CategorySearch
+          {...mockProps}
+          selectPreviewCategory={mockSelectCategory}
+          selectedCategories={['SubCategory_507', 'SubCategory_1387']}
+          selectedCategoriesInfo={[
+            {
+              id: 'SubCategory_507',
+              name: 'Dresses',
+              plpUrl: '/l/dresses',
+            },
+            {
+              id: 'SubCategory_1387',
+              name: 'Orchids',
+              plpUrl: 'l/flowers-and-plants/plants/orchids',
+            },
+          ]}
+          previewCategory={mockCategoryId}
+        />
+      );
+
+      const dropdownButton = screen.getByRole('button', {
+        name: 'select category',
+      });
+
+      await user.click(dropdownButton);
+
+      const otherCategory = screen.getByRole('button', {
+        name: 'SubCategory_1387 Orchids',
+      });
+      await user.click(otherCategory);
+
+      await waitFor(() => {
+        expect(mockSelectCategory).toHaveBeenCalledWith('SubCategory_1387');
+      });
     });
 
-    const category1remove = await screen.findAllByRole('button', {
-      name: `Remove category from modal: ${mockCategoryId}`,
-    });
+    it('should close the dropdown when Escape key is pressed', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <CategorySearch
+          {...mockProps}
+          selectedCategories={['SubCategory_507', 'SubCategory_1387']}
+          selectedCategoriesInfo={[
+            {
+              id: 'SubCategory_507',
+              name: 'Dresses',
+              plpUrl: '/l/dresses',
+            },
+            {
+              id: 'SubCategory_1387',
+              name: 'Orchids',
+              plpUrl: 'l/flowers-and-plants/plants/orchids',
+            },
+          ]}
+          previewCategory={mockCategoryId}
+        />
+      );
 
-    act(() => {
-      category1remove[0].click();
-    });
+      const dropdownButton = screen.getByRole('button', {
+        name: 'select category',
+      });
 
-    expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(
-      mockCategoryId2
-    );
+      await user.click(dropdownButton);
 
-    const category2remove = await screen.findAllByRole('button', {
-      name: `Remove category from modal: ${mockCategoryId2}`,
-    });
+      expect(dropdownButton).toHaveAttribute('aria-expanded', 'true');
 
-    act(() => {
-      category2remove[0].click();
-    });
+      await user.keyboard('{Escape}');
 
-    expect(mockProps.selectPreviewCategory).toHaveBeenCalledWith(undefined);
-  });
-
-  it('should show a tooltip when hovering over a category', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(
-      <CategorySearch
-        {...mockProps}
-        selectedCategories={['SubCategory_507']}
-        selectedCategoriesInfo={[
-          {
-            id: 'SubCategory_507',
-            name: 'Dresses',
-            plpUrl: '/l/dresses',
-          },
-        ]}
-        previewCategory={mockCategoryId}
-      />
-    );
-
-    expect(screen.queryByText('/l/dresses')).not.toBeVisible();
-    const category = screen.getByLabelText('Preview category');
-    const parentContainer = category.parentElement
-      ?.parentElement as HTMLElement;
-
-    user.hover(category);
-
-    await waitFor(() => {
-      expect(screen.getByText('/l/dresses')).toBeVisible();
-    });
-
-    user.hover(parentContainer);
-
-    await waitFor(() => {
-      expect(screen.queryByText('/l/dresses')).not.toBeVisible();
+      await waitFor(() => {
+        expect(dropdownButton).toHaveAttribute('aria-expanded', 'false');
+      });
     });
   });
 });

@@ -47,7 +47,7 @@ const StyledLabel = styled.label`
 const Input = styled.input`
   background-color: ${color.backgroundGrey};
   border: none;
-  border-bottom: 1px solid ${color.grey};
+  border-bottom: 1px solid ${color.role.outline.outline};
   min-height: 64px;
   max-width: 1038px;
   width: 100%;

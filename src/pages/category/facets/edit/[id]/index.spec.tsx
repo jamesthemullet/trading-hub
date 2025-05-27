@@ -791,9 +791,20 @@ describe('Category Facet Management Editing', () => {
       });
 
       renderWithProviders(<Page id={ruleSetId} />);
+      const modalButton = await screen.findByRole('button', {
+        name: 'Edit',
+      });
+
+      act(() => {
+        modalButton.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
 
       const clearButton = await screen.findByLabelText(
-        'Remove category: SubCategory_428'
+        'Remove category from modal: SubCategory_428'
       );
 
       act(() => {

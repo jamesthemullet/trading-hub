@@ -23,6 +23,19 @@ export const DropdownWrapper = styled.div<{
   }
 `;
 
+export const DropdownWrapperNoBorder = styled(DropdownWrapper)`
+  border: none;
+  border-bottom: 1px solid ${color.role.outline.outline};
+  border-radius: 4px 4px 0 0;
+  min-height: 56px;
+
+  button {
+    border: none;
+    border-radius: 4px 4px 0 0;
+    min-height: 56px;
+  }
+`;
+
 export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   align-items: center;
   border-radius: 4px;
@@ -44,18 +57,21 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   }
 
   &:disabled {
+    background-color: ${color.lightGrey};
+    color: ${color.accessibilityGrey};
     cursor: default;
-
-    &:hover {
-      background-color: ${color.backgroundGrey};
-    }
   }
+`;
+
+export const FlagWrapper = styled.span`
+  margin-left: -${spacing(1)};
+  padding-top: ${spacing(0.5)};
 `;
 
 export const DropdownHeading = styled(Text)`
   display: flex;
   align-items: center;
-  padding-left: ${spacing(1)};
+  padding-left: ${spacing(2)};
   text-align: left;
 
   p {
@@ -110,12 +126,16 @@ export const DropdownContainer = styled.div<{ isDropdownOpen: boolean }>`
   ${({ isDropdownOpen }) => isDropdownOpen && 'display: flex; z-index: 10'}
 `;
 
-export const DropdownOption = styled.button<{ hoverColour: string }>`
+export const DropdownOption = styled.button<{
+  hoverColour: string;
+  align?: string;
+}>`
   background-color: #fff;
   height: 40px;
   border: none;
   display: flex;
   align-items: center;
+  text-align: ${({ align }) => (align ? align : 'center')};
   font-size: 14px;
   padding: 0 ${spacing(1)};
 

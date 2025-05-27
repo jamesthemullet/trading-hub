@@ -130,6 +130,17 @@ describe('Category Facet Management New', () => {
       getCategoriesError: '',
     });
     renderWithProviders(<NewFacetRuleset />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -207,6 +218,17 @@ describe('Category Facet Management New', () => {
     });
 
     renderWithProviders(<NewFacetRuleset />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -291,6 +313,17 @@ describe('Category Facet Management New', () => {
     });
 
     renderWithProviders(<NewFacetRuleset />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -354,6 +387,17 @@ describe('Category Facet Management New', () => {
     });
 
     renderWithProviders(<NewFacetRuleset />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -425,6 +469,17 @@ describe('Category Facet Management New', () => {
     });
 
     renderWithProviders(<NewFacetRuleset />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -496,6 +551,17 @@ describe('Category Facet Management New', () => {
     });
 
     renderWithProviders(<NewFacetRuleset />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -565,6 +631,17 @@ describe('Category Facet Management New', () => {
     });
 
     renderWithProviders(<NewFacetRuleset />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -629,6 +706,17 @@ describe('Category Facet Management New', () => {
       renderWithProviders(<NewFacetRuleset />);
 
       expect(screen.getByText('Duration')).toBeVisible();
+      const modalButton = await screen.findByRole('button', {
+        name: 'Edit',
+      });
+
+      act(() => {
+        modalButton.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
 
       act(() => {
         user.type(

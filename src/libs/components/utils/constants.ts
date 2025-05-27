@@ -20,4 +20,11 @@ export const color = {
   focusBlue: '#4273B7',
   infoBoxBlue: '#EAF5FA',
   infoBoxBorder: '#194D69',
+  // colour names and references from figma
+  // https://www.figma.com/design/YHeWRA8WLjuNm1VWp9Y2is/Colleague-Design-System?node-id=0-1&p=f&t=nomDBg9Pdn9CM7Z7-0
+  role: {
+    outline: {
+      outline: '#627886',
+    },
+  },
 };

@@ -196,6 +196,18 @@ const mockCategoriesInfo507 = [
 ];
 
 const selectCategory = async (screen: Screen, user: UserEvent) => {
+  const modalButton = await screen.findByRole('button', {
+    name: 'Edit',
+  });
+
+  act(() => {
+    modalButton.click();
+  });
+
+  await waitFor(() => {
+    expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+  });
+
   await user.type(
     screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
     'SubCategory_507{enter}'
@@ -558,6 +570,18 @@ describe('Ruleset', () => {
           countryCode="UK_IE"
         />
       );
+
+      const modalButton = await screen.findByRole('button', {
+        name: 'Edit',
+      });
+
+      act(() => {
+        modalButton.click();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
 
       await user.type(
         screen.getByPlaceholderText(CATEGORY_SEARCH_PLACEHOLDER_TEXT),
@@ -1122,7 +1146,7 @@ describe('Ruleset', () => {
     await selectCategory(screen, user);
 
     const clearButton = screen.getByLabelText(
-      `Remove category: ${categoryId1}`
+      `Remove category from modal: ${categoryId1}`
     );
 
     act(() => {

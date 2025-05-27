@@ -12,6 +12,17 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const DropdownWrapper = styled.div`
+  display: flex;
+  gap: ${spacing(1)};
+  align-items: center;
+`;
+export const DropdownText = styled(Text)`
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
 export const Container = styled.div`
   margin-top: -1px;
   position: relative;
@@ -88,6 +99,7 @@ export const SearchInput = styled.input`
   background: none;
   margin-left: ${spacing(1)};
   height: 54px;
+  width: calc(100% - ${spacing(1)});
 
   &::placeholder {
     color: #222222;

@@ -80,7 +80,7 @@ export type SearchBoxProps = {
     ref?: RefObject<HTMLInputElement>;
   } & InputProps;
   iconButtonProps: {
-    icon?: ReactElement;
+    searchIcon?: ReactElement;
     buttonAriaLabel?: string;
   } & Partial<ButtonProps>;
 };
@@ -92,21 +92,21 @@ export const SearchBox = ({
   iconButtonProps,
 }: SearchBoxProps) => {
   const {
-    icon = !hideIcon && <Icon name="Search" size={32} />,
+    searchIcon = !hideIcon && <Icon name="Search" size={32} />,
     buttonAriaLabel = 'Search button',
     ...iconButtonPropsRest
   } = iconButtonProps;
   return (
     <Wrapper>
       <StyledInput type="search" {...inputProps} iconPosition={iconPosition} />
-      {icon && (
+      {searchIcon && (
         <StyledButton
           type="submit"
           aria-label={buttonAriaLabel}
           iconPosition={iconPosition}
           {...iconButtonPropsRest}
         >
-          {icon}
+          {searchIcon}
         </StyledButton>
       )}
     </Wrapper>

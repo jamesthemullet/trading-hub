@@ -120,6 +120,7 @@ test.describe('Categories', () => {
       page.getByText('No, there are no product rankings yet')
     ).toBeVisible();
 
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Dresses');
     await page
@@ -127,6 +128,7 @@ test.describe('Categories', () => {
       .click();
 
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await expect(page.getByLabel('Position 1', { exact: true })).toBeVisible();
 
@@ -178,6 +180,7 @@ test.describe('Categories', () => {
       })
       .click();
 
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Dresses');
     await page
@@ -185,6 +188,7 @@ test.describe('Categories', () => {
       .click();
 
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await expect(page.getByLabel('Position 1', { exact: true })).toBeVisible();
 
@@ -224,12 +228,15 @@ test.describe('Categories', () => {
       page.getByText('No, there are no product rankings yet')
     ).toBeVisible();
 
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Dresses');
     await page.getByText('SubCategory_429 | Dresses | l/women/dresses').click();
 
     await page
-      .getByRole('button', { name: 'Remove category: SubCategory_429' })
+      .getByRole('button', {
+        name: 'Remove category from modal: SubCategory_429',
+      })
       .click();
 
     await page.getByPlaceholder('Search...').fill('Dresses');
@@ -237,7 +244,6 @@ test.describe('Categories', () => {
       .getByText('IE_SubCategory_7585102 | Dresses | ie/l/baby/dresses')
       .click();
 
-    await page.getByRole('button', { name: 'View all' }).click();
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Dresses');
     await page
@@ -636,6 +642,7 @@ test.describe('Categories', () => {
         page.getByText('No, there are no product rankings yet')
       ).toBeVisible();
 
+      await page.getByRole('button', { name: 'Edit', exact: true }).click();
       await page.getByPlaceholder('Search...').click();
       await page.getByPlaceholder('Search...').fill('Dresses');
       await page
@@ -645,6 +652,7 @@ test.describe('Categories', () => {
         .click();
 
       await page.waitForLoadState('networkidle');
+      await page.getByRole('button', { name: 'Close' }).click();
 
       await expect(
         page.getByLabel('Position 1', { exact: true })

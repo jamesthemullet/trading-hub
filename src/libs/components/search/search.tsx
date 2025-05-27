@@ -44,7 +44,7 @@ export const Search = ({
       <SearchBox
         iconButtonProps={{
           id: 'SearchIconInputBtn',
-          icon: <StyledIcon name="Search" />,
+          searchIcon: <StyledIcon name="Search" />,
         }}
         inputProps={{
           isLabelHidden: true,

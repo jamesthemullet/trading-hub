@@ -16,6 +16,7 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 
 import { Checkbox } from '../checkboxes/checkbox';
+import { color } from '../utils/constants';
 import { Content } from './date-picker.styles';
 
 const theme = createTheme({});
@@ -44,7 +45,8 @@ const StyledButton = styled(Button)`
 const StyledInput = styled(Input)`
   background-color: #f5f5f5;
   border: none;
-  height: 54px;
+  height: 56px;
+  border-radius: 4px 4px 0 0;
 `;
 
 const ButtonImage = styled.button`
@@ -56,12 +58,13 @@ const ButtonImage = styled.button`
 
 const StyledInputContainer = styled.div`
   background-color: #f5f5f5;
-  border-bottom: solid 1px #cacaca;
+  border-bottom: 1px solid ${color.role.outline.outline};
   width: 316px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 ${spacing(1)};
+  border-radius: 4px 4px 0 0;
 `;
 
 const RangeSelector = styled.div`

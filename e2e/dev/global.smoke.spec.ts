@@ -20,6 +20,7 @@ test.describe('Global Ranking', () => {
     await page.getByRole('button', { name: 'Add facet rule' }).click();
 
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(5000);
     await expect(
       page.getByRole('heading', { name: 'Global Facet Rule Editor' })
     ).toBeVisible();
@@ -41,6 +42,7 @@ test.describe('Global Ranking', () => {
       .click();
 
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(5000);
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     const checkbox = page
@@ -160,8 +162,7 @@ test.describe('Global Ranking', () => {
       page.getByTestId('Row showing Absorbency Level 1 as included')
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Global Ranking Rules' }).click();
-    await page.getByRole('link', { name: 'Global Category Ranking' }).click();
+    await page.getByLabel('Global Ranking Rules').click();
 
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 

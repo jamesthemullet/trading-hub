@@ -620,7 +620,7 @@ describe('Search Facet Management Editing', () => {
   });
 
   describe('Search term operations', () => {
-    it('should show empty list when category is removed', async () => {
+    it('should show empty list when keyword is removed', async () => {
       jest.mocked(useSearchRuleSetPreview).mockReturnValue({
         ...mockUseSearchRuleSetPreviewData,
         ruleSet: {

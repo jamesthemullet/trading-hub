@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
@@ -11,20 +10,8 @@ import {
   DropdownContainer,
   DropdownHeading,
   DropdownOption,
-  DropdownWrapper,
+  DropdownWrapperNoBorder,
 } from '../dropdown.styles';
-
-const DropdownWrapperNoBorder = styled(DropdownWrapper)`
-  border: none;
-  border-bottom: 1px solid #b1b1b1;
-  border-radius: 1px 1px 0 0;
-  width: 230px;
-
-  button {
-    border: none;
-    border-radius: 1px 1px 0 0;
-  }
-`;
 
 export const CountryFilterDropdown = ({
   onChange,
@@ -94,6 +81,7 @@ export const CountryFilterDropdown = ({
       isDropdownOpen={isDropdownOpen}
       ref={dropdownWrapperRef}
       onKeyDown={handleOnKeyDown}
+      width={250}
     >
       <DropdownButton
         isDropdownOpen={isDropdownOpen}

@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -93,6 +93,17 @@ describe('Index', () => {
   it('stores input value', async () => {
     const user = userEvent.setup();
     renderWithProviders(<RuleSetCreate />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -141,6 +152,17 @@ describe('Index', () => {
       getCategoriesError: '',
     });
     renderWithProviders(<RuleSetCreate />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -155,7 +177,7 @@ describe('Index', () => {
     });
 
     const clear = await screen.findByLabelText(
-      `Remove category: ${categoryId1}`
+      `Remove category from modal: ${categoryId1}`
     );
     act(() => {
       clear.click();
@@ -206,6 +228,17 @@ describe('Index', () => {
       getCategoriesError: '',
     });
     renderWithProviders(<RuleSetCreate />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
@@ -257,6 +290,17 @@ describe('Index', () => {
       getCategoriesError: '',
     });
     renderWithProviders(<RuleSetCreate />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
 
     await user.type(
       screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
