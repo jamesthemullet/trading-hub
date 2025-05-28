@@ -68,6 +68,7 @@ describe('Search Keywords', () => {
 
   it('should add a new keyword to the list without the modal being open', async () => {
     const addSearchTermStub = jest.fn();
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
@@ -76,12 +77,7 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(async () => {
-      await userEvent.type(
-        screen.getByLabelText('Add keyword'),
-        'new keyword{enter}'
-      );
-    });
+    await user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
 
     await waitFor(() => {
       expect(addSearchTermStub).toHaveBeenCalledWith('new keyword');
@@ -90,6 +86,7 @@ describe('Search Keywords', () => {
 
   it('should add a new keyword in lower case if prop is provided', async () => {
     const addSearchTermStub = jest.fn();
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
@@ -98,12 +95,7 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(async () => {
-      await userEvent.type(
-        screen.getByLabelText('Add keyword'),
-        'NEW keyword{enter}'
-      );
-    });
+    await user.type(screen.getByLabelText('Add keyword'), 'NEW keyword{enter}');
 
     await waitFor(() => {
       expect(addSearchTermStub).toHaveBeenCalledWith('new keyword');
@@ -137,6 +129,7 @@ describe('Search Keywords', () => {
 
   it('should remove a keyword from the list without the modal being open', async () => {
     const removeSearchTermStub = jest.fn();
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
@@ -145,9 +138,7 @@ describe('Search Keywords', () => {
       />
     );
 
-    await waitFor(async () => {
-      await userEvent.click(screen.getByLabelText('Remove keyword: keyword2'));
-    });
+    await user.click(screen.getByLabelText('Remove keyword: keyword2'));
 
     await waitFor(() => {
       expect(removeSearchTermStub).toHaveBeenCalledWith('keyword2');
@@ -156,6 +147,7 @@ describe('Search Keywords', () => {
 
   it('should add a new keyword to the list with the modal being open', async () => {
     const addSearchTermStub = jest.fn();
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
@@ -166,11 +158,11 @@ describe('Search Keywords', () => {
     );
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
+      await user.click(screen.getByRole('button', { name: 'View all' }));
     });
 
     await waitFor(async () => {
-      await userEvent.type(
+      await user.type(
         screen.getByLabelText('Add keyword to list'),
         'new keyword{enter}'
       );
@@ -183,6 +175,7 @@ describe('Search Keywords', () => {
 
   it('should add a new keyword in lowercase to the list with the modal being open', async () => {
     const addSearchTermStub = jest.fn();
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
@@ -193,11 +186,11 @@ describe('Search Keywords', () => {
     );
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
+      await user.click(screen.getByRole('button', { name: 'View all' }));
     });
 
     await waitFor(async () => {
-      await userEvent.type(
+      await user.type(
         screen.getByLabelText('Add keyword to list'),
         'NEW keyword{enter}'
       );
@@ -210,6 +203,7 @@ describe('Search Keywords', () => {
 
   it('should remove a keyword from the list on the modal', async () => {
     const removeSearchTermStub = jest.fn();
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
@@ -221,8 +215,8 @@ describe('Search Keywords', () => {
     expect(modal).toBeVisible();
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
-      await userEvent.click(
+      await user.click(screen.getByRole('button', { name: 'View all' }));
+      await user.click(
         within(modal).getByLabelText('Remove keyword: keyword5')
       );
     });
@@ -251,12 +245,13 @@ describe('Search Keywords', () => {
   });
 
   it('should close the modal', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords {...mockProps} searchTerms={longerSearchTermsList} />
     );
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
+      await user.click(screen.getByRole('button', { name: 'View all' }));
     });
 
     await waitFor(() => {
@@ -264,7 +259,7 @@ describe('Search Keywords', () => {
     });
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByRole('button', { name: 'Close' }));
+      await user.click(screen.getByRole('button', { name: 'Close' }));
     });
 
     await waitFor(() => {
@@ -275,23 +270,24 @@ describe('Search Keywords', () => {
   });
 
   it('should not close the modal if the user tries to close it with an unfinished keyword', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords {...mockProps} searchTerms={longerSearchTermsList} />
     );
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByRole('button', { name: 'View all' }));
+      await user.click(screen.getByRole('button', { name: 'View all' }));
     });
 
     await waitFor(async () => {
-      await userEvent.type(
+      await user.type(
         screen.getByLabelText('Add keyword to list'),
         'new keyword'
       );
     });
 
     await waitFor(async () => {
-      await userEvent.click(screen.getByRole('button', { name: 'Close' }));
+      await user.click(screen.getByRole('button', { name: 'Close' }));
     });
 
     await waitFor(() => {
@@ -304,17 +300,18 @@ describe('Search Keywords', () => {
   });
 
   it('should filter attributes on user input', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords {...mockProps} searchTerms={longerSearchTermsList} />
     );
 
-    await userEvent.click(screen.getByRole('button', { name: 'View all' }));
+    await user.click(screen.getByRole('button', { name: 'View all' }));
 
     const modal = await screen.findByLabelText('Search Keywords Modal');
     expect(modal).toBeVisible();
 
     await waitFor(async () => {
-      await userEvent.type(
+      await user.type(
         within(modal).getByPlaceholderText('Search...'),
         'keyword1'
       );
@@ -495,6 +492,7 @@ describe('Search Keywords', () => {
 
   it('should show error when adding a duplicate keyword', async () => {
     const addSearchTermStub = jest.fn();
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
@@ -504,7 +502,7 @@ describe('Search Keywords', () => {
     );
 
     await waitFor(async () => {
-      await userEvent.type(
+      await user.type(
         screen.getByLabelText('Add keyword'),
         'new keyword{enter}'
       );

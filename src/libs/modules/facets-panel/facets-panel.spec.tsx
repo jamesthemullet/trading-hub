@@ -411,6 +411,7 @@ describe('Facet Panel', () => {
   });
 
   it('should not allow renaming a row to an existing value', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <FacetsPanel
         writeEnabled={true}
@@ -440,11 +441,9 @@ describe('Facet Panel', () => {
 
     expect(inputField).toHaveValue('color');
 
-    await waitFor(async () => {
-      await userEvent.clear(inputField);
-      await userEvent.type(inputField, 'brand');
-      await userEvent.keyboard('{enter}');
-    });
+    await user.clear(inputField);
+    await user.type(inputField, 'brand');
+    await user.keyboard('{enter}');
 
     const errorMessage = screen.getByText(`brand is not a unique value`);
     expect(errorMessage).toBeVisible();

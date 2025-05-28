@@ -76,6 +76,7 @@ describe('editable-label', () => {
 
     it('should call onDisplayValueChange when save button is clicked', async () => {
       const onDisplayValueChange = jest.fn();
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
@@ -101,8 +102,8 @@ describe('editable-label', () => {
       });
 
       expect(editColorInput).toHaveValue('color');
-      await userEvent.clear(editColorInput);
-      await userEvent.type(editColorInput, 'colour');
+      await user.clear(editColorInput);
+      await user.type(editColorInput, 'colour');
 
       const saveButton = screen.getByLabelText('Save color change');
 
@@ -122,6 +123,7 @@ describe('editable-label', () => {
 
     it('should call onDisplayValueChange when enter key is pressed', async () => {
       const onDisplayValueChange = jest.fn();
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
@@ -147,9 +149,9 @@ describe('editable-label', () => {
       });
 
       expect(editColorInput).toHaveValue('color');
-      await userEvent.clear(editColorInput);
-      await userEvent.type(editColorInput, 'colour');
-      await userEvent.keyboard('{enter}');
+      await user.clear(editColorInput);
+      await user.type(editColorInput, 'colour');
+      await user.keyboard('{enter}');
 
       await waitFor(() => {
         const newEditButton = screen.getByRole('button', {
@@ -163,6 +165,7 @@ describe('editable-label', () => {
 
     it('should display error state and not allow save if error state is true', async () => {
       const onDisplayValueChange = jest.fn();
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
@@ -174,7 +177,7 @@ describe('editable-label', () => {
       );
 
       await waitFor(async () => {
-        await userEvent.keyboard('{enter}');
+        await user.keyboard('{enter}');
       });
 
       const saveButton = screen.getByLabelText('Save color change');
@@ -186,6 +189,7 @@ describe('editable-label', () => {
     it('should not call onDisplayValueChange when escape key is pressed', async () => {
       const onDisplayValueChange = jest.fn();
       const mockCancel = jest.fn();
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
@@ -213,9 +217,9 @@ describe('editable-label', () => {
       });
 
       expect(editColorInput).toHaveValue('color');
-      await userEvent.clear(editColorInput);
-      await userEvent.type(editColorInput, 'colour');
-      await userEvent.keyboard('{Escape}');
+      await user.clear(editColorInput);
+      await user.type(editColorInput, 'colour');
+      await user.keyboard('{Escape}');
 
       const label = await screen.findByTestId('Label for color');
       expect(label).toBeVisible();

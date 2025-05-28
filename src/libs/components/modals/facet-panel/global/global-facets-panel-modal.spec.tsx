@@ -396,6 +396,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
     it('should rename a row', async () => {
       const newRowName = 'New row name';
+      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -421,9 +422,9 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(inputField).toHaveValue(attributeValuesMock[0].displayValue);
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, newRowName);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, newRowName);
+        await user.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -433,6 +434,7 @@ describe('GlobalFacetPanelModalContent', () => {
     }, 1000);
 
     it('should allow renaming to the same name', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -457,9 +459,9 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(inputField).toHaveValue(attributeValuesMock[0].displayValue);
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, attributeValuesMock[0].displayValue);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, attributeValuesMock[0].displayValue);
+        await user.keyboard('{enter}');
       });
 
       await waitFor(() => {
@@ -477,6 +479,7 @@ describe('GlobalFacetPanelModalContent', () => {
         }),
         error: '',
       });
+      const user = userEvent.setup();
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -502,9 +505,9 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(inputField).toHaveValue(attributeValuesMock[0].displayValue);
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, attributeValuesMock[1].displayValue);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, attributeValuesMock[1].displayValue);
+        await user.keyboard('{enter}');
       });
 
       const errorMessage = screen.getByText(
@@ -522,6 +525,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and make no changes if algo control is chosen', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -541,13 +545,13 @@ describe('GlobalFacetPanelModalContent', () => {
         `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(select);
+      await user.click(select);
 
       const algoControlButton = screen.getByLabelText(
         `algoControl ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(algoControlButton);
+      await user.click(algoControlButton);
 
       expect(
         screen.getByTestId(
@@ -557,6 +561,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and select include only', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -581,13 +586,13 @@ describe('GlobalFacetPanelModalContent', () => {
         `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(select);
+      await user.click(select);
 
       const button = screen.getByLabelText(
         `include ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(button);
+      await user.click(button);
 
       expect(
         screen.getByTestId(
@@ -597,6 +602,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and select exclude only', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -616,13 +622,13 @@ describe('GlobalFacetPanelModalContent', () => {
         `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(select);
+      await user.click(select);
 
       const button = screen.getByLabelText(
         `exclude ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(button);
+      await user.click(button);
 
       expect(
         screen.getByTestId(
@@ -632,6 +638,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and change excluded facet to include only', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -656,13 +663,13 @@ describe('GlobalFacetPanelModalContent', () => {
         `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(select);
+      await user.click(select);
 
       const includeButton = screen.getByLabelText(
         `include ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(includeButton);
+      await user.click(includeButton);
 
       expect(
         screen.getByTestId(
@@ -672,6 +679,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and change included facet to exclude only', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -696,13 +704,13 @@ describe('GlobalFacetPanelModalContent', () => {
         `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(select);
+      await user.click(select);
 
       const excludeButton = screen.getByLabelText(
         `exclude ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(excludeButton);
+      await user.click(excludeButton);
 
       expect(
         screen.getByTestId(
@@ -712,6 +720,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and change excluded facet to algo control', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -736,13 +745,13 @@ describe('GlobalFacetPanelModalContent', () => {
         `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(select);
+      await user.click(select);
 
       const algoControlButton = screen.getByLabelText(
         `algoControl ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(algoControlButton);
+      await user.click(algoControlButton);
 
       expect(
         screen.getByTestId(
@@ -752,6 +761,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and change included facet to algo control', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -776,13 +786,13 @@ describe('GlobalFacetPanelModalContent', () => {
         `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(select);
+      await user.click(select);
 
       const algoControlButton = screen.getByLabelText(
         `algoControl ${attributeValuesMock[0].displayValue}`
       );
 
-      await userEvent.click(algoControlButton);
+      await user.click(algoControlButton);
 
       expect(
         screen.getByTestId(
@@ -997,6 +1007,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
   describe('merging values', () => {
     it('should merge 2 values', async () => {
+      const user = userEvent.setup({ delay: null });
       const newMergeName = 'New Merge Name';
 
       renderWithProviders(
@@ -1050,9 +1061,9 @@ describe('GlobalFacetPanelModalContent', () => {
       );
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, newMergeName);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, newMergeName);
+        await user.keyboard('{enter}');
       });
       await waitFor(() => {
         const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
@@ -1062,6 +1073,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
     it('should merge all values', async () => {
       const newMergeName = 'New Merge Name';
+      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -1089,9 +1101,9 @@ describe('GlobalFacetPanelModalContent', () => {
       );
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, newMergeName);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, newMergeName);
+        await user.keyboard('{enter}');
       });
       await waitFor(() => {
         const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
@@ -1156,6 +1168,7 @@ describe('GlobalFacetPanelModalContent', () => {
     it('should merge into an existing merge group', async () => {
       const mergeName = 'Foo';
       const newMergeName = 'New Merge Name';
+      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -1206,9 +1219,9 @@ describe('GlobalFacetPanelModalContent', () => {
       );
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, newMergeName);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, newMergeName);
+        await user.keyboard('{enter}');
       });
       await waitFor(() => {
         const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
@@ -1218,6 +1231,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
     it('should merge into a boosted merge group if the first selected value is boosted', async () => {
       const newMergeName = 'New Merge Name';
+      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -1262,9 +1276,9 @@ describe('GlobalFacetPanelModalContent', () => {
       );
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, newMergeName);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, newMergeName);
+        await user.keyboard('{enter}');
       });
       await waitFor(() => {
         const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
@@ -1274,6 +1288,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
     it('should merge into an excluded merge group if the first selected value is excluded', async () => {
       const newMergeName = 'New Merge Name';
+      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -1318,9 +1333,9 @@ describe('GlobalFacetPanelModalContent', () => {
       });
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, newMergeName);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, newMergeName);
+        await user.keyboard('{enter}');
       });
       await waitFor(() => {
         const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
@@ -1329,6 +1344,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should allow renaming the merge group to a merged attribute', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1367,9 +1383,9 @@ describe('GlobalFacetPanelModalContent', () => {
       );
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, attributeValuesMock[1].displayValue);
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, attributeValuesMock[1].displayValue);
+        await user.keyboard('{enter}');
       });
       await waitFor(() => {
         const updatedRow = screen.getByTestId(
@@ -1380,6 +1396,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should not allow naming the merge group to the same name of a merged attribute in another merge group regardless of case', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1425,9 +1442,9 @@ describe('GlobalFacetPanelModalContent', () => {
       );
 
       await waitFor(async () => {
-        await userEvent.clear(inputField);
-        await userEvent.type(inputField, 'FOO');
-        await userEvent.keyboard('{enter}');
+        await user.clear(inputField);
+        await user.type(inputField, 'FOO');
+        await user.keyboard('{enter}');
       });
 
       const errorMessage = screen.getByText('FOO is not a unique value');
