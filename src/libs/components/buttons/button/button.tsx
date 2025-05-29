@@ -7,7 +7,10 @@ import {
   type Ref,
 } from 'react';
 
+import Link from 'next/link';
+
 import { color } from '../../utils/constants';
+import { sizing } from '../../utils/sizing';
 import { spacing } from '../../utils/spacing';
 
 const setTheme = ({
@@ -133,20 +136,15 @@ const setIcon = ({ icon }: { icon: string }) => css`
   }
 `;
 
-const StyledButton = styled.button<ButtonProps>`
+const sharedButtonStyles = css`
   border: solid 1px ${color.lightGrey};
   border-radius: 4px;
-  ${({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled }) =>
-    setTheme({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled })};
-  ${({ icon }) => icon && setIcon({ icon })};
   font-size: 16px;
   transition: all 0.1s ease-in;
   transition-property: background-color color border-color;
   text-decoration: none;
   padding: ${spacing(1)} ${spacing(2)};
-  height: 40px;
-  width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
-
+  height: ${sizing(5.5)};
   &:disabled {
     cursor: default;
     pointer-events: none;
@@ -154,9 +152,36 @@ const StyledButton = styled.button<ButtonProps>`
   }
 `;
 
+const StyledButton = styled.button<ButtonProps>`
+  ${sharedButtonStyles};
+  ${({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled }) =>
+    setTheme({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled })};
+  ${({ icon }) => icon && setIcon({ icon })};
+  width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
+`;
+
+const StyledLink = styled(Link, {
+  shouldForwardProp: (prop) =>
+    ![
+      'isPrimary',
+      'isTertiary',
+      'isFilled',
+      'isOutlined',
+      'isDisabled',
+      'iconPosition',
+      'isInline',
+    ].includes(prop),
+})<RawButtonProps>`
+  ${sharedButtonStyles};
+  ${({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled }) =>
+    setTheme({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled })};
+  ${({ icon }) => icon && setIcon({ icon })};
+  width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
+`;
+
 type Icon = 'plus-simple-green' | 'plus-simple-white';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type RawButtonProps = {
   isPrimary?: boolean;
   isTertiary?: boolean;
   isFilled?: boolean;
@@ -170,6 +195,8 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   theme?: 'primary' | 'secondary' | 'tertiary' | 'filled' | 'outlined';
   type?: 'submit' | 'reset' | 'button' | undefined;
 };
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+  RawButtonProps;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -185,11 +212,30 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }: ButtonProps,
     ref: Ref<HTMLButtonElement>
   ) => {
+    if (as === 'a' && href) {
+      return (
+        <StyledLink
+          ref={ref as Ref<HTMLAnchorElement>}
+          href={href}
+          isPrimary={theme === 'primary'}
+          isTertiary={theme === 'tertiary'}
+          isFilled={theme === 'filled'}
+          isOutlined={theme === 'outlined'}
+          {...(onClick && !isDisabled && { onClick })}
+          {...(isDisabled && { 'aria-disabled': isDisabled })}
+          isDisabled={isDisabled}
+          isInline={rest.isInline}
+          icon={rest.icon}
+        >
+          {children}
+        </StyledLink>
+      );
+    }
+
     return (
       <StyledButton
         ref={ref}
         as={as}
-        {...(href && { href })}
         isPrimary={theme === 'primary'}
         isTertiary={theme === 'tertiary'}
         isFilled={theme === 'filled'}

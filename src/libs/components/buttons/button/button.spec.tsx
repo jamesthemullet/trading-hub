@@ -12,19 +12,6 @@ describe('Button', () => {
     expect(screen.getByRole('button', { name: 'foo' })).toBeInTheDocument();
   });
 
-  it('should render as a link', () => {
-    render(
-      <Button as="a" href="/bar" theme="primary">
-        foo
-      </Button>
-    );
-
-    expect(screen.getByRole('link', { name: 'foo' })).toHaveAttribute(
-      'href',
-      '/bar'
-    );
-  });
-
   it('should render a tertiary button', () => {
     render(
       <>
@@ -64,5 +51,37 @@ describe('Button', () => {
     });
 
     expect(mockClickHandler).not.toHaveBeenCalled();
+  });
+
+  describe('link', () => {
+    it('should render as a link', () => {
+      render(
+        <Button as="a" href="/bar" theme="primary">
+          foo
+        </Button>
+      );
+
+      expect(screen.getByRole('link', { name: 'foo' })).toHaveAttribute(
+        'href',
+        '/bar'
+      );
+    });
+
+    it('should render as disabled link', () => {
+      render(
+        <Button as="a" href="/bar" theme="primary" isDisabled>
+          foo
+        </Button>
+      );
+
+      expect(screen.getByRole('link', { name: 'foo' })).toHaveAttribute(
+        'href',
+        '/bar'
+      );
+      expect(screen.getByRole('link', { name: 'foo' })).toHaveAttribute(
+        'aria-disabled',
+        'true'
+      );
+    });
   });
 });

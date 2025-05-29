@@ -42,7 +42,7 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   border: 1px solid #b1b1b1;
   background-color: ${color.backgroundGrey};
   display: flex;
-  height: ${sizing(5)};
+  height: ${sizing(5.5)};
   justify-content: space-between;
   align-items: center;
   padding: 0;

@@ -556,9 +556,7 @@ describe('Categories', () => {
     });
     renderWithProviders(<Categories />);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
-    });
+    expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
 
     expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
   });

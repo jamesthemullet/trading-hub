@@ -356,11 +356,7 @@ test.describe('Categories', () => {
       .click();
     await page.getByRole('button', { name: 'Pin in position' }).click();
     await page.getByPlaceholder('i.e. 3').fill('1');
-    await page
-      .getByLabel('Position 1')
-      .first()
-      .getByRole('button', { name: 'Confirm' })
-      .click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
 
     const saveButton = page.getByRole('button', { name: 'Save' });
 

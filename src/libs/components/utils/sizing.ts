@@ -19,6 +19,8 @@ export type RoundNumberSizingUnit =
   | -4
   | 5
   | -5
+  | 5.5
+  | -5.5
   | 6
   | -6
   | 7
