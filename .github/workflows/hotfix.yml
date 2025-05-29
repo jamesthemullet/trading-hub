@@ -112,10 +112,11 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Login via Azure CLI
-        uses: azure/login@v2
+        uses: azure/login@v2.3.0
         with:
-          creds: '{"clientId": "${{ secrets.SP_CLIENT_ID }}", "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
-
+          client-id: ${{ secrets.SP_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
@@ -189,10 +190,11 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Login via Azure CLI
-        uses: azure/login@v2
+        uses: azure/login@v2.3.0
         with:
-          creds: '{"clientId": "${{ secrets.SP_CLIENT_ID }}", "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "bd5c6713-7399-4b31-be79-78f2d078e543"}'
-
+          client-id: ${{ secrets.SP_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
