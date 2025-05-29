@@ -11,6 +11,7 @@ import {
   Button,
   ErrorMessage,
   Header3,
+  Loader,
   Search,
   spacing,
   Text,
@@ -110,6 +111,14 @@ export const GlobalFacetPanelModalContent = ({
 
   const [editingValues, setEditingValues] = useState<string[]>([]);
 
+  const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
+
+  useEffect(() => {
+    if (!isAwaitingUpdate) return;
+
+    setIsAwaitingUpdate(false);
+  }, [isAwaitingUpdate]);
+
   useEffect(() => {
     dispatch({
       type: 'INITIALISE_STATE',
@@ -180,6 +189,7 @@ export const GlobalFacetPanelModalContent = ({
   const onCloseModal = () => setIsConfirmationModalOpen(false);
 
   const handleMerge = () => {
+    setIsAwaitingUpdate(true);
     const isFirstAttributeBoosted = globalAttributesLocalState.boostedRows.some(
       (val) =>
         val.attributes.includes(
@@ -202,39 +212,44 @@ export const GlobalFacetPanelModalContent = ({
         allCurrentlyMergedAttributes.includes(val)
       );
 
-    if (isInExistingMergeGroup) {
-      dispatch({
-        type: 'UPDATE_MERGE_GROUP',
-        payload: {
-          attributes: globalAttributesLocalState.selectedAttributes,
-          isFirstAttributeBoosted,
-          isFirstAttributeExcluded,
-        },
-      });
-    } else {
-      dispatch({
-        type: 'CREATE_MERGE_GROUP',
-        payload: {
-          attributes: globalAttributesLocalState.selectedAttributes,
-          isFirstAttributeBoosted,
-          isFirstAttributeExcluded,
-        },
-      });
-    }
+    requestAnimationFrame(() => {
+      if (isInExistingMergeGroup) {
+        dispatch({
+          type: 'UPDATE_MERGE_GROUP',
+          payload: {
+            attributes: globalAttributesLocalState.selectedAttributes,
+            isFirstAttributeBoosted,
+            isFirstAttributeExcluded,
+          },
+        });
+      } else {
+        dispatch({
+          type: 'CREATE_MERGE_GROUP',
+          payload: {
+            attributes: globalAttributesLocalState.selectedAttributes,
+            isFirstAttributeBoosted,
+            isFirstAttributeExcluded,
+          },
+        });
+      }
 
-    dispatch({
-      type: 'CLEAR_SELECTED_ATTRIBUTES',
+      dispatch({
+        type: 'CLEAR_SELECTED_ATTRIBUTES',
+      });
+
+      setEditingValues((prev) => [
+        ...prev,
+        globalAttributesLocalState.selectedAttributes[0],
+      ]);
     });
-
-    setEditingValues((prev) => [
-      ...prev,
-      globalAttributesLocalState.selectedAttributes[0],
-    ]);
   };
 
   const { callback: handleSearch } = useDebounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value);
+      setIsAwaitingUpdate(true);
+      requestAnimationFrame(() => {
+        setSearchQuery(event.target.value);
+      });
     },
     300
   );
@@ -268,37 +283,40 @@ export const GlobalFacetPanelModalContent = ({
       return filteredRows.map(
         ({ displayName, attributes, isMergeGroup }, index) => {
           const onOrderChange = (status: FacetDisplayType) => {
+            setIsAwaitingUpdate(true);
             if (status === displayType) {
               return;
             }
 
-            if (displayType === 'included') {
-              dispatch({
-                type: 'AMEND_BOOSTED_ROW',
-                payload: {
-                  newStatus: status,
-                  displayName,
-                },
-              });
-            }
-            if (displayType === 'algoControl') {
-              dispatch({
-                type: 'AMEND_NONBOOSTEDEXCLUDED_ROW',
-                payload: {
-                  newStatus: status,
-                  displayName,
-                },
-              });
-            }
-            if (displayType === 'excluded') {
-              dispatch({
-                type: 'AMEND_EXCLUDED_ROW',
-                payload: {
-                  newStatus: status,
-                  displayName,
-                },
-              });
-            }
+            requestAnimationFrame(() => {
+              if (displayType === 'included') {
+                dispatch({
+                  type: 'AMEND_BOOSTED_ROW',
+                  payload: {
+                    newStatus: status,
+                    displayName,
+                  },
+                });
+              }
+              if (displayType === 'algoControl') {
+                dispatch({
+                  type: 'AMEND_NONBOOSTEDEXCLUDED_ROW',
+                  payload: {
+                    newStatus: status,
+                    displayName,
+                  },
+                });
+              }
+              if (displayType === 'excluded') {
+                dispatch({
+                  type: 'AMEND_EXCLUDED_ROW',
+                  payload: {
+                    newStatus: status,
+                    displayName,
+                  },
+                });
+              }
+            });
           };
 
           return (
@@ -473,20 +491,24 @@ export const GlobalFacetPanelModalContent = ({
                           aria-label="Select all facet attributes"
                           checked={hasSelectedAllAttributes}
                           onChange={() => {
+                            setIsAwaitingUpdate(true);
+
                             const selectedAttributes = hasSelectedAllAttributes
                               ? []
                               : attributeValues.map((val) => val.displayValue);
-
-                            dispatch({
-                              type: 'TOGGLE_SELECTED_ATTRIBUTES',
-                              payload: {
-                                attributes: selectedAttributes,
-                                allSelected:
-                                  selectedAttributes.length ===
-                                  attributeValues.length,
-                                allDeselected: selectedAttributes.length === 0,
-                                disableArrows: selectedAttributes.length > 0,
-                              },
+                            requestAnimationFrame(() => {
+                              dispatch({
+                                type: 'TOGGLE_SELECTED_ATTRIBUTES',
+                                payload: {
+                                  attributes: selectedAttributes,
+                                  allSelected:
+                                    selectedAttributes.length ===
+                                    attributeValues.length,
+                                  allDeselected:
+                                    selectedAttributes.length === 0,
+                                  disableArrows: selectedAttributes.length > 0,
+                                },
+                              });
                             });
                           }}
                         />
@@ -505,6 +527,8 @@ export const GlobalFacetPanelModalContent = ({
           {defaultValuesRows}
 
           {excludedValuesRows}
+
+          {isAwaitingUpdate && <Loader isInModal />}
 
           <FilteredResultsPanel filteredFacets={totalFilteredResults} />
         </BodyContainer>

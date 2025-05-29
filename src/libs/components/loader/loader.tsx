@@ -2,17 +2,28 @@ import styled from '@emotion/styled';
 
 import { Icon } from '../icon/icon';
 
-const Wrapper = styled.div`
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
+const Wrapper = styled.div<{ isInModal?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff70;
   z-index: 12;
-  top: 0;
-  left: 91px;
+
+  ${({ isInModal }) =>
+    isInModal
+      ? `
+      top: 50%;
+      position: absolute;
+      left: 0%;
+      width: 100%;
+  `
+      : `
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    position: fixed;
+    left: 91px;
+    background: #ffffff70;
+  `}
 `;
 
 const AnimatedLoader = styled.div`
@@ -30,8 +41,8 @@ const AnimatedLoader = styled.div`
   display: inline-flex;
 `;
 
-export const Loader = () => (
-  <Wrapper>
+export const Loader = ({ isInModal = false }: { isInModal?: boolean }) => (
+  <Wrapper isInModal={isInModal}>
     <AnimatedLoader aria-label="loading content">
       <Icon name="Loader" size={64} />
     </AnimatedLoader>

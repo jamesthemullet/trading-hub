@@ -154,7 +154,9 @@ export const FacetOrderDropdown = ({
               <DropdownOption
                 key={option.label}
                 hoverColour="#f5f5f5"
-                onClick={() => handleSelectedOption(option.index)}
+                onClick={() => {
+                  handleSelectedOption(option.index);
+                }}
                 aria-label={option.ariaLabel}
               >
                 <Image src={option.src} alt="" width={24} height={24} />

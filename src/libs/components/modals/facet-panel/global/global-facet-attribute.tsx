@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import type { Dispatch } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Text } from '@/libs/components';
+import { Loader, Text } from '@/libs/components';
 import {
   AttributeWrapper,
   Col,
@@ -45,6 +45,13 @@ export const GlobalFacetAttribute = ({
   const maxVisible = 4;
   const [isChecked, setIsChecked] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
+
+  useEffect(() => {
+    if (!isAwaitingUpdate) return;
+
+    setIsAwaitingUpdate(false);
+  }, [isAwaitingUpdate]);
 
   useEffect(() => {
     if (allSelected) {
@@ -63,14 +70,17 @@ export const GlobalFacetAttribute = ({
     : attributes.slice(0, maxVisible);
 
   const handleSelect = () => {
-    setIsChecked(!isChecked);
-    dispatch({
-      type: 'TOGGLE_SELECTED_ATTRIBUTES',
-      payload: {
-        attributes: attributes,
-        allSelected: false,
-        allDeselected: false,
-      },
+    setIsChecked((prev) => !prev);
+
+    requestAnimationFrame(() => {
+      dispatch({
+        type: 'TOGGLE_SELECTED_ATTRIBUTES',
+        payload: {
+          attributes: attributes,
+          allSelected: false,
+          allDeselected: false,
+        },
+      });
     });
   };
 
@@ -96,6 +106,7 @@ export const GlobalFacetAttribute = ({
                   {isMergeGroup && value !== displayName && (
                     <RemoveMergedFacet
                       onClick={() => {
+                        setIsAwaitingUpdate(true);
                         if (isChecked) {
                           dispatch({
                             type: 'TOGGLE_SELECTED_ATTRIBUTES',
@@ -106,9 +117,11 @@ export const GlobalFacetAttribute = ({
                             },
                           });
                         }
-                        handleRemoveFromMerge({
-                          valueToRemove: value,
-                          mergeDisplayName: displayName,
+                        requestAnimationFrame(() => {
+                          handleRemoveFromMerge({
+                            valueToRemove: value,
+                            mergeDisplayName: displayName,
+                          });
                         });
                       }}
                       aria-label={`Remove merged facet for ${value}`}
@@ -132,6 +145,7 @@ export const GlobalFacetAttribute = ({
             <Text>{attributes[0]}</Text>
           )}
         </AttributeWrapper>
+        {isAwaitingUpdate && <Loader isInModal />}
       </Col>
     </>
   );

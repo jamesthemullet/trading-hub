@@ -1,4 +1,4 @@
-import { type Dispatch, useState } from 'react';
+import { type Dispatch, useEffect, useState } from 'react';
 
 import type {
   MerchandisingCountryCode,
@@ -6,6 +6,7 @@ import type {
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
+import { Loader } from '@/libs/components/loader/loader';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 
 import { FlexColumnCol } from '../search-and-category/edit-facet-modal-content.styles';
@@ -43,6 +44,13 @@ export const GlobalEditableLabel = ({
   const allBoostedValues = boostedRows.map((row) => row.displayName);
   const allExcludedValues = excludedRows.map((row) => row.displayName);
   const { checkMergeNameUnique } = useCheckMergeNameUnique();
+  const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
+
+  useEffect(() => {
+    if (!isAwaitingUpdate) return;
+
+    setIsAwaitingUpdate(false);
+  }, [isAwaitingUpdate]);
 
   const handleError = (message: string) => {
     setError(message);
@@ -128,8 +136,13 @@ export const GlobalEditableLabel = ({
         displayValue={displayName}
         onCancel={() => handleError('')}
         onDisplayValueChange={(newValue) => {
-          handleDisplayNameChange(displayName, newValue);
-          setEditingValues((prev) => prev.filter((val) => val !== displayName));
+          setIsAwaitingUpdate(true);
+          requestAnimationFrame(() => {
+            handleDisplayNameChange(displayName, newValue);
+            setEditingValues((prev) =>
+              prev.filter((val) => val !== displayName)
+            );
+          });
         }}
         canCancelEdit
         showErrorState={!!error}
@@ -148,6 +161,7 @@ export const GlobalEditableLabel = ({
           }
         }}
       />
+      {isAwaitingUpdate && <Loader isInModal />}
     </FlexColumnCol>
   );
 };

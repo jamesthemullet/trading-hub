@@ -1,5 +1,6 @@
-import type { Dispatch } from 'react';
+import { type Dispatch, useEffect, useState } from 'react';
 
+import { Loader } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 
 import { OrderArrowsContainer } from '../search-and-category/edit-facet-modal-content.styles';
@@ -30,6 +31,14 @@ export const GlobalArrowButtons = ({
   disableArrows: boolean;
   dispatch: Dispatch<GlobalAttributeReducer>;
 }) => {
+  const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
+
+  useEffect(() => {
+    if (!isAwaitingUpdate) return;
+
+    setIsAwaitingUpdate(false);
+  }, [isAwaitingUpdate]);
+
   return (
     <OrderArrowsContainer>
       <ArrowButton
@@ -37,6 +46,7 @@ export const GlobalArrowButtons = ({
         aria-label={`Move ${displayName} row up`}
         isDisabled={index === 0 || !!searchQuery || disableArrows}
         onClick={() => {
+          setIsAwaitingUpdate(true);
           const rowsAboveIndex = boostedRows.findIndex((val) =>
             val.attributes.includes(attributes[0])
           );
@@ -51,15 +61,17 @@ export const GlobalArrowButtons = ({
             val.attributes.includes(attributes[0])
           );
 
-          dispatch({
-            type: 'CHANGE_ROW_ORDER',
-            payload: {
-              newOrder: updatedBoostedValues.toSpliced(
-                newPosition,
-                0,
-                rowToMove!
-              ),
-            },
+          requestAnimationFrame(() => {
+            dispatch({
+              type: 'CHANGE_ROW_ORDER',
+              payload: {
+                newOrder: updatedBoostedValues.toSpliced(
+                  newPosition,
+                  0,
+                  rowToMove!
+                ),
+              },
+            });
           });
         }}
       />
@@ -69,6 +81,7 @@ export const GlobalArrowButtons = ({
         aria-label={`Move ${displayName} row down`}
         isDisabled={index === rows.length - 1 || !!searchQuery || disableArrows}
         onClick={() => {
+          setIsAwaitingUpdate(true);
           const rowBelowIndex = boostedRows.findIndex((val) =>
             val.attributes.includes(attributes[0])
           );
@@ -83,18 +96,21 @@ export const GlobalArrowButtons = ({
             val.attributes.includes(attributes[0])
           );
 
-          dispatch({
-            type: 'CHANGE_ROW_ORDER',
-            payload: {
-              newOrder: updatedBoostedValues.toSpliced(
-                newPosition,
-                0,
-                rowToMove!
-              ),
-            },
+          requestAnimationFrame(() => {
+            dispatch({
+              type: 'CHANGE_ROW_ORDER',
+              payload: {
+                newOrder: updatedBoostedValues.toSpliced(
+                  newPosition,
+                  0,
+                  rowToMove!
+                ),
+              },
+            });
           });
         }}
       />
+      {isAwaitingUpdate && <Loader isInModal />}
     </OrderArrowsContainer>
   );
 };

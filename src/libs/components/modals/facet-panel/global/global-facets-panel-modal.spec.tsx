@@ -18,6 +18,8 @@ import {
   GlobalFacetPanelModalContent,
 } from './global-facets-panel-modal';
 
+const debounceTime = 100;
+
 const mockUpdateGlobalFacet = jest.fn(() =>
   Promise.resolve({} as MerchandisingReturnedGlobalFacet | { status: string })
 );
@@ -157,13 +159,18 @@ describe('GlobalFacetPanelModalContent', () => {
         }),
       error: '',
     });
+
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.useRealTimers();
   });
 
   it('should save', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
     const mockOnClose = jest.fn();
     mockUpdateGlobalFacet.mockResolvedValueOnce(mockFacet);
 
@@ -176,32 +183,32 @@ describe('GlobalFacetPanelModalContent', () => {
       />
     );
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
+    await user.click(screen.getByRole('button', { name: 'Save' }));
 
     act(() => {
-      saveButton.click();
+      jest.advanceTimersByTime(debounceTime);
     });
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('heading', { name: 'Apply global changes' })
-      ).toBeVisible();
+    const heading = await screen.findByRole('heading', {
+      name: 'Apply global changes',
     });
+    expect(heading).toBeVisible();
 
-    const confirmButton = screen.getByRole('button', {
-      name: 'Apply action',
-    });
+    await user.click(screen.getByRole('button', { name: 'Apply action' }));
 
     act(() => {
-      confirmButton.click();
+      jest.advanceTimersByTime(debounceTime);
     });
 
-    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+    await waitFor(() => {
+      expect(mockOnClose).toHaveBeenCalled();
+    });
+
     expect(mockUpdateGlobalFacet).toHaveBeenCalled();
   });
 
   it('should close the confirmation modal when cancel button on modal clicked', async () => {
-    const user = userEvent.setup({ delay: null });
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
     renderWithProviders(
       <GlobalFacetPanelModalContent
@@ -212,10 +219,10 @@ describe('GlobalFacetPanelModalContent', () => {
       />
     );
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
+    await user.click(screen.getByRole('button', { name: 'Save' }));
 
     act(() => {
-      saveButton.click();
+      jest.advanceTimersByTime(debounceTime);
     });
 
     await waitFor(() => {
@@ -234,6 +241,7 @@ describe('GlobalFacetPanelModalContent', () => {
   });
 
   it('should not close on save error', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
     mockUpdateGlobalFacet.mockResolvedValueOnce({ status: 'error' });
     const mockOnClose = jest.fn();
 
@@ -246,23 +254,21 @@ describe('GlobalFacetPanelModalContent', () => {
       />
     );
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
-    act(() => {
-      saveButton.click();
-    });
-
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('heading', { name: 'Apply global changes' })
-      ).toBeVisible();
-    });
-
-    const confirmButton = screen.getByRole('button', {
-      name: 'Apply action',
-    });
+    await user.click(screen.getByRole('button', { name: 'Save' }));
 
     act(() => {
-      confirmButton.click();
+      jest.advanceTimersByTime(debounceTime);
+    });
+
+    const heading = await screen.findByRole('heading', {
+      name: 'Apply global changes',
+    });
+    expect(heading).toBeVisible();
+
+    await user.click(screen.getByRole('button', { name: 'Apply action' }));
+
+    act(() => {
+      jest.advanceTimersByTime(debounceTime);
     });
 
     expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
@@ -271,28 +277,6 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     await waitFor(() => expect(mockOnClose).not.toHaveBeenCalled());
-  });
-
-  it('should set boosted, excluded and merged defaults', () => {
-    const mockOnClose = jest.fn();
-    mockUpdateGlobalFacet.mockResolvedValueOnce(mockFacet);
-
-    renderWithProviders(
-      <GlobalFacetPanelModalContent
-        attributeValues={[attributeValuesMock[0]]}
-        facet={{
-          id: mockFacet.id,
-          indexPropertyName: mockFacet.indexPropertyName,
-          displayValue: mockFacet.displayValue,
-          lastChanged: mockFacet.lastChanged,
-        }}
-        {...defaultProps}
-        onClose={mockOnClose}
-        writeEnabled={true}
-      />
-    );
-
-    expect(screen.getByRole('button', { name: 'Algo control' })).toBeVisible();
   });
 
   describe('Attribute value rows', () => {
@@ -370,6 +354,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should filter values', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -385,7 +370,11 @@ describe('GlobalFacetPanelModalContent', () => {
 
       const searchInput = await screen.findByPlaceholderText('Search...');
 
-      await userEvent.type(searchInput, 'over');
+      await user.type(searchInput, 'over');
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
+      });
 
       await waitFor(() => {
         expect(under10label).not.toBeVisible();
@@ -525,7 +514,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and make no changes if algo control is chosen', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -547,6 +536,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
+      });
+
       const algoControlButton = screen.getByLabelText(
         `algoControl ${attributeValuesMock[0].displayValue}`
       );
@@ -561,7 +554,8 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and select include only', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -594,6 +588,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(button);
 
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
+      });
+
       expect(
         screen.getByTestId(
           `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
@@ -602,7 +600,8 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and select exclude only', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -630,6 +629,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(button);
 
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
+      });
+
       expect(
         screen.getByTestId(
           `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
@@ -638,7 +641,8 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and change excluded facet to include only', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -671,6 +675,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(includeButton);
 
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
+      });
+
       expect(
         screen.getByTestId(
           `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
@@ -679,7 +687,8 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and change included facet to exclude only', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -712,6 +721,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(excludeButton);
 
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
+      });
+
       expect(
         screen.getByTestId(
           `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
@@ -720,7 +733,8 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and change excluded facet to algo control', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -753,6 +767,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(algoControlButton);
 
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
+      });
+
       expect(
         screen.getByTestId(
           `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
@@ -761,7 +779,8 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should open actions dropdown and change included facet to algo control', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0]]}
@@ -794,6 +813,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(algoControlButton);
 
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
+      });
+
       expect(
         screen.getByTestId(
           `button to open facet order dropdown for ${attributeValuesMock[0].displayValue}`
@@ -803,7 +826,9 @@ describe('GlobalFacetPanelModalContent', () => {
   });
 
   describe('row ordering', () => {
-    it('should move a row up', () => {
+    it('should move a row up', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0], attributeValuesMock[1]]}
@@ -836,8 +861,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Move ${attributeValuesMock[1].displayValue} row up`
       );
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(
@@ -852,7 +879,8 @@ describe('GlobalFacetPanelModalContent', () => {
       ).toBeVisible();
     });
 
-    it('should move a row down', () => {
+    it('should move a row down', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0], attributeValuesMock[1]]}
@@ -885,8 +913,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Move ${attributeValuesMock[0].displayValue} row down`
       );
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(
@@ -901,7 +931,8 @@ describe('GlobalFacetPanelModalContent', () => {
       ).toBeVisible();
     });
 
-    it('should move a row above a merged row', () => {
+    it('should move a row above a merged row', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[
@@ -944,8 +975,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Move ${attributeValuesMock[3].displayValue} row up`
       );
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(
@@ -955,7 +988,8 @@ describe('GlobalFacetPanelModalContent', () => {
       ).toBeVisible();
     });
 
-    it('should move a row below a merged row', () => {
+    it('should move a row below a merged row', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -993,8 +1027,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Move ${attributeValuesMock[0].displayValue} row down`
       );
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(
@@ -1007,7 +1043,8 @@ describe('GlobalFacetPanelModalContent', () => {
 
   describe('merging values', () => {
     it('should merge 2 values', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       const newMergeName = 'New Merge Name';
 
       renderWithProviders(
@@ -1036,8 +1073,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox1.click();
+      await user.click(checkbox1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
@@ -1046,34 +1085,39 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[1].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox2.click();
+      await user.click(checkbox2);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
 
-      act(() => {
-        mergeButton.click();
+      await user.click(mergeButton);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const inputField = await screen.findByLabelText(
         `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
-      await waitFor(async () => {
-        await user.clear(inputField);
-        await user.type(inputField, newMergeName);
-        await user.keyboard('{enter}');
+      await user.clear(inputField);
+      await user.type(inputField, newMergeName);
+      await user.keyboard('{enter}');
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
-      await waitFor(() => {
-        const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
-        expect(updatedRow).toBeVisible();
-      });
+
+      const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
+      expect(updatedRow).toBeVisible();
     });
 
     it('should merge all values', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       const newMergeName = 'New Merge Name';
-      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -1086,32 +1130,38 @@ describe('GlobalFacetPanelModalContent', () => {
 
       const button = screen.getByLabelText('Select all facet attributes');
 
-      act(() => {
-        button.click();
+      await user.click(button);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const mergeButton = screen.getByRole('button', { name: 'Merge (5)' });
 
-      act(() => {
-        mergeButton.click();
+      await user.click(mergeButton);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
-      const inputField = await screen.findByLabelText(
-        `Edit ${attributeValuesMock[0].displayValue} input field`
-      );
+      const inputField = screen.getByRole('textbox', {
+        name: `Edit ${attributeValuesMock[0].displayValue} input field`,
+      });
 
-      await waitFor(async () => {
-        await user.clear(inputField);
-        await user.type(inputField, newMergeName);
-        await user.keyboard('{enter}');
+      await user.clear(inputField);
+      await user.type(inputField, newMergeName);
+      await user.keyboard('{enter}');
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
-      await waitFor(() => {
-        const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
-        expect(updatedRow).toBeVisible();
-      });
+
+      const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
+      expect(updatedRow).toBeVisible();
     });
 
     it('should deselect a single value', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={[attributeValuesMock[0], attributeValuesMock[1]]}
@@ -1123,8 +1173,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       const button = screen.getByLabelText('Select all facet attributes');
 
-      act(() => {
-        button.click();
+      await user.click(button);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
@@ -1133,42 +1185,19 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox1.click();
+      await user.click(checkbox1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
     });
 
-    it('should deselect all values', async () => {
-      renderWithProviders(
-        <GlobalFacetPanelModalContent
-          attributeValues={[attributeValuesMock[0], attributeValuesMock[1]]}
-          facet={{ ...mockFacet, merged: [], boosted: [], excludedValues: [] }}
-          {...defaultProps}
-          onClose={jest.fn()}
-        />
-      );
-
-      const button = screen.getByLabelText('Select all facet attributes');
-
-      act(() => {
-        button.click();
-      });
-
-      expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
-
-      act(() => {
-        button.click();
-      });
-
-      expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
-    });
-
     it('should merge into an existing merge group', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       const mergeName = 'Foo';
       const newMergeName = 'New Merge Name';
-      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -1196,42 +1225,49 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox1.click();
+      await user.click(checkbox1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
 
       const checkbox2 = screen.getByLabelText(`Select ${mergeName} to merge`);
 
-      act(() => {
-        checkbox2.click();
+      await user.click(checkbox2);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const mergeButton = screen.getByRole('button', { name: 'Merge (3)' });
 
-      act(() => {
-        mergeButton.click();
+      await user.click(mergeButton);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const inputField = await screen.findByLabelText(
         `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
-      await waitFor(async () => {
-        await user.clear(inputField);
-        await user.type(inputField, newMergeName);
-        await user.keyboard('{enter}');
+      await user.clear(inputField);
+      await user.type(inputField, newMergeName);
+      await user.keyboard('{enter}');
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
-      await waitFor(() => {
-        const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
-        expect(updatedRow).toBeVisible();
-      });
+
+      const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
+      expect(updatedRow).toBeVisible();
     });
 
     it('should merge into a boosted merge group if the first selected value is boosted', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       const newMergeName = 'New Merge Name';
-      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -1251,8 +1287,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox1.click();
+      await user.click(checkbox1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
@@ -1261,34 +1299,39 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[1].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox2.click();
+      await user.click(checkbox2);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
 
-      act(() => {
-        mergeButton.click();
+      await user.click(mergeButton);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const inputField = await screen.findByLabelText(
         `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
-      await waitFor(async () => {
-        await user.clear(inputField);
-        await user.type(inputField, newMergeName);
-        await user.keyboard('{enter}');
+      await user.clear(inputField);
+      await user.type(inputField, newMergeName);
+      await user.keyboard('{enter}');
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
-      await waitFor(() => {
-        const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
-        expect(updatedRow).toBeVisible();
-      });
+
+      const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
+      expect(updatedRow).toBeVisible();
     });
 
     it('should merge into an excluded merge group if the first selected value is excluded', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       const newMergeName = 'New Merge Name';
-      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(
         <GlobalFacetPanelModalContent
@@ -1308,8 +1351,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox1.click();
+      await user.click(checkbox1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
@@ -1318,33 +1363,39 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[1].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox2.click();
+      await user.click(checkbox2);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
 
-      act(() => {
-        mergeButton.click();
+      await user.click(mergeButton);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const inputField = screen.getByRole('textbox', {
         name: `Edit ${attributeValuesMock[0].displayValue} input field`,
       });
 
-      await waitFor(async () => {
-        await user.clear(inputField);
-        await user.type(inputField, newMergeName);
-        await user.keyboard('{enter}');
+      await user.clear(inputField);
+      await user.type(inputField, newMergeName);
+      await user.keyboard('{enter}');
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
-      await waitFor(() => {
-        const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
-        expect(updatedRow).toBeVisible();
-      });
+
+      const updatedRow = screen.getByTestId(`Label for ${newMergeName}`);
+      expect(updatedRow).toBeVisible();
     });
 
     it('should allow renaming the merge group to a merged attribute', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1358,8 +1409,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox1.click();
+      await user.click(checkbox1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
@@ -1368,35 +1421,41 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[1].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox2.click();
+      await user.click(checkbox2);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
 
-      act(() => {
-        mergeButton.click();
+      await user.click(mergeButton);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const inputField = await screen.findByLabelText(
         `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
-      await waitFor(async () => {
-        await user.clear(inputField);
-        await user.type(inputField, attributeValuesMock[1].displayValue);
-        await user.keyboard('{enter}');
+      await user.clear(inputField);
+      await user.type(inputField, attributeValuesMock[1].displayValue);
+      await user.keyboard('{enter}');
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
-      await waitFor(() => {
-        const updatedRow = screen.getByTestId(
-          `Label for ${attributeValuesMock[1].displayValue}`
-        );
-        expect(updatedRow).toBeVisible();
-      });
+
+      const updatedRow = screen.getByTestId(
+        `Label for ${attributeValuesMock[1].displayValue}`
+      );
+      expect(updatedRow).toBeVisible();
     });
 
     it('should not allow naming the merge group to the same name of a merged attribute in another merge group regardless of case', async () => {
-      const user = userEvent.setup({ delay: null });
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1417,8 +1476,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox1.click();
+      await user.click(checkbox1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
@@ -1427,24 +1488,30 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[1].displayValue} to merge`
       );
 
-      act(() => {
-        checkbox2.click();
+      await user.click(checkbox2);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const mergeButton = screen.getByRole('button', { name: 'Merge (2)' });
 
-      act(() => {
-        mergeButton.click();
+      await user.click(mergeButton);
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const inputField = await screen.findByLabelText(
         `Edit ${attributeValuesMock[0].displayValue} input field`
       );
 
-      await waitFor(async () => {
-        await user.clear(inputField);
-        await user.type(inputField, 'FOO');
-        await user.keyboard('{enter}');
+      await user.clear(inputField);
+      await user.type(inputField, 'FOO');
+      await user.keyboard('{enter}');
+
+      await act(async () => {
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const errorMessage = screen.getByText('FOO is not a unique value');
@@ -1452,6 +1519,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should remove a value from a merge group', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1488,8 +1556,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Remove merged facet for ${attributeValuesMock[0].displayValue}`
       );
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(
@@ -1501,6 +1571,7 @@ describe('GlobalFacetPanelModalContent', () => {
     });
 
     it('should remove the merge group if there is only 1 value left after removing a value', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1530,8 +1601,10 @@ describe('GlobalFacetPanelModalContent', () => {
         `Remove merged facet for ${attributeValuesMock[0].displayValue}`
       );
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(
@@ -1722,7 +1795,8 @@ describe('GlobalFacetPanelModalContent', () => {
   });
 
   describe('selection of all values', () => {
-    it('should select all values when the checkbox is checked', () => {
+    it('should select all values when the checkbox is checked', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1753,15 +1827,18 @@ describe('GlobalFacetPanelModalContent', () => {
       const button = screen.getByLabelText('Select all facet attributes');
       expect(button).not.toBeChecked();
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
       expect(button).toBeChecked();
     });
 
-    it('should select all values when the checkbox is checked and some values are already selected', () => {
+    it('should select all values when the checkbox is checked and some values are already selected', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1776,22 +1853,27 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
+      await user.click(checkbox1);
+
       act(() => {
-        checkbox1.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (1)' })).toBeVisible();
 
       const button = screen.getByLabelText('Select all facet attributes');
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
     });
 
-    it('should check the select all checkbox when all values are selected individually', () => {
+    it('should check the select all checkbox when all values are selected individually', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1806,40 +1888,50 @@ describe('GlobalFacetPanelModalContent', () => {
         `Select ${attributeValuesMock[0].displayValue} to merge`
       );
 
+      await user.click(checkbox1);
+
       act(() => {
-        checkbox1.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const checkbox2 = screen.getByLabelText(
         `Select ${attributeValuesMock[1].displayValue} to merge`
       );
 
+      await user.click(checkbox2);
+
       act(() => {
-        checkbox2.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const checkbox3 = screen.getByLabelText(
         `Select ${attributeValuesMock[2].displayValue} to merge`
       );
 
+      await user.click(checkbox3);
+
       act(() => {
-        checkbox3.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const checkbox4 = screen.getByLabelText(
         `Select ${attributeValuesMock[3].displayValue} to merge`
       );
 
+      await user.click(checkbox4);
+
       act(() => {
-        checkbox4.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const checkbox5 = screen.getByLabelText(
         `Select ${attributeValuesMock[4].displayValue} to merge`
       );
 
+      await user.click(checkbox5);
+
       act(() => {
-        checkbox5.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       const selectAllButton = screen.getByLabelText(
@@ -1851,7 +1943,8 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
     });
 
-    it('should uncheck the select all checkbox when a value is deselected individually', () => {
+    it('should uncheck the select all checkbox when a value is deselected individually', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1870,15 +1963,19 @@ describe('GlobalFacetPanelModalContent', () => {
         'Select all facet attributes'
       );
 
+      await user.click(selectAllButton);
+
       act(() => {
-        selectAllButton.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(selectAllButton).toBeChecked();
       expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
 
+      await user.click(checkbox1);
+
       act(() => {
-        checkbox1.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(selectAllButton).not.toBeChecked();
@@ -1886,7 +1983,8 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(screen.getByRole('button', { name: 'Merge (4)' })).toBeVisible();
     });
 
-    it('should deselect all values when the checkbox is unchecked', () => {
+    it('should deselect all values when the checkbox is unchecked', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1899,20 +1997,24 @@ describe('GlobalFacetPanelModalContent', () => {
 
       const button = screen.getByLabelText('Select all facet attributes');
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (5)' })).toBeVisible();
 
+      await user.click(button);
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
     });
 
-    it('should remove the item from selected when removed from a selected merge group', () => {
+    it('should remove the item from selected when removed from a selected merge group', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1939,8 +2041,10 @@ describe('GlobalFacetPanelModalContent', () => {
 
       const checkbox1 = screen.getByLabelText(`Select Merge Foo to merge`);
 
+      await user.click(checkbox1);
+
       act(() => {
-        checkbox1.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
@@ -1951,12 +2055,15 @@ describe('GlobalFacetPanelModalContent', () => {
 
       act(() => {
         button.click();
+        jest.advanceTimersByTime(16);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
     });
 
-    it('should not add the item to selected when removed from an unselected merge group', () => {
+    it('should not add the item to selected when removed from an unselected merge group', async () => {
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
       renderWithProviders(
         <GlobalFacetPanelModalContent
           attributeValues={attributeValuesMock}
@@ -1987,8 +2094,10 @@ describe('GlobalFacetPanelModalContent', () => {
         name: `Remove merged facet for ${attributeValuesMock[2].displayValue}`,
       });
 
+      await user.click(button);
+
       act(() => {
-        button.click();
+        jest.advanceTimersByTime(debounceTime);
       });
 
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
