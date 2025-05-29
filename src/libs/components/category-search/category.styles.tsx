@@ -52,11 +52,6 @@ export const Categories = styled.div`
   padding: ${spacing(1)} ${spacing(1)} 0;
 `;
 
-export const CategoryTitle = styled(Text)`
-  margin-bottom: ${spacing(1)};
-  line-height: 1.6rem;
-`;
-
 export const SearchBox = styled.div`
   display: flex;
 `;

@@ -6,10 +6,10 @@ import { Modal } from '@mantine/core';
 import Image from 'next/image';
 
 import { Button } from '../../buttons/button/button';
+import { Count } from '../../count/count';
 import { SearchBox } from '../../search-box/search-box';
 import { ErrorMessage, Label } from '../../typography/typography.styles';
 import { checkForDuplicates } from '../../utils/check-for-duplicates';
-import { color } from '../../utils/constants';
 import { spacing } from '../../utils/spacing';
 import {
   ErrorContainer,
@@ -45,20 +45,6 @@ const SearchBoxContainer = styled.div`
   display: flex;
   gap: ${spacing(1)};
   align-items: center;
-`;
-
-const Count = styled.span`
-  background: ${color.darkHeritageGreen};
-  color: #fff;
-  margin-left: ${spacing(1)};
-  border-radius: 13px;
-  padding: 1px 6px;
-  font-weight: 600;
-  min-width: 26px;
-  height: 26px;
-  display: inline;
-  text-align: center;
-  font-size: 16px;
 `;
 
 const ViewAllButton = styled(Button)`

@@ -87,3 +87,89 @@ export const CentredError = styled.p`
   text-align: center;
   padding: ${spacing(4)};
 `;
+
+type TypographyProps = {
+  isStrong?: boolean;
+  withMargin?: boolean;
+  variant?:
+    | 'bodyLarge'
+    | 'bodyMedium'
+    | 'bodySmall'
+    | 'displayLarge'
+    | 'displayMedium'
+    | 'displaySmall'
+    | 'headlineLarge'
+    | 'headlineMedium'
+    | 'headlineSmall'
+    | 'labelLarge'
+    | 'labelMedium'
+    | 'labelSmall'
+    | 'titleLarge'
+    | 'titleMedium'
+    | 'titleSmall';
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'label';
+  children: React.ReactNode;
+};
+
+export const fontSizes = {
+  bodyLarge: '18px',
+  bodyMedium: '16px',
+  bodySmall: '14px',
+  displayLarge: '52px',
+  displayMedium: '46px',
+  displaySmall: '41px',
+  headlineLarge: '36px',
+  headlineMedium: '32px',
+  headlineSmall: '29px',
+  labelLarge: '13px',
+  labelMedium: '11px',
+  labelSmall: '10px',
+  titleLarge: '26px',
+  titleMedium: '23px',
+  titleSmall: '20px',
+};
+
+export const lineHeights = {
+  bodyLarge: '28px',
+  bodyMedium: '24px',
+  bodySmall: '20px',
+  displayLarge: '60px',
+  displayMedium: '54px',
+  displaySmall: '48px',
+  headlineLarge: '44px',
+  headlineMedium: '40px',
+  headlineSmall: '36px',
+  labelLarge: '20px',
+  labelMedium: '18px',
+  labelSmall: '16px',
+  titleLarge: '36px',
+  titleMedium: '32px',
+  titleSmall: '28px',
+};
+
+export const Typography = ({
+  as = 'p',
+  variant = 'bodyMedium',
+  children,
+  isStrong = false,
+  withMargin = false,
+}: TypographyProps) => {
+  const StyledTypography = styled.p<TypographyProps>`
+    ${commonStyles}
+    font-family: ${({ isStrong }) => (isStrong ? fonts.bold : fonts.regular)};
+    font-size: ${fontSizes[variant]};
+    line-height: ${lineHeights[variant]};
+    margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
+  `;
+
+  return (
+    <StyledTypography
+      variant={variant}
+      as={as}
+      isStrong={isStrong}
+      withMargin={withMargin}
+    >
+      {children}
+    </StyledTypography>
+  );
+};

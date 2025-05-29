@@ -15,6 +15,7 @@ import {
   Search,
   SearchKeywords,
   Text,
+  Typography,
 } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
@@ -36,7 +37,6 @@ import {
   CountryPreviewDropdown,
   CountrySelectorLabel,
   Duration,
-  LabelContainer,
   LowerHeading,
   NoAttributesBlock,
   OrderArrowsContainer,
@@ -385,7 +385,9 @@ export const Facets = ({
         <LowerHeading isStrong>Rule scope</LowerHeading>
         <ScopeWrapper>
           <div>
-            <CountrySelectorLabel>Influence</CountrySelectorLabel>
+            <Typography as="p" withMargin variant="labelMedium">
+              Influence
+            </Typography>
             <CountrySelectorDropdown
               onChange={(country) => {
                 dispatch({ type: 'changeCountry', payload: country });
@@ -421,7 +423,9 @@ export const Facets = ({
             />
           )}
           <Duration>
-            <LabelContainer>Duration</LabelContainer>
+            <Typography as="p" withMargin variant="labelMedium">
+              Duration
+            </Typography>
             <DateTimePickerModal
               showCalendarIcon={true}
               onUpdateDateTimeRange={(dateTime) => {

@@ -12,6 +12,7 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import Image from 'next/image';
 
 import { Button } from '../buttons/button/button';
+import { Count } from '../count/count';
 import {
   Arrow,
   ArrowContainer,
@@ -33,10 +34,10 @@ import {
   Header3,
   Label,
   Text,
+  Typography,
 } from '../typography/typography.styles';
 import { checkForDuplicates } from '../utils/check-for-duplicates';
 import {
-  CategoryTitle,
   Container,
   DropdownText,
   DropdownWrapper,
@@ -241,7 +242,12 @@ export const CategorySearch = ({
 
   return (
     <Wrapper>
-      <CategoryTitle>Category</CategoryTitle>
+      <Typography as="p" withMargin variant="labelMedium">
+        Category
+        <Count aria-label="number of categories">
+          {selectedCategories.length}
+        </Count>
+      </Typography>
       <DropdownWrapper>
         <DropdownWrapperNoBorder
           isDropdownOpen={isDropdownOpen}

@@ -24,6 +24,7 @@ import {
   spacing,
   Tabs,
   Text,
+  Typography,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
@@ -135,27 +136,6 @@ const KeywordSearchWrapper = styled.div`
 const InfluenceWrapper = styled.div`
   margin-right: ${spacing(2)};
   width: 220px;
-`;
-
-const InfluenceLabel = styled(Text)`
-  margin-bottom: ${spacing(1)};
-  line-height: 1.6rem;
-`;
-
-const Duration = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${spacing(1)};
-
-  label {
-    margin-top: ${spacing(0.5)};
-  }
-`;
-
-const LabelContainer = styled.label`
-  display: flex;
-  font-size: 14px;
-  align-items: center;
 `;
 
 const TextContent = styled.div`
@@ -479,7 +459,9 @@ export const Ruleset = ({
 
       <CategoryPanel>
         <InfluenceWrapper>
-          <InfluenceLabel>Influence</InfluenceLabel>
+          <Typography as="p" withMargin variant="labelMedium">
+            Influence
+          </Typography>
           <CountrySelectorDropdown
             onChange={(country) => {
               dispatch({ type: 'changeCountry', payload: country });
@@ -549,8 +531,10 @@ export const Ruleset = ({
         )}
 
         {rulesetType !== 'global' && (
-          <Duration>
-            <LabelContainer>Duration</LabelContainer>
+          <div>
+            <Typography as="p" withMargin variant="labelMedium">
+              Duration
+            </Typography>
             <DateTimePickerModal
               showCalendarIcon={true}
               onUpdateDateTimeRange={(dateTime: [Date | null, Date | null]) =>
@@ -567,7 +551,7 @@ export const Ruleset = ({
               ]}
               writeEnabled={writeEnabled}
             />
-          </Duration>
+          </div>
         )}
       </CategoryPanel>
       {merchandisingRules.pinnedProducts.length >

@@ -66,12 +66,6 @@ export const Duration = styled.div`
   }
 `;
 
-export const LabelContainer = styled.label`
-  display: flex;
-  font-size: 14px;
-  align-items: center;
-`;
-
 export const AttributesTable = styled.div`
   display: flex;
   flex-direction: column;
