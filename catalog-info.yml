@@ -6,8 +6,14 @@ metadata:
   description: 'A webapp for merchandising PLP and SRP pages'
   annotations:
     github.com/project-slug: DigitalInnovation/trading-hub
+    sonarqube.com/project-key: DigitalInnovation_trading-hub
+    newrelic.com/dashboard-guid: MjQ3OTYxNHxWSVp8REFTSEJPQVJEfGRhOjc1NjE2ODg
     backstage.io/techdocs-ref: url:https://github.com/DigitalInnovation/trading-hub/blob/main/README.md
     mnscorp.net/support-url: 'https://teams.microsoft.com/l/channel/19%3A7be4c038edd448038529c7cc8147aa7c%40thread.tacv2/%5BSquad%5D%20Merchandising%20Hub%20-%20Product?groupId=09be67e3-2208-45f2-9eaf-41d6c22743bb&tenantId=bd5c6713-7399-4b31-be79-78f2d078e543'
+  links:
+    - url: https://github.com/DigitalInnovation/trading-hub/blob/main/docs/run-book.md
+      title: Run book
+      icon: docs
 
 spec:
   type: website
