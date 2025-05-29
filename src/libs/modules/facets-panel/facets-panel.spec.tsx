@@ -400,11 +400,11 @@ describe('Facet Panel', () => {
 
       await waitFor(async () => {
         expect(
-          await screen.findByRole('heading', {
+          screen.queryAllByRole('heading', {
             level: 3,
             name: 'Facet value settings of: color',
-          })
-        ).not.toBeVisible();
+          }).length
+        ).toBe(0);
       });
       expect(refreshMock).toHaveBeenCalled();
     });

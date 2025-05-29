@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { createTheme, MantineProvider, Modal } from '@mantine/core';
+import { MantineProvider, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import {
@@ -18,8 +18,6 @@ import Image from 'next/image';
 import { Checkbox } from '../checkboxes/checkbox';
 import { color } from '../utils/constants';
 import { Content } from './date-picker.styles';
-
-const theme = createTheme({});
 
 const StyledModalBody = styled(Modal.Body)`
   background-color: #fbf6f4;
@@ -162,7 +160,7 @@ export const DateTimePickerModal = ({
         )}
       </StyledInputContainer>
 
-      <MantineProvider theme={theme}>
+      <MantineProvider>
         <Modal.Root
           opened={opened}
           onClose={close}

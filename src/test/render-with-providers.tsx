@@ -1,11 +1,21 @@
 import { render as testingLibraryRender } from '@testing-library/react';
-import { MantineProvider } from '@mantine/core';
+import { createTheme, MantineProvider, Portal } from '@mantine/core';
 import { SessionProvider } from 'next-auth/react';
 import {
   defaultFeatureFlags,
   FeatureFlagContext,
   FeatureFlags,
 } from '../libs/components/context/feature-flag';
+
+const theme = createTheme({
+  components: {
+    Portal: Portal.extend({
+      defaultProps: {
+        reuseTargetNode: false,
+      },
+    }),
+  },
+});
 
 export function renderWithProviders(
   ui: React.ReactNode,
@@ -34,7 +44,7 @@ export function renderWithProviders(
         <FeatureFlagContext.Provider
           value={{ ...defaultFeatureFlags, ...ctx.featureFlags }}
         >
-          <MantineProvider>{children}</MantineProvider>
+          <MantineProvider theme={theme}>{children}</MantineProvider>
         </FeatureFlagContext.Provider>
       </SessionProvider>
     ),

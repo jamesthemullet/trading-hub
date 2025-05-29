@@ -1,9 +1,12 @@
 import '@mantine/core/styles.css';
+import '@mantine/core/styles/baseline.css';
+import '@mantine/core/styles/default-css-variables.css';
+import '@mantine/core/styles/global.css';
 import '@mantine/dates/styles.css';
 
 import styled from '@emotion/styled';
 import { useCookies } from 'react-cookie';
-import { MantineProvider } from '@mantine/core';
+import { createTheme, MantineProvider, Portal } from '@mantine/core';
 
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
 import { LoginCheck } from '@/libs/components/login/login-check';
@@ -14,6 +17,16 @@ import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 
 import { Navigation } from '../libs/components/navigation/navigation';
+
+const theme = createTheme({
+  components: {
+    Portal: Portal.extend({
+      defaultProps: {
+        reuseTargetNode: false,
+      },
+    }),
+  },
+});
 
 const Layout = styled.div`
   display: flex;
@@ -59,7 +72,7 @@ export default function App({
         }}
       >
         <SessionProvider session={session}>
-          <MantineProvider>
+          <MantineProvider theme={theme}>
             <LoginCheck
               autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
             />

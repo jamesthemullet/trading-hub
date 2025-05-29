@@ -69,7 +69,8 @@ export const DatePickerSingle = ({
 }: {
   startTime: string;
   setStartTime: (time: string) => void;
-} & DatePickerProps<'default'>) => {
+  onChange: (val: Date | null) => void;
+} & Omit<DatePickerProps<'default'>, 'onChange'>) => {
   const startTimeRef = useRef<HTMLInputElement>(null);
 
   const isToggleEnabled = value === null;
@@ -81,9 +82,6 @@ export const DatePickerSingle = ({
           <Toggle
             checked={isToggleEnabled}
             onChange={() => {
-              if (!onChange) {
-                return;
-              }
               if (isToggleEnabled) {
                 onChange(new Date());
               } else {
@@ -112,9 +110,9 @@ export const DatePickerSingle = ({
           size="sm"
           numberOfColumns={2}
           type="default"
-          weekdayFormat={weekDayFormat}
+          weekdayFormat={(date) => weekDayFormat(new Date(date))}
           value={value}
-          onChange={onChange}
+          onChange={(val) => onChange(new Date(val))}
           minDate={new Date()}
           {...datePickerProps}
         />

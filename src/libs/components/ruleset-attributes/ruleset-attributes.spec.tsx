@@ -822,7 +822,7 @@ describe('RulesetAttributes', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getAllByText('Puma')[1]).not.toBeVisible();
+        expect(screen.getAllByText('Puma').length).toBe(1);
       });
 
       expect(mockDispatch).toHaveBeenCalledWith({
@@ -1120,7 +1120,7 @@ describe('RulesetAttributes', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getAllByText('Puma')[1]).not.toBeVisible();
+        expect(screen.getAllByText('Puma').length).toBe(1);
       });
 
       expect(mockDispatch).toHaveBeenCalledWith({

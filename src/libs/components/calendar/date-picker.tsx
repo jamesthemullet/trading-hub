@@ -85,18 +85,19 @@ const StyledDatePicker = styled(MantineDatePicker<'range'>)`
   }
 `;
 
-const weekDayFormat = (day: Date) => {
+const weekDayFormat = (day: string) => {
   return dayjs(day).format('ddd').charAt(0);
 };
 
 export const DatePicker = (
   props: {
+    onChange: (value: [Date | null, Date | null]) => void;
     isTimeEnabled?: boolean;
     startTime?: string;
     endTime?: string;
     setStartTime?: (time: string) => void;
     setEndTime?: (time: string) => void;
-  } & DatePickerProps<'range'>
+  } & Omit<DatePickerProps<'range'>, 'onChange'>
 ) => {
   const {
     value,
@@ -137,9 +138,6 @@ export const DatePicker = (
           <Toggle
             checked={isToggleEnabled}
             onChange={() => {
-              if (!onChange) {
-                return;
-              }
               if (isToggleEnabled) {
                 onChange([new Date(), null]);
               } else {
@@ -171,7 +169,9 @@ export const DatePicker = (
           type="range"
           weekdayFormat={weekDayFormat}
           value={value}
-          onChange={onChange}
+          onChange={(val) =>
+            onChange([new Date(val[0]), val[1] ? new Date(val[1]) : null])
+          }
           minDate={new Date()}
           {...datePickerProps}
         />

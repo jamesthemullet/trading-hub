@@ -9,12 +9,17 @@ import { DatePickerSingle } from './date-picker-single';
 describe('date-picker', () => {
   afterEach(() => {
     jest.clearAllMocks();
+    jest.useRealTimers();
   });
 
   it('should render', () => {
     render(
       <MantineProvider>
-        <DatePickerSingle startTime="00:00" setStartTime={jest.fn()} />
+        <DatePickerSingle
+          startTime="00:00"
+          setStartTime={jest.fn()}
+          onChange={jest.fn()}
+        />
       </MantineProvider>
     );
     screen.getByTitle('Toggle').click();
@@ -40,6 +45,8 @@ describe('date-picker', () => {
   });
 
   it('should call onChange with value', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2021-01-01'));
+
     const mockOnChange = jest.fn();
     render(
       <MantineProvider>
@@ -55,17 +62,22 @@ describe('date-picker', () => {
     screen.getByTitle('Toggle').click();
     expect(mockOnChange).toHaveBeenCalled();
     expect(mockOnChange).toHaveBeenCalledTimes(2);
+
+    screen.getByLabelText('2 January 2021').click();
+    expect(mockOnChange).toHaveBeenCalledWith(dayjs('2021-01-02').toDate());
   });
 
   it('should be able to select start time', async () => {
     const user = userEvent.setup();
     const mockSetStartTime = jest.fn();
+    const mockOnChange = jest.fn();
     render(
       <MantineProvider>
         <DatePickerSingle
           value={dayjs('2021-01-01').toDate()}
           startTime="00:00"
           setStartTime={mockSetStartTime}
+          onChange={mockOnChange}
         />
       </MantineProvider>
     );
@@ -80,12 +92,14 @@ describe('date-picker', () => {
     const user = userEvent.setup();
     const mockSetStartTime = jest.fn();
     const mockTimeSelect = jest.fn();
+    const mockOnChange = jest.fn();
     render(
       <MantineProvider>
         <DatePickerSingle
           value={dayjs('2021-01-01').toDate()}
           startTime="00:00"
           setStartTime={mockSetStartTime}
+          onChange={mockOnChange}
         />
       </MantineProvider>
     );

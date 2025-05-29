@@ -1,7 +1,10 @@
 /* istanbul ignore file */
-
 import '@mantine/core/styles.css';
+import '@mantine/core/styles/baseline.css';
+import '@mantine/core/styles/default-css-variables.css';
+import '@mantine/core/styles/global.css';
 import '@mantine/dates/styles.css';
+
 import styled from '@emotion/styled';
 import { ArrowButton } from '../../libs/components/buttons/button/arrow-button';
 import { SearchKeywords } from '@/libs/components/keywords/search-keywords/search-keywords';

@@ -14,7 +14,7 @@ describe('date-picker', () => {
   it('should render', () => {
     render(
       <MantineProvider>
-        <DatePicker />
+        <DatePicker onChange={jest.fn()} />
       </MantineProvider>
     );
     screen.getByTitle('Toggle').click();
@@ -54,6 +54,7 @@ describe('date-picker', () => {
     const user = userEvent.setup();
     const mockSetStartTime = jest.fn();
     const mockSetEndTime = jest.fn();
+    const mockOnChange = jest.fn();
     render(
       <MantineProvider>
         <DatePicker
@@ -63,6 +64,7 @@ describe('date-picker', () => {
           endTime="00:00"
           setStartTime={mockSetStartTime}
           setEndTime={mockSetEndTime}
+          onChange={mockOnChange}
         />
       </MantineProvider>
     );
@@ -81,6 +83,7 @@ describe('date-picker', () => {
     const user = userEvent.setup();
     const mockSetStartTime = jest.fn();
     const mockSetEndTime = jest.fn();
+    const mockOnChange = jest.fn();
     render(
       <MantineProvider>
         <DatePicker
@@ -90,6 +93,7 @@ describe('date-picker', () => {
           endTime="00:00"
           setStartTime={mockSetStartTime}
           setEndTime={mockSetEndTime}
+          onChange={mockOnChange}
         />
       </MantineProvider>
     );
@@ -104,6 +108,7 @@ describe('date-picker', () => {
     const user = userEvent.setup();
     const mockSetStartTime = jest.fn();
     const mockSetEndTime = jest.fn();
+    const mockOnChange = jest.fn();
     render(
       <MantineProvider>
         <DatePicker
@@ -113,6 +118,7 @@ describe('date-picker', () => {
           endTime="00:00"
           setStartTime={mockSetStartTime}
           setEndTime={mockSetEndTime}
+          onChange={mockOnChange}
         />
       </MantineProvider>
     );
