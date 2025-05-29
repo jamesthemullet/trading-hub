@@ -8,7 +8,7 @@ Following permissions are required:
 
 # Azure oAuth app registration permission
 
-When new permissions needs to be added to the app registration one needs to rise request in [https://mnscorp-rod-myit.onbmc.com/](https://mnscorp-rod-myit.onbmc.com/)
+When new permissions needs to be added to the app registration one needs to raise a request in [https://mnscorp-rod-myit.onbmc.com/](https://mnscorp-rod-myit.onbmc.com/)
 
 1. Click on Request Something
 2. Fill in all the details, like in this example:
