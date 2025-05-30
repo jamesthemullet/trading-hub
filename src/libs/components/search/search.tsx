@@ -58,7 +58,6 @@ export const Search = ({
           autoCapitalize: 'off',
           autoCorrect: 'off',
           value,
-          size: 32,
         }}
       />
     </SearchBoxContainer>

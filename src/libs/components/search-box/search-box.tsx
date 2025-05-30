@@ -38,7 +38,7 @@ const StyledInput = styled(Input)<{
   ${mediaQuery('md')} {
     background-color: #f5f5f5;
     border-color: transparent;
-    height: ${sizing(5.5)};
+    height: ${sizing(7)};
   }
 
   ${({ iconPosition }) =>
