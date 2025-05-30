@@ -93,7 +93,15 @@ describe('Search Facet Management New', () => {
 
     renderWithProviders(<NewFacetRuleset />);
 
-    const keywordInput = await screen.findByLabelText('Add keyword');
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    const keywordInput = await screen.findByLabelText('Add keyword to list');
     await user.type(keywordInput, 'red dress{Enter}');
 
     await waitFor(() => {
@@ -172,7 +180,14 @@ describe('Search Facet Management New', () => {
 
       renderWithProviders(<NewFacetRuleset />);
 
-      const keywordInput = await screen.findByLabelText('Add keyword');
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+      const keywordInput = await screen.findByLabelText('Add keyword to list');
       await user.type(keywordInput, 'red dress{Enter}');
 
       expect(screen.getByText('Duration')).toBeVisible();

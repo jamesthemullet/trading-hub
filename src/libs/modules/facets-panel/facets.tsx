@@ -35,7 +35,6 @@ import {
   AttributesTable,
   Col,
   CountryPreviewDropdown,
-  CountrySelectorLabel,
   Duration,
   LowerHeading,
   NoAttributesBlock,
@@ -194,7 +193,6 @@ export const Facets = ({
 
   const onAddSearchTerm = (term: string) => {
     setSelectedSearchTerms([...selectedSearchTerms, term]);
-    setPreviewValue(term);
   };
 
   const handleSave = () => {
@@ -446,7 +444,9 @@ export const Facets = ({
 
           {facetType === 'search' && ruleset.countryCode === 'UK_IE' && (
             <div>
-              <CountrySelectorLabel>Preview Country</CountrySelectorLabel>
+              <Typography as="p" withMargin variant="labelMedium">
+                Preview Country
+              </Typography>
               <CountryPreviewDropdown
                 label={`${selectedPreviewCountryCode} view`}
                 isOpen={isCountryDropdownOpen}

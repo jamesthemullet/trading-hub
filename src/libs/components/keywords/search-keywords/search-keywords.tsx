@@ -1,14 +1,29 @@
 import styled from '@emotion/styled';
-import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
+
+import { useOnOutsideClick } from '@/libs/hooks';
 
 import Image from 'next/image';
 
 import { Button } from '../../buttons/button/button';
 import { Count } from '../../count/count';
+import {
+  Arrow,
+  ArrowContainer,
+  DropdownButton,
+  DropdownContainer,
+  DropdownHeading,
+  DropdownOption,
+  DropdownWrapperNoBorder,
+} from '../../dropdowns/dropdown.styles';
 import { SearchBox } from '../../search-box/search-box';
-import { ErrorMessage, Label } from '../../typography/typography.styles';
+import {
+  ErrorMessage,
+  Label,
+  Text,
+  Typography,
+} from '../../typography/typography.styles';
 import { checkForDuplicates } from '../../utils/check-for-duplicates';
 import { spacing } from '../../utils/spacing';
 import {
@@ -27,19 +42,8 @@ import {
   StyledSearchContainer,
 } from './modal.styles';
 
-const MAX_CHARS = 50;
-
-const SearchKeywordsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${spacing(1)};
-`;
-
-const LabelContainer = styled.div`
-  display: flex;
-  font-size: 14px;
-  align-items: baseline;
-`;
+const DEFAULT_DROPDOWN_WIDTH = 256;
+const ACTIVE_DROPDOWN_WIDTH = 320;
 
 const SearchBoxContainer = styled.div`
   display: flex;
@@ -47,44 +51,10 @@ const SearchBoxContainer = styled.div`
   align-items: center;
 `;
 
-const ViewAllButton = styled(Button)`
-  min-width: 110px;
-  margin-left: ${spacing(1)};
-`;
-
-const InputBoxWrapper = styled.div`
-  background-color: #f5f5f5;
-  border-bottom: solid 1px #cacaca;
-  height: 55px;
-  width: 470px;
-  display: flex;
-  align-items: center;
-  padding: 0 ${spacing(1)};
-
-  & > * {
-    flex-shrink: 0;
-  }
-`;
-
-const StyledForm = styled.form`
-  flex-grow: 1;
-  width: 0;
-  min-width: 0;
-  overflow: hidden;
-`;
-
-const KeyWordInput = styled.input`
-  flex: 1 1 auto;
-  display: inline-block;
-  background: none;
-  border: none;
-  height: 40px;
-  width: 100%;
+const DropdownText = styled(Text)`
+  white-space: nowrap;
   text-overflow: ellipsis;
-
-  &:focus {
-    outline: none;
-  }
+  overflow: hidden;
 `;
 
 export type Props = {
@@ -93,27 +63,8 @@ export type Props = {
   searchTerms: string[];
   title: string;
   writeEnabled: boolean;
-  previewSearchTerm?: string | undefined;
-  selectPreviewSearchTerm?: (keyword: string | undefined) => void;
-};
-
-const calculateWordsToDisplay = (searchTerms: string[], MAX_CHARS: number) => {
-  const result = searchTerms
-    .map((term, index) => ({ term, index }))
-    .find(({ term }, i, arr) => {
-      const charCount = arr
-        .slice(0, i)
-        .reduce((acc, { term }) => acc + term.length + 10, 0);
-      return charCount + term.length + 2 > MAX_CHARS;
-    });
-
-  const wordsToDisplay = result ? result.index : searchTerms.length;
-
-  return {
-    wordsToDisplay,
-    charCount: wordsToDisplay * 2,
-    showViewAllButton: searchTerms.length > wordsToDisplay,
-  };
+  previewSearchTerm: string | undefined;
+  selectPreviewSearchTerm: (keyword: string | undefined) => void;
 };
 
 export const SearchKeywords = ({
@@ -126,45 +77,51 @@ export const SearchKeywords = ({
   writeEnabled,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
-  const [inputText, setInputText] = useState('');
 
   const [inputValue, setInputValue] = useState('');
   const [duplicationError, setDuplicationError] = useState('');
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownWrapperRef = useOnOutsideClick<HTMLDivElement>({
+    handler: () => setIsDropdownOpen(false),
+  });
 
   const [filterValue, setFilterValue] = useState('');
   const [filteredKeywords, setFilteredKeywords] =
     useState<string[]>(searchTerms);
   const [unfinishedKeyword, setUnfinishedKeyword] = useState<boolean>(false);
 
-  const openModal = () => {
-    setShowModal(true);
-  };
-
   const onClose = () => {
     setShowModal(false);
+    setDuplicationError('');
   };
 
-  const onAddKeyword = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape' && isDropdownOpen) {
+      e.preventDefault();
+      setIsDropdownOpen(false);
+    }
+  };
+
+  const onAddKeyword = () => {
     const hasDuplicates = checkForDuplicates(
       [...searchTerms],
-      inputText,
+      inputValue,
       'keyword'
     );
 
     if (hasDuplicates) {
       setDuplicationError(hasDuplicates);
     } else {
-      addSearchTerm(inputText);
-      setInputText('');
+      addSearchTerm(inputValue);
+      setInputValue('');
       setDuplicationError('');
+
+      if (!previewSearchTerm) {
+        selectPreviewSearchTerm(inputValue);
+      }
     }
   };
-
-  const { wordsToDisplay, showViewAllButton } = calculateWordsToDisplay(
-    searchTerms,
-    MAX_CHARS
-  );
 
   useEffect(() => {
     setFilteredKeywords(
@@ -194,88 +151,71 @@ export const SearchKeywords = ({
 
   return (
     <>
-      <SearchKeywordsContainer>
-        <LabelContainer>
-          <label htmlFor="searchId">{title}</label>
+      <div>
+        <Typography as="p" withMargin variant="labelMedium">
+          {title}
           <Count aria-label="number of keywords">{searchTerms.length}</Count>
-        </LabelContainer>
+        </Typography>
         <SearchBoxContainer>
-          <InputBoxWrapper>
-            {sortedSearchTerms.map((term, index) => {
-              const isSelectedSearchTerm =
-                previewSearchTerm === term && !!selectPreviewSearchTerm;
-              return index < wordsToDisplay ? (
-                <KeyWordPill
-                  key={`${term}-${index}`}
-                  isSelected={isSelectedSearchTerm}
-                  as="p"
-                >
-                  {isSelectedSearchTerm || !selectPreviewSearchTerm ? (
-                    term
-                  ) : (
-                    <SelectKeywordPill
-                      onClick={() => selectPreviewSearchTerm(term)}
-                    >
-                      {term}
-                    </SelectKeywordPill>
-                  )}
-                  {writeEnabled && (
-                    <RemoveKeyWordPill
-                      onClick={() => {
-                        removeSearchTerm(term);
-
-                        if (isSelectedSearchTerm) {
-                          selectPreviewSearchTerm(
-                            additionalSearchTerms.length
-                              ? additionalSearchTerms[0]
-                              : undefined
-                          );
-                        }
-                      }}
-                      aria-label={`Remove keyword: ${term}`}
-                    >
-                      <Image
-                        alt=""
-                        src={`/trading-hub/asset/icon-remove-${isSelectedSearchTerm ? 'selected-' : ''}chip.svg`}
-                        width={16}
-                        height={16}
-                      />
-                    </RemoveKeyWordPill>
-                  )}
-                </KeyWordPill>
-              ) : null;
-            })}
-            {writeEnabled && (
-              <StyledForm onSubmit={onAddKeyword} style={{ display: 'inline' }}>
-                <KeyWordInput
-                  aria-label="Add keyword"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value.toLowerCase())}
-                  onBlur={() => {
-                    if (inputText) {
-                      addSearchTerm(inputText);
-                      setInputText('');
-                    }
-                  }}
-                />
-              </StyledForm>
-            )}
-          </InputBoxWrapper>
-          {showViewAllButton && (
-            <ViewAllButton
-              onClick={() => openModal()}
-              theme="secondary"
-              isInline={true}
+          <DropdownWrapperNoBorder
+            isDropdownOpen={isDropdownOpen}
+            width={
+              previewSearchTerm ? DEFAULT_DROPDOWN_WIDTH : ACTIVE_DROPDOWN_WIDTH
+            }
+            ref={dropdownWrapperRef}
+            onKeyDown={handleOnKeyDown}
+          >
+            <DropdownButton
+              isDropdownOpen={isDropdownOpen}
+              onClick={() =>
+                sortedSearchTerms.length > 1
+                  ? setIsDropdownOpen(!isDropdownOpen)
+                  : setShowModal(true)
+              }
+              aria-haspopup="listbox"
+              aria-expanded={isDropdownOpen}
+              aria-label="select keyword"
+              disabled={!previewSearchTerm}
             >
-              View all
-            </ViewAllButton>
-          )}
-        </SearchBoxContainer>
+              <DropdownHeading>
+                {previewSearchTerm ? (
+                  <>{previewSearchTerm}</>
+                ) : (
+                  'Add categories to display here'
+                )}
+              </DropdownHeading>
+              <ArrowContainer borderLeft={false}>
+                <Arrow isDropdownOpen={isDropdownOpen} />
+              </ArrowContainer>
+            </DropdownButton>
 
-        {duplicationError && (
-          <ErrorMessage style={{ padding: 0 }}>{duplicationError}</ErrorMessage>
-        )}
-      </SearchKeywordsContainer>
+            <DropdownContainer isDropdownOpen={isDropdownOpen}>
+              {additionalSearchTerms.map((searchTerm) => (
+                <DropdownOption
+                  key={`search-term-${searchTerm}`}
+                  hoverColour="#f5f5f5"
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    selectPreviewSearchTerm(searchTerm);
+                  }}
+                  align="left"
+                >
+                  <DropdownText>{searchTerm}</DropdownText>
+                </DropdownOption>
+              ))}
+            </DropdownContainer>
+          </DropdownWrapperNoBorder>
+
+          <Button
+            theme="filled"
+            isInline
+            onClick={() => setShowModal(true)}
+            isDisabled={!writeEnabled}
+          >
+            Edit
+          </Button>
+        </SearchBoxContainer>
+      </div>
 
       <Modal.Root
         opened={showModal}
@@ -316,7 +256,7 @@ export const SearchKeywords = ({
                 </StyledSearchContainer>
               )}
               {previewSearchTerm && (
-                <ModalSelectedKeyword aria-label="Preview category">
+                <ModalSelectedKeyword aria-label="Preview keyword">
                   <Label as="h4">Selected: </Label>
                   <KeyWordPill isSelected as="p">
                     {previewSearchTerm}
@@ -326,16 +266,15 @@ export const SearchKeywords = ({
                           // istanbul ignore next
                           () => {
                             removeSearchTerm(previewSearchTerm);
-                            if (selectPreviewSearchTerm) {
-                              selectPreviewSearchTerm(
-                                additionalSearchTerms.length
-                                  ? additionalSearchTerms[0]
-                                  : undefined
-                              );
-                            }
+
+                            selectPreviewSearchTerm(
+                              additionalSearchTerms.length
+                                ? additionalSearchTerms[0]
+                                : undefined
+                            );
                           }
                         }
-                        aria-label={`Remove keyword from modal: ${previewSearchTerm}`}
+                        aria-label={`Remove keyword: ${previewSearchTerm}`}
                       >
                         <Image
                           alt=""
@@ -351,15 +290,11 @@ export const SearchKeywords = ({
               <KeywordList unfinishedKeyword={unfinishedKeyword}>
                 {filteredKeywords.map((keyword, index) => (
                   <KeyWordPill key={`${keyword}-${index}`} isSelected={false}>
-                    {selectPreviewSearchTerm ? (
-                      <SelectKeywordPill
-                        onClick={() => selectPreviewSearchTerm(keyword)}
-                      >
-                        {keyword}
-                      </SelectKeywordPill>
-                    ) : (
-                      keyword
-                    )}
+                    <SelectKeywordPill
+                      onClick={() => selectPreviewSearchTerm(keyword)}
+                    >
+                      {keyword}
+                    </SelectKeywordPill>
                     {writeEnabled && (
                       <RemoveKeyWordPill
                         onClick={() => removeSearchTerm(keyword)}
@@ -379,14 +314,14 @@ export const SearchKeywords = ({
                   <StyledInput
                     type="text"
                     value={inputValue}
+                    placeholder="Add new keyword"
                     onChange={(event) =>
                       setInputValue(event.target.value.toLowerCase())
                     }
                     onKeyDown={(event) => {
                       setUnfinishedKeyword(false);
                       if (event.key === 'Enter') {
-                        addSearchTerm(inputValue);
-                        setInputValue('');
+                        onAddKeyword();
                       }
                     }}
                     aria-label="Add keyword to list"

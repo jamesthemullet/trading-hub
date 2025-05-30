@@ -56,6 +56,9 @@ import {
 
 const SEARCH_DEBOUNCE_WAIT = 500;
 
+const DEFAULT_DROPDOWN_WIDTH = 256;
+const ACTIVE_DROPDOWN_WIDTH = 320;
+
 type Props = {
   onClearSelection: (category: string) => void;
   onSelectCategory: (category: {
@@ -251,7 +254,9 @@ export const CategorySearch = ({
       <DropdownWrapper>
         <DropdownWrapperNoBorder
           isDropdownOpen={isDropdownOpen}
-          width={previewCategory ? 256 : 320}
+          width={
+            previewCategory ? DEFAULT_DROPDOWN_WIDTH : ACTIVE_DROPDOWN_WIDTH
+          }
           ref={dropdownWrapperRef}
           onKeyDown={handleOnKeyDown}
         >

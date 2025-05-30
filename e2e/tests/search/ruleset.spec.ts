@@ -85,10 +85,12 @@ test.describe('Keyword search', () => {
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
 
-    await page.getByLabel('Add keyword').fill('joggers');
-    await page.getByLabel('Add keyword').press('Enter');
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
 
-    await page.waitForLoadState('networkidle');
+    await page.getByLabel('Add keyword to list').fill('joggers');
+    await page.getByLabel('Add keyword to list').press('Enter');
+
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await page.getByRole('button', { name: 'Create' }).click();
 

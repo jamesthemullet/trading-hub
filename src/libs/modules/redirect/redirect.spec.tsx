@@ -8,25 +8,36 @@ import { Redirect } from './redirect';
 
 describe('Redirect', () => {
   it('creates a redirect', async () => {
-    const mockCreate = jest.fn();
     const user = userEvent.setup({ delay: null });
+    const mockCreate = jest.fn();
 
     renderWithProviders(
       <Redirect
-        writeEnabled
+        writeEnabled={true}
         onCancel={() => jest.fn()}
         onCreate={mockCreate}
         title="Add Keyword Redirect rule"
       />
     );
 
-    act(() => {
-      user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+    await user.click(screen.getByRole('button', { name: 'Edit' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
     });
+
+    await waitFor(() => {
+      user.type(
+        screen.getByLabelText('Add keyword to list'),
+        'new keyword{enter}'
+      );
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     const redirectUrl = await screen.findByPlaceholderText('c/');
 
-    await act(async () => {
+    await waitFor(() => {
       user.type(redirectUrl, 'c/redirect-url');
     });
 
@@ -34,23 +45,19 @@ describe('Redirect', () => {
       'Enter redirect title'
     );
 
-    await act(async () => {
+    await waitFor(() => {
       user.type(redirectTitle, 'title');
     });
 
     const toggle = await screen.findAllByLabelText('Redirect Phrase(s)');
-    await act(async () => {
-      user.click(toggle[0]);
-    });
-
-    expect(
-      screen.getByRole('heading', { name: 'Add Keyword Redirect rule' })
-    ).toBeVisible();
+    user.click(toggle[0]);
 
     const saveButton = await screen.findByRole('button', { name: 'Create' });
 
-    act(() => {
-      saveButton.click();
+    expect(saveButton).toBeEnabled();
+
+    await waitFor(() => {
+      user.click(saveButton);
     });
 
     expect(mockCreate).toHaveBeenCalledWith({
@@ -78,8 +85,23 @@ describe('Redirect', () => {
       />
     );
 
-    act(() => {
-      user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    await waitFor(() => {
+      user.type(
+        screen.getByLabelText('Add keyword to list'),
+        'new keyword{enter}'
+      );
+    });
+
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Close' }));
     });
 
     const redirectUrl = await screen.findByPlaceholderText('c/');
@@ -149,8 +171,19 @@ describe('Redirect', () => {
       />
     );
 
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
     act(() => {
-      user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+      user.type(
+        screen.getByLabelText('Add keyword to list'),
+        'new keyword{enter}'
+      );
     });
 
     await waitFor(async () => {

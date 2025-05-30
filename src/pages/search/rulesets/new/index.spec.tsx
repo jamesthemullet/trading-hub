@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -91,7 +91,18 @@ describe('Index', () => {
     });
     renderWithProviders(<RuleSetCreate />);
 
-    await user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    await user.type(
+      screen.getByLabelText('Add keyword to list'),
+      'new keyword{enter}'
+    );
 
     const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);
     act(() => {

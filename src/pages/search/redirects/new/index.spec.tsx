@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -119,15 +119,34 @@ describe('Create new redirect', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(<NewRedirect />);
-
-    const redirectUrl = await screen.findByPlaceholderText('c/');
-
-    await act(async () => {
-      user.type(redirectUrl, 'c/redirect-url');
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
     });
 
     act(() => {
-      user.type(screen.getByLabelText('Add keyword'), 'new keyword{enter}');
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    const inputBox = screen.getByLabelText('Add keyword to list');
+
+    act(() => {
+      user.type(inputBox, 'new keyword{enter}');
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Remove keyword: new keyword' })
+      ).toBeVisible();
+    });
+
+    const closeButton = screen.getByRole('button', { name: 'Close' });
+
+    act(() => {
+      user.click(closeButton);
     });
 
     const redirectTitle = await screen.findByPlaceholderText(
@@ -136,6 +155,12 @@ describe('Create new redirect', () => {
 
     await act(async () => {
       user.type(redirectTitle, 'title');
+    });
+
+    const redirectUrl = await screen.findByPlaceholderText('c/');
+
+    act(() => {
+      user.type(redirectUrl, 'c/redirect-url');
     });
 
     const createButton = await screen.findByRole('button', { name: 'Create' });

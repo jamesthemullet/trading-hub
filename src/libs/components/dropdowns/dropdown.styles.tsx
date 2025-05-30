@@ -68,16 +68,18 @@ export const FlagWrapper = styled.span`
   padding-top: ${spacing(0.5)};
 `;
 
-export const DropdownHeading = styled(Text)`
+export const FlagHeading = styled.span`
   display: flex;
   align-items: center;
+`;
+
+export const DropdownHeading = styled(Text)`
   padding-left: ${spacing(2)};
   text-align: left;
-
-  p {
-    display: flex;
-    align-items: center;
-  }
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
 `;
 
 export const ArrowContainer = styled.div<{ borderLeft?: boolean }>`

@@ -59,7 +59,6 @@ export const ScopeWrapper = styled.div`
 export const Duration = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacing(1)};
 
   label {
     margin-top: ${spacing(0.5)};

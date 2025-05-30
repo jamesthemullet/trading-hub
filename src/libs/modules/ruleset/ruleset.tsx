@@ -49,10 +49,7 @@ const CategoryPanel = styled.div`
   padding: ${spacing(1)};
   display: flex;
   flex-wrap: wrap;
-`;
-
-const RulesetIdentifier = styled.div`
-  margin-right: ${spacing(1)};
+  gap: ${spacing(2)};
 `;
 
 const MainContainerPanel = styled.div`
@@ -129,12 +126,7 @@ const CategorySearchWrapper = styled.div`
   margin-right: ${spacing(1)};
 `;
 
-const KeywordSearchWrapper = styled.div`
-  min-width: 470px;
-`;
-
 const InfluenceWrapper = styled.div`
-  margin-right: ${spacing(2)};
   width: 220px;
 `;
 
@@ -478,7 +470,7 @@ export const Ruleset = ({
         </InfluenceWrapper>
 
         {rulesetType !== 'global' && (
-          <RulesetIdentifier>
+          <>
             {rulesetType === 'category' && (
               <CategorySearchWrapper>
                 <CategorySearch
@@ -511,19 +503,17 @@ export const Ruleset = ({
             )}
 
             {rulesetType === 'search' && (
-              <KeywordSearchWrapper>
-                <SearchKeywords
-                  title="Search Keywords"
-                  searchTerms={rulesetSearchTerms}
-                  addSearchTerm={onAddSearchTerm}
-                  removeSearchTerm={onRemoveSearchTerm}
-                  previewSearchTerm={previewValue}
-                  selectPreviewSearchTerm={setPreviewValue}
-                  writeEnabled={writeEnabled}
-                />
-              </KeywordSearchWrapper>
+              <SearchKeywords
+                title="Search Keywords"
+                searchTerms={rulesetSearchTerms}
+                addSearchTerm={onAddSearchTerm}
+                removeSearchTerm={onRemoveSearchTerm}
+                previewSearchTerm={previewValue}
+                selectPreviewSearchTerm={setPreviewValue}
+                writeEnabled={writeEnabled}
+              />
             )}
-          </RulesetIdentifier>
+          </>
         )}
 
         {rulesetType === 'global' && (

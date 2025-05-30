@@ -35,6 +35,7 @@ const RowsPerPageContainer = styled.div`
 const PageSizeItem = styled.div`
   padding: ${spacing(1)};
   cursor: pointer;
+  text-align: center;
 
   &:hover,
   &:focus {

@@ -40,7 +40,8 @@ test.describe('Keyword Redirects', () => {
       page.getByRole('heading', { name: 'Add Keyword Redirect rule' })
     ).toBeVisible();
 
-    await page.getByLabel('Add keyword').click();
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
+    await page.getByLabel('Add keyword to list').click();
 
     await expect(
       page.getByRole('radio', { name: 'Redirect Term(s)' })
@@ -49,10 +50,12 @@ test.describe('Keyword Redirects', () => {
       page.getByRole('radio', { name: 'Redirect Phrase(s)' })
     ).not.toBeChecked();
 
-    await page.getByLabel('Add keyword').fill('word 1');
-    await page.getByLabel('Add keyword').press('Enter');
-    await page.getByLabel('Add keyword').fill('word 2');
-    await page.getByLabel('Add keyword').press('Enter');
+    await page.getByLabel('Add keyword to list').fill('word 1');
+    await page.getByLabel('Add keyword to list').press('Enter');
+    await page.getByLabel('Add keyword to list').fill('word 2');
+    await page.getByLabel('Add keyword to list').press('Enter');
+
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await page.getByPlaceholder('c/').click();
     await page.getByPlaceholder('c/').fill('/test/keyword');
@@ -81,7 +84,6 @@ test.describe('Keyword Redirects', () => {
 
     await expect(page.getByLabel('number of keywords')).toContainText('2');
     await expect(page.getByText('word 1', { exact: true })).toBeVisible();
-    await expect(page.getByText('word 2', { exact: true })).toBeVisible();
 
     await expect(page.getByPlaceholder('c/')).toHaveValue('/test/keyword');
 

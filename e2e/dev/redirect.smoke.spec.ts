@@ -26,13 +26,18 @@ test.describe('Search Redirect', () => {
       page.getByRole('heading', { name: 'Add KeyWord Redirect rule' })
     ).toBeVisible();
 
-    await page.getByLabel('Add keyword').click();
-    await page.getByLabel('Add keyword').fill('Gravy');
-    await page.getByLabel('Add keyword').press('Enter');
-    await page.getByLabel('Add keyword').fill('Beef Gravy');
-    await page.getByLabel('Add keyword').press('Enter');
-    await page.getByLabel('Add keyword').fill('Turkey Gravy');
-    await page.getByLabel('Add keyword').press('Enter');
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
+
+    await page.getByLabel('Add keyword to list').click();
+    await page.getByLabel('Add keyword to list').fill('Gravy');
+    await page.getByLabel('Add keyword to list').press('Enter');
+    await page.getByLabel('Add keyword to list').fill('Beef Gravy');
+    await page.getByLabel('Add keyword to list').press('Enter');
+    await page.getByLabel('Add keyword to list').fill('Turkey Gravy');
+    await page.getByLabel('Add keyword to list').press('Enter');
+
+    await page.getByRole('button', { name: 'Close' }).click();
+
     await page.getByPlaceholder('c/').fill('/christmas/gravy');
 
     await page.getByRole('button', { name: 'Create' }).click();
@@ -111,6 +116,8 @@ test.describe('Search Redirect', () => {
     await page.getByRole('button', { name: 'select market' }).click();
     await page.getByRole('button', { name: 'select IE market only' }).click();
 
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
+
     await page
       .getByRole('button', { name: 'Remove keyword: Beef Gravy' })
       .click();
@@ -118,13 +125,13 @@ test.describe('Search Redirect', () => {
       .getByRole('button', { name: 'Remove keyword: Turkey Gravy' })
       .click();
 
-    await page.getByLabel('Add keyword').click();
-    await page.getByLabel('Add keyword').fill('Vegetarian Gravy');
-    await page.getByLabel('Add keyword').press('Enter');
+    await page.getByLabel('Add keyword to list').click();
+    await page.getByLabel('Add keyword to list').fill('Vegetarian Gravy');
+    await page.getByLabel('Add keyword to list').press('Enter');
+
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await page.waitForLoadState('networkidle');
-
-    await expect(page.getByText('Vegetarian Gravy')).toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
     await page.waitForLoadState('networkidle');

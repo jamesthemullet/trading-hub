@@ -41,9 +41,12 @@ export const KeyWordPill = styled.li<{ isSelected: boolean }>`
   display: flex;
   margin-right: ${spacing(1)};
   position: relative;
+  word-break: break-word;
+  text-align: left;
 
   button {
     color: ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
+    text-align: left;
 
     &:focus {
       outline: solid

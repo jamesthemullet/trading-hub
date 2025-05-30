@@ -118,6 +118,7 @@ describe('Facets', () => {
   });
 
   it('should add and set a category', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(<Facets {...defaultFacetProps} />);
     const modalButton = await screen.findByRole('button', {
       name: 'Edit',
@@ -132,7 +133,7 @@ describe('Facets', () => {
     });
 
     const searchInput = screen.getByPlaceholderText('Search...');
-    await userEvent.type(searchInput, 'je');
+    await user.type(searchInput, 'je');
 
     await waitFor(async () => {
       const categoryToSelect = await screen.findByText(
@@ -194,6 +195,7 @@ describe('Facets', () => {
   });
 
   it('should not allow setting a duplicate category', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(<Facets {...defaultFacetProps} />);
     const modalButton = await screen.findByRole('button', {
       name: 'Edit',
@@ -208,7 +210,7 @@ describe('Facets', () => {
     });
 
     const searchInput = screen.getByPlaceholderText('Search...');
-    await userEvent.type(searchInput, 'je');
+    await user.type(searchInput, 'je');
 
     await waitFor(async () => {
       const categoryToSelect = await screen.findByText(
@@ -220,7 +222,7 @@ describe('Facets', () => {
       });
     });
 
-    await userEvent.type(searchInput, 'jeans');
+    await user.type(searchInput, 'jeans');
 
     await waitFor(async () => {
       const modalCategoryToSelect = await screen.findByText(
@@ -238,20 +240,37 @@ describe('Facets', () => {
   });
 
   it('should add and set a search term', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(<Facets {...defaultFacetProps} facetType="search" />);
 
-    const searchInput = screen.getByLabelText('Add keyword');
-    await userEvent.type(searchInput, 'jeans{Enter}');
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    const searchInput = screen.getByLabelText('Add keyword to list');
+    await user.type(searchInput, 'jeans{Enter}');
 
     expect(screen.getByLabelText('Remove keyword: jeans')).toBeVisible();
   });
 
   it('should not allow setting a duplicate search term', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(<Facets {...defaultFacetProps} facetType="search" />);
 
-    const searchInput = screen.getByLabelText('Add keyword');
-    await userEvent.type(searchInput, 'jeans{Enter}');
-    await userEvent.type(searchInput, 'jeans{Enter}');
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+    const searchInput = screen.getByLabelText('Add keyword to list');
+    await user.type(searchInput, 'jeans{Enter}');
+    await user.type(searchInput, 'jeans{Enter}');
 
     expect(
       screen.getByText('Keyword jeans has already been added')
@@ -259,6 +278,7 @@ describe('Facets', () => {
   });
 
   it('should remove an existing search term', async () => {
+    const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <Facets
         {...defaultFacetProps}
@@ -266,6 +286,14 @@ describe('Facets', () => {
         searchTerms={['jeans']}
       />
     );
+
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
     await waitFor(() => {
       const jeansButton = screen.getByLabelText('Remove keyword: jeans');
 
@@ -278,6 +306,7 @@ describe('Facets', () => {
   });
 
   it('should filter facets', async () => {
+    const user = userEvent.setup({ delay: null });
     const categoriesInfo = [
       {
         id: categoryId1,
@@ -323,7 +352,7 @@ describe('Facets', () => {
     expect(screen.getByTestId('Row showing size as algoControl')).toBeVisible();
 
     const searchInput = screen.getByPlaceholderText('Search...');
-    await userEvent.type(searchInput, `size{Enter}`);
+    await user.type(searchInput, `size{Enter}`);
 
     await waitFor(async () => {
       const resultCount = await screen.findByText('1 result');
@@ -337,6 +366,7 @@ describe('Facets', () => {
   });
 
   it('should change a facet display type', async () => {
+    const user = userEvent.setup({ delay: null });
     const categoriesInfo = [
       {
         id: categoryId1,
@@ -359,15 +389,16 @@ describe('Facets', () => {
     const dropdownHeader = screen.getAllByTestId(
       'button to open facet order dropdown'
     )[0];
-    await userEvent.click(dropdownHeader);
+    await user.click(dropdownHeader);
 
     const alwaysHideOption = screen.getAllByText('Exclude only')[0];
-    await userEvent.click(alwaysHideOption);
+    await user.click(alwaysHideOption);
 
     expect(screen.getByTestId('Row showing color as excluded')).toBeVisible();
   });
 
   it('should not change a facet display type when clicking on the existing value', async () => {
+    const user = userEvent.setup({ delay: null });
     const categoriesInfo = [
       {
         id: categoryId1,
@@ -390,10 +421,10 @@ describe('Facets', () => {
     const dropdownHeader = screen.getAllByTestId(
       'button to open facet order dropdown'
     )[0];
-    await userEvent.click(dropdownHeader);
+    await user.click(dropdownHeader);
 
     const alwaysHideOption = screen.getAllByText('Algo control')[1];
-    await userEvent.click(alwaysHideOption);
+    await user.click(alwaysHideOption);
 
     expect(
       screen.getByTestId('Row showing color as algoControl')
@@ -821,6 +852,7 @@ describe('Facets', () => {
     };
 
     renderWithProviders(<Facets {...defaultFacetProps} onSave={onSaveSpy} />);
+    const user = userEvent.setup({ delay: null });
     const modalButton = await screen.findByRole('button', {
       name: 'Edit',
     });
@@ -834,7 +866,7 @@ describe('Facets', () => {
     });
 
     const searchInput = screen.getByPlaceholderText('Search...');
-    await userEvent.type(searchInput, 'je');
+    await user.type(searchInput, 'je');
 
     await waitFor(async () => {
       const categoryToSelect = await screen.findByText(

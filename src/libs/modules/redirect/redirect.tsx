@@ -13,6 +13,7 @@ import {
   spacing,
   SubHeader2,
   Text,
+  Typography,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
@@ -56,22 +57,10 @@ const Input = styled.input`
 const Duration = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacing(1)};
 
   label {
     margin-top: ${spacing(0.5)};
   }
-`;
-
-const LabelContainer = styled.label`
-  display: flex;
-  font-size: 14px;
-  align-items: center;
-`;
-
-const InfluenceLabel = styled(Text)`
-  margin-bottom: ${spacing(1)};
-  line-height: 1.6rem;
 `;
 
 type Props = {
@@ -114,6 +103,8 @@ export const Redirect = ({
           countryCode: 'UK_IE',
         }
   );
+
+  const [defaultValue, setDefaultValue] = useState(savedRedirect?.keywords[0]);
 
   const onSaveRedirect = () => {
     if (onCreate) {
@@ -205,7 +196,9 @@ export const Redirect = ({
         </SubHeader2>
         <Row style={{ display: 'flex', flexWrap: 'wrap', gap: spacing(2) }}>
           <div>
-            <InfluenceLabel>Influence</InfluenceLabel>
+            <Typography as="p" withMargin variant="labelMedium">
+              Influence
+            </Typography>
             <CountrySelectorDropdown
               onChange={(country: MerchandisingCountryCode) =>
                 onUpdate('countryCode', country)
@@ -221,10 +214,16 @@ export const Redirect = ({
             }
             addSearchTerm={onAddKeyword}
             removeSearchTerm={onRemoveKeyword}
+            previewSearchTerm={defaultValue}
+            selectPreviewSearchTerm={(term: string | undefined) => {
+              setDefaultValue(term);
+            }}
             writeEnabled={writeEnabled}
           />
           <Duration>
-            <LabelContainer>Duration</LabelContainer>
+            <Typography as="p" withMargin variant="labelMedium">
+              Duration
+            </Typography>
             <DateTimePickerModal
               showCalendarIcon={true}
               dateTime={[

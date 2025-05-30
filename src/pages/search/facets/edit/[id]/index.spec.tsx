@@ -621,6 +621,7 @@ describe('Search Facet Management Editing', () => {
 
   describe('Search term operations', () => {
     it('should show empty list when keyword is removed', async () => {
+      const user = userEvent.setup({ delay: null });
       jest.mocked(useSearchRuleSetPreview).mockReturnValue({
         ...mockUseSearchRuleSetPreviewData,
         ruleSet: {
@@ -630,6 +631,14 @@ describe('Search Facet Management Editing', () => {
       });
 
       renderWithProviders(<Page id={ruleSetId} />);
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
 
       const clearButton = await screen.findByLabelText(
         'Remove keyword: red dress'
@@ -658,10 +667,11 @@ describe('Search Facet Management Editing', () => {
 
     it('should display error message when updating ruleset fails', async () => {
       mockUpdateRuleSet.error = 'Failed to update';
+      const user = userEvent.setup({ delay: null });
 
       renderWithProviders(<Page id={ruleSetId} />);
 
-      await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+      await user.click(screen.getByRole('button', { name: 'Save' }));
 
       expect(
         screen.getByText('Error whilst updating ruleset: Failed to update')

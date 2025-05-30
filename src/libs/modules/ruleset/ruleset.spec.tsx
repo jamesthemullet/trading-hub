@@ -604,6 +604,7 @@ describe('Ruleset', () => {
 
   describe('keyword search', () => {
     it('should remove a search term', async () => {
+      const user = userEvent.setup({ delay: null });
       renderWithProviders(
         <Ruleset
           {...defaultProps}
@@ -626,13 +627,21 @@ describe('Ruleset', () => {
         />
       );
 
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
       const fooKeyword = await screen.findByLabelText('Remove keyword: foo');
-      const numberOfKeywords =
-        await screen.findByLabelText('number of keywords');
 
       act(() => {
         fooKeyword.click();
       });
+      const numberOfKeywords =
+        await screen.findByLabelText('number of keywords');
 
       expect(numberOfKeywords).toHaveTextContent('0');
     });
@@ -661,11 +670,19 @@ describe('Ruleset', () => {
         />
       );
 
-      const keywordInput = await screen.findByLabelText('Add keyword');
-      const numberOfKeywords =
-        await screen.findByLabelText('number of keywords');
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
+      const keywordInput = await screen.findByLabelText('Add keyword to list');
 
       await user.type(keywordInput, 'bar{Enter}');
+      const numberOfKeywords =
+        await screen.findByLabelText('number of keywords');
 
       expect(numberOfKeywords).toHaveTextContent('2');
       expect(await screen.findByLabelText('Remove keyword: bar')).toBeVisible();
@@ -750,8 +767,16 @@ describe('Ruleset', () => {
         />
       );
 
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
       await user.type(
-        screen.getByLabelText('Add keyword'),
+        screen.getByLabelText('Add keyword to list'),
         'new keyword{enter}'
       );
 
@@ -782,13 +807,21 @@ describe('Ruleset', () => {
         />
       );
 
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
       await user.type(
-        screen.getByLabelText('Add keyword'),
+        screen.getByLabelText('Add keyword to list'),
         'new keyword{enter}'
       );
 
       await user.type(
-        screen.getByLabelText('Add keyword'),
+        screen.getByLabelText('Add keyword to list'),
         'nEw kEyWOrd{enter}'
       );
 
@@ -818,8 +851,16 @@ describe('Ruleset', () => {
         />
       );
 
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
       await user.type(
-        screen.getByLabelText('Add keyword'),
+        screen.getByLabelText('Add keyword to list'),
         'new keyword{enter}'
       );
 

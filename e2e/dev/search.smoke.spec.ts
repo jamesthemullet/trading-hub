@@ -24,11 +24,16 @@ test.describe('Search Ranking', () => {
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
 
-    await page.getByLabel('Add keyword').click();
-    await page.getByLabel('Add keyword').fill('Black Dress');
-    await page.getByLabel('Add keyword').press('Enter');
-    await page.getByLabel('Add keyword').fill('Sequin Dress');
-    await page.getByLabel('Add keyword').press('Enter');
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
+
+    await page.getByLabel('Add keyword to list').click();
+    await page.getByLabel('Add keyword to list').fill('Black Dress');
+    await page.getByLabel('Add keyword to list').press('Enter');
+    await page.getByLabel('Add keyword to list').fill('Sequin Dress');
+    await page.getByLabel('Add keyword to list').press('Enter');
+
+    await page.getByRole('button', { name: 'Close' }).click();
+
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(page.getByText('Black Dress')).toBeVisible();
@@ -152,17 +157,21 @@ test.describe('Search Ranking', () => {
     await page.getByRole('button', { name: 'select market' }).click();
     await page.getByRole('button', { name: 'select IE market only' }).click();
 
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page
       .getByRole('button', { name: 'Remove keyword: Black Dress' })
       .click();
 
-    await page.getByLabel('Add keyword').click();
-    await page.getByLabel('Add keyword').fill('Green Dress');
-    await page.getByLabel('Add keyword').press('Enter');
+    await page.getByLabel('Add keyword to list').click();
+    await page.getByLabel('Add keyword to list').fill('Green Dress');
+    await page.getByLabel('Add keyword to list').press('Enter');
 
+    await page.getByRole('button', { name: 'Close' }).click();
+
+    await page.waitForTimeout(2000);
     await page.waitForLoadState('networkidle');
 
-    await expect(page.getByText('Green Dress')).toBeVisible();
+    await expect(page.getByText('sequin dress', { exact: true })).toBeVisible();
 
     await page.getByRole('button', { name: 'Save' }).click();
     await page.waitForLoadState('networkidle');
