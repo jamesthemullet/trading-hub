@@ -50,6 +50,7 @@ export const ScopeWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: ${spacing(2)};
+  align-items: end;
 
   & > div:second-child {
     width: 100%;

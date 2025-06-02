@@ -50,6 +50,7 @@ const CategoryPanel = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: ${spacing(2)};
+  align-items: end;
 `;
 
 const MainContainerPanel = styled.div`
