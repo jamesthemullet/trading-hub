@@ -6,6 +6,7 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-onboarding',
     '@storybook/experimental-addon-test',
+    'storybook-addon-deep-controls',
   ],
   framework: {
     name: '@storybook/experimental-nextjs-vite',

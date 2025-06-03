@@ -16,8 +16,7 @@ import type {
 import { Button } from '../buttons/button/button';
 import { Checkbox } from '../checkboxes/checkbox';
 import type { RuleSetActions } from '../types';
-import { Text } from '../typography/typography.styles';
-import { spacing } from '../utils/spacing';
+import { Typography } from '../typography/typography.styles';
 import {
   BlockedPin,
   BoostPin,
@@ -33,12 +32,12 @@ import {
   ProductInfoWrapper,
   ProductMenu,
   ProductMenuButton,
+  ProductMenuHead,
   ProductMenuOverlay,
   ProductMenuToggle,
   ProductNumber,
   ProductPin,
   ProductWrapper,
-  StyledPinText,
   SupplementaryInfo,
 } from './product.styles';
 
@@ -81,18 +80,24 @@ const ProductDetails = ({
         {isOutOfStock && <OutOfStockMessage>Out of stock</OutOfStockMessage>}
       </ProductCard>
       <ProductInfo isSearchResult={isSearchResult}>
-        <Text isStrong={isBrandStrong ?? true} data-testid="product title">
+        <Typography
+          variant="bodySmall"
+          isStrong={isBrandStrong ?? true}
+          data-testid="product title"
+        >
           {brand} {title}
-        </Text>
-        <Text>{price}</Text>
-        <Text data-testid="product id">ID: {productId}</Text>
+        </Typography>
+        <Typography variant="bodySmall">{price}</Typography>
+        <Typography variant="bodySmall" data-testid="product id" align="right">
+          ID: {productId}
+        </Typography>
       </ProductInfo>
       {hasSupplementaryInfo && ranking && (
         <SupplementaryInfo>
           {ranking.map((item) => (
-            <Text key={item.property}>
+            <Typography variant="bodySmall" key={item.property}>
               {item.property} <span>{item.values[0]}</span>
-            </Text>
+            </Typography>
           ))}
         </SupplementaryInfo>
       )}
@@ -228,22 +233,22 @@ export const Product = ({
           )}
           {isBoosted && (
             <BoostPin aria-label="Boosted product">
-              <StyledPinText>Internal</StyledPinText>
+              <Typography variant="labelSmall">Boost</Typography>
             </BoostPin>
           )}
           {isBuried && (
             <BuriedPin aria-label="Buried product">
-              <StyledPinText>Internal</StyledPinText>
+              <Typography variant="labelSmall">Bury</Typography>
             </BuriedPin>
           )}
           {isPinned && (
             <ProductPin aria-label="Pinned product">
-              <StyledPinText>Internal</StyledPinText>
+              <Typography variant="labelSmall">Pinned</Typography>
             </ProductPin>
           )}
           {isBlocked && (
             <BlockedPin aria-label="Blocked product">
-              <StyledPinText>Internal</StyledPinText>
+              <Typography variant="labelSmall">Block</Typography>
             </BlockedPin>
           )}
         </ProductInfoWrapper>
@@ -261,16 +266,11 @@ export const Product = ({
         </ProductMenuToggle>
         {isMenuOpen && (
           <ProductMenu>
-            <Text
-              isStrong={true}
-              style={{
-                color: '#000',
-                padding: `${spacing(1)} ${spacing(1)} 0`,
-              }}
-              as="h4"
-            >
-              Product actions
-            </Text>
+            <ProductMenuHead>
+              <Typography variant="bodySmall" isStrong={true} as="h4">
+                Product actions
+              </Typography>
+            </ProductMenuHead>
             {isPinned && isPinnable && (
               <ProductMenuButton
                 icon="restore"
@@ -422,16 +422,17 @@ export const Product = ({
                   height: error ? '330px' : '245px',
                 }}
               >
-                <Text
+                <Typography
+                  variant="bodySmall"
                   isStrong={true}
-                  style={{ marginBottom: spacing(1) }}
+                  withMargin
                   aria-label="Pinning heading"
                 >
                   Slot position
-                </Text>
-                <Text style={{ marginBottom: spacing(1) }}>
+                </Typography>
+                <Typography variant="bodySmall" withMargin>
                   Select the position number you want to set for this product.
-                </Text>
+                </Typography>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -553,22 +554,22 @@ export const MissingProduct = ({
           )}
           {isBoosted && (
             <BoostPin aria-label="Boosted product">
-              <Text>Internal</Text>
+              <Typography variant="labelSmall">Boost</Typography>
             </BoostPin>
           )}
           {isBuried && (
             <BuriedPin aria-label="Buried product">
-              <Text>Internal</Text>
+              <Typography variant="labelSmall">Bury</Typography>
             </BuriedPin>
           )}
           {isPinned && (
             <ProductPin aria-label="Pinned product">
-              <Text>Internal</Text>
+              <Typography variant="labelSmall">Pinned</Typography>
             </ProductPin>
           )}
           {isBlocked && (
             <BlockedPin aria-label="Blocked product">
-              <Text>Internal</Text>
+              <Typography variant="labelSmall">Block</Typography>
             </BlockedPin>
           )}
         </ProductInfoWrapper>
@@ -585,16 +586,11 @@ export const MissingProduct = ({
         </ProductMenuToggle>
         {isMenuOpen && (
           <ProductMenu>
-            <Text
-              isStrong={true}
-              style={{
-                color: '#000',
-                padding: `${spacing(1)} ${spacing(1)} 0`,
-              }}
-              as="h4"
-            >
-              Product actions
-            </Text>
+            <ProductMenuHead>
+              <Typography variant="bodySmall" isStrong={true} as="h4">
+                Product actions
+              </Typography>
+            </ProductMenuHead>
             {isPinned && (
               <ProductMenuButton
                 icon="restore"
@@ -678,10 +674,12 @@ export const MissingProduct = ({
         animate={false}
       />
       <ProductInfo aria-label="Product details">
-        <Text isStrong data-testid="product title">
+        <Typography variant="bodySmall" isStrong data-testid="product title">
           Product {id} not found
-        </Text>
-        <Text data-testid="product id">ID:&nbsp;{id}</Text>
+        </Typography>
+        <Typography variant="bodySmall" align="right" data-testid="product id">
+          ID:&nbsp;{id}
+        </Typography>
       </ProductInfo>
     </ProductWrapper>
   );

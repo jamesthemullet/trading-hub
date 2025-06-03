@@ -108,6 +108,7 @@ type TypographyProps = {
     | 'titleMedium'
     | 'titleSmall';
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'label';
+  align?: 'left' | 'right';
   children: React.ReactNode;
 };
 
@@ -148,17 +149,22 @@ export const lineHeights = {
 };
 
 export const Typography = ({
+  align = 'left',
   as = 'p',
   variant = 'bodyMedium',
   children,
   isStrong = false,
   withMargin = false,
+  ...rest
 }: TypographyProps) => {
   const StyledTypography = styled.p<TypographyProps>`
     ${commonStyles}
-    font-family: ${({ isStrong }) => (isStrong ? fonts.bold : fonts.regular)};
+    font-family: ${({ isStrong }) =>
+      isStrong ? fonts.semiBold : fonts.regular};
+    font-weight: ${({ isStrong }) => (isStrong ? 400 : 100)};
     font-size: ${fontSizes[variant]};
     line-height: ${lineHeights[variant]};
+    text-align: ${align};
     margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
   `;
 
@@ -168,6 +174,7 @@ export const Typography = ({
       as={as}
       isStrong={isStrong}
       withMargin={withMargin}
+      {...rest}
     >
       {children}
     </StyledTypography>

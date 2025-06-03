@@ -8,7 +8,7 @@ import { spacing } from '../utils/spacing';
 
 export const ProductWrapper = styled.div`
   width: 100%;
-  border: solid 1px ${color.grey};
+  border: solid 1px ${color.role.surfaceBright.onSurfaceBrightVariant};
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -28,10 +28,10 @@ export const ProductNumber = styled.div`
   min-width: 18px;
   height: 18px;
   text-align: center;
-  padding: 2px;
-  font-size: 14px;
-  line-height: 14px;
-  margin: 0px 8px 0 0;
+  padding: 0 2px 2px;
+  font-size: 12px;
+  line-height: 18px;
+  margin: 0 ${spacing(0.5)} 0 0;
 `;
 
 export const ProductPin = styled.div`
@@ -41,8 +41,9 @@ export const ProductPin = styled.div`
   &::before {
     content: '';
     background: url('/trading-hub/asset/icon-pin.svg');
-    width: 18px;
+    width: 13px;
     height: 18px;
+    margin-right: ${spacing(0.5)};
   }
 `;
 
@@ -52,11 +53,11 @@ export const BoostPin = styled.div`
 
   &::before {
     content: '';
-    background: url('/trading-hub/asset/boost-signifier.svg');
-    width: 16px;
-    height: 16px;
+    background: url('/trading-hub/asset/icon-boost.svg');
+    width: 18px;
+    height: 18px;
     background-size: contain;
-    margin: 0px 5px 0 3px;
+    margin-right: ${spacing(0.5)};
   }
 `;
 
@@ -66,11 +67,11 @@ export const BuriedPin = styled.div`
 
   &::before {
     content: '';
-    background: url('/trading-hub/asset/bury-signifier.svg');
-    width: 16px;
-    height: 16px;
+    background: url('/trading-hub/asset/icon-bury.svg');
+    width: 18px;
+    height: 18px;
     background-size: contain;
-    margin: 0px 5px 0 3px;
+    margin-right: ${spacing(0.5)};
   }
 `;
 
@@ -81,10 +82,10 @@ export const BlockedPin = styled.div`
   &::before {
     content: '';
     background: url('/trading-hub/asset/icon-block.svg');
-    width: 16px;
-    height: 16px;
+    width: 19px;
+    height: 18px;
     background-size: contain;
-    margin: 0px 5px 0 3px;
+    margin-right: ${spacing(0.5)};
   }
 `;
 
@@ -165,6 +166,10 @@ export const ProductMenu = styled.div`
   z-index: 2;
 `;
 
+export const ProductMenuHead = styled.div`
+  padding: ${spacing(1)} ${spacing(1)} 0;
+`;
+
 export const ProductMenuButton = styled(Text)<{ icon: string; size?: string }>`
   border: none;
   background: #fff;
@@ -200,7 +205,10 @@ export const LockMenu = styled.div`
 export const LockInput = styled.input<{ hasError: boolean }>`
   border: none;
   border-bottom: 1px solid
-    ${({ hasError }) => (hasError ? color.errorRed : color.grey)};
+    ${({ hasError }) =>
+      hasError
+        ? color.errorRed
+        : color.role.surfaceBright.onSurfaceBrightVariant};
   padding: ${spacing(2)};
   background-color: ${color.backgroundGrey};
   width: 100%;
@@ -215,7 +223,7 @@ export const ErrorText = styled(Text)`
 export const LockActions = styled.div<{ isSearchResult?: boolean }>`
   display: flex;
   gap: ${({ isSearchResult }) => (isSearchResult ? spacing(0.5) : spacing(1))};
-  border-top: solid 1px #999;
+  border-top: solid 1px ${color.role.surfaceBright.onSurfaceBrightVariant};
   padding-top: ${spacing(1)};
 
   ${({ isSearchResult }) =>
@@ -229,8 +237,6 @@ export const LockActions = styled.div<{ isSearchResult?: boolean }>`
 `;
 
 export const ProductCard = styled.div<{ hasSupplementaryInfo?: boolean }>`
-  border-top: ${({ hasSupplementaryInfo }) =>
-    hasSupplementaryInfo ? `1px solid ${color.grey}` : 'none'};
   height: 176px;
   position: relative;
   display: flex;
@@ -256,7 +262,7 @@ export const OutOfStockMessage = styled(Text)`
 `;
 
 export const SupplementaryInfo = styled.div`
-  border-top: solid 1px ${color.grey};
+  border-top: solid 1px ${color.role.surfaceBright.onSurfaceBrightVariant};
   padding: ${spacing(1)};
 
   p {
@@ -271,12 +277,8 @@ export const SupplementaryInfo = styled.div`
 
     &:first-of-type {
       span {
-        color: ${color.successGreen};
+        color: ${color.role.success.onSuccessContainer};
       }
     }
   }
-`;
-
-export const StyledPinText = styled(Text)`
-  line-height: 20px;
 `;

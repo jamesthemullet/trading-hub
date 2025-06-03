@@ -1,4 +1,5 @@
 export const color = {
+  // TODO: phase out use of these colours and use design system figma colours
   buttonPrimaryHover: '#595959',
   primaryGreen: '#bdd755',
   lightGreen: '#dfece2',
@@ -25,6 +26,19 @@ export const color = {
   role: {
     outline: {
       outline: '#627886',
+    },
+    success: {
+      success: '#2DB236',
+      onSuccess: '#0E3510',
+      successContainer: '#EAF7EB',
+      onSuccessContainer: '#207D26',
+    },
+    surfaceBright: {
+      surfaceBright: '#FFFFFF',
+      onSurfaceBright: '#000000',
+      onSurfaceBrightVariant: '#707070',
+      surfaceBrightContainer: '#F5F5F5',
+      onSurfaceBrightContainer: '#0F0F0F',
     },
   },
 };
