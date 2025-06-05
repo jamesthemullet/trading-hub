@@ -1,0 +1,138 @@
+import { ColorItem, ColorPalette, Meta } from '@storybook/addon-docs/blocks';
+
+import { color } from './constants'
+ 
+<Meta title="Colors" />
+ 
+<ColorPalette>
+  <ColorItem
+    title="Accent -> Primary"
+    colors={{ 
+      Primary: color.accent.primary.primary,
+      OnPrimary: color.accent.primary.onPrimary,
+      PrimaryContainer: color.accent.primary.primaryContainer,
+      OnPrimaryContainer: color.accent.primary.onPrimaryContainer
+    }}
+  />
+
+<ColorItem
+  title="Accent -> Secondary"
+  colors={{
+    Secondary: color.accent.secondary.secondary,
+    OnSecondary: color.accent.secondary.onSecondary,
+    SecondaryContainer: color.accent.secondary.secondaryContainer,
+    OnSecondaryContainer: color.accent.secondary.onSecondaryContainer,
+  }}
+/>
+
+<ColorItem
+  title="Accent -> Tertiary"
+  colors={{
+    Tertiary: color.accent.tertiary.tertiary,
+    OnTertiary: color.accent.tertiary.onTertiary,
+    TertiaryContainer: color.accent.tertiary.tertiaryContainer,
+    OnTertiaryContainer: color.accent.tertiary.onTertiaryContainer,
+  }}
+/>
+
+<ColorItem
+  title="Role -> Info"
+  colors={{
+    Info: color.role.info.info,
+    OnInfo: color.role.info.onInfo,
+    InfoContainer: color.role.info.infoContainer,
+    OnInfoContainer: color.role.info.onInfoContainer,
+  }}
+/>
+
+<ColorItem
+  title="Role -> Link"
+  colors={{
+    Link: color.role.link.link,
+    OnInfo: color.role.link.linkOnBright,
+    InfoContainer: color.role.link.linkOnDark,
+  }}
+/>
+
+<ColorItem
+  title="Role -> Outline"
+  colors={{
+    Info: color.role.outline.outline,
+    OnInfo: color.role.outline.outlineVariant,
+  }}
+/>
+
+<ColorItem
+  title="State -> Error"
+  colors={{
+    Error: color.state.error.error,
+    OnError: color.state.error.onError,
+    ErrorContainer: color.state.error.errorContainer,
+    OnErrorContainer: color.state.error.onErrorContainer,
+  }}
+/>
+
+<ColorItem
+  title="State -> Success"
+  colors={{
+    Success: color.state.success.success,
+    OnSuccess: color.state.success.onSuccess,
+    SuccessContainer: color.state.success.successContainer,
+    OnSuccessContainer: color.state.success.onSuccessContainer,
+  }}
+/>
+
+<ColorItem
+  title="State -> Unactioned"
+  colors={{
+    Unactioned: color.state.unactioned.unactioned,
+    OnUnactioned: color.state.unactioned.onUnactioned,
+    UnactionedContainer: color.state.unactioned.unactionedContainer,
+    OnUnactionedContainer: color.state.unactioned.onUnactionedContainer,
+  }}
+/>
+
+<ColorItem
+  title="State -> Disabled"
+  colors={{
+    Disabled: color.state.disabled.disabled,
+    OnDisabled: color.state.disabled.onDisabled,
+    DisabledOnDark: color.state.disabled.disabledOnDark,
+    OnDisabledOnDark: color.state.disabled.onDisabledOnDark,
+  }}
+/>
+
+<ColorItem
+  title="Surface"
+  colors={{
+    Surface: color.surface.surface,
+    OnSurface: color.surface.onSurface,
+    OnSurfaceVariant: color.surface.onSurfaceVariant,
+    SurfaceContainer: color.surface.surfaceContainer,
+    OnSurfaceContainer: color.surface.onSurfaceContainer,
+  }}
+/>
+
+<ColorItem
+  title="SurfaceBright"
+  colors={{
+    SurfaceBright: color.surfaceBright.surfaceBright,
+    OnSurfaceBright: color.surfaceBright.onSurfaceBright,
+    OnSurfaceBrightVariant: color.surfaceBright.onSurfaceBrightVariant,
+    SurfaceBrightContainer: color.surfaceBright.surfaceBrightContainer,
+    OnSurfaceBrightContainer: color.surfaceBright.onSurfaceBrightContainer,
+  }}
+/>
+
+<ColorItem
+  title="SurfaceDark"
+  colors={{
+    SurfaceDark: color.surfaceDark.surfaceDark,
+    OnSurfaceDark: color.surfaceDark.onSurfaceDark,
+    OnSurfaceDarkVariant: color.surfaceDark.onSurfaceDarkVariant,
+    SurfaceDarkContainer: color.surfaceDark.surfaceDarkContainer,
+    OnSurfaceDarkContainer: color.surfaceDark.onSurfaceDarkContainer,
+  }}
+/>
+
+</ColorPalette>

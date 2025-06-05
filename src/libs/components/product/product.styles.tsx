@@ -8,7 +8,7 @@ import { spacing } from '../utils/spacing';
 
 export const ProductWrapper = styled.div`
   width: 100%;
-  border: solid 1px ${color.role.surfaceBright.onSurfaceBrightVariant};
+  border: solid 1px ${color.surfaceBright.onSurfaceBrightVariant};
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -206,9 +206,7 @@ export const LockInput = styled.input<{ hasError: boolean }>`
   border: none;
   border-bottom: 1px solid
     ${({ hasError }) =>
-      hasError
-        ? color.errorRed
-        : color.role.surfaceBright.onSurfaceBrightVariant};
+      hasError ? color.errorRed : color.surfaceBright.onSurfaceBrightVariant};
   padding: ${spacing(2)};
   background-color: ${color.backgroundGrey};
   width: 100%;
@@ -223,7 +221,7 @@ export const ErrorText = styled(Text)`
 export const LockActions = styled.div<{ isSearchResult?: boolean }>`
   display: flex;
   gap: ${({ isSearchResult }) => (isSearchResult ? spacing(0.5) : spacing(1))};
-  border-top: solid 1px ${color.role.surfaceBright.onSurfaceBrightVariant};
+  border-top: solid 1px ${color.surfaceBright.onSurfaceBrightVariant};
   padding-top: ${spacing(1)};
 
   ${({ isSearchResult }) =>
@@ -262,7 +260,7 @@ export const OutOfStockMessage = styled(Text)`
 `;
 
 export const SupplementaryInfo = styled.div`
-  border-top: solid 1px ${color.role.surfaceBright.onSurfaceBrightVariant};
+  border-top: solid 1px ${color.surfaceBright.onSurfaceBrightVariant};
   padding: ${spacing(1)};
 
   p {
@@ -277,7 +275,7 @@ export const SupplementaryInfo = styled.div`
 
     &:first-of-type {
       span {
-        color: ${color.role.success.onSuccessContainer};
+        color: ${color.state.success.onSuccessContainer};
       }
     }
   }
