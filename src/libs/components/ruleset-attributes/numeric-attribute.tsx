@@ -1,8 +1,9 @@
 import Image from 'next/image';
 
 import type { MerchandisingNumericBoostBury } from '../../api';
-import { Label, Text } from '../typography/typography.styles';
+import { Text, Typography } from '../typography/typography.styles';
 import {
+  AlignedText,
   AttributeHeading,
   AttributeRow,
   AttributeWrapper,
@@ -36,21 +37,22 @@ export const NumericAttribute = ({
   return (
     <AttributeWrapper>
       <AttributeHeading>
-        <Label isStrong>{name}</Label>
+        <Typography variant="bodyMedium" isStrong>
+          {name}
+        </Typography>
       </AttributeHeading>
 
       <AttributeRow>
-        <Text>
+        <AlignedText>
           Operation{' '}
           <Image
             width={20}
             height={20}
             alt=""
-            src={`/trading-hub/asset/${labels[operation].icon}.svg`}
-            style={{ marginBottom: '-4px' }}
+            src={`/trading-hub/asset/icon-${operation}.svg`}
           />{' '}
           {labels[operation].text}
-        </Text>
+        </AlignedText>
       </AttributeRow>
 
       {!isEditMode && (

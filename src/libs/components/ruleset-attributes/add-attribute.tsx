@@ -153,6 +153,7 @@ const ModalFooter = styled.div`
 
 const Filters = styled.div`
   display: flex;
+  align-items: end;
 `;
 
 const SectionLabel = ({
@@ -443,7 +444,7 @@ export const AddAttribute = ({
 
           <AttributeSelection
             data-testid="modal alphanumeric attributes list"
-            style={{ maxHeight: '295px' }}
+            style={{ maxHeight: '290px' }}
           >
             <ModalAttributeHeader>
               <Label isStrong>Relevant attributes</Label>
@@ -507,7 +508,7 @@ export const AddAttribute = ({
             </SearchWrapper>
           </ModalSection>
 
-          <AttributeSelection style={{ maxHeight: '380px' }}>
+          <AttributeSelection style={{ maxHeight: '360px' }}>
             <ModalAttributeHeader>
               <Label isStrong>Current matching attribute values</Label>
             </ModalAttributeHeader>

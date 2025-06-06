@@ -9,10 +9,10 @@ export const labels = {
   },
   include: {
     text: 'Include',
-    icon: 'icon-include-only',
+    icon: 'icon-include',
   },
   exclude: {
     text: 'Exclude',
-    icon: 'icon-exclude-only',
+    icon: 'icon-exclude',
   },
 };

@@ -4,10 +4,12 @@ import type {
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
 } from '../../api';
+
+import { Text, Typography } from '../typography/typography.styles';
 import { formatHTMLStrings } from '../../utils/format-html-strings';
-import { Label, Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import {
+  AlignedText,
   AttributeHeading,
   AttributeRow,
   AttributeValueList,
@@ -49,7 +51,9 @@ export const AlphanumericAttribute = ({
       <AttributeHeading>
         {fields.map(({ field, values }) => (
           <div key={`field-${field}`}>
-            <Label isStrong>{field}</Label>
+            <Typography variant="bodyMedium" isStrong>
+              {field}
+            </Typography>
 
             <AttributeValueList>
               {values.map((value) => (
@@ -63,17 +67,16 @@ export const AlphanumericAttribute = ({
       </AttributeHeading>
 
       <AttributeRow style={{ padding: spacing(1) }}>
-        <Text>
-          Operation{' '}
+        <AlignedText>
+          Operation
           <Image
             width={20}
             height={20}
             alt=""
-            src={`/trading-hub/asset/${labels[operation].icon}.svg`}
-            style={{ marginBottom: '-4px' }}
+            src={`/trading-hub/asset/icon-${operation}.svg`}
           />{' '}
           {labels[operation].text}
-        </Text>
+        </AlignedText>
       </AttributeRow>
 
       {isEditMode && canEditWeight ? (

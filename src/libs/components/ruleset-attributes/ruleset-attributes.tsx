@@ -14,7 +14,7 @@ import pluralize from 'pluralize';
 
 import { Button } from '../buttons/button/button';
 import type { AttributeEdit, RuleSetActions } from '../types';
-import { Label } from '../typography/typography.styles';
+import { Typography } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { NumericAttribute } from './numeric-attribute';
@@ -23,27 +23,12 @@ import { RulesetAttributesModal } from './ruleset-attributes-modal';
 
 const Wrapper = styled.div`
   position: relative;
-`;
-
-const Icon = styled.img`
-  margin-right: ${spacing(1)};
-  margin-bottom: -2px;
-`;
-
-const CreateNew = styled(Button)`
-  width: auto;
   margin: ${spacing(3)} auto;
-  display: block;
-`;
-
-const InsetLabel = styled(Label)`
-  margin-left: ${spacing(1)};
 `;
 
 const RuleSetAttributesContainer = styled.div`
   height: calc(100vh - 375px);
   overflow-y: auto;
-  padding-right: ${spacing(1)};
 `;
 
 export type Props = {
@@ -100,10 +85,14 @@ export const RulesetAttributes = ({
   return (
     <Wrapper>
       {writeEnabled && (
-        <CreateNew onClick={() => setIsModalOpen(!isModalOpen)}>
-          <Icon alt="" src="/trading-hub/asset/icon-plus-simple.svg" />
+        <Button
+          theme="outlined"
+          icon="plus-simple-green"
+          isTextCentred={true}
+          onClick={() => setIsModalOpen(!isModalOpen)}
+        >
           Create new attribute rule
-        </CreateNew>
+        </Button>
       )}
       {countOfAttributeChanges > 0 && (
         <RuleSetAttributesContainer data-testid="Ruleset attributes">
@@ -112,9 +101,9 @@ export const RulesetAttributes = ({
             {pluralize('rule', countOfAttributeChanges)}
           </AttributeCount>
           {(!!alphanumericBoost.length || !!alphanumericBuries.length) && (
-            <InsetLabel isStrong withMargin as="h3">
+            <Typography variant="bodyMedium" isStrong withMargin as="h3">
               Product Description Attribute Rules
-            </InsetLabel>
+            </Typography>
           )}
 
           {!!alphanumericBoost.length &&
@@ -256,9 +245,9 @@ export const RulesetAttributes = ({
             ))}
 
           {(!!numericBoosts.length || !!numericBury.length) && (
-            <InsetLabel isStrong withMargin as="h3">
+            <Typography variant="bodyMedium" isStrong withMargin as="h3">
               Numeric Attribute Rules
-            </InsetLabel>
+            </Typography>
           )}
 
           {!!numericBoosts.length &&

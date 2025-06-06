@@ -13,7 +13,6 @@ import {
   DropdownHeading,
   DropdownOption,
   DropdownWrapperNoBorder,
-  FlagHeading,
   FlagWrapper,
 } from '../dropdown.styles';
 
@@ -101,22 +100,20 @@ export const CountrySelectorDropdown = ({
         disabled={!writeEnabled}
       >
         <DropdownHeading>
-          <FlagHeading>
-            {dropdownHeading?.flagsToShow && (
-              <FlagWrapper>
-                {dropdownHeading.flagsToShow.map((flag) => (
-                  <Image
-                    key={flag}
-                    src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
-                    width={20}
-                    height={20}
-                    alt={flag}
-                  />
-                ))}
-              </FlagWrapper>
-            )}
-            {dropdownHeading?.label}
-          </FlagHeading>
+          {dropdownHeading?.flagsToShow && (
+            <FlagWrapper>
+              {dropdownHeading.flagsToShow.map((flag) => (
+                <Image
+                  key={flag}
+                  src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
+                  width={20}
+                  height={20}
+                  alt={flag}
+                />
+              ))}
+            </FlagWrapper>
+          )}
+          {dropdownHeading?.label}
         </DropdownHeading>
         {writeEnabled && (
           <ArrowContainer borderLeft={false}>

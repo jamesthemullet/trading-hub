@@ -8,20 +8,17 @@ import { spacing } from '../utils/spacing';
 export const AttributeCount = styled(Text)`
   text-align: right;
   font-size: 12px;
-  border-bottom: solid 1px ${color.lightGrey};
-  margin: 0 ${spacing(1)} ${spacing(1)};
-  padding-right: ${spacing(1)};
-  padding-bottom: ${spacing(1)};
+  margin: ${spacing(1)} ${spacing(1)} ${spacing(2)};
 `;
 
 export const AttributeWrapper = styled.div`
   border: solid 1px #999;
-  margin-bottom: ${spacing(2)};
+  margin-bottom: ${spacing(3)};
   width: 100%;
 `;
 
 export const AttributeHeading = styled.div`
-  padding: ${spacing(1)};
+  margin: ${spacing(1)};
   background: #fff;
 `;
 
@@ -43,19 +40,20 @@ export const AttributeValue = styled.div`
 export const AttributeValueList = styled.ul`
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: ${spacing(1)};
 `;
+
 export const AttributeValuePill = styled.li`
-  background-color: #e0e4e7;
-  border-radius: 5px;
+  background-color: ${color.accent.tertiary.tertiaryContainer};
+  color: ${color.accent.tertiary.onTertiaryContainer};
+  border-radius: 6px;
   padding: ${spacing(1)};
-  margin: ${spacing(1)};
+  margin: ${spacing(1)} ${spacing(1)} 0 0;
   font-size: 14px;
-  font-weight: 600;
   text-align: center;
   display: flex;
   align-items: center;
   height: 36px;
-  margin-right: ${spacing(1)};
   button {
     color: #000;
 
@@ -88,11 +86,15 @@ export const AttributeSelection = styled.div`
 
 export const Buttons = styled.div`
   display: flex;
+  align-items: center;
 `;
+
 export const Button = styled.button`
   border: none;
   background: none;
+  display: flex;
 `;
+
 export const AddAttributeValueButton = styled(RegularButton)`
   margin: ${spacing(1)};
   padding: ${spacing(1)};
@@ -104,8 +106,19 @@ export const AddAttributeValueButton = styled(RegularButton)`
   height: 36px;
   width: auto;
 `;
+
 export const AddAttributeValueIcon = styled.div`
   width: 18px;
   height: 18px;
   margin-right: ${spacing(0.5)};
+`;
+
+export const AlignedText = styled(Text)`
+  display: flex;
+  align-items: center;
+  gap: ${spacing(0.5)};
+
+  img {
+    margin-left: ${spacing(1)};
+  }
 `;

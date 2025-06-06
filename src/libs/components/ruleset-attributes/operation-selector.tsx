@@ -4,30 +4,22 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
+import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import { labels } from './utils';
 
 const DropdownWrapper = styled.div<{ isOperationDropdownOpen: boolean }>`
-  margin-top: ${spacing(2)};
+  border: none;
+  border-bottom: 1px solid ${color.role.outline.outline};
+  border-radius: 4px 4px 0 0;
+  min-height: 56px;
+  width: 150px;
   margin-right: ${spacing(1)};
-  margin-left: -${spacing(1)};
-  min-width: 150px;
 
   button {
-    &[aria-haspopup='listbox'] {
-      background: none;
-      border: solid 1px #000;
-      border-radius: ${({ isOperationDropdownOpen }) =>
-        isOperationDropdownOpen ? '4px 4px 0 0' : '4px'};
-      border-bottom: ${({ isOperationDropdownOpen }) =>
-        isOperationDropdownOpen ? 'none' : 'solid 1px #000'};
-      text-transform: capitalize;
-      height: 40px;
-    }
-    span {
-      font-size: 16px;
-      justify-content: left;
-    }
+    border: none;
+    border-radius: 4px 4px 0 0;
+    min-height: 56px;
   }
 
   img {
@@ -36,11 +28,20 @@ const DropdownWrapper = styled.div<{ isOperationDropdownOpen: boolean }>`
     margin-right: ${spacing(1)};
     margin-top: 3px;
   }
+
+  div {
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 const StyledDropdownOption = styled(DropdownOption)`
   font-size: 12px;
   align-items: end;
+  width: 150px;
+  box-shadow: none;
+  background-color: #fff;
+  border-radius: 0 !important;
 `;
 
 export const OperationSelector = ({
@@ -109,7 +110,7 @@ export const OperationSelector = ({
               }}
             >
               <Image
-                src="/trading-hub/asset/icon-include-only.svg"
+                src="/trading-hub/asset/icon-include.svg"
                 alt=""
                 width={20}
                 height={20}
@@ -124,7 +125,7 @@ export const OperationSelector = ({
               }}
             >
               <Image
-                src="/trading-hub/asset/icon-exclude-only.svg"
+                src="/trading-hub/asset/icon-exclude.svg"
                 alt=""
                 width={20}
                 height={20}

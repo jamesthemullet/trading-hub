@@ -157,6 +157,7 @@ const StyledButton = styled.button<ButtonProps>`
   ${({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled }) =>
     setTheme({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled })};
   ${({ icon }) => icon && setIcon({ icon })};
+  ${({ isTextCentred }) => isTextCentred && 'text-align: center;'}
   width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
 `;
 
@@ -194,6 +195,7 @@ export type RawButtonProps = {
   onClick?: () => void;
   theme?: 'primary' | 'secondary' | 'tertiary' | 'filled' | 'outlined';
   type?: 'submit' | 'reset' | 'button' | undefined;
+  isTextCentred?: boolean;
 };
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   RawButtonProps;
