@@ -135,14 +135,12 @@ describe('Facets', () => {
     const searchInput = screen.getByPlaceholderText('Search...');
     await user.type(searchInput, 'je');
 
-    await waitFor(async () => {
-      const categoryToSelect = await screen.findByText(
-        `${categoryId1} | ${categoryName1} | ${categoryPath1}`
-      );
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
 
-      act(() => {
-        categoryToSelect.click();
-      });
+    act(() => {
+      categoryToSelect.click();
     });
 
     act(() => {
@@ -212,26 +210,22 @@ describe('Facets', () => {
     const searchInput = screen.getByPlaceholderText('Search...');
     await user.type(searchInput, 'je');
 
-    await waitFor(async () => {
-      const categoryToSelect = await screen.findByText(
-        `${categoryId2} | ${categoryName1} | ${categoryPath1}`
-      );
+    const categoryToSelect = await screen.findByText(
+      `${categoryId2} | ${categoryName1} | ${categoryPath1}`
+    );
 
-      act(() => {
-        categoryToSelect.click();
-      });
+    act(() => {
+      categoryToSelect.click();
     });
 
     await user.type(searchInput, 'jeans');
 
-    await waitFor(async () => {
-      const modalCategoryToSelect = await screen.findByText(
-        `${categoryId2} | ${categoryName1} | ${categoryPath1}`
-      );
+    const modalCategoryToSelect = await screen.findByText(
+      `${categoryId2} | ${categoryName1} | ${categoryPath1}`
+    );
 
-      act(() => {
-        modalCategoryToSelect.click();
-      });
+    act(() => {
+      modalCategoryToSelect.click();
     });
 
     expect(
@@ -354,10 +348,8 @@ describe('Facets', () => {
     const searchInput = screen.getByPlaceholderText('Search...');
     await user.type(searchInput, `size{Enter}`);
 
-    await waitFor(async () => {
-      const resultCount = await screen.findByText('1 result');
-      expect(resultCount).toBeVisible();
-    });
+    const resultCount = await screen.findByText('1 result');
+    expect(resultCount).toBeVisible();
 
     expect(
       screen.queryByTestId('Row showing brand as algoControl')
@@ -868,14 +860,12 @@ describe('Facets', () => {
     const searchInput = screen.getByPlaceholderText('Search...');
     await user.type(searchInput, 'je');
 
-    await waitFor(async () => {
-      const categoryToSelect = await screen.findByText(
-        `${categoryId1} | ${categoryName1} | ${categoryPath1}`
-      );
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
 
-      act(() => {
-        categoryToSelect.click();
-      });
+    act(() => {
+      categoryToSelect.click();
     });
 
     const saveButton = await screen.findByRole('button', { name: 'Create' });
