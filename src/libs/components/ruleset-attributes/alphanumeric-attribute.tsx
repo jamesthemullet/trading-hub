@@ -4,9 +4,8 @@ import type {
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
 } from '../../api';
-
-import { Text, Typography } from '../typography/typography.styles';
 import { formatHTMLStrings } from '../../utils/format-html-strings';
+import { Text, Typography } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import {
   AlignedText,
