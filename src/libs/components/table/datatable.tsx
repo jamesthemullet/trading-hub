@@ -4,6 +4,7 @@ import { Modal, Skeleton } from '@mantine/core';
 
 import { useOnOutsideClick } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
+import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -425,6 +426,8 @@ export const DataTable = ({
                   }
                 };
 
+                const formattedIdentifier = formatHTMLStrings(identifier)!;
+
                 return (
                   <Row
                     key={id}
@@ -448,8 +451,8 @@ export const DataTable = ({
                             )}
                           </>
                         )}
-                        <NoOverflowText title={identifier}>
-                          {formatByQuery(identifier)}
+                        <NoOverflowText title={formattedIdentifier}>
+                          {formatByQuery(formattedIdentifier)}
                         </NoOverflowText>
                       </FlagAndIdentifier>
                       {categoryPlpUrl && (

@@ -8,6 +8,7 @@ import type {
 } from '@/libs/api';
 import { useGetCategories, useOnOutsideClick } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
 
 import Image from 'next/image';
 
@@ -229,7 +230,7 @@ export const CategorySearch = ({
       aria-label={`Select category ${category.identifier}`}
     >
       <Text>
-        {category.identifier} | {category.name}{' '}
+        {category.identifier} | {formatHTMLStrings(category.name)}{' '}
         {category.path && `| ${category.path}`}
       </Text>
     </Row>
@@ -240,7 +241,9 @@ export const CategorySearch = ({
   };
 
   const getCurrentName = (category: string) => {
-    return selectedCategoriesInfo?.find((c) => c.id === category)?.name;
+    return formatHTMLStrings(
+      selectedCategoriesInfo?.find((c) => c.id === category)?.name
+    );
   };
 
   return (
@@ -313,7 +316,7 @@ export const CategorySearch = ({
                   align="left"
                 >
                   <DropdownText>
-                    {category.id} {category.name}
+                    {category.id} {formatHTMLStrings(category.name)}
                   </DropdownText>
                 </DropdownOption>
               ))}

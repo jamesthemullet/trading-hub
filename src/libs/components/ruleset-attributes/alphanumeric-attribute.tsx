@@ -4,6 +4,7 @@ import type {
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
 } from '../../api';
+import { formatHTMLStrings } from '../../utils/format-html-strings';
 import { Label, Text } from '../typography/typography.styles';
 import { spacing } from '../utils/spacing';
 import {
@@ -53,7 +54,7 @@ export const AlphanumericAttribute = ({
             <AttributeValueList>
               {values.map((value) => (
                 <AttributeValuePill key={value}>
-                  <span>{value}</span>
+                  <span>{formatHTMLStrings(value)}</span>
                 </AttributeValuePill>
               ))}
             </AttributeValueList>

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 
+import { formatHTMLStrings } from '../../utils/format-html-strings';
 import { Label, Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
@@ -35,7 +36,7 @@ export const Checkboxes = ({ values, onSelect }: Props) => {
               checked={isSelected}
               onChange={() => onSelect(!isSelected, name)}
             />
-            <Label as="span">{name}</Label>
+            <Label as="span">{formatHTMLStrings(name)}</Label>
           </Row>
         ))
       ) : (
