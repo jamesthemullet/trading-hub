@@ -5,7 +5,7 @@ import '@mantine/core/styles/global.css';
 import '@mantine/dates/styles.css';
 
 import styled from '@emotion/styled';
-import { useCookies } from 'react-cookie';
+import { CookiesProvider, useCookies } from 'react-cookie';
 import { createTheme, MantineProvider, Portal } from '@mantine/core';
 
 import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
@@ -40,18 +40,36 @@ const StyledMain = styled.main`
   height: 100vh;
 `;
 
-export default function App({
-  Component,
-  pageProps,
-}: AppProps<{ session: Session | null }>) {
-  const { session } = pageProps;
+const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
   const [cookies] = useCookies([
     'flagAuthorization',
     'flagAuthorizationRoleOverride',
   ]);
 
   return (
-    <>
+    <FeatureFlagContext.Provider
+      value={{
+        hasAuthorization: cookies.flagAuthorization,
+        authorizationRoleOverride: cookies.flagAuthorizationRoleOverride || {
+          catOverride: 'No Override',
+          searchOverride: 'No Override',
+          globalOverride: 'No Override',
+        },
+      }}
+    >
+      {children}
+    </FeatureFlagContext.Provider>
+  );
+};
+
+export default function App({
+  Component,
+  pageProps,
+}: AppProps<{ session: Session | null }>) {
+  const { session } = pageProps;
+
+  return (
+    <CookiesProvider>
       {typeof window !== 'undefined' &&
         navigator.userAgent !== 'smoke-test-playwright' &&
         process.env.NODE_ENV !== 'development' && (
@@ -61,16 +79,7 @@ export default function App({
             data-website-id="35c4c416-e422-4130-9b76-b344be44cefa"
           />
         )}
-      <FeatureFlagContext.Provider
-        value={{
-          hasAuthorization: cookies.flagAuthorization,
-          authorizationRoleOverride: cookies.flagAuthorizationRoleOverride || {
-            catOverride: 'No Override',
-            searchOverride: 'No Override',
-            globalOverride: 'No Override',
-          },
-        }}
-      >
+      <FeatureFlagWrapper>
         <SessionProvider session={session}>
           <MantineProvider theme={theme}>
             <LoginCheck
@@ -86,7 +95,7 @@ export default function App({
             </Layout>
           </MantineProvider>
         </SessionProvider>
-      </FeatureFlagContext.Provider>
-    </>
+      </FeatureFlagWrapper>
+    </CookiesProvider>
   );
 }

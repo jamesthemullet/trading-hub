@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 
+import { CookiesProvider } from 'react-cookie';
 import { render, screen } from '@testing-library/react';
 
 import { useSession } from 'next-auth/react';
@@ -36,13 +37,15 @@ describe('App', () => {
       update: jest.fn(),
     });
     render(
-      <App
-        Component={() => <div>hello</div>}
-        pageProps={{
-          session: null,
-        }}
-        router={createMockNextRouter()}
-      />
+      <CookiesProvider>
+        <App
+          Component={() => <div>hello</div>}
+          pageProps={{
+            session: null,
+          }}
+          router={createMockNextRouter()}
+        />
+      </CookiesProvider>
     );
 
     expect(screen.getByText('hello')).toBeInTheDocument();
