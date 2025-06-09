@@ -282,7 +282,7 @@ describe('CategorySearch', () => {
       });
 
       const modalHeading = screen.getByRole('heading', {
-        name: 'Category',
+        name: 'Search Categories',
       });
 
       expect(modalHeading).toBeVisible();

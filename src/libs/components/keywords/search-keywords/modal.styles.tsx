@@ -20,51 +20,51 @@ export const KeywordList = styled.ul<{ unfinishedKeyword: boolean }>`
   background-color: ${color.backgroundGrey};
   overflow-y: auto;
   overflow-x: hidden;
-  height: 220px;
-  max-height: 220px;
+  height: 250px;
   align-content: baseline;
-  border-bottom: ${({ unfinishedKeyword }) =>
-    unfinishedKeyword ? `1px solid ${color.saleRed}` : 'none'};
+  border-bottom: 1px solid;
+  border-bottom-color: ${({ unfinishedKeyword }) =>
+    unfinishedKeyword ? color.saleRed : color.surfaceDark.onSurfaceDarkVariant};
 `;
 
 export const KeyWordPill = styled.li<{ isSelected: boolean }>`
   background-color: ${({ isSelected }) =>
-    isSelected ? color.selectionBox : '#fff'};
-  color: ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
-  border: 2px solid ${color.selectionBox};
-  border-radius: 6px;
-  padding: 6px 8px;
-  font-weight: 600;
+    isSelected ? color.accent.primary.primary : '#fff'};
+  color: ${({ isSelected }) =>
+    isSelected ? '#fff' : color.accent.secondary.secondary};
+  border: 2px solid
+    ${({ isSelected }) =>
+      isSelected
+        ? color.accent.primary.primary
+        : color.accent.secondary.secondary};
+  border-radius: 100px;
+  padding: 5px 8px;
   display: inline;
   text-align: center;
-  font-size: 16px;
   display: flex;
+  align-items: center;
   margin-right: ${spacing(1)};
   position: relative;
   word-break: break-word;
   text-align: left;
 
   button {
-    color: ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
+    color: ${({ isSelected }) =>
+      isSelected ? '#fff' : color.accent.secondary.secondary};
     text-align: left;
 
     &:focus {
       outline: solid
-        ${({ isSelected }) => (isSelected ? '#fff' : color.selectionBox)};
+        ${({ isSelected }) =>
+          isSelected ? '#fff' : color.accent.secondary.secondary};
     }
   }
 
   p {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    text-align: left;
-    height: 100%;
-
-    span:nth-of-type(2) {
-      font-size: 14px;
-      font-weight: 400;
-    }
+    color: ${({ isSelected }) =>
+      isSelected ? '#fff' : color.accent.secondary.secondary};
+    display: block;
+    width: 100%;
   }
 `;
 
@@ -78,8 +78,7 @@ export const RemoveKeyWordPill = styled.button`
   width: 18px;
   height: 18px;
   padding: 0;
-  margin-top: ${spacing(0.5)};
-  margin-left: ${spacing(1)};
+  margin-left: ${spacing(2)};
   background: none;
   outline: none;
   border: none;
@@ -91,7 +90,7 @@ export const StyledInput = styled.input`
 
 export const ModalSelectedKeyword = styled.div`
   display: flex;
-  padding-top: ${spacing(1)};
+  padding-top: ${spacing(2)};
 
   h4 {
     padding: ${spacing(1)} ${spacing(1)} 0 0;

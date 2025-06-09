@@ -20,7 +20,6 @@ import {
 import { SearchBox } from '../../search-box/search-box';
 import {
   ErrorMessage,
-  Label,
   Text,
   Typography,
 } from '../../typography/typography.styles';
@@ -29,7 +28,6 @@ import { spacing } from '../../utils/spacing';
 import {
   ErrorContainer,
   ErrorText,
-  Heading,
   KeywordList,
   KeyWordPill,
   ModalContainer,
@@ -55,6 +53,10 @@ const DropdownText = styled(Text)`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+`;
+
+const ModalWrapper = styled.div`
+  padding-top: ${spacing(2)};
 `;
 
 export type Props = {
@@ -233,111 +235,121 @@ export const SearchKeywords = ({
         <Modal.Content>
           <Modal.Body>
             <ModalContainer>
-              <Heading>{title}</Heading>
-              {writeEnabled && (
-                <StyledSearchContainer>
-                  <SearchBox
-                    inputProps={{
-                      id: 'searchId',
-                      label: 'search keywords',
-                      isLabelHidden: true,
-                      placeholder: 'Search...',
-                      value: filterValue,
-                      onChange: (
-                        event: React.ChangeEvent<HTMLInputElement>
-                      ) => {
-                        setFilterValue(event.target.value);
-                      },
-                    }}
-                    iconButtonProps={{
-                      id: 'SearchIconInputBtn',
-                    }}
-                  />
-                </StyledSearchContainer>
-              )}
-              {previewSearchTerm && (
-                <ModalSelectedKeyword aria-label="Preview keyword">
-                  <Label as="h4">Selected: </Label>
-                  <KeyWordPill isSelected as="p">
-                    {previewSearchTerm}
-                    {writeEnabled && (
-                      <RemoveKeyWordPill
-                        onClick={
-                          // istanbul ignore next
-                          () => {
-                            removeSearchTerm(previewSearchTerm);
-
-                            selectPreviewSearchTerm(
-                              additionalSearchTerms.length
-                                ? additionalSearchTerms[0]
-                                : undefined
-                            );
-                          }
-                        }
-                        aria-label={`Remove keyword: ${previewSearchTerm}`}
-                      >
-                        <Image
-                          alt=""
-                          src="/trading-hub/asset/icon-remove-selected-chip.svg"
-                          width={16}
-                          height={16}
-                        />
-                      </RemoveKeyWordPill>
-                    )}
-                  </KeyWordPill>
-                </ModalSelectedKeyword>
-              )}
-              <KeywordList unfinishedKeyword={unfinishedKeyword}>
-                {filteredKeywords.map((keyword, index) => (
-                  <KeyWordPill key={`${keyword}-${index}`} isSelected={false}>
-                    <SelectKeywordPill
-                      onClick={() => selectPreviewSearchTerm(keyword)}
-                    >
-                      {keyword}
-                    </SelectKeywordPill>
-                    {writeEnabled && (
-                      <RemoveKeyWordPill
-                        onClick={() => removeSearchTerm(keyword)}
-                        aria-label={`Remove keyword: ${keyword}`}
-                      >
-                        <Image
-                          alt=""
-                          src="/trading-hub/asset/icon-remove-chip.svg"
-                          width={16}
-                          height={16}
-                        />
-                      </RemoveKeyWordPill>
-                    )}
-                  </KeyWordPill>
-                ))}
+              <ModalWrapper>
+                <Typography variant="titleSmall" isStrong withMargin>
+                  {title}
+                </Typography>
                 {writeEnabled && (
-                  <StyledInput
-                    type="text"
-                    value={inputValue}
-                    placeholder="Add new keyword"
-                    onChange={(event) =>
-                      setInputValue(event.target.value.toLowerCase())
-                    }
-                    onKeyDown={(event) => {
-                      setUnfinishedKeyword(false);
-                      if (event.key === 'Enter') {
-                        onAddKeyword();
-                      }
-                    }}
-                    aria-label="Add keyword to list"
-                    style={{
-                      flex: '1',
-                      border: 'none',
-                      outline: 'none',
-                    }}
-                  />
+                  <StyledSearchContainer>
+                    <SearchBox
+                      inputProps={{
+                        id: 'searchId',
+                        label: 'search keywords',
+                        isLabelHidden: true,
+                        placeholder: 'Search...',
+                        value: filterValue,
+                        onChange: (
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                          setFilterValue(event.target.value);
+                        },
+                      }}
+                      iconButtonProps={{
+                        id: 'SearchIconInputBtn',
+                      }}
+                    />
+                  </StyledSearchContainer>
                 )}
-              </KeywordList>
-              {duplicationError && (
-                <ErrorMessage style={{ padding: 0 }}>
-                  {duplicationError}
-                </ErrorMessage>
-              )}
+                {previewSearchTerm && (
+                  <ModalSelectedKeyword aria-label="Preview keyword">
+                    <Typography as="h4" variant="bodyMedium">
+                      Selected:
+                    </Typography>
+                    <KeyWordPill isSelected as="div">
+                      <Typography variant="bodySmall" isStrong>
+                        {previewSearchTerm}
+                      </Typography>
+                      {writeEnabled && (
+                        <RemoveKeyWordPill
+                          onClick={
+                            // istanbul ignore next
+                            () => {
+                              removeSearchTerm(previewSearchTerm);
+
+                              selectPreviewSearchTerm(
+                                additionalSearchTerms.length
+                                  ? additionalSearchTerms[0]
+                                  : undefined
+                              );
+                            }
+                          }
+                          aria-label={`Remove keyword: ${previewSearchTerm}`}
+                        >
+                          <Image
+                            alt=""
+                            src="/trading-hub/asset/icon-remove-selected-chip.svg"
+                            width={16}
+                            height={16}
+                          />
+                        </RemoveKeyWordPill>
+                      )}
+                    </KeyWordPill>
+                  </ModalSelectedKeyword>
+                )}
+                <KeywordList unfinishedKeyword={unfinishedKeyword}>
+                  {filteredKeywords.map((keyword, index) => (
+                    <KeyWordPill key={`${keyword}-${index}`} isSelected={false}>
+                      <SelectKeywordPill
+                        onClick={() => selectPreviewSearchTerm(keyword)}
+                      >
+                        <Typography variant="bodySmall" isStrong>
+                          {keyword}
+                        </Typography>
+                      </SelectKeywordPill>
+                      {writeEnabled && (
+                        <RemoveKeyWordPill
+                          onClick={() => removeSearchTerm(keyword)}
+                          aria-label={`Remove keyword: ${keyword}`}
+                        >
+                          <Image
+                            alt=""
+                            src="/trading-hub/asset/icon-remove-chip.svg"
+                            width={16}
+                            height={16}
+                          />
+                        </RemoveKeyWordPill>
+                      )}
+                    </KeyWordPill>
+                  ))}
+                  {writeEnabled && (
+                    <StyledInput
+                      type="text"
+                      value={inputValue}
+                      placeholder="Add new keyword"
+                      onChange={(event) =>
+                        setInputValue(event.target.value.toLowerCase())
+                      }
+                      onKeyDown={(event) => {
+                        setUnfinishedKeyword(false);
+                        if (event.key === 'Enter') {
+                          onAddKeyword();
+                        }
+                      }}
+                      aria-label="Add keyword to list"
+                      style={{
+                        flex: '1',
+                        border: 'none',
+                        outline: 'none',
+                      }}
+                    />
+                  )}
+                </KeywordList>
+                {duplicationError && (
+                  <ErrorMessage style={{ padding: 0 }}>
+                    {duplicationError}
+                  </ErrorMessage>
+                )}
+              </ModalWrapper>
             </ModalContainer>
           </Modal.Body>
           <ModalFooter>

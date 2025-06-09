@@ -52,17 +52,11 @@ export const Categories = styled.div`
   padding: ${spacing(1)} ${spacing(1)} 0;
 `;
 
-export const SearchBox = styled.div`
-  display: flex;
-`;
-
-export const SearchWrapper = styled.div<{
-  hasModal: boolean;
-}>`
+export const SearchWrapper = styled.div`
   background-color: ${color.backgroundGrey};
   display: flex;
   border-bottom: 1px solid ${color.lightGrey};
-  min-width: ${({ hasModal }) => (hasModal ? '600px' : '710px')};
+  width: 335px;
   & div {
     border-bottom: none;
   }
@@ -92,9 +86,10 @@ export const SearchForm = styled.form`
 export const SearchInput = styled.input`
   border: none;
   background: none;
-  margin-left: ${spacing(1)};
+  padding-left: ${spacing(1)};
+  padding-right: ${spacing(4)};
   height: 54px;
-  width: calc(100% - ${spacing(1)});
+  width: 335px;
 
   &::placeholder {
     color: #222222;
@@ -151,10 +146,12 @@ export const ModalWrapper = styled.div`
 
 export const ModalSelectedCategory = styled.div`
   display: flex;
-  padding-top: ${spacing(1)};
+  align-items: center;
+  padding-top: ${spacing(2)};
 
   h4 {
     padding: ${spacing(1)} ${spacing(1)} 0 0;
+    margin-right: ${spacing(2)};
   }
 `;
 export const ModalCategoriesList = styled.ul`
@@ -167,7 +164,7 @@ export const ModalCategoriesList = styled.ul`
   background-color: ${color.backgroundGrey};
   overflow-y: auto;
   overflow-x: hidden;
-  height: 160px;
-  max-height: 260px;
+  height: 205px;
   align-content: baseline;
+  border-bottom: 1px solid ${color.surfaceDark.onSurfaceDarkVariant};
 `;

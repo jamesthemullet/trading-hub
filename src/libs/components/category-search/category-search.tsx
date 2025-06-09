@@ -30,13 +30,7 @@ import {
   RemoveKeyWordPill,
   StyledCloseButton,
 } from '../keywords/search-keywords/modal.styles';
-import {
-  ErrorMessage,
-  Header3,
-  Label,
-  Text,
-  Typography,
-} from '../typography/typography.styles';
+import { ErrorMessage, Typography } from '../typography/typography.styles';
 import { checkForDuplicates } from '../utils/check-for-duplicates';
 import {
   Container,
@@ -46,7 +40,6 @@ import {
   ModalSelectedCategory,
   ModalWrapper,
   Row,
-  SearchBox,
   SearchForm,
   SearchInput,
   SearchValue,
@@ -229,10 +222,10 @@ export const CategorySearch = ({
       }}
       aria-label={`Select category ${category.identifier}`}
     >
-      <Text>
+      <Typography variant="bodySmall">
         {category.identifier} | {formatHTMLStrings(category.name)}{' '}
         {category.path && `| ${category.path}`}
-      </Text>
+      </Typography>
     </Row>
   );
 
@@ -348,21 +341,21 @@ export const CategorySearch = ({
         <Modal.Content>
           <Modal.Body>
             <ModalWrapper>
-              <Header3>Category</Header3>
+              <Typography variant="titleSmall" isStrong withMargin as="h3">
+                Search Categories
+              </Typography>
 
               {writeEnabled && (
-                <SearchBox>
-                  <SearchWrapper hasModal>
-                    <SearchForm onSubmit={onSubmit}>
-                      <SearchInput
-                        placeholder="Search..."
-                        value={searchValue}
-                        onChange={onSearchChange}
-                      />
-                      <StyledIcon name="Search" size={32} />
-                    </SearchForm>
-                  </SearchWrapper>
-                </SearchBox>
+                <SearchWrapper>
+                  <SearchForm onSubmit={onSubmit}>
+                    <SearchInput
+                      placeholder="Search..."
+                      value={searchValue}
+                      onChange={onSearchChange}
+                    />
+                    <StyledIcon name="Search" size={32} />
+                  </SearchForm>
+                </SearchWrapper>
               )}
 
               {categoryResults.categories.length > 0 && (
@@ -373,16 +366,20 @@ export const CategorySearch = ({
 
               {previewCategory && (
                 <ModalSelectedCategory>
-                  <Label as="h4">Selected: </Label>
+                  <Typography as="h4" variant="bodyMedium">
+                    Selected:
+                  </Typography>
                   <KeyWordPill isSelected as="div">
-                    <p>
-                      <span>
+                    <div>
+                      <Typography variant="bodySmall" isStrong>
                         {previewCategory}
                         {getCurrentName(previewCategory) &&
                           ` : ${getCurrentName(previewCategory)}`}
-                      </span>
-                      <span>{getCurrentPath(previewCategory)}</span>
-                    </p>
+                      </Typography>
+                      <Typography variant="labelSmall">
+                        {getCurrentPath(previewCategory)}
+                      </Typography>
+                    </div>
 
                     {writeEnabled && (
                       <RemoveKeyWordPill
@@ -420,14 +417,16 @@ export const CategorySearch = ({
                         onClick={() => selectPreviewCategory(category)}
                         aria-label={`Additional category ${category}`}
                       >
-                        <p>
-                          <span>
+                        <div>
+                          <Typography variant="bodySmall" isStrong>
                             {category}
                             {getCurrentName(category) &&
                               ` : ${getCurrentName(category)}`}
-                          </span>
-                          <span>{getCurrentPath(category)}</span>
-                        </p>
+                          </Typography>
+                          <Typography variant="labelSmall">
+                            {getCurrentPath(category)}
+                          </Typography>
+                        </div>
                       </SearchValue>
                       {writeEnabled && (
                         <RemoveKeyWordPill
