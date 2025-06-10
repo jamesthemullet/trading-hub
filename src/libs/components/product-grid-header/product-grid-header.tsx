@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import { track } from '@/libs/hooks/utils/analytics';
+
 import { Button } from '../buttons/button/button';
 import { ModalUnsavedChanges } from '../modals';
 import { spacing } from '../utils/spacing';
@@ -81,8 +83,12 @@ export const ProductGridHeader = ({
             <Button
               theme="primary"
               isDisabled={isSaveButtonDisabled}
-              onClick={onSave}
-              data-umami-event={`${isNewRuleSet ? 'create' : 'edit'}-${rulesetType}-rule`}
+              onClick={() => {
+                track({
+                  event: `${isNewRuleSet ? 'create' : 'edit'}-${rulesetType}-rule`,
+                });
+                onSave();
+              }}
             >
               {isNewRuleSet ? 'Create' : 'Save'}
             </Button>

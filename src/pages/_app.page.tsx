@@ -72,7 +72,8 @@ export default function App({
     <CookiesProvider>
       {typeof window !== 'undefined' &&
         navigator.userAgent !== 'smoke-test-playwright' &&
-        process.env.NODE_ENV !== 'development' && (
+        // TODO: when code freeze over change to !== 'development'
+        process.env.NODE_ENV === 'development' && (
           <Script
             defer
             src="https://cloud.umami.is/script.js"

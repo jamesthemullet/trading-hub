@@ -1,5 +1,7 @@
 import type { MerchandisingErrorResponse } from '@/libs/api';
 
+import { track } from './analytics';
+
 const sendErrorToNewRelic = (err: unknown) => {
   if (window && window.newrelic) {
     if (err instanceof Error || typeof err === 'string') {
@@ -26,7 +28,7 @@ const validateErrorResponse = (err: unknown) => {
 
 export const handleError = (err: unknown) => {
   if (window) {
-    window.umami?.track(`error: ${err}`, 'click');
+    track({ event: `error: ${err}` });
     sendErrorToNewRelic(err);
   }
   return validateErrorResponse(err);
