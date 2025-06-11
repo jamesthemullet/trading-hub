@@ -518,6 +518,9 @@ export const DataTable = ({
                         checked={isEnabled}
                         disabled={!writeEnabled}
                         onChange={() => {
+                          track({
+                            event: `Toggle ${ruleType} ruleset to ${!isEnabled}`,
+                          });
                           if (onToggleRuleSet) {
                             onToggleRuleSet({ id });
                           }
@@ -558,18 +561,35 @@ export const DataTable = ({
                               <>
                                 <TableLink
                                   href={`${basePath}/rulesets/edit/${id}`}
+                                  onClick={() =>
+                                    track({
+                                      event: `${editViewText} ${ruleType} ranking rule`,
+                                    })
+                                  }
                                 >
                                   {editViewText} ranking rule
                                 </TableLink>
                                 <TableLink
                                   href={`${basePath}/facets/edit/${id}`}
+                                  onClick={() =>
+                                    track({
+                                      event: `${editViewText} ${ruleType} facet rule`,
+                                    })
+                                  }
                                 >
                                   {editViewText} facet rule
                                 </TableLink>
                               </>
                             )}
                             {ruleType === 'redirect' && (
-                              <TableLink href={`/search/redirects/edit/${id}`}>
+                              <TableLink
+                                href={`/search/redirects/edit/${id}`}
+                                onClick={() =>
+                                  track({
+                                    event: `${editViewText} ${ruleType} rule`,
+                                  })
+                                }
+                              >
                                 {editViewText} redirect rule
                               </TableLink>
                             )}

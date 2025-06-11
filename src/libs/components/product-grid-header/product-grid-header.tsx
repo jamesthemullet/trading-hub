@@ -85,7 +85,7 @@ export const ProductGridHeader = ({
               isDisabled={isSaveButtonDisabled}
               onClick={() => {
                 track({
-                  event: `${isNewRuleSet ? 'create' : 'edit'}-${rulesetType}-rule`,
+                  event: `${isNewRuleSet ? 'Create' : 'Save'} ${rulesetType} rule`,
                 });
                 onSave();
               }}

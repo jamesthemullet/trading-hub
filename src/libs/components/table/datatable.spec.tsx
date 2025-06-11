@@ -1,6 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import * as analytics from '@/libs/hooks/utils/analytics';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { DataTableProps } from './datatable';
@@ -8,6 +9,39 @@ import { DataTable } from './datatable';
 
 const mockToggle = jest.fn();
 const mockToggleRuleSet = jest.fn();
+
+jest.mock('next/link', () => {
+  const mockLink = ({
+    children,
+    href,
+    onClick,
+  }: {
+    children: React.ReactNode;
+    href: string;
+    onClick: () => void;
+  }) => {
+    return (
+      <a
+        href={href}
+        onClick={(e) => {
+          e.preventDefault();
+          onClick();
+        }}
+      >
+        {children}
+      </a>
+    );
+  };
+  mockLink.displayName = 'Link';
+  return mockLink;
+});
+
+jest.mock('@/libs/hooks/utils/analytics', () => {
+  return {
+    track: jest.fn(),
+  };
+});
+const analyticsSpy = jest.spyOn(analytics, 'track');
 
 const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];
 const sixHeadings = [
@@ -547,6 +581,59 @@ describe('DataTable', () => {
             'Are you sure you want to create a duplicate of oneId - one | twoId - two | threeId - three [...]?'
           )
         ).toBeVisible();
+      });
+    });
+  });
+
+  describe('analytics', () => {
+    it('should track editing a redirect rule', async () => {
+      const user = userEvent.setup();
+
+      renderWithProviders(<DataTable {...defaultProps} ruleType="redirect" />);
+
+      await user.click(
+        screen.getAllByRole('button', { name: 'More options' })[0]
+      );
+      await user.click(
+        screen.getByRole('link', { name: 'Edit redirect rule' })
+      );
+
+      expect(analyticsSpy).toHaveBeenCalledWith({
+        event: 'Edit redirect rule',
+      });
+    });
+
+    it('should track editing a facet rule', async () => {
+      const user = userEvent.setup();
+
+      renderWithProviders(
+        <DataTable {...defaultProps} ruleType="categoryRanking" />
+      );
+
+      await user.click(
+        screen.getAllByRole('button', { name: 'More options' })[0]
+      );
+      await user.click(screen.getByRole('link', { name: 'Edit facet rule' }));
+
+      expect(analyticsSpy).toHaveBeenCalledWith({
+        event: 'Edit categoryRanking facet rule',
+      });
+    });
+
+    it('should track editing a ranking rule', async () => {
+      const user = userEvent.setup();
+
+      renderWithProviders(
+        <DataTable {...defaultProps} ruleType="searchRanking" />
+      );
+
+      await user.click(
+        screen.getAllByRole('button', { name: 'More options' })[0]
+      );
+      await user.click(screen.getByRole('link', { name: 'Edit ranking rule' }));
+
+      expect(analyticsSpy).toHaveBeenCalledWith({
+        event: 'Edit searchRanking ranking rule',
       });
     });
   });
