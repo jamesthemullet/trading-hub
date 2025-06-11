@@ -34,7 +34,7 @@ const TabButton = styled.button<{ isActive: boolean }>`
     content: '';
     display: block;
     width: 100%;
-    height: 5px;
+    height: 2px;
     border-radius: 3px;
     margin-top: 12px;
     background-color: ${({ isActive }) => (isActive ? '#005640' : 'none')};
@@ -43,13 +43,12 @@ const TabButton = styled.button<{ isActive: boolean }>`
 
 const Count = styled.span`
   background: ${color.improvedFit};
-  color: #fff;
   margin-left: ${spacing(1)};
-  border-radius: 15px;
+  border-radius: 100px;
   padding: 2px 6px;
   font-weight: normal;
-  width: 27px;
   display: inline;
+  font-size: 11px;
 `;
 
 export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {

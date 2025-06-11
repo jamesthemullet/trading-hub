@@ -28,7 +28,6 @@ type ClosingType = 'icon' | 'button' | 'esc' | 'outsideClick';
 
 const FilterDropdownWrapper = styled.div`
   position: relative;
-  margin-bottom: ${spacing(2)};
   min-width: 125px;
 `;
 
@@ -43,6 +42,7 @@ const FilterDropdownButton = styled.button<Pick<FilterDropdownProps, 'isOpen'>>`
   justify-content: space-between;
   padding: 0 ${spacing(2)};
   width: ${sizing('100%')};
+  margin-bottom: ${spacing(2)};
 
   &:hover {
     background-color: ${color.lightGrey};

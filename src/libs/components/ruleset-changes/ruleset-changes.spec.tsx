@@ -32,7 +32,7 @@ describe('RulesetChanges', () => {
   it('should render correctly', () => {
     const { container } = render(<RulesetChanges {...defaultProps} />);
 
-    expect(container).toBeEmptyDOMElement();
+    expect(container.children[0]).toBeEmptyDOMElement();
   });
 
   it('should render with undefined data', () => {
@@ -52,7 +52,7 @@ describe('RulesetChanges', () => {
       />
     );
 
-    expect(container).toBeEmptyDOMElement();
+    expect(container.children[0]).toBeEmptyDOMElement();
   });
 
   it('should show pinned products', async () => {

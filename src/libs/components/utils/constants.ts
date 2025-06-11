@@ -17,7 +17,7 @@ export const color = {
   infoBlueBackground: '#eaf0f3',
   selectionBox: '#4273b7',
   successGreen: '#2db236',
-  improvedFit: '#e86c25',
+  improvedFit: '#EADF12',
   focusBlue: '#4273B7',
   infoBoxBlue: '#EAF5FA',
   infoBoxBorder: '#194D69',

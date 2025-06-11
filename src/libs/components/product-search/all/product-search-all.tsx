@@ -16,10 +16,9 @@ import { Checkbox } from '../../checkboxes/checkbox';
 import { Product } from '../../product/product';
 import { Search } from '../../search/search';
 import type { RuleSetActions } from '../../types';
-import { spacing } from '../../utils/spacing';
 
 const ProductSearchRootContainer = styled.div`
-  padding-top: ${spacing(2.5)};
+  height: 100%;
 `;
 const TopContainer = styled.div`
   display: flex;
@@ -30,6 +29,7 @@ const TopContainer = styled.div`
 `;
 const StyledSearch = styled(Search)`
   width: 100%;
+  max-width: 400px;
   & > div {
     & > input {
       height: 53px;
@@ -40,7 +40,8 @@ const ProductsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 0;
-  height: calc(100vh - 395px);
+  height: 100%;
+  padding-bottom: 108px;
   overflow: auto;
   gap: 5px;
   & > div {

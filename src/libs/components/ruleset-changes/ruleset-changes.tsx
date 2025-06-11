@@ -28,9 +28,14 @@ export type ChangePositionTypes = {
 
 const Heading = styled(Text)`
   font-size: 20px;
-  padding: ${spacing(2)} 0 0 ${spacing(2)};
+  padding: ${spacing(2)} 0;
 `;
-
+const RulesetChangesWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+`;
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -43,6 +48,17 @@ const Header = styled.div`
 const SelectAll = styled.div`
   padding: ${spacing(3)} 0 0 ${spacing(4)};
 `;
+const ChangeSection = styled.section`
+  padding: 0 ${spacing(2)};
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  width: 100%;
+
+  section {
+    padding: 0;
+  }
+}`;
 
 const PRODUCTS_TO_LOAD = 8;
 const PRODUCTS_TO_LOAD_INCREMENT = 4;
@@ -145,7 +161,7 @@ const ProductsLoader = ({
   };
 
   return (
-    <>
+    <ChangeSection>
       <Header>
         <Heading as="h2" isStrong={true}>
           {`${heading} (${products.length})`}
@@ -215,11 +231,12 @@ const ProductsLoader = ({
           );
         })}
       </Layout>
+
       {productsShown < products.length &&
         products.length > PRODUCTS_TO_LOAD_INCREMENT && (
           <ButtonWrapper>
             <Button
-              style={{ width: 'auto' }}
+              style={{ width: 'auto', marginTop: spacing(2) }}
               onClick={() => {
                 setProductsShown(productsShown + PRODUCTS_TO_LOAD_INCREMENT);
               }}
@@ -228,7 +245,7 @@ const ProductsLoader = ({
             </Button>
           </ButtonWrapper>
         )}
-    </>
+    </ChangeSection>
   );
 };
 
@@ -296,93 +313,75 @@ export const RulesetChanges = ({
   );
 
   return (
-    <>
+    <RulesetChangesWrapper>
       {hasAttributeChanges && (
-        <>
+        <ChangeSection>
           <Heading as="h2" isStrong={true}>
             Attribute-level changes ({countOfAttributeChanges})
           </Heading>
-          {numericBoosts.length > 0 && (
-            <Layout>
-              {numericBoosts.map(({ field, weight }, index) => {
-                return (
-                  <NumericAttribute
-                    key={`boost-numeric-${index}`}
-                    name={field}
-                    operation="boost"
-                    weight={weight}
-                  />
-                );
-              })}
-            </Layout>
-          )}
-          {alphanumericBoost.length > 0 && (
-            <Layout>
-              {alphanumericBoost.map(({ fields, weight }, index) => (
-                <AlphanumericAttribute
-                  key={`boost-alphanumeric-${index}`}
-                  fields={fields}
+          {numericBoosts.length > 0 &&
+            numericBoosts.map(({ field, weight }, index) => {
+              return (
+                <NumericAttribute
+                  key={`boost-numeric-${index}`}
+                  name={field}
                   operation="boost"
                   weight={weight}
                 />
-              ))}
-            </Layout>
-          )}
-          {numericBury.length > 0 && (
-            <Layout>
-              {numericBury.map(({ field, weight }, index) => {
-                return (
-                  <NumericAttribute
-                    key={`bury-numeric-${index}`}
-                    name={field}
-                    operation="bury"
-                    weight={weight}
-                  />
-                );
-              })}
-            </Layout>
-          )}
-          {alphanumericBuries.length > 0 && (
-            <Layout>
-              {alphanumericBuries.map(({ fields, weight }, index) => {
-                return (
-                  <AlphanumericAttribute
-                    key={`bury-alphanumeric-${index}`}
-                    fields={fields}
-                    operation="bury"
-                    weight={weight}
-                  />
-                );
-              })}
-            </Layout>
-          )}
-          {alphanumericIncludes.length > 0 && (
-            <Layout>
-              {alphanumericIncludes.map(({ fields }, index) => {
-                return (
-                  <AlphanumericAttribute
-                    key={`include-alphanumeric-${index}`}
-                    fields={fields}
-                    operation="include"
-                  />
-                );
-              })}
-            </Layout>
-          )}
-          {alphanumericExcludes.length > 0 && (
-            <Layout>
-              {alphanumericExcludes.map(({ fields }, index) => {
-                return (
-                  <AlphanumericAttribute
-                    key={`exclude-alphanumeric-${index}`}
-                    fields={fields}
-                    operation="exclude"
-                  />
-                );
-              })}
-            </Layout>
-          )}
-        </>
+              );
+            })}
+          {alphanumericBoost.length > 0 &&
+            alphanumericBoost.map(({ fields, weight }, index) => (
+              <AlphanumericAttribute
+                key={`boost-alphanumeric-${index}`}
+                fields={fields}
+                operation="boost"
+                weight={weight}
+              />
+            ))}
+          {numericBury.length > 0 &&
+            numericBury.map(({ field, weight }, index) => {
+              return (
+                <NumericAttribute
+                  key={`bury-numeric-${index}`}
+                  name={field}
+                  operation="bury"
+                  weight={weight}
+                />
+              );
+            })}
+          {alphanumericBuries.length > 0 &&
+            alphanumericBuries.map(({ fields, weight }, index) => {
+              return (
+                <AlphanumericAttribute
+                  key={`bury-alphanumeric-${index}`}
+                  fields={fields}
+                  operation="bury"
+                  weight={weight}
+                />
+              );
+            })}
+          {alphanumericIncludes.length > 0 &&
+            alphanumericIncludes.map(({ fields }, index) => {
+              return (
+                <AlphanumericAttribute
+                  key={`include-alphanumeric-${index}`}
+                  fields={fields}
+                  operation="include"
+                />
+              );
+            })}
+          {alphanumericExcludes.length > 0 &&
+            alphanumericExcludes.map(({ fields }, index) => {
+              return (
+                <AlphanumericAttribute
+                  key={`exclude-alphanumeric-${index}`}
+                  fields={fields}
+                  operation="exclude"
+                />
+              );
+            })}
+        </ChangeSection>
       )}
 
       {blockedProductsCount > 0 && (
@@ -464,6 +463,6 @@ export const RulesetChanges = ({
           onSelectAll={onSelectAll}
         />
       )}
-    </>
+    </RulesetChangesWrapper>
   );
 };

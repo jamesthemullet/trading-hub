@@ -15,7 +15,6 @@ import pluralize from 'pluralize';
 import { Button } from '../buttons/button/button';
 import type { AttributeEdit, RuleSetActions } from '../types';
 import { Typography } from '../typography/typography.styles';
-import { spacing } from '../utils/spacing';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { NumericAttribute } from './numeric-attribute';
 import { AttributeCount } from './ruleset-attributes.styles';
@@ -23,7 +22,6 @@ import { RulesetAttributesModal } from './ruleset-attributes-modal';
 
 const Wrapper = styled.div`
   position: relative;
-  margin: ${spacing(3)} auto;
 `;
 
 const RuleSetAttributesContainer = styled.div`

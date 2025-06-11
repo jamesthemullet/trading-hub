@@ -13,7 +13,7 @@ export const AttributeCount = styled(Text)`
 
 export const AttributeWrapper = styled.div`
   border: solid 1px #999;
-  margin-bottom: ${spacing(3)};
+  margin-bottom: 10px;
   width: 100%;
 `;
 
