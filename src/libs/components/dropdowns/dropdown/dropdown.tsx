@@ -35,14 +35,13 @@ const FilterDropdownButton = styled.button<Pick<FilterDropdownProps, 'isOpen'>>`
   align-items: center;
   background: ${color.backgroundGrey};
   border: none;
-  border-bottom: 1px solid #b1b1b1;
+  border-bottom: 1px solid ${color.role.outline.outline};
   border-radius: 4px 4px 0 0;
   display: flex;
   height: ${sizing(6)};
   justify-content: space-between;
   padding: 0 ${spacing(2)};
   width: ${sizing('100%')};
-  margin-bottom: ${spacing(2)};
 
   &:hover {
     background-color: ${color.lightGrey};

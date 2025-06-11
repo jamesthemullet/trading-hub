@@ -146,7 +146,7 @@ export const CountrySelectorLabel = styled(Text)`
 
 export const CountryPreviewDropdown = styled(Dropdown)`
   width: 155px;
-  height: 54px;
+  height: 56px;
 
   img {
     margin-left: -${spacing(2)};

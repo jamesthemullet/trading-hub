@@ -31,6 +31,7 @@ const RowsPerPageContainer = styled.div`
   justify-content: center;
   align-items: baseline;
   margin-right: 18px;
+  margin-bottom: ${spacing(2)};
 `;
 const PageSizeItem = styled.div`
   padding: ${spacing(1)};
