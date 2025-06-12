@@ -18,6 +18,7 @@ import {
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { color } from '@/libs/components/utils/constants';
+import { track } from '@/libs/hooks/utils/analytics';
 
 const RedirectType = styled.div`
   border-top: solid 1px ${color.darkHeritageGreen};
@@ -200,9 +201,10 @@ export const Redirect = ({
               Influence
             </Typography>
             <CountrySelectorDropdown
-              onChange={(country: MerchandisingCountryCode) =>
-                onUpdate('countryCode', country)
-              }
+              onChange={(country: MerchandisingCountryCode) => {
+                onUpdate('countryCode', country);
+                track({ event: `Change redirect influence to ${country}` });
+              }}
               selectedCountryCode={redirect.countryCode}
               writeEnabled={writeEnabled}
             />

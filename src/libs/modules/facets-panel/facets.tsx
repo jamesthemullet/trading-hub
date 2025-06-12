@@ -26,6 +26,7 @@ import { SearchAndCategoryFacetsPanelModal } from '@/libs/components/modals/face
 import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
 import { useFacetsList } from '@/libs/hooks';
+import { track } from '@/libs/hooks/utils/analytics';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Image from 'next/image';
@@ -389,6 +390,9 @@ export const Facets = ({
             <CountrySelectorDropdown
               onChange={(country) => {
                 dispatch({ type: 'changeCountry', payload: country });
+                track({
+                  event: `Change ${facetType} facet influence to ${country}`,
+                });
                 if (country !== 'UK_IE') {
                   setSelectedPreviewCountryCode(country);
                 }
@@ -463,6 +467,7 @@ export const Facets = ({
                   <DropdownItem
                     as="button"
                     onClick={() => {
+                      track({ event: 'Change search facets preview to IE' });
                       setSelectedPreviewCountryCode?.('IE');
                       setIsCountryDropdownOpen(false);
                     }}
@@ -478,6 +483,7 @@ export const Facets = ({
                   <DropdownItem
                     as="button"
                     onClick={() => {
+                      track({ event: 'Change search facets preview to UK' });
                       setSelectedPreviewCountryCode?.('UK');
                       setIsCountryDropdownOpen(false);
                     }}

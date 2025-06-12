@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
 import { useOnOutsideClick } from '@/libs/hooks';
+import { track } from '@/libs/hooks/utils/analytics';
 
 import {
   Arrow,
@@ -54,6 +55,9 @@ export const CountryFilterDropdown = ({
       return { ...option, selected: false };
     });
 
+    track({
+      event: `Change datatable filter to ${dropdownOptions[index].label}`,
+    });
     setDropdownOptions(updatedDropdownOptions);
     setIsDropdownOpen(false);
   };

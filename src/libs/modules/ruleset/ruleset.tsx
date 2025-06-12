@@ -35,6 +35,7 @@ import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-
 import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
 import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
 import { usePreview } from '@/libs/hooks';
+import { track } from '@/libs/hooks/utils/analytics';
 
 import isEqual from 'lodash/isEqual';
 import Image from 'next/image';
@@ -470,6 +471,9 @@ export const Ruleset = ({
           <CountrySelectorDropdown
             onChange={(country) => {
               dispatch({ type: 'changeCountry', payload: country });
+              track({
+                event: `Change ${rulesetType} ranking rule influence to ${country}`,
+              });
               if (country === 'UK' && selectedPreviewCountryCode === 'IE') {
                 setSelectedPreviewCountryCode('UK');
               }
@@ -655,6 +659,10 @@ export const Ruleset = ({
                             <DropdownItem
                               as="button"
                               onClick={() => {
+                                track({
+                                  event:
+                                    'Change search ranking rule preview to IE',
+                                });
                                 setSelectedPreviewCountryCode('IE');
                                 setIsCountryDropdownOpen(false);
                               }}
@@ -670,6 +678,10 @@ export const Ruleset = ({
                             <DropdownItem
                               as="button"
                               onClick={() => {
+                                track({
+                                  event:
+                                    'Change search ranking rule preview to UK',
+                                });
                                 setSelectedPreviewCountryCode('UK');
                                 setIsCountryDropdownOpen(false);
                               }}
