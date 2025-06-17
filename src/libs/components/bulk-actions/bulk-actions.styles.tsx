@@ -12,7 +12,7 @@ export const ConfirmationPanel = styled.div`
   z-index: 1;
   bottom: 0;
   right: 0;
-  padding-left: ${spacing(8)};
+  padding-left: ${spacing(12)};
   position: fixed;
   min-height: 60px;
   display: flex;

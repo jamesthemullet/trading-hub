@@ -782,6 +782,7 @@ export const Ruleset = ({
             setSelectedSearchProducts([]);
           }}
           ruleset={ruleset}
+          rulesetType={rulesetType}
         />
       )}
 

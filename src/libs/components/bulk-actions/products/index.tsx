@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Divider, Modal } from '@mantine/core';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
+import { track } from '@/libs/hooks/utils/analytics';
 
 import pluralize from 'pluralize';
 
@@ -27,6 +28,7 @@ type BulkActionsTypes = {
   ruleset: MerchandisingRuleSet;
   selectedProducts: string[];
   onReset: () => void;
+  rulesetType: 'global' | 'category' | 'search';
 };
 
 type ActionType = 'boost' | 'bury' | 'block';
@@ -38,6 +40,7 @@ export const BulkActions = ({
   onReset,
   ruleset,
   selectedProducts,
+  rulesetType,
 }: BulkActionsTypes) => {
   const [showBulkActionsMenu, setShowBulkActionsMenu] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,6 +57,9 @@ export const BulkActions = ({
       },
     });
     setShowBulkActionsMenu(false);
+    track({
+      event: `Bulk Action - ${rulesetType} - ${type} - ${selectedProducts.length} ${pluralize('item', selectedProducts.length)}`,
+    });
     onReset();
   };
 
@@ -67,6 +73,9 @@ export const BulkActions = ({
       },
     });
     setShowBulkActionsMenu(false);
+    track({
+      event: `Bulk Action - ${rulesetType} - restore - ${selectedProducts.length} ${pluralize('item', selectedProducts.length)}`,
+    });
     onReset();
   };
 
