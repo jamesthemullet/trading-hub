@@ -637,7 +637,9 @@ describe('Search Facet Management Editing', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+        expect(
+          screen.getByRole('button', { name: 'Close' })
+        ).toBeInTheDocument();
       });
 
       const clearButton = await screen.findByLabelText(

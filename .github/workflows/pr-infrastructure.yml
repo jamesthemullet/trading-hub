@@ -176,16 +176,16 @@ jobs:
               echo "The URI $new_uri is already in the list"
           else
               echo "Adding the URI $new_uri to the list"
-              az ad app update --id "${{ steps.check-app-exists.outputs.object-id }}" --web-redirect-uris $existing_redirect_uris $new_uri
+              az ad app update --id "${{ steps.check-app-exists.outputs.object-id }}" --web-redirect-uris "$existing_redirect_uris" "$new_uri"
           fi
 
       - name: Login via Azure CLI as Cloud9 own SP
         if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
         uses: azure/login@v2.3.0
         with:
-          client-id: ${{ secrets.SP_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.FEDERATED_AD_CLIENT_ID }}
+          tenant-id: ${{ secrets.FEDERATED_AD_TENANT_ID }}
+          subscription-id: ${{ secrets.FEDERATED_SUBSCRIPTION_ID }}
       - name: Deploy PR infrastructure
         if: steps.check-pr-infra-exists.outputs.should_build_env == 'true'
         uses: DigitalInnovation/brightcloud/.github/actions/webapp-dynamic-env-oidc@feat/oidcn

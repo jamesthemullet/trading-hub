@@ -3,8 +3,8 @@ import { Modal } from '@mantine/core';
 
 import { Button } from '@/libs/components';
 
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { fn } from 'storybook/test';
 
 import { ModalUnsavedChanges } from './modal-unsaved-changes';
 

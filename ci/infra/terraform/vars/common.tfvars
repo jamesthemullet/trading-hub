@@ -8,7 +8,7 @@ additional_tags = {
   DataClassification = "Internal"
   deploy_app_name    = "trading-hub"
 }
-app_name         = "trading-hub" #CHANGEME # Required : Change this as you see appropriate "Preferrably: alphanumberical with hyphens as allowed characters"
+app_name         = "trading-hub" #CHANGEME # Required : Change this as you see appropriate "Preferably: alphanumerical with hyphens as allowed characters"
 github_repo_name = "trading-hub"
 port             = "4200"
 stack_version    = "1"
@@ -22,11 +22,11 @@ application_stack = {
   node_version = "20-lts"
 }
 
-#duplicated from app_name as PR environemnts appname is overridden
+#duplicated from app_name as PR environments appname is overridden
 newrelic_app_name = "trading-hub" #CHANGEME
 
 # Custom DNS
-# Uncomment & provide parent domain to be used if custom DNS is required (for production use-cases). This will deploy DNS zones.
+# Uncomment & provide parent domain to be used if custom DNS  is required (for production use-cases). This will deploy DNS zones.
 # Otherwise, leave it commented and default Azure domains will be used (good for quick prototypes and demos)
 domain_suffix = "web.engineering.mnscorp.net"
 # override_appwebsite_name = "trading-hub"

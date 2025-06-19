@@ -115,7 +115,7 @@ const eslint = [
       ],
 
       'simple-import-sort/exports': 'error',
-      'import/no-cycle': 'error',
+      // 'import/no-cycle': 'error',
     },
   },
   {

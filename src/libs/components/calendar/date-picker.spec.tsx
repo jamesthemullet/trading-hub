@@ -11,7 +11,7 @@ describe('date-picker', () => {
     jest.clearAllMocks();
   });
 
-  it('should render', () => {
+  it('should  render', () => {
     render(
       <MantineProvider>
         <DatePicker onChange={jest.fn()} />

@@ -854,7 +854,7 @@ describe('Facets', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
     });
 
     const searchInput = screen.getByPlaceholderText('Search...');

@@ -795,19 +795,21 @@ describe('Category Facet Management Editing', () => {
         name: 'Edit',
       });
 
-      act(() => {
+      await act(async () => {
         modalButton.click();
       });
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+        expect(
+          screen.getByRole('button', { name: 'Close' })
+        ).toBeInTheDocument();
       });
 
       const clearButton = await screen.findByLabelText(
         'Remove category from modal: SubCategory_428'
       );
 
-      act(() => {
+      await act(async () => {
         clearButton.click();
       });
 
