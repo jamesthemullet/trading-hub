@@ -57,7 +57,7 @@
     "@babel/preset-env": "7.27.2",
     "@babel/preset-react": "7.27.1",
     "@babel/preset-typescript": "7.27.1",
-    "@biomejs/js-api": "0.7.1",
+    "@biomejs/js-api": "1.0.0",
     "@emotion/jest": "11.13.0",
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.29.0",
