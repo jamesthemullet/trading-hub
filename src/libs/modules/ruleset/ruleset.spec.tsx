@@ -921,7 +921,7 @@ describe('Ruleset', () => {
       });
 
       expect(
-        screen.getByRole('button', { name: 'IE flag IE view' })
+        screen.getByRole('button', { name: 'IE flag &nbsp; IE view' })
       ).toBeVisible();
 
       act(() => {
@@ -929,7 +929,7 @@ describe('Ruleset', () => {
       });
 
       expect(
-        screen.queryByRole('button', { name: 'IE flag IE view' })
+        screen.queryByRole('button', { name: 'IE flag &nbsp; IE view' })
       ).not.toBeInTheDocument();
     });
 
@@ -978,7 +978,9 @@ describe('Ruleset', () => {
         selectUK.click();
       });
 
-      const selectIE = screen.getByRole('button', { name: 'IE flag IE view' });
+      const selectIE = screen.getByRole('button', {
+        name: 'IE flag &nbsp; IE view',
+      });
       act(() => {
         selectIE.click();
       });
@@ -992,7 +994,7 @@ describe('Ruleset', () => {
       });
 
       const selectUKView = screen.getByRole('button', {
-        name: 'UK flag UK view',
+        name: 'UK flag &nbsp; UK view',
       });
       act(() => {
         selectUKView.click();
