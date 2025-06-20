@@ -43,7 +43,7 @@ ENV PORT 3000
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 CMD HOSTNAME="0.0.0.0" node server.js
 
-FROM mcr.microsoft.com/playwright:v1.52.0-jammy AS e2e
+FROM mcr.microsoft.com/playwright:v1.53.1-jammy AS e2e
 RUN apt-get update
 WORKDIR /app
 COPY /package.json ./package-lock.json ./
@@ -53,6 +53,6 @@ COPY /playwright.config.ts ./
 CMD npm run test:e2e
 
 # External APIs Rest endpoints for local and pipeline use with automated tests
-FROM wiremock/wiremock:3.13.0 AS external-apis-dev
+FROM wiremock/wiremock:3.13.1 AS external-apis-dev
 COPY e2e/wiremock/ /home/wiremock
 ENTRYPOINT ["/docker-entrypoint.sh", "--global-response-templating", "--disable-gzip", "--verbose"]
