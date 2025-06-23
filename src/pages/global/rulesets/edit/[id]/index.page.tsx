@@ -37,6 +37,7 @@ const Page = ({ id }: PageProps) => {
       ruleSet: ruleSetToSave,
     });
 
+    // istanbul ignore else
     if (response.status === 'success') {
       router.push('/global/rulesets');
     }

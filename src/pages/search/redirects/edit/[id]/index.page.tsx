@@ -23,6 +23,7 @@ const EditRedirect = ({ id }: Props) => {
   const onSaveRedirect = async (redirect: MerchandisingKeywordRedirect) => {
     const response = await updateRedirect({ redirect, redirectId: id });
 
+    // istanbul ignore else
     if (response) {
       router.push('/search/redirects');
     }

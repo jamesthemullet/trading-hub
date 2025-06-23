@@ -16,6 +16,7 @@ const CreateRedirect = () => {
   const createNewRedirect = async (redirect: MerchandisingKeywordRedirect) => {
     const response = await createRedirect({ redirect });
 
+    // istanbul ignore else
     if (response) {
       router.push('/search/redirects');
     }

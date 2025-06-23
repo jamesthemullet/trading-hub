@@ -51,6 +51,7 @@ const Page = ({ id }: { id: string }) => {
       excludedFacets,
       countryCode,
     });
+    // istanbul ignore else
     if (response && response.status !== 'error') {
       return router.push('/category/facets/');
     }

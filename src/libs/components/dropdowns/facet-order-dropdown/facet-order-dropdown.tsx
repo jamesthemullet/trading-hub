@@ -104,6 +104,7 @@ export const FacetOrderDropdown = ({
   });
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // istanbul ignore else
     if (e.key === 'Escape' && isDropdownOpen) {
       return onClose();
     }

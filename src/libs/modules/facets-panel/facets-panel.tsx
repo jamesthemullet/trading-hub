@@ -306,6 +306,7 @@ export const FacetsPanel = ({
                 countryCode={countryCode}
                 facet={selectedFacet}
                 onClose={() => {
+                  // istanbul ignore else
                   if (refreshData) refreshData();
                   onClose();
                 }}

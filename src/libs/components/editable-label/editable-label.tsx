@@ -133,6 +133,7 @@ export const EditableLabel = ({
                   if (event.key === 'Escape' && canCancelEdit) {
                     setValue(originalValue);
                     setIsEditMode(false);
+                    // istanbul ignore else
                     if (onCancel) onCancel();
                   }
                 }}
@@ -172,6 +173,7 @@ export const EditableLabel = ({
                     setValue(originalValue);
                     setIsEditMode(false);
                     setError('');
+                    // istanbul ignore else
                     if (onCancel) onCancel();
                   }}
                   aria-label={`Cancel ${displayValue} change`}

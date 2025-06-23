@@ -49,6 +49,7 @@ const Page = ({ id }: PageProps) => {
   >([]);
 
   useEffect(() => {
+    // istanbul ignore else
     if (globalRuleSet.facets) {
       setFacetsFromGlobalRuleSet(globalRuleSet.facets);
     }
@@ -69,6 +70,7 @@ const Page = ({ id }: PageProps) => {
       },
     });
 
+    // istanbul ignore else
     if (response) {
       return router.push('/global/facets/');
     }

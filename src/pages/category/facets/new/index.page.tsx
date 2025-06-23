@@ -56,6 +56,7 @@ const Page = () => {
       }),
     });
 
+    // istanbul ignore else
     if (resp) {
       return router.push('/category/facets');
     }

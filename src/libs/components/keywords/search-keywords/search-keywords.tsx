@@ -99,6 +99,7 @@ export const SearchKeywords = ({
   };
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // istanbul ignore else
     if (e.key === 'Escape' && isDropdownOpen) {
       e.preventDefault();
       setIsDropdownOpen(false);

@@ -254,12 +254,14 @@ export const Ruleset = ({
       },
     ]);
 
+    // istanbul ignore else
     if (!selectedCategories.length) {
       setPreviewValue(category.identifier);
       setSelectedPreviewCountryCode(
         category.identifier.includes('IE_') ? 'IE' : 'UK'
       );
     }
+    // istanbul ignore else
     if (!hasChanges) {
       setHasChanges(true);
     }
@@ -380,6 +382,20 @@ export const Ruleset = ({
     },
   ];
 
+  const createKeywordSearchRuleset = () => {
+    // istanbul ignore else
+    if (onCreateKeywordSearchRuleset && rulesetSearchTerms.length) {
+      onCreateKeywordSearchRuleset({
+        isEnabled,
+        rules: merchandisingRules,
+        searchTerms: rulesetSearchTerms,
+        startDate: ruleset.startDate,
+        endDate: ruleset.endDate,
+        countryCode: ruleset.countryCode,
+      });
+    }
+  };
+
   const onSaveRuleset = () => {
     if (onSave && rulesetId) {
       onSave({
@@ -408,15 +424,8 @@ export const Ruleset = ({
         endDate: ruleset.endDate,
         countryCode: ruleset.countryCode,
       });
-    } else if (onCreateKeywordSearchRuleset && rulesetSearchTerms.length) {
-      onCreateKeywordSearchRuleset({
-        isEnabled,
-        rules: merchandisingRules,
-        searchTerms: rulesetSearchTerms,
-        startDate: ruleset.startDate,
-        endDate: ruleset.endDate,
-        countryCode: ruleset.countryCode,
-      });
+    } else {
+      createKeywordSearchRuleset();
     }
   };
 

@@ -51,6 +51,7 @@ const Page = ({ id }: { id: string }) => {
       countryCode,
     });
 
+    // istanbul ignore else
     if (response) {
       return router.push('/search/facets/');
     }

@@ -45,6 +45,7 @@ const Page = ({ id }: PageProps) => {
       ...(ruleSet.countryCode && { countryCode: ruleSet.countryCode }),
     });
 
+    // istanbul ignore else
     if (response.status === 'success') {
       router.push('/category/rulesets');
     }

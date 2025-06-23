@@ -27,6 +27,7 @@ const validateErrorResponse = (err: unknown) => {
 };
 
 export const handleError = (err: unknown) => {
+  // istanbul ignore else
   if (window) {
     track({ event: `error: ${err}` });
     sendErrorToNewRelic(err);

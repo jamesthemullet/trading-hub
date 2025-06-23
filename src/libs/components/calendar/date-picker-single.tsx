@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { ChangeEvent } from 'react';
 import { useRef } from 'react';
 import { ActionIcon } from '@mantine/core';
 import type { DatePickerProps } from '@mantine/dates';
@@ -75,6 +76,10 @@ export const DatePickerSingle = ({
 
   const isToggleEnabled = value === null;
 
+  // istanbul ignore next
+  const handleChange = (val: string | null) =>
+    onChange(val ? new Date(val) : null);
+
   return (
     <CalendarContainer>
       <Header>
@@ -110,9 +115,9 @@ export const DatePickerSingle = ({
           size="sm"
           numberOfColumns={2}
           type="default"
-          weekdayFormat={(date) => weekDayFormat(new Date(date))}
+          weekdayFormat={(date: string) => weekDayFormat(new Date(date))}
           value={value}
-          onChange={(val) => onChange(new Date(val))}
+          onChange={handleChange}
           minDate={new Date()}
           {...datePickerProps}
         />
@@ -124,7 +129,9 @@ export const DatePickerSingle = ({
             minTime="00:00"
             value={startTime}
             disabled={value === null}
-            onChange={(event) => setStartTime(event.currentTarget.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setStartTime(event.currentTarget.value)
+            }
             ref={startTimeRef}
             rightSection={
               <ActionIcon

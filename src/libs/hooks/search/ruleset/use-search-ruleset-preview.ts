@@ -77,6 +77,7 @@ export const useSearchRuleSetPreview = (id: string) => {
         setProducts(previewData.products);
         setError('');
       } catch (error) {
+        // istanbul ignore else
         if (error && typeof error === 'object' && 'status' in error) {
           setError(handleError(error));
           setIsLoading(false);

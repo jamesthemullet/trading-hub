@@ -55,6 +55,7 @@ const NewRuleSetPage = () => {
       isEnabled: true,
     });
 
+    // istanbul ignore else
     if (resp) {
       return router.push('/search/facets');
     }

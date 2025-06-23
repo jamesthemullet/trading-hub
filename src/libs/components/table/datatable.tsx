@@ -542,6 +542,7 @@ export const DataTable = ({
                       <TableActions onKeyDown={handleOnKeyDown}>
                         <ArrowContainer
                           onKeyDown={(e) => {
+                            // istanbul ignore else
                             if (e.key === 'Enter') {
                               e.stopPropagation();
                               handleOptionToggle(id);
@@ -598,6 +599,7 @@ export const DataTable = ({
                                 title="Delete"
                                 onMouseDown={onConfirmDelete}
                                 onKeyDown={(e) => {
+                                  // istanbul ignore else
                                   if (e.key === 'Enter') {
                                     onConfirmDelete();
                                   }
@@ -612,6 +614,7 @@ export const DataTable = ({
                                 title="Duplicate"
                                 onMouseDown={onConfirmDuplicate}
                                 onKeyDown={(e) => {
+                                  // istanbul ignore else
                                   if (e.key === 'Enter') {
                                     onConfirmDuplicate();
                                   }

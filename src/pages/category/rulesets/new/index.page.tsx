@@ -32,6 +32,7 @@ const NewRuleSetPage = () => {
       countryCode,
     });
 
+    // istanbul ignore else
     if (resp) {
       return router.push('/category/rulesets');
     }

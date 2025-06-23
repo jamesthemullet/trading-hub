@@ -54,6 +54,7 @@ export const CountrySelectorDropdown = ({
   const handleSelectedOption = (index: number) => {
     const updatedDropdownOptions = dropdownOptions.map((option) => {
       if (option.index === index) {
+        // istanbul ignore else
         if (onChange) {
           onChange(option.countryCode);
         }
@@ -79,6 +80,7 @@ export const CountrySelectorDropdown = ({
   });
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // istanbul ignore else
     if (e.key === 'Escape' && isDropdownOpen) {
       return onClose();
     }

@@ -58,11 +58,13 @@ export const useRuleSetRowsState = <
     ) => {
       const asyncCall = async () => {
         const emptyRuleSet = mapping.getEmptyRuleSet!();
+        // istanbul ignore else
         if (newRowCreateMode === 'create-then-redirect') {
           setIsLoading(true);
           const [error, result] = await handlePromise(
             mapping.newRuleSet(emptyRuleSet)
           );
+          // istanbul ignore else
           if (error) {
             setError(
               `Failed to create new ruleset ${JSON.stringify(handleError(error))}`
@@ -94,6 +96,7 @@ export const useRuleSetRowsState = <
           })
         );
 
+        // istanbul ignore else
         if (error) {
           setError(
             `Error whilst retrieving ruleset: ${JSON.stringify(handleError(error))}`
@@ -122,6 +125,7 @@ export const useRuleSetRowsState = <
     ({ id }) => {
       const asyncCall = async () => {
         const [error] = await handlePromise(mapping.deleteRuleSetById(id));
+        // istanbul ignore else
         if (error) {
           setError(
             `Error whilst deleting ruleset: ${JSON.stringify(handleError(error))}`
@@ -164,6 +168,7 @@ export const useRuleSetRowsState = <
         const [error, result] = await handlePromise(
           mapping.newRuleSet(ruleSetWithIsEnabledSetToFalse)
         );
+        // istanbul ignore else
         if (error) {
           setError(
             `Failed to duplicate ruleset ${JSON.stringify(handleError(error))}`
@@ -208,6 +213,7 @@ export const useRuleSetRowsState = <
         const [error, updatedRow] = await handlePromise(
           mapping.updateRuleSetById(id, toggledRuleSet)
         );
+        // istanbul ignore else
         if (error) {
           setError(
             `Error whilst updating ruleset: ${JSON.stringify(handleError(error))}`

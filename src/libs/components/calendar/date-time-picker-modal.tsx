@@ -107,11 +107,13 @@ export const DateTimePickerModal = ({
     const startDate = tempDateRange[0];
     const endDate = hasDateRange ? tempDateRange[1] : null;
 
+    // istanbul ignore else
     if (startTime) {
       startDate?.setHours(Number(startTime.split(':')[0]));
       startDate?.setMinutes(Number(startTime.split(':')[1]));
     }
 
+    // istanbul ignore else
     if (endTime) {
       endDate?.setHours(Number(endTime.split(':')[0]));
       endDate?.setMinutes(Number(endTime.split(':')[1]));

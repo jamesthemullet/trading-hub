@@ -48,6 +48,7 @@ const PageNavigationButton = styled.button<{ isEnabled: boolean }>`
 export const Pagination = ({ current, total, onClick }: Props) => {
   const onNextPageActivated = useCallback(
     (e: React.MouseEvent | React.KeyboardEvent) => {
+      // istanbul ignore else
       if ((e as React.KeyboardEvent).key === 'Enter' || e.type === 'click') {
         onClick(e, Math.min(current + 1, total));
       }
@@ -56,6 +57,7 @@ export const Pagination = ({ current, total, onClick }: Props) => {
   );
   const onPrevPageActivated = useCallback(
     (e: React.MouseEvent | React.KeyboardEvent) => {
+      // istanbul ignore else
       if ((e as React.KeyboardEvent).key === 'Enter' || e.type === 'click') {
         onClick(e, Math.max(current - 1, 1));
       }

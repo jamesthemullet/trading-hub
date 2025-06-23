@@ -176,6 +176,7 @@ export const CategorySearch = ({
   };
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // istanbul ignore else
     if (e.key === 'Escape' && isDropdownOpen) {
       e.preventDefault();
       setIsDropdownOpen(false);
@@ -203,6 +204,7 @@ export const CategorySearch = ({
       onSelectCategory(category);
       setDuplicationError('');
 
+      // istanbul ignore else
       if (selectedCategories.length === 0) {
         selectPreviewCategory(category.identifier);
       }

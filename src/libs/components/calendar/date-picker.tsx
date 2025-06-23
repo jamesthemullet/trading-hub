@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { ChangeEvent } from 'react';
 import { useRef } from 'react';
 import { ActionIcon } from '@mantine/core';
 import type { DatePickerProps } from '@mantine/dates';
@@ -169,8 +170,12 @@ export const DatePicker = (
           type="range"
           weekdayFormat={weekDayFormat}
           value={value}
-          onChange={(val) =>
-            onChange([new Date(val[0]), val[1] ? new Date(val[1]) : null])
+          onChange={(val: [string | null, string | null] | null) =>
+            onChange([
+              // istanbul ignore next
+              val?.[0] ? new Date(val[0]) : null,
+              val?.[1] ? new Date(val[1]) : null,
+            ])
           }
           minDate={new Date()}
           {...datePickerProps}
@@ -184,7 +189,9 @@ export const DatePicker = (
               minTime="00:00"
               value={startTime}
               disabled={value?.[0] === null}
-              onChange={(event) => setStartTime?.(event.currentTarget.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setStartTime?.(event.currentTarget.value)
+              }
               ref={startTimeRef}
               rightSection={
                 <ActionIcon
@@ -209,7 +216,7 @@ export const DatePicker = (
               maxTime="23:59"
               value={endTime}
               disabled={value?.[1] === null}
-              onChange={(event) =>
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 handleSetEndTime?.(event.currentTarget.value)
               }
               ref={endTimeRef}

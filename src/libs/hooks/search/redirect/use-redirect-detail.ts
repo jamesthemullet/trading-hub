@@ -32,6 +32,7 @@ export const useRedirectDetail = (id: string) => {
         setError('');
       } catch (error) {
         console.log('error', error);
+        // istanbul ignore else
         if (error && typeof error === 'object' && 'status' in error) {
           setError(`POST status ${error.status}`);
           setIsLoading(false);

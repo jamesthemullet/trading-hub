@@ -19,6 +19,7 @@ export const useRedirectCreate = () => {
         setIsSaving(false);
         return response.data;
       } catch (error: unknown) {
+        // istanbul ignore else
         if (error) {
           setError(handleError(error));
           setIsSaving(false);

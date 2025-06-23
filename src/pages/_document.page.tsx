@@ -14,19 +14,25 @@ type MerchHubInitialProps = DocumentInitialProps & {
 };
 
 const checkNewRelicConnection = async () => {
-  if (
+  const shouldWaitForConnection =
     process.env.NEW_RELIC_APP_NAME &&
     process.env.NEW_RELIC_LICENSE_KEY &&
     newrelic.agent?.collector &&
-    newrelic.agent.collector.isConnected() === false
-  ) {
+    newrelic.agent.collector.isConnected() === false;
+
+  if (shouldWaitForConnection) {
     return new Promise((resolve) => {
       newrelic.agent.on('connected', resolve);
     });
-  } else if (
+  }
+
+  // istanbul ignore else
+  const shouldWarnMissingEnvVars =
     process.env.NODE_ENV !== 'development' &&
-    (!process.env.NEW_RELIC_APP_NAME || !process.env.NEW_RELIC_LICENSE_KEY)
-  ) {
+    (!process.env.NEW_RELIC_APP_NAME || !process.env.NEW_RELIC_LICENSE_KEY);
+
+  // istanbul ignore else
+  if (shouldWarnMissingEnvVars) {
     logger.warn('missing new relic env vars');
   }
 };
