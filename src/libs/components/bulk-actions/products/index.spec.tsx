@@ -358,7 +358,7 @@ describe('Product bulk actions', () => {
       collapseWhitespace: false,
     });
     expect(message.textContent?.replace(/\u00a0/g, ' ')).toEqual(
-      'Are you sure you want to proceed? This action will apply to 4&nbsp;items and will overwrite existing actions on 3&nbsp;items.'
+      'Are you sure you want to proceed? This action will apply to 4 items and will overwrite existing actions on 3 items.'
     );
   });
 

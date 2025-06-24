@@ -558,7 +558,7 @@ describe('Facets', () => {
       />
     );
 
-    expect(screen.getAllByText('&nbsp; IE view')).toHaveLength(1);
+    expect(screen.getAllByText('IE view')).toHaveLength(1);
     const selectPreview = screen.getByRole('button', {
       name: 'Select country for preview',
     });
@@ -568,14 +568,13 @@ describe('Facets', () => {
     });
 
     const selectIE = screen.getByRole('button', {
-      name: 'IE flag &nbsp; IE view',
+      name: 'IE flag IE view',
     });
     act(() => {
       selectIE.click();
     });
 
-    expect(screen.getAllByText('IE view')).toHaveLength(1);
-    expect(screen.getAllByText('&nbsp; IE view')).toHaveLength(1);
+    expect(screen.getAllByText('IE view')).toHaveLength(2);
   });
 
   it('should set the preview country for search facets to UK', async () => {
@@ -598,14 +597,13 @@ describe('Facets', () => {
     });
 
     const selectUK = screen.getByRole('button', {
-      name: 'UK flag &nbsp; UK view',
+      name: 'UK flag UK view',
     });
     act(() => {
       selectUK.click();
     });
 
-    expect(screen.getAllByText('&nbsp; UK view')).toHaveLength(1);
-    expect(screen.getAllByText('UK view')).toHaveLength(1);
+    expect(screen.getAllByText('UK view')).toHaveLength(2);
   });
 
   it('should open and close the preview country dropdown', async () => {
@@ -628,7 +626,7 @@ describe('Facets', () => {
     });
 
     expect(
-      screen.getByRole('button', { name: 'UK flag &nbsp; UK view' })
+      screen.getByRole('button', { name: 'UK flag UK view' })
     ).toBeVisible();
 
     act(() => {
@@ -636,7 +634,7 @@ describe('Facets', () => {
     });
 
     expect(
-      screen.queryByRole('button', { name: 'UK flag &nbsp; UK view' })
+      screen.queryByRole('button', { name: 'UK flag UK view' })
     ).not.toBeInTheDocument();
   });
 
@@ -651,7 +649,7 @@ describe('Facets', () => {
       />
     );
 
-    expect(screen.getAllByText('&nbsp; IE view')).toHaveLength(1);
+    expect(screen.getAllByText('IE view')).toHaveLength(1);
     const selectMarket = screen.getByRole('button', {
       name: 'select market',
     });

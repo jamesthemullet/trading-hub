@@ -921,7 +921,7 @@ describe('Ruleset', () => {
       });
 
       expect(
-        screen.getByRole('button', { name: 'IE flag &nbsp; IE view' })
+        screen.getByRole('button', { name: 'IE flag IE view' })
       ).toBeVisible();
 
       act(() => {
@@ -979,7 +979,7 @@ describe('Ruleset', () => {
       });
 
       const selectIE = screen.getByRole('button', {
-        name: 'IE flag &nbsp; IE view',
+        name: 'IE flag IE view',
       });
       act(() => {
         selectIE.click();
@@ -994,7 +994,7 @@ describe('Ruleset', () => {
       });
 
       const selectUKView = screen.getByRole('button', {
-        name: 'UK flag &nbsp; UK view',
+        name: 'UK flag UK view',
       });
       act(() => {
         selectUKView.click();
