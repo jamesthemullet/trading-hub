@@ -122,3 +122,23 @@ Prod: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMen
 ### Incident management
 
 [Pagerduty Merchandising Hub Escalation](https://mands.pagerduty.com/escalation_policies#P4WPYI5)
+
+### Hotfix Release Process
+
+Create your branch from the [hotfix branch](https://github.com/DigitalInnovation/trading-hub/tree/hotfix).
+
+Make your necessary changes, commit and push the code.
+
+Create a pull request, with the base branch as [hotfix branch](https://github.com/DigitalInnovation/trading-hub/tree/hotfix).
+
+If there is a code freeze, or there are other unreleased changes on the main branch, do not merge in the main branch, and do not follow the "resolve conflicts" process on your pull request.
+
+Note that merging into the hotfix branch does not require an approval, but the usual code review process should be followed if possible. This is so that an emergency release can be done out of office hours.
+
+Merge your pull request. This will trigger the [Hotfix Release workflow](https://github.com/DigitalInnovation/trading-hub/blob/main/.github/workflows/hotfix.yml).
+
+This will deploy to dev so that you can test your fix.
+
+To deploy to prod, you will need to provide approval within the Hotfix Release Github Actions flow.
+
+Once this is deployed, you will then need to create a pull request to merge the [hotfix branch](https://github.com/DigitalInnovation/trading-hub/tree/hotfix), into the [main branch](https://github.com/DigitalInnovation/trading-hub/tree/main).
