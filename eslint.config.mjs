@@ -49,13 +49,11 @@ const eslint = [
       'jsx-a11y': jsxA11Y,
       functional,
     },
-
     languageOptions: {
       globals: {
         React: true,
         NodeJS: true,
       },
-
       parser: tsParser,
     },
   },
@@ -64,12 +62,10 @@ const eslint = [
     languageOptions: {
       ecmaVersion: 5,
       sourceType: 'script',
-
       parserOptions: {
         project: ['./tsconfig.json'],
       },
     },
-
     rules: {
       'no-unused-vars': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
@@ -82,18 +78,15 @@ const eslint = [
       'functional/no-expression-statements': 'off',
       'functional/no-conditional-statements': 'off',
       'functional/no-return-void': 'off',
-
       'functional/immutable-data': [
         'error',
         {
           ignoreAccessorPattern: ['*.displayName', 'session.*', 'timeout.*'],
         },
       ],
-
       'functional/no-let': 'off',
       'functional/prefer-immutable-types': 'off',
       'functional/functional-parameters': 'off',
-
       'simple-import-sort/imports': [
         'error',
         {
@@ -113,14 +106,12 @@ const eslint = [
           ],
         },
       ],
-
       'simple-import-sort/exports': 'error',
-      // 'import/no-cycle': 'error',
+      'import/no-cycle': 'error',
     },
   },
   {
     files: ['**/*.spec.*'],
-
     rules: {
       '@next/next/no-document-import-in-page': 'off',
       '@next/next/no-head-element': 'off',
