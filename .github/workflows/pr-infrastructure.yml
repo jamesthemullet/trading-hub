@@ -168,7 +168,8 @@ jobs:
 
           new_uri="https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net/api/auth/callback/azure-ad"
 
-          existing_redirect_uris=$(az ad app show --id "${{ steps.check-app-exists.outputs.object-id }}" --query "[web.redirectUris]" --output tsv)
+
+          existing_redirect_uris=$(az ad app show --id "${{ steps.check-app-exists.outputs.object-id }}" --query "web.redirectUris" -o json | jq -r '.[]' | paste -sd " " -)
           echo "$existing_redirect_uris"
 
           # Check if the new URI is already in the list

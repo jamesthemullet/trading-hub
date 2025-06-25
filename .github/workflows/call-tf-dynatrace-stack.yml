@@ -19,6 +19,11 @@ permissions:
 jobs:
   check-vars:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 5
+    outputs:
+      oidc: ${{ steps.check-oidc.outputs.oidc }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,15 +31,22 @@ jobs:
         shell: bash
         id: check-oidc
         run: |
-          OIDC=$(grep 'use_oidc' ${{ github.workspace }}/ci/infra/terraform/vars/common.tfvars | grep "=" | cut -d '"' -f 2 | awk -F= '{print tolower($1)}' | sed -e 's/^[[:space:],"]*//' -e 's/[[:space:],"]*$//')
-          echo "oidc=$OIDC" >> $GITHUB_OUTPUT
-          echo "$OIDC"
-    outputs:
-      oidc: ${{ steps.check-oidc.outputs.oidc}}
+          OIDC=$(grep 'use_oidc' "${GITHUB_WORKSPACE}/ci/infra/terraform/vars/common.tfvars" | grep "=" | cut -d '"' -f 2 | awk -F= '{print tolower($1)}' | sed -e 's/^[[:space:],"]*//' -e 's/[[:space:],"]*$//')
+          if [ "$OIDC" != "true" ]; then
+            echo "OIDC is not enabled."
+            echo "Please configure federated credentials for your service principal. Using a service principal password is no longer supported"
+            exit 1
+          else
+            echo "OIDC enabled"
+          fi
+
   upload-files:
     needs:
       - check-vars
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -53,30 +65,12 @@ jobs:
           path: ci/infra/terraform/dynatrace/production/dashboard/
           if-no-files-found: ignore
 
-  call-tf-plan-dynatrace_stack:
-    needs:
-      - check-vars
-      - upload-files
-    if: ${{ needs.check-vars.outputs.oidc != 'true' }}
-    uses: DigitalInnovation/Dynatrace/.github/workflows/tf-dynatrace-stack.yml@v2
-    with:
-      TRIGGER_EVENT: ${{ github.event_name }}
-      DYNATRACE_REF: v2
-    secrets:
-      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
-      SP_PASSWORD: ${{ secrets.SP_PASSWORD }}
-      SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
-      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
-      PAGERDUTY_TOKEN: ${{ secrets.PAGERDUTY_DYNATRACE_API_KEY }}
-      _DYNATRACE_ACCESS_TOKEN: ${{ secrets._DYNATRACE_ACCESS_TOKEN }}
-      _DYNATRACE_ENV_URL: ${{ secrets._DYNATRACE_ENV_URL }}
-      DYNATRACE_IAM_CLIENT_ID: ${{ secrets.DYNATRACE_IAM_CLIENT_ID }}
-      DYNATRACE_IAM_CLIENT_SECRET: ${{ secrets.DYNATRACE_IAM_CLIENT_SECRET }}
-      DYNATRACE_IAM_ACCOUNT_ID: ${{ secrets.DYNATRACE_IAM_ACCOUNT_ID }}
-      TEAMS_WORKFLOW_WEBHOOK_URL: ${{ secrets.TEAMS_WORKFLOW_WEBHOOK_URL }}
-
   call-tf-plan-dynatrace_stack-oidc:
+    name: Call TF Plan
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
     needs:
       - check-vars
       - upload-files
