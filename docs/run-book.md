@@ -141,4 +141,6 @@ This will deploy to dev so that you can test your fix.
 
 To deploy to prod, you will need to provide approval within the Hotfix Release Github Actions flow.
 
-Once this is deployed, you will then need to create a pull request to merge the [hotfix branch](https://github.com/DigitalInnovation/trading-hub/tree/hotfix), into the [main branch](https://github.com/DigitalInnovation/trading-hub/tree/main).
+Once this is deployed, you will then need to create another pull request, this time to merge your branch into the [main branch](https://github.com/DigitalInnovation/trading-hub/tree/main).
+
+Do not merge the hotfix branch into main if there are unreleased changes on main (ie during times of code freeze).
