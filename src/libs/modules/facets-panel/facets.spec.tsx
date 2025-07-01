@@ -295,7 +295,7 @@ describe('Facets', () => {
         jeansButton.click();
       });
 
-      expect(jeansButton).not.toBeVisible();
+      expect(jeansButton).not.toBeInTheDocument();
     });
   });
 

@@ -111,6 +111,7 @@ const mockProps = {
   countryCode: mockCountryCode,
   writeEnabled: true,
 };
+
 const mockIncludeExcludeProps = {
   merchandisingRules: mockIncludeExcludeRules,
   countryCode: mockCountryCode,
@@ -124,6 +125,7 @@ describe('RulesetAttributes', () => {
         {...mockProps}
         categories={['SubCategory_429']}
         dispatch={mockDispatch}
+        rulesetType="category"
       />
     );
 
@@ -144,7 +146,11 @@ describe('RulesetAttributes', () => {
 
   it('should render correctly', () => {
     renderWithProviders(
-      <RulesetAttributes dispatch={mockDispatch} {...mockProps} />
+      <RulesetAttributes
+        dispatch={mockDispatch}
+        {...mockProps}
+        rulesetType="global"
+      />
     );
 
     expect(
@@ -432,6 +438,7 @@ describe('RulesetAttributes', () => {
         merchandisingRules={merchandisingRules}
         dispatch={mockDispatch}
         writeEnabled={true}
+        rulesetType="category"
       />
     );
 
@@ -556,6 +563,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />
       );
 
@@ -659,6 +667,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />
       );
 
@@ -686,6 +695,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -770,6 +780,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -854,6 +865,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -925,6 +937,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -993,6 +1006,7 @@ describe('RulesetAttributes', () => {
           {...mockIncludeExcludeProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -1072,6 +1086,7 @@ describe('RulesetAttributes', () => {
           {...mockIncludeExcludeProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -1151,6 +1166,7 @@ describe('RulesetAttributes', () => {
           {...mockIncludeExcludeProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -1218,6 +1234,7 @@ describe('RulesetAttributes', () => {
           {...mockIncludeExcludeProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -1287,6 +1304,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -1345,6 +1363,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -1405,6 +1424,7 @@ describe('RulesetAttributes', () => {
           {...mockProps}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
+          rulesetType="category"
         />,
         []
       );
@@ -1473,7 +1493,11 @@ describe('RulesetAttributes', () => {
       };
 
       renderWithProviders(
-        <RulesetAttributes {...mockProps} dispatch={mockDispatch} />
+        <RulesetAttributes
+          {...mockProps}
+          dispatch={mockDispatch}
+          rulesetType="category"
+        />
       );
 
       const newAttributeButton = screen.getByRole('button', {
@@ -1517,7 +1541,11 @@ describe('RulesetAttributes', () => {
 
     it('can cancel editing', async () => {
       renderWithProviders(
-        <RulesetAttributes {...mockProps} dispatch={mockDispatch} />
+        <RulesetAttributes
+          {...mockProps}
+          dispatch={mockDispatch}
+          rulesetType="category"
+        />
       );
 
       const newAttributeButton = screen.getByRole('button', {
@@ -1716,6 +1744,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
           writeEnabled={true}
+          rulesetType="category"
         />
       );
 
@@ -1757,6 +1786,7 @@ describe('RulesetAttributes', () => {
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
           writeEnabled={true}
+          rulesetType="category"
         />
       );
 

@@ -600,8 +600,6 @@ export const Ruleset = ({
                     }
                     merchandisingRules={merchandisingRules}
                     dispatch={dispatch}
-                    categoryIds={selectedCategories}
-                    searchTerms={rulesetSearchTerms}
                     countryCode={ruleset.countryCode}
                     selectedProducts={selectedSearchProducts}
                     isSelectionDisabled={
@@ -617,6 +615,9 @@ export const Ruleset = ({
                           : [...selectedSearchProducts, id]
                       );
                     }}
+                    rulesetType={rulesetType}
+                    categoryIds={selectedCategories}
+                    searchTerms={rulesetSearchTerms}
                   />
                 )}
                 {currentEditorTab === 1 && (
@@ -632,6 +633,7 @@ export const Ruleset = ({
                     dispatch={dispatch}
                     searchTerms={rulesetSearchTerms}
                     writeEnabled={writeEnabled}
+                    rulesetType={rulesetType}
                   />
                 )}
               </ProductSearchTabContent>

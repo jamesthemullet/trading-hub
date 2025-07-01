@@ -26,6 +26,7 @@ const mockProps: ProductSearchProps = {
   pinnedProductsCount: 0,
   onSelectProduct: jest.fn(),
   selectedProducts: [],
+  rulesetType: 'category',
 };
 
 describe('ProductSearchAll', () => {
@@ -365,6 +366,7 @@ describe('ProductSearchAll', () => {
         categoryIds={['cat123']}
         dispatch={mockDispatch}
         pinnedProductsCount={0}
+        rulesetType="global"
       />
     );
 

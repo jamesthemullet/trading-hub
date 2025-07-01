@@ -123,7 +123,7 @@ describe('Create new redirect', () => {
       name: 'Edit',
     });
 
-    act(() => {
+    await act(async () => {
       modalButton.click();
     });
 
@@ -133,7 +133,7 @@ describe('Create new redirect', () => {
 
     const inputBox = screen.getByLabelText('Add keyword to list');
 
-    act(() => {
+    await act(async () => {
       user.type(inputBox, 'new keyword{enter}');
     });
 
@@ -145,7 +145,7 @@ describe('Create new redirect', () => {
 
     const closeButton = screen.getByRole('button', { name: 'Close' });
 
-    act(() => {
+    await act(async () => {
       user.click(closeButton);
     });
 
@@ -159,13 +159,13 @@ describe('Create new redirect', () => {
 
     const redirectUrl = await screen.findByPlaceholderText('c/');
 
-    act(() => {
+    await act(async () => {
       user.type(redirectUrl, 'c/redirect-url');
     });
 
     const createButton = await screen.findByRole('button', { name: 'Create' });
 
-    act(() => {
+    await act(async () => {
       createButton.click();
     });
 

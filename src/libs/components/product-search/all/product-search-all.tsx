@@ -16,6 +16,7 @@ import { Checkbox } from '../../checkboxes/checkbox';
 import { Product } from '../../product/product';
 import { Search } from '../../search/search';
 import type { RuleSetActions } from '../../types';
+import { spacing } from '../../utils/spacing';
 
 const ProductSearchRootContainer = styled.div`
   height: 100%;
@@ -27,16 +28,21 @@ const TopContainer = styled.div`
   gap: 9px;
   align-items: stretch;
 `;
-const StyledSearch = styled(Search)`
-  width: 100%;
-  max-width: 400px;
+const StyledSearch = styled(Search)<{
+  rulesetType: 'global' | 'category' | 'search';
+}>`
+  width: ${(props) => (props.rulesetType === 'global' ? '336px' : '100%')};
+  max-width: 360px;
   & > div {
     & > input {
       height: 53px;
     }
   }
 `;
-const ProductsContainer = styled.div`
+
+const ProductsContainer = styled.div<{
+  rulesetType: 'global' | 'category' | 'search';
+}>`
   display: flex;
   flex-wrap: wrap;
   padding: 0;
@@ -46,23 +52,49 @@ const ProductsContainer = styled.div`
   gap: 5px;
   & > div {
     margin: 0;
-    flex: calc(50% - 10px);
+    flex: ${(props) => props.rulesetType !== 'global' && 'calc(50% - 10px)'};
     min-height: auto;
+    max-width: ${(props) => props.rulesetType === 'global' && '322px'};
   }
 `;
+
 const StyledProduct = styled(Product)`
   width: 100%;
 `;
-const InfoContainer = styled.div`
+
+const InfoContainer = styled.div<{
+  rulesetType: 'global' | 'category' | 'search';
+}>`
   display: flex;
   height: 34px;
   align-items: center;
+
+  flex-direction: ${(props) =>
+    props.rulesetType === 'global' && 'column-reverse'};
+  align-items: ${(props) => props.rulesetType === 'global' && 'flex-end'};
+  justify-content: flex-end;
+  gap: 10px;
 `;
-const SelectAll = styled.div`
+
+const SelectAll = styled.div<{
+  rulesetType: 'global' | 'category' | 'search';
+}>`
   margin-left: auto;
   display: flex;
   height: 34px;
   align-items: center;
+
+  align-items: ${(props) => props.rulesetType === 'global' && 'flex-end'};
+`;
+
+const ContainerHeader = styled.div<{
+  rulesetType: 'global' | 'category' | 'search';
+}>`
+  display: ${(props) => props.rulesetType === 'global' && 'flex'};
+  flex-direction: row;
+  justify-content: space-between;
+  margin: ${(props) =>
+    props.rulesetType === 'global' && `${spacing(1)} 0 ${spacing(3)}`};
 `;
 
 export type ProductSearchProps = {
@@ -81,6 +113,7 @@ export type ProductSearchProps = {
   isPinnable: boolean;
   merchandisingRules: MerchandisingRules;
   pinnedProductsCount: number;
+  rulesetType: 'global' | 'category' | 'search';
   categoryIds?: string[];
   searchTerms?: string[];
 };
@@ -95,8 +128,9 @@ export const ProductSearchAll = ({
   onSelectProduct,
   selectedProducts,
   pinnedProductsCount,
-  searchTerms,
+  rulesetType,
   categoryIds,
+  searchTerms,
 }: ProductSearchProps) => {
   const [productSearchTerm, setProductSearchTerm] = useState('');
   const [products, setSearchProducts] = useState<ProductType[]>([]);
@@ -151,34 +185,40 @@ export const ProductSearchAll = ({
 
   return (
     <ProductSearchRootContainer data-testid="Product Search Container">
-      <TopContainer>
-        <StyledSearch
-          placeholder="Search for product"
-          onChange={(e) => {
-            handleSearch(e.target.value);
-          }}
-        />
-      </TopContainer>
-      <InfoContainer>
-        {products.length > 0 && (
-          <>
-            {products.length} {pluralize('results', products.length)}
-            <SelectAll>
-              <Checkbox
-                label="Select all"
-                onChange={onSelectAllProducts}
-                checked={
-                  selectedProducts.length > 0 &&
-                  selectedProducts.length === products.length
-                }
-                showLabel={true}
-                disabled={isSelectionDisabled}
-              />
-            </SelectAll>
-          </>
-        )}
-      </InfoContainer>
-      <ProductsContainer data-testid="product-search-result">
+      <ContainerHeader rulesetType={rulesetType}>
+        <TopContainer>
+          <StyledSearch
+            rulesetType={rulesetType}
+            placeholder="Search for product"
+            onChange={(e) => {
+              handleSearch(e.target.value);
+            }}
+          />
+        </TopContainer>
+        <InfoContainer rulesetType={rulesetType}>
+          {products.length > 0 && (
+            <>
+              {products.length} {pluralize('results', products.length)}
+              <SelectAll rulesetType={rulesetType}>
+                <Checkbox
+                  label="Select all"
+                  onChange={onSelectAllProducts}
+                  checked={
+                    selectedProducts.length > 0 &&
+                    selectedProducts.length === products.length
+                  }
+                  showLabel={true}
+                  disabled={isSelectionDisabled}
+                />
+              </SelectAll>
+            </>
+          )}
+        </InfoContainer>
+      </ContainerHeader>
+      <ProductsContainer
+        data-testid="product-search-result"
+        rulesetType={rulesetType}
+      >
         {products.map((product, index) => {
           const id = `${product.id}-${index}`;
           const isSelected = selectedProducts.includes(product.id);

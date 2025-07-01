@@ -15,6 +15,7 @@ import pluralize from 'pluralize';
 import { Button } from '../buttons/button/button';
 import type { AttributeEdit, RuleSetActions } from '../types';
 import { Typography } from '../typography/typography.styles';
+import { spacing } from '../utils/spacing';
 import { AlphanumericAttribute } from './alphanumeric-attribute';
 import { NumericAttribute } from './numeric-attribute';
 import { AttributeCount } from './ruleset-attributes.styles';
@@ -29,6 +30,25 @@ const RuleSetAttributesContainer = styled.div`
   overflow-y: auto;
 `;
 
+const ButtonContainer = styled.div<{
+  rulesetType: 'global' | 'category' | 'search';
+}>`
+  margin: ${(props) =>
+    props.rulesetType === 'global' ? `${spacing(1)} 0` : '0'};
+  display: ${(props) => props.rulesetType === 'global' && 'flex'};
+  justify-content: space-between;
+  align-items: baseline;
+  flex-direction: ${(props) => props.rulesetType !== 'global' && 'column'};
+
+  button {
+    max-width: ${(props) => props.rulesetType === 'global' && '312px'};
+  }
+
+  p {
+    margin-bottom: ${(props) => props.rulesetType === 'global' && '0'};
+  }
+`;
+
 export type Props = {
   countryCode: MerchandisingCountryCode;
   categories?: string[];
@@ -36,6 +56,7 @@ export type Props = {
   merchandisingRules: MerchandisingRules;
   dispatch: Dispatch<RuleSetActions>;
   writeEnabled: boolean;
+  rulesetType: 'global' | 'category' | 'search';
 };
 
 export const RulesetAttributes = ({
@@ -45,6 +66,7 @@ export const RulesetAttributes = ({
   dispatch,
   searchTerms,
   writeEnabled,
+  rulesetType,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -83,21 +105,25 @@ export const RulesetAttributes = ({
   return (
     <Wrapper>
       {writeEnabled && (
-        <Button
-          theme="outlined"
-          icon="plus-simple-green"
-          isTextCentred={true}
-          onClick={() => setIsModalOpen(!isModalOpen)}
-        >
-          Create new attribute rule
-        </Button>
+        <ButtonContainer rulesetType={rulesetType}>
+          <Button
+            theme="outlined"
+            icon="plus-simple-green"
+            isTextCentred={true}
+            onClick={() => setIsModalOpen(!isModalOpen)}
+          >
+            Create new attribute rule
+          </Button>
+          {countOfAttributeChanges > 0 && (
+            <AttributeCount>
+              {countOfAttributeChanges} attribute{' '}
+              {pluralize('rule', countOfAttributeChanges)}
+            </AttributeCount>
+          )}
+        </ButtonContainer>
       )}
       {countOfAttributeChanges > 0 && (
         <RuleSetAttributesContainer data-testid="Ruleset attributes">
-          <AttributeCount>
-            {countOfAttributeChanges} attribute{' '}
-            {pluralize('rule', countOfAttributeChanges)}
-          </AttributeCount>
           {(!!alphanumericBoost.length || !!alphanumericBuries.length) && (
             <Typography variant="bodyMedium" isStrong withMargin as="h3">
               Product Description Attribute Rules
@@ -141,7 +167,6 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
-
           {!!alphanumericBuries.length &&
             alphanumericBuries.map(({ fields, weight }, index) => (
               <AlphanumericAttribute
@@ -179,7 +204,6 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
-
           {!!alphanumericIncludes.length &&
             alphanumericIncludes.map(({ fields }, index) => (
               <AlphanumericAttribute
@@ -210,7 +234,6 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
-
           {!!alphanumericExcludes.length &&
             alphanumericExcludes.map(({ fields }, index) => (
               <AlphanumericAttribute
@@ -241,13 +264,11 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
-
           {(!!numericBoosts.length || !!numericBury.length) && (
             <Typography variant="bodyMedium" isStrong withMargin as="h3">
               Numeric Attribute Rules
             </Typography>
           )}
-
           {!!numericBoosts.length &&
             numericBoosts.map(({ field, weight }, index) => (
               <NumericAttribute
@@ -281,7 +302,6 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
-
           {!!numericBury.length &&
             numericBury.map(({ field, weight }, index) => (
               <NumericAttribute
