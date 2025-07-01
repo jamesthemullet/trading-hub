@@ -43,7 +43,7 @@ ENV PORT 3000
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 CMD HOSTNAME="0.0.0.0" node server.js
 
-FROM mcr.microsoft.com/playwright:v1.53.1-jammy AS e2e
+FROM mcr.microsoft.com/playwright:v1.53.2-jammy AS e2e
 RUN apt-get update
 WORKDIR /app
 COPY /package.json ./package-lock.json ./
