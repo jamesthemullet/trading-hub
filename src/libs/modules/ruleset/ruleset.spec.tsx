@@ -11,6 +11,7 @@ import type {
   MerchandisingRules,
   MerchandisingSearchPreviewResponseBeta,
 } from '@/libs/api';
+import * as analytics from '@/libs/hooks/utils/analytics';
 import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 
 import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
@@ -80,6 +81,13 @@ jest.mock('../../hooks/use-attributes', () => ({
     };
   },
 }));
+
+jest.mock('@/libs/hooks/utils/analytics', () => {
+  return {
+    track: jest.fn(),
+  };
+});
+const analyticsSpy = jest.spyOn(analytics, 'track');
 
 const CATEGORY_SEARCH_PLACEHOLDER_TEXT = 'Search...';
 const PRODUCT_SEARCH_PLACEHOLDER_TEXT = 'Search for product';
@@ -875,6 +883,47 @@ describe('Ruleset', () => {
       ).toBeInTheDocument();
     });
 
+    it('should track preview click', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          {...defaultProps}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetType="search"
+        />
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
+      await user.type(
+        screen.getByLabelText('Add keyword to list'),
+        'new keyword{enter}'
+      );
+
+      const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+      act(() => {
+        previewButton.click();
+      });
+
+      expect(analyticsSpy).toHaveBeenCalledWith({
+        event: 'Preview search rule - new keyword',
+      });
+    });
+
     it('should open and close UK or IE view dropdown', async () => {
       const mockSave = jest.fn();
       const mockSearchTerms = ['foo', 'bar'];
@@ -1467,13 +1516,48 @@ describe('Ruleset', () => {
       />
     );
 
-    const tab2 = await screen.findByText('Changes');
+    const tab2 = screen.getByRole('button', { name: /Changes/ });
 
     await waitFor(() => {
       tab2.click();
     });
 
-    expect(screen.getByText('Pinned Products (1)')).toBeVisible();
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Pinned Products (1)' })
+    ).toBeVisible();
+  });
+
+  it('should track tab clicks', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <Ruleset
+        {...defaultProps}
+        onSave={jest.fn()}
+        onCancel={jest.fn()}
+        rulesetMerchandisingRules={mockMerchandisingRules}
+        rulesetType="category"
+      />
+    );
+
+    const tab1 = screen.getByRole('button', { name: 'Changes1' });
+    const tab2 = screen.getByRole('button', { name: 'Product' });
+    const tab3 = screen.getByRole('button', { name: 'Attribute' });
+
+    await user.click(tab1);
+
+    expect(analyticsSpy).toHaveBeenCalledWith({
+      event: 'category rules - Changes tab clicked',
+    });
+    await user.click(tab2);
+    expect(analyticsSpy).toHaveBeenCalledWith({
+      event: 'category rules - Product tab clicked',
+    });
+
+    await user.click(tab3);
+    expect(analyticsSpy).toHaveBeenCalledWith({
+      event: 'category rules - Attribute tab clicked',
+    });
   });
 
   describe('Attribute rules', () => {

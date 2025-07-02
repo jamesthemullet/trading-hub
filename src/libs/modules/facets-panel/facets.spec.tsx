@@ -2,6 +2,7 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
+import * as analytics from '@/libs/hooks/utils/analytics';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -28,6 +29,14 @@ jest.mock('next/router', () => ({
 jest.mock('../../../libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
+
+jest.mock('@/libs/hooks/utils/analytics', () => {
+  return {
+    track: jest.fn(),
+  };
+});
+
+const analyticsSpy = jest.spyOn(analytics, 'track');
 
 const categoryId1 = 'cat_123';
 const categoryId2 = 'IE_cat123';
@@ -512,6 +521,42 @@ describe('Facets', () => {
     expect(
       screen.queryByText('View rule changes made on the website below')
     ).not.toBeInTheDocument();
+  });
+
+  it('should track the opening of the preview modal for categories', async () => {
+    const categoriesInfo = [
+      {
+        id: categoryId1,
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+    renderWithProviders(
+      <Facets
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            { id: facetsListMock.facets[0].id },
+            { id: facetsListMock.facets[1].id },
+          ],
+        }}
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />
+    );
+
+    await waitFor(() => {
+      const previewButton = screen.getByRole('button', { name: 'Preview' });
+
+      act(() => {
+        previewButton.click();
+      });
+    });
+
+    expect(analyticsSpy).toHaveBeenCalledWith({
+      event: 'Preview category facets - cat_123',
+    });
   });
 
   it('should show and close the preview modal for search terms', async () => {

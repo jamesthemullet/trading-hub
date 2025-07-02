@@ -458,7 +458,12 @@ export const Ruleset = ({
           setHasChanges(false);
         }}
         hasPreview={!!selectedCategories.length || !!rulesetSearchTerms.length}
-        onPreview={() => setShowPreview(!showPreview)}
+        onPreview={() => {
+          setShowPreview(!showPreview);
+          track({
+            event: `Preview ${rulesetType} rule - ${rulesetType === 'category' ? previewValue : rulesetSearchTerms[0]}`,
+          });
+        }}
         hasChanges={
           hasChanges || !isEqual(merchandisingRules, rulesetMerchandisingRules)
         }
@@ -583,6 +588,9 @@ export const Ruleset = ({
           setCurrentEditorTab(tab);
           setSelectedProducts([]);
           setSelectedSearchProducts([]);
+          track({
+            event: `${rulesetType} rules - ${rulesPanelTabs[tab].title} tab clicked`,
+          });
         }}
         currentTab={currentEditorTab}
       />

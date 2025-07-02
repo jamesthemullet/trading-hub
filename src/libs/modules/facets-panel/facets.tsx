@@ -364,7 +364,12 @@ export const Facets = ({
         hasPreview={
           !!selectedCategoriesInfo?.length || !!selectedSearchTerms?.length
         }
-        onPreview={() => setShowPreview(!showPreview)}
+        onPreview={() => {
+          setShowPreview(!showPreview);
+          track({
+            event: `Preview ${facetType} facets - ${facetType === 'category' ? previewValue : selectedSearchTerms.join(', ')}`,
+          });
+        }}
         isNewRuleSet={!!isNewRuleset}
         hasChanges
         onCancel={onCancel}
