@@ -150,9 +150,7 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
-    await page
-      .getByRole('button', { name: 'Visual Editor', exact: true })
-      .click();
+    await page.getByRole('button', { name: 'Product', exact: true }).click();
 
     await page
       .getByLabel('Position 5', { exact: true })
