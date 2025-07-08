@@ -77,7 +77,7 @@ Anyone with an M&S email can log in to the trading hub. To access data users nee
 
 ### Logs - New relic
 
-The results of the smoke tests that run every 15 minutes are sent to New Relic.
+The results of the smoke tests that run every 15 minutes are sent to New Relic & Dynatrace.
 An incident will be created if the percentage of smoke tests that fails is above 0%.
 An e-mail will then be sent to the Search And Sort inbox.
 
