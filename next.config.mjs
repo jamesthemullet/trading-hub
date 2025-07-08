@@ -57,6 +57,7 @@ const nextConfig = {
     });
     return config;
   },
+  serverExternalPackages: ['@vercel/otel'],
 };
 
 export default nextConfig;

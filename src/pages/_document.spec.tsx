@@ -26,6 +26,10 @@ describe('<RootDocument />', () => {
   let mockedLogger: { info: jest.Mock; error: jest.Mock; warn: jest.Mock };
   let mockedNewrelic: jest.Mocked<typeof newrelic>;
 
+  beforeAll(() => {
+    process.env.DYNATRACE_RUM_SCRIPT_URL_DEV = 'https://dev-dynatrace-url.com';
+  });
+
   beforeEach(() => {
     mockedLogger = jest.mocked(logger);
     mockedNewrelic = jest.mocked(newrelic);
@@ -33,6 +37,10 @@ describe('<RootDocument />', () => {
     process.env['NEW_RELIC_APP_NAME'] = 'app-name';
     process.env['NEW_RELIC_LICENSE_KEY'] = 'license-key';
     process.env['NEW_RELIC_ENABLED'] = 'true';
+  });
+
+  afterAll(() => {
+    delete process.env.DYNATRACE_RUM_SCRIPT_URL_DEV;
   });
 
   it('should call getInitialProps without errors', async () => {
@@ -55,6 +63,7 @@ describe('<RootDocument />', () => {
       head: [],
       styles: [],
       browserTimingHeader: 'newRelicHeader',
+      dynatraceRumScriptUrl: 'https://dev-dynatrace-url.com',
     });
 
     expect(mockedLogger.info).toHaveBeenCalledWith(

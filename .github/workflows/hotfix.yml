@@ -62,6 +62,8 @@ jobs:
           NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
           NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
           NEW_RELIC_ENABLED: ${{ secrets.NEW_RELIC_ENABLED }}
+          DYNATRACE_RUM_SCRIPT_URL_DEV: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_DEV }}
+          DYNATRACE_RUM_SCRIPT_URL_PROD: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_PROD }}
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it

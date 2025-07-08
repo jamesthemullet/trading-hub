@@ -1,6 +1,6 @@
 web_application = [
         {
-            application_name             = "trading-hub"
+            application_name             = "trading-hub_non-prod"
             type                         = "MANUALLY_INJECTED"
             environment                  = "non-prod"
             real_user_monitoring_enabled = true
