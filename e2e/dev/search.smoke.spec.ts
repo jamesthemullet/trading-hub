@@ -176,7 +176,7 @@ test.describe('Search Ranking', () => {
     await page.getByRole('button', { name: 'Save' }).click();
     await page.waitForLoadState('networkidle');
 
-    await expect(page.getByText('Green Dress')).toBeVisible();
+    await expect(page.getByText('Green Dress').first()).toBeVisible();
   });
 
   test('deletes a ruleset', async ({ page }) => {

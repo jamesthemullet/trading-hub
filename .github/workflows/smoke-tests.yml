@@ -100,7 +100,7 @@ jobs:
             -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
-              "eventType": "TRADING_HUB_SMOKE_TEST",
+              "eventType": "CUSTOM_ANNOTATION",
               "title": "Smoke Test Results for '"$SERVICE_NAME"'",
               "description": "Results of the smoke tests run on '"$FORMATTED_RUN_DATE"'",
               "properties": {

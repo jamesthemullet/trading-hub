@@ -288,7 +288,7 @@ test.describe('Category Ranking', () => {
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
     await expect(
-      page.getByText('IE_SubCategory_1012341 - Scarves')
+      page.getByText('IE_SubCategory_1012341 - Scarves').first()
     ).toBeVisible();
   });
 
