@@ -80,7 +80,10 @@ test.describe('global facets', () => {
       .getByTestId('Row showing Age as algoControl')
       .getByTestId('button to open facet order dropdown')
       .click();
-    await page.getByRole('button', { name: 'include' }).click();
+    await page
+      .getByTestId('Row showing Age as algoControl')
+      .getByRole('button', { name: 'include', exact: true })
+      .click();
     await page.getByLabel('Edit display name for Age').click();
     await page.getByLabel('Edit Age input field').press('ArrowLeft');
     await page.getByLabel('Edit Age input field').fill('Hue');
@@ -99,16 +102,23 @@ test.describe('global facets', () => {
     ).toBeVisible();
 
     await page
+      .getByTestId('Row showing Age as algoControl')
       .getByTestId('button to open facet order dropdown')
-      .nth(1)
       .click();
-    await page.getByLabel('include').nth(1).click();
+    await page
+      .getByTestId('Row showing Age as algoControl')
+      .getByRole('button', { name: 'include', exact: true })
+      .click();
 
     await page
+      .getByTestId('Row showing Alcohol Type as algoControl')
       .getByTestId('button to open facet order dropdown')
-      .nth(3)
       .click();
-    await page.getByLabel('exclude').nth(3).click();
+    await page
+      .getByTestId('Row showing Alcohol Type as algoControl')
+      .getByRole('button', { name: 'exclude', exact: true })
+      .click();
+
     await expect(page.getByTestId('Row showing Age as included')).toBeVisible();
     await expect(
       page.getByTestId('Row showing Alcohol Type as excluded')

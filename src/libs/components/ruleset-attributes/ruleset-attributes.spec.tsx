@@ -71,6 +71,7 @@ jest.mock('@/libs/hooks', () => ({
       ],
     };
   },
+  useOnOutsideClick: jest.requireActual('@/libs/hooks').useOnOutsideClick,
 }));
 
 const mockRules: MerchandisingRules = {
@@ -379,10 +380,12 @@ describe('RulesetAttributes', () => {
       nextStepButton.click();
     });
 
-    const dropdownButton = screen.getAllByRole('button', { name: 'Boost' });
+    const dropdownButton = screen.getByRole('button', {
+      name: 'Select to boost or bury',
+    });
 
     act(() => {
-      dropdownButton[1].click();
+      dropdownButton.click();
     });
 
     const buryButton = screen.getByRole('button', { name: 'Bury' });
@@ -880,10 +883,12 @@ describe('RulesetAttributes', () => {
         ).toBeVisible();
       });
 
-      const dropdownButton = screen.getAllByRole('button', { name: 'Boost' });
+      const dropdownButton = screen.getByRole('button', {
+        name: 'Select to boost or bury',
+      });
 
       act(() => {
-        dropdownButton[1].click();
+        dropdownButton.click();
       });
 
       const buryButton = screen.getByRole('button', { name: 'Bury' });
@@ -952,10 +957,12 @@ describe('RulesetAttributes', () => {
         ).toBeVisible();
       });
 
-      const dropdownButton = screen.getAllByRole('button', { name: 'Boost' });
+      const dropdownButton = screen.getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
+      });
 
       act(() => {
-        dropdownButton[1].click();
+        dropdownButton.click();
       });
 
       act(() => {
@@ -1181,10 +1188,12 @@ describe('RulesetAttributes', () => {
         ).toBeVisible();
       });
 
-      const dropdownButton = screen.getAllByRole('button', { name: 'Include' });
+      const dropdownButton = screen.getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
+      });
 
       act(() => {
-        dropdownButton[1].click();
+        dropdownButton.click();
       });
 
       act(() => {
@@ -1249,10 +1258,12 @@ describe('RulesetAttributes', () => {
         ).toBeVisible();
       });
 
-      const dropdownButton = screen.getAllByRole('button', { name: 'Include' });
+      const dropdownButton = screen.getByRole('button', {
+        name: 'Select to boost or bury',
+      });
 
       act(() => {
-        dropdownButton[1].click();
+        dropdownButton.click();
       });
 
       act(() => {
@@ -1378,7 +1389,9 @@ describe('RulesetAttributes', () => {
         ).toBeVisible();
       });
 
-      const dropdownButton = screen.getAllByRole('button', { name: 'Boost' });
+      const dropdownButton = screen.getAllByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
+      });
 
       act(() => {
         dropdownButton[0].click();
@@ -1439,7 +1452,9 @@ describe('RulesetAttributes', () => {
         ).toBeVisible();
       });
 
-      const dropdownButton = screen.getAllByRole('button', { name: 'Bury' });
+      const dropdownButton = screen.getAllByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
+      });
 
       act(() => {
         dropdownButton[0].click();

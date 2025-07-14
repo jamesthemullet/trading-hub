@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 import Image from 'next/image';
 
 import { Button } from '../buttons/button/button';
-import { Menu } from '../dropdowns/dropdown.styles';
+import { Menu } from '../dropdown/dropdown.styles';
 import { Toggle } from '../toggle/toggle';
 import { Header3, Text } from '../typography/typography.styles';
 import { formatCategoriesInfo } from '../utils/format-categories-info';

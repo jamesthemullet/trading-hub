@@ -494,7 +494,7 @@ describe('Search Rulesets', () => {
 
     expect(await screen.findByAltText('UK rule')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'All marksandspencer.com' })
+      screen.getByRole('button', { name: 'Select country' })
     ).toBeVisible();
   });
 
@@ -527,7 +527,7 @@ describe('Search Rulesets', () => {
     renderWithProviders(<RuleSets />);
 
     const dropdown = screen.getByRole('button', {
-      name: 'All marksandspencer.com',
+      name: 'Select country',
     });
 
     await user.click(dropdown);
@@ -538,9 +538,7 @@ describe('Search Rulesets', () => {
     expect(mockRefetchRuleSetList).toHaveBeenCalledWith({
       countryCode: 'UK',
     });
-    expect(
-      screen.getByRole('button', { name: 'UK only marksandspencer' })
-    ).toBeVisible();
+    expect(screen.getAllByText('UK only marksandspencer')[0]).toBeVisible();
 
     const showIE = screen.getByText('IE only marksandspencer');
     await userEvent.click(showIE);
@@ -548,8 +546,6 @@ describe('Search Rulesets', () => {
     expect(mockRefetchRuleSetList).toHaveBeenCalledWith({
       countryCode: 'IE',
     });
-    expect(
-      screen.getByRole('button', { name: 'IE only marksandspencer' })
-    ).toBeVisible();
+    expect(screen.getAllByText('IE only marksandspencer')[0]).toBeVisible();
   });
 });

@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 import { Text } from '../typography/typography.styles';
@@ -8,6 +9,10 @@ import { spacing } from '../utils/spacing';
 export const DropdownWrapper = styled.div<{
   isDropdownOpen: boolean;
   width?: number;
+  hasBorder?: boolean;
+  hasBorderBottom?: boolean;
+  alignContentTowards?: 'left' | 'right' | 'center';
+  height?: 'default' | 'large';
 }>`
   width: 346px;
   position: relative;
@@ -17,10 +22,35 @@ export const DropdownWrapper = styled.div<{
   ${({ width }) => width && `min-width: ${width}px;`}
 
   img {
-    width: 24px;
-    height: 24px;
     margin-right: ${spacing(1)};
   }
+
+  ${({ hasBorderBottom = true, height }) =>
+    hasBorderBottom &&
+    `
+    border: none;
+    border-bottom: 1px solid ${color.role.outline.outline};
+    border-radius: 4px 4px 0 0;
+    ${height === 'large' ? `min-height: ${sizing(7)};` : ''}
+
+    button {
+      border: none;
+      border-radius: 4px 4px 0 0;
+      ${height === 'large' ? `min-height: ${sizing(7)};` : ''}
+    }
+  `}
+
+  ${({ hasBorder }) =>
+    hasBorder &&
+    `
+    border: 1px solid ${color.role.outline.outline};
+    border-bottom: 1px solid ${color.role.outline.outline};
+    border-radius: 4px;
+
+    button {
+      border-radius: 4px;
+    }
+  `}
 `;
 
 export const DropdownWrapperNoBorder = styled(DropdownWrapper)`
@@ -37,20 +67,28 @@ export const DropdownWrapperNoBorder = styled(DropdownWrapper)`
 `;
 
 export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+
+  height: ${sizing(5.5)};
+  width: 100%;
+
+  padding: 0;
+  padding-left: ${spacing(1)};
+
   border-radius: 4px;
   border: 1px solid #b1b1b1;
+
   background-color: ${color.backgroundGrey};
-  display: flex;
-  height: ${sizing(5.5)};
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-  width: ${sizing('100%')};
 
   ${({ isDropdownOpen }) =>
     isDropdownOpen &&
     'border-bottom: 1px solid #b1b1b1; border-radius: 4px 4px 0 0;'}
+
+  img {
+    margin-right: ${spacing(1)};
+  }
 
   &:hover {
     background-color: ${color.lightGrey};
@@ -67,16 +105,25 @@ export const FlagWrapper = styled.span`
   margin-left: -${spacing(1)};
   padding-top: ${spacing(0.5)};
 `;
+export const ImageWrapper = styled.span`
+  padding-top: ${spacing(0.5)};
+`;
 
 export const DropdownHeading = styled(Text)`
-  padding-left: ${spacing(2)};
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  padding-left: ${spacing(1)};
+
+  overflow: hidden;
   text-align: left;
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
-  width: 100%;
-  display: flex;
-  align-items: center;
+`;
+export const HeadingIcon = styled.img`
+  width: 20px;
+  height: 20px;
 `;
 
 export const ArrowContainer = styled.div<{ borderLeft?: boolean }>`
@@ -113,20 +160,28 @@ export const Menu = styled.span`
   padding: 2px;
 `;
 
-export const DropdownContainer = styled.div<{ isDropdownOpen: boolean }>`
+export const DropdownContainer = styled.div<{
+  isDropdownOpen: boolean;
+  alignContentTowards?: string;
+  contentWidth?: string;
+}>`
   position: absolute;
   top: 100%;
-  width: 100%;
+  width: ${({ contentWidth }) => contentWidth || '100%'};
   display: none;
   border: 1px solid #b1b1b1;
   border-top: none;
   background-color: #fff;
   flex-direction: column;
-  ${({ isDropdownOpen }) => isDropdownOpen && 'display: flex; z-index: 10'}
+  ${({ isDropdownOpen }) => isDropdownOpen && 'display: flex; z-index: 10;'}
+
+  ${({ alignContentTowards = 'left' }) => css`
+    ${alignContentTowards}: 0;
+  `}
 `;
 
 export const DropdownOption = styled.button<{
-  hoverColour: string;
+  hoverColour?: string;
   align?: string;
 }>`
   background-color: #fff;
@@ -134,13 +189,15 @@ export const DropdownOption = styled.button<{
   border: none;
   display: flex;
   align-items: center;
+  border: none;
+  border-top: solid 1px #999;
   text-align: ${({ align }) => (align ? align : 'center')};
   font-size: 14px;
   padding: 0 ${spacing(1)};
 
   &:hover,
   &:active {
-    ${({ hoverColour }) =>
+    ${({ hoverColour = '#f5f5f5' }) =>
       hoverColour &&
       `
       background-color: ${hoverColour};

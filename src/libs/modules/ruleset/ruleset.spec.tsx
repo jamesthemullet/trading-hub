@@ -437,7 +437,7 @@ describe('Ruleset', () => {
     await selectCategory(screen, user);
 
     const dropdownButton = screen.getByRole('button', {
-      name: 'select market',
+      name: 'Select country',
     });
 
     await user.click(dropdownButton);
@@ -1042,9 +1042,8 @@ describe('Ruleset', () => {
         selectUK.click();
       });
 
-      const selectUKView = screen.getByRole('button', {
-        name: 'UK flag UK view',
-      });
+      const selectUKView = screen.getByText('UK view');
+
       act(() => {
         selectUKView.click();
       });
@@ -1091,7 +1090,9 @@ describe('Ruleset', () => {
         expect.objectContaining({ countryCode: 'UK' })
       );
 
-      const selectMarket = screen.getByLabelText('select market');
+      const selectMarket = screen.getByRole('button', {
+        name: 'Select country',
+      });
 
       act(() => {
         selectMarket.click();
@@ -1145,7 +1146,7 @@ describe('Ruleset', () => {
       );
 
       const selectMarket = screen.getByRole('button', {
-        name: 'select market',
+        name: 'Select country',
       });
 
       act(() => {

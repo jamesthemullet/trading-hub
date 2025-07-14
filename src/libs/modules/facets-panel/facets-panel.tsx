@@ -7,10 +7,14 @@ import type {
   MerchandisingReturnedFacet,
   MerchandisingRules,
 } from '@/libs/api';
-import { Button, ProductGridHeader, Search, Text } from '@/libs/components';
+import {
+  Button,
+  CombinedDropdown,
+  ProductGridHeader,
+  Search,
+  Text,
+} from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
-import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
-import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
@@ -197,11 +201,15 @@ export const FacetsPanel = ({
         </Col>
         <Col>
           <OrderColumn>
-            <FacetOrderDropdown
+            <CombinedDropdown
+              variant="facetOrder"
               status={displayType}
-              onChange={handleOrderChange(facet)}
+              onChange={(newOrder) =>
+                handleOrderChange(facet)(newOrder as FacetDisplayType)
+              }
               hasAlgoControl
               writeEnabled={writeEnabled}
+              ariaLabel="Select to set as included, excluded or algo control"
             />
 
             {displayType === 'included' &&
@@ -257,12 +265,17 @@ export const FacetsPanel = ({
         <ScopeWrapper>
           <div>
             <CountrySelectorLabel>Influence</CountrySelectorLabel>
-            <CountrySelectorDropdown
+            <CombinedDropdown
+              variant="countrySelector"
               onChange={(country) => {
-                dispatch({ type: 'changeCountry', payload: country });
+                dispatch({
+                  type: 'changeCountry',
+                  payload: country as MerchandisingCountryCode,
+                });
               }}
               selectedCountryCode={countryCode}
               writeEnabled={writeEnabled}
+              ariaLabel="Select country"
             />
           </div>
 

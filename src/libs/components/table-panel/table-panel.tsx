@@ -7,13 +7,13 @@ import { useRouter } from 'next/router';
 import type { MerchandisingCountryCode } from '@/libs/api';
 import {
   Button,
+  CombinedDropdown,
   DataTable,
   ErrorMessage,
   Search,
   spacing,
   TablePagination,
 } from '@/libs/components';
-import { CountryFilterDropdown } from '@/libs/components/dropdowns/country-filter-dropdown/country-filter-dropdown';
 import {
   PageWrapper,
   ToolsContainer,
@@ -154,7 +154,13 @@ export const TablePanel = <
     <PageWrapper>
       <ToolsContainer>
         <Search value={searchInputValue} onChange={handleSearchInputChange} />
-        <CountryFilterDropdown onChange={setCountryCode} />
+        <CombinedDropdown
+          variant="countryFilter"
+          onChange={(country) =>
+            setCountryCode(country as MerchandisingCountryCode)
+          }
+          ariaLabel="Select country"
+        />
 
         {writeEnabled && (
           <>

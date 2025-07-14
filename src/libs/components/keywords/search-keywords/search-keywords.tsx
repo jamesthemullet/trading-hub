@@ -16,7 +16,7 @@ import {
   DropdownHeading,
   DropdownOption,
   DropdownWrapperNoBorder,
-} from '../../dropdowns/dropdown.styles';
+} from '../../dropdown/dropdown.styles';
 import { SearchBox } from '../../search-box/search-box';
 import {
   ErrorMessage,

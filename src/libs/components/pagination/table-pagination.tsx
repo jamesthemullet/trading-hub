@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
 import type { MerchandisingPagination as PaginationType } from '@/libs/api/generated/open-api';
 
-import { Dropdown } from '../dropdowns/dropdown/dropdown';
+import { CombinedDropdown } from '../dropdown/dropdown';
 import { spacing } from '../utils/spacing';
 import { Pagination } from './pagination';
 
@@ -59,8 +58,6 @@ export const TablePagination = ({
   currentPageSize: number;
   isLoading: boolean;
 }) => {
-  const [isPageSizeOpen, setIsPageSizeOpen] = useState(false);
-
   return (
     <NavigationContainer>
       {isLoading ? (
@@ -96,21 +93,16 @@ export const TablePagination = ({
           />
           <RowsPerPageContainer>
             <span>Rows per page</span>
-            <Dropdown
+            <CombinedDropdown
+              variant="generic"
               label={`${currentPageSize}`}
-              isOpen={isPageSizeOpen}
-              onOpen={() => {
-                setIsPageSizeOpen(true);
-              }}
-              onClose={() => {
-                setIsPageSizeOpen(false);
-              }}
+              width={125}
+              ariaLabel="Select rows per page"
             >
               {pageSizes.map((size) => (
                 <PageSizeItem
                   key={size}
                   onClick={() => {
-                    setIsPageSizeOpen(false);
                     if (
                       currentPage * size >
                       Math.ceil(pagination.totalItems ?? 0 / size)
@@ -124,7 +116,7 @@ export const TablePagination = ({
                   {size}
                 </PageSizeItem>
               ))}
-            </Dropdown>
+            </CombinedDropdown>
           </RowsPerPageContainer>
         </>
       )}

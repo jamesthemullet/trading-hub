@@ -748,7 +748,7 @@ describe('TablePanel', () => {
 
       expect(await screen.findByAltText('UK rule')).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: 'All marksandspencer.com' })
+        screen.getByRole('button', { name: 'Select country' })
       ).toBeVisible();
     });
 
@@ -764,8 +764,8 @@ describe('TablePanel', () => {
         />
       );
 
-      const dropdown = await screen.findByRole('button', {
-        name: 'All marksandspencer.com',
+      const dropdown = screen.getByRole('button', {
+        name: 'Select country',
       });
 
       await user.click(dropdown);
@@ -779,9 +779,7 @@ describe('TablePanel', () => {
         rows: 10,
         start: 0,
       });
-      expect(
-        screen.getByRole('button', { name: 'UK only marksandspencer' })
-      ).toBeVisible();
+      expect(screen.getAllByText('UK only marksandspencer')[0]).toBeVisible();
 
       const showIE = screen.getByText('IE only marksandspencer');
       await userEvent.click(showIE);
@@ -792,9 +790,7 @@ describe('TablePanel', () => {
         rows: 10,
         start: 0,
       });
-      expect(
-        screen.getByRole('button', { name: 'IE only marksandspencer' })
-      ).toBeVisible();
+      expect(screen.getAllByText('IE only marksandspencer')[0]).toBeVisible();
     });
   });
 

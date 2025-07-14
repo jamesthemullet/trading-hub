@@ -113,7 +113,7 @@ test.describe('Search Redirect', () => {
       page.getByRole('heading', { name: 'Edit Keyword Redirect' })
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'select market' }).click();
+    await page.getByRole('button', { name: 'Select country' }).click();
     await page.getByRole('button', { name: 'select IE market only' }).click();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();

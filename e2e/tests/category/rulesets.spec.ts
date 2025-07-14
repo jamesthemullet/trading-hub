@@ -168,11 +168,7 @@ test.describe('Categories', () => {
       page.getByText('No, there are no product rankings yet')
     ).toBeVisible();
 
-    await page
-      .getByRole('button', {
-        name: 'select market',
-      })
-      .click();
+    await page.getByRole('button', { name: 'Select country' }).click();
 
     await page
       .getByRole('button', {
@@ -472,9 +468,12 @@ test.describe('Categories', () => {
 
     await page.getByRole('button', { name: 'Numeric Attributes' }).click();
 
-    await page.getByRole('button', { name: 'Boost' }).first().click();
+    await page
+      .getByRole('button', { name: 'Select to boost or bury' })
+      .first()
+      .click();
 
-    await page.getByRole('button', { name: 'Bury' }).click();
+    await page.getByRole('button', { name: 'Select to boost or bury' }).click();
 
     await page
       .getByLabel('predictions.salesIn1Day.normalisedValue')
@@ -539,9 +538,13 @@ test.describe('Categories', () => {
       .getByRole('button', { name: 'Product description attributes' })
       .click();
 
-    await page.getByRole('button', { name: 'Boost' }).nth(1).click();
+    await page
+      .getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
+      })
+      .click();
 
-    await page.getByRole('button', { name: 'Bury' }).click();
+    await page.getByRole('button', { name: 'Bury', exact: true }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 

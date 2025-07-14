@@ -14,9 +14,8 @@ import type {
 import {
   BulkActions,
   CategorySearch,
-  Dropdown,
-  DropdownContent,
-  DropdownItem,
+  CombinedDropdown,
+  DropdownOption,
   ErrorMessage,
   Loader,
   ProductGridHeader,
@@ -27,7 +26,6 @@ import {
   Typography,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearchAll } from '@/libs/components/product-search/all/product-search-all';
@@ -94,7 +92,7 @@ const CountryPreviewWrapper = styled.div`
   display: flex;
 `;
 
-const CountryPreviewDropdown = styled(Dropdown)`
+const CountryPreviewDropdown = styled(CombinedDropdown)`
   width: 155px;
   border-radius: 0;
   margin-bottom: 0;
@@ -235,7 +233,6 @@ export const Ruleset = ({
   const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
     'UK' | 'IE'
   >(defaultPreviewCountryCode);
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
   const router = useRouter();
 
@@ -482,9 +479,13 @@ export const Ruleset = ({
           <Typography as="p" withMargin variant="labelMedium">
             Influence
           </Typography>
-          <CountrySelectorDropdown
+          <CombinedDropdown
+            variant="countrySelector"
             onChange={(country) => {
-              dispatch({ type: 'changeCountry', payload: country });
+              dispatch({
+                type: 'changeCountry',
+                payload: country as MerchandisingCountryCode,
+              });
               track({
                 event: `Change ${rulesetType} ranking rule influence to ${country}`,
               });
@@ -495,6 +496,7 @@ export const Ruleset = ({
                 setSelectedPreviewCountryCode('IE');
               }
             }}
+            ariaLabel="Select country"
             selectedCountryCode={ruleset.countryCode}
             writeEnabled={writeEnabled}
           />
@@ -663,57 +665,48 @@ export const Ruleset = ({
                     ruleset.countryCode === 'UK_IE' && (
                       <CountryPreviewWrapper>
                         <CountryPreviewDropdown
+                          variant="generic"
                           label={`${selectedPreviewCountryCode} view`}
-                          isOpen={isCountryDropdownOpen}
                           icon={`icon-${selectedPreviewCountryCode.toLowerCase()}-flag`}
-                          onOpen={() => {
-                            setIsCountryDropdownOpen(true);
-                          }}
-                          onClose={() => {
-                            setIsCountryDropdownOpen(false);
-                          }}
-                          aria-label="Select country view for visual editor"
+                          ariaLabel="Select country view for visual editor"
+                          width={155}
                         >
-                          <DropdownContent isLeftAligned>
-                            <DropdownItem
-                              as="button"
-                              onClick={() => {
-                                track({
-                                  event:
-                                    'Change search ranking rule preview to IE',
-                                });
-                                setSelectedPreviewCountryCode('IE');
-                                setIsCountryDropdownOpen(false);
-                              }}
-                            >
-                              <FlagImage
-                                src="/trading-hub/asset/icon-ie-flag.svg"
-                                width={20}
-                                height={20}
-                                alt="IE flag"
-                              />
-                              &nbsp; IE view
-                            </DropdownItem>
-                            <DropdownItem
-                              as="button"
-                              onClick={() => {
-                                track({
-                                  event:
-                                    'Change search ranking rule preview to UK',
-                                });
-                                setSelectedPreviewCountryCode('UK');
-                                setIsCountryDropdownOpen(false);
-                              }}
-                            >
-                              <FlagImage
-                                src="/trading-hub/asset/icon-uk-flag.svg"
-                                width={20}
-                                height={20}
-                                alt="UK flag"
-                              />
-                              &nbsp; UK view
-                            </DropdownItem>
-                          </DropdownContent>
+                          <DropdownOption
+                            as="button"
+                            onClick={() => {
+                              track({
+                                event:
+                                  'Change search ranking rule preview to IE',
+                              });
+                              setSelectedPreviewCountryCode('IE');
+                            }}
+                          >
+                            <FlagImage
+                              src="/trading-hub/asset/icon-ie-flag.svg"
+                              width={20}
+                              height={20}
+                              alt="IE flag"
+                            />
+                            &nbsp; IE view
+                          </DropdownOption>
+                          <DropdownOption
+                            as="button"
+                            onClick={() => {
+                              track({
+                                event:
+                                  'Change search ranking rule preview to UK',
+                              });
+                              setSelectedPreviewCountryCode('UK');
+                            }}
+                          >
+                            <FlagImage
+                              src="/trading-hub/asset/icon-uk-flag.svg"
+                              width={20}
+                              height={20}
+                              alt="UK flag"
+                            />
+                            &nbsp; UK view
+                          </DropdownOption>
                         </CountryPreviewDropdown>
                       </CountryPreviewWrapper>
                     )}

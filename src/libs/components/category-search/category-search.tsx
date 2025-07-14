@@ -19,10 +19,9 @@ import {
   ArrowContainer,
   DropdownButton,
   DropdownContainer,
-  DropdownHeading,
   DropdownOption,
   DropdownWrapperNoBorder,
-} from '../dropdowns/dropdown.styles';
+} from '../dropdown/dropdown.styles';
 import {
   KeyWordPill,
   ModalFooter,
@@ -270,7 +269,7 @@ export const CategorySearch = ({
             aria-label="select category"
             disabled={!previewCategory}
           >
-            <DropdownHeading>
+            <>
               {previewCategory ? (
                 <span
                   onMouseEnter={() => setVisibleTooltip(previewCategory)}
@@ -281,7 +280,7 @@ export const CategorySearch = ({
               ) : (
                 'Add categories to display here'
               )}
-            </DropdownHeading>
+            </>
             {previewCategory && getCurrentPath(previewCategory) && (
               <Popover
                 isOpen={visibleTooltip}

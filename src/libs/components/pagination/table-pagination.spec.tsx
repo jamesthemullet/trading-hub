@@ -38,16 +38,12 @@ describe('TablePagination', () => {
       isLoading: false,
       pageSizes,
     };
-    const { container } = renderWithProviders(
-      <TablePagination {...mockProps} />
-    );
+    renderWithProviders(<TablePagination {...mockProps} />);
 
     const newText = 'Page 1 of 1';
     expect(await screen.findByText(newText)).toBeVisible();
 
-    const dropdown = container.querySelector<HTMLElement>(
-      'span[name="ChevronDownDefault"]'
-    );
+    const dropdown = screen.getByLabelText('Select rows per page');
 
     if (!dropdown) {
       throw new Error('Dropdown not found');
@@ -80,15 +76,11 @@ describe('TablePagination', () => {
       pageSizes,
     };
 
-    const { container } = renderWithProviders(
-      <TablePagination {...mockProps} />
-    );
+    renderWithProviders(<TablePagination {...mockProps} />);
 
     expect(await screen.findByText('Page 1 of 1')).toBeVisible();
 
-    const dropdown = container.querySelector<HTMLElement>(
-      'span[name="ChevronDownDefault"]'
-    );
+    const dropdown = screen.getByLabelText('Select rows per page');
 
     if (!dropdown) {
       throw new Error('Dropdown not found');
@@ -122,13 +114,9 @@ describe('TablePagination', () => {
       pageSizes,
     };
 
-    const { container } = renderWithProviders(
-      <TablePagination {...mockProps} />
-    );
+    renderWithProviders(<TablePagination {...mockProps} />);
 
-    const dropdown = container.querySelector<HTMLElement>(
-      'span[name="ChevronDownDefault"]'
-    );
+    const dropdown = screen.getByLabelText('Select rows per page');
 
     if (!dropdown) {
       throw new Error('Dropdown not found');
@@ -193,16 +181,12 @@ describe('TablePagination', () => {
       isLoading: false,
       pageSizes,
     };
-    const { container } = renderWithProviders(
-      <TablePagination {...mockProps} />
-    );
+    renderWithProviders(<TablePagination {...mockProps} />);
 
     const newText = 'Page 2 of 2';
     expect(await screen.findByText(newText)).toBeVisible();
 
-    const dropdown = container.querySelector<HTMLElement>(
-      'span[name="ChevronDownDefault"]'
-    );
+    const dropdown = screen.getByLabelText('Select rows per page');
 
     if (!dropdown) {
       throw new Error('Dropdown not found');
@@ -236,16 +220,12 @@ describe('TablePagination', () => {
       handlePageChange: handlePageChangeSpy,
       pageSizes,
     };
-    const { container } = renderWithProviders(
-      <TablePagination {...mockProps} />
-    );
+    renderWithProviders(<TablePagination {...mockProps} />);
 
     const newText = 'Page 2 of 8';
     expect(await screen.findByText(newText)).toBeVisible();
 
-    const dropdown = container.querySelector<HTMLElement>(
-      'span[name="ChevronDownDefault"]'
-    );
+    const dropdown = screen.getByLabelText('Select rows per page');
 
     if (!dropdown) {
       throw new Error('Dropdown not found');

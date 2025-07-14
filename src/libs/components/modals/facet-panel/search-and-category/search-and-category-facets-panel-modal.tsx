@@ -6,14 +6,15 @@ import type {
   MerchandisingCountryCode,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import { Button } from '@/libs/components/buttons/button/button';
-import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import { Search } from '@/libs/components/search/search';
 import {
+  Button,
+  CombinedDropdown,
   ErrorMessage,
   Header3,
+  Search,
   Text,
-} from '@/libs/components/typography/typography.styles';
+} from '@/libs/components';
+import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import type { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-reducer';
@@ -21,7 +22,6 @@ import type { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-
 import { intersection, without } from 'lodash';
 
 import { ArrowButton } from '../../../buttons/button/arrow-button';
-import { FacetOrderDropdown } from '../../../dropdowns/facet-order-dropdown/facet-order-dropdown';
 import {
   FacetAttributeValuesTableRow,
   TableHeading,
@@ -135,6 +135,19 @@ export const SearchAndCategoryFacetsPanelModal = ({
     300
   );
 
+  const handleDisplayTypeChange = (
+    newDisplayType: FacetDisplayType,
+    displayValue: string
+  ) => {
+    dispatch({
+      type: 'CHANGE_DISPLAY_TYPE',
+      payload: {
+        id: displayValue,
+        newDisplayType,
+      },
+    });
+  };
+
   const listValues = useCallback(
     (
       values: MerchandisingAttributeValuesResponse['values'],
@@ -198,20 +211,19 @@ export const SearchAndCategoryFacetsPanelModal = ({
             </Col>
 
             <Col>
-              <FacetOrderDropdown
+              <CombinedDropdown
+                variant="facetOrder"
                 hasAlgoControl
-                status={displayType}
-                onChange={(newDisplayType: FacetDisplayType) => {
-                  dispatch({
-                    type: 'CHANGE_DISPLAY_TYPE',
-                    payload: {
-                      id: displayValue,
-                      newDisplayType,
-                    },
-                  });
+                onChange={(newDisplayType) => {
+                  handleDisplayTypeChange(
+                    newDisplayType as FacetDisplayType,
+                    displayValue
+                  );
                 }}
+                status={displayType}
                 attribute={displayValue}
                 writeEnabled={writeEnabled}
+                ariaLabel="Select to set as included, excluded or algo control"
               />
             </Col>
           </FacetAttributeValuesTableRow>

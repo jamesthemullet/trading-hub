@@ -260,8 +260,12 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
 
-    await page.getByRole('button', { name: 'select market' }).click();
+    await page.getByRole('button', { name: 'Select country' }).click();
+
     await page.getByRole('button', { name: 'select IE market only' }).click();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();

@@ -83,7 +83,13 @@ test.describe('Category rulesets', () => {
 
     await expect(page.getByText('Colours')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Algo control' }).first().click();
+    await page
+      .getByTestId('Row showing Collections as algoControl')
+      .getByRole('button', {
+        name: 'Select to set as included, excluded or algo control',
+      })
+      .first()
+      .click();
     await page.getByRole('button', { name: 'include', exact: true }).click();
 
     await expect(
@@ -92,25 +98,26 @@ test.describe('Category rulesets', () => {
 
     await page.keyboard.down('End');
 
-    await page.getByRole('button', { name: 'Algo control' }).first().click();
+    await page
+      .getByTestId('Row showing Colours as included')
+      .getByRole('button', {
+        name: 'Select to set as included, excluded or algo control',
+      })
+      .first()
+      .click();
     await page.getByRole('button', { name: 'exclude', exact: true }).click();
 
     await expect(
-      page.getByTestId('Row showing Colour as excluded')
+      page.getByTestId('Row showing Colours as excluded')
     ).toBeVisible();
-
-    await expect(page.getByTestId(/Row showing/).first()).toContainText(
-      'Colours'
-    );
-
-    await page.getByRole('button', { name: 'Move Colours row down' }).click();
 
     await expect(page.getByTestId(/Row showing/).first()).toContainText(
       'Categories'
     );
 
-    await page.getByRole('button', { name: 'Move Collections row up' }).click();
-    await page.getByRole('button', { name: 'Move Collections row up' }).click();
+    await page
+      .getByRole('button', { name: 'Move Categories row down' })
+      .click();
 
     await expect(page.getByTestId(/Row showing/).first()).toContainText(
       'Collections'

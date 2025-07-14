@@ -1,14 +1,19 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import {
+  CombinedDropdown,
+  DropdownOption,
+  ImageWrapper,
+} from '@/libs/components';
+
 import Image from 'next/image';
 
-import { Dropdown, DropdownOption } from '../dropdowns/dropdown/dropdown';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 import { labels } from './utils';
 
-const DropdownWrapper = styled.div<{ isOperationDropdownOpen: boolean }>`
+const DropdownWrapper = styled.div`
   border: none;
   border-bottom: 1px solid ${color.role.outline.outline};
   border-radius: 4px 4px 0 0;
@@ -22,13 +27,6 @@ const DropdownWrapper = styled.div<{ isOperationDropdownOpen: boolean }>`
     min-height: 56px;
   }
 
-  img {
-    width: 20px;
-    height: 20px;
-    margin-right: ${spacing(1)};
-    margin-top: 3px;
-  }
-
   div {
     margin: 0;
     padding: 0;
@@ -37,7 +35,7 @@ const DropdownWrapper = styled.div<{ isOperationDropdownOpen: boolean }>`
 
 const StyledDropdownOption = styled(DropdownOption)`
   font-size: 12px;
-  align-items: end;
+  align-items: center;
   width: 150px;
   box-shadow: none;
   background-color: #fff;
@@ -55,86 +53,93 @@ export const OperationSelector = ({
     args: 'boost' | 'bury' | 'include' | 'exclude'
   ) => void;
 }) => {
-  const [isOperationDropdownOpen, setIsOperationDropdownOpen] = useState(false);
+  const [closeDropdown, setCloseDropdown] = useState(false);
 
   const label = labels[selectedOperation];
+
   return (
-    <DropdownWrapper isOperationDropdownOpen={isOperationDropdownOpen}>
-      <Dropdown
+    <DropdownWrapper>
+      <CombinedDropdown
+        variant="generic"
         label={label.text}
         icon={label.icon}
-        isOpen={isOperationDropdownOpen}
-        onOpen={() => setIsOperationDropdownOpen(true)}
-        onClose={
-          // istanbul ignore next
-          () => setIsOperationDropdownOpen(false)
-        }
+        width={150}
+        ariaLabel={`Select to ${hasIncludeExclude ? 'include, exclude, ' : ''}boost or bury`}
+        closeFromChild={closeDropdown}
+        onOpen={() => {
+          setCloseDropdown(false);
+        }}
       >
         <StyledDropdownOption
-          onClick={
-            // istanbul ignore next
-            () => {
-              setIsOperationDropdownOpen(false);
-              setSelectedOperation('boost');
-            }
-          }
+          onClick={() => {
+            setCloseDropdown(true);
+            setSelectedOperation('boost');
+          }}
         >
-          <Image
-            src="/trading-hub/asset/boost-signifier.svg"
-            alt=""
-            width={20}
-            height={20}
-          />
+          <ImageWrapper>
+            <Image
+              src="/trading-hub/asset/boost-signifier.svg"
+              alt=""
+              width={20}
+              height={20}
+            />
+          </ImageWrapper>
           Boost
         </StyledDropdownOption>
         <StyledDropdownOption
           onClick={() => {
-            setIsOperationDropdownOpen(false);
+            setCloseDropdown(true);
             setSelectedOperation('bury');
           }}
         >
-          <Image
-            src="/trading-hub/asset/bury-signifier.svg"
-            alt=""
-            width={20}
-            height={20}
-          />
+          <ImageWrapper>
+            <Image
+              src="/trading-hub/asset/bury-signifier.svg"
+              alt=""
+              width={20}
+              height={20}
+            />
+          </ImageWrapper>
           Bury
         </StyledDropdownOption>
         {hasIncludeExclude && (
           <>
             <StyledDropdownOption
               onClick={() => {
-                setIsOperationDropdownOpen(false);
+                setCloseDropdown(true);
                 setSelectedOperation('include');
               }}
             >
-              <Image
-                src="/trading-hub/asset/icon-include.svg"
-                alt=""
-                width={20}
-                height={20}
-              />
+              <ImageWrapper>
+                <Image
+                  src="/trading-hub/asset/icon-include.svg"
+                  alt=""
+                  width={20}
+                  height={20}
+                />
+              </ImageWrapper>
               Include only
             </StyledDropdownOption>
 
             <StyledDropdownOption
               onClick={() => {
-                setIsOperationDropdownOpen(false);
+                setCloseDropdown(true);
                 setSelectedOperation('exclude');
               }}
             >
-              <Image
-                src="/trading-hub/asset/icon-exclude.svg"
-                alt=""
-                width={20}
-                height={20}
-              />
+              <ImageWrapper>
+                <Image
+                  src="/trading-hub/asset/icon-exclude.svg"
+                  alt=""
+                  width={20}
+                  height={20}
+                />
+              </ImageWrapper>
               Exclude only
             </StyledDropdownOption>
           </>
         )}
-      </Dropdown>
+      </CombinedDropdown>
     </DropdownWrapper>
   );
 };

@@ -8,7 +8,7 @@ import type {
   MerchandisingRules,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import { Dropdown, Loader, Search } from '@/libs/components';
+import { CombinedDropdown, Loader, Search } from '@/libs/components';
 import { usePreview } from '@/libs/hooks';
 
 import Image from 'next/image';
@@ -372,7 +372,6 @@ export const Preview = ({
   searchTerm,
 }: Props) => {
   const [withRules, setWithRules] = useState(true);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [rules, setRules] = useState(merchandisingRules);
   const [showAllFacets, setShowAllFacets] = useState(false);
   const [openFacetId, setOpenFacetId] = useState('');
@@ -400,7 +399,6 @@ export const Preview = ({
   });
 
   const toggleView = (withMerchandisingRules: boolean) => {
-    setIsDropdownOpen(false);
     setWithRules(withMerchandisingRules);
     setRules(withMerchandisingRules ? merchandisingRules : emptyRules);
     setFacetConfigRules(withMerchandisingRules ? facetConfig : []);
@@ -431,15 +429,11 @@ export const Preview = ({
               <PreviewTypeSelector>
                 <LabelText as="p">Preview</LabelText>
                 <DropdownWrapper>
-                  <Dropdown
+                  <CombinedDropdown
+                    variant="generic"
+                    width={220}
                     label={`${withRules ? 'with new rule change' : 'current state'}`}
-                    isOpen={isDropdownOpen}
-                    onOpen={() => {
-                      setIsDropdownOpen(true);
-                    }}
-                    onClose={() => {
-                      setIsDropdownOpen(false);
-                    }}
+                    ariaLabel="Preview type selector"
                   >
                     <DropdownContent>
                       <Item
@@ -459,7 +453,7 @@ export const Preview = ({
                         current state
                       </Item>
                     </DropdownContent>
-                  </Dropdown>
+                  </CombinedDropdown>
                 </DropdownWrapper>
               </PreviewTypeSelector>
             </Header>

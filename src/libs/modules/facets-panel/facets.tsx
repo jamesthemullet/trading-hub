@@ -8,8 +8,8 @@ import type {
 import {
   Button,
   CategorySearch,
-  DropdownContent,
-  DropdownItem,
+  CombinedDropdown,
+  DropdownOption,
   ErrorMessage,
   ProductGridHeader,
   Search,
@@ -19,8 +19,6 @@ import {
 } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
-import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { SearchAndCategoryFacetsPanelModal } from '@/libs/components/modals/facet-panel/search-and-category/search-and-category-facets-panel-modal';
 import { Preview } from '@/libs/components/preview/preview';
@@ -35,7 +33,6 @@ import { rulesetReducer } from '../ruleset/reducer';
 import {
   AttributesTable,
   Col,
-  CountryPreviewDropdown,
   Duration,
   LowerHeading,
   NoAttributesBlock,
@@ -141,7 +138,6 @@ export const Facets = ({
   const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
     'UK' | 'IE'
   >('UK');
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
   const [selectedFacet, setSelectedFacet] = useState<
     MerchandisingReturnedFacet | undefined
@@ -237,7 +233,8 @@ export const Facets = ({
         </Col>
         <Col>
           <OrderColumn>
-            <FacetOrderDropdown
+            <CombinedDropdown
+              variant="facetOrder"
               status={displayType}
               onChange={(status) => {
                 if (status === displayType) return;
@@ -245,13 +242,14 @@ export const Facets = ({
                   type: 'facetChangeDisplayType',
                   payload: {
                     id: facet.id,
-                    newType: status,
+                    newType: status as FacetDisplayType,
                     oldType: displayType,
                   },
                 });
               }}
               hasAlgoControl
               writeEnabled={writeEnabled}
+              ariaLabel="Select to set as included, excluded or algo control"
             />
 
             {displayType === 'included' && writeEnabled && (
@@ -392,19 +390,24 @@ export const Facets = ({
             <Typography as="p" withMargin variant="labelMedium">
               Influence
             </Typography>
-            <CountrySelectorDropdown
+            <CombinedDropdown
+              variant="countrySelector"
               onChange={(country) => {
-                dispatch({ type: 'changeCountry', payload: country });
+                dispatch({
+                  type: 'changeCountry',
+                  payload: country as 'UK' | 'IE',
+                });
                 track({
                   event: `Change ${facetType} facet influence to ${country}`,
                 });
                 // istanbul ignore else
                 if (country !== 'UK_IE') {
-                  setSelectedPreviewCountryCode(country);
+                  setSelectedPreviewCountryCode(country as 'UK' | 'IE');
                 }
               }}
               selectedCountryCode={ruleset.countryCode}
               writeEnabled={writeEnabled}
+              ariaLabel="Select country"
             />
           </div>
           {facetType === 'category' && (
@@ -457,53 +460,44 @@ export const Facets = ({
               <Typography as="p" withMargin variant="labelMedium">
                 Preview Country
               </Typography>
-              <CountryPreviewDropdown
+              <CombinedDropdown
+                variant="generic"
                 label={`${selectedPreviewCountryCode} view`}
-                isOpen={isCountryDropdownOpen}
+                width={155}
                 icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}
-                onOpen={() => {
-                  setIsCountryDropdownOpen(true);
-                }}
-                onClose={() => {
-                  setIsCountryDropdownOpen(false);
-                }}
-                aria-label="Select country for preview"
+                ariaLabel="Select country for preview"
               >
-                <DropdownContent isLeftAligned>
-                  <DropdownItem
-                    as="button"
-                    onClick={() => {
-                      track({ event: 'Change search facets preview to IE' });
-                      setSelectedPreviewCountryCode?.('IE');
-                      setIsCountryDropdownOpen(false);
-                    }}
-                  >
-                    <Image
-                      src="/trading-hub/asset/icon-ie-flag.svg"
-                      width={20}
-                      height={20}
-                      alt="IE flag"
-                    />
-                    &nbsp; IE view
-                  </DropdownItem>
-                  <DropdownItem
-                    as="button"
-                    onClick={() => {
-                      track({ event: 'Change search facets preview to UK' });
-                      setSelectedPreviewCountryCode?.('UK');
-                      setIsCountryDropdownOpen(false);
-                    }}
-                  >
-                    <Image
-                      src="/trading-hub/asset/icon-uk-flag.svg"
-                      width={20}
-                      height={20}
-                      alt="UK flag"
-                    />
-                    &nbsp; UK view
-                  </DropdownItem>
-                </DropdownContent>
-              </CountryPreviewDropdown>
+                <DropdownOption
+                  as="button"
+                  onClick={() => {
+                    track({ event: 'Change search facets preview to IE' });
+                    setSelectedPreviewCountryCode?.('IE');
+                  }}
+                >
+                  <Image
+                    src="/trading-hub/asset/icon-ie-flag.svg"
+                    width={20}
+                    height={20}
+                    alt="IE flag"
+                  />
+                  &nbsp; IE view
+                </DropdownOption>
+                <DropdownOption
+                  as="button"
+                  onClick={() => {
+                    track({ event: 'Change search facets preview to UK' });
+                    setSelectedPreviewCountryCode?.('UK');
+                  }}
+                >
+                  <Image
+                    src="/trading-hub/asset/icon-uk-flag.svg"
+                    width={20}
+                    height={20}
+                    alt="UK flag"
+                  />
+                  &nbsp; UK view
+                </DropdownOption>
+              </CombinedDropdown>
             </div>
           )}
         </ScopeWrapper>

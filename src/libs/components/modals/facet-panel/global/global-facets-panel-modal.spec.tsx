@@ -305,15 +305,19 @@ describe('GlobalFacetPanelModalContent', () => {
         />
       );
 
+      const buttons = screen.getAllByRole('button', {
+        name: 'Select to set as included, excluded or algo control',
+      });
+
       expect(
-        screen.getByRole('button', { name: 'Include only' })
-      ).toBeVisible();
+        buttons.some((button) => button.textContent?.includes('Include only'))
+      ).toBe(true);
       expect(
-        screen.getByRole('button', { name: 'Algo control' })
-      ).toBeVisible();
+        buttons.some((button) => button.textContent?.includes('Exclude only'))
+      ).toBe(true);
       expect(
-        screen.getByRole('button', { name: 'Exclude only' })
-      ).toBeVisible();
+        buttons.some((button) => button.textContent?.includes('Algo control'))
+      ).toBe(true);
     });
 
     it('should show merged values', () => {

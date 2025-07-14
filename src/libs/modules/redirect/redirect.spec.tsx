@@ -119,7 +119,7 @@ describe('Redirect', () => {
     });
 
     const dropdownButton = screen.getByRole('button', {
-      name: 'select market',
+      name: 'Select country',
     });
 
     await user.click(dropdownButton);

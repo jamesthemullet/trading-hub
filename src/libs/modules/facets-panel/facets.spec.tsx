@@ -696,7 +696,7 @@ describe('Facets', () => {
 
     expect(screen.getAllByText('IE view')).toHaveLength(1);
     const selectMarket = screen.getByRole('button', {
-      name: 'select market',
+      name: 'Select country',
     });
 
     act(() => {

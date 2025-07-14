@@ -81,6 +81,8 @@ test.describe('Keyword search', () => {
 
     await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
+    await page.waitForLoadState('networkidle');
+
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -337,9 +339,11 @@ test.describe('Keyword search', () => {
 
     await page.getByRole('button', { name: 'Numeric Attributes' }).click();
 
-    await page.getByRole('button', { name: 'Boost' }).first().click();
+    await page.getByRole('button', { name: 'Select to boost or bury' }).click();
 
-    await page.getByRole('button', { name: 'Bury' }).click();
+    await page.getByRole('button', { name: 'Bury', exact: true }).click();
+
+    await page.waitForLoadState('networkidle');
 
     await page
       .getByLabel('predictions.salesIn1Day.normalisedValue')
@@ -406,9 +410,13 @@ test.describe('Keyword search', () => {
       .getByRole('button', { name: 'Product description attributes' })
       .click();
 
-    await page.getByRole('button', { name: 'Boost' }).nth(1).click();
+    await page
+      .getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
+      })
+      .click();
 
-    await page.getByRole('button', { name: 'Bury' }).click();
+    await page.getByRole('button', { name: 'Bury', exact: true }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 

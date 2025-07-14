@@ -9,6 +9,7 @@ import type {
 } from '@/libs/api';
 import {
   Button,
+  CombinedDropdown,
   ErrorMessage,
   Header3,
   Loader,
@@ -16,7 +17,6 @@ import {
   spacing,
   Text,
 } from '@/libs/components';
-import { FacetOrderDropdown } from '@/libs/components/dropdowns/facet-order-dropdown/facet-order-dropdown';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import {
   AttributesModalHeader,
@@ -367,12 +367,16 @@ export const GlobalFacetPanelModalContent = ({
               </Col>
 
               <Col>
-                <FacetOrderDropdown
-                  hasAlgoControl
+                <CombinedDropdown
+                  variant="facetOrder"
                   status={displayType}
-                  onChange={onOrderChange}
                   attribute={displayName}
+                  onChange={(status) =>
+                    onOrderChange(status as FacetDisplayType)
+                  }
                   writeEnabled={writeEnabled}
+                  hasAlgoControl
+                  ariaLabel="Select to set as included, excluded or algo control"
                 />
               </Col>
             </FacetAttributeValuesTableRow>

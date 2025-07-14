@@ -7,6 +7,7 @@ import type {
   MerchandisingReturnedKeywordRedirect,
 } from '@/libs/api';
 import {
+  CombinedDropdown,
   ProductGridHeader,
   RadioButtons,
   SearchKeywords,
@@ -16,7 +17,6 @@ import {
   Typography,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
-import { CountrySelectorDropdown } from '@/libs/components/dropdowns/country-selector/country-selector';
 import { color } from '@/libs/components/utils/constants';
 import { track } from '@/libs/hooks/utils/analytics';
 
@@ -200,11 +200,13 @@ export const Redirect = ({
             <Typography as="p" withMargin variant="labelMedium">
               Influence
             </Typography>
-            <CountrySelectorDropdown
-              onChange={(country: MerchandisingCountryCode) => {
-                onUpdate('countryCode', country);
+            <CombinedDropdown
+              variant="countrySelector"
+              onChange={(country) => {
+                onUpdate('countryCode', country as MerchandisingCountryCode);
                 track({ event: `Change redirect influence to ${country}` });
               }}
+              ariaLabel="Select country"
               selectedCountryCode={redirect.countryCode}
               writeEnabled={writeEnabled}
             />
