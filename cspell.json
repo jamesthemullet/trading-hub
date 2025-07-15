@@ -3,7 +3,17 @@
   "ignorePaths": [],
   "dictionaryDefinitions": [],
   "dictionaries": [],
-  "words": ["Haigh", "Licence", "Muziris"],
+  "words": [
+    "azcliversion",
+    "creds",
+    "Haigh",
+    "Licence",
+    "Muziris",
+    "Personalisation",
+    "Prihabrata",
+    "prodeun",
+    "Sahu"
+  ],
   "ignoreWords": [],
   "import": []
 }
