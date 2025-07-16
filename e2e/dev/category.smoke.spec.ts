@@ -67,12 +67,21 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
-    await expect(page.getByText('babySize')).toBeVisible();
+    await expect(page.getByText('fabric')).toBeVisible();
+    await expect(page.getByText('categoryId')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Algo control' }).first().click();
+    await page
+      .getByTestId('Row showing Material as algoControl')
+      .getByRole('button', { name: 'Algo control' })
+      .first()
+      .click();
     await page.getByRole('button', { name: 'include', exact: true }).click();
 
-    await page.getByRole('button', { name: 'Algo control' }).first().click();
+    await page
+      .getByTestId('Row showing Categories as algoControl')
+      .getByRole('button', { name: 'Algo control' })
+      .first()
+      .click();
     await page.getByRole('button', { name: 'exclude', exact: true }).click();
 
     await page.getByRole('button', { name: 'Preview', exact: true }).click();
@@ -216,7 +225,10 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(
-      page.getByTestId('Row showing Baby Sizes as included')
+      page.getByTestId('Row showing Material as included')
+    ).toBeVisible();
+    await expect(
+      page.getByTestId('Row showing Categories as excluded')
     ).toBeVisible();
 
     await page.getByRole('link', { name: 'Category Rules' }).click();
