@@ -4,7 +4,7 @@ import { SessionProvider } from 'next-auth/react';
 import {
   defaultFeatureFlags,
   FeatureFlagContext,
-  FeatureFlags,
+  type FeatureFlags,
 } from '../libs/components/context/feature-flag';
 
 const theme = createTheme({
@@ -28,7 +28,7 @@ export function renderWithProviders(
     featureFlags: defaultFeatureFlags,
   }
 ) {
-  return testingLibraryRender(<>{ui}</>, {
+  return testingLibraryRender(ui, {
     wrapper: ({ children }: { children: React.ReactNode }) => (
       <SessionProvider
         session={{

@@ -436,21 +436,18 @@ export const DataTable = ({
                   >
                     <FirstColumn>
                       <FlagAndIdentifier>
-                        {countryCode && (
-                          <>
-                            {getFlagFromCountryCode(countryCode).map(
-                              ({ flags, alt }, index) => (
-                                <Image
-                                  key={index}
-                                  src={flags}
-                                  width={20}
-                                  height={20}
-                                  alt={alt}
-                                />
-                              )
-                            )}
-                          </>
-                        )}
+                        {countryCode &&
+                          getFlagFromCountryCode(countryCode).map(
+                            ({ flags, alt }, index) => (
+                              <Image
+                                key={index}
+                                src={flags}
+                                width={20}
+                                height={20}
+                                alt={alt}
+                              />
+                            )
+                          )}
                         <NoOverflowText title={formattedIdentifier}>
                           {formatByQuery(formattedIdentifier)}
                         </NoOverflowText>

@@ -556,9 +556,11 @@ describe('Categories', () => {
     });
     renderWithProviders(<Categories />);
 
-    expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
-
-    expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
+      // eslint-disable-next-line testing-library/no-wait-for-multiple-assertions
+      expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
+    });
   });
 
   it('should show country flag and filter', async () => {

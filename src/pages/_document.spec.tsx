@@ -1,6 +1,7 @@
 import { logger } from '@/libs/components/logger/logger';
 
 import newrelic from 'newrelic';
+import type { DocumentContext } from 'next/document';
 
 import RootDocument from './_document.page';
 
@@ -34,9 +35,9 @@ describe('<RootDocument />', () => {
     mockedLogger = jest.mocked(logger);
     mockedNewrelic = jest.mocked(newrelic);
     jest.clearAllMocks();
-    process.env['NEW_RELIC_APP_NAME'] = 'app-name';
-    process.env['NEW_RELIC_LICENSE_KEY'] = 'license-key';
-    process.env['NEW_RELIC_ENABLED'] = 'true';
+    process.env.NEW_RELIC_APP_NAME = 'app-name';
+    process.env.NEW_RELIC_LICENSE_KEY = 'license-key';
+    process.env.NEW_RELIC_ENABLED = 'true';
   });
 
   afterAll(() => {
@@ -56,7 +57,9 @@ describe('<RootDocument />', () => {
       }),
     };
 
-    const initialProps = await RootDocument.getInitialProps(ctx as any);
+    const initialProps = await RootDocument.getInitialProps(
+      ctx as unknown as DocumentContext
+    );
 
     expect(initialProps).toStrictEqual({
       html: '',
@@ -79,7 +82,7 @@ describe('<RootDocument />', () => {
   });
 
   it('should handle newrelic license key secret not being available', async () => {
-    delete process.env['NEW_RELIC_APP_NAME'];
+    delete process.env.NEW_RELIC_APP_NAME;
 
     const ctx = {
       renderPage: jest.fn(),
@@ -91,7 +94,7 @@ describe('<RootDocument />', () => {
       }),
     };
 
-    await RootDocument.getInitialProps(ctx as any);
+    await RootDocument.getInitialProps(ctx as unknown as DocumentContext);
 
     expect(mockedLogger.warn).toHaveBeenCalledWith(
       'missing new relic env vars'
@@ -99,7 +102,7 @@ describe('<RootDocument />', () => {
   });
 
   it('should handle newrelic app name secret not being available', async () => {
-    delete process.env['NEW_RELIC_LICENSE_KEY'];
+    delete process.env.NEW_RELIC_LICENSE_KEY;
 
     const ctx = {
       renderPage: jest.fn(),
@@ -111,7 +114,7 @@ describe('<RootDocument />', () => {
       }),
     };
 
-    await RootDocument.getInitialProps(ctx as any);
+    await RootDocument.getInitialProps(ctx as unknown as DocumentContext);
 
     expect(mockedLogger.warn).toHaveBeenCalledWith(
       'missing new relic env vars'
@@ -119,7 +122,7 @@ describe('<RootDocument />', () => {
   });
 
   it('should not initialise new relic if NEW_RELIC_ENABLED is false', async () => {
-    process.env['NEW_RELIC_ENABLED'] = 'false';
+    process.env.NEW_RELIC_ENABLED = 'false';
 
     const ctx = {
       renderPage: jest.fn(),
@@ -131,7 +134,7 @@ describe('<RootDocument />', () => {
       }),
     };
 
-    await RootDocument.getInitialProps(ctx as any);
+    await RootDocument.getInitialProps(ctx as unknown as DocumentContext);
 
     expect(mockedNewrelic.getBrowserTimingHeader).not.toHaveBeenCalled();
   });

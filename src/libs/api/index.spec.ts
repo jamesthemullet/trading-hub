@@ -6,8 +6,8 @@ describe('API', () => {
   });
 
   it('should use env var if present', () => {
-    process.env['MERCHANDISING_PROXY_BASE_URL'] = 'http://localhost';
+    process.env.MERCHANDISING_PROXY_BASE_URL = 'http://localhost';
     expect(api().baseUrl).toEqual('http://localhost');
-    delete process.env['MERCHANDISING_PROXY_BASE_URL'];
+    delete process.env.MERCHANDISING_PROXY_BASE_URL;
   });
 });
