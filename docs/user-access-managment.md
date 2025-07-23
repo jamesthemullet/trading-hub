@@ -12,7 +12,7 @@ Our app officially supports following AD groups.
 - [GRP - Search-and-Sort](https://portal.azure.com/#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Members/groupId/aeb17e7d-4329-4eb4-90e4-8ccf859a38cb) with `Cat.W, Search.W, Glob.W` roles
 - [DL-TCSDigitalSiteMerchandisingTeam](https://portal.azure.com/#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Members/groupId/0edcdaf6-e6b1-4296-a703-f3255870c71c) with `Cat.W, Search.W, Glob.W` roles
 
-These groups have roles already assigned, if you are part of any of those groups you will get access trough that membership.
+These groups have roles already assigned, if you are part of any of those groups you will get access through that membership.
 
 ## Adding users by new AD group or direct role assignment
 
