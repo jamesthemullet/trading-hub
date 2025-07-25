@@ -65,6 +65,7 @@ jobs:
           NEW_RELIC_ENABLED: ${{ secrets.NEW_RELIC_ENABLED }}
           DYNATRACE_RUM_SCRIPT_URL_DEV: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_DEV }}
           DYNATRACE_RUM_SCRIPT_URL_PROD: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_PROD }}
+          CLARITY_KEY: ${{ secrets.CLARITY_KEY }}
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
@@ -259,7 +260,8 @@ jobs:
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
               "NEW_RELIC_APP_NAME=${{ secrets._NEW_RELIC_APP_NAME }}" \
               "NEW_RELIC_LICENSE_KEY=${{ secrets._NEW_RELIC_LICENSE_KEY }}" \
-              "NEW_RELIC_ENABLED=${{ secrets.NEW_RELIC_ENABLED }}"
+              "NEW_RELIC_ENABLED=${{ secrets.NEW_RELIC_ENABLED }}" \
+              "CLARITY_KEY=${{ secrets.CLARITY_KEY }}"
 
       - name: Deploy to Azure Web Apps slot
         uses: azure/cli@v2
