@@ -60,9 +60,6 @@ jobs:
           npm install
           NEXT_TELEMETRY_DISABLED=1 npm run build
         env:
-          NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
-          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
-          NEW_RELIC_ENABLED: ${{ secrets.NEW_RELIC_ENABLED }}
           DYNATRACE_RUM_SCRIPT_URL_DEV: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_DEV }}
           DYNATRACE_RUM_SCRIPT_URL_PROD: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_PROD }}
           CLARITY_KEY: ${{ secrets.CLARITY_KEY }}
@@ -145,8 +142,6 @@ jobs:
               "AZURE_AD_CLIENT_ID=${{ secrets._AZURE_AD_CLIENT_ID }}" \
               "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
-              "NEW_RELIC_APP_NAME=${{ secrets._NEW_RELIC_APP_NAME }}" \
-              "NEW_RELIC_LICENSE_KEY=${{ secrets._NEW_RELIC_LICENSE_KEY }}" \
 
       - name: Deploy to Azure Web Apps
         shell: bash
@@ -258,9 +253,6 @@ jobs:
               "AZURE_AD_CLIENT_ID=${{ secrets._AZURE_AD_CLIENT_ID }}" \
               "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
-              "NEW_RELIC_APP_NAME=${{ secrets._NEW_RELIC_APP_NAME }}" \
-              "NEW_RELIC_LICENSE_KEY=${{ secrets._NEW_RELIC_LICENSE_KEY }}" \
-              "NEW_RELIC_ENABLED=${{ secrets.NEW_RELIC_ENABLED }}" \
               "CLARITY_KEY=${{ secrets.CLARITY_KEY }}"
 
       - name: Deploy to Azure Web Apps slot

@@ -36,7 +36,6 @@ const config: Config = {
     'test',
     'e2e',
     'playwright-report',
-    '/newrelic.js',
     '/\\.storybook/',
     '^.*\\.stories\\.[jt]sx?$',
   ],

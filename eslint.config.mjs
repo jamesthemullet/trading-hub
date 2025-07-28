@@ -26,7 +26,6 @@ const eslint = [
       'src/pages/sandbox/**/*',
       'src/pages/api/auth/next-auth.d.ts',
       'src/libs/api/generated/open-api.ts',
-      'newrelic.js',
     ],
   },
   ...compat.extends(

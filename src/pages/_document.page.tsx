@@ -4,38 +4,12 @@ import { ColorSchemeScript } from '@mantine/core';
 import { logger } from '@/libs/components/logger/logger';
 import { fontStyles, resetStyles } from '@/libs/utils/base-styles';
 
-import newrelic from 'newrelic';
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import Script from 'next/script';
 
 type MerchHubInitialProps = DocumentInitialProps & {
-  browserTimingHeader: string;
   dynatraceRumScriptUrl?: string;
-};
-
-const checkNewRelicConnection = async () => {
-  const shouldWaitForConnection =
-    process.env.NEW_RELIC_APP_NAME &&
-    process.env.NEW_RELIC_LICENSE_KEY &&
-    newrelic.agent?.collector &&
-    newrelic.agent.collector.isConnected() === false;
-
-  if (shouldWaitForConnection) {
-    return new Promise((resolve) => {
-      newrelic.agent.on('connected', resolve);
-    });
-  }
-
-  // istanbul ignore else
-  const shouldWarnMissingEnvVars =
-    process.env.NODE_ENV !== 'development' &&
-    (!process.env.NEW_RELIC_APP_NAME || !process.env.NEW_RELIC_LICENSE_KEY);
-
-  // istanbul ignore else
-  if (shouldWarnMissingEnvVars) {
-    logger.warn('missing new relic env vars');
-  }
 };
 
 class RootDocument extends Document<MerchHubInitialProps> {
@@ -43,15 +17,6 @@ class RootDocument extends Document<MerchHubInitialProps> {
     ctx: DocumentContext
   ): Promise<MerchHubInitialProps> {
     const initialProps = await Document.getInitialProps(ctx);
-
-    await checkNewRelicConnection();
-    const browserTimingHeader =
-      process.env.NEW_RELIC_ENABLED === 'true'
-        ? newrelic.getBrowserTimingHeader({
-            hasToRemoveScriptWrapper: true,
-            allowTransactionlessInjection: true,
-          })
-        : '';
 
     logger.info('Trading Hub Loaded', {
       application: 'Trading Hub',
@@ -61,7 +26,6 @@ class RootDocument extends Document<MerchHubInitialProps> {
 
     return {
       ...initialProps,
-      browserTimingHeader,
       dynatraceRumScriptUrl:
         // istanbul ignore next - cannot overwrite NODE_ENV as it is set by Next.js and is read only.  There is a test to cover process.env.DYNATRACE_RUM_SCRIPT_URL_DEV
         process.env.NODE_ENV === 'production'
@@ -76,11 +40,6 @@ class RootDocument extends Document<MerchHubInitialProps> {
     return (
       <Html lang="en">
         <Head>
-          <Script
-            id="browser-timing-header"
-            type="text/javascript"
-            dangerouslySetInnerHTML={{ __html: this.props.browserTimingHeader }}
-          />
           {dynatraceRumScriptUrl && (
             <Script
               type="text/javascript"

@@ -32,8 +32,6 @@ jobs:
       AZURE_AD_TENANT_ID: ${{ secrets._AZURE_AD_TENANT_ID }}
       AZURE_AD_CLIENT_SECRET: ${{ secrets._AZURE_AD_CLIENT_SECRET }}
       NEXT_PUBLIC_AUTO_LOGIN: false
-      NEW_RELIC_LICENSE_KEY: ${{ secrets._NEW_RELIC_LICENSE_KEY }}
-      NEW_RELIC_APP_NAME: ${{ secrets._NEW_RELIC_APP_NAME }}
       DYNATRACE_URL: ${{ secrets.DYNATRACE_URL }}
       DYNATRACE_API_TOKEN: ${{ secrets.DYNATRACE_API_TOKEN }}
     steps:
@@ -57,7 +55,7 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      - name: Report results to New Relic & Dynatrace
+      - name: Report results to Dynatrace
         if: ${{ always() }}
         run: |
           set -e
@@ -79,23 +77,6 @@ jobs:
           esac
 
           FORMATTED_RUN_DATE="$(date -u +"${DAY}${ORDINAL} %B %Y %H:%M UTC")"
-          NEW_RELIC_APP_NAME="${{ secrets.NEW_RELIC_APP_NAME }}"
-          NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
-          NEW_RELIC_ACCOUNT_ID="${{ secrets.NEW_RELIC_ACCOUNT_ID }}"
-          curl -X POST "https://insights-collector.newrelic.com/v1/accounts/$NEW_RELIC_ACCOUNT_ID/events" \
-            -H "X-Insert-Key: $NEW_RELIC_LICENSE_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "eventType": "TradingHubSmokeTestResults",
-              "appName": "'"$NEW_RELIC_APP_NAME"'",
-              "runDateTime": "'"${FORMATTED_RUN_DATE}"'",
-              "totalTests": '"$TOTAL_TESTS"',
-              "passed": '"$PASSED"',
-              "failed": '"$FAILED"',
-              "duration": '"$DURATION"',
-              "timestamp": '"$TIMESTAMP"'
-            }'
-
           DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
           DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
           SERVICE_NAME="trading-hub"

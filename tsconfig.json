@@ -34,7 +34,6 @@
     "next-auth.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "newrelic.js",
     ".storybook/*.ts",
     ".storybook/*.tsx"
   ],
