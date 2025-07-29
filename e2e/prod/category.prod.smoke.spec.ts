@@ -14,11 +14,11 @@ test.describe('Category Ranking', () => {
     await page.waitForURL('**/login.microsoftonline.com/**');
     await page.waitForLoadState('domcontentloaded');
 
-    await page.getByPlaceholder('you@mnscorp.net').fill(TEST_USER_ID);
+    await page.locator('input[type="email"]').fill(TEST_USER_ID);
 
     await page.getByRole('button', { name: 'Next' }).click();
 
-    await page.getByPlaceholder('Password').fill(TEST_USER_PASSWORD);
+    await page.locator('input[type="password"]').fill(TEST_USER_PASSWORD);
     await page.getByRole('button', { name: 'Sign in' }).click();
     await page.waitForLoadState('domcontentloaded');
 
