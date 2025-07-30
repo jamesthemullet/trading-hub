@@ -128,7 +128,7 @@ jobs:
       - name: Set up environment variables
         uses: azure/cli@v2
         with:
-          azcliversion: 2.55.0
+          azcliversion: 2.75.0
           inlineScript: |
             az webapp config appsettings set \
               --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
@@ -209,7 +209,7 @@ jobs:
       - name: Set up environment variables
         uses: azure/cli@v2
         with:
-          azcliversion: 2.55.0
+          azcliversion: 2.75.0
           inlineScript: |
             az webapp config appsettings set \
               --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
@@ -229,7 +229,7 @@ jobs:
       - name: Deploy to Azure Web Apps slot
         uses: azure/cli@v2
         with:
-          azcliversion: 2.55.0
+          azcliversion: 2.75.0
           inlineScript: |
             az webapp deploy \
             --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
@@ -258,7 +258,7 @@ jobs:
       - name: Swap EUN from pre prod to prod
         uses: azure/cli@v2.1.0
         with:
-          azcliversion: 2.55.0
+          azcliversion: 2.75.0
           inlineScript: |
             set -x
             az 'webapp' deployment slot swap \
