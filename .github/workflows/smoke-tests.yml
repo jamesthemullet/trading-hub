@@ -59,13 +59,12 @@ jobs:
         if: ${{ always() }}
         run: |
           set -e
-          TEST_RESULTS=$(cat test-results.json | jq '.stats')
-          TOTAL_TESTS=$(echo $TEST_RESULTS | jq '.expected + .unexpected')
-          PASSED=$(echo $TEST_RESULTS | jq '.expected')
-          FAILED=$(echo $TEST_RESULTS | jq '.unexpected')
-          DURATION=$(echo $TEST_RESULTS | jq '.duration')
+          TEST_RESULTS=$(jq '.stats' < test-results.json)
+          TOTAL_TESTS=$(echo "$TEST_RESULTS" | jq '.expected + .unexpected')
+          PASSED=$(echo "$TEST_RESULTS" | jq '.expected')
+          FAILED=$(echo "$TEST_RESULTS" | jq '.unexpected')
+          DURATION=$(echo "$TEST_RESULTS" | jq '.duration')
           TIMESTAMP=$(date +%s)
-          RUN_DATE=$(date -u +"%d %B %Y %H:%M")
           DAY=$(date -u +"%d")
 
           # Add ordinal suffix to the day
@@ -86,7 +85,7 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{
               "eventType": "CUSTOM_ANNOTATION",
-              "title": "Smoke Test Results for '"$SERVICE_NAME"'",
+              "title": "Smoke Test Results for '"$SERVICE_NAME"' (dev)",
               "description": "Results of the smoke tests run on '"$FORMATTED_RUN_DATE"'",
               "properties": {
                 "serviceName": "'"$SERVICE_NAME"'",

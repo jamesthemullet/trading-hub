@@ -7,6 +7,8 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+  DYNATRACE_PROD_URL: ${{ secrets.DYNATRACE_PROD_URL }}
+  DYNATRACE_PROD_API_TOKEN: ${{ secrets.DYNATRACE_PROD_API_TOKEN }}
 
 jobs:
   end-to-end-smoke-tests:
@@ -32,3 +34,61 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      - name: Report results to Dynatrace
+        if: ${{ always() }}
+        run: |
+          set -e
+          TEST_RESULTS=$(jq '.stats' < test-results.json)
+          TOTAL_TESTS=$(echo "$TEST_RESULTS" | jq '.expected + .unexpected')
+          PASSED=$(echo "$TEST_RESULTS" | jq '.expected')
+          FAILED=$(echo "$TEST_RESULTS" | jq '.unexpected')
+          DURATION=$(echo "$TEST_RESULTS" | jq '.duration')
+          TIMESTAMP=$(date +%s)
+          DAY=$(date -u +"%d")
+
+          # Add ordinal suffix to the day
+          case "${DAY}" in
+            1|21|31) ORDINAL="st";;
+            2|22) ORDINAL="nd";;
+            3|23) ORDINAL="rd";;
+            *) ORDINAL="th";;
+          esac
+
+          FORMATTED_RUN_DATE="$(date -u +"${DAY}${ORDINAL} %B %Y %H:%M UTC")"
+          DYNATRACE_URL="${{ secrets.DYNATRACE_PROD_URL }}"
+          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_PROD_API_TOKEN }}"
+          SERVICE_NAME="trading-hub"
+
+          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
+            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "CUSTOM_ANNOTATION",
+              "title": "Smoke Test Results for '"$SERVICE_NAME"' (prod)",
+              "description": "Results of the smoke tests run on '"$FORMATTED_RUN_DATE"'",
+              "properties": {
+                "serviceName": "'"$SERVICE_NAME"'",
+                "totalTests": '"$TOTAL_TESTS"',
+                "passed": '"$PASSED"',
+                "failed": '"$FAILED"',
+                "duration": '"$DURATION"',
+                "timestamp": '"$TIMESTAMP"'
+              },
+              "attachRules": {
+                "tagRule": [
+                  {
+                    "meTypes": ["SERVICE"],
+                    "tags": [
+                      {
+                        "key": "service",
+                        "value": "'"$SERVICE_NAME"'"
+                      },
+                      {
+                        "key": "environment",
+                        "value": "prod"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }'
