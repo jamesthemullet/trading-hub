@@ -60,7 +60,7 @@ export const NumericAttribute = ({
           weight={weight}
           field={name}
           isEditable={isEditable}
-          onDelete={() => onDelete && onDelete({ field: name, weight })}
+          onDelete={() => onDelete?.({ field: name, weight })}
           onStartChanges={handleStartChanges}
           canEditWeight
         />

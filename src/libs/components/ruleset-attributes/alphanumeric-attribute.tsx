@@ -102,7 +102,7 @@ export const AlphanumericAttribute = ({
           weight={weight || 0}
           field={fields[0].field}
           isEditable={isEditable}
-          onDelete={() => onDelete && onDelete({ fields, weight: weight || 0 })}
+          onDelete={() => onDelete?.({ fields, weight: weight || 0 })}
           onStartChanges={handleStartChanges}
           canEditWeight={canEditWeight}
         />

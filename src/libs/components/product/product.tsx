@@ -71,11 +71,11 @@ const ProductDetails = ({
           style={{ objectFit: 'contain' }}
           priority
           sizes="100%"
-          onError={(element) =>
+          onError={(element) => {
             // eslint-disable-next-line functional/immutable-data
-            (element.currentTarget.src =
-              'https://dummyimage.com/300x400/cccccc/ffffff?text=missing+image')
-          }
+            element.currentTarget.src =
+              'https://dummyimage.com/300x400/cccccc/ffffff?text=missing+image';
+          }}
         />
         {isOutOfStock && <OutOfStockMessage>Out of stock</OutOfStockMessage>}
       </ProductCard>
@@ -545,9 +545,7 @@ export const MissingProduct = ({
           label={`Select ${id}`}
           disabled={isSelectionDisabled}
           checked={isSelected}
-          onChange={() =>
-            onSelectProduct && onSelectProduct({ id, isSelected })
-          }
+          onChange={() => onSelectProduct?.({ id, isSelected })}
         />
         <ProductInfoWrapper>
           {(isProductNumberEnabled ?? true) && (
