@@ -122,7 +122,7 @@ jobs:
           tenant-id: ${{ secrets._AZURE_AD_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: node-app
 
@@ -233,7 +233,7 @@ jobs:
           tenant-id: ${{ secrets._AZURE_AD_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: node-app
 
