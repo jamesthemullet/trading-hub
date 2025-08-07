@@ -58,13 +58,14 @@ This process I followed at around 10:30am, and then updated the secrets in GitHu
   > “AttributeError: Can't get attribute 'NormalizedResponse' on <module 'msal.throttled_http_client' from '/usr/local/lib/python3.10/site-packages/msal/throttled_http_client.py'>”  
   > [GitHub Actions Run](https://github.com/DigitalInnovation/trading-hub/actions/runs/15709363681/job/44263431097).
 
-  I tried various solutions:
-  - Removing secrets from the failing step:  
-    [Commit](https://github.com/DigitalInnovation/trading-hub/pull/1341/commits/7c6e2598aec3c828ed4bc8b5b37360c3c469a61f).
-  - Reverted the above and upgraded `azcliversion` to 2.55.0:  
-    [Commit](https://github.com/DigitalInnovation/trading-hub/pull/1343/commits/b09ba8793dafc13b936aa0e89ef192e6a53bc76e).
-  - Removed the step entirely, as I wasn’t sure whether it was necessary:  
-    [Commit](https://github.com/DigitalInnovation/trading-hub/pull/1344/commits/765098ff6f0a9d10f16500767459c77f76ce25aa).
+I tried various solutions:
+
+- Removing secrets from the failing step:  
+  [Commit](https://github.com/DigitalInnovation/trading-hub/pull/1341/commits/7c6e2598aec3c828ed4bc8b5b37360c3c469a61f).
+- Reverted the above and upgraded `azcliversion` to 2.55.0:  
+  [Commit](https://github.com/DigitalInnovation/trading-hub/pull/1343/commits/b09ba8793dafc13b936aa0e89ef192e6a53bc76e).
+- Removed the step entirely, as I wasn’t sure whether it was necessary:  
+  [Commit](https://github.com/DigitalInnovation/trading-hub/pull/1344/commits/765098ff6f0a9d10f16500767459c77f76ce25aa).
 
 - **15:53**  
    The deploy to dev step worked, though I remained unsure about the previous solution of removing the failing step – however, dev was still working.

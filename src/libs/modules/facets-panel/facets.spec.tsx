@@ -871,6 +871,46 @@ describe('Facets', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should not allow to edit values of an algoControl facet', async () => {
+    renderWithProviders(
+      <Facets
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        isNewRuleset={false}
+        facetType="search"
+        searchTerms={['socks']}
+      />
+    );
+
+    expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+
+    // Change existing included facet to algoControl - so there should be no edit values button
+    const dropdownHeader = screen.getAllByTestId(
+      'button to open facet order dropdown'
+    )[0];
+    await userEvent.click(dropdownHeader);
+
+    const algoControlOption = screen.getByRole('button', {
+      name: 'algoControl',
+    });
+    await userEvent.click(algoControlOption);
+
+    const editValuesButtons = screen.queryAllByRole('button', {
+      name: 'Edit values',
+    });
+
+    expect(editValuesButtons).toHaveLength(0);
+  });
+
   it('should save facets changes', async () => {
     const onSaveSpy = jest.fn();
     const expectedCall = {
