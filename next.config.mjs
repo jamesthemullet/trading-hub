@@ -57,6 +57,14 @@ const nextConfig = {
     });
     return config;
   },
+  turbopack: {
+    rules: {
+      '*.yml': {
+        loaders: ['yaml-loader'],
+        as: '*.js',
+      },
+    },
+  },
   serverExternalPackages: ['@vercel/otel'],
 };
 

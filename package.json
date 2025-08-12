@@ -9,7 +9,8 @@
     "pnpm": "please-use-npm"
   },
   "scripts": {
-    "dev": "npm run codegen && next dev",
+    "dev": "npm run codegen && next dev --turbo",
+    "dev:turbo-verbose": "npm run codegen && next dev --turbo --show-all",
     "codegen": "swagger-typescript-api generate --path src/libs/api/api.yml --output src/libs/api/generated/ --name open-api.ts --extract-response-body --extract-response-error --extract-enums --generate-union-enums",
     "build": "npm run codegen && next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
     "start": "next start",
@@ -49,13 +50,6 @@
     "yaml-loader": "0.8.1"
   },
   "devDependencies": {
-    "@babel/core": "7.28.0",
-    "@babel/plugin-syntax-dynamic-import": "7.8.3",
-    "@babel/plugin-syntax-jsx": "7.27.1",
-    "@babel/plugin-transform-react-jsx": "7.27.1",
-    "@babel/plugin-transform-runtime": "7.28.0",
-    "@babel/preset-env": "7.28.0",
-    "@babel/preset-react": "7.27.1",
     "@babel/preset-typescript": "7.27.1",
     "@biomejs/biome": "2.1.4",
     "@biomejs/js-api": "2.0.3",
@@ -85,7 +79,6 @@
     "@typescript-eslint/eslint-plugin": "8.39.1",
     "@typescript-eslint/parser": "8.39.1",
     "all-contributors-cli": "6.26.1",
-    "babel-jest": "29.7.0",
     "dotenv": "17.2.1",
     "eslint": "9.33.0",
     "eslint-config-next": "15.4.6",
