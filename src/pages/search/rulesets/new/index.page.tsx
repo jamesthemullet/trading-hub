@@ -33,7 +33,7 @@ const NewRuleSetPage = () => {
 
     // istanbul ignore else
     if (resp) {
-      return router.push('/search/rulesets');
+      return router.push('/search');
     }
   };
 
@@ -61,7 +61,7 @@ const NewRuleSetPage = () => {
         <Ruleset
           isEnabled={true}
           onCreateKeywordSearchRuleset={createNewKeywordRuleset}
-          onCancel={() => router.push('/search/rulesets')}
+          onCancel={() => router.push('/search')}
           rulesetType="search"
           writeEnabled={hasWriteAccess}
         />

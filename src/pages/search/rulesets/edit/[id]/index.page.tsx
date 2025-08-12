@@ -41,7 +41,7 @@ const Page = ({ id }: PageProps) => {
       ...(ruleSet.startDate && { startDate: ruleSet.startDate }),
       ...(ruleSet.countryCode && { countryCode: ruleSet.countryCode }),
     }).then(() => {
-      router.push('/search/rulesets');
+      router.push('/search');
     });
   };
 
@@ -71,7 +71,7 @@ const Page = ({ id }: PageProps) => {
         {!isLoading && (
           <Ruleset
             isEnabled={ruleSet.isEnabled}
-            onCancel={() => router.push('/search/rulesets')}
+            onCancel={() => router.push('/search')}
             onSave={saveRuleSet}
             rulesetId={ruleSet.id}
             rulesetMerchandisingRules={ruleSet.rules}

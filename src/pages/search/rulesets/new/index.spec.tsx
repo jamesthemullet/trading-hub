@@ -111,7 +111,7 @@ describe('Index', () => {
 
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/rulesets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search');
   });
 
   it('cancels new ruleset creation', async () => {
@@ -129,6 +129,6 @@ describe('Index', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/rulesets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search');
   });
 });

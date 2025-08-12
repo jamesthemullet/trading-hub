@@ -160,7 +160,7 @@ describe('Search ranking rules', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/rulesets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search');
   });
 
   it('should show an error', async () => {
