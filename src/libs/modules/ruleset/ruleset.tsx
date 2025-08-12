@@ -31,6 +31,7 @@ import { Preview } from '@/libs/components/preview/preview';
 import { ProductSearchAll } from '@/libs/components/product-search/all/product-search-all';
 import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
 import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
+import { color } from '@/libs/components/utils/constants';
 import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
 import { usePreview } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
@@ -60,7 +61,7 @@ const MainContainerPanel = styled.div`
 `;
 
 const ProductSearchPanel = styled.div<{ isFullWidth?: boolean }>`
-  background-color: #fff;
+  background-color: ${color.surfaceBright.surfaceBright};
   border-right: 1px solid #707070;
   margin: 0;
   margin-top: ${spacing(2.5)};
@@ -68,13 +69,13 @@ const ProductSearchPanel = styled.div<{ isFullWidth?: boolean }>`
 `;
 
 const VisualEditorPanel = styled.div`
-  background-color: #fff;
+  background-color: ${color.surfaceBright.surfaceBright};
   width: calc(100% - 360px);
   padding-left: 10px;
 `;
 
 const PanelTop = styled.div`
-  background-color: #fff;
+  background-color: ${color.surfaceBright.surfaceBright};
   z-index: 1;
   display: flex;
   align-items: center;

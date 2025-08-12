@@ -10,8 +10,7 @@ import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
 const NavigationWrapper = styled.nav`
-  background-color: ${color.darkHeritageGreen};
-  color: #fff;
+  background-color: ${color.surface.onSurface};
   z-index: 12;
   position: fixed;
 `;

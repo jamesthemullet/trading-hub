@@ -14,8 +14,8 @@ const Box = styled.div`
   padding: ${spacing(2)} ${spacing(1.5)};
   width: 340px;
   height: 56px;
-  background-color: ${color.infoBoxBlue};
-  border-left: 2px solid ${color.infoBoxBorder};
+  background-color: ${color.role.info.infoContainer};
+  border-left: 5px solid ${color.role.info.onInfoContainer};
 
   p {
     margin-left: 18px;

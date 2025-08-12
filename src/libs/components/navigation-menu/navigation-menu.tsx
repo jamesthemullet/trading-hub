@@ -7,8 +7,6 @@ import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
-const navigationLightGreen = '#216d58';
-
 const MenuItem = styled.div`
   width: 100%;
 `;
@@ -18,10 +16,11 @@ const StyledLink = styled(Link, {
 })<{ isActive: boolean }>`
   text-decoration: none;
   font-size: 12px;
-  color: #fff;
   border: none;
   background-color: ${({ isActive }) =>
-    isActive ? navigationLightGreen : color.darkHeritageGreen};
+    isActive
+      ? `${color.accent.tertiary.tertiary}`
+      : `${color.surface.onSurface}`};
   display: flex;
   min-height: 64px;
   justify-content: center;
@@ -33,12 +32,12 @@ const StyledLink = styled(Link, {
   width: 100%;
 
   p {
-    color: #fff;
+    color: ${color.surface.surfaceContainer};
   }
 
   &:hover,
   &:focus {
-    background-color: ${navigationLightGreen};
+    background-color: ${color.accent.tertiary.tertiary};
     outline: none;
   }
 `;

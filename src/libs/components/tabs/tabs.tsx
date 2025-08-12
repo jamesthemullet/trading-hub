@@ -34,10 +34,11 @@ const TabButton = styled.button<{ isActive: boolean }>`
     content: '';
     display: block;
     width: 100%;
-    height: 2px;
+    height: 3px;
     border-radius: 3px;
     margin-top: 12px;
-    background-color: ${({ isActive }) => (isActive ? '#005640' : 'none')};
+    background-color: ${({ isActive }) =>
+      isActive ? `${color.accent.primary.primary}` : 'none'};
   }
 `;
 
