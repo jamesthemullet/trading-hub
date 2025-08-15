@@ -19,12 +19,24 @@ concurrency:
 
 env:
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  DYNATRACE_URL: ${{ secrets.DYNATRACE_URL }}
+  DYNATRACE_API_TOKEN: ${{ secrets.DYNATRACE_API_TOKEN }}
 
 jobs:
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    outputs:
+      workflow-start-time: ${{ steps.workflow-start.outputs.start_time }}
     steps:
+      - name: Record workflow start time
+        id: workflow-start
+        run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
+
+      - name: Record job start time
+        id: job-start
+        run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -52,11 +64,67 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Track job timing
+        if: always()
+        run: |
+          end_time=$(date +%s)
+          duration=$((end_time - ${{ steps.job-start.outputs.start_time }}))
+          echo "Code quality job duration: ${duration} seconds"
+
+          minutes=$((duration / 60))
+          seconds=$((duration % 60))
+
+          DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
+          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
+          SERVICE_NAME="trading-hub"
+
+          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
+            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "CUSTOM_ANNOTATION",
+              "title": "GitHub Workflow Job Completed: code-quality",
+              "description": "Code quality checks completed in '"${minutes}m ${seconds}s"' ('"$duration"' seconds) with status: ${{ job.status }}",
+              "properties": {
+                "serviceName": "'"$SERVICE_NAME"'",
+                "jobName": "code-quality",
+                "duration": '"$duration"',
+                "status": "${{ job.status }}",
+                "workflow": "${{ github.workflow }}",
+                "branch": "${{ github.ref_name }}",
+                "repository": "${{ github.repository }}",
+                "runId": "${{ github.run_id }}",
+                "prNumber": "${{ github.event.number }}",
+                "actor": "${{ github.actor }}"
+              },
+              "attachRules": {
+                "tagRule": [
+                  {
+                    "meTypes": ["SERVICE"],
+                    "tags": [
+                      {
+                        "key": "service",
+                        "value": "'"$SERVICE_NAME"'"
+                      },
+                      {
+                        "key": "environment",
+                        "value": "dev"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }' || echo "Failed to send code-quality timing event to Dynatrace"
+
   unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
     needs: code-quality
     steps:
+      - name: Record job start time
+        id: job-start
+        run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -69,11 +137,67 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
 
+      - name: Track unit-tests timing
+        if: always()
+        run: |
+          end_time=$(date +%s)
+          duration=$((end_time - ${{ steps.job-start.outputs.start_time }}))
+          echo "Unit tests duration: ${duration} seconds"
+
+          minutes=$((duration / 60))
+          seconds=$((duration % 60))
+
+          DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
+          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
+          SERVICE_NAME="trading-hub"
+
+          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
+            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "CUSTOM_ANNOTATION",
+              "title": "GitHub Workflow Job Completed: unit-tests",
+              "description": "Unit tests and SonarCloud scan completed in '"${minutes}m ${seconds}s"' ('"$duration"' seconds) with status: ${{ job.status }}",
+              "properties": {
+                "serviceName": "'"$SERVICE_NAME"'",
+                "jobName": "unit-tests",
+                "duration": '"$duration"',
+                "status": "${{ job.status }}",
+                "workflow": "${{ github.workflow }}",
+                "branch": "${{ github.ref_name }}",
+                "repository": "${{ github.repository }}",
+                "runId": "${{ github.run_id }}",
+                "prNumber": "${{ github.event.number }}",
+                "actor": "${{ github.actor }}"
+              },
+              "attachRules": {
+                "tagRule": [
+                  {
+                    "meTypes": ["SERVICE"],
+                    "tags": [
+                      {
+                        "key": "service",
+                        "value": "'"$SERVICE_NAME"'"
+                      },
+                      {
+                        "key": "environment",
+                        "value": "dev"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }' || echo "Failed to send unit-tests timing event to Dynatrace"
+
   build:
     name: Build and upload the app
     runs-on: ubuntu-latest
     needs: code-quality
     steps:
+      - name: Record job start time
+        id: job-start
+        run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -94,6 +218,58 @@ jobs:
         with:
           name: node-app
           path: .next/standalone/next.zip
+
+      - name: Track build timing
+        if: always()
+        run: |
+          end_time=$(date +%s)
+          duration=$((end_time - ${{ steps.job-start.outputs.start_time }}))
+          echo "Build duration: ${duration} seconds"
+
+          minutes=$((duration / 60))
+          seconds=$((duration % 60))
+
+          DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
+          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
+          SERVICE_NAME="trading-hub"
+
+          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
+            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "CUSTOM_ANNOTATION",
+              "title": "GitHub Workflow Job Completed: build",
+              "description": "Application build and artifact creation completed in '"${minutes}m ${seconds}s"' ('"$duration"' seconds) with status: ${{ job.status }}",
+              "properties": {
+                "serviceName": "'"$SERVICE_NAME"'",
+                "jobName": "build",
+                "duration": '"$duration"',
+                "status": "${{ job.status }}",
+                "workflow": "${{ github.workflow }}",
+                "branch": "${{ github.ref_name }}",
+                "repository": "${{ github.repository }}",
+                "runId": "${{ github.run_id }}",
+                "prNumber": "${{ github.event.number }}",
+                "actor": "${{ github.actor }}"
+              },
+              "attachRules": {
+                "tagRule": [
+                  {
+                    "meTypes": ["SERVICE"],
+                    "tags": [
+                      {
+                        "key": "service",
+                        "value": "'"$SERVICE_NAME"'"
+                      },
+                      {
+                        "key": "environment",
+                        "value": "dev"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }' || echo "Failed to send build timing event to Dynatrace"
 
   comment-deployment-message:
     if: ${{ github.event_name == 'pull_request' }}
@@ -139,6 +315,10 @@ jobs:
     environment:
       name: deveun
     steps:
+      - name: Record job start time
+        id: job-start
+        run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -257,6 +437,58 @@ jobs:
         if: ${{ failure() }}
         uses: andymckay/cancel-action@0.5
 
+      - name: Track deploy-pr-env timing
+        if: always()
+        run: |
+          end_time=$(date +%s)
+          duration=$((end_time - ${{ steps.job-start.outputs.start_time }}))
+          echo "Deploy PR env duration: ${duration} seconds"
+
+          minutes=$((duration / 60))
+          seconds=$((duration % 60))
+
+          DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
+          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
+          SERVICE_NAME="trading-hub"
+
+          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
+            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "CUSTOM_ANNOTATION",
+              "title": "GitHub Workflow Job Completed: deploy-pr-env",
+              "description": "PR environment deployment completed in '"${minutes}m ${seconds}s"' ('"$duration"' seconds) with status: ${{ job.status }}",
+              "properties": {
+                "serviceName": "'"$SERVICE_NAME"'",
+                "jobName": "deploy-pr-env",
+                "duration": '"$duration"',
+                "status": "${{ job.status }}",
+                "workflow": "${{ github.workflow }}",
+                "branch": "${{ github.ref_name }}",
+                "repository": "${{ github.repository }}",
+                "runId": "${{ github.run_id }}",
+                "prNumber": "${{ github.event.number }}",
+                "actor": "${{ github.actor }}"
+              },
+              "attachRules": {
+                "tagRule": [
+                  {
+                    "meTypes": ["SERVICE"],
+                    "tags": [
+                      {
+                        "key": "service",
+                        "value": "'"$SERVICE_NAME"'"
+                      },
+                      {
+                        "key": "environment",
+                        "value": "dev"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }' || echo "Failed to send deploy-pr-env timing event to Dynatrace"
+
   end-to-end-tests:
     runs-on: ubuntu-latest
     needs: code-quality
@@ -273,6 +505,10 @@ jobs:
       NEXT_PUBLIC_AUTO_LOGIN: false
       DEBUG: 'pw:webserver'
     steps:
+      - name: Record job start time
+        id: job-start
+        run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -289,3 +525,160 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      - name: Track end-to-end-tests timing
+        if: always()
+        run: |
+          end_time=$(date +%s)
+          duration=$((end_time - ${{ steps.job-start.outputs.start_time }}))
+          echo "E2E tests duration: ${duration} seconds"
+
+          minutes=$((duration / 60))
+          seconds=$((duration % 60))
+
+          DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
+          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
+          SERVICE_NAME="trading-hub"
+
+          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
+            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "CUSTOM_ANNOTATION",
+              "title": "GitHub Workflow Job Completed: end-to-end-tests",
+              "description": "End-to-end Playwright tests completed in '"${minutes}m ${seconds}s"' ('"$duration"' seconds) with status: ${{ job.status }}",
+              "properties": {
+                "serviceName": "'"$SERVICE_NAME"'",
+                "workflowName": "${{ github.workflow }}",
+                "jobName": "end-to-end-tests",
+                "duration": '"$duration"',
+                "status": "${{ job.status }}",
+                "workflow": "${{ github.workflow }}",
+                "branch": "${{ github.ref_name }}",
+                "repository": "${{ github.repository }}",
+                "runId": "${{ github.run_id }}",
+                "prNumber": "${{ github.event.number }}",
+                "actor": "${{ github.actor }}"
+              },
+              "attachRules": {
+                "tagRule": [
+                  {
+                    "meTypes": ["SERVICE"],
+                    "tags": [
+                      {
+                        "key": "service",
+                        "value": "'"$SERVICE_NAME"'"
+                      },
+                      {
+                        "key": "environment",
+                        "value": "dev"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }' || echo "Failed to send end-to-end-tests timing event to Dynatrace"
+
+  track-workflow-timing:
+    name: Track Workflow Performance
+    runs-on: ubuntu-latest
+    needs:
+      [
+        code-quality,
+        unit-tests,
+        build,
+        comment-deployment-message,
+        deploy-pr-env,
+        end-to-end-tests,
+      ]
+    if: always()
+    steps:
+      - name: Calculate and send workflow metrics
+        run: |
+          # Use accurate workflow start time from first job
+          workflow_start_epoch="${{ needs.code-quality.outputs.workflow-start-time }}"
+          workflow_end_epoch=$(date +%s)
+          duration=$((workflow_end_epoch - workflow_start_epoch))
+
+          minutes=$(((duration % 3600) / 60))
+          seconds=$((duration % 60))
+
+          DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
+          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
+          SERVICE_NAME="trading-hub"
+
+          echo "📊 Workflow Duration: ${duration} seconds (${minutes}m ${seconds}s)"
+
+          # Determine overall workflow status
+          if [[ "${{ needs.code-quality.result }}" == "failure" || \
+                "${{ needs.unit-tests.result }}" == "failure" || \
+                "${{ needs.build.result }}" == "failure" || \
+                "${{ needs.deploy-pr-env.result }}" == "failure" || \
+                "${{ needs.end-to-end-tests.result }}" == "failure" ]]; then
+            workflow_status="failure"
+          elif [[ "${{ needs.code-quality.result }}" == "cancelled" || \
+                  "${{ needs.unit-tests.result }}" == "cancelled" || \
+                  "${{ needs.build.result }}" == "cancelled" || \
+                  "${{ needs.deploy-pr-env.result }}" == "cancelled" || \
+                  "${{ needs.end-to-end-tests.result }}" == "cancelled" ]]; then
+            workflow_status="cancelled"
+          else
+            workflow_status="success"
+          fi
+
+          echo "📈 Workflow Status: ${workflow_status}"
+
+          # Send workflow completion event to Dynatrace
+          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
+            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN " \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "CUSTOM_ANNOTATION",
+              "title": "GitHub Workflow Completed: ${{ github.workflow }}",
+              "description": "Complete PR validation workflow finished in '"${minutes}m ${seconds}s"' ('"$duration"' seconds) with status: '"$workflow_status"'",
+              "properties": {
+                "serviceName": "'"$SERVICE_NAME"'",
+                "workflow": "${{ github.workflow }}",
+                "jobName": "whole-workflow",
+                "duration": '"$duration"',
+                "status": "'"$workflow_status"'",
+                "branch": "${{ github.ref_name }}",
+                "repository": "${{ github.repository }}",
+                "actor": "${{ github.actor }}",
+                "runId": "${{ github.run_id }}",
+                "prNumber": "${{ github.event.number }}",
+                "codeQualityResult": "${{ needs.code-quality.result }}",
+                "unitTestsResult": "${{ needs.unit-tests.result }}",
+                "buildResult": "${{ needs.build.result }}",
+                "deployResult": "${{ needs.deploy-pr-env.result }}",
+                "e2eTestsResult": "${{ needs.end-to-end-tests.result }}"
+              },
+              "attachRules": {
+                "tagRule": [
+                  {
+                    "meTypes": ["SERVICE"],
+                    "tags": [
+                      {
+                        "key": "service",
+                        "value": "'"$SERVICE_NAME"'"
+                      },
+                      {
+                        "key": "environment",
+                        "value": "dev"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }' || echo "⚠️  Failed to send workflow completion event to Dynatrace"
+            
+          # Also send individual job statuses summary
+          echo "📋 Job Results Summary:"
+          echo "  - code-quality: ${{ needs.code-quality.result }}"
+          echo "  - unit-tests: ${{ needs.unit-tests.result }}"  
+          echo "  - build: ${{ needs.build.result }}"
+          echo "  - deploy-pr-env: ${{ needs.deploy-pr-env.result }}"
+          echo "  - end-to-end-tests: ${{ needs.end-to-end-tests.result }}"
+        env:
+          DYNATRACE_URL: ${{ secrets.DYNATRACE_URL }}
+          DYNATRACE_API_TOKEN: ${{ secrets.DYNATRACE_API_TOKEN }}
