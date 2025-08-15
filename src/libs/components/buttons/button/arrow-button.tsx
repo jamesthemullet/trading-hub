@@ -12,11 +12,11 @@ export type ArrowButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const StyledArrowButton = styled.button<ArrowButtonProps>`
   background: url('/trading-hub/asset/icon-arrow-up.svg');
-  background-color: #fff;
+  background-color: ${color.surface.surfaceContainer};
   background-repeat: no-repeat;
   background-position: center;
   border: none;
-  outline: solid 1px ${color.grey};
+  outline: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   width: 40px;
   height: 40px;
   padding: 12px;
@@ -32,9 +32,9 @@ const StyledArrowButton = styled.button<ArrowButtonProps>`
   &:disabled {
     cursor: default;
     opacity: 0.7;
-    background-color: ${color.lightGrey};
+    background-color: ${color.state.disabled.disabled};
     margin-top: 0;
-    outline: solid 1px ${color.grey};
+    outline: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   }
 
   &:active {

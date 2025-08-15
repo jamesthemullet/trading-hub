@@ -57,7 +57,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
       path: '/category',
       icon: '/trading-hub/asset/menu-category-ranking-v2.svg',
       activeIcon: '/trading-hub/asset/menu-category-ranking-v2-active.svg',
-      alt: 'Categories',
+      alt: 'Category Ranking Rules',
       shortTitle: 'Categories',
     },
     {

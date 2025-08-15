@@ -12,7 +12,7 @@ export const ModalStickyHeader = styled.div`
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #fff;
+  background-color: ${color.surface.surfaceContainer};
 `;
 
 export const HeadingContainer = styled.div`
@@ -60,11 +60,11 @@ export const ModalContainer = styled.div`
 `;
 
 export const ModalFooter = styled.div`
-  background-color: #fff;
+  background-color: ${color.surface.surfaceContainer};
   position: sticky;
   bottom: 0;
   width: 100%;
-  border-top: solid 1px ${color.grey};
+  border-top: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   padding: ${spacing(1)};
   display: flex;
   justify-content: flex-end;

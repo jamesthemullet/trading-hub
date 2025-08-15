@@ -7,7 +7,7 @@ import { spacing } from '../utils/spacing';
 import { Checkbox } from './checkbox';
 
 const Row = styled.label`
-  border-bottom: solid 1px ${color.grey};
+  border-bottom: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   padding: ${spacing(2)};
   display: flex;
   align-items: center;

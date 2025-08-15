@@ -52,11 +52,11 @@ const ModalContainer = styled.div`
 `;
 
 const ModalFooter = styled.div`
-  background-color: #fff;
+  background-color: ${color.surface.surfaceContainer};
   position: sticky;
   bottom: 0;
   width: 100%;
-  border-top: solid 1px ${color.grey};
+  border-top: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   padding: ${spacing(1)};
   display: flex;
   justify-content: flex-end;

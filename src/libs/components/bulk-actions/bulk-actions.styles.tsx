@@ -7,7 +7,7 @@ import { spacing } from '../utils/spacing';
 
 export const ConfirmationPanel = styled.div`
   width: 100%;
-  background: #fff;
+  background: ${color.surface.surfaceContainer};
   border-top: solid 1px #000;
   z-index: 1;
   bottom: 0;
@@ -48,7 +48,7 @@ export const ProductMenu = styled.div`
   right: 50px;
   width: 100%;
   min-width: 160px;
-  background: #fff;
+  background: ${color.surface.surfaceContainer};
   border-radius: 3px;
   z-index: 2;
 `;
@@ -66,7 +66,7 @@ export const ProductMenuOverlay = styled.button`
 
 export const ProductMenuButton = styled(Text)<{ icon: string; size?: string }>`
   border: none;
-  background: #fff;
+  background: ${color.surface.surfaceContainer};
   width: 100%;
   min-height: 40px;
   text-align: left;

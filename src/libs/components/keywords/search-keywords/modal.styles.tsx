@@ -17,7 +17,7 @@ export const KeywordList = styled.ul<{ unfinishedKeyword: boolean }>`
   gap: ${spacing(1)};
   flex-wrap: wrap;
   width: 100%;
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.surface.surface};
   overflow-y: auto;
   overflow-x: hidden;
   height: 250px;
@@ -85,7 +85,7 @@ export const RemoveKeyWordPill = styled.button`
 `;
 
 export const StyledInput = styled.input`
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.surface.surface};
 `;
 
 export const ModalSelectedKeyword = styled.div`
@@ -117,11 +117,10 @@ export const StyledSearchContainer = styled.div`
 `;
 
 export const ModalFooter = styled.div`
-  background-color: #fff;
   position: sticky;
   bottom: 0;
   width: 100%;
-  border-top: solid 1px ${color.grey};
+  border-top: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   padding: ${spacing(1.5)} ${spacing(2.5)};
   display: flex;
   justify-content: space-between;
@@ -150,7 +149,7 @@ export const StyledCloseButton = styled(Button)`
 export const Popover = styled.div<{ isOpen: string | undefined }>`
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   position: absolute;
-  background-color: #fff;
+  background-color: ${color.surface.surfaceContainer};
   border-radius: 4px;
   z-index: 1;
   padding: ${spacing(1)} ${spacing(2)};
