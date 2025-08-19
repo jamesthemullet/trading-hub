@@ -53,7 +53,7 @@ export const AttributeValuePill = styled.li`
   text-align: center;
   display: flex;
   align-items: center;
-  height: 36px;
+  max-width: 100%;
   button {
     color: #000;
 

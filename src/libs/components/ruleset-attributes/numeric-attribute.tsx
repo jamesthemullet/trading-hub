@@ -1,3 +1,5 @@
+import styled from '@emotion/styled';
+
 import Image from 'next/image';
 
 import type { MerchandisingNumericBoostBury } from '../../api';
@@ -10,6 +12,10 @@ import {
 } from './ruleset-attributes.styles';
 import { labels } from './utils';
 import { AttributeWeight } from './weight';
+
+const AttributeNameText = styled(Typography)`
+  word-break: break-word;
+`;
 
 export const NumericAttribute = ({
   isEditable,
@@ -37,9 +43,9 @@ export const NumericAttribute = ({
   return (
     <AttributeWrapper>
       <AttributeHeading>
-        <Typography variant="bodyMedium" isStrong>
+        <AttributeNameText variant="bodyMedium" isStrong>
           {name}
-        </Typography>
+        </AttributeNameText>
       </AttributeHeading>
 
       <AttributeRow>

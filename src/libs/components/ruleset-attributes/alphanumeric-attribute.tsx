@@ -1,3 +1,5 @@
+import styled from '@emotion/styled';
+
 import Image from 'next/image';
 
 import type {
@@ -17,6 +19,10 @@ import {
 } from './ruleset-attributes.styles';
 import { labels } from './utils';
 import { AttributeWeight } from './weight';
+
+const AttributeNameText = styled.span`
+  word-break: break-word;
+`;
 
 export const AlphanumericAttribute = ({
   fields,
@@ -57,7 +63,9 @@ export const AlphanumericAttribute = ({
             <AttributeValueList>
               {values.map((value) => (
                 <AttributeValuePill key={value}>
-                  <span>{formatHTMLStrings(value)}</span>
+                  <AttributeNameText>
+                    {formatHTMLStrings(value)}
+                  </AttributeNameText>
                 </AttributeValuePill>
               ))}
             </AttributeValueList>
