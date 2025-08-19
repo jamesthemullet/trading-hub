@@ -307,7 +307,9 @@ export const DataTable = ({
 
   const formatByQuery = (identifier: string) =>
     identifier
-      .split(new RegExp(`(${query})`, 'gi'))
+      .split(
+        new RegExp(`(${query?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+      )
       .map((word, ind) =>
         word.toLowerCase() === query?.toLowerCase() ? (
           <b key={`${word}-${ind}`}>{word}</b>
