@@ -41,29 +41,27 @@ const EditRedirect = ({ id }: Props) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit redirect</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={[
-            'Search & Merchandising',
-            'Site search',
-            'Keyword redirect',
-          ]}
+      <Heading
+        breadcrumbs={[
+          'Search & Merchandising',
+          'Site search',
+          'Keyword redirect',
+        ]}
+      />
+
+      {error && <CentredError>{error}</CentredError>}
+
+      {!isLoading && (
+        <Redirect
+          onCancel={() => router.push('/search/redirects')}
+          onSave={onSaveRedirect}
+          redirect={redirect}
+          title="Edit Keyword Redirect"
+          writeEnabled={hasWriteAccess}
         />
+      )}
 
-        {error && <CentredError>{error}</CentredError>}
-
-        {!isLoading && (
-          <Redirect
-            onCancel={() => router.push('/search/redirects')}
-            onSave={onSaveRedirect}
-            redirect={redirect}
-            title="Edit Keyword Redirect"
-            writeEnabled={hasWriteAccess}
-          />
-        )}
-
-        {isLoading && <Loader />}
-      </>
+      {isLoading && <Loader />}
     </>
   );
 };

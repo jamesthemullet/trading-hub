@@ -79,7 +79,7 @@ export const Generic: Story = {
         <div style={{ padding: '1rem', width: '200px' }}>
           {content}
           <br />
-          <button onClick={() => setContent('Updated content')}>
+          <button type="button" onClick={() => setContent('Updated content')}>
             Update Content
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { MerchandisingRulesWithInfo } from '@/libs/api';
+import type { MerchandisingRulesWithInfo } from '@/libs/api';
 
 export const mockMerchandisingRulesWithInfo: MerchandisingRulesWithInfo = {
   pinnedProducts: [

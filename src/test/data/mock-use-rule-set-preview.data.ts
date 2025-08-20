@@ -1,4 +1,4 @@
-import { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 
 export const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
 export const categoryId = 'SubCategory_428';

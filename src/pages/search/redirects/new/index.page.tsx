@@ -34,26 +34,24 @@ const CreateRedirect = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create redirect</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={[
-            'Search & Merchandising',
-            'Site search',
-            'Keyword redirect',
-          ]}
-        />
+      <Heading
+        breadcrumbs={[
+          'Search & Merchandising',
+          'Site search',
+          'Keyword redirect',
+        ]}
+      />
 
-        {error && <CentredError>{error}</CentredError>}
+      {error && <CentredError>{error}</CentredError>}
 
-        <Redirect
-          onCreate={createNewRedirect}
-          onCancel={() => router.push('/search/redirects')}
-          title="Add Keyword Redirect rule"
-          writeEnabled={hasWriteAccess}
-        />
+      <Redirect
+        onCreate={createNewRedirect}
+        onCancel={() => router.push('/search/redirects')}
+        title="Add Keyword Redirect rule"
+        writeEnabled={hasWriteAccess}
+      />
 
-        {isSaving && <Loader />}
-      </>
+      {isSaving && <Loader />}
     </>
   );
 };

@@ -56,8 +56,9 @@ const server = setupServer(
   }),
   http.get('/api/search/beta/merchandising/keyword/redirect/:id', (ctx) => {
     const data = useSearchRedirectList();
+    type Redirect = typeof returnedRedirectMock;
     const ruleSetReturned = data.redirects.find(
-      (ruleSet: any) => ruleSet.id === ctx.params.id
+      (ruleSet: Redirect) => ruleSet.id === ctx.params.id
     );
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
@@ -65,8 +66,9 @@ const server = setupServer(
     '/api/search/beta/merchandising/keyword/redirect/:id',
     async (ctx) => {
       const data = useSearchRedirectList();
+      type Redirect = typeof returnedRedirectMock;
       const redirectReturned = data.redirects.find(
-        (ruleSet: any) => ruleSet.id === ctx.params.id
+        (ruleSet: Redirect) => ruleSet.id === ctx.params.id
       );
       const redirect = (await ctx.request.json()) as object;
       mockUpdateRedirect({

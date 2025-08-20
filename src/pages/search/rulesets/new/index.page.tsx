@@ -49,23 +49,17 @@ const NewRuleSetPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create search ranking rule</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={[
-            'Search & Merchandising',
-            'Site search',
-            'Ranking rules',
-          ]}
-        />
+      <Heading
+        breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
+      />
 
-        <Ruleset
-          isEnabled={true}
-          onCreateKeywordSearchRuleset={createNewKeywordRuleset}
-          onCancel={() => router.push('/search')}
-          rulesetType="search"
-          writeEnabled={hasWriteAccess}
-        />
-      </>
+      <Ruleset
+        isEnabled={true}
+        onCreateKeywordSearchRuleset={createNewKeywordRuleset}
+        onCancel={() => router.push('/search')}
+        rulesetType="search"
+        writeEnabled={hasWriteAccess}
+      />
     </>
   );
 };

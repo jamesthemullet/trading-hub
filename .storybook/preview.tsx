@@ -2,7 +2,7 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
 import { css, Global } from '@emotion/react';
-import React from 'react';
+import type React from 'react';
 import { createTheme, MantineProvider } from '@mantine/core';
 
 import type { Preview } from '@storybook/nextjs-vite';

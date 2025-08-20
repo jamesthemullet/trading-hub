@@ -269,18 +269,16 @@ export const CategorySearch = ({
             aria-label="select category"
             disabled={!previewCategory}
           >
-            <>
-              {previewCategory ? (
-                <span
-                  onMouseEnter={() => setVisibleTooltip(previewCategory)}
-                  onMouseLeave={() => setVisibleTooltip(undefined)}
-                >
-                  {previewCategory}
-                </span>
-              ) : (
-                'Add categories to display here'
-              )}
-            </>
+            {previewCategory ? (
+              <span
+                onMouseEnter={() => setVisibleTooltip(previewCategory)}
+                onMouseLeave={() => setVisibleTooltip(undefined)}
+              >
+                {previewCategory}
+              </span>
+            ) : (
+              'Add categories to display here'
+            )}
             {previewCategory && getCurrentPath(previewCategory) && (
               <Popover
                 isOpen={visibleTooltip}

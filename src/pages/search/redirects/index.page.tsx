@@ -79,21 +79,19 @@ const RedirectRuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Keyword Redirect</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={['Search & Merchandising', 'Site search', 'Redirects']}
-        />
+      <Heading
+        breadcrumbs={['Search & Merchandising', 'Site search', 'Redirects']}
+      />
 
-        <PageNameLabel>Keyword Redirect</PageNameLabel>
+      <PageNameLabel>Keyword Redirect</PageNameLabel>
 
-        <TablePanel
-          basePath="/search"
-          headings={headings}
-          mapping={mapping}
-          ruleType="redirect"
-          writeEnabled={hasWriteAccess}
-        />
-      </>
+      <TablePanel
+        basePath="/search"
+        headings={headings}
+        mapping={mapping}
+        ruleType="redirect"
+        writeEnabled={hasWriteAccess}
+      />
     </>
   );
 };

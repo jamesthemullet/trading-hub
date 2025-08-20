@@ -1,4 +1,4 @@
-import { MerchandisingReturnedKeywordRuleSet } from '@/libs/api';
+import type { MerchandisingReturnedKeywordRuleSet } from '@/libs/api';
 
 const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
 const product1Id = 'a1';

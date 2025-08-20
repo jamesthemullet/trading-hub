@@ -4,10 +4,10 @@ declare global {
       track: (
         event_name: string,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        event_data?: { [key: string]: any }
+        event_data?: { [key: string]: string }
       ) => void;
     };
-    clarity: (arg: string, arg: string) => object;
+    clarity: (arg: string, event: string) => object;
   }
 }
 

@@ -67,3 +67,4 @@ test-results.json
 newrelic_agent.log
 
 *storybook.log
+biome.json
