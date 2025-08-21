@@ -249,8 +249,10 @@ export const globalAttributesReducer = (
       } = action.payload;
 
       const formatRow = (row: { displayValue: string }): FormattedRow => {
-        const match = merged.find((merge) =>
-          merge.mergedValues?.includes(row.displayValue)
+        const match = merged.find(
+          (merge) =>
+            merge.mergedValues?.includes(row.displayValue) ||
+            merge.displayValue === row.displayValue
         );
 
         return match?.displayValue && match.mergedValues
@@ -274,26 +276,31 @@ export const globalAttributesReducer = (
           const isUnique =
             index === self.findIndex((r) => r.displayName === row.displayName);
           const isExcluded = excludes.some((group) =>
-            group.some((ex) => ex.displayName === row.displayName)
+            group.some(
+              (ex) =>
+                ex.attributes.includes(row.displayName) ||
+                ex.displayName === row.displayName
+            )
           );
           return isUnique && !isExcluded;
         });
       };
 
       const updatedBoostedRows = boostedValues.map(formatRow);
+      const updatedExcludedRows = excludedValues.map(formatRow);
       const updatedNonBoostedExcludedRows =
         nonBoostedExcludedValues.map(formatRow);
-      const updatedExcludedRows = excludedValues.map(formatRow);
 
       const uniqueBoostedRows = getUniqueRows(updatedBoostedRows);
-      const uniqueNonBoostedExcludedRows = getUniqueRows(
-        updatedNonBoostedExcludedRows,
-        uniqueBoostedRows
-      );
       const uniqueExcludedRows = getUniqueRows(
         updatedExcludedRows,
+        uniqueBoostedRows
+      );
+
+      const uniqueNonBoostedExcludedRows = getUniqueRows(
+        updatedNonBoostedExcludedRows,
         uniqueBoostedRows,
-        uniqueNonBoostedExcludedRows
+        uniqueExcludedRows
       );
 
       return {

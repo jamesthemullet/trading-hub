@@ -66,7 +66,7 @@ export const useCategoryProductSearch = () => {
 
         const results = await Promise.all(promises);
 
-        const products = results.map((res) => res.products).flat();
+        const products = results.flatMap((res) => res.products);
         const totalItems = results
           .map((res) => res.pagination.totalItems ?? 0)
           .reduce((max, current) => Math.max(max, current), 0);

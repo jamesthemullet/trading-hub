@@ -78,12 +78,11 @@ export const GlobalEditableLabel = ({
     const otherMergeGroups = merged!.toSpliced(existingMergeGroup);
 
     const isInOtherMergeGroups = otherMergeGroups
-      .map((group) =>
+      .flatMap((group) =>
         group.mergedValues?.map(
           (val) => val.toLowerCase() === trimmedNewValue.toLowerCase()
         )
       )
-      .flat()
       .some((val) => !!val);
 
     if (isInOtherMergeGroups) {

@@ -49,7 +49,7 @@ const mockFacet: MerchandisingReturnedGlobalFacet = {
     user: 'John Smith',
   },
   excludedValues: ['Over 20', '13 - 14.4'],
-  boosted: ['10 - 12.9', 'Under 10', '14.5 - 20'],
+  boosted: ['Under 13', '14.5 - 20'],
   merged: [
     {
       displayValue: 'Under 13',
@@ -204,7 +204,10 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(mockOnClose).toHaveBeenCalled();
     });
 
-    expect(mockUpdateGlobalFacet).toHaveBeenCalled();
+    expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
+      data: mockFacet,
+      facetId: mockFacet.id,
+    });
   });
 
   it('should close the confirmation modal when cancel button on modal clicked', async () => {

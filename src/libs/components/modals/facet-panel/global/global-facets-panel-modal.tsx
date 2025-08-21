@@ -161,12 +161,12 @@ export const GlobalFacetPanelModalContent = ({
       data: {
         ...facet,
         merged: globalAttributesLocalState.merged,
-        excludedValues: globalAttributesLocalState.excludedRows
-          .map((val) => val.attributes)
-          .flat(),
-        boosted: globalAttributesLocalState.boostedRows
-          .map((val) => val.attributes)
-          .flat(),
+        excludedValues: globalAttributesLocalState.excludedRows.flatMap(
+          (val) => val.displayName
+        ),
+        boosted: globalAttributesLocalState.boostedRows.flatMap(
+          (val) => val.displayName
+        ),
       },
     });
 
