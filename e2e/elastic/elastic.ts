@@ -68,6 +68,7 @@ export const setupData = async () => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const searchIndex = async (_query: string = '') => {
   return fetch(`${elasticUrl}/${indexName}/_search?typed_keys=true`, {
     method: 'GET',

@@ -19,16 +19,9 @@ const compat = new FlatCompat({
 });
 
 const eslint = [
-  {
-    ignores: [
-      'src/test/**/*',
-      'src/pages/status.page.tsx',
-      'src/pages/sandbox/**/*',
-      'src/pages/api/auth/next-auth.d.ts',
-      'src/libs/api/generated/open-api.ts',
-    ],
-  },
   ...compat.extends(
+    'next/core-web-vitals',
+    'next/typescript',
     'next',
     'prettier',
     'plugin:jest/recommended',
@@ -39,6 +32,25 @@ const eslint = [
     'plugin:jsx-a11y/recommended',
     'plugin:storybook/recommended'
   ),
+  {
+    ignores: [
+      'node_modules/**',
+      '.next/**',
+      'out/**',
+      'build/**',
+      'next-env.d.ts',
+      'playwright-report',
+      'coverage',
+      'jest.polyfills.js',
+      'jest.setup.ts',
+      'jest.config.ts',
+      'src/test/**/*',
+      'src/pages/status.page.tsx',
+      'src/pages/sandbox/**/*',
+      'src/pages/api/auth/next-auth.d.ts',
+      'src/libs/api/generated/open-api.ts',
+    ],
+  },
   {
     plugins: {
       '@typescript-eslint': typescriptEslint,
@@ -59,8 +71,8 @@ const eslint = [
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
-      ecmaVersion: 5,
-      sourceType: 'script',
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       parserOptions: {
         project: ['./tsconfig.json'],
       },
@@ -107,10 +119,17 @@ const eslint = [
       ],
       'simple-import-sort/exports': 'error',
       'import/no-cycle': 'error',
+      // 'react/jsx-no-useless-fragment': 'error',
+      // 'react/jsx-boolean-value': 'error',
+      // 'react/jsx-curly-brace-presence': ['error', 'never'],
+      // '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      // '@typescript-eslint/prefer-nullish-coalescing': 'error',
+      // 'react/jsx-fragments': ['error', 'syntax'],
     },
   },
   {
     files: ['**/*.spec.*'],
+    ignores: ['e2e/**/*'],
     rules: {
       '@next/next/no-document-import-in-page': 'off',
       '@next/next/no-head-element': 'off',
@@ -118,7 +137,7 @@ const eslint = [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
       'functional/immutable-data': 'off',
-      'functional/no-expression-statement': 'off',
+      'functional/no-expression-statements': 'off',
       'functional/no-return-void': 'off',
       'functional/no-throw-statements': 'off',
       'no-unused-vars': 'off',
@@ -149,8 +168,20 @@ const eslint = [
       'testing-library/prefer-query-by-disappearance': 'error',
       'testing-library/prefer-query-matchers': 'error',
       'testing-library/prefer-screen-queries': 'error',
-      'testing-library/prefer-user-event': 'error',
-      'testing-library/render-result-naming-convention': 'error',
+    },
+  },
+  {
+    files: ['e2e/**/*.spec.*', 'e2e/**/*.ts'],
+    rules: {
+      '@typescript-eslint/await-thenable': 'off',
+      'testing-library/prefer-screen-queries': 'off',
+      'functional/immutable-data': 'off',
+      'functional/no-expression-statements': 'off',
+      'functional/no-return-void': 'off',
+      ...Object.keys(testingLibrary.rules).reduce((acc, rule) => {
+        acc[`testing-library/${rule}`] = 'off';
+        return acc;
+      }, {}),
     },
   },
 ];

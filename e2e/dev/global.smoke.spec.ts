@@ -1,5 +1,3 @@
-/* eslint-disable testing-library/prefer-screen-queries */
-
 import { expect, test } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });

@@ -1,12 +1,13 @@
 import type { Page } from '@playwright/test';
 
 export const create500ErrorsCollector = (page: Page) => {
-  const badResponses: string[] = [];
+  let badResponses: string[] = [];
   page.on('response', async (response) => {
     if (response.status() === 500) {
-      badResponses.push(
-        `${response.url()} ${response.status()} ${response.statusText()}`
-      );
+      badResponses = [
+        ...badResponses,
+        `${response.url()} ${response.status()} ${response.statusText()}`,
+      ];
     }
   });
   return () => {

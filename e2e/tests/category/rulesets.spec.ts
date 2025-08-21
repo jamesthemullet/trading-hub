@@ -1,4 +1,3 @@
-/* eslint-disable testing-library/prefer-screen-queries */
 import type { MerchandisingReturnedCategoryRuleSets } from '@/libs/api';
 
 import { expect, test } from '@playwright/test';
