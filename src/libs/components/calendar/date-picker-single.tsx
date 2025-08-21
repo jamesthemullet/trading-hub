@@ -43,7 +43,7 @@ const StyledDatePicker = styled(MantineDatePicker<'default'>)`
   & .mantine-DatePicker-day:where([data-selected])::before {
     content: '';
     position: absolute;
-    background-color: ${color.darkHeritageGreen};
+    background-color: ${color.accent.primary.primary};
     border-radius: 50%;
     top: 0;
     bottom: 0;

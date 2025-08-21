@@ -206,27 +206,6 @@ const StyleGuide = () => {
         </Text>
       </Guide>
       <Guide>
-        <Colour style={{ backgroundColor: color.backgroundPink }} />
-        <Text>color.backgroundPink</Text>
-        <Text>
-          <code>{color.backgroundPink}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.buttonPrimaryHover }} />
-        <Text>color.buttonPrimaryHover</Text>
-        <Text>
-          <code>{color.buttonPrimaryHover}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.darkHeritageGreen }} />
-        <Text>color.darkHeritageGreen</Text>
-        <Text>
-          <code>{color.darkHeritageGreen}</code>
-        </Text>
-      </Guide>
-      <Guide>
         <Colour style={{ backgroundColor: color.errorRed }} />
         <Text>color.errorRed</Text>
         <Text>
@@ -273,13 +252,6 @@ const StyleGuide = () => {
         <Text>color.lightGrey</Text>
         <Text>
           <code>{color.lightGrey}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.primaryGreen }} />
-        <Text>color.primaryGreen</Text>
-        <Text>
-          <code>{color.primaryGreen}</code>
         </Text>
       </Guide>
       <Guide>

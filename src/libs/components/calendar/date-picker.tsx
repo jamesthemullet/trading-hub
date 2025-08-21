@@ -48,7 +48,7 @@ const StyledDatePicker = styled(MantineDatePicker<'range'>)`
   & .mantine-DatePicker-day[data-last-in-range]::before {
     content: '';
     position: absolute;
-    background-color: ${color.darkHeritageGreen};
+    background-color: ${color.accent.primary.primary};
     border-radius: 50%;
     top: 0;
     bottom: 0;

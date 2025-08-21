@@ -5,8 +5,8 @@ import { color } from '../utils/constants';
 import { spacing } from '../utils/spacing';
 
 export const Count = styled.span`
-  background: ${color.darkHeritageGreen};
-  color: #fff;
+  background: ${color.accent.primary.primary};
+  color: ${color.accent.primary.onPrimary};
   margin-left: ${spacing(0.5)};
   border-radius: ${spacing(1)};
   padding: 0 4px;

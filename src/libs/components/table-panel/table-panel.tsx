@@ -227,6 +227,7 @@ export const TablePanel = <
                   as="a"
                   isInline
                   theme="filled"
+                  icon="plus-simple-white"
                   href="/search/redirects/new"
                   onClick={() => track({ event: 'Add redirect rule' })}
                 >

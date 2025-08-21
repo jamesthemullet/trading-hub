@@ -21,8 +21,8 @@ import { color } from '@/libs/components/utils/constants';
 import { track } from '@/libs/hooks/utils/analytics';
 
 const RedirectType = styled.div`
-  border-top: solid 1px ${color.darkHeritageGreen};
-  border-bottom: solid 1px ${color.darkHeritageGreen};
+  border-top: solid 1px ${color.accent.primary.primary};
+  border-bottom: solid 1px ${color.accent.primary.primary};
   span {
     font-size: 16px;
   }

@@ -1,15 +1,11 @@
 export const color = {
   // TODO: phase out use of these colours and use design system figma colours
-  buttonPrimaryHover: '#595959',
-  primaryGreen: '#bdd755',
   lightGreen: '#dfece2',
-  darkHeritageGreen: '#005640',
   lightGrey: '#ccc',
   grey: '#999',
   accessibilityGrey: '#707070',
   backgroundGrey: '#f5f5f5',
   backgroundDarkGrey: '#f0f0f0',
-  backgroundPink: '#fbf6f4',
   successGreenBackground: '#f4faed',
   errorRedBackground: '#fff3f4',
   errorRed: '#ea122a',

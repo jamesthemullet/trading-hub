@@ -46,8 +46,8 @@ const ToggleSwitch = styled.label`
   }
 
   & > input:not([disabled]):checked + span::before {
-    background-color: ${color.darkHeritageGreen};
-    border: 2px solid ${color.darkHeritageGreen};
+    background-color: ${color.accent.primary.primary};
+    border: 2px solid ${color.accent.primary.primary};
     transition:
       background-color 0.2s,
       opacity 0.2s;

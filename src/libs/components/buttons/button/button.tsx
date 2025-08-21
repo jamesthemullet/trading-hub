@@ -77,9 +77,9 @@ const setTheme = ({
   if (isFilled) {
     return css`
       text-align: left;
-      border: ${color.darkHeritageGreen} solid 1px;
-      background: ${color.darkHeritageGreen};
-      color: #fff;
+      border: ${color.accent.primary.primary} solid 1px;
+      background: ${color.accent.primary.primary};
+      color: ${color.accent.primary.onPrimary};
 
       &:hover {
         background-color: #10604b;
@@ -92,9 +92,9 @@ const setTheme = ({
   if (isOutlined) {
     return css`
       text-align: left;
-      border: ${color.darkHeritageGreen} solid 1px;
+      border: ${color.accent.primary.primary} solid 1px;
       background: #fff;
-      color: ${color.darkHeritageGreen};
+      color: ${color.accent.primary.primary};
 
       &:hover {
         background-color: #f0f5f4;
