@@ -465,7 +465,7 @@ export const globalAttributesReducer = (
         excludedRows: uniqueExcludedRows,
         nonBoostedExcludedRows: uniqueNonBoostedExcludedRows,
         merged: [
-          ...state.merged!,
+          ...state.merged,
           {
             displayValue: newMergeGroup.displayName,
             mergedValues: newMergeGroup.attributes,
@@ -491,7 +491,7 @@ export const globalAttributesReducer = (
           row.attributes.some((val) => !attributes.includes(val))
         );
 
-      const updatedMerged = state.merged!.filter((merge) => {
+      const updatedMerged = state.merged.filter((merge) => {
         const hasMatchingValues = merge.mergedValues!.some((value) =>
           attributes.includes(value)
         );
@@ -534,7 +534,7 @@ export const globalAttributesReducer = (
     case 'REMOVE_FROM_MERGE_GROUP': {
       const { valueToRemove, mergeDisplayName } = action.payload;
 
-      const originalMergeGroup = state.merged!.find(
+      const originalMergeGroup = state.merged.find(
         (merge) => merge.displayValue === mergeDisplayName
       );
 
@@ -567,7 +567,7 @@ export const globalAttributesReducer = (
         ];
       }
 
-      const updatedMerged = state.merged!.map((merge) => {
+      const updatedMerged = state.merged.map((merge) => {
         if (merge.displayValue === mergeDisplayName) {
           return {
             ...merge,
