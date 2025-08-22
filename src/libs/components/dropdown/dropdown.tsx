@@ -256,14 +256,8 @@ export const CombinedDropdown = ({
         );
       case 'countryFilter': {
         const current = countryFilterOptions.find((o) => o.selected);
-        return (
-          <>
-            {current?.label ||
-              // there won't be a case where label is undefined but since we get current from find it has undefined type
-              // istanbul ignore next
-              'Select country filter'}
-          </>
-        );
+        // istanbul ignore next - there won't be a case where label is undefined but since we get current from find it has undefined type
+        return current?.label || 'Select country filter';
       }
       case 'countrySelector': {
         const current = countrySelectorOptions.find((o) => o.selected);

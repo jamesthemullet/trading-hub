@@ -96,42 +96,38 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit global facets</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
+      <Heading
+        breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
+      />
+
+      {globalRulesetError && (
+        <ErrorMessage>
+          Error whilst retrieving global ruleset: {globalRulesetError}
+        </ErrorMessage>
+      )}
+
+      {savingGlobalRulesetError && (
+        <ErrorMessage>
+          Error whilst saving global ruleset: {savingGlobalRulesetError}
+        </ErrorMessage>
+      )}
+
+      {!globalRulesetError && (
+        <GlobalFacetsPanel
+          ruleSetIncludedFacets={facetsFromGlobalRuleSet}
+          ruleSetExcludedFacets={globalRuleSet.excludedFacets}
+          isLoading={isLoading}
+          countryCode={globalRuleSet.countryCode || 'UK_IE'}
+          onSave={({ countryCode, includedFacets, excludedFacets }) => {
+            setCountryCodeToSave(countryCode);
+            setIncludedFacetsToSave(includedFacets);
+            setExcludedFacetsToSave(excludedFacets);
+            setIsModalOpen(true);
+          }}
+          onCancel={handleCancel}
+          writeEnabled={hasWriteAccess}
         />
-
-        {globalRulesetError && (
-          <ErrorMessage>
-            Error whilst retrieving global ruleset: {globalRulesetError}
-          </ErrorMessage>
-        )}
-
-        {savingGlobalRulesetError && (
-          <ErrorMessage>
-            Error whilst saving global ruleset: {savingGlobalRulesetError}
-          </ErrorMessage>
-        )}
-
-        {!globalRulesetError && (
-          <>
-            <GlobalFacetsPanel
-              ruleSetIncludedFacets={facetsFromGlobalRuleSet}
-              ruleSetExcludedFacets={globalRuleSet.excludedFacets}
-              isLoading={isLoading}
-              countryCode={globalRuleSet.countryCode || 'UK_IE'}
-              onSave={({ countryCode, includedFacets, excludedFacets }) => {
-                setCountryCodeToSave(countryCode);
-                setIncludedFacetsToSave(includedFacets);
-                setExcludedFacetsToSave(excludedFacets);
-                setIsModalOpen(true);
-              }}
-              onCancel={handleCancel}
-              writeEnabled={hasWriteAccess}
-            />
-          </>
-        )}
-      </>
+      )}
       <Modal.Root
         centered
         opened={isModalOpen}

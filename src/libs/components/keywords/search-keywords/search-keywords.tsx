@@ -181,11 +181,9 @@ export const SearchKeywords = ({
               disabled={!previewSearchTerm}
             >
               <DropdownHeading>
-                {previewSearchTerm ? (
-                  <>{previewSearchTerm}</>
-                ) : (
-                  'Add categories to display here'
-                )}
+                {previewSearchTerm
+                  ? previewSearchTerm
+                  : 'Add categories to display here'}
               </DropdownHeading>
               <ArrowContainer borderLeft={false}>
                 <Arrow isDropdownOpen={isDropdownOpen} />

@@ -26,7 +26,7 @@ type Props = {
 
 export const Checkboxes = ({ values, onSelect }: Props) => {
   return (
-    <>
+    <div>
       {values.length ? (
         values.map(({ name, isSelected }) => (
           <Row key={name}>
@@ -42,6 +42,6 @@ export const Checkboxes = ({ values, onSelect }: Props) => {
       ) : (
         <Text style={{ padding: spacing(2) }}>0 Results</Text>
       )}
-    </>
+    </div>
   );
 };
