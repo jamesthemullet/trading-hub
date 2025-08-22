@@ -306,7 +306,7 @@ const FacetInfo = ({
           {id}{' '}
           <Icon
             name={isDropdownOpen ? 'ChevronUpDefault' : 'ChevronDownDefault'}
-            color={'#000'}
+            color="#000"
             size={20}
           />
         </FacetText>

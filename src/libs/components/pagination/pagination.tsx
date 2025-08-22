@@ -68,7 +68,7 @@ export const Pagination = ({ current, total, onClick }: Props) => {
     <PaginationContainer>
       {`Page ${current} of ${total}`}
       <PageNavigationButton
-        name={'prev-button'}
+        name="prev-button"
         aria-label="Previous page"
         onClick={onPrevPageActivated}
         onKeyDown={onPrevPageActivated}
@@ -78,7 +78,7 @@ export const Pagination = ({ current, total, onClick }: Props) => {
         <ChevronIcon type="prev" />
       </PageNavigationButton>
       <PageNavigationButton
-        name={'next-button'}
+        name="next-button"
         aria-label="Next page"
         onClick={onNextPageActivated}
         onKeyDown={onNextPageActivated}

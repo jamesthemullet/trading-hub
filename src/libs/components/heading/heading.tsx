@@ -39,7 +39,7 @@ export const Heading = ({ breadcrumbs }: Props) => {
       <HeadingWrapper>
         <Breadcrumb>
           {breadcrumbs.map((breadcrumb) => (
-            <BreadcrumbText as={'span'} key={breadcrumb}>
+            <BreadcrumbText as="span" key={breadcrumb}>
               {breadcrumb}
             </BreadcrumbText>
           ))}

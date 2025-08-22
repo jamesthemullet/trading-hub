@@ -26,7 +26,7 @@ export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
       </ActionContainer>
       <SectionWrapper>
         <LowerHeading isStrong>Rule scope</LowerHeading>
-        <Skeleton height={96} width={'100%'} />
+        <Skeleton height={96} width="100%" />
       </SectionWrapper>
       <SectionWrapper>
         <Skeleton height={41} />

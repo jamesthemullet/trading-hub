@@ -133,9 +133,9 @@ export const DateTimePickerModal = ({
     <>
       <StyledInputContainer>
         <StyledInput
-          id={''}
+          id=""
           label={label || ''}
-          placeholder={'Select date range'}
+          placeholder="Select date range"
           value={formatDateMonthYearTimeRange(
             dateRange,
             startTime,

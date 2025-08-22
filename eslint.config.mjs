@@ -121,7 +121,7 @@ const eslint = [
       'import/no-cycle': 'error',
       // 'react/jsx-no-useless-fragment': 'error',
       // 'react/jsx-boolean-value': 'error',
-      // 'react/jsx-curly-brace-presence': ['error', 'never'],
+      'react/jsx-curly-brace-presence': ['error', 'never'],
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       // '@typescript-eslint/prefer-nullish-coalescing': 'error',
       // 'react/jsx-fragments': ['error', 'syntax'],

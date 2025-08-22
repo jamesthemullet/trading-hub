@@ -348,25 +348,25 @@ export const DataTable = ({
                     numColumns={headings.length}
                   >
                     <FirstColumn aria-busy="true">
-                      <Skeleton height={48} width={'100%'} />
+                      <Skeleton height={48} width="100%" />
                     </FirstColumn>
                     <BreadcrumbColumn aria-busy="true">
-                      <Skeleton height={48} width={'100%'} />
+                      <Skeleton height={48} width="100%" />
                     </BreadcrumbColumn>
                     <SchedulingColumn aria-busy="true">
-                      <Skeleton height={48} width={'100%'} />
+                      <Skeleton height={48} width="100%" />
                     </SchedulingColumn>
                     <TableCol aria-busy="true">
-                      <Skeleton height={48} width={'100%'} />
+                      <Skeleton height={48} width="100%" />
                     </TableCol>
                     <TableCol aria-busy="true">
-                      <Skeleton height={48} width={'100%'} />
+                      <Skeleton height={48} width="100%" />
                     </TableCol>
                     <TableCol aria-busy="true">
-                      <Skeleton height={48} width={'100%'} />
+                      <Skeleton height={48} width="100%" />
                     </TableCol>
                     <TableCol aria-busy="true">
-                      <Skeleton height={48} width={'100%'} />
+                      <Skeleton height={48} width="100%" />
                     </TableCol>
                     <TableCol
                       style={{ padding: '12px 0 16px' }}

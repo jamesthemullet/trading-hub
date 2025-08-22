@@ -115,7 +115,7 @@ export const EditableLabel = ({
           <>
             <InputContainer>
               <StyledInput
-                id={'input'}
+                id="input"
                 ref={(inputRef) => {
                   inputRef?.focus();
                 }}

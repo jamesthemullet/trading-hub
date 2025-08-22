@@ -108,7 +108,7 @@ export const Tooltip = ({
   return (
     <StyledTooltipContainer ref={tooltipRef} arrowAlignment={arrowAlignment}>
       <StyledTooltip arrowAlignment={arrowAlignment} isOpen={isOpen}>
-        <StyledTypography as="p" color={'#fff'} id={`${id}-tooltip`}>
+        <StyledTypography as="p" color="#fff" id={`${id}-tooltip`}>
           {text}
         </StyledTypography>
         <StyledCloseButton onClick={() => setIsOpen(false)}>
@@ -117,7 +117,7 @@ export const Tooltip = ({
             widthDeprecated={28}
             role="img"
             aria-label="Close tooltip"
-            color={'#fff'}
+            color="#fff"
           />
         </StyledCloseButton>
       </StyledTooltip>
