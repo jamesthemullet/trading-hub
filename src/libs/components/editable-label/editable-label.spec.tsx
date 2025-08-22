@@ -42,7 +42,7 @@ describe('editable-label', () => {
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
-          canCancelEdit={true}
+          canCancelEdit
           onCancel={mockCancel}
           setError={jest.fn()}
           handleUpdatedValue={jest.fn()}
@@ -171,7 +171,7 @@ describe('editable-label', () => {
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
           setError={jest.fn()}
-          showErrorState={true}
+          showErrorState
           handleUpdatedValue={jest.fn()}
         />
       );
@@ -194,7 +194,7 @@ describe('editable-label', () => {
         <EditableLabel
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
-          canCancelEdit={true}
+          canCancelEdit
           onCancel={mockCancel}
           setError={jest.fn()}
           showErrorState={false}

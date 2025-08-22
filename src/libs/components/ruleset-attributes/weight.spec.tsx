@@ -52,7 +52,7 @@ describe('AttributeWeight', () => {
         canEditWeight
         onChangeSubmit={jest.fn()}
         field="category"
-        isEditing={true}
+        isEditing
         onStartChanges={jest.fn()}
         weight={1}
         isEditable
@@ -77,7 +77,7 @@ describe('AttributeWeight', () => {
         canEditWeight
         onChangeSubmit={mockOnChange}
         field="category"
-        isEditing={true}
+        isEditing
         onStartChanges={jest.fn()}
         weight={1}
         isEditable

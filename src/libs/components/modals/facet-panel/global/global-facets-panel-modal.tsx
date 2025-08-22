@@ -484,7 +484,7 @@ export const GlobalFacetPanelModalContent = ({
               {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                 <Col key={`add-facet-modal-column-${label}`}>
                   {label ? (
-                    <TableHeading as="p" isStrong={true}>
+                    <TableHeading as="p" isStrong>
                       {label}
                     </TableHeading>
                   ) : (

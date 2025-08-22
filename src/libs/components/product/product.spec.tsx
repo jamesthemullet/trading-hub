@@ -414,7 +414,7 @@ describe('Product', () => {
     });
 
     it('should render predicted revenue and newness for visual editor or product search', () => {
-      render(<Product {...productProps} hasSupplementaryInfo={true} />);
+      render(<Product {...productProps} hasSupplementaryInfo />);
 
       const predictedRevenue = screen.getByText('Predicted Revenue Score:');
       expect(predictedRevenue).toBeInTheDocument();
@@ -437,7 +437,7 @@ describe('Product', () => {
     });
 
     it('should not show out of stock message', () => {
-      render(<Product {...productProps} isInStock={true} />);
+      render(<Product {...productProps} isInStock />);
 
       const outOfStockMessage = screen.queryByText('Out of stock');
       expect(outOfStockMessage).not.toBeInTheDocument();
@@ -463,7 +463,7 @@ describe('Product', () => {
         },
       };
       renderWithProviders(
-        <MissingProduct {...missingProductProps} isBoosted={true} />
+        <MissingProduct {...missingProductProps} isBoosted />
       );
 
       openActionsMenu(screen);
@@ -486,9 +486,7 @@ describe('Product', () => {
           operation: 'bury',
         },
       };
-      renderWithProviders(
-        <MissingProduct {...missingProductProps} isBuried={true} />
-      );
+      renderWithProviders(<MissingProduct {...missingProductProps} isBuried />);
 
       openActionsMenu(screen);
 
@@ -510,9 +508,7 @@ describe('Product', () => {
           change: 'remove',
         },
       };
-      renderWithProviders(
-        <MissingProduct {...missingProductProps} isPinned={true} />
-      );
+      renderWithProviders(<MissingProduct {...missingProductProps} isPinned />);
 
       openActionsMenu(screen);
 
@@ -535,7 +531,7 @@ describe('Product', () => {
         },
       };
       renderWithProviders(
-        <MissingProduct {...missingProductProps} isBlocked={true} />
+        <MissingProduct {...missingProductProps} isBlocked />
       );
 
       openActionsMenu(screen);

@@ -219,7 +219,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant="facetOrder"
-          writeEnabled={true}
+          writeEnabled
           onChange={jest.fn()}
         />
       );
@@ -253,7 +253,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant="facetOrder"
-          writeEnabled={true}
+          writeEnabled
           onChange={jest.fn()}
           attribute="color"
         />
@@ -275,7 +275,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant="facetOrder"
-          writeEnabled={true}
+          writeEnabled
           onChange={jest.fn()}
           hasAlgoControl
           attribute="color"
@@ -299,7 +299,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant="facetOrder"
-          writeEnabled={true}
+          writeEnabled
           onChange={jest.fn()}
         />
       );
@@ -326,7 +326,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant="facetOrder"
-          writeEnabled={true}
+          writeEnabled
           onChange={jest.fn()}
           hasAlgoControl
         />
@@ -421,7 +421,7 @@ describe('CombinedDropdown', () => {
         <CombinedDropdown
           variant="countrySelector"
           selectedCountryCode="UK_IE"
-          writeEnabled={true}
+          writeEnabled
           onChange={jest.fn()}
           ariaLabel="Select country"
         />
@@ -439,7 +439,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant="countrySelector"
-          writeEnabled={true}
+          writeEnabled
           onChange={jest.fn()}
           ariaLabel="Select country"
         />
@@ -460,7 +460,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant="countrySelector"
-          writeEnabled={true}
+          writeEnabled
           onChange={onChange}
           ariaLabel="Select country"
         />

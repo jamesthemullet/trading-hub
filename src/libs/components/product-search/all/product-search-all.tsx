@@ -207,7 +207,7 @@ export const ProductSearchAll = ({
                     selectedProducts.length > 0 &&
                     selectedProducts.length === products.length
                   }
-                  showLabel={true}
+                  showLabel
                   disabled={isSelectionDisabled}
                 />
               </SelectAll>
@@ -234,9 +234,9 @@ export const ProductSearchAll = ({
               pinnedProductsCount={pinnedProductsCount}
               isBrandStrong={false}
               isProductNumberEnabled={false}
-              isSearchResult={true}
+              isSearchResult
               isSelected={isSelected}
-              hasSupplementaryInfo={true}
+              hasSupplementaryInfo
             />
           );
         })}

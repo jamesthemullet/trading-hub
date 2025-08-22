@@ -304,7 +304,7 @@ describe('GlobalFacetPanelModalContent', () => {
           }}
           {...defaultProps}
           onClose={mockOnClose}
-          writeEnabled={true}
+          writeEnabled
         />
       );
 

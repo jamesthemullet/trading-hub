@@ -84,7 +84,7 @@ describe('RulesetChanges', () => {
     renderWithProviders(
       <RulesetChanges
         {...defaultProps}
-        isPinnable={true}
+        isPinnable
         merchandisingRules={{
           ...mockMerchandisingRulesWithData,
           pinnedProducts: [
@@ -160,7 +160,7 @@ describe('RulesetChanges', () => {
     renderWithProviders(
       <RulesetChanges
         {...defaultProps}
-        isPinnable={true}
+        isPinnable
         merchandisingRules={{
           ...mockMerchandisingRules,
           boosts: {
@@ -268,7 +268,7 @@ describe('RulesetChanges', () => {
     renderWithProviders(
       <RulesetChanges
         {...defaultProps}
-        isPinnable={true}
+        isPinnable
         merchandisingRules={{
           ...mockMerchandisingRulesWithData,
           pinnedProducts: [
@@ -337,7 +337,7 @@ describe('RulesetChanges', () => {
     renderWithProviders(
       <RulesetChanges
         {...defaultProps}
-        isPinnable={true}
+        isPinnable
         merchandisingRules={{
           ...mockMerchandisingRulesWithData,
           pinnedProducts: Array.from({ length: 9 }).map((_, index) => ({
@@ -416,7 +416,7 @@ describe('RulesetChanges', () => {
       renderWithProviders(
         <RulesetChanges
           {...defaultProps}
-          isPinnable={true}
+          isPinnable
           onSelectAll={mockSelectAll}
           merchandisingRules={{
             includes: {},
@@ -509,7 +509,7 @@ describe('RulesetChanges', () => {
       renderWithProviders(
         <RulesetChanges
           {...defaultProps}
-          isPinnable={true}
+          isPinnable
           onSelectAll={mockSelectAll}
           selectedProducts={['60183701', '60183702']}
           merchandisingRules={{
@@ -598,7 +598,7 @@ describe('RulesetChanges', () => {
       renderWithProviders(
         <RulesetChanges
           {...defaultProps}
-          isPinnable={true}
+          isPinnable
           onSelectAll={mockSelectAll}
           selectedProducts={['60183702']}
           merchandisingRules={{

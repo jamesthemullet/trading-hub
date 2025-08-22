@@ -54,7 +54,7 @@ const NewRuleSetPage = () => {
       />
 
       <Ruleset
-        isEnabled={true}
+        isEnabled
         onCreateKeywordSearchRuleset={createNewKeywordRuleset}
         onCancel={() => router.push('/search')}
         rulesetType="search"

@@ -406,7 +406,7 @@ export const Preview = ({
 
   return (
     <Modal.Root
-      opened={true}
+      opened
       onClose={onClose}
       centered
       padding={0}

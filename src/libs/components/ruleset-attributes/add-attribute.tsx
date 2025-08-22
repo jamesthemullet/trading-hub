@@ -424,7 +424,7 @@ export const AddAttribute = ({
             <Text>Attributes are aggregated from the account level</Text>
             <Filters>
               <OperationSelector
-                hasIncludeExclude={true}
+                hasIncludeExclude
                 selectedOperation={selectedOperation}
                 setSelectedOperation={setSelectedOperation}
               />
@@ -558,7 +558,7 @@ export const AddAttribute = ({
             onClick={() => {
               onCancel();
             }}
-            isInline={true}
+            isInline
           >
             Cancel
           </Button>{' '}

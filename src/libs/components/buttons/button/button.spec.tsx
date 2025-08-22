@@ -40,7 +40,7 @@ describe('Button', () => {
   it('should not call an onclick handler when disabled', async () => {
     const mockClickHandler = jest.fn();
     render(
-      <Button onClick={mockClickHandler} isDisabled={true}>
+      <Button onClick={mockClickHandler} isDisabled>
         foo
       </Button>
     );

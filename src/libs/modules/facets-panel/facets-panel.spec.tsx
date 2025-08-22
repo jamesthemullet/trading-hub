@@ -138,7 +138,7 @@ describe('Facet Panel', () => {
   it('should render the facet management editing page', async () => {
     renderWithProviders(
       <FacetsPanel
-        writeEnabled={true}
+        writeEnabled
         title="Facet Rule Editor"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
@@ -163,7 +163,7 @@ describe('Facet Panel', () => {
   it('should not render preview button or add new facets button', async () => {
     renderWithProviders(
       <FacetsPanel
-        writeEnabled={true}
+        writeEnabled
         title="Facet Rule Editor"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
@@ -189,7 +189,7 @@ describe('Facet Panel', () => {
   it('should render column headings', () => {
     renderWithProviders(
       <FacetsPanel
-        writeEnabled={true}
+        writeEnabled
         title="Facet Rule Editor"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
@@ -215,13 +215,13 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
-        writeEnabled={true}
+        writeEnabled
         title="Facet Rule Editor"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
-        displayRowOrderControls={true}
+        displayRowOrderControls
         onFacetDataChange={jest.fn()}
         facetsState={mockFacetsState}
         includedFacets={mockIncludedFacets}
@@ -246,13 +246,13 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
-        writeEnabled={true}
+        writeEnabled
         title="Facet Rule Editor"
         countryCode="UK_IE"
         selectedPreviewCountryCode="UK"
         onSave={onSaveSpy}
         onCancel={onCancelSpy}
-        displayRowOrderControls={true}
+        displayRowOrderControls
         onFacetDataChange={jest.fn()}
         facetsState={mockFacetsState}
         includedFacets={mockIncludedFacets}
@@ -275,7 +275,7 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
-        writeEnabled={true}
+        writeEnabled
         title="Facet Rule Editor"
         countryCode="UK"
         selectedPreviewCountryCode="UK"
@@ -325,7 +325,7 @@ describe('Facet Panel', () => {
 
       renderWithProviders(
         <FacetsPanel
-          writeEnabled={true}
+          writeEnabled
           title="Facet Rule Editor"
           countryCode="UK"
           selectedPreviewCountryCode="UK"
@@ -364,7 +364,7 @@ describe('Facet Panel', () => {
 
       renderWithProviders(
         <FacetsPanel
-          writeEnabled={true}
+          writeEnabled
           title="Facet Rule Editor"
           countryCode="UK"
           selectedPreviewCountryCode="UK"
@@ -414,7 +414,7 @@ describe('Facet Panel', () => {
     const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <FacetsPanel
-        writeEnabled={true}
+        writeEnabled
         title="Facet Rule Editor"
         countryCode="UK"
         selectedPreviewCountryCode="UK"

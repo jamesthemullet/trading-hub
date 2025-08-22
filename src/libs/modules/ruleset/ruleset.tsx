@@ -560,7 +560,7 @@ export const Ruleset = ({
               Duration
             </Typography>
             <DateTimePickerModal
-              showCalendarIcon={true}
+              showCalendarIcon
               onUpdateDateTimeRange={(dateTime: [Date | null, Date | null]) =>
                 dispatch({
                   type: 'dateTime',

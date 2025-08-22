@@ -152,7 +152,7 @@ export const Redirect = ({
         onCancel={onCancel}
         onSave={onSaveRedirect}
         hasPreview={false}
-        shouldHidePreview={true}
+        shouldHidePreview
         isNewRuleSet={!!onCreate}
         hasChanges={false}
         rulesetType="redirect"
@@ -229,7 +229,7 @@ export const Redirect = ({
               Duration
             </Typography>
             <DateTimePickerModal
-              showCalendarIcon={true}
+              showCalendarIcon
               dateTime={[
                 redirect.startDate ? new Date(redirect.startDate) : null,
                 redirect.endDate ? new Date(redirect.endDate) : null,

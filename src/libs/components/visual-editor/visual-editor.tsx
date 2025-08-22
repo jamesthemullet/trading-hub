@@ -39,13 +39,13 @@ export const VisualEditor = ({
           <Product
             {...product}
             index={index}
-            isPinnable={true}
+            isPinnable
             dispatch={dispatch}
             onSelectProduct={onSelectProduct}
             isSelected={selectedProducts.includes(product.id)}
             isSelectionDisabled={isSelectionDisabled}
             pinnedProductsCount={pinnedProductsCount}
-            hasSupplementaryInfo={true}
+            hasSupplementaryInfo
           />
         </ProductBox>
       ))}

@@ -438,7 +438,7 @@ export const Facets = ({
               Duration
             </Typography>
             <DateTimePickerModal
-              showCalendarIcon={true}
+              showCalendarIcon
               onUpdateDateTimeRange={(dateTime) => {
                 dispatch({
                   type: 'dateTime',
@@ -513,7 +513,7 @@ export const Facets = ({
         <Row>
           {COLUMNS.map(({ label }) => (
             <Col key={`column-${label}`}>
-              <TableHeading as="p" isStrong={true}>
+              <TableHeading as="p" isStrong>
                 {label}
               </TableHeading>
             </Col>

@@ -87,7 +87,7 @@ const Page = () => {
 
       <Facets
         facetType="category"
-        isNewRuleset={true}
+        isNewRuleset
         onCancel={handleCancel}
         onSave={handleSave}
         writeEnabled={hasWriteAccess}

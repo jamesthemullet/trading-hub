@@ -143,7 +143,7 @@ export const DateTimePickerModal = ({
             true
           )}
           {...(writeEnabled && { onClick: openDatePicker })}
-          isLabelHidden={true}
+          isLabelHidden
           readOnly={!writeEnabled}
         />
 
@@ -167,7 +167,7 @@ export const DateTimePickerModal = ({
           opened={opened}
           onClose={close}
           size="auto"
-          withinPortal={true}
+          withinPortal
           role="dialog"
           aria-modal="true"
           aria-label="Datepicker modal"

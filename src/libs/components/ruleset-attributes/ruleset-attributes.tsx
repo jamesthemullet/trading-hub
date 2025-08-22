@@ -109,7 +109,7 @@ export const RulesetAttributes = ({
           <Button
             theme="outlined"
             icon="plus-simple-green"
-            isTextCentred={true}
+            isTextCentred
             onClick={() => setIsModalOpen(!isModalOpen)}
           >
             Create new attribute rule

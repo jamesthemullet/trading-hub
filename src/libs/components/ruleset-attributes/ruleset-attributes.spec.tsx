@@ -440,7 +440,7 @@ describe('RulesetAttributes', () => {
         countryCode={mockCountryCode}
         merchandisingRules={merchandisingRules}
         dispatch={mockDispatch}
-        writeEnabled={true}
+        writeEnabled
         rulesetType="category"
       />
     );
@@ -1758,7 +1758,7 @@ describe('RulesetAttributes', () => {
           }}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
-          writeEnabled={true}
+          writeEnabled
           rulesetType="category"
         />
       );
@@ -1800,7 +1800,7 @@ describe('RulesetAttributes', () => {
           }}
           categories={['SubCategory_429']}
           dispatch={mockDispatch}
-          writeEnabled={true}
+          writeEnabled
           rulesetType="category"
         />
       );

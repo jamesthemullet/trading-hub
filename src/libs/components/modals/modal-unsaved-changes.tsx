@@ -34,7 +34,7 @@ type Props = {
 export const ModalUnsavedChanges = ({ onClose, onContinue }: Props) => {
   return (
     <Modal.Root
-      opened={true}
+      opened
       onClose={onContinue}
       centered
       padding={10}

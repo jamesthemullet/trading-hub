@@ -11,9 +11,7 @@ describe('Input', () => {
   });
 
   it('should hide label', () => {
-    render(
-      <Input id="id" name="input" label="Need input" isLabelHidden={true} />
-    );
+    render(<Input id="id" name="input" label="Need input" isLabelHidden />);
 
     expect(screen.getByText('Need input')).toHaveStyle(
       'clip: rect(0, 0, 0, 0);'

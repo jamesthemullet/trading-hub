@@ -32,7 +32,7 @@ describe('ArrowButton', () => {
 
   it('should not call an onclick handler when disabled', async () => {
     const mockClickHandler = jest.fn();
-    render(<ArrowButton onClick={mockClickHandler} isDisabled={true} />);
+    render(<ArrowButton onClick={mockClickHandler} isDisabled />);
 
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByRole('button'));

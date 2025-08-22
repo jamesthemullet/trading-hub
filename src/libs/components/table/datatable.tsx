@@ -332,7 +332,7 @@ export const DataTable = ({
         >
           {headings.map((heading) => (
             <DynamicTableCol key={heading} data-heading={heading}>
-              <TableHeading as="p" isStrong={true}>
+              <TableHeading as="p" isStrong>
                 {heading}
               </TableHeading>
             </DynamicTableCol>

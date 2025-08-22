@@ -247,7 +247,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
 
   return (
     <Modal.Root
-      opened={true}
+      opened
       onClose={onClose}
       centered
       size={MODAL_WIDTH}
@@ -283,7 +283,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
                 <FacetAttributeValuesTableRow>
                   {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                     <Col key={`add-facet-modal-column-${label}`}>
-                      <TableHeading as="p" isStrong={true}>
+                      <TableHeading as="p" isStrong>
                         {label}
                       </TableHeading>
                     </Col>

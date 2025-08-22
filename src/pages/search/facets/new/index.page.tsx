@@ -88,7 +88,7 @@ const NewRuleSetPage = () => {
 
         <Facets
           facetType="search"
-          isNewRuleset={true}
+          isNewRuleset
           onCancel={handleCancel}
           onSave={handleSave}
           writeEnabled={hasWriteAccess}

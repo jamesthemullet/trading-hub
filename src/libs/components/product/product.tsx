@@ -267,7 +267,7 @@ export const Product = ({
         {isMenuOpen && (
           <ProductMenu>
             <ProductMenuHead>
-              <Typography variant="bodySmall" isStrong={true} as="h4">
+              <Typography variant="bodySmall" isStrong as="h4">
                 Product actions
               </Typography>
             </ProductMenuHead>
@@ -424,7 +424,7 @@ export const Product = ({
               >
                 <Typography
                   variant="bodySmall"
-                  isStrong={true}
+                  isStrong
                   withMargin
                   aria-label="Pinning heading"
                 >
@@ -586,7 +586,7 @@ export const MissingProduct = ({
         {isMenuOpen && (
           <ProductMenu>
             <ProductMenuHead>
-              <Typography variant="bodySmall" isStrong={true} as="h4">
+              <Typography variant="bodySmall" isStrong as="h4">
                 Product actions
               </Typography>
             </ProductMenuHead>

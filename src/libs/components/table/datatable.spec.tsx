@@ -153,7 +153,7 @@ describe('DataTable', () => {
   });
 
   it('should render loading skeleton correctly', () => {
-    renderWithProviders(<DataTable {...defaultProps} isLoading={true} />);
+    renderWithProviders(<DataTable {...defaultProps} isLoading />);
 
     expect(screen.getByTestId('datatable-skeleton')).toBeVisible();
     expect(screen.getByText('Identifier')).toBeVisible();
@@ -161,7 +161,7 @@ describe('DataTable', () => {
 
   it('should render loading skeleton with specific page size', () => {
     renderWithProviders(
-      <DataTable {...defaultProps} isLoading={true} currentPageSize={20} />
+      <DataTable {...defaultProps} isLoading currentPageSize={20} />
     );
 
     expect(screen.getByTestId('datatable-skeleton')).toBeVisible();

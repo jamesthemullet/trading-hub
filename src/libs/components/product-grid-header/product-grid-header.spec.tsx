@@ -17,7 +17,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="search"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 
@@ -57,11 +57,11 @@ describe('ProductGridHeader', () => {
         onSave={jest.fn()}
         onCancel={jest.fn()}
         hasChanges={false}
-        isNewRuleSet={true}
+        isNewRuleSet
         shouldHidePreview={false}
         title="Title"
         rulesetType="search"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 
@@ -72,8 +72,8 @@ describe('ProductGridHeader', () => {
     const mockSave = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        canSave={true}
-        hasPreview={true}
+        canSave
+        hasPreview
         onPreview={jest.fn()}
         onSave={mockSave}
         onCancel={jest.fn()}
@@ -82,7 +82,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="search"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 
@@ -109,7 +109,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="global"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 
@@ -126,8 +126,8 @@ describe('ProductGridHeader', () => {
     const mockPreview = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        canSave={true}
-        hasPreview={true}
+        canSave
+        hasPreview
         onPreview={mockPreview}
         onSave={jest.fn()}
         onCancel={jest.fn()}
@@ -136,7 +136,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="global"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 
@@ -153,17 +153,17 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        canSave={true}
-        hasPreview={true}
+        canSave
+        hasPreview
         onPreview={jest.fn()}
         onSave={jest.fn()}
         onCancel={mockCancel}
-        hasChanges={true}
+        hasChanges
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
         rulesetType="global"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 
@@ -186,8 +186,8 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        canSave={true}
-        hasPreview={true}
+        canSave
+        hasPreview
         onPreview={jest.fn()}
         onSave={jest.fn()}
         onCancel={mockCancel}
@@ -196,7 +196,7 @@ describe('ProductGridHeader', () => {
         shouldHidePreview={false}
         title="Title"
         rulesetType="category"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 
@@ -212,17 +212,17 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        canSave={true}
-        hasPreview={true}
+        canSave
+        hasPreview
         onPreview={jest.fn()}
         onSave={jest.fn()}
         onCancel={mockCancel}
-        hasChanges={true}
+        hasChanges
         isNewRuleSet={false}
         shouldHidePreview={false}
         title="Title"
         rulesetType="category"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 
@@ -245,17 +245,17 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        canSave={true}
-        hasPreview={true}
+        canSave
+        hasPreview
         onPreview={jest.fn()}
         onSave={jest.fn()}
         onCancel={mockCancel}
-        hasChanges={true}
+        hasChanges
         isNewRuleSet={false}
-        shouldHidePreview={true}
+        shouldHidePreview
         title="Title"
         rulesetType="redirect"
-        writeEnabled={true}
+        writeEnabled
       />
     );
 

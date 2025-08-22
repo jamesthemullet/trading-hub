@@ -179,7 +179,7 @@ export const FacetsPanel = ({
               onDisplayValueChange={(newValue) =>
                 onFacetDataChange({ value: newValue, facet })
               }
-              canCancelEdit={true}
+              canCancelEdit
               showErrorState={!!errorState.message}
               setError={(message) => setError(id, message)}
               disallowedValues={facetsState.map((facet) => facet.displayValue)}
@@ -248,13 +248,13 @@ export const FacetsPanel = ({
   return (
     <>
       <ProductGridHeader
-        canSave={true}
+        canSave
         onSave={() => onSave()}
         hasPreview={false}
         isNewRuleSet={false}
         hasChanges
         onCancel={onCancel}
-        shouldHidePreview={true}
+        shouldHidePreview
         title={title}
         writeEnabled={writeEnabled}
         rulesetType="global"
@@ -291,7 +291,7 @@ export const FacetsPanel = ({
         <Row>
           {COLUMNS.map(({ label }) => (
             <Col key={`column-${label}`}>
-              <TableHeading as="p" isStrong={true}>
+              <TableHeading as="p" isStrong>
                 {label}
               </TableHeading>
             </Col>
@@ -303,7 +303,7 @@ export const FacetsPanel = ({
 
       {selectedFacet && isEditValuesModalOpen && (
         <Modal.Root
-          opened={true}
+          opened
           onClose={onClose}
           centered
           size={1150}

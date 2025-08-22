@@ -35,7 +35,7 @@ export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
         <Row>
           {COLUMNS.map(({ label }) => (
             <Col key={`column-${label}`}>
-              <TableHeading as="p" isStrong={true}>
+              <TableHeading as="p" isStrong>
                 {label}
               </TableHeading>
             </Col>

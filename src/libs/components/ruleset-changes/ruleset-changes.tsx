@@ -163,7 +163,7 @@ const ProductsLoader = ({
   return (
     <ChangeSection>
       <Header>
-        <Heading as="h2" isStrong={true}>
+        <Heading as="h2" isStrong>
           {`${heading} (${products.length})`}
         </Heading>
 
@@ -175,7 +175,7 @@ const ProductsLoader = ({
               selectedProducts.length > 0 &&
               selectedProducts.length === products.length
             }
-            showLabel={true}
+            showLabel
             disabled={isSelectionDisabled}
           />
         </SelectAll>
@@ -205,7 +205,7 @@ const ProductsLoader = ({
                     index={index}
                     id={id}
                     dispatch={dispatch}
-                    isProductNumberEnabled={true}
+                    isProductNumberEnabled
                     isBlocked={changeType === 'block'}
                     isBuried={changeType === 'bury'}
                     isPinned={changeType === 'pin'}
@@ -316,7 +316,7 @@ export const RulesetChanges = ({
     <RulesetChangesWrapper>
       {hasAttributeChanges && (
         <ChangeSection>
-          <Heading as="h2" isStrong={true}>
+          <Heading as="h2" isStrong>
             Attribute-level changes ({countOfAttributeChanges})
           </Heading>
           {numericBoosts.length > 0 &&

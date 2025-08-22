@@ -161,7 +161,7 @@ describe('Product bulk actions', () => {
 
   it('should bulk restore', async () => {
     renderWithProviders(
-      <BulkActions {...mockProps} rulesetType="category" hasRestore={true} />
+      <BulkActions {...mockProps} rulesetType="category" hasRestore />
     );
 
     const bulkActionsButton = screen.getByRole('button', {

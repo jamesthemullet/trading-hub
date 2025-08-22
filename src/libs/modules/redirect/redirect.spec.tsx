@@ -13,7 +13,7 @@ describe('Redirect', () => {
 
     renderWithProviders(
       <Redirect
-        writeEnabled={true}
+        writeEnabled
         onCancel={() => jest.fn()}
         onCreate={mockCreate}
         title="Add Keyword Redirect rule"

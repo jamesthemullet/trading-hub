@@ -36,7 +36,7 @@ export default function AuthError() {
     <Wrapper>
       <Header1>{sourceOfError}Error</Header1>
       <Text>{errorMessage}</Text>
-      <Button theme="primary" isInline={true} onClick={() => router.push('/')}>
+      <Button theme="primary" isInline onClick={() => router.push('/')}>
         Go Back to Sign In
       </Button>
     </Wrapper>
