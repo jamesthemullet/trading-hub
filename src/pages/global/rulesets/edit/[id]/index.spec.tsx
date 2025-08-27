@@ -140,7 +140,7 @@ describe('Index', () => {
     await user.click(screen.getByRole('button', { name: 'Apply action' }));
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
-    expect(mockRouter.push).toHaveBeenCalledWith('/global/rulesets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/global');
   });
 
   it('should not save ruleset with server errors', async () => {
@@ -209,7 +209,7 @@ describe('Index', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/global/rulesets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/global');
   });
 
   it('should close the confirmation modal when cancel button on modal clicked', async () => {

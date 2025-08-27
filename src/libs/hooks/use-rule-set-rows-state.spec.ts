@@ -129,7 +129,7 @@ describe('useCategoryRuleSetApi', () => {
       });
 
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -153,7 +153,7 @@ describe('useCategoryRuleSetApi', () => {
       });
 
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -173,7 +173,7 @@ describe('useCategoryRuleSetApi', () => {
         status: { status: 200 },
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -195,7 +195,7 @@ describe('useCategoryRuleSetApi', () => {
         status: { status: 200 },
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -216,7 +216,7 @@ describe('useCategoryRuleSetApi', () => {
         error: { message: 'not ok', status: 200 },
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -262,7 +262,7 @@ describe('useCategoryRuleSetApi', () => {
         status: { status: 200 },
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
       expect(result.current.rowsState.pagination.totalItems).toBe(0);
 
@@ -287,7 +287,7 @@ describe('useCategoryRuleSetApi', () => {
         status: { status: 200 },
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -310,7 +310,7 @@ describe('useCategoryRuleSetApi', () => {
         error: { message: 'JSON parse error', status: 500 },
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -328,7 +328,7 @@ describe('useCategoryRuleSetApi', () => {
       });
 
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -349,7 +349,7 @@ describe('useCategoryRuleSetApi', () => {
         throw new Error('No data');
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -377,7 +377,7 @@ describe('useCategoryRuleSetApi', () => {
         status: { status: 200 },
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -411,7 +411,7 @@ describe('useCategoryRuleSetApi', () => {
         },
       });
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {
@@ -429,7 +429,7 @@ describe('useCategoryRuleSetApi', () => {
       });
 
       const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search/rulesets')
+        useRuleSetRowsState(mappingMock, '/search')
       );
 
       await act(async () => {

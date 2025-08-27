@@ -244,7 +244,7 @@ describe('Search Facet Management Editing', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search');
   });
 
   it('should save changes to a facet', async () => {
@@ -256,7 +256,7 @@ describe('Search Facet Management Editing', () => {
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets/');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search');
   });
 
   it('should save changes to a ruleset with a different country', async () => {

@@ -112,7 +112,7 @@ const mappingMock = {
   toggleRuleSet: (ruleSet: any) => ({
     ...ruleSet,
     isEnabled: !ruleSet.isEnabled,
-    url: `/category/rulesets/edit/${ruleSet.id}`,
+    url: `/category/edit/${ruleSet.id}`,
   }),
   allToTotalItems: (data: any) => data.pagination.totalItems,
   allToArray: (data: any) => data.ruleSets,
@@ -123,7 +123,7 @@ const mappingMock = {
 
 const mockPush = jest.fn();
 const mockRouter = {
-  pathname: '/search/rulesets',
+  pathname: '/search',
   query: {
     currentPage: '1',
     currentPageSize: '10',
@@ -814,7 +814,7 @@ describe('TablePanel', () => {
 
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith({
-          pathname: '/search/rulesets',
+          pathname: '/search',
           query: {
             currentPage: 1,
             currentPageSize: 10,
@@ -827,7 +827,7 @@ describe('TablePanel', () => {
     it('should go back to the first page after the user has searched', async () => {
       const pushSpy = jest.fn();
       const mockRouter = {
-        pathname: '/category/rulesets',
+        pathname: '/category',
         query: {
           currentPage: '4',
           currentPageSize: '10',
@@ -867,7 +867,7 @@ describe('TablePanel', () => {
 
       await waitFor(() => {
         expect(pushSpy).toHaveBeenCalledWith({
-          pathname: '/category/rulesets',
+          pathname: '/category',
           query: {
             currentPage: 1,
             currentPageSize: 10,
@@ -881,7 +881,7 @@ describe('TablePanel', () => {
   describe('pagination functionality', () => {
     beforeEach(() => {
       const mockRouter = {
-        pathname: '/category/rulesets',
+        pathname: '/category',
         query: {},
         push: mockPush,
       };
@@ -935,7 +935,7 @@ describe('TablePanel', () => {
       await userEvent.click(valueToClick);
 
       expect(mockPush).toHaveBeenCalledWith({
-        pathname: '/category/rulesets',
+        pathname: '/category',
         query: {
           currentPage: 1,
           currentPageSize: 100,
@@ -945,7 +945,7 @@ describe('TablePanel', () => {
 
     it('should load default page and page size if not in query', async () => {
       jest.mocked(useRouter as jest.Mock).mockReturnValue({
-        pathname: '/search/rulesets',
+        pathname: '/search',
         query: {},
         isReady: false,
         push: mockPush,
@@ -961,7 +961,7 @@ describe('TablePanel', () => {
         />
       );
       jest.mocked(useRouter as jest.Mock).mockReturnValue({
-        pathname: '/search/rulesets',
+        pathname: '/search',
         query: {},
         isReady: true,
         push: mockPush,
@@ -1001,7 +1001,7 @@ describe('TablePanel', () => {
 
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith({
-          pathname: '/category/rulesets',
+          pathname: '/category',
           query: {
             currentPage: 1,
             currentPageSize: 10,

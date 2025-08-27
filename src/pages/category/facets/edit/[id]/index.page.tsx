@@ -53,12 +53,12 @@ const Page = ({ id }: { id: string }) => {
     });
     // istanbul ignore else
     if (response && response.status !== 'error') {
-      return router.push('/category/facets/');
+      return router.push('/category');
     }
   };
 
   const handleCancel = () => {
-    router.push('/category/facets');
+    router.push('/category');
   };
 
   const {

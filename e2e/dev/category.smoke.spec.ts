@@ -96,7 +96,7 @@ test.describe('Category Ranking', () => {
 
   test('edits a ruleset', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
-    await page.goto('/category/rulesets');
+    await page.goto('/category');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
@@ -246,7 +246,7 @@ test.describe('Category Ranking', () => {
   });
 
   test('duplicates and edits a rule', async ({ page }) => {
-    await page.goto('/category/rulesets');
+    await page.goto('/category');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
@@ -307,7 +307,7 @@ test.describe('Category Ranking', () => {
   });
 
   test('deletes a ruleset', async ({ page }) => {
-    await page.goto('/category/rulesets');
+    await page.goto('/category');
     await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);

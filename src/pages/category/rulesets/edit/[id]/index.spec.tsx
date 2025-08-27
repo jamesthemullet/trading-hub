@@ -248,7 +248,7 @@ describe('Index', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category');
   });
 
   it('loads the mock data', async () => {

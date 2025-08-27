@@ -47,7 +47,7 @@ const Page = ({ id }: PageProps) => {
 
     // istanbul ignore else
     if (response.status === 'success') {
-      router.push('/category/rulesets');
+      router.push('/category');
     }
   };
 
@@ -75,7 +75,7 @@ const Page = ({ id }: PageProps) => {
           <Ruleset
             isEnabled={ruleSetDetail.isEnabled}
             onSave={saveRuleSet}
-            onCancel={() => router.push('/category/rulesets')}
+            onCancel={() => router.push('/category')}
             categoriesInfo={ruleSetDetail.categoriesInfo}
             rulesetFacets={ruleSetDetail.facets}
             rulesetExcludedFacets={ruleSetDetail.excludedFacets}

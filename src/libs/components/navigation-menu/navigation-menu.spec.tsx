@@ -47,7 +47,7 @@ const menuItems = [
 
 describe('NavigationMenu', () => {
   beforeEach(() => {
-    jest.mocked(usePathname).mockReturnValue('/category/rulesets');
+    jest.mocked(usePathname).mockReturnValue('/category');
   });
 
   afterEach(() => {

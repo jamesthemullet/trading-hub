@@ -58,12 +58,12 @@ const Page = () => {
 
     // istanbul ignore else
     if (resp) {
-      return router.push('/category/facets');
+      return router.push('/category');
     }
   };
 
   const handleCancel = () => {
-    router.push('/category/facets');
+    router.push('/category');
   };
 
   const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Cat');

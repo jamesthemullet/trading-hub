@@ -34,7 +34,7 @@ const NewRuleSetPage = () => {
 
     // istanbul ignore else
     if (resp) {
-      return router.push('/category/rulesets');
+      return router.push('/category');
     }
   };
 
@@ -57,7 +57,7 @@ const NewRuleSetPage = () => {
         <Ruleset
           isEnabled
           onCreate={createNewCategoryRuleSet}
-          onCancel={() => router.push('/category/rulesets')}
+          onCancel={() => router.push('/category')}
           rulesetType="category"
           writeEnabled={hasWriteAccess}
         />

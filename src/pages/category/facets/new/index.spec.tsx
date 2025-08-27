@@ -115,7 +115,7 @@ describe('Category Facet Management New', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category');
   });
 
   it('should save changes to a facet', async () => {
@@ -207,7 +207,7 @@ describe('Category Facet Management New', () => {
         pinnedProducts: [],
       },
     });
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category');
   });
 
   it('should update status on dropdown change to include only, and re-order by status', async () => {

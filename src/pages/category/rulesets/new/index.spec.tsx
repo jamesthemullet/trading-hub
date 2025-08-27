@@ -258,7 +258,7 @@ describe('Index', () => {
     });
 
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category');
   });
 
   it('cancels new ruleset creation', async () => {
@@ -276,7 +276,7 @@ describe('Index', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/rulesets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category');
   });
 
   it('creates a new rule set and does not redirect if no id given for the edit page', async () => {

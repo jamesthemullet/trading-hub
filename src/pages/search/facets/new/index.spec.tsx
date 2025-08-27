@@ -80,7 +80,7 @@ describe('Search Facet Management New', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search');
   });
 
   it('should save changes to a newly created facet', async () => {
@@ -157,7 +157,7 @@ describe('Search Facet Management New', () => {
         pinnedProducts: [],
       },
     });
-    expect(mockRouter.push).toHaveBeenCalledWith('/search/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/search');
   });
 
   describe('Scheduling', () => {

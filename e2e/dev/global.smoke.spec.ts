@@ -94,7 +94,7 @@ test.describe('Global Ranking', () => {
   });
 
   test('edits a ruleset', async ({ page }) => {
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -171,7 +171,7 @@ test.describe('Global Ranking', () => {
   });
 
   test('deletes a ruleset', async ({ page }) => {
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await page.waitForLoadState('networkidle');
 
     const currentCount =

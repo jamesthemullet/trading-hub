@@ -72,12 +72,12 @@ const Page = ({ id }: PageProps) => {
 
     // istanbul ignore else
     if (response) {
-      return router.push('/global/facets/');
+      return router.push('/global');
     }
   };
 
   const handleCancel = () => {
-    router.push('/global/facets');
+    router.push('/global');
   };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');

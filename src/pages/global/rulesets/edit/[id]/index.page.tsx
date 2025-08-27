@@ -39,7 +39,7 @@ const Page = ({ id }: PageProps) => {
 
     // istanbul ignore else
     if (response.status === 'success') {
-      router.push('/global/rulesets');
+      router.push('/global');
     }
   };
 
@@ -82,7 +82,7 @@ const Page = ({ id }: PageProps) => {
               setRuleSetIdToSave(ruleSetId);
               setRuleSetToSave(ruleSet);
             }}
-            onCancel={() => router.push('/global/rulesets')}
+            onCancel={() => router.push('/global')}
             rulesetMerchandisingRules={globalRuleSet.rules}
             rulesetFacets={globalRuleSet.facets}
             rulesetExcludedFacets={globalRuleSet.excludedFacets}

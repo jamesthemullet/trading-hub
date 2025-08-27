@@ -90,18 +90,18 @@ test.describe('global rulesets', () => {
       }
     );
 
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await page.waitForLoadState('networkidle');
   });
 
   test('lists global rulesets', async ({ page }) => {
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
     await expect(page.getByText('Graham Licence')).toBeVisible();
   });
 
   test('edits a global ruleset to bury, boost and block', async ({ page }) => {
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -142,7 +142,7 @@ test.describe('global rulesets', () => {
   });
 
   test('edits a global ruleset to include attributes', async ({ page }) => {
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -178,7 +178,7 @@ test.describe('global rulesets', () => {
   });
 
   test('edits a global ruleset to exclude attributes', async ({ page }) => {
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -214,7 +214,7 @@ test.describe('global rulesets', () => {
   });
 
   test('edits a global ruleset to bury attributes', async ({ page }) => {
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -254,7 +254,7 @@ test.describe('global rulesets', () => {
   });
 
   test('edits a global ruleset to boost attributes', async ({ page }) => {
-    await page.goto('/global/rulesets');
+    await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();

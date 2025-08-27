@@ -221,7 +221,7 @@ describe('Global Facet Management Editing', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/global/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/global');
   });
 
   it('should save changes to a facet', async () => {
@@ -310,7 +310,7 @@ describe('Global Facet Management Editing', () => {
       },
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/global/facets/');
+    expect(mockRouter.push).toHaveBeenCalledWith('/global');
   });
 
   it('should close the confirmation modal when cancel button on modal clicked', async () => {

@@ -180,7 +180,7 @@ describe('Category Facet Management Editing', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category');
   });
 
   it('should save changes to a facet', async () => {
@@ -242,7 +242,7 @@ describe('Category Facet Management Editing', () => {
       ],
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/category/facets/');
+    expect(mockRouter.push).toHaveBeenCalledWith('/category');
   });
 
   it('should save changes to a facet ruleset with a different country', async () => {

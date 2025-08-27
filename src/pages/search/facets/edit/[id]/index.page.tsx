@@ -53,12 +53,12 @@ const Page = ({ id }: { id: string }) => {
 
     // istanbul ignore else
     if (response) {
-      return router.push('/search/facets/');
+      return router.push('/search');
     }
   };
 
   const handleCancel = () => {
-    router.push('/search/facets');
+    router.push('/search');
   };
 
   const { ruleSet, error, isLoading } = useSearchRuleSetPreview(id);

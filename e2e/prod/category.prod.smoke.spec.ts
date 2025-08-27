@@ -10,7 +10,7 @@ const TEST_USER_PASSWORD = process.env.PROD_TEST_USER_PASSWORD!;
 
 test.describe('Category Ranking', () => {
   test('Loads data', async ({ page }) => {
-    await page.goto('/category/rulesets');
+    await page.goto('/category');
     await page.waitForURL('**/login.microsoftonline.com/**');
     await page.waitForLoadState('domcontentloaded');
 
@@ -29,7 +29,7 @@ test.describe('Category Ranking', () => {
     await page.waitForLoadState('domcontentloaded');
 
     await page.goto(
-      `/category/rulesets?currentPage=1&currentPageSize=10&searchQuery=${TEST_CATEGORY_ID}`
+      `/category?currentPage=1&currentPageSize=10&searchQuery=${TEST_CATEGORY_ID}`
     );
 
     await page.getByText(TEST_CATEGORY_IDENTIFIER);

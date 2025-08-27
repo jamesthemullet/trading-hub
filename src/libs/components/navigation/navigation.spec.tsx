@@ -20,7 +20,7 @@ jest.mock('next/navigation', () => ({
 
 describe('Navigation', () => {
   beforeEach(() => {
-    jest.mocked(usePathname).mockReturnValue('/category/rulesets');
+    jest.mocked(usePathname).mockReturnValue('/category');
   });
 
   afterEach(() => {
@@ -97,14 +97,14 @@ describe('Navigation', () => {
 
   it.each([
     [
-      '/category/rulesets',
+      '/category',
       '/trading-hub/asset/menu-category-ranking-v2-active.svg',
       '/trading-hub/asset/menu-search-v2.svg',
       '/trading-hub/asset/menu-redirect-arrow.svg',
       '/trading-hub/asset/menu-globe.svg',
     ],
     [
-      '/search/rulesets',
+      '/search',
       '/trading-hub/asset/menu-category-ranking-v2.svg',
       '/trading-hub/asset/menu-search-v2-active.svg',
       '/trading-hub/asset/menu-redirect-arrow.svg',
@@ -118,7 +118,7 @@ describe('Navigation', () => {
       '/trading-hub/asset/menu-globe.svg',
     ],
     [
-      '/global/rulesets',
+      '/global',
       '/trading-hub/asset/menu-category-ranking-v2.svg',
       '/trading-hub/asset/menu-search-v2.svg',
       '/trading-hub/asset/menu-redirect-arrow.svg',

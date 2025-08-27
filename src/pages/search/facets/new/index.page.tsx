@@ -57,12 +57,12 @@ const NewRuleSetPage = () => {
 
     // istanbul ignore else
     if (resp) {
-      return router.push('/search/facets');
+      return router.push('/search');
     }
   };
 
   const handleCancel = () => {
-    router.push('/search/facets');
+    router.push('/search');
   };
 
   const { hasReadAccess, requiredReadRole, hasWriteAccess } =
