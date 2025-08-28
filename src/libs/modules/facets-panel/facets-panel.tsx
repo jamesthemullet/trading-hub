@@ -318,9 +318,9 @@ export const FacetsPanel = ({
               <GlobalFacetPanelModal
                 countryCode={countryCode}
                 facet={selectedFacet}
-                onClose={() => {
+                onClose={(shouldRefetch) => {
                   // istanbul ignore else
-                  if (refreshData) refreshData();
+                  if (refreshData && shouldRefetch) refreshData();
                   onClose();
                 }}
                 writeEnabled={writeEnabled}

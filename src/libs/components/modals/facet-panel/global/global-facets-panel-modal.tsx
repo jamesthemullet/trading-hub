@@ -94,7 +94,7 @@ type ContentProps = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
   countryCode: MerchandisingCountryCode;
   facet: MerchandisingReturnedGlobalFacet;
-  onClose: () => void;
+  onClose: (shouldRefetch?: boolean) => void;
   writeEnabled: boolean;
 };
 
@@ -174,7 +174,7 @@ export const GlobalFacetPanelModalContent = ({
       return;
     }
 
-    onClose();
+    onClose(true);
   };
 
   const handleSave = () => {
@@ -538,7 +538,7 @@ export const GlobalFacetPanelModalContent = ({
         </BodyContainer>
       </ModalContainer>
       <ModalFooter>
-        <Button onClick={onClose}>Cancel</Button>{' '}
+        <Button onClick={() => onClose()}>Cancel</Button>{' '}
         <Button
           onClick={handleSave}
           disabled={Object.values(globalAttributesLocalState.errorStates).some(
@@ -571,7 +571,7 @@ export const GlobalFacetPanelModalContent = ({
 type Props = {
   countryCode: MerchandisingCountryCode;
   facet: MerchandisingReturnedGlobalFacet;
-  onClose: () => void;
+  onClose: (shouldRefetch?: boolean) => void;
   writeEnabled: boolean;
 };
 
@@ -625,7 +625,7 @@ export const GlobalFacetPanelModal = ({
         </BodyContainer>
       </ModalContainer>
       <ModalFooter>
-        <Button onClick={onClose} type="button">
+        <Button onClick={() => onClose()} type="button">
           Cancel
         </Button>{' '}
         <Button isDisabled>Save</Button>

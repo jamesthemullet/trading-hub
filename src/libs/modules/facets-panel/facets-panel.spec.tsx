@@ -1,7 +1,8 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { useGetFacetAttributeValues } from '@/libs/hooks';
+import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
+import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -12,6 +13,7 @@ jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGetFacetAttributeValues: jest.fn(),
   usePreview: jest.fn(),
+  useGlobalFacetUpdate: jest.fn(),
 }));
 
 jest.mock('next/router', () => ({
@@ -122,6 +124,14 @@ const mockExcludedFacets = {
   facets: [{ id: facetsListMock.facets[1].id }],
 };
 
+const mockUpdateGlobalFacet = jest.fn(() =>
+  Promise.resolve({} as MerchandisingReturnedGlobalFacet | { status: string })
+);
+const updateGlobalFacet = {
+  handleGlobalFacetUpdate: mockUpdateGlobalFacet,
+  error: '',
+};
+
 describe('Facet Panel', () => {
   beforeEach(() => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
@@ -129,10 +139,13 @@ describe('Facet Panel', () => {
       error: '',
       isLoading: false,
     });
+    jest.mocked(useGlobalFacetUpdate).mockReturnValue(updateGlobalFacet);
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.useRealTimers();
   });
 
   it('should render the facet management editing page', async () => {
@@ -406,7 +419,65 @@ describe('Facet Panel', () => {
           }).length
         ).toBe(0);
       });
-      expect(refreshMock).toHaveBeenCalled();
+      expect(refreshMock).not.toHaveBeenCalled();
+    });
+
+    it('should close the modal and refetch on click of the save button', async () => {
+      const user = userEvent.setup({ delay: null });
+      const refreshMock = jest.fn();
+
+      renderWithProviders(
+        <FacetsPanel
+          writeEnabled
+          title="Facet Rule Editor"
+          countryCode="UK"
+          selectedPreviewCountryCode="UK"
+          onSave={onSaveSpy}
+          onCancel={onCancelSpy}
+          onFacetDataChange={jest.fn()}
+          facetsState={mockFacetsState}
+          includedFacets={mockIncludedFacets}
+          excludedFacets={mockExcludedFacets}
+          dispatch={dispatchSpy}
+          refreshData={refreshMock}
+        />
+      );
+
+      const editFacetValuesButton = screen.getAllByText('Edit values')[0];
+
+      await act(async () => {
+        editFacetValuesButton.click();
+      });
+
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Facet value settings of: color',
+        })
+      ).toBeVisible();
+
+      const modal = screen.getByLabelText('Edit facet values modal');
+      expect(modal).toBeVisible();
+      const saveButton = within(modal).getAllByRole('button', {
+        name: 'Save',
+      })[0];
+
+      await act(async () => {
+        user.click(saveButton);
+      });
+
+      const heading = await screen.findByRole('heading', {
+        name: 'Apply global changes',
+      });
+      expect(heading).toBeVisible();
+
+      await act(async () => {
+        user.click(screen.getByRole('button', { name: 'Apply action' }));
+      });
+
+      await waitFor(() => {
+        expect(refreshMock).toHaveBeenCalled();
+      });
     });
   });
 
