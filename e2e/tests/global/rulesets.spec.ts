@@ -164,7 +164,11 @@ test.describe('global rulesets', () => {
       .getByRole('button', { name: 'Product description attributes' })
       .click();
 
-    await page.getByRole('button', { name: 'Boost' }).nth(1).click();
+    await page
+      .getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
+      })
+      .click();
 
     await page.getByRole('button', { name: 'Include only' }).click();
 
@@ -200,7 +204,11 @@ test.describe('global rulesets', () => {
       .getByRole('button', { name: 'Product description attributes' })
       .click();
 
-    await page.getByRole('button', { name: 'Boost' }).nth(1).click();
+    await page
+      .getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
+      })
+      .click();
 
     await page.getByRole('button', { name: 'Exclude only' }).click();
 
