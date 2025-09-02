@@ -26,11 +26,7 @@ class RootDocument extends Document<MerchHubInitialProps> {
 
     return {
       ...initialProps,
-      dynatraceRumScriptUrl:
-        // istanbul ignore next - cannot overwrite NODE_ENV as it is set by Next.js and is read only.  There is a test to cover process.env.DYNATRACE_RUM_SCRIPT_URL_DEV
-        process.env.NODE_ENV === 'production'
-          ? process.env.DYNATRACE_RUM_SCRIPT_URL_PROD
-          : process.env.DYNATRACE_RUM_SCRIPT_URL_DEV,
+      dynatraceRumScriptUrl: process.env.DYNATRACE_RUM_SCRIPT_URL,
     };
   }
 

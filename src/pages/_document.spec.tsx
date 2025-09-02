@@ -16,7 +16,7 @@ describe('<RootDocument />', () => {
   let mockedLogger: { info: jest.Mock; error: jest.Mock; warn: jest.Mock };
 
   beforeAll(() => {
-    process.env.DYNATRACE_RUM_SCRIPT_URL_DEV = 'https://dev-dynatrace-url.com';
+    process.env.DYNATRACE_RUM_SCRIPT_URL = 'https://dev-dynatrace-url.com';
   });
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe('<RootDocument />', () => {
   });
 
   afterAll(() => {
-    delete process.env.DYNATRACE_RUM_SCRIPT_URL_DEV;
+    delete process.env.DYNATRACE_RUM_SCRIPT_URL;
   });
 
   it('should call getInitialProps without errors', async () => {
