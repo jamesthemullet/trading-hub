@@ -12,7 +12,7 @@ runs:
         echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
 
     - name: Set up node
-      uses: actions/setup-node@v4.4.0
+      uses: actions/setup-node@v5.0.0
       env:
         SEGMENT_DOWNLOAD_TIMEOUT_MINS: '10'
       with:
