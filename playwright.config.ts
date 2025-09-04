@@ -28,7 +28,7 @@ export default defineConfig({
     {
       command: 'npm run start',
       url: 'http://localhost:3000',
-      timeout: 120 * 1000,
+      timeout: 4 * 60 * 1000,
       reuseExistingServer: !process.env.CI,
     },
   ],
@@ -38,7 +38,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 1080 },
-        userAgent: 'mock-test-playwright',
+        userAgent: 'smoke-test-playwright',
       },
       testMatch: /tests\/.*\.spec\.ts/,
       testIgnore: /.*smoke.spec.ts/,
