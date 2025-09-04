@@ -20,6 +20,7 @@ env:
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   DYNATRACE_URL: ${{ secrets.DYNATRACE_URL }}
   DYNATRACE_API_TOKEN: ${{ secrets.DYNATRACE_API_TOKEN }}
+  NEXT_PUBLIC_AUTO_LOGIN: false
 
 jobs:
   code-quality:
