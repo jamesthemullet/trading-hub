@@ -26,9 +26,9 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'npm run build && npm run start',
+      command: 'npm run start',
       url: 'http://localhost:3000',
-      timeout: 4 * 60 * 1000,
+      timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
   ],
@@ -38,8 +38,49 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 1080 },
-        userAgent: 'smoke-test-playwright',
+        userAgent: 'mock-test-playwright',
       },
+      testMatch: /tests\/.*\.spec\.ts/,
+      testIgnore: /.*smoke.spec.ts/,
+    },
+    {
+      name: 'category-tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 1080 },
+        userAgent: 'category-test-playwright',
+      },
+      testMatch: /tests\/category\/.*\.spec\.ts/,
+      testIgnore: /.*smoke.spec.ts/,
+    },
+    {
+      name: 'global-tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 1080 },
+        userAgent: 'global-test-playwright',
+      },
+      testMatch: /tests\/global\/.*\.spec\.ts/,
+      testIgnore: /.*smoke.spec.ts/,
+    },
+    {
+      name: 'search-tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 1080 },
+        userAgent: 'search-test-playwright',
+      },
+      testMatch: /tests\/search\/.*\.spec\.ts/,
+      testIgnore: [/.*smoke.spec.ts/, /.*redirect.*\.spec\.ts/],
+    },
+    {
+      name: 'redirect-tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 1080 },
+        userAgent: 'redirect-test-playwright',
+      },
+      testMatch: /tests\/.*redirect.*\.spec\.ts/,
       testIgnore: /.*smoke.spec.ts/,
     },
     {
