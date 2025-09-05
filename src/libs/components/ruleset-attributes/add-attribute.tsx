@@ -38,6 +38,7 @@ const SelectedAttribute = styled.div`
   border-right: solid 1px ${color.lightGrey};
   height: 100%;
   padding-right: ${spacing(1)};
+  overflow-y: scroll;
 `;
 
 const ModalSection = styled.div`
@@ -195,9 +196,9 @@ export const AddAttribute = ({
 }: Props) => {
   const [modalStep, setModalStep] = useState(0);
 
-  const [numbericSearchValue, setNumericSearchValue] = useState('');
+  const [numericSearchValue, setNumericSearchValue] = useState('');
   const [alphanumericSearchValue, setAlphanumericSearchValue] = useState('');
-  const [alphanumbericFilterValue, setAlphanumericFilterValue] = useState('');
+  const [alphanumericFilterValue, setAlphanumericFilterValue] = useState('');
   const [alphanumericField, setAlphanumericField] = useState<string>('');
   const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
     useState<string[]>([]);
@@ -362,7 +363,7 @@ export const AddAttribute = ({
                 <Search
                   name="Filter numeric attributes"
                   id="filerNumericAttributes"
-                  value={numbericSearchValue}
+                  value={numericSearchValue}
                   onChange={(e) => setNumericSearchValue(e.target.value)}
                 />
               </SearchWrapper>
@@ -380,7 +381,7 @@ export const AddAttribute = ({
                 .filter((attribute: MerchandisingAttributeResponseItem) =>
                   attribute.name
                     .toLowerCase()
-                    .includes(numbericSearchValue.toLowerCase())
+                    .includes(numericSearchValue.toLowerCase())
                 )
                 .map((attribute: MerchandisingAttributeResponseItem) => ({
                   name: attribute.name,
@@ -502,7 +503,7 @@ export const AddAttribute = ({
               <Search
                 name="Filter selected attributes"
                 id="filerSelectedAttributes"
-                value={alphanumbericFilterValue}
+                value={alphanumericFilterValue}
                 onChange={(e) => setAlphanumericFilterValue(e.target.value)}
               />
             </SearchWrapper>
@@ -539,7 +540,7 @@ export const AddAttribute = ({
                   .filter((value) =>
                     value
                       .toLowerCase()
-                      .includes(alphanumbericFilterValue.toLowerCase())
+                      .includes(alphanumericFilterValue.toLowerCase())
                   )
                   .map((value) => ({
                     name: value,
