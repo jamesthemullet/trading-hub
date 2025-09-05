@@ -409,7 +409,7 @@ jobs:
           edit-mode: append
 
       - name: Update description
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           INPUT_PR_NUMBER: ${{ github.event.number }}
         with:
