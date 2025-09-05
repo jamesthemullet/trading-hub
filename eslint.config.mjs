@@ -123,6 +123,7 @@ const eslint = [
       'react/jsx-no-useless-fragment': 'error',
       'react/jsx-curly-brace-presence': ['error', 'never'],
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      'no-lone-blocks': 'error',
       // '@typescript-eslint/prefer-nullish-coalescing': 'error',
       // 'react/jsx-fragments': ['error', 'syntax'],
     },

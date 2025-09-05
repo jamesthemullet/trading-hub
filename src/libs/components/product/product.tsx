@@ -327,17 +327,15 @@ export const Product = ({
                 as="button"
                 size="16px 16px"
                 onClick={() => {
-                  {
-                    dispatch({
-                      type: 'product',
-                      payload: {
-                        ids: [id],
-                        operation: 'block',
-                        change: 'remove',
-                      },
-                    });
-                    setIsMenuOpen(false);
-                  }
+                  dispatch({
+                    type: 'product',
+                    payload: {
+                      ids: [id],
+                      operation: 'block',
+                      change: 'remove',
+                    },
+                  });
+                  setIsMenuOpen(false);
                 }}
               >
                 Restore
@@ -646,17 +644,15 @@ export const MissingProduct = ({
                 as="button"
                 size="16px 16px"
                 onClick={() => {
-                  {
-                    dispatch({
-                      type: 'product',
-                      payload: {
-                        ids: [id],
-                        operation: 'block',
-                        change: 'remove',
-                      },
-                    });
-                    setIsMenuOpen(false);
-                  }
+                  dispatch({
+                    type: 'product',
+                    payload: {
+                      ids: [id],
+                      operation: 'block',
+                      change: 'remove',
+                    },
+                  });
+                  setIsMenuOpen(false);
                 }}
               >
                 Restore
