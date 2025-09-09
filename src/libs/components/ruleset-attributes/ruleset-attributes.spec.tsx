@@ -178,7 +178,7 @@ describe('RulesetAttributes', () => {
       screen.getByText(/Select one numeric attribute below/i)
     ).toBeVisible();
 
-    const prevStepButton = screen.getAllByText('Back')[0];
+    const prevStepButton = screen.getAllByRole('button', { name: 'Back' })[0];
 
     act(() => {
       prevStepButton.click();
@@ -219,10 +219,12 @@ describe('RulesetAttributes', () => {
     const attributeSelection = screen.getByTestId('Selected attributes');
 
     await waitFor(() =>
-      expect(within(attributeSelection).getByText('Nike')).toBeVisible()
+      expect(
+        within(attributeSelection).getByRole('checkbox', { name: 'Nike' })
+      ).toBeVisible()
     );
 
-    const prevStepButton = screen.getAllByText('brand')[1];
+    const prevStepButton = screen.getByRole('button', { name: 'brand' });
 
     act(() => {
       prevStepButton.click();
@@ -232,7 +234,7 @@ describe('RulesetAttributes', () => {
       screen.getByRole('heading', { name: 'Product description attributes' })
     ).toBeVisible();
 
-    const firstStepButton = screen.getAllByText('Back')[1];
+    const firstStepButton = screen.getAllByRole('button', { name: 'Back' })[1];
 
     act(() => {
       firstStepButton.click();
@@ -302,9 +304,9 @@ describe('RulesetAttributes', () => {
   it('selects Product description attributes', async () => {
     await openModal();
 
-    const nextStepButton = screen.getAllByText(
-      'Product description attributes'
-    )[0];
+    const nextStepButton = screen.getByRole('button', {
+      name: 'Product description attributes',
+    });
 
     act(() => {
       nextStepButton.click();
@@ -336,9 +338,9 @@ describe('RulesetAttributes', () => {
     const user = userEvent.setup();
     await openModal();
 
-    const nextStepButton = screen.getAllByText(
-      'Product description attributes'
-    )[0];
+    const nextStepButton = screen.getByRole('button', {
+      name: 'Product description attributes',
+    });
 
     act(() => {
       nextStepButton.click();
@@ -388,7 +390,7 @@ describe('RulesetAttributes', () => {
       dropdownButton.click();
     });
 
-    const buryButton = screen.getByRole('button', { name: 'Bury' });
+    const buryButton = screen.getByRole('option', { name: 'Bury' });
 
     act(() => {
       buryButton.click();
@@ -448,7 +450,9 @@ describe('RulesetAttributes', () => {
     const rulesetAttributes = screen.getByTestId('Ruleset attributes');
 
     expect(
-      within(rulesetAttributes).getByText('Product Description Attribute Rules')
+      within(rulesetAttributes).getByRole('heading', {
+        name: 'Product Description Attribute Rules',
+      })
     ).toBeVisible();
   });
 
@@ -508,16 +512,20 @@ describe('RulesetAttributes', () => {
         name: 'Numeric attributes',
       });
 
-      const dropdownButton = screen.getAllByText('Boost');
-
-      act(() => {
-        dropdownButton[1].click();
+      const dropdownButton = screen.getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
       });
 
-      const buryButton = screen.getAllByText('Bury');
+      act(() => {
+        dropdownButton.click();
+      });
+
+      const buryButton = screen.getByRole('option', {
+        name: 'Bury',
+      });
 
       act(() => {
-        buryButton[1].click();
+        buryButton.click();
       });
 
       act(() => {
@@ -606,9 +614,9 @@ describe('RulesetAttributes', () => {
 
       await openModal();
 
-      const nextStepButton = screen.getAllByText(
-        'Product description attributes'
-      )[0];
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Product description attributes',
+      });
 
       act(() => {
         nextStepButton.click();
@@ -715,7 +723,7 @@ describe('RulesetAttributes', () => {
 
       act(() => {
         within(screen.getByTestId('modal alphanumeric attributes list'))
-          .getByText('brand')
+          .getByRole('button', { name: 'brand' })
           .click();
       });
 
@@ -731,7 +739,9 @@ describe('RulesetAttributes', () => {
 
       const attributeSelection = screen.getByTestId('Selected attributes');
       act(() => {
-        within(attributeSelection).getByText('Puma').click();
+        within(attributeSelection)
+          .getByRole('checkbox', { name: 'Puma' })
+          .click();
       });
 
       const selectedAttributes = screen.getByTestId('Selected Attribute');
@@ -800,13 +810,15 @@ describe('RulesetAttributes', () => {
 
       act(() => {
         within(screen.getByTestId('modal alphanumeric attributes list'))
-          .getByText('brand')
+          .getByRole('button', { name: 'brand' })
           .click();
       });
 
       const attributeSelection = screen.getByTestId('Selected attributes');
       act(() => {
-        within(attributeSelection).getByText('Puma').click();
+        within(attributeSelection)
+          .getByRole('checkbox', { name: 'Puma' })
+          .click();
       });
 
       const selectedAttributes = screen.getByTestId('Selected Attribute');
@@ -817,7 +829,9 @@ describe('RulesetAttributes', () => {
       });
 
       act(() => {
-        within(attributeSelection).getByText('Nike').click();
+        within(attributeSelection)
+          .getByRole('checkbox', { name: 'Nike' })
+          .click();
       });
       await waitFor(() => {
         expect(within(selectedAttributes).getByText('Nike')).toBeVisible();
@@ -891,7 +905,7 @@ describe('RulesetAttributes', () => {
         dropdownButton.click();
       });
 
-      const buryButton = screen.getByRole('button', { name: 'Bury' });
+      const buryButton = screen.getByRole('option', { name: 'Bury' });
 
       act(() => {
         buryButton.click();
@@ -966,7 +980,7 @@ describe('RulesetAttributes', () => {
       });
 
       act(() => {
-        screen.getByRole('button', { name: 'Exclude only' }).click();
+        screen.getByRole('option', { name: 'Exclude only' }).click();
       });
 
       act(() => {
@@ -1030,7 +1044,7 @@ describe('RulesetAttributes', () => {
 
       act(() => {
         within(screen.getByTestId('modal alphanumeric attributes list'))
-          .getByText('brand')
+          .getByRole('button', { name: 'brand' })
           .click();
       });
 
@@ -1046,7 +1060,9 @@ describe('RulesetAttributes', () => {
 
       const attributeSelection = screen.getByTestId('Selected attributes');
       act(() => {
-        within(attributeSelection).getByText('Puma').click();
+        within(attributeSelection)
+          .getByRole('checkbox', { name: 'Puma' })
+          .click();
       });
 
       const selectedAttributes = screen.getByTestId('Selected Attribute');
@@ -1110,13 +1126,15 @@ describe('RulesetAttributes', () => {
 
       act(() => {
         within(screen.getByTestId('modal alphanumeric attributes list'))
-          .getByText('brand')
+          .getByRole('button', { name: 'brand' })
           .click();
       });
 
       const attributeSelection = screen.getByTestId('Selected attributes');
       act(() => {
-        within(attributeSelection).getByText('Puma').click();
+        within(attributeSelection)
+          .getByRole('checkbox', { name: 'Puma' })
+          .click();
       });
 
       const selectedAttributes = screen.getByTestId('Selected Attribute');
@@ -1127,7 +1145,9 @@ describe('RulesetAttributes', () => {
       });
 
       act(() => {
-        within(attributeSelection).getByText('Nike').click();
+        within(attributeSelection)
+          .getByRole('checkbox', { name: 'Nike' })
+          .click();
       });
       await waitFor(() => {
         expect(within(selectedAttributes).getByText('Nike')).toBeVisible();
@@ -1197,7 +1217,7 @@ describe('RulesetAttributes', () => {
       });
 
       act(() => {
-        screen.getByRole('button', { name: 'Exclude only' }).click();
+        screen.getByRole('option', { name: 'Exclude only' }).click();
       });
 
       act(() => {
@@ -1267,7 +1287,7 @@ describe('RulesetAttributes', () => {
       });
 
       act(() => {
-        screen.getByRole('button', { name: 'Boost' }).click();
+        screen.getByRole('option', { name: 'Boost' }).click();
       });
 
       act(() => {
@@ -1389,16 +1409,16 @@ describe('RulesetAttributes', () => {
         ).toBeVisible();
       });
 
-      const dropdownButton = screen.getAllByRole('button', {
+      const dropdownButton = screen.getByRole('button', {
         name: 'Select to include, exclude, boost or bury',
       });
 
       act(() => {
-        dropdownButton[0].click();
+        dropdownButton.click();
       });
 
       act(() => {
-        screen.getByRole('button', { name: 'Bury' }).click();
+        screen.getByRole('option', { name: 'Bury' }).click();
       });
 
       act(() => {
@@ -1452,16 +1472,16 @@ describe('RulesetAttributes', () => {
         ).toBeVisible();
       });
 
-      const dropdownButton = screen.getAllByRole('button', {
+      const dropdownButton = screen.getByRole('button', {
         name: 'Select to include, exclude, boost or bury',
       });
 
       act(() => {
-        dropdownButton[0].click();
+        dropdownButton.click();
       });
 
       act(() => {
-        screen.getByRole('button', { name: 'Boost' }).click();
+        screen.getByRole('option', { name: 'Boost' }).click();
       });
 
       act(() => {
@@ -1624,21 +1644,25 @@ describe('RulesetAttributes', () => {
 
       await openModal();
 
-      const nextStepButton = screen.getAllByText(
-        'Product description attributes'
-      )[0];
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Product description attributes',
+      });
 
       act(() => {
         nextStepButton.click();
       });
 
-      const dropdownButton = screen.getAllByText('Boost');
-
-      act(() => {
-        dropdownButton[1].click();
+      const dropdownButton = screen.getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
       });
 
-      const includeButton = screen.getAllByText('Include only');
+      act(() => {
+        dropdownButton.click();
+      });
+
+      const includeButton = screen.getAllByRole('option', {
+        name: 'Include only',
+      });
 
       act(() => {
         includeButton[0].click();
@@ -1668,6 +1692,7 @@ describe('RulesetAttributes', () => {
     });
 
     it('excludes alphanumeric attributes', async () => {
+      const user = userEvent.setup();
       const expectedCall: RuleSetActions = {
         payload: {
           data: {
@@ -1687,45 +1712,37 @@ describe('RulesetAttributes', () => {
 
       await openModal();
 
-      const nextStepButton = screen.getAllByText(
-        'Product description attributes'
-      )[0];
-
-      act(() => {
-        nextStepButton.click();
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Product description attributes',
       });
 
-      const dropdownButton = screen.getAllByText('Boost');
+      await user.click(nextStepButton);
 
-      act(() => {
-        dropdownButton[1].click();
+      const dropdownButton = screen.getByRole('button', {
+        name: 'Select to include, exclude, boost or bury',
       });
 
-      const includeButton = screen.getAllByText('Exclude only');
+      await user.click(dropdownButton);
 
-      act(() => {
-        includeButton[0].click();
+      const excludeButton = screen.getByRole('option', {
+        name: 'Exclude only',
       });
+
+      await user.click(excludeButton);
 
       const colourButton = screen.getByRole('button', { name: 'colour' });
 
-      act(() => {
-        colourButton.click();
-      });
+      await user.click(colourButton);
 
       const colourRedButton = screen.getByLabelText('Red');
       const colourBlueButton = screen.getByLabelText('Blue');
 
-      act(() => {
-        colourBlueButton.click();
-        colourRedButton.click();
-      });
+      await user.click(colourBlueButton);
+      await user.click(colourRedButton);
 
       const doneButton = screen.getByRole('button', { name: 'Done' });
 
-      act(() => {
-        doneButton.click();
-      });
+      await user.click(doneButton);
 
       expect(mockDispatch).toHaveBeenCalledWith(expectedCall);
     });

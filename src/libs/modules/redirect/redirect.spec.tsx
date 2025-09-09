@@ -124,7 +124,9 @@ describe('Redirect', () => {
 
     await user.click(dropdownButton);
 
-    const selectIE = screen.getByLabelText('select IE market only');
+    const selectIE = screen.getByRole('option', {
+      name: 'IE market only',
+    });
 
     await user.click(selectIE);
 

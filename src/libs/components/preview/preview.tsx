@@ -81,15 +81,6 @@ const LabelText = styled(Label)`
   padding-top: ${spacing(1)};
 `;
 
-const DropdownWrapper = styled.div`
-  width: 220px;
-`;
-
-const DropdownContent = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
 const Item = styled(Text)`
   padding: ${spacing(1)};
   cursor: pointer;
@@ -428,33 +419,33 @@ export const Preview = ({
 
               <PreviewTypeSelector>
                 <LabelText as="p">Preview</LabelText>
-                <DropdownWrapper>
-                  <CombinedDropdown
-                    variant="generic"
-                    width={220}
-                    label={`${withRules ? 'with new rule change' : 'current state'}`}
-                    ariaLabel="Preview type selector"
+                <CombinedDropdown
+                  variant="generic"
+                  width={220}
+                  label={`${withRules ? 'with new rule change' : 'current state'}`}
+                  ariaLabel="Preview type selector"
+                >
+                  <Item
+                    as="button"
+                    onClick={() => {
+                      toggleView(true);
+                    }}
+                    role="option"
+                    aria-selected={withRules}
                   >
-                    <DropdownContent>
-                      <Item
-                        as="button"
-                        onClick={() => {
-                          toggleView(true);
-                        }}
-                      >
-                        with new rule change
-                      </Item>
-                      <Item
-                        as="button"
-                        onClick={() => {
-                          toggleView(false);
-                        }}
-                      >
-                        current state
-                      </Item>
-                    </DropdownContent>
-                  </CombinedDropdown>
-                </DropdownWrapper>
+                    with new rule change
+                  </Item>
+                  <Item
+                    as="button"
+                    onClick={() => {
+                      toggleView(false);
+                    }}
+                    role="option"
+                    aria-selected={!withRules}
+                  >
+                    current state
+                  </Item>
+                </CombinedDropdown>
               </PreviewTypeSelector>
             </Header>
             <Content>

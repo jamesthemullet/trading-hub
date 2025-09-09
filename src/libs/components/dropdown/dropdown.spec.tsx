@@ -450,8 +450,12 @@ describe('CombinedDropdown', () => {
       });
       await user.click(dropdownButton);
 
-      expect(screen.getByLabelText('select UK market only')).toBeVisible();
-      expect(screen.getByLabelText('select IE market only')).toBeVisible();
+      expect(
+        screen.getByRole('option', { name: 'UK market only' })
+      ).toBeVisible();
+      expect(
+        screen.getByRole('option', { name: 'IE market only' })
+      ).toBeVisible();
     });
 
     it('should change the selected option when an option is clicked, and close the dropdown', async () => {
@@ -472,7 +476,7 @@ describe('CombinedDropdown', () => {
 
       await user.click(dropdownButton);
 
-      const showUK = screen.getByLabelText('select UK market only');
+      const showUK = screen.getByRole('option', { name: 'UK market only' });
 
       await user.click(showUK);
 

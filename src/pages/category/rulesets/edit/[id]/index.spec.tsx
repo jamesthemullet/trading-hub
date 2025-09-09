@@ -188,7 +188,9 @@ describe('Index', () => {
 
     await user.click(dropdownButton);
 
-    const irelandOption = screen.getByLabelText('select IE market only');
+    const irelandOption = screen.getByRole('option', {
+      name: 'IE market only',
+    });
     await user.click(irelandOption);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));

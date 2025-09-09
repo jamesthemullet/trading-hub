@@ -294,7 +294,7 @@ export const CategorySearch = ({
             </ArrowContainer>
           </DropdownButton>
 
-          <DropdownContainer isDropdownOpen={isDropdownOpen}>
+          <DropdownContainer isDropdownOpen={isDropdownOpen} role="listbox">
             {selectedCategoriesInfo
               .filter((cat) => cat.id !== previewCategory)
               .map((category) => (

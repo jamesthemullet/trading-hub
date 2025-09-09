@@ -32,10 +32,12 @@ const RowsPerPageContainer = styled.div`
   margin-right: 18px;
   margin-bottom: ${spacing(2)};
 `;
-const PageSizeItem = styled.div`
+
+const PageSizeItem = styled.button`
   padding: ${spacing(1)};
   cursor: pointer;
   text-align: center;
+  background-color: #fff;
 
   &:hover,
   &:focus {
@@ -94,7 +96,7 @@ export const TablePagination = ({
           <RowsPerPageContainer>
             <span>Rows per page</span>
             <CombinedDropdown
-              variant="generic"
+              variant="pageSize"
               label={`${currentPageSize}`}
               width={125}
               ariaLabel="Select rows per page"
@@ -112,6 +114,8 @@ export const TablePagination = ({
                       handlePageChange(currentPage, size);
                     }
                   }}
+                  role="option"
+                  aria-selected={currentPageSize === size}
                 >
                   {size}
                 </PageSizeItem>

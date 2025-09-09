@@ -170,7 +170,7 @@ test.describe('global rulesets', () => {
       })
       .click();
 
-    await page.getByRole('button', { name: 'Include only' }).click();
+    await page.getByRole('option', { name: 'Include only' }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 
@@ -210,7 +210,7 @@ test.describe('global rulesets', () => {
       })
       .click();
 
-    await page.getByRole('button', { name: 'Exclude only' }).click();
+    await page.getByRole('option', { name: 'Exclude only' }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 
@@ -250,7 +250,7 @@ test.describe('global rulesets', () => {
       })
       .click();
 
-    await page.getByRole('button', { name: 'Bury', exact: true }).click();
+    await page.getByRole('option', { name: 'Bury', exact: true }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 

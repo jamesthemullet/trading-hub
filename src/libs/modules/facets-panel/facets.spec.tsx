@@ -703,8 +703,8 @@ describe('Facets', () => {
       selectMarket.click();
     });
 
-    const selectIE = screen.getByRole('button', {
-      name: 'select IE market only',
+    const selectIE = screen.getByRole('option', {
+      name: 'IE market only',
     });
     act(() => {
       selectIE.click();
@@ -899,8 +899,8 @@ describe('Facets', () => {
     )[0];
     await userEvent.click(dropdownHeader);
 
-    const algoControlOption = screen.getByRole('button', {
-      name: 'algoControl',
+    const algoControlOption = screen.getByRole('option', {
+      name: 'Algo control',
     });
     await userEvent.click(algoControlOption);
 

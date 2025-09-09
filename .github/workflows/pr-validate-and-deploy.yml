@@ -727,7 +727,7 @@ jobs:
           # Also send individual job statuses summary
           echo "📋 Job Results Summary:"
           echo "  - code-quality: ${{ needs.code-quality.result }}"
-          echo "  - unit-tests: ${{ needs.unit-tests.result }}"  
+          echo "  - unit-tests: ${{ needs.unit-tests.result }}"
           echo "  - build: ${{ needs.build.result }}"
           echo "  - deploy-pr-env: ${{ needs.deploy-pr-env.result }}"
           echo "  - end-to-end-tests: ${{ needs.end-to-end-tests.result }}"

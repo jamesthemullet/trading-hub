@@ -16,9 +16,7 @@ import {
   DropdownHeading,
   DropdownOption,
   DropdownWrapper,
-  FlagWrapper,
   HeadingIcon,
-  ImageWrapper,
 } from './dropdown.styles';
 
 type ClosingType = 'icon' | 'button' | 'esc' | 'outsideClick' | 'tab';
@@ -27,7 +25,8 @@ export type DropdownVariant =
   | 'generic'
   | 'countryFilter'
   | 'countrySelector'
-  | 'facetOrder';
+  | 'facetOrder'
+  | 'pageSize';
 
 type GenericDropdownProps = {
   label?: string;
@@ -247,13 +246,13 @@ export const CombinedDropdown = ({
         return (
           <>
             {icon && (
-              <ImageWrapper>
-                <HeadingIcon src={`/trading-hub/asset/${icon}.svg`} alt="" />
-              </ImageWrapper>
+              <HeadingIcon src={`/trading-hub/asset/${icon}.svg`} alt="" />
             )}
             {label}
           </>
         );
+      case 'pageSize':
+        return label;
       case 'countryFilter': {
         const current = countryFilterOptions.find((o) => o.selected);
         // istanbul ignore next - there won't be a case where label is undefined but since we get current from find it has undefined type
@@ -264,19 +263,15 @@ export const CombinedDropdown = ({
         const label = current?.label || 'Select country';
         return (
           <>
-            {current?.flagsToShow && (
-              <FlagWrapper>
-                {current.flagsToShow.map((flag) => (
-                  <Image
-                    key={flag}
-                    src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
-                    width={24}
-                    height={24}
-                    alt={flag}
-                  />
-                ))}
-              </FlagWrapper>
-            )}
+            {current?.flagsToShow?.map((flag) => (
+              <Image
+                key={flag}
+                src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
+                width={24}
+                height={24}
+                alt=""
+              />
+            ))}
             {label}
           </>
         );
@@ -314,6 +309,8 @@ export const CombinedDropdown = ({
             hoverColour="#f5f5f5"
             aria-label={option.ariaLabel}
             onClick={() => handleCountryFilterSelect(option.index)}
+            role="option"
+            aria-selected={option.selected}
           >
             {option.label}
           </DropdownOption>
@@ -324,20 +321,19 @@ export const CombinedDropdown = ({
           <DropdownOption
             key={option.label}
             hoverColour="#f5f5f5"
-            aria-label={option.ariaLabel}
             onClick={() => handleCountrySelectorSelect(option.index)}
+            role="option"
+            aria-selected={option.selected}
           >
-            <ImageWrapper>
-              {option.flagsToShow.map((flag) => (
-                <Image
-                  key={flag}
-                  src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
-                  width={24}
-                  height={24}
-                  alt={flag}
-                />
-              ))}
-            </ImageWrapper>
+            {option.flagsToShow.map((flag) => (
+              <Image
+                key={flag}
+                src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
+                width={24}
+                height={24}
+                alt=""
+              />
+            ))}
             {option.label}
           </DropdownOption>
         ));
@@ -349,8 +345,9 @@ export const CombinedDropdown = ({
             <DropdownOption
               key={option.label}
               hoverColour="#f5f5f5"
-              aria-label={option.ariaLabel}
               onClick={() => handleFacetOrderSelect(option.index)}
+              role="option"
+              aria-selected={option.selected}
             >
               <Image src={option.src as string} alt="" width={24} height={24} />
               {option.label}
@@ -420,7 +417,9 @@ export const CombinedDropdown = ({
       hasBorder={variant === 'facetOrder'}
       width={dropdownWidth}
       alignContentTowards={variant === 'generic' ? 'center' : 'left'}
-      height={variant === 'facetOrder' ? 'default' : 'large'}
+      height={
+        variant === 'facetOrder' || variant === 'pageSize' ? 'default' : 'large'
+      }
     >
       <DropdownButton
         isDropdownOpen={isOpen}
@@ -444,6 +443,7 @@ export const CombinedDropdown = ({
       <DropdownContainer
         isDropdownOpen={isOpen}
         alignContentTowards={alignContentTowards}
+        role="listbox"
       >
         {renderDropdownContent()}
       </DropdownContainer>

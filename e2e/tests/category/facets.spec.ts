@@ -88,7 +88,9 @@ test.describe('Category rulesets', () => {
       })
       .first()
       .click();
-    await page.getByRole('button', { name: 'include', exact: true }).click();
+    await page
+      .getByRole('option', { name: 'Include only', exact: true })
+      .click();
 
     await expect(
       page.getByTestId('Row showing Collections as included')
@@ -103,7 +105,9 @@ test.describe('Category rulesets', () => {
       })
       .first()
       .click();
-    await page.getByRole('button', { name: 'exclude', exact: true }).click();
+    await page
+      .getByRole('option', { name: 'Exclude only', exact: true })
+      .click();
 
     await expect(
       page.getByTestId('Row showing Colours as excluded')
@@ -140,13 +144,13 @@ test.describe('Category rulesets', () => {
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')
       .click();
-    await page.getByLabel('include SMOKE').click();
+    await page.getByRole('option', { name: 'Include only' }).click();
     await page.getByLabel('Move SMOKE row up').click();
 
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')
       .click();
-    await page.getByLabel('exclude SMOKE').click();
+    await page.getByRole('option', { name: 'Exclude only' }).click();
 
     await expect(page.getByLabel('Move SMOKE row up')).not.toBeVisible();
   });

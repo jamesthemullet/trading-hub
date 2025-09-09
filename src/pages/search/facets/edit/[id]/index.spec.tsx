@@ -269,7 +269,9 @@ describe('Search Facet Management Editing', () => {
     });
 
     await user.click(countryDropdown);
-    const irelandOption = screen.getByLabelText('select IE market only');
+    const irelandOption = screen.getByRole('option', {
+      name: 'IE market only',
+    });
     await user.click(irelandOption);
 
     const saveButton = screen.getByRole('button', { name: 'Save' });
@@ -494,7 +496,11 @@ describe('Search Facet Management Editing', () => {
     await user.click(screen.getAllByRole('button', { name: 'Edit values' })[0]);
     expect(screen.getAllByText('More Silk')[0]).toBeVisible();
 
-    await user.click(screen.getByLabelText('include More Silk'));
+    const moreSilkRow = screen.getByTestId(
+      'button to open facet order dropdown for More Silk'
+    );
+    await user.click(moreSilkRow);
+    await user.click(screen.getByRole('option', { name: 'Include only' }));
 
     await waitFor(() => {
       expect(

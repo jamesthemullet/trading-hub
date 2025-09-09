@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { Text } from '../typography/typography.styles';
 import { color } from '../utils/constants';
 import { sizing } from '../utils/sizing';
 import { spacing } from '../utils/spacing';
@@ -70,6 +69,7 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: 0.875rem;
 
   height: ${sizing(5.5)};
   width: 100%;
@@ -105,16 +105,12 @@ export const FlagWrapper = styled.span`
   margin-left: -${spacing(1)};
   padding-top: ${spacing(0.5)};
 `;
-export const ImageWrapper = styled.span`
-  padding-top: ${spacing(0.5)};
-`;
 
-export const DropdownHeading = styled(Text)`
+export const DropdownHeading = styled.span`
   display: flex;
   align-items: center;
 
   width: 100%;
-  padding-left: ${spacing(1)};
 
   overflow: hidden;
   text-align: left;
@@ -138,7 +134,9 @@ export const ArrowContainer = styled.div<{ borderLeft?: boolean }>`
   ${({ borderLeft }) => borderLeft && 'border-left: 1px solid #b1b1b1;'}
 `;
 
-export const Arrow = styled.span<{ isDropdownOpen: boolean }>`
+export const Arrow = styled.span<{
+  isDropdownOpen: boolean;
+}>`
   transition: 0.3s;
   isolation: isolate;
   background: url('/trading-hub/asset/filled-chevron.svg');
@@ -146,8 +144,9 @@ export const Arrow = styled.span<{ isDropdownOpen: boolean }>`
   width: 10px;
   border: 0;
   padding: 1px;
+  cursor: pointer;
   ${({ isDropdownOpen }) =>
-    isDropdownOpen ? 'transform: rotate(180deg);' : ''}
+    isDropdownOpen ? 'transform: rotate(180deg);' : ''};
 `;
 
 export const Menu = styled.span`
@@ -190,10 +189,11 @@ export const DropdownOption = styled.button<{
   display: flex;
   align-items: center;
   border: none;
-  border-top: solid 1px #999;
   text-align: ${({ align }) => (align ? align : 'center')};
   font-size: 14px;
   padding: 0 ${spacing(1)};
+  cursor: pointer;
+  min-height: 3.5rem;
 
   &:hover,
   &:active {

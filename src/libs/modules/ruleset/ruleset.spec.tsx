@@ -442,7 +442,9 @@ describe('Ruleset', () => {
 
     await user.click(dropdownButton);
 
-    const selectIE = screen.getByLabelText('select UK/IE Market');
+    const selectIE = screen.getByRole('option', {
+      name: 'UK/IE Market',
+    });
 
     await user.click(selectIE);
 
@@ -1098,7 +1100,10 @@ describe('Ruleset', () => {
         selectMarket.click();
       });
 
-      const selectIE = screen.getByLabelText('select IE market only');
+      const selectIE = screen.getByRole('option', {
+        name: 'IE market only',
+      });
+
       act(() => {
         selectIE.click();
       });
@@ -1153,8 +1158,8 @@ describe('Ruleset', () => {
         selectMarket.click();
       });
 
-      const selectIE = screen.getByRole('button', {
-        name: 'select UK market only',
+      const selectIE = screen.getByRole('option', {
+        name: 'UK market only',
       });
       act(() => {
         selectIE.click();

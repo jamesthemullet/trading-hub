@@ -72,7 +72,9 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Algo control' }).first().click();
-    await page.getByRole('button', { name: 'include', exact: true }).click();
+    await page
+      .getByRole('option', { name: 'Include only', exact: true })
+      .click();
 
     await expect(
       page.getByTestId('Row showing Absorbency Level 1 as included')

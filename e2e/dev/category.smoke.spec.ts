@@ -73,14 +73,18 @@ test.describe('Category Ranking', () => {
       .getByRole('button', { name: 'Algo control' })
       .first()
       .click();
-    await page.getByRole('button', { name: 'include', exact: true }).click();
+    await page
+      .getByRole('option', { name: 'Include only', exact: true })
+      .click();
 
     await page
       .getByTestId('Row showing Categories as algoControl')
       .getByRole('button', { name: 'Algo control' })
       .first()
       .click();
-    await page.getByRole('button', { name: 'exclude', exact: true }).click();
+    await page
+      .getByRole('option', { name: 'Exclude only', exact: true })
+      .click();
 
     await page.getByRole('button', { name: 'Preview', exact: true }).click();
     await page.waitForLoadState('networkidle');
@@ -277,7 +281,7 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'Select country' }).click();
 
-    await page.getByRole('button', { name: 'select IE market only' }).click();
+    await page.getByRole('option', { name: 'IE market only' }).click();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
 

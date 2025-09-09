@@ -1,11 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import {
-  CombinedDropdown,
-  DropdownOption,
-  ImageWrapper,
-} from '@/libs/components';
+import { CombinedDropdown, DropdownOption } from '@/libs/components';
 
 import Image from 'next/image';
 
@@ -75,15 +71,15 @@ export const OperationSelector = ({
             setCloseDropdown(true);
             setSelectedOperation('boost');
           }}
+          role="option"
+          aria-selected={selectedOperation === 'boost'}
         >
-          <ImageWrapper>
-            <Image
-              src="/trading-hub/asset/boost-signifier.svg"
-              alt=""
-              width={20}
-              height={20}
-            />
-          </ImageWrapper>
+          <Image
+            src="/trading-hub/asset/boost-signifier.svg"
+            alt=""
+            width={20}
+            height={20}
+          />
           Boost
         </StyledDropdownOption>
         <StyledDropdownOption
@@ -91,15 +87,15 @@ export const OperationSelector = ({
             setCloseDropdown(true);
             setSelectedOperation('bury');
           }}
+          role="option"
+          aria-selected={selectedOperation === 'bury'}
         >
-          <ImageWrapper>
-            <Image
-              src="/trading-hub/asset/bury-signifier.svg"
-              alt=""
-              width={20}
-              height={20}
-            />
-          </ImageWrapper>
+          <Image
+            src="/trading-hub/asset/bury-signifier.svg"
+            alt=""
+            width={20}
+            height={20}
+          />
           Bury
         </StyledDropdownOption>
         {hasIncludeExclude && (
@@ -109,15 +105,15 @@ export const OperationSelector = ({
                 setCloseDropdown(true);
                 setSelectedOperation('include');
               }}
+              role="option"
+              aria-selected={selectedOperation === 'include'}
             >
-              <ImageWrapper>
-                <Image
-                  src="/trading-hub/asset/icon-include.svg"
-                  alt=""
-                  width={20}
-                  height={20}
-                />
-              </ImageWrapper>
+              <Image
+                src="/trading-hub/asset/icon-include.svg"
+                alt=""
+                width={20}
+                height={20}
+              />
               Include only
             </StyledDropdownOption>
 
@@ -126,15 +122,15 @@ export const OperationSelector = ({
                 setCloseDropdown(true);
                 setSelectedOperation('exclude');
               }}
+              role="option"
+              aria-selected={selectedOperation === 'exclude'}
             >
-              <ImageWrapper>
-                <Image
-                  src="/trading-hub/asset/icon-exclude.svg"
-                  alt=""
-                  width={20}
-                  height={20}
-                />
-              </ImageWrapper>
+              <Image
+                src="/trading-hub/asset/icon-exclude.svg"
+                alt=""
+                width={20}
+                height={20}
+              />
               Exclude only
             </StyledDropdownOption>
           </>

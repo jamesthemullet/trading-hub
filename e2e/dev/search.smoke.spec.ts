@@ -149,7 +149,7 @@ test.describe('Search Ranking', () => {
     await page
       .getByRole('button', { name: 'Select country', exact: true })
       .click();
-    await page.getByRole('button', { name: 'select IE market only' }).click();
+    await page.getByRole('option', { name: 'IE market only' }).click();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page

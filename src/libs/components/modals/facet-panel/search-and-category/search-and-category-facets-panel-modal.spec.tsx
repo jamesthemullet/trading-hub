@@ -286,7 +286,9 @@ describe('ModalEditValues', () => {
       const dropdownHeader = screen.getAllByText('Include only')[0];
       await userEvent.click(dropdownHeader);
 
-      const algoControlOption = screen.getByLabelText('exclude Cotton');
+      const algoControlOption = screen.getByRole('option', {
+        name: 'Exclude only',
+      });
       await userEvent.click(algoControlOption);
 
       expect(boostedValue).not.toBeVisible();

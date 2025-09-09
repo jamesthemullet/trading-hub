@@ -170,7 +170,7 @@ test.describe('Categories', () => {
     await page.getByRole('button', { name: 'Select country' }).click();
 
     await page
-      .getByRole('button', {
+      .getByRole('option', {
         name: 'IE market only',
       })
       .click();
@@ -543,7 +543,7 @@ test.describe('Categories', () => {
       })
       .click();
 
-    await page.getByRole('button', { name: 'Bury', exact: true }).click();
+    await page.getByRole('option', { name: 'Bury', exact: true }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 
@@ -582,7 +582,7 @@ test.describe('Categories', () => {
       })
       .click();
 
-    await page.getByRole('button', { name: 'Include only' }).click();
+    await page.getByRole('option', { name: 'Include only' }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 
@@ -621,7 +621,7 @@ test.describe('Categories', () => {
       })
       .click();
 
-    await page.getByRole('button', { name: 'Exclude only' }).click();
+    await page.getByRole('option', { name: 'Exclude only' }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 

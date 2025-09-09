@@ -547,9 +547,9 @@ describe('GlobalFacetPanelModalContent', () => {
         jest.advanceTimersByTime(debounceTime);
       });
 
-      const algoControlButton = screen.getByLabelText(
-        `algoControl ${attributeValuesMock[0].displayValue}`
-      );
+      const algoControlButton = screen.getByRole('option', {
+        name: `Algo control`,
+      });
 
       await user.click(algoControlButton);
 
@@ -589,9 +589,9 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const button = screen.getByLabelText(
-        `include ${attributeValuesMock[0].displayValue}`
-      );
+      const button = screen.getByRole('option', {
+        name: `Include only`,
+      });
 
       await user.click(button);
 
@@ -630,9 +630,9 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const button = screen.getByLabelText(
-        `exclude ${attributeValuesMock[0].displayValue}`
-      );
+      const button = screen.getByRole('option', {
+        name: `Exclude only`,
+      });
 
       await user.click(button);
 
@@ -676,9 +676,9 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const includeButton = screen.getByLabelText(
-        `include ${attributeValuesMock[0].displayValue}`
-      );
+      const includeButton = screen.getByRole('option', {
+        name: `Include only`,
+      });
 
       await user.click(includeButton);
 
@@ -722,9 +722,9 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const excludeButton = screen.getByLabelText(
-        `exclude ${attributeValuesMock[0].displayValue}`
-      );
+      const excludeButton = screen.getByRole('option', {
+        name: `Exclude only`,
+      });
 
       await user.click(excludeButton);
 
@@ -768,9 +768,9 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const algoControlButton = screen.getByLabelText(
-        `algoControl ${attributeValuesMock[0].displayValue}`
-      );
+      const algoControlButton = screen.getByRole('option', {
+        name: `Algo control`,
+      });
 
       await user.click(algoControlButton);
 
@@ -814,9 +814,9 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const algoControlButton = screen.getByLabelText(
-        `algoControl ${attributeValuesMock[0].displayValue}`
-      );
+      const algoControlButton = screen.getByRole('option', {
+        name: `Algo control`,
+      });
 
       await user.click(algoControlButton);
 

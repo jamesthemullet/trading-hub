@@ -83,7 +83,9 @@ test.describe('Search rulesets', () => {
         name: 'Select to set as included, excluded or algo control',
       })
       .click();
-    await page.getByRole('button', { name: 'include', exact: true }).click();
+    await page
+      .getByRole('option', { name: 'Include only', exact: true })
+      .click();
 
     await expect(
       page.getByTestId('Row showing Collections as included')
@@ -92,7 +94,9 @@ test.describe('Search rulesets', () => {
     await page.keyboard.down('End');
 
     await page.getByRole('button', { name: 'Algo control' }).first().click();
-    await page.getByRole('button', { name: 'exclude', exact: true }).click();
+    await page
+      .getByRole('option', { name: 'Exclude only', exact: true })
+      .click();
 
     await expect(
       page.getByTestId('Row showing Colours as excluded')
@@ -129,13 +133,13 @@ test.describe('Search rulesets', () => {
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')
       .click();
-    await page.getByLabel('include SMOKE').click();
+    await page.getByRole('option', { name: 'Include only' }).click();
     await page.getByLabel('Move SMOKE row up').click();
 
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')
       .click();
-    await page.getByLabel('exclude SMOKE').click();
+    await page.getByRole('option', { name: 'Exclude only' }).click();
 
     await expect(page.getByLabel('Move SMOKE row up')).not.toBeVisible();
   });
