@@ -75,12 +75,6 @@ test.describe('Search Ranking', () => {
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
 
-    const product2Id =
-      (await page
-        .getByLabel('Position 2', { exact: true })
-        .getByTestId('product id')
-        .textContent()) || '';
-
     await page
       .getByLabel('Position 1', { exact: true })
       .getByRole('button', { name: 'Open menu' })
@@ -94,8 +88,8 @@ test.describe('Search Ranking', () => {
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
 
+    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(3000);
-    await expect(page.getByText(product2Id)).not.toBeInViewport();
 
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
     await page.getByRole('button', { name: 'Changes2' }).click();

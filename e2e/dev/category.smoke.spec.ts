@@ -242,6 +242,7 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(3000);
     await expect(page.getByRole('button', { name: 'Changes4' })).toBeVisible();
   });
 
