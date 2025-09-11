@@ -25,12 +25,20 @@ const ModalContainer = styled.div`
   height: 600px;
   display: flex;
 `;
-const ModalSide = styled.div`
+
+const ModalSideBase = styled.section`
   position: relative;
   background-color: #fff;
   overflow: hidden;
+  z-index: 1;
 `;
-const ModalRightSide = styled(ModalSide)`
+
+const ModalSide = styled(ModalSideBase)`
+  padding: ${spacing(8)} ${spacing(2)} ${spacing(2)};
+  width: 40%;
+`;
+
+const ModalRightSide = styled(ModalSideBase)`
   width: 60%;
 `;
 
@@ -178,6 +186,25 @@ const SectionLabel = ({
   );
 };
 
+const StepContent = ({
+  stepIndex,
+  currentStep,
+  children,
+}: {
+  stepIndex: number;
+  currentStep: number;
+  children: React.ReactNode;
+}) => (
+  <ModalContent
+    style={{
+      transform: `translateX(${(currentStep - stepIndex) * MODAL_WIDTH * -1}px)`,
+    }}
+    {...(currentStep !== stepIndex && { inert: true })}
+  >
+    {children}
+  </ModalContent>
+);
+
 type Props = {
   onCancel: () => void;
   onSelect: (attribute: RulesetAttribute) => void;
@@ -247,19 +274,13 @@ export const AddAttribute = ({
 
   return (
     <ModalContainer>
-      <ModalSide
-        style={{
-          zIndex: 1,
-          padding: `${spacing(8)} ${spacing(2)} ${spacing(2)}`,
-          width: '40%',
-        }}
-      >
+      <ModalSide>
         <SelectedAttribute data-testid="Selected Attribute">
           {selectedAttributeType === 'numeric' && !!selectedNumericField && (
             <NumericAttribute
               operation={selectedOperation}
               name={selectedNumericField}
-              isEditMode={isEditMode}
+              isEditMode
               weight={weight}
               setWeight={setWeight}
             />
@@ -269,7 +290,7 @@ export const AddAttribute = ({
               <AlphanumericAttribute
                 operation={selectedOperation}
                 fields={selectedAlphanumericValues}
-                isEditMode={isEditMode}
+                isEditMode
                 weight={weight}
                 setWeight={setWeight}
                 canEditWeight={
@@ -297,12 +318,7 @@ export const AddAttribute = ({
           </ModalHeader>
         </ModalSection>
 
-        <ModalContent
-          style={{
-            transform: `translateX(${modalStep * MODAL_WIDTH * -1}px)`,
-          }}
-          {...(modalStep !== 0 && { inert: true })}
-        >
+        <StepContent stepIndex={0} currentStep={modalStep}>
           <ModalSection>
             <Label isStrong as="h4">
               Choose attribute type
@@ -320,14 +336,9 @@ export const AddAttribute = ({
               Product description attributes
             </ModalButton>
           </ModalSection>
-        </ModalContent>
+        </StepContent>
 
-        <ModalContent
-          style={{
-            transform: `translateX(${(modalStep - 1) * MODAL_WIDTH * -1}px)`,
-          }}
-          {...(modalStep !== 1 && { inert: true })}
-        >
+        <StepContent stepIndex={1} currentStep={modalStep}>
           {!isEditMode && (
             <ModalSection>
               <PreviousStep
@@ -393,14 +404,9 @@ export const AddAttribute = ({
               }}
             />
           </AttributeSelection>
-        </ModalContent>
+        </StepContent>
 
-        <ModalContent
-          style={{
-            transform: `translateX(${(modalStep - 2) * MODAL_WIDTH * -1}px)`,
-          }}
-          {...(modalStep !== 2 && { inert: true })}
-        >
+        <StepContent stepIndex={2} currentStep={modalStep}>
           {!isEditMode && (
             <ModalSection>
               <PreviousStep
@@ -476,14 +482,9 @@ export const AddAttribute = ({
                 </ModalSection>
               ))}
           </AttributeSelection>
-        </ModalContent>
+        </StepContent>
 
-        <ModalContent
-          style={{
-            transform: `translateX(${(modalStep - 3) * MODAL_WIDTH * -1}px)`,
-          }}
-          {...(modalStep !== 3 && { inert: true })}
-        >
+        <StepContent stepIndex={3} currentStep={modalStep}>
           <ModalSection>
             <PreviousStep
               aria-label="Move back to step 2"
@@ -552,7 +553,7 @@ export const AddAttribute = ({
               />
             </div>
           </AttributeSelection>
-        </ModalContent>
+        </StepContent>
 
         <ModalFooter>
           <Button

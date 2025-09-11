@@ -496,12 +496,13 @@ describe('RulesetAttributes', () => {
     });
 
     it('adds buried numeric attribute', async () => {
+      const user = userEvent.setup();
       const expectedCall: RuleSetActions = {
         payload: {
           change: 'add',
           index: 0,
           operation: 'bury',
-          data: { field: 'Size', weight: 100 },
+          data: { field: 'Size', weight: 12 },
         },
         type: 'numericAttribute',
       };
@@ -537,6 +538,11 @@ describe('RulesetAttributes', () => {
       act(() => {
         sizeButton[1].click();
       });
+
+      const input = screen.getByLabelText('Strength %');
+
+      await user.clear(input);
+      await user.type(input, '12');
 
       const doneButton = screen.getByRole('button', {
         name: 'Done',
@@ -594,6 +600,7 @@ describe('RulesetAttributes', () => {
     });
 
     it('adds alphanumeric attributes', async () => {
+      const user = userEvent.setup();
       const expectedCall: RuleSetActions = {
         payload: {
           data: {
@@ -603,7 +610,7 @@ describe('RulesetAttributes', () => {
                 values: ['Blue', 'Red'],
               },
             ],
-            weight: 100,
+            weight: 20,
           },
           change: 'add',
           operation: 'boost',
@@ -635,6 +642,11 @@ describe('RulesetAttributes', () => {
         colourBlueButton.click();
         colourRedButton.click();
       });
+
+      const input = screen.getByLabelText('Strength %');
+
+      await user.clear(input);
+      await user.type(input, '20');
 
       act(() => {
         screen.getByLabelText('Move back to step 2').click();
