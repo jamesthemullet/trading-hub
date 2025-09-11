@@ -62,35 +62,32 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit Category Ruleset</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']}
+
+      <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
+
+      {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
+
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Ruleset
+          isEnabled={ruleSetDetail.isEnabled}
+          onSave={saveRuleSet}
+          onCancel={() => router.push('/category')}
+          categoriesInfo={ruleSetDetail.categoriesInfo}
+          rulesetFacets={ruleSetDetail.facets}
+          rulesetExcludedFacets={ruleSetDetail.excludedFacets}
+          rulesetId={ruleSetDetail.id}
+          rulesetMerchandisingRules={ruleSetDetail.rules}
+          rulesetType="category"
+          startDate={ruleSetDetail.startDate}
+          endDate={ruleSetDetail.endDate}
+          countryCode={ruleSetDetail.countryCode}
+          writeEnabled={hasWriteAccess}
         />
+      )}
 
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <Ruleset
-            isEnabled={ruleSetDetail.isEnabled}
-            onSave={saveRuleSet}
-            onCancel={() => router.push('/category')}
-            categoriesInfo={ruleSetDetail.categoriesInfo}
-            rulesetFacets={ruleSetDetail.facets}
-            rulesetExcludedFacets={ruleSetDetail.excludedFacets}
-            rulesetId={ruleSetDetail.id}
-            rulesetMerchandisingRules={ruleSetDetail.rules}
-            rulesetType="category"
-            startDate={ruleSetDetail.startDate}
-            endDate={ruleSetDetail.endDate}
-            countryCode={ruleSetDetail.countryCode}
-            writeEnabled={hasWriteAccess}
-          />
-        )}
-
-        {isSaving && <Loader />}
-      </>
+      {isSaving && <Loader />}
     </>
   );
 };

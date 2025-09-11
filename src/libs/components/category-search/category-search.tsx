@@ -446,7 +446,7 @@ export const CategorySearch = ({
             </ModalWrapper>
 
             {duplicationError && (
-              <ErrorMessage style={{ padding: 0 }}>
+              <ErrorMessage style={{ padding: 0 }} role="alert">
                 {duplicationError}
               </ErrorMessage>
             )}

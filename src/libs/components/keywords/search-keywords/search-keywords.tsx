@@ -344,7 +344,7 @@ export const SearchKeywords = ({
                   )}
                 </KeywordList>
                 {duplicationError && (
-                  <ErrorMessage style={{ padding: 0 }}>
+                  <ErrorMessage style={{ padding: 0 }} role="alert">
                     {duplicationError}
                   </ErrorMessage>
                 )}

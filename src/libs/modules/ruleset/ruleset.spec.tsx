@@ -360,7 +360,9 @@ describe('Ruleset', () => {
       />
     );
 
-    expect(screen.getByText('Error: Failed to preview')).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Error: Failed to preview'
+    );
   });
 
   it('should select a category', async () => {
@@ -493,7 +495,7 @@ describe('Ruleset', () => {
 
     await user.click(screen.getAllByTitle('Open menu')[0]);
 
-    await user.click(screen.getByText('Boost to Top'));
+    await user.click(screen.getByRole('button', { name: 'Boost to Top' }));
 
     const saveButton = await screen.findByText(SAVE_BUTTON);
 
@@ -835,9 +837,9 @@ describe('Ruleset', () => {
         'nEw kEyWOrd{enter}'
       );
 
-      expect(
-        screen.getByText('Keyword new keyword has already been added')
-      ).toBeVisible();
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        'Keyword new keyword has already been added'
+      );
 
       expect(
         screen.queryAllByRole('button', { name: 'Remove keyword: new keyword' })
@@ -1021,12 +1023,12 @@ describe('Ruleset', () => {
         expect.objectContaining({ countryCode: 'UK' })
       );
 
-      const selectUK = screen.getByRole('button', {
+      const selectDropdown = screen.getByRole('button', {
         name: 'Select country view for visual editor',
       });
 
       act(() => {
-        selectUK.click();
+        selectDropdown.click();
       });
 
       const selectIE = screen.getByRole('button', {
@@ -1040,14 +1042,12 @@ describe('Ruleset', () => {
         expect.objectContaining({ countryCode: 'IE' })
       );
 
-      act(() => {
-        selectUK.click();
+      const selectUK = screen.getByRole('button', {
+        name: 'UK flag UK view',
       });
 
-      const selectUKView = screen.getByText('UK view');
-
       act(() => {
-        selectUKView.click();
+        selectUK.click();
       });
 
       expect(usePreview).toHaveBeenLastCalledWith(
@@ -1206,7 +1206,7 @@ describe('Ruleset', () => {
 
     await user.click(screen.getAllByTitle('Open menu')[0]);
 
-    await user.click(screen.getByText('Boost to Top'));
+    await user.click(screen.getByRole('button', { name: 'Boost to Top' }));
 
     const cancelButton = await screen.findByText(CANCEL_BUTTON);
 
@@ -1297,7 +1297,7 @@ describe('Ruleset', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText('3 results')).toBeVisible();
+        expect(screen.getByRole('status')).toHaveTextContent('3 results');
       });
 
       await user.clear(
@@ -1305,7 +1305,9 @@ describe('Ruleset', () => {
       );
 
       await waitFor(() => {
-        expect(screen.queryByText('3 results')).not.toBeInTheDocument();
+        expect(
+          screen.queryByRole('status', { name: '3 results' })
+        ).not.toBeInTheDocument();
       });
     });
 
@@ -1447,7 +1449,7 @@ describe('Ruleset', () => {
 
       await user.type(input, '1');
 
-      const confirmButton = screen.getByText('Confirm');
+      const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
       await waitFor(() => {
         confirmButton.click();
@@ -1613,57 +1615,73 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() =>
-        expect(screen.getByText('Numeric attributes')).toBeVisible()
+        expect(
+          screen.getByRole('button', { name: 'Numeric attributes' })
+        ).toBeVisible()
       );
 
-      const nextStepButton = screen.getAllByText(
-        'Product description attributes'
-      )[0];
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Product description attributes',
+      });
 
       act(() => {
         nextStepButton.click();
       });
 
       if (withBury) {
-        const dropdownButton = screen.getAllByText('Boost');
-
-        act(() => {
-          dropdownButton[0].click();
+        const dropdownButton = screen.getByRole('button', {
+          name: 'Select to include, exclude, boost or bury',
         });
 
-        const buryButton = screen.getAllByText('Bury');
+        act(() => {
+          dropdownButton.click();
+        });
+
+        const buryButton = screen.getByRole('option', {
+          name: 'Bury',
+        });
 
         act(() => {
-          buryButton[0].click();
+          buryButton.click();
         });
       }
 
       if (withInclude) {
-        const dropdownButton = screen.getAllByText('Boost');
-
-        act(() => {
-          dropdownButton[0].click();
+        const dropdownButton = screen.getByRole('button', {
+          name: 'Select to include, exclude, boost or bury',
         });
 
-        const buryButton = screen.getAllByText('Include only');
+        act(() => {
+          dropdownButton.click();
+        });
+
+        const includeButton = screen.getByRole('option', {
+          name: 'Include only',
+        });
 
         act(() => {
-          buryButton[0].click();
+          includeButton.click();
         });
       }
 
-      const colourButton = screen.getByText('Colour');
+      const colourButton = screen.getByRole('button', {
+        name: 'Colour',
+      });
 
       act(() => {
         colourButton.click();
       });
 
-      const colourRedButton = screen.getByLabelText('Red');
-      const colourBlueButton = screen.getByLabelText('Blue');
+      const colourRedCheckbox = screen.getByRole('checkbox', {
+        name: 'Red',
+      });
+      const colourBlueCheckbox = screen.getByRole('checkbox', {
+        name: 'Blue',
+      });
 
       act(() => {
-        colourBlueButton.click();
-        colourRedButton.click();
+        colourBlueCheckbox.click();
+        colourRedCheckbox.click();
       });
     };
 
@@ -1698,10 +1716,14 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() =>
-        expect(screen.getByText('Numeric attributes')).toBeVisible()
+        expect(
+          screen.getByRole('button', { name: 'Numeric attributes' })
+        ).toBeVisible()
       );
 
-      const nextStepButton = screen.getByText('Numeric attributes');
+      const nextStepButton = screen.getByRole('button', {
+        name: 'Numeric attributes',
+      });
 
       act(() => {
         nextStepButton.click();
@@ -1720,7 +1742,9 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() =>
-        expect(screen.getByText('2 attribute rules')).toBeVisible()
+        expect(screen.getByRole('status')).toHaveTextContent(
+          '2 attribute rules'
+        )
       );
     });
 
@@ -1749,7 +1773,9 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() =>
-        expect(screen.getByText('2 attribute rules')).toBeVisible()
+        expect(screen.getByRole('status')).toHaveTextContent(
+          '2 attribute rules'
+        )
       );
     });
 
@@ -1778,7 +1804,9 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() =>
-        expect(screen.getByText('2 attribute rules')).toBeVisible()
+        expect(screen.getByRole('status')).toHaveTextContent(
+          '2 attribute rules'
+        )
       );
     });
 
@@ -1807,7 +1835,9 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() =>
-        expect(screen.getByText('2 attribute rules')).toBeVisible()
+        expect(screen.getByRole('status')).toHaveTextContent(
+          '2 attribute rules'
+        )
       );
     });
 
@@ -1887,18 +1917,18 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() => {
-        const startDate = screen.getAllByText('14')[0];
+        const startDate = screen.getByRole('button', { name: '14 March 2022' });
         act(() => {
           startDate.click();
         });
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Mar 14 2022 00:00')).toBeVisible();
+        expect(screen.getByRole('time')).toHaveTextContent('Mar 14 2022 00:00');
       });
 
       await waitFor(() => {
-        const endDate = screen.getAllByText('16')[0];
+        const endDate = screen.getByRole('button', { name: '16 March 2022' });
         act(() => {
           endDate.click();
         });
@@ -2201,7 +2231,9 @@ describe('Ruleset', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Pinned Products (1)')).toBeVisible();
+        expect(
+          screen.getByRole('heading', { name: 'Pinned Products (1)' })
+        ).toBeVisible();
       });
 
       const checkbox = await screen.findByLabelText(

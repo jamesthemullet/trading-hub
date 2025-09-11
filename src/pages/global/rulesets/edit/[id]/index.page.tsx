@@ -59,40 +59,40 @@ const Page = ({ id }: PageProps) => {
       <Head>
         <title>Merchandising Hub | M&S | Edit global ruleset</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
+
+      <Heading
+        breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
+      />
+
+      {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
+
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Ruleset
+          isEnabled={globalRuleSet.isEnabled}
+          onSave={({
+            ruleSetId,
+            ruleSet,
+          }: {
+            ruleSetId: string;
+            ruleSet: MerchandisingRuleSet;
+          }) => {
+            setIsModalOpen(true);
+            setRuleSetIdToSave(ruleSetId);
+            setRuleSetToSave(ruleSet);
+          }}
+          onCancel={() => router.push('/global')}
+          rulesetMerchandisingRules={globalRuleSet.rules}
+          rulesetFacets={globalRuleSet.facets}
+          rulesetExcludedFacets={globalRuleSet.excludedFacets}
+          rulesetType="global"
+          rulesetId={id}
+          countryCode={globalRuleSet.countryCode}
+          writeEnabled={hasWriteAccess}
         />
+      )}
 
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <Ruleset
-            isEnabled={globalRuleSet.isEnabled}
-            onSave={({
-              ruleSetId,
-              ruleSet,
-            }: {
-              ruleSetId: string;
-              ruleSet: MerchandisingRuleSet;
-            }) => {
-              setIsModalOpen(true);
-              setRuleSetIdToSave(ruleSetId);
-              setRuleSetToSave(ruleSet);
-            }}
-            onCancel={() => router.push('/global')}
-            rulesetMerchandisingRules={globalRuleSet.rules}
-            rulesetFacets={globalRuleSet.facets}
-            rulesetExcludedFacets={globalRuleSet.excludedFacets}
-            rulesetType="global"
-            rulesetId={id}
-            countryCode={globalRuleSet.countryCode}
-            writeEnabled={hasWriteAccess}
-          />
-        )}
-      </>
       <Modal.Root
         centered
         opened={isModalOpen}

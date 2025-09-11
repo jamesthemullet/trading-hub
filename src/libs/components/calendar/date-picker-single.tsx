@@ -20,7 +20,7 @@ import {
   StyledInfoLabel,
   StyledTimeInput,
   StyledTimeInputGroup,
-  StyledvalueLabel,
+  StyledValueLabel,
 } from './date-picker.styles';
 import { formatMonthDayDateTimeRange } from './format-date-range';
 
@@ -101,13 +101,13 @@ export const DatePickerSingle = ({
       <StyledInfoContainer>
         <StyledInfoLabel as="h4">Rule date and time duration</StyledInfoLabel>
 
-        <StyledvalueLabel>
+        <StyledValueLabel as={value && !isToggleEnabled ? 'time' : 'span'}>
           {isToggleEnabled
             ? 'All the time'
             : value
               ? formatMonthDayDateTimeRange([value, null], startTime)
               : ''}
-        </StyledvalueLabel>
+        </StyledValueLabel>
       </StyledInfoContainer>
 
       <Content isDisabled={isToggleEnabled}>

@@ -61,7 +61,7 @@ export const StyledInfoLabel = styled.div`
   margin-bottom: ${spacing(2)};
 `;
 
-export const StyledvalueLabel = styled.div`
+export const StyledValueLabel = styled.div`
   display: flex;
   justify-content: left;
   align-items: center;

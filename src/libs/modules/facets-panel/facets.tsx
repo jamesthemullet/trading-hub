@@ -378,7 +378,7 @@ export const Facets = ({
       />
 
       {getFacetsDataError && (
-        <ErrorMessage>
+        <ErrorMessage role="alert">
           Error retrieving facet list: {getFacetsDataError}
         </ErrorMessage>
       )}

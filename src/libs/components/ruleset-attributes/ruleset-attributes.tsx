@@ -115,7 +115,7 @@ export const RulesetAttributes = ({
             Create new attribute rule
           </Button>
           {countOfAttributeChanges > 0 && (
-            <AttributeCount>
+            <AttributeCount as="output">
               {countOfAttributeChanges} attribute{' '}
               {pluralize('rule', countOfAttributeChanges)}
             </AttributeCount>

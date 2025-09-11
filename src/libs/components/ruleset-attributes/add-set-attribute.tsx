@@ -44,10 +44,10 @@ export const AddSetAttribute = ({
   return (
     <>
       {alphanumericAttributesError && (
-        <ErrorMessage>{alphanumericAttributesError}</ErrorMessage>
+        <ErrorMessage role="alert">{alphanumericAttributesError}</ErrorMessage>
       )}
       {numericAttributesError && (
-        <ErrorMessage>{numericAttributesError}</ErrorMessage>
+        <ErrorMessage role="alert">{numericAttributesError}</ErrorMessage>
       )}
       <AddAttribute
         onCancel={onCancel}

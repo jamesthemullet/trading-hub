@@ -119,8 +119,10 @@ describe('ProductSearchAll', () => {
     await user.type(searchProduct, 'productSearchTitle');
 
     await waitFor(() => {
-      expect(screen.getByText('3 results')).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('3 results');
     });
+
+    expect(screen.getByRole('status')).toHaveTextContent('3 results');
   });
 
   it('should search with category ids', async () => {
@@ -452,7 +454,7 @@ describe('ProductSearchAll', () => {
     await user.type(searchProduct, 'productSearchTitle');
 
     await waitFor(() => {
-      expect(screen.getByText('3 results')).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('3 results');
     });
 
     const checkbox = await screen.findByLabelText('Select all');
@@ -511,7 +513,7 @@ describe('ProductSearchAll', () => {
     await user.type(searchProduct, 'productSearchTitle');
 
     await waitFor(() => {
-      expect(screen.getByText('10 results')).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('10 results');
     });
 
     const checkbox = await screen.findByLabelText('Select all');

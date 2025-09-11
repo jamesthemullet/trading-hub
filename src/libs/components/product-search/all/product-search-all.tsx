@@ -198,7 +198,9 @@ export const ProductSearchAll = ({
         <InfoContainer rulesetType={rulesetType}>
           {products.length > 0 && (
             <>
-              {products.length} {pluralize('results', products.length)}
+              <output aria-live="polite">
+                {products.length} {pluralize('results', products.length)}
+              </output>
               <SelectAll rulesetType={rulesetType}>
                 <Checkbox
                   label="Select all"

@@ -101,13 +101,13 @@ const Page = ({ id }: PageProps) => {
       />
 
       {globalRulesetError && (
-        <ErrorMessage>
+        <ErrorMessage role="alert">
           Error whilst retrieving global ruleset: {globalRulesetError}
         </ErrorMessage>
       )}
 
       {savingGlobalRulesetError && (
-        <ErrorMessage>
+        <ErrorMessage role="alert">
           Error whilst saving global ruleset: {savingGlobalRulesetError}
         </ErrorMessage>
       )}

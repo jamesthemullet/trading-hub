@@ -580,7 +580,7 @@ export const Ruleset = ({
       </CategoryPanel>
       {merchandisingRules.pinnedProducts.length >
         MAX_PINNED_PRODUCTS_ALLOWED && (
-        <ErrorMessage style={{ padding: 0 }}>
+        <ErrorMessage style={{ padding: 0 }} role="alert">
           Error: Please only pin 100 or fewer products
         </ErrorMessage>
       )}
@@ -715,7 +715,9 @@ export const Ruleset = ({
 
                 <TabContent>
                   {previewError && (
-                    <ErrorMessage>Error: {previewError}</ErrorMessage>
+                    <ErrorMessage role="alert">
+                      Error: {previewError}
+                    </ErrorMessage>
                   )}
 
                   {selectedCategories.length || rulesetSearchTerms.length ? (

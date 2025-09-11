@@ -239,7 +239,7 @@ export const TablePanel = <
         )}
       </ToolsContainer>
 
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
 
       <DataTable
         headings={headings}
