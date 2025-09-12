@@ -110,10 +110,6 @@ const CountryPreviewDropdown = styled(CombinedDropdown)`
   }
 `;
 
-const FlagImage = styled(Image)`
-  margin-left: -${spacing(1)};
-`;
-
 const TabContent = styled.div`
   height: calc(100vh - 334px);
   overflow: auto;
@@ -684,7 +680,7 @@ export const Ruleset = ({
                               setSelectedPreviewCountryCode('IE');
                             }}
                           >
-                            <FlagImage
+                            <Image
                               src="/trading-hub/asset/icon-ie-flag.svg"
                               width={20}
                               height={20}
@@ -702,7 +698,7 @@ export const Ruleset = ({
                               setSelectedPreviewCountryCode('UK');
                             }}
                           >
-                            <FlagImage
+                            <Image
                               src="/trading-hub/asset/icon-uk-flag.svg"
                               width={20}
                               height={20}
