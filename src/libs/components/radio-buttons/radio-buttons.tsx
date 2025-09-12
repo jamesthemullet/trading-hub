@@ -6,7 +6,9 @@ import { spacing } from '../utils/spacing';
 
 const Row = styled.label<{ hasDivider: boolean }>`
   border-bottom: ${({ hasDivider }) =>
-    hasDivider ? `solid 1px ${color.grey}` : 'none'};
+    hasDivider
+      ? `solid 1px ${color.surfaceDark.onSurfaceDarkVariant}`
+      : 'none'};
   padding: ${spacing(2)};
   display: flex;
   align-items: baseline;

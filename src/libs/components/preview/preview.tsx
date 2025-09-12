@@ -129,7 +129,7 @@ const FacetName = styled(Text)`
 const FacetCount = styled.span`
   margin-left: auto;
   font-weight: bold;
-  color: ${color.grey};
+  color: ${color.surfaceDark.onSurfaceDarkVariant};
 `;
 
 const ShowAllButton = styled.button`
@@ -164,7 +164,7 @@ const FacetDropdown = styled.div`
 
 const StyledSearch = styled(Search)`
   width: 100%;
-  border: solid 1px ${color.grey};
+  border: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   margin-bottom: ${spacing(2)};
 
   & > div {
@@ -477,7 +477,12 @@ export const Preview = ({
               </Facets>
 
               {!!data.pagination.totalItems && (
-                <Text style={{ color: color.grey, marginBottom: spacing(2) }}>
+                <Text
+                  style={{
+                    color: color.surfaceDark.onSurfaceDarkVariant,
+                    marginBottom: spacing(2),
+                  }}
+                >
                   1 to{' '}
                   {data.pagination.totalItems &&
                   data.pagination.totalItems < 140

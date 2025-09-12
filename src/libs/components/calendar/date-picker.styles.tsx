@@ -21,8 +21,8 @@ export const StyledInfoContainer = styled.div`
   flex-direction: column;
   padding: ${spacing(2)} 0;
   margin-bottom: ${spacing(2)};
-  border-top: 1px solid ${color.grey};
-  border-bottom: 1px solid ${color.grey};
+  border-top: 1px solid ${color.surfaceDark.onSurfaceDarkVariant};
+  border-bottom: 1px solid ${color.surfaceDark.onSurfaceDarkVariant};
 `;
 
 export const Content = styled.div<{ isDisabled: boolean }>`

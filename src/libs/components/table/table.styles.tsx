@@ -133,7 +133,7 @@ export const TableActionsButton = styled(Link, {
   padding: ${spacing(1)} ${spacing(2)};
   width: 100%;
   border-radius: 4px;
-  border: solid 1px ${color.accessibilityGrey};
+  border: solid 1px ${color.surface.onSurfaceVariant};
 
   ${({ hasDropdown }) =>
     hasDropdown && 'border-right: none;border-radius: 4px 0 0 4px;'}

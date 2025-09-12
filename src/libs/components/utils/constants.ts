@@ -2,9 +2,6 @@ export const color = {
   // TODO: phase out use of these colours and use design system figma colours
   lightGreen: '#dfece2',
   lightGrey: '#ccc',
-  grey: '#999',
-  accessibilityGrey: '#707070',
-  backgroundGrey: '#f5f5f5',
   backgroundDarkGrey: '#f0f0f0',
   successGreenBackground: '#f4faed',
   errorRedBackground: '#fff3f4',

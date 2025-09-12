@@ -80,7 +80,7 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   border-radius: 4px;
   border: 1px solid #b1b1b1;
 
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.accent.secondary.secondaryContainer};
 
   ${({ isDropdownOpen }) =>
     isDropdownOpen &&
@@ -96,7 +96,7 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
 
   &:disabled {
     background-color: ${color.lightGrey};
-    color: ${color.accessibilityGrey};
+    color: ${color.surface.onSurfaceVariant};
     cursor: default;
   }
 `;

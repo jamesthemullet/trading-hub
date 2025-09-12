@@ -29,16 +29,15 @@ const setTheme = ({
   if (isTertiary) {
     return css`
       color: rgba(29, 29, 27, 1);
-      background: ${isDisabled ? color.backgroundGrey : '#fff'};
-      border-color: ${color.accessibilityGrey};
+      border-color: ${color.surface.onSurfaceVariant};
       font-weight: 600;
       border-radius: 20px;
 
       &:hover,
       &:focus {
-        background-color: ${color.backgroundGrey};
+        background-color: ${color.accent.secondary.secondaryContainer};
         border-color: ${isDisabled
-          ? color.accessibilityGrey
+          ? color.surface.onSurfaceVariant
           : '#C0E2C9'}; // colour in figma but not in design system
       }
 
@@ -51,8 +50,8 @@ const setTheme = ({
   if (isDisabled) {
     return css`
       color: rgba(142, 142, 142, 1);
-      background-color: ${color.backgroundGrey};
-      border-color: ${color.backgroundGrey};
+      background-color: ${color.accent.secondary.secondaryContainer};
+      border-color: ${color.accent.secondary.secondaryContainer};
     `;
   }
   if (isPrimary) {
@@ -112,7 +111,7 @@ const setTheme = ({
 
     &:hover,
     &:focus {
-      background-color: ${color.backgroundGrey};
+      background-color: ${color.accent.secondary.secondaryContainer};
       border-color: ${color.lightGreen};
     }
 

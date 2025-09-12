@@ -47,7 +47,7 @@ const StyledLabel = styled.label`
 `;
 
 const Input = styled.input`
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.accent.secondary.secondaryContainer};
   border: none;
   border-bottom: 1px solid ${color.role.outline.outline};
   min-height: 64px;

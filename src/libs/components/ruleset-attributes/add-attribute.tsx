@@ -50,7 +50,7 @@ const SelectedAttribute = styled.div`
 `;
 
 const ModalSection = styled.div`
-  border-bottom: solid 1px ${color.grey};
+  border-bottom: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   padding: 12px;
   position: relative;
 `;
@@ -73,17 +73,17 @@ const ModalHeader = styled.div`
 `;
 
 const ModalAttributeHeader = styled.div`
-  border-bottom: solid 1px ${color.grey};
+  border-bottom: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   padding: ${spacing(2)};
   display: flex;
   align-items: center;
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.accent.secondary.secondaryContainer};
   margin: 0;
 `;
 
 const Divider = styled.span`
   width: 35px;
-  border-bottom: solid 1px ${color.grey};
+  border-bottom: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
 `;
 
 const ModalContent = styled.div`
@@ -154,7 +154,7 @@ const ModalFooter = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  border-top: solid 1px ${color.grey};
+  border-top: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   padding: ${spacing(1)};
   display: flex;
   justify-content: end;

@@ -47,13 +47,13 @@ export const Row = styled.button`
 
 export const Categories = styled.div`
   border-radius: 4px 4px 0 0;
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.accent.secondary.secondaryContainer};
   border-bottom: 1px solid #b1b1b1;
   padding: ${spacing(1)} ${spacing(1)} 0;
 `;
 
 export const SearchWrapper = styled.div`
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.accent.secondary.secondaryContainer};
   display: flex;
   border-bottom: 1px solid ${color.lightGrey};
   width: 335px;
@@ -161,7 +161,7 @@ export const ModalCategoriesList = styled.ul`
   gap: ${spacing(1)};
   flex-wrap: wrap;
   width: 100%;
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.accent.secondary.secondaryContainer};
   overflow-y: auto;
   overflow-x: hidden;
   height: 205px;

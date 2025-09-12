@@ -199,13 +199,6 @@ const StyleGuide = () => {
 
       <Header2 style={{ width: '100%', marginBottom: '8px' }}>Colours</Header2>
       <Guide>
-        <Colour style={{ backgroundColor: color.backgroundGrey }} />
-        <Text>color.backgroundGrey</Text>
-        <Text>
-          <code>{color.backgroundGrey}</code>
-        </Text>
-      </Guide>
-      <Guide>
         <Colour style={{ backgroundColor: color.errorRed }} />
         <Text>color.errorRed</Text>
         <Text>
@@ -217,13 +210,6 @@ const StyleGuide = () => {
         <Text>color.errorRedBackground</Text>
         <Text>
           <code>{color.errorRedBackground}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.grey }} />
-        <Text>color.grey</Text>
-        <Text>
-          <code>{color.grey}</code>
         </Text>
       </Guide>
       <Guide>

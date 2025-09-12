@@ -27,7 +27,7 @@ export const formDefaultStyles = ({ padding }: { padding: SpacingUnit }) => css`
 `;
 
 export const formActiveStyles = () => css`
-  border-color: ${color.grey};
+  border-color: ${color.surfaceDark.onSurfaceDarkVariant};
   border-width: 2px;
   &:focus {
     box-shadow: none;

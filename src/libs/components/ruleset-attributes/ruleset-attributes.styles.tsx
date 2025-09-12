@@ -25,7 +25,7 @@ export const AttributeHeading = styled.div`
 export const AttributeRow = styled.div`
   padding: ${spacing(1)};
   border-top: solid 1px #999;
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.accent.secondary.secondaryContainer};
 `;
 
 export const AttributeValue = styled.div`

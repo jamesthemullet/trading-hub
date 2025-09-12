@@ -208,7 +208,7 @@ export const LockInput = styled.input<{ hasError: boolean }>`
     ${({ hasError }) =>
       hasError ? color.errorRed : color.surfaceBright.onSurfaceBrightVariant};
   padding: ${spacing(2)};
-  background-color: ${color.backgroundGrey};
+  background-color: ${color.accent.secondary.secondaryContainer};
   width: 100%;
   margin-bottom: ${spacing(1)};
 `;

@@ -29,7 +29,7 @@ describe('Input', () => {
       width: 100%;
       height: 3rem;
       font-size: 1rem;
-      border-color: #999;
+      border-color: #999999;
       background: rgb(255, 255, 255);
     `);
 
@@ -57,7 +57,7 @@ describe('Input', () => {
     render(<Input id="id" label="input" />);
     const input = screen.getByLabelText('input');
     await user.type(input, 'input now contains text');
-    expect(input).toHaveStyleRule('border-color', '#999');
+    expect(input).toHaveStyleRule('border-color', '#999999');
   });
 
   it('Should invoke a provided onChange callback', async () => {
