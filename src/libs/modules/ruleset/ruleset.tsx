@@ -12,8 +12,6 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
-  BulkActions,
-  CategorySearch,
   CombinedDropdown,
   DropdownOption,
   ErrorMessage,
@@ -27,12 +25,16 @@ import {
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
-import { Preview } from '@/libs/components/preview/preview';
-import { ProductSearchAll } from '@/libs/components/product-search/all/product-search-all';
-import { RulesetAttributes } from '@/libs/components/ruleset-attributes/ruleset-attributes';
-import { RulesetChanges } from '@/libs/components/ruleset-changes/ruleset-changes';
 import { color } from '@/libs/components/utils/constants';
-import { VisualEditor } from '@/libs/components/visual-editor/visual-editor';
+import {
+  BulkActions,
+  CategorySearch,
+  Preview,
+  ProductSearchAll,
+  RulesetAttributes,
+  RulesetChanges,
+  VisualEditor,
+} from '@/libs/features';
 import { usePreview } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 

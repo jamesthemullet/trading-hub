@@ -2,7 +2,7 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedFacet,
 } from '@/libs/api';
-import { toArrayWithSwappedElements } from '@/libs/components/modals/facet-panel/utils/swap-array-elements';
+import { toArrayWithSwappedElements } from '@/libs/features/facets/facet-panel/utils/swap-array-elements';
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
 

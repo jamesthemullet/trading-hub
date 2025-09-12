@@ -6,10 +6,10 @@ import type {
 import { search } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
-import { TablePanel } from '@/libs/components/table-panel/table-panel';
 import type { RuleSetMapping } from '@/libs/components/types';
 import { formatCategoriesInfo } from '@/libs/components/utils/format-categories-info';
 import { PageNameLabel } from '@/libs/components/utils/shared.styles';
+import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';

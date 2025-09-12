@@ -7,7 +7,6 @@ import type {
 } from '@/libs/api';
 import {
   Button,
-  CategorySearch,
   CombinedDropdown,
   DropdownOption,
   ErrorMessage,
@@ -20,9 +19,12 @@ import {
 import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import { SearchAndCategoryFacetsPanelModal } from '@/libs/components/modals/facet-panel/search-and-category/search-and-category-facets-panel-modal';
-import { Preview } from '@/libs/components/preview/preview';
 import { TableHeading } from '@/libs/components/table/table.styles';
+import {
+  CategorySearch,
+  Preview,
+  SearchAndCategoryFacetsPanelModal,
+} from '@/libs/features';
 import { useFacetsList } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';

@@ -1,7 +1,5 @@
-export * from './bulk-actions/products';
 export * from './buttons/button/button';
 export * from './calendar';
-export * from './category-search/category-search';
 export * from './checkboxes/checkboxes';
 export * from './count/count';
 export * from './dropdown/dropdown';

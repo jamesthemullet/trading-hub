@@ -18,8 +18,8 @@ import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import { EditableLabel } from '@/libs/components/editable-label/editable-label';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
-import { GlobalFacetPanelModal } from '@/libs/components/modals/facet-panel/global/global-facets-panel-modal';
 import { TableHeading } from '@/libs/components/table/table.styles';
+import { GlobalFacetPanelModal } from '@/libs/features';
 import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 

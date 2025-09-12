@@ -1,16 +1,17 @@
 import styled from '@emotion/styled';
 
+import type { MerchandisingNumericBoostBury } from '@/libs/api';
+import { Text, Typography } from '@/libs/components';
+import { labels } from '@/libs/components/utils/ruleset-attributes';
+
 import Image from 'next/image';
 
-import type { MerchandisingNumericBoostBury } from '../../api';
-import { Text, Typography } from '../typography/typography.styles';
 import {
   AlignedText,
   AttributeHeading,
   AttributeRow,
   AttributeWrapper,
 } from './ruleset-attributes.styles';
-import { labels } from './utils';
 import { AttributeWeight } from './weight';
 
 const AttributeNameText = styled(Typography)`

@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
 
-import { Button as RegularButton } from '../buttons/button/button';
-import { Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
+import { Button as RegularButton, Text } from '@/libs/components';
+import { color } from '@/libs/components/utils/constants';
+import { spacing } from '@/libs/components/utils/spacing';
 
 export const AttributeCount = styled(Text)`
   text-align: right;
@@ -89,7 +88,7 @@ export const Buttons = styled.div`
   align-items: center;
 `;
 
-export const Button = styled.button`
+export const RulesetAttributeButton = styled.button`
   border: none;
   background: none;
   display: flex;
@@ -121,4 +120,8 @@ export const AlignedText = styled(Text)`
   img {
     margin-left: ${spacing(1)};
   }
+`;
+
+export const ErrorText = styled(Text)`
+  color: ${color.errorRed};
 `;

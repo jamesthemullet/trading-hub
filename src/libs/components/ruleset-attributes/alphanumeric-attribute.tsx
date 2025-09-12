@@ -1,14 +1,19 @@
 import styled from '@emotion/styled';
 
-import Image from 'next/image';
-
 import type {
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
-} from '../../api';
-import { formatHTMLStrings } from '../../utils/format-html-strings';
-import { Text, Typography } from '../typography/typography.styles';
-import { spacing } from '../utils/spacing';
+} from '@/libs/api';
+import {
+  Text,
+  Typography,
+} from '@/libs/components/typography/typography.styles';
+import { labels } from '@/libs/components/utils/ruleset-attributes';
+import { spacing } from '@/libs/components/utils/spacing';
+import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
+
+import Image from 'next/image';
+
 import {
   AlignedText,
   AttributeHeading,
@@ -17,7 +22,6 @@ import {
   AttributeValuePill,
   AttributeWrapper,
 } from './ruleset-attributes.styles';
-import { labels } from './utils';
 import { AttributeWeight } from './weight';
 
 const AttributeNameText = styled.span`

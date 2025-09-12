@@ -2,18 +2,19 @@ import styled from '@emotion/styled';
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 
+import { Text } from '@/libs/components';
+
 import Image from 'next/image';
 
-import { Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { AttributeRow, Button, Buttons } from './ruleset-attributes.styles';
+import {
+  AttributeRow,
+  Buttons,
+  ErrorText,
+  RulesetAttributeButton,
+} from './ruleset-attributes.styles';
 
 const Input = styled.input`
   min-width: 60px;
-`;
-
-const ErrorText = styled(Text)`
-  color: ${color.errorRed};
 `;
 
 export const AttributeWeight = ({
@@ -90,7 +91,7 @@ export const AttributeWeight = ({
       {isEditable && !isEditing && (
         <AttributeRow>
           <Buttons>
-            <Button
+            <RulesetAttributeButton
               onClick={() => onStartChanges()}
               aria-label={`Edit attribute ${field}`}
             >
@@ -100,16 +101,19 @@ export const AttributeWeight = ({
                 src="/trading-hub/asset/icon-edit.svg"
                 alt=""
               />
-            </Button>
+            </RulesetAttributeButton>
 
-            <Button onClick={onDelete} aria-label="Delete attribute">
+            <RulesetAttributeButton
+              onClick={onDelete}
+              aria-label="Delete attribute"
+            >
               <Image
                 width={20}
                 height={20}
                 src="/trading-hub/asset/icon-delete.svg"
                 alt=""
               />
-            </Button>
+            </RulesetAttributeButton>
           </Buttons>
         </AttributeRow>
       )}
@@ -119,7 +123,7 @@ export const AttributeWeight = ({
             <ErrorText>{error}</ErrorText>
           ) : (
             <Buttons style={{ justifyContent: 'end' }}>
-              <Button
+              <RulesetAttributeButton
                 onClick={onSubmit}
                 aria-label={`Save attribute ${field} change`}
               >
@@ -129,8 +133,8 @@ export const AttributeWeight = ({
                   src="/trading-hub/asset/icon-tick-in-circle.svg"
                   alt=""
                 />
-              </Button>
-              <Button
+              </RulesetAttributeButton>
+              <RulesetAttributeButton
                 onClick={
                   /* istanbul ignore next */
                   () => {
@@ -146,7 +150,7 @@ export const AttributeWeight = ({
                   src="/trading-hub/asset/icon-cross-in-circle.svg"
                   alt=""
                 />
-              </Button>
+              </RulesetAttributeButton>
             </Buttons>
           )}
         </AttributeRow>
