@@ -125,7 +125,7 @@ const eslint = [
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       'no-lone-blocks': 'error',
       // '@typescript-eslint/prefer-nullish-coalescing': 'error',
-      // 'react/jsx-fragments': ['error', 'syntax'],
+      'react/jsx-fragments': ['error', 'syntax'],
     },
   },
   {

@@ -3,7 +3,7 @@ import * as path from 'node:path';
 
 const mappingFilePath = path.resolve(__dirname, './clothinghome_mappings.json');
 const dataFilePath = path.resolve(__dirname, './clothinghome_products.jsonl');
-const elasticUrl = process.env.ELASTIC_URL || 'http://localhost:9200';
+const elasticUrl = process.env.ELASTIC_URL ?? 'http://localhost:9200';
 const indexName = 'search-indexer-1';
 const indexAlias = 'search-indexer';
 

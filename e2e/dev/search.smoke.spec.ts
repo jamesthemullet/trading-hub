@@ -182,7 +182,7 @@ test.describe('Search Ranking', () => {
     await expect(page.getByText('Sequin Dress').first()).toBeVisible();
 
     const currentCount =
-      (await page.getByTestId('results count').textContent()) || '';
+      (await page.getByTestId('results count').textContent()) ?? '';
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();

@@ -177,7 +177,7 @@ test.describe('Global Ranking', () => {
     await page.waitForLoadState('networkidle');
 
     const currentCount =
-      (await page.getByTestId('results count').textContent()) || '';
+      (await page.getByTestId('results count').textContent()) ?? '';
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();
