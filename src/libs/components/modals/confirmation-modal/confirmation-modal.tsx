@@ -20,15 +20,19 @@ const Buttons = styled.div`
 const ConfirmationModal = ({
   onCloseModal,
   handleModalConfirm,
+  titleId,
+  descriptionId,
 }: {
   onCloseModal: () => void;
   handleModalConfirm: () => void;
+  titleId: string;
+  descriptionId: string;
 }) => {
   return (
     <Modal.Body>
-      <Header3>Apply global changes</Header3>
+      <Header3 id={titleId}>Apply global changes</Header3>
 
-      <Text withMargin>
+      <Text withMargin id={descriptionId}>
         This action will apply live changes on the M&S website and app. Do you
         want to proceed?
       </Text>

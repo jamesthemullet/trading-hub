@@ -7,6 +7,7 @@ const config: StorybookConfig = {
     '@storybook/addon-vitest',
     'storybook-addon-deep-controls',
     '@storybook/addon-docs',
+    '@storybook/addon-a11y',
   ],
   framework: {
     name: '@storybook/nextjs-vite',

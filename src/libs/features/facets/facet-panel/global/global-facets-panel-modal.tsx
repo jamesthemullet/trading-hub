@@ -1,5 +1,12 @@
 import styled from '@emotion/styled';
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -108,6 +115,9 @@ export const GlobalFacetPanelModalContent = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+
+  const titleId = useId();
+  const descriptionId = useId();
 
   const [editingValues, setEditingValues] = useState<string[]>([]);
 
@@ -553,14 +563,17 @@ export const GlobalFacetPanelModalContent = ({
         opened={isConfirmationModalOpen}
         onClose={onCloseModal}
         padding={10}
-        role="dialog"
-        aria-modal="true"
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content>
+        <Modal.Content
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
+        >
           <ConfirmationModal
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
+            titleId={titleId}
+            descriptionId={descriptionId}
           />
         </Modal.Content>
       </Modal.Root>

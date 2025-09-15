@@ -27,7 +27,8 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "storybook:dev": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "test-storybook": "npx @storybook/test-runner"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -35,6 +36,7 @@
     "@mantine/core": "8.3.1",
     "@mantine/dates": "8.3.1",
     "@mantine/hooks": "8.3.1",
+    "@storybook/addon-a11y": "9.1.6",
     "@vercel/otel": "1.13.0",
     "date-fns": "4.1.0",
     "dayjs": "1.11.18",
@@ -64,6 +66,7 @@
     "@storybook/addon-styling-webpack": "^2.0.0",
     "@storybook/addon-vitest": "9.1.5",
     "@storybook/nextjs-vite": "9.1.5",
+    "@storybook/test-runner": "0.23.0",
     "@swc/core": "1.13.5",
     "@swc/helpers": "0.5.17",
     "@swc/jest": "0.2.39",

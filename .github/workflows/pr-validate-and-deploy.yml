@@ -631,6 +631,97 @@ jobs:
               }
             }' || echo "Failed to send end-to-end-tests timing event to Dynatrace"
 
+  storybook-a11y:
+    name: Storybook Accessibility Tests
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - name: Record job start time
+        id: job-start
+        run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare node and install dependencies
+        uses: ./.github/actions/prepare
+
+      - name: Generate API code
+        run: npm run codegen
+
+      - name: Build Storybook
+        run: npm run storybook:build
+
+      - name: Install Playwright (for test-runner)
+        run: npx playwright install --with-deps chromium
+
+      - name: Start Storybook and run accessibility tests
+        run: |
+          npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+            "npx http-server storybook-static --port 6006" \
+            "wait-on http://localhost:6006 && npm run test-storybook"
+
+      - name: Upload accessibility test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-accessibility-report
+          path: |
+            test-results.json
+            coverage/
+          retention-days: 30
+
+      - name: Track storybook-a11y timing
+        if: success()
+        run: |
+          end_time=$(date +%s)
+          duration=$((end_time - ${{ steps.job-start.outputs.start_time }}))
+          echo "Storybook accessibility tests duration: ${duration} seconds"
+
+          minutes=$((duration / 60))
+          seconds=$((duration % 60))
+
+          DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
+          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
+          SERVICE_NAME="trading-hub"
+
+          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
+            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "eventType": "CUSTOM_ANNOTATION",
+              "title": "GitHub Workflow Job Completed: storybook-a11y",
+              "description": "Storybook accessibility tests completed in '"${minutes}m ${seconds}s"' ('"$duration"' seconds) with status: ${{ job.status }}",
+              "properties": {
+                "serviceName": "'"$SERVICE_NAME"'",
+                "jobName": "storybook-a11y",
+                "duration": '"$duration"',
+                "status": "${{ job.status }}",
+                "workflow": "${{ github.workflow }}",
+                "branch": "${{ github.ref_name }}",
+                "repository": "${{ github.repository }}",
+                "runId": "${{ github.run_id }}",
+                "prNumber": "${{ github.event.number }}",
+                "actor": "${{ github.actor }}"
+              },
+              "attachRules": {
+                "tagRule": [
+                  {
+                    "meTypes": ["SERVICE"],
+                    "tags": [
+                      {
+                        "key": "service",
+                        "value": "'"$SERVICE_NAME"'"
+                      },
+                      {
+                        "key": "environment",
+                        "value": "dev"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }' || echo "Failed to send storybook-a11y timing event to Dynatrace"
   track-workflow-timing:
     name: Track Workflow Performance
     runs-on: ubuntu-latest
@@ -642,6 +733,7 @@ jobs:
         comment-deployment-message,
         deploy-pr-env,
         end-to-end-tests,
+        storybook-a11y,
       ]
     if: success()
     steps:

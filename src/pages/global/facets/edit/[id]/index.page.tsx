@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -82,6 +82,9 @@ const Page = ({ id }: PageProps) => {
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
 
+  const titleId = useId();
+  const descriptionId = useId();
+
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
@@ -133,14 +136,17 @@ const Page = ({ id }: PageProps) => {
         opened={isModalOpen}
         onClose={onCloseModal}
         padding={10}
-        role="dialog"
-        aria-modal="true"
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content>
+        <Modal.Content
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
+        >
           <ConfirmationModal
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
+            titleId={titleId}
+            descriptionId={descriptionId}
           />
         </Modal.Content>
       </Modal.Root>

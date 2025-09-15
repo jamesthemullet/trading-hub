@@ -15,24 +15,10 @@ describe('Label', () => {
     expect(screen.getByText('hello')).toHaveStyle('cursor: pointer');
   });
 
-  it('should render successfully with default cursor when disabled', () => {
-    render(<Label isDisabled>hello</Label>);
-
-    expect(screen.getByText('hello')).not.toHaveStyle('cursor: pointer');
-  });
-
   it('should render for screen readers', () => {
     render(<Label isHidden>hello</Label>);
 
     expect(screen.getByText('hello')).toHaveStyle('clip: rect(0, 0, 0, 0);');
-  });
-
-  it('should render disabled state', () => {
-    render(<Label isDisabled>hello</Label>);
-
-    expect(screen.getByText('hello')).toHaveStyle({
-      color: 'rgb(204, 204, 204)',
-    });
   });
 
   it('should render the required state', () => {

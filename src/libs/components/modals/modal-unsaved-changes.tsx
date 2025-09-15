@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useId } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button } from '../buttons/button/button';
@@ -29,24 +30,24 @@ const Heading = styled(Title)`
 type Props = {
   onClose: () => void;
   onContinue: () => void;
+  opened?: boolean;
 };
 
-export const ModalUnsavedChanges = ({ onClose, onContinue }: Props) => {
+export const ModalUnsavedChanges = ({
+  onClose,
+  onContinue,
+  opened = true,
+}: Props) => {
+  const titleId = useId();
+  const descriptionId = useId();
+
   return (
-    <Modal.Root
-      opened
-      onClose={onContinue}
-      centered
-      padding={10}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Unsaved changes modal"
-    >
+    <Modal.Root opened={opened} onClose={onContinue} centered padding={10}>
       <Modal.Overlay blur={3} />
-      <Modal.Content>
+      <Modal.Content aria-labelledby={titleId} aria-describedby={descriptionId}>
         <Modal.Body>
-          <Heading>Close without saving edits</Heading>
-          <Text>
+          <Heading id={titleId}>Close without saving edits</Heading>
+          <Text id={descriptionId}>
             Are you sure you want to navigate away from this page without saving
             your edits?
           </Text>

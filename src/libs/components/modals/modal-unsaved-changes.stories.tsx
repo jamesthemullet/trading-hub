@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Modal } from '@mantine/core';
 
 import { Button } from '@/libs/components';
 
@@ -13,6 +12,11 @@ const meta: Meta<typeof ModalUnsavedChanges> = {
   component: ModalUnsavedChanges,
   tags: ['autodocs'],
   argTypes: {
+    opened: {
+      control: 'boolean',
+      description: 'Controls whether the modal is open',
+      defaultValue: true,
+    },
     onClose: {
       action: 'onClose',
       description: 'Handler for Close without saving',
@@ -32,6 +36,7 @@ type Story = StoryObj<typeof ModalUnsavedChanges>;
 
 export const Default: Story = {
   args: {
+    opened: false,
     onClose: fn(),
     onContinue: fn(),
   },
@@ -44,28 +49,17 @@ export const Default: Story = {
           Open Unsaved Changes Modal
         </Button>
 
-        <Modal.Root
-          centered
+        <ModalUnsavedChanges
           opened={isOpen}
-          onClose={() => setIsOpen(false)}
-          padding={10}
-          role="dialog"
-          aria-modal="true"
-        >
-          <Modal.Overlay blur={3} />
-          <Modal.Content>
-            <ModalUnsavedChanges
-              onClose={() => {
-                setIsOpen(false);
-                args.onClose();
-              }}
-              onContinue={() => {
-                setIsOpen(false);
-                args.onContinue();
-              }}
-            />
-          </Modal.Content>
-        </Modal.Root>
+          onClose={() => {
+            setIsOpen(false);
+            args.onClose();
+          }}
+          onContinue={() => {
+            setIsOpen(false);
+            args.onContinue();
+          }}
+        />
       </>
     );
   },

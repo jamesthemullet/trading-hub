@@ -6,7 +6,6 @@ import { Label as LabelText } from '../typography/typography.styles';
 import type { BreakPoints } from '../utils/breakpoint-type';
 
 type BaseLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
-  isDisabled?: boolean;
   isHidden?: boolean;
   isRequired?: boolean;
   children: ReactNode;
@@ -32,17 +31,8 @@ const visuallyHide = css`
 `;
 
 const StyledLabel = styled(LabelText)<BaseLabelProps>`
-  ${({ isDisabled }) =>
-    !isDisabled &&
-    css`
-      cursor: pointer;
-    `};
+  cursor: pointer;
   ${({ isHidden }) => isHidden && visuallyHide};
-  ${({ isDisabled: disabled }) =>
-    disabled &&
-    css`
-      color: #cccccc;
-    `};
 `;
 
 export type LabelProps = BaseLabelProps & {

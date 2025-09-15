@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button } from '@/libs/components';
@@ -38,6 +38,8 @@ export const Default: Story = {
   },
   render: (args) => {
     const [isOpen, setIsOpen] = useState(false);
+    const titleId = useId();
+    const descriptionId = useId();
 
     return (
       <>
@@ -50,14 +52,17 @@ export const Default: Story = {
           opened={isOpen}
           onClose={() => setIsOpen(false)}
           padding={10}
-          role="dialog"
-          aria-modal="true"
         >
           <Modal.Overlay blur={3} />
-          <Modal.Content>
+          <Modal.Content
+            aria-labelledby={titleId}
+            aria-describedby={descriptionId}
+          >
             <ConfirmationModal
               onCloseModal={() => setIsOpen(false)}
               handleModalConfirm={args.handleModalConfirm}
+              titleId={titleId}
+              descriptionId={descriptionId}
             />
           </Modal.Content>
         </Modal.Root>

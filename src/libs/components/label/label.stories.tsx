@@ -8,10 +8,6 @@ const meta: Meta<LabelProps> = {
   tags: ['autodocs'],
   component: Label,
   argTypes: {
-    isDisabled: {
-      control: 'boolean',
-      description: 'Disables the label',
-    },
     isHidden: {
       control: 'boolean',
       description: 'Visually hides the label',
@@ -33,7 +29,6 @@ type Story = StoryObj<LabelProps>;
 export const Default: Story = {
   args: {
     children: 'Label Text',
-    isDisabled: false,
     isHidden: false,
     isRequired: false,
   },
@@ -41,7 +36,6 @@ export const Default: Story = {
 export const Disabled: Story = {
   args: {
     ...Default.args,
-    isDisabled: true,
   },
 };
 export const Required: Story = {

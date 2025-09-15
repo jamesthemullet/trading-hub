@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -143,6 +143,9 @@ export const TablePanel = <
     toggleRow({ id: idToUpdate });
   };
 
+  const titleId = useId();
+  const descriptionId = useId();
+
   const linkConfig = {
     categoryRanking: 'category',
     searchRanking: 'search',
@@ -267,14 +270,17 @@ export const TablePanel = <
         opened={isModalOpen}
         onClose={onCloseModal}
         padding={10}
-        role="dialog"
-        aria-modal="true"
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content>
+        <Modal.Content
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
+        >
           <ConfirmationModal
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
+            titleId={titleId}
+            descriptionId={descriptionId}
           />
         </Modal.Content>
       </Modal.Root>

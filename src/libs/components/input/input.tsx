@@ -136,7 +136,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <StyledLabel
             htmlFor={id}
             isHidden={isLabelHidden}
-            isDisabled={rest.disabled}
             isRequired={isRequired}
             {...mouseFocusProps}
           >
