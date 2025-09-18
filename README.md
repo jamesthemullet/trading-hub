@@ -243,6 +243,10 @@ A [hotfix branch](https://github.com/DigitalInnovation/trading-hub/tree/hotfix) 
 
 Please follow this [doc](./docs/run-book.md) for production issues.
 
+## Play book
+
+Please follow this[doc](https://jira-marksandspencer-app.atlassian.net/wiki/spaces/CGE/pages/362578145/Merchandising+Hub+Product+playbook) to understand how users can use Merchandising Hub
+
 ## Adding users
 
 Please follow this [doc](./docs/user-access-managment.md)

@@ -9,13 +9,6 @@
   "commitConvention": "none",
   "contributors": [
     {
-      "login": "grahamlicence",
-      "name": "Graham Licence",
-      "avatar_url": "https://avatars.githubusercontent.com/u/1006709?v=4",
-      "profile": "https://github.com/grahamlicence",
-      "contributions": ["code"]
-    },
-    {
       "login": "Niko-guus",
       "name": "Nikolay",
       "avatar_url": "https://avatars.githubusercontent.com/u/112879607?v=4",
@@ -27,13 +20,6 @@
       "name": "James Winfield",
       "avatar_url": "https://avatars.githubusercontent.com/u/25197817?v=4",
       "profile": "http://www.jameswinfield.co.uk/",
-      "contributions": ["code"]
-    },
-    {
-      "login": "krzysztof-kabat-mns",
-      "name": "Krzysztof Kabat",
-      "avatar_url": "https://avatars.githubusercontent.com/u/90202184?v=4",
-      "profile": "https://github.com/krzysztof-kabat-mns",
       "contributions": ["code"]
     },
     {

@@ -42,8 +42,6 @@ Toyin Butler
 
 ### Engineers:
 
-Graham Licence  
-Krzysztof Kabat  
 James Winfield  
 Nikolay Gushchin
 
