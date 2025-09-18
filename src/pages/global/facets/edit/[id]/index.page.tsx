@@ -10,10 +10,10 @@ import type {
 } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
-import ConfirmationModal from '@/libs/components/modals/confirmation-modal/confirmation-modal';
+import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
+import GlobalFacetsPanel from '@/libs/features/facets/global-facets-panel/global-facets-panel';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import GlobalFacetsPanel from '@/libs/modules/facets-panel/global-facets-panel';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';

@@ -21,7 +21,7 @@ import {
   Popover,
   RemoveKeyWordPill,
   StyledCloseButton,
-} from '@/libs/components/keywords/search-keywords/modal.styles';
+} from '@/libs/components/search-keywords/search-keywords-modal.styles';
 import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { useGetCategories, useOnOutsideClick } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';

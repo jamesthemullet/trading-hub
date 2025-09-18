@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { MerchandisingCountryCode } from '@/libs/api';
 import { useOnOutsideClick } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
-import type { FacetDisplayType } from '@/libs/modules/facets-panel/facets-panel-reducer';
+import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-reducer';
 
 import Image from 'next/image';
 

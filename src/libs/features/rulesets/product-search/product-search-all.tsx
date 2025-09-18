@@ -7,16 +7,15 @@ import type {
   MerchandisingProduct as ProductType,
   MerchandisingRules,
 } from '@/libs/api';
+import { Checkbox } from '@/libs/components/checkboxes/checkbox';
+import { Product } from '@/libs/components/product/product';
+import { Search } from '@/libs/components/search/search';
+import type { RuleSetActions } from '@/libs/components/types';
+import { spacing } from '@/libs/components/utils/spacing';
 import { useCategoryProductSearch } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import pluralize from 'pluralize';
-
-import { Checkbox } from '../../../components/checkboxes/checkbox';
-import { Product } from '../../../components/product/product';
-import { Search } from '../../../components/search/search';
-import type { RuleSetActions } from '../../../components/types';
-import { spacing } from '../../../components/utils/spacing';
 
 const ProductSearchRootContainer = styled.div`
   height: 100%;

@@ -8,18 +8,18 @@ import type { MerchandisingCountryCode } from '@/libs/api';
 import {
   Button,
   CombinedDropdown,
-  DataTable,
   ErrorMessage,
   Search,
   spacing,
   TablePagination,
 } from '@/libs/components';
-import ConfirmationModal from '@/libs/components/modals/confirmation-modal/confirmation-modal';
 import type { RuleSetMapping } from '@/libs/components/types';
 import {
   PageWrapper,
   ToolsContainer,
 } from '@/libs/components/utils/shared.styles';
+import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
+import { DataTable } from '@/libs/containers/shared/table/datatable';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import { track } from '@/libs/hooks/utils/analytics';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';

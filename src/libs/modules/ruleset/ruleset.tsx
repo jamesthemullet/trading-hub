@@ -16,18 +16,17 @@ import {
   DropdownOption,
   ErrorMessage,
   Loader,
-  ProductGridHeader,
-  SearchKeywords,
   spacing,
   Tabs,
   Text,
   Typography,
 } from '@/libs/components';
-import { DateTimePickerModal } from '@/libs/components/calendar/date-time-picker-modal';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { color } from '@/libs/components/utils/constants';
+import { BulkActions } from '@/libs/containers/rulesets/bulk-actions-products';
+import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
+import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import {
-  BulkActions,
   CategorySearch,
   Preview,
   ProductSearchAll,
@@ -35,14 +34,14 @@ import {
   RulesetChanges,
   VisualEditor,
 } from '@/libs/features';
+import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { usePreview } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
+import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
 
 import isEqual from 'lodash/isEqual';
 import Image from 'next/image';
 import pluralize from 'pluralize';
-
-import { rulesetReducer } from './reducer';
 
 const MAX_PINNED_PRODUCTS_ALLOWED = 100;
 

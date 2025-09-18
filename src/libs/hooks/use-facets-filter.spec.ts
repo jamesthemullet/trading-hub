@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 
-import type { FacetRowDisplayValue } from '../modules/facets-panel/facets-panel-reducer';
+import type { FacetRowDisplayValue } from '../stores/facets-panel/facets-panel-reducer';
 import { useFacetsFilter } from './use-facets-filter';
 
 const mockFacets: FacetRowDisplayValue[] = [

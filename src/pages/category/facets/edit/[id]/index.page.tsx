@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { FacetsPanelSkeleton } from '@/libs/containers';
 import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { Facets } from '@/libs/modules/facets-panel/facets';
-import { FacetsPanelSkeleton } from '@/libs/modules/facets-panel/facets-panel-skeleton';
+import { Facets } from '@/libs/modules/facets/facets';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';

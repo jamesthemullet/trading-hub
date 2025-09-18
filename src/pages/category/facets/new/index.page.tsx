@@ -5,7 +5,7 @@ import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { Facets } from '@/libs/modules/facets-panel/facets';
+import { Facets } from '@/libs/modules/facets/facets';
 
 import Head from 'next/head';
 
