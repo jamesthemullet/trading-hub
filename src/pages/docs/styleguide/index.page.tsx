@@ -199,20 +199,6 @@ const StyleGuide = () => {
 
       <Header2 style={{ width: '100%', marginBottom: '8px' }}>Colours</Header2>
       <Guide>
-        <Colour style={{ backgroundColor: color.errorRed }} />
-        <Text>color.errorRed</Text>
-        <Text>
-          <code>{color.errorRed}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.errorRedBackground }} />
-        <Text>color.errorRedBackground</Text>
-        <Text>
-          <code>{color.errorRedBackground}</code>
-        </Text>
-      </Guide>
-      <Guide>
         <Colour style={{ backgroundColor: color.improvedFit }} />
         <Text>color.improvedFit</Text>
         <Text>
@@ -245,13 +231,6 @@ const StyleGuide = () => {
         <Text>color.selectionBox</Text>
         <Text>
           <code>{color.selectionBox}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.successGreen }} />
-        <Text>color.successGreen</Text>
-        <Text>
-          <code>{color.successGreen}</code>
         </Text>
       </Guide>
       <Guide>

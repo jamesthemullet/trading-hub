@@ -36,7 +36,7 @@ const StyledInput = styled.input<{
   ${({ isError }) =>
     isError &&
     css`
-      border-color: ${color.errorRed};
+      border-color: ${color.state.error.error};
       border-width: 2px;
     `};
 `;
@@ -159,7 +159,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {isError && (
           <StyledError>
-            <Text style={{ color: color.errorRed }}>{message.text}</Text>
+            <Text style={{ color: color.state.error.error }}>
+              {message.text}
+            </Text>
           </StyledError>
         )}
 

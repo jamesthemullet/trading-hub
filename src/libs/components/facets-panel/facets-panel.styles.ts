@@ -107,7 +107,7 @@ export const Row = styled(TableRow)<TableRowProps>`
 
   ${({ optionSelected }) =>
     optionSelected === 'excluded' &&
-    `background-color: ${color.errorRedBackground}`}
+    `background-color: ${color.state.error.errorContainer}`}
 
   ${({ optionSelected }) =>
     optionSelected === 'algoControl' &&

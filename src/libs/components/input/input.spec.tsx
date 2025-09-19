@@ -78,7 +78,7 @@ describe('Input', () => {
       />
     );
     const input = screen.getByLabelText('input');
-    expect(input).toHaveStyleRule('border-color', '#ea122a');
+    expect(input).toHaveStyleRule('border-color', '#EA122A');
     expect(input.nextSibling).toHaveTextContent('Error message');
   });
 
@@ -91,7 +91,7 @@ describe('Input', () => {
       />
     );
     const input = screen.getByLabelText('input');
-    expect(input).toHaveStyleRule('border-color', '#ea122a');
+    expect(input).toHaveStyleRule('border-color', '#EA122A');
     expect(input.nextSibling).toHaveTextContent('Error message');
   });
 

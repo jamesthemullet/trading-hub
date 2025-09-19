@@ -51,14 +51,14 @@ export const FacetAttributeValuesTableRow = styled(
       isPinned && `background-color: ${color.successGreenBackground}`}
 
     ${({ isExcluded }) =>
-      isExcluded && `background-color: ${color.errorRedBackground}`}
+      isExcluded && `background-color: ${color.state.error.errorContainer}`}
   }
 
   ${({ isPinned }) =>
     isPinned && `background-color: ${color.successGreenBackground}`}
 
   ${({ isExcluded }) =>
-    isExcluded && `background-color: ${color.errorRedBackground}`}
+    isExcluded && `background-color: ${color.state.error.errorContainer}`}
 `;
 
 export const TableCol = styled.div`

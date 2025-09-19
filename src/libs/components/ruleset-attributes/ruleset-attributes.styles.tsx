@@ -123,5 +123,5 @@ export const AlignedText = styled(Text)`
 `;
 
 export const ErrorText = styled(Text)`
-  color: ${color.errorRed};
+  color: ${color.state.error.error};
 `;

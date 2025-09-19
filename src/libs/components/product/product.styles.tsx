@@ -206,7 +206,9 @@ export const LockInput = styled.input<{ hasError: boolean }>`
   border: none;
   border-bottom: 1px solid
     ${({ hasError }) =>
-      hasError ? color.errorRed : color.surfaceBright.onSurfaceBrightVariant};
+      hasError
+        ? color.state.error.error
+        : color.surfaceBright.onSurfaceBrightVariant};
   padding: ${spacing(2)};
   background-color: ${color.accent.secondary.secondaryContainer};
   width: 100%;
@@ -215,7 +217,7 @@ export const LockInput = styled.input<{ hasError: boolean }>`
 
 export const ErrorText = styled(Text)`
   margin-bottom: ${spacing(1)};
-  color: ${color.errorRed};
+  color: ${color.state.error.error};
 `;
 
 export const LockActions = styled.div<{ isSearchResult?: boolean }>`
