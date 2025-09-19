@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { checkAccessibility } from '../accessibility-utils';
 import {
   mockCategoryAlphanumericAttributes,
   mockCategoryNumericAttributes,
@@ -98,6 +99,8 @@ test.describe('global rulesets', () => {
     await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
     await expect(page.getByText('Graham Licence')).toBeVisible();
+
+    await checkAccessibility(page);
   });
 
   test('edits a global ruleset to bury, boost and block', async ({ page }) => {
@@ -110,6 +113,8 @@ test.describe('global rulesets', () => {
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
+
+    await checkAccessibility(page);
 
     await page.getByPlaceholder('Search for product').fill('dress');
     await page.waitForTimeout(400);
@@ -159,6 +164,8 @@ test.describe('global rulesets', () => {
       .click();
 
     await page.waitForLoadState('networkidle');
+
+    await checkAccessibility(page);
 
     await page
       .getByRole('button', { name: 'Product description attributes' })

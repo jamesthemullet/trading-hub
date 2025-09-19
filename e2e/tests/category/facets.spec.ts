@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { checkAccessibility } from '../accessibility-utils';
 import {
   mockAttributeValue,
   mockCategoryList,
@@ -71,6 +72,8 @@ test.describe('Category rulesets', () => {
 
     await page.waitForLoadState('networkidle');
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
 
@@ -78,6 +81,8 @@ test.describe('Category rulesets', () => {
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
+
+    await checkAccessibility(page);
 
     await expect(page.getByText('Colours')).toBeVisible();
 
@@ -95,6 +100,8 @@ test.describe('Category rulesets', () => {
     await expect(
       page.getByTestId('Row showing Collections as included')
     ).toBeVisible();
+
+    await checkAccessibility(page);
 
     await page.keyboard.down('End');
 
@@ -136,6 +143,8 @@ test.describe('Category rulesets', () => {
 
     await page.getByRole('button', { name: 'Edit values' }).first().click();
     await page.waitForLoadState('networkidle');
+
+    await checkAccessibility(page);
 
     await expect(
       page.getByTestId('algoControl attribute 0 SMOKE')

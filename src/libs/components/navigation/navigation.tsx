@@ -47,6 +47,10 @@ const Logo = styled.img`
   display: block;
 `;
 
+const StyledLink = styled(Link)`
+  min-height: 24px;
+`;
+
 export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
   const session = useSession();
   const isLoggedIn = session && session.status === 'authenticated';
@@ -103,7 +107,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
         </ListItem>
         <ListItem>
           {!autoLogin && (
-            <Link
+            <StyledLink
               href="/"
               onClick={() => (isLoggedIn ? signOut() : signIn())}
               style={{ textDecoration: 'none' }}
@@ -120,7 +124,7 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
               >
                 {isLoggedIn ? 'Sign out' : 'Sign in'}
               </Text>
-            </Link>
+            </StyledLink>
           )}
         </ListItem>
       </List>

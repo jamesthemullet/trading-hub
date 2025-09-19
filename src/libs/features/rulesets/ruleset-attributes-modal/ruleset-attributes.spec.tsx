@@ -449,9 +449,7 @@ describe('RulesetAttributes', () => {
     const rulesetAttributes = screen.getByTestId('Ruleset attributes');
 
     expect(
-      within(rulesetAttributes).getByRole('heading', {
-        name: 'Product Description Attribute Rules',
-      })
+      within(rulesetAttributes).getByText('Product Description Attribute Rules')
     ).toBeVisible();
   });
 

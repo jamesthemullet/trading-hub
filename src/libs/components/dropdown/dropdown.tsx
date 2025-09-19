@@ -387,6 +387,11 @@ export const CombinedDropdown = ({
     }
   }, [variant, attribute]);
 
+  const buttonId = useMemo(
+    () => `dropdown-button-${variant}${attribute ? `-${attribute}` : ''}`,
+    [variant, attribute]
+  );
+
   if (!writeEnabled) {
     const current =
       facetOptions.find((o) => o.name === status) ||
@@ -430,6 +435,7 @@ export const CombinedDropdown = ({
         aria-label={ariaLabel ? ariaLabel : `${variant} dropdown`}
         disabled={!writeEnabled}
         data-testid={testId}
+        id={buttonId}
       >
         <DropdownHeading>{dropdownHeading}</DropdownHeading>
 
@@ -444,6 +450,7 @@ export const CombinedDropdown = ({
         isDropdownOpen={isOpen}
         alignContentTowards={alignContentTowards}
         role="listbox"
+        aria-labelledby={buttonId}
       >
         {renderDropdownContent()}
       </DropdownContainer>

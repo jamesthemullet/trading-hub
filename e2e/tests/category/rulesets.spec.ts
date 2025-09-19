@@ -2,6 +2,7 @@ import type { MerchandisingReturnedCategoryRuleSets } from '@/libs/api';
 
 import { expect, test } from '@playwright/test';
 
+import { checkAccessibility } from '../accessibility-utils';
 import {
   mockCategoryAlphanumericAttributes,
   mockCategoryList,
@@ -112,12 +113,16 @@ test.describe('Categories', () => {
 
     await page.waitForLoadState('networkidle');
 
+    await checkAccessibility(page);
+
     await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
     await page.waitForLoadState();
     await expect(
       page.getByText('No, there are no product rankings yet')
     ).toBeVisible();
+
+    await checkAccessibility(page);
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByPlaceholder('Search...').click();
@@ -135,6 +140,9 @@ test.describe('Categories', () => {
       .getByLabel('Position 1', { exact: true })
       .getByRole('button', { name: 'Open menu' })
       .click();
+
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
     await page
@@ -176,6 +184,9 @@ test.describe('Categories', () => {
       .click();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
+
+    await checkAccessibility(page);
+
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Dresses');
     await page
@@ -247,6 +258,8 @@ test.describe('Categories', () => {
 
     await page.getByPlaceholder('Search...').click();
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'Close' }).click();
   });
 
@@ -260,7 +273,10 @@ test.describe('Categories', () => {
 
     await expect(page.getByText('7 results')).toBeVisible();
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'More options' }).first().click();
+
     await page.getByRole('button', { name: 'Delete' }).click();
 
     await page.route(
@@ -290,6 +306,8 @@ test.describe('Categories', () => {
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Changes8' })).toBeVisible();
+
+    await checkAccessibility(page);
 
     await page
       .getByLabel('Position 1', { exact: true })
@@ -435,6 +453,8 @@ test.describe('Categories', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
+
+    await checkAccessibility(page);
 
     await page.waitForLoadState('networkidle');
 
@@ -669,6 +689,8 @@ test.describe('Categories', () => {
       await page.getByPlaceholder('Select date range').click();
 
       await expect(page.getByText('Rule date and time duration')).toBeVisible();
+
+      await checkAccessibility(page);
 
       await page.getByTitle('Toggle').click();
       await expect(

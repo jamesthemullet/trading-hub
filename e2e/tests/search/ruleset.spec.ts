@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { checkAccessibility } from '../accessibility-utils';
 import {
   mockCategoryAlphanumericAttributes,
   mockCategoryNumericAttributes,
@@ -78,15 +79,21 @@ test.describe('Keyword search', () => {
   test('creates a new ruleset', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
+    await checkAccessibility(page);
+
     await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
     await page.waitForLoadState('networkidle');
+
+    await checkAccessibility(page);
 
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
+
+    await checkAccessibility(page);
 
     await page.getByLabel('Add keyword to list').fill('joggers');
     await page.getByLabel('Add keyword to list').press('Enter');
@@ -123,6 +130,8 @@ test.describe('Keyword search', () => {
     await page.getByRole('button', { name: 'Preview' }).click();
 
     await page.waitForLoadState('networkidle');
+
+    await checkAccessibility(page);
 
     await expect(
       page.getByText('View rule changes made on the website below')

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { checkAccessibility } from '../accessibility-utils';
 import { mockRedirect, mockRedirectsList } from './redirects.mocks';
 
 test.describe('Keyword Redirects', () => {
@@ -33,14 +34,20 @@ test.describe('Keyword Redirects', () => {
       page.getByRole('heading', { name: 'Keyword Redirect' })
     ).toBeVisible();
 
+    await checkAccessibility(page);
+
     await page.getByRole('link', { name: 'Add redirect rule' }).click();
 
     await expect(
       page.getByRole('heading', { name: 'Add Keyword Redirect rule' })
     ).toBeVisible();
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByLabel('Add keyword to list').click();
+
+    await checkAccessibility(page);
 
     await expect(
       page.getByRole('radio', { name: 'Redirect Term(s)' })
@@ -80,6 +87,8 @@ test.describe('Keyword Redirects', () => {
     await expect(
       page.getByRole('radio', { name: 'Redirect Phrase(s)' })
     ).not.toBeChecked();
+
+    await checkAccessibility(page);
 
     await expect(page.getByLabel('number of keywords')).toContainText('2');
     await expect(page.getByText('word 1', { exact: true })).toBeVisible();

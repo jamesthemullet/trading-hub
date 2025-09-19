@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { checkAccessibility } from '../accessibility-utils';
 import { mockAttributeValue, mockFacets } from '../category/category.mocks';
 import {
   mockPreview,
@@ -65,6 +66,8 @@ test.describe('Search rulesets', () => {
     await page.goto('/search');
     await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
+    await checkAccessibility(page);
+
     await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -74,6 +77,8 @@ test.describe('Search rulesets', () => {
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
+
+    await checkAccessibility(page);
 
     await expect(page.getByText('Colours')).toBeVisible();
 

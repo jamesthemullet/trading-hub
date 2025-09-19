@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { checkAccessibility } from '../accessibility-utils';
 import {
   mockAttributeValues,
   mockEditedFacet,
@@ -67,6 +68,8 @@ test.describe('global facets', () => {
     await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'Add facet rule' }).click();
 
     await expect(
@@ -75,10 +78,15 @@ test.describe('global facets', () => {
       )
     ).toBeVisible();
 
+    await checkAccessibility(page);
+
     await page
       .getByTestId('Row showing Age as algoControl')
       .getByTestId('button to open facet order dropdown')
       .click();
+
+    await checkAccessibility(page);
+
     await page
       .getByTestId('Row showing Age as algoControl')
       .getByRole('option', { name: 'Include only', exact: true })
@@ -99,6 +107,8 @@ test.describe('global facets', () => {
     await expect(
       page.getByTestId('Row showing Alcohol Type as algoControl')
     ).toBeVisible();
+
+    await checkAccessibility(page);
 
     await page
       .getByTestId('Row showing Age as algoControl')
@@ -172,6 +182,8 @@ test.describe('global facets', () => {
     await expect(
       page.getByRole('heading', { name: 'Facet value settings of: Age' })
     ).toBeVisible();
+
+    await checkAccessibility(page);
 
     await page.getByLabel('Select 0-2 Years to merge').click();
     await page.getByLabel('Select 3-5 Years to merge').click();

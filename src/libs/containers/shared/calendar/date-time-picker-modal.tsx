@@ -41,13 +41,8 @@ const StyledInput = styled(Input)`
   border: none;
   height: 56px;
   border-radius: 4px 4px 0 0;
-`;
-
-const ButtonImage = styled.button`
-  border: none;
-  background: none;
-  margin: 0;
-  padding: ${spacing(1)} 0 0;
+  padding-right: ${spacing(6)};
+  cursor: pointer;
 `;
 
 const StyledInputContainer = styled.div`
@@ -59,6 +54,7 @@ const StyledInputContainer = styled.div`
   align-items: center;
   padding: 0 ${spacing(1)};
   border-radius: 4px 4px 0 0;
+  position: relative;
 `;
 
 const RangeSelector = styled.div`
@@ -66,6 +62,17 @@ const RangeSelector = styled.div`
   align-items: end;
   justify-content: right;
   padding-right: 150px;
+`;
+
+const CalendarIconContainer = styled.div`
+  position: absolute;
+  right: ${spacing(1)};
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const DateTimePickerModal = ({
@@ -141,20 +148,19 @@ export const DateTimePickerModal = ({
           {...(writeEnabled && { onClick: openDatePicker })}
           isLabelHidden
           readOnly={!writeEnabled}
+          aria-label={label || 'Select date range'}
         />
 
         {showCalendarIcon && (
-          <ButtonImage
-            {...(writeEnabled && { onClick: openDatePicker })}
-            aria-label="Open Datepicker"
-          >
+          <CalendarIconContainer>
             <Image
               alt=""
               src="/trading-hub/asset/icon-blank-calendar.svg"
               width={20}
               height={20}
+              aria-hidden="true"
             />
-          </ButtonImage>
+          </CalendarIconContainer>
         )}
       </StyledInputContainer>
 

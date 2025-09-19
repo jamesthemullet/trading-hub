@@ -218,6 +218,8 @@ export const Product = ({
             setIsMenuOpen(!isMenuOpen);
             setIsLockToPositionMenuOpen(false);
           }}
+          aria-label="Close product menu"
+          role="button"
         />
       )}
       <ProductHeader>
@@ -267,7 +269,7 @@ export const Product = ({
         {isMenuOpen && (
           <ProductMenu>
             <ProductMenuHead>
-              <Typography variant="bodySmall" isStrong as="h4">
+              <Typography variant="bodySmall" isStrong>
                 Product actions
               </Typography>
             </ProductMenuHead>

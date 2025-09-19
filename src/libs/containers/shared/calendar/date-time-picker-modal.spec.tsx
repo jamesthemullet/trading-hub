@@ -271,9 +271,8 @@ describe('DateTimePickerModal', () => {
     );
 
     const input = screen.getByPlaceholderText('Select date range');
-    const calendarIcon = screen.getByRole('button');
     act(() => {
-      calendarIcon.click();
+      input.click();
     });
     await waitFor(() => {
       screen.getByTitle('Toggle').click();

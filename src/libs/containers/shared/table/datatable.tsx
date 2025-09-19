@@ -204,7 +204,7 @@ const ArrowContainer = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 40px;
   width: ${sizing(5)};
   box-sizing: border-box;
   cursor: pointer;
