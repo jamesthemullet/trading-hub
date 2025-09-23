@@ -9,16 +9,16 @@ import type {
 import {
   CombinedDropdown,
   RadioButtons,
-  spacing,
   SubHeader2,
   Text,
   Typography,
 } from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { track } from '@/libs/hooks/utils/analytics';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 const RedirectType = styled.div`
   border-top: solid 1px ${color.accent.primary.primary};

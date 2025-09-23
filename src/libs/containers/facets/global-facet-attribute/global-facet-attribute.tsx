@@ -3,14 +3,13 @@ import type { Dispatch } from 'react';
 import { useEffect, useState } from 'react';
 
 import { Loader, Text } from '@/libs/components';
-
 import {
   AttributeWrapper,
   Col,
   MergedValue,
   RemoveMergedFacet,
-} from '../../../components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import type { GlobalAttributeReducer } from '../../../stores/global-attribute/global-attribute-reducer';
+} from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
+import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 
 const StyledText = styled(Text)`
   text-decoration: underline;

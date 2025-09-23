@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { ButtonHTMLAttributes, ElementType } from 'react';
 
-import { color } from '../../utils/constants';
+import { color } from '@/libs/utils/constants';
 
 export type ArrowButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   as?: ElementType;

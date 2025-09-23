@@ -8,9 +8,9 @@ import {
   Text,
   Typography,
 } from '@/libs/components/typography/typography.styles';
-import { labels } from '@/libs/components/utils/ruleset-attributes';
-import { spacing } from '@/libs/components/utils/spacing';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
+import { labels } from '@/libs/utils/ruleset-attributes';
+import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 

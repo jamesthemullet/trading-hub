@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import type { LabelProps } from './label';
-import { Label } from './label';
+import type { FormLabelProps } from './form-label';
+import { FormLabel } from './form-label';
 
-const meta: Meta<LabelProps> = {
-  title: 'Components/Label',
+const meta: Meta<FormLabelProps> = {
+  title: 'Components/Form Label',
   tags: ['autodocs'],
-  component: Label,
+  component: FormLabel,
   argTypes: {
     isHidden: {
       control: 'boolean',
@@ -24,7 +24,7 @@ const meta: Meta<LabelProps> = {
 };
 
 export default meta;
-type Story = StoryObj<LabelProps>;
+type Story = StoryObj<FormLabelProps>;
 
 export const Default: Story = {
   args: {

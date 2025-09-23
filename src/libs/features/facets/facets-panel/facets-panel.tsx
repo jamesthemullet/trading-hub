@@ -8,7 +8,7 @@ import type {
   MerchandisingRules,
 } from '@/libs/api';
 import { Button, CombinedDropdown, Search, Text } from '@/libs/components';
-import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
+import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
 import {
   AttributesTable,
   Col,

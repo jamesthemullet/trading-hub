@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { color } from '../utils/constants';
-import { sizing } from '../utils/sizing';
-import { spacing } from '../utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { sizing } from '@/libs/utils/sizing';
+import { spacing } from '@/libs/utils/spacing';
 
 export const DropdownWrapper = styled.div<{
   isDropdownOpen: boolean;

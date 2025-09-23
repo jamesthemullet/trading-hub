@@ -1,6 +1,6 @@
 import rawApi from '@/libs/api/api.yml';
+import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 
-import { createMockNextApiRequest } from '../../../test/create-mock-next-api-request';
 import { getMockMapping } from './mocks';
 import {
   matchPaths,

@@ -1,7 +1,6 @@
 import { css, Global } from '@emotion/react';
 import { ColorSchemeScript } from '@mantine/core';
 
-import { logger } from '@/libs/components/logger/logger';
 import { fontStyles, resetStyles } from '@/libs/utils/base-styles';
 
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
@@ -17,12 +16,6 @@ class RootDocument extends Document<MerchHubInitialProps> {
     ctx: DocumentContext
   ): Promise<MerchHubInitialProps> {
     const initialProps = await Document.getInitialProps(ctx);
-
-    logger.info('Trading Hub Loaded', {
-      application: 'Trading Hub',
-      test: 'Testing logging with Winston',
-      pathname: ctx.pathname,
-    });
 
     return {
       ...initialProps,

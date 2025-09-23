@@ -2,9 +2,10 @@ import styled from '@emotion/styled';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, cloneElement, isValidElement } from 'react';
 
-import { color } from '../utils/constants';
-import { sizing } from '../utils/sizing';
-import { spacing } from '../utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { sizing } from '@/libs/utils/sizing';
+import { spacing } from '@/libs/utils/spacing';
+
 import { List } from './list';
 import { VisuallyHide } from './visually-hide';
 

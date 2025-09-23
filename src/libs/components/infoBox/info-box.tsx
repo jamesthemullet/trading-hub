@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 
-import { Text } from '@/libs/components';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
+import { Text } from '../typography/typography.styles';
 
 const Box = styled.div`
   display: flex;

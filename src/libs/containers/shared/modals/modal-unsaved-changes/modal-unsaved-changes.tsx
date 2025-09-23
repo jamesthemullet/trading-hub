@@ -2,9 +2,8 @@ import styled from '@emotion/styled';
 import { useId } from 'react';
 import { Modal } from '@mantine/core';
 
-import { Button } from '@/libs/components/buttons/button/button';
-import { Text, Title } from '@/libs/components/typography/typography.styles';
-import { spacing } from '@/libs/components/utils/spacing';
+import { Button, Text, Title } from '@/libs/components';
+import { spacing } from '@/libs/utils/spacing';
 
 const Divider = styled.span`
   border-bottom: solid 1px #000;

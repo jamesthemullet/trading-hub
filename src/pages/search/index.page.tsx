@@ -7,9 +7,9 @@ import { search } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import type { RuleSetMapping } from '@/libs/components/types';
-import { PageNameLabel } from '@/libs/components/utils/shared.styles';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
+import { PageNameLabel } from '@/libs/utils/shared.styles';
 
 import Head from 'next/head';
 

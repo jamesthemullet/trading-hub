@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 
+import { mediaQuery } from '@/libs/utils/media-query';
+import { spacing } from '@/libs/utils/spacing';
+
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { Text } from '../typography/typography.styles';
-import { mediaQuery } from '../utils/media-query';
-import { spacing } from '../utils/spacing';
 
 const BreadcrumbText = styled(Text)`
   color: #000;

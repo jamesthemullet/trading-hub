@@ -2,24 +2,21 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Modal, Skeleton } from '@mantine/core';
 
+import { Button } from '@/libs/components';
+import { Menu } from '@/libs/components/dropdown/dropdown.styles';
+import { Toggle } from '@/libs/components/toggle/toggle';
+import { Header3, Text } from '@/libs/components/typography/typography.styles';
 import { useOnOutsideClick } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
+import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
+import { mediaQuery } from '@/libs/utils/media-query';
+import { sizing } from '@/libs/utils/sizing';
+import { spacing } from '@/libs/utils/spacing';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
 
-import { Button } from '../../../components/buttons/button/button';
-import { Menu } from '../../../components/dropdown/dropdown.styles';
-import { Toggle } from '../../../components/toggle/toggle';
-import {
-  Header3,
-  Text,
-} from '../../../components/typography/typography.styles';
-import { formatCategoriesInfo } from '../../../components/utils/format-categories-info';
-import { mediaQuery } from '../../../components/utils/media-query';
-import { sizing } from '../../../components/utils/sizing';
-import { spacing } from '../../../components/utils/spacing';
 import { TableLink } from './table.styles';
 import {
   DropdownOptions,

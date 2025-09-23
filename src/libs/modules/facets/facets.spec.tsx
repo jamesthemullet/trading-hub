@@ -26,7 +26,7 @@ jest.mock('@/libs/hooks', () => ({
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../libs/hooks/use-get-categories', () => ({
+jest.mock('@/libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
 

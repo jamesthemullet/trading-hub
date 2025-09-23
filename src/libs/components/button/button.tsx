@@ -7,11 +7,11 @@ import {
   type Ref,
 } from 'react';
 
-import Link from 'next/link';
+import { color } from '@/libs/utils/constants';
+import { sizing } from '@/libs/utils/sizing';
+import { spacing } from '@/libs/utils/spacing';
 
-import { color } from '../../utils/constants';
-import { sizing } from '../../utils/sizing';
-import { spacing } from '../../utils/spacing';
+import Link from 'next/link';
 
 const setTheme = ({
   isDisabled,

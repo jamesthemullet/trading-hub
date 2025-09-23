@@ -11,29 +11,29 @@ import type {
   MerchandisingRules,
   MerchandisingSearchPreviewResponseBeta,
 } from '@/libs/api';
+import { useCategoryProductSearch } from '@/libs/hooks/use-category-product-search';
+import { useGetCategories } from '@/libs/hooks/use-get-categories';
+import { usePreview } from '@/libs/hooks/use-preview';
 import * as analytics from '@/libs/hooks/utils/analytics';
+import { boostMock, buriesMock } from '@/pages/api/search/mocks';
 import { mockMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
+import { renderWithProviders } from '@/test/render-with-providers';
 
-import { boostMock, buriesMock } from '../../../pages/api/search/mocks';
-import { renderWithProviders } from '../../../test/render-with-providers';
-import { useCategoryProductSearch } from '../../hooks/use-category-product-search';
-import { useGetCategories } from '../../hooks/use-get-categories';
-import { usePreview } from '../../hooks/use-preview';
 import { Ruleset } from './ruleset';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../hooks/use-get-categories', () => ({
+jest.mock('@/libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
-jest.mock('../../hooks/use-preview', () => ({
+jest.mock('@/libs/hooks/use-preview', () => ({
   usePreview: jest.fn(),
 }));
-jest.mock('../../hooks/use-category-product-search', () => ({
+jest.mock('@/libs/hooks/use-category-product-search', () => ({
   useCategoryProductSearch: jest.fn(),
 }));
-jest.mock('../../hooks/use-attributes', () => ({
+jest.mock('@/libs/hooks/use-attributes', () => ({
   useAttributes: ({ type }: { type: string }) => {
     if (type === 'alphanumeric') {
       return {

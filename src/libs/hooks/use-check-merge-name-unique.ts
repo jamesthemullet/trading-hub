@@ -8,7 +8,7 @@ import { uniqBy } from 'lodash';
 import {
   convertCategoryIdToCatalogue,
   convertCountryCodeToCatalogues,
-} from '../components/utils/convert-country-code-to-catalogues';
+} from '../utils/convert-country-code-to-catalogues';
 
 export const useCheckMergeNameUnique = () => {
   const [error, setError] = useState('');

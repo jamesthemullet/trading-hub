@@ -16,13 +16,11 @@ import {
   DropdownOption,
   ErrorMessage,
   Loader,
-  spacing,
   Tabs,
   Text,
   Typography,
 } from '@/libs/components';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
-import { color } from '@/libs/components/utils/constants';
 import { BulkActions } from '@/libs/containers/rulesets/bulk-actions-products';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
@@ -38,6 +36,8 @@ import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-ke
 import { usePreview } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 import isEqual from 'lodash/isEqual';
 import Image from 'next/image';

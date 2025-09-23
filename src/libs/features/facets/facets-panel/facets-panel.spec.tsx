@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event';
 
 import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
+import type { FacetRowDisplayValue } from '@/libs/stores/facets-panel/facets-panel-reducer';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { FacetRowDisplayValue } from '../../../stores/facets-panel/facets-panel-reducer';
 import { FacetsPanel } from './facets-panel';
 
 jest.mock('@/libs/hooks', () => ({

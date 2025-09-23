@@ -1,10 +1,9 @@
 import { type Dispatch, useEffect, useState } from 'react';
 
 import { Loader } from '@/libs/components';
-import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
-
-import type { GlobalAttributeReducer } from '../../../stores/global-attribute/global-attribute-reducer';
-import { OrderArrowsContainer } from '../../edit-facet-modal-content/edit-facet-modal-content.styles';
+import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
+import { OrderArrowsContainer } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
+import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 
 type FormattedRow = {
   displayName: string;

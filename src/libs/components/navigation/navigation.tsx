@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
+
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import type { MenuItem } from '../navigation-menu/navigation-menu';
 import { NavigationMenu } from '../navigation-menu/navigation-menu';
 import { Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
 
 const NavigationWrapper = styled.nav`
   background-color: ${color.surface.onSurface};

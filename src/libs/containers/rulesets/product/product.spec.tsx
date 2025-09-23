@@ -2,9 +2,9 @@ import type { Screen } from '@testing-library/react';
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import type { RuleSetActions } from '@/libs/components/types';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { RuleSetActions } from '../types';
 import type { ProductProps } from './product';
 import { MissingProduct, Product } from './product';
 

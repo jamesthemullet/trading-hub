@@ -13,7 +13,7 @@ import { uniqBy } from 'lodash';
 import {
   convertCategoryIdToCatalogue,
   convertCountryCodeToCatalogues,
-} from '../components/utils/convert-country-code-to-catalogues';
+} from '../utils/convert-country-code-to-catalogues';
 
 type Props = {
   countryCode: MerchandisingCountryCode;

@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { boxShadow } from '../utils/shared.styles';
-import { spacing } from '../utils/spacing';
+import { Text } from '@/libs/components/typography/typography.styles';
+import { color } from '@/libs/utils/constants';
+import { boxShadow } from '@/libs/utils/shared.styles';
+import { spacing } from '@/libs/utils/spacing';
 
 export const ProductWrapper = styled.div`
   width: 100%;

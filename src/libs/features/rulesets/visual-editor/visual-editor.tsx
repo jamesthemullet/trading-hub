@@ -1,8 +1,8 @@
 import type { Dispatch } from 'react';
 
 import type { MerchandisingProduct as ProductType } from '@/libs/api';
-import { Product } from '@/libs/components/product/product';
 import type { RuleSetActions } from '@/libs/components/types';
+import { Product } from '@/libs/containers/rulesets/product/product';
 
 import { Layout, ProductBox } from './visual-editor.styles';
 

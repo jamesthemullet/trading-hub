@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 import type { MerchandisingNumericBoostBury } from '@/libs/api';
 import { Text, Typography } from '@/libs/components';
-import { labels } from '@/libs/components/utils/ruleset-attributes';
+import { labels } from '@/libs/utils/ruleset-attributes';
 
 import Image from 'next/image';
 

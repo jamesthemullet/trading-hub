@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { color } from '../utils/constants';
+import { color } from '@/libs/utils/constants';
 
 type Props = React.DetailedHTMLProps<
   React.HTMLAttributes<SVGSVGElement>,

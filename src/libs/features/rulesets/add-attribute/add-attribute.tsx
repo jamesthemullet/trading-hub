@@ -14,8 +14,8 @@ import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-a
 import { AttributeSelection } from '@/libs/components/ruleset-attributes/ruleset-attributes.styles';
 import { Search } from '@/libs/components/search/search';
 import type { AttributeEdit, RulesetAttribute } from '@/libs/components/types';
-import { color } from '@/libs/components/utils/constants';
-import { spacing } from '@/libs/components/utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 const MODAL_WIDTH = 522;
 

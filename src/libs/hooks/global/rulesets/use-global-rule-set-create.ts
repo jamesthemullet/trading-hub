@@ -1,9 +1,8 @@
 import { useCallback, useState } from 'react';
 
+import type { MerchandisingRuleSet } from '@/libs/api';
+import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
-
-import type { MerchandisingRuleSet } from '../../../api';
-import { search } from '../../../api';
 
 export const useGlobalRuleSetCreate = () => {
   const [error, setError] = useState('');

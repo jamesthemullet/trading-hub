@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import { useCallback } from 'react';
 
-import { color } from '../utils/constants';
+import { color } from '@/libs/utils/constants';
+
 import { ChevronIcon } from './chevron-icon';
 
 type Props = {

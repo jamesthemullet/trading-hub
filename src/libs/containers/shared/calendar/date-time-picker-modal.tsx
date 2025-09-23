@@ -3,13 +3,15 @@ import { useState } from 'react';
 import { MantineProvider, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { Button, Input, spacing } from '@/libs/components';
+import { Button } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
-import { color } from '@/libs/components/utils/constants';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
+import { Input } from '../input/input';
 import { DatePicker } from './date-picker';
 import { Content } from './date-picker.styles';
 import { DatePickerSingle } from './date-picker-single';

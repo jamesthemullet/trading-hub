@@ -14,7 +14,7 @@ import {
   Text,
   Typography,
 } from '@/libs/components';
-import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
+import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
 import {
   AttributesTable,
   Col,

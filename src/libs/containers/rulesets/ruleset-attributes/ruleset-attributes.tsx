@@ -14,11 +14,10 @@ import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alph
 import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-attribute';
 import { AttributeCount } from '@/libs/components/ruleset-attributes/ruleset-attributes.styles';
 import type { AttributeEdit, RuleSetActions } from '@/libs/components/types';
-import { spacing } from '@/libs/components/utils/spacing';
+import { RulesetAttributesModal } from '@/libs/features/rulesets/ruleset-attributes-modal/ruleset-attributes-modal';
+import { spacing } from '@/libs/utils/spacing';
 
 import pluralize from 'pluralize';
-
-import { RulesetAttributesModal } from '../../../features/rulesets/ruleset-attributes-modal/ruleset-attributes-modal';
 
 const Wrapper = styled.div`
   position: relative;

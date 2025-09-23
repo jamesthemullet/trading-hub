@@ -7,16 +7,17 @@ import type {
 import { useEffect, useRef, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
-import Image from 'next/image';
-
 import type {
   MerchandisingProduct as ProductType,
   MerchandisingRankingAttribute,
-} from '../../api';
-import { Button } from '../buttons/button/button';
-import { Checkbox } from '../checkboxes/checkbox';
-import type { RuleSetActions } from '../types';
-import { Typography } from '../typography/typography.styles';
+} from '@/libs/api';
+import { Button } from '@/libs/components';
+import { Checkbox } from '@/libs/components/checkboxes/checkbox';
+import type { RuleSetActions } from '@/libs/components/types';
+import { Typography } from '@/libs/components/typography/typography.styles';
+
+import Image from 'next/image';
+
 import {
   BlockedPin,
   BoostPin,

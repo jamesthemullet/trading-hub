@@ -8,7 +8,7 @@ import type {
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
+import { convertCountryCodeToCatalogues } from '../utils/convert-country-code-to-catalogues';
 import { handleError } from './utils/error';
 
 export const usePreview = ({

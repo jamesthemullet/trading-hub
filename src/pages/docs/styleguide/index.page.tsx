@@ -11,8 +11,7 @@ import {
   Text,
   Title,
 } from '@/libs/components';
-
-import { color } from '../../../libs/components/utils/constants';
+import { color } from '@/libs/utils/constants';
 
 const Container = styled.div`
   display: flex;

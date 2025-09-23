@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { spacing } from '../utils/spacing';
+import { spacing } from '@/libs/utils/spacing';
 
 const CHECKBOX_SIZE = '18px';
 

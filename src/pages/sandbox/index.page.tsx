@@ -6,7 +6,7 @@ import '@mantine/core/styles/global.css';
 import '@mantine/dates/styles.css';
 
 import styled from '@emotion/styled';
-import { ArrowButton } from '../../libs/components/buttons/button/arrow-button';
+import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
 
 const Example = styled.div`
   padding: 20px;

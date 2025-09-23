@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { TimeInput } from '@mantine/dates';
 
-import { color } from '@/libs/components/utils/constants';
-import { spacing } from '@/libs/components/utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 export const CalendarContainer = styled.div`
   display: flex;
   flex-direction: column;

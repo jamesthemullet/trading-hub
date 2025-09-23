@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import { Skeleton } from '@mantine/core';
 
 import type { MerchandisingPagination as PaginationType } from '@/libs/api/generated/open-api';
+import { spacing } from '@/libs/utils/spacing';
 
 import { CombinedDropdown } from '../dropdown/dropdown';
-import { spacing } from '../utils/spacing';
 import { Pagination } from './pagination';
 
 const NavigationContainer = styled.div`

@@ -21,7 +21,6 @@ import {
   Header3,
   Loader,
   Search,
-  spacing,
   Text,
 } from '@/libs/components';
 import {
@@ -31,15 +30,14 @@ import {
   MergeAndSearchContainer,
   SkeletonRow,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import { GlobalArrowButtons } from '@/libs/components/facets-panel/global/global-arrow-buttons';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import {
   HeadingContainer,
   ModalAttributesTable,
 } from '@/libs/components/modals/modal.styles';
-import { color } from '@/libs/components/utils/constants';
+import { GlobalFacetAttribute } from '@/libs/containers';
+import { GlobalArrowButtons } from '@/libs/containers/facets/global-arrow-buttons/global-arrow-buttons';
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
-import { GlobalFacetAttribute } from '@/libs/containers/facets/global-facet-attribute/global-facet-attribute';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import {
   FacetAttributeValuesTableRow,
@@ -49,6 +47,8 @@ import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-reducer';
 import { globalAttributesReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 const ModalContainer = styled.div`
   height: 100%;

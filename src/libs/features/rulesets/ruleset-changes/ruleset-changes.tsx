@@ -10,12 +10,15 @@ import type {
 } from '@/libs/api';
 import { Button, Text } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
-import { MissingProduct, Product } from '@/libs/components/product/product';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-attribute';
 import type { RuleSetActions } from '@/libs/components/types';
-import { spacing } from '@/libs/components/utils/spacing';
+import {
+  MissingProduct,
+  Product,
+} from '@/libs/containers/rulesets/product/product';
 import { useCategoryProductSearch } from '@/libs/hooks';
+import { spacing } from '@/libs/utils/spacing';
 
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
 

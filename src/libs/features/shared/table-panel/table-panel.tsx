@@ -10,20 +10,17 @@ import {
   CombinedDropdown,
   ErrorMessage,
   Search,
-  spacing,
   TablePagination,
 } from '@/libs/components';
 import type { RuleSetMapping } from '@/libs/components/types';
-import {
-  PageWrapper,
-  ToolsContainer,
-} from '@/libs/components/utils/shared.styles';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { DataTable } from '@/libs/containers/shared/table/datatable';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import { track } from '@/libs/hooks/utils/analytics';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { PageWrapper, ToolsContainer } from '@/libs/utils/shared.styles';
+import { spacing } from '@/libs/utils/spacing';
 
 const ButtonGroup = styled.div`
   width: 410px;

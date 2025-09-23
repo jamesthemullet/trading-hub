@@ -15,18 +15,12 @@ import Page, { getServerSideProps } from './index.page';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock(
-  '../../../../../libs/hooks/search/redirect/use-redirect-detail',
-  () => ({
-    useRedirectDetail: jest.fn(),
-  })
-);
-jest.mock(
-  '../../../../../libs/hooks/search/redirect/use-redirect-update',
-  () => ({
-    useRedirectUpdate: jest.fn(),
-  })
-);
+jest.mock('@/libs/hooks/search/redirect/use-redirect-detail', () => ({
+  useRedirectDetail: jest.fn(),
+}));
+jest.mock('@/libs/hooks/search/redirect/use-redirect-update', () => ({
+  useRedirectUpdate: jest.fn(),
+}));
 
 describe('Edit keyword redirect', () => {
   const mockUpdateRedirect = {

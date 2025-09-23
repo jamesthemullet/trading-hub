@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 
 import { Text } from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
-import { boxShadow } from '@/libs/components/utils/shared.styles';
-import { spacing } from '@/libs/components/utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { boxShadow } from '@/libs/utils/shared.styles';
+import { spacing } from '@/libs/utils/spacing';
 
 export const ConfirmationPanel = styled.div`
   width: 100%;

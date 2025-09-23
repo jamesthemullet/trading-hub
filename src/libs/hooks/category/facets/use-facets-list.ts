@@ -6,8 +6,8 @@ import type {
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
-import { convertCountryCodeToCatalogues } from '@/libs/components/utils/convert-country-code-to-catalogues';
 import { handleError } from '@/libs/hooks/utils/error';
+import { convertCountryCodeToCatalogues } from '@/libs/utils/convert-country-code-to-catalogues';
 
 import { uniqBy } from 'lodash';
 

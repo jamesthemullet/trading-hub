@@ -3,9 +3,9 @@ import { Skeleton } from '@mantine/core';
 
 import { ModalStickyHeader } from '@/libs/components/modals/modal.styles';
 import { Text } from '@/libs/components/typography/typography.styles';
-import { color } from '@/libs/components/utils/constants';
-import { spacing } from '@/libs/components/utils/spacing';
 import { TableCol } from '@/libs/containers/shared/table/table.styles';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 export const Col = styled(TableCol)`
   padding: 0;

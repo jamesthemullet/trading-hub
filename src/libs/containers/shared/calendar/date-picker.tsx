@@ -6,7 +6,7 @@ import type { DatePickerProps } from '@mantine/dates';
 import { DatePicker as MantineDatePicker } from '@mantine/dates';
 
 import { Toggle } from '@/libs/components/toggle/toggle';
-import { color } from '@/libs/components/utils/constants';
+import { color } from '@/libs/utils/constants';
 
 import dayjs from 'dayjs';
 import Image from 'next/image';

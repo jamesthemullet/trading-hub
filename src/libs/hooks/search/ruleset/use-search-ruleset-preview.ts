@@ -5,8 +5,7 @@ import type {
   MerchandisingReturnedKeywordRuleSet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
-
-import { handleError } from '../../utils/error';
+import { handleError } from '@/libs/hooks/utils/error';
 
 export const useSearchRuleSetPreview = (id: string) => {
   const api = useMemo(() => search(), []);

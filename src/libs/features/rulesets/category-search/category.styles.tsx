@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
 
-import { Button } from '@/libs/components/buttons/button/button';
-import { Icon } from '@/libs/components/icon/icon';
-import { Label, Text } from '@/libs/components/typography/typography.styles';
-import { color } from '@/libs/components/utils/constants';
-import { spacing } from '@/libs/components/utils/spacing';
+import { Button, Icon, Label, Text } from '@/libs/components';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 export const Wrapper = styled.div`
   input {

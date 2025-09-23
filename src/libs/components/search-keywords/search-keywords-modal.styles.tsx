@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 
-import { Button } from '../buttons/button/button';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
+
+import { Button } from '../button/button';
 import { Title } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
 
 export const ModalContainer = styled.div`
   width: 856px;

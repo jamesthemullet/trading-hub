@@ -1,12 +1,14 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { CombinedDropdown, DropdownOption } from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
-import { labels } from '@/libs/components/utils/ruleset-attributes';
-import { spacing } from '@/libs/components/utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { labels } from '@/libs/utils/ruleset-attributes';
+import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
+
+import { CombinedDropdown } from '../dropdown/dropdown';
+import { DropdownOption } from '../dropdown/dropdown.styles';
 
 const DropdownWrapper = styled.div`
   border: none;

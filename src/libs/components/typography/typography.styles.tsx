@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 export const fonts = {
   regular: 'mnsLondonRegular, Helvetica, Arial, sans-serif',

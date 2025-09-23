@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { Button } from '@/libs/components/buttons/button/button';
-import { spacing } from '@/libs/components/utils/spacing';
+import { Button } from '@/libs/components';
 import { track } from '@/libs/hooks/utils/analytics';
+import { spacing } from '@/libs/utils/spacing';
 
 import { ModalUnsavedChanges } from '../modals';
 const RuleSetOptions = styled.div`

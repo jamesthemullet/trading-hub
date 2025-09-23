@@ -8,12 +8,12 @@ import type {
   MerchandisingRules,
 } from '@/libs/api';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
-import { Product } from '@/libs/components/product/product';
 import { Search } from '@/libs/components/search/search';
 import type { RuleSetActions } from '@/libs/components/types';
-import { spacing } from '@/libs/components/utils/spacing';
+import { Product } from '@/libs/containers/rulesets/product/product';
 import { useCategoryProductSearch } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { spacing } from '@/libs/utils/spacing';
 
 import pluralize from 'pluralize';
 

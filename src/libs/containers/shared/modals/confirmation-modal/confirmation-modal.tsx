@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
 import { Divider, Modal } from '@mantine/core';
 
-import { Button } from '@/libs/components/buttons/button/button';
-import { Header3, Text } from '@/libs/components/typography/typography.styles';
-import { spacing } from '@/libs/components/utils/spacing';
+import { Button, Header3, Text } from '@/libs/components';
+import { spacing } from '@/libs/utils/spacing';
 
 const Buttons = styled.div`
   display: flex;

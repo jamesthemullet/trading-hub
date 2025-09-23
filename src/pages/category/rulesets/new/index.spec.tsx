@@ -17,10 +17,10 @@ const categoryPath2 = 'l/women/dresses';
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-rule-set-create', () => ({
+jest.mock('@/libs/hooks/use-rule-set-create', () => ({
   useRuleSetCreate: jest.fn(),
 }));
-jest.mock('../../../../libs/hooks/use-get-categories', () => ({
+jest.mock('@/libs/hooks/use-get-categories', () => ({
   useGetCategories: jest.fn(),
 }));
 

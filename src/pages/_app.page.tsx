@@ -8,8 +8,8 @@ import styled from '@emotion/styled';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { createTheme, MantineProvider, Portal } from '@mantine/core';
 
-import { FeatureFlagContext } from '@/libs/components/context/feature-flag';
-import { LoginCheck } from '@/libs/components/login/login-check';
+import { FeatureFlagContext } from '@/libs/components/feature-flag/feature-flag';
+import { LoginCheck } from '@/libs/features/shared/login/login-check';
 
 import type { AppProps } from 'next/app';
 import Script from 'next/script';

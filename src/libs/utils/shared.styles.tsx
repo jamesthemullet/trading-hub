@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { fonts } from '../typography/typography.styles';
+import { fonts } from '../components/typography/typography.styles';
 import { color } from './constants';
 import { mediaQuery } from './media-query';
 import { spacing, type SpacingUnit } from './spacing';

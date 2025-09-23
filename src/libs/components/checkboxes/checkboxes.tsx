@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 
-import { formatHTMLStrings } from '../../utils/format-html-strings';
+import { color } from '@/libs/utils/constants';
+import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
+import { spacing } from '@/libs/utils/spacing';
+
 import { Label, Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
 import { Checkbox } from './checkbox';
 
 const Row = styled.label`

@@ -7,14 +7,15 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
+  ArrowButton,
   Button,
   CombinedDropdown,
   ErrorMessage,
+  FilteredResultsPanel,
   Header3,
   Search,
   Text,
 } from '@/libs/components';
-import { ArrowButton } from '@/libs/components/buttons/button/arrow-button';
 import {
   AttributesModalHeader,
   AttributeWrapper,
@@ -25,7 +26,6 @@ import {
   OrderArrowsContainer,
   SkeletonRow,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import {
   HeadingContainer,
   ModalAttributesTable,

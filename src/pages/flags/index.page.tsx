@@ -4,7 +4,8 @@ import styled from '@emotion/styled';
 import { useCookies } from 'react-cookie';
 import { Select, Stack } from '@mantine/core';
 
-import { spacing, Toggle } from '@/libs/components';
+import { Toggle } from '@/libs/components';
+import { spacing } from '@/libs/utils/spacing';
 
 import dynamic from 'next/dynamic';
 

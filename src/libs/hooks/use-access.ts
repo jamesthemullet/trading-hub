@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import {
   useAuthorizationFlag,
   useAuthorizationRoleOverride,
-} from '../components/context/feature-flag';
+} from '../components/feature-flag/feature-flag';
 
 export type AccessType = 'Cat' | 'Search' | 'Glob';
 export type AccessMap = {

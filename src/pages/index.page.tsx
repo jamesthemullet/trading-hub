@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
-import { Button, spacing, Text } from '@/libs/components';
+import { Button, Text } from '@/libs/components';
+import { spacing } from '@/libs/utils/spacing';
 
 import Head from 'next/head';
 import { signIn, signOut, useSession } from 'next-auth/react';

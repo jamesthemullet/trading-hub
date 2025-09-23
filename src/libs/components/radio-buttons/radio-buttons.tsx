@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
+
 import { Label, Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
 
 const Row = styled.label<{ hasDivider: boolean }>`
   border-bottom: ${({ hasDivider }) =>

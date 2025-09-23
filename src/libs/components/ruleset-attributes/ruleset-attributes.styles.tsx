@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
 import { Button as RegularButton, Text } from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
-import { spacing } from '@/libs/components/utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 export const AttributeCount = styled(Text)`
   text-align: right;

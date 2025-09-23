@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
 import { Label } from '@/libs/components/typography/typography.styles';
-import { color } from '@/libs/components/utils/constants';
-import { spacing } from '@/libs/components/utils/spacing';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 import Link from 'next/link';
 

@@ -2,10 +2,11 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { LabelHTMLAttributes, ReactNode } from 'react';
 
-import { Label as LabelText } from '../typography/typography.styles';
-import type { BreakPoints } from '../utils/breakpoint-type';
+import type { BreakPoints } from '@/libs/utils/breakpoint-type';
 
-type BaseLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
+import { Label as LabelText } from '../typography/typography.styles';
+
+type BaseFormLabelProps = LabelHTMLAttributes<HTMLParagraphElement> & {
   isHidden?: boolean;
   isRequired?: boolean;
   children: ReactNode;
@@ -30,18 +31,22 @@ const visuallyHide = css`
   height: 1px;
 `;
 
-const StyledLabel = styled(LabelText)<BaseLabelProps>`
+const StyledFormLabel = styled(LabelText)<BaseFormLabelProps>`
   cursor: pointer;
   ${({ isHidden }) => isHidden && visuallyHide};
 `;
 
-export type LabelProps = BaseLabelProps & {
+export type FormLabelProps = BaseFormLabelProps & {
   as?: never;
 };
 
-export const Label = ({ children, isRequired, ...rest }: LabelProps) => (
-  <StyledLabel isStrong {...rest} as="label">
+export const FormLabel = ({
+  children,
+  isRequired,
+  ...rest
+}: FormLabelProps) => (
+  <StyledFormLabel isStrong {...rest} as="label">
     {children}
     {isRequired && REQUIRED_FIELD_INDICATOR}
-  </StyledLabel>
+  </StyledFormLabel>
 );

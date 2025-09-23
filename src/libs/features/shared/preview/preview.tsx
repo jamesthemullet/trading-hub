@@ -15,9 +15,9 @@ import {
   Label,
   Text,
 } from '@/libs/components/typography/typography.styles';
-import { color } from '@/libs/components/utils/constants';
-import { spacing } from '@/libs/components/utils/spacing';
 import { usePreview } from '@/libs/hooks';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 

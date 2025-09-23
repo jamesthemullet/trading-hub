@@ -2,8 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import { Button } from '@/libs/components/buttons/button/button';
-import { Count } from '@/libs/components/count/count';
+import { Button, Count } from '@/libs/components';
 import {
   Arrow,
   ArrowContainer,
@@ -13,7 +12,7 @@ import {
   DropdownOption,
   DropdownWrapperNoBorder,
 } from '@/libs/components/dropdown/dropdown.styles';
-import { SearchBox } from '@/libs/components/search-box/search-box';
+import { SearchBox } from '@/libs/components/search/search';
 import {
   ErrorContainer,
   ErrorText,
@@ -33,9 +32,9 @@ import {
   Text,
   Typography,
 } from '@/libs/components/typography/typography.styles';
-import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
-import { spacing } from '@/libs/components/utils/spacing';
 import { useOnOutsideClick } from '@/libs/hooks';
+import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
+import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 

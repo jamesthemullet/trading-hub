@@ -22,9 +22,9 @@ import {
   RemoveKeyWordPill,
   StyledCloseButton,
 } from '@/libs/components/search-keywords/search-keywords-modal.styles';
-import { checkForDuplicates } from '@/libs/components/utils/check-for-duplicates';
 import { useGetCategories, useOnOutsideClick } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
 
 import Image from 'next/image';

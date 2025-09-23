@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { Button, Input, spacing, Text } from '@/libs/components';
+import { Button, Text } from '@/libs/components';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 
-import { color } from '../../../components/utils/constants';
+import { Input } from '../input/input';
 
 const DisplayName = styled.div`
   display: flex;

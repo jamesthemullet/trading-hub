@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
-import pluralize from 'pluralize';
+import { spacing } from '@/libs/utils/spacing';
 
-import { spacing } from '../utils/spacing';
+import pluralize from 'pluralize';
 
 const FilteredResults = styled.div`
   display: flex;

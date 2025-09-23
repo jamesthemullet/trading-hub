@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import {
   defaultFeatureFlags,
   FeatureFlagContext,
-} from '../components/context/feature-flag';
+} from '../components/feature-flag/feature-flag';
 import { useAccess } from './use-access';
 
 jest.mock('next-auth/react', () => ({

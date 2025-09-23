@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import type { MerchandisingCountryCode } from '../api';
 import { search } from '../api';
-import { convertCountryCodeToCatalogues } from '../components/utils/convert-country-code-to-catalogues';
+import { convertCountryCodeToCatalogues } from '../utils/convert-country-code-to-catalogues';
 
 export const useGetCategories = () => {
   const [getCategoriesError, setGetCategoriesError] = useState('');

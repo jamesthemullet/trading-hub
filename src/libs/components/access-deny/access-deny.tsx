@@ -1,6 +1,6 @@
 import { Box, Flex } from '@mantine/core';
 
-import { spacing } from '../utils/spacing';
+import { spacing } from '@/libs/utils/spacing';
 
 export const AccessDeny = ({ requiredRole }: { requiredRole: string }) => {
   return (

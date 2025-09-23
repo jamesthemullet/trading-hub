@@ -3,19 +3,21 @@ import styled from '@emotion/styled';
 import type { ChangeEvent, ComponentProps } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 
-import { useMouseFocus } from '@/libs/hooks/utils/use-mouse-focus';
-
-import { Label } from '../label/label';
+import { FormLabel } from '@/libs/components/form-label/form-label';
 import {
   Tooltip,
   tooltipAriaLabelledBy,
   type TooltipProps,
-} from '../tooltip/tooltip';
-import { Text } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { formActiveStyles, formDefaultStyles } from '../utils/shared.styles';
-import { sizing } from '../utils/sizing';
-import { spacing } from '../utils/spacing';
+} from '@/libs/components/tooltip/tooltip';
+import { Text } from '@/libs/components/typography/typography.styles';
+import { useMouseFocus } from '@/libs/hooks/utils/use-mouse-focus';
+import { color } from '@/libs/utils/constants';
+import {
+  formActiveStyles,
+  formDefaultStyles,
+} from '@/libs/utils/shared.styles';
+import { sizing } from '@/libs/utils/sizing';
+import { spacing } from '@/libs/utils/spacing';
 
 const padding = 1;
 
@@ -54,7 +56,7 @@ const CharacterLimitWrapper = styled.div`
   margin-top: ${spacing(1)};
 `;
 
-const StyledLabel = styled(Label)<{ isHidden: boolean }>`
+const StyledLabel = styled(FormLabel)<{ isHidden: boolean }>`
   ${({ isHidden }) =>
     !isHidden &&
     css`

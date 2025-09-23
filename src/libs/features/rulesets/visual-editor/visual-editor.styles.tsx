@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { spacing } from '@/libs/components/utils/spacing';
+import { spacing } from '@/libs/utils/spacing';
 
 export const Layout = styled.section`
   padding: ${spacing(2.5)} 0;

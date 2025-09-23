@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
+
 import { fontSizes, lineHeights } from '../typography/typography.styles';
-import { color } from '../utils/constants';
-import { spacing } from '../utils/spacing';
 
 export const Count = styled.span`
   background: ${color.accent.primary.primary};

@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 import { fonts } from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
+import { color } from '@/libs/utils/constants';
 
 export const fontStyles = css`
   @font-face {

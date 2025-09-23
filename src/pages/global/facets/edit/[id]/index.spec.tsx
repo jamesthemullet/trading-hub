@@ -11,11 +11,11 @@ import {
 } from '@/libs/hooks';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { GetServerSidePropsContext } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
-import { renderWithProviders } from '../../../../../test/render-with-providers';
 import Page, { getServerSideProps } from './index.page';
 
 jest.mock('next/router', () => ({

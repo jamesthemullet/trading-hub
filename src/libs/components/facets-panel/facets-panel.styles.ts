@@ -1,12 +1,32 @@
 import styled from '@emotion/styled';
 
-import { spacing, Text } from '@/libs/components';
-import { color } from '@/libs/components/utils/constants';
-import {
-  TableCol,
-  TableRow,
-} from '@/libs/containers/shared/table/table.styles';
+import { Text } from '@/libs/components';
+import { color } from '@/libs/utils/constants';
+import { spacing } from '@/libs/utils/spacing';
 
+export const TableRow = styled.div`
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) 200px 350px 180px;
+  border-bottom: 1px solid #b1b1b1;
+  align-items: center;
+  padding-left: ${spacing(2)};
+
+  &:first-of-type {
+    position: sticky;
+    z-index: 1;
+    top: 30px;
+    background: #fff;
+  }
+`;
+export const TableCol = styled.div`
+  text-overflow: ellipsis;
+  display: flex;
+  padding: ${spacing(1)} ${spacing(1)} ${spacing(1)} 0;
+
+  p {
+    width: 100%;
+  }
+`;
 export const ActionContainer = styled.div`
   display: flex;
 

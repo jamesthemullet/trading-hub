@@ -5,7 +5,7 @@ import {
   defaultFeatureFlags,
   FeatureFlagContext,
   type FeatureFlags,
-} from '../libs/components/context/feature-flag';
+} from '../libs/components/feature-flag/feature-flag';
 
 const theme = createTheme({
   components: {
