@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Label } from '@/libs/components/typography/typography.styles';
+import { fonts, Label } from '@/libs/components/typography/typography.styles';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -73,7 +73,8 @@ export const TableCol = styled.div`
 
 export const TableHeading = styled(Label)`
   color: #1d1d1b;
-  font-weight: bold;
+  font-weight: 600;
+  font-family: ${fonts.bold};
 `;
 
 const ORDER_TO_COLOR = [
