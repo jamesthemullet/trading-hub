@@ -628,9 +628,7 @@ describe('Global Facet Management Editing', () => {
 
     const includeOnlyOption = screen.getAllByText('Include only')[1];
 
-    act(() => {
-      user.click(includeOnlyOption);
-    });
+    await user.click(includeOnlyOption);
 
     expect(screen.getByTestId('Row showing color as included')).toBeVisible();
 

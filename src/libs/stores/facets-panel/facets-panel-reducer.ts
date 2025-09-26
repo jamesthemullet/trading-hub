@@ -94,19 +94,20 @@ export const facetsPanelReducer = (
         : state;
     }
     case 'CHANGE_DISPLAY_TYPE': {
-      const currentIncluded = state.includedFacets;
-      const currentExcluded = state.excludedFacets;
+      const { id, newDisplayType } = action.payload;
+      const currentIncluded = state.includedFacets.filter((val) => val !== id);
+      const currentExcluded = state.excludedFacets.filter((val) => val !== id);
 
       return {
         ...state,
         includedFacets:
-          action.payload.newDisplayType !== 'included'
-            ? state.includedFacets?.filter((val) => val !== action.payload.id)
-            : [...currentIncluded, action.payload.id],
+          newDisplayType === 'included'
+            ? [...currentIncluded, id]
+            : currentIncluded,
         excludedFacets:
-          action.payload.newDisplayType !== 'excluded'
-            ? state.excludedFacets?.filter((val) => val !== action.payload.id)
-            : [...currentExcluded, action.payload.id],
+          newDisplayType === 'excluded'
+            ? [...currentExcluded, id]
+            : currentExcluded,
       };
     }
     case 'INITIALISE_STATE': {
