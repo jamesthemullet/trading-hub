@@ -140,8 +140,8 @@ describe('DateTimePickerModal', () => {
     });
 
     const startTimeInput = screen.getByLabelText('Start time (GMT +1)');
-    user.type(startTimeInput, '3');
-    user.type(startTimeInput, '0');
+    await user.type(startTimeInput, '3');
+    await user.type(startTimeInput, '0');
 
     const headerText = await screen.findByText(
       'Mar 14 2022 00:30 - Mar 16 2022 23:59'
@@ -219,13 +219,14 @@ describe('DateTimePickerModal', () => {
     });
 
     const endTimeInput = screen.getByLabelText('End time (GMT +1)');
-    user.type(endTimeInput, '0');
-    user.type(endTimeInput, '0');
+    await user.clear(endTimeInput);
+    await user.type(endTimeInput, '23:00');
 
-    const headerText = await screen.findByText(
-      'Mar 14 2022 00:00 - Mar 16 2022 23:00'
-    );
-    expect(headerText).toBeVisible();
+    await waitFor(() => {
+      expect(
+        screen.getByText('Mar 14 2022 00:00 - Mar 16 2022 23:00')
+      ).toBeVisible();
+    });
 
     const saveButton = screen.getByRole('button', {
       name: 'Close schedule editor',
@@ -239,7 +240,9 @@ describe('DateTimePickerModal', () => {
       ).not.toBeInTheDocument();
     });
 
-    expect(headerText).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Mar 14 2022 00:00 - Mar 16 2022 23:00')
+    ).not.toBeInTheDocument();
 
     expect((input as HTMLInputElement).value).toBe(
       '14/03/22 00:00 - 16/03/22 23:00'
@@ -341,10 +344,10 @@ describe('DateTimePickerModal', () => {
       input.click();
     });
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const endTimeInput = screen.getByLabelText('End time (GMT +1)');
-      user.type(endTimeInput, '0');
-      user.type(endTimeInput, '0');
+      await user.type(endTimeInput, '0');
+      await user.type(endTimeInput, '0');
     });
 
     const headerText = await screen.findByText(

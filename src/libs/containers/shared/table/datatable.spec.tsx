@@ -649,7 +649,9 @@ describe('DataTable', () => {
       />
     );
 
-    user.click(screen.getAllByTitle('Toggle')[0]);
+    await waitFor(async () => {
+      await user.click(screen.getAllByTitle('Toggle')[0]);
+    });
 
     await waitFor(() => {
       expect(mockToggle).toHaveBeenCalledWith({
@@ -768,7 +770,7 @@ describe('DataTable', () => {
       />
     );
 
-    user.click(screen.getAllByTitle('Toggle')[0]);
+    await user.click(screen.getAllByTitle('Toggle')[0]);
 
     await waitFor(() => {
       expect(mockToggleRuleSet).toHaveBeenCalledWith({

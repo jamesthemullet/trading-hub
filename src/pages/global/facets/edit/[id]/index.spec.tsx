@@ -489,10 +489,10 @@ describe('Global Facet Management Editing', () => {
       screen.queryByTestId('Row showing size as included')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Include only')[6];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -519,10 +519,10 @@ describe('Global Facet Management Editing', () => {
       screen.queryByTestId('Row showing price as included')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Include only')[7];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -549,10 +549,10 @@ describe('Global Facet Management Editing', () => {
       screen.queryByTestId('Row showing color as algoControl')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Algo control')[0];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -622,6 +622,7 @@ describe('Global Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+
     expect(
       screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();

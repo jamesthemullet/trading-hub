@@ -1431,19 +1431,15 @@ describe('Ruleset', () => {
         .getByTestId('Product Search Container')
         .querySelector('button[title="Open menu"]');
 
-      act(() => {
-        if (menuButton) {
-          user.click(menuButton);
-        }
-      });
+      if (menuButton) {
+        await user.click(menuButton);
+      }
 
       const pinToPositionButton = await waitFor(() =>
         screen.findByText('Pin in position')
       );
 
-      act(() => {
-        user.click(pinToPositionButton);
-      });
+      await user.click(pinToPositionButton);
 
       const input = await screen.findByPlaceholderText('i.e. 3');
 
@@ -1451,9 +1447,7 @@ describe('Ruleset', () => {
 
       const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
-      await waitFor(() => {
-        confirmButton.click();
-      });
+      await user.click(confirmButton);
 
       expect(usePreview).toHaveBeenCalledWith(expectedPreview);
     });

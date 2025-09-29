@@ -26,8 +26,8 @@ describe('Redirect', () => {
       expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
     });
 
-    await waitFor(() => {
-      user.type(
+    await waitFor(async () => {
+      await user.type(
         screen.getByLabelText('Add keyword to list'),
         'new keyword{enter}'
       );
@@ -37,27 +37,27 @@ describe('Redirect', () => {
 
     const redirectUrl = await screen.findByPlaceholderText('c/');
 
-    await waitFor(() => {
-      user.type(redirectUrl, 'c/redirect-url');
+    await waitFor(async () => {
+      await user.type(redirectUrl, 'c/redirect-url');
     });
 
     const redirectTitle = await screen.findByPlaceholderText(
       'Enter redirect title'
     );
 
-    await waitFor(() => {
-      user.type(redirectTitle, 'title');
+    await waitFor(async () => {
+      await user.type(redirectTitle, 'title');
     });
 
     const toggle = await screen.findAllByLabelText('Redirect Phrase(s)');
-    user.click(toggle[0]);
+    await user.click(toggle[0]);
 
     const saveButton = await screen.findByRole('button', { name: 'Create' });
 
     expect(saveButton).toBeEnabled();
 
-    await waitFor(() => {
-      user.click(saveButton);
+    await waitFor(async () => {
+      await user.click(saveButton);
     });
 
     expect(mockCreate).toHaveBeenCalledWith({
@@ -85,38 +85,28 @@ describe('Redirect', () => {
       />
     );
 
-    await waitFor(async () => {
-      await user.click(screen.getByRole('button', { name: 'Edit' }));
-    });
+    await user.click(screen.getByRole('button', { name: 'Edit' }));
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
     });
 
-    await waitFor(() => {
-      user.type(
-        screen.getByLabelText('Add keyword to list'),
-        'new keyword{enter}'
-      );
-    });
+    await user.type(
+      screen.getByLabelText('Add keyword to list'),
+      'new keyword{enter}'
+    );
 
-    await waitFor(async () => {
-      await user.click(screen.getByRole('button', { name: 'Close' }));
-    });
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     const redirectUrl = await screen.findByPlaceholderText('c/');
 
-    await act(async () => {
-      user.type(redirectUrl, 'c/redirect-url');
-    });
+    await user.type(redirectUrl, 'c/redirect-url');
 
     const redirectTitle = await screen.findByPlaceholderText(
       'Enter redirect title'
     );
 
-    await act(async () => {
-      user.type(redirectTitle, 'title');
-    });
+    await user.type(redirectTitle, 'title');
 
     const dropdownButton = screen.getByRole('button', {
       name: 'Select country',
@@ -132,9 +122,7 @@ describe('Redirect', () => {
 
     const saveButton = await screen.findByRole('button', { name: 'Create' });
 
-    act(() => {
-      saveButton.click();
-    });
+    await user.click(saveButton);
 
     expect(mockCreate).toHaveBeenCalledWith({
       destinationUrl: 'c/redirect-url',
@@ -181,12 +169,10 @@ describe('Redirect', () => {
       expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
     });
 
-    act(() => {
-      user.type(
-        screen.getByLabelText('Add keyword to list'),
-        'new keyword{enter}'
-      );
-    });
+    await user.type(
+      screen.getByLabelText('Add keyword to list'),
+      'new keyword{enter}'
+    );
 
     await waitFor(async () => {
       expect(
@@ -196,6 +182,7 @@ describe('Redirect', () => {
   });
 
   it('saves a redirect', async () => {
+    const user = userEvent.setup({ delay: null });
     const mockSave = jest.fn();
 
     const existingRedirect: MerchandisingReturnedKeywordRedirect = {
@@ -226,9 +213,7 @@ describe('Redirect', () => {
 
     const saveButton = await screen.findByRole('button', { name: 'Save' });
 
-    act(() => {
-      saveButton.click();
-    });
+    await user.click(saveButton);
 
     expect(mockSave).toHaveBeenCalledWith({
       destinationUrl: 'l/womens/dresses',

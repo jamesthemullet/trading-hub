@@ -396,10 +396,10 @@ describe('Category Facet Management Editing', () => {
       screen.queryByTestId('Row showing category as included')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Include only')[6];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -431,10 +431,10 @@ describe('Category Facet Management Editing', () => {
       screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Algo control')[0];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -466,10 +466,10 @@ describe('Category Facet Management Editing', () => {
       screen.queryByTestId('Row showing price as included')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Algo control')[5];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -497,9 +497,7 @@ describe('Category Facet Management Editing', () => {
 
     const includeOnlyOption = screen.getAllByText('Include only')[1];
 
-    act(() => {
-      user.click(includeOnlyOption);
-    });
+    await user.click(includeOnlyOption);
 
     expect(screen.getByTestId('Row showing color as included')).toBeVisible();
 

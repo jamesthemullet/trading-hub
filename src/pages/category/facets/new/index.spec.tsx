@@ -33,9 +33,6 @@ jest.mock('@/libs/hooks', () => ({
   },
 }));
 
-const logSpy = jest.spyOn(console, 'log');
-logSpy.mockImplementation(jest.fn());
-
 const INPUT_PLACEHOLDER_TEXT = 'Search...';
 const NEW_RULE_BUTTON_TEXT = 'Create';
 
@@ -252,9 +249,7 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing category as included')
     ).not.toBeInTheDocument();
 
-    act(() => {
-      user.click(screen.getAllByText('Include only')[3]);
-    });
+    await user.click(screen.getAllByText('Include only')[3]);
 
     await waitFor(() => {
       expect(
@@ -279,9 +274,7 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
 
-    act(() => {
-      user.click(screen.getAllByText('Include only')[2]);
-    });
+    await user.click(screen.getAllByText('Include only')[2]);
 
     await waitFor(() => {
       expect(screen.getByTestId('Row showing color as included')).toBeVisible();
@@ -424,10 +417,10 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Include only')[0];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -441,10 +434,10 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing color as algoControl')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Algo control')[0];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -506,10 +499,10 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Exclude only')[0];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -523,10 +516,10 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Algo control')[8];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -588,10 +581,10 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Exclude only')[0];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -605,10 +598,10 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing color as included')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Include only')[4];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -662,10 +655,10 @@ describe('Category Facet Management New', () => {
       screen.queryByTestId('Row showing color as excluded')
     ).not.toBeInTheDocument();
 
-    await waitFor(() => {
+    await waitFor(async () => {
       const includeOnlyOption = screen.getAllByText('Algo control')[0];
 
-      user.click(includeOnlyOption);
+      await user.click(includeOnlyOption);
     });
 
     await waitFor(() => {
@@ -718,12 +711,19 @@ describe('Category Facet Management New', () => {
         expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
       });
 
-      act(() => {
-        user.type(
+      await waitFor(() => {
+        expect(
+          screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT)
+        ).toBeVisible();
+      });
+
+      await waitFor(async () => {
+        await user.type(
           screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
           'SubCategory_507{Enter}'
         );
       });
+
       act(() => {
         jest.runAllTimers();
       });

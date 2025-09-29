@@ -47,7 +47,7 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   modulePathIgnorePatterns: ['<rootDir>/e2e'],
   transform: {
-    '^.+\\.(ts|tsx)$': [
+    '^.+\\.(ts|tsx|js|mjs)$': [
       '@swc/jest',
       {
         sourceMaps: 'inline',

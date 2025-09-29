@@ -565,12 +565,13 @@ describe('CategorySearch', () => {
       expect(screen.queryByText('Dresses /l/dresses')).not.toBeVisible();
       const category = screen.getByText('SubCategory_507');
 
-      user.hover(category);
+      await user.hover(category);
 
       await waitFor(() => {
         expect(screen.getByText('Dresses /l/dresses')).toBeVisible();
       });
-      user.hover(screen.getByText('Category'));
+
+      await user.hover(screen.getByText('Category'));
 
       await waitFor(() => {
         expect(screen.queryByText('Dresses /l/dresses')).not.toBeVisible();

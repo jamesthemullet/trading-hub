@@ -334,6 +334,7 @@ describe('Facet Panel', () => {
 
   describe('Edit Facet Values Modal', () => {
     it('should open the modal', async () => {
+      jest.useRealTimers();
       const user = userEvent.setup();
 
       renderWithProviders(
@@ -353,13 +354,11 @@ describe('Facet Panel', () => {
         />
       );
 
-      const editFacetValuesButton = (
-        await screen.findAllByText('Edit values')
-      )[0];
+      const editFacetValuesButton = screen.getAllByText('Edit values')[0];
 
       expect(editFacetValuesButton).toBeVisible();
 
-      user.click(editFacetValuesButton);
+      await user.click(editFacetValuesButton);
 
       await waitFor(() => {
         expect(
@@ -407,8 +406,8 @@ describe('Facet Panel', () => {
 
       const closeButton = screen.getAllByRole('button', { name: 'Cancel' })[1];
 
-      act(() => {
-        user.click(closeButton);
+      await act(async () => {
+        await user.click(closeButton);
       });
 
       await waitFor(async () => {
@@ -445,9 +444,7 @@ describe('Facet Panel', () => {
 
       const editFacetValuesButton = screen.getAllByText('Edit values')[0];
 
-      await act(async () => {
-        editFacetValuesButton.click();
-      });
+      await user.click(editFacetValuesButton);
 
       expect(
         screen.getByRole('heading', {
@@ -462,18 +459,14 @@ describe('Facet Panel', () => {
         name: 'Save',
       })[0];
 
-      await act(async () => {
-        user.click(saveButton);
-      });
+      await user.click(saveButton);
 
       const heading = await screen.findByRole('heading', {
         name: 'Apply global changes',
       });
       expect(heading).toBeVisible();
 
-      await act(async () => {
-        user.click(screen.getByRole('button', { name: 'Apply action' }));
-      });
+      await user.click(screen.getByRole('button', { name: 'Apply action' }));
 
       await waitFor(() => {
         expect(refreshMock).toHaveBeenCalled();
