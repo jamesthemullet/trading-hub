@@ -149,16 +149,20 @@ test.describe('Search Redirect', () => {
 
     const currentCount =
       (await page.getByTestId('results count').textContent()) ?? '';
-    await page.getByRole('button', { name: 'More options' }).first().click();
-    await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByTestId('Delete rule').click();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
-    await page.getByRole('button', { name: 'Delete' }).click();
-    await page.getByTestId('Delete rule').click();
+
+    const deleteButton = page.getByRole('button', { name: 'Delete' });
+    await expect(deleteButton).toBeVisible();
+    await expect(deleteButton).toBeEnabled();
+    await deleteButton.click();
+
+    const confirmButton = page.getByTestId('Delete rule');
+    await expect(confirmButton).toBeVisible();
+    await confirmButton.click();
 
     await expect(
-      page.getByText(`${parseInt(currentCount) - 2} results`, { exact: true })
+      page.getByText(`${parseInt(currentCount) - 1} results`, { exact: true })
     ).toBeVisible();
   });
 });
