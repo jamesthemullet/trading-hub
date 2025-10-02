@@ -42,7 +42,6 @@ Note. Use this method only if you need to debug roles or any settings that would
 10. Click add.
 11. Copy the secret value this will be used as AZURE_AD_CLIENT_SECRET in your .env
 12. Add AZURE_AD_CLIENT_ID AZURE_AD_TENANT_ID AZURE_AD_CLIENT_SECRET to your .env located at the root of your onyx repo
-    ![Image showing .env setup in vscode](img/env.png 'App Registrations')
 13. You can now run trading-hub and try to authenticate yourself using SSO in localhost.
 
 ## Environment variables
