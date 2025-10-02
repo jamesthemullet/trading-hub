@@ -44,6 +44,7 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
   const [cookies] = useCookies([
     'flagAuthorization',
     'flagAuthorizationRoleOverride',
+    'flagShowNewFacetValuesPage',
   ]);
 
   return (
@@ -55,6 +56,7 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
           searchOverride: 'No Override',
           globalOverride: 'No Override',
         },
+        showNewFacetValuesPage: cookies.flagShowNewFacetValuesPage,
       }}
     >
       {children}

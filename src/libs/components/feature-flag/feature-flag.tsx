@@ -13,6 +13,7 @@ export type AuthorizationRoleOverride = {
 export type FeatureFlags = {
   hasAuthorization: boolean;
   authorizationRoleOverride: AuthorizationRoleOverride;
+  showNewFacetValuesPage: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -22,6 +23,7 @@ export const defaultFeatureFlags: FeatureFlags = {
     searchOverride: 'No Override',
     globalOverride: 'No Override',
   },
+  showNewFacetValuesPage: false,
 };
 
 export const FeatureFlagContext =
@@ -49,4 +51,15 @@ export const useAuthorizationRoleOverride = () => {
   }, [featureFlags.authorizationRoleOverride]);
 
   return authorizationRoleOverride;
+};
+
+export const useShowNewFacetValuesPage = () => {
+  const featureFlags = useContext(FeatureFlagContext);
+  const [showNewFacetValuesPage, setShowNewFacetValuesPage] = useState(false);
+
+  useEffect(() => {
+    setShowNewFacetValuesPage(featureFlags.showNewFacetValuesPage);
+  }, [featureFlags.showNewFacetValuesPage]);
+
+  return showNewFacetValuesPage;
 };

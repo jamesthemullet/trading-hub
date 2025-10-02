@@ -25,17 +25,34 @@ const Flag = styled.div`
 
 const FeatureFlags = () => {
   const [cookies, setCookie] = useCookies(
-    ['flagAuthorization', 'flagAuthorizationRoleOverride'],
+    [
+      'flagAuthorization',
+      'flagAuthorizationRoleOverride',
+      'flagShowNewFacetValuesPage',
+    ],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization } = cookies;
+  const { flagAuthorization, flagShowNewFacetValuesPage } = cookies;
 
   return (
     <Wrapper>
       <h1>Feature Flags</h1>
+      <Flag>
+        <p>New Facet Values Page:&nbsp;</p>
+        <Toggle
+          checked={flagShowNewFacetValuesPage}
+          onChange={() => {
+            setCookie(
+              'flagShowNewFacetValuesPage',
+              JSON.stringify(!flagShowNewFacetValuesPage)
+            );
+          }}
+        />
+      </Flag>
+
       <Flag>
         <p>Authorization:&nbsp;</p>
         <Toggle

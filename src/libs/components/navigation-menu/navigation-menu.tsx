@@ -66,9 +66,9 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
     <>
       {menuItems.map((menuItem) => {
         const isActive = menuItem.pathExcludes
-          ? pathname.includes(menuItem.path) &&
+          ? pathname?.includes(menuItem.path) &&
             !pathname.includes(menuItem.pathExcludes)
-          : pathname.includes(menuItem.path);
+          : pathname?.includes(menuItem.path);
 
         return (
           <MenuItem key={menuItem.title}>
