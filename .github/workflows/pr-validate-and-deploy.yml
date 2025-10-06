@@ -278,7 +278,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Find Comment
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@v4
         id: find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -380,7 +380,7 @@ jobs:
       - name: Find deployment comment
         if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
         id: find-deployment-comment
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: Deploying PR environments
@@ -388,7 +388,7 @@ jobs:
       - name: Check if already includes URL
         if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
         id: check-if-already-includes
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: ${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
