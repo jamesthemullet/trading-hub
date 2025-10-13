@@ -52,7 +52,7 @@ const StyledLink = styled(Link)`
   min-height: 24px;
 `;
 
-export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
+export const Navigation = () => {
   const session = useSession();
   const isLoggedIn = session && session.status === 'authenticated';
 
@@ -107,26 +107,24 @@ export const Navigation = ({ autoLogin }: { autoLogin: boolean }) => {
           <NavigationMenu menuItems={menuItems} />
         </ListItem>
         <ListItem>
-          {!autoLogin && (
-            <StyledLink
-              href="/"
-              onClick={() => (isLoggedIn ? signOut() : signIn())}
-              style={{ textDecoration: 'none' }}
-              prefetch
+          <StyledLink
+            href="/"
+            onClick={() => (isLoggedIn ? signOut() : signIn())}
+            style={{ textDecoration: 'none' }}
+            prefetch
+          >
+            <Text
+              style={{
+                color: '#fff',
+                zIndex: 100,
+                position: 'relative',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
             >
-              <Text
-                style={{
-                  color: '#fff',
-                  zIndex: 100,
-                  position: 'relative',
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-              >
-                {isLoggedIn ? 'Sign out' : 'Sign in'}
-              </Text>
-            </StyledLink>
-          )}
+              {isLoggedIn ? 'Sign out' : 'Sign in'}
+            </Text>
+          </StyledLink>
         </ListItem>
       </List>
     </NavigationWrapper>

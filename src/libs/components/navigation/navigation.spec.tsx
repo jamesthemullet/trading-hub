@@ -28,25 +28,25 @@ describe('Navigation', () => {
   });
 
   it('should render trading hub navigation', () => {
-    render(<Navigation autoLogin />);
+    render(<Navigation />);
 
     expect(screen.getByTitle('Category Rules')).toBeInTheDocument();
   });
 
   it('should not show login button when auto login enabled', () => {
-    render(<Navigation autoLogin />);
+    render(<Navigation />);
 
     expect(screen.queryByText('Login')).not.toBeInTheDocument();
   });
 
   it('should show Sign in when signed out', () => {
-    render(<Navigation autoLogin={false} />);
+    render(<Navigation />);
 
     expect(screen.getByText('Sign in')).toBeVisible();
   });
 
   it('should call auth Sign in when signed out', async () => {
-    render(<Navigation autoLogin={false} />);
+    render(<Navigation />);
 
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByText('Sign in'));
@@ -68,7 +68,7 @@ describe('Navigation', () => {
       status: 'authenticated',
       update: jest.fn(),
     });
-    render(<Navigation autoLogin={false} />);
+    render(<Navigation />);
 
     expect(screen.getByText('Sign out')).toBeVisible();
   });
@@ -87,7 +87,7 @@ describe('Navigation', () => {
       status: 'authenticated',
       update: jest.fn(),
     });
-    render(<Navigation autoLogin={false} />);
+    render(<Navigation />);
 
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByText('Sign out'));
@@ -129,7 +129,7 @@ describe('Navigation', () => {
     async (url, icon1, icon2, icon3, icon4) => {
       jest.mocked(usePathname).mockReturnValue(url);
 
-      render(<Navigation autoLogin />);
+      render(<Navigation />);
 
       expect(
         (await screen.findByLabelText('Category Rules')).childNodes[0]

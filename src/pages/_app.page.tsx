@@ -86,9 +86,7 @@ export default function App({
               autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
             />
             <Layout>
-              <Navigation
-                autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
-              />
+              <Navigation />
               <StyledMain>
                 <Component {...pageProps} />
               </StyledMain>

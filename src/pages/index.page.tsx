@@ -22,8 +22,6 @@ const StyledText = styled(Text)`
 const Index = () => {
   const session = useSession();
 
-  const hasAutoLogin = process.env.NEXT_PUBLIC_AUTO_LOGIN === 'false';
-
   return (
     <>
       <Head>
@@ -34,20 +32,18 @@ const Index = () => {
         {session && session.status === 'authenticated' ? (
           <>
             <StyledText>Hello, {session.data.user?.email}</StyledText>
-            {hasAutoLogin && (
-              <Button isInline isPrimary onClick={() => signOut()}>
-                Sign out
-              </Button>
-            )}
+
+            <Button isInline isPrimary onClick={() => signOut()}>
+              Sign out
+            </Button>
           </>
         ) : (
           <>
             <StyledText>Unauthorised, please </StyledText>
-            {hasAutoLogin && (
-              <Button isInline isPrimary onClick={() => signIn('azure-ad')}>
-                Sign in
-              </Button>
-            )}
+
+            <Button isInline isPrimary onClick={() => signIn('azure-ad')}>
+              Sign in
+            </Button>
           </>
         )}
       </Container>
