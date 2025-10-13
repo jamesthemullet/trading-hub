@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import type {
   MerchandisingAttributeValuesResponse,
@@ -15,7 +15,7 @@ import {
 import { handleError } from './utils/error';
 
 type Props = {
-  countryCode: MerchandisingCountryCode;
+  countryCode?: MerchandisingCountryCode;
   facetId: string;
   query: string;
   categories?: string[];
@@ -35,13 +35,27 @@ export const useGetFacetAttributeValues = ({
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const categoriesKey = categories?.join(',') || '';
+  const searchTermsKey = searchTerms?.join(',') || '';
+  const memoizedCategories = useMemo(() => categories, [categoriesKey]);
+  const memoizedSearchTerms = useMemo(() => searchTerms, [searchTermsKey]);
+
   useEffect(() => {
+    if (!facetId) {
+      setAttributeValues([]);
+      setError('');
+      setIsLoading(false);
+      return;
+    }
     const asyncCall = async () => {
       setIsLoading(true);
       try {
+        if (!countryCode) {
+          throw new Error('Invalid or missing country code parameter');
+        }
         const catalogues = convertCountryCodeToCatalogues(countryCode);
-        const promises = categories
-          ? categories.map((categoryId) =>
+        const promises = memoizedCategories
+          ? memoizedCategories.map((categoryId) =>
               search()
                 .betaMerchandisingFacetAttributeValuesList(facetId, {
                   categoryId,
@@ -59,7 +73,7 @@ export const useGetFacetAttributeValues = ({
                   start: 0,
                   rows: 2000,
                   catalogue,
-                  searchTerm: searchTerms,
+                  searchTerm: memoizedSearchTerms,
                 })
                 .then((response) => response.data.values)
             );
@@ -74,7 +88,7 @@ export const useGetFacetAttributeValues = ({
       }
     };
     void asyncCall();
-  }, [facetId, categories, query, countryCode, searchTerms]);
+  }, [facetId, countryCode, query, memoizedSearchTerms, memoizedCategories]);
 
   return {
     attributeValues,

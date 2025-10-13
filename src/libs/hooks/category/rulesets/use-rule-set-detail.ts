@@ -42,6 +42,11 @@ export const useRuleSetDetail = (id: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) {
+      setIsLoading(false);
+      return;
+    }
+
     const asyncCall = async () => {
       try {
         const response = await api.betaMerchandisingCategoryRulesetDetail(id);

@@ -165,4 +165,45 @@ describe('useSearchRuleSetPreview', () => {
       expect(result).toEqual({ current: expectedData });
     });
   });
+
+  it('should not make API calls when id is empty', async () => {
+    const { result } = renderHook(() => useSearchRuleSetPreview(''));
+
+    const expectedData = {
+      products: [],
+      ruleSet: {
+        searchTerms: [],
+        id: '',
+        isEnabled: false,
+        lastChanged: {
+          date: '',
+          user: '',
+        },
+        rules: {
+          pinnedProducts: [],
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: {
+            alphanumeric: [],
+            numeric: [],
+            product: [],
+          },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
+        },
+        facets: [],
+      },
+      error: '',
+      isLoading: false,
+    };
+
+    expect(result.current).toEqual(expectedData);
+
+    expect(getRuleSetMock).not.toHaveBeenCalled();
+    expect(getRuleSetPreviewMock).not.toHaveBeenCalled();
+  });
 });

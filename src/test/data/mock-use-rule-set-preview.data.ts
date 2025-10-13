@@ -1,4 +1,7 @@
-import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
+import type {
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingReturnedGlobalRuleSet,
+} from '@/libs/api';
 
 export const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
 export const categoryId = 'SubCategory_428';
@@ -13,7 +16,7 @@ export const product2Brand = 'M&S';
 export const product1Price = '£5';
 export const product2Price = '£10';
 
-const mockRuleData: MerchandisingReturnedCategoryRuleSet = {
+export const mockRuleData: MerchandisingReturnedCategoryRuleSet = {
   id: ruleSetId,
   countryCode: 'UK_IE',
   categoriesInfo: [
@@ -104,5 +107,23 @@ export const mockUseRuleSetPreviewData = {
   error: '',
   facets: [],
   isLoading: false,
-  refreshRuleset: jest.fn(),
+  refreshRuleset: () => {},
+};
+
+export const mockGlobalRuleData: MerchandisingReturnedGlobalRuleSet = {
+  rules: {
+    pinnedProducts: [{ id: 'xyz0' }],
+    blockedProducts: [],
+    boosts: { numeric: [], alphanumeric: [], product: [] },
+    buries: { numeric: [], alphanumeric: [], product: [] },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
+  },
+  isEnabled: true,
+  id: 'df70401f-f89d-45ad-92e7-6e152930ff86',
+  lastChanged: { date: '2023-12-06T14:24:17Z', user: 'Mark Spencer' },
 };

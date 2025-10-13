@@ -5,7 +5,6 @@ import type {
   MerchandisingCountryCode,
   MerchandisingExcludedFacets,
   MerchandisingReturnedFacet,
-  MerchandisingRules,
 } from '@/libs/api';
 import { Button, CombinedDropdown, Search, Text } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
@@ -44,7 +43,6 @@ type defaultOrderDataType = {
 interface FacetsPanelProps {
   displayRowOrderControls?: boolean;
   title: string;
-  rulesetMerchandisingRules?: MerchandisingRules;
   canMergeValueAttributes?: boolean;
   defaultOrderData?: defaultOrderDataType;
   facetsState: FacetRowDisplayValue[];

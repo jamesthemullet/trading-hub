@@ -176,4 +176,21 @@ describe('useGetFacetAttributeValues', () => {
       });
     });
   });
+
+  it('should not make API calls when facetId is empty', async () => {
+    const { result } = renderHook(() =>
+      useGetFacetAttributeValues({
+        countryCode: 'UK_IE',
+        facetId: '',
+        query: 'test',
+        categories: ['category1'],
+      })
+    );
+
+    expect(result.current).toEqual({
+      attributeValues: [],
+      error: '',
+      isLoading: false,
+    });
+  });
 });

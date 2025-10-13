@@ -106,7 +106,6 @@ describe('Global Facet Panel', () => {
       <GlobalFacetsPanel
         ruleSetIncludedFacets={mockRuleData.facets}
         ruleSetExcludedFacets={mockRuleData.excludedFacets}
-        ruleSetRules={mockRuleData.rules}
         isLoading={false}
         writeEnabled
         countryCode="UK_IE"
@@ -132,7 +131,6 @@ describe('Global Facet Panel', () => {
       <GlobalFacetsPanel
         ruleSetIncludedFacets={mockRuleData.facets}
         ruleSetExcludedFacets={mockRuleData.excludedFacets}
-        ruleSetRules={mockRuleData.rules}
         isLoading={false}
         writeEnabled
         countryCode="UK_IE"
@@ -159,7 +157,6 @@ describe('Global Facet Panel', () => {
       <GlobalFacetsPanel
         ruleSetIncludedFacets={mockRuleData.facets}
         ruleSetExcludedFacets={mockRuleData.excludedFacets}
-        ruleSetRules={mockRuleData.rules}
         isLoading={false}
         writeEnabled
         countryCode="UK_IE"
@@ -180,7 +177,6 @@ describe('Global Facet Panel', () => {
       <GlobalFacetsPanel
         ruleSetIncludedFacets={mockRuleData.facets}
         ruleSetExcludedFacets={mockRuleData.excludedFacets}
-        ruleSetRules={mockRuleData.rules}
         isLoading={false}
         writeEnabled
         countryCode="UK_IE"
@@ -230,7 +226,6 @@ describe('Global Facet Panel', () => {
       <GlobalFacetsPanel
         ruleSetIncludedFacets={mockRuleData.facets}
         ruleSetExcludedFacets={mockRuleData.excludedFacets}
-        ruleSetRules={mockRuleData.rules}
         isLoading={false}
         writeEnabled
         countryCode="UK_IE"
@@ -264,7 +259,6 @@ describe('Global Facet Panel', () => {
       <GlobalFacetsPanel
         ruleSetIncludedFacets={undefined}
         ruleSetExcludedFacets={undefined}
-        ruleSetRules={mockRuleData.rules}
         isLoading={false}
         writeEnabled
         countryCode="UK_IE"

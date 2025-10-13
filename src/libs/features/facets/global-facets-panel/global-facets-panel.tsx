@@ -4,7 +4,6 @@ import type {
   MerchandisingCountryCode,
   MerchandisingExcludedFacets,
   MerchandisingReturnedFacet,
-  MerchandisingRules,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { ErrorMessage } from '@/libs/components';
@@ -17,7 +16,6 @@ import { useFacetsRowsSelector } from '@/libs/stores/facets-panel/use-facets-pan
 type GlobalFacetsPanelProps = {
   ruleSetIncludedFacets?: MerchandisingRuleSetFacetConfigWithId[];
   ruleSetExcludedFacets?: MerchandisingExcludedFacets;
-  ruleSetRules?: MerchandisingRules;
   isLoading: boolean;
   countryCode: MerchandisingCountryCode;
   writeEnabled: boolean;
@@ -32,7 +30,6 @@ type GlobalFacetsPanelProps = {
 const GlobalFacetsPanel = ({
   ruleSetIncludedFacets,
   ruleSetExcludedFacets,
-  ruleSetRules,
   isLoading,
   countryCode,
   writeEnabled,
@@ -168,7 +165,6 @@ const GlobalFacetsPanel = ({
           title="Global Facet Rule Editor"
           canMergeValueAttributes
           facetsState={facetsState}
-          rulesetMerchandisingRules={ruleSetRules}
           countryCode={facetPanelLocalState.countryCode}
           includedFacets={includedFacets}
           excludedFacets={excludedFacets}
