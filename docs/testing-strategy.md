@@ -1,0 +1,93 @@
+# Testing Strategy
+
+## Test Types
+
+### Unit Tests
+
+- **Location**: `src/**/*.spec.ts(x)`
+- **Runner**: Jest
+- **Coverage Requirements**: 100%
+- **Command**: `npm run test`
+
+#### Example
+
+```typescript
+describe('RulesetEditor', () => {
+  it('should update attribute weight', () => {
+    // Arrange
+    const initialWeight = 50;
+
+    // Act
+    const result = updateWeight(initialWeight, 75);
+
+    // Assert
+    expect(result).toBe(75);
+  });
+});
+```
+
+### E2E Tests
+
+- **Location**: `e2e/**/*.spec.ts`
+- **Runner**: Playwright
+- **Command**: `npm run test:e2e:ui`
+
+#### Test Categories
+
+1. **Smoke Tests**
+   - Run every 15 minutes
+   - Basic functionality verification
+   - Critical path testing
+
+2. **Mock Tests**
+   - Test complex interactions
+   - Verify error handling
+
+3. **Production Tests**
+   - Verify authentication
+   - Test data loading
+   - Check critical business flows
+
+## Test Environment Setup
+
+### Local Testing
+
+```bash
+# Unit and E2E Tests
+NEXT_PUBLIC_AUTO_LOGIN=false npm run test
+
+# E2E Tests with UI
+npm run test:e2e:ui
+
+# E2E Tests headless
+npm run test:e2e
+```
+
+### CI/CD Testing
+
+- PR validation runs all tests
+- Smoke tests run automatically
+- Production tests require credentials
+
+## Test Data Management
+
+### Mock Data
+
+- Located in `src/test/data`
+- Use factories for consistent data (we don't do that now, so would be good to add)
+
+### API Mocking
+
+- MSW or just mocks for unit tests
+
+## Debugging Tests
+
+### Unit Tests
+
+```bash
+# Debug specific test
+npm run test -- -t "test name"
+
+# Watch mode
+npm run test -- --watch
+```
