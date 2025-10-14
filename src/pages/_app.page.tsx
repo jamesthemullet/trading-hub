@@ -2,6 +2,7 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
 import styled from '@emotion/styled';
+import { useContext } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { createTheme, MantineProvider, Portal } from '@mantine/core';
 
@@ -41,6 +42,7 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
   const [cookies] = useCookies([
     'flagAuthorization',
     'flagAuthorizationRoleOverride',
+    'flagOneTrust',
     'flagShowNewFacetValuesPage',
   ]);
 
@@ -53,11 +55,53 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
           searchOverride: 'No Override',
           globalOverride: 'No Override',
         },
+        oneTrust: cookies.flagOneTrust,
         showNewFacetValuesPage: cookies.flagShowNewFacetValuesPage,
       }}
     >
       {children}
     </FeatureFlagContext.Provider>
+  );
+};
+
+const OneTrustScripts = () => {
+  const { oneTrust } = useContext(FeatureFlagContext);
+  const isLocal =
+    typeof window !== 'undefined' && window.location.hostname === 'localhost';
+
+  if (!oneTrust || isLocal) {
+    return null;
+  }
+  return (
+    <>
+      <Script
+        src="https://cdn-ukwest.onetrust.com/scripttemplates/otSDKStub.js"
+        type="text/javascript"
+        charSet="UTF-8"
+        data-domain-script="01999609-8173-7554-b57e-cebe580c3242"
+        strategy="afterInteractive"
+      />
+      <Script
+        id="onetrust-inline"
+        type="text/javascript"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: 'function OptanonWrapper() {}',
+        }}
+      />
+      <Script id="onetrust-clarity-consent" strategy="afterInteractive">
+        {`
+          function sendClarityConsent() {
+            if (typeof OneTrust === 'undefined' || typeof clarity === 'undefined') return;
+            console.log(OneTrust);
+            // to be completed
+          }
+
+          window.addEventListener('OneTrustGroupsUpdated', sendClarityConsent);
+          window.addEventListener('load', sendClarityConsent);
+        `}
+      </Script>
+    </>
   );
 };
 
@@ -93,6 +137,27 @@ export default function App({
             </Layout>
           </MantineProvider>
         </SessionProvider>
+
+        <OneTrustScripts />
+
+        {process.env.CLARITY_KEY && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(c,l,a,r,i,t,y){
+                  c[a] = c[a] || function () { 
+                    (c[a].q = c[a].q || []).push(arguments) 
+                  };
+                  t=l.createElement(r);
+                  t.async=1;
+                  t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];
+                  y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "${process.env.CLARITY_KEY}");
+              `,
+            }}
+          />
+        )}
       </FeatureFlagWrapper>
     </CookiesProvider>
   );

@@ -28,6 +28,7 @@ const FeatureFlags = () => {
     [
       'flagAuthorization',
       'flagAuthorizationRoleOverride',
+      'flagOneTrust',
       'flagShowNewFacetValuesPage',
     ],
     {
@@ -59,6 +60,16 @@ const FeatureFlags = () => {
           checked={flagAuthorization}
           onChange={() => {
             setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
+          }}
+        />
+      </Flag>
+
+      <Flag>
+        <p>One Trust:&nbsp;</p>
+        <Toggle
+          checked={cookies.flagOneTrust}
+          onChange={() => {
+            setCookie('flagOneTrust', JSON.stringify(!cookies.flagOneTrust));
           }}
         />
       </Flag>
