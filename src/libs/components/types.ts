@@ -10,7 +10,7 @@ import type {
   MerchandisingPagination,
   MerchandisingReturnedNotFound,
 } from '../api';
-import type { FacetDisplayType } from '../modules/facets/facets';
+import type { FacetDisplayType } from '../modules/facet-list/facet-list';
 
 export type RulesetAttribute = {
   attribute: {

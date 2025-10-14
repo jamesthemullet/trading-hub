@@ -6,8 +6,8 @@ import * as analytics from '@/libs/hooks/utils/analytics';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { Props } from './facets';
-import { Facets } from './facets';
+import type { Props } from './facet-list';
+import { Facets } from './facet-list';
 
 const mockUseFacetsList = {
   isLoading: false,

@@ -6,7 +6,7 @@ import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { Facets } from '@/libs/modules/facets/facets';
+import { Facets } from '@/libs/modules/facet-list/facet-list';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
