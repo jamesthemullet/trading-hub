@@ -33,7 +33,9 @@ test.describe('Category Ranking', () => {
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
-    await page.getByText(TEST_CATEGORY_NAME).click({ timeout: 500 });
+
+    await expect(page.getByText(TEST_CATEGORY_NAME)).toBeVisible();
+    await page.getByText(TEST_CATEGORY_NAME).click();
     await page.getByRole('button', { name: 'Close' }).click();
 
     await page.getByRole('button', { name: 'Create' }).click();
