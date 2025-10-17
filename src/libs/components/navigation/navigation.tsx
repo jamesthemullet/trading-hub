@@ -50,6 +50,7 @@ const Logo = styled.img`
 
 const StyledLink = styled(Link)`
   min-height: 24px;
+  padding: ${spacing(1)};
 `;
 
 export const Navigation = () => {

@@ -30,8 +30,6 @@ const headings = [
 const mockId1 = 'ewfw-e3f23-f23f2-3cwef3';
 const mockId2 = 'ewfw-e3f23-f23f2-3cwef4';
 
-const MOCK_CATEGORY_ID = 'NewRowId';
-
 const mockRules = {
   pinnedProducts: [],
   blockedProducts: [],
@@ -78,23 +76,6 @@ const mockRow2: MerchandisingReturnedCategoryRuleSet = {
       plpUrl: '/jeans',
     },
   ],
-};
-
-const mockRuleSet: MerchandisingReturnedCategoryRuleSet = {
-  id: MOCK_CATEGORY_ID,
-  isEnabled: true,
-  lastChanged: {
-    date: '2023-12-28T14:24:17Z',
-    user: 'M&S',
-  },
-  categoriesInfo: [
-    {
-      id: 'xyz0',
-      name: 'Jeans',
-      plpUrl: '/jeans',
-    },
-  ],
-  rules: mockRules,
 };
 
 const mappingMock = {
@@ -190,109 +171,6 @@ describe('TablePanel', () => {
     });
   });
 
-  it('should call createNewRow when add ranking rule is clicked and mode is eager', async () => {
-    const NEW_RULE_BUTTON_TEXT = 'Add ranking rule';
-    jest.mocked(mappingMock.newRuleSet).mockResolvedValue({
-      data: mockRuleSet,
-      status: 200,
-    });
-
-    renderWithProviders(
-      <TablePanel
-        writeEnabled
-        basePath="/category"
-        headings={headings}
-        mapping={mappingMock}
-        newRowCreateMode="create-then-redirect"
-        ruleType="global"
-      />
-    );
-
-    const createButton = await screen.findByText(NEW_RULE_BUTTON_TEXT);
-    act(() => {
-      createButton.click();
-    });
-
-    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(mappingMock.newRuleSet).toHaveBeenCalled();
-    });
-    await waitFor(() => {
-      expect(useRouter().push).toHaveBeenCalledWith(
-        `/category/rulesets/edit/${MOCK_CATEGORY_ID}`
-      );
-    });
-  });
-
-  it('should call createNewRow when add facet rule is clicked and mode is eager', async () => {
-    const NEW_RULE_BUTTON_TEXT = 'Add facet rule';
-    jest.mocked(mappingMock.newRuleSet).mockResolvedValue({
-      data: mockRuleSet,
-      status: 200,
-    });
-
-    renderWithProviders(
-      <TablePanel
-        writeEnabled
-        basePath="/category"
-        headings={headings}
-        mapping={mappingMock}
-        newRowCreateMode="create-then-redirect"
-        ruleType="global"
-      />
-    );
-
-    const createButton = await screen.findByText(NEW_RULE_BUTTON_TEXT);
-    act(() => {
-      createButton.click();
-    });
-
-    expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(mappingMock.newRuleSet).toHaveBeenCalled();
-    });
-    await waitFor(() => {
-      expect(useRouter().push).toHaveBeenCalledWith(
-        `/category/facets/edit/${MOCK_CATEGORY_ID}`
-      );
-    });
-  });
-
-  it('should call createNewRow when add ranking rule is clicked and mode is eager and when error is returned it should render it', async () => {
-    jest.mocked(mappingMock.newRuleSet).mockRejectedValue({
-      error: {
-        status: 500,
-        message: 'Error creating new row',
-      },
-    });
-
-    renderWithProviders(
-      <TablePanel
-        writeEnabled
-        basePath="/category"
-        headings={headings}
-        mapping={mappingMock}
-        newRowCreateMode="create-then-redirect"
-        ruleType="global"
-      />
-    );
-
-    const createButton = await screen.findByText('Add ranking rule');
-    act(() => {
-      createButton.click();
-    });
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(
-          'Failed to create new ruleset "Error Error creating new row 500"'
-        )
-      ).toBeInTheDocument();
-    });
-  });
-
   it('should show errors', async () => {
     jest.mocked(mappingMock.queryAllRuleSets).mockRejectedValue({
       error: {
@@ -308,7 +186,6 @@ describe('TablePanel', () => {
         headings={headings}
         mapping={mappingMock}
         ruleType="global"
-        newRowCreateMode="create-then-redirect"
       />
     );
     await waitFor(() => {

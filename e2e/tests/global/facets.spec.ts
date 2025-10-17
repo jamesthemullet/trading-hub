@@ -69,8 +69,19 @@ test.describe('global facets', () => {
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await checkAccessibility(page);
+    await page.waitForTimeout(1000);
 
-    await page.getByRole('button', { name: 'Add facet rule' }).click();
+    await page.getByRole('link', { name: 'Add facet rule' }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Facet Rule Editor' })
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Create', exact: true }).click();
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit facet rule' }).click();
 
     await expect(
       page.getByText(

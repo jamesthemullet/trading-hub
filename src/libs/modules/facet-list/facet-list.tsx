@@ -74,7 +74,7 @@ type SearchTerms = { searchTerms: string[] };
 type SaveType = MerchandisingRuleSet & (CategoryIds | SearchTerms);
 
 export type Props = {
-  facetType: 'search' | 'category';
+  facetType: 'search' | 'category' | 'global';
   isNewRuleset: boolean;
   onCancel: () => void;
   onSave: (args: SaveType) => void;
@@ -88,7 +88,7 @@ export type Props = {
   searchTerms?: string[];
 };
 
-export const Facets = ({
+export const FacetList = ({
   currentRuleset,
   facetType,
   isNewRuleset,
@@ -101,7 +101,7 @@ export const Facets = ({
   const [ruleset, dispatch] = useReducer(
     rulesetReducer,
     currentRuleset || {
-      isEnabled: true,
+      isEnabled: facetType !== 'global',
       startDate: undefined,
       endDate: undefined,
       rules: {
@@ -357,7 +357,9 @@ export const Facets = ({
 
       <ProductGridHeader
         canSave={
-          !!selectedCategoriesInfo.length || !!selectedSearchTerms.length
+          !!selectedCategoriesInfo.length ||
+          !!selectedSearchTerms.length ||
+          facetType === 'global'
         }
         onSave={handleSave}
         hasPreview={
@@ -373,7 +375,7 @@ export const Facets = ({
         hasChanges
         onCancel={onCancel}
         title="Facet Rule Editor"
-        shouldHidePreview={false}
+        shouldHidePreview={facetType === 'global'}
         rulesetType={facetType}
         writeEnabled={writeEnabled}
       />
@@ -434,28 +436,29 @@ export const Facets = ({
               writeEnabled={writeEnabled}
             />
           )}
-          <Duration>
-            <Typography as="p" withMargin variant="labelMedium">
-              Duration
-            </Typography>
-            <DateTimePickerModal
-              showCalendarIcon
-              onUpdateDateTimeRange={(dateTime) => {
-                dispatch({
-                  type: 'dateTime',
-                  payload: {
-                    dateTime,
-                  },
-                });
-              }}
-              dateTime={[
-                ruleset.startDate ? new Date(ruleset.startDate) : null,
-                ruleset.endDate ? new Date(ruleset.endDate) : null,
-              ]}
-              writeEnabled={writeEnabled}
-            />
-          </Duration>
-
+          {facetType !== 'global' && (
+            <Duration>
+              <Typography as="p" withMargin variant="labelMedium">
+                Duration
+              </Typography>
+              <DateTimePickerModal
+                showCalendarIcon
+                onUpdateDateTimeRange={(dateTime) => {
+                  dispatch({
+                    type: 'dateTime',
+                    payload: {
+                      dateTime,
+                    },
+                  });
+                }}
+                dateTime={[
+                  ruleset.startDate ? new Date(ruleset.startDate) : null,
+                  ruleset.endDate ? new Date(ruleset.endDate) : null,
+                ]}
+                writeEnabled={writeEnabled}
+              />
+            </Duration>
+          )}
           {facetType === 'search' && ruleset.countryCode === 'UK_IE' && (
             <div>
               <Typography as="p" withMargin variant="labelMedium">
@@ -558,6 +561,21 @@ export const Facets = ({
         )}
       </AttributesTable>
 
+      {filteredFacets.length === 0 && facetType !== 'global' && (
+        <NoAttributesBlock>
+          <Text>No, there are no attributes yet.</Text>
+          <Text>How about adding a subcategory first?</Text>
+        </NoAttributesBlock>
+      )}
+
+      {filteredFacets.length === 0 && facetType === 'global' && (
+        <NoAttributesBlock>
+          <Text>Please create the ruleset before editing facets.</Text>
+        </NoAttributesBlock>
+      )}
+
+      <FilteredResultsPanel filteredFacets={filteredFacets.length} />
+
       {isFacetValuesModalOpen && selectedFacet && (
         <SearchAndCategoryFacetsPanelModal
           onClose={() => setIsFacetValuesModalOpen(false)}
@@ -579,15 +597,6 @@ export const Facets = ({
           writeEnabled={writeEnabled}
         />
       )}
-
-      {filteredFacets.length === 0 && (
-        <NoAttributesBlock>
-          <Text>No, there are no attributes yet.</Text>
-          <Text>How about adding a subcategory first?</Text>
-        </NoAttributesBlock>
-      )}
-
-      <FilteredResultsPanel filteredFacets={filteredFacets.length} />
     </>
   );
 };

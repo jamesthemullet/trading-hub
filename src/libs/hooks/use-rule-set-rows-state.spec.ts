@@ -78,49 +78,6 @@ describe('useCategoryRuleSetApi', () => {
     });
   });
 
-  describe('createNewRow', () => {
-    it('should create a new rule set', async () => {
-      mappingMock.newRuleSet.mockResolvedValue({
-        data: mockRuleSet,
-        status: { status: 200 },
-      });
-
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
-
-      await act(async () => {
-        await result.current.createNewRow('rulesets', 'create-then-redirect');
-      });
-
-      expect(mappingMock.newRuleSet).toHaveBeenCalled();
-      expect(useRouter().push).toHaveBeenCalledWith(
-        `/search/rulesets/edit/${ruleSetId}`
-      );
-    });
-
-    it('should return errors', async () => {
-      mappingMock.newRuleSet.mockRejectedValue({
-        error: {
-          message: 'something went wrong',
-          status: 500,
-        },
-      });
-
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
-
-      await act(async () => {
-        await result.current.createNewRow('rulesets', 'create-then-redirect');
-      });
-
-      expect(result.current.error).toEqual(
-        'Failed to create new ruleset "Error something went wrong 500"'
-      );
-    });
-  });
-
   describe('getRows', () => {
     it('should return a function that fetches the category rule sets', async () => {
       mappingMock.queryAllRuleSets.mockResolvedValue({
@@ -128,9 +85,7 @@ describe('useCategoryRuleSetApi', () => {
         status: { status: 200 },
       });
 
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.getRows(1, 10, '', 'UK');
@@ -152,9 +107,7 @@ describe('useCategoryRuleSetApi', () => {
         },
       });
 
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.getRows(1, 10, '', 'UK');
@@ -172,9 +125,7 @@ describe('useCategoryRuleSetApi', () => {
         data: 'ok',
         status: { status: 200 },
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.deleteRow({ id: ruleSetId });
@@ -194,9 +145,7 @@ describe('useCategoryRuleSetApi', () => {
         data: 'ok',
         status: { status: 200 },
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.getRows(1, 10, '', 'UK');
@@ -215,9 +164,7 @@ describe('useCategoryRuleSetApi', () => {
       mappingMock.deleteRuleSetById.mockRejectedValue({
         error: { message: 'not ok', status: 200 },
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.deleteRow({ id: ruleSetId });
@@ -261,9 +208,7 @@ describe('useCategoryRuleSetApi', () => {
         data: ruleSet,
         status: { status: 200 },
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
       expect(result.current.rowsState.pagination.totalItems).toBe(0);
 
       await act(async () => {
@@ -286,9 +231,7 @@ describe('useCategoryRuleSetApi', () => {
         data: ruleSet,
         status: { status: 200 },
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.getRows(1, 10, '', 'UK');
@@ -309,9 +252,7 @@ describe('useCategoryRuleSetApi', () => {
       mappingMock.newRuleSet.mockRejectedValue({
         error: { message: 'JSON parse error', status: 500 },
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.duplicateRow(ruleSetId);
@@ -327,9 +268,7 @@ describe('useCategoryRuleSetApi', () => {
         error: { message: 'not ok', status: 500 },
       });
 
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.duplicateRow(ruleSetId);
@@ -348,9 +287,7 @@ describe('useCategoryRuleSetApi', () => {
       mappingMock.newRuleSet.mockImplementation(async () => {
         throw new Error('No data');
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.duplicateRow(ruleSetId);
@@ -376,9 +313,7 @@ describe('useCategoryRuleSetApi', () => {
         data: { ...mockRuleSet, isEnabled: false },
         status: { status: 200 },
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.getRows(1, 10, '', 'UK');
@@ -410,9 +345,7 @@ describe('useCategoryRuleSetApi', () => {
           status: '500',
         },
       });
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.toggleRow({ id: ruleSetId });
@@ -428,9 +361,7 @@ describe('useCategoryRuleSetApi', () => {
         error: { message: 'not ok', status: 500 },
       });
 
-      const { result } = renderHook(() =>
-        useRuleSetRowsState(mappingMock, '/search')
-      );
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
 
       await act(async () => {
         await result.current.toggleRow({ id: ruleSetId });

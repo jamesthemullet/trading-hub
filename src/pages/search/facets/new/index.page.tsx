@@ -5,7 +5,7 @@ import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useSearchRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { Facets } from '@/libs/modules/facet-list/facet-list';
+import { FacetList } from '@/libs/modules/facet-list/facet-list';
 
 import Head from 'next/head';
 
@@ -77,23 +77,18 @@ const NewRuleSetPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create search ranking rule</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={[
-            'Search & Merchandising',
-            'Site search',
-            'Ranking rules',
-          ]}
-        />
 
-        <Facets
-          facetType="search"
-          isNewRuleset
-          onCancel={handleCancel}
-          onSave={handleSave}
-          writeEnabled={hasWriteAccess}
-        />
-      </>
+      <Heading
+        breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
+      />
+
+      <FacetList
+        facetType="search"
+        isNewRuleset
+        onCancel={handleCancel}
+        onSave={handleSave}
+        writeEnabled={hasWriteAccess}
+      />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
@@ -17,9 +17,6 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-const NEW_RULE_BUTTON_TEXT = 'Add ranking rule';
-const NEW_FACET_RULE_BUTTON_TEXT = 'Add facet rule';
-
 const mockMerchandisingRules = {
   pinnedProducts: [],
   blockedProducts: [],
@@ -34,7 +31,6 @@ const mockMerchandisingRules = {
 };
 
 const MOCK_CATEGORY_ID = 'Cat123';
-const mockId = 'ewfw-e3f23-f23f2-3cwef3';
 
 const mockPush = jest.fn();
 
@@ -244,21 +240,6 @@ describe('Index', () => {
   });
 
   describe('Rulesets', () => {
-    it('creates a new rule set and redirects to the edit page', async () => {
-      renderWithProviders(<RuleSets />);
-
-      const createButton = await screen.findByText(NEW_RULE_BUTTON_TEXT);
-      act(() => {
-        createButton.click();
-      });
-
-      expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
-
-      expect(mockPush).toHaveBeenCalledWith(
-        `/global/rulesets/edit/${MOCK_CATEGORY_ID}`
-      );
-    });
-
     it('should enable or disable a ruleset', async () => {
       const user = userEvent.setup();
       const mockId = 'ewfw-e3f23-f23f2-3cwef3';
@@ -507,46 +488,6 @@ describe('Index', () => {
       await user.click(rulesetDropdown[0]);
 
       expect(screen.queryByTitle('Duplicate')).not.toBeInTheDocument();
-    });
-
-    it('creates a new rule set and redirects to the edit page', async () => {
-      jest.mocked(useRuleSet).mockReturnValue({
-        globalRuleSets: [
-          {
-            id: mockId,
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-          },
-        ],
-        categoryRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-
-      renderWithProviders(<RuleSets />);
-
-      const createButton = await screen.findByText(NEW_FACET_RULE_BUTTON_TEXT);
-      act(() => {
-        createButton.click();
-      });
-
-      expect(
-        await screen.findByText(NEW_FACET_RULE_BUTTON_TEXT)
-      ).toBeInTheDocument();
-
-      expect(mockPush).toHaveBeenCalledWith(
-        `/global/facets/edit/${MOCK_CATEGORY_ID}`
-      );
     });
   });
 });

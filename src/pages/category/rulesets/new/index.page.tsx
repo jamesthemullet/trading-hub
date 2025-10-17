@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
 import type { MerchandisingCategoryRuleSet } from '@/libs/api';
-import { Heading } from '@/libs/components';
+import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -10,7 +10,7 @@ import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 import Head from 'next/head';
 
 const NewRuleSetPage = () => {
-  const { createRuleset } = useRuleSetCreate();
+  const { createRuleset, error } = useRuleSetCreate();
   const router = useRouter();
 
   const createNewCategoryRuleSet = async ({
@@ -49,19 +49,22 @@ const NewRuleSetPage = () => {
       <Head>
         <title>Merchandising Hub | M&S | Create Category Ruleset</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']}
-        />
 
-        <Ruleset
-          isEnabled
-          onCreate={createNewCategoryRuleSet}
-          onCancel={() => router.push('/category')}
-          rulesetType="category"
-          writeEnabled={hasWriteAccess}
-        />
-      </>
+      <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
+
+      {error && (
+        <ErrorMessage role="alert">
+          Error whilst creating new category rule set: {error}
+        </ErrorMessage>
+      )}
+
+      <Ruleset
+        isEnabled
+        onCreate={createNewCategoryRuleSet}
+        onCancel={() => router.push('/category')}
+        rulesetType="category"
+        writeEnabled={hasWriteAccess}
+      />
     </>
   );
 };

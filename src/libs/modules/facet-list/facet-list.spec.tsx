@@ -7,7 +7,7 @@ import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { Props } from './facet-list';
-import { Facets } from './facet-list';
+import { FacetList } from './facet-list';
 
 const mockUseFacetsList = {
   isLoading: false,
@@ -119,16 +119,32 @@ describe('Facets', () => {
   });
 
   it('should render the facet management editing page', async () => {
-    renderWithProviders(<Facets {...defaultFacetProps} />);
+    renderWithProviders(<FacetList {...defaultFacetProps} />);
 
     expect(
       screen.getByRole('heading', { level: 1, name: 'Facet Rule Editor' })
     ).toBeVisible();
   });
 
+  it('should render default empty ruleset message when facetType is global', async () => {
+    const originalFacets = mockUseFacetsList.facets;
+    try {
+      mockUseFacetsList.facets = [];
+      renderWithProviders(
+        <FacetList {...defaultFacetProps} facetType="global" />
+      );
+
+      expect(
+        screen.getByText('Please create the ruleset before editing facets.')
+      ).toBeVisible();
+    } finally {
+      mockUseFacetsList.facets = originalFacets;
+    }
+  });
+
   it('should add and set a category', async () => {
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Facets {...defaultFacetProps} />);
+    renderWithProviders(<FacetList {...defaultFacetProps} />);
     const modalButton = await screen.findByRole('button', {
       name: 'Edit',
     });
@@ -170,7 +186,7 @@ describe('Facets', () => {
       },
     ];
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         isNewRuleset={false}
         categoriesInfo={categoriesInfo}
@@ -203,7 +219,7 @@ describe('Facets', () => {
 
   it('should not allow setting a duplicate category', async () => {
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Facets {...defaultFacetProps} />);
+    renderWithProviders(<FacetList {...defaultFacetProps} />);
     const modalButton = await screen.findByRole('button', {
       name: 'Edit',
     });
@@ -244,7 +260,9 @@ describe('Facets', () => {
 
   it('should add and set a search term', async () => {
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Facets {...defaultFacetProps} facetType="search" />);
+    renderWithProviders(
+      <FacetList {...defaultFacetProps} facetType="search" />
+    );
 
     await waitFor(async () => {
       await user.click(screen.getByRole('button', { name: 'Edit' }));
@@ -262,7 +280,9 @@ describe('Facets', () => {
 
   it('should not allow setting a duplicate search term', async () => {
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Facets {...defaultFacetProps} facetType="search" />);
+    renderWithProviders(
+      <FacetList {...defaultFacetProps} facetType="search" />
+    );
 
     await waitFor(async () => {
       await user.click(screen.getByRole('button', { name: 'Edit' }));
@@ -283,7 +303,7 @@ describe('Facets', () => {
   it('should remove an existing search term', async () => {
     const user = userEvent.setup({ delay: null });
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         facetType="search"
         searchTerms={['jeans']}
@@ -318,7 +338,7 @@ describe('Facets', () => {
       },
     ];
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{
           isEnabled: true,
@@ -376,7 +396,7 @@ describe('Facets', () => {
       },
     ];
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         isNewRuleset={false}
         categoriesInfo={categoriesInfo}
@@ -408,7 +428,7 @@ describe('Facets', () => {
       },
     ];
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         isNewRuleset={false}
         categoriesInfo={categoriesInfo}
@@ -441,7 +461,7 @@ describe('Facets', () => {
       },
     ];
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{
           ...mockRuleset,
@@ -487,7 +507,7 @@ describe('Facets', () => {
       },
     ];
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{
           ...mockRuleset,
@@ -532,7 +552,7 @@ describe('Facets', () => {
       },
     ];
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{
           ...mockRuleset,
@@ -561,7 +581,7 @@ describe('Facets', () => {
 
   it('should show and close the preview modal for search terms', async () => {
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, facets: undefined }}
         isNewRuleset={false}
@@ -594,7 +614,7 @@ describe('Facets', () => {
 
   it('should set the preview country for search facets to IE', async () => {
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
         isNewRuleset={false}
@@ -624,7 +644,7 @@ describe('Facets', () => {
 
   it('should set the preview country for search facets to UK', async () => {
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
         isNewRuleset={false}
@@ -653,7 +673,7 @@ describe('Facets', () => {
 
   it('should open and close the preview country dropdown', async () => {
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
         isNewRuleset={false}
@@ -685,7 +705,7 @@ describe('Facets', () => {
 
   it('should change the country of influence', async () => {
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
         isNewRuleset={false}
@@ -725,7 +745,7 @@ describe('Facets', () => {
 
     it('should change the duration', async () => {
       renderWithProviders(
-        <Facets
+        <FacetList
           {...defaultFacetProps}
           currentRuleset={{
             ...mockRuleset,
@@ -788,7 +808,7 @@ describe('Facets', () => {
       },
     ];
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{
           ...mockRuleset,
@@ -830,7 +850,7 @@ describe('Facets', () => {
 
   it('should open and return changes from the facet values modal', async () => {
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{
           ...mockRuleset,
@@ -873,7 +893,7 @@ describe('Facets', () => {
 
   it('should not allow to edit values of an algoControl facet', async () => {
     renderWithProviders(
-      <Facets
+      <FacetList
         {...defaultFacetProps}
         currentRuleset={{
           ...mockRuleset,
@@ -932,7 +952,9 @@ describe('Facets', () => {
       startDate: undefined,
     };
 
-    renderWithProviders(<Facets {...defaultFacetProps} onSave={onSaveSpy} />);
+    renderWithProviders(
+      <FacetList {...defaultFacetProps} onSave={onSaveSpy} />
+    );
     const user = userEvent.setup({ delay: null });
     const modalButton = await screen.findByRole('button', {
       name: 'Edit',

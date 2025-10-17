@@ -6,7 +6,7 @@ import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { Facets } from '@/libs/modules/facet-list/facet-list';
+import { FacetList } from '@/libs/modules/facet-list/facet-list';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -91,7 +91,7 @@ const Page = ({ id }: { id: string }) => {
       {isLoading ? (
         <FacetsPanelSkeleton title="Facet Rule Editor" aria-busy="true" />
       ) : (
-        <Facets
+        <FacetList
           facetType="search"
           currentRuleset={ruleSet}
           searchTerms={ruleSet.searchTerms}

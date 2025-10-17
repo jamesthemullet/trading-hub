@@ -154,10 +154,6 @@ export type GetRowsFn = (
   countryCode?: MerchandisingCountryCode
 ) => Promise<void>;
 export type DeleteRowFn = (row: { id: string }) => Promise<void>;
-export type CreateRowFn = (
-  path: string,
-  newRowCreateMode?: 'create-then-redirect' | 'redirect-to-new'
-) => Promise<void>;
 export type DuplicateRowFn = (id: string) => Promise<void>;
 export type ToggleRowFn = (row: { id: string }) => Promise<void>;
 
@@ -201,7 +197,6 @@ export type RuleSetMapping<A, T, N> = {
 };
 
 export type RowsApi = {
-  createNewRow: CreateRowFn;
   getRows: GetRowsFn;
   deleteRow: DeleteRowFn;
   duplicateRow: DuplicateRowFn;

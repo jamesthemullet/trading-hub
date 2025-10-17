@@ -156,6 +156,7 @@ export const Ruleset = ({
   isEnabled,
   onCancel,
   onCreate,
+  onCreateGlobalRuleset,
   onCreateKeywordSearchRuleset,
   onSave,
   categoriesInfo,
@@ -186,6 +187,7 @@ export const Ruleset = ({
     args: Required<Pick<MerchandisingCategoryRuleSet, 'facets'>> &
       MerchandisingCategoryRuleSet
   ) => void;
+  onCreateGlobalRuleset?: (args: MerchandisingRuleSet) => void;
   onCreateKeywordSearchRuleset?: (args: MerchandisingKeywordRuleSet) => void;
   categoriesInfo?: Array<{
     id: string;
@@ -419,6 +421,14 @@ export const Ruleset = ({
         endDate: ruleset.endDate,
         countryCode: ruleset.countryCode,
       });
+    } else if (onCreateGlobalRuleset && rulesetType === 'global') {
+      onCreateGlobalRuleset({
+        rules: merchandisingRules,
+        isEnabled: false,
+        startDate: ruleset.startDate,
+        endDate: ruleset.endDate,
+        countryCode: ruleset.countryCode,
+      });
     } else {
       createKeywordSearchRuleset();
     }
@@ -462,7 +472,11 @@ export const Ruleset = ({
         hasChanges={
           hasChanges || !isEqual(merchandisingRules, rulesetMerchandisingRules)
         }
-        isNewRuleSet={!!onCreate || !!onCreateKeywordSearchRuleset}
+        isNewRuleSet={
+          !!onCreate ||
+          !!onCreateKeywordSearchRuleset ||
+          !!onCreateGlobalRuleset
+        }
         onCancel={() => {
           onCancel();
         }}
@@ -472,331 +486,343 @@ export const Ruleset = ({
         writeEnabled={writeEnabled}
       />
 
-      <CategoryPanel>
-        <InfluenceWrapper>
-          <Typography as="p" withMargin variant="labelMedium">
-            Influence
-          </Typography>
-          <CombinedDropdown
-            variant="countrySelector"
-            onChange={(country) => {
-              dispatch({
-                type: 'changeCountry',
-                payload: country as MerchandisingCountryCode,
-              });
-              track({
-                event: `Change ${rulesetType} ranking rule influence to ${country}`,
-              });
-              if (country === 'UK' && selectedPreviewCountryCode === 'IE') {
-                setSelectedPreviewCountryCode('UK');
-              }
-              if (country === 'IE' && selectedPreviewCountryCode === 'UK') {
-                setSelectedPreviewCountryCode('IE');
-              }
-            }}
-            ariaLabel="Select country"
-            selectedCountryCode={ruleset.countryCode}
-            writeEnabled={writeEnabled}
-          />
-        </InfluenceWrapper>
-
-        {rulesetType !== 'global' && (
-          <>
-            {rulesetType === 'category' && (
-              <CategorySearchWrapper>
-                <CategorySearch
-                  selectedCategories={selectedCategories}
-                  onClearSelection={(category: string) => {
-                    setSelectedCategories(
-                      selectedCategories.filter(
-                        (categoryName) => categoryName !== category
-                      )
-                    );
-                    setSelectedCategoriesInfo(
-                      selectedCategoriesInfo.filter(
-                        (categoryInfo) => categoryInfo.id !== category
-                      )
-                    );
-                  }}
-                  onSelectCategory={onSelectCategory}
-                  selectedCategoriesInfo={selectedCategoriesInfo}
-                  countryCode={ruleset.countryCode}
-                  previewCategory={previewValue}
-                  selectPreviewCategory={(category: string | undefined) => {
-                    setPreviewValue(category);
-                    setSelectedPreviewCountryCode(
-                      category?.includes('IE_') ? 'IE' : 'UK'
-                    );
-                  }}
-                  writeEnabled={writeEnabled}
-                />
-              </CategorySearchWrapper>
-            )}
-
-            {rulesetType === 'search' && (
-              <SearchKeywords
-                title="Search Keywords"
-                searchTerms={rulesetSearchTerms}
-                addSearchTerm={onAddSearchTerm}
-                removeSearchTerm={onRemoveSearchTerm}
-                previewSearchTerm={previewValue}
-                selectPreviewSearchTerm={setPreviewValue}
+      {
+        <>
+          <CategoryPanel>
+            <InfluenceWrapper>
+              <Typography as="p" withMargin variant="labelMedium">
+                Influence
+              </Typography>
+              <CombinedDropdown
+                variant="countrySelector"
+                onChange={(country) => {
+                  dispatch({
+                    type: 'changeCountry',
+                    payload: country as MerchandisingCountryCode,
+                  });
+                  track({
+                    event: `Change ${rulesetType} ranking rule influence to ${country}`,
+                  });
+                  if (country === 'UK' && selectedPreviewCountryCode === 'IE') {
+                    setSelectedPreviewCountryCode('UK');
+                  }
+                  if (country === 'IE' && selectedPreviewCountryCode === 'UK') {
+                    setSelectedPreviewCountryCode('IE');
+                  }
+                }}
+                ariaLabel="Select country"
+                selectedCountryCode={ruleset.countryCode}
                 writeEnabled={writeEnabled}
               />
-            )}
-          </>
-        )}
-
-        {rulesetType === 'global' && (
-          <InfoBox text="You are currently editing all pages on the M&S website and app" />
-        )}
-
-        {rulesetType !== 'global' && (
-          <div>
-            <Typography as="p" withMargin variant="labelMedium">
-              Duration
-            </Typography>
-            <DateTimePickerModal
-              showCalendarIcon
-              onUpdateDateTimeRange={(dateTime: [Date | null, Date | null]) =>
-                dispatch({
-                  type: 'dateTime',
-                  payload: {
-                    dateTime,
-                  },
-                })
-              }
-              dateTime={[
-                ruleset.startDate ? new Date(ruleset.startDate) : null,
-                ruleset.endDate ? new Date(ruleset.endDate) : null,
-              ]}
-              writeEnabled={writeEnabled}
-            />
-          </div>
-        )}
-      </CategoryPanel>
-      {merchandisingRules.pinnedProducts.length >
-        MAX_PINNED_PRODUCTS_ALLOWED && (
-        <ErrorMessage style={{ padding: 0 }} role="alert">
-          Error: Please only pin 100 or fewer products
-        </ErrorMessage>
-      )}
-
-      <Tabs
-        tabs={rulesPanelTabs}
-        onTabChange={(tab) => {
-          setCurrentEditorTab(tab);
-          setSelectedProducts([]);
-          setSelectedSearchProducts([]);
-          track({
-            event: `${rulesetType} rules - ${rulesPanelTabs[tab].title} tab clicked`,
-          });
-        }}
-        currentTab={currentEditorTab}
-      />
-
-      <MainContainerPanel>
-        {(currentEditorTab === 0 || currentEditorTab === 1) && (
-          <>
-            <ProductSearchPanel isFullWidth={rulesetType === 'global'}>
-              <ProductSearchTabContent>
-                {currentEditorTab === 0 && (
-                  <ProductSearchAll
-                    isPinnable={rulesetType !== 'global'}
-                    pinnedProductsCount={
-                      merchandisingRules.pinnedProducts.length
-                    }
-                    merchandisingRules={merchandisingRules}
-                    dispatch={dispatch}
-                    countryCode={ruleset.countryCode}
-                    selectedProducts={selectedSearchProducts}
-                    isSelectionDisabled={
-                      !writeEnabled || !!selectedProducts.length
-                    }
-                    onSelectAll={setSelectedSearchProducts}
-                    onSelectProduct={({ id, isSelected }) => {
-                      setSelectedSearchProducts(
-                        isSelected
-                          ? selectedSearchProducts.filter(
-                              (product) => product !== id
-                            )
-                          : [...selectedSearchProducts, id]
-                      );
-                    }}
-                    rulesetType={rulesetType}
-                    categoryIds={selectedCategories}
-                    searchTerms={rulesetSearchTerms}
-                  />
-                )}
-                {currentEditorTab === 1 && (
-                  <RulesetAttributes
-                    merchandisingRules={merchandisingRules}
-                    categories={selectedCategories}
-                    countryCode={
-                      ruleset.countryCode ||
-                      // reducer always sets a country code but optional in api
-                      // istanbul ignore next
-                      'UK_IE'
-                    }
-                    dispatch={dispatch}
-                    searchTerms={rulesetSearchTerms}
-                    writeEnabled={writeEnabled}
-                    rulesetType={rulesetType}
-                  />
-                )}
-              </ProductSearchTabContent>
-            </ProductSearchPanel>
+            </InfluenceWrapper>
 
             {rulesetType !== 'global' && (
-              <VisualEditorPanel>
-                <PanelTop>
-                  <VisualEditorText>
-                    <VisualEditorText as="span" isStrong>
-                      VisualEditor -{' '}
-                    </VisualEditorText>
-                    {rulesetType === 'category'
-                      ? selectedCategories[0]
-                      : rulesetSearchTerms[0]}
-                  </VisualEditorText>
+              <>
+                {rulesetType === 'category' && (
+                  <CategorySearchWrapper>
+                    <CategorySearch
+                      selectedCategories={selectedCategories}
+                      onClearSelection={(category: string) => {
+                        setSelectedCategories(
+                          selectedCategories.filter(
+                            (categoryName) => categoryName !== category
+                          )
+                        );
+                        setSelectedCategoriesInfo(
+                          selectedCategoriesInfo.filter(
+                            (categoryInfo) => categoryInfo.id !== category
+                          )
+                        );
+                      }}
+                      onSelectCategory={onSelectCategory}
+                      selectedCategoriesInfo={selectedCategoriesInfo}
+                      countryCode={ruleset.countryCode}
+                      previewCategory={previewValue}
+                      selectPreviewCategory={(category: string | undefined) => {
+                        setPreviewValue(category);
+                        setSelectedPreviewCountryCode(
+                          category?.includes('IE_') ? 'IE' : 'UK'
+                        );
+                      }}
+                      writeEnabled={writeEnabled}
+                    />
+                  </CategorySearchWrapper>
+                )}
 
-                  {rulesetType === 'search' &&
-                    ruleset.countryCode === 'UK_IE' && (
-                      <CountryPreviewWrapper>
-                        <CountryPreviewDropdown
-                          variant="generic"
-                          label={`${selectedPreviewCountryCode} view`}
-                          icon={`icon-${selectedPreviewCountryCode.toLowerCase()}-flag`}
-                          ariaLabel="Select country view for visual editor"
-                          width={155}
-                        >
-                          <DropdownOption
-                            as="button"
-                            onClick={() => {
-                              track({
-                                event:
-                                  'Change search ranking rule preview to IE',
-                              });
-                              setSelectedPreviewCountryCode('IE');
-                            }}
-                          >
-                            <Image
-                              src="/trading-hub/asset/icon-ie-flag.svg"
-                              width={20}
-                              height={20}
-                              alt="IE flag"
-                            />
-                            &nbsp; IE view
-                          </DropdownOption>
-                          <DropdownOption
-                            as="button"
-                            onClick={() => {
-                              track({
-                                event:
-                                  'Change search ranking rule preview to UK',
-                              });
-                              setSelectedPreviewCountryCode('UK');
-                            }}
-                          >
-                            <Image
-                              src="/trading-hub/asset/icon-uk-flag.svg"
-                              width={20}
-                              height={20}
-                              alt="UK flag"
-                            />
-                            &nbsp; UK view
-                          </DropdownOption>
-                        </CountryPreviewDropdown>
-                      </CountryPreviewWrapper>
-                    )}
-                </PanelTop>
+                {rulesetType === 'search' && (
+                  <SearchKeywords
+                    title="Search Keywords"
+                    searchTerms={rulesetSearchTerms}
+                    addSearchTerm={onAddSearchTerm}
+                    removeSearchTerm={onRemoveSearchTerm}
+                    previewSearchTerm={previewValue}
+                    selectPreviewSearchTerm={setPreviewValue}
+                    writeEnabled={writeEnabled}
+                  />
+                )}
+              </>
+            )}
 
-                <TabContent>
-                  {previewError && (
-                    <ErrorMessage role="alert">
-                      Error: {previewError}
-                    </ErrorMessage>
-                  )}
+            {rulesetType === 'global' && (
+              <InfoBox text="You are currently editing all pages on the M&S website and app" />
+            )}
 
-                  {selectedCategories.length || rulesetSearchTerms.length ? (
-                    <>
-                      <ProductCount>
-                        <Text>
-                          {data.products.length}{' '}
-                          {data.pagination.totalItems &&
-                          data.pagination.totalItems > data.products.length
-                            ? `out of ${data.pagination.totalItems}`
-                            : ''}
-                          {` algo ${pluralize(' product', data.products.length)} loaded`}
-                        </Text>
-                      </ProductCount>
+            {rulesetType !== 'global' && (
+              <div>
+                <Typography as="p" withMargin variant="labelMedium">
+                  Duration
+                </Typography>
+                <DateTimePickerModal
+                  showCalendarIcon
+                  onUpdateDateTimeRange={(
+                    dateTime: [Date | null, Date | null]
+                  ) =>
+                    dispatch({
+                      type: 'dateTime',
+                      payload: {
+                        dateTime,
+                      },
+                    })
+                  }
+                  dateTime={[
+                    ruleset.startDate ? new Date(ruleset.startDate) : null,
+                    ruleset.endDate ? new Date(ruleset.endDate) : null,
+                  ]}
+                  writeEnabled={writeEnabled}
+                />
+              </div>
+            )}
+          </CategoryPanel>
 
-                      <VisualEditor
-                        products={data.products}
-                        dispatch={dispatch}
-                        selectedProducts={selectedProducts}
-                        isSelectionDisabled={
-                          !writeEnabled || !!selectedSearchProducts.length
+          {merchandisingRules.pinnedProducts.length >
+            MAX_PINNED_PRODUCTS_ALLOWED && (
+            <ErrorMessage style={{ padding: 0 }} role="alert">
+              Error: Please only pin 100 or fewer products
+            </ErrorMessage>
+          )}
+
+          <Tabs
+            tabs={rulesPanelTabs}
+            onTabChange={(tab) => {
+              setCurrentEditorTab(tab);
+              setSelectedProducts([]);
+              setSelectedSearchProducts([]);
+              track({
+                event: `${rulesetType} rules - ${rulesPanelTabs[tab].title} tab clicked`,
+              });
+            }}
+            currentTab={currentEditorTab}
+          />
+
+          <MainContainerPanel>
+            {(currentEditorTab === 0 || currentEditorTab === 1) && (
+              <>
+                <ProductSearchPanel isFullWidth={rulesetType === 'global'}>
+                  <ProductSearchTabContent>
+                    {currentEditorTab === 0 && (
+                      <ProductSearchAll
+                        isPinnable={rulesetType !== 'global'}
+                        pinnedProductsCount={
+                          merchandisingRules.pinnedProducts.length
                         }
+                        merchandisingRules={merchandisingRules}
+                        dispatch={dispatch}
+                        countryCode={ruleset.countryCode}
+                        selectedProducts={selectedSearchProducts}
+                        isSelectionDisabled={
+                          !writeEnabled || !!selectedProducts.length
+                        }
+                        onSelectAll={setSelectedSearchProducts}
                         onSelectProduct={({ id, isSelected }) => {
-                          setSelectedProducts(
+                          setSelectedSearchProducts(
                             isSelected
-                              ? selectedProducts.filter(
+                              ? selectedSearchProducts.filter(
                                   (product) => product !== id
                                 )
-                              : [...selectedProducts, id]
+                              : [...selectedSearchProducts, id]
                           );
                         }}
+                        rulesetType={rulesetType}
+                        categoryIds={selectedCategories}
+                        searchTerms={rulesetSearchTerms}
                       />
-                    </>
-                  ) : (
-                    <TextContent>
-                      <p>No, there are no product rankings yet.</p>
-                      <p>
-                        You need to select a category or sub-category first.
-                      </p>
-                    </TextContent>
-                  )}
-                </TabContent>
-              </VisualEditorPanel>
+                    )}
+                    {currentEditorTab === 1 && (
+                      <RulesetAttributes
+                        merchandisingRules={merchandisingRules}
+                        categories={selectedCategories}
+                        countryCode={
+                          ruleset.countryCode ||
+                          // reducer always sets a country code but optional in api
+                          // istanbul ignore next
+                          'UK_IE'
+                        }
+                        dispatch={dispatch}
+                        searchTerms={rulesetSearchTerms}
+                        writeEnabled={writeEnabled}
+                        rulesetType={rulesetType}
+                      />
+                    )}
+                  </ProductSearchTabContent>
+                </ProductSearchPanel>
+
+                {rulesetType !== 'global' && (
+                  <VisualEditorPanel>
+                    <PanelTop>
+                      <VisualEditorText>
+                        <VisualEditorText as="span" isStrong>
+                          VisualEditor -{' '}
+                        </VisualEditorText>
+                        {rulesetType === 'category'
+                          ? selectedCategories[0]
+                          : rulesetSearchTerms[0]}
+                      </VisualEditorText>
+
+                      {rulesetType === 'search' &&
+                        ruleset.countryCode === 'UK_IE' && (
+                          <CountryPreviewWrapper>
+                            <CountryPreviewDropdown
+                              variant="generic"
+                              label={`${selectedPreviewCountryCode} view`}
+                              icon={`icon-${selectedPreviewCountryCode.toLowerCase()}-flag`}
+                              ariaLabel="Select country view for visual editor"
+                              width={155}
+                            >
+                              <DropdownOption
+                                as="button"
+                                onClick={() => {
+                                  track({
+                                    event:
+                                      'Change search ranking rule preview to IE',
+                                  });
+                                  setSelectedPreviewCountryCode('IE');
+                                }}
+                              >
+                                <Image
+                                  src="/trading-hub/asset/icon-ie-flag.svg"
+                                  width={20}
+                                  height={20}
+                                  alt="IE flag"
+                                />
+                                &nbsp; IE view
+                              </DropdownOption>
+                              <DropdownOption
+                                as="button"
+                                onClick={() => {
+                                  track({
+                                    event:
+                                      'Change search ranking rule preview to UK',
+                                  });
+                                  setSelectedPreviewCountryCode('UK');
+                                }}
+                              >
+                                <Image
+                                  src="/trading-hub/asset/icon-uk-flag.svg"
+                                  width={20}
+                                  height={20}
+                                  alt="UK flag"
+                                />
+                                &nbsp; UK view
+                              </DropdownOption>
+                            </CountryPreviewDropdown>
+                          </CountryPreviewWrapper>
+                        )}
+                    </PanelTop>
+
+                    <TabContent>
+                      {previewError && (
+                        <ErrorMessage role="alert">
+                          Error: {previewError}
+                        </ErrorMessage>
+                      )}
+
+                      {selectedCategories.length ||
+                      rulesetSearchTerms.length ? (
+                        <>
+                          <ProductCount>
+                            <Text>
+                              {data.products.length}{' '}
+                              {data.pagination.totalItems &&
+                              data.pagination.totalItems > data.products.length
+                                ? `out of ${data.pagination.totalItems}`
+                                : ''}
+                              {` algo ${pluralize(' product', data.products.length)} loaded`}
+                            </Text>
+                          </ProductCount>
+
+                          <VisualEditor
+                            products={data.products}
+                            dispatch={dispatch}
+                            selectedProducts={selectedProducts}
+                            isSelectionDisabled={
+                              !writeEnabled || !!selectedSearchProducts.length
+                            }
+                            onSelectProduct={({ id, isSelected }) => {
+                              setSelectedProducts(
+                                isSelected
+                                  ? selectedProducts.filter(
+                                      (product) => product !== id
+                                    )
+                                  : [...selectedProducts, id]
+                              );
+                            }}
+                          />
+                        </>
+                      ) : (
+                        <TextContent>
+                          <p>No, there are no product rankings yet.</p>
+                          <p>
+                            You need to select a category or sub-category first.
+                          </p>
+                        </TextContent>
+                      )}
+                    </TabContent>
+                  </VisualEditorPanel>
+                )}
+              </>
             )}
-          </>
-        )}
 
-        {currentEditorTab === 2 && (
-          <RulesetChanges
-            merchandisingRules={merchandisingRules}
-            dispatch={dispatch}
-            isPinnable={rulesetType !== 'global'}
-            countryCode={ruleset.countryCode}
-            selectedProducts={selectedProducts}
-            onSelectAll={setSelectedProducts}
-            onSelectProduct={({ id, isSelected }) => {
-              setSelectedProducts(
-                isSelected
-                  ? selectedProducts.filter((product) => product !== id)
-                  : [...selectedProducts, id]
-              );
-            }}
-            isSelectionDisabled={
-              !writeEnabled || selectedSearchProducts.length > 0
-            }
-          />
-        )}
-      </MainContainerPanel>
+            {currentEditorTab === 2 && (
+              <RulesetChanges
+                merchandisingRules={merchandisingRules}
+                dispatch={dispatch}
+                isPinnable={rulesetType !== 'global'}
+                countryCode={ruleset.countryCode}
+                selectedProducts={selectedProducts}
+                onSelectAll={setSelectedProducts}
+                onSelectProduct={({ id, isSelected }) => {
+                  setSelectedProducts(
+                    isSelected
+                      ? selectedProducts.filter((product) => product !== id)
+                      : [...selectedProducts, id]
+                  );
+                }}
+                isSelectionDisabled={
+                  !writeEnabled || selectedSearchProducts.length > 0
+                }
+              />
+            )}
+          </MainContainerPanel>
 
-      {(selectedProducts.length > 0 || selectedSearchProducts.length > 0) && (
-        <BulkActions
-          dispatch={dispatch}
-          hasRestore={selectedProducts.length > 0}
-          selectedProducts={[...selectedProducts, ...selectedSearchProducts]}
-          onReset={() => {
-            setSelectedProducts([]);
-            setSelectedSearchProducts([]);
-          }}
-          ruleset={ruleset}
-          rulesetType={rulesetType}
-        />
-      )}
+          {(selectedProducts.length > 0 ||
+            selectedSearchProducts.length > 0) && (
+            <BulkActions
+              dispatch={dispatch}
+              hasRestore={selectedProducts.length > 0}
+              selectedProducts={[
+                ...selectedProducts,
+                ...selectedSearchProducts,
+              ]}
+              onReset={() => {
+                setSelectedProducts([]);
+                setSelectedSearchProducts([]);
+              }}
+              ruleset={ruleset}
+              rulesetType={rulesetType}
+            />
+          )}
+        </>
+      }
 
       {isLoading && <Loader />}
     </>

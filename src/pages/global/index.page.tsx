@@ -32,22 +32,6 @@ const mapping: RuleSetMapping<
     countryCode,
   }),
   allToArray: (data) => data.ruleSets,
-  getEmptyRuleSet: () => ({
-    isEnabled: false,
-    countryCode: 'UK_IE',
-    rules: {
-      pinnedProducts: [],
-      blockedProducts: [],
-      boosts: { numeric: [], alphanumeric: [], product: [] },
-      buries: { numeric: [], alphanumeric: [], product: [] },
-      includes: { alphanumeric: [] },
-      excludes: { alphanumeric: [] },
-    },
-    endDate: undefined,
-    startDate: undefined,
-    facets: [],
-    excludedFacets: undefined,
-  }),
   returnedToRuleSet: (returnedRuleSet) => {
     return {
       isEnabled: returnedRuleSet.isEnabled,
@@ -82,22 +66,20 @@ const RuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Global</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
-        />
 
-        <PageNameLabel>Global</PageNameLabel>
-        <TablePanel
-          basePath="/global"
-          headings={headings}
-          mapping={mapping}
-          newRowCreateMode="create-then-redirect"
-          ruleType="global"
-          isDuplicateEnabled={false}
-          writeEnabled={hasWriteAccess}
-        />
-      </>
+      <Heading
+        breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
+      />
+
+      <PageNameLabel>Global</PageNameLabel>
+      <TablePanel
+        basePath="/global"
+        headings={headings}
+        mapping={mapping}
+        ruleType="global"
+        isDuplicateEnabled={false}
+        writeEnabled={hasWriteAccess}
+      />
     </>
   );
 };

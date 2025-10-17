@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -39,7 +39,6 @@ export const TablePanel = <
   headings,
   mapping,
   ruleType,
-  newRowCreateMode = 'redirect-to-new',
   isDuplicateEnabled = true,
   writeEnabled,
 }: {
@@ -47,7 +46,6 @@ export const TablePanel = <
   headings: string[];
   mapping: RuleSetMapping<A, T, N>;
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
-  newRowCreateMode?: 'create-then-redirect' | 'redirect-to-new';
   isDuplicateEnabled?: boolean;
   writeEnabled: boolean;
 }) => {
@@ -56,11 +54,10 @@ export const TablePanel = <
     deleteRow,
     duplicateRow,
     toggleRow,
-    createNewRow,
     error,
     rowsState,
     isLoading,
-  } = useRuleSetRowsState(mapping, basePath);
+  } = useRuleSetRowsState(mapping);
 
   const router = useRouter();
 
@@ -101,13 +98,6 @@ export const TablePanel = <
       });
     },
     300
-  );
-
-  const createNewRuleSet = useCallback(
-    async (path: string) => {
-      createNewRow(path, newRowCreateMode);
-    },
-    [createNewRow, newRowCreateMode]
   );
 
   const handlePageChange = (page: number, pageSize: number) => {
@@ -163,8 +153,7 @@ export const TablePanel = <
 
         {writeEnabled && (
           <>
-            {(ruleType === 'categoryRanking' ||
-              ruleType === 'searchRanking') && (
+            {ruleType !== 'redirect' && (
               <ButtonGroup>
                 <Button
                   as="a"
@@ -186,35 +175,6 @@ export const TablePanel = <
                   onClick={() =>
                     track({ event: `Add ${ruleType} ranking rule` })
                   }
-                >
-                  Add ranking rule
-                </Button>
-              </ButtonGroup>
-            )}
-            {ruleType === 'global' && (
-              <ButtonGroup>
-                <Button
-                  as="button"
-                  isInline
-                  theme="outlined"
-                  icon="plus-simple-green"
-                  onClick={() => {
-                    createNewRuleSet('facets');
-                    track({ event: 'Add global facet rule' });
-                  }}
-                >
-                  Add facet rule
-                </Button>
-
-                <Button
-                  as="button"
-                  isInline
-                  theme="filled"
-                  icon="plus-simple-white"
-                  onClick={() => {
-                    createNewRuleSet('rulesets');
-                    track({ event: 'Add global ranking rule' });
-                  }}
                 >
                   Add ranking rule
                 </Button>

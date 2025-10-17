@@ -79,20 +79,18 @@ const SearchRuleSets = () => {
       <Head>
         <title>Merchandising Hub | M&S | Search ranking rules</title>
       </Head>
-      <>
-        <Heading
-          breadcrumbs={['Search & Merchandising', 'Site search', 'Search']}
-        />
-        <PageNameLabel>Search</PageNameLabel>
-        <TablePanel
-          basePath="/search"
-          headings={headings}
-          mapping={mapping}
-          newRowCreateMode="redirect-to-new"
-          ruleType="searchRanking"
-          writeEnabled={hasWriteAccess}
-        />
-      </>
+
+      <Heading
+        breadcrumbs={['Search & Merchandising', 'Site search', 'Search']}
+      />
+      <PageNameLabel>Search</PageNameLabel>
+      <TablePanel
+        basePath="/search"
+        headings={headings}
+        mapping={mapping}
+        ruleType="searchRanking"
+        writeEnabled={hasWriteAccess}
+      />
     </>
   );
 };

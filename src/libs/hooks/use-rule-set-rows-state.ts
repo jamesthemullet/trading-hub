@@ -1,9 +1,7 @@
 import { useCallback, useState } from 'react';
-import { useRouter } from 'next/router';
 
 import type { MerchandisingPagination } from '@/libs/api';
 import type {
-  CreateRowFn,
   DeleteRowFn,
   DuplicateRowFn,
   GetRowsFn,
@@ -35,10 +33,8 @@ export const useRuleSetRowsState = <
   T,
   N extends { isEnabled: boolean },
 >(
-  mapping: RuleSetMapping<A, T, N>,
-  basePath: string
+  mapping: RuleSetMapping<A, T, N>
 ): RowsApi => {
-  const router = useRouter();
   const [rowsState, setRowsState] = useState<{
     pagination: MerchandisingPagination;
     rows: Row[];
@@ -50,38 +46,6 @@ export const useRuleSetRowsState = <
   });
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-
-  const createNewRow = useCallback<CreateRowFn>(
-    (
-      path: string,
-      newRowCreateMode?: 'create-then-redirect' | 'redirect-to-new'
-    ) => {
-      const asyncCall = async () => {
-        const emptyRuleSet = mapping.getEmptyRuleSet!();
-        // istanbul ignore else
-        if (newRowCreateMode === 'create-then-redirect') {
-          setIsLoading(true);
-          const [error, result] = await handlePromise(
-            mapping.newRuleSet(emptyRuleSet)
-          );
-          // istanbul ignore else
-          if (error) {
-            setError(
-              `Failed to create new ruleset ${JSON.stringify(handleError(error))}`
-            );
-            return;
-          }
-          mapping.ruleSetToRow(result.data, {});
-          setIsLoading(false);
-          const row = mapping.ruleSetToRow(result.data, {});
-          router.push(`${basePath}/${path}/edit/${row.id}`);
-          return;
-        }
-      };
-      return asyncCall();
-    },
-    [mapping, router, basePath]
-  );
 
   const getRows = useCallback<GetRowsFn>(
     (currentPage, currentPageSize, query, countryCode) => {
@@ -237,7 +201,6 @@ export const useRuleSetRowsState = <
   );
 
   return {
-    createNewRow,
     getRows,
     deleteRow,
     duplicateRow,

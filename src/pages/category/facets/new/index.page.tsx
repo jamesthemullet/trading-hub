@@ -5,7 +5,7 @@ import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { Facets } from '@/libs/modules/facet-list/facet-list';
+import { FacetList } from '@/libs/modules/facet-list/facet-list';
 
 import Head from 'next/head';
 
@@ -85,7 +85,7 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      <Facets
+      <FacetList
         facetType="category"
         isNewRuleset
         onCancel={handleCancel}
