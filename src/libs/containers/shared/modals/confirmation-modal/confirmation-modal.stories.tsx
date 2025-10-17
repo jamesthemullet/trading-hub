@@ -36,37 +36,38 @@ export const Default: Story = {
     onCloseModal: fn(),
     handleModalConfirm: fn(),
   },
-  render: (args) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const titleId = useId();
-    const descriptionId = useId();
+  render: (args) => <DefaultTemplate {...args} />,
+};
 
-    return (
-      <>
-        <Button onClick={() => setIsOpen(true)} theme="primary" data-autofocus>
-          Open Confirmation Modal
-        </Button>
-
-        <Modal.Root
-          centered
-          opened={isOpen}
-          onClose={() => setIsOpen(false)}
-          padding={10}
+const DefaultTemplate = (args: Story['args'] = {}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const titleId = useId();
+  const descriptionId = useId();
+  const handleModalConfirm = args.handleModalConfirm ?? (() => {});
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)} theme="primary" data-autofocus>
+        Open Confirmation Modal
+      </Button>
+      <Modal.Root
+        centered
+        opened={isOpen}
+        onClose={() => setIsOpen(false)}
+        padding={10}
+      >
+        <Modal.Overlay blur={3} />
+        <Modal.Content
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
         >
-          <Modal.Overlay blur={3} />
-          <Modal.Content
-            aria-labelledby={titleId}
-            aria-describedby={descriptionId}
-          >
-            <ConfirmationModal
-              onCloseModal={() => setIsOpen(false)}
-              handleModalConfirm={args.handleModalConfirm}
-              titleId={titleId}
-              descriptionId={descriptionId}
-            />
-          </Modal.Content>
-        </Modal.Root>
-      </>
-    );
-  },
+          <ConfirmationModal
+            onCloseModal={() => setIsOpen(false)}
+            handleModalConfirm={handleModalConfirm}
+            titleId={titleId}
+            descriptionId={descriptionId}
+          />
+        </Modal.Content>
+      </Modal.Root>
+    </>
+  );
 };

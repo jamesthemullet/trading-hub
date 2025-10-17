@@ -9,6 +9,10 @@ import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 import functional from 'eslint-plugin-functional';
+import nextPlugin from '@next/eslint-plugin-next';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import importPlugin from 'eslint-plugin-import';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,9 +24,6 @@ const compat = new FlatCompat({
 
 const eslint = [
   ...compat.extends(
-    'next/core-web-vitals',
-    'next/typescript',
-    'next',
     'prettier',
     'plugin:jest/recommended',
     'eslint:recommended',
@@ -59,6 +60,10 @@ const eslint = [
       'jest-dom': jestDom,
       'jsx-a11y': jsxA11Y,
       functional,
+      '@next/next': nextPlugin,
+      react,
+      'react-hooks': reactHooks,
+      import: importPlugin,
     },
     languageOptions: {
       globals: {
@@ -66,6 +71,28 @@ const eslint = [
         NodeJS: true,
       },
       parser: tsParser,
+    },
+    settings: {
+      react: { version: 'detect' },
+      'import/resolver': {
+        typescript: {
+          project: ['./tsconfig.json'],
+        },
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
+      },
+    },
+    rules: {
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      ...react.configs.recommended.rules,
+      ...reactHooks.configs['flat/recommended'].rules,
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      'import/no-unresolved': 'error',
+      'import/named': 'error',
+      'import/default': 'error',
+      'import/no-duplicates': 'error',
     },
   },
   {
@@ -169,6 +196,23 @@ const eslint = [
       'testing-library/prefer-query-by-disappearance': 'error',
       'testing-library/prefer-query-matchers': 'error',
       'testing-library/prefer-screen-queries': 'error',
+    },
+  },
+  {
+    files: [
+      'config/**/*.js',
+      'config/**/*.cjs',
+      '*.config.js',
+      '*.config.cjs',
+      'postcss.config.cjs',
+    ],
+    languageOptions: {
+      globals: {
+        module: 'readonly',
+        require: 'readonly',
+        process: 'readonly',
+        __dirname: 'readonly',
+      },
     },
   },
   {

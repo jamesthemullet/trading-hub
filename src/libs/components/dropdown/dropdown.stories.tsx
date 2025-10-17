@@ -66,26 +66,29 @@ const meta: Meta<typeof CombinedDropdown> = {
 export default meta;
 type Story = StoryObj<typeof CombinedDropdown>;
 
+const GenericTemplate = (args: Story['args']) => {
+  const [content, setContent] = useState('Some custom dropdown content');
+  const { variant = 'generic', ...rest } = args ?? {};
+  return (
+    <CombinedDropdown variant={variant} {...rest}>
+      <div style={{ padding: '1rem', width: '200px' }}>
+        {content}
+        <br />
+        <button type="button" onClick={() => setContent('Updated content')}>
+          Update Content
+        </button>
+      </div>
+    </CombinedDropdown>
+  );
+};
+
 export const Generic: Story = {
   args: {
     variant: 'generic',
     writeEnabled: true,
     label: 'Open Generic Dropdown',
   },
-  render: (args) => {
-    const [content, setContent] = useState('Some custom dropdown content');
-    return (
-      <CombinedDropdown {...args}>
-        <div style={{ padding: '1rem', width: '200px' }}>
-          {content}
-          <br />
-          <button type="button" onClick={() => setContent('Updated content')}>
-            Update Content
-          </button>
-        </div>
-      </CombinedDropdown>
-    );
-  },
+  render: (args) => <GenericTemplate {...args} />,
 };
 
 export const CountryFilter: Story = {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type {
   MerchandisingAttributeValuesResponse,
@@ -35,10 +35,8 @@ export const useGetFacetAttributeValues = ({
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const categoriesKey = categories?.join(',') || '';
-  const searchTermsKey = searchTerms?.join(',') || '';
-  const memoizedCategories = useMemo(() => categories, [categoriesKey]);
-  const memoizedSearchTerms = useMemo(() => searchTerms, [searchTermsKey]);
+  const categoriesKey = categories?.join(',');
+  const searchTermsKey = searchTerms?.join(',');
 
   useEffect(() => {
     if (!facetId) {
@@ -54,8 +52,9 @@ export const useGetFacetAttributeValues = ({
           throw new Error('Invalid or missing country code parameter');
         }
         const catalogues = convertCountryCodeToCatalogues(countryCode);
-        const promises = memoizedCategories
-          ? memoizedCategories.map((categoryId) =>
+
+        const promises = categories
+          ? categories.map((categoryId) =>
               search()
                 .betaMerchandisingFacetAttributeValuesList(facetId, {
                   categoryId,
@@ -73,7 +72,7 @@ export const useGetFacetAttributeValues = ({
                   start: 0,
                   rows: 2000,
                   catalogue,
-                  searchTerm: memoizedSearchTerms,
+                  searchTerm: searchTerms,
                 })
                 .then((response) => response.data.values)
             );
@@ -88,7 +87,7 @@ export const useGetFacetAttributeValues = ({
       }
     };
     void asyncCall();
-  }, [facetId, countryCode, query, memoizedSearchTerms, memoizedCategories]);
+  }, [facetId, countryCode, query, categoriesKey, searchTermsKey]);
 
   return {
     attributeValues,

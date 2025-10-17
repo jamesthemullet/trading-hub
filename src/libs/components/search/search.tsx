@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import type { ChangeEventHandler } from 'react';
-import type { ReactElement, RefObject } from 'react';
+import type { ChangeEventHandler, ReactElement, RefObject } from 'react';
 
 import { Input, type InputProps } from '@/libs/containers/shared/input/input';
 import { mediaQuery } from '@/libs/utils/media-query';

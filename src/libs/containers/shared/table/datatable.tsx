@@ -17,7 +17,6 @@ import { spacing } from '@/libs/utils/spacing';
 import { format } from 'date-fns';
 import Image from 'next/image';
 
-import { TableLink } from './table.styles';
 import {
   DropdownOptions,
   TableActions,
@@ -25,6 +24,7 @@ import {
   TableContainer,
   TableDropdown,
   TableHeading,
+  TableLink,
   TableRow,
 } from './table.styles';
 

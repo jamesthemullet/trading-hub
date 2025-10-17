@@ -40,27 +40,27 @@ export const Default: Story = {
     onClose: fn(),
     onContinue: fn(),
   },
-  render: (args) => {
-    const [isOpen, setIsOpen] = useState(false);
+  render: (args) => <DefaultTemplate {...args} />,
+};
 
-    return (
-      <>
-        <Button onClick={() => setIsOpen(true)} theme="primary">
-          Open Unsaved Changes Modal
-        </Button>
-
-        <ModalUnsavedChanges
-          opened={isOpen}
-          onClose={() => {
-            setIsOpen(false);
-            args.onClose();
-          }}
-          onContinue={() => {
-            setIsOpen(false);
-            args.onContinue();
-          }}
-        />
-      </>
-    );
-  },
+const DefaultTemplate = (args: Story['args'] = {}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)} theme="primary">
+        Open Unsaved Changes Modal
+      </Button>
+      <ModalUnsavedChanges
+        opened={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          args.onClose?.();
+        }}
+        onContinue={() => {
+          setIsOpen(false);
+          args.onContinue?.();
+        }}
+      />
+    </>
+  );
 };
