@@ -566,7 +566,6 @@ export const Ruleset = ({
             {rulesetType === 'global' && (
               <InfoBox text="You are currently editing all pages on the M&S website and app" />
             )}
-
             {rulesetType !== 'global' && (
               <div>
                 <Typography as="p" withMargin variant="labelMedium">
@@ -673,9 +672,7 @@ export const Ruleset = ({
                         <VisualEditorText as="span" isStrong>
                           VisualEditor -{' '}
                         </VisualEditorText>
-                        {rulesetType === 'category'
-                          ? selectedCategories[0]
-                          : rulesetSearchTerms[0]}
+                        {previewValue}
                       </VisualEditorText>
 
                       {rulesetType === 'search' &&
