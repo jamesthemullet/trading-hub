@@ -70,4 +70,15 @@ describe('Category And Search Facets Panel Page Layout', () => {
       `/category/facets/edit/${ruleSetId}`
     );
   });
+
+  it('should save when save button is clicked', async () => {
+    const user = userEvent.setup();
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    render(<CategoryAndSearchFacetsPanelPageLayout {...defaultProps} />);
+
+    const saveButton = screen.getByRole('button', { name: 'Save' });
+    await user.click(saveButton);
+
+    expect(consoleLogSpy).toHaveBeenCalledWith('save');
+  });
 });

@@ -1,3 +1,4 @@
+import isPropValid from '@emotion/is-prop-valid';
 import styled from '@emotion/styled';
 
 import { Button, Text } from '@/libs/components';
@@ -6,7 +7,7 @@ import { spacing } from '@/libs/utils/spacing';
 
 export const Wrapper = styled.div`
   box-shadow: #000 0 0 10px -5px;
-  margin: ${spacing(2)};
+  margin: ${spacing(2.5)};
   border-radius: 4px;
   display: flex;
   flex-direction: column;
@@ -49,10 +50,16 @@ export const SummaryBox = styled.div`
   width: 82px;
 `;
 
-export const CancelButton = styled(Button)`
+export const CancelButton = styled(Button, {
+  shouldForwardProp: (prop) => isPropValid(prop) || prop === 'theme',
+})`
   width: 120px;
+  text-align: center;
+  border-right 1px solid ${color.accent.primary.primary};
 `;
 
-export const SaveButton = styled(Button)`
+export const SaveButton = styled(Button, {
+  shouldForwardProp: (prop) => isPropValid(prop) || prop === 'theme',
+})`
   width: 168px;
 `;

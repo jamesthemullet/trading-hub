@@ -1,6 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/router';
 
+import { useGlobalFacetsList } from '@/libs/hooks';
+import { facetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -8,6 +10,10 @@ import Page from './index.page';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/global/facets/use-global-facets-list', () => ({
+  useGlobalFacetsList: jest.fn(),
 }));
 
 describe('Index', () => {
@@ -20,6 +26,16 @@ describe('Index', () => {
         displayName: 'Color',
       },
     });
+    jest.mocked(useGlobalFacetsList).mockReturnValue({
+      isLoading: false,
+      facets: facetsListMock.facets,
+      error: '',
+      onRefreshFacetList: jest.fn(),
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should render coming soon if feature flag is not enabled', async () => {

@@ -43,6 +43,8 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         onClose={() => {
           router.push(`/${facetType}/facets/edit/${ruleSetId}`);
         }}
+        onSave={() => console.log('save')}
+        isSaveDisabled={false}
       />
       <p>hello category/search values... </p>
     </>

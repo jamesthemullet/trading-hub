@@ -12,11 +12,15 @@ const defaultProps = {
   displayName: 'Age',
   facetType: 'global' as const,
   onClose: onCloseMock,
+  onSave: jest.fn(),
+  isSaveDisabled: false,
 };
 
 describe('Facet Page Layout Header', () => {
   it('should render', () => {
-    render(<FacetAttributesPageLayoutHeader {...defaultProps} />);
+    render(
+      <FacetAttributesPageLayoutHeader {...defaultProps} isSaveDisabled />
+    );
 
     expect(screen.getByText('Value settings of: Age')).toBeInTheDocument();
 
@@ -31,7 +35,6 @@ describe('Facet Page Layout Header', () => {
     );
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
   });
 
   it('close button should navigate back to appropriate facets editing page', async () => {

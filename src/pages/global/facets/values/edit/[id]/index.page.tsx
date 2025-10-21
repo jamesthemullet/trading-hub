@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
+import { useMemo } from 'react';
 
+import type { MerchandisingReturnedGlobalFacet } from '@/libs/api/generated/open-api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { GlobalFacetAttributesPageLayout } from '@/libs/features';
@@ -40,6 +42,11 @@ const Page = () => {
     error: globalFacetsListError,
   } = useGlobalFacetsList();
 
+  const facet = useMemo(
+    () => facets.find((f) => f.id === facetId),
+    [facets, facetId]
+  ) as MerchandisingReturnedGlobalFacet;
+
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
   return (
@@ -71,8 +78,8 @@ const Page = () => {
 
       {!isLoading && !isLoadingFacets && showNewFacetValuesPage ? (
         <GlobalFacetAttributesPageLayout
+          facet={facet}
           attributeValues={attributeValues}
-          facets={facets}
           facetId={facetId}
           displayName={displayName}
           ruleSetId={ruleSetId}

@@ -1,4 +1,4 @@
-import { Text, Typography } from '@/libs/components';
+import { ErrorMessage, Text, Typography } from '@/libs/components';
 
 import Image from 'next/image';
 
@@ -20,7 +20,10 @@ type HeaderProps = {
   excludedValues: number;
   displayName: string;
   facetType: 'category' | 'search' | 'global';
+  isSaveDisabled: boolean;
+  error?: string;
   onClose: (facetType: 'category' | 'search' | 'global') => void;
+  onSave: () => void;
 };
 
 export const FacetAttributesPageLayoutHeader = ({
@@ -29,7 +32,10 @@ export const FacetAttributesPageLayoutHeader = ({
   excludedValues,
   displayName,
   facetType,
+  isSaveDisabled,
+  error,
   onClose,
+  onSave,
 }: HeaderProps) => {
   return (
     <Wrapper>
@@ -53,12 +59,22 @@ export const FacetAttributesPageLayoutHeader = ({
           >
             Cancel
           </CancelButton>
-          <SaveButton theme="primary" isDisabled>
+
+          <SaveButton
+            theme="primary"
+            isDisabled={isSaveDisabled}
+            onClick={onSave}
+          >
             Save
           </SaveButton>
         </ButtonContainer>
       </FlagAndButtons>
       <StyledText>Value settings of: {displayName}</StyledText>
+
+      {error && (
+        <ErrorMessage role="alert">Error updating facet: {error}</ErrorMessage>
+      )}
+
       <Summary>
         <SummaryBox data-testid="include-only-count">
           <Typography variant="headlineSmall">{includedValues}</Typography>
