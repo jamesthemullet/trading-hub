@@ -36,7 +36,10 @@ describe('Global Facet Management New', () => {
     renderWithProviders(<Page />);
 
     expect(
-      screen.getByRole('heading', { level: 1, name: 'Facet Rule Editor' })
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Global Facet Rule Editor',
+      })
     ).toBeVisible();
   });
 

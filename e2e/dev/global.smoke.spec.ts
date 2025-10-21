@@ -9,19 +9,28 @@ test.describe('Global Ranking', () => {
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await expect(
-      page.getByRole('button', { name: 'Add facet rule' })
+      page.getByRole('link', { name: 'Add facet rule' })
     ).toBeVisible();
     await expect(
       page.getByText('0 results', { exact: true })
     ).not.toBeVisible();
 
-    await page.getByRole('button', { name: 'Add facet rule' }).click();
+    await page.getByRole('link', { name: 'Add facet rule' }).click();
 
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(5000);
     await expect(
       page.getByRole('heading', { name: 'Global Facet Rule Editor' })
     ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Create' }).click();
+
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit facet rule' }).click();
+
+    await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await expect(
       page.getByTestId('Row showing Age as algoControl')

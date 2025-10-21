@@ -374,7 +374,11 @@ export const FacetList = ({
         isNewRuleSet={!!isNewRuleset}
         hasChanges
         onCancel={onCancel}
-        title="Facet Rule Editor"
+        title={
+          facetType === 'global'
+            ? 'Global Facet Rule Editor'
+            : 'Facet Rule Editor'
+        }
         shouldHidePreview={facetType === 'global'}
         rulesetType={facetType}
         writeEnabled={writeEnabled}
