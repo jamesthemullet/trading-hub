@@ -65,7 +65,7 @@ jobs:
           CLARITY_KEY: ${{ secrets.CLARITY_KEY }}
 
       - name: Zip all files for upload between jobs
-        # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
+        # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it.
         run: |
           cd .next/standalone
           zip next.zip ./* .next -qr
