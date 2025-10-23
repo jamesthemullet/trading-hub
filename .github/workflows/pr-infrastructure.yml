@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 concurrency:
-  # injecting the uri is subject to race condition so we need to limit the concurrency
+  # injecting the uri is subject to race condition so we need to limit the concurrency.
   group: 'pr-infrastructure'
   cancel-in-progress: false
 
