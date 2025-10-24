@@ -4,7 +4,7 @@ import { FacetAttributesListActions } from './facet-attributes-list-actions';
 
 describe('FacetAttributesListActions', () => {
   it('renders Multi-select and Merge buttons as disabled', () => {
-    render(<FacetAttributesListActions />);
+    render(<FacetAttributesListActions onSearchChange={jest.fn()} />);
     expect(screen.getByText('Multi-select')).toBeInTheDocument();
     expect(screen.getByText('Merge')).toBeInTheDocument();
     expect(screen.getByText('Multi-select').closest('button')).toBeDisabled();
@@ -12,7 +12,7 @@ describe('FacetAttributesListActions', () => {
   });
 
   it('renders the search input', () => {
-    render(<FacetAttributesListActions />);
+    render(<FacetAttributesListActions onSearchChange={jest.fn()} />);
     // The input is inside the custom Search component, so we check for input presence
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
   });

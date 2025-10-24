@@ -1,84 +1,103 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingAttributeValuesResponse } from '@/libs/api';
+import type {
+  MerchandisingAttributeValuesResponse,
+  MerchandisingRuleSetFacetConfigWithId,
+} from '@/libs/api';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import { CategoryAndSearchFacetsPanelPageLayout } from './category-and-search-facet-attributes-page-layout';
-
-const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
-
-const attributeValuesMock: MerchandisingAttributeValuesResponse['values'] = [
-  {
-    displayValue: '13 - 14.4',
-  },
-  {
-    displayValue: '10 - 12.9',
-  },
-  {
-    displayValue: '14.5 - 20',
-  },
-  {
-    displayValue: 'Under 10',
-  },
-  {
-    displayValue: 'Over 20',
-  },
-];
-
-import { mockRuleData } from '@/test/data/mock-use-rule-set-preview.data';
-
-const defaultProps = {
-  attributeValues: attributeValuesMock,
-  ruleSetDetail: mockRuleData,
-  facetId: 'facet-123',
-  displayName: 'Color',
-  facets: mockRuleData.facets || [],
-  facetType: 'category' as const,
-  ruleSetId,
-};
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-const mockRouter = {
+const mockRouter: Partial<NextRouter> = {
   push: jest.fn(),
+  query: {},
+  route: '',
+  pathname: '',
+  asPath: '',
+  basePath: '',
+  isLocaleDomain: false,
 };
 
-describe('Category And Search Facets Panel Page Layout', () => {
+const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
+
+const attributeValuesMock: MerchandisingAttributeValuesResponse['values'] = [
+  { displayValue: '13 - 14.4' },
+  { displayValue: '10 - 12.9' },
+  { displayValue: '14.5 - 20' },
+  { displayValue: 'Under 10' },
+  { displayValue: 'Over 20' },
+];
+
+const facetMock: MerchandisingRuleSetFacetConfigWithId = {
+  id: '1',
+  boosted: ['13 - 14.4', '10 - 12.9'],
+  excludedValues: ['Under 10'],
+};
+
+const setup = (props = {}) => {
+  const defaultProps = {
+    attributeValues: attributeValuesMock,
+    facet: facetMock,
+    displayName: 'Screen Size',
+    facetType: 'category' as const,
+    ruleSetId,
+    searchQuery: '',
+    onSearchChange: jest.fn(),
+    isLoading: false,
+    error: '',
+    onSave: jest.fn(),
+  };
+
+  jest.mocked(useRouter).mockReturnValue(mockRouter as NextRouter);
+
+  return {
+    ...renderWithProviders(
+      <CategoryAndSearchFacetsPanelPageLayout {...defaultProps} {...props} />
+    ),
+    mockRouter,
+    props: { ...defaultProps, ...props },
+  };
+};
+
+describe('CategoryAndSearchFacetsPanelPageLayout', () => {
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    jest.clearAllMocks();
   });
 
-  it('should render page', () => {
-    render(<CategoryAndSearchFacetsPanelPageLayout {...defaultProps} />);
+  it('renders the component with category facet type', () => {
+    setup();
 
-    expect(
-      screen.getByText('hello category/search values...')
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
+    expect(screen.getByTestId('Label for 13 - 14.4')).toBeInTheDocument();
   });
 
-  it('should close and go back to category/search facets page', async () => {
-    const user = userEvent.setup();
-    render(<CategoryAndSearchFacetsPanelPageLayout {...defaultProps} />);
+  it('renders the component with search facet type', () => {
+    setup({ facetType: 'search' });
 
-    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
-    await user.click(cancelButton);
-
-    expect(mockRouter.push).toHaveBeenCalledWith(
-      `/category/facets/edit/${ruleSetId}`
-    );
+    expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
   });
 
-  it('should save when save button is clicked', async () => {
-    const user = userEvent.setup();
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    render(<CategoryAndSearchFacetsPanelPageLayout {...defaultProps} />);
+  it('handles search input changes', async () => {
+    const onSearchChange = jest.fn();
+    setup({ onSearchChange });
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
-    await user.click(saveButton);
+    const searchInput = screen.getByPlaceholderText('Search...');
+    await userEvent.type(searchInput, 'test');
 
-    expect(consoleLogSpy).toHaveBeenCalledWith('save');
+    expect(onSearchChange).toHaveBeenCalled();
+  });
+
+  it('filters attribute values based on search query', () => {
+    setup({ searchQuery: '13' });
+
+    expect(screen.getByTestId('Label for 13 - 14.4')).toBeInTheDocument();
+    expect(screen.queryByText('Under 10')).not.toBeInTheDocument();
   });
 });

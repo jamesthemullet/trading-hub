@@ -21,11 +21,11 @@ import type {
 } from '@/libs/stores/global-attribute/global-attribute-reducer';
 import { spacing } from '@/libs/utils/spacing';
 
-const FacetAttributesListContainer = styled.div`
+const GlobalFacetAttributesListContainer = styled.div`
   margin: 0 ${spacing(3)};
 `;
 
-export type FacetAttributesListProps = {
+export type GlobalFacetAttributesListProps = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
   searchQuery: string;
   countryCode: MerchandisingCountryCode;
@@ -37,7 +37,7 @@ export type FacetAttributesListProps = {
   facet: MerchandisingReturnedGlobalFacet;
 };
 
-export const FacetAttributesList = ({
+export const GlobalFacetAttributesList = ({
   attributeValues,
   searchQuery,
   countryCode,
@@ -47,7 +47,7 @@ export const FacetAttributesList = ({
   writeEnabled,
   setEditingValues,
   facet,
-}: FacetAttributesListProps) => {
+}: GlobalFacetAttributesListProps) => {
   // No need for it now, mainly used for merge functionality
   // const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
   // useEffect(() => {
@@ -231,7 +231,7 @@ export const FacetAttributesList = ({
     filteredAttributeValuesNotInAMergeGroup.length + filteredMergeGroups.length;
 
   return (
-    <FacetAttributesListContainer>
+    <GlobalFacetAttributesListContainer>
       {boostedValuesRows}
 
       {defaultValuesRows}
@@ -241,6 +241,6 @@ export const FacetAttributesList = ({
       {/* {isAwaitingUpdate && <Loader isInModal />} */}
 
       <FilteredResultsPanel filteredFacets={totalFilteredResults} />
-    </FacetAttributesListContainer>
+    </GlobalFacetAttributesListContainer>
   );
 };

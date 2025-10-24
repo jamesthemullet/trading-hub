@@ -15,8 +15,8 @@ import { useGlobalFacetUpdate } from '@/libs/hooks';
 import { globalAttributesReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 import { FACET_ATTRIBUTE_VIEW_MODE } from '@/libs/utils/facet-attribute-types';
 
-import { FacetAttributesList } from '../facet-attributes-list/facet-attributes-list';
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
+import { GlobalFacetAttributesList } from '../global-facet-attributes-list/global-facet-attributes-list';
 
 type PageLayout = {
   facet: MerchandisingReturnedGlobalFacet;
@@ -157,9 +157,14 @@ export const GlobalFacetAttributesPageLayout = ({
         setCurrentMode={setCurrentMode}
       />
 
-      <FacetAttributesListActions />
+      <FacetAttributesListActions
+        onSearchChange={
+          // istanbul ignore next
+          () => {}
+        }
+      />
 
-      <FacetAttributesList
+      <GlobalFacetAttributesList
         attributeValues={attributeValues}
         searchQuery=""
         countryCode="UK_IE"

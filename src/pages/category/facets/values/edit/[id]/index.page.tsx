@@ -1,12 +1,19 @@
 import styled from '@emotion/styled';
+import type { ChangeEvent } from 'react';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
+import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
-import { useGetFacetAttributeValues, useRuleSetDetail } from '@/libs/hooks';
+import {
+  useGetFacetAttributeValues,
+  useRuleSetDetail,
+  useUpdateRuleSet,
+} from '@/libs/hooks';
 import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
 
@@ -18,17 +25,25 @@ const CentredContainer = styled.div`
 `;
 
 const Page = () => {
+  const router = useRouter();
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
-  const [searchQuery] = useState('');
+  const { updateCategoryRuleSet, error: updateRulesetError } =
+    useUpdateRuleSet();
 
-  const router = useRouter();
   const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
-
   const facetId = getStringParam('id');
   const ruleSetId = getStringParam('ruleSetId');
   const displayName = getStringParam('displayName');
   const countryCode = getCountryCodeParam('countryCode');
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const { callback: handleSearch } = useDebounce(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value);
+    },
+    300
+  );
 
   const categoriesArray = useMemo(() => {
     const categories = router.query.categories;
@@ -54,6 +69,42 @@ const Page = () => {
     error: getRulesetDetailError,
   } = useRuleSetDetail(ruleSetId);
 
+  const facet = ruleSetDetail.facets?.find((facet) => facet.id === facetId);
+
+  const handleSave = async (
+    newFacet: MerchandisingRuleSetFacetConfigWithId
+  ) => {
+    const {
+      // no need for last changed
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      lastChanged: _,
+      facets,
+      id,
+      categoriesInfo,
+      ...rest
+    } = ruleSetDetail;
+    const newFacets = facets?.map((facet) => {
+      if (facet.id === newFacet.id) {
+        return newFacet;
+      }
+
+      return facet;
+    });
+    const response = await updateCategoryRuleSet({
+      ...rest,
+      categoryIds:
+        categoriesInfo.map(({ id }) => id) ||
+        // istanbul ignore next
+        [],
+      facets: newFacets,
+      ruleSetId: id,
+    });
+    // istanbul ignore else
+    if (response && response.status !== 'error') {
+      return router.push('/category');
+    }
+  };
+
   return (
     <>
       <Head>
@@ -74,15 +125,22 @@ const Page = () => {
           Error whilst retrieving ruleset: {getRulesetDetailError}
         </ErrorMessage>
       )}
+      {updateRulesetError && (
+        <ErrorMessage role="alert">
+          Error whilst updating ruleset: {updateRulesetError}
+        </ErrorMessage>
+      )}
 
-      {!isLoading && showNewFacetValuesPage ? (
+      {!isLoading && showNewFacetValuesPage && facet ? (
         <CategoryAndSearchFacetsPanelPageLayout
           attributeValues={attributeValues}
-          facets={ruleSetDetail.facets}
-          facetId={facetId}
+          facet={facet}
           displayName={displayName}
           facetType="category"
           ruleSetId={ruleSetId}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearch}
+          onSave={handleSave}
         />
       ) : (
         <CentredContainer>Coming soon/loading</CentredContainer>

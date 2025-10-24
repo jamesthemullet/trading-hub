@@ -1,5 +1,6 @@
 import isPropValid from '@emotion/is-prop-valid';
 import styled from '@emotion/styled';
+import type { ChangeEvent } from 'react';
 
 import { Button, Search } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
@@ -55,7 +56,11 @@ const FacetAttributesSearch = styled(Search)`
   }
 `;
 
-export const FacetAttributesListActions = () => {
+export const FacetAttributesListActions = ({
+  onSearchChange,
+}: {
+  onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}) => {
   return (
     <FacetAttributesListActionsContainer>
       <FacetAttributesActionsButtonsContainer>
@@ -79,7 +84,7 @@ export const FacetAttributesListActions = () => {
         </FacetAttributesActionsButton>
       </FacetAttributesActionsButtonsContainer>
 
-      <FacetAttributesSearch />
+      <FacetAttributesSearch onChange={onSearchChange} />
     </FacetAttributesListActionsContainer>
   );
 };

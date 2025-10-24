@@ -1,12 +1,18 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
+import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
 import { CentredError, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
-import { useSearchRuleSetPreview } from '@/libs/hooks';
-import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
+import {
+  useGetFacetAttributeValues,
+  useSearchRuleSetPreview,
+  useSearchRuleSetUpdate,
+} from '@/libs/hooks';
 import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
 
@@ -18,16 +24,27 @@ const CentredContainer = styled.div`
 `;
 
 const Page = () => {
+  const router = useRouter();
+
   const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
 
-  const showNewFacetValuesPage = useShowNewFacetValuesPage();
+  const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
 
-  const [searchQuery] = useState('');
+  const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
   const facetId = getStringParam('id');
   const ruleSetId = getStringParam('ruleSetId');
   const displayName = getStringParam('displayName');
   const countryCode = getCountryCodeParam('countryCode');
+
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const { callback: handleSearch } = useDebounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value);
+    },
+    300
+  );
 
   // Currently we don't send searchTerms to this endpoint, which I think is wrong, awaiting confirmation
   const { attributeValues } = useGetFacetAttributeValues({
@@ -37,6 +54,31 @@ const Page = () => {
   });
 
   const { ruleSet, error, isLoading } = useSearchRuleSetPreview(ruleSetId);
+
+  const facet = ruleSet.facets?.find((facet) => facet.id === facetId);
+
+  const handleSave = async (
+    newFacet: MerchandisingRuleSetFacetConfigWithId
+  ) => {
+    const newFacets = ruleSet.facets?.map((facet) => {
+      if (facet.id === newFacet.id) {
+        return newFacet;
+      }
+
+      return facet;
+    });
+
+    const response = await updateRuleSet({
+      ...ruleSet,
+      ruleSetId,
+      facets: newFacets,
+    });
+
+    // istanbul ignore else
+    if (response) {
+      return router.push('/search');
+    }
+  };
 
   return (
     <>
@@ -54,15 +96,22 @@ const Page = () => {
       />
 
       {error && <CentredError>{error}</CentredError>}
+      {updateRuleSetError && (
+        <CentredError role="alert">
+          Error whilst updating ruleset: {updateRuleSetError}
+        </CentredError>
+      )}
 
-      {!isLoading && showNewFacetValuesPage ? (
+      {!isLoading && showNewFacetValuesPage && facet ? (
         <CategoryAndSearchFacetsPanelPageLayout
           attributeValues={attributeValues}
-          facets={ruleSet.facets}
-          facetId={facetId}
+          facet={facet}
           displayName={displayName}
           facetType="search"
           ruleSetId={ruleSetId}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearch}
+          onSave={handleSave}
         />
       ) : (
         <CentredContainer>Coming soon/loading</CentredContainer>

@@ -7,8 +7,8 @@ import type {
 } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { FacetAttributesListProps } from './facet-attributes-list';
-import { FacetAttributesList } from './facet-attributes-list';
+import type { GlobalFacetAttributesListProps } from './global-facet-attributes-list';
+import { GlobalFacetAttributesList } from './global-facet-attributes-list';
 
 describe('FacetAttributesList', () => {
   const formattedRows = [
@@ -23,7 +23,7 @@ describe('FacetAttributesList', () => {
     isMergeGroup: false,
   }));
 
-  const defaultProps: FacetAttributesListProps = {
+  const defaultProps: GlobalFacetAttributesListProps = {
     attributeValues: [
       { displayValue: '13 - 14.4' },
       { displayValue: '10 - 12.9' },
@@ -67,7 +67,7 @@ describe('FacetAttributesList', () => {
   });
 
   it('renders the component with default props', () => {
-    renderWithProviders(<FacetAttributesList {...defaultProps} />);
+    renderWithProviders(<GlobalFacetAttributesList {...defaultProps} />);
 
     formattedRows.forEach(({ displayName }) => {
       expect(screen.getByTestId(`Label for ${displayName}`)).toHaveTextContent(
@@ -78,7 +78,7 @@ describe('FacetAttributesList', () => {
 
   it('filters rows based on search query', () => {
     renderWithProviders(
-      <FacetAttributesList {...defaultProps} searchQuery="Under" />
+      <GlobalFacetAttributesList {...defaultProps} searchQuery="Under" />
     );
 
     expect(screen.getByTestId('Label for Under 10')).toHaveTextContent(
@@ -95,7 +95,7 @@ describe('FacetAttributesList', () => {
     const dispatchMock = jest.fn();
 
     renderWithProviders(
-      <FacetAttributesList {...defaultProps} dispatch={dispatchMock} />
+      <GlobalFacetAttributesList {...defaultProps} dispatch={dispatchMock} />
     );
 
     const boostedRow = screen.getByTestId('included attribute 0 13 - 14.4');
@@ -119,7 +119,7 @@ describe('FacetAttributesList', () => {
   });
 
   it('renders filtered results panel with correct count', () => {
-    renderWithProviders(<FacetAttributesList {...defaultProps} />);
+    renderWithProviders(<GlobalFacetAttributesList {...defaultProps} />);
 
     expect(screen.getByText(/5\s+results/i)).toBeInTheDocument();
   });
@@ -141,7 +141,7 @@ describe('FacetAttributesList', () => {
       },
       searchQuery: 'Merged',
     };
-    renderWithProviders(<FacetAttributesList {...props} />);
+    renderWithProviders(<GlobalFacetAttributesList {...props} />);
 
     expect(screen.getByText('1 result')).toBeInTheDocument();
   });
@@ -152,7 +152,7 @@ describe('FacetAttributesList', () => {
       ...defaultProps,
       dispatch: dispatchMock,
     };
-    renderWithProviders(<FacetAttributesList {...props} />);
+    renderWithProviders(<GlobalFacetAttributesList {...props} />);
     const boostedRow = screen.getByTestId('included attribute 0 13 - 14.4');
     const dropdownButton = within(boostedRow).getByRole('button', {
       name: /select to set as included, excluded or algo control/i,
@@ -173,7 +173,7 @@ describe('FacetAttributesList', () => {
       ...defaultProps,
       dispatch: dispatchMock,
     };
-    renderWithProviders(<FacetAttributesList {...props} />);
+    renderWithProviders(<GlobalFacetAttributesList {...props} />);
 
     const boostedRow = screen.getByTestId('included attribute 0 13 - 14.4');
     const dropdownButton = within(boostedRow).getByRole('button', {
@@ -235,7 +235,7 @@ describe('FacetAttributesList', () => {
       },
       searchQuery: 'special', // should match 'SpecialValue' (case-insensitive)
     };
-    renderWithProviders(<FacetAttributesList {...props} />);
+    renderWithProviders(<GlobalFacetAttributesList {...props} />);
     // Should show 1 result (the merged group)
     expect(screen.getByText('1 result')).toBeInTheDocument();
   });
@@ -257,7 +257,7 @@ describe('FacetAttributesList', () => {
       },
       searchQuery: 'Merged',
     };
-    renderWithProviders(<FacetAttributesList {...props} />);
+    renderWithProviders(<GlobalFacetAttributesList {...props} />);
 
     expect(screen.getByText('1 result')).toBeInTheDocument();
   });

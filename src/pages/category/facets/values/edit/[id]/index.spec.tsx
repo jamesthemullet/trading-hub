@@ -1,8 +1,16 @@
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
+import { useGetFacetAttributeValues, useRuleSetDetail } from '@/libs/hooks';
+import { attributeValuesMock } from '@/pages/api/search/mocks';
+import {
+  mockUseRuleSetPreviewData,
+  ruleSetId,
+} from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
+
+import * as lodash from 'lodash';
 
 import Page from './index.page';
 
@@ -10,19 +18,62 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  intersection: jest.fn(),
+  without: jest.fn(),
+}));
+
+const mockRulesetDetailResponse = {
+  ...mockUseRuleSetPreviewData,
+  isLoading: false,
+  isSaving: false,
+};
+
+const mockUpdateRuleSet = jest.fn().mockReturnValue(true);
+const updateRuleSet = {
+  updateCategoryRuleSet: mockUpdateRuleSet,
+  error: '',
+};
+
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useUpdateRuleSet: () => {
+    return updateRuleSet;
+  },
+  useGetFacetAttributeValues: jest.fn(),
+  useRuleSetDetail: jest.fn(),
+}));
+
 describe('Index', () => {
   const defaultMockRouter = {
     query: {
-      id: '124',
+      id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
       categories: 'subCategory_429',
       ruleSetId,
       displayName: 'Color',
       countryCode: 'UK_IE',
     },
+    push: jest.fn(),
   };
 
   beforeEach(() => {
+    jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(defaultMockRouter);
+    (lodash.intersection as jest.Mock).mockReturnValue(['red']);
+    (lodash.without as jest.Mock).mockReturnValue(['blue', 'green']);
+    jest.mocked(useGetFacetAttributeValues).mockReturnValue({
+      attributeValues: attributeValuesMock,
+      error: '',
+      isLoading: false,
+    });
+    jest
+      .mocked(useRuleSetDetail)
+      .mockImplementation(() => mockRulesetDetailResponse);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should render coming soon if feature flag is disabled', async () => {
@@ -117,5 +168,125 @@ describe('Index', () => {
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
     });
+  });
+
+  it('should handle searchQuery changes', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('Label for Cotton')).toBeVisible();
+    });
+    const blueRow = screen.getByTestId('Label for blue');
+    const greenRow = screen.getByTestId('Label for green');
+    expect(greenRow).toBeVisible();
+    expect(blueRow).toBeVisible();
+
+    const searchInput = await screen.findByPlaceholderText('Search...');
+
+    await user.type(searchInput, 'blue');
+
+    await waitFor(() => {
+      expect(greenRow).not.toBeVisible();
+    });
+
+    expect(blueRow).toBeVisible();
+  });
+
+  it('should call updateCategoryRuleSet on save', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+
+    const saveButton = screen.getByRole('button', { name: 'Save' });
+    await user.click(saveButton);
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      categoryIds: ['SubCategory_428'],
+      countryCode: 'UK_IE',
+      ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      excludedFacets: {
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+          },
+        ],
+      },
+      rules: {
+        pinnedProducts: [{ id: 'a1' }],
+        blockedProducts: [],
+        boosts: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+        buries: {
+          numeric: [],
+          alphanumeric: [],
+          product: [],
+        },
+        includes: {
+          alphanumeric: [],
+        },
+        excludes: {
+          alphanumeric: [],
+        },
+      },
+
+      isEnabled: false,
+      facets: [
+        {
+          boosted: ['blue', 'green'],
+          excludedValues: ['test exclude'],
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+        },
+        {
+          boosted: [],
+          excludedValues: [],
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+        },
+        {
+          boosted: [],
+          excludedValues: [],
+          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+        },
+      ],
+    });
+
+    expect(defaultMockRouter.push).toHaveBeenCalledWith('/category');
+  });
+
+  it('should display error message when updating ruleset fails', async () => {
+    updateRuleSet.error = 'Failed to update';
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(
+      screen.getByText('Error whilst updating ruleset: Failed to update')
+    ).toBeVisible();
   });
 });
