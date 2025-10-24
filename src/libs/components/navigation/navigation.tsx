@@ -55,7 +55,7 @@ const StyledLink = styled(Link)`
 
 export const Navigation = () => {
   const session = useSession();
-  const isLoggedIn = session && session.status === 'authenticated';
+  const isLoggedIn = session?.status === 'authenticated';
 
   const menuItems: MenuItem = [
     {

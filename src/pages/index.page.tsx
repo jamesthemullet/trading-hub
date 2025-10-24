@@ -29,7 +29,7 @@ const Index = () => {
       </Head>
       <Container>
         <h1>Trading Hub</h1>
-        {session && session.status === 'authenticated' ? (
+        {session?.status === 'authenticated' ? (
           <>
             <StyledText>Hello, {session.data.user?.email}</StyledText>
 

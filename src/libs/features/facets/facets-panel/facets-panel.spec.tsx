@@ -406,9 +406,7 @@ describe('Facet Panel', () => {
 
       const closeButton = screen.getAllByRole('button', { name: 'Cancel' })[1];
 
-      await act(async () => {
-        await user.click(closeButton);
-      });
+      await user.click(closeButton);
 
       await waitFor(async () => {
         expect(

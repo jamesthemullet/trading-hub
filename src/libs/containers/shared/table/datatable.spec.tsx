@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import * as analytics from '@/libs/hooks/utils/analytics';
@@ -667,9 +667,7 @@ describe('DataTable', () => {
     const dropDown = screen.queryAllByTitle('More options')[0];
 
     dropDown.focus();
-    await act(async () => {
-      await user.keyboard('{Enter}');
-    });
+    await user.keyboard('{Enter}');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible();
