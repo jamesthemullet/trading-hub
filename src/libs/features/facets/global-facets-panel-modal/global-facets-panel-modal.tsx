@@ -5,6 +5,7 @@ import {
   useId,
   useMemo,
   useReducer,
+  useRef,
   useState,
 } from 'react';
 import { Modal } from '@mantine/core';
@@ -41,6 +42,7 @@ import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-la
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import {
   FacetAttributeValuesTableRow,
+  StyledInput,
   TableHeading,
 } from '@/libs/containers/shared/table/table.styles';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
@@ -80,10 +82,13 @@ const EDITFACETVALUESMODALCOLUMNS: {
     label: 'Attribute',
   },
   {
+    label: 'Ranking',
+  },
+  {
     label: 'Display name',
   },
   {
-    label: false,
+    label: '',
   },
   {
     label: 'Actions',
@@ -94,6 +99,7 @@ type FormattedRow = {
   displayName: string;
   attributes: string[];
   isMergeGroup: boolean;
+  order?: number;
 };
 
 type ContentProps = {
@@ -160,6 +166,33 @@ export const GlobalFacetPanelModalContent = ({
       errorStates: {},
     }
   );
+
+  const [orderChanged, setOrderChanged] = useState<string | null>(null);
+  const [localOrders, setLocalOrders] = useState<
+    Record<string, number | string>
+  >({});
+
+  useEffect(() => {
+    const newOrders = Object.fromEntries(
+      globalAttributesLocalState.boostedRows.map((item) => [
+        item.displayName,
+        item.order,
+      ])
+    );
+    setLocalOrders(newOrders);
+  }, [globalAttributesLocalState.boostedRows]);
+
+  const inputRefs = useRef<Record<string, HTMLInputElement>>({});
+
+  useEffect(() => {
+    if (orderChanged && inputRefs.current[orderChanged]) {
+      const input = inputRefs.current[orderChanged];
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      input.focus();
+      input.select();
+      setOrderChanged(null);
+    }
+  }, [orderChanged]);
 
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
     useGlobalFacetUpdate();
@@ -263,6 +296,82 @@ export const GlobalFacetPanelModalContent = ({
     300
   );
 
+  const handleOrderChange = useCallback(
+    (displayValue: string, newIndex: number) => {
+      dispatch({
+        type: 'SET_BOOSTED_ORDER',
+        payload: { id: displayValue, newIndex },
+      });
+      setOrderChanged(displayValue);
+    },
+    [dispatch]
+  );
+
+  const handleInputChange = useCallback(
+    (displayName: string, value: string) => {
+      if (value.startsWith('0')) {
+        return;
+      }
+      const newOrder = value === '' ? '' : Number(value);
+
+      setLocalOrders((prev) => ({
+        ...prev,
+        [displayName]: newOrder,
+      }));
+    },
+    []
+  );
+
+  const handleInputBlur = useCallback(
+    (displayName: string, value: string, order: number) => {
+      const newOrder = Number(value);
+
+      if (value === '' || !Number.isInteger(newOrder)) {
+        setLocalOrders((prev) => ({
+          ...prev,
+          [displayName]: order,
+        }));
+        return;
+      }
+
+      dispatch({
+        type: 'SET_BOOSTED_ORDER',
+        payload: { id: displayName, newIndex: newOrder - 1 },
+      });
+    },
+    []
+  );
+
+  const handleInputKeyDown = useCallback(
+    (
+      e: React.KeyboardEvent<HTMLInputElement>,
+      displayName: string,
+      order: number
+    ) => {
+      const invalidKeys = ['.', 'e', 'E', '-', '+'];
+      if (invalidKeys.includes(e.key)) {
+        e.preventDefault();
+        return;
+      }
+
+      if (e.key === 'Enter') {
+        const value = e.currentTarget.value;
+        const newOrder = Number(value);
+
+        if (value === '' || !Number.isInteger(newOrder)) {
+          setLocalOrders((prev) => ({
+            ...prev,
+            [displayName]: order,
+          }));
+          return;
+        }
+
+        handleOrderChange(displayName, newOrder - 1);
+      }
+    },
+    [handleOrderChange]
+  );
+
   const listValues = useCallback(
     (values: FormattedRow[], displayType: FacetDisplayType) => {
       const handleRemoveFromMerge = ({
@@ -290,7 +399,7 @@ export const GlobalFacetPanelModalContent = ({
       );
 
       return filteredRows.map(
-        ({ displayName, attributes, isMergeGroup }, index) => {
+        ({ displayName, attributes, isMergeGroup, order }, index) => {
           const onOrderChange = (status: FacetDisplayType) => {
             setIsAwaitingUpdate(true);
             if (status === displayType) {
@@ -328,6 +437,8 @@ export const GlobalFacetPanelModalContent = ({
             });
           };
 
+          const localOrder = localOrders[displayName] ?? order;
+
           return (
             <FacetAttributeValuesTableRow
               key={`${displayType}-${displayName}`}
@@ -344,6 +455,36 @@ export const GlobalFacetPanelModalContent = ({
                 allSelected={globalAttributesLocalState.allSelected}
                 allDeselected={globalAttributesLocalState.allDeselected}
               />
+
+              <Col>
+                {displayType === 'included' && order && (
+                  <StyledInput
+                    ref={(el) => {
+                      if (el) {
+                        // eslint-disable-next-line functional/immutable-data
+                        inputRefs.current[displayName] = el;
+                      }
+                    }}
+                    id={`order-input-${displayName}`}
+                    label={`Order for ${displayName}`}
+                    isLabelHidden
+                    type="number"
+                    value={localOrder}
+                    min={1}
+                    aria-label={`Order for ${displayName}`}
+                    onFocus={(e) => {
+                      e.target.select();
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(displayName, e.target.value)
+                    }
+                    onBlur={(e) =>
+                      handleInputBlur(displayName, e.currentTarget.value, order)
+                    }
+                    onKeyDown={(e) => handleInputKeyDown(e, displayName, order)}
+                  />
+                )}
+              </Col>
 
               <GlobalEditableLabel
                 displayName={displayName}
@@ -406,6 +547,10 @@ export const GlobalFacetPanelModalContent = ({
       globalAttributesLocalState.excludedRows,
       globalAttributesLocalState.merged,
       writeEnabled,
+      localOrders,
+      handleInputChange,
+      handleInputBlur,
+      handleInputKeyDown,
     ]
   );
 

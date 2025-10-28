@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 import { fonts, Label } from '@/libs/components/typography/typography.styles';
+import { Input } from '@/libs/containers/shared/input/input';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -37,7 +38,7 @@ export const FacetAttributeValuesTableRow = styled(
   TableRow
 )<FacetAttributeValuesTableRowProps>`
   grid-template-columns:
-    24px minmax(auto, 340px) minmax(auto, 340px) minmax(100px, auto)
+    24px 250px minmax(auto, 100px) minmax(auto, 340px) minmax(100px, auto)
     230px;
   border-bottom: none;
   align-items: center;
@@ -195,4 +196,8 @@ export const TableLink = styled(Link)`
   &:active {
     background-color: #e3e3e3;
   }
+`;
+
+export const StyledInput = styled(Input)`
+  width: 82px;
 `;

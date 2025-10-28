@@ -2,7 +2,11 @@ import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 
 import { facetReducer } from './facet-reducer';
 
-const mockReturnedGlobalFacetState: MerchandisingReturnedGlobalFacet = {
+type FacetStateWithOrder = MerchandisingReturnedGlobalFacet & {
+  orderedBoostedList: { displayValue: string; order: number }[];
+};
+
+const mockReturnedGlobalFacetState: FacetStateWithOrder = {
   id: 'color',
   lastChanged: {
     date: '2021-10-01',
@@ -12,12 +16,17 @@ const mockReturnedGlobalFacetState: MerchandisingReturnedGlobalFacet = {
   indexPropertyName: 'color',
   boosted: ['1', '2', '3'],
   excludedValues: [],
+  orderedBoostedList: [
+    { displayValue: '1', order: 1 },
+    { displayValue: '2', order: 2 },
+    { displayValue: '3', order: 3 },
+  ],
 };
 
 describe('facetReducer', () => {
   describe('MOVE_BOOSTED_ROW_UP', () => {
     it('should move boosted row up', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '2', '3'],
       };
@@ -31,11 +40,25 @@ describe('facetReducer', () => {
       expect(result).toEqual({
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '3', '2'],
+        orderedBoostedList: [
+          {
+            displayValue: '1',
+            order: 1,
+          },
+          {
+            displayValue: '3',
+            order: 2,
+          },
+          {
+            displayValue: '2',
+            order: 3,
+          },
+        ],
       });
     });
 
     it('should not move boosted row up if it is already at the top', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '2', '3'],
       };
@@ -53,7 +76,7 @@ describe('facetReducer', () => {
     });
 
     it('should work with boosted equal to undefined', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: undefined,
       };
@@ -73,7 +96,7 @@ describe('facetReducer', () => {
 
   describe('MOVE_BOOSTED_ROW_DOWN', () => {
     it('should move boosted row down', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '2', '3'],
       };
@@ -87,11 +110,25 @@ describe('facetReducer', () => {
       expect(result).toEqual({
         ...mockReturnedGlobalFacetState,
         boosted: ['2', '1', '3'],
+        orderedBoostedList: [
+          {
+            displayValue: '2',
+            order: 1,
+          },
+          {
+            displayValue: '1',
+            order: 2,
+          },
+          {
+            displayValue: '3',
+            order: 3,
+          },
+        ],
       });
     });
 
     it('should not move boosted row down if it is already at the bottom', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1', '2', '3'],
       };
@@ -109,7 +146,7 @@ describe('facetReducer', () => {
     });
 
     it('should work with boosted equal to undefined', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: undefined,
       };
@@ -129,7 +166,7 @@ describe('facetReducer', () => {
 
   describe('CHANGE_DISPLAY_TYPE', () => {
     it('should change display type to boosted', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: [],
       };
@@ -145,11 +182,17 @@ describe('facetReducer', () => {
         ...mockReturnedGlobalFacetState,
         boosted: ['1'],
         excludedValues: [],
+        orderedBoostedList: [
+          {
+            displayValue: '1',
+            order: 1,
+          },
+        ],
       });
     });
 
     it('should change group to boosted', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: [],
         merged: [
@@ -175,13 +218,19 @@ describe('facetReducer', () => {
           {
             displayValue: 'group',
             mergedValues: ['1'],
+          },
+        ],
+        orderedBoostedList: [
+          {
+            displayValue: '1',
+            order: 1,
           },
         ],
       });
     });
 
     it('should change display type from boosted to excluded', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1'],
         excludedValues: [],
@@ -198,11 +247,12 @@ describe('facetReducer', () => {
         ...mockReturnedGlobalFacetState,
         boosted: [],
         excludedValues: ['1'],
+        orderedBoostedList: [],
       });
     });
 
     it('should change display type from boosted to excluded with a merge group', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: ['1'],
         excludedValues: [],
@@ -231,11 +281,12 @@ describe('facetReducer', () => {
             mergedValues: ['1'],
           },
         ],
+        orderedBoostedList: [],
       });
     });
 
     it('should change display type from excluded to default', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: ['2', '4'],
         excludedValues: ['1', '3'],
@@ -252,11 +303,21 @@ describe('facetReducer', () => {
         ...mockReturnedGlobalFacetState,
         boosted: ['2', '4'],
         excludedValues: ['1', '3'],
+        orderedBoostedList: [
+          {
+            displayValue: '2',
+            order: 1,
+          },
+          {
+            displayValue: '4',
+            order: 2,
+          },
+        ],
       });
     });
 
     it('should change display type when boosted is undefined and excludedValues is undefined', () => {
-      const state: MerchandisingReturnedGlobalFacet = {
+      const state: FacetStateWithOrder = {
         ...mockReturnedGlobalFacetState,
         boosted: undefined,
         excludedValues: undefined,
@@ -273,6 +334,42 @@ describe('facetReducer', () => {
         ...mockReturnedGlobalFacetState,
         boosted: undefined,
         excludedValues: undefined,
+        orderedBoostedList: [],
+      });
+    });
+  });
+
+  describe('SET_BOOSTED_ORDER', () => {
+    it('should set boosted order', () => {
+      const state: FacetStateWithOrder = {
+        ...mockReturnedGlobalFacetState,
+        boosted: ['1', '2', '3'],
+      };
+      const action = {
+        type: 'SET_BOOSTED_ORDER' as const,
+        payload: {
+          id: '3',
+          newIndex: 0,
+        },
+      };
+      const result = facetReducer(state, action);
+      expect(result).toEqual({
+        ...mockReturnedGlobalFacetState,
+        boosted: ['3', '1', '2'],
+        orderedBoostedList: [
+          {
+            displayValue: '3',
+            order: 1,
+          },
+          {
+            displayValue: '1',
+            order: 2,
+          },
+          {
+            displayValue: '2',
+            order: 3,
+          },
+        ],
       });
     });
   });

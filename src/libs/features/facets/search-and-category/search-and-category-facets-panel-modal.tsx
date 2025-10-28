@@ -1,4 +1,11 @@
-import { useCallback, useMemo, useReducer, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -34,6 +41,7 @@ import {
 } from '@/libs/components/modals/modal.styles';
 import {
   FacetAttributeValuesTableRow,
+  StyledInput,
   TableHeading,
 } from '@/libs/containers/shared/table/table.styles';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
@@ -51,6 +59,9 @@ const EDITFACETVALUESMODALCOLUMNS: {
   { label: null },
   {
     label: 'Attribute',
+  },
+  {
+    label: 'Ranking',
   },
   {
     label: 'Display name',
@@ -87,14 +98,46 @@ export const SearchAndCategoryFacetsPanelModal = ({
     const intersectedValues = intersection(facet.boosted, facet.excludedValues);
 
     const boosted = without(facet.boosted, ...intersectedValues);
+    const orderedBoostedList = boosted.map((item, index) => ({
+      displayValue: item,
+      order: index + 1,
+    }));
 
     return {
       ...facet,
       ...(boosted.length > 0 && { boosted }),
+      orderedBoostedList,
     };
   }, [facet]);
 
   const [facetLocalState, dispatch] = useReducer(facetReducer, processedFacet);
+
+  const [orderChanged, setOrderChanged] = useState<string | null>(null);
+  const [localOrders, setLocalOrders] = useState<
+    Record<string, number | string>
+  >({});
+
+  useEffect(() => {
+    const newOrders = Object.fromEntries(
+      facetLocalState.orderedBoostedList.map((item) => [
+        item.displayValue,
+        item.order,
+      ])
+    );
+    setLocalOrders(newOrders);
+  }, [facetLocalState.orderedBoostedList]);
+
+  const inputRefs = useRef<Record<string, HTMLInputElement>>({});
+
+  useEffect(() => {
+    if (orderChanged && inputRefs.current[orderChanged]) {
+      const input = inputRefs.current[orderChanged];
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      input.focus();
+      input.select();
+      setOrderChanged(null);
+    }
+  }, [orderChanged]);
 
   const handleSave = async () => {
     onSave(facetLocalState);
@@ -134,29 +177,109 @@ export const SearchAndCategoryFacetsPanelModal = ({
     300
   );
 
-  const handleDisplayTypeChange = (
-    newDisplayType: FacetDisplayType,
-    displayValue: string
-  ) => {
-    dispatch({
-      type: 'CHANGE_DISPLAY_TYPE',
-      payload: {
-        id: displayValue,
-        newDisplayType,
-      },
-    });
-  };
+  const handleOrderChange = useCallback(
+    (displayValue: string, newIndex: number) => {
+      dispatch({
+        type: 'SET_BOOSTED_ORDER',
+        payload: { id: displayValue, newIndex },
+      });
+      setOrderChanged(displayValue);
+    },
+    [dispatch]
+  );
+
+  const handleDisplayTypeChange = useCallback(
+    (newDisplayType: FacetDisplayType, displayValue: string) => {
+      dispatch({
+        type: 'CHANGE_DISPLAY_TYPE',
+        payload: {
+          id: displayValue,
+          newDisplayType,
+        },
+      });
+    },
+    []
+  );
+
+  const handleInputChange = useCallback(
+    (displayValue: string, value: string) => {
+      if (value.startsWith('0')) {
+        return;
+      }
+      const newOrder = value === '' ? '' : Number(value);
+      setLocalOrders((prev) => ({
+        ...prev,
+        [displayValue]: newOrder,
+      }));
+    },
+    []
+  );
+
+  const handleInputBlur = useCallback(
+    (displayValue: string, value: string, order: number) => {
+      const newOrder = Number(value);
+
+      if (value === '' || !Number.isInteger(newOrder)) {
+        setLocalOrders((prev) => ({
+          ...prev,
+          [displayValue]: order,
+        }));
+        return;
+      }
+
+      dispatch({
+        type: 'SET_BOOSTED_ORDER',
+        payload: { id: displayValue, newIndex: newOrder - 1 },
+      });
+    },
+    []
+  );
+
+  const handleInputKeyDown = useCallback(
+    (
+      e: React.KeyboardEvent<HTMLInputElement>,
+      displayValue: string,
+      order: number
+    ) => {
+      const invalidKeys = ['.', 'e', 'E', '-', '+'];
+      if (invalidKeys.includes(e.key)) {
+        e.preventDefault();
+        return;
+      }
+
+      if (e.key === 'Enter') {
+        const value = e.currentTarget.value;
+        const newOrder = Number(value);
+
+        if (value === '' || !Number.isInteger(newOrder)) {
+          setLocalOrders((prev) => ({
+            ...prev,
+            [displayValue]: order,
+          }));
+          return;
+        }
+
+        handleOrderChange(displayValue, newOrder - 1);
+      }
+    },
+    [handleOrderChange]
+  );
 
   const listValues = useCallback(
     (
       values: MerchandisingAttributeValuesResponse['values'],
-      displayType: FacetDisplayType
+      displayType: FacetDisplayType,
+      orderedBoostedList?: { displayValue: string; order: number }[]
     ) => {
       const filteredRows = values.filter((row) =>
         row.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
       return filteredRows.map(({ displayValue }, index) => {
+        const order =
+          orderedBoostedList?.find((item) => item.displayValue === displayValue)
+            ?.order || 0;
+        const localOrder = localOrders[displayValue] ?? order;
         return (
           <FacetAttributeValuesTableRow
             key={`${displayType}-${displayValue}`}
@@ -169,6 +292,44 @@ export const SearchAndCategoryFacetsPanelModal = ({
               <AttributeWrapper>
                 <Text>{displayValue}</Text>
               </AttributeWrapper>
+            </Col>
+
+            <Col>
+              {displayType === 'included' && (
+                <AttributeWrapper>
+                  <StyledInput
+                    ref={(el) => {
+                      if (el) {
+                        // eslint-disable-next-line functional/immutable-data
+                        inputRefs.current[displayValue] = el;
+                      }
+                    }}
+                    id={`order-input-${displayValue}`}
+                    label={`Order for ${displayValue}`}
+                    isLabelHidden
+                    type="number"
+                    value={localOrder}
+                    min={1}
+                    aria-label={`Order for ${displayValue}`}
+                    onFocus={(e) => {
+                      e.target.select();
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(displayValue, e.target.value)
+                    }
+                    onBlur={(e) =>
+                      handleInputBlur(
+                        displayValue,
+                        e.currentTarget.value,
+                        order
+                      )
+                    }
+                    onKeyDown={(e) =>
+                      handleInputKeyDown(e, displayValue, order)
+                    }
+                  />
+                </AttributeWrapper>
+              )}
             </Col>
 
             <FlexColumnCol>
@@ -229,19 +390,31 @@ export const SearchAndCategoryFacetsPanelModal = ({
         );
       });
     },
-    [dispatch, searchQuery, writeEnabled]
+    [
+      searchQuery,
+      writeEnabled,
+      handleDisplayTypeChange,
+      handleInputChange,
+      handleInputBlur,
+      handleInputKeyDown,
+      localOrders,
+    ]
   );
 
   const boostedValuesRows = useMemo(() => {
-    return listValues(boostedValues, 'included');
-  }, [boostedValues, listValues]);
+    return listValues(
+      boostedValues,
+      'included',
+      facetLocalState.orderedBoostedList
+    );
+  }, [boostedValues, listValues, facetLocalState.orderedBoostedList]);
 
   const defaultValuesRows = useMemo(() => {
-    return listValues(algoControlValues, 'algoControl');
+    return listValues(algoControlValues, 'algoControl', []);
   }, [algoControlValues, listValues]);
 
   const excludedValuesRows = useMemo(() => {
-    return listValues(excludedValues, 'excluded');
+    return listValues(excludedValues, 'excluded', []);
   }, [excludedValues, listValues]);
 
   return (

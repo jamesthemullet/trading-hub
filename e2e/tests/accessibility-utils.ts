@@ -19,6 +19,9 @@ export const checkAccessibility = async (
       '.mantine-Modal-root',
       '[data-centered="true"]',
       '[data-portal="true"]',
+      // Exclude Next.js dev tools that only appear in development
+      '#nextjs-portal',
+      '[data-nextjs-dev-tools-button]',
     ],
     include = [],
     tags = ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'best-practice'],

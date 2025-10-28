@@ -40,7 +40,10 @@ describe('FacetAttributesList', () => {
       allSelected: false,
       allDeselected: false,
       disableArrows: false,
-      boostedRows: formattedRows.slice(0, 2),
+      boostedRows: formattedRows.slice(0, 2).map((row, index) => ({
+        ...row,
+        order: index + 1,
+      })),
       nonBoostedExcludedRows: formattedRows.slice(2, 4),
       excludedRows: formattedRows.slice(4),
       merged: [],

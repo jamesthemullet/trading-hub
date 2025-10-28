@@ -2110,4 +2110,189 @@ describe('GlobalFacetPanelModalContent', () => {
       expect(screen.getByRole('button', { name: 'Merge (0)' })).toBeVisible();
     });
   });
+
+  describe('re-ordering by number', () => {
+    beforeEach(() => {
+      Element.prototype.scrollIntoView = jest.fn();
+    });
+
+    it('should dispatch SET_BOOSTED_ORDER if new value within the range of boosted items', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={mockFacet}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const input = screen.getByLabelText('Order for Under 13');
+      expect(input).toHaveValue(1);
+      await user.clear(input);
+      await user.type(input, '2');
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(2);
+      });
+    });
+
+    it('should default to the highest value if new value is out of range of boosted items', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={mockFacet}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const input = screen.getByLabelText('Order for Under 13');
+      expect(input).toHaveValue(1);
+      await user.type(input, '5');
+      act(() => {
+        input.blur();
+      });
+
+      await waitFor(() => {
+        expect(input).toHaveValue(2);
+      });
+    });
+
+    it('should not dispatch SET_BOOSTED_ORDER if new value is less than 1', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={mockFacet}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const input = screen.getByLabelText('Order for Under 13');
+      expect(input).toHaveValue(1);
+      await user.type(input, '0');
+      await user.keyboard('{enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(1);
+      });
+    });
+
+    it('should keep the existing order if the user deletes, then clicks outside without inputting a new order', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={mockFacet}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const input = screen.getByLabelText('Order for 14.5 - 20');
+      expect(input).toHaveValue(2);
+      await user.clear(input);
+      expect(input).toHaveValue(null);
+      act(() => {
+        input.blur();
+      });
+
+      await waitFor(() => {
+        expect(input).toHaveValue(2);
+      });
+    });
+
+    it('should keep the existing order if the user deletes, then clicks enter without inputting a new order', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={mockFacet}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const input = screen.getByLabelText('Order for Under 13');
+      expect(input).toHaveValue(1);
+      await user.clear(input);
+      expect(input).toHaveValue(null);
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(1);
+      });
+    });
+
+    it('should only accept number inputs, and not disallowed inputs', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <GlobalFacetPanelModalContent
+          attributeValues={attributeValuesMock}
+          facet={mockFacet}
+          countryCode="UK"
+          onClose={jest.fn()}
+          writeEnabled
+        />
+      );
+
+      const input = screen.getByLabelText('Order for Under 13');
+      expect(input).toHaveValue(1);
+      await user.click(input);
+      await user.type(input, '.');
+      expect(input).toHaveValue(1);
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(1);
+      });
+
+      await user.type(input, 'e');
+      expect(input).toHaveValue(1);
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(1);
+      });
+
+      await user.type(input, 'E');
+      expect(input).toHaveValue(1);
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(1);
+      });
+
+      await user.type(input, '-');
+      expect(input).toHaveValue(1);
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(1);
+      });
+
+      await user.type(input, '+');
+      expect(input).toHaveValue(1);
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(1);
+      });
+    });
+  });
 });

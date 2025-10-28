@@ -17,6 +17,13 @@ export type FormattedRow = {
   isMergeGroup: boolean;
 };
 
+export type FormattedBoostedRow = {
+  displayName: string;
+  attributes: string[];
+  isMergeGroup: boolean;
+  order: number;
+};
+
 export type ToggleSelectedAttribute = {
   type: 'TOGGLE_SELECTED_ATTRIBUTES';
   payload: {
@@ -117,6 +124,14 @@ type SetError = {
   };
 };
 
+type SetBoostedOrderAction = {
+  type: 'SET_BOOSTED_ORDER';
+  payload: {
+    id: string;
+    newIndex: number;
+  };
+};
+
 export type GlobalAttributeReducer =
   | ToggleSelectedAttribute
   | ClearSelectedAttributes
@@ -129,14 +144,15 @@ export type GlobalAttributeReducer =
   | CreateMergeGroup
   | UpdateMergeGroup
   | RemoveFromMergeGroup
-  | SetError;
+  | SetError
+  | SetBoostedOrderAction;
 
 export type GlobalAttributesState = {
   selectedAttributes: string[];
   allSelected: boolean;
   allDeselected: boolean;
   disableArrows: boolean;
-  boostedRows: FormattedRow[];
+  boostedRows: FormattedBoostedRow[];
   nonBoostedExcludedRows: FormattedRow[];
   excludedRows: FormattedRow[];
   merged: {
@@ -292,6 +308,14 @@ export const globalAttributesReducer = (
         nonBoostedExcludedValues.map(formatRow);
 
       const uniqueBoostedRows = getUniqueRows(updatedBoostedRows);
+
+      const uniqueBoostedRowsWithOrder = uniqueBoostedRows.map(
+        (row, index) => ({
+          ...row,
+          order: index + 1,
+        })
+      );
+
       const uniqueExcludedRows = getUniqueRows(
         updatedExcludedRows,
         uniqueBoostedRows
@@ -305,7 +329,7 @@ export const globalAttributesReducer = (
 
       return {
         ...state,
-        boostedRows: uniqueBoostedRows,
+        boostedRows: uniqueBoostedRowsWithOrder,
         nonBoostedExcludedRows: uniqueNonBoostedExcludedRows,
         excludedRows: uniqueExcludedRows,
         merged,
@@ -314,21 +338,30 @@ export const globalAttributesReducer = (
 
     case 'AMEND_BOOSTED_ROW': {
       const { newStatus, displayName } = action.payload;
-      const rowToMove = state.boostedRows.find(
+      const found = state.boostedRows.find(
         (row) => row.displayName === displayName
-      );
+      )!;
+
+      const rowToMove = {
+        displayName: found.displayName,
+        attributes: found.attributes,
+        isMergeGroup: found.isMergeGroup,
+      };
       return {
         ...state,
-        boostedRows: state.boostedRows.filter(
-          (row) => row.displayName !== displayName
-        ),
+        boostedRows: state.boostedRows
+          .filter((row) => row.displayName !== displayName)
+          .map((row, index) => ({
+            ...row,
+            order: index + 1,
+          })),
         excludedRows:
           newStatus === 'excluded'
-            ? [...state.excludedRows, rowToMove!]
+            ? [...state.excludedRows, rowToMove]
             : state.excludedRows,
         nonBoostedExcludedRows:
           newStatus === 'algoControl'
-            ? [...state.nonBoostedExcludedRows, rowToMove!]
+            ? [...state.nonBoostedExcludedRows, rowToMove]
             : state.nonBoostedExcludedRows,
       };
     }
@@ -338,6 +371,7 @@ export const globalAttributesReducer = (
       const rowToMove = state.nonBoostedExcludedRows.find(
         (row) => row.displayName === displayName
       );
+
       return {
         ...state,
         nonBoostedExcludedRows: state.nonBoostedExcludedRows.filter(
@@ -349,7 +383,10 @@ export const globalAttributesReducer = (
             : state.excludedRows,
         boostedRows:
           newStatus === 'included'
-            ? [...state.boostedRows, rowToMove!]
+            ? [
+                ...state.boostedRows,
+                { ...rowToMove!, order: state.boostedRows.length + 1 },
+              ]
             : state.boostedRows,
       };
     }
@@ -359,6 +396,7 @@ export const globalAttributesReducer = (
       const rowToMove = state.excludedRows.find(
         (row) => row.displayName === displayName
       );
+
       return {
         ...state,
         excludedRows: state.excludedRows.filter(
@@ -366,7 +404,10 @@ export const globalAttributesReducer = (
         ),
         boostedRows:
           newStatus === 'included'
-            ? [...state.boostedRows, rowToMove!]
+            ? [
+                ...state.boostedRows,
+                { ...rowToMove!, order: state.boostedRows.length + 1 },
+              ]
             : state.boostedRows,
         nonBoostedExcludedRows:
           newStatus === 'algoControl'
@@ -379,7 +420,12 @@ export const globalAttributesReducer = (
       const { newOrder } = action.payload;
       return {
         ...state,
-        boostedRows: newOrder,
+        boostedRows: newOrder.map((row, index) => {
+          return {
+            ...row,
+            order: index + 1,
+          };
+        }),
       };
     }
 
@@ -461,7 +507,12 @@ export const globalAttributesReducer = (
 
       return {
         ...state,
-        boostedRows: uniqueBoostedRows,
+        boostedRows: uniqueBoostedRows.map((row, index) => {
+          return {
+            ...row,
+            order: index + 1,
+          };
+        }),
         excludedRows: uniqueExcludedRows,
         nonBoostedExcludedRows: uniqueNonBoostedExcludedRows,
         merged: [
@@ -512,8 +563,20 @@ export const globalAttributesReducer = (
       return {
         ...state,
         boostedRows: isFirstAttributeBoosted
-          ? [newMergeGroup, ...boostedRowsWithoutMergeGroup]
-          : boostedRowsWithoutMergeGroup,
+          ? [newMergeGroup, ...boostedRowsWithoutMergeGroup].map(
+              (row, index) => {
+                return {
+                  ...row,
+                  order: index + 1,
+                };
+              }
+            )
+          : boostedRowsWithoutMergeGroup.map((row, index) => {
+              return {
+                ...row,
+                order: index + 1,
+              };
+            }),
         excludedRows: isFirstAttributeExcluded
           ? [newMergeGroup, ...excludedRowsWithoutMergeGroup]
           : excludedRowsWithoutMergeGroup,
@@ -628,7 +691,12 @@ export const globalAttributesReducer = (
 
       return {
         ...state,
-        boostedRows: updatedBoostedRows,
+        boostedRows: updatedBoostedRows.map((row, index) => {
+          return {
+            ...row,
+            order: index + 1,
+          };
+        }),
         excludedRows: updatedExcludedRows,
         nonBoostedExcludedRows: updatedNonBoostedExcludedRows,
         merged: updatedMerged.filter((merge) => merge.mergedValues!.length > 1),
@@ -648,6 +716,26 @@ export const globalAttributesReducer = (
       return {
         ...state,
         errorStates: updatedErrorStates,
+      };
+    }
+
+    case 'SET_BOOSTED_ORDER': {
+      const currentBoosted = state.boostedRows;
+      const currentIndex = currentBoosted.findIndex(
+        (item) => item.displayName === action.payload.id
+      );
+      const newIndex = action.payload.newIndex;
+
+      const item = currentBoosted[currentIndex];
+      const withoutItem = currentBoosted.toSpliced(currentIndex, 1);
+      const newBoostedArray = withoutItem.toSpliced(newIndex, 0, item);
+
+      return {
+        ...state,
+        boostedRows: newBoostedArray.map((row, index) => ({
+          ...row,
+          order: index + 1,
+        })),
       };
     }
   }

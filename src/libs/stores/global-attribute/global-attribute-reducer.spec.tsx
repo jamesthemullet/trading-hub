@@ -25,6 +25,7 @@ const mockState: GlobalAttributesState = {
       displayName: 'Vegan',
       attributes: ['Vegan'],
       isMergeGroup: false,
+      order: 1,
     },
   ],
   excludedRows: [
@@ -291,6 +292,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            order: 1,
           },
         ],
       };
@@ -358,6 +360,60 @@ describe('Global Attribute Reducer', () => {
         ],
       });
     });
+
+    it('should move boosted row and set order', () => {
+      const state: GlobalAttributesState = {
+        ...mockState,
+        boostedRows: [
+          {
+            displayName: 'Under 10',
+            attributes: ['Under 10'],
+            isMergeGroup: false,
+            order: 1,
+          },
+          {
+            displayName: 'Vegan',
+            attributes: ['Vegan'],
+            isMergeGroup: false,
+            order: 2,
+          },
+        ],
+        nonBoostedExcludedRows: [],
+      };
+      const action = {
+        type: 'AMEND_BOOSTED_ROW' as const,
+        payload: {
+          displayName: 'Vegan',
+          newStatus: 'algoControl' as FacetDisplayType,
+        },
+      };
+      const result = globalAttributesReducer(state, action);
+      expect(result).toEqual({
+        ...mockState,
+        nonBoostedExcludedRows: [
+          {
+            displayName: 'Vegan',
+            attributes: ['Vegan'],
+            isMergeGroup: false,
+          },
+        ],
+        excludedRows: [
+          {
+            displayName: 'Vegetarian',
+            attributes: ['Vegetarian'],
+            isMergeGroup: false,
+          },
+        ],
+        boostedRows: [
+          {
+            displayName: 'Under 10',
+            attributes: ['Under 10'],
+            isMergeGroup: false,
+            order: 1,
+          },
+        ],
+      });
+    });
   });
 
   describe('AMEND_EXCLUDED_ROW', () => {
@@ -388,11 +444,13 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            order: 1,
           },
           {
             displayName: 'Feather',
             attributes: ['Feather', 'Polyester'],
             isMergeGroup: true,
+            order: 2,
           },
         ],
       });
@@ -437,6 +495,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            order: 1,
           },
         ],
         excludedRows: [
@@ -466,11 +525,13 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            order: 1,
           },
           {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            order: 2,
           },
         ],
       };
@@ -499,11 +560,13 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            order: 1,
           },
           {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            order: 2,
           },
         ],
       });
@@ -519,16 +582,19 @@ describe('Global Attribute Reducer', () => {
             displayName: 'GOODMOVE',
             attributes: ['GOODMOVE'],
             isMergeGroup: false,
+            order: 1,
           },
           {
             displayName: 'ROSIE',
             attributes: ['ROSIE'],
             isMergeGroup: false,
+            order: 2,
           },
           {
             displayName: 'SOSANDAR',
             attributes: ['SOSANDAR'],
             isMergeGroup: false,
+            order: 3,
           },
         ],
       };
@@ -548,6 +614,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'ROSIE',
             attributes: ['GOODMOVE', 'ROSIE', 'SOSANDAR'],
             isMergeGroup: true,
+            order: 1,
           },
         ],
         merged: [
@@ -694,11 +761,13 @@ describe('Global Attribute Reducer', () => {
             displayName: 'value1',
             attributes: ['value1', 'value2', 'value3'],
             isMergeGroup: true,
+            order: 1,
           },
           {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            order: 2,
           },
         ],
         nonBoostedExcludedRows: [],
@@ -830,6 +899,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test10',
           attributes: ['value10', 'value20', 'value30'],
           isMergeGroup: true,
+          order: 1,
         },
       ],
       merged: [
@@ -854,11 +924,13 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test10',
           attributes: ['value20', 'value30'],
           isMergeGroup: true,
+          order: 1,
         },
         {
           displayName: 'value10',
           attributes: ['value10'],
           isMergeGroup: false,
+          order: 2,
         },
       ],
       merged: [
@@ -926,6 +998,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test1',
           attributes: ['value3', 'value4'],
           isMergeGroup: true,
+          order: 1,
         },
       ],
       excludedRows: [
@@ -990,6 +1063,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test1',
           attributes: ['value3', 'value4'],
           isMergeGroup: true,
+          order: 1,
         },
       ],
       excludedRows: [
@@ -1028,6 +1102,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test',
           attributes: ['value1', 'value2'],
           isMergeGroup: true,
+          order: 1,
         },
       ],
       nonBoostedExcludedRows: [],
@@ -1047,11 +1122,13 @@ describe('Global Attribute Reducer', () => {
           displayName: 'value2',
           attributes: ['value2'],
           isMergeGroup: false,
+          order: 1,
         },
         {
           displayName: 'value1',
           attributes: ['value1'],
           isMergeGroup: false,
+          order: 2,
         },
       ],
       nonBoostedExcludedRows: [],

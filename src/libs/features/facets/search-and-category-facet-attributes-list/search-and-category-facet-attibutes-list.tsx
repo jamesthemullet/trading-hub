@@ -12,7 +12,7 @@ import {
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
 import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
-import type { Action } from '@/libs/stores/search-and-category/facet-reducer';
+import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 import { spacing } from '@/libs/utils/spacing';
 
 const GlobalFacetAttributesListContainer = styled.div`
