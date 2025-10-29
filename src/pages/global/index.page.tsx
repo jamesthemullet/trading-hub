@@ -77,7 +77,6 @@ const RuleSets = () => {
         headings={headings}
         mapping={mapping}
         ruleType="global"
-        isDuplicateEnabled={false}
         writeEnabled={hasWriteAccess}
       />
     </>

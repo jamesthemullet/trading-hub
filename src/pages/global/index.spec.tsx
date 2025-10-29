@@ -170,41 +170,6 @@ describe('Index', () => {
     ).toBeVisible();
   });
 
-  it('should not display the duplicate button', async () => {
-    const user = userEvent.setup();
-    const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-    jest.mocked(useRuleSet).mockReturnValue({
-      categoryRuleSets: [],
-      pagination: {
-        totalItems: 0,
-      },
-      globalRuleSets: [
-        {
-          id: mockId,
-          isEnabled: true,
-          lastChanged: {
-            user: 'user',
-            date: '2021-01-01',
-          },
-          rules: mockMerchandisingRules,
-          facets: [],
-        },
-      ],
-      refetchRuleSetList: () => jest.fn,
-      setCategoryRuleSets: jest.fn(),
-      setGlobalRuleSets: jest.fn(),
-      error: '',
-      isLoading: false,
-    });
-    renderWithProviders(<RuleSets />);
-
-    const rulesetDropdown = await screen.findAllByTitle('More options');
-
-    await user.click(rulesetDropdown[0]);
-
-    expect(screen.queryByTitle('Duplicate')).not.toBeInTheDocument();
-  });
-
   it('should search', async () => {
     const user = userEvent.setup();
 
@@ -451,43 +416,6 @@ describe('Index', () => {
         countryCode: 'IE',
       });
       expect(screen.getAllByText('IE only marksandspencer')[0]).toBeVisible();
-    });
-  });
-
-  describe('Facets', () => {
-    it('should not display the duplicate button', async () => {
-      const user = userEvent.setup();
-      const mockId = 'ewfw-e3f23-f23f2-3cwef3';
-      jest.mocked(useRuleSet).mockReturnValue({
-        categoryRuleSets: [],
-        pagination: {
-          totalItems: 0,
-        },
-        globalRuleSets: [
-          {
-            id: mockId,
-            isEnabled: true,
-            lastChanged: {
-              user: 'user',
-              date: '2021-01-01',
-            },
-            rules: mockMerchandisingRules,
-            facets: [],
-          },
-        ],
-        refetchRuleSetList: () => jest.fn,
-        setCategoryRuleSets: jest.fn(),
-        setGlobalRuleSets: jest.fn(),
-        error: '',
-        isLoading: false,
-      });
-      renderWithProviders(<RuleSets />);
-
-      const rulesetDropdown = await screen.findAllByTitle('More options');
-
-      await user.click(rulesetDropdown[0]);
-
-      expect(screen.queryByTitle('Duplicate')).not.toBeInTheDocument();
     });
   });
 });

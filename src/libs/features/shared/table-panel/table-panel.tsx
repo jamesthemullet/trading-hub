@@ -39,14 +39,12 @@ export const TablePanel = <
   headings,
   mapping,
   ruleType,
-  isDuplicateEnabled = true,
   writeEnabled,
 }: {
   basePath: string;
   headings: string[];
   mapping: RuleSetMapping<A, T, N>;
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
-  isDuplicateEnabled?: boolean;
   writeEnabled: boolean;
 }) => {
   const {
@@ -205,7 +203,7 @@ export const TablePanel = <
         rows={rowsState.rows}
         currentPageSize={currentPageSize}
         onDeleteRuleSet={deleteRow}
-        onDuplicate={isDuplicateEnabled ? duplicateRow : undefined}
+        onDuplicate={duplicateRow}
         onToggleRuleSet={onToggleRow}
         ruleType={ruleType}
         query={searchInputValue}

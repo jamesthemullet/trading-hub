@@ -464,36 +464,6 @@ describe('TablePanel', () => {
       expect(track).toHaveBeenCalledWith({ event: 'Duplicate global ruleset' });
     });
 
-    it('should hide duplicate dropdown button when isDuplicateEnabled is false', async () => {
-      const user = userEvent.setup();
-      jest.mocked(mappingMock.queryAllRuleSets).mockResolvedValue({
-        data: {
-          ruleSets: [mockRow1],
-          pagination: {
-            totalItems: 1,
-          },
-        },
-        status: 200,
-      });
-
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-          isDuplicateEnabled={false}
-        />
-      );
-
-      const rulesetDropdown = await screen.findAllByTitle('More options');
-
-      await user.click(rulesetDropdown[0]);
-
-      expect(screen.queryByTitle('Duplicate')).not.toBeInTheDocument();
-    });
-
     it('should render error when duplicate row fails', async () => {
       const user = userEvent.setup();
 

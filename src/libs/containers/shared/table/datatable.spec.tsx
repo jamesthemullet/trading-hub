@@ -135,6 +135,7 @@ const defaultProps: DataTableProps = {
   headings,
   rows,
   onDeleteRuleSet: jest.fn(),
+  onDuplicate: jest.fn(),
   ruleType: 'categoryRanking',
   basePath: '/category',
 };

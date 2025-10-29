@@ -240,7 +240,7 @@ export type DataTableProps = {
   rows: Row[];
   isLoading: boolean;
   ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
-  onDuplicate?: (id: string) => void;
+  onDuplicate: (id: string) => void;
   query?: string;
   writeEnabled: boolean;
   currentPageSize?: number;
