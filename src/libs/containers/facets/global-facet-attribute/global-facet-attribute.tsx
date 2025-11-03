@@ -21,17 +21,15 @@ const StyledText = styled(Text)`
 export const GlobalFacetAttribute = ({
   attributes,
   isMergeGroup,
+  isChecked,
   displayName,
-  allSelected,
-  allDeselected,
   handleRemoveFromMerge,
   dispatch,
 }: {
   attributes: string[];
   isMergeGroup: boolean;
+  isChecked: boolean;
   displayName: string;
-  allSelected: boolean;
-  allDeselected: boolean;
   handleRemoveFromMerge: ({
     valueToRemove,
     mergeDisplayName,
@@ -42,7 +40,6 @@ export const GlobalFacetAttribute = ({
   dispatch: Dispatch<GlobalAttributeReducer>;
 }) => {
   const maxVisible = 4;
-  const [isChecked, setIsChecked] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
 
@@ -52,32 +49,16 @@ export const GlobalFacetAttribute = ({
     setIsAwaitingUpdate(false);
   }, [isAwaitingUpdate]);
 
-  useEffect(() => {
-    if (allSelected) {
-      setIsChecked(true);
-    }
-  }, [allSelected]);
-
-  useEffect(() => {
-    if (allDeselected) {
-      setIsChecked(false);
-    }
-  }, [allDeselected]);
-
   const visibleAttributes = isExpanded
     ? attributes
     : attributes.slice(0, maxVisible);
 
-  const handleSelect = () => {
-    setIsChecked((prev) => !prev);
-
+  const handleSelect = (displayName: string) => {
     requestAnimationFrame(() => {
       dispatch({
-        type: 'TOGGLE_SELECTED_ATTRIBUTES',
+        type: 'TOGGLE_SELECTED_ATTRIBUTE',
         payload: {
-          attributes: attributes,
-          allSelected: false,
-          allDeselected: false,
+          displayName: displayName,
         },
       });
     });
@@ -89,7 +70,7 @@ export const GlobalFacetAttribute = ({
         <input
           type="checkbox"
           checked={isChecked}
-          onChange={handleSelect}
+          onChange={() => handleSelect(displayName)}
           aria-label={`Select ${displayName} to merge`}
         />
       </Col>
@@ -106,16 +87,6 @@ export const GlobalFacetAttribute = ({
                     <RemoveMergedFacet
                       onClick={() => {
                         setIsAwaitingUpdate(true);
-                        if (isChecked) {
-                          dispatch({
-                            type: 'TOGGLE_SELECTED_ATTRIBUTES',
-                            payload: {
-                              attributes: [value],
-                              allSelected,
-                              allDeselected,
-                            },
-                          });
-                        }
                         requestAnimationFrame(() => {
                           handleRemoveFromMerge({
                             valueToRemove: value,

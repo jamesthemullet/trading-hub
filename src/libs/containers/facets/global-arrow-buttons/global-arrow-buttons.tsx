@@ -9,6 +9,7 @@ type FormattedRow = {
   displayName: string;
   attributes: string[];
   isMergeGroup: boolean;
+  isChecked: boolean;
 };
 
 export const GlobalArrowButtons = ({

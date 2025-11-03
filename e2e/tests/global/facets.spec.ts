@@ -223,12 +223,12 @@ test.describe('global facets', () => {
 
     await page.getByRole('button', { name: 'Merge (3)' }).click();
 
-    await page.getByLabel('Edit Not suitable under 36 mth input field').click();
+    await page.getByLabel('Edit 0-2 years').click();
     await page
-      .getByLabel('Edit Not suitable under 36 mth input field')
+      .getByLabel('Edit 0-2 years')
       .fill('A merge into a merged group name');
 
-    await page.getByLabel('Save Not suitable under 36 mth change').click();
+    await page.getByLabel('Save 0-2 years change').click();
 
     await page.waitForTimeout(3000);
 

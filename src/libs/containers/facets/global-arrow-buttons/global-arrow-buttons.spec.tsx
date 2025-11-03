@@ -16,11 +16,17 @@ describe('Arrow Buttons', () => {
             displayName: 'value1',
             attributes: ['value1'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ]}
         attributes={['value1']}
         rows={[
-          { displayName: 'test', attributes: ['value1'], isMergeGroup: false },
+          {
+            displayName: 'test',
+            attributes: ['value1'],
+            isMergeGroup: false,
+            isChecked: false,
+          },
         ]}
         disableArrows={false}
         dispatch={jest.fn()}

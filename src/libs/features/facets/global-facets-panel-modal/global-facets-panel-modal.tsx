@@ -99,6 +99,7 @@ type FormattedRow = {
   displayName: string;
   attributes: string[];
   isMergeGroup: boolean;
+  isChecked: boolean;
   order?: number;
 };
 
@@ -155,10 +156,6 @@ export const GlobalFacetPanelModalContent = ({
   const [globalAttributesLocalState, dispatch] = useReducer(
     globalAttributesReducer,
     {
-      selectedAttributes: [],
-      allSelected: false,
-      allDeselected: false,
-      disableArrows: false,
       boostedRows: [],
       excludedRows: [],
       nonBoostedExcludedRows: [],
@@ -228,38 +225,60 @@ export const GlobalFacetPanelModalContent = ({
     await onSave();
   };
 
+  const totalSelectedItems = useMemo(() => {
+    const selectedBoostedRows = globalAttributesLocalState.boostedRows
+      .filter((row) => row.isChecked === true)
+      .reduce((sum, row) => sum + row.attributes.length, 0);
+
+    const selectedExcludedRows = globalAttributesLocalState.excludedRows
+      .filter((row) => row.isChecked === true)
+      .reduce((sum, row) => sum + row.attributes.length, 0);
+
+    const selectedAlgoControlRows =
+      globalAttributesLocalState.nonBoostedExcludedRows
+        .filter((row) => row.isChecked === true)
+        .reduce((sum, row) => sum + row.attributes.length, 0);
+
+    return selectedBoostedRows + selectedExcludedRows + selectedAlgoControlRows;
+  }, [
+    globalAttributesLocalState.boostedRows,
+    globalAttributesLocalState.excludedRows,
+    globalAttributesLocalState.nonBoostedExcludedRows,
+  ]);
+
   const onCloseModal = () => setIsConfirmationModalOpen(false);
 
   const handleMerge = () => {
     setIsAwaitingUpdate(true);
-    const isFirstAttributeBoosted = globalAttributesLocalState.boostedRows.some(
-      (val) =>
-        val.attributes.includes(
-          globalAttributesLocalState.selectedAttributes[0]
-        )
-    );
+
+    const isFirstAttributeBoosted =
+      globalAttributesLocalState.boostedRows.filter((val) => val.isChecked)
+        .length > 0;
     const isFirstAttributeExcluded =
-      globalAttributesLocalState.excludedRows.some((val) =>
-        val.attributes.includes(
-          globalAttributesLocalState.selectedAttributes[0]
-        )
-      );
+      globalAttributesLocalState.boostedRows.filter((val) => val.isChecked)
+        .length === 0 &&
+      globalAttributesLocalState.nonBoostedExcludedRows.filter(
+        (val) => val.isChecked
+      ).length === 0;
 
-    const allCurrentlyMergedAttributes =
-      globalAttributesLocalState.merged?.flatMap((group) => group.mergedValues);
+    const selectedRows = [
+      ...globalAttributesLocalState.boostedRows.filter((val) => val.isChecked),
+      ...globalAttributesLocalState.excludedRows.filter((val) => val.isChecked),
+      ...globalAttributesLocalState.nonBoostedExcludedRows.filter(
+        (val) => val.isChecked
+      ),
+    ];
 
-    const isInExistingMergeGroup =
-      allCurrentlyMergedAttributes &&
-      globalAttributesLocalState.selectedAttributes?.some((val) =>
-        allCurrentlyMergedAttributes.includes(val)
-      );
+    const isExistingMergeGroup = selectedRows.some((row) => {
+      return row.isMergeGroup === true;
+    });
 
     requestAnimationFrame(() => {
-      if (isInExistingMergeGroup) {
+      if (isExistingMergeGroup) {
         dispatch({
           type: 'UPDATE_MERGE_GROUP',
           payload: {
-            attributes: globalAttributesLocalState.selectedAttributes,
+            attributes: selectedRows.flatMap((row) => row.attributes),
             isFirstAttributeBoosted,
             isFirstAttributeExcluded,
           },
@@ -268,7 +287,7 @@ export const GlobalFacetPanelModalContent = ({
         dispatch({
           type: 'CREATE_MERGE_GROUP',
           payload: {
-            attributes: globalAttributesLocalState.selectedAttributes,
+            attributes: selectedRows.flatMap((row) => row.attributes),
             isFirstAttributeBoosted,
             isFirstAttributeExcluded,
           },
@@ -276,13 +295,13 @@ export const GlobalFacetPanelModalContent = ({
       }
 
       dispatch({
-        type: 'CLEAR_SELECTED_ATTRIBUTES',
+        type: 'TOGGLE_ALL_ATTRIBUTES',
+        payload: {
+          allSelected: false,
+        },
       });
 
-      setEditingValues((prev) => [
-        ...prev,
-        globalAttributesLocalState.selectedAttributes[0],
-      ]);
+      setEditingValues((prev) => [...prev, selectedRows[0].attributes[0]]);
     });
   };
 
@@ -399,7 +418,10 @@ export const GlobalFacetPanelModalContent = ({
       );
 
       return filteredRows.map(
-        ({ displayName, attributes, isMergeGroup, order }, index) => {
+        (
+          { displayName, attributes, isMergeGroup, isChecked, order },
+          index
+        ) => {
           const onOrderChange = (status: FacetDisplayType) => {
             setIsAwaitingUpdate(true);
             if (status === displayType) {
@@ -449,11 +471,10 @@ export const GlobalFacetPanelModalContent = ({
               <GlobalFacetAttribute
                 attributes={attributes}
                 isMergeGroup={isMergeGroup}
+                isChecked={isChecked}
                 displayName={displayName}
                 handleRemoveFromMerge={handleRemoveFromMerge}
                 dispatch={dispatch}
-                allSelected={globalAttributesLocalState.allSelected}
-                allDeselected={globalAttributesLocalState.allDeselected}
               />
 
               <Col>
@@ -510,7 +531,7 @@ export const GlobalFacetPanelModalContent = ({
                     boostedRows={globalAttributesLocalState.boostedRows}
                     attributes={attributes}
                     rows={filteredRows}
-                    disableArrows={globalAttributesLocalState.disableArrows}
+                    disableArrows={totalSelectedItems > 0}
                     dispatch={dispatch}
                   />
                 )}
@@ -539,14 +560,12 @@ export const GlobalFacetPanelModalContent = ({
       countryCode,
       editingValues,
       facet,
-      globalAttributesLocalState.allSelected,
-      globalAttributesLocalState.allDeselected,
-      globalAttributesLocalState.disableArrows,
       globalAttributesLocalState.boostedRows,
       globalAttributesLocalState.nonBoostedExcludedRows,
       globalAttributesLocalState.excludedRows,
       globalAttributesLocalState.merged,
       writeEnabled,
+      totalSelectedItems,
       localOrders,
       handleInputChange,
       handleInputBlur,
@@ -570,7 +589,7 @@ export const GlobalFacetPanelModalContent = ({
   }, [globalAttributesLocalState.excludedRows, listValues]);
 
   const hasSelectedAllAttributes =
-    globalAttributesLocalState.selectedAttributes.length ===
+    totalSelectedItems ===
     globalAttributesLocalState.excludedRows.flatMap((val) => val.attributes)
       .length +
       globalAttributesLocalState.boostedRows.flatMap((val) => val.attributes)
@@ -621,13 +640,8 @@ export const GlobalFacetPanelModalContent = ({
           <MergeAndSearchContainer>
             <Text isStrong>All values listed</Text>
 
-            <Button
-              isDisabled={
-                globalAttributesLocalState.selectedAttributes.length < 2
-              }
-              onClick={handleMerge}
-            >
-              Merge ({globalAttributesLocalState.selectedAttributes.length})
+            <Button isDisabled={totalSelectedItems < 2} onClick={handleMerge}>
+              Merge ({totalSelectedItems})
             </Button>
 
             <Search onChange={handleSearch} />
@@ -656,15 +670,11 @@ export const GlobalFacetPanelModalContent = ({
                               : attributeValues.map((val) => val.displayValue);
                             requestAnimationFrame(() => {
                               dispatch({
-                                type: 'TOGGLE_SELECTED_ATTRIBUTES',
+                                type: 'TOGGLE_ALL_ATTRIBUTES',
                                 payload: {
-                                  attributes: selectedAttributes,
                                   allSelected:
                                     selectedAttributes.length ===
                                     attributeValues.length,
-                                  allDeselected:
-                                    selectedAttributes.length === 0,
-                                  disableArrows: selectedAttributes.length > 0,
                                 },
                               });
                             });

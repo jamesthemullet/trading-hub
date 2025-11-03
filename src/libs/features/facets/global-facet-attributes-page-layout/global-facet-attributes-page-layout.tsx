@@ -47,10 +47,6 @@ export const GlobalFacetAttributesPageLayout = ({
   const [globalAttributesLocalState, dispatch] = useReducer(
     globalAttributesReducer,
     {
-      selectedAttributes: [],
-      allSelected: false,
-      allDeselected: false,
-      disableArrows: false,
       boostedRows: [],
       excludedRows: [],
       nonBoostedExcludedRows: [],

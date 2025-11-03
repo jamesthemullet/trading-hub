@@ -56,6 +56,28 @@ export const GlobalFacetAttributesList = ({
   //   setIsAwaitingUpdate(false);
   // }, [isAwaitingUpdate]);
 
+  // istanbul ignore next - remove once we have completed the selection functionality
+  const totalSelectedItems = useMemo(() => {
+    const selectedBoostedRows = globalAttributesLocalState.boostedRows
+      .filter((row) => row.isChecked === true)
+      .reduce((sum, row) => sum + row.attributes.length, 0);
+
+    const selectedExcludedRows = globalAttributesLocalState.excludedRows
+      .filter((row) => row.isChecked === true)
+      .reduce((sum, row) => sum + row.attributes.length, 0);
+
+    const selectedAlgoControlRows =
+      globalAttributesLocalState.nonBoostedExcludedRows
+        .filter((row) => row.isChecked === true)
+        .reduce((sum, row) => sum + row.attributes.length, 0);
+
+    return selectedBoostedRows + selectedExcludedRows + selectedAlgoControlRows;
+  }, [
+    globalAttributesLocalState.boostedRows,
+    globalAttributesLocalState.excludedRows,
+    globalAttributesLocalState.nonBoostedExcludedRows,
+  ]);
+
   const listValues = useCallback(
     (values: FormattedRow[], displayType: FacetDisplayType) => {
       const filteredRows = values.filter(
@@ -67,7 +89,7 @@ export const GlobalFacetAttributesList = ({
       );
 
       return filteredRows.map(
-        ({ displayName, attributes, isMergeGroup }, index) => {
+        ({ displayName, attributes, isMergeGroup, isChecked }, index) => {
           const onOrderChange = (status: FacetDisplayType) => {
             // setIsAwaitingUpdate(true);
             if (status === displayType) {
@@ -115,6 +137,7 @@ export const GlobalFacetAttributesList = ({
               <GlobalFacetAttribute
                 attributes={attributes}
                 isMergeGroup={isMergeGroup}
+                isChecked={isChecked}
                 displayName={displayName}
                 // TODO: Implement merge functionality
                 handleRemoveFromMerge={
@@ -122,8 +145,6 @@ export const GlobalFacetAttributesList = ({
                   () => {}
                 }
                 dispatch={dispatch}
-                allSelected={globalAttributesLocalState.allSelected}
-                allDeselected={globalAttributesLocalState.allDeselected}
               />
 
               <GlobalEditableLabel
@@ -150,7 +171,7 @@ export const GlobalFacetAttributesList = ({
                     boostedRows={globalAttributesLocalState.boostedRows}
                     attributes={attributes}
                     rows={filteredRows}
-                    disableArrows={globalAttributesLocalState.disableArrows}
+                    disableArrows={totalSelectedItems > 0}
                     dispatch={dispatch}
                   />
                 )}
@@ -179,9 +200,6 @@ export const GlobalFacetAttributesList = ({
       countryCode,
       editingValues,
       facet,
-      globalAttributesLocalState.allSelected,
-      globalAttributesLocalState.allDeselected,
-      globalAttributesLocalState.disableArrows,
       globalAttributesLocalState.boostedRows,
       globalAttributesLocalState.nonBoostedExcludedRows,
       globalAttributesLocalState.excludedRows,
@@ -189,6 +207,7 @@ export const GlobalFacetAttributesList = ({
       writeEnabled,
       dispatch,
       setEditingValues,
+      totalSelectedItems,
     ]
   );
 

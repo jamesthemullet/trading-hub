@@ -21,6 +21,7 @@ describe('FacetAttributesList', () => {
     displayName,
     attributes: [displayName],
     isMergeGroup: false,
+    isChecked: false,
   }));
 
   const defaultProps: GlobalFacetAttributesListProps = {
@@ -36,10 +37,6 @@ describe('FacetAttributesList', () => {
     editingValues: [],
     dispatch: jest.fn(),
     globalAttributesLocalState: {
-      selectedAttributes: [],
-      allSelected: false,
-      allDeselected: false,
-      disableArrows: false,
       boostedRows: formattedRows.slice(0, 2).map((row, index) => ({
         ...row,
         order: index + 1,

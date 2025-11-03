@@ -4,10 +4,6 @@ import type { GlobalAttributesState } from './global-attribute-reducer';
 import { globalAttributesReducer } from './global-attribute-reducer';
 
 const mockInitialState: GlobalAttributesState = {
-  selectedAttributes: [],
-  allSelected: false,
-  allDeselected: true,
-  disableArrows: false,
   boostedRows: [],
   excludedRows: [],
   nonBoostedExcludedRows: [],
@@ -16,15 +12,12 @@ const mockInitialState: GlobalAttributesState = {
 };
 
 const mockState: GlobalAttributesState = {
-  selectedAttributes: [],
-  allSelected: false,
-  allDeselected: true,
-  disableArrows: false,
   boostedRows: [
     {
       displayName: 'Vegan',
       attributes: ['Vegan'],
       isMergeGroup: false,
+      isChecked: false,
       order: 1,
     },
   ],
@@ -33,6 +26,7 @@ const mockState: GlobalAttributesState = {
       displayName: 'Vegetarian',
       attributes: ['Vegetarian'],
       isMergeGroup: false,
+      isChecked: false,
     },
   ],
   nonBoostedExcludedRows: [
@@ -40,11 +34,13 @@ const mockState: GlobalAttributesState = {
       displayName: 'Under 10',
       attributes: ['Under 10'],
       isMergeGroup: false,
+      isChecked: false,
     },
     {
       displayName: 'test',
       attributes: ['value1', 'value2'],
       isMergeGroup: true,
+      isChecked: false,
     },
   ],
   merged: [
@@ -61,118 +57,78 @@ const mockState: GlobalAttributesState = {
 };
 
 describe('Global Attribute Reducer', () => {
-  describe('TOGGLE_SELECTED_ATTRIBUTES', () => {
-    it('should add an attribute when selected', () => {
+  describe('TOGGLE_ALL_ATTRIBUTES', () => {
+    it('should deselect all attributes when deselecting all', () => {
       const state: GlobalAttributesState = {
         ...mockState,
+        boostedRows: [
+          {
+            displayName: 'Vegan',
+            attributes: ['Vegan'],
+            isMergeGroup: false,
+            isChecked: false,
+            order: 1,
+          },
+        ],
       };
       const action = {
-        type: 'TOGGLE_SELECTED_ATTRIBUTES' as const,
+        type: 'TOGGLE_ALL_ATTRIBUTES' as const,
         payload: {
           attributes: ['1'],
           allSelected: false,
-          allDeselected: false,
-          disableArrows: true,
         },
       };
       const result = globalAttributesReducer(state, action);
       expect(result).toEqual({
         ...mockState,
-        selectedAttributes: ['1'],
-        allDeselected: false,
-        disableArrows: true,
       });
     });
 
-    it('should remove an attribute when deselected', () => {
+    it('should select all attributes when selecting all', () => {
       const state: GlobalAttributesState = {
         ...mockState,
-        selectedAttributes: ['1', '2'],
-        allDeselected: false,
       };
       const action = {
-        type: 'TOGGLE_SELECTED_ATTRIBUTES' as const,
+        type: 'TOGGLE_ALL_ATTRIBUTES' as const,
         payload: {
           attributes: ['1'],
-          allSelected: false,
-          allDeselected: false,
-          disableArrows: true,
+          allSelected: true,
         },
       };
       const result = globalAttributesReducer(state, action);
       expect(result).toEqual({
         ...mockState,
-        selectedAttributes: ['2'],
-        allSelected: false,
-        allDeselected: false,
-        disableArrows: true,
-      });
-    });
-
-    it('should add multiple attributes when merge group is selected', () => {
-      const state: GlobalAttributesState = {
-        ...mockState,
-        selectedAttributes: ['1', '2'],
-        allDeselected: false,
-      };
-      const action = {
-        type: 'TOGGLE_SELECTED_ATTRIBUTES' as const,
-        payload: {
-          attributes: ['3', '4'],
-          allSelected: false,
-          allDeselected: false,
-          disableArrows: true,
-        },
-      };
-      const result = globalAttributesReducer(state, action);
-      expect(result).toEqual({
-        ...mockState,
-        selectedAttributes: ['1', '2', '3', '4'],
-        allDeselected: false,
-        disableArrows: true,
-      });
-    });
-
-    it('should disable arrows when an attribute is selected', () => {
-      const state: GlobalAttributesState = {
-        ...mockState,
-      };
-      const action = {
-        type: 'TOGGLE_SELECTED_ATTRIBUTES' as const,
-        payload: {
-          attributes: ['1'],
-          allSelected: false,
-          allDeselected: false,
-          disableArrows: true,
-        },
-      };
-      const result = globalAttributesReducer(state, action);
-      expect(result).toEqual({
-        ...mockState,
-        selectedAttributes: ['1'],
-        allDeselected: false,
-        disableArrows: true,
-      });
-    });
-  });
-
-  describe('CLEAR_SELECTED_ATTRIBUTES', () => {
-    it('should clear selected attributes', () => {
-      const state: GlobalAttributesState = {
-        ...mockState,
-        selectedAttributes: ['1', '2'],
-        allSelected: false,
-        allDeselected: false,
-      };
-      const action = {
-        type: 'CLEAR_SELECTED_ATTRIBUTES' as const,
-      };
-      const result = globalAttributesReducer(state, action);
-      expect(result).toEqual({
-        ...mockState,
-        selectedAttributes: [],
-        allSelected: false,
-        allDeselected: true,
+        boostedRows: [
+          {
+            displayName: 'Vegan',
+            attributes: ['Vegan'],
+            isMergeGroup: false,
+            order: 1,
+            isChecked: true,
+          },
+        ],
+        excludedRows: [
+          {
+            displayName: 'Vegetarian',
+            attributes: ['Vegetarian'],
+            isMergeGroup: false,
+            isChecked: true,
+          },
+        ],
+        nonBoostedExcludedRows: [
+          {
+            displayName: 'Under 10',
+            attributes: ['Under 10'],
+            isMergeGroup: false,
+            isChecked: true,
+          },
+          {
+            displayName: 'test',
+            attributes: ['value1', 'value2'],
+            isMergeGroup: true,
+            isChecked: true,
+          },
+        ],
       });
     });
   });
@@ -186,6 +142,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian', 'Veggie'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
       };
@@ -204,6 +161,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian or Veggie',
             attributes: ['Vegetarian', 'Veggie'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
         merged: [
@@ -231,6 +189,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Sweet',
             attributes: ['Sweet'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
         nonBoostedExcludedRows: [
@@ -238,6 +197,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
       };
@@ -256,6 +216,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Sweet',
             attributes: ['Sweet'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
         nonBoostedExcludedRows: [
@@ -263,6 +224,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian or Veggie',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
         merged: [
@@ -292,6 +254,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            isChecked: false,
             order: 1,
           },
         ],
@@ -312,11 +275,13 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            isChecked: false,
           },
           {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
       });
@@ -332,6 +297,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Under 10',
             attributes: ['Under 10'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
       };
@@ -351,11 +317,13 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            isChecked: false,
           },
           {
             displayName: 'Under 10',
             attributes: ['Under 10'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
       });
@@ -369,12 +337,14 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Under 10',
             attributes: ['Under 10'],
             isMergeGroup: false,
+            isChecked: false,
             order: 1,
           },
           {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            isChecked: false,
             order: 2,
           },
         ],
@@ -394,6 +364,7 @@ describe('Global Attribute Reducer', () => {
           {
             displayName: 'Vegan',
             attributes: ['Vegan'],
+            isChecked: false,
             isMergeGroup: false,
           },
         ],
@@ -401,6 +372,7 @@ describe('Global Attribute Reducer', () => {
           {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
+            isChecked: false,
             isMergeGroup: false,
           },
         ],
@@ -409,6 +381,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Under 10',
             attributes: ['Under 10'],
             isMergeGroup: false,
+            isChecked: false,
             order: 1,
           },
         ],
@@ -425,6 +398,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Feather',
             attributes: ['Feather', 'Polyester'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
       };
@@ -444,12 +418,14 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            isChecked: false,
             order: 1,
           },
           {
             displayName: 'Feather',
             attributes: ['Feather', 'Polyester'],
             isMergeGroup: true,
+            isChecked: false,
             order: 2,
           },
         ],
@@ -495,6 +471,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            isChecked: false,
             order: 1,
           },
         ],
@@ -503,6 +480,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian', 'Vegetarian Or Vegan'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
         nonBoostedExcludedRows: [],
@@ -525,12 +503,14 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            isChecked: false,
             order: 1,
           },
           {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            isChecked: false,
             order: 2,
           },
         ],
@@ -543,11 +523,13 @@ describe('Global Attribute Reducer', () => {
               displayName: 'Vegetarian',
               attributes: ['Vegetarian'],
               isMergeGroup: false,
+              isChecked: false,
             },
             {
               displayName: 'Vegan',
               attributes: ['Vegan'],
               isMergeGroup: false,
+              isChecked: false,
             },
           ],
         },
@@ -560,12 +542,14 @@ describe('Global Attribute Reducer', () => {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            isChecked: false,
             order: 1,
           },
           {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            isChecked: false,
             order: 2,
           },
         ],
@@ -582,18 +566,21 @@ describe('Global Attribute Reducer', () => {
             displayName: 'GOODMOVE',
             attributes: ['GOODMOVE'],
             isMergeGroup: false,
+            isChecked: false,
             order: 1,
           },
           {
             displayName: 'ROSIE',
             attributes: ['ROSIE'],
             isMergeGroup: false,
+            isChecked: false,
             order: 2,
           },
           {
             displayName: 'SOSANDAR',
             attributes: ['SOSANDAR'],
             isMergeGroup: false,
+            isChecked: false,
             order: 3,
           },
         ],
@@ -614,6 +601,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'ROSIE',
             attributes: ['GOODMOVE', 'ROSIE', 'SOSANDAR'],
             isMergeGroup: true,
+            isChecked: false,
             order: 1,
           },
         ],
@@ -647,6 +635,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'GOODMOVE',
           attributes: ['GOODMOVE'],
           isMergeGroup: false,
+          isChecked: false,
         },
       ],
     };
@@ -664,6 +653,7 @@ describe('Global Attribute Reducer', () => {
           attributes: ['GOODMOVE'],
           displayName: 'GOODMOVE',
           isMergeGroup: true,
+          isChecked: false,
         },
       ],
       merged: [
@@ -696,6 +686,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'test',
             attributes: ['value1', 'value2'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
       };
@@ -715,6 +706,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'value1',
             attributes: ['value1', 'value2', 'value3'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
         merged: [
@@ -742,6 +734,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'test',
             attributes: ['value1', 'value2'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
       };
@@ -761,12 +754,14 @@ describe('Global Attribute Reducer', () => {
             displayName: 'value1',
             attributes: ['value1', 'value2', 'value3'],
             isMergeGroup: true,
+            isChecked: false,
             order: 1,
           },
           {
             displayName: 'Vegan',
             attributes: ['Vegan'],
             isMergeGroup: false,
+            isChecked: false,
             order: 2,
           },
         ],
@@ -796,6 +791,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'test',
             attributes: ['value1', 'value2'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
       };
@@ -815,11 +811,13 @@ describe('Global Attribute Reducer', () => {
             displayName: 'value1',
             attributes: ['value1', 'value2', 'value3'],
             isMergeGroup: true,
+            isChecked: false,
           },
           {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
         nonBoostedExcludedRows: [],
@@ -850,6 +848,7 @@ describe('Global Attribute Reducer', () => {
             displayName: 'test',
             attributes: ['value1', 'value2', 'value3'],
             isMergeGroup: true,
+            isChecked: false,
           },
         ],
         merged: [
@@ -874,11 +873,13 @@ describe('Global Attribute Reducer', () => {
             displayName: 'test',
             attributes: ['value2', 'value3'],
             isMergeGroup: true,
+            isChecked: false,
           },
           {
             displayName: 'value1',
             attributes: ['value1'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ],
         merged: [
@@ -899,6 +900,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test10',
           attributes: ['value10', 'value20', 'value30'],
           isMergeGroup: true,
+          isChecked: false,
           order: 1,
         },
       ],
@@ -924,12 +926,14 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test10',
           attributes: ['value20', 'value30'],
           isMergeGroup: true,
+          isChecked: false,
           order: 1,
         },
         {
           displayName: 'value10',
           attributes: ['value10'],
           isMergeGroup: false,
+          isChecked: false,
           order: 2,
         },
       ],
@@ -950,6 +954,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test10',
           attributes: ['value10', 'value20', 'value30'],
           isMergeGroup: true,
+          isChecked: false,
         },
       ],
       merged: [
@@ -974,11 +979,13 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test10',
           attributes: ['value20', 'value30'],
           isMergeGroup: true,
+          isChecked: false,
         },
         {
           displayName: 'value10',
           attributes: ['value10'],
           isMergeGroup: false,
+          isChecked: false,
         },
       ],
       merged: [
@@ -998,6 +1005,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test1',
           attributes: ['value3', 'value4'],
           isMergeGroup: true,
+          isChecked: false,
           order: 1,
         },
       ],
@@ -1006,6 +1014,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test2',
           attributes: ['value5', 'value6'],
           isMergeGroup: true,
+          isChecked: false,
         },
       ],
       merged: [
@@ -1046,16 +1055,19 @@ describe('Global Attribute Reducer', () => {
           displayName: 'Under 10',
           attributes: ['Under 10'],
           isMergeGroup: false,
+          isChecked: false,
         },
         {
           displayName: 'value2',
           attributes: ['value2'],
           isMergeGroup: false,
+          isChecked: false,
         },
         {
           displayName: 'value1',
           attributes: ['value1'],
           isMergeGroup: false,
+          isChecked: false,
         },
       ],
       boostedRows: [
@@ -1063,6 +1075,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test1',
           attributes: ['value3', 'value4'],
           isMergeGroup: true,
+          isChecked: false,
           order: 1,
         },
       ],
@@ -1071,6 +1084,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test2',
           attributes: ['value5', 'value6'],
           isMergeGroup: true,
+          isChecked: false,
         },
       ],
       merged: [
@@ -1102,6 +1116,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test',
           attributes: ['value1', 'value2'],
           isMergeGroup: true,
+          isChecked: false,
           order: 1,
         },
       ],
@@ -1122,12 +1137,14 @@ describe('Global Attribute Reducer', () => {
           displayName: 'value2',
           attributes: ['value2'],
           isMergeGroup: false,
+          isChecked: false,
           order: 1,
         },
         {
           displayName: 'value1',
           attributes: ['value1'],
           isMergeGroup: false,
+          isChecked: false,
           order: 2,
         },
       ],
@@ -1154,6 +1171,7 @@ describe('Global Attribute Reducer', () => {
           displayName: 'test',
           attributes: ['value1', 'value2'],
           isMergeGroup: true,
+          isChecked: false,
         },
       ],
     };
@@ -1173,11 +1191,13 @@ describe('Global Attribute Reducer', () => {
           displayName: 'value2',
           attributes: ['value2'],
           isMergeGroup: false,
+          isChecked: false,
         },
         {
           displayName: 'value1',
           attributes: ['value1'],
           isMergeGroup: false,
+          isChecked: false,
         },
       ],
       merged: [

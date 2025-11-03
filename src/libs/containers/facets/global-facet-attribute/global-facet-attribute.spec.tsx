@@ -10,9 +10,8 @@ describe('GlobalFacetAttribute', () => {
       <GlobalFacetAttribute
         attributes={['value1', 'value2']}
         isMergeGroup={false}
+        isChecked={false}
         displayName="test"
-        allSelected={false}
-        allDeselected={false}
         handleRemoveFromMerge={jest.fn()}
         dispatch={jest.fn()}
       />

@@ -15,27 +15,29 @@ export type FormattedRow = {
   displayName: string;
   attributes: string[];
   isMergeGroup: boolean;
+  isChecked: boolean;
 };
 
 export type FormattedBoostedRow = {
   displayName: string;
   attributes: string[];
   isMergeGroup: boolean;
+  isChecked: boolean;
   order: number;
 };
 
-export type ToggleSelectedAttribute = {
-  type: 'TOGGLE_SELECTED_ATTRIBUTES';
+export type ToggleAllAttributes = {
+  type: 'TOGGLE_ALL_ATTRIBUTES';
   payload: {
-    attributes: string[];
     allSelected: boolean;
-    allDeselected: boolean;
-    disableArrows?: boolean;
   };
 };
 
-type ClearSelectedAttributes = {
-  type: 'CLEAR_SELECTED_ATTRIBUTES';
+export type ToggleSelectedAttribute = {
+  type: 'TOGGLE_SELECTED_ATTRIBUTE';
+  payload: {
+    displayName: string;
+  };
 };
 
 type AmendDisplayName = {
@@ -133,8 +135,8 @@ type SetBoostedOrderAction = {
 };
 
 export type GlobalAttributeReducer =
+  | ToggleAllAttributes
   | ToggleSelectedAttribute
-  | ClearSelectedAttributes
   | AmendDisplayName
   | InitialiseState
   | AmendBoostedRow
@@ -148,10 +150,6 @@ export type GlobalAttributeReducer =
   | SetBoostedOrderAction;
 
 export type GlobalAttributesState = {
-  selectedAttributes: string[];
-  allSelected: boolean;
-  allDeselected: boolean;
-  disableArrows: boolean;
   boostedRows: FormattedBoostedRow[];
   nonBoostedExcludedRows: FormattedRow[];
   excludedRows: FormattedRow[];
@@ -169,56 +167,53 @@ export const globalAttributesReducer = (
   action: GlobalAttributeReducer
 ): GlobalAttributesState => {
   switch (action.type) {
-    case 'TOGGLE_SELECTED_ATTRIBUTES': {
-      const { attributes, allSelected, allDeselected } = action.payload;
-
-      if (allSelected) {
-        return {
-          ...state,
-          selectedAttributes: [...attributes],
-          allSelected: true,
-          allDeselected: false,
-          disableArrows: true,
-        };
-      }
-
-      if (allDeselected && attributes.length === 0) {
-        return {
-          ...state,
-          selectedAttributes: [],
-          allSelected: false,
-          allDeselected: true,
-          disableArrows: false,
-        };
-      }
-
-      const selectedAttributes = state.selectedAttributes.filter(
-        (name) => !attributes.includes(name)
-      );
-
-      const newSelectedAttributes = [
-        ...selectedAttributes,
-        ...attributes.filter(
-          (name) => !state.selectedAttributes.includes(name)
-        ),
-      ];
+    case 'TOGGLE_ALL_ATTRIBUTES': {
+      const { allSelected } = action.payload;
 
       return {
         ...state,
-        selectedAttributes: newSelectedAttributes,
-        allSelected,
-        allDeselected: newSelectedAttributes.length === 0,
-        disableArrows: newSelectedAttributes.length > 0,
+        boostedRows: state.boostedRows.map((row) => ({
+          ...row,
+          isChecked: !!allSelected,
+        })),
+        excludedRows: state.excludedRows.map((row) => ({
+          ...row,
+          isChecked: !!allSelected,
+        })),
+        nonBoostedExcludedRows: state.nonBoostedExcludedRows.map((row) => ({
+          ...row,
+          isChecked: !!allSelected,
+        })),
       };
     }
 
-    case 'CLEAR_SELECTED_ATTRIBUTES': {
+    case 'TOGGLE_SELECTED_ATTRIBUTE': {
+      const { displayName } = action.payload;
+
+      const updatedBoostedRows = state.boostedRows.map((row) =>
+        row.displayName === displayName
+          ? { ...row, isChecked: !row.isChecked }
+          : row
+      );
+
+      const updatedExcludedRows = state.excludedRows.map((row) =>
+        row.displayName === displayName
+          ? { ...row, isChecked: !row.isChecked }
+          : row
+      );
+
+      const updatedNonBoostedExcludedRows = state.nonBoostedExcludedRows.map(
+        (row) =>
+          row.displayName === displayName
+            ? { ...row, isChecked: !row.isChecked }
+            : row
+      );
+
       return {
         ...state,
-        selectedAttributes: [],
-        allSelected: false,
-        allDeselected: true,
-        disableArrows: false,
+        boostedRows: updatedBoostedRows,
+        excludedRows: updatedExcludedRows,
+        nonBoostedExcludedRows: updatedNonBoostedExcludedRows,
       };
     }
 
@@ -276,11 +271,13 @@ export const globalAttributesReducer = (
               displayName: match.displayValue,
               attributes: match.mergedValues,
               isMergeGroup: true,
+              isChecked: false,
             }
           : {
               displayName: row.displayValue,
               attributes: [row.displayValue],
               isMergeGroup: false,
+              isChecked: false,
             };
       };
 
@@ -346,6 +343,7 @@ export const globalAttributesReducer = (
         displayName: found.displayName,
         attributes: found.attributes,
         isMergeGroup: found.isMergeGroup,
+        isChecked: found.isChecked,
       };
       return {
         ...state,
@@ -451,6 +449,7 @@ export const globalAttributesReducer = (
         ].flat(),
         displayName: attributes[0],
         isMergeGroup: true,
+        isChecked: false,
       };
 
       const filteredBoostedRows = state.boostedRows.map((row) => {
@@ -558,6 +557,7 @@ export const globalAttributesReducer = (
         attributes,
         displayName: attributes[0],
         isMergeGroup: true,
+        isChecked: false,
       };
 
       return {
@@ -613,11 +613,13 @@ export const globalAttributesReducer = (
             displayName: remainingValues[0],
             attributes: [remainingValues[0]],
             isMergeGroup: false,
+            isChecked: false,
           },
           {
             displayName: valueToRemove,
             attributes: [valueToRemove],
             isMergeGroup: false,
+            isChecked: false,
           },
         ];
       } else {
@@ -626,6 +628,7 @@ export const globalAttributesReducer = (
             displayName: valueToRemove,
             attributes: [valueToRemove],
             isMergeGroup: false,
+            isChecked: false,
           },
         ];
       }

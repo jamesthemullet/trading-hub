@@ -93,6 +93,7 @@ describe('Global Editable label', () => {
             displayName: 'test attribute 2',
             attributes: ['test attribute 2'],
             isMergeGroup: false,
+            isChecked: false,
           },
         ]}
         countryCode="UK"
