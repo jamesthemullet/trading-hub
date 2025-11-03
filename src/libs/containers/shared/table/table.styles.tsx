@@ -33,7 +33,9 @@ export const FacetsTableRow = styled(TableRow)`
 type FacetAttributeValuesTableRowProps = {
   isPinned?: boolean;
   isExcluded?: boolean;
+  isHeading?: boolean;
 };
+
 export const FacetAttributeValuesTableRow = styled(
   TableRow
 )<FacetAttributeValuesTableRowProps>`
@@ -42,9 +44,18 @@ export const FacetAttributeValuesTableRow = styled(
     230px;
   border-bottom: none;
   align-items: center;
-  margin-bottom: ${spacing(2)};
+  margin: 0 ${spacing(3)} ${spacing(2)};
   box-shadow: #000 0 0 10px -5px;
   padding: ${spacing(2)};
+
+  p {
+    ${({ isHeading }) =>
+      isHeading &&
+      `
+
+    font-size: 16px;
+  `}
+  }
 
   &:first-of-type {
     position: static;
@@ -75,7 +86,7 @@ export const TableCol = styled.div`
 export const TableHeading = styled(Label)`
   color: #1d1d1b;
   font-weight: 600;
-  font-family: ${fonts.bold};
+  font-family: ${fonts.semiBold};
 `;
 
 const ORDER_TO_COLOR = [

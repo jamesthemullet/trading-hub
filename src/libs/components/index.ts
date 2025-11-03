@@ -6,6 +6,7 @@ export * from './checkboxes/checkboxes';
 export * from './count/count';
 export * from './dropdown/dropdown';
 export * from './dropdown/dropdown.styles';
+export * from './facet-order-input/facet-order-input';
 export * from './filter/filter';
 export * from './filtered-results-panel/filtered-results-panel';
 export * from './form-label/form-label';

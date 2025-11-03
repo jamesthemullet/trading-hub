@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type {
@@ -24,6 +24,8 @@ describe('FacetAttributesList', () => {
     isChecked: false,
   }));
 
+  const dispatchMock = jest.fn();
+
   const defaultProps: GlobalFacetAttributesListProps = {
     attributeValues: [
       { displayValue: '13 - 14.4' },
@@ -35,7 +37,7 @@ describe('FacetAttributesList', () => {
     searchQuery: '',
     countryCode: 'UK' as MerchandisingCountryCode,
     editingValues: [],
-    dispatch: jest.fn(),
+    dispatch: dispatchMock,
     globalAttributesLocalState: {
       boostedRows: formattedRows.slice(0, 2).map((row, index) => ({
         ...row,
@@ -260,5 +262,91 @@ describe('FacetAttributesList', () => {
     renderWithProviders(<GlobalFacetAttributesList {...props} />);
 
     expect(screen.getByText('1 result')).toBeInTheDocument();
+  });
+
+  describe('re-ordering by number', () => {
+    beforeEach(() => {
+      Element.prototype.scrollIntoView = jest.fn();
+    });
+
+    it('should dispatch SET_BOOSTED_ORDER if new value within the range of boosted items', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(<GlobalFacetAttributesList {...defaultProps} />);
+
+      const input = screen.getByLabelText('Order for 13 - 14.4');
+      expect(input).toHaveValue(1);
+      await user.clear(input);
+      await user.type(input, '2');
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(dispatchMock).toHaveBeenCalledWith({
+          type: 'SET_BOOSTED_ORDER',
+          payload: { id: '13 - 14.4', newIndex: 1 },
+        });
+      });
+    });
+
+    it('should not change order if new value is less than 1', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(<GlobalFacetAttributesList {...defaultProps} />);
+
+      const input = screen.getByLabelText('Order for 10 - 12.9');
+      expect(input).toHaveValue(2);
+      await user.type(input, '0');
+      await user.keyboard('{enter}');
+
+      await waitFor(() => {
+        expect(dispatchMock).toHaveBeenCalledWith({
+          type: 'SET_BOOSTED_ORDER',
+          payload: { id: '10 - 12.9', newIndex: 1 },
+        });
+        expect(input).toHaveValue(2);
+      });
+    });
+
+    it('should keep the existing order if the user deletes, then clicks outside without inputting a new order', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(<GlobalFacetAttributesList {...defaultProps} />);
+
+      const input = screen.getByLabelText('Order for 10 - 12.9');
+      expect(input).toHaveValue(2);
+      await user.clear(input);
+      expect(input).toHaveValue(null);
+      act(() => {
+        input.blur();
+      });
+
+      await waitFor(() => {
+        expect(dispatchMock).not.toHaveBeenCalledWith({
+          type: 'SET_BOOSTED_ORDER',
+          payload: expect.any(Object),
+        });
+        expect(input).toHaveValue(2);
+      });
+    });
+
+    it('should keep the existing order if the user deletes, then clicks enter without inputting a new order', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(<GlobalFacetAttributesList {...defaultProps} />);
+
+      const input = screen.getByLabelText('Order for 13 - 14.4');
+      expect(input).toHaveValue(1);
+      await user.clear(input);
+      expect(input).toHaveValue(null);
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(dispatchMock).not.toHaveBeenCalledWith({
+          type: 'SET_BOOSTED_ORDER',
+          payload: expect.any(Object),
+        });
+        expect(input).toHaveValue(1);
+      });
+    });
   });
 });

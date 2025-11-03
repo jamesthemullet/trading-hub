@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useMemo, useReducer, useState } from 'react';
+import { useMemo, useReducer } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -8,13 +8,11 @@ import type {
 } from '@/libs/api';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
-import { FACET_ATTRIBUTE_VIEW_MODE } from '@/libs/utils/facet-attribute-types';
 
 import { intersection, without } from 'lodash';
 
-import { FacetAttributesActions } from '../..';
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
-import { SearchAndCategoryFacetAttributesList } from '../search-and-category-facet-attributes-list/search-and-category-facet-attibutes-list';
+import { SearchAndCategoryFacetAttributesList } from '../search-and-category-facet-attributes-list/search-and-category-facet-attributes-list';
 
 type PageLayout = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
@@ -38,9 +36,6 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   onSave,
 }: PageLayout) => {
   const router = useRouter();
-  const [currentMode, setCurrentMode] = useState<FACET_ATTRIBUTE_VIEW_MODE>(
-    FACET_ATTRIBUTE_VIEW_MODE.LIST
-  );
 
   const processedFacet = useMemo(() => {
     const intersectedValues = intersection(facet.boosted, facet.excludedValues);
@@ -63,8 +58,9 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
     .filter(
       (value) => !facetLocalState.excludedValues?.includes(value.displayValue)
     );
-  const includedValues = facetLocalState.boosted!.map((value) => ({
+  const includedValues = facetLocalState.boosted!.map((value, index) => ({
     displayValue: value,
+    order: index + 1,
   }));
 
   const excludedValues = attributeValues.filter((value) =>
@@ -94,11 +90,6 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         // this is just set to false in the original component too
         // istanbul ignore next
         isSaveDisabled={false}
-      />
-
-      <FacetAttributesActions
-        currentMode={currentMode}
-        setCurrentMode={setCurrentMode}
       />
 
       <FacetAttributesListActions onSearchChange={onSearchChange} />

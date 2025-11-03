@@ -276,4 +276,25 @@ describe('facetAttributesPageReducer', () => {
       });
     });
   });
+
+  describe('SET_BOOSTED_ORDER', () => {
+    it('should set boosted order', () => {
+      const state: MerchandisingReturnedGlobalFacet = {
+        ...mockReturnedGlobalFacetState,
+        boosted: ['1', '2', '3'],
+      };
+      const action = {
+        type: 'SET_BOOSTED_ORDER' as const,
+        payload: {
+          id: '3',
+          newIndex: 0,
+        },
+      };
+      const result = facetAttributesPageReducer(state, action);
+      expect(result).toEqual({
+        ...mockReturnedGlobalFacetState,
+        boosted: ['3', '1', '2'],
+      });
+    });
+  });
 });

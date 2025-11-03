@@ -6,14 +6,10 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import {
-  FacetAttributesActions,
-  FacetAttributesListActions,
-} from '@/libs/containers';
+import { FacetAttributesListActions } from '@/libs/containers';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
 import { globalAttributesReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
-import { FACET_ATTRIBUTE_VIEW_MODE } from '@/libs/utils/facet-attribute-types';
 
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { GlobalFacetAttributesList } from '../global-facet-attributes-list/global-facet-attributes-list';
@@ -34,9 +30,6 @@ export const GlobalFacetAttributesPageLayout = ({
   ruleSetId,
 }: PageLayout) => {
   const router = useRouter();
-  const [currentMode, setCurrentMode] = useState<FACET_ATTRIBUTE_VIEW_MODE>(
-    FACET_ATTRIBUTE_VIEW_MODE.LIST
-  );
 
   const titleId = useId();
   const descriptionId = useId();
@@ -146,11 +139,6 @@ export const GlobalFacetAttributesPageLayout = ({
         }}
         onSave={handleSave}
         error={updateGlobalFacetError}
-      />
-
-      <FacetAttributesActions
-        currentMode={currentMode}
-        setCurrentMode={setCurrentMode}
       />
 
       <FacetAttributesListActions

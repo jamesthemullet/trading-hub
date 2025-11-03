@@ -15,6 +15,7 @@ export type FormattedRow = {
   displayName: string;
   attributes: string[];
   isMergeGroup: boolean;
+  order?: number;
   isChecked: boolean;
 };
 

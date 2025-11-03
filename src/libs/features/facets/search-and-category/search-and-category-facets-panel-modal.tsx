@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useMemo, useReducer, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -18,6 +11,7 @@ import {
   Button,
   CombinedDropdown,
   ErrorMessage,
+  FacetOrderInput,
   FilteredResultsPanel,
   Header3,
   Search,
@@ -41,10 +35,10 @@ import {
 } from '@/libs/components/modals/modal.styles';
 import {
   FacetAttributeValuesTableRow,
-  StyledInput,
   TableHeading,
 } from '@/libs/containers/shared/table/table.styles';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
+import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-reducer';
 import { facetReducer } from '@/libs/stores/search-and-category/facet-reducer';
@@ -112,32 +106,34 @@ export const SearchAndCategoryFacetsPanelModal = ({
 
   const [facetLocalState, dispatch] = useReducer(facetReducer, processedFacet);
 
-  const [orderChanged, setOrderChanged] = useState<string | null>(null);
-  const [localOrders, setLocalOrders] = useState<
-    Record<string, number | string>
-  >({});
+  const initialOrders = useMemo(
+    () =>
+      Object.fromEntries(
+        facetLocalState.orderedBoostedList.map((item) => [
+          item.displayValue,
+          item.order,
+        ])
+      ),
+    [facetLocalState.orderedBoostedList]
+  );
 
-  useEffect(() => {
-    const newOrders = Object.fromEntries(
-      facetLocalState.orderedBoostedList.map((item) => [
-        item.displayValue,
-        item.order,
-      ])
-    );
-    setLocalOrders(newOrders);
-  }, [facetLocalState.orderedBoostedList]);
+  const handleOrderChange = useCallback(
+    (displayValue: string, newIndex: number) => {
+      dispatch({
+        type: 'SET_BOOSTED_ORDER',
+        payload: { id: displayValue, newIndex },
+      });
+    },
+    []
+  );
 
-  const inputRefs = useRef<Record<string, HTMLInputElement>>({});
-
-  useEffect(() => {
-    if (orderChanged && inputRefs.current[orderChanged]) {
-      const input = inputRefs.current[orderChanged];
-      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      input.focus();
-      input.select();
-      setOrderChanged(null);
-    }
-  }, [orderChanged]);
+  const {
+    inputRefs,
+    localOrders,
+    handleInputChange,
+    handleInputBlur,
+    handleInputKeyDown,
+  } = useFacetOrderInput(handleOrderChange, initialOrders);
 
   const handleSave = async () => {
     onSave(facetLocalState);
@@ -177,17 +173,6 @@ export const SearchAndCategoryFacetsPanelModal = ({
     300
   );
 
-  const handleOrderChange = useCallback(
-    (displayValue: string, newIndex: number) => {
-      dispatch({
-        type: 'SET_BOOSTED_ORDER',
-        payload: { id: displayValue, newIndex },
-      });
-      setOrderChanged(displayValue);
-    },
-    [dispatch]
-  );
-
   const handleDisplayTypeChange = useCallback(
     (newDisplayType: FacetDisplayType, displayValue: string) => {
       dispatch({
@@ -199,70 +184,6 @@ export const SearchAndCategoryFacetsPanelModal = ({
       });
     },
     []
-  );
-
-  const handleInputChange = useCallback(
-    (displayValue: string, value: string) => {
-      if (value.startsWith('0')) {
-        return;
-      }
-      const newOrder = value === '' ? '' : Number(value);
-      setLocalOrders((prev) => ({
-        ...prev,
-        [displayValue]: newOrder,
-      }));
-    },
-    []
-  );
-
-  const handleInputBlur = useCallback(
-    (displayValue: string, value: string, order: number) => {
-      const newOrder = Number(value);
-
-      if (value === '' || !Number.isInteger(newOrder)) {
-        setLocalOrders((prev) => ({
-          ...prev,
-          [displayValue]: order,
-        }));
-        return;
-      }
-
-      dispatch({
-        type: 'SET_BOOSTED_ORDER',
-        payload: { id: displayValue, newIndex: newOrder - 1 },
-      });
-    },
-    []
-  );
-
-  const handleInputKeyDown = useCallback(
-    (
-      e: React.KeyboardEvent<HTMLInputElement>,
-      displayValue: string,
-      order: number
-    ) => {
-      const invalidKeys = ['.', 'e', 'E', '-', '+'];
-      if (invalidKeys.includes(e.key)) {
-        e.preventDefault();
-        return;
-      }
-
-      if (e.key === 'Enter') {
-        const value = e.currentTarget.value;
-        const newOrder = Number(value);
-
-        if (value === '' || !Number.isInteger(newOrder)) {
-          setLocalOrders((prev) => ({
-            ...prev,
-            [displayValue]: order,
-          }));
-          return;
-        }
-
-        handleOrderChange(displayValue, newOrder - 1);
-      }
-    },
-    [handleOrderChange]
   );
 
   const listValues = useCallback(
@@ -280,6 +201,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
           orderedBoostedList?.find((item) => item.displayValue === displayValue)
             ?.order || 0;
         const localOrder = localOrders[displayValue] ?? order;
+
         return (
           <FacetAttributeValuesTableRow
             key={`${displayType}-${displayValue}`}
@@ -297,36 +219,19 @@ export const SearchAndCategoryFacetsPanelModal = ({
             <Col>
               {displayType === 'included' && (
                 <AttributeWrapper>
-                  <StyledInput
-                    ref={(el) => {
+                  <FacetOrderInput
+                    displayValue={displayValue}
+                    order={order}
+                    localOrder={localOrder}
+                    inputRef={(el) => {
                       if (el) {
                         // eslint-disable-next-line functional/immutable-data
                         inputRefs.current[displayValue] = el;
                       }
                     }}
-                    id={`order-input-${displayValue}`}
-                    label={`Order for ${displayValue}`}
-                    isLabelHidden
-                    type="number"
-                    value={localOrder}
-                    min={1}
-                    aria-label={`Order for ${displayValue}`}
-                    onFocus={(e) => {
-                      e.target.select();
-                    }}
-                    onChange={(e) =>
-                      handleInputChange(displayValue, e.target.value)
-                    }
-                    onBlur={(e) =>
-                      handleInputBlur(
-                        displayValue,
-                        e.currentTarget.value,
-                        order
-                      )
-                    }
-                    onKeyDown={(e) =>
-                      handleInputKeyDown(e, displayValue, order)
-                    }
+                    onInputChange={handleInputChange}
+                    onInputBlur={handleInputBlur}
+                    onInputKeyDown={handleInputKeyDown}
                   />
                 </AttributeWrapper>
               )}
@@ -398,6 +303,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
       handleInputBlur,
       handleInputKeyDown,
       localOrders,
+      inputRefs,
     ]
   );
 

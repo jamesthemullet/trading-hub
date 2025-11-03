@@ -24,9 +24,18 @@ type ChangeDisplayTypeAction = {
   };
 };
 
+type SetBoostedOrder = {
+  type: 'SET_BOOSTED_ORDER';
+  payload: {
+    id: string;
+    newIndex: number;
+  };
+};
+
 export type Action =
   | MoveRowUpAction
   | MoveRowDownAction
+  | SetBoostedOrder
   | ChangeDisplayTypeAction;
 
 export const facetAttributesPageReducer = (
@@ -78,6 +87,24 @@ export const facetAttributesPageReducer = (
           action.payload.newDisplayType !== 'excluded'
             ? state.excludedValues?.filter((val) => val !== action.payload.id)
             : [...currentExcludedValues, action.payload.id],
+      };
+    }
+
+    case 'SET_BOOSTED_ORDER': {
+      // This will only be called if there are boosted items
+      const currentBoosted = state.boosted!;
+      const currentIndex = currentBoosted.indexOf(action.payload.id);
+      const newIndex = action.payload.newIndex;
+
+      const item = currentBoosted[currentIndex];
+
+      const withoutItem = currentBoosted.toSpliced(currentIndex, 1);
+
+      const newBoostedArray = withoutItem.toSpliced(newIndex, 0, item);
+
+      return {
+        ...state,
+        boosted: newBoostedArray,
       };
     }
   }

@@ -1,8 +1,7 @@
-import styled from '@emotion/styled';
 import type { ActionDispatch } from 'react';
 import { useCallback, useMemo } from 'react';
 
-import type { MerchandisingAttributeValuesResponse } from '@/libs/api';
+import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/open-api';
 import { ArrowButton, CombinedDropdown, Text } from '@/libs/components';
 import {
   AttributeWrapper,
@@ -10,17 +9,43 @@ import {
   FlexColumnCol,
   OrderArrowsContainer,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
+import {
+  FacetAttributeValuesTableRow,
+  TableHeading,
+} from '@/libs/containers/shared/table/table.styles';
+import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
 import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
-import { spacing } from '@/libs/utils/spacing';
 
-const GlobalFacetAttributesListContainer = styled.div`
-  margin: 0 ${spacing(3)};
-`;
+const EDITFACETVALUESMODALCOLUMNS: {
+  label: string | null | false;
+}[] = [
+  { label: null },
+  {
+    label: 'Attribute',
+  },
+  {
+    label: 'Ranking',
+  },
+  {
+    label: 'Display name',
+  },
+  {
+    label: '',
+  },
+  {
+    label: 'Actions',
+  },
+];
+
+type AttributeValueWithOrder = {
+  displayValue: string;
+  order: number;
+};
 
 type SearchAndCategoryFacetAttributesListProps = {
-  boostedValues: MerchandisingAttributeValuesResponse['values'];
+  boostedValues: AttributeValueWithOrder[];
   algoControlValues: MerchandisingAttributeValuesResponse['values'];
   excludedValues: MerchandisingAttributeValuesResponse['values'];
   dispatch: ActionDispatch<[action: Action]>;
@@ -36,9 +61,37 @@ export const SearchAndCategoryFacetAttributesList = ({
   searchQuery,
   writeEnabled,
 }: SearchAndCategoryFacetAttributesListProps) => {
+  const initialOrders = useMemo(
+    () =>
+      Object.fromEntries(
+        boostedValues.map((item) => [item.displayValue, item.order])
+      ),
+    [boostedValues]
+  );
+
+  const handleOrderChange = useCallback(
+    (displayValue: string, newIndex: number) => {
+      dispatch({
+        type: 'SET_BOOSTED_ORDER',
+        payload: { id: displayValue, newIndex },
+      });
+    },
+    [dispatch]
+  );
+
+  const {
+    inputRefs,
+    localOrders,
+    handleInputChange,
+    handleInputBlur,
+    handleInputKeyDown,
+  } = useFacetOrderInput(handleOrderChange, initialOrders);
+
   const listValues = useCallback(
     (
-      values: MerchandisingAttributeValuesResponse['values'],
+      values:
+        | AttributeValueWithOrder[]
+        | MerchandisingAttributeValuesResponse['values'],
       displayType: FacetDisplayType
     ) => {
       const handleDisplayTypeChange = (
@@ -58,7 +111,17 @@ export const SearchAndCategoryFacetAttributesList = ({
         row.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
-      return filteredRows?.map(({ displayValue }, index) => {
+      return filteredRows?.map((row, index) => {
+        const displayValue = row.displayValue;
+
+        let order: number | undefined;
+        let localOrder: number | string | undefined;
+
+        if ('order' in row && typeof row.order === 'number') {
+          order = row.order;
+          localOrder = localOrders[displayValue] ?? order;
+        }
+
         return (
           <FacetAttributeValuesTableRow
             key={`${displayType}-${displayValue}`}
@@ -67,6 +130,26 @@ export const SearchAndCategoryFacetAttributesList = ({
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
           >
             <Col />
+            <Col>
+              {displayType === 'included' && order !== undefined && (
+                <AttributeWrapper>
+                  <FacetOrderInput
+                    displayValue={displayValue}
+                    order={order}
+                    localOrder={localOrder}
+                    inputRef={(el) => {
+                      if (el) {
+                        // eslint-disable-next-line functional/immutable-data
+                        inputRefs.current[displayValue] = el;
+                      }
+                    }}
+                    onInputChange={handleInputChange}
+                    onInputBlur={handleInputBlur}
+                    onInputKeyDown={handleInputKeyDown}
+                  />
+                </AttributeWrapper>
+              )}
+            </Col>
             <Col>
               <AttributeWrapper>
                 <Text>{displayValue}</Text>
@@ -80,7 +163,7 @@ export const SearchAndCategoryFacetAttributesList = ({
             </FlexColumnCol>
 
             <Col>
-              {displayType === 'included' && (
+              {displayType === 'included' && order !== undefined && (
                 <OrderArrowsContainer>
                   <ArrowButton
                     direction="up"
@@ -131,7 +214,16 @@ export const SearchAndCategoryFacetAttributesList = ({
         );
       });
     },
-    [dispatch, searchQuery, writeEnabled]
+    [
+      dispatch,
+      searchQuery,
+      writeEnabled,
+      handleInputBlur,
+      handleInputChange,
+      handleInputKeyDown,
+      localOrders,
+      inputRefs,
+    ]
   );
 
   const boostedValuesRows = useMemo(() => {
@@ -147,10 +239,20 @@ export const SearchAndCategoryFacetAttributesList = ({
   }, [excludedValues, listValues]);
 
   return (
-    <GlobalFacetAttributesListContainer>
+    <>
+      <FacetAttributeValuesTableRow isHeading>
+        {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
+          <Col key={`add-facet-modal-column-${label}`}>
+            <TableHeading as="p" isStrong>
+              {label}
+            </TableHeading>
+          </Col>
+        ))}
+      </FacetAttributeValuesTableRow>
+
       {boostedValuesRows}
       {defaultValuesRows}
       {excludedValuesRows}
-    </GlobalFacetAttributesListContainer>
+    </>
   );
 };

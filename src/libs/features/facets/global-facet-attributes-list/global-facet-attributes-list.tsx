@@ -9,21 +9,49 @@ import type {
 } from '@/libs/api';
 import { CombinedDropdown, FilteredResultsPanel } from '@/libs/components';
 import { Col } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
+import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
 import { GlobalFacetAttribute } from '@/libs/containers';
 import { GlobalArrowButtons } from '@/libs/containers/facets/global-arrow-buttons/global-arrow-buttons';
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
-import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import {
+  FacetAttributeValuesTableRow,
+  TableHeading,
+} from '@/libs/containers/shared/table/table.styles';
+import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
 import type {
   FormattedRow,
   GlobalAttributeReducer,
   GlobalAttributesState,
 } from '@/libs/stores/global-attribute/global-attribute-reducer';
-import { spacing } from '@/libs/utils/spacing';
 
-const GlobalFacetAttributesListContainer = styled.div`
-  margin: 0 ${spacing(3)};
+const StyledCheckbox = styled.input`
+  width: 18px;
+  height: 18px;
+  border: 2px solid #000;
+  appearance: none;
 `;
+
+const EDITFACETVALUESMODALCOLUMNS: {
+  label: string | null | false;
+}[] = [
+  { label: null },
+  {
+    label: 'Attribute',
+  },
+  {
+    label: 'Ranking',
+  },
+  {
+    label: 'Display name',
+  },
+  {
+    label: '',
+  },
+  {
+    label: 'Actions',
+  },
+];
 
 export type GlobalFacetAttributesListProps = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
@@ -56,6 +84,34 @@ export const GlobalFacetAttributesList = ({
   //   setIsAwaitingUpdate(false);
   // }, [isAwaitingUpdate]);
 
+  const initialOrders = useMemo(
+    () =>
+      Object.fromEntries(
+        globalAttributesLocalState.boostedRows.map((item) => [
+          item.displayName,
+          item.order,
+        ])
+      ),
+    [globalAttributesLocalState.boostedRows]
+  );
+
+  const handleOrderChangeCallback = useCallback(
+    (displayName: string, newIndex: number) => {
+      dispatch({
+        type: 'SET_BOOSTED_ORDER',
+        payload: { id: displayName, newIndex },
+      });
+    },
+    [dispatch]
+  );
+
+  const {
+    inputRefs,
+    localOrders,
+    handleInputChange,
+    handleInputBlur,
+    handleInputKeyDown,
+  } = useFacetOrderInput(handleOrderChangeCallback, initialOrders);
   // istanbul ignore next - remove once we have completed the selection functionality
   const totalSelectedItems = useMemo(() => {
     const selectedBoostedRows = globalAttributesLocalState.boostedRows
@@ -89,7 +145,10 @@ export const GlobalFacetAttributesList = ({
       );
 
       return filteredRows.map(
-        ({ displayName, attributes, isMergeGroup, isChecked }, index) => {
+        (
+          { displayName, attributes, isMergeGroup, order, isChecked },
+          index
+        ) => {
           const onOrderChange = (status: FacetDisplayType) => {
             // setIsAwaitingUpdate(true);
             if (status === displayType) {
@@ -127,6 +186,8 @@ export const GlobalFacetAttributesList = ({
             });
           };
 
+          const localOrder = localOrders[displayName] ?? order;
+
           return (
             <FacetAttributeValuesTableRow
               key={`${displayType}-${displayName}`}
@@ -146,6 +207,24 @@ export const GlobalFacetAttributesList = ({
                 }
                 dispatch={dispatch}
               />
+              <Col>
+                {displayType === 'included' && order && (
+                  <FacetOrderInput
+                    displayValue={displayName}
+                    order={order}
+                    localOrder={localOrder}
+                    inputRef={(el) => {
+                      if (el) {
+                        // eslint-disable-next-line functional/immutable-data
+                        inputRefs.current[displayName] = el;
+                      }
+                    }}
+                    onInputChange={handleInputChange}
+                    onInputBlur={handleInputBlur}
+                    onInputKeyDown={handleInputKeyDown}
+                  />
+                )}
+              </Col>
 
               <GlobalEditableLabel
                 displayName={displayName}
@@ -207,6 +286,11 @@ export const GlobalFacetAttributesList = ({
       writeEnabled,
       dispatch,
       setEditingValues,
+      handleInputBlur,
+      handleInputChange,
+      handleInputKeyDown,
+      localOrders,
+      inputRefs,
       totalSelectedItems,
     ]
   );
@@ -250,7 +334,48 @@ export const GlobalFacetAttributesList = ({
     filteredAttributeValuesNotInAMergeGroup.length + filteredMergeGroups.length;
 
   return (
-    <GlobalFacetAttributesListContainer>
+    <>
+      <FacetAttributeValuesTableRow isHeading>
+        {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
+          <Col key={`add-facet-modal-column-${label}`}>
+            {label ? (
+              <TableHeading as="p" isStrong>
+                {label}
+              </TableHeading>
+            ) : (
+              label === null && (
+                <Col>
+                  <StyledCheckbox
+                    type="checkbox"
+                    aria-label="Select all facet attributes"
+                    // checked={hasSelectedAllAttributes}
+                    // onChange={() => {
+                    // setIsAwaitingUpdate(true);
+                    // const selectedAttributes = hasSelectedAllAttributes
+                    //   ? []
+                    //   : attributeValues.map((val) => val.displayValue);
+                    // requestAnimationFrame(() => {
+                    //   dispatch({
+                    //     type: 'TOGGLE_SELECTED_ATTRIBUTES',
+                    //     payload: {
+                    //       attributes: selectedAttributes,
+                    //       allSelected:
+                    //         selectedAttributes.length ===
+                    //         attributeValues.length,
+                    //       allDeselected: selectedAttributes.length === 0,
+                    //       disableArrows: selectedAttributes.length > 0,
+                    //     },
+                    //   });
+                    // });
+                    // }}
+                  />
+                </Col>
+              )
+            )}
+          </Col>
+        ))}
+      </FacetAttributeValuesTableRow>
+
       {boostedValuesRows}
 
       {defaultValuesRows}
@@ -260,6 +385,6 @@ export const GlobalFacetAttributesList = ({
       {/* {isAwaitingUpdate && <Loader isInModal />} */}
 
       <FilteredResultsPanel filteredFacets={totalFilteredResults} />
-    </GlobalFacetAttributesListContainer>
+    </>
   );
 };

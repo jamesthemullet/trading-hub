@@ -1,16 +1,25 @@
-import { screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { SearchAndCategoryFacetAttributesList } from './search-and-category-facet-attibutes-list';
+import lodash from 'lodash';
+
+import { SearchAndCategoryFacetAttributesList } from './search-and-category-facet-attributes-list';
+
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  intersection: jest.fn(),
+  without: jest.fn(),
+}));
 
 const setup = (props = {}) => {
   const defaultProps = {
     boostedValues: [
-      { displayValue: 'Cotton' },
-      { displayValue: 'Silk' },
-      { displayValue: 'Wool' },
+      { displayValue: 'Cotton', order: 1 },
+      { displayValue: 'Silk', order: 2 },
+      { displayValue: 'Satin', order: 3 },
+      { displayValue: 'Wool', order: 4 },
     ],
     algoControlValues: [
       { displayValue: 'Polyester' },
@@ -31,6 +40,14 @@ const setup = (props = {}) => {
 };
 
 describe('SearchAndCategoryFacetAttributesList', () => {
+  beforeEach(() => {
+    Element.prototype.scrollIntoView = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders all value rows', () => {
     setup();
     expect(screen.getByTestId('included attribute 0 Cotton')).toBeVisible();
@@ -122,5 +139,108 @@ describe('SearchAndCategoryFacetAttributesList', () => {
       screen.queryByTestId(/algoControl attribute/)
     ).not.toBeInTheDocument();
     expect(screen.queryByTestId(/excluded attribute/)).not.toBeInTheDocument();
+  });
+
+  describe('Re-order by number', () => {
+    it('should dispatch SET_BOOSTED_ORDER if new value within the range of boosted items', async () => {
+      const dispatch = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      (lodash.without as jest.Mock).mockReturnValue([
+        'Cotton',
+        'Silk',
+        'Satin',
+        'Wool',
+      ]);
+
+      setup({ dispatch });
+
+      const input = screen.getByLabelText('Order for Wool');
+      expect(input).toHaveValue(4);
+      await user.clear(input);
+      await user.type(input, '1');
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(dispatch).toHaveBeenCalledWith({
+          type: 'SET_BOOSTED_ORDER',
+          payload: { id: 'Wool', newIndex: 0 },
+        });
+      });
+    });
+
+    it('should not dispatch SET_BOOSTED_ORDER if new value is less than 1', async () => {
+      const user = userEvent.setup({ delay: null });
+      const dispatch = jest.fn();
+      (lodash.without as jest.Mock).mockReturnValue([
+        'Cotton',
+        'Silk',
+        'Satin',
+        'Wool',
+      ]);
+
+      setup({ dispatch });
+
+      const input = screen.getByLabelText('Order for Wool');
+      expect(input).toHaveValue(4);
+      await user.clear(input);
+      await user.type(input, '0');
+      await user.keyboard('{enter}');
+
+      await waitFor(() => {
+        expect(dispatch).not.toHaveBeenCalledWith({
+          type: 'SET_BOOSTED_ORDER',
+          payload: expect.any(Object),
+        });
+        expect(input).toHaveValue(4);
+      });
+    });
+
+    it('should keep the existing order if the user deletes, then clicks outside without inputting a new order', async () => {
+      const dispatch = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      (lodash.without as jest.Mock).mockReturnValue([
+        'Cotton',
+        'Silk',
+        'Satin',
+        'Wool',
+      ]);
+
+      setup({ dispatch });
+
+      const input = screen.getByLabelText('Order for Satin');
+      expect(input).toHaveValue(3);
+      await user.clear(input);
+      expect(input).toHaveValue(null);
+      act(() => {
+        input.blur();
+      });
+
+      await waitFor(() => {
+        expect(input).toHaveValue(3);
+      });
+    });
+
+    it('should keep the existing order if the user deletes, then clicks enter without inputting a new order', async () => {
+      const dispatch = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      (lodash.without as jest.Mock).mockReturnValue([
+        'Cotton',
+        'Silk',
+        'Satin',
+        'Wool',
+      ]);
+
+      setup({ dispatch });
+
+      const input = screen.getByLabelText('Order for Silk');
+      expect(input).toHaveValue(2);
+      await user.clear(input);
+      expect(input).toHaveValue(null);
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(input).toHaveValue(2);
+      });
+    });
   });
 });
