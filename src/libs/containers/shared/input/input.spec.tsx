@@ -140,23 +140,6 @@ describe('Input', () => {
     expect(input).toHaveValue('test value');
   });
 
-  it('should display a tooltip component when passed', () => {
-    render(
-      <Input
-        id="inputId"
-        label="input"
-        tooltip={{ text: 'An additional help message' }}
-      />
-    );
-
-    expect(screen.getByLabelText('Open tooltip')).toBeInTheDocument();
-    expect(screen.getByText('An additional help message')).toBeInTheDocument();
-    expect(screen.getByRole('textbox')).toHaveAttribute(
-      'aria-labelledby',
-      'inputId inputId-tooltip'
-    );
-  });
-
   it('should display the character limit count when the maxLength prop is truthy', () => {
     render(<Input id="inputId" label="input" maxLength={10} />);
 

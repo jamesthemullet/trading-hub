@@ -4,11 +4,6 @@ import type { ChangeEvent, ComponentProps } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 
 import { FormLabel } from '@/libs/components/form-label/form-label';
-import {
-  Tooltip,
-  tooltipAriaLabelledBy,
-  type TooltipProps,
-} from '@/libs/components/tooltip/tooltip';
 import { Text } from '@/libs/components/typography/typography.styles';
 import { useMouseFocus } from '@/libs/hooks/utils/use-mouse-focus';
 import { color } from '@/libs/utils/constants';
@@ -79,7 +74,6 @@ export type InputProps = Omit<
     text: string;
   };
   isRequired?: boolean;
-  tooltip?: Omit<TooltipProps, 'id'> | false;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -96,7 +90,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       message,
       defaultValue,
       isRequired = false,
-      tooltip = false,
       ...rest
     }: InputProps,
     ref
@@ -134,7 +127,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <>
         <StyledLabelWrapper>
-          {tooltip && <Tooltip {...tooltip} id={id} />}
           <StyledLabel
             htmlFor={id}
             isHidden={isLabelHidden}
@@ -152,7 +144,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           maxLength={maxLength}
           value={inputVal}
           required={isRequired}
-          {...(tooltip && tooltipAriaLabelledBy(id))}
           {...(message && { isError })}
           {...mouseFocusProps}
           {...rest}
