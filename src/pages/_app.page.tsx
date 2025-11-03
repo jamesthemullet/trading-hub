@@ -2,13 +2,14 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
 import styled from '@emotion/styled';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { createTheme, MantineProvider, Portal } from '@mantine/core';
 
 import { FeatureFlagContext } from '@/libs/components/feature-flag/feature-flag';
 import { LoginCheck } from '@/libs/features/shared/login/login-check';
 
+import { accented } from 'accented';
 import type { AppProps } from 'next/app';
 import Script from 'next/script';
 import type { Session } from 'next-auth';
@@ -110,6 +111,16 @@ export default function App({
   pageProps,
 }: AppProps<{ session: Session | null }>) {
   const { session } = pageProps;
+
+  // istanbul ignore next
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV === 'development' &&
+      process.env.NEXT_PUBLIC_RUN_ACCENTED_ON_DEV === 'true'
+    ) {
+      accented();
+    }
+  }, []);
 
   return (
     <CookiesProvider>
