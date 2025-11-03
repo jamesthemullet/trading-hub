@@ -52,14 +52,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Upload Nonprod Dashboard Files (if exists)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: nonprod_dashboard_files
           path: ci/infra/terraform/dynatrace/non-production/dashboard/
           if-no-files-found: ignore
 
       - name: Upload Prod Dashboard Files (if exists)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: prod_dashboard_files
           path: ci/infra/terraform/dynatrace/production/dashboard/
