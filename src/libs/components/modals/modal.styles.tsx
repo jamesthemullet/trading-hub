@@ -26,32 +26,6 @@ export const HeadingContainer = styled.div`
   }
 `;
 
-export const HeadingAndCloseButton = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${spacing(3)};
-
-  h3 {
-    font-size: 1.25em;
-  }
-
-  button {
-    background: none;
-    width: 24px;
-    height: 24px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    padding: 0;
-    border: none;
-
-    &:hover {
-      background: none;
-    }
-  }
-`;
-
 export const ModalContainer = styled.div`
   height: 100%;
   min-width: 860px;

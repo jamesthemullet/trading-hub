@@ -76,7 +76,7 @@ const StyledError = styled(Text)`
   margin-top: ${spacing(0.5)};
 `;
 
-export type EditableLabelProps = {
+type EditableLabelProps = {
   displayValue: string;
   onDisplayValueChange: (newValue: string) => void;
   setError: (message: string) => void;

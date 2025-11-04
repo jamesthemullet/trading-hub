@@ -12,7 +12,7 @@ import type {
 
 import type { NextApiRequest } from 'next';
 
-export const mockProducts: MerchandisingProductBoostBury[] = [
+const mockProducts: MerchandisingProductBoostBury[] = [
   {
     id: '2',
     weight: 0.7,

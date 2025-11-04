@@ -21,7 +21,7 @@ import {
 
 type ClosingType = 'icon' | 'button' | 'esc' | 'outsideClick' | 'tab';
 
-export type DropdownVariant =
+type DropdownVariant =
   | 'generic'
   | 'countryFilter'
   | 'countrySelector'
@@ -51,7 +51,7 @@ type FacetOrderProps = {
   onChange?: (status: FacetDisplayType) => void;
 };
 
-export type CombinedDropdownProps = {
+type CombinedDropdownProps = {
   variant: DropdownVariant;
   width?: number;
   writeEnabled?: boolean;

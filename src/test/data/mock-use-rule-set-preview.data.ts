@@ -4,19 +4,19 @@ import type {
 } from '@/libs/api';
 
 export const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
-export const categoryId = 'SubCategory_428';
-export const product1Id = 'a1';
-export const product2Id = 'b2';
-export const product3Id = 'c2';
-export const product1Title = 'first product';
-export const product2Title = 'second product';
-export const product3Title = 'third product';
-export const product1Brand = 'Monsoon';
-export const product2Brand = 'M&S';
-export const product1Price = '£5';
-export const product2Price = '£10';
+const categoryId = 'SubCategory_428';
+const product1Id = 'a1';
+const product2Id = 'b2';
+const product3Id = 'c2';
+const product1Title = 'first product';
+const product2Title = 'second product';
+const product3Title = 'third product';
+const product1Brand = 'Monsoon';
+const product2Brand = 'M&S';
+const product1Price = '£5';
+const product2Price = '£10';
 
-export const mockRuleData: MerchandisingReturnedCategoryRuleSet = {
+const mockRuleData: MerchandisingReturnedCategoryRuleSet = {
   id: ruleSetId,
   countryCode: 'UK_IE',
   categoriesInfo: [

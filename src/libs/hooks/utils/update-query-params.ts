@@ -1,6 +1,6 @@
 import type { NextRouter } from 'next/router';
 
-export type QueryParams = {
+type QueryParams = {
   currentPage: number;
   currentPageSize: number;
   searchQuery: string;

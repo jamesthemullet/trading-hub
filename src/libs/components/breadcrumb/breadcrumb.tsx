@@ -9,7 +9,7 @@ import { spacing } from '@/libs/utils/spacing';
 import { List } from './list';
 import { VisuallyHide } from './visually-hide';
 
-export type BreadcrumbProps = {
+type BreadcrumbProps = {
   children: ReactNode;
 };
 

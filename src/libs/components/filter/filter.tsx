@@ -12,7 +12,7 @@ type FilteredListItem = {
   };
 };
 
-export type FilteredListProps = Array<FilteredListItem>;
+type FilteredListProps = Array<FilteredListItem>;
 
 export const Filter = ({ value, onChange }: FilterTypes) => {
   return (

@@ -32,7 +32,7 @@ type ChangeDisplayTypeAction = {
   };
 };
 
-export type Action =
+type Action =
   | MoveRowUpAction
   | MoveRowDownAction
   | ChangeDisplayTypeAction

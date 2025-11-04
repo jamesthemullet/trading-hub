@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { ReactNode } from 'react';
 
-export type ListProps = {
+type ListProps = {
   as?: 'ul' | 'ol';
   isUnstyled?: boolean;
   isHorizontal?: true;

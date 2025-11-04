@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Button as RegularButton, Text } from '@/libs/components';
+import { Text } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -25,15 +25,6 @@ export const AttributeRow = styled.div`
   padding: ${spacing(1)};
   border-top: solid 1px #999;
   background-color: ${color.accent.secondary.secondaryContainer};
-`;
-
-export const AttributeValue = styled.div`
-  background-color: #e0e4e7;
-  border-radius: 5px;
-  padding: ${spacing(1)};
-  margin: ${spacing(1)};
-  display: inline-block;
-  font-size: 14px;
 `;
 
 export const AttributeValueList = styled.ul`
@@ -62,22 +53,6 @@ export const AttributeValuePill = styled.li`
   }
 `;
 
-export const RemoveAttributeValuePill = styled.button`
-  width: 12px;
-  height: 12px;
-  padding: 0;
-  margin-left: ${spacing(1)};
-  background: none;
-  outline: none;
-  border: none;
-  display: flex;
-
-  img {
-    width: 12px;
-    height: 12px;
-  }
-`;
-
 export const AttributeSelection = styled.div`
   max-height: 250px;
   overflow: auto;
@@ -92,24 +67,6 @@ export const RulesetAttributeButton = styled.button`
   border: none;
   background: none;
   display: flex;
-`;
-
-export const AddAttributeValueButton = styled(RegularButton)`
-  margin: ${spacing(1)};
-  padding: ${spacing(1)};
-  align-items: center;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 400;
-  display: flex;
-  height: 36px;
-  width: auto;
-`;
-
-export const AddAttributeValueIcon = styled.div`
-  width: 18px;
-  height: 18px;
-  margin-right: ${spacing(0.5)};
 `;
 
 export const AlignedText = styled(Text)`

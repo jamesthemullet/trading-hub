@@ -34,46 +34,6 @@ export const formActiveStyles = () => css`
   }
 `;
 
-export const resetSearchInput = css`
-  &::-webkit-search-decoration,
-  &::-webkit-search-cancel-button,
-  &::-webkit-search-results-button,
-  &::-webkit-search-results-decoration {
-    display: none;
-  }
-`;
-
-export type TypographyStyleProps = {
-  isStrong?: boolean;
-};
-
-export const microTypographyStyles = () => css`
-  font-family: 'mnsLondonSemiBold, Helvetica, Arial, sans-serif';
-  font-size: 1rem;
-  letter-spacing: 0.25px;
-  line-height: 1.4;
-`;
-
-export const smallTypographyStyles = ({
-  isStrong,
-}: {
-  isStrong?: TypographyStyleProps['isStrong'];
-}) => css`
-  font-family: ${isStrong ? fonts.semiBold : fonts.regular};
-  font-size: 1rem;
-  line-height: 1.5714;
-`;
-
-export const extraSmallTypographyStyles = ({
-  isStrong,
-}: {
-  isStrong?: TypographyStyleProps['isStrong'];
-}) => css`
-  font-family: ${isStrong ? fonts.semiBold : fonts.regular};
-  font-size: 1rem;
-  line-height: 1.5;
-`;
-
 export const boxShadow = () => css`
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
 `;
@@ -107,11 +67,4 @@ export const ToolsContainer = styled.div`
   gap: ${spacing(2)};
   max-width: 100%;
   align-items: center;
-`;
-
-export const SectionWrapper = styled.div`
-  box-shadow: #000 0 0 10px -5px;
-  margin: ${spacing(2)};
-  padding-top: ${spacing(1)};
-  border-radius: 4px;
 `;

@@ -22,12 +22,6 @@ import { spacing } from '@/libs/utils/spacing';
 
 import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
 
-export type ChangePositionTypes = {
-  isPinned: boolean;
-  id: string;
-  newPosition: number;
-};
-
 const Heading = styled(Text)`
   font-size: 20px;
   padding: ${spacing(2)} 0;

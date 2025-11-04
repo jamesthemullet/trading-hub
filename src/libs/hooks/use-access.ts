@@ -5,8 +5,8 @@ import {
   useAuthorizationRoleOverride,
 } from '../components/feature-flag/feature-flag';
 
-export type AccessType = 'Cat' | 'Search' | 'Glob';
-export type AccessMap = {
+type AccessType = 'Cat' | 'Search' | 'Glob';
+type AccessMap = {
   Cat: '' | 'Cat.R' | 'Cat.W';
   Search: '' | 'Search.R' | 'Search.W';
   Glob: '' | 'Glob.R' | 'Glob.W';

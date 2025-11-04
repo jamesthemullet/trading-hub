@@ -10,7 +10,7 @@ import { spacing } from '@/libs/utils/spacing';
 import { Button, type ButtonProps } from '../button/button';
 import { Icon } from '../icon/icon';
 
-export type SearchProps = {
+type SearchProps = {
   id?: string;
   name?: string;
   value?: string | number | readonly string[] | undefined;
@@ -134,7 +134,7 @@ const StyledButton = styled(Button)<{ iconPosition: IconPosition }>`
         `}
 `;
 
-export type SearchBoxProps = {
+type SearchBoxProps = {
   iconPosition?: IconPosition;
   hideIcon?: boolean;
   inputProps: {

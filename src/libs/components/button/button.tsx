@@ -181,7 +181,7 @@ const StyledLink = styled(Link, {
 
 type Icon = 'plus-simple-green' | 'plus-simple-white';
 
-export type RawButtonProps = {
+type RawButtonProps = {
   isPrimary?: boolean;
   isTertiary?: boolean;
   isFilled?: boolean;

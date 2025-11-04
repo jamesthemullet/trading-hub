@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Button, Icon, Label, Text } from '@/libs/components';
+import { Icon, Text } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -43,13 +43,6 @@ export const Row = styled.button`
   }
 `;
 
-export const Categories = styled.div`
-  border-radius: 4px 4px 0 0;
-  background-color: ${color.accent.secondary.secondaryContainer};
-  border-bottom: 1px solid #b1b1b1;
-  padding: ${spacing(1)} ${spacing(1)} 0;
-`;
-
 export const SearchWrapper = styled.div`
   background-color: ${color.accent.secondary.secondaryContainer};
   display: flex;
@@ -57,20 +50,6 @@ export const SearchWrapper = styled.div`
   width: 335px;
   & div {
     border-bottom: none;
-  }
-`;
-
-export const SelectedCategories = styled.div`
-  padding: ${spacing(1)};
-  display: flex;
-
-  & > li {
-    margin-right: ${spacing(1)};
-  }
-
-  p {
-    height: 36px;
-    padding: 2px 8px;
   }
 `;
 
@@ -108,31 +87,6 @@ export const StyledIcon = styled(Icon)`
   right: 4px;
   top: 12px;
   pointer-events: none;
-`;
-
-export const ViewAllButton = styled(Button)`
-  min-width: 110px;
-  margin-top: ${spacing(1)};
-  margin-left: ${spacing(1)};
-`;
-
-export const SelectedCategoryPill = styled(Label)`
-  margin-bottom: ${spacing(1)};
-  margin-right: ${spacing(1)};
-  color: #fff;
-  background-color: ${color.selectionBox};
-  border-radius: 6px;
-  padding: ${spacing(1)} ${spacing(2)};
-  display: inline-flex;
-  align-items: center;
-`;
-
-export const SelectedCategoryClose = styled.button`
-  background: url('/trading-hub/asset/icon-close.svg');
-  width: 19px;
-  height: 18px;
-  display: inline-block;
-  border: none;
 `;
 
 export const ModalWrapper = styled.div`

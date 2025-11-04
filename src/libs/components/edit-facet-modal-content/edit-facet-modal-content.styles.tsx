@@ -2,9 +2,7 @@ import styled from '@emotion/styled';
 import { Skeleton } from '@mantine/core';
 
 import { ModalStickyHeader } from '@/libs/components/modals/modal.styles';
-import { Text } from '@/libs/components/typography/typography.styles';
 import { TableCol } from '@/libs/containers/shared/table/table.styles';
-import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
 export const Col = styled(TableCol)`
@@ -75,9 +73,4 @@ export const RemoveMergedFacet = styled.button`
   height: 18px;
   display: inline-block;
   border: none;
-`;
-
-export const StyledError = styled(Text)`
-  color: ${color.saleRed};
-  margin-top: ${spacing(0.5)};
 `;

@@ -47,26 +47,29 @@ type MerchandisingAlphanumericBoostBuryAttributePayload = {
   data: MerchandisingAlphanumericBoostBury;
 };
 
-export type NumericAttributeEdit = {
+type NumericAttributeEdit = {
   field: MerchandisingNumericBoostBury;
   weight: number;
   index: number;
   operation: 'boost' | 'bury';
   type: 'numericBoostBury';
 };
-export type MerchandisingAlphanumericBoostBuryAttributeEdit = {
+
+type MerchandisingAlphanumericBoostBuryAttributeEdit = {
   fields: MerchandisingAlphanumericBoostBuryField[];
   weight: number;
   index: number;
   operation: 'boost' | 'bury';
   type: 'alphanumericBoostBury';
 };
-export type MerchandisingAlphanumericIncludeExcludeAttributeEdit = {
+
+type MerchandisingAlphanumericIncludeExcludeAttributeEdit = {
   fields: MerchandisingAlphanumericBoostBuryField[];
   index: number;
   operation: 'include' | 'exclude';
   type: 'alphanumericIncludeExclude';
 };
+
 export type AttributeEdit =
   | NumericAttributeEdit
   | MerchandisingAlphanumericBoostBuryAttributeEdit

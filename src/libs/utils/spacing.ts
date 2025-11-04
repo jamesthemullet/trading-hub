@@ -6,8 +6,8 @@ type PercentageSpacingUnit =
   | `${'100%' | '-100%'}`
   | `${PercentageDigits}.${PercentageDigits}%`;
 
-export type FourAndTwelvePixelUnit = 0.5 | -0.5 | 1.5 | -1.5;
-export type RoundNumberSpacingUnit =
+type FourAndTwelvePixelUnit = 0.5 | -0.5 | 1.5 | -1.5;
+type RoundNumberSpacingUnit =
   | 0
   | 1
   | -1

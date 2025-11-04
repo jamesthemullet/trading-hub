@@ -101,11 +101,6 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   }
 `;
 
-export const FlagWrapper = styled.span`
-  margin-left: -${spacing(1)};
-  padding-top: ${spacing(0.5)};
-`;
-
 export const DropdownHeading = styled.span`
   display: flex;
   align-items: center;

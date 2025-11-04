@@ -6,7 +6,7 @@ import type {
 type MergeGroup = Required<
   NonNullable<MerchandisingGlobalOnlyFacetConfig['merged']>[number]
 >;
-export type AttributeToMergeGroupMap = Record<string, MergeGroup>;
+type AttributeToMergeGroupMap = Record<string, MergeGroup>;
 
 export const getAttributeToMergeGroupMap = (
   merged: NonNullable<MerchandisingReturnedGlobalFacet['merged']>

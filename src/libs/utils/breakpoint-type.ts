@@ -33,9 +33,3 @@ export type BreakPoints =
   | `${Md}, ${Lg}, ${Xl}`
   | `${Sm}, ${Md}, ${Lg}`
   | `${Sm}, ${Md}, ${Lg}, ${Xl}`;
-
-export type ActiveBreakpoints =
-  | Sm
-  | `${Sm}, ${Md}`
-  | `${Sm}, ${Md}, ${Lg}`
-  | `${Sm}, ${Md}, ${Lg}, ${Xl}`;

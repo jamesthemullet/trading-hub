@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
 import { expect } from '@playwright/test';
 
-export interface AccessibilityCheckOptions {
+interface AccessibilityCheckOptions {
   exclude?: string[];
   include?: string[];
   tags?: string[];

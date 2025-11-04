@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-export type CatRoleOverride = 'No Override' | '' | 'Cat.R' | 'Cat.W';
-export type SearchRoleOverride = 'No Override' | '' | 'Search.R' | 'Search.W';
-export type GlobalRoleOverride = 'No Override' | '' | 'Glob.R' | 'Glob.W';
+type CatRoleOverride = 'No Override' | '' | 'Cat.R' | 'Cat.W';
+type SearchRoleOverride = 'No Override' | '' | 'Search.R' | 'Search.W';
+type GlobalRoleOverride = 'No Override' | '' | 'Glob.R' | 'Glob.W';
 
-export type AuthorizationRoleOverride = {
+type AuthorizationRoleOverride = {
   catOverride: CatRoleOverride;
   searchOverride: SearchRoleOverride;
   globalOverride: GlobalRoleOverride;

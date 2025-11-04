@@ -4,7 +4,6 @@ import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
 import { Button } from '../button/button';
-import { Title } from '../typography/typography.styles';
 
 export const ModalContainer = styled.div`
   width: 856px;
@@ -96,12 +95,6 @@ export const ModalSelectedKeyword = styled.div`
   h4 {
     padding: ${spacing(1)} ${spacing(1)} 0 0;
   }
-`;
-
-export const Heading = styled(Title)`
-  padding-top: ${spacing(2)};
-  margin-bottom: ${spacing(2)};
-  font-size: 20px;
 `;
 
 export const StyledSearchContainer = styled.div`

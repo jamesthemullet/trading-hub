@@ -63,7 +63,7 @@ const COLUMNS: {
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
 
-export type FacetRowDisplayValue = MerchandisingReturnedFacet & {
+type FacetRowDisplayValue = MerchandisingReturnedFacet & {
   displayType: FacetDisplayType;
   index: number;
 };

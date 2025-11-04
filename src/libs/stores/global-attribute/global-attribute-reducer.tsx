@@ -1,15 +1,4 @@
-import type { MerchandisingReturnedFacet } from '@/libs/api';
-
-export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
-
-export type BaseDisplayValueMeta = {
-  isBeginningOfDisplayTypeGroup: boolean;
-  isEndOfDisplayTypeGroup: boolean;
-};
-export type FacetRowDisplayValue = MerchandisingReturnedFacet & {
-  meta?: BaseDisplayValueMeta;
-  displayType: FacetDisplayType;
-};
+type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
 
 export type FormattedRow = {
   displayName: string;
@@ -19,7 +8,7 @@ export type FormattedRow = {
   isChecked: boolean;
 };
 
-export type FormattedBoostedRow = {
+type FormattedBoostedRow = {
   displayName: string;
   attributes: string[];
   isMergeGroup: boolean;
@@ -27,7 +16,7 @@ export type FormattedBoostedRow = {
   order: number;
 };
 
-export type ToggleAllAttributes = {
+type ToggleAllAttributes = {
   type: 'TOGGLE_ALL_ATTRIBUTES';
   payload: {
     allSelected: boolean;

@@ -6,7 +6,7 @@ import { toArrayWithSwappedElements } from '@/libs/features/facets/utils/swap-ar
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
 
-export type BaseDisplayValueMeta = {
+type BaseDisplayValueMeta = {
   isBeginningOfDisplayTypeGroup: boolean;
   isEndOfDisplayTypeGroup: boolean;
 };

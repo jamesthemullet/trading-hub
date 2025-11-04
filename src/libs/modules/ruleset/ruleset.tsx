@@ -145,12 +145,6 @@ const VisualEditorText = styled(Text)`
   font-size: 16px;
 `;
 
-export type ChangePositionTypes = {
-  isPinned: boolean;
-  id: string;
-  newPosition: number;
-};
-
 export const Ruleset = ({
   endDate,
   isEnabled,

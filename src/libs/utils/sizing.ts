@@ -7,7 +7,7 @@ type PercentageSizingUnit =
   | `${SizingDigits}.${SizingDigits}%`;
 
 type FourAndTwelvePixelUnit = 0.5 | -0.5 | 1.5 | -1.5;
-export type RoundNumberSizingUnit =
+type RoundNumberSizingUnit =
   | 0
   | 1
   | -1
@@ -126,7 +126,7 @@ export type RoundNumberSizingUnit =
   | 218
   | -218;
 
-export type SizingUnit =
+type SizingUnit =
   | PercentageSizingUnit
   | RoundNumberSizingUnit
   | FourAndTwelvePixelUnit;

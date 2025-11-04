@@ -17,7 +17,7 @@ const visuallyHide = css`
   height: 1px;
 `;
 
-export type VisuallyHideProps = {
+type VisuallyHideProps = {
   as: React.ElementType;
   children: ReactNode;
   [props: string]: unknown;

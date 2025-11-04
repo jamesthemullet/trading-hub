@@ -4,7 +4,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 
 import iconMapping from './svg-mapping.json';
 
-export type SvgMapping = keyof typeof iconMapping;
+type SvgMapping = keyof typeof iconMapping;
 export type SvgProps = HTMLAttributes<HTMLSpanElement> & {
   name: SvgMapping;
   color?: string;

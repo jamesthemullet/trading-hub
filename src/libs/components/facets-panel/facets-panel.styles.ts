@@ -4,7 +4,7 @@ import { Text } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
-export const TableRow = styled.div`
+const TableRow = styled.div`
   display: grid;
   grid-template-columns: minmax(180px, 2fr) 200px 350px 180px;
   border-bottom: 1px solid #b1b1b1;
@@ -18,7 +18,7 @@ export const TableRow = styled.div`
     background: #fff;
   }
 `;
-export const TableCol = styled.div`
+const TableCol = styled.div`
   text-overflow: ellipsis;
   display: flex;
   padding: ${spacing(1)} ${spacing(1)} ${spacing(1)} 0;
@@ -47,21 +47,6 @@ export const Actions = styled.div`
   gap: ${spacing(2)};
   margin-left: auto;
   padding: 18px;
-`;
-
-export const AddFacetPanel = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  div {
-    &:first-of-type {
-      flex: 6;
-    }
-
-    &:last-of-type {
-      flex: 1;
-    }
-  }
 `;
 
 export const LowerHeading = styled(Text)`

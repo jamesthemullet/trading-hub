@@ -47,7 +47,7 @@ const ButtonContainer = styled.div<{
   }
 `;
 
-export type RulesetAttributesProps = {
+type RulesetAttributesProps = {
   countryCode: MerchandisingCountryCode;
   categories?: string[];
   searchTerms?: string[];

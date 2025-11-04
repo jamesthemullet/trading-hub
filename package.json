@@ -28,7 +28,8 @@
     "contributors:generate": "all-contributors generate",
     "storybook:dev": "storybook dev -p 6006",
     "storybook:build": "storybook build",
-    "test-storybook": "npx @storybook/test-runner"
+    "test-storybook": "npx @storybook/test-runner",
+    "knip": "knip"
   },
   "dependencies": {
     "@axe-core/playwright": "4.11.0",
@@ -106,6 +107,7 @@
     "jest-fail-on-console": "3.3.1",
     "jest-junit": "16.0.0",
     "jest-watch-typeahead": "3.0.1",
+    "knip": "5.66.4",
     "msw": "2.11.6",
     "node-fetch": "3.3.2",
     "openapi-types": "12.1.3",

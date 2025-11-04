@@ -26,9 +26,6 @@ export const TableRow = styled.div`
     background: #fff;
   }
 `;
-export const FacetsTableRow = styled(TableRow)`
-  grid-template-columns: minmax(170px, 2fr) 120px 150px 150px 150px;
-`;
 
 type FacetAttributeValuesTableRowProps = {
   isPinned?: boolean;
@@ -87,73 +84,6 @@ export const TableHeading = styled(Label)`
   color: #1d1d1b;
   font-weight: 600;
   font-family: ${fonts.semiBold};
-`;
-
-const ORDER_TO_COLOR = [
-  {
-    asc: '#bbb',
-    desc: '#666',
-    unsorted: '#bbb',
-  },
-  {
-    asc: '#666',
-    desc: '#bbb',
-    unsorted: '#bbb',
-  },
-];
-
-export const TableColumnOrder = styled.div<{
-  order: 'asc' | 'desc' | 'unsorted';
-}>`
-  position: relative;
-  ::before,
-  ::after {
-    border: 4px solid transparent;
-    content: '';
-    display: block;
-    height: 0;
-    right: 5px;
-    top: 50%;
-    position: absolute;
-    width: 0;
-  }
-
-  ::before {
-    border-bottom-color: ${({ order }) => ORDER_TO_COLOR[0][order]};
-    margin-top: -9px;
-  }
-
-  ::after {
-    border-top-color: ${({ order }) => ORDER_TO_COLOR[1][order]};
-    margin-top: 1px;
-  }
-`;
-
-export const TableDateContainer = styled.div`
-  p {
-    line-height: 1;
-  }
-`;
-
-export const TableActionsButton = styled(Link, {
-  shouldForwardProp: (prop) => prop !== 'hasDropdown',
-})<{ hasDropdown: boolean }>`
-  border: none;
-  color: #000;
-  background-color: #f5f5f5;
-  transition: background-color 0.1s ease-in;
-  text-decoration: none;
-  padding: ${spacing(1)} ${spacing(2)};
-  width: 100%;
-  border-radius: 4px;
-  border: solid 1px ${color.surface.onSurfaceVariant};
-
-  ${({ hasDropdown }) =>
-    hasDropdown && 'border-right: none;border-radius: 4px 0 0 4px;'}
-
-  &:hover {
-    background-color: #e3e3e3;
-  }
 `;
 
 export const TableActions = styled.div`
