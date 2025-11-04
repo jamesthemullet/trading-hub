@@ -1,7 +1,4 @@
-import type { DefaultBodyType, PathParams } from 'msw';
 import { http, HttpResponse } from 'msw';
-import type { HttpRequestResolverExtras } from 'msw/lib/core/handlers/HttpHandler';
-import type { ResponseResolverInfo } from 'msw/lib/core/handlers/RequestHandler';
 import { setupServer } from 'msw/node';
 
 import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
@@ -28,12 +25,7 @@ const httpDelete = jest.fn();
 
 const captureRequest =
   (fn: jest.Mock) =>
-  async ({
-    request,
-  }: ResponseResolverInfo<
-    HttpRequestResolverExtras<PathParams>,
-    DefaultBodyType
-  >) => {
+  async ({ request }: { request: Request }) => {
     const body = await request.text();
     return fn({
       url: request.url,
