@@ -86,7 +86,6 @@ const eslint = [
     rules: {
       ...nextPlugin.configs['core-web-vitals'].rules,
       ...react.configs.recommended.rules,
-      ...reactHooks.configs['flat/recommended'].rules,
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'import/no-unresolved': 'error',
