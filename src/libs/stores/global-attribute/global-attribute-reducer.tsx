@@ -23,7 +23,7 @@ type ToggleAllAttributes = {
   };
 };
 
-export type ToggleSelectedAttribute = {
+type ToggleSelectedAttribute = {
   type: 'TOGGLE_SELECTED_ATTRIBUTE';
   payload: {
     displayName: string;
