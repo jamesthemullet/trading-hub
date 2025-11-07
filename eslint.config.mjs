@@ -13,9 +13,14 @@ import nextPlugin from '@next/eslint-plugin-next';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import importPlugin from 'eslint-plugin-import';
+import prettierConfig from 'eslint-config-prettier';
+import jestPlugin from 'eslint-plugin-jest';
+import tseslint from 'typescript-eslint';
+import storybookPlugin from 'eslint-plugin-storybook';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
@@ -23,16 +28,14 @@ const compat = new FlatCompat({
 });
 
 const eslint = [
-  ...compat.extends(
-    'prettier',
-    'plugin:jest/recommended',
-    'eslint:recommended',
-    'plugin:jest-formatting/recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jest-dom/recommended',
-    'plugin:jsx-a11y/recommended',
-    'plugin:storybook/recommended'
-  ),
+  js.configs.recommended,
+  jestPlugin.configs['flat/recommended'],
+  ...tseslint.configs.recommended,
+  jestDom.configs['flat/recommended'],
+  jsxA11Y.flatConfigs.recommended,
+  ...storybookPlugin.configs['flat/recommended'],
+  ...compat.extends('plugin:jest-formatting/recommended'),
+  prettierConfig,
   {
     ignores: [
       'node_modules/**',
@@ -57,8 +60,6 @@ const eslint = [
       '@typescript-eslint': typescriptEslint,
       'simple-import-sort': simpleImportSort,
       'testing-library': testingLibrary,
-      'jest-dom': jestDom,
-      'jsx-a11y': jsxA11Y,
       functional,
       '@next/next': nextPlugin,
       react,
