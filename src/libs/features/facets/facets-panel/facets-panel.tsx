@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -23,6 +23,7 @@ import {
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { COLUMNS } from '@/libs/constants/facets-panel-columns';
+import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { TableHeading } from '@/libs/containers/shared/table/table.styles';
@@ -222,6 +223,20 @@ export const FacetsPanel = ({
     );
   };
 
+  const [boostedCount, excludedCount, nonBoostedExcludedCount] = useMemo(() => {
+    const boosted = facetsState.filter(
+      (facet) => facet.displayType === 'included'
+    ).length;
+    const excluded = facetsState.filter(
+      (facet) => facet.displayType === 'excluded'
+    ).length;
+    const nonBoostedExcluded = facetsState.filter(
+      (facet) => facet.displayType === 'algoControl'
+    ).length;
+
+    return [boosted, excluded, nonBoostedExcluded];
+  }, [facetsState]);
+
   return (
     <>
       <ProductGridHeader
@@ -258,6 +273,12 @@ export const FacetsPanel = ({
 
           <InfoBox text="You are currently editing all pages on the M&S website and app" />
         </ScopeWrapper>
+
+        <FacetsPanelAccordion
+          boostedCount={boostedCount}
+          excludedCount={excludedCount}
+          nonBoostedExcludedCount={nonBoostedExcludedCount}
+        />
       </SectionWrapper>
 
       <SectionWrapper>

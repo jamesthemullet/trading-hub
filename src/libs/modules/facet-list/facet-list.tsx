@@ -28,6 +28,7 @@ import {
   SectionWrapper,
 } from '@/libs/components/facets-panel/facets-panel.styles';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { TableHeading } from '@/libs/containers/shared/table/table.styles';
@@ -509,6 +510,12 @@ export const FacetList = ({
             </div>
           )}
         </ScopeWrapper>
+
+        <FacetsPanelAccordion
+          boostedCount={boostedFacets.length}
+          excludedCount={excludedFacets.length}
+          nonBoostedExcludedCount={defaultFacets.length}
+        />
       </SectionWrapper>
 
       {(selectedCategories.length > 0 || selectedSearchTerms.length > 0) && (
