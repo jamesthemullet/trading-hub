@@ -1,5 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
 import * as analytics from '@/libs/hooks/utils/analytics';
@@ -13,6 +15,18 @@ const mockUseFacetsList = {
   isLoading: false,
   facets: facetsListMock.facets,
   error: '',
+};
+
+const pushMock = jest.fn();
+
+const mockRouter: Partial<NextRouter> = {
+  query: { id: 'test-ruleset-id' },
+  push: pushMock,
+  route: '',
+  pathname: '',
+  asPath: '',
+  basePath: '',
+  isLocaleDomain: false,
 };
 
 jest.mock('@/libs/hooks', () => ({
@@ -112,6 +126,8 @@ describe('Facets', () => {
       error: '',
       isLoading: false,
     });
+
+    jest.mocked(useRouter).mockReturnValue(mockRouter as NextRouter);
   });
 
   afterEach(() => {
@@ -986,5 +1002,85 @@ describe('Facets', () => {
     });
 
     expect(onSaveSpy).toHaveBeenCalledWith(expectedCall);
+  });
+
+  it('should route the user to the facet values page if showNewFacetValuesPage is true', async () => {
+    const categoriesInfo = [
+      {
+        id: categoryId1,
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+
+    renderWithProviders(
+      <FacetList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        facetType="category"
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />,
+      [],
+      {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      }
+    );
+
+    const editValuesButton = screen.getByRole('link', {
+      name: 'Edit values',
+    });
+
+    expect(editValuesButton).toHaveAttribute(
+      'href',
+      '/category/facets/values/edit/b04eaac3-f4ea-4f21-9459-0b4302dc2a84?ruleSetId=test-ruleset-id&displayName=color&countryCode=UK_IE&categories=cat_123'
+    );
+  });
+
+  it('should handle multiple search terms when routing the user to the facet values page', async () => {
+    renderWithProviders(
+      <FacetList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        facetType="search"
+        isNewRuleset={false}
+        searchTerms={['term 1', 'term 2']}
+      />,
+      [],
+      {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      }
+    );
+
+    const editFacetValuesButton = screen.getAllByRole('link', {
+      name: 'Edit values',
+    })[0];
+
+    expect(editFacetValuesButton).toHaveAttribute(
+      'href',
+      '/search/facets/values/edit/b04eaac3-f4ea-4f21-9459-0b4302dc2a84?ruleSetId=test-ruleset-id&displayName=color&countryCode=UK_IE&searchTerms=term+1&searchTerms=term+2'
+    );
   });
 });

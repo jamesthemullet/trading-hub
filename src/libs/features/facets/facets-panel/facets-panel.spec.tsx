@@ -1,5 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
@@ -15,6 +17,18 @@ jest.mock('@/libs/hooks', () => ({
   usePreview: jest.fn(),
   useGlobalFacetUpdate: jest.fn(),
 }));
+
+const pushMock = jest.fn();
+
+const mockRouter: Partial<NextRouter> = {
+  query: { id: 'test-ruleset-id' },
+  push: pushMock,
+  route: '',
+  pathname: '',
+  asPath: '',
+  basePath: '',
+  isLocaleDomain: false,
+};
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -140,6 +154,7 @@ describe('Facet Panel', () => {
       isLoading: false,
     });
     jest.mocked(useGlobalFacetUpdate).mockReturnValue(updateGlobalFacet);
+    jest.mocked(useRouter).mockReturnValue(mockRouter as NextRouter);
     jest.useFakeTimers();
   });
 
@@ -354,7 +369,9 @@ describe('Facet Panel', () => {
         />
       );
 
-      const editFacetValuesButton = screen.getAllByText('Edit values')[0];
+      const editFacetValuesButton = screen.getAllByRole('button', {
+        name: 'Edit values',
+      })[0];
 
       expect(editFacetValuesButton).toBeVisible();
 
@@ -391,7 +408,9 @@ describe('Facet Panel', () => {
         />
       );
 
-      const editFacetValuesButton = screen.getAllByText('Edit values')[0];
+      const editFacetValuesButton = screen.getAllByRole('button', {
+        name: 'Edit values',
+      })[0];
 
       act(() => {
         editFacetValuesButton.click();
@@ -440,7 +459,9 @@ describe('Facet Panel', () => {
         />
       );
 
-      const editFacetValuesButton = screen.getAllByText('Edit values')[0];
+      const editFacetValuesButton = screen.getAllByRole('button', {
+        name: 'Edit values',
+      })[0];
 
       await user.click(editFacetValuesButton);
 
@@ -515,5 +536,39 @@ describe('Facet Panel', () => {
       cancelButton.click();
     });
     expect(errorMessage).not.toBeVisible();
+  });
+
+  it('should route the user to the facet values page if showNewFacetValuesPage is true', async () => {
+    renderWithProviders(
+      <FacetsPanel
+        writeEnabled
+        title="Facet Rule Editor"
+        countryCode="UK"
+        selectedPreviewCountryCode="UK"
+        onFacetDataChange={jest.fn()}
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+        refreshData={jest.fn()}
+        facetsState={mockFacetsState}
+        includedFacets={mockIncludedFacets}
+        excludedFacets={mockExcludedFacets}
+        dispatch={dispatchSpy}
+      />,
+      [],
+      {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      }
+    );
+
+    const editFacetValuesButton = screen.getAllByRole('link', {
+      name: 'Edit values',
+    })[0];
+
+    expect(editFacetValuesButton).toHaveAttribute(
+      'href',
+      '/global/facets/values/edit/b04eaac3-f4ea-4f21-9459-0b4302dc2a84?ruleSetId=test-ruleset-id&displayName=color&countryCode=UK'
+    );
   });
 });

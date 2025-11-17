@@ -13,15 +13,19 @@ import { spacing } from '@/libs/utils/spacing';
 
 import Link from 'next/link';
 
+import { fonts } from '../typography/typography.styles';
+
 const setTheme = ({
   isDisabled,
   isPrimary,
+  isSecondary,
   isTertiary,
   isFilled,
   isOutlined,
 }: {
   isDisabled?: boolean;
   isPrimary?: boolean;
+  isSecondary?: boolean;
   isTertiary?: boolean;
   isFilled?: boolean;
   isOutlined?: boolean;
@@ -70,6 +74,22 @@ const setTheme = ({
       &:active {
         background-color: #e1ece3;
         border-color: #e1ece3;
+      }
+    `;
+  }
+  if (isSecondary) {
+    return css`
+      color: #1d1d1b;
+      background: ${color.accent.primary.onPrimary};
+      border: #8c8c8c solid 1px;
+      text-align: center;
+      font-family: ${fonts.semiBold};
+
+      &:hover {
+        background-color: #f0f5f4;
+      }
+      &:focus {
+        background-color: #dee9e6;
       }
     `;
   }
@@ -153,8 +173,22 @@ const sharedButtonStyles = css`
 
 const StyledButton = styled.button<ButtonProps>`
   ${sharedButtonStyles};
-  ${({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled }) =>
-    setTheme({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled })};
+  ${({
+    isDisabled,
+    isPrimary,
+    isSecondary,
+    isTertiary,
+    isOutlined,
+    isFilled,
+  }) =>
+    setTheme({
+      isDisabled,
+      isPrimary,
+      isSecondary,
+      isTertiary,
+      isOutlined,
+      isFilled,
+    })};
   ${({ icon }) => icon && setIcon({ icon })};
   ${({ isTextCentred }) => isTextCentred && 'text-align: center;'}
   width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
@@ -164,6 +198,7 @@ const StyledLink = styled(Link, {
   shouldForwardProp: (prop) =>
     ![
       'isPrimary',
+      'isSecondary',
       'isTertiary',
       'isFilled',
       'isOutlined',
@@ -173,8 +208,22 @@ const StyledLink = styled(Link, {
     ].includes(prop),
 })<RawButtonProps>`
   ${sharedButtonStyles};
-  ${({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled }) =>
-    setTheme({ isDisabled, isPrimary, isTertiary, isOutlined, isFilled })};
+  ${({
+    isDisabled,
+    isPrimary,
+    isSecondary,
+    isTertiary,
+    isOutlined,
+    isFilled,
+  }) =>
+    setTheme({
+      isDisabled,
+      isPrimary,
+      isSecondary,
+      isTertiary,
+      isOutlined,
+      isFilled,
+    })};
   ${({ icon }) => icon && setIcon({ icon })};
   width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
 `;
@@ -183,6 +232,7 @@ type Icon = 'plus-simple-green' | 'plus-simple-white';
 
 type RawButtonProps = {
   isPrimary?: boolean;
+  isSecondary?: boolean;
   isTertiary?: boolean;
   isFilled?: boolean;
   isOutlined?: boolean;
@@ -219,6 +269,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           ref={ref as Ref<HTMLAnchorElement>}
           href={href}
           isPrimary={theme === 'primary'}
+          isSecondary={theme === 'secondary'}
           isTertiary={theme === 'tertiary'}
           isFilled={theme === 'filled'}
           isOutlined={theme === 'outlined'}
@@ -238,6 +289,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         as={as}
         isPrimary={theme === 'primary'}
+        isSecondary={theme === 'secondary'}
         isTertiary={theme === 'tertiary'}
         isFilled={theme === 'filled'}
         isOutlined={theme === 'outlined'}

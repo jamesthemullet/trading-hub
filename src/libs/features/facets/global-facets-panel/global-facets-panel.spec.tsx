@@ -1,6 +1,8 @@
 import { useReducer } from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
@@ -16,12 +18,26 @@ const mockUseFacetsList = {
   onRefreshFacetList: jest.fn(),
 };
 
+const mockRouter: Partial<NextRouter> = {
+  query: { id: 'test-ruleset-id' },
+  push: jest.fn(),
+  route: '',
+  pathname: '',
+  asPath: '',
+  basePath: '',
+  isLocaleDomain: false,
+};
+
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGetFacetAttributeValues: jest.fn(),
   useGlobalFacetsList: () => {
     return mockUseFacetsList;
   },
+}));
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
 }));
 
 jest.mock('react', () => ({
@@ -95,6 +111,7 @@ describe('Global Facet Panel', () => {
       error: '',
       isLoading: false,
     });
+    jest.mocked(useRouter).mockReturnValue(mockRouter as NextRouter);
   });
 
   afterEach(() => {

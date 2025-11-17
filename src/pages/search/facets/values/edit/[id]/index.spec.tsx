@@ -7,7 +7,7 @@ import {
   useSearchRuleSetPreview,
   useSearchRuleSetUpdate,
 } from '@/libs/hooks';
-import { attributeValuesMock } from '@/pages/api/search/mocks';
+import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { mockUseSearchRuleSetPreviewData } from '@/test/data/mock-use-search-ruleset-preview';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -15,6 +15,12 @@ import { renderWithProviders } from '@/test/render-with-providers';
 import * as lodash from 'lodash';
 
 import Page from './index.page';
+
+const mockUseFacetsList = {
+  isLoading: false,
+  facets: facetsListMock.facets,
+  error: '',
+};
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -39,13 +45,23 @@ const updateMock = {
   },
   facets: [
     {
+      displayValue: 'color',
       boosted: ['blue', 'green'],
       excludedValues: ['Brown'],
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+      indexPropertyName: 'color',
+      lastChanged: {
+        date: '2021-01-01T08:34:15Z',
+        user: 'Test User',
+      },
+      merged: [
+        {
+          displayValue: 'test merged group',
+          mergedValues: ['merged 1', 'merged 2'],
+        },
+      ],
     },
     {
-      boosted: [],
-      excludedValues: [],
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
     },
     {
@@ -118,10 +134,13 @@ jest.mock('@/libs/hooks', () => ({
   useSearchRuleSetUpdate: jest.fn(),
   useGetFacetAttributeValues: jest.fn(),
   useSearchRuleSetPreview: jest.fn(),
+  useFacetsList: () => {
+    return mockUseFacetsList;
+  },
 }));
 
 describe('Index', () => {
-  const mockRouter = {
+  const defaultMockRouter = {
     query: {
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
       searchTerms: 'dress',
@@ -133,7 +152,7 @@ describe('Index', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useRouter as jest.Mock).mockReturnValue(defaultMockRouter);
     (lodash.intersection as jest.Mock).mockReturnValue(['red']);
     (lodash.without as jest.Mock).mockReturnValue(['blue', 'green']);
     jest.mocked(useSearchRuleSetUpdate).mockReturnValue(mockUpdateRuleSet);
@@ -142,6 +161,7 @@ describe('Index', () => {
       error: '',
       isLoading: false,
     });
+
     jest
       .mocked(useSearchRuleSetPreview)
       .mockImplementation(() => mockUseSearchRuleSetPreviewData);
@@ -156,6 +176,69 @@ describe('Index', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Coming soon/loading')).toBeVisible();
+    });
+  });
+
+  it('should handle undefined searchTerm', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...defaultMockRouter,
+      query: {
+        ...defaultMockRouter.query,
+        searchTerms: undefined,
+      },
+    });
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+  });
+
+  it('should handle searchTerms as array', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...defaultMockRouter,
+      query: {
+        ...defaultMockRouter.query,
+        searchTerms: ['term 1', 'term 2', 'term 3'],
+      },
+    });
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+  });
+
+  it('should handle no boosted/excluded items in facet', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...defaultMockRouter,
+      query: {
+        ...defaultMockRouter.query,
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+        searchTerms: ['term 1', 'term 2'],
+      },
+    });
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
     });
   });
 
@@ -217,7 +300,7 @@ describe('Index', () => {
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/search');
+    expect(defaultMockRouter.push).toHaveBeenCalledWith('/search');
   });
 
   it('should display error message when updating ruleset fails', async () => {

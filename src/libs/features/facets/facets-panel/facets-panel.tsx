@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Modal } from '@mantine/core';
+import { useRouter } from 'next/router';
 
 import type {
   MerchandisingCountryCode,
@@ -20,6 +21,7 @@ import {
   ScopeWrapper,
   SectionWrapper,
 } from '@/libs/components/facets-panel/facets-panel.styles';
+import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { COLUMNS } from '@/libs/constants/facets-panel-columns';
@@ -77,6 +79,9 @@ export const FacetsPanel = ({
   onFacetDataChange,
   refreshData,
 }: FacetsPanelProps) => {
+  const router = useRouter();
+  const showNewFacetValuesPage = useShowNewFacetValuesPage();
+
   const [selectedFacet, setSelectedFacet] = useState<
     MerchandisingReturnedFacet | undefined
   >(undefined);
@@ -212,12 +217,32 @@ export const FacetsPanel = ({
           </OrderColumn>
         </Col>
         <Col>
-          <Button
-            onClick={() => handleOpenFacetEditModal(facet)}
-            disabled={!writeEnabled}
-          >
-            Edit values
-          </Button>
+          {showNewFacetValuesPage ? (
+            <Button
+              as="a"
+              theme="secondary"
+              href={(() => {
+                const ruleSetId = router.query.id as string;
+                const baseUrl = `/global/facets/values/edit/${facet.id}`;
+                const params = new URLSearchParams({
+                  ruleSetId: ruleSetId,
+                  displayName: facet.displayValue,
+                  countryCode: countryCode,
+                });
+                return `${baseUrl}?${params.toString()}`;
+              })()}
+              disabled={!writeEnabled}
+            >
+              Edit values
+            </Button>
+          ) : (
+            <Button
+              onClick={() => handleOpenFacetEditModal(facet)}
+              disabled={!writeEnabled}
+            >
+              Edit values
+            </Button>
+          )}
         </Col>
       </Row>
     );

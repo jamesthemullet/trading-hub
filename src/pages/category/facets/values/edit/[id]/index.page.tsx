@@ -1,13 +1,17 @@
 import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
+import type {
+  MerchandisingReturnedFacet,
+  MerchandisingRuleSetFacetConfigWithId,
+} from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
+  useFacetsList,
   useGetFacetAttributeValues,
   useRuleSetDetail,
   useUpdateRuleSet,
@@ -38,6 +42,10 @@ const Page = () => {
   const countryCode = getCountryCodeParam('countryCode');
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFacet, setSelectedFacet] = useState<
+    MerchandisingReturnedFacet | undefined
+  >(undefined);
+
   const { callback: handleSearch } = useDebounce(
     (event: ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(event.target.value);
@@ -69,7 +77,29 @@ const Page = () => {
     error: getRulesetDetailError,
   } = useRuleSetDetail(ruleSetId);
 
-  const facet = ruleSetDetail.facets?.find((facet) => facet.id === facetId);
+  const { facets } = useFacetsList({
+    query: categoriesArray ?? [],
+    queryBy: 'categoryIds',
+    enabled: true,
+    countryCode: countryCode || 'UK_IE',
+  });
+
+  const facet = facets.find((facet) => facet.id === facetId);
+
+  useEffect(() => {
+    // istanbul ignore else
+    if (facets.length > 0 && facet) {
+      const rulesetConfig = ruleSetDetail.facets?.find(
+        (f) => f.id === facet.id
+      );
+      setSelectedFacet({
+        ...facet,
+        boosted: rulesetConfig?.boosted || [],
+        excludedValues: rulesetConfig?.excludedValues || [],
+        indexPropertyName: facet.indexPropertyName,
+      });
+    }
+  }, [facets, facet, ruleSetDetail]);
 
   const handleSave = async (
     newFacet: MerchandisingRuleSetFacetConfigWithId
@@ -131,10 +161,10 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      {!isLoading && showNewFacetValuesPage && facet ? (
+      {!isLoading && showNewFacetValuesPage && selectedFacet ? (
         <CategoryAndSearchFacetsPanelPageLayout
           attributeValues={attributeValues}
-          facet={facet}
+          facet={selectedFacet}
           displayName={displayName}
           facetType="category"
           ruleSetId={ruleSetId}

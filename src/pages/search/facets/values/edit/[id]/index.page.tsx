@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
@@ -7,6 +7,7 @@ import { CentredError, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
+  useFacetsList,
   useGetFacetAttributeValues,
   useSearchRuleSetPreview,
   useSearchRuleSetUpdate,
@@ -39,6 +40,10 @@ const Page = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [selectedFacet, setSelectedFacet] = useState<
+    MerchandisingRuleSetFacetConfigWithId | undefined
+  >(undefined);
+
   const { callback: handleSearch } = useDebounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(event.target.value);
@@ -46,16 +51,48 @@ const Page = () => {
     300
   );
 
+  const searchTermsArray = useMemo(() => {
+    const searchTerms = router.query.searchTerms;
+    if (typeof searchTerms === 'string') {
+      return [searchTerms];
+    }
+    if (Array.isArray(searchTerms)) {
+      return searchTerms.filter((v): v is string => typeof v === 'string');
+    }
+    return undefined;
+  }, [router.query.searchTerms]);
+
   // Currently we don't send searchTerms to this endpoint, which I think is wrong, awaiting confirmation
   const { attributeValues } = useGetFacetAttributeValues({
     facetId: facetId,
     query: searchQuery,
+    searchTerms: searchTermsArray,
     countryCode,
   });
 
   const { ruleSet, error, isLoading } = useSearchRuleSetPreview(ruleSetId);
 
-  const facet = ruleSet.facets?.find((facet) => facet.id === facetId);
+  const { facets } = useFacetsList({
+    query: searchTermsArray ?? [],
+    queryBy: 'searchTerms',
+    enabled: true,
+    countryCode: countryCode || 'UK_IE',
+  });
+
+  const facet = facets.find((facet) => facet.id === facetId);
+
+  useEffect(() => {
+    // istanbul ignore else
+    if (facets.length > 0 && facet) {
+      const rulesetConfig = ruleSet.facets?.find((f) => f.id === facet.id);
+
+      setSelectedFacet({
+        ...facet,
+        boosted: rulesetConfig?.boosted || [],
+        excludedValues: rulesetConfig?.excludedValues || [],
+      });
+    }
+  }, [facets, facet, ruleSet.facets]);
 
   const handleSave = async (
     newFacet: MerchandisingRuleSetFacetConfigWithId
@@ -102,10 +139,10 @@ const Page = () => {
         </CentredError>
       )}
 
-      {!isLoading && showNewFacetValuesPage && facet ? (
+      {!isLoading && showNewFacetValuesPage && selectedFacet ? (
         <CategoryAndSearchFacetsPanelPageLayout
           attributeValues={attributeValues}
-          facet={facet}
+          facet={selectedFacet}
           displayName={displayName}
           facetType="search"
           ruleSetId={ruleSetId}

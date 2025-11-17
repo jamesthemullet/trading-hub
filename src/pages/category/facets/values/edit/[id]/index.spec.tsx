@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useGetFacetAttributeValues, useRuleSetDetail } from '@/libs/hooks';
-import { attributeValuesMock } from '@/pages/api/search/mocks';
+import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import {
   mockUseRuleSetPreviewData,
   ruleSetId,
@@ -30,6 +30,12 @@ const mockRulesetDetailResponse = {
   isSaving: false,
 };
 
+const mockUseFacetsList = {
+  isLoading: false,
+  facets: facetsListMock.facets,
+  error: '',
+};
+
 const mockUpdateRuleSet = jest.fn().mockReturnValue(true);
 const updateRuleSet = {
   updateCategoryRuleSet: mockUpdateRuleSet,
@@ -43,6 +49,9 @@ jest.mock('@/libs/hooks', () => ({
   },
   useGetFacetAttributeValues: jest.fn(),
   useRuleSetDetail: jest.fn(),
+  useFacetsList: () => {
+    return mockUseFacetsList;
+  },
 }));
 
 describe('Index', () => {
@@ -126,6 +135,28 @@ describe('Index', () => {
       ...defaultMockRouter,
       query: {
         ...defaultMockRouter.query,
+        categories: ['category1', 'category2', 'category3'],
+      },
+    });
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+  });
+
+  it('should handle no boosted/excluded items in facet', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...defaultMockRouter,
+      query: {
+        ...defaultMockRouter.query,
+        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
         categories: ['category1', 'category2', 'category3'],
       },
     });
@@ -256,10 +287,20 @@ describe('Index', () => {
           boosted: ['blue', 'green'],
           excludedValues: ['test exclude'],
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          displayValue: 'color',
+          indexPropertyName: 'color',
+          lastChanged: {
+            date: '2021-01-01T08:34:15Z',
+            user: 'Test User',
+          },
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
         },
         {
-          boosted: [],
-          excludedValues: [],
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
         },
         {
@@ -288,5 +329,25 @@ describe('Index', () => {
     expect(
       screen.getByText('Error whilst updating ruleset: Failed to update')
     ).toBeVisible();
+  });
+
+  it('should default to using countryCode of UK_IE if not in route params', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...defaultMockRouter,
+      query: {
+        ...defaultMockRouter.query,
+        countryCode: undefined,
+      },
+    });
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
   });
 });

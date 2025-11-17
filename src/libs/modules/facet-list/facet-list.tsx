@@ -1,4 +1,5 @@
 import { useReducer, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import type {
   MerchandisingReturnedFacet,
@@ -27,6 +28,7 @@ import {
   ScopeWrapper,
   SectionWrapper,
 } from '@/libs/components/facets-panel/facets-panel.styles';
+import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
@@ -99,6 +101,8 @@ export const FacetList = ({
   onSave,
   writeEnabled,
 }: Props) => {
+  const showNewFacetValuesPage = useShowNewFacetValuesPage();
+  const router = useRouter();
   const [ruleset, dispatch] = useReducer(
     rulesetReducer,
     currentRuleset || {
@@ -290,23 +294,64 @@ export const FacetList = ({
           </OrderColumn>
         </Col>
         <Col>
-          {displayType === 'included' && writeEnabled && (
-            <Button
-              onClick={() => {
-                setIsFacetValuesModalOpen(true);
-                const rulesetConfig = ruleset.facets?.find(
-                  (f) => f.id === facet.id
-                );
-                setSelectedFacet({
-                  ...facet,
-                  boosted: rulesetConfig?.boosted,
-                  excludedValues: rulesetConfig?.excludedValues,
-                });
-              }}
-            >
-              Edit values
-            </Button>
-          )}
+          {displayType === 'included' &&
+            writeEnabled &&
+            showNewFacetValuesPage && (
+              <Button
+                as="a"
+                theme="secondary"
+                href={(() => {
+                  const ruleSetId = router.query.id as string;
+                  const baseUrl = `/${facetType}/facets/values/edit/${facet.id}`;
+                  const params = new URLSearchParams({
+                    ruleSetId: ruleSetId,
+                    displayName: facet.displayValue,
+                    countryCode: ruleset.countryCode || 'UK_IE',
+                  });
+
+                  if (
+                    facetType === 'category' &&
+                    selectedCategories.length > 0
+                  ) {
+                    selectedCategories.forEach((categoryId) => {
+                      params.append('categories', categoryId);
+                    });
+                  }
+
+                  if (
+                    facetType === 'search' &&
+                    selectedSearchTerms.length > 0
+                  ) {
+                    selectedSearchTerms.forEach((term) => {
+                      params.append('searchTerms', term);
+                    });
+                  }
+
+                  return `${baseUrl}?${params.toString()}`;
+                })()}
+              >
+                Edit values
+              </Button>
+            )}
+          {displayType === 'included' &&
+            writeEnabled &&
+            !showNewFacetValuesPage && (
+              <Button
+                onClick={() => {
+                  setIsFacetValuesModalOpen(true);
+                  const rulesetConfig = ruleset.facets?.find(
+                    (f) => f.id === facet.id
+                  );
+                  setSelectedFacet({
+                    ...facet,
+                    boosted: rulesetConfig?.boosted,
+                    excludedValues: rulesetConfig?.excludedValues,
+                  });
+                }}
+              >
+                Edit values
+              </Button>
+            )}
         </Col>
       </Row>
     );
