@@ -7,6 +7,7 @@ import { search } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import type { RuleSetMapping } from '@/libs/components/types';
+import { ROUTES } from '@/libs/constants/routes';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
 import { PageNameLabel } from '@/libs/utils/shared.styles';
@@ -36,7 +37,7 @@ const mapping: RuleSetMapping<
     identifier: keywords.join(' | '),
     isEnabled,
     lastChanged,
-    url: `/search/redirects/edit/${id}`,
+    url: ROUTES.SEARCH.REDIRECTS.EDIT(id),
     startDate,
     endDate,
     countryCode,

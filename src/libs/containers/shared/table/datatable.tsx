@@ -6,6 +6,11 @@ import { Button } from '@/libs/components';
 import { Menu } from '@/libs/components/dropdown/dropdown.styles';
 import { Toggle } from '@/libs/components/toggle/toggle';
 import { Header3, Text } from '@/libs/components/typography/typography.styles';
+import {
+  getFacetRoute,
+  getRulesetEditRoute,
+  ROUTES,
+} from '@/libs/constants/routes';
 import { useOnOutsideClick } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
@@ -560,7 +565,7 @@ export const DataTable = ({
                             {ruleType !== 'redirect' && (
                               <>
                                 <TableLink
-                                  href={`${basePath}/rulesets/edit/${id}`}
+                                  href={getRulesetEditRoute(ruleType, id)}
                                   onClick={() =>
                                     track({
                                       event: `${editViewText} ${ruleType} ranking rule`,
@@ -570,7 +575,14 @@ export const DataTable = ({
                                   {editViewText} ranking rule
                                 </TableLink>
                                 <TableLink
-                                  href={`${basePath}/facets/edit/${id}`}
+                                  href={getFacetRoute(
+                                    basePath.replace('/', '') as
+                                      | 'category'
+                                      | 'search'
+                                      | 'global',
+                                    'edit',
+                                    id
+                                  )}
                                   onClick={() =>
                                     track({
                                       event: `${editViewText} ${ruleType} facet rule`,
@@ -583,7 +595,7 @@ export const DataTable = ({
                             )}
                             {ruleType === 'redirect' && (
                               <TableLink
-                                href={`/search/redirects/edit/${id}`}
+                                href={ROUTES.SEARCH.REDIRECTS.EDIT(id)}
                                 onClick={() =>
                                   track({
                                     event: `${editViewText} ${ruleType} rule`,

@@ -13,6 +13,11 @@ import {
   TablePagination,
 } from '@/libs/components';
 import type { RuleSetMapping } from '@/libs/components/types';
+import {
+  getNewFacetRoute,
+  getNewRulesetRoute,
+  ROUTES,
+} from '@/libs/constants/routes';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { DataTable } from '@/libs/containers/shared/table/datatable';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
@@ -131,12 +136,6 @@ export const TablePanel = <
   const titleId = useId();
   const descriptionId = useId();
 
-  const linkConfig = {
-    categoryRanking: 'category',
-    searchRanking: 'search',
-    global: 'global',
-  };
-
   return (
     <PageWrapper>
       <ToolsContainer>
@@ -158,7 +157,7 @@ export const TablePanel = <
                   isInline
                   theme="outlined"
                   icon="plus-simple-green"
-                  href={`/${linkConfig[ruleType]}/facets/new`}
+                  href={getNewFacetRoute(ruleType)}
                   onClick={() => track({ event: `Add ${ruleType} facet rule` })}
                 >
                   Add facet rule
@@ -169,7 +168,7 @@ export const TablePanel = <
                   isInline
                   theme="filled"
                   icon="plus-simple-white"
-                  href={`/${linkConfig[ruleType]}/rulesets/new`}
+                  href={getNewRulesetRoute(ruleType)}
                   onClick={() =>
                     track({ event: `Add ${ruleType} ranking rule` })
                   }
@@ -185,7 +184,7 @@ export const TablePanel = <
                   isInline
                   theme="filled"
                   icon="plus-simple-white"
-                  href="/search/redirects/new"
+                  href={ROUTES.SEARCH.REDIRECTS.NEW}
                   onClick={() => track({ event: 'Add redirect rule' })}
                 >
                   Add redirect rule

@@ -6,6 +6,7 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
+import { getFacetRoute } from '@/libs/constants';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 
@@ -83,7 +84,8 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
           // istanbul ignore next
           () => {
             // istanbul ignore next
-            router.push(`/${facetType}/facets/edit/${ruleSetId}`);
+
+            router.push(getFacetRoute(facetType, 'edit', ruleSetId));
           }
         }
         onSave={handleSave}

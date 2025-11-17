@@ -31,6 +31,7 @@ import {
 } from '@/libs/components/facets-panel/facets-panel.styles';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { getFacetRoute } from '@/libs/constants';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
@@ -303,7 +304,11 @@ export const FacetList = ({
                 theme="secondary"
                 href={(() => {
                   const ruleSetId = router.query.id as string;
-                  const baseUrl = `/${facetType}/facets/values/edit/${facet.id}`;
+                  const baseUrl = getFacetRoute(
+                    facetType,
+                    'valuesEdit',
+                    facet.id
+                  );
                   const params = new URLSearchParams({
                     ruleSetId: ruleSetId,
                     displayName: facet.displayValue,

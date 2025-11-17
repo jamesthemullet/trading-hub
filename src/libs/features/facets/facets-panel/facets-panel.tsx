@@ -25,7 +25,7 @@ import {
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
-import { COLUMNS } from '@/libs/constants/facets-panel-columns';
+import { COLUMNS, ROUTES } from '@/libs/constants';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
@@ -224,7 +224,7 @@ export const FacetsPanel = ({
               theme="secondary"
               href={(() => {
                 const ruleSetId = router.query.id as string;
-                const baseUrl = `/global/facets/values/edit/${facet.id}`;
+                const baseUrl = ROUTES.GLOBAL.FACETS.VALUES.EDIT(facet.id);
                 const params = new URLSearchParams({
                   ruleSetId: ruleSetId,
                   displayName: facet.displayValue,

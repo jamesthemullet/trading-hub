@@ -13,6 +13,7 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
+import { ROUTES } from '@/libs/constants';
 import { FacetAttributesListActions } from '@/libs/containers';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
@@ -143,7 +144,7 @@ export const GlobalFacetAttributesPageLayout = ({
         facetType="global"
         isSaveDisabled={false}
         onClose={() => {
-          router.push(`/global/facets/edit/${ruleSetId}`);
+          router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
         }}
         onSave={handleSave}
         error={updateGlobalFacetError}
