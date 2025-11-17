@@ -27,7 +27,8 @@
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": [
     "next-env.d.ts",

@@ -14,8 +14,8 @@
     "codegen": "swagger-typescript-api generate --path src/libs/api/api.yml --output src/libs/api/generated/ --name open-api.ts --extract-response-body --extract-response-error --extract-enums --generate-union-enums",
     "build": "npm run codegen && next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
     "start": "next start",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "eslint . && stylelint '**/*.css'",
+    "lint:fix": "eslint --fix . && stylelint --fix '**/*.css'",
     "tdd": "TZ=UTC node --max-old-space-size=4096 node_modules/.bin/jest --watchAll --coverage",
     "test": "TZ=UTC node --max-old-space-size=4096 node_modules/.bin/jest",
     "test:e2e:ui": "playwright test --ui",
@@ -115,10 +115,14 @@
     "prettier": "3.6.2",
     "storybook": "10.0.7",
     "storybook-addon-deep-controls": "^0.10.0",
+    "stylelint": "16.25.0",
+    "stylelint-config-standard": "39.0.1",
+    "stylelint-order": "7.0.0",
     "swagger-typescript-api": "13.2.16",
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.46.4"
+    "typescript-eslint": "8.46.4",
+    "typescript-plugin-css-modules": "5.2.0"
   },
   "overrides": {
     "storybook": "$storybook",

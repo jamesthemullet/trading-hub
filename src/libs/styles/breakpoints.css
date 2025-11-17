@@ -1,0 +1,6 @@
+:root {
+  --mns-breakpoints-sm: 320px;
+  --mns-breakpoints-md: 768px;
+  --mns-breakpoints-lg: 1024px;
+  --mns-breakpoints-xl: 1280px;
+}

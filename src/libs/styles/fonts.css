@@ -1,0 +1,44 @@
+/* MS London */
+@font-face {
+  font-family: 'New MS London';
+  font-display: swap;
+  font-weight: 100 400;
+  src:
+    url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonRegular.woff2')
+      format('woff2'),
+    url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonRegular.woff')
+      format('woff');
+}
+
+@font-face {
+  font-family: 'New MS London';
+  font-display: swap;
+  font-weight: normal;
+  src:
+    url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonRegular.woff2')
+      format('woff2'),
+    url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonRegular.woff')
+      format('woff');
+}
+
+@font-face {
+  font-family: 'New MS London';
+  font-display: swap;
+  font-weight: 500 900;
+  src:
+    url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonSemiBold.woff2')
+      format('woff2'),
+    url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonSemiBold.woff')
+      format('woff');
+}
+
+@font-face {
+  font-family: 'New MS London';
+  font-display: swap;
+  font-weight: bold;
+  src:
+    url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonSemiBold.woff2')
+      format('woff2'),
+    url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonSemiBold.woff')
+      format('woff');
+}

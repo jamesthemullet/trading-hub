@@ -1,25 +1,6 @@
-import styled from '@emotion/styled';
-
-import { spacing } from '@/libs/utils/spacing';
-
 import pluralize from 'pluralize';
 
-const FilteredResults = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: ${spacing(4)};
-  margin-left: auto;
-  margin-right: ${spacing(2)};
-  margin-bottom: ${spacing(4)};
-  font-weight: 400;
-  font-size: 14px;
-`;
-
-const TotalResultsLabel = styled.output`
-  font-family: mnsLondonRegular, monospace;
-  margin-left: 31px;
-`;
+import styles from './filtered-results-panel.module.css';
 
 export const FilteredResultsPanel = ({
   filteredFacets,
@@ -27,10 +8,10 @@ export const FilteredResultsPanel = ({
   filteredFacets: number;
 }) => {
   return (
-    <FilteredResults>
-      <TotalResultsLabel>
+    <div className={styles.filteredResults}>
+      <output className={styles.totalResultsLabel}>
         {filteredFacets} {pluralize(' result', filteredFacets)}
-      </TotalResultsLabel>
-    </FilteredResults>
+      </output>
+    </div>
   );
 };

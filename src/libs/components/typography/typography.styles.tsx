@@ -107,7 +107,17 @@ type TypographyProps = {
     | 'titleLarge'
     | 'titleMedium'
     | 'titleSmall';
-  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'label';
+  as?:
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'h5'
+    | 'h6'
+    | 'p'
+    | 'span'
+    | 'label'
+    | 'output';
   align?: 'left' | 'right';
   children: React.ReactNode;
 };

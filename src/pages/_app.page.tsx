@@ -1,5 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@/libs/styles/globals.css';
 
 import styled from '@emotion/styled';
 import { useContext, useEffect } from 'react';

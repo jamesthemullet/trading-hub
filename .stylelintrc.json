@@ -1,0 +1,64 @@
+{
+  "plugins": ["stylelint-order"],
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "at-rule-empty-line-before": null,
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["custom-media", "extend"]
+      }
+    ],
+    "at-rule-no-vendor-prefix": null,
+    "declaration-block-no-redundant-longhand-properties": null,
+    "declaration-empty-line-before": null,
+    "declaration-property-unit-disallowed-list": {
+      "line-height": ["em", "rem", "px", "%"]
+    },
+    "keyframes-name-pattern": null,
+    "import-notation": null,
+    "length-zero-no-unit": true,
+    "media-feature-range-notation": null,
+    "no-descending-specificity": null,
+    "no-empty-source": null,
+    "rule-empty-line-before": null,
+    "property-disallowed-list": [
+      ["font-size"],
+      {
+        "message": "Expected use of Typography component"
+      }
+    ],
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": ["composes"]
+      }
+    ],
+    "selector-class-pattern": "^([a-z][a-zA-Z0-9]+|focus-visible)$",
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global"]
+      }
+    ],
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreKeywords": ["Helvetica", "Arial"],
+        "ignoreProperties": ["composes"]
+      }
+    ],
+    "order/order": ["custom-properties", "declarations"],
+    "order/properties-order": ["width", "height"]
+  },
+  "ignoreFiles": [
+    "node_modules/**/*",
+    ".next/**/*",
+    "coverage/**/*",
+    "playwright-report/**/*",
+    "**/*.tsx",
+    "**/*.ts",
+    "**/*.js",
+    "**/*.jsx"
+  ]
+}

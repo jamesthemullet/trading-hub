@@ -1,0 +1,144 @@
+/* stylelint-disable property-disallowed-list */
+@import './fonts.css';
+@import './breakpoints.css';
+@import './colors.css';
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Area for shared css variables, reset styles, etc */
+:root {
+  /* spacing */
+  --mns-spacing-unit: 8px;
+  --mns-spacing-0-5: calc(var(--mns-spacing-unit) * 0.5);
+  --mns-spacing-1: calc(var(--mns-spacing-unit) * 1);
+  --mns-spacing-1-5: calc(var(--mns-spacing-unit) * 1.5);
+  --mns-spacing-2: calc(var(--mns-spacing-unit) * 2);
+  --mns-spacing-3: calc(var(--mns-spacing-unit) * 3);
+  --mns-spacing-4: calc(var(--mns-spacing-unit) * 4);
+  --mns-spacing-5: calc(var(--mns-spacing-unit) * 5);
+  --mns-spacing-6: calc(var(--mns-spacing-unit) * 6);
+  --mns-spacing-7: calc(var(--mns-spacing-unit) * 7);
+  --mns-spacing-8: calc(var(--mns-spacing-unit) * 8);
+  --mns-spacing-9: calc(var(--mns-spacing-unit) * 9);
+  --mns-spacing-10: calc(var(--mns-spacing-unit) * 10);
+  --mns-spacing-11: calc(var(--mns-spacing-unit) * 11);
+  --mns-spacing-12: calc(var(--mns-spacing-unit) * 12);
+
+  /* typography | size */
+  --typography-size-display-lg: 52px;
+  --typography-size-display-md: 46px;
+  --typography-size-display-sm: 41px;
+  --typography-size-headline-lg: 36px;
+  --typography-size-headline-md: 32px;
+  --typography-size-headline-sm: 29px;
+  --typography-size-title-lg: 26px;
+  --typography-size-title-md: 23px;
+  --typography-size-title-sm: 20px;
+  --typography-size-body-lg: 18px;
+  --typography-size-body-md: 16px;
+  --typography-size-body-sm: 14px;
+  --typography-size-label-lg: 13px;
+  --typography-size-label-md: 11px;
+  --typography-size-label-sm: 10px;
+
+  /* typography | line-height */
+  --typography-line-height-display-lg: 60px;
+  --typography-line-height-display-md: 52px;
+  --typography-line-height-display-sm: 48px;
+  --typography-line-height-headline-lg: 44px;
+  --typography-line-height-headline-md: 40px;
+  --typography-line-height-headline-sm: 36px;
+  --typography-line-height-title-lg: 36px;
+  --typography-line-height-title-md: 32px;
+  --typography-line-height-title-sm: 28px;
+  --typography-line-height-body-lg: 28px;
+  --typography-line-height-body-md: 24px;
+  --typography-line-height-body-sm: 20px;
+  --typography-line-height-label-lg: 20px;
+  --typography-line-height-label-md: 18px;
+  --typography-line-height-label-sm: 16px;
+
+  /* typography | font-weight */
+  --typography-weight-light: 300;
+  --typography-weight-regular: 400;
+  --typography-weight-semibold: 600;
+  --typography-weight-bold: 700;
+}
+
+.typographyDisplayLarge {
+  font-size: var(--typography-size-display-lg);
+  line-height: var(--typography-line-height-display-lg);
+}
+
+.typographyDisplayMedium {
+  font-size: var(--typography-size-display-md);
+  line-height: var(--typography-line-height-display-md);
+}
+
+.typographyDisplaySmall {
+  font-size: var(--typography-size-display-sm);
+  line-height: var(--typography-line-height-display-sm);
+}
+
+.typographyHeadlineLarge {
+  font-size: var(--typography-size-headline-lg);
+  line-height: var(--typography-line-height-headline-lg);
+}
+
+.typographyHeadlineMedium {
+  font-size: var(--typography-size-headline-md);
+  line-height: var(--typography-line-height-headline-md);
+}
+
+.typographyHeadlineSmall {
+  font-size: var(--typography-size-headline-sm);
+  line-height: var(--typography-line-height-headline-sm);
+}
+
+.typographyTitleLarge {
+  font-size: var(--typography-size-title-lg);
+  line-height: var(--typography-line-height-title-lg);
+}
+
+.typographyTitleMedium {
+  font-size: var(--typography-size-title-md);
+  line-height: var(--typography-line-height-title-md);
+}
+
+.typographyTitleSmall {
+  font-size: var(--typography-size-title-sm);
+  line-height: var(--typography-line-height-title-sm);
+}
+
+.typographyBodyLarge {
+  font-size: var(--typography-size-body-lg);
+  line-height: var(--typography-line-height-body-lg);
+}
+
+.typographyBodyMedium {
+  font-size: var(--typography-size-body-md);
+  line-height: var(--typography-line-height-body-md);
+}
+
+.typographyBodySmall {
+  font-size: var(--typography-size-body-sm);
+  line-height: var(--typography-line-height-body-sm);
+}
+
+.typographyLabelLarge {
+  font-size: var(--typography-size-label-lg);
+  line-height: var(--typography-line-height-label-lg);
+}
+
+.typographyLabelMedium {
+  font-size: var(--typography-size-label-md);
+  line-height: var(--typography-line-height-label-md);
+}
+
+.typographyLabelSmall {
+  font-size: var(--typography-size-label-md);
+  line-height: var(--typography-line-height-label-sm);
+}
