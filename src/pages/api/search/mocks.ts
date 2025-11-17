@@ -140,6 +140,8 @@ export const facetsListMock: BetaMerchandisingFacetListData = {
           mergedValues: ['merged 1', 'merged 2'],
         },
       ],
+      boosted: ['Cotton', 'Duck Down'],
+      excludedValues: ['Ducky Downy'],
     },
     {
       displayValue: 'size',

@@ -30,6 +30,8 @@ describe('useFacetsRowsSelector', () => {
           date: '2021-01-01T08:34:15Z',
           user: 'Test User',
         },
+        boosted: ['Cotton', 'Duck Down'],
+        excludedValues: ['Ducky Downy'],
         merged: [
           {
             displayValue: 'test merged group',

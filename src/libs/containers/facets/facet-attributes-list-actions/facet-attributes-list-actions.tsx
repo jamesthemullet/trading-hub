@@ -22,6 +22,7 @@ const FacetAttributesActionsButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-grow: 2;
 `;
 
 const FacetAttributesActionsButton = styled(Button, {
@@ -33,27 +34,11 @@ const FacetAttributesActionsButton = styled(Button, {
   gap: ${spacing(1)};
   line-height: 1;
 `;
-const FacetAttributesSearch = styled(Search)`
-  max-width: 750px;
-  width: 100%;
 
-  & > div {
-    width: 100%;
-    border: 0;
-
-    & input {
-      width: 100%;
-      border: 1px solid ${color.surface.onSurfaceVariant};
-      border-radius: 30px;
-      background-color: ${color.surface.surfaceContainer};
-      padding-left: 52px;
-    }
-
-    & button {
-      right: unset;
-      left: 4px;
-    }
-  }
+const SearchWrapper = styled.div`
+  justify-content: flex-end;
+  display: flex;
+  flex-grow: 3;
 `;
 
 export const FacetAttributesListActions = ({
@@ -84,7 +69,9 @@ export const FacetAttributesListActions = ({
         </FacetAttributesActionsButton>
       </FacetAttributesActionsButtonsContainer>
 
-      <FacetAttributesSearch onChange={onSearchChange} />
+      <SearchWrapper>
+        <Search onChange={onSearchChange} placeholder="Search" fullWidth />
+      </SearchWrapper>
     </FacetAttributesListActionsContainer>
   );
 };

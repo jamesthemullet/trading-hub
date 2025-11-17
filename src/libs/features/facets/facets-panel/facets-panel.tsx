@@ -19,6 +19,7 @@ import {
   OrderColumn,
   Row,
   ScopeWrapper,
+  SearchWrapper,
   SectionWrapper,
 } from '@/libs/components/facets-panel/facets-panel.styles';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
@@ -307,7 +308,12 @@ export const FacetsPanel = ({
       </SectionWrapper>
 
       <SectionWrapper>
-        <Search onChange={(e) => handleSearch(e.target.value.trim())} />
+        <SearchWrapper>
+          <Search
+            onChange={(e) => handleSearch(e.target.value.trim())}
+            placeholder="Search"
+          />
+        </SearchWrapper>
       </SectionWrapper>
 
       <AttributesTable>

@@ -221,7 +221,7 @@ describe('Index', () => {
     expect(greenRow).toBeVisible();
     expect(blueRow).toBeVisible();
 
-    const searchInput = await screen.findByPlaceholderText('Search...');
+    const searchInput = await screen.findByPlaceholderText('Search');
 
     await user.type(searchInput, 'blue');
 

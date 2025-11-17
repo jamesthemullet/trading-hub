@@ -193,4 +193,23 @@ describe('useGetFacetAttributeValues', () => {
       isLoading: false,
     });
   });
+
+  it('should return error when countryCode is missing', async () => {
+    const { result } = renderHook(() =>
+      useGetFacetAttributeValues({
+        countryCode: undefined,
+        facetId: 'color-id',
+        query: 'test',
+        categories: ['category1'],
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current).toEqual({
+        attributeValues: [],
+        error: 'Unknown error',
+        isLoading: false,
+      });
+    });
+  });
 });

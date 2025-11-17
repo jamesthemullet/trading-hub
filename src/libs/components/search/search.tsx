@@ -1,14 +1,13 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import type { ChangeEventHandler, ReactElement, RefObject } from 'react';
+import { type ChangeEventHandler, type RefObject, useState } from 'react';
 
 import { Input, type InputProps } from '@/libs/containers/shared/input/input';
-import { mediaQuery } from '@/libs/utils/media-query';
+import { color } from '@/libs/utils/constants';
 import { sizing } from '@/libs/utils/sizing';
 import { spacing } from '@/libs/utils/spacing';
 
-import { Button, type ButtonProps } from '../button/button';
-import { Icon } from '../icon/icon';
+import Image from 'next/image';
 
 type SearchProps = {
   id?: string;
@@ -16,25 +15,43 @@ type SearchProps = {
   value?: string | number | readonly string[] | undefined;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
+  fullWidth?: boolean;
 };
 
-const SearchBoxContainer = styled.div`
+const SearchBoxContainer = styled.div<{
+  fullWidth?: boolean;
+}>`
   margin: 0;
   padding: 0;
   & div {
-    border-bottom: 1px solid #b1b1b1;
-
     & > input {
-      border-radius: 4px 4px 0 0;
+      border-radius: 30px;
     }
   }
+  ${({ fullWidth }) =>
+    fullWidth &&
+    css`
+      width: 100%;
+    `}
 `;
 
-const StyledIcon = styled(Icon)`
-  width: 18px;
-  height: 18px;
-  background-color: #000;
-  mask-size: 20px;
+const SearchIcon = styled(Image)`
+  margin-left: ${spacing(2.5)};
+  position: absolute;
+`;
+
+const ClearButton = styled.button`
+  position: absolute;
+  right: ${spacing(1)};
+  background: none;
+  border: none;
+  padding: ${spacing(1)};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
 `;
 
 export const Search = ({
@@ -45,13 +62,17 @@ export const Search = ({
   placeholder,
   ...rest
 }: SearchProps) => {
+  const [currentValue, setCurrentValue] = useState('');
+
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentValue(event.target.value);
+
+    onChange?.(event);
+  };
+
   return (
     <SearchBoxContainer {...rest}>
       <SearchBox
-        iconButtonProps={{
-          id: 'SearchIconInputBtn',
-          searchIcon: <StyledIcon name="Search" />,
-        }}
         inputProps={{
           isLabelHidden: true,
           label: name || 'Search category identifier or user name',
@@ -59,11 +80,11 @@ export const Search = ({
           required: true,
           id: id || 'searchId',
           name: name || 'searchTerm',
-          onChange,
+          onChange: handleOnChange,
           autoComplete: 'off',
           autoCapitalize: 'off',
           autoCorrect: 'off',
-          value,
+          value: value ?? currentValue,
         }}
       />
     </SearchBoxContainer>
@@ -85,90 +106,59 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-type IconPosition = 'left' | 'right';
-
-const StyledInput = styled(Input)<{
-  iconPosition: IconPosition;
-}>`
+const StyledInput = styled(Input)`
   &::placeholder {
-    color: #000;
+    color: ${color.surface.onSurfaceVariant};
   }
 
   ${resetSearchInput}
 
-  ${mediaQuery('md')} {
-    background-color: #f5f5f5;
-    border-color: transparent;
-    height: ${sizing(7)};
-  }
-
-  ${({ iconPosition }) =>
-    iconPosition === 'left'
-      ? css`
-          padding-left: ${spacing(5)};
-          &:focus {
-            padding-left: calc(${spacing(5)} - 1px);
-          }
-        `
-      : css`
-          padding-right: ${spacing(5)};
-        `}
-`;
-
-const StyledButton = styled(Button)<{ iconPosition: IconPosition }>`
-  height: ${sizing(4)};
-  width: ${sizing(4)};
-  position: absolute;
-  background: none;
-  border: none;
-  .icon {
-    flex-shrink: 1;
-  }
-  ${({ iconPosition }) =>
-    iconPosition === 'left'
-      ? css`
-          left: ${spacing(1)};
-        `
-      : css`
-          right: ${spacing(1)};
-        `}
+  background-color: ${color.surface.surfaceContainer};
+  border: 1px solid ${color.surface.onSurfaceVariant};
+  height: ${sizing(7)};
+  padding-left: 50px;
+  padding-right: ${spacing(5)};
 `;
 
 type SearchBoxProps = {
-  iconPosition?: IconPosition;
-  hideIcon?: boolean;
   inputProps: {
     ref?: RefObject<HTMLInputElement>;
   } & InputProps;
-  iconButtonProps: {
-    searchIcon?: ReactElement;
-    buttonAriaLabel?: string;
-  } & Partial<ButtonProps>;
 };
 
-export const SearchBox = ({
-  iconPosition = 'right',
-  hideIcon = false,
-  inputProps,
-  iconButtonProps,
-}: SearchBoxProps) => {
-  const {
-    searchIcon = !hideIcon && <Icon name="Search" size={32} />,
-    buttonAriaLabel = 'Search button',
-    ...iconButtonPropsRest
-  } = iconButtonProps;
+export const SearchBox = ({ inputProps }: SearchBoxProps) => {
+  const handleClear = () => {
+    if (inputProps.onChange) {
+      const syntheticEvent = {
+        target: { value: '' },
+        currentTarget: { value: '' },
+      } as React.ChangeEvent<HTMLInputElement>;
+      inputProps.onChange(syntheticEvent);
+    }
+  };
+
   return (
     <Wrapper>
-      <StyledInput type="search" {...inputProps} iconPosition={iconPosition} />
-      {searchIcon && (
-        <StyledButton
-          type="submit"
-          aria-label={buttonAriaLabel}
-          iconPosition={iconPosition}
-          {...iconButtonPropsRest}
+      <SearchIcon
+        src="/trading-hub/asset/icon-search.svg"
+        alt=""
+        width={20}
+        height={20}
+      />
+      <StyledInput type="search" {...inputProps} />
+      {inputProps.value && (
+        <ClearButton
+          type="button"
+          onClick={handleClear}
+          aria-label="Clear search"
         >
-          {searchIcon}
-        </StyledButton>
+          <Image
+            src="/trading-hub/asset/icon-x.svg"
+            alt=""
+            width={14}
+            height={14}
+          />
+        </ClearButton>
       )}
     </Wrapper>
   );

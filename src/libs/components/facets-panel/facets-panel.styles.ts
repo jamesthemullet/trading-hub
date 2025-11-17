@@ -151,3 +151,12 @@ export const CountrySelectorLabel = styled(Text)`
   margin-bottom: ${spacing(1)};
   line-height: 1.6rem;
 `;
+
+export const SearchWrapper = styled.div`
+  justify-content: flex-end;
+  display: flex;
+
+  & > div:first-of-type {
+    flex-basis: 50%;
+  }
+`;

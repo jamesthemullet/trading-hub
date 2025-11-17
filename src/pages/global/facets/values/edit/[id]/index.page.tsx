@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useMemo } from 'react';
+import { type ChangeEvent, useMemo, useState } from 'react';
 
 import type { MerchandisingReturnedGlobalFacet } from '@/libs/api/generated/open-api';
 import { ErrorMessage, Heading } from '@/libs/components';
@@ -8,6 +8,7 @@ import { GlobalFacetAttributesPageLayout } from '@/libs/features';
 import { useGlobalFacetsList } from '@/libs/hooks/global/facets/use-global-facets-list';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
+import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
 
@@ -26,21 +27,22 @@ const Page = () => {
   const displayName = getStringParam('displayName');
   const countryCode = getCountryCodeParam('countryCode');
 
-  const {
-    attributeValues,
-    error: attributeValuesError,
-    isLoading,
-  } = useGetFacetAttributeValues({
-    facetId: facetId,
-    query: '',
-    countryCode,
-  });
+  const [searchQuery, setSearchQuery] = useState('');
+  const { callback: handleSearch } = useDebounce(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value);
+    },
+    300
+  );
 
-  const {
-    facets,
-    isLoading: isLoadingFacets,
-    error: globalFacetsListError,
-  } = useGlobalFacetsList();
+  const { attributeValues, error: attributeValuesError } =
+    useGetFacetAttributeValues({
+      facetId: facetId,
+      query: searchQuery,
+      countryCode,
+    });
+
+  const { facets, error: globalFacetsListError } = useGlobalFacetsList();
 
   const facet = useMemo(
     () => facets.find((f) => f.id === facetId),
@@ -76,13 +78,15 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      {!isLoading && !isLoadingFacets && showNewFacetValuesPage ? (
+      {!!attributeValues && showNewFacetValuesPage ? (
         <GlobalFacetAttributesPageLayout
           facet={facet}
           attributeValues={attributeValues}
           facetId={facetId}
           displayName={displayName}
           ruleSetId={ruleSetId}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearch}
         />
       ) : (
         <CentredContainer>Coming soon/loading</CentredContainer>

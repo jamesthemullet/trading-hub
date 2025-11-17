@@ -46,6 +46,8 @@ describe('GlobalFacetAttributesPageLayout', () => {
     displayName: 'Color',
     facet: facetsListMock.facets[0],
     facetType: 'category' as const,
+    searchQuery: '',
+    onSearchChange: jest.fn(),
     ruleSetId,
   };
 
@@ -66,7 +68,12 @@ describe('GlobalFacetAttributesPageLayout', () => {
 
   it('navigates back to global facets page on cancel', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<GlobalFacetAttributesPageLayout {...defaultProps} />);
+    renderWithProviders(
+      <GlobalFacetAttributesPageLayout
+        {...defaultProps}
+        facet={facetsListMock.facets[1]}
+      />
+    );
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
     await user.click(cancelButton);
@@ -105,8 +112,8 @@ describe('GlobalFacetAttributesPageLayout', () => {
             mergedValues: ['merged 1', 'merged 2'],
           },
         ],
-        excludedValues: [],
-        boosted: [],
+        excludedValues: ['Ducky Downy'],
+        boosted: ['Cotton', 'Duck Down'],
       },
     });
 
@@ -143,9 +150,9 @@ describe('GlobalFacetAttributesPageLayout', () => {
   it('renders the correct number of included, excluded, and algo control values', () => {
     renderWithProviders(<GlobalFacetAttributesPageLayout {...defaultProps} />);
 
-    expect(screen.getByTestId('include-only-count')).toHaveTextContent('0');
-    expect(screen.getByTestId('exclude-only-count')).toHaveTextContent('0');
-    expect(screen.getByTestId('algo-control-count')).toHaveTextContent('5');
+    expect(screen.getByTestId('include-only-count')).toHaveTextContent('2');
+    expect(screen.getByTestId('exclude-only-count')).toHaveTextContent('1');
+    expect(screen.getByTestId('algo-control-count')).toHaveTextContent('2');
   });
 
   it('handles error response in onSave', async () => {
@@ -185,6 +192,8 @@ describe('GlobalFacetAttributesPageLayout', () => {
         boosted: ['A'],
         excludedValues: ['B'],
       },
+      searchQuery: '',
+      onSearchChange: jest.fn(),
     };
     renderWithProviders(<GlobalFacetAttributesPageLayout {...props} />);
     expect(screen.getByTestId('include-only-count')).toHaveTextContent('1');

@@ -258,8 +258,8 @@ describe('Global Facet Management Editing', () => {
       ruleSet: {
         facets: [
           {
-            boosted: undefined,
-            excludedValues: undefined,
+            boosted: ['Cotton', 'Duck Down'],
+            excludedValues: ['Ducky Downy'],
             displayValue: 'color',
             id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
             indexPropertyName: 'color',
@@ -355,7 +355,7 @@ describe('Global Facet Management Editing', () => {
   it('should filter on the facet list', async () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
-    const search = screen.getByPlaceholderText('Search...');
+    const search = screen.getByPlaceholderText('Search');
 
     await userEvent.type(search, 'color');
 
@@ -402,10 +402,10 @@ describe('Global Facet Management Editing', () => {
     await waitFor(() => {
       expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
         data: {
-          boosted: undefined,
           displayValue: 'colour',
-          excludedValues: undefined,
           indexPropertyName: 'color',
+          boosted: ['Cotton', 'Duck Down'],
+          excludedValues: ['Ducky Downy'],
         },
         facetId: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
       });

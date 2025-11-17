@@ -16,7 +16,7 @@ const FilteredResults = styled.div`
   font-size: 14px;
 `;
 
-const TotalResultsLabel = styled.div`
+const TotalResultsLabel = styled.output`
   font-family: mnsLondonRegular, monospace;
   margin-left: 31px;
 `;

@@ -1,4 +1,11 @@
-import { useEffect, useId, useMemo, useReducer, useState } from 'react';
+import {
+  type ChangeEvent,
+  useEffect,
+  useId,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -20,6 +27,8 @@ type PageLayout = {
   facetId: string;
   displayName: string;
   ruleSetId: string;
+  searchQuery: string;
+  onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
 export const GlobalFacetAttributesPageLayout = ({
@@ -28,6 +37,8 @@ export const GlobalFacetAttributesPageLayout = ({
   facetId,
   displayName,
   ruleSetId,
+  searchQuery,
+  onSearchChange,
 }: PageLayout) => {
   const router = useRouter();
 
@@ -49,27 +60,24 @@ export const GlobalFacetAttributesPageLayout = ({
   );
 
   useEffect(() => {
-    if (facet) {
-      dispatch({
-        type: 'INITIALISE_STATE',
-        payload: {
-          boostedValues:
-            facet.boosted?.map((value) => ({ displayValue: value })) || [],
-          excludedValues:
-            facet.excludedValues?.map((value) => ({ displayValue: value })) ||
-            [],
-          nonBoostedExcludedValues: attributeValues.filter(
-            ({ displayValue }) =>
-              !facet.boosted?.includes(displayValue) &&
-              !facet.excludedValues?.includes(displayValue)
-          ),
-          merged:
-            facet.merged ||
-            // istanbul ignore next
-            [],
-        },
-      });
-    }
+    dispatch({
+      type: 'INITIALISE_STATE',
+      payload: {
+        boostedValues:
+          facet.boosted?.map((value) => ({ displayValue: value })) || [],
+        excludedValues:
+          facet.excludedValues?.map((value) => ({ displayValue: value })) || [],
+        nonBoostedExcludedValues: attributeValues.filter(
+          ({ displayValue }) =>
+            !facet.boosted?.includes(displayValue) &&
+            !facet.excludedValues?.includes(displayValue)
+        ),
+        merged:
+          facet.merged ||
+          // istanbul ignore next
+          [],
+      },
+    });
   }, [facet, attributeValues]);
 
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
@@ -141,16 +149,11 @@ export const GlobalFacetAttributesPageLayout = ({
         error={updateGlobalFacetError}
       />
 
-      <FacetAttributesListActions
-        onSearchChange={
-          // istanbul ignore next
-          () => {}
-        }
-      />
+      <FacetAttributesListActions onSearchChange={onSearchChange} />
 
       <GlobalFacetAttributesList
         attributeValues={attributeValues}
-        searchQuery=""
+        searchQuery={searchQuery}
         countryCode="UK_IE"
         editingValues={editingValues}
         dispatch={dispatch}

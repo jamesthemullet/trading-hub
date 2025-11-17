@@ -74,21 +74,21 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
   it('renders the component with category facet type', () => {
     setup();
 
-    expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search')).toBeInTheDocument();
     expect(screen.getByTestId('Label for 13 - 14.4')).toBeInTheDocument();
   });
 
   it('renders the component with search facet type', () => {
     setup({ facetType: 'search' });
 
-    expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search')).toBeInTheDocument();
   });
 
   it('handles search input changes', async () => {
     const onSearchChange = jest.fn();
     setup({ onSearchChange });
 
-    const searchInput = screen.getByPlaceholderText('Search...');
+    const searchInput = screen.getByPlaceholderText('Search');
     await userEvent.type(searchInput, 'test');
 
     expect(onSearchChange).toHaveBeenCalled();

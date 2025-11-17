@@ -251,9 +251,6 @@ export const SearchKeywords = ({
                           setFilterValue(event.target.value);
                         },
                       }}
-                      iconButtonProps={{
-                        id: 'SearchIconInputBtn',
-                      }}
                     />
                   </StyledSearchContainer>
                 )}

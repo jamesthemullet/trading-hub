@@ -167,19 +167,7 @@ const FacetDropdown = styled.div`
 
 const StyledSearch = styled(Search)`
   width: 100%;
-  border: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
   margin-bottom: ${spacing(2)};
-
-  & > div {
-    border: none;
-    & > input {
-      background: #fff;
-
-      &::placeholder {
-        color: ${color.lightGrey};
-      }
-    }
-  }
 `;
 
 const PriceFilter = styled.div`

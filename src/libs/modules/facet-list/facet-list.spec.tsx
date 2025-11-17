@@ -390,7 +390,7 @@ describe('Facets', () => {
     ).toBeVisible();
     expect(screen.getByTestId('Row showing size as algoControl')).toBeVisible();
 
-    const searchInput = screen.getByPlaceholderText('Search...');
+    const searchInput = screen.getByPlaceholderText('Search');
     await user.type(searchInput, `size{Enter}`);
 
     const resultCount = await screen.findByText('1 result');
