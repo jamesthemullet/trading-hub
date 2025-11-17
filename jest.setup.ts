@@ -8,10 +8,18 @@ expect.addSnapshotSerializer(createSerializer());
 expect.extend(matchers);
 
 const { TextDecoder, TextEncoder } = require('node:util');
+const {
+  ReadableStream,
+  WritableStream,
+  TransformStream,
+} = require('node:stream/web');
 
 Object.defineProperties(globalThis, {
   TextDecoder: { value: TextDecoder },
   TextEncoder: { value: TextEncoder },
+  ReadableStream: { value: ReadableStream },
+  WritableStream: { value: WritableStream },
+  TransformStream: { value: TransformStream },
 });
 
 const { Blob, File } = require('node:buffer');
@@ -22,17 +30,10 @@ channelMock.prototype.postMessage = function (data: any) {
   this.onmessage({ data });
 };
 
-function Transform() {}
-Transform.prototype.readable = true;
-Transform.prototype.writable = true;
-Transform.prototype.write = function () {};
-Transform.prototype.end = function () {};
-
 Object.defineProperties(globalThis, {
   Blob: { value: Blob },
   File: { value: File },
   BroadcastChannel: { value: channelMock },
-  TransformStream: { value: Transform },
 });
 
 failOnConsole({
