@@ -18,9 +18,9 @@ jobs:
       APP_NAME: ${{ github.event.inputs.APP_NAME }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.3.0
+        uses: actions/checkout@v4.3.1
       - name: Checkout
-        uses: actions/checkout@v4.3.0
+        uses: actions/checkout@v4.3.1
         with:
           repository: DigitalInnovation/brightcloud
           token: ${{ secrets.SAML_GITHUB_TOKEN }}
