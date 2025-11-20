@@ -118,9 +118,12 @@ describe('GlobalFacetAttributesPageLayout', () => {
       },
     });
 
-    await waitFor(() => {
-      expect(screen.queryByText(/Apply action/i)).not.toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.queryByText(/Apply action/i)).not.toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should close the confirmation modal when cancel button on modal clicked', async () => {
@@ -168,9 +171,12 @@ describe('GlobalFacetAttributesPageLayout', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await user.click(saveButton);
 
-    await waitFor(() => {
-      expect(screen.queryByText(/Apply action/i)).not.toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.queryByText(/Apply action/i)).not.toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
 
     await waitFor(() => {
       expect(

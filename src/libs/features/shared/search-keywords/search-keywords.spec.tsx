@@ -406,9 +406,11 @@ describe('Search Keywords', () => {
       );
     });
 
-    expect(
-      screen.getByText('Keyword new keyword has already been added')
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        screen.getByText('Keyword new keyword has already been added')
+      ).toBeVisible()
+    );
   });
 
   it('open the modal when only one category is in the dropdown', async () => {

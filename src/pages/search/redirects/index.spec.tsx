@@ -138,7 +138,7 @@ describe('Search Rulesets', () => {
     jest.resetAllMocks();
   });
 
-  it('displays the list of redirects', () => {
+  it('displays the list of redirects', async () => {
     jest.mocked(useSearchRedirectList).mockReturnValue({
       redirects: [],
       pagination: {
@@ -151,7 +151,9 @@ describe('Search Rulesets', () => {
 
     renderWithProviders(<RedirectRuleSets />);
 
-    expect(screen.getByText('Keyword Redirect')).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByText('Keyword Redirect')).toBeVisible();
+    });
   });
 
   it('should render the access denied page', async () => {

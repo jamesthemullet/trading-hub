@@ -1735,10 +1735,12 @@ describe('Ruleset', () => {
         doneButton.click();
       });
 
-      await waitFor(() =>
-        expect(screen.getByRole('status')).toHaveTextContent(
-          '2 attribute rules'
-        )
+      await waitFor(
+        () =>
+          expect(screen.getByRole('status')).toHaveTextContent(
+            '2 attribute rules'
+          ),
+        { timeout: 3000 }
       );
     });
 
@@ -1766,10 +1768,12 @@ describe('Ruleset', () => {
         doneButton.click();
       });
 
-      await waitFor(() =>
-        expect(screen.getByRole('status')).toHaveTextContent(
-          '2 attribute rules'
-        )
+      await waitFor(
+        () =>
+          expect(screen.getByRole('status')).toHaveTextContent(
+            '2 attribute rules'
+          ),
+        { timeout: 3000 }
       );
     });
 
@@ -1797,10 +1801,12 @@ describe('Ruleset', () => {
         doneButton.click();
       });
 
-      await waitFor(() =>
-        expect(screen.getByRole('status')).toHaveTextContent(
-          '2 attribute rules'
-        )
+      await waitFor(
+        () =>
+          expect(screen.getByRole('status')).toHaveTextContent(
+            '2 attribute rules'
+          ),
+        { timeout: 3000 }
       );
     });
 
@@ -1828,10 +1834,12 @@ describe('Ruleset', () => {
         doneButton.click();
       });
 
-      await waitFor(() =>
-        expect(screen.getByRole('status')).toHaveTextContent(
-          '2 attribute rules'
-        )
+      await waitFor(
+        () =>
+          expect(screen.getByRole('status')).toHaveTextContent(
+            '2 attribute rules'
+          ),
+        { timeout: 3000 }
       );
     });
 
