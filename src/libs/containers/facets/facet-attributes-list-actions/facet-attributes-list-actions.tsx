@@ -43,30 +43,33 @@ const SearchWrapper = styled.div`
 
 export const FacetAttributesListActions = ({
   onSearchChange,
+  onMergeClick,
+  isMergeHidden = false,
+  isMergeDisabled = true,
 }: {
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onMergeClick?: () => void;
+  isMergeHidden?: boolean;
+  isMergeDisabled?: boolean;
 }) => {
   return (
     <FacetAttributesListActionsContainer>
       <FacetAttributesActionsButtonsContainer>
-        <FacetAttributesActionsButton theme="secondary" disabled>
-          <Image
-            src="/trading-hub/asset/icon-multi-select.svg"
-            width="18"
-            height="18"
-            alt=""
-          />
-          <span>Multi-select</span>
-        </FacetAttributesActionsButton>
-        <FacetAttributesActionsButton theme="secondary" disabled>
-          <Image
-            src="/trading-hub/asset/icon-merge.svg"
-            width="18"
-            height="18"
-            alt=""
-          />
-          <span>Merge</span>
-        </FacetAttributesActionsButton>
+        {!isMergeHidden && (
+          <FacetAttributesActionsButton
+            theme="secondary"
+            onClick={onMergeClick}
+            disabled={isMergeDisabled}
+          >
+            <Image
+              src="/trading-hub/asset/icon-merge.svg"
+              width="18"
+              height="18"
+              alt=""
+            />
+            <span>Merge</span>
+          </FacetAttributesActionsButton>
+        )}
       </FacetAttributesActionsButtonsContainer>
 
       <SearchWrapper>

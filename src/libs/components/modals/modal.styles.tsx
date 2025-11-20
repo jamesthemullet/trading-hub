@@ -7,6 +7,11 @@ export const ModalAttributesTable = styled.div`
   display: flex;
   flex-direction: column;
 `;
+export const EditFacetAttributesModalTable = styled(ModalAttributesTable)`
+  min-height: 200px;
+  margin: 0 ${spacing(2.5)} ${spacing(2.5)};
+  gap: 12px;
+`;
 
 export const ModalStickyHeader = styled.div`
   position: sticky;

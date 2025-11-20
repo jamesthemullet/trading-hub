@@ -94,7 +94,10 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         isSaveDisabled={false}
       />
 
-      <FacetAttributesListActions onSearchChange={onSearchChange} />
+      <FacetAttributesListActions
+        onSearchChange={onSearchChange}
+        isMergeHidden
+      />
 
       <SearchAndCategoryFacetAttributesList
         boostedValues={includedValues}

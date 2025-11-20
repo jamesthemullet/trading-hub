@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import type { ActionDispatch, Dispatch, SetStateAction } from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -7,7 +6,11 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import { CombinedDropdown, FilteredResultsPanel } from '@/libs/components';
+import {
+  CombinedDropdown,
+  FilteredResultsPanel,
+  Loader,
+} from '@/libs/components';
 import { Col } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
 import { GlobalFacetAttribute } from '@/libs/containers';
@@ -19,18 +22,12 @@ import {
 } from '@/libs/containers/shared/table/table.styles';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
+import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 import type {
   FormattedRow,
-  GlobalAttributeReducer,
-  GlobalAttributesState,
-} from '@/libs/stores/global-attribute/global-attribute-reducer';
-
-const StyledCheckbox = styled.input`
-  width: 18px;
-  height: 18px;
-  border: 2px solid #000;
-  appearance: none;
-`;
+  GlobalAttributesPageReducer,
+  GlobalAttributesPageState,
+} from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
 
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null | false;
@@ -58,10 +55,12 @@ export type GlobalFacetAttributesListProps = {
   searchQuery: string;
   countryCode: MerchandisingCountryCode;
   editingValues: string[];
-  dispatch: ActionDispatch<[action: GlobalAttributeReducer]>;
-  globalAttributesLocalState: GlobalAttributesState;
+  dispatch: ActionDispatch<[action: GlobalAttributesPageReducer]>;
+  globalAttributesLocalState: GlobalAttributesPageState;
   writeEnabled: boolean;
   setEditingValues: Dispatch<SetStateAction<string[]>>;
+  isAwaitingUpdate: boolean;
+  setIsAwaitingUpdate: Dispatch<SetStateAction<boolean>>;
   facet: MerchandisingReturnedGlobalFacet;
 };
 
@@ -74,16 +73,10 @@ export const GlobalFacetAttributesList = ({
   globalAttributesLocalState,
   writeEnabled,
   setEditingValues,
+  isAwaitingUpdate,
+  setIsAwaitingUpdate,
   facet,
 }: GlobalFacetAttributesListProps) => {
-  // No need for it now, mainly used for merge functionality
-  // const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
-  // useEffect(() => {
-  //   if (!isAwaitingUpdate) return;
-
-  //   setIsAwaitingUpdate(false);
-  // }, [isAwaitingUpdate]);
-
   const initialOrders = useMemo(
     () =>
       Object.fromEntries(
@@ -112,7 +105,6 @@ export const GlobalFacetAttributesList = ({
     handleInputBlur,
     handleInputKeyDown,
   } = useFacetOrderInput(handleOrderChangeCallback, initialOrders);
-  // istanbul ignore next - remove once we have completed the selection functionality
   const totalSelectedItems = useMemo(() => {
     const selectedBoostedRows = globalAttributesLocalState.boostedRows
       .filter((row) => row.isChecked === true)
@@ -136,6 +128,22 @@ export const GlobalFacetAttributesList = ({
 
   const listValues = useCallback(
     (values: FormattedRow[], displayType: FacetDisplayType) => {
+      const handleRemoveFromMerge = ({
+        valueToRemove,
+        mergeDisplayName,
+      }: {
+        valueToRemove: string;
+        mergeDisplayName: string;
+      }) => {
+        dispatch({
+          type: 'REMOVE_FROM_MERGE_GROUP',
+          payload: {
+            valueToRemove,
+            mergeDisplayName,
+          },
+        });
+      };
+
       const filteredRows = values.filter(
         (row) =>
           row.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -150,7 +158,7 @@ export const GlobalFacetAttributesList = ({
           index
         ) => {
           const onOrderChange = (status: FacetDisplayType) => {
-            // setIsAwaitingUpdate(true);
+            setIsAwaitingUpdate(true);
             if (status === displayType) {
               return;
             }
@@ -200,12 +208,8 @@ export const GlobalFacetAttributesList = ({
                 isMergeGroup={isMergeGroup}
                 isChecked={isChecked}
                 displayName={displayName}
-                // TODO: Implement merge functionality
-                handleRemoveFromMerge={
-                  // istanbul ignore next
-                  () => {}
-                }
-                dispatch={dispatch}
+                handleRemoveFromMerge={handleRemoveFromMerge}
+                dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
               />
               <Col>
                 {displayType === 'included' && order && (
@@ -237,7 +241,7 @@ export const GlobalFacetAttributesList = ({
                 excludedRows={globalAttributesLocalState.excludedRows}
                 facet={facet}
                 countryCode={countryCode}
-                dispatch={dispatch}
+                dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                 setEditingValues={setEditingValues}
               />
 
@@ -251,7 +255,7 @@ export const GlobalFacetAttributesList = ({
                     attributes={attributes}
                     rows={filteredRows}
                     disableArrows={totalSelectedItems > 0}
-                    dispatch={dispatch}
+                    dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                   />
                 )}
               </Col>
@@ -289,6 +293,7 @@ export const GlobalFacetAttributesList = ({
       handleInputBlur,
       handleInputChange,
       handleInputKeyDown,
+      setIsAwaitingUpdate,
       localOrders,
       inputRefs,
       totalSelectedItems,
@@ -333,6 +338,16 @@ export const GlobalFacetAttributesList = ({
   const totalFilteredResults =
     filteredAttributeValuesNotInAMergeGroup.length + filteredMergeGroups.length;
 
+  const hasSelectedAllAttributes =
+    totalSelectedItems ===
+    globalAttributesLocalState.excludedRows.flatMap((val) => val.attributes)
+      .length +
+      globalAttributesLocalState.boostedRows.flatMap((val) => val.attributes)
+        .length +
+      globalAttributesLocalState.nonBoostedExcludedRows.flatMap(
+        (val) => val.attributes
+      ).length;
+
   return (
     <>
       <FacetAttributeValuesTableRow isHeading>
@@ -345,29 +360,21 @@ export const GlobalFacetAttributesList = ({
             ) : (
               label === null && (
                 <Col>
-                  <StyledCheckbox
+                  <input
                     type="checkbox"
                     aria-label="Select all facet attributes"
-                    // checked={hasSelectedAllAttributes}
-                    // onChange={() => {
-                    // setIsAwaitingUpdate(true);
-                    // const selectedAttributes = hasSelectedAllAttributes
-                    //   ? []
-                    //   : attributeValues.map((val) => val.displayValue);
-                    // requestAnimationFrame(() => {
-                    //   dispatch({
-                    //     type: 'TOGGLE_SELECTED_ATTRIBUTES',
-                    //     payload: {
-                    //       attributes: selectedAttributes,
-                    //       allSelected:
-                    //         selectedAttributes.length ===
-                    //         attributeValues.length,
-                    //       allDeselected: selectedAttributes.length === 0,
-                    //       disableArrows: selectedAttributes.length > 0,
-                    //     },
-                    //   });
-                    // });
-                    // }}
+                    checked={hasSelectedAllAttributes}
+                    onChange={() => {
+                      setIsAwaitingUpdate(true);
+                      requestAnimationFrame(() => {
+                        dispatch({
+                          type: 'TOGGLE_ALL_ATTRIBUTES',
+                          payload: {
+                            allSelected: !hasSelectedAllAttributes,
+                          },
+                        });
+                      });
+                    }}
                   />
                 </Col>
               )
@@ -382,7 +389,7 @@ export const GlobalFacetAttributesList = ({
 
       {excludedValuesRows}
 
-      {/* {isAwaitingUpdate && <Loader isInModal />} */}
+      {isAwaitingUpdate && <Loader isInModal />}
 
       <FilteredResultsPanel filteredFacets={totalFilteredResults} />
     </>

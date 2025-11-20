@@ -34,6 +34,8 @@ describe('FacetAttributesList', () => {
       { displayValue: 'Under 10' },
       { displayValue: 'Over 20' },
     ],
+    setIsAwaitingUpdate: jest.fn(),
+    isAwaitingUpdate: false,
     searchQuery: '',
     countryCode: 'UK' as MerchandisingCountryCode,
     editingValues: [],
@@ -47,6 +49,7 @@ describe('FacetAttributesList', () => {
       excludedRows: formattedRows.slice(4),
       merged: [],
       errorStates: {},
+      currentMerge: { isOpen: false, displayValue: '', mergedValues: [] },
     },
     writeEnabled: true,
     setEditingValues: jest.fn(),
@@ -348,5 +351,130 @@ describe('FacetAttributesList', () => {
         expect(input).toHaveValue(1);
       });
     });
+  });
+
+  it('dispatches REMOVE_FROM_MERGE_GROUP when removing a merged value', async () => {
+    const user = userEvent.setup();
+    const dispatchMock = jest.fn();
+
+    const props = {
+      ...defaultProps,
+      dispatch: dispatchMock,
+      globalAttributesLocalState: {
+        ...defaultProps.globalAttributesLocalState,
+        boostedRows: [
+          {
+            displayName: 'MergedGroup',
+            attributes: ['13 - 14.4', '10 - 12.9'],
+            isMergeGroup: true,
+            isChecked: false,
+            order: 1,
+          },
+        ],
+        merged: [
+          {
+            displayValue: 'MergedGroup',
+            mergedValues: ['13 - 14.4', '10 - 12.9'],
+          },
+        ],
+      },
+    };
+    renderWithProviders(<GlobalFacetAttributesList {...props} />);
+
+    const removeButton = screen.getByLabelText(
+      'Remove merged facet for 10 - 12.9'
+    );
+    await user.click(removeButton);
+
+    await waitFor(() => {
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: 'REMOVE_FROM_MERGE_GROUP',
+        payload: {
+          valueToRemove: '10 - 12.9',
+          mergeDisplayName: 'MergedGroup',
+        },
+      });
+    });
+  });
+
+  it('toggles all attributes when header checkbox clicked', async () => {
+    const user = userEvent.setup();
+    const dispatchMock = jest.fn();
+    const setIsAwaitingUpdateMock = jest.fn();
+
+    const props = {
+      ...defaultProps,
+      dispatch: dispatchMock,
+      setIsAwaitingUpdate: setIsAwaitingUpdateMock,
+    };
+
+    renderWithProviders(<GlobalFacetAttributesList {...props} />);
+
+    const checkbox = screen.getByLabelText('Select all facet attributes');
+
+    const raf = jest
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((cb: any) => cb(0));
+
+    await user.click(checkbox);
+
+    await waitFor(() => {
+      expect(setIsAwaitingUpdateMock).toHaveBeenCalledWith(true);
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: 'TOGGLE_ALL_ATTRIBUTES',
+        payload: { allSelected: true },
+      });
+    });
+
+    raf.mockRestore();
+  });
+
+  it('unselects all attributes when header checkbox clicked', async () => {
+    const user = userEvent.setup();
+    const dispatchMock = jest.fn();
+    const setIsAwaitingUpdateMock = jest.fn();
+
+    const props = {
+      ...defaultProps,
+      dispatch: dispatchMock,
+      setIsAwaitingUpdate: setIsAwaitingUpdateMock,
+      globalAttributesLocalState: {
+        ...defaultProps.globalAttributesLocalState,
+        boostedRows: defaultProps.attributeValues.map((val, index) => ({
+          displayName: val.displayValue,
+          attributes: [val.displayValue],
+          isMergeGroup: false,
+          isChecked: true,
+          order: index + 1,
+        })),
+        nonBoostedExcludedRows: [],
+        excludedRows: [],
+        merged: [],
+        errorStates: {},
+        currentMerge: { isOpen: false, displayValue: '', mergedValues: [] },
+      },
+    };
+
+    renderWithProviders(<GlobalFacetAttributesList {...props} />);
+
+    const checkbox = screen.getByLabelText('Select all facet attributes');
+
+    expect(checkbox).toBeChecked();
+
+    const raf = jest
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((cb: any) => cb(0));
+
+    await user.click(checkbox);
+
+    await waitFor(() => {
+      expect(setIsAwaitingUpdateMock).toHaveBeenCalledWith(true);
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: 'TOGGLE_ALL_ATTRIBUTES',
+        payload: { allSelected: false },
+      });
+    });
+
+    raf.mockRestore();
   });
 });

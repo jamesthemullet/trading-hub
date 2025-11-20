@@ -85,6 +85,7 @@ const Page = () => {
           facetId={facetId}
           displayName={displayName}
           ruleSetId={ruleSetId}
+          countryCode={countryCode}
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
         />

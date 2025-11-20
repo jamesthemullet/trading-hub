@@ -11,13 +11,17 @@ import { useRouter } from 'next/router';
 
 import type {
   MerchandisingAttributeValuesResponse,
+  MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import { ROUTES } from '@/libs/constants';
 import { FacetAttributesListActions } from '@/libs/containers';
+import { GlobalFacetAttributesEditModal } from '@/libs/containers/facets/global-facet-attributes-edit-modal';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
-import { globalAttributesReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
+import { useGlobalFacetAttributesEditModal } from '@/libs/hooks/use-global-facet-attributes-edit-modal';
+import { globalAttributesPageReducer } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
+import { useCheckedRowsSelector } from '@/libs/stores/global-attributes-page/use-checked-rows-selector';
 
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { GlobalFacetAttributesList } from '../global-facet-attributes-list/global-facet-attributes-list';
@@ -28,6 +32,7 @@ type PageLayout = {
   facetId: string;
   displayName: string;
   ruleSetId: string;
+  countryCode: MerchandisingCountryCode | undefined;
   searchQuery: string;
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
 };
@@ -38,6 +43,7 @@ export const GlobalFacetAttributesPageLayout = ({
   facetId,
   displayName,
   ruleSetId,
+  countryCode = 'UK_IE',
   searchQuery,
   onSearchChange,
 }: PageLayout) => {
@@ -46,20 +52,35 @@ export const GlobalFacetAttributesPageLayout = ({
   const titleId = useId();
   const descriptionId = useId();
 
-  const [editingValues, setEditingValues] = useState<string[]>([]);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-
+  // reducer
   const [globalAttributesLocalState, dispatch] = useReducer(
-    globalAttributesReducer,
+    globalAttributesPageReducer,
     {
       boostedRows: [],
       excludedRows: [],
       nonBoostedExcludedRows: [],
       merged: [],
       errorStates: {},
+      currentMerge: {
+        isOpen: false,
+        displayValue: '',
+        mergedValues: [],
+      },
     }
   );
+  const checkedRows = useCheckedRowsSelector(globalAttributesLocalState);
 
+  // loading logic
+  const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
+  useEffect(() => {
+    if (!isAwaitingUpdate) return;
+
+    setTimeout(() => {
+      setIsAwaitingUpdate(false);
+    }, 100);
+  }, [isAwaitingUpdate]);
+
+  // init logic
   useEffect(() => {
     dispatch({
       type: 'INITIALISE_STATE',
@@ -80,6 +101,21 @@ export const GlobalFacetAttributesPageLayout = ({
       },
     });
   }, [facet, attributeValues]);
+
+  // save logic
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+
+  // istanbul ignore next
+  const onCloseModal = () => setIsConfirmationModalOpen(false);
+
+  const handleSave = () => {
+    setIsConfirmationModalOpen(true);
+  };
+
+  const handleModalConfirm = async () => {
+    setIsConfirmationModalOpen(false);
+    await onSave();
+  };
 
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
     useGlobalFacetUpdate();
@@ -110,18 +146,50 @@ export const GlobalFacetAttributesPageLayout = ({
     }
   };
 
-  const handleSave = () => {
-    setIsConfirmationModalOpen(true);
+  // edit modal logic
+  const [editingValues, setEditingValues] = useState<string[]>([]);
+
+  const { editModalError, handleEditModalError, handleEditModalSave } =
+    useGlobalFacetAttributesEditModal({
+      facet,
+      countryCode,
+      displayName,
+      dispatch,
+      globalAttributesLocalState,
+      setIsAwaitingUpdate,
+    });
+
+  // merge logic
+  const handleMerge = () => {
+    setIsAwaitingUpdate(true);
+
+    const selectedRows = [
+      ...globalAttributesLocalState.boostedRows.filter(
+        (val) =>
+          // istanbul ignore next
+          val.isChecked
+      ),
+      ...globalAttributesLocalState.excludedRows.filter(
+        (val) =>
+          // istanbul ignore next
+          val.isChecked
+      ),
+      ...globalAttributesLocalState.nonBoostedExcludedRows.filter(
+        (val) => val.isChecked
+      ),
+    ];
+
+    dispatch({
+      type: 'OPEN_MERGE_GROUP_MODAL',
+      payload: {
+        displayValue: selectedRows[0].displayName,
+        mergedValues: selectedRows.flatMap((row) => row.attributes),
+      },
+    });
+    handleEditModalError('');
   };
 
-  const handleModalConfirm = async () => {
-    setIsConfirmationModalOpen(false);
-    await onSave();
-  };
-
-  // istanbul ignore next
-  const onCloseModal = () => setIsConfirmationModalOpen(false);
-
+  // render
   const includedValues = useMemo(
     () => globalAttributesLocalState.boostedRows.length,
     [globalAttributesLocalState.boostedRows]
@@ -150,18 +218,24 @@ export const GlobalFacetAttributesPageLayout = ({
         error={updateGlobalFacetError}
       />
 
-      <FacetAttributesListActions onSearchChange={onSearchChange} />
+      <FacetAttributesListActions
+        onSearchChange={onSearchChange}
+        isMergeDisabled={checkedRows.length < 2}
+        onMergeClick={handleMerge}
+      />
 
       <GlobalFacetAttributesList
         attributeValues={attributeValues}
         searchQuery={searchQuery}
-        countryCode="UK_IE"
+        countryCode={countryCode}
         editingValues={editingValues}
         dispatch={dispatch}
         globalAttributesLocalState={globalAttributesLocalState}
-        writeEnabled
         setEditingValues={setEditingValues}
         facet={facet}
+        isAwaitingUpdate={isAwaitingUpdate}
+        setIsAwaitingUpdate={setIsAwaitingUpdate}
+        writeEnabled
       />
 
       <Modal.Root
@@ -183,6 +257,16 @@ export const GlobalFacetAttributesPageLayout = ({
           />
         </Modal.Content>
       </Modal.Root>
+
+      {globalAttributesLocalState.currentMerge.isOpen && (
+        <GlobalFacetAttributesEditModal
+          globalAttributesLocalState={globalAttributesLocalState}
+          dispatch={dispatch}
+          error={editModalError}
+          handleError={handleEditModalError}
+          onSave={handleEditModalSave}
+        />
+      )}
     </>
   );
 };

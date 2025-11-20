@@ -69,6 +69,29 @@ export const FacetAttributeValuesTableRow = styled(
   ${({ isExcluded }) =>
     isExcluded && `background-color: ${color.state.error.errorContainer}`}
 `;
+export const EditFacetAttributesModalTableRow = styled(
+  TableRow
+)<FacetAttributeValuesTableRowProps>`
+  grid-template-columns: minmax(auto, 3fr) minmax(auto, 2fr);
+  border-bottom: none;
+  align-items: flex-start;
+  margin: 0;
+  padding: ${spacing(2)};
+  box-shadow: #000 0 0 10px -5px;
+
+  p {
+    ${({ isHeading }) =>
+      isHeading &&
+      `
+
+    font-size: 16px;
+  `}
+  }
+
+  &:first-of-type {
+    position: static;
+  }
+`;
 
 export const TableCol = styled.div`
   text-overflow: ellipsis;

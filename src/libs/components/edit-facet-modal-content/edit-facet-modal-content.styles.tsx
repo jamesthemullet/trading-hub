@@ -66,6 +66,12 @@ export const MergedValue = styled.div`
   align-items: center;
   gap: ${spacing(1)};
 `;
+export const GlobalFacetAttributesPageMergedValue = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${spacing(1)};
+  margin-left: ${spacing(4)};
+`;
 
 export const RemoveMergedFacet = styled.button`
   background: url('/trading-hub/asset/icon-close-black.svg');

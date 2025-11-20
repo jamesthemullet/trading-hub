@@ -49,6 +49,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
     searchQuery: '',
     onSearchChange: jest.fn(),
     ruleSetId,
+    countryCode: 'UK_IE' as const,
   };
 
   beforeEach(() => {
@@ -199,5 +200,113 @@ describe('GlobalFacetAttributesPageLayout', () => {
     expect(screen.getByTestId('include-only-count')).toHaveTextContent('1');
     expect(screen.getByTestId('exclude-only-count')).toHaveTextContent('1');
     expect(screen.getByTestId('algo-control-count')).toHaveTextContent('2');
+  });
+
+  it('handles merging of two attribute values', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<GlobalFacetAttributesPageLayout {...defaultProps} />);
+
+    const attributeA = screen.getByLabelText('Select 13 - 14.4 to merge');
+    const attributeB = screen.getByLabelText('Select 10 - 12.9 to merge');
+
+    await user.click(attributeA);
+    await user.click(attributeB);
+
+    const mergeButton = screen.getByRole('button', { name: 'Merge' });
+    await user.click(mergeButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit merge')).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByLabelText('Remove merged facet for 13 - 14.4')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Remove merged facet for 10 - 12.9')
+    ).toBeInTheDocument();
+  });
+
+  it('handles merge of boosted, excluded and non-boosted values (covers selectedRows assembly)', async () => {
+    const user = userEvent.setup();
+
+    const props = {
+      ...defaultProps,
+      facet: {
+        ...defaultProps.facet,
+        boosted: ['13 - 14.4'],
+        excludedValues: ['Over 20'],
+      },
+      attributeValues: [
+        { displayValue: '13 - 14.4' },
+        { displayValue: '10 - 12.9' },
+        { displayValue: '14.5 - 20' },
+        { displayValue: 'Under 10' },
+        { displayValue: 'Over 20' },
+      ],
+    } as typeof defaultProps;
+
+    renderWithProviders(<GlobalFacetAttributesPageLayout {...props} />);
+
+    const boostedCheckbox = screen.getByLabelText('Select 13 - 14.4 to merge');
+    const algoCheckbox = screen.getByLabelText('Select 14.5 - 20 to merge');
+    const excludedCheckbox = screen.getByLabelText('Select Over 20 to merge');
+
+    await user.click(boostedCheckbox);
+    await user.click(algoCheckbox);
+    await user.click(excludedCheckbox);
+
+    const mergeButton = screen.getByRole('button', { name: 'Merge' });
+    await user.click(mergeButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit merge')).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByLabelText('Remove merged facet for 13 - 14.4')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Remove merged facet for 14.5 - 20')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Remove merged facet for Over 20')
+    ).toBeInTheDocument();
+  });
+
+  it('handles merge groups correctly in onSave', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<GlobalFacetAttributesPageLayout {...defaultProps} />);
+
+    const mergeGroup = [
+      {
+        displayValue: 'test merged group',
+        mergedValues: ['merged 1', 'merged 2'],
+      },
+    ];
+
+    const saveButton = screen.getByRole('button', { name: 'Save' });
+    await user.click(saveButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /Apply action/i })
+      ).toBeInTheDocument();
+    });
+
+    const confirmButton = screen.getByRole('button', { name: /Apply action/i });
+    await user.click(confirmButton);
+
+    expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
+      facetId: 'color',
+      data: {
+        ...defaultProps.facet,
+        merged: mergeGroup,
+        excludedValues: ['Ducky Downy'],
+        boosted: ['Cotton', 'Duck Down'],
+      },
+    });
   });
 });
