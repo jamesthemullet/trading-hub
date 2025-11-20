@@ -570,17 +570,17 @@ export const AddAttribute = ({
                   selectedAttributeType === 'alphanumeric'
                     ? {
                         fields: selectedAlphanumericValues,
-                        weight: weight,
+                        weight,
                       }
                     : {
                         field: selectedNumericField,
-                        weight: weight,
+                        weight,
                       };
 
                 onSelect({
                   attribute,
-                  operation: selectedOperation,
                   change: isEditMode ? 'modify' : 'add',
+                  operation: selectedOperation,
                   type: selectedAttributeType,
                 });
               }}

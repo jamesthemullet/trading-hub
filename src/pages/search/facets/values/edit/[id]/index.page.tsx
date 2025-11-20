@@ -64,7 +64,7 @@ const Page = () => {
 
   // Currently we don't send searchTerms to this endpoint, which I think is wrong, awaiting confirmation
   const { attributeValues } = useGetFacetAttributeValues({
-    facetId: facetId,
+    facetId,
     query: searchQuery,
     searchTerms: searchTermsArray,
     countryCode,

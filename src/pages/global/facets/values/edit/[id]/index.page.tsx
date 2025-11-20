@@ -37,8 +37,8 @@ const Page = () => {
 
   const { attributeValues, error: attributeValuesError } =
     useGetFacetAttributeValues({
-      facetId: facetId,
-      query: searchQuery,
+      facetId,
+      query: '',
       countryCode,
     });
 

@@ -328,7 +328,7 @@ export const Ruleset = ({
   } = usePreview({
     ...(selectedCategories.length && { categoryId: previewValue }),
     ...(rulesetSearchTerms.length && { searchTerm: previewValue }),
-    merchandisingRules: merchandisingRules,
+    merchandisingRules,
     facetConfig: [],
     countryCode: selectedPreviewCountryCode,
   });

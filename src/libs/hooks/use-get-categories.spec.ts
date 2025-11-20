@@ -13,11 +13,11 @@ const rows = 10;
 const pagination = { totalItems: 20 };
 const categoryListDataSingleResult = {
   categories: [{ identifier: categoryId1 }],
-  pagination: pagination,
+  pagination,
 };
 const categoryListDataMultipleResults = {
   categories: [{ identifier: categoryId1 }, { identifier: categoryId2 }],
-  pagination: pagination,
+  pagination,
 };
 
 const getCategoriesMock = jest.fn();
@@ -65,8 +65,8 @@ describe('useGetCategories', () => {
     } = renderHook(() => useGetCategories());
 
     const resp = await current.getCategories({
-      start: start,
-      rows: rows,
+      start,
+      rows,
       countryCode: 'UK',
     });
 
@@ -84,8 +84,8 @@ describe('useGetCategories', () => {
 
     const resp = await current.getCategories({
       query: categoryId1,
-      start: start,
-      rows: rows,
+      start,
+      rows,
       countryCode: 'UK',
     });
 
@@ -103,8 +103,8 @@ describe('useGetCategories', () => {
 
     const resp = await current.getCategories({
       query: categoryName,
-      start: start,
-      rows: rows,
+      start,
+      rows,
       countryCode: 'UK',
     });
 
@@ -122,8 +122,8 @@ describe('useGetCategories', () => {
 
     const resp = await current.getCategories({
       query: categoryName,
-      start: start,
-      rows: rows,
+      start,
+      rows,
       countryCode: 'UK',
     });
 
@@ -141,8 +141,8 @@ describe('useGetCategories', () => {
     await act(async () => {
       await result.current.getCategories({
         query: categoryName,
-        start: start,
-        rows: rows,
+        start,
+        rows,
         countryCode: 'UK',
       });
     });
@@ -159,8 +159,8 @@ describe('useGetCategories', () => {
     await act(async () => {
       await result.current.getCategories({
         query: categoryName,
-        start: start,
-        rows: rows,
+        start,
+        rows,
         countryCode: 'UK',
       });
     });

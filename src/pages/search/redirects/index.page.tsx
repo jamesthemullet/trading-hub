@@ -33,7 +33,7 @@ const mapping: RuleSetMapping<
     endDate,
     countryCode,
   }) => ({
-    id: id,
+    id,
     identifier: keywords.join(' | '),
     isEnabled,
     lastChanged,

@@ -58,7 +58,7 @@ export const GlobalFacetAttribute = ({
       dispatch({
         type: 'TOGGLE_SELECTED_ATTRIBUTE',
         payload: {
-          displayName: displayName,
+          displayName,
         },
       });
     });

@@ -78,7 +78,7 @@ export const useRuleSet = (
     categoryRuleSets,
     error,
     globalRuleSets,
-    pagination: pagination,
+    pagination,
     refetchRuleSetList: ({
       countryCode,
     }: {

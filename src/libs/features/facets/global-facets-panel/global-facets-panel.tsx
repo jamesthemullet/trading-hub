@@ -59,7 +59,7 @@ const GlobalFacetsPanel = ({
   const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
     includedFacets: initialIncludedFacets,
     excludedFacets: initialExcludedFacets,
-    countryCode: countryCode,
+    countryCode,
   });
 
   useEffect(() => {

@@ -65,7 +65,7 @@ const Page = () => {
   }, [router.query.categories]);
 
   const { attributeValues } = useGetFacetAttributeValues({
-    facetId: facetId,
+    facetId,
     query: searchQuery,
     categories: categoriesArray,
     countryCode,

@@ -226,9 +226,9 @@ export const FacetsPanel = ({
                 const ruleSetId = router.query.id as string;
                 const baseUrl = ROUTES.GLOBAL.FACETS.VALUES.EDIT(facet.id);
                 const params = new URLSearchParams({
-                  ruleSetId: ruleSetId,
+                  ruleSetId,
                   displayName: facet.displayValue,
-                  countryCode: countryCode,
+                  countryCode,
                 });
                 return `${baseUrl}?${params.toString()}`;
               })()}

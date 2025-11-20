@@ -122,7 +122,7 @@ export const GlobalFacetAttributesPageLayout = ({
 
   const onSave = async () => {
     const response = await handleGlobalFacetUpdate({
-      facetId: facetId,
+      facetId,
       data: {
         ...facet,
         merged: globalAttributesLocalState.merged,

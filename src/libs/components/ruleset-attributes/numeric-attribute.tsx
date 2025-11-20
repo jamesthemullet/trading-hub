@@ -38,7 +38,7 @@ export const NumericAttribute = ({
   setWeight?: (weight: number) => void;
 }) => {
   const handleStartChanges = () => {
-    onEdit?.({ field: { weight: weight, field: name } });
+    onEdit?.({ field: { weight, field: name } });
   };
 
   return (

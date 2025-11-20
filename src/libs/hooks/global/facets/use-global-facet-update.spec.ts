@@ -53,7 +53,7 @@ describe('useGlobalFacetUpdate', () => {
 
     await act(async () => {
       await result.current.handleGlobalFacetUpdate({
-        facetId: facetId,
+        facetId,
         data: {
           displayValue: 'colour',
           indexPropertyName: 'color',
@@ -74,7 +74,7 @@ describe('useGlobalFacetUpdate', () => {
 
     await act(async () => {
       await result.current.handleGlobalFacetUpdate({
-        facetId: facetId,
+        facetId,
         data: facet,
       });
     });

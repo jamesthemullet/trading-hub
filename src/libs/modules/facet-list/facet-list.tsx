@@ -310,7 +310,7 @@ export const FacetList = ({
                     facet.id
                   );
                   const params = new URLSearchParams({
-                    ruleSetId: ruleSetId,
+                    ruleSetId,
                     displayName: facet.displayValue,
                     countryCode: ruleset.countryCode || 'UK_IE',
                   });

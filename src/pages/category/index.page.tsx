@@ -38,7 +38,7 @@ const mapping: RuleSetMapping<
     endDate,
     countryCode,
   }) => ({
-    id: id,
+    id,
     identifier: formatCategoriesInfo(categoriesInfo),
     isEnabled,
     lastChanged,

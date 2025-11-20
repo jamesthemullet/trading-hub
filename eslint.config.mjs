@@ -146,6 +146,7 @@ const eslint = [
       ],
       'simple-import-sort/exports': 'error',
       'import/no-cycle': 'error',
+      'object-shorthand': ['error', 'always'],
       'react/jsx-boolean-value': 'error',
       'react/jsx-no-useless-fragment': 'error',
       'react/jsx-curly-brace-presence': ['error', 'never'],
