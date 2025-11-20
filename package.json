@@ -39,7 +39,7 @@
     "@mantine/dates": "8.3.8",
     "@mantine/hooks": "8.3.8",
     "@storybook/addon-a11y": "10.0.8",
-    "@vercel/otel": "1.14.0",
+    "@vercel/otel": "2.1.0",
     "date-fns": "4.1.0",
     "dayjs": "1.11.19",
     "lodash": "4.17.21",
