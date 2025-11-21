@@ -5,27 +5,21 @@ test.describe.configure({ mode: 'serial' });
 test.describe('Global Ranking', () => {
   test('creates new ruleset', async ({ page }) => {
     await page.goto('/global');
-    await page.waitForLoadState('networkidle');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await expect(
       page.getByRole('link', { name: 'Add facet rule' })
     ).toBeVisible();
-    await expect(
-      page.getByText('0 results', { exact: true })
-    ).not.toBeVisible();
+    await expect(page.getByText('0 results', { exact: true })).toBeHidden();
 
     await page.getByRole('link', { name: 'Add facet rule' }).click();
 
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(5000);
     await expect(
       page.getByRole('heading', { name: 'Global Facet Rule Editor' })
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Create' }).click();
-
-    await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
@@ -47,8 +41,6 @@ test.describe('Global Ranking', () => {
     await page
       .getByRole('button', { name: 'Apply action', exact: true })
       .click();
-
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(5000);
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
@@ -74,7 +66,6 @@ test.describe('Global Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByTestId('Row showing Absorbency Level 1 as algoControl')
@@ -100,21 +91,16 @@ test.describe('Global Ranking', () => {
     await page
       .getByRole('button', { name: 'Apply action', exact: true })
       .click();
-
-    await page.waitForLoadState('networkidle');
   });
 
   test('edits a ruleset', async ({ page }) => {
     await page.goto('/global');
-    await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
 
     await page.getByPlaceholder('Search for product').fill('black dress');
     await page.waitForTimeout(400);
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByTestId('product-search-result')
@@ -157,11 +143,9 @@ test.describe('Global Ranking', () => {
 
   test('keeps changes for facets and products', async ({ page }) => {
     await page.goto('/global');
-    await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByRole('heading', { name: 'Global Facet Rule Editor' })
@@ -177,13 +161,11 @@ test.describe('Global Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
   });
 
   test('deletes a ruleset', async ({ page }) => {
     await page.goto('/global');
-    await page.waitForLoadState('networkidle');
 
     const currentCount =
       (await page.getByTestId('results count').textContent()) ?? '';

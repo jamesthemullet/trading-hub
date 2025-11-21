@@ -70,14 +70,11 @@ test.describe('Category rulesets', () => {
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
-    await page.waitForLoadState('networkidle');
-
     await checkAccessibility(page);
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
@@ -136,13 +133,11 @@ test.describe('Category rulesets', () => {
   test('edits facet values', async ({ page }) => {
     page.goto('/category/facets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010a');
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Edit values' }).first().click();
-    await page.waitForLoadState('networkidle');
 
     await checkAccessibility(page);
 
@@ -161,6 +156,6 @@ test.describe('Category rulesets', () => {
       .click();
     await page.getByRole('option', { name: 'Exclude only' }).click();
 
-    await expect(page.getByLabel('Move SMOKE row up')).not.toBeVisible();
+    await expect(page.getByLabel('Move SMOKE row up')).toBeHidden();
   });
 });

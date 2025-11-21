@@ -26,7 +26,6 @@ test.describe('Keyword Redirects', () => {
     );
 
     await page.goto('/search/redirects');
-    await page.waitForLoadState('networkidle');
   });
 
   test('Should create new redirect', async ({ page }) => {
@@ -71,8 +70,6 @@ test.describe('Keyword Redirects', () => {
 
     await page.getByRole('button', { name: 'Create' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await expect(
       page.getByRole('heading', { name: 'Keyword Redirect' })
     ).toBeVisible();
@@ -105,8 +102,6 @@ test.describe('Keyword Redirects', () => {
 
     await page.getByRole('button', { name: 'Save' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await expect(
       page.getByRole('heading', { name: 'Keyword Redirect' })
     ).toBeVisible();
@@ -114,8 +109,6 @@ test.describe('Keyword Redirects', () => {
 
   test('disables a redirect', async ({ page }) => {
     await page.getByTitle('Toggle').first().locator('span').click();
-
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByTitle('Toggle').first().locator('input')
@@ -177,8 +170,6 @@ test.describe('Keyword Redirects', () => {
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
-      await page.waitForLoadState('networkidle');
-
       await expect(
         page.getByRole('heading', { name: 'Keyword Redirect' })
       ).toBeVisible();
@@ -216,8 +207,6 @@ test.describe('Keyword Redirects', () => {
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
-      await page.waitForLoadState('networkidle');
-
       await expect(
         page.getByRole('heading', { name: 'Keyword Redirect' })
       ).toBeVisible();
@@ -239,8 +228,6 @@ test.describe('Keyword Redirects', () => {
       await page.getByTitle('Toggle').click();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
-
-      await page.waitForLoadState('networkidle');
 
       await expect(
         page.getByRole('heading', { name: 'Keyword Redirect' })

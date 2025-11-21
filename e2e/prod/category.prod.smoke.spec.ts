@@ -32,7 +32,6 @@ test.describe('Category Ranking', () => {
       `/category?currentPage=1&currentPageSize=10&searchQuery=${TEST_CATEGORY_ID}`
     );
 
-    await page.getByText(TEST_CATEGORY_IDENTIFIER);
     await expect(
       page.getByText(TEST_CATEGORY_IDENTIFIER).first()
     ).toBeVisible();

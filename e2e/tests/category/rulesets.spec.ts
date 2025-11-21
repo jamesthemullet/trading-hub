@@ -111,8 +111,6 @@ test.describe('Categories', () => {
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
-    await page.waitForLoadState('networkidle');
-
     await checkAccessibility(page);
 
     await page.getByRole('link', { name: 'Add ranking rule' }).click();
@@ -131,7 +129,6 @@ test.describe('Categories', () => {
       .getByText('SubCategory_429 | Dresses | l/women/dresses', { exact: true })
       .click();
 
-    await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Close' }).click();
 
     await expect(page.getByLabel('Position 1', { exact: true })).toBeVisible();
@@ -166,8 +163,6 @@ test.describe('Categories', () => {
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
-    await page.waitForLoadState('networkidle');
-
     await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
     await page.waitForLoadState();
@@ -193,7 +188,6 @@ test.describe('Categories', () => {
       .getByText('IE_SubCategory_1002041 | Dresses | ie/l/women/dresses')
       .click();
 
-    await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Close' }).click();
 
     await expect(page.getByLabel('Position 1', { exact: true })).toBeVisible();
@@ -224,8 +218,6 @@ test.describe('Categories', () => {
     await expect(
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
-
-    await page.waitForLoadState('networkidle');
 
     await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
@@ -301,7 +293,6 @@ test.describe('Categories', () => {
       '/category/rulesets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010a'
     );
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -339,8 +330,6 @@ test.describe('Categories', () => {
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await expect(page.getByRole('button', { name: 'Changes12' })).toBeVisible();
   });
 
@@ -349,7 +338,6 @@ test.describe('Categories', () => {
       '/category/rulesets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010b'
     );
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -357,10 +345,7 @@ test.describe('Categories', () => {
       page.getByRole('button', { name: 'Changes100' })
     ).toBeVisible();
 
-    await page.waitForLoadState('networkidle');
-
     await page.getByPlaceholder('Search for product').fill('dress');
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByLabel('Position 1', { exact: true })
@@ -377,7 +362,7 @@ test.describe('Categories', () => {
       page.getByText('Error: Please only pin 100 or fewer products')
     ).toBeVisible();
 
-    expect(saveButton.isDisabled()).toBeTruthy();
+    await expect(saveButton).toBeDisabled();
   });
 
   test('pin/block/bury/boost from search', async ({ page }) => {
@@ -385,7 +370,6 @@ test.describe('Categories', () => {
       '/category/rulesets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010a'
     );
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -393,7 +377,6 @@ test.describe('Categories', () => {
 
     await page.getByPlaceholder('Search for product').fill('dress');
     await page.waitForTimeout(400);
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByLabel('Position 2')
@@ -433,8 +416,6 @@ test.describe('Categories', () => {
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await expect(page.getByRole('button', { name: 'Changes12' })).toBeVisible();
   });
 
@@ -455,8 +436,6 @@ test.describe('Categories', () => {
       .click();
 
     await checkAccessibility(page);
-
-    await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'Numeric Attributes' }).click();
 
@@ -482,8 +461,6 @@ test.describe('Categories', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'Numeric Attributes' }).click();
 
@@ -520,8 +497,6 @@ test.describe('Categories', () => {
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
 
-    await page.waitForLoadState('networkidle');
-
     await page
       .getByRole('button', { name: 'Product description attributes' })
       .click();
@@ -550,8 +525,6 @@ test.describe('Categories', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByRole('button', { name: 'Product description attributes' })
@@ -590,8 +563,6 @@ test.describe('Categories', () => {
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
 
-    await page.waitForLoadState('networkidle');
-
     await page
       .getByRole('button', { name: 'Product description attributes' })
       .click();
@@ -629,8 +600,6 @@ test.describe('Categories', () => {
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
 
-    await page.waitForLoadState('networkidle');
-
     await page
       .getByRole('button', { name: 'Product description attributes' })
       .click();
@@ -659,8 +628,6 @@ test.describe('Categories', () => {
         page.getByRole('heading', { name: 'Categories' })
       ).toBeVisible();
 
-      await page.waitForLoadState('networkidle');
-
       await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
       await page.waitForLoadState();
@@ -677,7 +644,6 @@ test.describe('Categories', () => {
         })
         .click();
 
-      await page.waitForLoadState('networkidle');
       await page.getByRole('button', { name: 'Close' }).click();
 
       await expect(
@@ -703,7 +669,7 @@ test.describe('Categories', () => {
       await page.getByText('00:00').click();
       await page.fill('input[type="time"]', '10:30');
 
-      await expect(page.getByText('00:00')).not.toBeVisible();
+      await expect(page.getByText('00:00')).toBeHidden();
 
       await expect(page.getByText('10:30')).toBeVisible();
 
@@ -712,8 +678,6 @@ test.describe('Categories', () => {
       ).toBeEnabled();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
-
-      await page.waitForLoadState('networkidle');
 
       await expect(
         page.getByRole('heading', { name: 'Product Grid' })
@@ -725,8 +689,6 @@ test.describe('Categories', () => {
       await expect(
         page.getByRole('heading', { name: 'Categories' })
       ).toBeVisible();
-
-      await page.waitForLoadState('networkidle');
 
       await page.getByRole('button', { name: 'More options' }).first().click();
       await page.getByRole('link', { name: 'Edit ranking rule' }).click();
@@ -747,8 +709,8 @@ test.describe('Categories', () => {
       await timeInputs[0].fill('10:30');
       await timeInputs[1].fill('11:45');
 
-      await expect(page.getByText('15:17')).not.toBeVisible();
-      await expect(page.getByText('04:20')).not.toBeVisible();
+      await expect(page.getByText('15:17')).toBeHidden();
+      await expect(page.getByText('04:20')).toBeHidden();
 
       await expect(page.getByText('10:30')).toBeVisible();
       await expect(page.getByText('11:45')).toBeVisible();
@@ -758,8 +720,6 @@ test.describe('Categories', () => {
       ).toBeEnabled();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
-
-      await page.waitForLoadState('networkidle');
 
       await expect(
         page.getByRole('heading', { name: 'Product Grid' })
@@ -771,8 +731,6 @@ test.describe('Categories', () => {
       await expect(
         page.getByRole('heading', { name: 'Categories' })
       ).toBeVisible();
-
-      await page.waitForLoadState('networkidle');
 
       await page.getByRole('button', { name: 'More options' }).first().click();
       await page.getByRole('link', { name: 'Edit ranking rule' }).click();
@@ -789,8 +747,6 @@ test.describe('Categories', () => {
       await page.getByTitle('Toggle').click();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
-
-      await page.waitForLoadState('networkidle');
 
       await expect(
         page.getByRole('heading', { name: 'Product Grid' })

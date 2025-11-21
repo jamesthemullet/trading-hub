@@ -73,7 +73,6 @@ test.describe('Keyword search', () => {
     );
 
     await page.goto('/search');
-    await page.waitForLoadState('networkidle');
   });
 
   test('creates a new ruleset', async ({ page }) => {
@@ -82,8 +81,6 @@ test.describe('Keyword search', () => {
     await checkAccessibility(page);
 
     await page.getByRole('link', { name: 'Add ranking rule' }).click();
-
-    await page.waitForLoadState('networkidle');
 
     await checkAccessibility(page);
 
@@ -102,8 +99,6 @@ test.describe('Keyword search', () => {
 
     await page.getByRole('button', { name: 'Create' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
   });
 
@@ -111,8 +106,6 @@ test.describe('Keyword search', () => {
     await expect(page.getByTitle('black hiking boots').first()).toBeVisible();
 
     await page.getByTitle('Toggle').first().locator('span').click();
-
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByTitle('Toggle').first().locator('input')
@@ -125,11 +118,7 @@ test.describe('Keyword search', () => {
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await page.getByRole('button', { name: 'Preview' }).click();
-
-    await page.waitForLoadState('networkidle');
 
     await checkAccessibility(page);
 
@@ -150,19 +139,13 @@ test.describe('Keyword search', () => {
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await page
       .getByRole('button', { name: 'Select country view for visual editor' })
       .click();
 
     await page.getByText('IE view').click();
 
-    await page.waitForLoadState('networkidle');
-
     await page.getByRole('button', { name: 'Preview' }).click();
-
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByText('View rule changes made on the website below')
@@ -197,7 +180,6 @@ test.describe('Keyword search', () => {
       '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
     );
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -234,8 +216,6 @@ test.describe('Keyword search', () => {
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await expect(page.getByRole('button', { name: 'Changes6' })).toBeVisible();
   });
 
@@ -244,7 +224,6 @@ test.describe('Keyword search', () => {
       '/search/rulesets/edit/2b948868-cbe2-4d21-8b8a-0fd713516add'
     );
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -253,7 +232,6 @@ test.describe('Keyword search', () => {
 
     await page.getByPlaceholder('Search for product').fill('dress');
     await page.waitForTimeout(400);
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByLabel('Position 2')
@@ -293,8 +271,6 @@ test.describe('Keyword search', () => {
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await expect(page.getByRole('button', { name: 'Changes6' })).toBeVisible();
   });
 
@@ -314,8 +290,6 @@ test.describe('Keyword search', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'Numeric Attributes' }).click();
 
@@ -343,15 +317,11 @@ test.describe('Keyword search', () => {
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
 
-    await page.waitForLoadState('networkidle');
-
     await page.getByRole('button', { name: 'Numeric Attributes' }).click();
 
     await page.getByRole('button', { name: 'Select to boost or bury' }).click();
 
     await page.getByRole('option', { name: 'Bury', exact: true }).click();
-
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByLabel('predictions.salesIn1Day.normalisedValue')
@@ -379,8 +349,6 @@ test.describe('Keyword search', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByRole('button', { name: 'Product description attributes' })
@@ -411,8 +379,6 @@ test.describe('Keyword search', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByRole('button', { name: 'Product description attributes' })
@@ -450,8 +416,6 @@ test.describe('Keyword search', () => {
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
 
-    await page.waitForLoadState('networkidle');
-
     await page
       .getByRole('button', { name: 'Product description attributes' })
       .click();
@@ -488,8 +452,6 @@ test.describe('Keyword search', () => {
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
 
-    await page.waitForLoadState('networkidle');
-
     await page
       .getByRole('button', { name: 'Product description attributes' })
       .click();
@@ -515,8 +477,6 @@ test.describe('Keyword search', () => {
     test('Should schedule a ruleset', async ({ page }) => {
       await page.goto('/search');
       await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
-
-      await page.waitForLoadState('networkidle');
 
       await page.getByRole('link', { name: 'Add ranking rule' }).click();
 
@@ -552,8 +512,6 @@ test.describe('Keyword search', () => {
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
-      await page.waitForLoadState('networkidle');
-
       await expect(
         page.getByRole('heading', { name: 'Product Grid' })
       ).toBeVisible();
@@ -562,8 +520,6 @@ test.describe('Keyword search', () => {
     test('should edit a scheduled ruleset', async ({ page }) => {
       await page.goto('/search');
       await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
-
-      await page.waitForLoadState('networkidle');
 
       await page.getByRole('button', { name: 'More options' }).first().click();
       await page.getByRole('link', { name: 'Edit ranking rule' }).click();
@@ -596,8 +552,6 @@ test.describe('Keyword search', () => {
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
 
-      await page.waitForLoadState('networkidle');
-
       await expect(
         page.getByRole('heading', { name: 'Product Grid' })
       ).toBeVisible();
@@ -606,8 +560,6 @@ test.describe('Keyword search', () => {
     test('should delete a scheduled ruleset', async ({ page }) => {
       await page.goto('/search');
       await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
-
-      await page.waitForLoadState('networkidle');
 
       await page.getByRole('button', { name: 'More options' }).first().click();
       await page.getByRole('link', { name: 'Edit ranking rule' }).click();
@@ -624,8 +576,6 @@ test.describe('Keyword search', () => {
       await page.getByTitle('Toggle').click();
 
       await page.getByRole('button', { name: 'Close schedule editor' }).click();
-
-      await page.waitForLoadState('networkidle');
 
       await expect(
         page.getByRole('heading', { name: 'Product Grid' })

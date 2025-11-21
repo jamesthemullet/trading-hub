@@ -92,7 +92,6 @@ test.describe('global rulesets', () => {
     );
 
     await page.goto('/global');
-    await page.waitForLoadState('networkidle');
   });
 
   test('lists global rulesets', async ({ page }) => {
@@ -109,7 +108,6 @@ test.describe('global rulesets', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -118,7 +116,6 @@ test.describe('global rulesets', () => {
 
     await page.getByPlaceholder('Search for product').fill('dress');
     await page.waitForTimeout(400);
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByLabel('Position 2')
@@ -141,8 +138,6 @@ test.describe('global rulesets', () => {
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
   });
 
@@ -152,7 +147,6 @@ test.describe('global rulesets', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -162,8 +156,6 @@ test.describe('global rulesets', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await checkAccessibility(page);
 
@@ -194,7 +186,6 @@ test.describe('global rulesets', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -204,8 +195,6 @@ test.describe('global rulesets', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByRole('button', { name: 'Product description attributes' })
@@ -234,7 +223,6 @@ test.describe('global rulesets', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -244,8 +232,6 @@ test.describe('global rulesets', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByRole('button', { name: 'Product description attributes' })
@@ -274,7 +260,6 @@ test.describe('global rulesets', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
@@ -284,8 +269,6 @@ test.describe('global rulesets', () => {
     await page
       .getByRole('button', { name: 'Create new attribute rule' })
       .click();
-
-    await page.waitForLoadState('networkidle');
 
     await page
       .getByRole('button', { name: 'Product description attributes' })

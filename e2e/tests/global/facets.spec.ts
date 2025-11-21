@@ -61,7 +61,6 @@ test.describe('global facets', () => {
       }
     );
     await page.goto('/global');
-    await page.waitForLoadState('networkidle');
   });
 
   test('edits a facet name', async ({ page }) => {
@@ -78,7 +77,6 @@ test.describe('global facets', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Create', exact: true }).click();
-    await page.waitForLoadState('networkidle');
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();

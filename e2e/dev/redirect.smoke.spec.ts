@@ -5,7 +5,6 @@ test.describe.configure({ mode: 'serial' });
 test.describe('Search Redirect', () => {
   test('creates new redirect', async ({ page }) => {
     await page.goto('/search/redirects');
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Keyword Redirect' })
     ).toBeVisible();
@@ -13,13 +12,10 @@ test.describe('Search Redirect', () => {
     await expect(
       page.getByRole('link', { name: 'Add redirect rule' })
     ).toBeVisible();
-    await expect(
-      page.getByText('0 results', { exact: true })
-    ).not.toBeVisible();
+    await expect(page.getByText('0 results', { exact: true })).toBeHidden();
 
     await page.getByRole('link', { name: 'Add redirect rule' }).click();
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Add KeyWord Redirect rule' })
     ).toBeVisible();
@@ -39,14 +35,12 @@ test.describe('Search Redirect', () => {
     await page.getByPlaceholder('c/').fill('/christmas/gravy');
 
     await page.getByRole('button', { name: 'Create' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Keyword Redirect' })
     ).toBeVisible();
 
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Gravy');
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(page.getByText('Gravy').first()).toBeVisible();
   });
@@ -54,16 +48,13 @@ test.describe('Search Redirect', () => {
   test('edits a redirect', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
     await page.goto('/search/redirects');
-    await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Gravy');
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(page.getByText('Gravy').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit redirect rule' }).click();
-    await page.waitForLoadState('networkidle');
 
     await page.getByPlaceholder('Select date range').click();
 
@@ -90,7 +81,6 @@ test.describe('Search Redirect', () => {
 
   test('duplicates and edits a rule', async ({ page }) => {
     await page.goto('/search/redirects');
-    await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Gravy');
     await page.waitForTimeout(2000);
@@ -98,13 +88,11 @@ test.describe('Search Redirect', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Duplicate' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Create a duplicate redirect rule' })
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Confirm' }).click();
-    await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit redirect rule' }).click();
     await expect(
@@ -129,10 +117,7 @@ test.describe('Search Redirect', () => {
 
     await page.getByRole('button', { name: 'Close' }).click();
 
-    await page.waitForLoadState('networkidle');
-
     await page.getByRole('button', { name: 'Save' }).click();
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByText('Gravy | Vegetarian Gravy').first()
@@ -141,7 +126,6 @@ test.describe('Search Redirect', () => {
 
   test('deletes a redirect', async ({ page }) => {
     await page.goto('/search/redirects');
-    await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Gravy');
     await page.waitForTimeout(2000);

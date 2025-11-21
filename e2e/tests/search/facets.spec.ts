@@ -68,12 +68,9 @@ test.describe('Search rulesets', () => {
 
     await checkAccessibility(page);
 
-    await page.waitForLoadState('networkidle');
-
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
@@ -123,13 +120,11 @@ test.describe('Search rulesets', () => {
   test('edits facet values', async ({ page }) => {
     page.goto('/search/facets/edit/abcdcae5-c3c4-455b-aeff-b7d2af65b702');
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Edit values' }).first().click();
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByTestId('algoControl attribute 0 SMOKE')

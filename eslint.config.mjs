@@ -17,6 +17,7 @@ import prettierConfig from 'eslint-config-prettier';
 import jestPlugin from 'eslint-plugin-jest';
 import tseslint from 'typescript-eslint';
 import storybookPlugin from 'eslint-plugin-storybook';
+import playwright from 'eslint-plugin-playwright';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -228,6 +229,13 @@ const eslint = [
         acc[`testing-library/${rule}`] = 'off';
         return acc;
       }, {}),
+    },
+  },
+  {
+    ...playwright.configs['flat/recommended'],
+    files: ['e2e/**'],
+    rules: {
+      ...playwright.configs['flat/recommended'].rules,
     },
   },
 ];

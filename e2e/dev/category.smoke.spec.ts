@@ -9,7 +9,6 @@ const TEST_CATEGORY_IDENTIFIER = 'SubCategory_1842397 - Socks';
 test.describe('Category Ranking', () => {
   test('creates new ruleset', async ({ page }) => {
     await page.goto('/category');
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
@@ -17,13 +16,10 @@ test.describe('Category Ranking', () => {
     await expect(
       page.getByRole('link', { name: 'Add facet rule' })
     ).toBeVisible();
-    await expect(
-      page.getByText('0 results', { exact: true })
-    ).not.toBeVisible();
+    await expect(page.getByText('0 results', { exact: true })).toBeHidden();
 
     await page.getByRole('link', { name: 'Add facet rule' }).click();
 
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
@@ -31,7 +27,6 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
     await expect(page.getByText(TEST_CATEGORY_NAME)).toBeVisible();
@@ -39,14 +34,12 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Close' }).click();
 
     await page.getByRole('button', { name: 'Create' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(
       page.getByText(TEST_CATEGORY_IDENTIFIER).first()
@@ -64,7 +57,6 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
     await expect(page.getByText('fabric')).toBeVisible();
@@ -89,7 +81,6 @@ test.describe('Category Ranking', () => {
       .click();
 
     await page.getByRole('button', { name: 'Preview', exact: true }).click();
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
     await expect(
@@ -103,10 +94,8 @@ test.describe('Category Ranking', () => {
   test('edits a ruleset', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
     await page.goto('/category');
-    await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await expect(
       page.getByText(TEST_CATEGORY_IDENTIFIER).first()
@@ -114,7 +103,6 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
 
     const product2Id =
       (await page
@@ -211,7 +199,6 @@ test.describe('Category Ranking', () => {
 
   test('keeps changes for facets and products', async ({ page }) => {
     await page.goto('/category');
-    await page.waitForLoadState('networkidle');
 
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
@@ -226,7 +213,6 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByTestId('Row showing Material as included')
@@ -247,14 +233,12 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(3000);
     await expect(page.getByRole('button', { name: 'Changes4' })).toBeVisible();
   });
 
   test('duplicates and edits a rule', async ({ page }) => {
     await page.goto('/category');
-    await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
@@ -264,13 +248,11 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Duplicate' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByRole('heading', { name: 'Create a duplicate rule' })
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Confirm' }).click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByText('SubCategory_1842397 - Socks').first()
     ).toBeVisible();
@@ -294,7 +276,6 @@ test.describe('Category Ranking', () => {
       .getByRole('button', { name: 'Select category IE_SubCategory_1012341' })
       .click();
     await page.getByRole('button', { name: 'Additional category' }).click();
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByText('Scarf', { exact: false }).first()
@@ -303,7 +284,6 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Close' }).click();
 
     await page.getByRole('button', { name: 'Save' }).click();
-    await page.waitForLoadState('networkidle');
 
     await expect(
       page.getByRole('heading', { name: 'Categories' })
@@ -315,7 +295,6 @@ test.describe('Category Ranking', () => {
 
   test('deletes a ruleset', async ({ page }) => {
     await page.goto('/category');
-    await page.waitForLoadState('networkidle');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
     await page.waitForTimeout(2000);
