@@ -22,7 +22,7 @@ jobs:
     environment:
       name: deveun
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check composite parameter for the reusable pipeline
         id: check-composite-vars
         uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn

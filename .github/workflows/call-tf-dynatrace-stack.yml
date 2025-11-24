@@ -26,7 +26,7 @@ jobs:
       oidc: ${{ steps.check-oidc.outputs.oidc }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Fetch use_oidc value
         shell: bash
         id: check-oidc
@@ -49,7 +49,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Upload Nonprod Dashboard Files (if exists)
         uses: actions/upload-artifact@v5

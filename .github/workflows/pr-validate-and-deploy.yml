@@ -38,7 +38,13 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Get Node version from package.json
+        id: get-versions-from-package-json
+        run: |
+          node_version=$(node -p "require('./package.json').engines.node")
+          echo "node-version=$node_version" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.0.0
@@ -126,7 +132,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
@@ -199,7 +205,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
@@ -320,7 +326,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - id: dynamic-env-name
         name: Get PR environment name
@@ -515,7 +521,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -641,7 +647,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.0.0

@@ -22,7 +22,7 @@ jobs:
     environment:
       name: deveun
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Log in via Azure CLI as federated SP
         uses: azure/login@v2.3.0
         with:
@@ -43,44 +43,14 @@ jobs:
               echo "App exists"
           else
               echo "App does not exist, creating..."
-              echo '
-                - allowedMemberTypes:
-                    - User
-                  description: Allows the app to update Merchandising Hub Category level rules
-                  displayName: MerchHubCategory.Write
-                  isEnabled: 'true'
-                  value: Cat.W
-                - allowedMemberTypes:
-                    - User
-                  description: Allows the app to read Merchandising Hub Category level rules
-                  displayName: MerchHubCategory.Read
-                  isEnabled: 'true'
-                  value: Cat.R
-                - allowedMemberTypes:
-                    - User
-                  description: Allows the app to update Merchandising Hub Search level rules
-                  displayName: MerchHubSearch.Write
-                  isEnabled: 'true'
-                  value: Search.W
-                - allowedMemberTypes:
-                    - User
-                  description: Allows the app to read Merchandising Hub Search level rules
-                  displayName: MerchHubSearch.Read
-                  isEnabled: 'true'
-                  value: Search.R
-                - allowedMemberTypes:
-                    - User
-                  description: Allows the app to update Merchandising Hub Global level rules
-                  displayName: MerchHubGlobal.Write
-                  isEnabled: 'true'
-                  value: Glob.W
-                - allowedMemberTypes:
-                    - User
-                  description: Allows the app to read Merchandising Hub Global level rules
-                  displayName: MerchHubGlobal.Read
-                  isEnabled: 'true'
-                  value: Glob.R
-              ' | yq -o=json '.' > manifest.json
+              jq -n '[
+                {allowedMemberTypes: ["User"], description: "Allows the app to update Merchandising Hub Category level rules", displayName: "MerchHubCategory.Write", isEnabled: true, value: "Cat.W"},
+                {allowedMemberTypes: ["User"], description: "Allows the app to read Merchandising Hub Category level rules", displayName: "MerchHubCategory.Read", isEnabled: true, value: "Cat.R"},
+                {allowedMemberTypes: ["User"], description: "Allows the app to update Merchandising Hub Search level rules", displayName: "MerchHubSearch.Write", isEnabled: true, value: "Search.W"},
+                {allowedMemberTypes: ["User"], description: "Allows the app to read Merchandising Hub Search level rules", displayName: "MerchHubSearch.Read", isEnabled: true, value: "Search.R"},
+                {allowedMemberTypes: ["User"], description: "Allows the app to update Merchandising Hub Global level rules", displayName: "MerchHubGlobal.Write", isEnabled: true, value: "Glob.W"},
+                {allowedMemberTypes: ["User"], description: "Allows the app to read Merchandising Hub Global level rules", displayName: "MerchHubGlobal.Read", isEnabled: true, value: "Glob.R"}
+              ]' > manifest.json
               az ad app create --display-name "$app_name" --app-roles @./manifest.json
               az ad sp create-for-rbac -n "$app_name"
               rm ./manifest.json
@@ -95,18 +65,15 @@ jobs:
               echo "Required resource access records exist"
           else
               echo "Required resource access records do not exist, adding..."
-              echo '
-          - resourceAppId: 00000003-0000-0000-c000-000000000000
-            resourceAccess:
-            - id: e1fe6dd8-ba31-4d61-89e7-88639da4683d # User.Read
-              type: Scope
-            - id: 7427e0e9-2fba-42fe-b0c0-848c9e6a8182 # offline_access
-              type: Scope
-            - id: 37f7f235-527c-4136-accd-4a02d197296e # openid
-              type: Scope
-            - id: 14dad69e-099b-42c9-810b-d002981feec1 # profile
-              type: Scope
-          ' | yq -o=json '.' > manifest.json
+              jq -n '[{
+                resourceAppId: "00000003-0000-0000-c000-000000000000",
+                resourceAccess: [
+                  {id: "e1fe6dd8-ba31-4d61-89e7-88639da4683d", type: "Scope"},
+                  {id: "7427e0e9-2fba-42fe-b0c0-848c9e6a8182", type: "Scope"},
+                  {id: "37f7f235-527c-4136-accd-4a02d197296e", type: "Scope"},
+                  {id: "14dad69e-099b-42c9-810b-d002981feec1", type: "Scope"}
+                ]
+              }]' > manifest.json
               cat manifest.json
               az ad app update --id "$object_id" --required-resource-accesses @./manifest.json
               rm ./manifest.json
