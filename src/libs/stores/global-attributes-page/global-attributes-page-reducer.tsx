@@ -23,7 +23,7 @@ type ToggleAllAttributes = {
   };
 };
 
-export type ToggleSelectedAttribute = {
+type ToggleSelectedAttribute = {
   type: 'TOGGLE_SELECTED_ATTRIBUTE';
   payload: {
     displayName: string;
@@ -102,7 +102,7 @@ type UpdateMergeGroup = {
   };
 };
 
-export type RemoveFromMergeGroup = {
+type RemoveFromMergeGroup = {
   type: 'REMOVE_FROM_MERGE_GROUP';
   payload: {
     valueToRemove: string;

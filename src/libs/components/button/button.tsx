@@ -246,8 +246,7 @@ type RawButtonProps = {
   type?: 'submit' | 'reset' | 'button' | undefined;
   isTextCentred?: boolean;
 };
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  RawButtonProps;
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & RawButtonProps;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
