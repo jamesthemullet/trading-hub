@@ -161,7 +161,7 @@
 
 ### Ticket 9: Migrate Dropdown, Tabs, Icons & UI Components
 
-**Components**: `Dropdown`, `Tabs`, `SVG/RenderSVG`, `ArrowButton`, `BulkActions`, `OperationSelector`
+**Components**: `Dropdown`, `Tabs`, `ArrowButton`, `BulkActions`, `OperationSelector`
 
 **Tasks**:
 
@@ -169,7 +169,6 @@
 - [ ] Migrate Dropdown component and dropdown.styles.tsx
 - [ ] Create tabs.module.css
 - [ ] Migrate Tabs component
-- [ ] Migrate RenderSVG component
 - [ ] Migrate ArrowButton component
 - [ ] Migrate BulkActions styles
 - [ ] Migrate OperationSelector component

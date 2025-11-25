@@ -350,7 +350,11 @@ export const CategorySearch = ({
                       value={searchValue}
                       onChange={onSearchChange}
                     />
-                    <StyledIcon name="Search" size={32} />
+                    <StyledIcon
+                      src="https://static.marksandspencer.com/icons/svgs/Search-v3-1.svg"
+                      width={24}
+                      height={24}
+                    />
                   </SearchForm>
                 </SearchWrapper>
               )}

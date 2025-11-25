@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Icon, Text } from '@/libs/components';
+import { Text } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -82,10 +82,10 @@ export const SearchValue = styled.button`
   }
 `;
 
-export const StyledIcon = styled(Icon)`
+export const StyledIcon = styled.img`
   position: absolute;
-  right: 4px;
-  top: 12px;
+  right: 8px;
+  top: 16px;
   pointer-events: none;
 `;
 

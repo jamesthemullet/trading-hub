@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Icon } from '../icon/icon';
+import Image from 'next/image';
 
 const Wrapper = styled.div<{ isInModal?: boolean }>`
   display: flex;
@@ -44,7 +44,12 @@ const AnimatedLoader = styled.div`
 export const Loader = ({ isInModal = false }: { isInModal?: boolean }) => (
   <Wrapper isInModal={isInModal}>
     <AnimatedLoader aria-label="loading content">
-      <Icon name="Loader" size={64} />
+      <Image
+        src="https://static.marksandspencer.com/icons/svgs/Loader.svg"
+        alt="loader"
+        width={64}
+        height={64}
+      />
     </AnimatedLoader>
   </Wrapper>
 );

@@ -9,7 +9,6 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { CombinedDropdown, Loader, Search } from '@/libs/components';
-import { Icon } from '@/libs/components/icon/icon';
 import {
   fonts,
   Label,
@@ -144,6 +143,9 @@ const ShowAllButton = styled.button`
   align-items: center;
   top: 20px;
 `;
+const FilterIcon = styled.img`
+  margin-right: ${spacing(1)};
+`;
 
 const FacetWrapper = styled.div`
   position: relative;
@@ -266,6 +268,16 @@ const ProductImage = styled.div`
 const ProductInfo = styled.div`
   padding: ${spacing(1)} 0;
 `;
+const DropdownIcon = styled.img<{ isDropdownOpen: boolean }>`
+  margin-left: auto;
+
+  ${({ isDropdownOpen }) =>
+    isDropdownOpen
+      ? `
+    transform: rotate(180deg);
+  `
+      : ''}
+`;
 
 const FacetInfo = ({
   currency,
@@ -286,10 +298,11 @@ const FacetInfo = ({
       <FacetButton onClick={() => setIsDropdownOpen(id)}>
         <FacetText as="span">
           {id}{' '}
-          <Icon
-            name={isDropdownOpen ? 'ChevronUpDefault' : 'ChevronDownDefault'}
-            color="#000"
-            size={20}
+          <DropdownIcon
+            isDropdownOpen={isDropdownOpen}
+            src="https://static.marksandspencer.com/icons/svgs/ChevronUpDefault.svg"
+            width={20}
+            height={20}
           />
         </FacetText>
       </FacetButton>
@@ -459,7 +472,12 @@ export const Preview = ({
                   <ShowAllButton
                     onClick={() => setShowAllFacets(!showAllFacets)}
                   >
-                    <Icon name="FilterSwitch" size={32} />
+                    <FilterIcon
+                      src="https://static.marksandspencer.com/icons/svgs/FilterSwitch-v2.svg"
+                      alt="filterSwitch"
+                      width={32}
+                      height={32}
+                    />
                     <Text as="span" isStrong style={{ fontSize: '16px' }}>
                       {showAllFacets ? 'Fewer' : 'All'} Filters
                     </Text>

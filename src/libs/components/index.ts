@@ -11,7 +11,6 @@ export * from './filter/filter';
 export * from './filtered-results-panel/filtered-results-panel';
 export * from './form-label/form-label';
 export * from './heading/heading';
-export * from './icon/icon';
 export * from './infoBox/info-box';
 export * from './loader/loader';
 export * from './navigation/navigation';

@@ -333,7 +333,7 @@ describe('Preview', () => {
       screen.queryByRole('button', { name: 'Style' })
     ).not.toBeInTheDocument();
     const viewMoreButton = screen.getByRole('button', {
-      name: 'All Filters',
+      name: 'filterSwitch All Filters',
     });
 
     act(() => {
