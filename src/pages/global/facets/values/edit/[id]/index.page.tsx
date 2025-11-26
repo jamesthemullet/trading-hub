@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { type ChangeEvent, useMemo, useState } from 'react';
 
-import type { MerchandisingReturnedGlobalFacet } from '@/libs/api/generated/open-api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { GlobalFacetAttributesPageLayout } from '@/libs/features';
@@ -47,7 +46,7 @@ const Page = () => {
   const facet = useMemo(
     () => facets.find((f) => f.id === facetId),
     [facets, facetId]
-  ) as MerchandisingReturnedGlobalFacet;
+  );
 
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
@@ -78,7 +77,7 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      {!!attributeValues && showNewFacetValuesPage ? (
+      {!!attributeValues && showNewFacetValuesPage && facet ? (
         <GlobalFacetAttributesPageLayout
           facet={facet}
           attributeValues={attributeValues}

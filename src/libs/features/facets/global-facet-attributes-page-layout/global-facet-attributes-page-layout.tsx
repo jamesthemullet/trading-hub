@@ -2,7 +2,6 @@ import {
   type ChangeEvent,
   useEffect,
   useId,
-  useMemo,
   useReducer,
   useState,
 } from 'react';
@@ -86,16 +85,17 @@ export const GlobalFacetAttributesPageLayout = ({
       type: 'INITIALISE_STATE',
       payload: {
         boostedValues:
-          facet.boosted?.map((value) => ({ displayValue: value })) || [],
+          facet?.boosted?.map((value) => ({ displayValue: value })) || [],
         excludedValues:
-          facet.excludedValues?.map((value) => ({ displayValue: value })) || [],
+          facet?.excludedValues?.map((value) => ({ displayValue: value })) ||
+          [],
         nonBoostedExcludedValues: attributeValues.filter(
           ({ displayValue }) =>
-            !facet.boosted?.includes(displayValue) &&
-            !facet.excludedValues?.includes(displayValue)
+            !facet?.boosted?.includes(displayValue) &&
+            !facet?.excludedValues?.includes(displayValue)
         ),
         merged:
-          facet.merged ||
+          facet?.merged ||
           // istanbul ignore next
           [],
       },
@@ -190,24 +190,14 @@ export const GlobalFacetAttributesPageLayout = ({
   };
 
   // render
-  const includedValues = useMemo(
-    () => globalAttributesLocalState.boostedRows.length,
-    [globalAttributesLocalState.boostedRows]
-  );
-
-  const excludedValues = useMemo(
-    () => globalAttributesLocalState.excludedRows.length,
-    [globalAttributesLocalState.excludedRows]
-  );
-
   return (
     <>
       <FacetAttributesPageLayoutHeader
         algoControlValues={
-          attributeValues.length - includedValues - excludedValues
+          globalAttributesLocalState.nonBoostedExcludedRows.length
         }
-        includedValues={includedValues}
-        excludedValues={excludedValues}
+        includedValues={globalAttributesLocalState.boostedRows.length}
+        excludedValues={globalAttributesLocalState.excludedRows.length}
         displayName={displayName}
         facetType="global"
         isSaveDisabled={false}

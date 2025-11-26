@@ -156,7 +156,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
 
     expect(screen.getByTestId('include-only-count')).toHaveTextContent('2');
     expect(screen.getByTestId('exclude-only-count')).toHaveTextContent('1');
-    expect(screen.getByTestId('algo-control-count')).toHaveTextContent('2');
+    expect(screen.getByTestId('algo-control-count')).toHaveTextContent('5');
   });
 
   it('handles error response in onSave', async () => {
