@@ -1,5 +1,6 @@
 .headingWrapper {
   background: var(--color-surface-surface-container);
+  color: var(--color-on-surface-variant-on-surface-variant);
   box-shadow: var(--color-surface-on-surface-container) 0 0 4px;
   padding: var(--mns-spacing-1);
   display: flex;
@@ -12,12 +13,6 @@
   @media (--mns-media-xxl-up) {
     padding: var(--mns-spacing-1) var(--mns-spacing-2);
   }
-}
-
-.breadcrumbText {
-  /* stylelint-disable-next-line property-disallowed-list */
-  font-size: var(--typography-size-body-sm);
-  color: var(--color-on-surface-variant-on-surface-variant);
 }
 
 .headingSpacer {

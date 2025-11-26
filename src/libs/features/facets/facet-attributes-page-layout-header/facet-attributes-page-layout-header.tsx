@@ -71,9 +71,7 @@ export const FacetAttributesPageLayoutHeader = ({
       </FlagAndButtons>
       <StyledText>Value settings of: {displayName}</StyledText>
 
-      {error && (
-        <ErrorMessage role="alert">Error updating facet: {error}</ErrorMessage>
-      )}
+      {error && <ErrorMessage>Error updating facet: {error}</ErrorMessage>}
 
       <Summary>
         <SummaryBox data-testid="include-only-count">

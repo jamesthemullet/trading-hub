@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
 import type { MerchandisingKeywordRedirect } from '@/libs/api';
-import { CentredError, Heading, Loader } from '@/libs/components';
+import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRedirectCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -42,7 +42,7 @@ const CreateRedirect = () => {
         ]}
       />
 
-      {error && <CentredError>{error}</CentredError>}
+      {error && <ErrorMessage centred>{error}</ErrorMessage>}
 
       <Redirect
         onCreate={createNewRedirect}

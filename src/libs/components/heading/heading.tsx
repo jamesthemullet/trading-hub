@@ -1,4 +1,5 @@
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
+import { Typography } from '../typography/typography';
 import styles from './heading.module.css';
 
 type Props = {
@@ -12,9 +13,14 @@ export const Heading = ({ breadcrumbs }: Props) => {
       <div className={styles.headingWrapper}>
         <Breadcrumb>
           {breadcrumbs.map((breadcrumb) => (
-            <span className={styles.breadcrumbText} key={breadcrumb}>
+            <Typography
+              as="span"
+              variant="bodySmall"
+              className={styles.breadcrumbText}
+              key={breadcrumb}
+            >
               {breadcrumb}
-            </span>
+            </Typography>
           ))}
         </Breadcrumb>
       </div>

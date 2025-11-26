@@ -67,7 +67,7 @@ const Page = ({ id }: PageProps) => {
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
       />
 
-      {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
 
       {isLoading ? (
         <Loader />

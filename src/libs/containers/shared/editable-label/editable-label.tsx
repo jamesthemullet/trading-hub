@@ -57,7 +57,7 @@ const StyledInput = styled(Input)<{ showErrorState: boolean }>`
   padding-right: 30px;
 
   ${({ showErrorState }) =>
-    showErrorState && `border: 1px solid ${color.saleRed}`};
+    showErrorState && `border: 1px solid ${color.state.error.error}`};
 `;
 
 const StyledText = styled(Text)`
@@ -72,7 +72,7 @@ const StyledIcon = styled(Image)`
 `;
 
 const StyledError = styled(Text)`
-  color: ${color.saleRed};
+  color: ${color.state.error.error};
   margin-top: ${spacing(0.5)};
 `;
 

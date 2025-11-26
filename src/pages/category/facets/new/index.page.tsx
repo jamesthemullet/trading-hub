@@ -80,7 +80,7 @@ const Page = () => {
       <Heading breadcrumbs={['Categories', 'Facet Management', 'New']} />
 
       {createRuleSetError && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst creating new category rule set: {createRuleSetError}
         </ErrorMessage>
       )}

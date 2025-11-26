@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
 export const fonts = {
@@ -68,24 +67,6 @@ export const Label = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
   font-size: 14px;
   line-height: 1.5714;
   margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
-`;
-
-export const ErrorMessage = styled.p`
-  ${commonStyles}
-  color: ${color.saleRed};
-  margin-top: ${spacing(1)};
-  margin-left: ${spacing(1)};
-`;
-
-export const CentredError = styled.p`
-  ${commonStyles}
-  display: grid;
-  height: 100vh;
-  justify-items: center;
-  align-items: center;
-  color: ${color.saleRed};
-  text-align: center;
-  padding: ${spacing(4)};
 `;
 
 type TypographyProps = {

@@ -145,12 +145,12 @@ const GlobalFacetsPanel = ({
   return (
     <>
       {globalFacetsListError && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst retrieving global facet list: {globalFacetsListError}
         </ErrorMessage>
       )}
       {updatingGlobalFacetError && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst updating global facet: {updatingGlobalFacetError}
         </ErrorMessage>
       )}

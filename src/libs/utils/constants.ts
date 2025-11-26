@@ -4,7 +4,6 @@ export const color = {
   lightGrey: '#ccc',
   backgroundDarkGrey: '#f0f0f0',
   successGreenBackground: '#f4faed',
-  saleRed: '#A6192E',
   infoBlueBackground: '#eaf0f3',
   selectionBox: '#4273b7',
   improvedFit: '#EADF12',

@@ -548,7 +548,7 @@ export const GlobalFacetPanelModalContent = ({
           </HeadingContainer>
 
           {updateGlobalFacetError && (
-            <ErrorMessage role="alert">
+            <ErrorMessage>
               Error updating facet: {updateGlobalFacetError}
             </ErrorMessage>
           )}
@@ -685,7 +685,7 @@ export const GlobalFacetPanelModal = ({
           </HeadingContainer>
 
           {attributeValuesError && (
-            <ErrorMessage role="alert">
+            <ErrorMessage>
               Error retrieving values: {attributeValuesError}
             </ErrorMessage>
           )}

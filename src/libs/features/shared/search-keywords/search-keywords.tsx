@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import { Button, Count } from '@/libs/components';
+import { Button, Count, ErrorMessage } from '@/libs/components';
 import {
   Arrow,
   ArrowContainer,
@@ -28,7 +28,6 @@ import {
   StyledSearchContainer,
 } from '@/libs/components/search-keywords/search-keywords-modal.styles';
 import {
-  ErrorMessage,
   Text,
   Typography,
 } from '@/libs/components/typography/typography.styles';
@@ -338,13 +337,11 @@ export const SearchKeywords = ({
                     />
                   )}
                 </KeywordList>
-                {duplicationError && (
-                  <ErrorMessage style={{ padding: 0 }} role="alert">
-                    {duplicationError}
-                  </ErrorMessage>
-                )}
               </ModalWrapper>
             </ModalContainer>
+            {duplicationError && (
+              <ErrorMessage>{duplicationError}</ErrorMessage>
+            )}
           </Modal.Body>
           <ModalFooter>
             {unfinishedKeyword && (

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
-import { CentredError, Heading } from '@/libs/components';
+import { ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
@@ -132,11 +132,11 @@ const Page = () => {
         ]}
       />
 
-      {error && <CentredError>{error}</CentredError>}
+      {error && <ErrorMessage centred>{error}</ErrorMessage>}
       {updateRuleSetError && (
-        <CentredError role="alert">
+        <ErrorMessage centred>
           Error whilst updating ruleset: {updateRuleSetError}
-        </CentredError>
+        </ErrorMessage>
       )}
 
       {!isLoading && showNewFacetValuesPage && selectedFacet ? (

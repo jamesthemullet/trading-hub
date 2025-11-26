@@ -78,12 +78,10 @@ const Page = ({ id }: { id: string }) => {
       <Heading breadcrumbs={['Search', 'Facet Management', 'Editor']} />
 
       {error && (
-        <ErrorMessage role="alert">
-          Error whilst retrieving ruleset: {error}
-        </ErrorMessage>
+        <ErrorMessage>Error whilst retrieving ruleset: {error}</ErrorMessage>
       )}
       {updateRuleSetError && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst updating ruleset: {updateRuleSetError}
         </ErrorMessage>
       )}

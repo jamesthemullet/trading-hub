@@ -346,7 +346,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
               </HeadingContainer>
 
               {attributeValuesError && (
-                <ErrorMessage role="alert">
+                <ErrorMessage>
                   Error whilst retrieving values: {attributeValuesError}
                 </ErrorMessage>
               )}

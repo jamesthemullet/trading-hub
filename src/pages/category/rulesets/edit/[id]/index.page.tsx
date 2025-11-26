@@ -65,7 +65,7 @@ const Page = ({ id }: PageProps) => {
 
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
 
-      {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
 
       {isLoading ? (
         <Loader />

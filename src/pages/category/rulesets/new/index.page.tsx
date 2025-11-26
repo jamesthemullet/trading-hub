@@ -53,7 +53,7 @@ const NewRuleSetPage = () => {
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
 
       {error && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst creating new category rule set: {error}
         </ErrorMessage>
       )}

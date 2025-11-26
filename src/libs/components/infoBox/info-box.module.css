@@ -6,10 +6,8 @@
   height: 56px;
   background-color: var(--color-role-info-info-container);
   border-left: 5px solid var(--color-role-info-on-info-container);
-}
 
-.infoBoxText {
-  margin-left: 18px;
-  /* stylelint-disable-next-line property-disallowed-list */
-  font-size: var(--typography-size-body-sm);
+  p {
+    margin-left: 18px;
+  }
 }

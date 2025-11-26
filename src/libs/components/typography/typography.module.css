@@ -1,0 +1,105 @@
+/* stylelint-disable property-disallowed-list */
+
+.typography {
+  color: var(--color-accent-secondary-on-secondary-container);
+  font-family: 'New MS London', Helvetica, Arial, sans-serif;
+  font-weight: var(--typography-weight-regular);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+.typography[data-strong='true'] {
+  font-weight: var(--typography-weight-semibold);
+}
+
+.typography[data-with-margin='true'] {
+  margin-bottom: var(--mns-spacing-1);
+}
+
+.typography[data-align='left'] {
+  text-align: left;
+}
+
+.typography[data-align='right'] {
+  text-align: right;
+}
+
+.typography[data-align='center'] {
+  text-align: center;
+}
+
+.typography[data-variant='bodyLarge'] {
+  font-size: var(--typography-size-body-lg);
+  line-height: var(--typography-line-height-body-lg);
+}
+
+.typography[data-variant='bodyMedium'] {
+  font-size: var(--typography-size-body-md);
+  line-height: var(--typography-line-height-body-md);
+}
+
+.typography[data-variant='bodySmall'] {
+  font-size: var(--typography-size-body-sm);
+  line-height: var(--typography-line-height-body-sm);
+}
+
+.typography[data-variant='displayLarge'] {
+  font-size: var(--typography-size-display-lg);
+  line-height: var(--typography-line-height-display-lg);
+}
+
+.typography[data-variant='displayMedium'] {
+  font-size: var(--typography-size-display-md);
+  line-height: var(--typography-line-height-display-md);
+}
+
+.typography[data-variant='displaySmall'] {
+  font-size: var(--typography-size-display-sm);
+  line-height: var(--typography-line-height-display-sm);
+}
+
+.typography[data-variant='headlineLarge'] {
+  font-size: var(--typography-size-headline-lg);
+  line-height: var(--typography-line-height-headline-lg);
+}
+
+.typography[data-variant='headlineMedium'] {
+  font-size: var(--typography-size-headline-md);
+  line-height: var(--typography-line-height-headline-md);
+}
+
+.typography[data-variant='headlineSmall'] {
+  font-size: var(--typography-size-headline-sm);
+  line-height: var(--typography-line-height-headline-sm);
+}
+
+.typography[data-variant='labelLarge'] {
+  font-size: var(--typography-size-label-lg);
+  line-height: var(--typography-line-height-label-lg);
+}
+
+.typography[data-variant='labelMedium'] {
+  font-size: var(--typography-size-label-md);
+  line-height: var(--typography-line-height-label-md);
+}
+
+.typography[data-variant='labelSmall'] {
+  font-size: var(--typography-size-label-sm);
+  line-height: var(--typography-line-height-label-sm);
+}
+
+.typography[data-variant='titleLarge'] {
+  font-size: var(--typography-size-title-lg);
+  line-height: var(--typography-line-height-title-lg);
+}
+
+.typography[data-variant='titleMedium'] {
+  font-size: var(--typography-size-title-md);
+  line-height: var(--typography-line-height-title-md);
+}
+
+.typography[data-variant='titleSmall'] {
+  font-size: var(--typography-size-title-sm);
+  line-height: var(--typography-line-height-title-sm);
+}

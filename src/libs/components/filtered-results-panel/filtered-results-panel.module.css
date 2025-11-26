@@ -6,10 +6,8 @@
   margin-left: auto;
   margin-right: var(--mns-spacing-1);
   margin-bottom: var(--mns-spacing-4);
-  /* stylelint-disable-next-line property-disallowed-list */
-  font-size: var(--typography-size-body-sm);
-}
 
-.totalResultsLabel {
-  margin-left: var(--mns-spacing-4);
+  output {
+    margin-left: var(--mns-spacing-4);
+  }
 }

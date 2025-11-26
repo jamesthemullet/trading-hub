@@ -9,7 +9,4 @@
   height: 16px;
   display: inline-block;
   text-align: center;
-  /* stylelint-disable-next-line property-disallowed-list */
-  font-size: var(--typography-size-label-sm);
-  line-height: var(--typography-line-height-label-sm);
 }

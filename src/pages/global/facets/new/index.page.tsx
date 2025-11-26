@@ -40,7 +40,7 @@ const Page = () => {
       <Heading breadcrumbs={['Global', 'Facet Management', 'New']} />
 
       {error && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst creating new global rule set: {error}
         </ErrorMessage>
       )}

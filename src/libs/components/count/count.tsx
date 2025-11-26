@@ -1,3 +1,4 @@
+import { Typography } from '../typography/typography';
 import styles from './count.module.css';
 
 export const Count = ({
@@ -7,7 +8,13 @@ export const Count = ({
   children: React.ReactNode;
   'aria-label'?: string;
 }) => (
-  <output className={styles.count} aria-label={ariaLabel}>
+  <Typography
+    as="output"
+    variant="labelSmall"
+    className={styles.count}
+    aria-label={ariaLabel}
+    align="center"
+  >
     {children}
-  </output>
+  </Typography>
 );

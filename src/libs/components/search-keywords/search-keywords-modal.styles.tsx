@@ -24,7 +24,9 @@ export const KeywordList = styled.ul<{ unfinishedKeyword: boolean }>`
   align-content: baseline;
   border-bottom: 1px solid;
   border-bottom-color: ${({ unfinishedKeyword }) =>
-    unfinishedKeyword ? color.saleRed : color.surfaceDark.onSurfaceDarkVariant};
+    unfinishedKeyword
+      ? color.state.error.error
+      : color.surfaceDark.onSurfaceDarkVariant};
 `;
 
 export const KeyWordPill = styled.li<{ isSelected: boolean }>`
@@ -133,7 +135,7 @@ export const ErrorContainer = styled.div`
 `;
 
 export const ErrorText = styled.p`
-  color: ${color.saleRed};
+  color: ${color.state.error.error};
 `;
 
 export const StyledCloseButton = styled(Button)`

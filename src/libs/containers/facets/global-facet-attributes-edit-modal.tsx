@@ -75,7 +75,7 @@ const InputContainer = styled.div<{ showErrorState: boolean }>`
     background: ${color.surface.surface};
 
     ${({ showErrorState }) =>
-      showErrorState && `border: 1px solid ${color.saleRed}`};
+      showErrorState && `border: 1px solid ${color.state.error.error}`};
   }
 `;
 const StyledIcon = styled(Image)`
@@ -85,7 +85,7 @@ const StyledIcon = styled(Image)`
   transform: translateY(-50%);
 `;
 const StyledError = styled(Text)`
-  color: ${color.saleRed};
+  color: ${color.state.error.error};
   margin-top: ${spacing(0.5)};
 `;
 const AttributesContainer = styled.div`

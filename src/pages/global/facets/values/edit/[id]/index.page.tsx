@@ -66,13 +66,13 @@ const Page = () => {
       />
 
       {globalFacetsListError && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst retrieving global facet list: {globalFacetsListError}
         </ErrorMessage>
       )}
 
       {attributeValuesError && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error retrieving values: {attributeValuesError}
         </ErrorMessage>
       )}

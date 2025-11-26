@@ -1,0 +1,15 @@
+.errorMessage {
+  color: var(--color-state-error-error);
+  margin-top: var(--mns-spacing-1);
+  margin-left: var(--mns-spacing-1);
+}
+
+.centredError {
+  color: var(--color-state-error-error);
+  display: grid;
+  height: 100vh;
+  justify-items: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--mns-spacing-4);
+}

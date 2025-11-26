@@ -37,7 +37,7 @@ const NewRuleSetPage = () => {
       <Heading breadcrumbs={['Global', 'Ranking rules', 'Product Grid']} />
 
       {error && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst creating new global rule set: {error}
         </ErrorMessage>
       )}

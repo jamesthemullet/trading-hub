@@ -1,6 +1,6 @@
 import type { MerchandisingCountryCode } from '@/libs/api';
+import { ErrorMessage } from '@/libs/components';
 import type { AttributeEdit, RulesetAttribute } from '@/libs/components/types';
-import { ErrorMessage } from '@/libs/components/typography/typography.styles';
 import { useAttributes } from '@/libs/hooks';
 
 import { AddAttribute } from '../add-attribute/add-attribute';
@@ -44,10 +44,10 @@ export const AddSetAttribute = ({
   return (
     <>
       {alphanumericAttributesError && (
-        <ErrorMessage role="alert">{alphanumericAttributesError}</ErrorMessage>
+        <ErrorMessage>{alphanumericAttributesError}</ErrorMessage>
       )}
       {numericAttributesError && (
-        <ErrorMessage role="alert">{numericAttributesError}</ErrorMessage>
+        <ErrorMessage>{numericAttributesError}</ErrorMessage>
       )}
       <AddAttribute
         onCancel={onCancel}

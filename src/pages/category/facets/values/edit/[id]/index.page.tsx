@@ -151,12 +151,12 @@ const Page = () => {
       />
 
       {getRulesetDetailError && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst retrieving ruleset: {getRulesetDetailError}
         </ErrorMessage>
       )}
       {updateRulesetError && (
-        <ErrorMessage role="alert">
+        <ErrorMessage>
           Error whilst updating ruleset: {updateRulesetError}
         </ErrorMessage>
       )}

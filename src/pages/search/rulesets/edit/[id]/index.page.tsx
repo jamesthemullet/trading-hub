@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
-import { CentredError, Heading, Loader } from '@/libs/components';
+import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -61,7 +61,7 @@ const Page = ({ id }: PageProps) => {
         breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
       />
 
-      {error && <CentredError>{error}</CentredError>}
+      {error && <ErrorMessage centred>{error}</ErrorMessage>}
 
       {!isLoading && (
         <Ruleset
