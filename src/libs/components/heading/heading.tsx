@@ -1,33 +1,5 @@
-import styled from '@emotion/styled';
-
-import { mediaQuery } from '@/libs/utils/media-query';
-import { spacing } from '@/libs/utils/spacing';
-
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
-import { Text } from '../typography/typography.styles';
-
-const BreadcrumbText = styled(Text)`
-  color: #000;
-`;
-
-const HeadingWrapper = styled.div`
-  background: #fff;
-  box-shadow: #000 0 0 4px;
-  padding: ${spacing(1)};
-  display: flex;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 3;
-
-  ${mediaQuery('xxl')} {
-    padding: ${spacing(1)} ${spacing(2)};
-  }
-`;
-
-const HeadingSpacer = styled.div`
-  height: ${spacing(5)};
-`;
+import styles from './heading.module.css';
 
 type Props = {
   breadcrumbs: string[];
@@ -36,16 +8,16 @@ type Props = {
 export const Heading = ({ breadcrumbs }: Props) => {
   return (
     <>
-      <HeadingSpacer />
-      <HeadingWrapper>
+      <div className={styles.headingSpacer} />
+      <div className={styles.headingWrapper}>
         <Breadcrumb>
           {breadcrumbs.map((breadcrumb) => (
-            <BreadcrumbText as="span" key={breadcrumb}>
+            <span className={styles.breadcrumbText} key={breadcrumb}>
               {breadcrumb}
-            </BreadcrumbText>
+            </span>
           ))}
         </Breadcrumb>
-      </HeadingWrapper>
+      </div>
     </>
   );
 };

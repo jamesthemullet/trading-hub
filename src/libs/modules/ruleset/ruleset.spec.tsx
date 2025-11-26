@@ -1297,7 +1297,9 @@ describe('Ruleset', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByRole('status')).toHaveTextContent('3 results');
+        expect(screen.getByLabelText('number of results')).toHaveTextContent(
+          '3 results'
+        );
       });
 
       await user.clear(
@@ -1737,9 +1739,9 @@ describe('Ruleset', () => {
 
       await waitFor(
         () =>
-          expect(screen.getByRole('status')).toHaveTextContent(
-            '2 attribute rules'
-          ),
+          expect(
+            screen.getByLabelText('number of attribute rules')
+          ).toHaveTextContent('2 attribute rules'),
         { timeout: 3000 }
       );
     });
@@ -1770,9 +1772,9 @@ describe('Ruleset', () => {
 
       await waitFor(
         () =>
-          expect(screen.getByRole('status')).toHaveTextContent(
-            '2 attribute rules'
-          ),
+          expect(
+            screen.getByLabelText('number of attribute rules')
+          ).toHaveTextContent('2 attribute rules'),
         { timeout: 3000 }
       );
     });
@@ -1803,9 +1805,9 @@ describe('Ruleset', () => {
 
       await waitFor(
         () =>
-          expect(screen.getByRole('status')).toHaveTextContent(
-            '2 attribute rules'
-          ),
+          expect(
+            screen.getByLabelText('number of attribute rules')
+          ).toHaveTextContent('2 attribute rules'),
         { timeout: 3000 }
       );
     });
@@ -1836,9 +1838,9 @@ describe('Ruleset', () => {
 
       await waitFor(
         () =>
-          expect(screen.getByRole('status')).toHaveTextContent(
-            '2 attribute rules'
-          ),
+          expect(
+            screen.getByLabelText('number of attribute rules')
+          ).toHaveTextContent('2 attribute rules'),
         { timeout: 3000 }
       );
     });

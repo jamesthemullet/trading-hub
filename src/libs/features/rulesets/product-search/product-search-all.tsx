@@ -197,7 +197,7 @@ export const ProductSearchAll = ({
         <InfoContainer rulesetType={rulesetType}>
           {products.length > 0 && (
             <>
-              <output aria-live="polite">
+              <output aria-live="polite" aria-label="number of results">
                 {products.length} {pluralize('results', products.length)}
               </output>
               <SelectAll rulesetType={rulesetType}>

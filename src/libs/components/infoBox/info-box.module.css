@@ -1,0 +1,15 @@
+.infoBox {
+  display: flex;
+  align-items: center;
+  padding: var(--mns-spacing-2) var(--mns-spacing-1-5);
+  width: 340px;
+  height: 56px;
+  background-color: var(--color-role-info-info-container);
+  border-left: 5px solid var(--color-role-info-on-info-container);
+}
+
+.infoBoxText {
+  margin-left: 18px;
+  /* stylelint-disable-next-line property-disallowed-list */
+  font-size: var(--typography-size-body-sm);
+}

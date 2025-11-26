@@ -1,5 +1,9 @@
 module.exports = {
   plugins: {
+    '@csstools/postcss-global-data': {
+      files: ['./src/libs/styles/breakpoints.css'],
+    },
+    'postcss-custom-media': {},
     'postcss-preset-mantine': {},
     'postcss-simple-vars': {
       variables: {

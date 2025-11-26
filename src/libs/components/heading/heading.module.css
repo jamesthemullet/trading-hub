@@ -1,0 +1,25 @@
+.headingWrapper {
+  background: var(--color-surface-surface-container);
+  box-shadow: var(--color-surface-on-surface-container) 0 0 4px;
+  padding: var(--mns-spacing-1);
+  display: flex;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+  height: var(--mns-spacing-5);
+
+  @media (--mns-media-xxl-up) {
+    padding: var(--mns-spacing-1) var(--mns-spacing-2);
+  }
+}
+
+.breadcrumbText {
+  /* stylelint-disable-next-line property-disallowed-list */
+  font-size: var(--typography-size-body-sm);
+  color: var(--color-on-surface-variant-on-surface-variant);
+}
+
+.headingSpacer {
+  height: var(--mns-spacing-5);
+}

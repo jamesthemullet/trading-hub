@@ -1,5 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@/libs/styles/globals.css';
 
 import { css, Global } from '@emotion/react';
 import type React from 'react';

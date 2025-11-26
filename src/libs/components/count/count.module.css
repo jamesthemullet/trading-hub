@@ -1,0 +1,15 @@
+.count {
+  background: var(--color-accent-primary-primary);
+  color: var(--color-accent-primary-on-primary);
+  margin-left: var(--mns-spacing-0-5);
+  border-radius: var(--mns-spacing-1);
+  padding: 0 4px;
+  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  display: inline-block;
+  text-align: center;
+  /* stylelint-disable-next-line property-disallowed-list */
+  font-size: var(--typography-size-label-sm);
+  line-height: var(--typography-line-height-label-sm);
+}
