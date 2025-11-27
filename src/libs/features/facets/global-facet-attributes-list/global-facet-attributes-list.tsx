@@ -210,6 +210,7 @@ export const GlobalFacetAttributesList = ({
                 displayName={displayName}
                 handleRemoveFromMerge={handleRemoveFromMerge}
                 dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
+                writeEnabled={writeEnabled}
               />
               <Col>
                 {displayType === 'included' && order && (
@@ -226,6 +227,7 @@ export const GlobalFacetAttributesList = ({
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
                     onInputKeyDown={handleInputKeyDown}
+                    writeEnabled={writeEnabled}
                   />
                 )}
               </Col>
@@ -243,6 +245,7 @@ export const GlobalFacetAttributesList = ({
                 countryCode={countryCode}
                 dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                 setEditingValues={setEditingValues}
+                writeEnabled={writeEnabled}
               />
 
               <Col>
@@ -255,6 +258,7 @@ export const GlobalFacetAttributesList = ({
                     attributes={attributes}
                     rows={filteredRows}
                     disableArrows={totalSelectedItems > 0}
+                    writeEnabled={writeEnabled}
                     dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                   />
                 )}
@@ -360,22 +364,24 @@ export const GlobalFacetAttributesList = ({
             ) : (
               label === null && (
                 <Col>
-                  <input
-                    type="checkbox"
-                    aria-label="Select all facet attributes"
-                    checked={hasSelectedAllAttributes}
-                    onChange={() => {
-                      setIsAwaitingUpdate(true);
-                      requestAnimationFrame(() => {
-                        dispatch({
-                          type: 'TOGGLE_ALL_ATTRIBUTES',
-                          payload: {
-                            allSelected: !hasSelectedAllAttributes,
-                          },
+                  {writeEnabled && (
+                    <input
+                      type="checkbox"
+                      aria-label="Select all facet attributes"
+                      checked={hasSelectedAllAttributes}
+                      onChange={() => {
+                        setIsAwaitingUpdate(true);
+                        requestAnimationFrame(() => {
+                          dispatch({
+                            type: 'TOGGLE_ALL_ATTRIBUTES',
+                            payload: {
+                              allSelected: !hasSelectedAllAttributes,
+                            },
+                          });
                         });
-                      });
-                    }}
-                  />
+                      }}
+                    />
+                  )}
                 </Col>
               )
             )}

@@ -14,6 +14,7 @@ const defaultProps = {
   onClose: onCloseMock,
   onSave: jest.fn(),
   isSaveDisabled: false,
+  writeEnabled: true,
 };
 
 describe('Facet Page Layout Header', () => {

@@ -178,6 +178,7 @@ export const FacetsPanel = ({
                   setError(id, '');
                 }
               }}
+              writeEnabled={writeEnabled}
             />
           ) : (
             <Text>{facet.displayValue}</Text>
@@ -234,7 +235,7 @@ export const FacetsPanel = ({
               })()}
               disabled={!writeEnabled}
             >
-              Edit values
+              {writeEnabled ? 'Edit values' : 'View values'}
             </Button>
           ) : (
             <Button

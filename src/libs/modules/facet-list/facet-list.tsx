@@ -296,49 +296,41 @@ export const FacetList = ({
           </OrderColumn>
         </Col>
         <Col>
-          {displayType === 'included' &&
-            writeEnabled &&
-            showNewFacetValuesPage && (
-              <Button
-                as="a"
-                theme="secondary"
-                href={(() => {
-                  const ruleSetId = router.query.id as string;
-                  const baseUrl = getFacetRoute(
-                    facetType,
-                    'valuesEdit',
-                    facet.id
-                  );
-                  const params = new URLSearchParams({
-                    ruleSetId,
-                    displayName: facet.displayValue,
-                    countryCode: ruleset.countryCode || 'UK_IE',
+          {displayType === 'included' && showNewFacetValuesPage && (
+            <Button
+              as="a"
+              theme="secondary"
+              href={(() => {
+                const ruleSetId = router.query.id as string;
+                const baseUrl = getFacetRoute(
+                  facetType,
+                  'valuesEdit',
+                  facet.id
+                );
+                const params = new URLSearchParams({
+                  ruleSetId,
+                  displayName: facet.displayValue,
+                  countryCode: ruleset.countryCode || 'UK_IE',
+                });
+
+                if (facetType === 'category' && selectedCategories.length > 0) {
+                  selectedCategories.forEach((categoryId) => {
+                    params.append('categories', categoryId);
                   });
+                }
 
-                  if (
-                    facetType === 'category' &&
-                    selectedCategories.length > 0
-                  ) {
-                    selectedCategories.forEach((categoryId) => {
-                      params.append('categories', categoryId);
-                    });
-                  }
+                if (facetType === 'search' && selectedSearchTerms.length > 0) {
+                  selectedSearchTerms.forEach((term) => {
+                    params.append('searchTerms', term);
+                  });
+                }
 
-                  if (
-                    facetType === 'search' &&
-                    selectedSearchTerms.length > 0
-                  ) {
-                    selectedSearchTerms.forEach((term) => {
-                      params.append('searchTerms', term);
-                    });
-                  }
-
-                  return `${baseUrl}?${params.toString()}`;
-                })()}
-              >
-                Edit values
-              </Button>
-            )}
+                return `${baseUrl}?${params.toString()}`;
+              })()}
+            >
+              {writeEnabled ? 'Edit values' : 'View values'}
+            </Button>
+          )}
           {displayType === 'included' &&
             writeEnabled &&
             !showNewFacetValuesPage && (

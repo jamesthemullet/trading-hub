@@ -20,6 +20,7 @@ export const GlobalArrowButtons = ({
   attributes,
   rows,
   disableArrows,
+  writeEnabled,
   dispatch,
 }: {
   displayName: string;
@@ -29,6 +30,7 @@ export const GlobalArrowButtons = ({
   attributes: string[];
   rows: FormattedRow[];
   disableArrows: boolean;
+  writeEnabled?: boolean;
   dispatch: Dispatch<GlobalAttributeReducer>;
 }) => {
   const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
@@ -44,7 +46,9 @@ export const GlobalArrowButtons = ({
       <ArrowButton
         direction="up"
         aria-label={`Move ${displayName} row up`}
-        isDisabled={index === 0 || !!searchQuery || disableArrows}
+        isDisabled={
+          index === 0 || !!searchQuery || disableArrows || !writeEnabled
+        }
         onClick={() => {
           setIsAwaitingUpdate(true);
           const rowsAboveIndex = boostedRows.findIndex((val) =>
@@ -79,7 +83,12 @@ export const GlobalArrowButtons = ({
       <ArrowButton
         direction="down"
         aria-label={`Move ${displayName} row down`}
-        isDisabled={index === rows.length - 1 || !!searchQuery || disableArrows}
+        isDisabled={
+          index === rows.length - 1 ||
+          !!searchQuery ||
+          disableArrows ||
+          !writeEnabled
+        }
         onClick={() => {
           setIsAwaitingUpdate(true);
           const rowBelowIndex = boostedRows.findIndex((val) =>

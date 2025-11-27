@@ -14,6 +14,7 @@ type FacetOrderInputProps = {
     displayValue: string,
     order: number
   ) => void;
+  writeEnabled: boolean;
 };
 
 export const FacetOrderInput = ({
@@ -24,6 +25,7 @@ export const FacetOrderInput = ({
   onInputChange,
   onInputBlur,
   onInputKeyDown,
+  writeEnabled,
 }: FacetOrderInputProps) => {
   return (
     <StyledInput
@@ -35,6 +37,7 @@ export const FacetOrderInput = ({
       value={localOrder}
       min={1}
       aria-label={`Order for ${displayValue}`}
+      disabled={!writeEnabled}
       onFocus={(e) => {
         e.target.select();
       }}

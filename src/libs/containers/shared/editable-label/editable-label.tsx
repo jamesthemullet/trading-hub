@@ -87,6 +87,7 @@ type EditableLabelProps = {
   onCancel?: () => void;
   disallowedValues?: string[];
   disallowedErrorMessage?: string;
+  writeEnabled?: boolean;
 };
 
 export const EditableLabel = ({
@@ -99,6 +100,7 @@ export const EditableLabel = ({
   canCancelEdit,
   onCancel,
   disallowedErrorMessage,
+  writeEnabled = true,
 }: EditableLabelProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalValue] = useState(displayValue);
@@ -196,19 +198,21 @@ export const EditableLabel = ({
               {displayValue}
             </StyledText>
 
-            <EditButton
-              onClick={() => {
-                setIsEditMode(true);
-              }}
-              aria-label={`Edit display name for ${displayValue}`}
-            >
-              <Image
-                width={20}
-                height={20}
-                src="/trading-hub/asset/icon-edit-pencil.svg"
-                alt=""
-              />
-            </EditButton>
+            {writeEnabled && (
+              <EditButton
+                onClick={() => {
+                  setIsEditMode(true);
+                }}
+                aria-label={`Edit display name for ${displayValue}`}
+              >
+                <Image
+                  width={20}
+                  height={20}
+                  src="/trading-hub/asset/icon-edit-pencil.svg"
+                  alt=""
+                />
+              </EditButton>
+            )}
           </>
         )}
       </NameContainer>

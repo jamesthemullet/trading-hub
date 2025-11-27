@@ -1,6 +1,7 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import type { MerchandisingCountryCode } from '@/libs/api/generated/open-api';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -27,6 +28,20 @@ const mockFacet = {
 
 const dispatchMock = jest.fn();
 
+const defaultProps = {
+  displayName: 'test attribute',
+  editingValues: [],
+  facet: mockFacet,
+  boostedRows: [],
+  nonBoostedExcludedRows: [],
+  excludedRows: [],
+  countryCode: 'UK' as MerchandisingCountryCode,
+  merged: [],
+  setEditingValues: jest.fn(),
+  dispatch: dispatchMock,
+  writeEnabled: true,
+};
+
 jest.mock('@/libs/hooks/use-check-merge-name-unique', () => ({
   ...jest.requireActual('@/libs/hooks/use-check-merge-name-unique'),
   useCheckMergeNameUnique: jest.fn(),
@@ -49,20 +64,7 @@ describe('Global Editable label', () => {
   });
 
   it('should render editable label', () => {
-    renderWithProviders(
-      <GlobalEditableLabel
-        displayName="test attribute"
-        editingValues={[]}
-        facet={mockFacet}
-        boostedRows={[]}
-        nonBoostedExcludedRows={[]}
-        excludedRows={[]}
-        countryCode="UK"
-        merged={[]}
-        setEditingValues={jest.fn()}
-        dispatch={jest.fn()}
-      />
-    );
+    renderWithProviders(<GlobalEditableLabel {...defaultProps} />);
 
     expect(screen.getByText('test attribute')).toBeVisible();
     expect(
@@ -83,11 +85,7 @@ describe('Global Editable label', () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
     renderWithProviders(
       <GlobalEditableLabel
-        displayName="test attribute"
-        editingValues={[]}
-        facet={mockFacet}
-        boostedRows={[]}
-        nonBoostedExcludedRows={[]}
+        {...defaultProps}
         excludedRows={[
           {
             displayName: 'test attribute 2',
@@ -96,10 +94,6 @@ describe('Global Editable label', () => {
             isChecked: false,
           },
         ]}
-        countryCode="UK"
-        merged={[]}
-        setEditingValues={jest.fn()}
-        dispatch={dispatchMock}
       />
     );
 
@@ -148,20 +142,7 @@ describe('Global Editable label', () => {
 
   it('should not update the name if the value is unchanged', async () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-    renderWithProviders(
-      <GlobalEditableLabel
-        displayName="test attribute"
-        editingValues={[]}
-        facet={mockFacet}
-        boostedRows={[]}
-        nonBoostedExcludedRows={[]}
-        excludedRows={[]}
-        countryCode="UK"
-        merged={[]}
-        setEditingValues={jest.fn()}
-        dispatch={dispatchMock}
-      />
-    );
+    renderWithProviders(<GlobalEditableLabel {...defaultProps} />);
 
     const editButton = await screen.findByLabelText(
       `Edit display name for test attribute`

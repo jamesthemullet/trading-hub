@@ -146,6 +146,7 @@ export const SearchAndCategoryFacetAttributesList = ({
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
                     onInputKeyDown={handleInputKeyDown}
+                    writeEnabled={writeEnabled}
                   />
                 </AttributeWrapper>
               )}
@@ -168,7 +169,7 @@ export const SearchAndCategoryFacetAttributesList = ({
                   <ArrowButton
                     direction="up"
                     aria-label={`Move ${displayValue} row up`}
-                    isDisabled={index === 0 || !!searchQuery}
+                    isDisabled={index === 0 || !!searchQuery || !writeEnabled}
                     onClick={() => {
                       dispatch({
                         type: 'MOVE_BOOSTED_ROW_UP',
@@ -181,7 +182,9 @@ export const SearchAndCategoryFacetAttributesList = ({
                     direction="down"
                     aria-label={`Move ${displayValue} row down`}
                     isDisabled={
-                      index === filteredRows.length - 1 || !!searchQuery
+                      index === filteredRows.length - 1 ||
+                      !!searchQuery ||
+                      !writeEnabled
                     }
                     onClick={() => {
                       dispatch({

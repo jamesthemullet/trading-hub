@@ -232,6 +232,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
                     onInputKeyDown={handleInputKeyDown}
+                    writeEnabled={writeEnabled}
                   />
                 </AttributeWrapper>
               )}

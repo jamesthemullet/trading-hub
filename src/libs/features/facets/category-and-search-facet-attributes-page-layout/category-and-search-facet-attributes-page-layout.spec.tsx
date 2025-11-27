@@ -53,6 +53,7 @@ const setup = (props = {}) => {
     isLoading: false,
     error: '',
     onSave: jest.fn(),
+    writeEnabled: true,
   };
 
   jest.mocked(useRouter).mockReturnValue(mockRouter as NextRouter);

@@ -14,6 +14,7 @@ describe('GlobalFacetAttribute', () => {
         displayName="test"
         handleRemoveFromMerge={jest.fn()}
         dispatch={jest.fn()}
+        writeEnabled
       />
     );
     expect(screen.getByText('value1')).toBeVisible();

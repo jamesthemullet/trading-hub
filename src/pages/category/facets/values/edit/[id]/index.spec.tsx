@@ -88,7 +88,7 @@ describe('Index', () => {
   it('should render coming soon if feature flag is disabled', async () => {
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
+        hasAuthorization: false,
       },
     });
 
@@ -100,7 +100,6 @@ describe('Index', () => {
   it('should render new facet values page if feature flag is enabled', async () => {
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -121,7 +120,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -141,7 +139,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -163,7 +160,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -191,7 +187,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -205,7 +200,6 @@ describe('Index', () => {
     const user = userEvent.setup();
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -237,7 +231,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -319,7 +312,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -342,12 +334,26 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
     });
+  });
+
+  it('should render the access denied page', async () => {
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
+    ).toBeVisible();
   });
 });

@@ -60,7 +60,6 @@ describe('Index', () => {
   it('should render new facet values page if feature flag is enabled', async () => {
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -75,7 +74,6 @@ describe('Index', () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(<Page />, [], {
         featureFlags: {
-          hasAuthorization: true,
           showNewFacetValuesPage: true,
         },
       });
@@ -97,7 +95,6 @@ describe('Index', () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(<Page />, [], {
         featureFlags: {
-          hasAuthorization: true,
           showNewFacetValuesPage: true,
         },
       });
@@ -115,7 +112,6 @@ describe('Index', () => {
       const user = userEvent.setup({ delay: null });
       renderWithProviders(<Page />, [], {
         featureFlags: {
-          hasAuthorization: true,
           showNewFacetValuesPage: true,
         },
       });
@@ -127,6 +123,21 @@ describe('Index', () => {
       await waitFor(() => {
         expect(screen.getByText('3 results')).toBeInTheDocument();
       });
+    });
+
+    it('should render the access denied page', async () => {
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          hasAuthorization: true,
+          showNewFacetValuesPage: true,
+        },
+      });
+
+      expect(
+        screen.getByText('please contact admin on our teams channel', {
+          exact: false,
+        })
+      ).toBeVisible();
     });
   });
 });

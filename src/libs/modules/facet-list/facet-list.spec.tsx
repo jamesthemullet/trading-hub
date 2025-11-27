@@ -1083,4 +1083,41 @@ describe('Facets', () => {
       '/search/facets/values/edit/b04eaac3-f4ea-4f21-9459-0b4302dc2a84?ruleSetId=test-ruleset-id&displayName=color&countryCode=UK_IE&searchTerms=term+1&searchTerms=term+2'
     );
   });
+
+  it('should render view values button with no write access', async () => {
+    renderWithProviders(
+      <FacetList
+        {...defaultFacetProps}
+        writeEnabled={false}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        facetType="search"
+        isNewRuleset={false}
+        searchTerms={['term 1', 'term 2']}
+      />,
+      [],
+      {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      }
+    );
+
+    const viewFacetValuesButton = screen.getAllByRole('link', {
+      name: 'View values',
+    })[0];
+
+    expect(viewFacetValuesButton).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Edit Values' })
+    ).not.toBeInTheDocument();
+  });
 });

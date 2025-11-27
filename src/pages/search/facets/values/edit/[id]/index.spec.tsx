@@ -190,7 +190,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -210,7 +209,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -232,7 +230,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -245,7 +242,6 @@ describe('Index', () => {
   it('should render new facet values page if feature flag is enabled', async () => {
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -259,7 +255,6 @@ describe('Index', () => {
     const user = userEvent.setup();
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -291,7 +286,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -309,7 +303,6 @@ describe('Index', () => {
 
     renderWithProviders(<Page />, [], {
       featureFlags: {
-        hasAuthorization: true,
         showNewFacetValuesPage: true,
       },
     });
@@ -317,6 +310,21 @@ describe('Index', () => {
 
     expect(
       screen.getByText('Error whilst updating ruleset: Failed to update')
+    ).toBeVisible();
+  });
+
+  it('should render the access denied page', async () => {
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: true,
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    expect(
+      screen.getByText('please contact admin on our teams channel', {
+        exact: false,
+      })
     ).toBeVisible();
   });
 });

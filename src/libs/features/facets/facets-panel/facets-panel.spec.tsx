@@ -146,6 +146,21 @@ const updateGlobalFacet = {
   error: '',
 };
 
+const defaultProps = {
+  writeEnabled: true,
+  title: 'Facet Rule Editor',
+  countryCode: 'UK_IE' as const,
+  selectedPreviewCountryCode: 'UK' as const,
+  onSave: onSaveSpy,
+  onCancel: onCancelSpy,
+  onFacetDataChange: jest.fn(),
+  facetsState: mockFacetsState,
+  includedFacets: mockIncludedFacets,
+  excludedFacets: mockExcludedFacets,
+  dispatch: dispatchSpy,
+  refreshData: jest.fn(),
+};
+
 describe('Facet Panel', () => {
   beforeEach(() => {
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
@@ -164,22 +179,7 @@ describe('Facet Panel', () => {
   });
 
   it('should render the facet management editing page', async () => {
-    renderWithProviders(
-      <FacetsPanel
-        writeEnabled
-        title="Facet Rule Editor"
-        countryCode="UK_IE"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        refreshData={jest.fn()}
-      />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} />);
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
@@ -189,22 +189,7 @@ describe('Facet Panel', () => {
   });
 
   it('should not render preview button or add new facets button', async () => {
-    renderWithProviders(
-      <FacetsPanel
-        writeEnabled
-        title="Facet Rule Editor"
-        countryCode="UK_IE"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        refreshData={jest.fn()}
-      />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} />);
 
     expect(
       screen.queryByRole('button', { name: 'Preview' })
@@ -215,22 +200,7 @@ describe('Facet Panel', () => {
   });
 
   it('should render column headings', () => {
-    renderWithProviders(
-      <FacetsPanel
-        writeEnabled
-        title="Facet Rule Editor"
-        countryCode="UK_IE"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        refreshData={jest.fn()}
-      />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} />);
 
     expect(screen.getByText('Attribute')).toBeVisible();
     expect(screen.getByText('Display name')).toBeVisible();
@@ -242,21 +212,7 @@ describe('Facet Panel', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(
-      <FacetsPanel
-        writeEnabled
-        title="Facet Rule Editor"
-        countryCode="UK_IE"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        displayRowOrderControls
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        refreshData={jest.fn()}
-      />
+      <FacetsPanel {...defaultProps} displayRowOrderControls />
     );
 
     await user.click(
@@ -273,21 +229,7 @@ describe('Facet Panel', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(
-      <FacetsPanel
-        writeEnabled
-        title="Facet Rule Editor"
-        countryCode="UK_IE"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        displayRowOrderControls
-        onFacetDataChange={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        refreshData={jest.fn()}
-      />
+      <FacetsPanel {...defaultProps} displayRowOrderControls />
     );
 
     await user.click(screen.getByRole('button', { name: 'Move brand row up' }));
@@ -303,19 +245,9 @@ describe('Facet Panel', () => {
 
     renderWithProviders(
       <FacetsPanel
-        writeEnabled
-        title="Facet Rule Editor"
+        {...defaultProps}
         countryCode="UK"
-        selectedPreviewCountryCode="UK"
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
         defaultOrderData={mockDefaultOrderData}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-        refreshData={jest.fn()}
-        onFacetDataChange={jest.fn()}
       />
     );
 
@@ -352,22 +284,7 @@ describe('Facet Panel', () => {
       jest.useRealTimers();
       const user = userEvent.setup();
 
-      renderWithProviders(
-        <FacetsPanel
-          writeEnabled
-          title="Facet Rule Editor"
-          countryCode="UK"
-          selectedPreviewCountryCode="UK"
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          refreshData={jest.fn()}
-          onFacetDataChange={jest.fn()}
-          facetsState={mockFacetsState}
-          includedFacets={mockIncludedFacets}
-          excludedFacets={mockExcludedFacets}
-          dispatch={dispatchSpy}
-        />
-      );
+      renderWithProviders(<FacetsPanel {...defaultProps} countryCode="UK" />);
 
       const editFacetValuesButton = screen.getAllByRole('button', {
         name: 'Edit values',
@@ -393,17 +310,8 @@ describe('Facet Panel', () => {
 
       renderWithProviders(
         <FacetsPanel
-          writeEnabled
-          title="Facet Rule Editor"
+          {...defaultProps}
           countryCode="UK"
-          selectedPreviewCountryCode="UK"
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          onFacetDataChange={jest.fn()}
-          facetsState={mockFacetsState}
-          includedFacets={mockIncludedFacets}
-          excludedFacets={mockExcludedFacets}
-          dispatch={dispatchSpy}
           refreshData={refreshMock}
         />
       );
@@ -444,17 +352,8 @@ describe('Facet Panel', () => {
 
       renderWithProviders(
         <FacetsPanel
-          writeEnabled
-          title="Facet Rule Editor"
+          {...defaultProps}
           countryCode="UK"
-          selectedPreviewCountryCode="UK"
-          onSave={onSaveSpy}
-          onCancel={onCancelSpy}
-          onFacetDataChange={jest.fn()}
-          facetsState={mockFacetsState}
-          includedFacets={mockIncludedFacets}
-          excludedFacets={mockExcludedFacets}
-          dispatch={dispatchSpy}
           refreshData={refreshMock}
         />
       );
@@ -495,22 +394,7 @@ describe('Facet Panel', () => {
 
   it('should not allow renaming a row to an existing value', async () => {
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(
-      <FacetsPanel
-        writeEnabled
-        title="Facet Rule Editor"
-        countryCode="UK"
-        selectedPreviewCountryCode="UK"
-        onFacetDataChange={jest.fn()}
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        refreshData={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-      />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} countryCode="UK" />);
 
     const editButton = await screen.findByLabelText(
       `Edit display name for color`
@@ -540,20 +424,7 @@ describe('Facet Panel', () => {
 
   it('should route the user to the facet values page if showNewFacetValuesPage is true', async () => {
     renderWithProviders(
-      <FacetsPanel
-        writeEnabled
-        title="Facet Rule Editor"
-        countryCode="UK"
-        selectedPreviewCountryCode="UK"
-        onFacetDataChange={jest.fn()}
-        onSave={onSaveSpy}
-        onCancel={onCancelSpy}
-        refreshData={jest.fn()}
-        facetsState={mockFacetsState}
-        includedFacets={mockIncludedFacets}
-        excludedFacets={mockExcludedFacets}
-        dispatch={dispatchSpy}
-      />,
+      <FacetsPanel {...defaultProps} countryCode="UK" />,
       [],
       {
         featureFlags: {
@@ -570,5 +441,26 @@ describe('Facet Panel', () => {
       'href',
       '/global/facets/values/edit/b04eaac3-f4ea-4f21-9459-0b4302dc2a84?ruleSetId=test-ruleset-id&displayName=color&countryCode=UK'
     );
+  });
+
+  it('should render view values button with no write access', async () => {
+    renderWithProviders(
+      <FacetsPanel {...defaultProps} writeEnabled={false} countryCode="UK" />,
+      [],
+      {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      }
+    );
+
+    const viewFacetValuesButton = screen.getAllByRole('link', {
+      name: 'View values',
+    })[0];
+
+    expect(viewFacetValuesButton).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Edit Values' })
+    ).not.toBeInTheDocument();
   });
 });

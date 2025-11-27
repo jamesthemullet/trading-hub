@@ -24,6 +24,7 @@ type HeaderProps = {
   error?: string;
   onClose: (facetType: 'category' | 'search' | 'global') => void;
   onSave: () => void;
+  writeEnabled: boolean;
 };
 
 export const FacetAttributesPageLayoutHeader = ({
@@ -36,6 +37,7 @@ export const FacetAttributesPageLayoutHeader = ({
   error,
   onClose,
   onSave,
+  writeEnabled,
 }: HeaderProps) => {
   return (
     <Wrapper>
@@ -62,7 +64,7 @@ export const FacetAttributesPageLayoutHeader = ({
 
           <SaveButton
             theme="primary"
-            isDisabled={isSaveDisabled}
+            isDisabled={isSaveDisabled || !writeEnabled}
             onClick={onSave}
           >
             Save

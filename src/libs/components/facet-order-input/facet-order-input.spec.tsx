@@ -11,6 +11,7 @@ describe('FacetOrderInput', () => {
     onInputChange: jest.fn(),
     onInputBlur: jest.fn(),
     onInputKeyDown: jest.fn(),
+    writeEnabled: true,
   };
 
   beforeEach(() => {

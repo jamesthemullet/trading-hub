@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import { type ChangeEvent, useMemo, useState } from 'react';
 
-import { ErrorMessage, Heading } from '@/libs/components';
+import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { GlobalFacetAttributesPageLayout } from '@/libs/features';
 import { useGlobalFacetsList } from '@/libs/hooks/global/facets/use-global-facets-list';
+import { useAccess } from '@/libs/hooks/use-access';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -50,6 +51,12 @@ const Page = () => {
 
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
+  const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Glob');
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={requiredReadRole} />;
+  }
+
   return (
     <>
       <Head>
@@ -87,6 +94,7 @@ const Page = () => {
           countryCode={countryCode}
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
+          writeEnabled={hasWriteAccess}
         />
       ) : (
         <CentredContainer>Coming soon/loading</CentredContainer>

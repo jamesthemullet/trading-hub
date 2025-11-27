@@ -46,11 +46,13 @@ export const FacetAttributesListActions = ({
   onMergeClick,
   isMergeHidden = false,
   isMergeDisabled = true,
+  writeEnabled,
 }: {
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onMergeClick?: () => void;
   isMergeHidden?: boolean;
   isMergeDisabled?: boolean;
+  writeEnabled: boolean;
 }) => {
   return (
     <FacetAttributesListActionsContainer>
@@ -59,7 +61,7 @@ export const FacetAttributesListActions = ({
           <FacetAttributesActionsButton
             theme="secondary"
             onClick={onMergeClick}
-            disabled={isMergeDisabled}
+            disabled={isMergeDisabled || !writeEnabled}
           >
             <Image
               src="/trading-hub/asset/icon-merge.svg"

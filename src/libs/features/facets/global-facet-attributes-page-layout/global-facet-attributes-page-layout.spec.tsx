@@ -50,6 +50,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
     onSearchChange: jest.fn(),
     ruleSetId,
     countryCode: 'UK_IE' as const,
+    writeEnabled: true,
   };
 
   beforeEach(() => {
@@ -220,6 +221,9 @@ describe('GlobalFacetAttributesPageLayout', () => {
     await user.click(attributeB);
 
     const mergeButton = screen.getByRole('button', { name: 'Merge' });
+    await waitFor(() => {
+      expect(mergeButton).toBeEnabled();
+    });
     await user.click(mergeButton);
 
     await waitFor(() => {
@@ -264,6 +268,9 @@ describe('GlobalFacetAttributesPageLayout', () => {
     await user.click(excludedCheckbox);
 
     const mergeButton = screen.getByRole('button', { name: 'Merge' });
+    await waitFor(() => {
+      expect(mergeButton).toBeEnabled();
+    });
     await user.click(mergeButton);
 
     await waitFor(() => {

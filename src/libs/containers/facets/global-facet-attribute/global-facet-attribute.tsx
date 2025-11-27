@@ -25,6 +25,7 @@ export const GlobalFacetAttribute = ({
   displayName,
   handleRemoveFromMerge,
   dispatch,
+  writeEnabled,
 }: {
   attributes: string[];
   isMergeGroup: boolean;
@@ -38,6 +39,7 @@ export const GlobalFacetAttribute = ({
     mergeDisplayName: string;
   }) => void;
   dispatch: Dispatch<GlobalAttributeReducer>;
+  writeEnabled: boolean;
 }) => {
   const maxVisible = 4;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -67,12 +69,14 @@ export const GlobalFacetAttribute = ({
   return (
     <>
       <Col>
-        <input
-          type="checkbox"
-          checked={isChecked}
-          onChange={() => handleSelect(displayName)}
-          aria-label={`Select ${displayName} to merge`}
-        />
+        {writeEnabled && (
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={() => handleSelect(displayName)}
+            aria-label={`Select ${displayName} to merge`}
+          />
+        )}
       </Col>
       <Col>
         <AttributeWrapper>
@@ -83,7 +87,7 @@ export const GlobalFacetAttribute = ({
               {visibleAttributes.map((value, i) => (
                 <MergedValue key={`${i}-${value}`}>
                   <Text>{value}</Text>{' '}
-                  {isMergeGroup && value !== displayName && (
+                  {isMergeGroup && value !== displayName && writeEnabled && (
                     <RemoveMergedFacet
                       onClick={() => {
                         setIsAwaitingUpdate(true);

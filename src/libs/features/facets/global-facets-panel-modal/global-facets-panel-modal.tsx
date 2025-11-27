@@ -401,6 +401,7 @@ export const GlobalFacetPanelModalContent = ({
                 displayName={displayName}
                 handleRemoveFromMerge={handleRemoveFromMerge}
                 dispatch={dispatch}
+                writeEnabled={writeEnabled}
               />
 
               <Col>
@@ -418,6 +419,7 @@ export const GlobalFacetPanelModalContent = ({
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
                     onInputKeyDown={handleInputKeyDown}
+                    writeEnabled={writeEnabled}
                   />
                 )}
               </Col>
@@ -447,6 +449,7 @@ export const GlobalFacetPanelModalContent = ({
                     attributes={attributes}
                     rows={filteredRows}
                     disableArrows={totalSelectedItems > 0}
+                    writeEnabled={writeEnabled}
                     dispatch={dispatch}
                   />
                 )}

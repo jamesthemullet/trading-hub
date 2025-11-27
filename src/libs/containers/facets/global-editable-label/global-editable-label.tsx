@@ -27,6 +27,7 @@ export const GlobalEditableLabel = ({
   merged,
   dispatch,
   setEditingValues,
+  writeEnabled,
 }: {
   displayName: string;
   editingValues: string[];
@@ -38,6 +39,7 @@ export const GlobalEditableLabel = ({
   merged: MergeGroup | undefined;
   dispatch: Dispatch<GlobalAttributeReducer>;
   setEditingValues: React.Dispatch<React.SetStateAction<string[]>>;
+  writeEnabled?: boolean;
 }) => {
   const [error, setError] = useState<string>('');
   const allBoostedValues = boostedRows.map((row) => row.displayName);
@@ -158,6 +160,7 @@ export const GlobalEditableLabel = ({
             handleError('');
           }
         }}
+        writeEnabled={writeEnabled}
       />
       {isAwaitingUpdate && <Loader isInModal />}
     </FlexColumnCol>

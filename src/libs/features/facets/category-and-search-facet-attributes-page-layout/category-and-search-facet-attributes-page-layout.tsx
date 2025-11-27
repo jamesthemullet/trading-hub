@@ -24,6 +24,7 @@ type PageLayout = {
   searchQuery: string;
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onSave: (newFacet: MerchandisingRuleSetFacetConfigWithId) => void;
+  writeEnabled: boolean;
 };
 
 export const CategoryAndSearchFacetsPanelPageLayout = ({
@@ -35,6 +36,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   searchQuery,
   onSearchChange,
   onSave,
+  writeEnabled,
 }: PageLayout) => {
   const router = useRouter();
 
@@ -92,11 +94,13 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         // this is just set to false in the original component too
         // istanbul ignore next
         isSaveDisabled={false}
+        writeEnabled={writeEnabled}
       />
 
       <FacetAttributesListActions
         onSearchChange={onSearchChange}
         isMergeHidden
+        writeEnabled={writeEnabled}
       />
 
       <SearchAndCategoryFacetAttributesList
@@ -105,7 +109,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         excludedValues={excludedValues}
         dispatch={dispatch}
         searchQuery={searchQuery}
-        writeEnabled
+        writeEnabled={writeEnabled}
       />
     </>
   );

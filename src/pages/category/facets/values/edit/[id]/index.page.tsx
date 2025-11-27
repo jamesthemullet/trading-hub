@@ -7,7 +7,7 @@ import type {
   MerchandisingReturnedFacet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import { ErrorMessage, Heading } from '@/libs/components';
+import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
@@ -16,6 +16,7 @@ import {
   useRuleSetDetail,
   useUpdateRuleSet,
 } from '@/libs/hooks';
+import { useAccess } from '@/libs/hooks/use-access';
 import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -30,6 +31,8 @@ const CentredContainer = styled.div`
 
 const Page = () => {
   const router = useRouter();
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
+
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
   const { updateCategoryRuleSet, error: updateRulesetError } =
@@ -135,6 +138,10 @@ const Page = () => {
     }
   };
 
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={requiredReadRole} />;
+  }
+
   return (
     <>
       <Head>
@@ -171,6 +178,7 @@ const Page = () => {
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
           onSave={handleSave}
+          writeEnabled={hasWriteAccess}
         />
       ) : (
         <CentredContainer>Coming soon/loading</CentredContainer>

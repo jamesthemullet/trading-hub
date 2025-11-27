@@ -29,6 +29,7 @@ describe('Arrow Buttons', () => {
           },
         ]}
         disableArrows={false}
+        writeEnabled
         dispatch={jest.fn()}
       />
     );

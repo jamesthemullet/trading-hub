@@ -59,7 +59,8 @@ export const CancelButton = styled(Button, {
 `;
 
 export const SaveButton = styled(Button, {
-  shouldForwardProp: (prop) => isPropValid(prop) || prop === 'theme',
+  shouldForwardProp: (prop) =>
+    isPropValid(prop) || prop === 'theme' || prop === 'isDisabled',
 })`
   width: 168px;
 `;
