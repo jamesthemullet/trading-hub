@@ -33,7 +33,7 @@ const Index = () => {
           <>
             <StyledText>Hello, {session.data.user?.email}</StyledText>
 
-            <Button isInline isPrimary onClick={() => signOut()}>
+            <Button isInline theme="primary" onClick={() => signOut()}>
               Sign out
             </Button>
           </>
@@ -41,7 +41,7 @@ const Index = () => {
           <>
             <StyledText>Unauthorised, please </StyledText>
 
-            <Button isInline isPrimary onClick={() => signIn('azure-ad')}>
+            <Button isInline theme="primary" onClick={() => signIn('azure-ad')}>
               Sign in
             </Button>
           </>

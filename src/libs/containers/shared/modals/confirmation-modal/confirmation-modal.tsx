@@ -43,6 +43,7 @@ const ConfirmationModal = ({
           onClick={onCloseModal}
           theme="secondary"
           aria-label="Close confirmation modal"
+          isInline
         >
           Cancel
         </Button>
@@ -53,6 +54,7 @@ const ConfirmationModal = ({
           }}
           theme="primary"
           data-autofocus
+          isInline
         >
           Apply action
         </Button>

@@ -231,7 +231,11 @@ export const BulkActions = ({
             <Divider />
 
             <Buttons>
-              <Button onClick={() => setIsModalOpen(false)} theme="secondary">
+              <Button
+                onClick={() => setIsModalOpen(false)}
+                theme="secondary"
+                isInline
+              >
                 Cancel
               </Button>
 
@@ -244,6 +248,7 @@ export const BulkActions = ({
                 }}
                 theme="primary"
                 data-autofocus
+                isInline
               >
                 Apply action
               </Button>

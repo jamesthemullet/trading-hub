@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MantineProvider, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { Button } from '@/libs/components';
+import { ButtonDeprecated } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
@@ -32,7 +32,7 @@ const Footer = styled.div`
   }
 `;
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(ButtonDeprecated)`
   align-self: flex-start;
   width: 96px;
   border-radius: 20px;

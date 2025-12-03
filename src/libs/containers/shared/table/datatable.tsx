@@ -698,7 +698,11 @@ export const DataTable = ({
             <Divider />
 
             <Buttons>
-              <Button onClick={() => setIsModalOpen(false)} theme="tertiary">
+              <Button
+                onClick={() => setIsModalOpen(false)}
+                theme="tertiary"
+                isInline
+              >
                 Cancel
               </Button>
 
@@ -713,6 +717,7 @@ export const DataTable = ({
                   theme="tertiary"
                   data-testid="Delete rule"
                   data-autofocus
+                  isInline
                 >
                   Delete
                 </Button>
@@ -728,6 +733,7 @@ export const DataTable = ({
                   }}
                   theme="tertiary"
                   data-autofocus
+                  isInline
                 >
                   Confirm
                 </Button>

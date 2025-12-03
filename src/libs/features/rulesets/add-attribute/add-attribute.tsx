@@ -53,7 +53,7 @@ const ModalSection = styled.div`
   position: relative;
 `;
 
-const Number = styled.span<{ isActive: boolean }>`
+const StyledNumber = styled.span<{ isActive: boolean }>`
   background-color: ${({ isActive }) =>
     isActive ? color.lightGreen : color.lightGrey};
   width: 32px;
@@ -156,6 +156,7 @@ const ModalFooter = styled.div`
   padding: ${spacing(1)};
   display: flex;
   justify-content: end;
+  gap: ${spacing(1)};
 `;
 
 const Filters = styled.div`
@@ -174,11 +175,11 @@ const SectionLabel = ({
 }) => {
   return (
     <>
-      <Number isActive={isActive}>
+      <StyledNumber isActive={isActive}>
         <Label as="span" isStrong={isActive}>
           {number}
         </Label>
-      </Number>
+      </StyledNumber>
       <Label isStrong={isActive}>{text}</Label>
     </>
   );
@@ -561,7 +562,7 @@ export const AddAttribute = ({
             isInline
           >
             Cancel
-          </Button>{' '}
+          </Button>
           {(!!selectedNumericField.length ||
             !!selectedAlphanumericValues.length) && (
             <Button
@@ -585,8 +586,7 @@ export const AddAttribute = ({
                 });
               }}
               isInline
-              isPrimary
-              style={{ marginLeft: spacing(1) }}
+              theme="primary"
             >
               Done
             </Button>

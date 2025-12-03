@@ -188,112 +188,110 @@ export const GlobalFacetAttributesEditModal = ({
 
       <Modal.Content>
         <Modal.Body>
-          <>
-            <ModalContainer>
-              <ModalStickyHeader>
-                <StyledHeading isStrong>Edit merge</StyledHeading>
-              </ModalStickyHeader>
+          <ModalContainer>
+            <ModalStickyHeader>
+              <StyledHeading isStrong>Edit merge</StyledHeading>
+            </ModalStickyHeader>
 
-              <EditFacetAttributesModalTable>
-                <EditFacetAttributesModalTableRow>
-                  {EDIT_FACET_ATTRIBUTES_MODALCOLUMNS.map(({ label }) => (
-                    <Col key={`edit-facet-attributes-modal-column-${label}`}>
-                      <TableHeading as="p" isStrong>
-                        {label}
-                      </TableHeading>
-                    </Col>
-                  ))}
-                </EditFacetAttributesModalTableRow>
-
-                <EditFacetAttributesModalTableRow
-                  data-testid={`edit attribute modal ${globalAttributesLocalState.currentMerge.displayValue}`}
-                >
-                  <Col>
-                    <AttributesContainer>
-                      <Text isStrong>Merged Value Group</Text>
-
-                      {visibleAttributes.map((value, i) => (
-                        <GlobalFacetAttributesPageMergedValue
-                          key={`${i}-${value}`}
-                        >
-                          <Text>{value}</Text>
-                          <RemoveMergedFacet
-                            onClick={() => {
-                              requestAnimationFrame(() => {
-                                handleRemoveFromMerge({
-                                  valueToRemove: value,
-                                  mergeDisplayName: displayName,
-                                });
-                              });
-                            }}
-                            aria-label={`Remove merged facet for ${value}`}
-                          />
-                        </GlobalFacetAttributesPageMergedValue>
-                      ))}
-
-                      {attributes.length > maxVisible && (
-                        <StyledText
-                          as="button"
-                          onClick={() => {
-                            setIsExpanded(!isExpanded);
-                          }}
-                        >
-                          {isExpanded ? 'Show Fewer' : 'Show More'}
-                        </StyledText>
-                      )}
-                    </AttributesContainer>
+            <EditFacetAttributesModalTable>
+              <EditFacetAttributesModalTableRow>
+                {EDIT_FACET_ATTRIBUTES_MODALCOLUMNS.map(({ label }) => (
+                  <Col key={`edit-facet-attributes-modal-column-${label}`}>
+                    <TableHeading as="p" isStrong>
+                      {label}
+                    </TableHeading>
                   </Col>
+                ))}
+              </EditFacetAttributesModalTableRow>
 
-                  <FlexColumnCol>
-                    <InputContainer showErrorState={!!error}>
-                      <Input
-                        id={`Edit ${globalAttributesLocalState.currentMerge.displayValue} input field`}
-                        ref={(inputRef) => {
-                          inputRef?.focus();
-                        }}
-                        onChange={(event) => {
-                          handleUpdatedValue(event);
-                          setValue(event.target.value);
-                        }}
-                        placeholder="Enter merge name"
-                        label=""
-                        value={value}
-                        aria-label={`Edit ${globalAttributesLocalState.currentMerge.displayValue} input field`}
-                      />
-
-                      {!!error && (
-                        <StyledIcon
-                          width={20}
-                          height={20}
-                          src="/trading-hub/asset/icon-warning.svg"
-                          alt="edit-facet-attributes-error-icon"
-                        />
-                      )}
-                    </InputContainer>
-
-                    {!!error && <StyledError>{error}</StyledError>}
-                  </FlexColumnCol>
-                </EditFacetAttributesModalTableRow>
-              </EditFacetAttributesModalTable>
-            </ModalContainer>
-
-            <ModalFooter>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button
-                onClick={handleSave}
-                theme="primary"
-                disabled={
-                  Object.values(globalAttributesLocalState.errorStates).some(
-                    (state) => state
-                  ) ||
-                  attributes.length <= 1 ||
-                  value.trim() === ''
-                }
+              <EditFacetAttributesModalTableRow
+                data-testid={`edit attribute modal ${globalAttributesLocalState.currentMerge.displayValue}`}
               >
-                Save
-              </Button>
-            </ModalFooter>
-          </>
+                <Col>
+                  <AttributesContainer>
+                    <Text isStrong>Merged Value Group</Text>
+
+                    {visibleAttributes.map((value, i) => (
+                      <GlobalFacetAttributesPageMergedValue
+                        key={`${i}-${value}`}
+                      >
+                        <Text>{value}</Text>
+                        <RemoveMergedFacet
+                          onClick={() => {
+                            requestAnimationFrame(() => {
+                              handleRemoveFromMerge({
+                                valueToRemove: value,
+                                mergeDisplayName: displayName,
+                              });
+                            });
+                          }}
+                          aria-label={`Remove merged facet for ${value}`}
+                        />
+                      </GlobalFacetAttributesPageMergedValue>
+                    ))}
+
+                    {attributes.length > maxVisible && (
+                      <StyledText
+                        as="button"
+                        onClick={() => {
+                          setIsExpanded(!isExpanded);
+                        }}
+                      >
+                        {isExpanded ? 'Show Fewer' : 'Show More'}
+                      </StyledText>
+                    )}
+                  </AttributesContainer>
+                </Col>
+
+                <FlexColumnCol>
+                  <InputContainer showErrorState={!!error}>
+                    <Input
+                      id={`Edit ${globalAttributesLocalState.currentMerge.displayValue} input field`}
+                      ref={(inputRef) => {
+                        inputRef?.focus();
+                      }}
+                      onChange={(event) => {
+                        handleUpdatedValue(event);
+                        setValue(event.target.value);
+                      }}
+                      placeholder="Enter merge name"
+                      label=""
+                      value={value}
+                      aria-label={`Edit ${globalAttributesLocalState.currentMerge.displayValue} input field`}
+                    />
+
+                    {!!error && (
+                      <StyledIcon
+                        width={20}
+                        height={20}
+                        src="/trading-hub/asset/icon-warning.svg"
+                        alt="edit-facet-attributes-error-icon"
+                      />
+                    )}
+                  </InputContainer>
+
+                  {!!error && <StyledError>{error}</StyledError>}
+                </FlexColumnCol>
+              </EditFacetAttributesModalTableRow>
+            </EditFacetAttributesModalTable>
+          </ModalContainer>
+
+          <ModalFooter>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button
+              onClick={handleSave}
+              theme="primary"
+              disabled={
+                Object.values(globalAttributesLocalState.errorStates).some(
+                  (state) => state
+                ) ||
+                attributes.length <= 1 ||
+                value.trim() === ''
+              }
+            >
+              Save
+            </Button>
+          </ModalFooter>
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>

@@ -7,7 +7,12 @@ import type {
   MerchandisingExcludedFacets,
   MerchandisingReturnedFacet,
 } from '@/libs/api';
-import { Button, CombinedDropdown, Search, Text } from '@/libs/components';
+import {
+  ButtonDeprecated,
+  CombinedDropdown,
+  Search,
+  Text,
+} from '@/libs/components';
 import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
 import {
   AttributesTable,
@@ -220,7 +225,7 @@ export const FacetsPanel = ({
         </Col>
         <Col>
           {showNewFacetValuesPage ? (
-            <Button
+            <ButtonDeprecated
               as="a"
               theme="secondary"
               href={(() => {
@@ -236,14 +241,14 @@ export const FacetsPanel = ({
               disabled={!writeEnabled}
             >
               {writeEnabled ? 'Edit values' : 'View values'}
-            </Button>
+            </ButtonDeprecated>
           ) : (
-            <Button
+            <ButtonDeprecated
               onClick={() => handleOpenFacetEditModal(facet)}
               disabled={!writeEnabled}
             >
               Edit values
-            </Button>
+            </ButtonDeprecated>
           )}
         </Col>
       </Row>

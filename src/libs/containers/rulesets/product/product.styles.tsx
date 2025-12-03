@@ -226,6 +226,10 @@ export const LockActions = styled.div<{ isSearchResult?: boolean }>`
   border-top: solid 1px ${color.surfaceBright.onSurfaceBrightVariant};
   padding-top: ${spacing(1)};
 
+  button {
+    flex-grow: 1;
+  }
+
   ${({ isSearchResult }) =>
     isSearchResult &&
     css`

@@ -69,6 +69,7 @@ const ModalFooter = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: ${spacing(2)};
+
   button {
     width: 160px;
   }

@@ -7,7 +7,7 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
-  Button,
+  ButtonDeprecated,
   CombinedDropdown,
   DropdownOption,
   ErrorMessage,
@@ -297,7 +297,7 @@ export const FacetList = ({
         </Col>
         <Col>
           {displayType === 'included' && showNewFacetValuesPage && (
-            <Button
+            <ButtonDeprecated
               as="a"
               theme="secondary"
               href={(() => {
@@ -329,12 +329,12 @@ export const FacetList = ({
               })()}
             >
               {writeEnabled ? 'Edit values' : 'View values'}
-            </Button>
+            </ButtonDeprecated>
           )}
           {displayType === 'included' &&
             writeEnabled &&
             !showNewFacetValuesPage && (
-              <Button
+              <ButtonDeprecated
                 onClick={() => {
                   setIsFacetValuesModalOpen(true);
                   const rulesetConfig = ruleset.facets?.find(
@@ -348,7 +348,7 @@ export const FacetList = ({
                 }}
               >
                 Edit values
-              </Button>
+              </ButtonDeprecated>
             )}
         </Col>
       </Row>

@@ -9,7 +9,7 @@ import type {
   MerchandisingNumericBoostBury,
   MerchandisingRules,
 } from '@/libs/api';
-import { Button, Typography } from '@/libs/components';
+import { ButtonDeprecated, Typography } from '@/libs/components';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-attribute';
 import { AttributeCount } from '@/libs/components/ruleset-attributes/ruleset-attributes.styles';
@@ -104,14 +104,14 @@ export const RulesetAttributes = ({
     <Wrapper>
       {writeEnabled && (
         <ButtonContainer rulesetType={rulesetType}>
-          <Button
+          <ButtonDeprecated
             theme="outlined"
             icon="plus-simple-green"
             isTextCentred
             onClick={() => setIsModalOpen(!isModalOpen)}
           >
             Create new attribute rule
-          </Button>
+          </ButtonDeprecated>
           {countOfAttributeChanges > 0 && (
             <AttributeCount as="output" aria-label="number of attribute rules">
               {countOfAttributeChanges} attribute{' '}

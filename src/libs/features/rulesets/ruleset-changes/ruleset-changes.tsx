@@ -35,6 +35,7 @@ const RulesetChangesWrapper = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: ${spacing(2)};
 `;
 
 const Header = styled.div`
@@ -232,7 +233,6 @@ const ProductsLoader = ({
         products.length > PRODUCTS_TO_LOAD_INCREMENT && (
           <ButtonWrapper>
             <Button
-              style={{ width: 'auto', marginTop: spacing(2) }}
               onClick={() => {
                 setProductsShown(productsShown + PRODUCTS_TO_LOAD_INCREMENT);
               }}

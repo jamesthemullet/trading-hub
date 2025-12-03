@@ -1,7 +1,7 @@
 import isPropValid from '@emotion/is-prop-valid';
 import styled from '@emotion/styled';
 
-import { Button, Text } from '@/libs/components';
+import { ButtonDeprecated, Text } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -50,7 +50,7 @@ export const SummaryBox = styled.div`
   width: 82px;
 `;
 
-export const CancelButton = styled(Button, {
+export const CancelButton = styled(ButtonDeprecated, {
   shouldForwardProp: (prop) => isPropValid(prop) || prop === 'theme',
 })`
   width: 120px;
@@ -58,7 +58,7 @@ export const CancelButton = styled(Button, {
   border-right 1px solid ${color.accent.primary.primary};
 `;
 
-export const SaveButton = styled(Button, {
+export const SaveButton = styled(ButtonDeprecated, {
   shouldForwardProp: (prop) =>
     isPropValid(prop) || prop === 'theme' || prop === 'isDisabled',
 })`

@@ -2,7 +2,7 @@ import isPropValid from '@emotion/is-prop-valid';
 import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
 
-import { Button, Search } from '@/libs/components';
+import { ButtonDeprecated, Search } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -25,7 +25,7 @@ const FacetAttributesActionsButtonsContainer = styled.div`
   flex-grow: 2;
 `;
 
-const FacetAttributesActionsButton = styled(Button, {
+const FacetAttributesActionsButton = styled(ButtonDeprecated, {
   shouldForwardProp: (prop) => isPropValid(prop) || prop === 'theme',
 })`
   display: flex;

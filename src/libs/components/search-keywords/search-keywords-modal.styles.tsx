@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
-import { Button } from '../button/button';
+import { ButtonDeprecated } from '../button/button';
 
 export const ModalContainer = styled.div`
   width: 856px;
@@ -138,7 +138,7 @@ export const ErrorText = styled.p`
   color: ${color.state.error.error};
 `;
 
-export const StyledCloseButton = styled(Button)`
+export const StyledCloseButton = styled(ButtonDeprecated)`
   margin-left: auto;
 `;
 

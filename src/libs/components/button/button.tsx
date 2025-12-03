@@ -1,11 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import {
-  type ButtonHTMLAttributes,
-  type ElementType,
-  forwardRef,
-  type Ref,
-} from 'react';
+import type { ButtonHTMLAttributes, ElementType, Ref } from 'react';
+import { forwardRef } from 'react';
 
 import { color } from '@/libs/utils/constants';
 import { sizing } from '@/libs/utils/sizing';
@@ -14,20 +10,19 @@ import { spacing } from '@/libs/utils/spacing';
 import Link from 'next/link';
 
 import { fonts } from '../typography/typography.styles';
+import styles from './button.module.css';
 
 const setTheme = ({
   isDisabled,
   isPrimary,
   isSecondary,
   isTertiary,
-  isFilled,
   isOutlined,
 }: {
   isDisabled?: boolean;
   isPrimary?: boolean;
   isSecondary?: boolean;
   isTertiary?: boolean;
-  isFilled?: boolean;
   isOutlined?: boolean;
 }) => {
   if (isTertiary) {
@@ -90,21 +85,6 @@ const setTheme = ({
       }
       &:focus {
         background-color: #dee9e6;
-      }
-    `;
-  }
-  if (isFilled) {
-    return css`
-      text-align: left;
-      border: ${color.accent.primary.primary} solid 1px;
-      background: ${color.accent.primary.primary};
-      color: ${color.accent.primary.onPrimary};
-
-      &:hover {
-        background-color: #10604b;
-      }
-      &:focus {
-        background-color: #226c59;
       }
     `;
   }
@@ -173,25 +153,16 @@ const sharedButtonStyles = css`
 
 const StyledButton = styled.button<ButtonProps>`
   ${sharedButtonStyles};
-  ${({
-    isDisabled,
-    isPrimary,
-    isSecondary,
-    isTertiary,
-    isOutlined,
-    isFilled,
-  }) =>
+  ${({ isDisabled, isPrimary, isSecondary, isTertiary, isOutlined }) =>
     setTheme({
       isDisabled,
       isPrimary,
       isSecondary,
       isTertiary,
       isOutlined,
-      isFilled,
     })};
   ${({ icon }) => icon && setIcon({ icon })};
   ${({ isTextCentred }) => isTextCentred && 'text-align: center;'}
-  width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
 `;
 
 const StyledLink = styled(Link, {
@@ -204,28 +175,17 @@ const StyledLink = styled(Link, {
       'isOutlined',
       'isDisabled',
       'iconPosition',
-      'isInline',
     ].includes(prop),
 })<RawButtonProps>`
   ${sharedButtonStyles};
-  ${({
-    isDisabled,
-    isPrimary,
-    isSecondary,
-    isTertiary,
-    isOutlined,
-    isFilled,
-  }) =>
+  ${({ isDisabled, isPrimary, isSecondary, isTertiary, isOutlined }) =>
     setTheme({
       isDisabled,
       isPrimary,
       isSecondary,
       isTertiary,
       isOutlined,
-      isFilled,
     })};
-  ${({ icon }) => icon && setIcon({ icon })};
-  width: ${({ isInline }) => (isInline ? 'auto' : '100%')};
 `;
 
 type Icon = 'plus-simple-green' | 'plus-simple-white';
@@ -234,7 +194,6 @@ type RawButtonProps = {
   isPrimary?: boolean;
   isSecondary?: boolean;
   isTertiary?: boolean;
-  isFilled?: boolean;
   isOutlined?: boolean;
   as?: ElementType;
   isDisabled?: boolean;
@@ -248,7 +207,7 @@ type RawButtonProps = {
 };
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & RawButtonProps;
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const ButtonDeprecated = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       as = 'button',
@@ -270,12 +229,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           isPrimary={theme === 'primary'}
           isSecondary={theme === 'secondary'}
           isTertiary={theme === 'tertiary'}
-          isFilled={theme === 'filled'}
           isOutlined={theme === 'outlined'}
-          {...(onClick && !isDisabled && { onClick })}
           {...(isDisabled && { 'aria-disabled': isDisabled })}
           isDisabled={isDisabled}
-          isInline={rest.isInline}
           icon={rest.icon}
         >
           {children}
@@ -290,7 +246,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         isPrimary={theme === 'primary'}
         isSecondary={theme === 'secondary'}
         isTertiary={theme === 'tertiary'}
-        isFilled={theme === 'filled'}
         isOutlined={theme === 'outlined'}
         {...(onClick && !isDisabled && { onClick })}
         {...(isDisabled && { disabled: isDisabled })}
@@ -304,4 +259,55 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = 'Button';
+ButtonDeprecated.displayName = 'ButtonDeprecated';
+
+export const Button = ({
+  as = 'button',
+  isDisabled,
+  href,
+  onClick,
+  theme,
+  type = 'button',
+  children,
+  icon,
+  isInline,
+  isTextCentred,
+  ...rest
+}: ButtonProps) => {
+  const className = `${styles.button} typographyBodyMedium`;
+
+  if (as === 'a' && href) {
+    return (
+      <Link
+        href={href}
+        className={className}
+        data-theme={theme}
+        data-is-disabled={isDisabled}
+        data-icon={icon}
+        data-is-inline={isInline}
+        data-is-text-centred={isTextCentred}
+        {...(onClick && !isDisabled && { onClick })}
+        {...(isDisabled && { 'aria-disabled': isDisabled })}
+      >
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      className={className}
+      type={type}
+      data-theme={theme}
+      data-is-disabled={isDisabled}
+      data-icon={icon}
+      data-is-inline={isInline}
+      data-is-text-centred={isTextCentred}
+      {...(onClick && !isDisabled && { onClick })}
+      {...(isDisabled && { disabled: isDisabled })}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+};

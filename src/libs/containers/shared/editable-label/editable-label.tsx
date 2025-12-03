@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { Button, Text } from '@/libs/components';
+import { ButtonDeprecated, Text } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -29,7 +29,7 @@ const EditConfirmationButtons = styled.div`
   }
 `;
 
-const EditButton = styled(Button)`
+const EditButton = styled(ButtonDeprecated)`
   padding: 0;
   border: none;
   background: none;

@@ -114,7 +114,7 @@ const StyleGuide = () => {
       <Header2 style={{ width: '100%', marginBottom: '8px' }}>Buttons</Header2>
       <Guide>
         <div style={{ width: '60%' }}>
-          <Button isPrimary>Button</Button>
+          <Button theme="primary">Button</Button>
         </div>
         <Text>Primary</Text>
         <Text>

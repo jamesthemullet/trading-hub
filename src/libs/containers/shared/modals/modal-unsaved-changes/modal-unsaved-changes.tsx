@@ -52,8 +52,10 @@ export const ModalUnsavedChanges = ({
           </Text>
           <Divider />
           <Buttons>
-            <Button onClick={onClose}>Close without saving</Button>
-            <Button onClick={onContinue} theme="primary">
+            <Button isInline onClick={onClose}>
+              Close without saving
+            </Button>
+            <Button onClick={onContinue} theme="primary" isInline>
               Continue editing
             </Button>
           </Buttons>
