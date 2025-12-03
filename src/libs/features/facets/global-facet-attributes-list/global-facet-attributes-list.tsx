@@ -6,28 +6,23 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import {
-  CombinedDropdown,
-  FilteredResultsPanel,
-  Loader,
-} from '@/libs/components';
+import { FilteredResultsPanel, Loader } from '@/libs/components';
 import { Col } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
-import { GlobalFacetAttribute } from '@/libs/containers';
-import { GlobalArrowButtons } from '@/libs/containers/facets/global-arrow-buttons/global-arrow-buttons';
-import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
 import {
   FacetAttributeValuesTableRow,
   TableHeading,
 } from '@/libs/containers/shared/table/table.styles';
-import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
-import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
-import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
+import { useGlobalFacetAttributesList } from '@/libs/hooks/global/facets/use-global-facet-attributes-list';
 import type {
-  FormattedRow,
   GlobalAttributesPageReducer,
   GlobalAttributesPageState,
 } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
+
+import { DndContext } from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null | false;
@@ -43,10 +38,10 @@ const EDITFACETVALUESMODALCOLUMNS: {
     label: 'Display name',
   },
   {
-    label: '',
+    label: 'Actions',
   },
   {
-    label: 'Actions',
+    label: '',
   },
 ];
 
@@ -98,13 +93,6 @@ export const GlobalFacetAttributesList = ({
     [dispatch]
   );
 
-  const {
-    inputRefs,
-    localOrders,
-    handleInputChange,
-    handleInputBlur,
-    handleInputKeyDown,
-  } = useFacetOrderInput(handleOrderChangeCallback, initialOrders);
   const totalSelectedItems = useMemo(() => {
     const selectedBoostedRows = globalAttributesLocalState.boostedRows
       .filter((row) => row.isChecked === true)
@@ -125,199 +113,6 @@ export const GlobalFacetAttributesList = ({
     globalAttributesLocalState.excludedRows,
     globalAttributesLocalState.nonBoostedExcludedRows,
   ]);
-
-  const listValues = useCallback(
-    (values: FormattedRow[], displayType: FacetDisplayType) => {
-      const handleRemoveFromMerge = ({
-        valueToRemove,
-        mergeDisplayName,
-      }: {
-        valueToRemove: string;
-        mergeDisplayName: string;
-      }) => {
-        dispatch({
-          type: 'REMOVE_FROM_MERGE_GROUP',
-          payload: {
-            valueToRemove,
-            mergeDisplayName,
-          },
-        });
-      };
-
-      const filteredRows = values.filter(
-        (row) =>
-          row.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.attributes.some((val) =>
-            val.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-      );
-
-      return filteredRows.map(
-        (
-          { displayName, attributes, isMergeGroup, order, isChecked },
-          index
-        ) => {
-          const onOrderChange = (status: FacetDisplayType) => {
-            setIsAwaitingUpdate(true);
-            if (status === displayType) {
-              return;
-            }
-
-            requestAnimationFrame(() => {
-              if (displayType === 'included') {
-                dispatch({
-                  type: 'AMEND_BOOSTED_ROW',
-                  payload: {
-                    newStatus: status,
-                    displayName,
-                  },
-                });
-              }
-              if (displayType === 'algoControl') {
-                dispatch({
-                  type: 'AMEND_NONBOOSTEDEXCLUDED_ROW',
-                  payload: {
-                    newStatus: status,
-                    displayName,
-                  },
-                });
-              }
-              if (displayType === 'excluded') {
-                dispatch({
-                  type: 'AMEND_EXCLUDED_ROW',
-                  payload: {
-                    newStatus: status,
-                    displayName,
-                  },
-                });
-              }
-            });
-          };
-
-          const localOrder = localOrders[displayName] ?? order;
-
-          return (
-            <FacetAttributeValuesTableRow
-              key={`${displayType}-${displayName}`}
-              isPinned={displayType === 'included'}
-              isExcluded={displayType === 'excluded'}
-              data-testid={`${displayType} attribute ${index} ${displayName}`}
-            >
-              <GlobalFacetAttribute
-                attributes={attributes}
-                isMergeGroup={isMergeGroup}
-                isChecked={isChecked}
-                displayName={displayName}
-                handleRemoveFromMerge={handleRemoveFromMerge}
-                dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
-                writeEnabled={writeEnabled}
-              />
-              <Col>
-                {displayType === 'included' && order && (
-                  <FacetOrderInput
-                    displayValue={displayName}
-                    order={order}
-                    localOrder={localOrder}
-                    inputRef={(el) => {
-                      if (el) {
-                        // eslint-disable-next-line functional/immutable-data
-                        inputRefs.current[displayName] = el;
-                      }
-                    }}
-                    onInputChange={handleInputChange}
-                    onInputBlur={handleInputBlur}
-                    onInputKeyDown={handleInputKeyDown}
-                    writeEnabled={writeEnabled}
-                  />
-                )}
-              </Col>
-
-              <GlobalEditableLabel
-                displayName={displayName}
-                editingValues={editingValues}
-                merged={globalAttributesLocalState.merged}
-                boostedRows={globalAttributesLocalState.boostedRows}
-                nonBoostedExcludedRows={
-                  globalAttributesLocalState.nonBoostedExcludedRows
-                }
-                excludedRows={globalAttributesLocalState.excludedRows}
-                facet={facet}
-                countryCode={countryCode}
-                dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
-                setEditingValues={setEditingValues}
-                writeEnabled={writeEnabled}
-              />
-
-              <Col>
-                {displayType === 'included' && (
-                  <GlobalArrowButtons
-                    displayName={displayName}
-                    index={index}
-                    searchQuery={searchQuery}
-                    boostedRows={globalAttributesLocalState.boostedRows}
-                    attributes={attributes}
-                    rows={filteredRows}
-                    disableArrows={totalSelectedItems > 0}
-                    writeEnabled={writeEnabled}
-                    dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
-                  />
-                )}
-              </Col>
-
-              <Col>
-                <CombinedDropdown
-                  variant="facetOrder"
-                  status={displayType}
-                  attribute={displayName}
-                  onChange={(status) =>
-                    onOrderChange(status as FacetDisplayType)
-                  }
-                  writeEnabled={writeEnabled}
-                  hasAlgoControl
-                  ariaLabel="Select to set as included, excluded or algo control"
-                />
-              </Col>
-            </FacetAttributeValuesTableRow>
-          );
-        }
-      );
-    },
-    [
-      searchQuery,
-      countryCode,
-      editingValues,
-      facet,
-      globalAttributesLocalState.boostedRows,
-      globalAttributesLocalState.nonBoostedExcludedRows,
-      globalAttributesLocalState.excludedRows,
-      globalAttributesLocalState.merged,
-      writeEnabled,
-      dispatch,
-      setEditingValues,
-      handleInputBlur,
-      handleInputChange,
-      handleInputKeyDown,
-      setIsAwaitingUpdate,
-      localOrders,
-      inputRefs,
-      totalSelectedItems,
-    ]
-  );
-
-  const boostedValuesRows = useMemo(() => {
-    return listValues(globalAttributesLocalState.boostedRows, 'included');
-  }, [globalAttributesLocalState.boostedRows, listValues]);
-
-  const defaultValuesRows = useMemo(() => {
-    return listValues(
-      globalAttributesLocalState.nonBoostedExcludedRows,
-      'algoControl'
-    );
-  }, [globalAttributesLocalState.nonBoostedExcludedRows, listValues]);
-
-  const excludedValuesRows = useMemo(() => {
-    return listValues(globalAttributesLocalState.excludedRows, 'excluded');
-  }, [globalAttributesLocalState.excludedRows, listValues]);
 
   const filteredAttributeValues = attributeValues.filter((attribute) =>
     attribute.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
@@ -351,6 +146,29 @@ export const GlobalFacetAttributesList = ({
       globalAttributesLocalState.nonBoostedExcludedRows.flatMap(
         (val) => val.attributes
       ).length;
+
+  const {
+    sensors,
+    boostedValuesRows,
+    defaultValuesRows,
+    excludedValuesRows,
+    boostedVisibleIds,
+    handleBoostedDragEnd,
+  } = useGlobalFacetAttributesList({
+    attributeValues,
+    searchQuery,
+    countryCode,
+    editingValues,
+    setEditingValues,
+    globalAttributesLocalState,
+    writeEnabled,
+    setIsAwaitingUpdate,
+    facet,
+    dispatch,
+    totalSelectedItems,
+    handleOrderChangeCallback,
+    initialOrders,
+  });
 
   return (
     <>
@@ -389,7 +207,14 @@ export const GlobalFacetAttributesList = ({
         ))}
       </FacetAttributeValuesTableRow>
 
-      {boostedValuesRows}
+      <DndContext sensors={sensors} onDragEnd={handleBoostedDragEnd}>
+        <SortableContext
+          items={boostedVisibleIds}
+          strategy={verticalListSortingStrategy}
+        >
+          {boostedValuesRows}
+        </SortableContext>
+      </DndContext>
 
       {defaultValuesRows}
 

@@ -12,7 +12,6 @@ import { Input } from '../input/input';
 const DisplayName = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   padding-right: ${spacing(2)};
 `;
 

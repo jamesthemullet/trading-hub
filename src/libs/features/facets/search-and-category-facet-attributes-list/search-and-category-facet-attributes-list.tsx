@@ -1,41 +1,57 @@
-import type { ActionDispatch } from 'react';
-import { useCallback, useMemo } from 'react';
+import { type ActionDispatch, useCallback, useMemo } from 'react';
 
 import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/open-api';
-import { ArrowButton, CombinedDropdown, Text } from '@/libs/components';
+import { CombinedDropdown, Text } from '@/libs/components';
 import {
   AttributeWrapper,
   Col,
+  DragHandleButton,
   FlexColumnCol,
-  OrderArrowsContainer,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
+import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
+import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import {
   FacetAttributeValuesTableRow,
   TableHeading,
 } from '@/libs/containers/shared/table/table.styles';
+import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
 import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
+
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import Image from 'next/image';
 
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null | false;
 }[] = [
   { label: null },
   {
-    label: 'Attribute',
+    label: 'Ranking',
   },
   {
-    label: 'Ranking',
+    label: 'Attribute',
   },
   {
     label: 'Display name',
   },
   {
-    label: '',
+    label: 'Actions',
   },
   {
-    label: 'Actions',
+    label: '',
   },
 ];
 
@@ -61,6 +77,22 @@ export const SearchAndCategoryFacetAttributesList = ({
   searchQuery,
   writeEnabled,
 }: SearchAndCategoryFacetAttributesListProps) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const boostedOrder = useMemo(
+    () => boostedValues.map((item) => item.displayValue),
+    [boostedValues]
+  );
+
   const initialOrders = useMemo(
     () =>
       Object.fromEntries(
@@ -107,12 +139,13 @@ export const SearchAndCategoryFacetAttributesList = ({
         });
       };
 
-      const filteredRows = values?.filter((row) =>
+      const filteredRows = (values ?? []).filter((row) =>
         row.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
-      return filteredRows?.map((row, index) => {
+      const rows = filteredRows.map((row, index) => {
         const displayValue = row.displayValue;
+        const rowKey = `${displayType}-${displayValue}`;
 
         let order: number | undefined;
         let localOrder: number | string | undefined;
@@ -121,10 +154,15 @@ export const SearchAndCategoryFacetAttributesList = ({
           order = row.order;
           localOrder = localOrders[displayValue] ?? order;
         }
+        const disableDrag =
+          !!searchQuery || !writeEnabled || filteredRows.length <= 1;
 
-        return (
+        const renderRow = (sortableProps?: SortableRowRenderArgs) => (
           <FacetAttributeValuesTableRow
-            key={`${displayType}-${displayValue}`}
+            key={sortableProps ? undefined : rowKey}
+            ref={sortableProps?.setNodeRef}
+            style={sortableProps?.style}
+            {...(sortableProps?.attributes ?? {})}
             isPinned={displayType === 'included'}
             isExcluded={displayType === 'excluded'}
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
@@ -132,25 +170,24 @@ export const SearchAndCategoryFacetAttributesList = ({
             <Col />
             <Col>
               {displayType === 'included' && order !== undefined && (
-                <AttributeWrapper>
-                  <FacetOrderInput
-                    displayValue={displayValue}
-                    order={order}
-                    localOrder={localOrder}
-                    inputRef={(el) => {
-                      if (el) {
-                        // eslint-disable-next-line functional/immutable-data
-                        inputRefs.current[displayValue] = el;
-                      }
-                    }}
-                    onInputChange={handleInputChange}
-                    onInputBlur={handleInputBlur}
-                    onInputKeyDown={handleInputKeyDown}
-                    writeEnabled={writeEnabled}
-                  />
-                </AttributeWrapper>
+                <FacetOrderInput
+                  displayValue={displayValue}
+                  order={order}
+                  localOrder={localOrder}
+                  inputRef={(el) => {
+                    if (el) {
+                      // eslint-disable-next-line functional/immutable-data
+                      inputRefs.current[displayValue] = el;
+                    }
+                  }}
+                  onInputChange={handleInputChange}
+                  onInputBlur={handleInputBlur}
+                  onInputKeyDown={handleInputKeyDown}
+                  writeEnabled={writeEnabled}
+                />
               )}
             </Col>
+
             <Col>
               <AttributeWrapper>
                 <Text>{displayValue}</Text>
@@ -162,40 +199,6 @@ export const SearchAndCategoryFacetAttributesList = ({
                 {displayValue}
               </Text>
             </FlexColumnCol>
-
-            <Col>
-              {displayType === 'included' && order !== undefined && (
-                <OrderArrowsContainer>
-                  <ArrowButton
-                    direction="up"
-                    aria-label={`Move ${displayValue} row up`}
-                    isDisabled={index === 0 || !!searchQuery || !writeEnabled}
-                    onClick={() => {
-                      dispatch({
-                        type: 'MOVE_BOOSTED_ROW_UP',
-                        payload: { id: displayValue },
-                      });
-                    }}
-                  />
-
-                  <ArrowButton
-                    direction="down"
-                    aria-label={`Move ${displayValue} row down`}
-                    isDisabled={
-                      index === filteredRows.length - 1 ||
-                      !!searchQuery ||
-                      !writeEnabled
-                    }
-                    onClick={() => {
-                      dispatch({
-                        type: 'MOVE_BOOSTED_ROW_DOWN',
-                        payload: { id: displayValue },
-                      });
-                    }}
-                  />
-                </OrderArrowsContainer>
-              )}
-            </Col>
 
             <Col>
               <CombinedDropdown
@@ -213,9 +216,45 @@ export const SearchAndCategoryFacetAttributesList = ({
                 ariaLabel="Select to set as included, excluded or algo control"
               />
             </Col>
+
+            <Col>
+              {displayType === 'included' && order !== undefined && (
+                <DragHandleButton
+                  type="button"
+                  aria-label={`Reorder ${displayValue}`}
+                  ref={sortableProps?.setActivatorNodeRef}
+                  {...(sortableProps?.listeners ?? {})}
+                  disabled={disableDrag}
+                  aria-disabled={disableDrag}
+                  data-testid={`drag-handle-${displayValue}`}
+                >
+                  <Image
+                    width={24}
+                    height={24}
+                    src="/trading-hub/asset/drag-handle.svg"
+                    alt="Drag handle"
+                  />
+                </DragHandleButton>
+              )}
+            </Col>
           </FacetAttributeValuesTableRow>
         );
+
+        if (displayType === 'included') {
+          return (
+            <SortableRow key={rowKey} id={displayValue} disabled={disableDrag}>
+              {(sortableProps) => renderRow(sortableProps)}
+            </SortableRow>
+          );
+        }
+
+        return renderRow();
       });
+
+      return {
+        rows: rows.length > 0 ? rows : undefined,
+        ids: filteredRows.map((row) => row.displayValue),
+      };
     },
     [
       dispatch,
@@ -229,17 +268,33 @@ export const SearchAndCategoryFacetAttributesList = ({
     ]
   );
 
-  const boostedValuesRows = useMemo(() => {
+  const boostedValuesResult = useMemo(() => {
     return listValues(boostedValues, 'included');
   }, [boostedValues, listValues]);
 
-  const defaultValuesRows = useMemo(() => {
+  const defaultValuesResult = useMemo(() => {
     return listValues(algoControlValues, 'algoControl');
   }, [algoControlValues, listValues]);
 
-  const excludedValuesRows = useMemo(() => {
+  const excludedValuesResult = useMemo(() => {
     return listValues(excludedValues, 'excluded');
   }, [excludedValues, listValues]);
+
+  const boostedValuesRows = boostedValuesResult.rows;
+  const boostedVisibleIds = boostedValuesResult.ids;
+  const defaultValuesRows = defaultValuesResult.rows;
+  const excludedValuesRows = excludedValuesResult.rows;
+
+  const handleBoostedDragEnd = useMemo(
+    () =>
+      createBoostedDragEndHandler({
+        boostedOrder,
+        dispatch,
+        writeEnabled,
+        shouldAbort: () => !!searchQuery,
+      }),
+    [boostedOrder, dispatch, searchQuery, writeEnabled]
+  );
 
   return (
     <>
@@ -253,7 +308,15 @@ export const SearchAndCategoryFacetAttributesList = ({
         ))}
       </FacetAttributeValuesTableRow>
 
-      {boostedValuesRows}
+      <DndContext sensors={sensors} onDragEnd={handleBoostedDragEnd}>
+        <SortableContext
+          items={boostedVisibleIds}
+          strategy={verticalListSortingStrategy}
+        >
+          {boostedValuesRows}
+        </SortableContext>
+      </DndContext>
+
       {defaultValuesRows}
       {excludedValuesRows}
     </>

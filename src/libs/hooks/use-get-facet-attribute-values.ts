@@ -87,6 +87,8 @@ export const useGetFacetAttributeValues = ({
       }
     };
     void asyncCall();
+    // adding categories and searchTerms causes infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [facetId, countryCode, query, categoriesKey, searchTermsKey]);
 
   return {

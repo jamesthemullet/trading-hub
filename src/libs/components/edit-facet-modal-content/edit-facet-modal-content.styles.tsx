@@ -80,3 +80,30 @@ export const RemoveMergedFacet = styled.button`
   display: inline-block;
   border: none;
 `;
+
+export const HandleCol = styled(Col)`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const DragHandleButton = styled.button`
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+`;
