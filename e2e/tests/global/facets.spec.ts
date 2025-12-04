@@ -68,8 +68,9 @@ test.describe('global facets', () => {
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await checkAccessibility(page);
-    await page.waitForTimeout(1000);
-
+    await expect(
+      page.getByRole('link', { name: 'Add facet rule' })
+    ).toBeVisible();
     await page.getByRole('link', { name: 'Add facet rule' }).click();
 
     await expect(
@@ -208,8 +209,6 @@ test.describe('global facets', () => {
 
     await page.getByLabel('Save 0-2 Years change').click();
 
-    await page.waitForTimeout(3000);
-
     await expect(
       page.getByLabel('Edit display name for A merged group name')
     ).toBeVisible();
@@ -228,8 +227,6 @@ test.describe('global facets', () => {
 
     await page.getByLabel('Save 0-2 years change').click();
 
-    await page.waitForTimeout(3000);
-
     await expect(
       page.getByLabel('Edit display name for A merge into a merged group name')
     ).toBeVisible();
@@ -239,8 +236,6 @@ test.describe('global facets', () => {
     ).toBeVisible();
 
     await page.getByLabel('Remove merged facet for 6+ years').click();
-
-    await page.waitForTimeout(2000);
 
     await expect(
       page.getByLabel('Edit display name for 6+ years')

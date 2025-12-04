@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { searchAndWaitForResults } from '../helpers';
+
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Search Ranking', () => {
@@ -27,15 +29,14 @@ test.describe('Search Ranking', () => {
 
     await page.getByRole('button', { name: 'Close' }).click();
 
-    await page.waitForTimeout(2000);
-    await expect(page.getByText('Black Dress')).toBeVisible();
+    const resultsButton = page.getByText('Black Dress').first();
+    await expect(resultsButton).toBeVisible();
+    await resultsButton.click();
 
     await page.getByRole('button', { name: 'Create' }).click();
     await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Sequin Dress');
-    await page.waitForTimeout(2000);
+    await searchAndWaitForResults(page, 'Sequin Dress');
     await expect(page.getByText('Sequin Dress').first()).toBeVisible();
 
     const checkbox = page
@@ -55,9 +56,7 @@ test.describe('Search Ranking', () => {
   test('edits a ruleset', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
     await page.goto('/search');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Sequin Dress');
-    await page.waitForTimeout(2000);
+    await searchAndWaitForResults(page, 'Sequin Dress');
     await expect(page.getByText('Sequin Dress').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -75,8 +74,6 @@ test.describe('Search Ranking', () => {
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
-
-    await page.waitForTimeout(3000);
 
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
     await page.getByRole('button', { name: 'Changes2' }).click();
@@ -112,9 +109,7 @@ test.describe('Search Ranking', () => {
 
   test('duplicates and edits a rule', async ({ page }) => {
     await page.goto('/search');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Sequin Dress');
-    await page.waitForTimeout(2000);
+    await searchAndWaitForResults(page, 'Sequin Dress');
     await expect(page.getByText('Sequin Dress').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -146,7 +141,7 @@ test.describe('Search Ranking', () => {
 
     await page.getByRole('button', { name: 'Close' }).click();
 
-    await page.waitForTimeout(2000);
+    await expect(page.getByRole('button', { name: 'Close' })).toBeHidden();
 
     await expect(page.getByText('sequin dress', { exact: true })).toBeVisible();
 
@@ -157,9 +152,7 @@ test.describe('Search Ranking', () => {
 
   test('deletes a ruleset', async ({ page }) => {
     await page.goto('/search');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Sequin Dress');
-    await page.waitForTimeout(2000);
+    await searchAndWaitForResults(page, 'Sequin Dress');
     await expect(page.getByText('Sequin Dress').first()).toBeVisible();
 
     const currentCount =

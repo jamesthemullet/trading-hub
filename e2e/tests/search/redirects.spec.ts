@@ -129,7 +129,7 @@ test.describe('Keyword Redirects', () => {
         level: 3,
         name: 'Do you want to delete this rule?',
       })
-    ).not.toBeVisible();
+    ).toBeHidden();
   });
 
   test.describe('Scheduling', () => {
@@ -160,7 +160,7 @@ test.describe('Keyword Redirects', () => {
       await page.getByText('00:00').click();
       await page.fill('input[type="time"]', '10:30');
 
-      await expect(page.getByText('00:00')).not.toBeVisible();
+      await expect(page.getByText('00:00')).toBeHidden();
 
       await expect(page.getByText('10:30')).toBeVisible();
 
@@ -191,12 +191,12 @@ test.describe('Keyword Redirects', () => {
       await page.locator('button:has-text("16")').nth(1).click();
       await page.locator('button:has-text("22")').nth(1).click();
 
-      const timeInputs = await page.$$('input[type="time"]');
-      await timeInputs[0].fill('10:30');
-      await timeInputs[1].fill('11:45');
+      const timeInputs = page.locator('input[type="time"]');
+      await timeInputs.nth(0).fill('10:30');
+      await timeInputs.nth(1).fill('11:45');
 
-      await expect(page.getByText('15:17')).not.toBeVisible();
-      await expect(page.getByText('04:20')).not.toBeVisible();
+      await expect(page.getByText('15:17')).toBeHidden();
+      await expect(page.getByText('04:20')).toBeHidden();
 
       await expect(page.getByText('10:30')).toBeVisible();
       await expect(page.getByText('11:45')).toBeVisible();

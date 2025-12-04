@@ -236,6 +236,7 @@ const eslint = [
     files: ['e2e/**'],
     rules: {
       ...playwright.configs['flat/recommended'].rules,
+      'playwright/no-conditional-in-test': 'off',
     },
   },
 ];

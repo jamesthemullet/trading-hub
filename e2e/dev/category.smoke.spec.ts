@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { searchAndWaitForResults } from '../helpers';
+
 test.describe.configure({ mode: 'serial' });
 
 const TEST_CATEGORY_ID = 'SubCategory_1842397';
@@ -27,7 +29,6 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForTimeout(2000);
 
     await expect(page.getByText(TEST_CATEGORY_NAME)).toBeVisible();
     await page.getByText(TEST_CATEGORY_NAME).click();
@@ -38,12 +39,7 @@ test.describe('Category Ranking', () => {
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForTimeout(2000);
-    await expect(
-      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
-    ).toBeVisible();
+    await searchAndWaitForResults(page, TEST_CATEGORY_ID);
 
     const checkbox = page
       .locator('label[title="Toggle"] input[type="checkbox"]')
@@ -57,7 +53,6 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
-    await page.waitForTimeout(2000);
 
     await expect(page.getByText('fabric')).toBeVisible();
     await expect(page.getByText('categoryId')).toBeVisible();
@@ -81,7 +76,6 @@ test.describe('Category Ranking', () => {
       .click();
 
     await page.getByRole('button', { name: 'Preview', exact: true }).click();
-    await page.waitForTimeout(2000);
 
     await expect(
       page.getByRole('button', { name: 'brand', exact: true })
@@ -94,12 +88,8 @@ test.describe('Category Ranking', () => {
   test('edits a ruleset', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
     await page.goto('/category');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForTimeout(2000);
-    await expect(
-      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
-    ).toBeVisible();
+
+    await searchAndWaitForResults(page, TEST_CATEGORY_ID);
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
@@ -123,7 +113,6 @@ test.describe('Category Ranking', () => {
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
 
-    await page.waitForTimeout(3000);
     await expect(page.getByText(product2Id)).not.toBeInViewport();
 
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
@@ -200,12 +189,7 @@ test.describe('Category Ranking', () => {
   test('keeps changes for facets and products', async ({ page }) => {
     await page.goto('/category');
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForTimeout(2000);
-    await expect(
-      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
-    ).toBeVisible();
+    await searchAndWaitForResults(page, TEST_CATEGORY_ID);
 
     await expect(page.getByRole('time').first()).toHaveText(
       '14 Nov 2024 - 19 Nov 2024'
@@ -227,24 +211,21 @@ test.describe('Category Ranking', () => {
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForTimeout(2000);
+    await searchAndWaitForResults(page, TEST_CATEGORY_ID);
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
-    await page.waitForTimeout(3000);
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
     await expect(page.getByRole('button', { name: 'Changes4' })).toBeVisible();
   });
 
   test('duplicates and edits a rule', async ({ page }) => {
     await page.goto('/category');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForTimeout(2000);
-    await expect(
-      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
-    ).toBeVisible();
+
+    await searchAndWaitForResults(page, TEST_CATEGORY_ID);
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Duplicate' }).click();
@@ -295,13 +276,13 @@ test.describe('Category Ranking', () => {
 
   test('deletes a ruleset', async ({ page }) => {
     await page.goto('/category');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
-    await page.waitForTimeout(2000);
-    await expect(
-      page.getByText(TEST_CATEGORY_IDENTIFIER).first()
-    ).toBeVisible();
 
+    await searchAndWaitForResults(page, TEST_CATEGORY_ID);
+
+    const currentCountText = await page
+      .getByTestId('results count')
+      .textContent();
+    expect(currentCountText).not.toBeNull();
     const currentCount =
       (await page.getByTestId('results count').textContent()) ?? '';
     await page.getByRole('button', { name: 'More options' }).first().click();

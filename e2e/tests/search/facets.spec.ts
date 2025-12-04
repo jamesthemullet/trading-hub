@@ -141,6 +141,6 @@ test.describe('Search rulesets', () => {
       .click();
     await page.getByRole('option', { name: 'Exclude only' }).click();
 
-    await expect(page.getByLabel('Move SMOKE row up')).not.toBeVisible();
+    await expect(page.getByLabel('Move SMOKE row up')).toBeHidden();
   });
 });

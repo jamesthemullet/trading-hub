@@ -13,8 +13,6 @@ test.describe('Global Ranking', () => {
     await expect(page.getByText('0 results', { exact: true })).toBeHidden();
 
     await page.getByRole('link', { name: 'Add facet rule' }).click();
-
-    await page.waitForTimeout(5000);
     await expect(
       page.getByRole('heading', { name: 'Global Facet Rule Editor' })
     ).toBeVisible();
@@ -41,7 +39,13 @@ test.describe('Global Ranking', () => {
     await page
       .getByRole('button', { name: 'Apply action', exact: true })
       .click();
-    await page.waitForTimeout(5000);
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Apply global changes',
+      })
+    ).toBeHidden();
+
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     const checkbox = page
@@ -100,7 +104,11 @@ test.describe('Global Ranking', () => {
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
     await page.getByPlaceholder('Search for product').fill('black dress');
-    await page.waitForTimeout(400);
+    await expect(
+      page
+        .getByTestId('product-search-result')
+        .getByLabel('Position 1', { exact: true })
+    ).toBeVisible();
 
     await page
       .getByTestId('product-search-result')
@@ -116,8 +124,6 @@ test.describe('Global Ranking', () => {
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
-
-    await page.waitForTimeout(3000);
 
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
     await page.getByRole('button', { name: 'Changes2' }).click();

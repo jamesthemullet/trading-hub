@@ -115,7 +115,12 @@ test.describe('global rulesets', () => {
     await checkAccessibility(page);
 
     await page.getByPlaceholder('Search for product').fill('dress');
-    await page.waitForTimeout(400);
+    await expect(
+      page
+        .getByLabel('Position 1')
+        .first()
+        .getByRole('button', { name: 'Open menu' })
+    ).toBeVisible();
 
     await page
       .getByLabel('Position 2')

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { searchAndWaitForResults } from '../helpers';
+
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Search Redirect', () => {
@@ -41,16 +43,13 @@ test.describe('Search Redirect', () => {
 
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Gravy');
-    await page.waitForTimeout(2000);
     await expect(page.getByText('Gravy').first()).toBeVisible();
   });
 
   test('edits a redirect', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2024-11-05T10:00:00'));
     await page.goto('/search/redirects');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Gravy');
-    await page.waitForTimeout(2000);
+    await searchAndWaitForResults(page, 'Gravy');
     await expect(page.getByText('Gravy').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -83,7 +82,6 @@ test.describe('Search Redirect', () => {
     await page.goto('/search/redirects');
     await page.getByPlaceholder('Search...').click();
     await page.getByPlaceholder('Search...').fill('Gravy');
-    await page.waitForTimeout(2000);
     await expect(page.getByText('Gravy').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
@@ -126,9 +124,7 @@ test.describe('Search Redirect', () => {
 
   test('deletes a redirect', async ({ page }) => {
     await page.goto('/search/redirects');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Gravy');
-    await page.waitForTimeout(2000);
+    await searchAndWaitForResults(page, 'Gravy');
     await expect(page.getByText('Gravy').first()).toBeVisible();
 
     const currentCount =
