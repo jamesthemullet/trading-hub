@@ -1,4 +1,5 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -19,5 +20,47 @@ describe('GlobalFacetAttribute', () => {
     );
     expect(screen.getByText('value1')).toBeVisible();
     expect(screen.getByText('value2')).toBeVisible();
+  });
+
+  it('prevents duplicate dispatches when remove button is clicked rapidly', async () => {
+    const mockHandleRemoveFromMerge = jest.fn();
+
+    const raf = jest
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
+
+    renderWithProviders(
+      <GlobalFacetAttribute
+        attributes={['value1', 'value2', 'value3', 'value4']}
+        isMergeGroup
+        isChecked={false}
+        displayName="test"
+        handleRemoveFromMerge={mockHandleRemoveFromMerge}
+        dispatch={jest.fn()}
+        writeEnabled
+      />
+    );
+
+    const removeButtons = screen.getAllByLabelText(/Remove merged facet for/i);
+    const removeButton = removeButtons[0];
+
+    await userEvent.click(removeButton);
+    await userEvent.click(removeButton);
+    await userEvent.click(removeButton);
+
+    await waitFor(() => {
+      expect(mockHandleRemoveFromMerge).toHaveBeenCalledTimes(1);
+    });
+    expect(mockHandleRemoveFromMerge).toHaveBeenCalledWith({
+      valueToRemove: 'value1',
+      mergeDisplayName: 'test',
+    });
+
+    expect(removeButton).toBeDisabled();
+
+    raf.mockRestore();
   });
 });

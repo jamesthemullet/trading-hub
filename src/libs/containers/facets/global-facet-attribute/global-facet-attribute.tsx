@@ -46,10 +46,8 @@ export const GlobalFacetAttribute = ({
   const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
 
   useEffect(() => {
-    if (!isAwaitingUpdate) return;
-
     setIsAwaitingUpdate(false);
-  }, [isAwaitingUpdate]);
+  }, [attributes]);
 
   const visibleAttributes = isExpanded
     ? attributes
@@ -99,6 +97,7 @@ export const GlobalFacetAttribute = ({
                         });
                       }}
                       aria-label={`Remove merged facet for ${value}`}
+                      disabled={isAwaitingUpdate}
                     />
                   )}
                 </MergedValue>
