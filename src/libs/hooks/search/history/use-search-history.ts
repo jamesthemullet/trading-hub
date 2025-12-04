@@ -4,7 +4,7 @@ import type { MerchandisingReturnedKeywordRuleSetHistory } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export type SearchHistoryChange =
+type SearchHistoryChange =
   MerchandisingReturnedKeywordRuleSetHistory['changes'][number] & {
     id: string;
     entityId: string;
@@ -13,7 +13,7 @@ export type SearchHistoryChange =
     schemaVersion: string;
   };
 
-export type SearchHistory = {
+type SearchHistory = {
   changes: SearchHistoryChange[];
 };
 

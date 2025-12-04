@@ -1,6 +1,6 @@
 import type { DragEndEvent } from '@dnd-kit/core';
 
-export type SetBoostedOrderAction = {
+type SetBoostedOrderAction = {
   type: 'SET_BOOSTED_ORDER';
   payload: {
     id: string;
@@ -8,7 +8,7 @@ export type SetBoostedOrderAction = {
   };
 };
 
-export type CreateBoostedDragEndHandlerOptions = {
+type CreateBoostedDragEndHandlerOptions = {
   writeEnabled: boolean;
   boostedOrder: string[];
   dispatch: (action: SetBoostedOrderAction) => void;

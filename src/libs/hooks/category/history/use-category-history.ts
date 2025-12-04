@@ -4,7 +4,7 @@ import type { MerchandisingReturnedCategoryRuleSetHistory } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export type CategoryHistoryChange =
+type CategoryHistoryChange =
   MerchandisingReturnedCategoryRuleSetHistory['changes'][number] & {
     id: string;
     entityId: string;
@@ -13,7 +13,7 @@ export type CategoryHistoryChange =
     schemaVersion: string;
   };
 
-export type CategoryHistory = {
+type CategoryHistory = {
   changes: CategoryHistoryChange[];
 };
 

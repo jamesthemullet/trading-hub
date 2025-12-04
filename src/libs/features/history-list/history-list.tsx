@@ -15,7 +15,7 @@ const TIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   minute: '2-digit',
 };
 
-export type HistoryItem = {
+type HistoryItem = {
   id: string;
   date: string;
   user: string;

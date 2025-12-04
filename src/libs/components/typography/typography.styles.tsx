@@ -103,7 +103,7 @@ type TypographyProps = {
   children: React.ReactNode;
 };
 
-export const fontSizes = {
+const fontSizes = {
   bodyLarge: '18px',
   bodyMedium: '16px',
   bodySmall: '14px',
@@ -121,7 +121,7 @@ export const fontSizes = {
   titleSmall: '20px',
 };
 
-export const lineHeights = {
+const lineHeights = {
   bodyLarge: '28px',
   bodyMedium: '24px',
   bodySmall: '20px',

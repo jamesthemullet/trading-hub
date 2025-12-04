@@ -4,7 +4,7 @@ import type { MerchandisingReturnedKeywordRedirectHistory } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export type RedirectHistoryChange =
+type RedirectHistoryChange =
   MerchandisingReturnedKeywordRedirectHistory['changes'][number] & {
     id: string;
     entityId: string;
@@ -13,7 +13,7 @@ export type RedirectHistoryChange =
     schemaVersion: string;
   };
 
-export type RedirectHistory = {
+type RedirectHistory = {
   changes: RedirectHistoryChange[];
 };
 

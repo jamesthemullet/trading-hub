@@ -4,7 +4,7 @@ import type { MerchandisingReturnedGlobalRuleSetHistory } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export type GlobalHistoryChange =
+type GlobalHistoryChange =
   MerchandisingReturnedGlobalRuleSetHistory['changes'][number] & {
     id: string;
     entityId: string;
@@ -13,7 +13,7 @@ export type GlobalHistoryChange =
     schemaVersion: string;
   };
 
-export type GlobalHistory = {
+type GlobalHistory = {
   changes: GlobalHistoryChange[];
 };
 
