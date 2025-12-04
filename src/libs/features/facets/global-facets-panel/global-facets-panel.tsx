@@ -174,6 +174,7 @@ const GlobalFacetsPanel = ({
           refreshData={onRefreshFacetList}
           onFacetDataChange={onFacetDataChange}
           writeEnabled={writeEnabled}
+          displayRowOrderControls
         />
       )}
     </>

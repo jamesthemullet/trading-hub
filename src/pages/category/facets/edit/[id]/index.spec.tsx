@@ -325,35 +325,6 @@ describe('Category Facet Management Editing', () => {
     );
   });
 
-  it('should change the order of rows', async () => {
-    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
-      ...mockUseRuleSetPreviewData,
-      facets: facetsListMock.facets,
-      isLoading: false,
-    }));
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(<Page id={ruleSetId} />);
-
-    await waitFor(() => {
-      expect(screen.getByLabelText('Move color row up')).toBeInTheDocument();
-    });
-    expect(screen.getByLabelText('Move color row up')).toBeDisabled();
-
-    await user.click(await screen.findByLabelText('Move color row down'));
-
-    await waitFor(async () => {
-      expect(await screen.findByLabelText('Move color row up')).toBeVisible();
-    });
-
-    await user.click(await screen.findByLabelText('Move color row up'));
-
-    await waitFor(() => {
-      expect(screen.getByLabelText('Move color row up')).toBeInTheDocument();
-    });
-    expect(screen.getByLabelText('Move color row up')).toBeDisabled();
-  });
-
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {
     const user = userEvent.setup();
     renderWithProviders(<Page id={ruleSetId} />);

@@ -103,6 +103,7 @@ export const Row = styled(TableRow)<TableRowProps>`
   align-items: center;
   border-bottom: none;
   box-shadow: #000 0 0 10px -5px;
+  grid-template-columns: minmax(180px, 2fr) 200px 300px 180px 40px;
   margin-bottom: ${spacing(2)};
   padding: ${spacing(2)};
 

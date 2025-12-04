@@ -37,6 +37,14 @@ type ChangeDisplayTypeAction = {
   };
 };
 
+type SetIncludedOrderAction = {
+  type: 'SET_INCLUDED_ORDER';
+  payload: {
+    id: string;
+    newIndex: number;
+  };
+};
+
 type InitialiseStateAction = {
   type: 'INITIALISE_STATE';
   payload: FacetPanelState;
@@ -51,6 +59,7 @@ export type Action =
   | MoveRowUpAction
   | MoveRowDownAction
   | ChangeDisplayTypeAction
+  | SetIncludedOrderAction
   | InitialiseStateAction
   | ChangeCountryAction;
 
@@ -78,6 +87,36 @@ export const facetsPanelReducer = (
             ),
           }
         : state;
+    }
+    case 'SET_INCLUDED_ORDER': {
+      const { id, newIndex } = action.payload;
+      const currentIncluded = state.includedFacets;
+      const currentIndex = currentIncluded.indexOf(id);
+
+      if (
+        currentIndex === -1 ||
+        newIndex < 0 ||
+        newIndex >= currentIncluded.length ||
+        currentIndex === newIndex
+      ) {
+        return state;
+      }
+
+      const movedFacet = currentIncluded[currentIndex];
+      const updatedIncluded = [
+        ...currentIncluded.slice(0, currentIndex),
+        ...currentIncluded.slice(currentIndex + 1),
+      ];
+      const finalIncluded = [
+        ...updatedIncluded.slice(0, newIndex),
+        movedFacet,
+        ...updatedIncluded.slice(newIndex),
+      ];
+
+      return {
+        ...state,
+        includedFacets: finalIncluded,
+      };
     }
     case 'MOVE_INCLUDED_ROW_DOWN': {
       const currentIncluded = state.includedFacets;

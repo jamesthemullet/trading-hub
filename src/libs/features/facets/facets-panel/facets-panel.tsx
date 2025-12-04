@@ -13,14 +13,13 @@ import {
   Search,
   Text,
 } from '@/libs/components';
-import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
+import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import {
   AttributesTable,
   Col,
   CountrySelectorLabel,
   LowerHeading,
   NoAttributesBlock,
-  OrderArrowsContainer,
   OrderColumn,
   Row,
   ScopeWrapper,
@@ -32,9 +31,12 @@ import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/f
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { COLUMNS, ROUTES } from '@/libs/constants';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
+import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
+import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { TableHeading } from '@/libs/containers/shared/table/table.styles';
+import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import type {
@@ -42,6 +44,20 @@ import type {
   FacetDisplayType,
   FacetRowDisplayValue,
 } from '@/libs/stores/facets-panel/facets-panel-reducer';
+
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import Image from 'next/image';
 
 import { GlobalFacetPanelModal } from '../global-facets-panel-modal/global-facets-panel-modal';
 
@@ -105,11 +121,52 @@ export const FacetsPanel = ({
     }));
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const includedFacetOrder = useMemo(
+    () =>
+      facetsState
+        .filter((facet) => facet.displayType === 'included')
+        .map((facet) => facet.id),
+    [facetsState]
+  );
+
   const { setSearch, filteredFacets } = useFacetsFilter(facetsState);
+
+  const visibleIncludedFacetIds = useMemo(
+    () =>
+      filteredFacets
+        .filter((facet) => facet.displayType === 'included')
+        .map((facet) => facet.id),
+    [filteredFacets]
+  );
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
   }, 300);
+
+  const handleIncludedDragEnd = useMemo(
+    () =>
+      createBoostedDragEndHandler({
+        boostedOrder: includedFacetOrder,
+        dispatch: (action) =>
+          dispatch({
+            type: 'SET_INCLUDED_ORDER',
+            payload: action.payload,
+          }),
+        writeEnabled: writeEnabled && displayRowOrderControls,
+      }),
+    [dispatch, displayRowOrderControls, includedFacetOrder, writeEnabled]
+  );
 
   const onClose = () => {
     setIsEditValuesModalOpen(false);
@@ -131,35 +188,27 @@ export const FacetsPanel = ({
       });
     };
 
-  const handleMoveRowUp = (attributeState: FacetRowDisplayValue) => () => {
-    dispatch({
-      type: 'MOVE_INCLUDED_ROW_UP',
-      payload: { id: attributeState.id },
-    });
-  };
-
-  const handleMoveRowDown = (attributeState: FacetRowDisplayValue) => () => {
-    dispatch({
-      type: 'MOVE_INCLUDED_ROW_DOWN',
-      payload: { id: attributeState.id },
-    });
-  };
-
   const disallowedValues = facetsState.map((facet) => facet.displayValue);
 
   const FacetRow = (facet: FacetRowDisplayValue) => {
-    const { displayValue, displayType, meta, id } = facet;
+    const { displayValue, displayType, id } = facet;
     const errorState = errorStates[id] || { message: '' };
+    const isIncludedFacet = displayType === 'included';
+    const isDragDisabled = !writeEnabled || boostedCount <= 1;
 
-    return (
+    const renderRow = (sortableProps?: SortableRowRenderArgs) => (
       <Row
         optionSelected={displayType}
         data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
-        key={id}
+        key={sortableProps ? undefined : id}
+        ref={sortableProps?.setNodeRef}
+        style={sortableProps?.style}
+        {...(sortableProps?.attributes ?? {})}
       >
         <Col>
           <Text>{facet.indexPropertyName}</Text>
         </Col>
+
         <Col>
           {writeEnabled ? (
             <EditableLabel
@@ -189,6 +238,7 @@ export const FacetsPanel = ({
             <Text>{facet.displayValue}</Text>
           )}
         </Col>
+
         <Col>
           <OrderColumn>
             <CombinedDropdown
@@ -201,28 +251,9 @@ export const FacetsPanel = ({
               writeEnabled={writeEnabled}
               ariaLabel="Select to set as included, excluded or algo control"
             />
-
-            {displayType === 'included' &&
-              displayRowOrderControls &&
-              writeEnabled && (
-                <OrderArrowsContainer>
-                  <ArrowButton
-                    direction="up"
-                    aria-label={`Move ${displayValue} row up`}
-                    onClick={handleMoveRowUp(facet)}
-                    isDisabled={meta?.isBeginningOfDisplayTypeGroup}
-                  />
-
-                  <ArrowButton
-                    direction="down"
-                    aria-label={`Move ${displayValue} row down`}
-                    onClick={handleMoveRowDown(facet)}
-                    isDisabled={meta?.isEndOfDisplayTypeGroup}
-                  />
-                </OrderArrowsContainer>
-              )}
           </OrderColumn>
         </Col>
+
         <Col>
           {showNewFacetValuesPage ? (
             <ButtonDeprecated
@@ -251,8 +282,39 @@ export const FacetsPanel = ({
             </ButtonDeprecated>
           )}
         </Col>
+
+        <Col>
+          {isIncludedFacet && (
+            <DragHandleButton
+              type="button"
+              aria-label={`Reorder ${displayValue}`}
+              ref={sortableProps?.setActivatorNodeRef}
+              {...(sortableProps?.listeners ?? {})}
+              disabled={isDragDisabled}
+              aria-disabled={isDragDisabled}
+              data-testid={`drag-handle-${displayValue}`}
+            >
+              <Image
+                width={24}
+                height={24}
+                src="/trading-hub/asset/drag-handle.svg"
+                alt="Drag handle"
+              />
+            </DragHandleButton>
+          )}
+        </Col>
       </Row>
     );
+
+    if (isIncludedFacet) {
+      return (
+        <SortableRow key={id} id={id} disabled={!writeEnabled}>
+          {(sortableProps) => renderRow(sortableProps)}
+        </SortableRow>
+      );
+    }
+
+    return renderRow();
   };
 
   const [boostedCount, excludedCount, nonBoostedExcludedCount] = useMemo(() => {
@@ -268,6 +330,13 @@ export const FacetsPanel = ({
 
     return [boosted, excluded, nonBoostedExcluded];
   }, [facetsState]);
+
+  const includedFacets = filteredFacets.filter(
+    (facet) => facet.displayType === 'included'
+  );
+  const nonIncludedFacets = filteredFacets.filter(
+    (facet) => facet.displayType !== 'included'
+  );
 
   return (
     <>
@@ -333,7 +402,16 @@ export const FacetsPanel = ({
           ))}
         </Row>
 
-        {filteredFacets.map(FacetRow)}
+        <DndContext sensors={sensors} onDragEnd={handleIncludedDragEnd}>
+          <SortableContext
+            items={visibleIncludedFacetIds}
+            strategy={verticalListSortingStrategy}
+          >
+            {includedFacets.map(FacetRow)}
+          </SortableContext>
+        </DndContext>
+
+        {nonIncludedFacets.map(FacetRow)}
       </AttributesTable>
 
       {selectedFacet && isEditValuesModalOpen && (

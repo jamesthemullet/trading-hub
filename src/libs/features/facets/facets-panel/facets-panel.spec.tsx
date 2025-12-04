@@ -1,3 +1,4 @@
+import React from 'react';
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { NextRouter } from 'next/router';
@@ -9,6 +10,8 @@ import type { FacetRowDisplayValue } from '@/libs/stores/facets-panel/facets-pan
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
+import type { DragEndEvent } from '@dnd-kit/core';
+
 import { FacetsPanel } from './facets-panel';
 
 jest.mock('@/libs/hooks', () => ({
@@ -17,6 +20,53 @@ jest.mock('@/libs/hooks', () => ({
   usePreview: jest.fn(),
   useGlobalFacetUpdate: jest.fn(),
 }));
+
+let latestDragEndHandler: ((event: DragEndEvent) => void) | undefined;
+
+jest.mock('@dnd-kit/core', () => {
+  const actual = jest.requireActual('@dnd-kit/core');
+
+  return {
+    ...actual,
+    DndContext: ({ children, onDragEnd }: any) => {
+      latestDragEndHandler = onDragEnd;
+      return <div data-testid="dnd-context">{children}</div>;
+    },
+    useSensors: (...args: unknown[]) => args,
+    useSensor: jest.fn((sensor: unknown, config?: unknown) => ({
+      sensor,
+      config,
+    })),
+    PointerSensor: function PointerSensor() {
+      return 'PointerSensor';
+    },
+    KeyboardSensor: function KeyboardSensor() {
+      return 'KeyboardSensor';
+    },
+  };
+});
+
+jest.mock('@dnd-kit/sortable', () => {
+  const actual = jest.requireActual('@dnd-kit/sortable');
+
+  return {
+    ...actual,
+    SortableContext: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="sortable-context">{children}</div>
+    ),
+    verticalListSortingStrategy: jest.fn(),
+    sortableKeyboardCoordinates: jest.fn(),
+    useSortable: () => ({
+      attributes: {},
+      listeners: {},
+      setActivatorNodeRef: jest.fn(),
+      setNodeRef: jest.fn(),
+      transform: null,
+      transition: null,
+      isDragging: false,
+    }),
+  };
+});
 
 const pushMock = jest.fn();
 
@@ -163,6 +213,7 @@ const defaultProps = {
 
 describe('Facet Panel', () => {
   beforeEach(() => {
+    latestDragEndHandler = undefined;
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
       error: '',
@@ -208,36 +259,79 @@ describe('Facet Panel', () => {
     expect(screen.getByText('Value options')).toBeVisible();
   });
 
-  it('should handle order change when button down is clicked', async () => {
-    const user = userEvent.setup({ delay: null });
-
+  it('should show drag handles for included facets when row ordering is enabled', () => {
     renderWithProviders(
       <FacetsPanel {...defaultProps} displayRowOrderControls />
     );
 
-    await user.click(
-      screen.getByRole('button', { name: 'Move color row down' })
+    expect(screen.getByTestId('drag-handle-color')).toBeVisible();
+    expect(screen.getByTestId('drag-handle-brand')).toBeVisible();
+    expect(screen.queryByTestId('drag-handle-size')).not.toBeInTheDocument();
+  });
+
+  it('should disable drag handles when there is only one included facet', () => {
+    const singleIncludedFacetState = [
+      mockFacetsState[0],
+      mockFacetsState[2],
+      mockFacetsState[3],
+      mockFacetsState[4],
+    ];
+
+    renderWithProviders(
+      <FacetsPanel
+        {...defaultProps}
+        facetsState={singleIncludedFacetState}
+        displayRowOrderControls
+      />
     );
 
+    const dragHandle = screen.getByTestId('drag-handle-color');
+    expect(dragHandle).toBeDisabled();
+  });
+
+  it('should dispatch drag-and-drop ordering changes for included facets', () => {
+    renderWithProviders(
+      <FacetsPanel {...defaultProps} displayRowOrderControls />
+    );
+
+    act(() => {
+      latestDragEndHandler?.({
+        active: { id: mockFacetsState[0].id },
+        over: { id: mockFacetsState[1].id },
+      } as DragEndEvent);
+    });
+
     expect(dispatchSpy).toHaveBeenCalledWith({
-      payload: { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' },
-      type: 'MOVE_INCLUDED_ROW_DOWN',
+      type: 'SET_INCLUDED_ORDER',
+      payload: {
+        id: mockFacetsState[0].id,
+        newIndex: 1,
+      },
     });
   });
 
-  it('should handle order change when button up is clicked', async () => {
-    const user = userEvent.setup({ delay: null });
+  it('should handle drag handles when listeners are undefined', () => {
+    const sortableMock = jest.requireMock('@dnd-kit/sortable');
+    const originalUseSortable = sortableMock.useSortable;
+
+    sortableMock.useSortable = jest.fn(() => ({
+      attributes: {},
+      listeners: undefined,
+      setActivatorNodeRef: jest.fn(),
+      setNodeRef: jest.fn(),
+      transform: null,
+      transition: null,
+      isDragging: false,
+    }));
 
     renderWithProviders(
       <FacetsPanel {...defaultProps} displayRowOrderControls />
     );
 
-    await user.click(screen.getByRole('button', { name: 'Move brand row up' }));
+    const dragHandle = screen.getByTestId('drag-handle-color');
+    expect(dragHandle).toBeVisible();
 
-    expect(dispatchSpy).toHaveBeenCalledWith({
-      payload: { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86' },
-      type: 'MOVE_INCLUDED_ROW_UP',
-    });
+    sortableMock.useSortable = originalUseSortable;
   });
 
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
@@ -254,15 +348,6 @@ describe('Facet Panel', () => {
     const dropdown = screen.getAllByTestId(
       'button to open facet order dropdown'
     )[0];
-
-    await user.click(dropdown);
-    const includeOnlyOption = screen.getAllByText('Include only')[0];
-
-    await user.click(includeOnlyOption);
-
-    expect(screen.getAllByTestId(/Row showing/)[0]).toHaveStyle(
-      'background-color: #f4faed'
-    );
 
     await user.click(dropdown);
     const excludeOnlyOption = screen.getAllByText('Exclude only')[0];

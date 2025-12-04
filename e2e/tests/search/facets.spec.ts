@@ -108,9 +108,27 @@ test.describe('Search rulesets', () => {
       'Categories'
     );
 
-    await page
-      .getByRole('button', { name: 'Move Categories row down' })
-      .click();
+    const dragHandle = page.getByLabel('Reorder Categories');
+    const targetRow = page.getByTestId('Row showing Collections as included');
+
+    await expect(dragHandle).toBeVisible();
+
+    const sourceBox = await dragHandle.boundingBox();
+    const targetBox = await targetRow.boundingBox();
+
+    if (sourceBox && targetBox) {
+      await page.mouse.move(
+        sourceBox.x + sourceBox.width / 2,
+        sourceBox.y + sourceBox.height / 2
+      );
+      await page.mouse.down();
+      await page.mouse.move(
+        targetBox.x + targetBox.width / 2,
+        targetBox.y + targetBox.height / 2,
+        { steps: 10 }
+      );
+      await page.mouse.up();
+    }
 
     await expect(page.getByTestId(/Row showing/).first()).toContainText(
       'Collections'

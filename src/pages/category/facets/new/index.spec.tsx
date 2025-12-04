@@ -207,7 +207,7 @@ describe('Category Facet Management New', () => {
     expect(mockRouter.push).toHaveBeenCalledWith('/category');
   });
 
-  it('should update status on dropdown change to include only, and re-order by status', async () => {
+  it('should update status on dropdown change to include only', async () => {
     const user = userEvent.setup({ delay: null });
     jest.mocked(useRuleSetCreate).mockReturnValue({
       createRuleset: jest.fn(),
@@ -279,23 +279,6 @@ describe('Category Facet Management New', () => {
     await waitFor(() => {
       expect(screen.getByTestId('Row showing color as included')).toBeVisible();
     });
-
-    await user.click(await screen.findByLabelText('Move category row down'));
-
-    await waitFor(async () => {
-      expect(
-        await screen.findByLabelText('Move category row up')
-      ).toBeVisible();
-    });
-
-    await user.click(await screen.findByLabelText('Move category row up'));
-
-    await waitFor(async () => {
-      expect(
-        await screen.findByLabelText('Move category row up')
-      ).toBeInTheDocument();
-    });
-    expect(screen.queryByLabelText('Move category row up')).toBeDisabled();
   });
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {

@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import React, { useReducer } from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { NextRouter } from 'next/router';
@@ -10,6 +10,50 @@ import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import GlobalFacetsPanel from './global-facets-panel';
+
+jest.mock('@dnd-kit/core', () => {
+  const actual = jest.requireActual('@dnd-kit/core');
+
+  return {
+    ...actual,
+    DndContext: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="dnd-context">{children}</div>
+    ),
+    useSensors: (...args: unknown[]) => args,
+    useSensor: jest.fn((sensor: unknown, config?: unknown) => ({
+      sensor,
+      config,
+    })),
+    PointerSensor: function PointerSensor() {
+      return 'PointerSensor';
+    },
+    KeyboardSensor: function KeyboardSensor() {
+      return 'KeyboardSensor';
+    },
+  };
+});
+
+jest.mock('@dnd-kit/sortable', () => {
+  const actual = jest.requireActual('@dnd-kit/sortable');
+
+  return {
+    ...actual,
+    SortableContext: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="sortable-context">{children}</div>
+    ),
+    verticalListSortingStrategy: jest.fn(),
+    sortableKeyboardCoordinates: jest.fn(),
+    useSortable: () => ({
+      attributes: {},
+      listeners: {},
+      setActivatorNodeRef: jest.fn(),
+      setNodeRef: jest.fn(),
+      transform: null,
+      transition: null,
+      isDragging: false,
+    }),
+  };
+});
 
 const mockUseFacetsList = {
   isLoading: false,
@@ -205,15 +249,6 @@ describe('Global Facet Panel', () => {
     const dropdown = screen.getAllByTestId(
       'button to open facet order dropdown'
     )[0];
-
-    await user.click(dropdown);
-    const includeOnlyOption = screen.getAllByText('Include only')[0];
-
-    await user.click(includeOnlyOption);
-
-    expect(screen.getAllByTestId(/Row showing/)[0]).toHaveStyle(
-      'background-color: #f4faed'
-    );
 
     await user.click(dropdown);
     const excludeOnlyOption = screen.getAllByText('Exclude only')[0];

@@ -32,8 +32,10 @@ const StyledToggleButton = styled.button`
   align-items: center;
   gap: ${spacing(1)};
 `;
-const StyledAnimatedSvg = styled.svg`
+const StyledAnimatedSvg = styled.svg<{ isOpen: boolean }>`
   user-select: none;
+  transition: transform 0.25s ease;
+  transform: rotate(${(props) => (props.isOpen ? '180deg' : '0deg')});
 `;
 
 const Summary = styled.div`
@@ -104,13 +106,10 @@ export const FacetsPanelAccordion = ({
           viewBox="0 0 18 18"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          isOpen={isOpen}
         >
           <path
-            d={
-              isOpen
-                ? 'M9 6.22119L4.5 10.7212L5.5575 11.7787L9 8.34369L12.4425 11.7787L13.5 10.7212L9 6.22119Z'
-                : 'M12.4425 6.22119L9 9.65619L5.5575 6.22119L4.5 7.27869L9 11.7787L13.5 7.27869L12.4425 6.22119Z'
-            }
+            d="M12.4425 6.22119L9 9.65619L5.5575 6.22119L4.5 7.27869L9 11.7787L13.5 7.27869L12.4425 6.22119Z"
             fill={color.role.link.link}
           />
         </StyledAnimatedSvg>

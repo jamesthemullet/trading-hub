@@ -85,6 +85,71 @@ describe('facetsPanelReducer', () => {
     });
   });
 
+  describe('SET_INCLUDED_ORDER', () => {
+    it('should position the selected facet at the requested index', () => {
+      const state: FacetPanelState = {
+        ...mockFacetsPanelState,
+        includedFacets: ['1', '2', '3', '4'],
+      };
+
+      const action = {
+        type: 'SET_INCLUDED_ORDER' as const,
+        payload: {
+          id: '4',
+          newIndex: 1,
+        },
+      };
+
+      const result = facetsPanelReducer(state, action);
+      expect(result).toEqual({
+        ...mockFacetsPanelState,
+        includedFacets: ['1', '4', '2', '3'],
+      });
+    });
+
+    it('should not update state when the facet is not included', () => {
+      const state: FacetPanelState = {
+        ...mockFacetsPanelState,
+        includedFacets: ['1', '2', '3'],
+      };
+
+      const action = {
+        type: 'SET_INCLUDED_ORDER' as const,
+        payload: {
+          id: '999',
+          newIndex: 1,
+        },
+      };
+
+      const result = facetsPanelReducer(state, action);
+      expect(result).toEqual({
+        ...mockFacetsPanelState,
+        includedFacets: ['1', '2', '3'],
+      });
+    });
+
+    it('should not update state when the facet is dropped back to its original index', () => {
+      const state: FacetPanelState = {
+        ...mockFacetsPanelState,
+        includedFacets: ['1', '2', '3'],
+      };
+
+      const action = {
+        type: 'SET_INCLUDED_ORDER' as const,
+        payload: {
+          id: '2',
+          newIndex: 1,
+        },
+      };
+
+      const result = facetsPanelReducer(state, action);
+      expect(result).toEqual({
+        ...mockFacetsPanelState,
+        includedFacets: ['1', '2', '3'],
+      });
+    });
+  });
+
   describe('CHANGE_DISPLAY_TYPE', () => {
     it('should change display type to included', () => {
       const state: FacetPanelState = {

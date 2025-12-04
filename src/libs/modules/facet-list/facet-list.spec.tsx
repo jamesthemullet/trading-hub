@@ -8,6 +8,8 @@ import * as analytics from '@/libs/hooks/utils/analytics';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
+import type { DragEndEvent } from '@dnd-kit/core';
+
 import type { Props } from './facet-list';
 import { FacetList } from './facet-list';
 
@@ -28,6 +30,53 @@ const mockRouter: Partial<NextRouter> = {
   basePath: '',
   isLocaleDomain: false,
 };
+
+let latestDragEndHandler: ((event: DragEndEvent) => void) | undefined;
+
+jest.mock('@dnd-kit/core', () => {
+  const actual = jest.requireActual('@dnd-kit/core');
+
+  return {
+    ...actual,
+    DndContext: ({ children, onDragEnd }: any) => {
+      latestDragEndHandler = onDragEnd;
+      return <div data-testid="dnd-context">{children}</div>;
+    },
+    useSensors: (...args: unknown[]) => args,
+    useSensor: jest.fn((sensor: unknown, config?: unknown) => ({
+      sensor,
+      config,
+    })),
+    PointerSensor: function PointerSensor() {
+      return 'PointerSensor';
+    },
+    KeyboardSensor: function KeyboardSensor() {
+      return 'KeyboardSensor';
+    },
+  };
+});
+
+jest.mock('@dnd-kit/sortable', () => {
+  const actual = jest.requireActual('@dnd-kit/sortable');
+
+  return {
+    ...actual,
+    SortableContext: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="sortable-context">{children}</div>
+    ),
+    verticalListSortingStrategy: jest.fn(),
+    sortableKeyboardCoordinates: jest.fn(),
+    useSortable: () => ({
+      attributes: {},
+      listeners: {},
+      setActivatorNodeRef: jest.fn(),
+      setNodeRef: jest.fn(),
+      transform: null,
+      transition: null,
+      isDragging: false,
+    }),
+  };
+});
 
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
@@ -476,14 +525,25 @@ describe('Facets', () => {
         plpUrl: categoryPath1,
       },
     ];
+
+    latestDragEndHandler = undefined;
+
     renderWithProviders(
       <FacetList
         {...defaultFacetProps}
         currentRuleset={{
           ...mockRuleset,
           facets: [
-            { id: facetsListMock.facets[0].id },
-            { id: facetsListMock.facets[1].id },
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+            {
+              id: facetsListMock.facets[1].id,
+              boosted: [],
+              excludedValues: [],
+            },
           ],
         }}
         isNewRuleset={false}
@@ -492,26 +552,101 @@ describe('Facets', () => {
     );
 
     expect(screen.getByTestId('Row showing color as included')).toBeVisible();
-
-    const downButton = screen.getByLabelText('Move color row down');
-
-    expect(screen.getByLabelText('Move color row up')).toBeDisabled();
+    expect(
+      screen.getByTestId('drag-handle-' + facetsListMock.facets[0].displayValue)
+    ).toBeVisible();
 
     act(() => {
-      downButton.click();
+      latestDragEndHandler?.({
+        active: { id: facetsListMock.facets[0].id },
+        over: { id: facetsListMock.facets[1].id },
+      } as DragEndEvent);
     });
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Move color row down')).toBeDisabled();
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
     });
-    const upButton = screen.getByLabelText('Move color row up');
-    act(() => {
-      upButton.click();
-    });
+  });
 
-    await waitFor(() => {
-      expect(screen.getByLabelText('Move color row down')).toBeEnabled();
-    });
+  it('should handle drag handles when listeners are undefined', () => {
+    const categoriesInfo = [
+      {
+        id: categoryId1,
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+
+    const sortableMock = jest.requireMock('@dnd-kit/sortable');
+    const originalUseSortable = sortableMock.useSortable;
+
+    sortableMock.useSortable = jest.fn(() => ({
+      attributes: {},
+      listeners: undefined,
+      setActivatorNodeRef: jest.fn(),
+      setNodeRef: jest.fn(),
+      transform: null,
+      transition: null,
+      isDragging: false,
+    }));
+
+    renderWithProviders(
+      <FacetList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />
+    );
+
+    const dragHandle = screen.getByTestId(
+      'drag-handle-' + facetsListMock.facets[0].displayValue
+    );
+    expect(dragHandle).toBeVisible();
+
+    sortableMock.useSortable = originalUseSortable;
+  });
+
+  it('should disable drag handles when there is only one included facet', () => {
+    const categoriesInfo = [
+      {
+        id: categoryId1,
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+
+    renderWithProviders(
+      <FacetList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />
+    );
+
+    const dragHandle = screen.getByTestId(
+      'drag-handle-' + facetsListMock.facets[0].displayValue
+    );
+    expect(dragHandle).toBeDisabled();
   });
 
   it('should show and close the preview modal for categories', async () => {

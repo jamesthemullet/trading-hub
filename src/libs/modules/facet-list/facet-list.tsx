@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -15,14 +15,13 @@ import {
   Text,
   Typography,
 } from '@/libs/components';
-import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
+import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import {
   AttributesTable,
   Col,
   Duration,
   LowerHeading,
   NoAttributesBlock,
-  OrderArrowsContainer,
   OrderColumn,
   Row,
   ScopeWrapper,
@@ -33,6 +32,8 @@ import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/featur
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { getFacetRoute } from '@/libs/constants';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
+import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
+import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { TableHeading } from '@/libs/containers/shared/table/table.styles';
@@ -41,12 +42,25 @@ import {
   Preview,
   SearchAndCategoryFacetsPanelModal,
 } from '@/libs/features';
+import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { useFacetsList } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
 
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import Image from 'next/image';
 
 const COLUMNS: {
@@ -224,14 +238,72 @@ export const FacetList = ({
     countryCode: ruleset.countryCode || 'UK_IE',
   });
 
-  const FacetRow = (facet: FacetRowDisplayValue) => {
-    const { displayValue, displayType, id, index } = facet;
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    return (
+  const includedFacetOrder = useMemo(
+    () => ruleset.facets?.map((facet) => facet.id) || [],
+    [ruleset.facets]
+  );
+
+  const filteredFacets = filter.length
+    ? facets.filter(
+        (facet) =>
+          facet.displayValue.toLowerCase().includes(filter.toLowerCase()) ||
+          facet.indexPropertyName.toLowerCase().includes(filter.toLowerCase())
+      )
+    : facets;
+
+  const boostedFacets = useMemo(
+    () =>
+      ruleset.facets?.map((facet) =>
+        filteredFacets.find((f) => f.id === facet.id)
+      ) || [],
+    [ruleset.facets, filteredFacets]
+  );
+
+  const filteredIncludedFacetIds = useMemo(
+    () => boostedFacets.filter((facet) => facet).map((facet) => facet!.id),
+    [boostedFacets]
+  );
+
+  const handleIncludedDragEnd = useMemo(
+    () =>
+      createBoostedDragEndHandler({
+        boostedOrder: includedFacetOrder,
+        dispatch: (action) =>
+          dispatch({
+            type: 'facetChangePosition',
+            payload: {
+              id: action.payload.id,
+              position: action.payload.newIndex,
+            },
+          }),
+        writeEnabled,
+      }),
+    [dispatch, includedFacetOrder, writeEnabled]
+  );
+
+  const FacetRow = (facet: FacetRowDisplayValue) => {
+    const { displayValue, displayType, id } = facet;
+    const isIncludedFacet = displayType === 'included';
+    const isDragDisabled = !writeEnabled || boostedFacets.length <= 1;
+
+    const renderRow = (sortableProps?: SortableRowRenderArgs) => (
       <Row
         optionSelected={displayType}
         data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
-        key={id}
+        key={sortableProps ? undefined : id}
+        ref={sortableProps?.setNodeRef}
+        style={sortableProps?.style}
       >
         <Col>
           <Text>{facet.indexPropertyName}</Text>
@@ -259,40 +331,6 @@ export const FacetList = ({
               writeEnabled={writeEnabled}
               ariaLabel="Select to set as included, excluded or algo control"
             />
-
-            {displayType === 'included' && writeEnabled && (
-              <OrderArrowsContainer>
-                <ArrowButton
-                  direction="up"
-                  aria-label={`Move ${displayValue} row up`}
-                  onClick={() => {
-                    dispatch({
-                      type: 'facetChangePosition',
-                      payload: {
-                        position: index - 1,
-                        id,
-                      },
-                    });
-                  }}
-                  isDisabled={index === 0}
-                />
-
-                <ArrowButton
-                  direction="down"
-                  aria-label={`Move ${displayValue} row down`}
-                  onClick={() => {
-                    dispatch({
-                      type: 'facetChangePosition',
-                      payload: {
-                        position: index + 1,
-                        id,
-                      },
-                    });
-                  }}
-                  isDisabled={index === boostedFacets.length - 1}
-                />
-              </OrderArrowsContainer>
-            )}
           </OrderColumn>
         </Col>
         <Col>
@@ -351,22 +389,40 @@ export const FacetList = ({
               </ButtonDeprecated>
             )}
         </Col>
+        <Col>
+          {isIncludedFacet && (
+            <DragHandleButton
+              type="button"
+              aria-label={`Reorder ${displayValue}`}
+              ref={sortableProps?.setActivatorNodeRef}
+              {...(sortableProps?.listeners ?? {})}
+              disabled={isDragDisabled}
+              aria-disabled={isDragDisabled}
+              data-testid={`drag-handle-${displayValue}`}
+            >
+              <Image
+                width={24}
+                height={24}
+                src="/trading-hub/asset/drag-handle.svg"
+                alt="Drag handle"
+              />
+            </DragHandleButton>
+          )}
+        </Col>
       </Row>
     );
+
+    if (isIncludedFacet) {
+      return (
+        <SortableRow key={id} id={id} disabled={isDragDisabled}>
+          {(sortableProps) => renderRow(sortableProps)}
+        </SortableRow>
+      );
+    }
+
+    return renderRow();
   };
 
-  const filteredFacets = filter.length
-    ? facets.filter(
-        (facet) =>
-          facet.displayValue?.toLowerCase().includes(filter.toLowerCase()) ||
-          facet.indexPropertyName.toLowerCase().includes(filter.toLowerCase())
-      )
-    : facets;
-
-  const boostedFacets =
-    ruleset.facets?.map((facet) =>
-      filteredFacets.find((f) => f.id === facet.id)
-    ) || [];
   const excludedFacets = filteredFacets
     .map((facet) =>
       ruleset.excludedFacets?.facets?.some((f) => f.id === facet.id)
@@ -583,17 +639,24 @@ export const FacetList = ({
           ))}
         </Row>
 
-        {boostedFacets.map(
-          (facet, index) =>
-            facet && (
-              <FacetRow
-                key={facet.id}
-                {...facet}
-                displayType="included"
-                index={index}
-              />
-            )
-        )}
+        <DndContext sensors={sensors} onDragEnd={handleIncludedDragEnd}>
+          <SortableContext
+            items={filteredIncludedFacetIds}
+            strategy={verticalListSortingStrategy}
+          >
+            {boostedFacets.map(
+              (facet, index) =>
+                facet && (
+                  <FacetRow
+                    key={facet.id}
+                    {...facet}
+                    displayType="included"
+                    index={index}
+                  />
+                )
+            )}
+          </SortableContext>
+        </DndContext>
 
         {defaultFacets.map(
           (facet, index) =>
