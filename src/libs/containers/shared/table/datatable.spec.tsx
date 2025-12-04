@@ -18,14 +18,14 @@ jest.mock('next/link', () => {
   }: {
     children: React.ReactNode;
     href: string;
-    onClick: () => void;
+    onClick?: () => void;
   }) => {
     return (
       <a
         href={href}
         onClick={(e) => {
           e.preventDefault();
-          onClick();
+          onClick?.();
         }}
       >
         {children}
@@ -146,7 +146,11 @@ describe('DataTable', () => {
   });
 
   it('should render correctly', () => {
-    renderWithProviders(<DataTable {...defaultProps} />);
+    renderWithProviders(<DataTable {...defaultProps} />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
     expect(screen.getByText('Bob')).toBeInTheDocument();
@@ -821,5 +825,87 @@ describe('DataTable', () => {
     );
 
     expect(container.querySelector('b')).toHaveTextContent('Foo');
+  });
+
+  describe('Historical Log Of Changes', () => {
+    it('should process click for historical log of changes for category rulesets', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<DataTable {...defaultProps} />, [], {
+        featureFlags: {
+          historicalLogOfChanges: true,
+        },
+      });
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+      const viewHistoryButton = screen.getByRole('link', {
+        name: 'View history',
+      });
+      expect(viewHistoryButton).toBeInTheDocument();
+
+      await user.click(viewHistoryButton);
+    });
+
+    it('should process click for historical log of changes for global rulesets', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <DataTable {...defaultProps} ruleType="global" />,
+        [],
+        {
+          featureFlags: {
+            historicalLogOfChanges: true,
+          },
+        }
+      );
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+      const viewHistoryButton = screen.getByRole('link', {
+        name: 'View history',
+      });
+      expect(viewHistoryButton).toBeInTheDocument();
+
+      await user.click(viewHistoryButton);
+    });
+
+    it('should process click for historical log of changes for redirects', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <DataTable {...defaultProps} ruleType="redirect" />,
+        [],
+        {
+          featureFlags: {
+            historicalLogOfChanges: true,
+          },
+        }
+      );
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+      const viewHistoryButton = screen.getByRole('link', {
+        name: 'View history',
+      });
+      expect(viewHistoryButton).toBeInTheDocument();
+
+      await user.click(viewHistoryButton);
+    });
+
+    it('should process click for historical log of changes for search rulesets', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <DataTable {...defaultProps} ruleType="searchRanking" />,
+        [],
+        {
+          featureFlags: {
+            historicalLogOfChanges: true,
+          },
+        }
+      );
+
+      await user.click(screen.getAllByTitle('More options')[0]);
+      const viewHistoryButton = screen.getByRole('link', {
+        name: 'View history',
+      });
+      expect(viewHistoryButton).toBeInTheDocument();
+
+      await user.click(viewHistoryButton);
+    });
   });
 });

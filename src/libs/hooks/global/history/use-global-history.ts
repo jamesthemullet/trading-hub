@@ -1,0 +1,52 @@
+import { useEffect, useState } from 'react';
+
+import type { MerchandisingReturnedGlobalRuleSetHistory } from '@/libs/api';
+import { search } from '@/libs/api';
+import { handleError } from '@/libs/hooks/utils/error';
+
+export type GlobalHistoryChange =
+  MerchandisingReturnedGlobalRuleSetHistory['changes'][number] & {
+    id: string;
+    entityId: string;
+    savedAt: string;
+    savedBy: string;
+    schemaVersion: string;
+  };
+
+export type GlobalHistory = {
+  changes: GlobalHistoryChange[];
+};
+
+export const useGlobalHistory = (id: string) => {
+  const [history, setHistory] = useState<GlobalHistory>({
+    changes: [],
+  });
+
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) {
+      setIsLoading(false);
+      return;
+    }
+
+    const asyncCall = async () => {
+      try {
+        const response =
+          await search().betaMerchandisingGlobalRulesetHistoryList(id);
+
+        setHistory(response.data as GlobalHistory);
+      } catch (error) {
+        setError(handleError(error));
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(false);
+    };
+    setIsLoading(true);
+    void asyncCall();
+  }, [id]);
+
+  return { history, error, isLoading };
+};

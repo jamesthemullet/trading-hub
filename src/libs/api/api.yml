@@ -389,7 +389,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
-
+  /search/beta/merchandising/category/ruleset/{ruleSetId}/history:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Retrieve Category Ruleset History
+      description: Returns changes to a rule set from each save
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSetHistory'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
   /search/beta/merchandising/preview:
     post:
       security:
@@ -703,6 +756,113 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/beta/merchandising/keyword/ruleset/{ruleSetId}/history:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Keyword
+      summary: Retrieve Keyword Ruleset History
+      description: Returns changes to a rule set from each save
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSetHistory'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
+  /search/beta/merchandising/{catalogue}/global/ruleset:
+    post:
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME', 'CFTO']
+          required: true
+          description: The catalogue the ruleset applies to
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Create a Global Rule Set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRuleSet'
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/global/ruleset:
     get:
       security:
@@ -945,7 +1105,61 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
-  '/search/beta/merchandising/facet':
+  /search/beta/merchandising/global/ruleset/{ruleSetId}/history:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Retrieve Global Ruleset History
+      description: Returns changes to a rule set from each save
+      parameters:
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSetHistory'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
+  /search/beta/merchandising/facet:
     get:
       security:
         - bearerAuth: []
@@ -1153,6 +1367,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/beta/merchandising/facet/{facetId}/history:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Facets
+      summary: Retrieve Facet History
+      description: Returns changes to a facet from each save
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to retrieve
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalFacetHistory'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
   /search/beta/merchandising/facet/{facetId}/attributeValues:
     get:
       security:
@@ -1588,6 +1856,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/beta/merchandising/keyword/redirect/{redirectId}/history:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Keyword Redirect
+      summary: Retrieve a redirect history
+      description: Returns changes to a redirect from each save
+      parameters:
+        - in: path
+          name: redirectId
+          schema:
+            type: string
+          required: true
+          description: The Redirect to retrieve
+      responses:
+        '200':
+          description: A JSON representation of redirect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirectHistory'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '404':
+          description: RuleSet was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedNotFound'
 components:
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
@@ -1916,6 +2238,76 @@ components:
           required:
             - id
             - lastChanged
+    MerchandisingReturnedCategoryRuleSetHistory:
+      type: object
+      properties:
+        changes:
+          type: array
+          items:
+            type: object
+            properties:
+              change:
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
+            required:
+              - change
+      required:
+        - changes
+    MerchandisingReturnedKeywordRuleSetHistory:
+      type: object
+      properties:
+        changes:
+          type: array
+          items:
+            type: object
+            properties:
+              change:
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
+            required:
+              - change
+      required:
+        - changes
+    MerchandisingReturnedGlobalRuleSetHistory:
+      type: object
+      properties:
+        changes:
+          type: array
+          items:
+            type: object
+            properties:
+              change:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
+            required:
+              - change
+      required:
+        - changes
+    MerchandisingReturnedKeywordRedirectHistory:
+      type: object
+      properties:
+        changes:
+          type: array
+          items:
+            type: object
+            properties:
+              change:
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
+            required:
+              - change
+      required:
+        - changes
+    MerchandisingReturnedGlobalFacetHistory:
+      type: object
+      properties:
+        changes:
+          type: array
+          items:
+            type: object
+            properties:
+              change:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
+            required:
+              - change
+      required:
+        - changes
     MerchandisingReturnedNotFound:
       type: object
       properties:

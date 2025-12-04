@@ -84,7 +84,7 @@ const SearchRuleSets = () => {
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Search']}
       />
-      <PageNameLabel>Search</PageNameLabel>
+      <PageNameLabel marginBottom>Search</PageNameLabel>
       <TablePanel
         basePath="/search"
         headings={headings}

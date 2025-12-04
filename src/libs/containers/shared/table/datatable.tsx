@@ -4,10 +4,12 @@ import { Modal, Skeleton } from '@mantine/core';
 
 import { Button } from '@/libs/components';
 import { Menu } from '@/libs/components/dropdown/dropdown.styles';
+import { useHistoricalLogOfChangesFlag } from '@/libs/components/feature-flag/feature-flag';
 import { Toggle } from '@/libs/components/toggle/toggle';
 import { Header3, Text } from '@/libs/components/typography/typography.styles';
 import {
   getFacetRoute,
+  getHistoryRoute,
   getRulesetEditRoute,
   ROUTES,
 } from '@/libs/constants/routes';
@@ -323,6 +325,8 @@ export const DataTable = ({
         )
       );
 
+  const showHistoricalLogOfChanges = useHistoricalLogOfChangesFlag();
+
   const editViewText = writeEnabled ? 'Edit' : 'View';
 
   return (
@@ -603,6 +607,18 @@ export const DataTable = ({
                                 }
                               >
                                 {editViewText} redirect rule
+                              </TableLink>
+                            )}
+                            {showHistoricalLogOfChanges && (
+                              <TableLink
+                                title="view history"
+                                href={getHistoryRoute(
+                                  ruleType,
+                                  id,
+                                  formattedIdentifier
+                                )}
+                              >
+                                View history
                               </TableLink>
                             )}
                             {writeEnabled && (

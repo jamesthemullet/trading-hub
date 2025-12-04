@@ -46,6 +46,7 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
     'flagAuthorizationRoleOverride',
     'flagOneTrust',
     'flagShowNewFacetValuesPage',
+    'flagHistoricalLogOfChanges',
   ]);
 
   return (
@@ -59,6 +60,7 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
         },
         oneTrust: cookies.flagOneTrust,
         showNewFacetValuesPage: cookies.flagShowNewFacetValuesPage,
+        historicalLogOfChanges: cookies.flagHistoricalLogOfChanges,
       }}
     >
       {children}

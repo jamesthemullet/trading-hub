@@ -84,7 +84,7 @@ const RedirectRuleSets = () => {
         breadcrumbs={['Search & Merchandising', 'Site search', 'Redirects']}
       />
 
-      <PageNameLabel>Keyword Redirect</PageNameLabel>
+      <PageNameLabel marginBottom>Keyword Redirect</PageNameLabel>
 
       <TablePanel
         basePath="/search"

@@ -91,7 +91,7 @@ const RuleSets = () => {
 
       <Heading breadcrumbs={['Search & Merchandising', 'Categories']} />
 
-      <PageNameLabel>Categories</PageNameLabel>
+      <PageNameLabel marginBottom>Categories</PageNameLabel>
       <TablePanel
         basePath="/category"
         headings={headings}

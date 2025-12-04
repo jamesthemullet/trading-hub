@@ -27,7 +27,7 @@ export const useGlobalRuleSetCreate = () => {
           countryCode,
         };
         const response =
-          await search().betaMerchandisingGlobalRulesetCreate(body);
+          await search().betaMerchandisingGlobalRulesetCreate2(body);
         return response.data;
       } catch (error) {
         setError(handleError(error));

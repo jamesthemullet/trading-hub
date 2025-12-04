@@ -11,6 +11,7 @@ export const ROUTES = {
       NEW: '/category/rulesets/new',
       EDIT: (id: string) => `/category/rulesets/edit/${id}`,
     },
+    HISTORY: (id: string) => `/category/history/${id}`,
   },
   SEARCH: {
     FACETS: {
@@ -20,6 +21,7 @@ export const ROUTES = {
         EDIT: (id: string) => `/search/facets/values/edit/${id}`,
       },
     },
+    HISTORY: (id: string) => `/search/history/${id}`,
     RULESETS: {
       NEW: '/search/rulesets/new',
       EDIT: (id: string) => `/search/rulesets/edit/${id}`,
@@ -27,6 +29,7 @@ export const ROUTES = {
     REDIRECTS: {
       NEW: '/search/redirects/new',
       EDIT: (id: string) => `/search/redirects/edit/${id}`,
+      HISTORY: (id: string) => `/search/redirects/history/${id}`,
     },
   },
   GLOBAL: {
@@ -41,6 +44,7 @@ export const ROUTES = {
       NEW: '/global/rulesets/new',
       EDIT: (id: string) => `/global/rulesets/edit/${id}`,
     },
+    HISTORY: (id: string) => `/global/history/${id}`,
   },
 } as const;
 
@@ -99,4 +103,19 @@ export const getRulesetEditRoute = (
   };
 
   return routeMap[ruleType](id);
+};
+
+export const getHistoryRoute = (
+  ruleType: 'categoryRanking' | 'searchRanking' | 'global' | 'redirect',
+  id: string,
+  label: string
+): string => {
+  const routeMap = {
+    categoryRanking: ROUTES.CATEGORY.HISTORY,
+    searchRanking: ROUTES.SEARCH.HISTORY,
+    global: ROUTES.GLOBAL.HISTORY,
+    redirect: ROUTES.SEARCH.REDIRECTS.HISTORY,
+  };
+
+  return `${routeMap[ruleType](id)}/?identifier=${label}`;
 };

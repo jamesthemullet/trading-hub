@@ -50,14 +50,16 @@ export const PageWrapper = styled.div`
   }
 `;
 
-export const PageNameLabel = styled.h1`
+export const PageNameLabel = styled.h1<{ marginBottom?: boolean }>`
   font-size: 1.5em;
-  margin: ${spacing(3)} ${spacing(2)};
+  margin: ${spacing(3)} ${spacing(2)}
+    ${({ marginBottom }) => (marginBottom ? spacing(3) : 0)};
   font-weight: 600;
   font-family: ${fonts.semiBold};
 
   ${mediaQuery('xxl')} {
-    margin: ${spacing(3)};
+    margin: ${spacing(3)} ${spacing(3)}
+      ${({ marginBottom }) => (marginBottom ? spacing(3) : 0)};
   }
 `;
 

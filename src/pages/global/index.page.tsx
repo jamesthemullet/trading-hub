@@ -23,7 +23,7 @@ const mapping: RuleSetMapping<
   deleteRuleSetById: search().betaMerchandisingGlobalRulesetDelete,
   queryRuleSetById: search().betaMerchandisingGlobalRulesetDetail,
   updateRuleSetById: search().betaMerchandisingGlobalRulesetUpdate,
-  newRuleSet: search().betaMerchandisingGlobalRulesetCreate,
+  newRuleSet: search().betaMerchandisingGlobalRulesetCreate2,
   ruleSetToRow: ({ id, isEnabled, lastChanged, countryCode }) => ({
     id,
     identifier: '*',
@@ -72,7 +72,7 @@ const RuleSets = () => {
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
       />
 
-      <PageNameLabel>Global</PageNameLabel>
+      <PageNameLabel marginBottom>Global</PageNameLabel>
       <TablePanel
         basePath="/global"
         headings={headings}

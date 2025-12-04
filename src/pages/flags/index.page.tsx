@@ -30,6 +30,7 @@ const FeatureFlags = () => {
       'flagAuthorizationRoleOverride',
       'flagOneTrust',
       'flagShowNewFacetValuesPage',
+      'flagHistoricalLogOfChanges',
     ],
     {
       doNotUpdate: true,
@@ -41,6 +42,18 @@ const FeatureFlags = () => {
   return (
     <Wrapper>
       <h1>Feature Flags</h1>
+      <Flag>
+        <p>Historical Log Of Changes:&nbsp;</p>
+        <Toggle
+          checked={cookies.flagHistoricalLogOfChanges}
+          onChange={() => {
+            setCookie(
+              'flagHistoricalLogOfChanges',
+              JSON.stringify(!cookies.flagHistoricalLogOfChanges)
+            );
+          }}
+        />
+      </Flag>
       <Flag>
         <p>New Facet Values Page:&nbsp;</p>
         <Toggle
