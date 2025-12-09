@@ -241,7 +241,6 @@ export const SearchKeywords = ({
                       inputProps={{
                         id: 'searchId',
                         label: 'search keywords',
-                        isLabelHidden: true,
                         placeholder: 'Search...',
                         value: filterValue,
                         onChange: (

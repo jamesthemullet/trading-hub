@@ -1,12 +1,9 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { ChangeEvent, ComponentProps } from 'react';
-import { forwardRef, useCallback, useEffect, useState } from 'react';
+import { forwardRef, useCallback, useState } from 'react';
 
-import { FormLabel } from '@/libs/components/form-label/form-label';
-import { Text } from '@/libs/components/typography/typography.styles';
 import { useMouseFocus } from '@/libs/hooks/utils/use-mouse-focus';
-import { color } from '@/libs/utils/constants';
 import {
   formActiveStyles,
   formDefaultStyles,
@@ -30,16 +27,6 @@ const StyledInput = styled.input<{
       ${formActiveStyles()}
       padding-left: calc(${spacing(padding)} - 1px);
     `};
-  ${({ isError }) =>
-    isError &&
-    css`
-      border-color: ${color.state.error.error};
-      border-width: 2px;
-    `};
-`;
-
-const StyledError = styled.div`
-  margin-top: ${spacing(2)};
 `;
 
 const StyledLabelWrapper = styled.div`
@@ -47,17 +34,9 @@ const StyledLabelWrapper = styled.div`
   position: relative;
 `;
 
-const CharacterLimitWrapper = styled.div`
-  margin-top: ${spacing(1)};
-`;
-
-const StyledLabel = styled(FormLabel)<{ isHidden: boolean }>`
-  ${({ isHidden }) =>
-    !isHidden &&
-    css`
-      display: inline-block;
-      margin-bottom: ${spacing(0.5)};
-    `}
+const StyledLabel = styled.label`
+  display: inline-block;
+  margin-bottom: ${spacing(0.5)};
 `;
 
 export type InputProps = Omit<
@@ -68,12 +47,6 @@ export type InputProps = Omit<
   label: string;
   isLabelHidden?: boolean;
   as?: never;
-  defaultValue?: string;
-  message?: {
-    variant: 'success' | 'info' | 'error' | 'inlineError';
-    text: string;
-  };
-  isRequired?: boolean;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -86,10 +59,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       onChange,
       onBlur,
       onMouseDown,
-      maxLength,
-      message,
-      defaultValue,
-      isRequired = false,
       ...rest
     }: InputProps,
     ref
@@ -97,12 +66,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const mouseFocusProps = useMouseFocus({ onBlur, onMouseDown });
     const [isEmpty, setIsEmpty] = useState(true);
     const [inputVal, setInputVal] = useState('');
-
-    useEffect(() => {
-      if (defaultValue !== undefined) {
-        setInputVal(defaultValue);
-      }
-    }, [defaultValue]);
 
     const handleChange = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
@@ -113,56 +76,26 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       [onChange]
     );
 
-    const isError =
-      message &&
-      !!message.text &&
-      (message.variant === 'error' || message.variant === 'inlineError');
-
-    const remainingCharacters = maxLength && maxLength - inputVal.length;
-
-    const remainingCharactersMessage = `${remainingCharacters} ${
-      remainingCharacters === 1 ? 'Character' : 'Characters'
-    } left`;
-
     return (
       <>
-        <StyledLabelWrapper>
-          <StyledLabel
-            htmlFor={id}
-            isHidden={isLabelHidden}
-            isRequired={isRequired}
-            {...mouseFocusProps}
-          >
-            {label}
-          </StyledLabel>
-        </StyledLabelWrapper>
+        {!isLabelHidden && (
+          <StyledLabelWrapper>
+            <StyledLabel htmlFor={id} {...mouseFocusProps}>
+              {label}
+            </StyledLabel>
+          </StyledLabelWrapper>
+        )}
         <StyledInput
           ref={ref}
           name={name}
           id={id}
           isEmpty={isEmpty}
-          maxLength={maxLength}
           value={inputVal}
-          required={isRequired}
-          {...(message && { isError })}
+          aria-label={isLabelHidden ? label : undefined}
           {...mouseFocusProps}
           {...rest}
           onChange={handleChange}
         />
-
-        {isError && (
-          <StyledError>
-            <Text style={{ color: color.state.error.error }}>
-              {message.text}
-            </Text>
-          </StyledError>
-        )}
-
-        {!!maxLength && (
-          <CharacterLimitWrapper>
-            <Text>{remainingCharactersMessage}</Text>
-          </CharacterLimitWrapper>
-        )}
       </>
     );
   }

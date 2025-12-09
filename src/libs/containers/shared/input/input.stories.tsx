@@ -24,18 +24,6 @@ const meta: Meta<typeof Input> = {
       description: 'Defines element type (e.g., "input", "textarea")',
       table: { disable: true },
     },
-    defaultValue: {
-      description: 'Initial value for the input field',
-      control: 'text',
-    },
-    message: {
-      description: 'Object containing message variant and text',
-      control: 'object',
-    },
-    isRequired: {
-      description: 'Specifies if the input is required',
-      control: 'boolean',
-    },
   },
   parameters: {
     layout: 'centered',
@@ -50,12 +38,6 @@ export const Default = {
     id: 'input-id',
     label: 'Input Label',
     isLabelHidden: false,
-    defaultValue: '',
-    message: {
-      variant: 'info',
-      text: 'This is an info message',
-    },
-    isRequired: false,
     onChange: fn(),
   },
   render: (args) => <Input {...args} />,
