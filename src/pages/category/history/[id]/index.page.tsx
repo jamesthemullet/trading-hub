@@ -11,6 +11,7 @@ const CategoryHistory = ({ id }: { id: string }) => {
       title="Category History"
       breadcrumbs={['Categories', 'Ranking rules']}
       accessType="Cat"
+      ruleType="categoryRanking"
       history={history}
       isLoading={isLoading}
       error={error}

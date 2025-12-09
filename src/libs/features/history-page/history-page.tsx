@@ -11,11 +11,13 @@ import Head from 'next/head';
 import styles from './history-page.module.css';
 
 type AccessType = 'Cat' | 'Search' | 'Glob';
+type RuleType = 'categoryRanking' | 'searchRanking' | 'global' | 'redirect';
 
 type HistoryData = {
   changes?: Array<{
     id: string;
     change: {
+      id: string;
       lastChanged: {
         date: string;
         user: string;
@@ -28,6 +30,7 @@ type HistoryPageProps = {
   title: string;
   breadcrumbs: string[];
   accessType: AccessType;
+  ruleType: RuleType;
   history: HistoryData;
   isLoading: boolean;
   error: string;
@@ -37,6 +40,7 @@ export const HistoryPage = ({
   title,
   breadcrumbs,
   accessType,
+  ruleType,
   history,
   isLoading,
   error,
@@ -53,6 +57,7 @@ export const HistoryPage = ({
     id: item.id,
     date: item.change.lastChanged.date,
     user: item.change.lastChanged.user,
+    rulesetId: item.change.id,
   }));
 
   return (
@@ -76,7 +81,7 @@ export const HistoryPage = ({
       )}
       <section className={styles.listContainer}>
         {!isLoading && !error && historyItems?.length && (
-          <HistoryList items={historyItems} />
+          <HistoryList items={historyItems} ruleType={ruleType} />
         )}
       </section>
     </section>

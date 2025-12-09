@@ -108,4 +108,28 @@ describe('useRedirectDetail', () => {
       expect(result.current.error).toEqual('POST status 500');
     });
   });
+
+  it('should not make API calls when id is empty', async () => {
+    const { result } = renderHook(() => useRedirectDetail(''));
+
+    const expectedData = {
+      error: '',
+      isLoading: false,
+      redirect: {
+        destinationUrl: '',
+        type: 'redirectTerm',
+        keywords: [],
+        id: '',
+        lastChanged: {
+          date: '',
+          user: '',
+        },
+        isEnabled: false,
+      },
+    };
+
+    expect(result.current).toEqual(expectedData);
+
+    expect(getRedirectMock).not.toHaveBeenCalled();
+  });
 });

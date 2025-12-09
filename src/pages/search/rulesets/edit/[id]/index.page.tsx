@@ -4,7 +4,9 @@ import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
+import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -15,8 +17,30 @@ type PageProps = {
 };
 
 const Page = ({ id }: PageProps) => {
-  const { ruleSet, error, isLoading } = useSearchRuleSetPreview(id);
   const router = useRouter();
+  const isHistoryView = router.query.history === 'true';
+
+  const historyData = useSearchHistory(isHistoryView ? id : '');
+  const {
+    ruleSet,
+    error,
+    isLoading: isRuleSetLoading,
+  } = useSearchRuleSetPreview(isHistoryView ? '' : id);
+
+  const {
+    rulesetData,
+    isLoading,
+    error: historyError,
+  } = useHistoricalOrCurrentRuleset({
+    id,
+    historyData: {
+      history: historyData.history,
+      isLoading: historyData.isLoading,
+      error: historyData.error,
+    },
+    currentData: { data: ruleSet, isLoading: isRuleSetLoading },
+  });
+
   const { updateRuleSet, isSaving } = useSearchRuleSetUpdate();
 
   const saveRuleSet = async ({
@@ -61,23 +85,25 @@ const Page = ({ id }: PageProps) => {
         breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
       />
 
-      {error && <ErrorMessage centred>{error}</ErrorMessage>}
+      {(error || historyError) && (
+        <ErrorMessage centred>{error || historyError}</ErrorMessage>
+      )}
 
-      {!isLoading && (
+      {!isLoading && rulesetData && (
         <Ruleset
-          isEnabled={ruleSet.isEnabled}
+          isEnabled={rulesetData.isEnabled}
           onCancel={() => router.push('/search')}
           onSave={saveRuleSet}
-          rulesetId={ruleSet.id}
-          rulesetMerchandisingRules={ruleSet.rules}
+          rulesetId={rulesetData.id}
+          rulesetMerchandisingRules={rulesetData.rules}
           rulesetType="search"
-          searchTerms={ruleSet.searchTerms}
-          rulesetFacets={ruleSet.facets}
-          rulesetExcludedFacets={ruleSet.excludedFacets}
-          startDate={ruleSet.startDate}
-          endDate={ruleSet.endDate}
-          countryCode={ruleSet.countryCode}
-          writeEnabled={hasWriteAccess}
+          searchTerms={rulesetData.searchTerms}
+          rulesetFacets={rulesetData.facets}
+          rulesetExcludedFacets={rulesetData.excludedFacets}
+          startDate={rulesetData.startDate}
+          endDate={rulesetData.endDate}
+          countryCode={rulesetData.countryCode}
+          writeEnabled={hasWriteAccess && !isHistoryView}
         />
       )}
 

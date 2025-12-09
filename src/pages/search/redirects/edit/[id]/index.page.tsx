@@ -4,7 +4,9 @@ import type { MerchandisingKeywordRedirect } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
+import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-redirect-history';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 import { Redirect } from '@/libs/modules/redirect/redirect';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -15,8 +17,29 @@ type Props = {
 };
 
 const EditRedirect = ({ id }: Props) => {
-  const { redirect, error, isLoading } = useRedirectDetail(id);
   const router = useRouter();
+  const isHistoryView = router.query.history === 'true';
+
+  const historyData = useRedirectHistory(isHistoryView ? id : '');
+  const {
+    redirect,
+    error,
+    isLoading: isRedirectLoading,
+  } = useRedirectDetail(isHistoryView ? '' : id);
+
+  const {
+    rulesetData: redirectData,
+    isLoading,
+    error: historyError,
+  } = useHistoricalOrCurrentRuleset({
+    id,
+    historyData: {
+      history: historyData.history,
+      isLoading: historyData.isLoading,
+      error: historyData.error,
+    },
+    currentData: { data: redirect, isLoading: isRedirectLoading },
+  });
 
   const { updateRedirect } = useRedirectUpdate();
 
@@ -49,15 +72,17 @@ const EditRedirect = ({ id }: Props) => {
         ]}
       />
 
-      {error && <ErrorMessage centred>{error}</ErrorMessage>}
+      {(error || historyError) && (
+        <ErrorMessage centred>{error || historyError}</ErrorMessage>
+      )}
 
-      {!isLoading && (
+      {!isLoading && redirectData && (
         <Redirect
           onCancel={() => router.push('/search/redirects')}
           onSave={onSaveRedirect}
-          redirect={redirect}
+          redirect={redirectData}
           title="Edit Keyword Redirect"
-          writeEnabled={hasWriteAccess}
+          writeEnabled={hasWriteAccess && !isHistoryView}
         />
       )}
 

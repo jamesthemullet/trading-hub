@@ -93,13 +93,14 @@ export const getNewRulesetRoute = (
 };
 
 export const getRulesetEditRoute = (
-  ruleType: 'categoryRanking' | 'searchRanking' | 'global',
+  ruleType: 'categoryRanking' | 'searchRanking' | 'global' | 'redirect',
   id: string
 ): string => {
   const routeMap = {
     categoryRanking: ROUTES.CATEGORY.RULESETS.EDIT,
     searchRanking: ROUTES.SEARCH.RULESETS.EDIT,
     global: ROUTES.GLOBAL.RULESETS.EDIT,
+    redirect: ROUTES.SEARCH.REDIRECTS.EDIT,
   };
 
   return routeMap[ruleType](id);

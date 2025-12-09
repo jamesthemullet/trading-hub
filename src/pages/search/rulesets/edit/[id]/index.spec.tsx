@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
 import { useSearchRuleSetPreview } from '@/libs/hooks/search/ruleset/use-search-ruleset-preview';
 import { useSearchRuleSetUpdate } from '@/libs/hooks/search/ruleset/use-search-ruleset-update';
 import { usePreview } from '@/libs/hooks/use-preview';
@@ -32,6 +33,13 @@ jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-update', () => ({
 jest.mock('@/libs/hooks/use-preview', () => ({
   ...jest.requireActual('@/libs/hooks/use-preview'),
   usePreview: jest.fn(),
+}));
+jest.mock('@/libs/hooks/search/history/use-search-history', () => ({
+  useSearchHistory: jest.fn(() => ({
+    history: { changes: [] },
+    isLoading: false,
+    error: '',
+  })),
 }));
 
 describe('Search ranking rules', () => {
@@ -68,6 +76,7 @@ describe('Search ranking rules', () => {
 
   const mockRouter = {
     push: jest.fn(),
+    query: {},
     events: {
       on: jest.fn(),
       off: jest.fn(),
@@ -245,5 +254,144 @@ describe('Search ranking rules', () => {
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenLastCalledWith(
       expectedData
     );
+  });
+
+  describe('History view', () => {
+    const mockHistoryChange = {
+      id: 'history-change-id',
+      entityId: 'entity-id',
+      savedAt: '2024-01-01T00:00:00Z',
+      savedBy: 'test-user',
+      schemaVersion: '1',
+      change: {
+        ...mockUseSearchRuleSetPreviewData.ruleSet,
+        id: 'historical-ruleset-id',
+      },
+    };
+
+    beforeEach(() => {
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [] },
+        isLoading: false,
+        error: '',
+      });
+    });
+
+    it('should render ruleset from history when history query param is true', async () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [mockHistoryChange] },
+        isLoading: false,
+        error: '',
+      });
+
+      jest
+        .mocked(useSearchRuleSetPreview)
+        .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        await screen.findByRole('button', { name: 'Cancel' })
+      ).toBeInTheDocument();
+    });
+
+    it('should disable write access when viewing history', async () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [mockHistoryChange] },
+        isLoading: false,
+        error: '',
+      });
+
+      jest
+        .mocked(useSearchRuleSetPreview)
+        .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        await screen.findByRole('button', { name: 'Cancel' })
+      ).toBeInTheDocument();
+
+      expect(
+        screen.queryByRole('button', { name: 'Save' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show loader when history is loading', () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [] },
+        isLoading: true,
+        error: '',
+      });
+
+      jest
+        .mocked(useSearchRuleSetPreview)
+        .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        screen.getAllByLabelText('loading content').length
+      ).toBeGreaterThan(0);
+    });
+
+    it('should show history error when present', () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [] },
+        isLoading: false,
+        error: 'Failed to load history',
+      });
+
+      jest
+        .mocked(useSearchRuleSetPreview)
+        .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(screen.getByText('Failed to load history')).toBeInTheDocument();
+    });
+
+    it('should not render ruleset when historyId does not match any change', () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'non-existent-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [mockHistoryChange] },
+        isLoading: false,
+        error: '',
+      });
+
+      jest
+        .mocked(useSearchRuleSetPreview)
+        .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        screen.queryByRole('button', { name: 'Cancel' })
+      ).not.toBeInTheDocument();
+    });
   });
 });

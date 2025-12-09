@@ -170,6 +170,38 @@ test.describe('Global Ranking', () => {
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
   });
 
+  test('views history', async ({ page, context }) => {
+    await context.addCookies([
+      {
+        name: 'flagHistoricalLogOfChanges',
+        value: 'true',
+        domain: 'localhost',
+        path: '/',
+      },
+    ]);
+
+    await page.goto('/global');
+
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'View history' }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Subcategory History' })
+    ).toBeVisible();
+
+    await expect(page.getByText('Current version')).toBeVisible();
+    const viewVersionLinks = page.getByRole('link', { name: 'View version' });
+    await expect(viewVersionLinks.first()).toBeVisible();
+
+    await viewVersionLinks.first().click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Save' })).toBeHidden();
+  });
+
   test('deletes a ruleset', async ({ page }) => {
     await page.goto('/global');
 

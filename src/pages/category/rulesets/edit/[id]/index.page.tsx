@@ -3,8 +3,10 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 import { useRuleSetDetail } from '@/libs/hooks/category/rulesets/use-rule-set-detail';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 import { useUpdateRuleSet } from '@/libs/hooks/use-rule-set-update';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
@@ -16,10 +18,25 @@ type PageProps = {
 };
 
 const Page = ({ id }: PageProps) => {
-  const { ruleSetDetail, isLoading } = useRuleSetDetail(id);
+  const router = useRouter();
+  const isHistoryView = router.query.history === 'true';
+
+  const historyData = useCategoryHistory(isHistoryView ? id : '');
+  const { ruleSetDetail, isLoading: isRuleSetLoading } = useRuleSetDetail(
+    isHistoryView ? '' : id
+  );
+
+  const {
+    rulesetData,
+    isLoading,
+    error: historyError,
+  } = useHistoricalOrCurrentRuleset({
+    id,
+    historyData,
+    currentData: { data: ruleSetDetail, isLoading: isRuleSetLoading },
+  });
 
   const { updateCategoryRuleSet, isSaving, error } = useUpdateRuleSet();
-  const router = useRouter();
 
   const saveRuleSet = async ({
     categoryIds,
@@ -65,26 +82,30 @@ const Page = ({ id }: PageProps) => {
 
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
 
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {(error || historyError) && (
+        <ErrorMessage>{error || historyError}</ErrorMessage>
+      )}
 
       {isLoading ? (
         <Loader />
       ) : (
-        <Ruleset
-          isEnabled={ruleSetDetail.isEnabled}
-          onSave={saveRuleSet}
-          onCancel={() => router.push('/category')}
-          categoriesInfo={ruleSetDetail.categoriesInfo}
-          rulesetFacets={ruleSetDetail.facets}
-          rulesetExcludedFacets={ruleSetDetail.excludedFacets}
-          rulesetId={ruleSetDetail.id}
-          rulesetMerchandisingRules={ruleSetDetail.rules}
-          rulesetType="category"
-          startDate={ruleSetDetail.startDate}
-          endDate={ruleSetDetail.endDate}
-          countryCode={ruleSetDetail.countryCode}
-          writeEnabled={hasWriteAccess}
-        />
+        rulesetData && (
+          <Ruleset
+            isEnabled={rulesetData.isEnabled}
+            onSave={saveRuleSet}
+            onCancel={() => router.push('/category')}
+            categoriesInfo={rulesetData.categoriesInfo}
+            rulesetFacets={rulesetData.facets}
+            rulesetExcludedFacets={rulesetData.excludedFacets}
+            rulesetId={rulesetData.id}
+            rulesetMerchandisingRules={rulesetData.rules}
+            rulesetType="category"
+            startDate={rulesetData.startDate}
+            endDate={rulesetData.endDate}
+            countryCode={rulesetData.countryCode}
+            writeEnabled={hasWriteAccess && !isHistoryView}
+          />
+        )
       )}
 
       {isSaving && <Loader />}

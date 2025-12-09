@@ -11,6 +11,7 @@ const RedirectsHistory = ({ id }: { id: string }) => {
       title="Redirects History"
       breadcrumbs={['Search Redirects', 'History']}
       accessType="Search"
+      ruleType="redirect"
       history={history}
       isLoading={isLoading}
       error={error}

@@ -124,4 +124,42 @@ describe('useGlobalRuleSetDetail', () => {
       expect(result).toEqual({ current: expectedData });
     });
   });
+
+  it('should not make API calls when id is empty', async () => {
+    const { result } = renderHook(() => useGlobalRuleSetDetail(''));
+
+    const expectedData = {
+      globalRuleSet: {
+        id: '',
+        isEnabled: false,
+        lastChanged: {
+          date: '',
+          user: '',
+        },
+        facets: [],
+        rules: {
+          pinnedProducts: [],
+          blockedProducts: [],
+          boosts: { alphanumeric: [], numeric: [], product: [] },
+          buries: {
+            alphanumeric: [],
+            numeric: [],
+            product: [],
+          },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
+        },
+      },
+      error: '',
+      isLoading: false,
+    };
+
+    expect(result.current).toEqual(expectedData);
+
+    expect(getRuleSetPreviewMock).not.toHaveBeenCalled();
+  });
 });

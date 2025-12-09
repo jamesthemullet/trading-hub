@@ -11,6 +11,7 @@ const SearchHistory = ({ id }: { id: string }) => {
       title="Search History"
       breadcrumbs={['Search Rules', 'History']}
       accessType="Search"
+      ruleType="searchRanking"
       history={history}
       isLoading={isLoading}
       error={error}

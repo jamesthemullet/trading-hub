@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
+import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-redirect-history';
 import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -21,6 +22,13 @@ jest.mock('@/libs/hooks/search/redirect/use-redirect-detail', () => ({
 jest.mock('@/libs/hooks/search/redirect/use-redirect-update', () => ({
   useRedirectUpdate: jest.fn(),
 }));
+jest.mock('@/libs/hooks/search/redirect/history/use-redirect-history', () => ({
+  useRedirectHistory: jest.fn(() => ({
+    history: { changes: [] },
+    isLoading: false,
+    error: '',
+  })),
+}));
 
 describe('Edit keyword redirect', () => {
   const mockUpdateRedirect = {
@@ -37,6 +45,7 @@ describe('Edit keyword redirect', () => {
 
   const mockRouter = {
     push: jest.fn(),
+    query: {},
     events: {
       on: jest.fn(),
       off: jest.fn(),
@@ -121,5 +130,124 @@ describe('Edit keyword redirect', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     expect(await screen.findByText('Error: Bad request')).toBeVisible();
+  });
+
+  describe('History view', () => {
+    const mockHistoryChange = {
+      id: 'history-change-id',
+      entityId: 'entity-id',
+      savedAt: '2024-01-01T00:00:00Z',
+      savedBy: 'test-user',
+      schemaVersion: '1',
+      change: {
+        ...returnedRedirectMock,
+        id: 'historical-redirect-id',
+      },
+    };
+
+    beforeEach(() => {
+      jest.mocked(useRedirectHistory).mockReturnValue({
+        history: { changes: [] },
+        isLoading: false,
+        error: '',
+      });
+    });
+
+    it('should render redirect from history when history query param is true', async () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useRedirectHistory).mockReturnValue({
+        history: { changes: [mockHistoryChange] },
+        isLoading: false,
+        error: '',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        await screen.findByRole('button', { name: 'Cancel' })
+      ).toBeInTheDocument();
+    });
+
+    it('should disable write access when viewing history', async () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useRedirectHistory).mockReturnValue({
+        history: { changes: [mockHistoryChange] },
+        isLoading: false,
+        error: '',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        await screen.findByRole('button', { name: 'Cancel' })
+      ).toBeInTheDocument();
+
+      expect(
+        screen.queryByRole('button', { name: 'Save' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show loader when history is loading', () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useRedirectHistory).mockReturnValue({
+        history: { changes: [] },
+        isLoading: true,
+        error: '',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        screen.getAllByLabelText('loading content').length
+      ).toBeGreaterThan(0);
+    });
+
+    it('should show history error when present', () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useRedirectHistory).mockReturnValue({
+        history: { changes: [] },
+        isLoading: false,
+        error: 'Failed to load history',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(screen.getByText('Failed to load history')).toBeInTheDocument();
+    });
+
+    it('should not render redirect when historyId does not match any change', () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'non-existent-id' },
+      });
+
+      jest.mocked(useRedirectHistory).mockReturnValue({
+        history: { changes: [mockHistoryChange] },
+        isLoading: false,
+        error: '',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        screen.queryByRole('button', { name: 'Cancel' })
+      ).not.toBeInTheDocument();
+    });
   });
 });

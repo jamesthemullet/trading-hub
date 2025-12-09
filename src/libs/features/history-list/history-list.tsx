@@ -1,8 +1,13 @@
 import { Typography } from '@/libs/components/typography/typography';
+import { getRulesetEditRoute } from '@/libs/constants/routes';
+
+import Link from 'next/link';
 
 import styles from './history-list.module.css';
 
-const HISTORY_COLUMNS = ['#', 'Date', 'Time', 'User'] as const;
+const HISTORY_COLUMNS = ['#', 'Date', 'Time', 'User', ''] as const;
+
+type RuleType = 'categoryRanking' | 'searchRanking' | 'global' | 'redirect';
 
 const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   month: 'short',
@@ -16,6 +21,7 @@ const TIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
 };
 
 type HistoryItem = {
+  rulesetId: string;
   id: string;
   date: string;
   user: string;
@@ -25,13 +31,18 @@ type HistoryRowProps = {
   item: HistoryItem;
   index: number;
   total: number;
+  ruleType: RuleType;
 };
 
-const HistoryRow = ({ item, index, total }: HistoryRowProps) => {
+const HistoryRow = ({ item, index, total, ruleType }: HistoryRowProps) => {
   const date = new Date(item.date);
   const formattedDate = date.toLocaleDateString('en-US', DATE_FORMAT_OPTIONS);
   const formattedTime = date.toLocaleTimeString('en-GB', TIME_FORMAT_OPTIONS);
   const isLatest = index === 0;
+  const linkText = isLatest ? 'Current version' : 'View version';
+  const href = isLatest
+    ? getRulesetEditRoute(ruleType, item.rulesetId)
+    : `${getRulesetEditRoute(ruleType, item.rulesetId)}?history=true&historyId=${item.id}`;
 
   return (
     <li className={styles.historyRow} key={item.id}>
@@ -42,16 +53,17 @@ const HistoryRow = ({ item, index, total }: HistoryRowProps) => {
       </Typography>
       <Typography variant="bodyMedium">{formattedTime}</Typography>
       <Typography variant="bodyMedium">{item.user}</Typography>
-      <span />
+      <Link href={href}>{linkText}</Link>
     </li>
   );
 };
 
 type HistoryListProps = {
   items: HistoryItem[];
+  ruleType: RuleType;
 };
 
-export const HistoryList = ({ items }: HistoryListProps) => {
+export const HistoryList = ({ items, ruleType }: HistoryListProps) => {
   return (
     <ul className={styles.historyList}>
       <li className={styles.historyHeader}>
@@ -60,7 +72,6 @@ export const HistoryList = ({ items }: HistoryListProps) => {
             {column}
           </Typography>
         ))}
-        <span />
       </li>
       {items.map((item, index) => (
         <HistoryRow
@@ -68,6 +79,7 @@ export const HistoryList = ({ items }: HistoryListProps) => {
           item={item}
           index={index}
           total={items.length}
+          ruleType={ruleType}
         />
       ))}
     </ul>

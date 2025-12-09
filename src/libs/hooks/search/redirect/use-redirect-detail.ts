@@ -22,6 +22,11 @@ export const useRedirectDetail = (id: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) {
+      setIsLoading(false);
+      return;
+    }
+
     const asyncCall = async () => {
       try {
         const response = await api.betaMerchandisingKeywordRedirectDetail(id);

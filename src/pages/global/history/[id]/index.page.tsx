@@ -11,6 +11,7 @@ const GlobalHistory = ({ id }: { id: string }) => {
       title="Global History"
       breadcrumbs={['Global Ranking Rules', 'History']}
       accessType="Glob"
+      ruleType="global"
       history={history}
       isLoading={isLoading}
       error={error}
