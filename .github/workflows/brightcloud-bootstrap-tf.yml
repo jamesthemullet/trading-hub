@@ -110,7 +110,7 @@ jobs:
           ${{ github.workspace }}/brightcloud/.github/scripts/repo-bootstrapper.sh -a brightcloud_init
           rm -rf ${{ github.workspace }}/brightcloud
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7.0.9
+        uses: peter-evans/create-pull-request@v8.0.0
         with:
           token: ${{secrets.SAML_GITHUB_TOKEN }}
           branch: bootstrap
