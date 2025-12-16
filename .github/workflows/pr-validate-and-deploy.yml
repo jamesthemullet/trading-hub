@@ -220,7 +220,7 @@ jobs:
           zip next.zip ./* .next -qr
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: node-app
           path: .next/standalone/next.zip
@@ -360,7 +360,7 @@ jobs:
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - name: Download artifact
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: node-app
 
@@ -557,7 +557,7 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.project }}
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.project }}
@@ -682,7 +682,7 @@ jobs:
 
       - name: Upload accessibility test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: storybook-accessibility-report
           path: |
