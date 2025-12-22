@@ -36,7 +36,6 @@ import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-ro
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
-import { TableHeading } from '@/libs/containers/shared/table/table.styles';
 import {
   CategorySearch,
   Preview,
@@ -632,9 +631,9 @@ export const FacetList = ({
         <Row>
           {COLUMNS.map(({ label }) => (
             <Col key={`column-${label}`}>
-              <TableHeading as="p" isStrong>
+              <Typography isStrong variant="bodySmall">
                 {label}
-              </TableHeading>
+              </Typography>
             </Col>
           ))}
         </Row>

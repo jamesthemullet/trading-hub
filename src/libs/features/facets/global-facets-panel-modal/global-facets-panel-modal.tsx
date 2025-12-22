@@ -23,6 +23,7 @@ import {
   Loader,
   Search,
   Text,
+  Typography,
 } from '@/libs/components';
 import {
   AttributesModalHeader,
@@ -40,10 +41,7 @@ import { GlobalFacetAttribute } from '@/libs/containers';
 import { GlobalArrowButtons } from '@/libs/containers/facets/global-arrow-buttons/global-arrow-buttons';
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
-import {
-  FacetAttributeValuesTableRow,
-  TableHeading,
-} from '@/libs/containers/shared/table/table.styles';
+import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -574,9 +572,9 @@ export const GlobalFacetPanelModalContent = ({
               {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                 <Col key={`add-facet-modal-column-${label}`}>
                   {label ? (
-                    <TableHeading as="p" isStrong>
+                    <Typography isStrong variant="bodySmall">
                       {label}
-                    </TableHeading>
+                    </Typography>
                   ) : (
                     label === null && (
                       <Col>

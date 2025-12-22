@@ -6,12 +6,9 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import { FilteredResultsPanel, Loader } from '@/libs/components';
+import { FilteredResultsPanel, Loader, Typography } from '@/libs/components';
 import { Col } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import {
-  FacetAttributeValuesTableRow,
-  TableHeading,
-} from '@/libs/containers/shared/table/table.styles';
+import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
 import { useGlobalFacetAttributesList } from '@/libs/hooks/global/facets/use-global-facet-attributes-list';
 import type {
   GlobalAttributesPageReducer,
@@ -176,9 +173,9 @@ export const GlobalFacetAttributesList = ({
         {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
           <Col key={`add-facet-modal-column-${label}`}>
             {label ? (
-              <TableHeading as="p" isStrong>
+              <Typography isStrong variant="bodySmall">
                 {label}
-              </TableHeading>
+              </Typography>
             ) : (
               label === null && (
                 <Col>

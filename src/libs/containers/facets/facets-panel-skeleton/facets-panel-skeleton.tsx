@@ -1,5 +1,6 @@
 import { Skeleton } from '@mantine/core';
 
+import { Typography } from '@/libs/components';
 import {
   ActionContainer,
   Actions,
@@ -10,7 +11,6 @@ import {
   SectionWrapper,
 } from '@/libs/components/facets-panel/facets-panel.styles';
 import { COLUMNS } from '@/libs/constants/facets-panel-columns';
-import { TableHeading } from '@/libs/containers/shared/table/table.styles';
 
 export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
   return (
@@ -34,9 +34,9 @@ export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
         <Row>
           {COLUMNS.map(({ label }) => (
             <Col key={`column-${label}`}>
-              <TableHeading as="p" isStrong>
+              <Typography isStrong variant="bodySmall">
                 {label}
-              </TableHeading>
+              </Typography>
             </Col>
           ))}
         </Row>

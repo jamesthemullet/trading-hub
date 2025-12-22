@@ -1,7 +1,7 @@
 import { type ActionDispatch, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import { Button, Text } from '@/libs/components';
+import { Button, Text, Typography } from '@/libs/components';
 import {
   FlexColumnCol,
   GlobalFacetAttributesPageMergedValue,
@@ -23,10 +23,7 @@ import Image from 'next/image';
 import { styled } from 'storybook/theming';
 
 import { InputDeprecated } from '../shared';
-import {
-  EditFacetAttributesModalTableRow,
-  TableHeading,
-} from '../shared/table/table.styles';
+import { EditFacetAttributesModalTableRow } from '../shared/table/table.styles';
 
 const ModalContainer = styled.div`
   height: 100%;
@@ -197,9 +194,9 @@ export const GlobalFacetAttributesEditModal = ({
               <EditFacetAttributesModalTableRow>
                 {EDIT_FACET_ATTRIBUTES_MODALCOLUMNS.map(({ label }) => (
                   <Col key={`edit-facet-attributes-modal-column-${label}`}>
-                    <TableHeading as="p" isStrong>
+                    <Typography isStrong variant="bodySmall">
                       {label}
-                    </TableHeading>
+                    </Typography>
                   </Col>
                 ))}
               </EditFacetAttributesModalTableRow>

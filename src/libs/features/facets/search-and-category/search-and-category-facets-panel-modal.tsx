@@ -16,6 +16,7 @@ import {
   Header3,
   Search,
   Text,
+  Typography,
 } from '@/libs/components';
 import {
   AttributesModalHeader,
@@ -33,10 +34,7 @@ import {
   ModalContainer,
   ModalFooter,
 } from '@/libs/components/modals/modal.styles';
-import {
-  FacetAttributeValuesTableRow,
-  TableHeading,
-} from '@/libs/containers/shared/table/table.styles';
+import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -362,9 +360,9 @@ export const SearchAndCategoryFacetsPanelModal = ({
                 <FacetAttributeValuesTableRow>
                   {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                     <Col key={`add-facet-modal-column-${label}`}>
-                      <TableHeading as="p" isStrong>
+                      <Typography isStrong variant="bodySmall">
                         {label}
-                      </TableHeading>
+                      </Typography>
                     </Col>
                   ))}
                 </FacetAttributeValuesTableRow>

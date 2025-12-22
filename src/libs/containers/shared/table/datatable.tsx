@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Modal, Skeleton } from '@mantine/core';
 
-import { Button } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { Menu } from '@/libs/components/dropdown/dropdown.styles';
 import { useHistoricalLogOfChangesFlag } from '@/libs/components/feature-flag/feature-flag';
 import { Toggle } from '@/libs/components/toggle/toggle';
@@ -30,7 +30,6 @@ import {
   TableCol,
   TableContainer,
   TableDropdown,
-  TableHeading,
   TableLink,
   TableRow,
 } from './table.styles';
@@ -341,9 +340,9 @@ export const DataTable = ({
         >
           {headings.map((heading) => (
             <DynamicTableCol key={heading} data-heading={heading}>
-              <TableHeading as="p" isStrong>
+              <Typography isStrong variant="bodySmall">
                 {heading}
-              </TableHeading>
+              </Typography>
             </DynamicTableCol>
           ))}
         </Row>

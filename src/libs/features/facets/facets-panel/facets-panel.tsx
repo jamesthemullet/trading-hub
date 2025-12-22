@@ -12,6 +12,7 @@ import {
   CombinedDropdown,
   Search,
   Text,
+  Typography,
 } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import {
@@ -35,7 +36,6 @@ import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-ro
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
-import { TableHeading } from '@/libs/containers/shared/table/table.styles';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -395,9 +395,9 @@ export const FacetsPanel = ({
         <Row>
           {COLUMNS.map(({ label }) => (
             <Col key={`column-${label}`}>
-              <TableHeading as="p" isStrong>
+              <Typography isStrong variant="bodySmall">
                 {label}
-              </TableHeading>
+              </Typography>
             </Col>
           ))}
         </Row>

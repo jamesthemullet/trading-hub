@@ -1,7 +1,7 @@
 import { type ActionDispatch, useCallback, useMemo } from 'react';
 
 import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/open-api';
-import { CombinedDropdown, Text } from '@/libs/components';
+import { CombinedDropdown, Text, Typography } from '@/libs/components';
 import {
   AttributeWrapper,
   Col,
@@ -11,10 +11,7 @@ import {
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
-import {
-  FacetAttributeValuesTableRow,
-  TableHeading,
-} from '@/libs/containers/shared/table/table.styles';
+import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
@@ -301,9 +298,9 @@ export const SearchAndCategoryFacetAttributesList = ({
       <FacetAttributeValuesTableRow isHeading>
         {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
           <Col key={`add-facet-modal-column-${label}`}>
-            <TableHeading as="p" isStrong>
+            <Typography isStrong variant="bodySmall">
               {label}
-            </TableHeading>
+            </Typography>
           </Col>
         ))}
       </FacetAttributeValuesTableRow>
