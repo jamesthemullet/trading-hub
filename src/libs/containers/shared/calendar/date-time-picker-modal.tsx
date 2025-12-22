@@ -11,7 +11,7 @@ import { spacing } from '@/libs/utils/spacing';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
-import { Input } from '../input/input';
+import { InputDeprecated } from '../input/input';
 import { DatePicker } from './date-picker';
 import { Content } from './date-picker.styles';
 import { DatePickerSingle } from './date-picker-single';
@@ -38,7 +38,7 @@ const StyledButton = styled(ButtonDeprecated)`
   border-radius: 20px;
 `;
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(InputDeprecated)`
   background-color: #f5f5f5;
   border: none;
   height: 56px;

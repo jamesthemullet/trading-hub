@@ -11,6 +11,8 @@ import {
 import { sizing } from '@/libs/utils/sizing';
 import { spacing } from '@/libs/utils/spacing';
 
+import styles from './input.module.css';
+
 const padding = 1;
 
 const StyledInput = styled.input<{
@@ -49,7 +51,7 @@ export type InputProps = Omit<
   as?: never;
 };
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+export const InputDeprecated = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       id,
@@ -92,6 +94,64 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           isEmpty={isEmpty}
           value={inputVal}
           aria-label={isLabelHidden ? label : undefined}
+          {...mouseFocusProps}
+          {...rest}
+          onChange={handleChange}
+        />
+      </>
+    );
+  }
+);
+
+InputDeprecated.displayName = 'InputDeprecated';
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      id,
+      name,
+      label,
+      isLabelHidden = false,
+      onChange,
+      onBlur,
+      onMouseDown,
+      ...rest
+    }: InputProps,
+    ref
+  ) => {
+    const { isMouseFocus, ...mouseFocusProps } = useMouseFocus({
+      onBlur,
+      onMouseDown,
+    });
+    const [inputVal, setInputVal] = useState('');
+    const isEmpty = inputVal.length === 0;
+
+    const handleChange = useCallback(
+      (event: ChangeEvent<HTMLInputElement>) => {
+        setInputVal(event.target.value || /* istanbul ignore next */ '');
+        onChange?.(event);
+      },
+      [onChange]
+    );
+
+    return (
+      <>
+        {!isLabelHidden && (
+          <div className={styles.labelWrapper}>
+            <label className={styles.label} htmlFor={id} {...mouseFocusProps}>
+              {label}
+            </label>
+          </div>
+        )}
+        <input
+          className={styles.input}
+          ref={ref}
+          name={name}
+          id={id}
+          value={inputVal}
+          aria-label={isLabelHidden ? label : undefined}
+          data-is-mouse-focus={isMouseFocus}
+          data-is-empty={isEmpty}
           {...mouseFocusProps}
           {...rest}
           onChange={handleChange}

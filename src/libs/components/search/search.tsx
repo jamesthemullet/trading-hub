@@ -2,7 +2,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { type ChangeEventHandler, type RefObject, useState } from 'react';
 
-import { Input, type InputProps } from '@/libs/containers/shared/input/input';
+import {
+  InputDeprecated,
+  type InputProps,
+} from '@/libs/containers/shared/input/input';
 import { color } from '@/libs/utils/constants';
 import { sizing } from '@/libs/utils/sizing';
 import { spacing } from '@/libs/utils/spacing';
@@ -106,7 +109,7 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(InputDeprecated)`
   &::placeholder {
     color: ${color.surface.onSurfaceVariant};
   }

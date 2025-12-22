@@ -52,6 +52,8 @@ import { globalAttributesReducer } from '@/libs/stores/global-attribute/global-a
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
+import styles from './global-facets-panel-modal.module.css';
+
 const ModalContainer = styled.div`
   height: 100%;
   min-width: 860px;
@@ -405,7 +407,7 @@ export const GlobalFacetPanelModalContent = ({
                 writeEnabled={writeEnabled}
               />
 
-              <Col>
+              <div className={styles.facetOrderInput}>
                 {displayType === 'included' && order && (
                   <FacetOrderInput
                     displayValue={displayName}
@@ -423,7 +425,7 @@ export const GlobalFacetPanelModalContent = ({
                     writeEnabled={writeEnabled}
                   />
                 )}
-              </Col>
+              </div>
 
               <GlobalEditableLabel
                 displayName={displayName}

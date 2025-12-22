@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { StyledInput } from '@/libs/containers/shared/table/table.styles';
+import { Input } from '@/libs/containers/shared/input/input';
 
 type FacetOrderInputProps = {
   displayValue: string;
@@ -28,7 +28,7 @@ export const FacetOrderInput = ({
   writeEnabled,
 }: FacetOrderInputProps) => {
   return (
-    <StyledInput
+    <Input
       ref={inputRef}
       id={`order-input-${displayValue}`}
       label={`Order for ${displayValue}`}
@@ -38,12 +38,18 @@ export const FacetOrderInput = ({
       min={1}
       aria-label={`Order for ${displayValue}`}
       disabled={!writeEnabled}
-      onFocus={(e) => {
+      onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
         e.target.select();
       }}
-      onChange={(e) => onInputChange(displayValue, e.target.value)}
-      onBlur={(e) => onInputBlur(displayValue, e.currentTarget.value, order)}
-      onKeyDown={(e) => onInputKeyDown(e, displayValue, order)}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+        onInputChange(displayValue, e.target.value)
+      }
+      onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
+        onInputBlur(displayValue, e.currentTarget.value, order)
+      }
+      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+        onInputKeyDown(e, displayValue, order)
+      }
     />
   );
 };

@@ -7,7 +7,7 @@ import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 
-import { Input } from '../input/input';
+import { InputDeprecated } from '../input/input';
 
 const DisplayName = styled.div`
   display: flex;
@@ -49,7 +49,7 @@ const InputContainer = styled.div`
   width: 100%;
 `;
 
-const StyledInput = styled(Input)<{ showErrorState: boolean }>`
+const StyledInput = styled(InputDeprecated)<{ showErrorState: boolean }>`
   font-size: 14px;
   max-height: 2.5rem;
   border-radius: 4px;

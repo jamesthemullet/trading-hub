@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 
 import { fonts, Label } from '@/libs/components/typography/typography.styles';
-import { Input } from '@/libs/containers/shared/input/input';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
 
@@ -160,8 +159,4 @@ export const TableLink = styled(Link)`
   &:active {
     background-color: #e3e3e3;
   }
-`;
-
-export const StyledInput = styled(Input)`
-  width: 82px;
 `;

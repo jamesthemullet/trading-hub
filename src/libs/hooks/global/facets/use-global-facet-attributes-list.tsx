@@ -37,6 +37,8 @@ import {
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import Image from 'next/image';
 
+import styles from './use-global-facet-attributes-list.module.css';
+
 type UseGlobalFacetAttributesListParams = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
   searchQuery: string;
@@ -188,7 +190,7 @@ export const useGlobalFacetAttributesList = ({
                 dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                 writeEnabled={writeEnabled}
               />
-              <Col>
+              <div className={styles.facetOrderInput}>
                 {displayType === 'included' && order && (
                   <FacetOrderInput
                     displayValue={displayName}
@@ -206,7 +208,7 @@ export const useGlobalFacetAttributesList = ({
                     writeEnabled={writeEnabled}
                   />
                 )}
-              </Col>
+              </div>
 
               <GlobalEditableLabel
                 displayName={displayName}

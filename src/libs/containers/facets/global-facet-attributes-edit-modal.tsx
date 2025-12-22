@@ -22,7 +22,7 @@ import { spacing } from '@/libs/utils/spacing';
 import Image from 'next/image';
 import { styled } from 'storybook/theming';
 
-import { Input } from '../shared';
+import { InputDeprecated } from '../shared';
 import {
   EditFacetAttributesModalTableRow,
   TableHeading,
@@ -245,7 +245,7 @@ export const GlobalFacetAttributesEditModal = ({
 
                 <FlexColumnCol>
                   <InputContainer showErrorState={!!error}>
-                    <Input
+                    <InputDeprecated
                       id={`Edit ${globalAttributesLocalState.currentMerge.displayValue} input field`}
                       ref={(inputRef) => {
                         inputRef?.focus();
