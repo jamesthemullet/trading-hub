@@ -16,12 +16,12 @@ describe('Pagination', () => {
       screen.getByRole('button', { name: 'Next page' }).click();
     });
 
-    expect(onClickCallback).toHaveBeenCalledWith(expect.anything(), 3);
+    expect(onClickCallback).toHaveBeenCalledWith(3);
 
     act(() => {
       screen.getByRole('button', { name: 'Previous page' }).click();
     });
 
-    expect(onClickCallback).toHaveBeenCalledWith(expect.anything(), 1);
+    expect(onClickCallback).toHaveBeenCalledWith(1);
   });
 });

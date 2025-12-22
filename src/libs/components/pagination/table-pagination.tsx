@@ -1,49 +1,12 @@
-import styled from '@emotion/styled';
 import { Skeleton } from '@mantine/core';
 
 import type { MerchandisingPagination as PaginationType } from '@/libs/api/generated/open-api';
-import { spacing } from '@/libs/utils/spacing';
+import { Button } from '@/libs/components/button/button';
 
 import { CombinedDropdown } from '../dropdown/dropdown';
+import { Typography } from '../typography/typography';
 import { Pagination } from './pagination';
-
-const NavigationContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: ${spacing(4)};
-  margin-left: auto;
-  margin-right: ${spacing(2)};
-  margin-bottom: ${spacing(18)};
-  font-weight: 400;
-  font-size: 14px;
-`;
-const TotalResultsLabel = styled.div`
-  font-family: mnsLondonRegular, monospace;
-  margin-left: 31px;
-`;
-
-const RowsPerPageContainer = styled.div`
-  font-family: mnsLondonRegular, monospace;
-  display: flex;
-  column-gap: 10px;
-  justify-content: center;
-  align-items: baseline;
-  margin-right: 18px;
-  margin-bottom: ${spacing(2)};
-`;
-
-const PageSizeItem = styled.button`
-  padding: ${spacing(1)};
-  cursor: pointer;
-  text-align: center;
-  background-color: #fff;
-
-  &:hover,
-  &:focus {
-    background-color: #f5f5f5;
-  }
-`;
+import styles from './pagination.module.css';
 
 export const TablePagination = ({
   pagination,
@@ -61,40 +24,40 @@ export const TablePagination = ({
   isLoading: boolean;
 }) => {
   return (
-    <NavigationContainer>
+    <div className={styles.paginationRowContainer}>
       {isLoading ? (
         <>
-          <TotalResultsLabel aria-busy="true">
+          <div className={`${styles.totalResultsLabel}`} aria-busy="true">
             <Skeleton
               height={40}
               width={84}
               mb={24}
               data-testid="table-pagination-skeleton"
             />
-          </TotalResultsLabel>
+          </div>
           <Skeleton height={40} width={173} mb={24} aria-busy="true" />
-          <RowsPerPageContainer>
+          <div className={`${styles.rowsPerPageContainer} `}>
             <Skeleton height={40} width={235} mb={24} aria-busy="true" />
-          </RowsPerPageContainer>
+          </div>
         </>
       ) : (
         <>
-          <TotalResultsLabel data-testid="results count">
+          <Typography variant="bodySmall" data-testid="results count">
             {pagination.totalItems} results
-          </TotalResultsLabel>
+          </Typography>
+
           <Pagination
             current={currentPage}
             total={Math.max(
               1,
               Math.ceil((pagination.totalItems ?? 0) / currentPageSize)
             )}
-            onClick={(e, pageNumber) => {
-              e.preventDefault();
+            onClick={(pageNumber) => {
               handlePageChange(pageNumber, currentPageSize);
             }}
           />
-          <RowsPerPageContainer>
-            <span>Rows per page</span>
+          <div className={`${styles.rowsPerPageContainer}`}>
+            <Typography variant="bodySmall">Rows per page</Typography>
             <CombinedDropdown
               variant="pageSize"
               label={`${currentPageSize}`}
@@ -102,7 +65,7 @@ export const TablePagination = ({
               ariaLabel="Select rows per page"
             >
               {pageSizes.map((size) => (
-                <PageSizeItem
+                <Button
                   key={size}
                   onClick={() => {
                     if (
@@ -116,14 +79,15 @@ export const TablePagination = ({
                   }}
                   role="option"
                   aria-selected={currentPageSize === size}
+                  isInline
                 >
                   {size}
-                </PageSizeItem>
+                </Button>
               ))}
             </CombinedDropdown>
-          </RowsPerPageContainer>
+          </div>
         </>
       )}
-    </NavigationContainer>
+    </div>
   );
 };
