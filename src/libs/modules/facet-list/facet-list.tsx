@@ -16,18 +16,6 @@ import {
   Typography,
 } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import {
-  AttributesTable,
-  Col,
-  Duration,
-  LowerHeading,
-  NoAttributesBlock,
-  OrderColumn,
-  Row,
-  ScopeWrapper,
-  SearchWrapper,
-  SectionWrapper,
-} from '@/libs/components/facets-panel/facets-panel.styles';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { getFacetRoute } from '@/libs/constants';
@@ -41,6 +29,18 @@ import {
   Preview,
   SearchAndCategoryFacetsPanelModal,
 } from '@/libs/features';
+import {
+  AttributesTable,
+  Col,
+  Duration,
+  LowerHeading,
+  NoAttributesBlock,
+  OrderColumn,
+  Row,
+  ScopeWrapper,
+  SearchWrapper,
+  SectionWrapper,
+} from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { useFacetsList } from '@/libs/hooks';

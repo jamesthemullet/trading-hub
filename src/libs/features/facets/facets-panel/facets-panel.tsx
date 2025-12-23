@@ -15,18 +15,6 @@ import {
   Typography,
 } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import {
-  AttributesTable,
-  Col,
-  CountrySelectorLabel,
-  LowerHeading,
-  NoAttributesBlock,
-  OrderColumn,
-  Row,
-  ScopeWrapper,
-  SearchWrapper,
-  SectionWrapper,
-} from '@/libs/components/facets-panel/facets-panel.styles';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
@@ -36,6 +24,17 @@ import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-ro
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
+import {
+  AttributesTable,
+  Col,
+  LowerHeading,
+  NoAttributesBlock,
+  OrderColumn,
+  Row,
+  ScopeWrapper,
+  SearchWrapper,
+  SectionWrapper,
+} from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -60,6 +59,7 @@ import {
 import Image from 'next/image';
 
 import { GlobalFacetPanelModal } from '../global-facets-panel-modal/global-facets-panel-modal';
+import styles from './facets-panel.module.css';
 
 type defaultOrderDataType = {
   defaultOrder: string;
@@ -354,10 +354,14 @@ export const FacetsPanel = ({
       />
 
       <SectionWrapper>
-        <LowerHeading isStrong>Rule scope</LowerHeading>
+        <div className={styles.lowerHeading}>
+          <LowerHeading isStrong>Rule scope</LowerHeading>
+        </div>
         <ScopeWrapper>
           <div>
-            <CountrySelectorLabel>Influence</CountrySelectorLabel>
+            <Typography variant="bodySmall" withMargin>
+              Influence
+            </Typography>
             <CombinedDropdown
               variant="countrySelector"
               onChange={(country) => {

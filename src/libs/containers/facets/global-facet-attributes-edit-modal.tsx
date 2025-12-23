@@ -7,11 +7,11 @@ import {
   GlobalFacetAttributesPageMergedValue,
   RemoveMergedFacet,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import { Col } from '@/libs/components/facets-panel/facets-panel.styles';
 import {
   EditFacetAttributesModalTable,
   ModalStickyHeader,
 } from '@/libs/components/modals/modal.styles';
+import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import type {
   GlobalAttributesPageReducer,
   GlobalAttributesPageState,

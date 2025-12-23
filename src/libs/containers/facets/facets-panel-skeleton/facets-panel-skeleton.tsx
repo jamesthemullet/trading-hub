@@ -1,6 +1,7 @@
 import { Skeleton } from '@mantine/core';
 
 import { Typography } from '@/libs/components';
+import { COLUMNS } from '@/libs/constants/facets-panel-columns';
 import {
   ActionContainer,
   Actions,
@@ -9,8 +10,7 @@ import {
   LowerHeading,
   Row,
   SectionWrapper,
-} from '@/libs/components/facets-panel/facets-panel.styles';
-import { COLUMNS } from '@/libs/constants/facets-panel-columns';
+} from '@/libs/features/facets/facets-panel/facets-panel.styles';
 
 export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
   return (
