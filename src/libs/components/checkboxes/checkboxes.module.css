@@ -1,0 +1,11 @@
+.noResults {
+  padding: var(--mns-spacing-2);
+}
+
+.checkboxRow {
+  border-bottom: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  padding: var(--mns-spacing-2);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}

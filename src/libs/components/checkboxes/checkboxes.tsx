@@ -1,19 +1,10 @@
-import styled from '@emotion/styled';
+import { useId } from 'react';
 
-import { color } from '@/libs/utils/constants';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
-import { spacing } from '@/libs/utils/spacing';
 
-import { Label, Text } from '../typography/typography.styles';
+import { Typography } from '../typography/typography';
 import { Checkbox } from './checkbox';
-
-const Row = styled.label`
-  border-bottom: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
-  padding: ${spacing(2)};
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
+import styles from './checkboxes.module.css';
 
 type Value = {
   name: string;
@@ -26,22 +17,33 @@ type Props = {
 };
 
 export const Checkboxes = ({ values, onSelect }: Props) => {
+  const id = useId();
+
   return (
     <div>
       {values.length ? (
         values.map(({ name, isSelected }) => (
-          <Row key={name}>
+          <label
+            className={styles.checkboxRow}
+            key={name}
+            htmlFor={`${id}-${name}`}
+          >
             <Checkbox
               label={name}
               type="checkbox"
               checked={isSelected}
+              id={`${id}-${name}`}
               onChange={() => onSelect(!isSelected, name)}
             />
-            <Label as="span">{formatHTMLStrings(name)}</Label>
-          </Row>
+            <Typography variant="bodySmall" as="span">
+              {formatHTMLStrings(name)}
+            </Typography>
+          </label>
         ))
       ) : (
-        <Text style={{ padding: spacing(2) }}>0 Results</Text>
+        <div className={styles.noResults}>
+          <Typography variant="bodySmall">0 Results</Typography>
+        </div>
       )}
     </div>
   );

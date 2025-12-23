@@ -1,6 +1,8 @@
 import type { ComponentProps } from 'react';
+import { useId } from 'react';
 
-import { Input, Label, LabelText } from './checkboxes.styles';
+import { Typography } from '../typography/typography';
+import styles from './checkbox.module.css';
 
 type InputProps = Omit<
   ComponentProps<'input'>,
@@ -11,12 +13,26 @@ type InputProps = Omit<
   showLabel?: boolean;
 };
 
-export const Checkbox = ({ label, showLabel, ...rest }: InputProps) =>
-  showLabel ? (
-    <Label>
-      <Input type="checkbox" {...rest} aria-label={label} />{' '}
-      <LabelText>{label}</LabelText>
-    </Label>
+export const Checkbox = ({ label, showLabel, ...rest }: InputProps) => {
+  const id = useId();
+
+  return showLabel ? (
+    <label className={styles.checkboxLabel} htmlFor={id}>
+      <input
+        className={styles.checkbox}
+        type="checkbox"
+        {...rest}
+        id={id}
+        aria-label={label}
+      />
+      <Typography variant="bodySmall">{label}</Typography>
+    </label>
   ) : (
-    <Input type="checkbox" {...rest} aria-label={label} />
+    <input
+      className={styles.checkbox}
+      type="checkbox"
+      {...rest}
+      aria-label={label}
+    />
   );
+};

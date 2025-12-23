@@ -1,32 +1,23 @@
-import styled from '@emotion/styled';
-
-import { spacing } from '@/libs/utils/spacing';
-
-const CHECKBOX_SIZE = '18px';
-
-export const Input = styled.input`
+.checkbox {
   appearance: none;
-  background-color: #fff;
   margin: 0;
-  font: inherit;
+  margin-right: var(--mns-spacing-1);
   cursor: pointer;
-  width: ${CHECKBOX_SIZE};
-  height: ${CHECKBOX_SIZE};
-  margin-right: ${spacing(1)};
 
   &::before {
     content: '';
-    width: ${CHECKBOX_SIZE};
-    height: ${CHECKBOX_SIZE};
-    border: 0.15em solid currentColor;
+    width: 18px;
+    height: 18px;
+    border: 2px solid currentcolor;
     display: block;
     border-radius: 2px;
   }
+
   &:checked {
     &::before {
       border-color: transparent;
       background: url('/trading-hub/asset/icon-checkbox.svg') -5px -5px;
-      background-size: 1.5em 1.5em;
+      background-size: 24px 24px;
     }
   }
 
@@ -50,14 +41,9 @@ export const Input = styled.input`
       left: 11px;
     }
   }
-`;
+}
 
-export const Label = styled.label`
+.checkboxLabel {
   display: flex;
   align-items: center;
-`;
-
-export const LabelText = styled.span`
-  font-size: 14px;
-  line-height: 14px;
-`;
+}

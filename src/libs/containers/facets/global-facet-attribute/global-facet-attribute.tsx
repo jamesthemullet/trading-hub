@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import type { Dispatch } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Loader, Text } from '@/libs/components';
+import { Checkbox, Loader, Text } from '@/libs/components';
 import {
   AttributeWrapper,
   Col,
@@ -68,11 +68,11 @@ export const GlobalFacetAttribute = ({
     <>
       <Col>
         {writeEnabled && (
-          <input
-            type="checkbox"
+          <Checkbox
             checked={isChecked}
             onChange={() => handleSelect(displayName)}
-            aria-label={`Select ${displayName} to merge`}
+            label={`Select ${displayName} to merge`}
+            showLabel={false}
           />
         )}
       </Col>

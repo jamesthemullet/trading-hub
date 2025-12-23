@@ -6,7 +6,12 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import { FilteredResultsPanel, Loader, Typography } from '@/libs/components';
+import {
+  Checkbox,
+  FilteredResultsPanel,
+  Loader,
+  Typography,
+} from '@/libs/components';
 import { Col } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
 import { useGlobalFacetAttributesList } from '@/libs/hooks/global/facets/use-global-facet-attributes-list';
@@ -180,9 +185,9 @@ export const GlobalFacetAttributesList = ({
               label === null && (
                 <Col>
                   {writeEnabled && (
-                    <input
-                      type="checkbox"
-                      aria-label="Select all facet attributes"
+                    <Checkbox
+                      label="Select all facet attributes"
+                      showLabel={false}
                       checked={hasSelectedAllAttributes}
                       onChange={() => {
                         setIsAwaitingUpdate(true);

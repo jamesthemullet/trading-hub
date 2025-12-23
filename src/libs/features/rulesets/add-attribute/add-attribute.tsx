@@ -384,24 +384,33 @@ export const AddAttribute = ({
             <ModalAttributeHeader>
               <Label isStrong>Relevant attributes</Label>
             </ModalAttributeHeader>
-            <RadioButtons
-              hasDivider
-              isBold
-              values={numericAttributes
-                .filter((attribute: MerchandisingAttributeResponseItem) =>
-                  attribute.name
-                    .toLowerCase()
-                    .includes(numericSearchValue.toLowerCase())
-                )
-                .map((attribute: MerchandisingAttributeResponseItem) => ({
-                  name: attribute.name,
-                  isSelected: selectedNumericField === attribute.name,
-                }))}
-              onSelect={(name) => {
-                setSelectedNumericField(name);
-                setSelectedAttributeType('numeric');
-              }}
-            />
+            {numericAttributes.filter(
+              (attribute: MerchandisingAttributeResponseItem) =>
+                attribute.name
+                  .toLowerCase()
+                  .includes(numericSearchValue.toLowerCase())
+            ).length > 0 ? (
+              <RadioButtons
+                hasDivider
+                isBold
+                values={numericAttributes
+                  .filter((attribute: MerchandisingAttributeResponseItem) =>
+                    attribute.name
+                      .toLowerCase()
+                      .includes(numericSearchValue.toLowerCase())
+                  )
+                  .map((attribute: MerchandisingAttributeResponseItem) => ({
+                    name: attribute.name,
+                    isSelected: selectedNumericField === attribute.name,
+                  }))}
+                onSelect={(name) => {
+                  setSelectedNumericField(name);
+                  setSelectedAttributeType('numeric');
+                }}
+              />
+            ) : (
+              <Text style={{ padding: spacing(2) }}>0 Results</Text>
+            )}
           </AttributeSelection>
         </StepContent>
 

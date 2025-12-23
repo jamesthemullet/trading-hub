@@ -16,6 +16,7 @@ import type {
 } from '@/libs/api';
 import {
   Button,
+  Checkbox,
   CombinedDropdown,
   ErrorMessage,
   FacetOrderInput,
@@ -578,9 +579,9 @@ export const GlobalFacetPanelModalContent = ({
                   ) : (
                     label === null && (
                       <Col>
-                        <input
-                          type="checkbox"
-                          aria-label="Select all facet attributes"
+                        <Checkbox
+                          label="Select all facet attributes"
+                          showLabel={false}
                           checked={hasSelectedAllAttributes}
                           onChange={() => {
                             setIsAwaitingUpdate(true);
