@@ -1,0 +1,42 @@
+.list {
+  padding: 0;
+  list-style: none;
+  margin: 0 var(--mns-spacing-1);
+  overflow: visible;
+  white-space: nowrap;
+
+  li + li::before {
+    display: inline-block;
+    margin: 0 var(--mns-spacing-1);
+    transform: rotate(15deg) translateY(4px);
+    border-right: 2px solid var(--color-state-disabled-disabled);
+    height: var(--mns-spacing-2);
+    content: '';
+  }
+
+  li + li:nth-last-of-type(2)::before {
+    margin: 0 var(--mns-spacing-1);
+  }
+
+  > li {
+    margin-bottom: 0;
+  }
+}
+
+.listItem {
+  display: inline-block;
+}
+
+.visuallyHide {
+  border: 0;
+  clip-path: inset(50%);
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  left: -999px;
+  top: auto;
+  white-space: nowrap;
+  width: 1px;
+  height: 1px;
+}

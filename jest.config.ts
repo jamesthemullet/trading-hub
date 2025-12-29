@@ -40,6 +40,7 @@ const config: Config = {
     '^.*\\.stories\\.[jt]sx?$',
   ],
   moduleNameMapper: {
+    '^.+\\.module\\.(css|less)$': 'identity-obj-proxy',
     '^.+\\.(css|less)$': '<rootDir>/config/css-stub.js',
     '^.+\\.(yml|yaml)$': '<rootDir>/config/css-stub.js',
     '@/(.*)': '<rootDir>/src/$1',

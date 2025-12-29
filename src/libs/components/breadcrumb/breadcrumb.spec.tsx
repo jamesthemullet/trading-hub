@@ -10,8 +10,10 @@ describe('Breadcrumb', () => {
       </Breadcrumb>
     );
 
-    expect(screen.getByText('You are here:')).toHaveStyle('left: -999px;');
-    expect(screen.getByText('You are here:').tagName).toBe('P');
+    const hiddenElement = screen.getByText('You are here:');
+    expect(hiddenElement).toBeInTheDocument();
+    expect(hiddenElement.tagName).toBe('P');
+    expect(hiddenElement).toHaveClass('visuallyHide');
   });
 
   it('renders with links', () => {
@@ -22,10 +24,7 @@ describe('Breadcrumb', () => {
     );
 
     const listItem = screen.getByText('Home').parentElement;
-    expect(listItem?.parentElement).toHaveStyle(`
-      margin: 0px 0.5rem;
-      padding: 0;
-    `);
+    expect(listItem?.parentElement).toHaveClass('list');
   });
 
   it('should pass aria-current attribute to the last element', () => {

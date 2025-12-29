@@ -47,6 +47,7 @@
     "date-fns": "4.1.0",
     "dayjs": "1.11.19",
     "deepmerge": "4.3.1",
+    "identity-obj-proxy": "3.0.0",
     "lodash": "4.17.21",
     "next": "16.1.1",
     "next-auth": "4.24.13",
