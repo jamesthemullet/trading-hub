@@ -1,0 +1,55 @@
+.accordionContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: var(--mns-spacing-2-5);
+}
+
+.contentWrapper {
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-1);
+  margin-bottom: var(--mns-spacing-2);
+}
+
+.summary {
+  display: flex;
+  gap: var(--mns-spacing-1-5);
+}
+
+.summaryBox {
+  width: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mns-spacing-1);
+  padding: var(--mns-spacing-1);
+  background-color: var(--color-accent-tertiary-tertiary-container);
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: var(--color-role-link-link);
+  cursor: pointer;
+  width: 200px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: var(--mns-spacing-1);
+}
+
+.animatedSvg {
+  user-select: none;
+  transition: transform 0.25s ease;
+  transform: rotate(0deg);
+}
+
+.animatedSvgOpen {
+  transform: rotate(180deg);
+}

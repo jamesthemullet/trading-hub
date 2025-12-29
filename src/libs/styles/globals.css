@@ -16,6 +16,7 @@ body {
   --mns-spacing-1: calc(var(--mns-spacing-unit) * 1);
   --mns-spacing-1-5: calc(var(--mns-spacing-unit) * 1.5);
   --mns-spacing-2: calc(var(--mns-spacing-unit) * 2);
+  --mns-spacing-2-5: calc(var(--mns-spacing-unit) * 2.5);
   --mns-spacing-3: calc(var(--mns-spacing-unit) * 3);
   --mns-spacing-4: calc(var(--mns-spacing-unit) * 4);
   --mns-spacing-5: calc(var(--mns-spacing-unit) * 5);

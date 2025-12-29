@@ -1,57 +1,9 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { Typography } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
 
-const AccordionWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-top: ${spacing(2.5)};
-`;
-const ContentWrapper = styled.div`
-  width: 100%;
-`;
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${spacing(1)};
-  margin-bottom: ${spacing(2)};
-`;
-
-const StyledToggleButton = styled.button`
-  background: none;
-  border: none;
-  color: ${color.role.link.link};
-  cursor: pointer;
-  width: 200px;
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  gap: ${spacing(1)};
-`;
-const StyledAnimatedSvg = styled.svg<{ isOpen: boolean }>`
-  user-select: none;
-  transition: transform 0.25s ease;
-  transform: rotate(${(props) => (props.isOpen ? '180deg' : '0deg')});
-`;
-
-const Summary = styled.div`
-  display: flex;
-  gap: ${spacing(1.5)};
-`;
-const SummaryBox = styled.div`
-  width: 92px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: ${spacing(1)};
-  padding: ${spacing(1)};
-  background-color: ${color.accent.tertiary.tertiaryContainer};
-`;
+import styles from './facets-panel-accordion.module.css';
 
 type FacetsPanelAccordionProps = {
   boostedCount: number;
@@ -67,54 +19,68 @@ export const FacetsPanelAccordion = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <AccordionWrapper>
-      <ContentWrapper>
+    <div className={styles.accordionContainer}>
+      <div className={styles.contentWrapper}>
         {isOpen && (
-          <Content>
+          <div className={styles.content}>
             <Typography
               data-testid="attribute-summary-label"
               variant="labelMedium"
             >
               Attribute Summary
             </Typography>
-            <Summary>
-              <SummaryBox data-testid="include-only-count">
+            <div className={styles.summary}>
+              <div
+                className={styles.summaryBox}
+                data-testid="include-only-count"
+              >
                 <Typography variant="headlineMedium">{boostedCount}</Typography>
                 <Typography variant="labelMedium">Include only</Typography>
-              </SummaryBox>
-              <SummaryBox data-testid="algo-control-count">
+              </div>
+              <div
+                className={styles.summaryBox}
+                data-testid="algo-control-count"
+              >
                 <Typography variant="headlineMedium">
                   {nonBoostedExcludedCount}
                 </Typography>
                 <Typography variant="labelMedium">Algo control</Typography>
-              </SummaryBox>
-              <SummaryBox data-testid="exclude-only-count">
+              </div>
+              <div
+                className={styles.summaryBox}
+                data-testid="exclude-only-count"
+              >
                 <Typography variant="headlineMedium">
                   {excludedCount}
                 </Typography>
                 <Typography variant="labelMedium">Exclude only</Typography>
-              </SummaryBox>
-            </Summary>
-          </Content>
+              </div>
+            </div>
+          </div>
         )}
-      </ContentWrapper>
+      </div>
 
-      <StyledToggleButton onClick={() => setIsOpen((open) => !open)}>
-        <StyledAnimatedSvg
+      <button
+        type="button"
+        className={styles.toggleButton}
+        onClick={() => setIsOpen((open) => !open)}
+      >
+        <svg
+          className={`${styles.animatedSvg} ${isOpen ? styles.animatedSvgOpen : ''}`}
           width="18"
           height="18"
           viewBox="0 0 18 18"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          isOpen={isOpen}
+          aria-hidden="true"
         >
           <path
             d="M12.4425 6.22119L9 9.65619L5.5575 6.22119L4.5 7.27869L9 11.7787L13.5 7.27869L12.4425 6.22119Z"
             fill={color.role.link.link}
           />
-        </StyledAnimatedSvg>
+        </svg>
         {isOpen ? 'Hide Summary' : 'View Summary'}
-      </StyledToggleButton>
-    </AccordionWrapper>
+      </button>
+    </div>
   );
 };
