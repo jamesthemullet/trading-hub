@@ -35,10 +35,6 @@ describe('SearchBox', () => {
     expect(input).toHaveValue('some value');
     expect(screen.getByRole('searchbox')).toHaveAttribute('id', 'searchId');
     expect(screen.getByRole('button')).toHaveAttribute('type', 'button');
-    expect(screen.getByLabelText('search products')).toHaveStyleRule(
-      'padding-right',
-      '2.5rem'
-    );
   });
 
   it('should call onChange with empty value when clear button is clicked', async () => {

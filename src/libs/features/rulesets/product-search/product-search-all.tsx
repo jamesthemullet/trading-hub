@@ -27,6 +27,7 @@ const TopContainer = styled.div`
   gap: 9px;
   align-items: stretch;
 `;
+
 const StyledSearch = styled(Search)<{
   rulesetType: 'global' | 'category' | 'search';
 }>`
@@ -192,6 +193,7 @@ export const ProductSearchAll = ({
             onChange={(e) => {
               handleSearch(e.target.value);
             }}
+            fullWidth
           />
         </TopContainer>
         <InfoContainer rulesetType={rulesetType}>
