@@ -1,49 +1,9 @@
-import styled from '@emotion/styled';
-
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
-
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Text } from '../typography/typography.styles';
-
-const MenuItem = styled.div`
-  width: 100%;
-`;
-
-const StyledLink = styled(Link, {
-  shouldForwardProp: (prop) => prop !== 'isActive',
-})<{ isActive: boolean }>`
-  text-decoration: none;
-  font-size: 12px;
-  border: none;
-  background-color: ${({ isActive }) =>
-    isActive
-      ? `${color.accent.tertiary.tertiary}`
-      : `${color.surface.onSurface}`};
-  display: flex;
-  min-height: 64px;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 11;
-  flex-direction: column;
-  padding: ${spacing(1)};
-  width: 100%;
-
-  p {
-    color: ${color.surface.surfaceContainer};
-  }
-
-  &:hover,
-  &:focus {
-    background-color: ${color.accent.tertiary.tertiary};
-    outline: none;
-  }
-`;
-
-const Icon = styled.img``;
+import { Typography } from '../typography/typography.styles';
+import styles from './navigation-menu.module.css';
 
 export type MenuItem = {
   title: string;
@@ -71,31 +31,32 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
           : pathname?.includes(menuItem.path);
 
         return (
-          <MenuItem key={menuItem.title}>
-            <StyledLink
-              isActive={isActive}
+          <div key={menuItem.title} className={styles.menuItem}>
+            <Link
+              className={styles.styledLink}
+              data-is-active={isActive}
               title={menuItem.title}
               aria-label={menuItem.title}
               href={menuItem.path}
             >
               {isActive ? (
-                <Icon
+                <Image
                   src={menuItem.activeIcon}
                   alt={menuItem.alt}
                   height={25}
                   width={25}
                 />
               ) : (
-                <Icon
+                <Image
                   src={menuItem.icon}
                   alt={menuItem.alt}
                   height={25}
                   width={25}
                 />
               )}
-              <Text>{menuItem.shortTitle}</Text>
-            </StyledLink>
-          </MenuItem>
+              <Typography variant="bodySmall">{menuItem.shortTitle}</Typography>
+            </Link>
+          </div>
         );
       })}
     </>

@@ -1,0 +1,31 @@
+.menuItem {
+  width: 100%;
+}
+
+.styledLink {
+  text-decoration: none;
+  background-color: var(--color-surface-on-surface);
+  display: flex;
+  min-height: 64px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 11;
+  flex-direction: column;
+  padding: var(--mns-spacing-1);
+  width: 100%;
+
+  & p {
+    color: var(--color-surface-surface-container);
+  }
+
+  &:hover,
+  &:focus {
+    background-color: var(--color-accent-tertiary-tertiary);
+    outline: none;
+  }
+
+  &[data-is-active='true'] {
+    background-color: var(--color-accent-tertiary-tertiary);
+  }
+}

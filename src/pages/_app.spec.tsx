@@ -20,6 +20,14 @@ jest.mock('next/navigation', () => ({
   usePathname: jest.fn().mockReturnValue('/category/rulesets'),
 }));
 
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: any) => {
+    // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
+    return <img {...props} />;
+  },
+}));
+
 jest.mock('react-cookie', () => {
   const originalModule = jest.requireActual('react-cookie');
   return {
@@ -90,7 +98,7 @@ describe('App', () => {
     expect(domainScript).not.toBeInTheDocument();
   });
 
-  it('should actually load OneTrust scripts in App component when feature flag is enabled', () => {
+  it('should load OneTrust scripts in App component when feature flag is enabled', () => {
     jest
       .mocked(useCookies)
       .mockReturnValue([

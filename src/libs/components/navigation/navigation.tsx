@@ -1,57 +1,11 @@
-import styled from '@emotion/styled';
-
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
-
+import Image from 'next/image';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import type { MenuItem } from '../navigation-menu/navigation-menu';
 import { NavigationMenu } from '../navigation-menu/navigation-menu';
-import { Text } from '../typography/typography.styles';
-
-const NavigationWrapper = styled.nav`
-  background-color: ${color.surface.onSurface};
-  z-index: 12;
-  position: fixed;
-`;
-
-const LogoWrapper = styled.div`
-  width: 100%;
-  display: block;
-`;
-
-const List = styled.ul`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  height: calc(100vh - 60px);
-`;
-
-const ListItem = styled.li`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  &:last-of-type {
-    margin-top: auto;
-    flex-grow: 1;
-    justify-content: flex-end;
-    padding-bottom: ${spacing(2)};
-  }
-`;
-
-const Logo = styled.img`
-  margin: ${spacing(3)} auto;
-  position: relative;
-  display: block;
-`;
-
-const StyledLink = styled(Link)`
-  min-height: 24px;
-  padding: ${spacing(1)};
-`;
+import { Typography } from '../typography/typography.styles';
+import styles from './navigation.module.css';
 
 export const Navigation = () => {
   const session = useSession();
@@ -94,40 +48,34 @@ export const Navigation = () => {
   ];
 
   return (
-    <NavigationWrapper>
-      <LogoWrapper>
-        <Logo
+    <nav className={styles.navigationWrapper}>
+      <div>
+        <Image
+          className={styles.logo}
           src="/trading-hub/asset/logo-no-date.svg"
           alt="M&S"
           height={18}
           width={47}
         />
-      </LogoWrapper>
-      <List>
-        <ListItem>
+      </div>
+      <ul className={styles.navigationList}>
+        <li className={styles.navigationListItem}>
           <NavigationMenu menuItems={menuItems} />
-        </ListItem>
-        <ListItem>
-          <StyledLink
+        </li>
+        <li className={styles.navigationListItem}>
+          <Link
+            className={styles.link}
             href="/"
             onClick={() => (isLoggedIn ? signOut() : signIn())}
             style={{ textDecoration: 'none' }}
             prefetch
           >
-            <Text
-              style={{
-                color: '#fff',
-                zIndex: 100,
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
+            <Typography variant="bodySmall">
               {isLoggedIn ? 'Sign out' : 'Sign in'}
-            </Text>
-          </StyledLink>
-        </ListItem>
-      </List>
-    </NavigationWrapper>
+            </Typography>
+          </Link>
+        </li>
+      </ul>
+    </nav>
   );
 };
