@@ -3,7 +3,6 @@ import { Modal } from '@mantine/core';
 
 import { Button, Text, Typography } from '@/libs/components';
 import {
-  FlexColumnCol,
   GlobalFacetAttributesPageMergedValue,
   RemoveMergedFacet,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
@@ -240,7 +239,7 @@ export const GlobalFacetAttributesEditModal = ({
                   </AttributesContainer>
                 </Col>
 
-                <FlexColumnCol>
+                <Col>
                   <InputContainer showErrorState={!!error}>
                     <InputDeprecated
                       id={`Edit ${globalAttributesLocalState.currentMerge.displayValue} input field`}
@@ -268,7 +267,7 @@ export const GlobalFacetAttributesEditModal = ({
                   </InputContainer>
 
                   {!!error && <StyledError>{error}</StyledError>}
-                </FlexColumnCol>
+                </Col>
               </EditFacetAttributesModalTableRow>
             </EditFacetAttributesModalTable>
           </ModalContainer>

@@ -22,8 +22,6 @@ import {
   AttributesModalHeader,
   AttributeWrapper,
   BodyContainer,
-  Col,
-  FlexColumnCol,
   MergeAndSearchContainer,
   OrderArrowsContainer,
   SkeletonRow,
@@ -34,7 +32,8 @@ import {
   ModalContainer,
   ModalFooter,
 } from '@/libs/components/modals/modal.styles';
-import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { SearchCategoryFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -201,7 +200,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
         const localOrder = localOrders[displayValue] ?? order;
 
         return (
-          <FacetAttributeValuesTableRow
+          <SearchCategoryFacetAttributeValuesTableRow
             key={`${displayType}-${displayValue}`}
             isPinned={displayType === 'included'}
             isExcluded={displayType === 'excluded'}
@@ -236,11 +235,11 @@ export const SearchAndCategoryFacetsPanelModal = ({
               )}
             </Col>
 
-            <FlexColumnCol>
+            <Col>
               <Text data-testid={`Label for ${displayValue}`}>
                 {displayValue}
               </Text>
-            </FlexColumnCol>
+            </Col>
 
             <Col>
               {displayType === 'included' && (
@@ -290,7 +289,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
                 ariaLabel="Select to set as included, excluded or algo control"
               />
             </Col>
-          </FacetAttributeValuesTableRow>
+          </SearchCategoryFacetAttributeValuesTableRow>
         );
       });
     },
@@ -357,7 +356,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
               </MergeAndSearchContainer>
 
               <ModalAttributesTable>
-                <FacetAttributeValuesTableRow>
+                <SearchCategoryFacetAttributeValuesTableRow>
                   {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                     <Col key={`add-facet-modal-column-${label}`}>
                       <Typography isStrong variant="bodySmall">
@@ -365,7 +364,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
                       </Typography>
                     </Col>
                   ))}
-                </FacetAttributeValuesTableRow>
+                </SearchCategoryFacetAttributeValuesTableRow>
               </ModalAttributesTable>
             </AttributesModalHeader>
 

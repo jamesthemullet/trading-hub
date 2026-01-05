@@ -87,6 +87,7 @@ export const InputDeprecated = forwardRef<HTMLInputElement, InputProps>(
             </StyledLabel>
           </StyledLabelWrapper>
         )}
+
         <StyledInput
           ref={ref}
           name={name}

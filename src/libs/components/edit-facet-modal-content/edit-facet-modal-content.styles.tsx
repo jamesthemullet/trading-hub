@@ -2,17 +2,7 @@ import styled from '@emotion/styled';
 import { Skeleton } from '@mantine/core';
 
 import { ModalStickyHeader } from '@/libs/components/modals/modal.styles';
-import { TableCol } from '@/libs/containers/shared/table/table.styles';
 import { spacing } from '@/libs/utils/spacing';
-
-export const Col = styled(TableCol)`
-  padding: 0;
-`;
-
-export const FlexColumnCol = styled(Col)`
-  display: flex;
-  flex-direction: column;
-`;
 
 export const AttributesModalHeader = styled(ModalStickyHeader)`
   padding: ${spacing(3)};
@@ -79,11 +69,6 @@ export const RemoveMergedFacet = styled.button`
   height: 18px;
   display: inline-block;
   border: none;
-`;
-
-export const HandleCol = styled(Col)`
-  display: flex;
-  justify-content: flex-end;
 `;
 
 export const DragHandleButton = styled.button`

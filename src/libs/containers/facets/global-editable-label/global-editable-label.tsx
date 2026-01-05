@@ -5,9 +5,9 @@ import type {
   MerchandisingGlobalOnlyFacetConfig,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import { FlexColumnCol } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { Loader } from '@/libs/components/loader/loader';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
+import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import type {
   FormattedRow,
@@ -131,7 +131,7 @@ export const GlobalEditableLabel = ({
   };
 
   return (
-    <FlexColumnCol>
+    <Col>
       <EditableLabel
         displayValue={displayName}
         onCancel={() => handleError('')}
@@ -163,6 +163,6 @@ export const GlobalEditableLabel = ({
         writeEnabled={writeEnabled}
       />
       {isAwaitingUpdate && <Loader isInModal />}
-    </FlexColumnCol>
+    </Col>
   );
 };

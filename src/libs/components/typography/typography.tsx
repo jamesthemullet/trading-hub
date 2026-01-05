@@ -29,7 +29,8 @@ type TypographyProps = {
     | 'p'
     | 'span'
     | 'label'
-    | 'output';
+    | 'output'
+    | 'time';
   align?: 'left' | 'right' | 'center';
   className?: string;
   role?: string;

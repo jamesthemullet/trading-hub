@@ -29,7 +29,6 @@ import {
 import {
   AttributesModalHeader,
   BodyContainer,
-  Col,
   MergeAndSearchContainer,
   SkeletonRow,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
@@ -42,7 +41,8 @@ import { GlobalFacetAttribute } from '@/libs/containers';
 import { GlobalArrowButtons } from '@/libs/containers/facets/global-arrow-buttons/global-arrow-buttons';
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
-import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -390,7 +390,7 @@ export const GlobalFacetPanelModalContent = ({
           const localOrder = localOrders[displayName] ?? order;
 
           return (
-            <FacetAttributeValuesTableRow
+            <GlobalFacetAttributeValuesTableRow
               key={`${displayType}-${displayName}`}
               isPinned={displayType === 'included'}
               isExcluded={displayType === 'excluded'}
@@ -404,6 +404,7 @@ export const GlobalFacetPanelModalContent = ({
                 handleRemoveFromMerge={handleRemoveFromMerge}
                 dispatch={dispatch}
                 writeEnabled={writeEnabled}
+                displayType={displayType}
               />
 
               <div className={styles.facetOrderInput}>
@@ -470,7 +471,7 @@ export const GlobalFacetPanelModalContent = ({
                   ariaLabel="Select to set as included, excluded or algo control"
                 />
               </Col>
-            </FacetAttributeValuesTableRow>
+            </GlobalFacetAttributeValuesTableRow>
           );
         }
       );
@@ -569,7 +570,7 @@ export const GlobalFacetPanelModalContent = ({
           </MergeAndSearchContainer>
 
           <ModalAttributesTable>
-            <FacetAttributeValuesTableRow>
+            <GlobalFacetAttributeValuesTableRow>
               {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                 <Col key={`add-facet-modal-column-${label}`}>
                   {label ? (
@@ -606,7 +607,7 @@ export const GlobalFacetPanelModalContent = ({
                   )}
                 </Col>
               ))}
-            </FacetAttributeValuesTableRow>
+            </GlobalFacetAttributeValuesTableRow>
           </ModalAttributesTable>
         </AttributesModalHeader>
 

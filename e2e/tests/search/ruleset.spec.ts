@@ -103,7 +103,7 @@ test.describe('Keyword search', () => {
   });
 
   test('enables a ruleset', async ({ page }) => {
-    await expect(page.getByTitle('black hiking boots').first()).toBeVisible();
+    await expect(page.getByText('black hiking boots').first()).toBeVisible();
 
     await page.getByTitle('Toggle').first().locator('span').click();
 
@@ -113,7 +113,7 @@ test.describe('Keyword search', () => {
   });
 
   test('previews a ruleset', async ({ page }) => {
-    await expect(page.getByTitle('black hiking boots').first()).toBeVisible();
+    await expect(page.getByText('black hiking boots').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
@@ -134,7 +134,7 @@ test.describe('Keyword search', () => {
   });
 
   test('changes the preview when the country changes', async ({ page }) => {
-    await expect(page.getByTitle('black hiking boots').first()).toBeVisible();
+    await expect(page.getByText('black hiking boots').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();

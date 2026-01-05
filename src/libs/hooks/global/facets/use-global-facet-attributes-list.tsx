@@ -6,18 +6,14 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import { CombinedDropdown } from '@/libs/components';
-import {
-  Col,
-  DragHandleButton,
-  HandleCol,
-} from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
+import { CombinedDropdown, FacetOrderInput } from '@/libs/components';
+import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { GlobalFacetAttribute } from '@/libs/containers';
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
-import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
@@ -172,7 +168,7 @@ export const useGlobalFacetAttributesList = ({
             sortableProps?: SortableRowRenderArgs,
             key?: string
           ) => (
-            <FacetAttributeValuesTableRow
+            <GlobalFacetAttributeValuesTableRow
               key={key}
               ref={sortableProps?.setNodeRef}
               style={sortableProps?.style}
@@ -189,6 +185,20 @@ export const useGlobalFacetAttributesList = ({
                 handleRemoveFromMerge={handleRemoveFromMerge}
                 dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                 writeEnabled={writeEnabled}
+                displayType={displayType}
+                order={order}
+                localOrder={localOrder}
+                inputRef={
+                  /* istanbul ignore next */ (el) => {
+                    if (el) {
+                      // eslint-disable-next-line functional/immutable-data
+                      inputRefs.current[displayName] = el;
+                    }
+                  }
+                }
+                onInputChange={handleInputChange}
+                onInputBlur={handleInputBlur}
+                onInputKeyDown={handleInputKeyDown}
               />
               <div className={styles.facetOrderInput}>
                 {displayType === 'included' && order && (
@@ -196,12 +206,14 @@ export const useGlobalFacetAttributesList = ({
                     displayValue={displayName}
                     order={order}
                     localOrder={localOrder}
-                    inputRef={(el) => {
-                      if (el) {
-                        // eslint-disable-next-line functional/immutable-data
-                        inputRefs.current[displayName] = el;
+                    inputRef={
+                      /* istanbul ignore next */ (el) => {
+                        if (el) {
+                          // eslint-disable-next-line functional/immutable-data
+                          inputRefs.current[displayName] = el;
+                        }
                       }
-                    }}
+                    }
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
                     onInputKeyDown={handleInputKeyDown}
@@ -240,7 +252,7 @@ export const useGlobalFacetAttributesList = ({
                 />
               </Col>
 
-              <HandleCol aria-hidden={displayType !== 'included'}>
+              <Col aria-hidden={displayType !== 'included'}>
                 {displayType === 'included' ? (
                   <DragHandleButton
                     type="button"
@@ -259,8 +271,8 @@ export const useGlobalFacetAttributesList = ({
                     />
                   </DragHandleButton>
                 ) : null}
-              </HandleCol>
-            </FacetAttributeValuesTableRow>
+              </Col>
+            </GlobalFacetAttributeValuesTableRow>
           );
 
           if (displayType === 'included') {

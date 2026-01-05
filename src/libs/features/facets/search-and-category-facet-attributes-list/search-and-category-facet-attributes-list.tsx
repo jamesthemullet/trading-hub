@@ -4,14 +4,13 @@ import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/
 import { CombinedDropdown, Text, Typography } from '@/libs/components';
 import {
   AttributeWrapper,
-  Col,
   DragHandleButton,
-  FlexColumnCol,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
-import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { SearchCategoryFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
@@ -34,7 +33,6 @@ import Image from 'next/image';
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null | false;
 }[] = [
-  { label: null },
   {
     label: 'Ranking',
   },
@@ -155,7 +153,7 @@ export const SearchAndCategoryFacetAttributesList = ({
           !!searchQuery || !writeEnabled || filteredRows.length <= 1;
 
         const renderRow = (sortableProps?: SortableRowRenderArgs) => (
-          <FacetAttributeValuesTableRow
+          <SearchCategoryFacetAttributeValuesTableRow
             key={sortableProps ? undefined : rowKey}
             ref={sortableProps?.setNodeRef}
             style={sortableProps?.style}
@@ -164,7 +162,6 @@ export const SearchAndCategoryFacetAttributesList = ({
             isExcluded={displayType === 'excluded'}
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
           >
-            <Col />
             <Col>
               {displayType === 'included' && order !== undefined && (
                 <FacetOrderInput
@@ -191,11 +188,11 @@ export const SearchAndCategoryFacetAttributesList = ({
               </AttributeWrapper>
             </Col>
 
-            <FlexColumnCol>
+            <Col>
               <Text data-testid={`Label for ${displayValue}`}>
                 {displayValue}
               </Text>
-            </FlexColumnCol>
+            </Col>
 
             <Col>
               <CombinedDropdown
@@ -234,7 +231,7 @@ export const SearchAndCategoryFacetAttributesList = ({
                 </DragHandleButton>
               )}
             </Col>
-          </FacetAttributeValuesTableRow>
+          </SearchCategoryFacetAttributeValuesTableRow>
         );
 
         if (displayType === 'included') {
@@ -295,7 +292,7 @@ export const SearchAndCategoryFacetAttributesList = ({
 
   return (
     <>
-      <FacetAttributeValuesTableRow isHeading>
+      <SearchCategoryFacetAttributeValuesTableRow>
         {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
           <Col key={`add-facet-modal-column-${label}`}>
             <Typography isStrong variant="bodySmall">
@@ -303,7 +300,7 @@ export const SearchAndCategoryFacetAttributesList = ({
             </Typography>
           </Col>
         ))}
-      </FacetAttributeValuesTableRow>
+      </SearchCategoryFacetAttributeValuesTableRow>
 
       <DndContext sensors={sensors} onDragEnd={handleBoostedDragEnd}>
         <SortableContext

@@ -1,12 +1,10 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Modal, Skeleton } from '@mantine/core';
 
-import { Button, Typography } from '@/libs/components';
-import { Menu } from '@/libs/components/dropdown/dropdown.styles';
+import { Button } from '@/libs/components';
 import { useHistoricalLogOfChangesFlag } from '@/libs/components/feature-flag/feature-flag';
 import { Toggle } from '@/libs/components/toggle/toggle';
-import { Header3, Text } from '@/libs/components/typography/typography.styles';
+import { Typography } from '@/libs/components/typography/typography';
 import {
   getFacetRoute,
   getHistoryRoute,
@@ -17,210 +15,18 @@ import { useOnOutsideClick } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
-import { mediaQuery } from '@/libs/utils/media-query';
-import { sizing } from '@/libs/utils/sizing';
-import { spacing } from '@/libs/utils/spacing';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
+import Link from 'next/link';
 
-import {
-  DropdownOptions,
-  TableActions,
-  TableCol,
-  TableContainer,
-  TableDropdown,
-  TableLink,
-  TableRow,
-} from './table.styles';
-
-const totalOfAllPossibleColumns = [
-  'Identifier',
-  'Breadcrumb',
-  'Schedule',
-  'Influence',
-  'Enable',
-  'Last Changed',
-  'User',
-  'Actions',
-].length;
-
-const Row = styled(TableRow)<{
-  numColumns: number;
-  showBreadcrumbColumn?: boolean;
-}>`
-  grid-template-columns: minmax(140px, 2fr) 90px 90px 120px 150px 130px;
-  min-height: 83px;
-
-  ${mediaQuery('xxl')} {
-    ${({ numColumns, showBreadcrumbColumn }) =>
-      `grid-template-columns: ${
-        ((numColumns === totalOfAllPossibleColumns - 1 &&
-          showBreadcrumbColumn) ||
-          numColumns === totalOfAllPossibleColumns) &&
-        'minmax(140px, 2fr) minmax(120px, 2fr) 90px 90px 120px 150px 130px;'
-      };`}
-  }
-
-  ${mediaQuery('xxxl')} {
-    ${({ numColumns }) => {
-      if (numColumns === totalOfAllPossibleColumns - 1) {
-        return 'grid-template-columns: minmax(140px, 2fr) minmax(140px, 2fr) 90px 90px 120px 150px 130px;';
-      }
-      if (numColumns === totalOfAllPossibleColumns) {
-        return 'grid-template-columns: minmax(140px, 2fr) minmax(140px, 2fr) minmax(140px, 2fr) 90px 90px 120px 150px 130px;';
-      }
-      return '';
-    }}
-  }
-`;
-
-const FullWidthRow = styled.div`
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: end;
-  margin-right: ${spacing(2)};
-  margin-bottom: ${spacing(1)};
-  align-items: end;
-
-  img {
-    margin-right: ${spacing(1)};
-  }
-
-  ${mediaQuery('xxl')} {
-    display: none;
-  }
-`;
-
-const Divider = styled.span`
-  border-bottom: solid 1px #000;
-  width: 100%;
-  display: inline-block;
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: right;
-
-  button {
-    width: auto;
-    margin-left: ${spacing(2)};
-  }
-`;
-
-const FirstColumn = styled(TableCol)`
-  display: flex;
-  flex-direction: column;
-
-  ${mediaQuery('xxl')} {
-    p:not(:first-of-type) {
-      display: none;
-    }
-  }
-`;
-
-const BreadcrumbColumn = styled(TableCol)`
-  display: none;
-
-  ${mediaQuery('xxl')} {
-    display: block;
-  }
-`;
-
-const DynamicTableCol = styled(TableCol)`
-  &[data-heading='Breadcrumb'] {
-    display: none;
-
-    ${mediaQuery('xxl')} {
-      display: block;
-    }
-  }
-
-  &[data-heading='Schedule'] {
-    display: none;
-
-    ${mediaQuery('xxxl')} {
-      display: block;
-    }
-  }
-`;
-
-const StyledUrlText = styled(Text)`
-  padding-top: ${spacing(1)};
-  font-style: italic;
-`;
-
-const CompactUrlText = styled(StyledUrlText)`
-  ${mediaQuery('xxxl')} {
-    display: none;
-  }
-`;
-
-const SchedulingDetailLeftSide = styled.div`
-  display: none;
-
-  ${mediaQuery('xxl')} {
-    display: flex;
-    align-items: end;
-    padding-top: ${spacing(1)};
-
-    img {
-      margin-right: ${spacing(1)};
-    }
-  }
-
-  ${mediaQuery('xxxl')} {
-    display: none;
-  }
-`;
-
-const SchedulingColumn = styled(TableCol)`
-  display: none;
-
-  ${mediaQuery('xxxl')} {
-    display: flex;
-    align-items: center;
-
-    img {
-      margin-right: ${spacing(1)};
-    }
-  }
-`;
-
-const FlagAndIdentifier = styled.div`
-  display: flex;
-  align-items: center;
-
-  img {
-    margin-right: ${spacing(1)};
-  }
-`;
-
-const NoOverflowText = styled(Text)`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const ArrowContainer = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  width: ${sizing(5)};
-  box-sizing: border-box;
-  cursor: pointer;
-  border: none;
-  background: none;
-`;
+import styles from './table.module.css';
 
 type Row = {
   id: string;
   identifier: string;
   isEnabled: boolean;
   lastChanged: {
-    /** @format date-time */
     date: string;
     user: string;
   };
@@ -281,12 +87,6 @@ export const DataTable = ({
     handler: onClose,
   });
 
-  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape' && optionToggle !== '') {
-      setOptionToggle('');
-    }
-  };
-
   const handleOptionToggle = (id: string) => {
     setOptionToggle(optionToggle === id ? '' : id);
   };
@@ -330,59 +130,59 @@ export const DataTable = ({
 
   return (
     <>
-      <TableContainer
-        data-testid={isLoading ? 'datatable-skeleton' : 'datatable'}
-      >
-        <Row
-          style={{ color: '#8a8a8a', fontSize: '0.9em' }}
-          numColumns={headings.length}
-          showBreadcrumbColumn={showBreadcrumbColumn}
+      <div data-testid={isLoading ? 'datatable-skeleton' : 'datatable'}>
+        <div
+          className={styles.row}
+          data-num-columns={headings.length}
+          data-show-breadcrumb={showBreadcrumbColumn}
         >
           {headings.map((heading) => (
-            <DynamicTableCol key={heading} data-heading={heading}>
+            <div
+              key={heading}
+              className={styles.dynamicTableCol}
+              data-heading={heading}
+            >
               <Typography isStrong variant="bodySmall">
                 {heading}
               </Typography>
-            </DynamicTableCol>
+            </div>
           ))}
-        </Row>
+        </div>
         {isLoading
           ? Array.from({ length: Number(currentPageSize || 10) }).map(
               (_, index) => {
                 return (
-                  <Row
+                  <div
+                    className={styles.row}
                     data-testid={`datatable-skeleton-row-${index}`}
                     key={`skeleton-row-${index}`}
-                    numColumns={headings.length}
+                    data-num-columns={headings.length}
                   >
-                    <FirstColumn aria-busy="true">
+                    <div className={styles.firstColumn} aria-busy="true">
                       <Skeleton height={48} width="100%" />
-                    </FirstColumn>
-                    <BreadcrumbColumn aria-busy="true">
+                    </div>
+                    <div className={styles.breadcrumbColumn} aria-busy="true">
                       <Skeleton height={48} width="100%" />
-                    </BreadcrumbColumn>
-                    <SchedulingColumn aria-busy="true">
+                    </div>
+                    <div className={styles.schedulingColumn} aria-busy="true">
                       <Skeleton height={48} width="100%" />
-                    </SchedulingColumn>
-                    <TableCol aria-busy="true">
+                    </div>
+                    <div className={styles.tableCol} aria-busy="true">
                       <Skeleton height={48} width="100%" />
-                    </TableCol>
-                    <TableCol aria-busy="true">
+                    </div>
+                    <div className={styles.tableCol} aria-busy="true">
                       <Skeleton height={48} width="100%" />
-                    </TableCol>
-                    <TableCol aria-busy="true">
+                    </div>
+                    <div className={styles.tableCol} aria-busy="true">
                       <Skeleton height={48} width="100%" />
-                    </TableCol>
-                    <TableCol aria-busy="true">
+                    </div>
+                    <div className={styles.tableCol} aria-busy="true">
                       <Skeleton height={48} width="100%" />
-                    </TableCol>
-                    <TableCol
-                      style={{ padding: '12px 0 16px' }}
-                      aria-busy="true"
-                    >
+                    </div>
+                    <div className={styles.tableCol} aria-busy="true">
                       <Skeleton height={48} width={113.3} />
-                    </TableCol>
-                  </Row>
+                    </div>
+                  </div>
                 );
               }
             )
@@ -439,13 +239,14 @@ export const DataTable = ({
                 const formattedIdentifier = formatHTMLStrings(identifier)!;
 
                 return (
-                  <Row
+                  <div
+                    className={styles.row}
                     key={id}
-                    numColumns={headings.length}
-                    showBreadcrumbColumn={showBreadcrumbColumn}
+                    data-num-columns={headings.length}
+                    data-show-breadcrumb={showBreadcrumbColumn}
                   >
-                    <FirstColumn>
-                      <FlagAndIdentifier>
+                    <div className={styles.firstColumn}>
+                      <div className={styles.flagAndIdentifier}>
                         {countryCode &&
                           getFlagFromCountryCode(countryCode).map(
                             ({ flags, alt }, index) => (
@@ -458,47 +259,61 @@ export const DataTable = ({
                               />
                             )
                           )}
-                        <NoOverflowText title={formattedIdentifier}>
+                        <Typography
+                          as="span"
+                          variant="bodySmall"
+                          className={styles.noOverflowText}
+                        >
                           {formatByQuery(formattedIdentifier)}
-                        </NoOverflowText>
-                      </FlagAndIdentifier>
+                        </Typography>
+                      </div>
                       {categoryPlpUrl && (
-                        <CompactUrlText title={categoryPlpUrl}>
+                        <Typography
+                          as="span"
+                          variant="bodySmall"
+                          className={styles.compactUrlText}
+                        >
                           {categoryPlpUrl}
-                        </CompactUrlText>
+                        </Typography>
                       )}
                       {startDate &&
                         headings.filter((heading) => heading === 'Schedule')
                           .length > 0 && (
-                          <SchedulingDetailLeftSide>
+                          <div className={styles.schedulingDetailLeftSide}>
                             <Image
                               alt=""
                               src="/trading-hub/asset/icon-calendar.svg"
                               width={24}
                               height={24}
                             />
-                            <Text as="time">
+                            <Typography as="span" variant="bodyMedium">
                               {format(new Date(startDate), 'dd MMM yyyy')}
                               {endDate
                                 ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
                                 : ' - No end date'}
-                            </Text>
-                          </SchedulingDetailLeftSide>
+                            </Typography>
+                          </div>
                         )}
-                    </FirstColumn>
+                    </div>
                     {headings.filter((heading) => heading === 'Breadcrumb')
                       .length > 0 && (
-                      <BreadcrumbColumn>
+                      <div className={styles.breadcrumbColumn}>
                         {categoryPlpUrl && (
-                          <StyledUrlText title={categoryPlpUrl}>
-                            {categoryPlpUrl}
-                          </StyledUrlText>
+                          <span title={categoryPlpUrl}>
+                            <Typography
+                              as="span"
+                              variant="bodyMedium"
+                              className={styles.styledUrlText}
+                            >
+                              {categoryPlpUrl}
+                            </Typography>
+                          </span>
                         )}
-                      </BreadcrumbColumn>
+                      </div>
                     )}
                     {headings.filter((heading) => heading === 'Schedule')
                       .length > 0 && (
-                      <SchedulingColumn>
+                      <div className={styles.schedulingColumn}>
                         {startDate ? (
                           <>
                             <Image
@@ -507,20 +322,24 @@ export const DataTable = ({
                               width={24}
                               height={24}
                             />
-                            <Text>
+                            <Typography as="span" variant="bodySmall">
                               {format(new Date(startDate), 'dd MMM yyyy')}
                               {endDate
                                 ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
                                 : ' - No end date'}
-                            </Text>
+                            </Typography>
                           </>
                         ) : (
-                          <Text>All time</Text>
+                          <Typography as="span" variant="bodyMedium">
+                            All time
+                          </Typography>
                         )}
-                      </SchedulingColumn>
+                      </div>
                     )}
-                    <TableCol>{countryCode?.replace('_', '/')}</TableCol>
-                    <TableCol>
+                    <div className={styles.tableCol}>
+                      {countryCode?.replace('_', '/')}
+                    </div>
+                    <div className={styles.tableCol}>
                       <Toggle
                         checked={isEnabled}
                         disabled={!writeEnabled}
@@ -536,23 +355,30 @@ export const DataTable = ({
                           }
                         }}
                       />
-                    </TableCol>
-                    <TableCol>
-                      <Text>
+                    </div>
+                    <div className={styles.tableCol}>
+                      <Typography as="span" variant="bodySmall">
                         {format(new Date(lastChanged.date), 'MMM dd, yyyy')}
-                      </Text>
-                    </TableCol>
-                    <TableCol>
-                      <Text>{formatByQuery(lastChanged.user)}</Text>
-                    </TableCol>
-                    <TableCol style={{ padding: '12px 0 0' }}>
-                      <TableActions onKeyDown={handleOnKeyDown}>
-                        <ArrowContainer
+                      </Typography>
+                    </div>
+                    <div className={styles.tableCol}>
+                      <Typography as="span" variant="bodySmall">
+                        {formatByQuery(lastChanged.user)}
+                      </Typography>
+                    </div>
+                    <div className={styles.tableCol}>
+                      <div className={styles.tableActions}>
+                        <button
+                          type="button"
+                          className={styles.arrowContainer}
                           onKeyDown={(e) => {
                             // istanbul ignore else
                             if (e.key === 'Enter') {
                               e.stopPropagation();
                               handleOptionToggle(id);
+                            }
+                            if (e.key === 'Escape' && optionToggle !== '') {
+                              setOptionToggle('');
                             }
                           }}
                           onMouseDown={(e) => {
@@ -561,13 +387,17 @@ export const DataTable = ({
                           }}
                           title="More options"
                         >
-                          <Menu />
-                        </ArrowContainer>
+                          <span className={styles.menuButton} />
+                        </button>
                         {isOptionDropdownOpen && (
-                          <DropdownOptions ref={dropdownWrapperRef}>
+                          <div
+                            className={styles.dropdownOptions}
+                            ref={dropdownWrapperRef}
+                          >
                             {ruleType !== 'redirect' && (
                               <>
-                                <TableLink
+                                <Link
+                                  className={styles.tableLink}
                                   href={getRulesetEditRoute(ruleType, id)}
                                   onClick={() =>
                                     track({
@@ -576,8 +406,9 @@ export const DataTable = ({
                                   }
                                 >
                                   {editViewText} ranking rule
-                                </TableLink>
-                                <TableLink
+                                </Link>
+                                <Link
+                                  className={styles.tableLink}
                                   href={getFacetRoute(
                                     basePath.replace('/', '') as
                                       | 'category'
@@ -593,11 +424,12 @@ export const DataTable = ({
                                   }
                                 >
                                   {editViewText} facet rule
-                                </TableLink>
+                                </Link>
                               </>
                             )}
                             {ruleType === 'redirect' && (
-                              <TableLink
+                              <Link
+                                className={styles.tableLink}
                                 href={ROUTES.SEARCH.REDIRECTS.EDIT(id)}
                                 onClick={() =>
                                   track({
@@ -606,10 +438,11 @@ export const DataTable = ({
                                 }
                               >
                                 {editViewText} redirect rule
-                              </TableLink>
+                              </Link>
                             )}
                             {showHistoricalLogOfChanges && (
-                              <TableLink
+                              <Link
+                                className={styles.tableLink}
                                 title="view history"
                                 href={getHistoryRoute(
                                   ruleType,
@@ -618,10 +451,12 @@ export const DataTable = ({
                                 )}
                               >
                                 View history
-                              </TableLink>
+                              </Link>
                             )}
                             {writeEnabled && (
-                              <TableDropdown
+                              <button
+                                className={styles.tableDropdown}
+                                type="submit"
                                 title="Delete"
                                 onMouseDown={onConfirmDelete}
                                 onKeyDown={(e) => {
@@ -633,11 +468,12 @@ export const DataTable = ({
                                 data-testid="Delete rule via dropdown"
                               >
                                 Delete
-                              </TableDropdown>
+                              </button>
                             )}
                             {writeEnabled && !!onDuplicate && (
-                              <TableDropdown
-                                title="Duplicate"
+                              <button
+                                className={styles.tableDropdown}
+                                type="submit"
                                 onMouseDown={onConfirmDuplicate}
                                 onKeyDown={(e) => {
                                   // istanbul ignore else
@@ -647,13 +483,13 @@ export const DataTable = ({
                                 }}
                               >
                                 Duplicate
-                              </TableDropdown>
+                              </button>
                             )}
-                          </DropdownOptions>
+                          </div>
                         )}
-                      </TableActions>
-                    </TableCol>
-                    <FullWidthRow>
+                      </div>
+                    </div>
+                    <div className={styles.fullWidthRow}>
                       {startDate && (
                         <>
                           <Image
@@ -662,20 +498,20 @@ export const DataTable = ({
                             width={24}
                             height={24}
                           />
-                          <Text as="time">
+                          <Typography as="time" variant="bodySmall">
                             {format(new Date(startDate), 'dd MMM yyyy')}
                             {endDate
                               ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
                               : ' - No end date'}
-                          </Text>
+                          </Typography>
                         </>
                       )}
-                    </FullWidthRow>
-                  </Row>
+                    </div>
+                  </div>
                 );
               }
             )}
-      </TableContainer>
+      </div>
 
       <Modal.Root
         centered
@@ -692,27 +528,27 @@ export const DataTable = ({
         <Modal.Overlay blur={3} />
         <Modal.Content>
           <Modal.Body>
-            <Header3>
+            <Typography as="h3" withMargin variant="bodyMedium">
               {ruleSetEditOption === 'delete'
                 ? 'Do you want to delete this rule?'
                 : `Create a duplicate ${ruleType === 'redirect' ? 'redirect' : ''} rule`}
-            </Header3>
+            </Typography>
 
             {ruleSetEditOption === 'duplicate' && (
               <>
-                <Text withMargin>
+                <Typography withMargin variant="bodyMedium">
                   Are you sure you want to create a duplicate of {ruleName}?
-                </Text>
-                <Text>
+                </Typography>
+                <Typography variant="bodyMedium">
                   This duplicate will supersede the current rule when it becomes
                   active.
-                </Text>
+                </Typography>
               </>
             )}
 
-            <Divider />
+            <span className={styles.divider} />
 
-            <Buttons>
+            <div className={styles.buttons}>
               <Button
                 onClick={() => setIsModalOpen(false)}
                 theme="tertiary"
@@ -753,7 +589,7 @@ export const DataTable = ({
                   Confirm
                 </Button>
               )}
-            </Buttons>
+            </div>
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>

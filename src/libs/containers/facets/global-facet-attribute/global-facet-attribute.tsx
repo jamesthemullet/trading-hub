@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { Checkbox, Loader, Text } from '@/libs/components';
 import {
   AttributeWrapper,
-  Col,
   MergedValue,
   RemoveMergedFacet,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
+import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 
 const StyledText = styled(Text)`
@@ -40,6 +40,17 @@ export const GlobalFacetAttribute = ({
   }) => void;
   dispatch: Dispatch<GlobalAttributeReducer>;
   writeEnabled: boolean;
+  displayType: 'included' | 'excluded' | 'algoControl';
+  order?: number;
+  localOrder?: number | string;
+  inputRef?: (el: HTMLInputElement | null) => void;
+  onInputChange?: (displayValue: string, value: string) => void;
+  onInputBlur?: (displayValue: string, value: string, order: number) => void;
+  onInputKeyDown?: (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    displayValue: string,
+    order: number
+  ) => void;
 }) => {
   const maxVisible = 4;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -76,6 +87,7 @@ export const GlobalFacetAttribute = ({
           />
         )}
       </Col>
+
       <Col>
         <AttributeWrapper>
           {attributes.length > 1 ? (

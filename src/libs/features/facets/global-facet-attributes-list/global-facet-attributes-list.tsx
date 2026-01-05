@@ -12,8 +12,8 @@ import {
   Loader,
   Typography,
 } from '@/libs/components';
-import { Col } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import { FacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
+import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { useGlobalFacetAttributesList } from '@/libs/hooks/global/facets/use-global-facet-attributes-list';
 import type {
   GlobalAttributesPageReducer,
@@ -174,7 +174,7 @@ export const GlobalFacetAttributesList = ({
 
   return (
     <>
-      <FacetAttributeValuesTableRow isHeading>
+      <GlobalFacetAttributeValuesTableRow>
         {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
           <Col key={`add-facet-modal-column-${label}`}>
             {label ? (
@@ -207,7 +207,7 @@ export const GlobalFacetAttributesList = ({
             )}
           </Col>
         ))}
-      </FacetAttributeValuesTableRow>
+      </GlobalFacetAttributeValuesTableRow>
 
       <DndContext sensors={sensors} onDragEnd={handleBoostedDragEnd}>
         <SortableContext

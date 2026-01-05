@@ -16,6 +16,7 @@ describe('GlobalFacetAttribute', () => {
         handleRemoveFromMerge={jest.fn()}
         dispatch={jest.fn()}
         writeEnabled
+        displayType="algoControl"
       />
     );
     expect(screen.getByText('value1')).toBeVisible();
@@ -41,6 +42,7 @@ describe('GlobalFacetAttribute', () => {
         handleRemoveFromMerge={mockHandleRemoveFromMerge}
         dispatch={jest.fn()}
         writeEnabled
+        displayType="algoControl"
       />
     );
 

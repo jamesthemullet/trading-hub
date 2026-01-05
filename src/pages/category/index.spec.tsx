@@ -225,9 +225,8 @@ describe('Categories', () => {
     });
     renderWithProviders(<Categories />);
 
-    expect(await screen.findByRole('time')).toHaveTextContent(
-      '14 Oct 2024 - 15 Oct 2024'
-    );
+    const timeElement = await screen.findByRole('time');
+    expect(timeElement).toHaveTextContent('14 Oct 2024 - 15 Oct 2024');
   });
 
   it('should search', async () => {

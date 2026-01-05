@@ -906,9 +906,8 @@ describe('TablePanel', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByRole('time')).toHaveTextContent(
-          '14 Oct 2024 - 15 Oct 2024'
-        );
+        const timeElement = screen.getByRole('time');
+        expect(timeElement).toHaveTextContent('14 Oct 2024 - 15 Oct 2024');
       });
     });
   });
