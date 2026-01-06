@@ -15,8 +15,9 @@ describe('ArrowButton', () => {
     render(<ArrowButton direction="down" />);
 
     expect(screen.getByRole('button')).toBeInTheDocument();
-    expect(screen.getByRole('button')).toHaveStyle(
-      'transform: rotate(180deg);'
+    expect(screen.getByRole('button')).toHaveAttribute(
+      'data-direction',
+      'down'
     );
   });
 

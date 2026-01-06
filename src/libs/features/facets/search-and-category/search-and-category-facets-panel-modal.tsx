@@ -246,7 +246,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
                 <OrderArrowsContainer>
                   <ArrowButton
                     direction="up"
-                    aria-label={`Move ${displayValue} row up`}
+                    label={`Move ${displayValue} row up`}
                     isDisabled={index === 0 || !!searchQuery}
                     onClick={() => {
                       dispatch({
@@ -258,7 +258,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
 
                   <ArrowButton
                     direction="down"
-                    aria-label={`Move ${displayValue} row down`}
+                    label={`Move ${displayValue} row down`}
                     isDisabled={
                       index === filteredRows.length - 1 || !!searchQuery
                     }

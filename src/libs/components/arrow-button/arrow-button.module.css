@@ -1,0 +1,33 @@
+.arrowButton {
+  background: url('/trading-hub/asset/icon-arrow-up.svg');
+  background-color: var(--color-surface-surface-container);
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  outline: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  width: 40px;
+  height: 40px;
+  padding: var(--mns-spacing-1-5);
+  border-radius: 4px;
+
+  &:hover,
+  &:focus {
+    outline: solid 2px #4273b7;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+    background-color: var(--color-state-disabled-disabled);
+    margin-top: 0;
+    outline: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  }
+
+  &:active {
+    margin-top: 2px;
+  }
+}
+
+.arrowButton[data-direction='down'] {
+  transform: rotate(180deg);
+}

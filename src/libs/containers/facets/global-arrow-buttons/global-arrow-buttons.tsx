@@ -45,7 +45,7 @@ export const GlobalArrowButtons = ({
     <OrderArrowsContainer>
       <ArrowButton
         direction="up"
-        aria-label={`Move ${displayName} row up`}
+        label={`Move ${displayName} row up`}
         isDisabled={
           index === 0 || !!searchQuery || disableArrows || !writeEnabled
         }
@@ -82,7 +82,7 @@ export const GlobalArrowButtons = ({
 
       <ArrowButton
         direction="down"
-        aria-label={`Move ${displayName} row down`}
+        label={`Move ${displayName} row down`}
         isDisabled={
           index === rows.length - 1 ||
           !!searchQuery ||
