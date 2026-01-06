@@ -3,22 +3,13 @@ import { useState } from 'react';
 import { Divider, Modal } from '@mantine/core';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
-import { Button, Header3, Text } from '@/libs/components';
-import {
-  BulkActionsHeader,
-  BulkActionsSpacer,
-  Buttons,
-  ConfirmationActions,
-  ConfirmationInfo,
-  ConfirmationPanel,
-  ProductMenu,
-  ProductMenuButton,
-  ProductMenuOverlay,
-} from '@/libs/components/bulk-actions/bulk-actions.styles';
+import { Button, Typography } from '@/libs/components';
 import type { RuleSetActions } from '@/libs/components/types';
 import { track } from '@/libs/hooks/utils/analytics';
 
 import pluralize from 'pluralize';
+
+import styles from './bulk-actions.module.css';
 
 type BulkActionsTypes = {
   dispatch: Dispatch<RuleSetActions>;
@@ -107,16 +98,16 @@ export const BulkActions = ({
 
   return (
     <>
-      <BulkActionsSpacer />
-      <ConfirmationPanel>
-        <ConfirmationInfo>
-          <Text>
+      <div className={styles.bulkActionsSpacer} />
+      <div className={styles.confirmationPanel}>
+        <div className={styles.confirmationInfo}>
+          <Typography variant="bodySmall">
             {selectedProducts.length}{' '}
             {pluralize('item', selectedProducts.length)} selected
-          </Text>
-        </ConfirmationInfo>
+          </Typography>
+        </div>
 
-        <ConfirmationActions>
+        <div className={styles.confirmationActions}>
           <Button theme="secondary" isInline onClick={() => onReset()}>
             Deselect
           </Button>
@@ -130,76 +121,79 @@ export const BulkActions = ({
 
           {showBulkActionsMenu && (
             <>
-              <ProductMenuOverlay
+              <button
+                className={styles.productMenuOverlay}
+                type="submit"
                 aria-label="select available bulk actions"
                 onClick={() => {
                   setShowBulkActionsMenu(false);
                 }}
               />
-              <ProductMenu>
-                <BulkActionsHeader isStrong as="h4">
-                  Bulk actions
-                </BulkActionsHeader>
+              <div className={styles.productMenu}>
+                <div className={styles.bulkActionsHeader}>
+                  <Typography as="h4" isStrong variant="bodySmall">
+                    Bulk actions
+                  </Typography>
+                </div>
                 {hasRestore && (
-                  <ProductMenuButton
-                    icon="restore"
-                    as="button"
-                    size="16px 16px"
+                  <button
+                    className={`${styles.productMenuButton} ${styles.iconRestore}`}
+                    type="submit"
                     onClick={() => {
                       setChangeToPerform('remove');
                       setIsModalOpen(true);
                     }}
                   >
-                    Restore
-                  </ProductMenuButton>
+                    <Typography variant="bodySmall">Restore</Typography>
+                  </button>
                 )}
 
                 {!allSelectedProductsBoosted && (
-                  <ProductMenuButton
-                    icon="boost"
-                    as="button"
+                  <button
+                    className={`${styles.productMenuButton} ${styles.iconBoost}`}
+                    type="button"
                     onClick={() => {
                       setActionToPerform('boost');
                       setChangeToPerform('add');
                       setIsModalOpen(true);
                     }}
                   >
-                    Boost to Top
-                  </ProductMenuButton>
+                    <Typography variant="bodySmall">Boost to Top</Typography>
+                  </button>
                 )}
 
                 {!allSelectedProductsBuried && (
-                  <ProductMenuButton
-                    icon="bury"
-                    as="button"
+                  <button
+                    className={`${styles.productMenuButton} ${styles.iconBury}`}
+                    type="button"
                     onClick={() => {
                       setActionToPerform('bury');
                       setChangeToPerform('add');
                       setIsModalOpen(true);
                     }}
                   >
-                    Bury to Bottom
-                  </ProductMenuButton>
+                    <Typography variant="bodySmall">Bury to Bottom</Typography>
+                  </button>
                 )}
 
                 {!allSelectedProductsBlocked && (
-                  <ProductMenuButton
-                    icon="block"
-                    as="button"
+                  <button
+                    className={`${styles.productMenuButton} ${styles.iconBlock}`}
+                    type="button"
                     onClick={() => {
                       setActionToPerform('block');
                       setChangeToPerform('add');
                       setIsModalOpen(true);
                     }}
                   >
-                    Block Product
-                  </ProductMenuButton>
+                    <Typography variant="bodySmall">Block Product</Typography>
+                  </button>
                 )}
-              </ProductMenu>
+              </div>
             </>
           )}
-        </ConfirmationActions>
-      </ConfirmationPanel>
+        </div>
+      </div>
 
       <Modal.Root
         centered
@@ -212,25 +206,27 @@ export const BulkActions = ({
         <Modal.Overlay blur={3} />
         <Modal.Content>
           <Modal.Body>
-            <Header3>Apply new bulk action</Header3>
+            <Typography variant="titleSmall" isStrong as="h3">
+              Apply new bulk action
+            </Typography>
 
-            <Text withMargin>
+            <Typography withMargin variant="bodySmall">
               Are you sure you want to proceed? This action will apply to{' '}
-              <strong>
+              <Typography as="span" isStrong variant="bodySmall">
                 {selectedProducts.length}&nbsp;
                 {pluralize('item', selectedProducts.length)}
-              </strong>{' '}
+              </Typography>{' '}
               and will overwrite existing actions on{' '}
-              <strong>
+              <Typography as="span" isStrong variant="bodySmall">
                 {totalOverwrittenRules}&nbsp;
                 {pluralize('item', totalOverwrittenRules)}
-              </strong>
+              </Typography>
               .
-            </Text>
+            </Typography>
 
             <Divider />
 
-            <Buttons>
+            <div className={styles.modalButtons}>
               <Button
                 onClick={() => setIsModalOpen(false)}
                 theme="secondary"
@@ -252,7 +248,7 @@ export const BulkActions = ({
               >
                 Apply action
               </Button>
-            </Buttons>
+            </div>
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>

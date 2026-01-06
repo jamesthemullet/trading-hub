@@ -1,0 +1,115 @@
+.bulkActionsSpacer {
+  width: 100%;
+  height: 60px;
+}
+
+.bulkActionsHeader {
+  padding: var(--mns-spacing-1) var(--mns-spacing-1) 0;
+}
+
+.confirmationPanel {
+  width: 100%;
+  background: var(--color-surface-surface-container);
+  border-top: solid 1px var(--color-surface-on-surface-container);
+  z-index: 1;
+  bottom: 0;
+  right: 0;
+  padding-left: var(--mns-spacing-12);
+  position: fixed;
+  min-height: 60px;
+  display: flex;
+}
+
+.confirmationInfo {
+  padding: var(--mns-spacing-2);
+}
+
+.confirmationActions {
+  padding: var(--mns-spacing-1);
+  margin-left: auto;
+  position: relative;
+
+  & button {
+    margin-left: var(--mns-spacing-1);
+  }
+}
+
+.productMenuOverlay {
+  position: fixed;
+  background: none;
+  inset: 0;
+  z-index: 1;
+  border: none;
+}
+
+.productMenu {
+  box-shadow: 0 2px 10px 0
+    color-mix(
+      in srgb,
+      var(--color-surface-on-surface-container) 10%,
+      transparent
+    );
+  position: absolute;
+  bottom: 40px;
+  right: 50px;
+  width: 100%;
+  min-width: 160px;
+  background: var(--color-surface-surface-container);
+  border-radius: 3px;
+  z-index: 2;
+}
+
+.productMenuButton {
+  border: none;
+  background: var(--color-surface-surface-container);
+  width: 100%;
+  min-height: 40px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.productMenuButton:hover,
+.productMenuButton:focus {
+  background-color: #dfece2;
+  outline: none;
+  box-shadow: none;
+}
+
+.productMenuButton::before {
+  content: '';
+  background: no-repeat 0 0;
+  background-size: 20px 20px;
+  width: 25px;
+  height: 20px;
+}
+
+.iconRestore::before {
+  background-image: url('/trading-hub/asset/icon-restore.svg');
+  background-size: 16px 16px;
+}
+
+.iconBoost::before {
+  background-image: url('/trading-hub/asset/icon-boost.svg');
+}
+
+.iconBury::before {
+  background-image: url('/trading-hub/asset/icon-bury.svg');
+}
+
+.iconBlock::before {
+  background-image: url('/trading-hub/asset/icon-block.svg');
+}
+
+.modalButtons {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: right;
+  margin-top: var(--mns-spacing-1);
+
+  button {
+    width: auto;
+    margin-left: var(--mns-spacing-2);
+  }
+}
