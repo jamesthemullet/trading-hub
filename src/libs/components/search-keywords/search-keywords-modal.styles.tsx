@@ -5,30 +5,6 @@ import { spacing } from '@/libs/utils/spacing';
 
 import { ButtonDeprecated } from '../button/button';
 
-export const ModalContainer = styled.div`
-  width: 856px;
-  height: 420px;
-`;
-
-export const KeywordList = styled.ul<{ unfinishedKeyword: boolean }>`
-  margin-top: ${spacing(2)};
-  padding: ${spacing(2)};
-  display: flex;
-  gap: ${spacing(1)};
-  flex-wrap: wrap;
-  width: 100%;
-  background-color: ${color.surface.surface};
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 250px;
-  align-content: baseline;
-  border-bottom: 1px solid;
-  border-bottom-color: ${({ unfinishedKeyword }) =>
-    unfinishedKeyword
-      ? color.state.error.error
-      : color.surfaceDark.onSurfaceDarkVariant};
-`;
-
 export const KeyWordPill = styled.li<{ isSelected: boolean }>`
   background-color: ${({ isSelected }) =>
     isSelected ? color.accent.primary.primary : '#fff'};
@@ -70,12 +46,6 @@ export const KeyWordPill = styled.li<{ isSelected: boolean }>`
   }
 `;
 
-export const SelectKeywordPill = styled.button`
-  border: none;
-  background: none;
-  padding: 0;
-`;
-
 export const RemoveKeyWordPill = styled.button`
   width: 18px;
   height: 18px;
@@ -84,32 +54,6 @@ export const RemoveKeyWordPill = styled.button`
   background: none;
   outline: none;
   border: none;
-`;
-
-export const StyledInput = styled.input`
-  background-color: ${color.surface.surface};
-`;
-
-export const ModalSelectedKeyword = styled.div`
-  display: flex;
-  padding-top: ${spacing(2)};
-
-  h4 {
-    padding: ${spacing(1)} ${spacing(1)} 0 0;
-  }
-`;
-
-export const StyledSearchContainer = styled.div`
-  width: 334px;
-
-  button {
-    height: 40px;
-    right: 1rem;
-  }
-
-  input {
-    min-height: 56px;
-  }
 `;
 
 export const ModalFooter = styled.div`
@@ -126,16 +70,6 @@ export const ModalFooter = styled.div`
   button {
     width: 160px;
   }
-`;
-
-export const ErrorContainer = styled.div`
-  display: flex;
-  gap: ${spacing(1)};
-  align-items: center;
-`;
-
-export const ErrorText = styled.p`
-  color: ${color.state.error.error};
 `;
 
 export const StyledCloseButton = styled(ButtonDeprecated)`

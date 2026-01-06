@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
@@ -13,48 +12,16 @@ import {
   DropdownWrapperNoBorder,
 } from '@/libs/components/dropdown/dropdown.styles';
 import { SearchBox } from '@/libs/components/search/search';
-import {
-  ErrorContainer,
-  ErrorText,
-  KeywordList,
-  KeyWordPill,
-  ModalContainer,
-  ModalFooter,
-  ModalSelectedKeyword,
-  RemoveKeyWordPill,
-  SelectKeywordPill,
-  StyledCloseButton,
-  StyledInput,
-  StyledSearchContainer,
-} from '@/libs/components/search-keywords/search-keywords-modal.styles';
-import {
-  Text,
-  Typography,
-} from '@/libs/components/typography/typography.styles';
+import { Typography } from '@/libs/components/typography/typography';
 import { useOnOutsideClick } from '@/libs/hooks';
 import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
-import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 
+import styles from './search-keywords.module.css';
+
 const DEFAULT_DROPDOWN_WIDTH = 256;
 const ACTIVE_DROPDOWN_WIDTH = 320;
-
-const SearchBoxContainer = styled.div`
-  display: flex;
-  gap: ${spacing(1)};
-  align-items: center;
-`;
-
-const DropdownText = styled(Text)`
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-`;
-
-const ModalWrapper = styled.div`
-  padding-top: ${spacing(2)};
-`;
 
 export type Props = {
   addSearchTerm: (keyword: string) => void;
@@ -156,7 +123,7 @@ export const SearchKeywords = ({
           {title}
           <Count aria-label="number of keywords">{searchTerms.length}</Count>
         </Typography>
-        <SearchBoxContainer>
+        <div className={styles.searchBoxContainer}>
           <DropdownWrapperNoBorder
             isDropdownOpen={isDropdownOpen}
             width={
@@ -198,7 +165,9 @@ export const SearchKeywords = ({
                   }}
                   align="left"
                 >
-                  <DropdownText>{searchTerm}</DropdownText>
+                  <Typography className={styles.dropdownText}>
+                    {searchTerm}
+                  </Typography>
                 </DropdownOption>
               ))}
             </DropdownContainer>
@@ -212,7 +181,7 @@ export const SearchKeywords = ({
           >
             Edit
           </Button>
-        </SearchBoxContainer>
+        </div>
       </div>
 
       <Modal.Root
@@ -230,17 +199,17 @@ export const SearchKeywords = ({
         <Modal.Overlay blur={3} />
         <Modal.Content>
           <Modal.Body>
-            <ModalContainer>
-              <ModalWrapper>
+            <div className={styles.modal}>
+              <div className={styles.modalWrapper}>
                 <Typography variant="titleSmall" isStrong withMargin>
                   {title}
                 </Typography>
                 {writeEnabled && (
-                  <StyledSearchContainer>
+                  <div className={styles.modalSearchBoxContainer}>
                     <SearchBox
                       inputProps={{
                         id: 'searchId',
-                        label: 'search keywords',
+                        label: '',
                         placeholder: 'Search...',
                         value: filterValue,
                         onChange: (
@@ -250,19 +219,21 @@ export const SearchKeywords = ({
                         },
                       }}
                     />
-                  </StyledSearchContainer>
+                  </div>
                 )}
                 {previewSearchTerm && (
-                  <ModalSelectedKeyword aria-label="Preview keyword">
+                  <div className={styles.modalSelectedKeyword}>
                     <Typography as="h4" variant="bodyMedium">
                       Selected:
                     </Typography>
-                    <KeyWordPill isSelected as="div">
+                    <div data-is-selected="true" className={styles.keywordPill}>
                       <Typography variant="bodySmall" isStrong>
                         {previewSearchTerm}
                       </Typography>
                       {writeEnabled && (
-                        <RemoveKeyWordPill
+                        <button
+                          className={styles.removeKeywordButton}
+                          type="submit"
                           onClick={
                             // istanbul ignore next
                             () => {
@@ -283,23 +254,31 @@ export const SearchKeywords = ({
                             width={16}
                             height={16}
                           />
-                        </RemoveKeyWordPill>
+                        </button>
                       )}
-                    </KeyWordPill>
-                  </ModalSelectedKeyword>
+                    </div>
+                  </div>
                 )}
-                <KeywordList unfinishedKeyword={unfinishedKeyword}>
+                <ul className={styles.keywordList}>
                   {filteredKeywords.map((keyword, index) => (
-                    <KeyWordPill key={`${keyword}-${index}`} isSelected={false}>
-                      <SelectKeywordPill
+                    <li
+                      key={`${keyword}-${index}`}
+                      data-is-selected="false"
+                      className={styles.keywordPill}
+                    >
+                      <button
+                        className={styles.selectKeywordButton}
+                        type="button"
                         onClick={() => selectPreviewSearchTerm(keyword)}
                       >
                         <Typography variant="bodySmall" isStrong>
                           {keyword}
                         </Typography>
-                      </SelectKeywordPill>
+                      </button>
                       {writeEnabled && (
-                        <RemoveKeyWordPill
+                        <button
+                          className={styles.removeKeywordButton}
+                          type="submit"
                           onClick={() => removeSearchTerm(keyword)}
                           aria-label={`Remove keyword: ${keyword}`}
                         >
@@ -309,13 +288,14 @@ export const SearchKeywords = ({
                             width={16}
                             height={16}
                           />
-                        </RemoveKeyWordPill>
+                        </button>
                       )}
-                    </KeyWordPill>
+                    </li>
                   ))}
                   {writeEnabled && (
-                    <StyledInput
+                    <input
                       type="text"
+                      className={styles.keywordInput}
                       value={inputValue}
                       placeholder="Add new keyword"
                       onChange={(event) =>
@@ -328,36 +308,33 @@ export const SearchKeywords = ({
                         }
                       }}
                       aria-label="Add keyword to list"
-                      style={{
-                        flex: '1',
-                        border: 'none',
-                        outline: 'none',
-                      }}
                     />
                   )}
-                </KeywordList>
-              </ModalWrapper>
-            </ModalContainer>
+                </ul>
+              </div>
+            </div>
             {duplicationError && (
               <ErrorMessage>{duplicationError}</ErrorMessage>
             )}
           </Modal.Body>
-          <ModalFooter>
+          <div className={styles.modalFooter}>
             {unfinishedKeyword && (
-              <ErrorContainer>
+              <div className={styles.errorContainer}>
                 <Image
                   alt=""
                   src="/trading-hub/asset/icon-warning.svg"
                   width={20}
                   height={20}
                 />
-                <ErrorText>Please finish adding the keyword to close</ErrorText>
-              </ErrorContainer>
+                <ErrorMessage>
+                  Please finish adding the keyword to close
+                </ErrorMessage>
+              </div>
             )}
-            <StyledCloseButton theme="secondary" onClick={handleClose}>
+            <Button theme="secondary" onClick={handleClose} type="submit">
               Close
-            </StyledCloseButton>
-          </ModalFooter>
+            </Button>
+          </div>
         </Modal.Content>
       </Modal.Root>
     </>
