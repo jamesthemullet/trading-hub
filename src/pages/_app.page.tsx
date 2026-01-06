@@ -7,8 +7,10 @@ import { useContext, useEffect } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { createTheme, MantineProvider, Portal } from '@mantine/core';
 
+import { ErrorBoundary } from '@/libs/components/error-boundary/error-boundary';
 import { FeatureFlagContext } from '@/libs/components/feature-flag/feature-flag';
 import { LoginCheck } from '@/libs/features/shared/login/login-check';
+import { setupGlobalErrorHandlers } from '@/libs/utils/dynatrace';
 
 import { accented } from 'accented';
 import type { AppProps } from 'next/app';
@@ -125,6 +127,12 @@ export default function App({
     }
   }, []);
 
+  // Setup global error handlers for Dynatrace
+  useEffect(() => {
+    const cleanup = setupGlobalErrorHandlers();
+    return cleanup;
+  }, []);
+
   return (
     <CookiesProvider>
       {typeof window !== 'undefined' &&
@@ -140,15 +148,17 @@ export default function App({
       <FeatureFlagWrapper>
         <SessionProvider session={session}>
           <MantineProvider theme={theme}>
-            <LoginCheck
-              autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
-            />
-            <Layout>
-              <Navigation />
-              <StyledMain>
-                <Component {...pageProps} />
-              </StyledMain>
-            </Layout>
+            <ErrorBoundary>
+              <LoginCheck
+                autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
+              />
+              <Layout>
+                <Navigation />
+                <StyledMain>
+                  <Component {...pageProps} />
+                </StyledMain>
+              </Layout>
+            </ErrorBoundary>
           </MantineProvider>
         </SessionProvider>
 

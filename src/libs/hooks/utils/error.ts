@@ -1,4 +1,5 @@
 import type { MerchandisingErrorResponse } from '@/libs/api';
+import { reportErrorToDynatrace } from '@/libs/utils/dynatrace';
 
 import { track } from './analytics';
 
@@ -10,9 +11,16 @@ const validateErrorResponse = (err: unknown) => {
 };
 
 export const handleError = (err: unknown) => {
+  const errorMessage = validateErrorResponse(err);
+
   // istanbul ignore else
   if (window) {
     track({ event: `error: ${err}` });
+
+    // Report to Dynatrace
+    const error = err instanceof Error ? err : new Error(errorMessage);
+    reportErrorToDynatrace(error);
   }
-  return validateErrorResponse(err);
+
+  return errorMessage;
 };
