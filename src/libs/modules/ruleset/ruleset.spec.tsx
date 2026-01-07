@@ -1544,7 +1544,7 @@ describe('Ruleset', () => {
       />
     );
 
-    const tab1 = screen.getByRole('button', { name: 'Changes1' });
+    const tab1 = screen.getByRole('button', { name: 'Changes 1' });
     const tab2 = screen.getByRole('button', { name: 'Product' });
     const tab3 = screen.getByRole('button', { name: 'Attribute' });
 

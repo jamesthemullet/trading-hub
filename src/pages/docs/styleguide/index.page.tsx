@@ -197,13 +197,7 @@ const StyleGuide = () => {
       </Guide>
 
       <Header2 style={{ width: '100%', marginBottom: '8px' }}>Colours</Header2>
-      <Guide>
-        <Colour style={{ backgroundColor: color.improvedFit }} />
-        <Text>color.improvedFit</Text>
-        <Text>
-          <code>{color.improvedFit}</code>
-        </Text>
-      </Guide>
+
       <Guide>
         <Colour style={{ backgroundColor: color.infoBlueBackground }} />
         <Text>color.infoBlueBackground</Text>

@@ -456,7 +456,7 @@ export const DataTable = ({
                             {writeEnabled && (
                               <button
                                 className={styles.tableDropdown}
-                                type="submit"
+                                type="button"
                                 title="Delete"
                                 onMouseDown={onConfirmDelete}
                                 onKeyDown={(e) => {
@@ -473,7 +473,7 @@ export const DataTable = ({
                             {writeEnabled && !!onDuplicate && (
                               <button
                                 className={styles.tableDropdown}
-                                type="submit"
+                                type="button"
                                 onMouseDown={onConfirmDuplicate}
                                 onKeyDown={(e) => {
                                   // istanbul ignore else
