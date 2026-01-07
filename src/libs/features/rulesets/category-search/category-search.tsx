@@ -332,13 +332,12 @@ export const CategorySearch = ({
         centered
         padding={20}
         size="auto"
-        aria-label="Category search modal"
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content>
+        <Modal.Content aria-label="Category search modal">
           <Modal.Body>
             <ModalWrapper>
-              <Typography variant="titleSmall" isStrong withMargin as="h3">
+              <Typography variant="titleSmall" isStrong withMargin as="h2">
                 Search Categories
               </Typography>
 
@@ -354,6 +353,7 @@ export const CategorySearch = ({
                       src="https://static.marksandspencer.com/icons/svgs/Search-v3-1.svg"
                       width={24}
                       height={24}
+                      alt=""
                     />
                   </SearchForm>
                 </SearchWrapper>
@@ -367,7 +367,7 @@ export const CategorySearch = ({
 
               {previewCategory && (
                 <ModalSelectedCategory>
-                  <Typography as="h4" variant="bodyMedium">
+                  <Typography as="h3" variant="bodyMedium">
                     Selected:
                   </Typography>
                   <KeyWordPill isSelected as="div">

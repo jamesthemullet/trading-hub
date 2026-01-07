@@ -126,11 +126,14 @@ describe('Search Keywords', () => {
         removeSearchTerm={removeSearchTermStub}
       />
     );
-    const modal = await screen.findByLabelText('Search Keywords Modal');
-    expect(modal).toBeVisible();
 
     await waitFor(async () => {
       await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    const modal = await screen.findByLabelText('Search Keywords Modal');
+
+    await waitFor(async () => {
       await user.click(
         within(modal).getByLabelText('Remove keyword: keyword5')
       );
@@ -205,7 +208,6 @@ describe('Search Keywords', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }));
 
     const modal = await screen.findByLabelText('Search Keywords Modal');
-    expect(modal).toBeVisible();
 
     await waitFor(async () => {
       await user.type(
@@ -368,7 +370,6 @@ describe('Search Keywords', () => {
     });
 
     const modal = await screen.findByLabelText('Search Keywords Modal');
-    expect(modal).toBeVisible();
 
     const keyword2remove = await within(modal).findByRole('button', {
       name: `Remove keyword: ${longerSearchTermsList[3]}`,

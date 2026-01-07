@@ -192,16 +192,13 @@ export const SearchKeywords = ({
         size="auto"
         closeOnClickOutside={false}
         closeOnEscape={false}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Search Keywords Modal"
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content>
+        <Modal.Content aria-label="Search Keywords Modal">
           <Modal.Body>
             <div className={styles.modal}>
               <div className={styles.modalWrapper}>
-                <Typography variant="titleSmall" isStrong withMargin>
+                <Typography variant="titleSmall" isStrong withMargin as="h2">
                   {title}
                 </Typography>
                 {writeEnabled && (
@@ -222,8 +219,11 @@ export const SearchKeywords = ({
                   </div>
                 )}
                 {previewSearchTerm && (
-                  <div className={styles.modalSelectedKeyword}>
-                    <Typography as="h4" variant="bodyMedium">
+                  <div
+                    className={styles.modalSelectedKeyword}
+                    aria-label="Preview keyword"
+                  >
+                    <Typography as="h3" variant="bodyMedium">
                       Selected:
                     </Typography>
                     <div data-is-selected="true" className={styles.keywordPill}>
