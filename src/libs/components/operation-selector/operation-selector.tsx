@@ -1,43 +1,12 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { color } from '@/libs/utils/constants';
 import { labels } from '@/libs/utils/ruleset-attributes';
-import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 
 import { CombinedDropdown } from '../dropdown/dropdown';
 import { DropdownOption } from '../dropdown/dropdown.styles';
-
-const DropdownWrapper = styled.div`
-  border: none;
-  border-bottom: 1px solid ${color.role.outline.outline};
-  border-radius: 4px 4px 0 0;
-  min-height: 56px;
-  width: 150px;
-  margin-right: ${spacing(1)};
-
-  button {
-    border: none;
-    border-radius: 4px 4px 0 0;
-    min-height: 56px;
-  }
-
-  div {
-    margin: 0;
-    padding: 0;
-  }
-`;
-
-const StyledDropdownOption = styled(DropdownOption)`
-  font-size: 12px;
-  align-items: center;
-  width: 150px;
-  box-shadow: none;
-  background-color: #fff;
-  border-radius: 0 !important;
-`;
+import styles from './operation-selector.module.css';
 
 export const OperationSelector = ({
   hasIncludeExclude,
@@ -55,7 +24,7 @@ export const OperationSelector = ({
   const label = labels[selectedOperation];
 
   return (
-    <DropdownWrapper>
+    <div className={styles.dropdownWrapper}>
       <CombinedDropdown
         variant="generic"
         label={label.text}
@@ -67,7 +36,7 @@ export const OperationSelector = ({
           setCloseDropdown(false);
         }}
       >
-        <StyledDropdownOption
+        <DropdownOption
           onClick={() => {
             setCloseDropdown(true);
             setSelectedOperation('boost');
@@ -82,8 +51,8 @@ export const OperationSelector = ({
             height={20}
           />
           Boost
-        </StyledDropdownOption>
-        <StyledDropdownOption
+        </DropdownOption>
+        <DropdownOption
           onClick={() => {
             setCloseDropdown(true);
             setSelectedOperation('bury');
@@ -98,10 +67,10 @@ export const OperationSelector = ({
             height={20}
           />
           Bury
-        </StyledDropdownOption>
+        </DropdownOption>
         {hasIncludeExclude && (
           <>
-            <StyledDropdownOption
+            <DropdownOption
               onClick={() => {
                 setCloseDropdown(true);
                 setSelectedOperation('include');
@@ -116,9 +85,9 @@ export const OperationSelector = ({
                 height={20}
               />
               Include only
-            </StyledDropdownOption>
+            </DropdownOption>
 
-            <StyledDropdownOption
+            <DropdownOption
               onClick={() => {
                 setCloseDropdown(true);
                 setSelectedOperation('exclude');
@@ -133,10 +102,10 @@ export const OperationSelector = ({
                 height={20}
               />
               Exclude only
-            </StyledDropdownOption>
+            </DropdownOption>
           </>
         )}
       </CombinedDropdown>
-    </DropdownWrapper>
+    </div>
   );
 };
