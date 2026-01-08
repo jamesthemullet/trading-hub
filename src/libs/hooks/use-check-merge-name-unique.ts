@@ -68,10 +68,10 @@ export const useCheckMergeNameUnique = () => {
               (item) =>
                 item.trim().toLowerCase() === searchQuery.trim().toLowerCase()
             )) ||
-            exceptions?.some(
-              (item) =>
-                item?.trim().toLowerCase() === searchQuery.trim().toLowerCase()
-            )
+          exceptions?.some(
+            (item) =>
+              item?.trim().toLowerCase() === searchQuery.trim().toLowerCase()
+          )
         ),
       };
     } catch {
