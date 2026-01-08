@@ -233,7 +233,7 @@ export const useGlobalFacetAttributesList = ({
                 excludedRows={globalAttributesLocalState.excludedRows}
                 facet={facet}
                 countryCode={countryCode}
-                dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
+                dispatch={dispatch}
                 setEditingValues={setEditingValues}
                 writeEnabled={writeEnabled}
               />

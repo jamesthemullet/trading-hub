@@ -241,7 +241,6 @@ export const globalAttributesPageReducer = (
       const updatedBoostedRows = state.boostedRows.map((row) =>
         row.displayName === oldValue ? { ...row, displayName: newValue } : row
       );
-
       const updatedExcludedRows = state.excludedRows.map((row) =>
         row.displayName === oldValue ? { ...row, displayName: newValue } : row
       );

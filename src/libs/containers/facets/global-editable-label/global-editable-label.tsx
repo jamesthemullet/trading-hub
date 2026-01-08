@@ -13,6 +13,7 @@ import type {
   FormattedRow,
   GlobalAttributeReducer,
 } from '@/libs/stores/global-attribute/global-attribute-reducer';
+import type { GlobalAttributesPageReducer } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
 
 type MergeGroup = MerchandisingGlobalOnlyFacetConfig['merged'];
 
@@ -37,7 +38,9 @@ export const GlobalEditableLabel = ({
   excludedRows: FormattedRow[];
   countryCode: MerchandisingCountryCode;
   merged: MergeGroup | undefined;
-  dispatch: Dispatch<GlobalAttributeReducer>;
+  dispatch:
+    | Dispatch<GlobalAttributeReducer>
+    | Dispatch<GlobalAttributesPageReducer>;
   setEditingValues: React.Dispatch<React.SetStateAction<string[]>>;
   writeEnabled?: boolean;
 }) => {
@@ -121,6 +124,7 @@ export const GlobalEditableLabel = ({
         type: 'CREATE_MERGE_GROUP',
         payload: {
           attributes: [newValue],
+          displayValue: newValue,
           isFirstAttributeBoosted: allBoostedValues?.includes(oldValue),
           isFirstAttributeExcluded: allExcludedValues?.includes(oldValue),
         },

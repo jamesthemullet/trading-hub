@@ -134,6 +134,7 @@ describe('Global Editable label', () => {
       type: 'CREATE_MERGE_GROUP',
       payload: {
         attributes: ['new name'],
+        displayValue: 'new name',
         isFirstAttributeBoosted: false,
         isFirstAttributeExcluded: false,
       },
