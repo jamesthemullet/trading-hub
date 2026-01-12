@@ -25,6 +25,8 @@ export const HeadingContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${spacing(3)};
+  padding: ${spacing(3)};
+  padding-bottom: 0;
 
   h3 {
     font-size: 1.25em;

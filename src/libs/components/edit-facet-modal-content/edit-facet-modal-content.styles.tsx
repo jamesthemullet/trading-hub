@@ -5,12 +5,7 @@ import { ModalStickyHeader } from '@/libs/components/modals/modal.styles';
 import { spacing } from '@/libs/utils/spacing';
 
 export const AttributesModalHeader = styled(ModalStickyHeader)`
-  padding: ${spacing(3)};
   padding-bottom: 0;
-`;
-
-export const BodyContainer = styled.div`
-  margin: 0 ${spacing(3)};
 `;
 
 export const MergeAndSearchContainer = styled.div`
@@ -18,7 +13,7 @@ export const MergeAndSearchContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: ${spacing(2)};
-  padding: ${spacing(2)} 0;
+  padding: ${spacing(2)} ${spacing(3)};
   p {
     flex: 80;
   }
@@ -54,11 +49,14 @@ export const AttributeWrapper = styled.div`
 export const MergedValue = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: ${spacing(1)};
 `;
+
 export const GlobalFacetAttributesPageMergedValue = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: ${spacing(1)};
   margin-left: ${spacing(4)};
 `;

@@ -28,7 +28,6 @@ import {
 } from '@/libs/components';
 import {
   AttributesModalHeader,
-  BodyContainer,
   MergeAndSearchContainer,
   SkeletonRow,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
@@ -395,6 +394,7 @@ export const GlobalFacetPanelModalContent = ({
               isPinned={displayType === 'included'}
               isExcluded={displayType === 'excluded'}
               data-testid={`${displayType} attribute ${index} ${displayName}`}
+              modal
             >
               <GlobalFacetAttribute
                 attributes={attributes}
@@ -570,7 +570,7 @@ export const GlobalFacetPanelModalContent = ({
           </MergeAndSearchContainer>
 
           <ModalAttributesTable>
-            <GlobalFacetAttributeValuesTableRow>
+            <GlobalFacetAttributeValuesTableRow modal>
               {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                 <Col key={`add-facet-modal-column-${label}`}>
                   {label ? (
@@ -611,7 +611,7 @@ export const GlobalFacetPanelModalContent = ({
           </ModalAttributesTable>
         </AttributesModalHeader>
 
-        <BodyContainer>
+        <div>
           {boostedValuesRows}
 
           {defaultValuesRows}
@@ -621,7 +621,7 @@ export const GlobalFacetPanelModalContent = ({
           {isAwaitingUpdate && <Loader isInModal />}
 
           <FilteredResultsPanel filteredFacets={totalFilteredResults} />
-        </BodyContainer>
+        </div>
       </ModalContainer>
       <ModalFooter>
         <Button onClick={() => onClose()}>Cancel</Button>{' '}
@@ -705,13 +705,13 @@ export const GlobalFacetPanelModal = ({
           </MergeAndSearchContainer>
         </AttributesModalHeader>
 
-        <BodyContainer data-testid="loader">
+        <div data-testid="loader">
           <SkeletonRow aria-busy="true" />
           <SkeletonRow aria-busy="true" />
           <SkeletonRow aria-busy="true" />
           <SkeletonRow aria-busy="true" />
           <SkeletonRow aria-busy="true" />
-        </BodyContainer>
+        </div>
       </ModalContainer>
       <ModalFooter>
         <Button onClick={() => onClose()} type="button">

@@ -21,7 +21,6 @@ import {
 import {
   AttributesModalHeader,
   AttributeWrapper,
-  BodyContainer,
   MergeAndSearchContainer,
   OrderArrowsContainer,
   SkeletonRow,
@@ -47,7 +46,6 @@ const MODAL_WIDTH = 1150;
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null;
 }[] = [
-  { label: null },
   {
     label: 'Attribute',
   },
@@ -205,8 +203,8 @@ export const SearchAndCategoryFacetsPanelModal = ({
             isPinned={displayType === 'included'}
             isExcluded={displayType === 'excluded'}
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
+            modal
           >
-            <Col />
             <Col>
               <AttributeWrapper>
                 <Text>{displayValue}</Text>
@@ -356,7 +354,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
               </MergeAndSearchContainer>
 
               <ModalAttributesTable>
-                <SearchCategoryFacetAttributeValuesTableRow>
+                <SearchCategoryFacetAttributeValuesTableRow modal>
                   {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
                     <Col key={`add-facet-modal-column-${label}`}>
                       <Typography isStrong variant="bodySmall">
@@ -368,7 +366,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
               </ModalAttributesTable>
             </AttributesModalHeader>
 
-            <BodyContainer>
+            <div>
               {isLoading ? (
                 attributeValues.map((attribute) => (
                   <SkeletonRow
@@ -388,7 +386,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
               )}
 
               <FilteredResultsPanel filteredFacets={attributeValues.length} />
-            </BodyContainer>
+            </div>
           </ModalContainer>
         </Modal.Body>
 

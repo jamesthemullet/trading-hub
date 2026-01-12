@@ -40,6 +40,7 @@ const ButtonContainer = styled.div<{
 
   button {
     max-width: ${(props) => props.rulesetType === 'global' && '312px'};
+    width: 100%;
   }
 
   p {
