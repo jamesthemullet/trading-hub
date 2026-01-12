@@ -1,0 +1,7 @@
+.dropdownWrapper {
+  min-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mns-spacing-1);
+  align-items: center;
+}

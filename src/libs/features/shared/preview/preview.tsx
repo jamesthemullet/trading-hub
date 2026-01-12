@@ -165,6 +165,10 @@ const FacetDropdown = styled.div`
   border: none;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 8px 12px 0px;
   padding: ${spacing(2)};
+
+  > div {
+    margin-bottom: ${spacing(2)};
+  }
 `;
 
 const StyledSearch = styled(Search)`

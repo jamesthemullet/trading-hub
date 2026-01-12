@@ -253,9 +253,12 @@ describe('Category Facet Management Editing', () => {
     });
 
     await user.click(countryDropdown);
-    const irelandOption = screen.getByRole('option', {
-      name: 'IE market only',
-    });
+    const irelandOption = within(countryDropdown.parentElement!).getByRole(
+      'option',
+      {
+        name: 'IE market only',
+      }
+    );
     await user.click(irelandOption);
 
     const saveButton = screen.getByRole('button', { name: 'Save' });
@@ -542,7 +545,13 @@ describe('Category Facet Management Editing', () => {
       'button to open facet order dropdown for More Silk'
     );
     await user.click(moreSilkRow);
-    await user.click(screen.getByRole('option', { name: 'Include only' }));
+    const includeOnlyOption = within(moreSilkRow.parentElement!).getByRole(
+      'option',
+      {
+        name: 'Include only',
+      }
+    );
+    await user.click(includeOnlyOption);
 
     await waitFor(() => {
       expect(

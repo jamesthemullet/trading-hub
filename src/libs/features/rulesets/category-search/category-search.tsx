@@ -32,7 +32,6 @@ import Image from 'next/image';
 import {
   Container,
   DropdownText,
-  DropdownWrapper,
   ModalCategoriesList,
   ModalSelectedCategory,
   ModalWrapper,
@@ -44,6 +43,7 @@ import {
   StyledIcon,
   Wrapper,
 } from './category.styles';
+import styles from './category-search.module.css';
 
 const SEARCH_DEBOUNCE_WAIT = 500;
 
@@ -246,7 +246,7 @@ export const CategorySearch = ({
           {selectedCategories.length}
         </Count>
       </Typography>
-      <DropdownWrapper>
+      <div className={styles.dropdownWrapper}>
         <DropdownWrapperNoBorder
           isDropdownOpen={isDropdownOpen}
           width={
@@ -321,7 +321,7 @@ export const CategorySearch = ({
         >
           Edit
         </Button>
-      </DropdownWrapper>
+      </div>
 
       <Modal.Root
         opened={isModalOpen}

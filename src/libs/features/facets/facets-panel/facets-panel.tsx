@@ -371,7 +371,6 @@ export const FacetsPanel = ({
                 });
               }}
               selectedCountryCode={countryCode}
-              writeEnabled={writeEnabled}
               ariaLabel="Select country"
             />
           </div>

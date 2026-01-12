@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 
 import type { Screen } from '@testing-library/react';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -1633,7 +1633,8 @@ describe('Ruleset', () => {
           dropdownButton.click();
         });
 
-        const buryButton = screen.getByRole('option', {
+        const dropdownWrapper = dropdownButton.parentElement!;
+        const buryButton = within(dropdownWrapper).getByRole('option', {
           name: 'Bury',
         });
 
@@ -1651,7 +1652,8 @@ describe('Ruleset', () => {
           dropdownButton.click();
         });
 
-        const includeButton = screen.getByRole('option', {
+        const dropdownWrapper = dropdownButton.parentElement!;
+        const includeButton = within(dropdownWrapper).getByRole('option', {
           name: 'Include only',
         });
 

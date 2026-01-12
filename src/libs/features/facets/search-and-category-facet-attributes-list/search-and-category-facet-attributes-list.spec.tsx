@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -206,7 +206,9 @@ describe('SearchAndCategoryFacetAttributesList', () => {
     )[0];
     await userEvent.click(dropdown);
 
-    const excludedOption = screen.getByRole('option', { name: 'Exclude only' });
+    const excludedOption = within(dropdown.parentElement!).getByRole('option', {
+      name: 'Exclude only',
+    });
     await userEvent.click(excludedOption);
 
     expect(dispatch).toHaveBeenCalledWith({

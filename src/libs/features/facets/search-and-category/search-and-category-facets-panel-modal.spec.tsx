@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type {
@@ -288,7 +288,7 @@ describe('ModalEditValues', () => {
       });
     });
 
-    it('should dispatch CHANGE_DISPLAY_TYPE', async () => {
+    it('should change display type from included to excluded', async () => {
       (lodash.without as jest.Mock).mockReturnValue(['Cotton', 'Silk']);
 
       renderWithProviders(
@@ -302,13 +302,18 @@ describe('ModalEditValues', () => {
 
       expect(boostedValue).toBeVisible();
 
-      const dropdownHeader = screen.getAllByText('Include only')[0];
-      await userEvent.click(dropdownHeader);
+      const dropdownButton = screen.getByTestId(
+        'button to open facet order dropdown for Cotton'
+      );
+      await userEvent.click(dropdownButton);
 
-      const algoControlOption = screen.getByRole('option', {
-        name: 'Exclude only',
-      });
-      await userEvent.click(algoControlOption);
+      const excludeOnlyOption = within(dropdownButton.parentElement!).getByRole(
+        'option',
+        {
+          name: 'Exclude only',
+        }
+      );
+      await userEvent.click(excludeOnlyOption);
 
       expect(boostedValue).not.toBeVisible();
     });

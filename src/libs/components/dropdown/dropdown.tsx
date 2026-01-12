@@ -8,16 +8,8 @@ import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-r
 
 import Image from 'next/image';
 
-import {
-  Arrow,
-  ArrowContainer,
-  DropdownButton,
-  DropdownContainer,
-  DropdownHeading,
-  DropdownOption,
-  DropdownWrapper,
-  HeadingIcon,
-} from './dropdown.styles';
+import { Typography } from '../typography/typography';
+import styles from './dropdown.module.css';
 
 type ClosingType = 'icon' | 'button' | 'esc' | 'outsideClick' | 'tab';
 
@@ -32,7 +24,6 @@ type GenericDropdownProps = {
   label?: string;
   icon?: string;
   children?: ReactNode;
-  alignContentTowards?: 'left' | 'center' | 'right';
   ariaLabel?: string;
   onOpen?: () => void;
   onClose?: (closingType?: ClosingType) => void;
@@ -64,7 +55,6 @@ export const CombinedDropdown = ({
   width,
   writeEnabled = true,
   label = 'Select',
-  alignContentTowards = 'left',
   icon,
   children,
   ariaLabel,
@@ -98,14 +88,12 @@ export const CombinedDropdown = ({
     onOpen?.();
   }, [onOpen]);
 
-  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape' && isOpen) {
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (isOpen && e.key === 'Escape') {
       closeDropdown('esc');
     }
-  };
-  const handleButtonOnKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (isOpen && e.key === 'Tab' && e.shiftKey) {
-      closeDropdown('esc');
+      closeDropdown('tab');
     }
   };
 
@@ -246,9 +234,15 @@ export const CombinedDropdown = ({
         return (
           <>
             {icon && (
-              <HeadingIcon src={`/trading-hub/asset/${icon}.svg`} alt="" />
+              <Image
+                className={styles.headingIcon}
+                src={`/trading-hub/asset/${icon}.svg`}
+                alt=""
+                width={20}
+                height={20}
+              />
             )}
-            {label}
+            <Typography variant="bodySmall">{label}</Typography>
           </>
         );
       case 'pageSize':
@@ -256,23 +250,29 @@ export const CombinedDropdown = ({
       case 'countryFilter': {
         const current = countryFilterOptions.find((o) => o.selected);
         // istanbul ignore next - there won't be a case where label is undefined but since we get current from find it has undefined type
-        return current?.label || 'Select country filter';
+        return (
+          <Typography variant="bodySmall">
+            {current?.label || 'Select country filter'}
+          </Typography>
+        );
       }
       case 'countrySelector': {
         const current = countrySelectorOptions.find((o) => o.selected);
         const label = current?.label || 'Select country';
         return (
           <>
-            {current?.flagsToShow?.map((flag) => (
-              <Image
-                key={flag}
-                src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
-                width={24}
-                height={24}
-                alt=""
-              />
-            ))}
-            {label}
+            <span className={styles.flagContainer}>
+              {current?.flagsToShow?.map((flag) => (
+                <Image
+                  key={flag}
+                  src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
+                  width={24}
+                  height={24}
+                  alt=""
+                />
+              ))}
+            </span>
+            <Typography variant="bodySmall">{label}</Typography>
           </>
         );
       }
@@ -285,7 +285,7 @@ export const CombinedDropdown = ({
             {current?.src && (
               <Image src={current.src} alt="" width={24} height={24} />
             )}
-            {current?.label}
+            <Typography variant="bodySmall">{current?.label}</Typography>
           </>
         );
       }
@@ -304,23 +304,29 @@ export const CombinedDropdown = ({
     switch (variant) {
       case 'countryFilter':
         return countryFilterOptions.map((option) => (
-          <DropdownOption
+          <button
+            type="button"
+            className={styles.dropdownOption}
             key={option.label}
-            hoverColour="#f5f5f5"
+            data-hover-grey
             aria-label={option.ariaLabel}
             onClick={() => handleCountryFilterSelect(option.index)}
             role="option"
             aria-selected={option.selected}
           >
-            {option.label}
-          </DropdownOption>
+            <Typography as="span" variant="bodySmall">
+              {option.label}
+            </Typography>
+          </button>
         ));
 
       case 'countrySelector':
         return countrySelectorOptions.map((option) => (
-          <DropdownOption
+          <button
+            type="button"
+            className={styles.dropdownOption}
             key={option.label}
-            hoverColour="#f5f5f5"
+            data-hover-grey
             onClick={() => handleCountrySelectorSelect(option.index)}
             role="option"
             aria-selected={option.selected}
@@ -334,24 +340,30 @@ export const CombinedDropdown = ({
                 alt=""
               />
             ))}
-            {option.label}
-          </DropdownOption>
+            <Typography as="span" variant="bodySmall">
+              {option.label}
+            </Typography>
+          </button>
         ));
 
       case 'facetOrder':
         return facetOptions
           .filter((o) => o.src)
           .map((option) => (
-            <DropdownOption
+            <button
+              type="button"
+              className={styles.dropdownOption}
               key={option.label}
-              hoverColour="#f5f5f5"
+              data-hover-grey
               onClick={() => handleFacetOrderSelect(option.index)}
               role="option"
               aria-selected={option.selected}
             >
               <Image src={option.src as string} alt="" width={24} height={24} />
-              {option.label}
-            </DropdownOption>
+              <Typography as="span" variant="bodySmall">
+                {option.label}
+              </Typography>
+            </button>
           ));
 
       default:
@@ -392,68 +404,72 @@ export const CombinedDropdown = ({
     [variant, attribute]
   );
 
-  if (!writeEnabled) {
+  if (!writeEnabled && variant === 'facetOrder') {
     const current =
       facetOptions.find((o) => o.name === status) ||
       // facetOptions.find makes it possible to have undefined type so added a fallback which would not happen
       // istanbul ignore next
       facetOptions[0];
     return (
-      <DropdownWrapper
-        isDropdownOpen={false}
-        hasBorder={false}
-        hasBorderBottom={false}
+      <div
+        className={styles.dropdownWrapper}
+        data-is-dropdown-open={false}
+        data-has-border={false}
+        data-has-border-bottom={false}
       >
-        <DropdownHeading>
+        <div className={styles.dropdownHeading}>
           {current?.src && (
             <Image src={current.src} alt="" width={24} height={24} />
           )}
           {current?.label}
-        </DropdownHeading>
-      </DropdownWrapper>
+        </div>
+      </div>
     );
   }
 
   return (
-    <DropdownWrapper
+    <div
+      className={styles.dropdownWrapper}
       ref={wrapperRef}
-      isDropdownOpen={isOpen}
-      onKeyDown={handleOnKeyDown}
-      hasBorder={variant === 'facetOrder'}
-      width={dropdownWidth}
-      alignContentTowards={variant === 'generic' ? 'center' : 'left'}
-      height={
+      data-is-dropdown-open={isOpen}
+      data-width={dropdownWidth}
+      data-has-border={variant === 'facetOrder'}
+      data-has-border-bottom={
+        variant !== 'facetOrder' && variant !== 'pageSize'
+      }
+      data-height={
         variant === 'facetOrder' || variant === 'pageSize' ? 'default' : 'large'
       }
     >
-      <DropdownButton
-        isDropdownOpen={isOpen}
-        onKeyDown={handleButtonOnKeyDown}
+      <button
+        className={styles.dropdownButton}
+        type="button"
+        onKeyDown={handleOnKeyDown}
         onClick={() => (isOpen ? closeDropdown() : openDropdown())}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label={ariaLabel ? ariaLabel : `${variant} dropdown`}
-        disabled={!writeEnabled}
         data-testid={testId}
         id={buttonId}
       >
-        <DropdownHeading>{dropdownHeading}</DropdownHeading>
+        {dropdownHeading}
 
-        {writeEnabled && (
-          <ArrowContainer borderLeft={variant === 'facetOrder'}>
-            <Arrow isDropdownOpen={isOpen} />
-          </ArrowContainer>
-        )}
-      </DropdownButton>
+        <div
+          className={styles.arrowContainer}
+          data-border-left={variant === 'facetOrder'}
+        >
+          <span className={styles.arrow} data-is-dropdown-open={isOpen} />
+        </div>
+      </button>
 
-      <DropdownContainer
-        isDropdownOpen={isOpen}
-        alignContentTowards={alignContentTowards}
+      <div
+        className={styles.dropdownContentContainer}
+        data-is-dropdown-open={isOpen}
         role="listbox"
         aria-labelledby={buttonId}
       >
         {renderDropdownContent()}
-      </DropdownContainer>
-    </DropdownWrapper>
+      </div>
+    </div>
   );
 };

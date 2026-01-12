@@ -389,7 +389,10 @@ describe('RulesetAttributes', () => {
       dropdownButton.click();
     });
 
-    const buryButton = screen.getByRole('option', { name: 'Bury' });
+    const dropdownWrapper = dropdownButton.parentElement!;
+    const buryButton = within(dropdownWrapper).getByRole('option', {
+      name: 'Bury',
+    });
 
     act(() => {
       buryButton.click();
@@ -518,7 +521,8 @@ describe('RulesetAttributes', () => {
         dropdownButton.click();
       });
 
-      const buryButton = screen.getByRole('option', {
+      const dropdownWrapper = dropdownButton.parentElement!;
+      const buryButton = within(dropdownWrapper).getByRole('option', {
         name: 'Bury',
       });
 
@@ -914,7 +918,10 @@ describe('RulesetAttributes', () => {
         dropdownButton.click();
       });
 
-      const buryButton = screen.getByRole('option', { name: 'Bury' });
+      const dropdownWrapper = dropdownButton.parentElement!;
+      const buryButton = within(dropdownWrapper).getByRole('option', {
+        name: 'Bury',
+      });
 
       act(() => {
         buryButton.click();
@@ -1295,8 +1302,10 @@ describe('RulesetAttributes', () => {
         dropdownButton.click();
       });
 
+      const dropdownWrapper = dropdownButton.parentElement!;
+
       act(() => {
-        screen.getByRole('option', { name: 'Boost' }).click();
+        within(dropdownWrapper).getByRole('option', { name: 'Boost' }).click();
       });
 
       act(() => {
@@ -1426,8 +1435,10 @@ describe('RulesetAttributes', () => {
         dropdownButton.click();
       });
 
+      const dropdownWrapper = dropdownButton.parentElement!;
+
       act(() => {
-        screen.getByRole('option', { name: 'Bury' }).click();
+        within(dropdownWrapper).getByRole('option', { name: 'Bury' }).click();
       });
 
       act(() => {
@@ -1489,8 +1500,10 @@ describe('RulesetAttributes', () => {
         dropdownButton.click();
       });
 
+      const dropdownWrapper = dropdownButton.parentElement!;
+
       act(() => {
-        screen.getByRole('option', { name: 'Boost' }).click();
+        within(dropdownWrapper).getByRole('option', { name: 'Boost' }).click();
       });
 
       act(() => {

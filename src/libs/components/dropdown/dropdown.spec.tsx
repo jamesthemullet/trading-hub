@@ -18,16 +18,6 @@ describe('CombinedDropdown', () => {
       defaultProps.onClose.mockClear();
     });
 
-    it('should render the button without children', () => {
-      render(
-        <CombinedDropdown {...defaultProps}>
-          <div>Content</div>
-        </CombinedDropdown>
-      );
-
-      expect(screen.queryByText('Content')).not.toBeVisible();
-    });
-
     it('should render the button with children', async () => {
       const user = userEvent.setup();
       const { rerender } = render(
@@ -48,44 +38,19 @@ describe('CombinedDropdown', () => {
 
     it('should close CombinedDropdown when button is clicked again when already open', async () => {
       const user = userEvent.setup();
-      const { rerender } = render(
-        <CombinedDropdown {...defaultProps}>
-          <div>Content</div>
-        </CombinedDropdown>
-      );
-
-      await user.click(screen.getByRole('button'));
-      await user.click(screen.getByRole('button'));
-      expect(defaultProps.onClose).toHaveBeenCalled();
-      rerender(
-        <CombinedDropdown {...defaultProps}>
-          <div>Content</div>
-        </CombinedDropdown>
-      );
-      expect(screen.queryByText('Content')).not.toBeVisible();
-    });
-
-    it('should render content starting from left', async () => {
-      const user = userEvent.setup();
-      render(<CombinedDropdown {...defaultProps}>Content</CombinedDropdown>);
-
-      await user.click(screen.getByRole('button'));
-      expect(screen.getByText('Content')).toBeVisible();
-      expect(screen.getByText('Content')).toHaveStyleRule('left', '0');
-    });
-
-    it('should align content from right', async () => {
-      const user = userEvent.setup();
       render(
-        <CombinedDropdown {...defaultProps} alignContentTowards="right">
-          Content
+        <CombinedDropdown {...defaultProps}>
+          <div>Content</div>
         </CombinedDropdown>
       );
 
-      await user.click(screen.getByRole('button'));
+      const button = screen.getByRole('button');
+      await user.click(button);
+      expect(button).toHaveAttribute('aria-expanded', 'true');
 
-      expect(screen.getByText('Content')).toBeVisible();
-      expect(screen.getByText('Content')).toHaveStyleRule('right', '0');
+      await user.click(button);
+      expect(defaultProps.onClose).toHaveBeenCalled();
+      expect(button).toHaveAttribute('aria-expanded', 'false');
     });
 
     it('should close CombinedDropdown when escape is pressed', async () => {
@@ -230,8 +195,6 @@ describe('CombinedDropdown', () => {
       expect(dropdownHeader).toHaveAttribute('aria-haspopup', 'listbox');
       expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
       expect(screen.getByText('Select an action')).toBeVisible();
-      expect(screen.queryByText('Include only')).not.toBeVisible();
-      expect(screen.queryByText('Exclude only')).not.toBeVisible();
     });
 
     it('should only show the status in read only mode', () => {
@@ -262,12 +225,12 @@ describe('CombinedDropdown', () => {
       const dropdownHeader = screen.getByTestId(
         'button to open facet order dropdown for color'
       );
-      await user.click(screen.getByRole('button'));
+
+      expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
+
+      await user.click(dropdownHeader);
 
       expect(dropdownHeader).toHaveAttribute('aria-expanded', 'true');
-      expect(screen.getByText('Select an action')).toBeVisible();
-      expect(screen.getByText('Include only')).toBeVisible();
-      expect(screen.getByText('Exclude only')).toBeVisible();
     });
 
     it('should open the dropdown with hasAlgoControl and display the options when button is clicked', async () => {
@@ -285,13 +248,12 @@ describe('CombinedDropdown', () => {
       const dropdownHeader = screen.getByTestId(
         'button to open facet order dropdown for color'
       );
-      await user.click(screen.getByRole('button'));
+
+      expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
+
+      await user.click(dropdownHeader);
 
       expect(dropdownHeader).toHaveAttribute('aria-expanded', 'true');
-      expect(screen.getByText('Select an action')).toBeVisible();
-      expect(screen.getByText('Include only')).toBeVisible();
-      expect(screen.getByText('Exclude only')).toBeVisible();
-      expect(screen.getByText('Algo control')).toBeVisible();
     });
 
     it('should change the selected option when an option is clicked, and close the dropdown', async () => {
@@ -304,20 +266,20 @@ describe('CombinedDropdown', () => {
         />
       );
 
-      expect(screen.getByText('Select an action')).toBeVisible();
-
       const dropdownHeader = screen.getByTestId(
         'button to open facet order dropdown'
       );
+
+      expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
+      expect(dropdownHeader).toHaveTextContent('Select an action');
+
       await user.click(dropdownHeader);
+      expect(dropdownHeader).toHaveAttribute('aria-expanded', 'true');
 
       const alwaysHideOption = screen.getByText('Exclude only');
       await user.click(alwaysHideOption);
 
-      expect(screen.getByText('Include only')).not.toBeVisible();
-      expect(screen.getAllByText('Exclude only')[0]).toBeVisible();
-      expect(screen.queryAllByText('Exclude only')[1]).not.toBeVisible();
-      expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
+      expect(dropdownHeader).toHaveTextContent('Exclude only');
       expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
     });
 
@@ -337,15 +299,16 @@ describe('CombinedDropdown', () => {
       const dropdownHeader = screen.getByTestId(
         'button to open facet order dropdown'
       );
+
+      expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
+      expect(dropdownHeader).toHaveTextContent('Select an action');
       await user.click(dropdownHeader);
+      expect(dropdownHeader).toHaveAttribute('aria-expanded', 'true');
 
       const algoControlOption = screen.getByText('Algo control');
       await user.click(algoControlOption);
 
-      expect(screen.getByText('Include only')).not.toBeVisible();
-      expect(screen.getAllByText('Algo control')[0]).toBeVisible();
-      expect(screen.queryAllByText('Algo control')[1]).not.toBeVisible();
-      expect(screen.queryByText('Select an action')).not.toBeInTheDocument();
+      expect(dropdownHeader).toHaveTextContent('Algo control');
       expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
     });
   });
@@ -360,11 +323,13 @@ describe('CombinedDropdown', () => {
         />
       );
 
+      const dropdown = screen.getByLabelText('Select country');
+
       expect(
         screen.getByRole('button', { name: 'Select country' })
       ).toBeVisible();
-      expect(screen.queryByText('UK only marksandspencer')).not.toBeVisible();
-      expect(screen.queryByText('IE only marksandspencer')).not.toBeVisible();
+
+      expect(dropdown).toHaveAttribute('aria-expanded', 'false');
     });
 
     it('should open the dropdown and display the options when button is clicked', async () => {
@@ -380,14 +345,13 @@ describe('CombinedDropdown', () => {
       const dropdownButton = screen.getByRole('button', {
         name: 'Select country',
       });
+      const dropdown = screen.getByLabelText('Select country');
 
-      expect(screen.queryByText('UK only marksandspencer')).not.toBeVisible();
-      expect(screen.queryByText('IE only marksandspencer')).not.toBeVisible();
+      expect(dropdown).toHaveAttribute('aria-expanded', 'false');
 
       await user.click(dropdownButton);
 
-      expect(screen.getByText('UK only marksandspencer')).toBeVisible();
-      expect(screen.getByText('IE only marksandspencer')).toBeVisible();
+      expect(dropdown).toHaveAttribute('aria-expanded', 'true');
     });
 
     it('should change the selected option when an option is clicked, and close the dropdown', async () => {

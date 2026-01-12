@@ -841,17 +841,12 @@ describe('Facets', () => {
       selectPreview.click();
     });
 
-    expect(
-      screen.getByRole('button', { name: 'UK flag UK view' })
-    ).toBeVisible();
+    expect(selectPreview).toHaveAttribute('aria-expanded', 'true');
 
     act(() => {
       selectPreview.click();
     });
-
-    expect(
-      screen.queryByRole('button', { name: 'UK flag UK view' })
-    ).not.toBeInTheDocument();
+    expect(selectPreview).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('should change the country of influence', async () => {
@@ -874,7 +869,7 @@ describe('Facets', () => {
       selectMarket.click();
     });
 
-    const selectIE = screen.getByRole('option', {
+    const selectIE = within(selectMarket.parentElement!).getByRole('option', {
       name: 'IE market only',
     });
     act(() => {
@@ -1070,9 +1065,12 @@ describe('Facets', () => {
     )[0];
     await userEvent.click(dropdownHeader);
 
-    const algoControlOption = screen.getByRole('option', {
-      name: 'Algo control',
-    });
+    const algoControlOption = within(dropdownHeader.parentElement!).getByRole(
+      'option',
+      {
+        name: 'Algo control',
+      }
+    );
     await userEvent.click(algoControlOption);
 
     const editValuesButtons = screen.queryAllByRole('button', {

@@ -1,62 +1,26 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 import { color } from '@/libs/utils/constants';
 import { sizing } from '@/libs/utils/sizing';
 import { spacing } from '@/libs/utils/spacing';
 
-export const DropdownWrapper = styled.div<{
+export const DropdownWrapperNoBorder = styled.div<{
   isDropdownOpen: boolean;
   width?: number;
   hasBorder?: boolean;
   hasBorderBottom?: boolean;
-  alignContentTowards?: 'left' | 'right' | 'center';
   height?: 'default' | 'large';
 }>`
-  width: 346px;
-  position: relative;
-
-  ${({ isDropdownOpen }) => isDropdownOpen && 'border-radius: 4px 4px 0 0;'}
-  ${({ width }) => width && `width: ${width}px;`}
-  ${({ width }) => width && `min-width: ${width}px;`}
-
-  img {
-    margin-right: ${spacing(1)};
-  }
-
-  ${({ hasBorderBottom = true, height }) =>
-    hasBorderBottom &&
-    `
-    border: none;
-    border-bottom: 1px solid ${color.role.outline.outline};
-    border-radius: 4px 4px 0 0;
-    ${height === 'large' ? `min-height: ${sizing(7)};` : ''}
-
-    button {
-      border: none;
-      border-radius: 4px 4px 0 0;
-      ${height === 'large' ? `min-height: ${sizing(7)};` : ''}
-    }
-  `}
-
-  ${({ hasBorder }) =>
-    hasBorder &&
-    `
-    border: 1px solid ${color.role.outline.outline};
-    border-bottom: 1px solid ${color.role.outline.outline};
-    border-radius: 4px;
-
-    button {
-      border-radius: 4px;
-    }
-  `}
-`;
-
-export const DropdownWrapperNoBorder = styled(DropdownWrapper)`
   border: none;
   border-bottom: 1px solid ${color.role.outline.outline};
   border-radius: 4px 4px 0 0;
   min-height: 56px;
+
+  width: 346px;
+  position: relative;
+
+  ${({ width }) => width && `width: ${width}px;`}
+  ${({ width }) => width && `min-width: ${width}px;`}
 
   button {
     border: none;
@@ -71,7 +35,7 @@ export const DropdownButton = styled.button<{ isDropdownOpen: boolean }>`
   justify-content: space-between;
   font-size: 0.875rem;
 
-  height: ${sizing(5.5)};
+  height: 42px;
   width: 100%;
 
   padding: 0;
@@ -112,10 +76,6 @@ export const DropdownHeading = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
-export const HeadingIcon = styled.img`
-  width: 20px;
-  height: 20px;
-`;
 
 export const ArrowContainer = styled.div<{ borderLeft?: boolean }>`
   display: flex;
@@ -146,7 +106,6 @@ export const Arrow = styled.span<{
 
 export const DropdownContainer = styled.div<{
   isDropdownOpen: boolean;
-  alignContentTowards?: string;
   contentWidth?: string;
 }>`
   position: absolute;
@@ -158,10 +117,6 @@ export const DropdownContainer = styled.div<{
   background-color: #fff;
   flex-direction: column;
   ${({ isDropdownOpen }) => isDropdownOpen && 'display: flex; z-index: 10;'}
-
-  ${({ alignContentTowards = 'left' }) => css`
-    ${alignContentTowards}: 0;
-  `}
 `;
 
 export const DropdownOption = styled.button<{
@@ -169,7 +124,7 @@ export const DropdownOption = styled.button<{
   align?: string;
 }>`
   background-color: #fff;
-  height: 40px;
+  height: 56px;
   border: none;
   display: flex;
   align-items: center;

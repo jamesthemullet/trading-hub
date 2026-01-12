@@ -10,11 +10,6 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const DropdownWrapper = styled.div`
-  display: flex;
-  gap: ${spacing(1)};
-  align-items: center;
-`;
 export const DropdownText = styled(Text)`
   white-space: nowrap;
   text-overflow: ellipsis;

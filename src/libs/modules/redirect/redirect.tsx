@@ -208,7 +208,6 @@ export const Redirect = ({
               }}
               ariaLabel="Select country"
               selectedCountryCode={redirect.countryCode}
-              writeEnabled={writeEnabled}
             />
           </div>
           <SearchKeywords

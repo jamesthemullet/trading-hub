@@ -506,7 +506,6 @@ export const Ruleset = ({
                 }}
                 ariaLabel="Select country"
                 selectedCountryCode={ruleset.countryCode}
-                writeEnabled={writeEnabled}
               />
             </InfluenceWrapper>
 

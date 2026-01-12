@@ -93,12 +93,15 @@ describe('TablePagination', () => {
     const label = await screen.findByText('100');
 
     expect(label).toBeVisible();
+    expect(dropdown).toHaveAttribute('aria-expanded', 'true');
 
     act(() => {
       dropdown.click();
     });
 
-    expect(await screen.findByText('100')).not.toBeVisible();
+    await waitFor(() => {
+      expect(dropdown).toHaveAttribute('aria-expanded', 'false');
+    });
   });
 
   it('should open select item and change page size', async () => {

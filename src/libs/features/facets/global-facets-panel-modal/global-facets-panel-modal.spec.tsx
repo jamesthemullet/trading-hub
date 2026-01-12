@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type {
@@ -547,9 +547,12 @@ describe('GlobalFacetPanelModalContent', () => {
         jest.advanceTimersByTime(debounceTime);
       });
 
-      const algoControlButton = screen.getByRole('option', {
-        name: `Algo control`,
-      });
+      const algoControlButton = within(select.parentElement!).getByRole(
+        'option',
+        {
+          name: `Algo control`,
+        }
+      );
 
       await user.click(algoControlButton);
 
@@ -589,7 +592,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const button = screen.getByRole('option', {
+      const button = within(select.parentElement!).getByRole('option', {
         name: `Include only`,
       });
 
@@ -630,7 +633,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const button = screen.getByRole('option', {
+      const button = within(select.parentElement!).getByRole('option', {
         name: `Exclude only`,
       });
 
@@ -676,7 +679,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const includeButton = screen.getByRole('option', {
+      const includeButton = within(select.parentElement!).getByRole('option', {
         name: `Include only`,
       });
 
@@ -722,7 +725,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const excludeButton = screen.getByRole('option', {
+      const excludeButton = within(select.parentElement!).getByRole('option', {
         name: `Exclude only`,
       });
 
@@ -768,9 +771,12 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const algoControlButton = screen.getByRole('option', {
-        name: `Algo control`,
-      });
+      const algoControlButton = within(select.parentElement!).getByRole(
+        'option',
+        {
+          name: `Algo control`,
+        }
+      );
 
       await user.click(algoControlButton);
 
@@ -814,9 +820,12 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const algoControlButton = screen.getByRole('option', {
-        name: `Algo control`,
-      });
+      const algoControlButton = within(select.parentElement!).getByRole(
+        'option',
+        {
+          name: `Algo control`,
+        }
+      );
 
       await user.click(algoControlButton);
 

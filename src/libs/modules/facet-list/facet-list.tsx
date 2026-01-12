@@ -512,7 +512,6 @@ export const FacetList = ({
                 }
               }}
               selectedCountryCode={ruleset.countryCode}
-              writeEnabled={writeEnabled}
               ariaLabel="Select country"
             />
           </div>

@@ -249,6 +249,7 @@ export const useGlobalFacetAttributesList = ({
                   writeEnabled={writeEnabled}
                   hasAlgoControl
                   ariaLabel="Select to set as included, excluded or algo control"
+                  width={150}
                 />
               </Col>
 

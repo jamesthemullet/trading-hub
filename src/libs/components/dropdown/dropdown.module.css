@@ -1,0 +1,185 @@
+.dropdownWrapper {
+  --dropdown-height-large: 56px;
+  position: relative;
+  border: none;
+  border-bottom: 1px solid var(--color-role-outline-outline);
+  border-radius: 4px 4px 0 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+
+  button {
+    border: none;
+    border-radius: 4px 4px 0 0;
+    min-height: 42px;
+  }
+
+  > button {
+    border-bottom: 1px solid var(--color-role-outline-outline);
+  }
+
+  img {
+    margin-right: var(--mns-spacing-1);
+  }
+}
+
+.dropdownWrapper[data-is-dropdown-open='true'] {
+  border-radius: 4px 4px 0 0;
+}
+
+.dropdownWrapper[data-width='125'] {
+  width: 125px;
+  min-width: 125px;
+}
+
+.dropdownWrapper[data-width='150'] {
+  width: 150px;
+  min-width: 150px;
+}
+
+.dropdownWrapper[data-width='155'] {
+  width: 155px;
+  min-width: 155px;
+}
+
+.dropdownWrapper[data-width='220'] {
+  width: 220px;
+  min-width: 220px;
+}
+
+.dropdownWrapper[data-width='237'] {
+  width: 237px;
+  min-width: 237px;
+}
+
+.dropdownWrapper[data-width='250'] {
+  width: 250px;
+  min-width: 250px;
+}
+
+.dropdownWrapper[data-height='large'] {
+  min-height: var(--dropdown-height-large);
+
+  button {
+    min-height: var(--dropdown-height-large);
+  }
+}
+
+.dropdownWrapper[data-has-border='true'] {
+  border: 1px solid var(--color-role-outline-outline);
+  border-bottom: 1px solid var(--color-role-outline-outline);
+  border-radius: 4px;
+
+  button {
+    border-radius: 4px;
+  }
+}
+
+.dropdownWrapper[data-has-border-bottom='false'] {
+  border-bottom: none;
+
+  > div {
+    box-sizing: content-box;
+    margin-left: -1px;
+  }
+}
+
+.dropdownHeading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropdownButton {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  height: 42px;
+
+  padding: 0;
+  padding-left: var(--mns-spacing-1);
+
+  border-radius: 4px;
+  border: 1px solid #b1b1b1;
+
+  background-color: var(--color-accent-secondary-secondary-container);
+
+  img {
+    margin-right: var(--mns-spacing-1);
+  }
+
+  &:hover {
+    background-color: var(--color-state-disabled-disabled);
+  }
+
+  &:disabled {
+    background-color: var(--color-state-disabled-disabled);
+    color: var(--color-surface-on-surface-variant);
+    cursor: default;
+  }
+}
+
+.flagContainer {
+  display: flex;
+  align-items: center;
+}
+
+.arrowContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  min-width: 40px;
+  height: 100%;
+}
+
+.arrowContainer[data-border-left='true'] {
+  border-left: 1px solid #b1b1b1;
+}
+
+.arrow {
+  transition: 0.3s;
+  isolation: isolate;
+  background: url('/trading-hub/asset/filled-chevron.svg');
+  width: 10px;
+  height: 5px;
+  border: 0;
+  padding: 1px;
+  cursor: pointer;
+}
+
+.arrow[data-is-dropdown-open='true'] {
+  transform: rotate(180deg);
+}
+
+.dropdownContentContainer {
+  position: absolute;
+  top: 100%;
+  display: none;
+  border: 1px solid #b1b1b1;
+  border-top: none;
+  background-color: var(--color-surface-bright-surface-bright);
+  flex-direction: column;
+  width: 100%;
+}
+
+.dropdownContentContainer[data-is-dropdown-open='true'] {
+  display: flex;
+  z-index: 10;
+}
+
+.dropdownOption {
+  background-color: var(--color-surface-bright-surface-bright);
+  height: var(--dropdown-height-large);
+  border: none;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--mns-spacing-1);
+  cursor: pointer;
+  min-height: 3.5rem;
+}
+
+.dropdownOption[data-hover-grey='true']:hover {
+  background-color: var(--color-accent-secondary-secondary-container);
+}
