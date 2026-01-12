@@ -40,7 +40,10 @@ export const useGlobalFacetAttributesEditModal = ({
     });
   };
 
-  const handleEditModalSave = async (newValue: string) => {
+  const handleEditModalSave = async (
+    newValue: string,
+    demergedValues: string[] = []
+  ) => {
     // istanbul ignore else
     if (!newValue?.trim()) return setEditModalError('You must supply a value');
 
@@ -88,7 +91,9 @@ export const useGlobalFacetAttributesEditModal = ({
       facetId: facet.id,
       searchQuery: trimmedNewValue,
       countryCode: countryCode ?? ('UK_IE' as MerchandisingCountryCode),
-      exceptions: selectedRows.flatMap((row) => row.attributes),
+      exceptions: selectedRows
+        .flatMap((row) => row.attributes)
+        .filter((val) => !demergedValues.includes(val)),
       localAttributeValues: [
         ...globalAttributesLocalState.boostedRows.map((row) => row.displayName),
         ...globalAttributesLocalState.excludedRows.map(
@@ -97,6 +102,7 @@ export const useGlobalFacetAttributesEditModal = ({
         ...globalAttributesLocalState.nonBoostedExcludedRows.map(
           (row) => row.displayName
         ),
+        ...demergedValues,
       ],
     });
 
@@ -106,12 +112,43 @@ export const useGlobalFacetAttributesEditModal = ({
     }
 
     requestAnimationFrame(() => {
+      const remainingMergedValues =
+        globalAttributesLocalState.currentMerge.mergedValues.filter(
+          (val) => !demergedValues.includes(val)
+        );
+
       if (isExistingMergeGroup) {
+        const originalMergeGroup = globalAttributesLocalState.merged.find(
+          (merge) =>
+            merge.displayValue ===
+              globalAttributesLocalState.currentMerge.displayValue ||
+            merge.mergedValues?.some((val) =>
+              globalAttributesLocalState.currentMerge.mergedValues.includes(val)
+            )
+        );
+
+        demergedValues.forEach((valueToRemove) => {
+          const wasInOriginalMergeGroup =
+            originalMergeGroup?.mergedValues?.includes(valueToRemove);
+
+          if (wasInOriginalMergeGroup) {
+            dispatch({
+              type: 'REMOVE_FROM_MERGE_GROUP',
+              payload: {
+                valueToRemove,
+                mergeDisplayName:
+                  originalMergeGroup?.displayValue ||
+                  globalAttributesLocalState.currentMerge.displayValue,
+              },
+            });
+          }
+        });
+
         dispatch({
           type: 'UPDATE_MERGE_GROUP',
           payload: {
             displayValue: trimmedNewValue,
-            attributes: globalAttributesLocalState.currentMerge.mergedValues,
+            attributes: remainingMergedValues,
             isFirstAttributeBoosted,
             isFirstAttributeExcluded,
           },
@@ -121,7 +158,7 @@ export const useGlobalFacetAttributesEditModal = ({
           type: 'CREATE_MERGE_GROUP',
           payload: {
             displayValue: trimmedNewValue,
-            attributes: globalAttributesLocalState.currentMerge.mergedValues,
+            attributes: remainingMergedValues,
             isFirstAttributeBoosted,
             isFirstAttributeExcluded,
           },

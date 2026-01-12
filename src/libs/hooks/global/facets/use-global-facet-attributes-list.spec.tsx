@@ -90,7 +90,13 @@ const createBaseState = (): GlobalAttributesPageState => ({
   ],
   merged: [],
   errorStates: {},
-  currentMerge: { isOpen: false, displayValue: '', mergedValues: [] },
+  currentMerge: {
+    isOpen: false,
+    displayValue: '',
+    mergedValues: [],
+    demergedValues: [],
+    currentMergeValues: [],
+  },
 });
 
 const createInitialOrders = (state: GlobalAttributesPageState) =>

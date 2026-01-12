@@ -16,6 +16,8 @@ const mockInitialState: GlobalAttributesPageState = {
     isOpen: false,
     displayValue: '',
     mergedValues: [],
+    demergedValues: [],
+    currentMergeValues: [],
   },
 };
 
@@ -66,6 +68,8 @@ const mockState: GlobalAttributesPageState = {
     isOpen: false,
     displayValue: '',
     mergedValues: [],
+    demergedValues: [],
+    currentMergeValues: [],
   },
 };
 
@@ -990,7 +994,13 @@ describe('Global Attribute Reducer', () => {
 
       const openState: GlobalAttributesPageState = {
         ...mockState,
-        currentMerge: { isOpen: true, displayValue: 'Y', mergedValues: ['z'] },
+        currentMerge: {
+          isOpen: true,
+          displayValue: 'Y',
+          mergedValues: ['z'],
+          currentMergeValues: ['z'],
+          demergedValues: [],
+        },
       };
 
       const result = globalAttributesPageReducer(openState, action);
@@ -1691,6 +1701,8 @@ describe('Global Attribute Reducer', () => {
         isOpen: true,
         displayValue: 'Group X',
         mergedValues: ['a', 'b', 'c'],
+        currentMergeValues: ['a', 'b', 'c'],
+        demergedValues: [],
       },
     };
     const action: RemoveFromCurrentMerge = {
@@ -1699,18 +1711,65 @@ describe('Global Attribute Reducer', () => {
     };
     const result = globalAttributesPageReducer(initialState, action);
     expect(result.currentMerge.mergedValues).toEqual(['a', 'c']);
-    // Coverage for boostedRows
     expect(
       result.boostedRows.find((r) => r.displayName === 'b')?.isChecked
     ).toBe(false);
-    // Coverage for excludedRows
     expect(
       result.excludedRows.find((r) => r.displayName === 'b')?.isChecked
     ).toBe(false);
-    // Coverage for nonBoostedExcludedRows
     expect(
       result.nonBoostedExcludedRows.find((r) => r.displayName === 'b')
         ?.isChecked
     ).toBe(false);
+  });
+
+  describe('UPDATE_CURRENT_MERGE_VALUES', () => {
+    it('should update currentMergeValues in currentMerge state', () => {
+      const initialState = {
+        ...mockInitialState,
+        currentMerge: {
+          isOpen: true,
+          displayValue: 'Group A',
+          mergedValues: ['a', 'b', 'c'],
+          demergedValues: [],
+          currentMergeValues: ['a', 'b', 'c'],
+        },
+      };
+      const action = {
+        type: 'UPDATE_CURRENT_MERGE_VALUES' as const,
+        payload: {
+          currentMergeValues: ['a', 'c'],
+        },
+      };
+      const result = globalAttributesPageReducer(initialState, action);
+      expect(result.currentMerge.currentMergeValues).toEqual(['a', 'c']);
+      expect(result.currentMerge.mergedValues).toEqual(['a', 'b', 'c']);
+      expect(result.currentMerge.demergedValues).toEqual([]);
+      expect(result.currentMerge.displayValue).toBe('Group A');
+    });
+  });
+
+  describe('RESET_CURRENT_MERGE_LOCAL_STATE', () => {
+    it('should reset demergedValues and restore currentMergeValues to original mergedValues', () => {
+      const initialState = {
+        ...mockInitialState,
+        currentMerge: {
+          isOpen: true,
+          displayValue: 'Group A',
+          mergedValues: ['a', 'b', 'c'],
+          demergedValues: ['b'],
+          currentMergeValues: ['a', 'c'],
+        },
+      };
+      const action = {
+        type: 'RESET_CURRENT_MERGE_LOCAL_STATE' as const,
+      };
+      const result = globalAttributesPageReducer(initialState, action);
+      expect(result.currentMerge.demergedValues).toEqual([]);
+      expect(result.currentMerge.currentMergeValues).toEqual(['a', 'b', 'c']);
+      expect(result.currentMerge.mergedValues).toEqual(['a', 'b', 'c']);
+      expect(result.currentMerge.displayValue).toBe('Group A');
+      expect(result.currentMerge.isOpen).toBe(true);
+    });
   });
 });

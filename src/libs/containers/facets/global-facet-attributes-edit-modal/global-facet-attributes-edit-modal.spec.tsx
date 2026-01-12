@@ -1,4 +1,4 @@
-import type { ActionDispatch } from 'react';
+import { type ActionDispatch, useReducer } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -31,6 +31,8 @@ describe('GlobalFacetAttributesEditModal', () => {
       isOpen: true,
       displayValue: 'Group A',
       mergedValues: ['a', 'b', 'c'],
+      demergedValues: [],
+      currentMergeValues: ['a', 'b', 'c'],
     },
   };
 
@@ -64,6 +66,28 @@ describe('GlobalFacetAttributesEditModal', () => {
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
+  });
+
+  it('does not render modal content when isOpen is false', () => {
+    const closedState: GlobalAttributesPageState = {
+      ...baseState,
+      currentMerge: {
+        ...baseState.currentMerge,
+        isOpen: false,
+      },
+    };
+
+    renderWithProviders(
+      <GlobalFacetAttributesEditModal
+        globalAttributesLocalState={closedState}
+        dispatch={mockDispatch}
+        error=""
+        handleError={mockHandleError}
+        onSave={mockOnSave}
+      />
+    );
+
+    expect(screen.queryByText('Edit merge')).not.toBeInTheDocument();
   });
 
   it('calls dispatch CLOSE_MERGE_GROUP_MODAL when cancel clicked', async () => {
@@ -107,7 +131,7 @@ describe('GlobalFacetAttributesEditModal', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => {
-      expect(mockOnSave).toHaveBeenCalledWith('New Group Name');
+      expect(mockOnSave).toHaveBeenCalledWith('New Group Name', []);
       expect(mockDispatch).not.toHaveBeenCalledWith({
         type: 'CLOSE_MERGE_GROUP_MODAL',
       });
@@ -144,6 +168,8 @@ describe('GlobalFacetAttributesEditModal', () => {
         isOpen: true,
         displayValue: 'Big Group',
         mergedValues: ['a', 'b', 'c', 'd', 'e'],
+        demergedValues: [],
+        currentMergeValues: ['a', 'b', 'c', 'd', 'e'],
       },
     };
 
@@ -239,20 +265,31 @@ describe('GlobalFacetAttributesEditModal', () => {
     rafSpy.mockRestore();
   });
 
-  it('dispatches REMOVE_FROM_CURRENT_MERGE with correct payload when remove merged facet clicked', async () => {
+  it('removes value from display and passes to onSave when remove merged facet clicked and saved', async () => {
     const raf = jest
       .spyOn(window, 'requestAnimationFrame')
       .mockImplementation((cb: any) => cb(0));
 
-    renderWithProviders(
-      <GlobalFacetAttributesEditModal
-        globalAttributesLocalState={baseState}
-        dispatch={mockDispatch}
-        error=""
-        handleError={mockHandleError}
-        onSave={mockOnSave}
-      />
-    );
+    const { globalAttributesPageReducer } =
+      await import('@/libs/stores/global-attributes-page/global-attributes-page-reducer');
+
+    const ModalWithReducer = () => {
+      const [state, dispatch] = useReducer(
+        globalAttributesPageReducer,
+        baseState
+      );
+      return (
+        <GlobalFacetAttributesEditModal
+          globalAttributesLocalState={state}
+          dispatch={dispatch}
+          error=""
+          handleError={mockHandleError}
+          onSave={mockOnSave}
+        />
+      );
+    };
+
+    renderWithProviders(<ModalWithReducer />);
 
     const removeButtons = screen.getAllByLabelText(/Remove merged facet for/i);
     expect(removeButtons.length).toBeGreaterThan(0);
@@ -260,12 +297,13 @@ describe('GlobalFacetAttributesEditModal', () => {
     await userEvent.click(removeButtons[1]);
 
     await waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: 'REMOVE_FROM_CURRENT_MERGE',
-        payload: {
-          valueToRemove: 'b',
-        },
-      });
+      expect(screen.queryByText('b')).not.toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(mockOnSave).toHaveBeenCalledWith('Group A', ['b']);
     });
 
     raf.mockRestore();
@@ -304,6 +342,8 @@ describe('GlobalFacetAttributesEditModal', () => {
         isOpen: true,
         displayValue: 'SoloGroup',
         mergedValues: ['solo'],
+        demergedValues: [],
+        currentMergeValues: ['solo'],
       },
     };
 

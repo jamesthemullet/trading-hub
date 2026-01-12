@@ -1,4 +1,4 @@
-import { type ActionDispatch, useState } from 'react';
+import { type ActionDispatch, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button, Text, Typography } from '@/libs/components';
@@ -10,6 +10,8 @@ import {
   EditFacetAttributesModalTable,
   ModalStickyHeader,
 } from '@/libs/components/modals/modal.styles';
+import { Input } from '@/libs/containers/shared';
+import { EditFacetAttributesModalTableRow } from '@/libs/containers/shared/table/table.styles';
 import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import type {
   GlobalAttributesPageReducer,
@@ -21,8 +23,7 @@ import { spacing } from '@/libs/utils/spacing';
 import Image from 'next/image';
 import { styled } from 'storybook/theming';
 
-import { InputDeprecated } from '../shared';
-import { EditFacetAttributesModalTableRow } from '../shared/table/table.styles';
+import styles from './global-facet-attributes-edit-modal.module.css';
 
 const ModalContainer = styled.div`
   height: 100%;
@@ -56,24 +57,6 @@ const StyledText = styled(Text)`
   background: none;
 `;
 
-const InputContainer = styled.div<{ showErrorState: boolean }>`
-  position: relative;
-  width: 100%;
-
-  margin-top: ${spacing(4)};
-
-  // input default styles override emotion so styling this way
-  & > input {
-    font-size: 14px;
-    max-height: 2.5rem;
-    border-radius: 4px;
-    padding-right: 30px;
-    background: ${color.surface.surface};
-
-    ${({ showErrorState }) =>
-      showErrorState && `border: 1px solid ${color.state.error.error}`};
-  }
-`;
 const StyledIcon = styled(Image)`
   position: absolute;
   right: 10px;
@@ -106,7 +89,7 @@ type GlobalFacetAttributesEditModalProps = {
   dispatch: ActionDispatch<[action: GlobalAttributesPageReducer]>;
   error: string;
   handleError: (message: string) => void;
-  onSave: (displayValue: string) => void;
+  onSave: (displayValue: string, demergedValues: string[]) => void;
 };
 
 export const GlobalFacetAttributesEditModal = ({
@@ -116,6 +99,20 @@ export const GlobalFacetAttributesEditModal = ({
   handleError,
   onSave,
 }: GlobalFacetAttributesEditModalProps) => {
+  const {
+    currentMergeValues: attributes,
+    displayValue: displayName,
+    isOpen,
+    demergedValues,
+  } = globalAttributesLocalState.currentMerge;
+
+  // Sync local state when modal opens with new data
+  useEffect(() => {
+    if (isOpen) {
+      dispatch({ type: 'RESET_CURRENT_MERGE_LOCAL_STATE' });
+    }
+  }, [isOpen, dispatch]);
+
   // close logic
   const handleClose = () => {
     dispatch({ type: 'CLOSE_MERGE_GROUP_MODAL' });
@@ -123,12 +120,8 @@ export const GlobalFacetAttributesEditModal = ({
 
   // save logic
   const handleSave = () => {
-    onSave(value);
+    onSave(value, demergedValues);
   };
-
-  // attribute values list logic
-  const attributes = globalAttributesLocalState.currentMerge.mergedValues;
-  const displayName = globalAttributesLocalState.currentMerge.displayValue;
 
   const maxVisible = 4;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -160,11 +153,10 @@ export const GlobalFacetAttributesEditModal = ({
     mergeDisplayName: string;
   }) => {
     dispatch({
-      type: 'REMOVE_FROM_CURRENT_MERGE',
-      payload: {
-        valueToRemove,
-      },
+      type: 'ADD_DEMERGED_VALUE',
+      payload: { valueToRemove },
     });
+
     if (attributes.length <= 1) {
       handleClose();
     }
@@ -172,7 +164,7 @@ export const GlobalFacetAttributesEditModal = ({
 
   return (
     <Modal.Root
-      opened={globalAttributesLocalState.currentMerge.isOpen}
+      opened={isOpen}
       onClose={handleClose}
       centered
       size={1150}
@@ -201,7 +193,7 @@ export const GlobalFacetAttributesEditModal = ({
               </EditFacetAttributesModalTableRow>
 
               <EditFacetAttributesModalTableRow
-                data-testid={`edit attribute modal ${globalAttributesLocalState.currentMerge.displayValue}`}
+                data-testid={`edit attribute modal ${displayName} row`}
               >
                 <Col>
                   <AttributesContainer>
@@ -240,33 +232,36 @@ export const GlobalFacetAttributesEditModal = ({
                 </Col>
 
                 <Col>
-                  <InputContainer showErrorState={!!error}>
-                    <InputDeprecated
-                      id={`Edit ${globalAttributesLocalState.currentMerge.displayValue} input field`}
-                      ref={(inputRef) => {
-                        inputRef?.focus();
-                      }}
-                      onChange={(event) => {
-                        handleUpdatedValue(event);
-                        setValue(event.target.value);
-                      }}
-                      placeholder="Enter merge name"
-                      label=""
-                      value={value}
-                      aria-label={`Edit ${globalAttributesLocalState.currentMerge.displayValue} input field`}
-                    />
-
-                    {!!error && (
-                      <StyledIcon
-                        width={20}
-                        height={20}
-                        src="/trading-hub/asset/icon-warning.svg"
-                        alt="edit-facet-attributes-error-icon"
+                  <div className={styles.inputWrapper}>
+                    <div className={styles.inputContainer}>
+                      <Input
+                        id={`Edit ${displayName} input field`}
+                        ref={(inputRef) => {
+                          inputRef?.focus();
+                        }}
+                        onChange={(event) => {
+                          handleUpdatedValue(event);
+                          setValue(event.target.value);
+                        }}
+                        placeholder="Enter merge name"
+                        label=""
+                        value={value}
+                        aria-label={`Edit ${displayName} input field`}
+                        aria-invalid={!!error}
                       />
-                    )}
-                  </InputContainer>
 
-                  {!!error && <StyledError>{error}</StyledError>}
+                      {!!error && (
+                        <StyledIcon
+                          width={20}
+                          height={20}
+                          src="/trading-hub/asset/icon-warning.svg"
+                          alt="edit-facet-attributes-error-icon"
+                        />
+                      )}
+                    </div>
+
+                    {!!error && <StyledError>{error}</StyledError>}
+                  </div>
                 </Col>
               </EditFacetAttributesModalTableRow>
             </EditFacetAttributesModalTable>

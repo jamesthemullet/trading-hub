@@ -145,6 +145,24 @@ export type RemoveFromCurrentMerge = {
   };
 };
 
+export type UpdateCurrentMergeValues = {
+  type: 'UPDATE_CURRENT_MERGE_VALUES';
+  payload: {
+    currentMergeValues: string[];
+  };
+};
+
+export type AddDemergedValue = {
+  type: 'ADD_DEMERGED_VALUE';
+  payload: {
+    valueToRemove: string;
+  };
+};
+
+export type ResetCurrentMergeLocalState = {
+  type: 'RESET_CURRENT_MERGE_LOCAL_STATE';
+};
+
 export type GlobalAttributesPageReducer =
   | ToggleAllAttributes
   | ToggleSelectedAttribute
@@ -161,7 +179,10 @@ export type GlobalAttributesPageReducer =
   | SetBoostedOrderAction
   | OpenMergeGroupModal
   | CloseMergeGroupModal
-  | RemoveFromCurrentMerge;
+  | RemoveFromCurrentMerge
+  | UpdateCurrentMergeValues
+  | AddDemergedValue
+  | ResetCurrentMergeLocalState;
 
 export type GlobalAttributesPageState = {
   boostedRows: FormattedBoostedRow[];
@@ -178,6 +199,8 @@ export type GlobalAttributesPageState = {
     isOpen: boolean;
     displayValue: string;
     mergedValues: string[];
+    demergedValues: string[];
+    currentMergeValues: string[];
   };
 };
 
@@ -549,6 +572,8 @@ export const globalAttributesPageReducer = (
           isOpen: true,
           displayValue: action.payload.displayValue,
           mergedValues: action.payload.mergedValues,
+          demergedValues: [],
+          currentMergeValues: action.payload.mergedValues,
         },
       };
     }
@@ -559,6 +584,40 @@ export const globalAttributesPageReducer = (
           isOpen: false,
           displayValue: '',
           mergedValues: [],
+          demergedValues: [],
+          currentMergeValues: [],
+        },
+      };
+    }
+    case 'UPDATE_CURRENT_MERGE_VALUES': {
+      return {
+        ...state,
+        currentMerge: {
+          ...state.currentMerge,
+          currentMergeValues: action.payload.currentMergeValues,
+        },
+      };
+    }
+    case 'ADD_DEMERGED_VALUE': {
+      const { valueToRemove } = action.payload;
+      return {
+        ...state,
+        currentMerge: {
+          ...state.currentMerge,
+          demergedValues: [...state.currentMerge.demergedValues, valueToRemove],
+          currentMergeValues: state.currentMerge.currentMergeValues.filter(
+            (val) => val !== valueToRemove
+          ),
+        },
+      };
+    }
+    case 'RESET_CURRENT_MERGE_LOCAL_STATE': {
+      return {
+        ...state,
+        currentMerge: {
+          ...state.currentMerge,
+          demergedValues: [],
+          currentMergeValues: state.currentMerge.mergedValues,
         },
       };
     }

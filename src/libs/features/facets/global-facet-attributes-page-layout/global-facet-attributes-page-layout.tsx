@@ -15,7 +15,7 @@ import type {
 } from '@/libs/api';
 import { ROUTES } from '@/libs/constants';
 import { FacetAttributesListActions } from '@/libs/containers';
-import { GlobalFacetAttributesEditModal } from '@/libs/containers/facets/global-facet-attributes-edit-modal';
+import { GlobalFacetAttributesEditModal } from '@/libs/containers/facets/global-facet-attributes-edit-modal/global-facet-attributes-edit-modal';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
 import { useGlobalFacetAttributesEditModal } from '@/libs/hooks/use-global-facet-attributes-edit-modal';
@@ -66,6 +66,8 @@ export const GlobalFacetAttributesPageLayout = ({
         isOpen: false,
         displayValue: '',
         mergedValues: [],
+        demergedValues: [],
+        currentMergeValues: [],
       },
     }
   );

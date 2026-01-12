@@ -36,4 +36,8 @@
       box-shadow: none;
     }
   }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-state-error-error);
+  }
 }

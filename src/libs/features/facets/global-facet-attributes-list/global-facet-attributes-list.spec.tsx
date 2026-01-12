@@ -49,7 +49,13 @@ describe('FacetAttributesList', () => {
       excludedRows: formattedRows.slice(4),
       merged: [],
       errorStates: {},
-      currentMerge: { isOpen: false, displayValue: '', mergedValues: [] },
+      currentMerge: {
+        isOpen: false,
+        displayValue: '',
+        mergedValues: [],
+        demergedValues: [],
+        currentMergeValues: [],
+      },
     },
     writeEnabled: true,
     setEditingValues: jest.fn(),
@@ -451,7 +457,13 @@ describe('FacetAttributesList', () => {
         excludedRows: [],
         merged: [],
         errorStates: {},
-        currentMerge: { isOpen: false, displayValue: '', mergedValues: [] },
+        currentMerge: {
+          isOpen: false,
+          displayValue: '',
+          mergedValues: [],
+          demergedValues: [],
+          currentMergeValues: [],
+        },
       },
     };
 

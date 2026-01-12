@@ -25,8 +25,9 @@ const mockFacet: MerchandisingReturnedGlobalFacet = {
 };
 
 describe('useGlobalFacetAttributesEditModal', () => {
-  const mockDispatch: ActionDispatch<[action: GlobalAttributesPageReducer]> =
-    jest.fn();
+  const mockDispatch = jest.fn() as jest.MockedFunction<
+    ActionDispatch<[action: GlobalAttributesPageReducer]>
+  >;
   const mockSetIsAwaitingUpdate = jest.fn();
 
   const baseState: GlobalAttributesPageState = {
@@ -35,11 +36,26 @@ describe('useGlobalFacetAttributesEditModal', () => {
     excludedRows: [],
     merged: [],
     errorStates: {},
-    currentMerge: { isOpen: false, displayValue: '', mergedValues: [] },
+    currentMerge: {
+      isOpen: false,
+      displayValue: '',
+      mergedValues: [],
+      demergedValues: [],
+      currentMergeValues: [],
+    },
   };
+
+  let rafSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    rafSpy = jest
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((cb: any) => cb(0));
+  });
+
+  afterEach(() => {
+    rafSpy.mockRestore();
   });
 
   it('handleEditModalError updates local state and dispatches SET_ERROR', () => {
@@ -172,10 +188,6 @@ describe('useGlobalFacetAttributesEditModal', () => {
       merged: [],
     };
 
-    const raf = jest
-      .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
-
     const { result } = renderHook(() =>
       useGlobalFacetAttributesEditModal({
         facet: mockFacet,
@@ -200,8 +212,6 @@ describe('useGlobalFacetAttributesEditModal', () => {
       type: 'TOGGLE_ALL_ATTRIBUTES',
       payload: { allSelected: false },
     });
-
-    raf.mockRestore();
   });
 
   it('handleEditModalSave works when only excludedRows selected (isFirstAttributeExcluded)', async () => {
@@ -222,10 +232,6 @@ describe('useGlobalFacetAttributesEditModal', () => {
       merged: [],
     };
 
-    const raf = jest
-      .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
-
     const { result } = renderHook(() =>
       useGlobalFacetAttributesEditModal({
         facet: mockFacet,
@@ -245,7 +251,6 @@ describe('useGlobalFacetAttributesEditModal', () => {
     expect(mockDispatch).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'CREATE_MERGE_GROUP' })
     );
-    raf.mockRestore();
   });
 
   it('passes provided countryCode to checkMergeNameUnique when given', async () => {
@@ -302,10 +307,6 @@ describe('useGlobalFacetAttributesEditModal', () => {
       merged: [],
     };
 
-    const raf = jest
-      .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
-
     const { result } = renderHook(() =>
       useGlobalFacetAttributesEditModal({
         facet: mockFacet,
@@ -324,8 +325,6 @@ describe('useGlobalFacetAttributesEditModal', () => {
     expect(mockDispatch).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'CREATE_MERGE_GROUP' })
     );
-
-    raf.mockRestore();
   });
 
   it('handleEditModalSave dispatches UPDATE_MERGE_GROUP when existing merge group selected', async () => {
@@ -345,10 +344,6 @@ describe('useGlobalFacetAttributesEditModal', () => {
       merged: [{ displayValue: 'MG', mergedValues: ['x', 'y'] }],
     };
 
-    const raf = jest
-      .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
-
     const { result } = renderHook(() =>
       useGlobalFacetAttributesEditModal({
         facet: mockFacet,
@@ -366,7 +361,244 @@ describe('useGlobalFacetAttributesEditModal', () => {
     expect(mockDispatch).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'UPDATE_MERGE_GROUP' })
     );
+  });
 
-    raf.mockRestore();
+  it('handleEditModalSave dispatches REMOVE_FROM_MERGE_GROUP for demerged values from existing merge group', async () => {
+    mockCheckMergeNameUnique.mockResolvedValue({ isUniqueValue: true });
+
+    const state: GlobalAttributesPageState = {
+      ...baseState,
+      currentMerge: {
+        isOpen: true,
+        displayValue: 'MG',
+        mergedValues: ['x', 'y', 'z'],
+        demergedValues: [],
+        currentMergeValues: [],
+      },
+      boostedRows: [
+        {
+          displayName: 'MG',
+          attributes: ['x', 'y', 'z'],
+          isMergeGroup: true,
+          isChecked: true,
+          order: 1,
+        },
+      ],
+      merged: [{ displayValue: 'MG', mergedValues: ['x', 'y', 'z'] }],
+    };
+
+    const { result } = renderHook(() =>
+      useGlobalFacetAttributesEditModal({
+        facet: mockFacet,
+        displayName: 'dn',
+        dispatch: mockDispatch,
+        globalAttributesLocalState: state,
+        setIsAwaitingUpdate: mockSetIsAwaitingUpdate,
+      })
+    );
+
+    await act(async () => {
+      await result.current.handleEditModalSave('UpdatedMG', ['y']);
+    });
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'REMOVE_FROM_MERGE_GROUP',
+      payload: {
+        valueToRemove: 'y',
+        mergeDisplayName: 'MG',
+      },
+    });
+
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'UPDATE_MERGE_GROUP' })
+    );
+  });
+
+  it('filters out demerged values from remaining merged values', async () => {
+    mockCheckMergeNameUnique.mockResolvedValue({ isUniqueValue: true });
+
+    const state: GlobalAttributesPageState = {
+      ...baseState,
+      currentMerge: {
+        isOpen: true,
+        displayValue: 'MG',
+        mergedValues: ['a', 'b', 'c'],
+        demergedValues: [],
+        currentMergeValues: [],
+      },
+      boostedRows: [
+        {
+          displayName: 'MG',
+          attributes: ['a', 'b', 'c'],
+          isMergeGroup: true,
+          isChecked: true,
+          order: 1,
+        },
+      ],
+      merged: [{ displayValue: 'MG', mergedValues: ['a', 'b', 'c'] }],
+    };
+
+    const { result } = renderHook(() =>
+      useGlobalFacetAttributesEditModal({
+        facet: mockFacet,
+        displayName: 'dn',
+        dispatch: mockDispatch,
+        globalAttributesLocalState: state,
+        setIsAwaitingUpdate: mockSetIsAwaitingUpdate,
+      })
+    );
+
+    await act(async () => {
+      await result.current.handleEditModalSave('FilteredMG', ['b']);
+    });
+
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'UPDATE_MERGE_GROUP',
+        payload: expect.objectContaining({
+          attributes: ['a', 'c'],
+        }),
+      })
+    );
+  });
+
+  it('uses currentMerge displayValue as fallback when original merge group has no displayValue', async () => {
+    mockCheckMergeNameUnique.mockResolvedValue({ isUniqueValue: true });
+
+    const state: GlobalAttributesPageState = {
+      ...baseState,
+      currentMerge: {
+        isOpen: true,
+        displayValue: 'CurrentMGName',
+        mergedValues: ['x', 'y', 'z'],
+        demergedValues: [],
+        currentMergeValues: [],
+      },
+      boostedRows: [
+        {
+          displayName: 'MG',
+          attributes: ['x', 'y', 'z'],
+          isMergeGroup: true,
+          isChecked: true,
+          order: 1,
+        },
+      ],
+      merged: [{ displayValue: '', mergedValues: ['x', 'y', 'z'] }],
+    };
+
+    const { result } = renderHook(() =>
+      useGlobalFacetAttributesEditModal({
+        facet: mockFacet,
+        displayName: 'dn',
+        dispatch: mockDispatch,
+        globalAttributesLocalState: state,
+        setIsAwaitingUpdate: mockSetIsAwaitingUpdate,
+      })
+    );
+
+    await act(async () => {
+      await result.current.handleEditModalSave('UpdatedMG', ['y']);
+    });
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'REMOVE_FROM_MERGE_GROUP',
+      payload: {
+        valueToRemove: 'y',
+        mergeDisplayName: 'CurrentMGName',
+      },
+    });
+  });
+
+  it('uses originalMergeGroup displayValue when removing demerged values', async () => {
+    mockCheckMergeNameUnique.mockResolvedValue({ isUniqueValue: true });
+
+    const state: GlobalAttributesPageState = {
+      ...baseState,
+      currentMerge: {
+        isOpen: true,
+        displayValue: 'OriginalMGName',
+        mergedValues: ['x', 'y', 'z'],
+        demergedValues: [],
+        currentMergeValues: [],
+      },
+      boostedRows: [
+        {
+          displayName: 'OriginalMGName',
+          attributes: ['x', 'y', 'z'],
+          isMergeGroup: true,
+          isChecked: true,
+          order: 1,
+        },
+      ],
+      merged: [
+        { displayValue: 'OriginalMGName', mergedValues: ['x', 'y', 'z'] },
+      ],
+    };
+
+    const { result } = renderHook(() =>
+      useGlobalFacetAttributesEditModal({
+        facet: mockFacet,
+        displayName: 'dn',
+        dispatch: mockDispatch,
+        globalAttributesLocalState: state,
+        setIsAwaitingUpdate: mockSetIsAwaitingUpdate,
+      })
+    );
+
+    await act(async () => {
+      await result.current.handleEditModalSave('UpdatedMG', ['x']);
+    });
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'REMOVE_FROM_MERGE_GROUP',
+      payload: {
+        valueToRemove: 'x',
+        mergeDisplayName: 'OriginalMGName',
+      },
+    });
+  });
+
+  it('does not dispatch REMOVE_FROM_MERGE_GROUP for values not in original merge group', async () => {
+    mockCheckMergeNameUnique.mockResolvedValue({ isUniqueValue: true });
+
+    const state: GlobalAttributesPageState = {
+      ...baseState,
+      currentMerge: {
+        isOpen: true,
+        displayValue: 'NewMG',
+        mergedValues: ['notInOriginal', 'alsoNotInOriginal'],
+        demergedValues: [],
+        currentMergeValues: [],
+      },
+      boostedRows: [
+        {
+          displayName: 'MG',
+          attributes: ['notInOriginal', 'alsoNotInOriginal'],
+          isMergeGroup: true,
+          isChecked: true,
+          order: 1,
+        },
+      ],
+      merged: [{ displayValue: 'MG', mergedValues: ['x', 'y', 'z'] }],
+    };
+
+    const { result } = renderHook(() =>
+      useGlobalFacetAttributesEditModal({
+        facet: mockFacet,
+        displayName: 'dn',
+        dispatch: mockDispatch,
+        globalAttributesLocalState: state,
+        setIsAwaitingUpdate: mockSetIsAwaitingUpdate,
+      })
+    );
+
+    await act(async () => {
+      await result.current.handleEditModalSave('NewMG', ['notInOriginal']);
+    });
+
+    const removeFromMergeGroupCalls = mockDispatch.mock.calls.filter(
+      (call) => call[0].type === 'REMOVE_FROM_MERGE_GROUP'
+    );
+    expect(removeFromMergeGroupCalls).toHaveLength(0);
   });
 });
