@@ -145,21 +145,21 @@ export type RemoveFromCurrentMerge = {
   };
 };
 
-export type UpdateCurrentMergeValues = {
+type UpdateCurrentMergeValues = {
   type: 'UPDATE_CURRENT_MERGE_VALUES';
   payload: {
     currentMergeValues: string[];
   };
 };
 
-export type AddDemergedValue = {
+type AddDemergedValue = {
   type: 'ADD_DEMERGED_VALUE';
   payload: {
     valueToRemove: string;
   };
 };
 
-export type ResetCurrentMergeLocalState = {
+type ResetCurrentMergeLocalState = {
   type: 'RESET_CURRENT_MERGE_LOCAL_STATE';
 };
 
