@@ -150,7 +150,7 @@ export const DateTimePickerModal = ({
           {...(writeEnabled && { onClick: openDatePicker })}
           isLabelHidden
           readOnly={!writeEnabled}
-          aria-label={label || 'Select date range'}
+          aria-label="Select date range"
         />
 
         {showCalendarIcon && (
@@ -167,17 +167,13 @@ export const DateTimePickerModal = ({
       </StyledInputContainer>
 
       <MantineProvider>
-        <Modal.Root
-          opened={opened}
-          onClose={close}
-          size="auto"
-          withinPortal
-          role="dialog"
-          aria-modal="true"
-          aria-label="Datepicker modal"
-        >
+        <Modal.Root opened={opened} onClose={close} size="auto" withinPortal>
           <Modal.Overlay backgroundOpacity={0.3} blur={3} />
-          <Modal.Content>
+          <Modal.Content
+            role="dialog"
+            aria-modal="true"
+            aria-label="Datepicker modal"
+          >
             <StyledModalBody>
               {hasDateRange ? (
                 <DatePicker

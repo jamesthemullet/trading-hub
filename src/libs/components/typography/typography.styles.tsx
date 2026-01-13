@@ -98,7 +98,8 @@ type TypographyProps = {
     | 'p'
     | 'span'
     | 'label'
-    | 'output';
+    | 'output'
+    | 'time';
   align?: 'left' | 'right';
   children: React.ReactNode;
 };

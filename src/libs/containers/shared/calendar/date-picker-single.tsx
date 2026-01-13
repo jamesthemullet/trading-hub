@@ -62,6 +62,11 @@ const weekDayFormat = (day: Date) => {
   return dayjs(day).format('ddd').charAt(0);
 };
 
+const calendarAriaLabels = {
+  previous: 'Go to previous month',
+  next: 'Go to next month',
+};
+
 export const DatePickerSingle = ({
   value,
   onChange,
@@ -118,6 +123,8 @@ export const DatePickerSingle = ({
           type="default"
           weekdayFormat={(date: string) => weekDayFormat(new Date(date))}
           value={value}
+          previousLabel={calendarAriaLabels.previous}
+          nextLabel={calendarAriaLabels.next}
           onChange={handleChange}
           minDate={new Date()}
           {...datePickerProps}

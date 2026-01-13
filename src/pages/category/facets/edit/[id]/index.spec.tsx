@@ -681,9 +681,9 @@ describe('Category Facet Management Editing', () => {
         });
       });
 
-      const saveButton = within(
-        screen.getByLabelText('Datepicker modal')
-      ).getByRole('button', { name: 'Close schedule editor' });
+      const saveButton = screen.getByRole('button', {
+        name: 'Close schedule editor',
+      });
       expect(saveButton).toBeEnabled();
       act(() => {
         saveButton.click();

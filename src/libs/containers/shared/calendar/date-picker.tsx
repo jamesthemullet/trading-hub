@@ -1,94 +1,25 @@
-import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
 import { useRef } from 'react';
 import { ActionIcon } from '@mantine/core';
 import type { DatePickerProps } from '@mantine/dates';
-import { DatePicker as MantineDatePicker } from '@mantine/dates';
+import { DatePicker as MantineDatePicker, TimeInput } from '@mantine/dates';
 
+import { Typography } from '@/libs/components';
 import { Toggle } from '@/libs/components/toggle/toggle';
-import { color } from '@/libs/utils/constants';
 
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
-import {
-  CalendarContainer,
-  Content,
-  Header,
-  OnAllTimeContainer,
-  OnAllTimeLabel,
-  StyledInfoContainer,
-  StyledInfoLabel,
-  StyledTimeInput,
-  StyledTimeInputGroup,
-  StyledValueLabel,
-} from './date-picker.styles';
+import styles from './date-picker.module.css';
 import { formatMonthDayDateTimeRange } from './format-date-range';
-
-const StyledDatePicker = styled(MantineDatePicker<'range'>)`
-  & .mantine-DatePicker-day[data-outside='true'] {
-    opacity: 0;
-  }
-
-  & .mantine-DatePicker-day[data-weekend='true'] {
-    color: #000000;
-  }
-
-  & .mantine-DatePicker-day[data-in-range] {
-    background: ${color.lightGreen};
-  }
-
-  & .mantine-DatePicker-day[data-first-in-range],
-  & .mantine-DatePicker-day[data-last-in-range] {
-    color: #ffffff;
-    background-color: transparent;
-    position: relative;
-    z-index: 1;
-  }
-  & .mantine-DatePicker-day[data-first-in-range]::before,
-  & .mantine-DatePicker-day[data-last-in-range]::before {
-    content: '';
-    position: absolute;
-    background-color: ${color.accent.primary.primary};
-    border-radius: 50%;
-    top: 0;
-    bottom: 0;
-    left: 0%;
-    right: 0;
-    z-index: -1;
-  }
-  & .mantine-DatePicker-day[data-first-in-range]::after {
-    content: '';
-    position: absolute;
-    background-color: ${color.lightGreen};
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    right: 0;
-    z-index: -2;
-  }
-  & .mantine-DatePicker-day[data-last-in-range]::after {
-    content: '';
-    position: absolute;
-    background-color: ${color.lightGreen};
-    top: 0;
-    bottom: 0;
-    right: 50%;
-    left: 0;
-    z-index: -2;
-  }
-  & .mantine-DatePicker-day[data-first-in-range][data-last-in-range]::after {
-    content: '';
-    display: none;
-  }
-
-  & .mantine-DatePicker-weekday {
-    color: #000000;
-  }
-`;
 
 const weekDayFormat = (day: string) => {
   return dayjs(day).format('ddd').charAt(0);
+};
+
+const calendarAriaLabels = {
+  previous: 'Go to previous month',
+  next: 'Go to next month',
 };
 
 export const DatePicker = (
@@ -119,6 +50,14 @@ export const DatePicker = (
     ? value[0] === null && value[1] === null
     : false;
 
+  const valueLabelContent = isToggleEnabled
+    ? 'All the time'
+    : props.value
+      ? formatMonthDayDateTimeRange(props.value, startTime, endTime)
+      : '';
+
+  const shouldRenderTimeElement = Boolean(value) && !isToggleEnabled;
+
   const handleSetEndTime = (time: string) => {
     if (
       value?.[0] &&
@@ -134,9 +73,9 @@ export const DatePicker = (
   };
 
   return (
-    <CalendarContainer>
-      <Header>
-        <OnAllTimeContainer>
+    <div className={styles.datepickerContainer}>
+      <div className={styles.datepickerHeader}>
+        <div className={styles.onAllTimeContainer}>
           <Toggle
             checked={isToggleEnabled}
             onChange={() => {
@@ -147,30 +86,37 @@ export const DatePicker = (
               }
             }}
           />
-          <OnAllTimeLabel>On all the time</OnAllTimeLabel>
-        </OnAllTimeContainer>
-      </Header>
+          <Typography>On all the time</Typography>
+        </div>
+      </div>
 
-      <StyledInfoContainer>
-        <StyledInfoLabel as="h4">Rule date and time duration</StyledInfoLabel>
+      <div className={styles.infoContainer}>
+        <Typography as="h2">Rule date and time duration</Typography>
+        {shouldRenderTimeElement ? (
+          <Typography variant="titleSmall" as="time">
+            {valueLabelContent}
+          </Typography>
+        ) : (
+          <Typography variant="titleSmall" as="span">
+            {valueLabelContent}
+          </Typography>
+        )}
+      </div>
 
-        <StyledValueLabel as={value && !isToggleEnabled ? 'time' : 'span'}>
-          {isToggleEnabled
-            ? 'All the time'
-            : props.value
-              ? formatMonthDayDateTimeRange(props.value, startTime, endTime)
-              : ''}
-        </StyledValueLabel>
-      </StyledInfoContainer>
-
-      <Content isDisabled={isToggleEnabled}>
-        <StyledDatePicker
+      <div
+        className={styles.datepickerContent}
+        data-is-disabled={isToggleEnabled}
+      >
+        <MantineDatePicker
+          className={styles.mantineDatepicker}
           allowSingleDateInRange
           size="sm"
           numberOfColumns={2}
           type="range"
           weekdayFormat={weekDayFormat}
           value={value}
+          previousLabel={calendarAriaLabels.previous}
+          nextLabel={calendarAriaLabels.next}
           onChange={(val: [string | null, string | null] | null) =>
             onChange([
               // istanbul ignore next
@@ -183,8 +129,8 @@ export const DatePicker = (
         />
 
         {isTimeEnabled && (
-          <StyledTimeInputGroup>
-            <StyledTimeInput
+          <div className={styles.timeInputGroup}>
+            <TimeInput
               label="Start time (GMT +1)"
               radius="xs"
               minTime="00:00"
@@ -211,7 +157,7 @@ export const DatePicker = (
               }
             />
 
-            <StyledTimeInput
+            <TimeInput
               label="End time (GMT +1)"
               radius="xs"
               maxTime="23:59"
@@ -238,9 +184,9 @@ export const DatePicker = (
                 </ActionIcon>
               }
             />
-          </StyledTimeInputGroup>
+          </div>
         )}
-      </Content>
-    </CalendarContainer>
+      </div>
+    </div>
   );
 };

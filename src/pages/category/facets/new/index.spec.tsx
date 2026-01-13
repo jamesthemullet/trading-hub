@@ -1,4 +1,4 @@
-import { act, screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -747,9 +747,7 @@ describe('Category Facet Management New', () => {
         endDate.click();
       });
 
-      const saveButton = within(
-        screen.getByLabelText('Datepicker modal')
-      ).getByRole('button', {
+      const saveButton = screen.getByRole('button', {
         name: 'Close schedule editor',
       });
       expect(saveButton).toBeEnabled();
