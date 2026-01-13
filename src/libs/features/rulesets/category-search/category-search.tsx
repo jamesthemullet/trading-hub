@@ -1,4 +1,10 @@
-import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
+import {
+  type ChangeEvent,
+  type FormEvent,
+  type KeyboardEvent,
+  useEffect,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -7,18 +13,10 @@ import type {
   MerchandisingPagination,
 } from '@/libs/api';
 import { Button, Count, ErrorMessage, Typography } from '@/libs/components';
-import {
-  Arrow,
-  ArrowContainer,
-  DropdownButton,
-  DropdownContainer,
-  DropdownOption,
-  DropdownWrapperNoBorder,
-} from '@/libs/components/dropdown/dropdown.styles';
+import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import {
   KeyWordPill,
   ModalFooter,
-  Popover,
   RemoveKeyWordPill,
   StyledCloseButton,
 } from '@/libs/components/search-keywords/search-keywords-modal.styles';
@@ -47,7 +45,7 @@ import styles from './category-search.module.css';
 
 const SEARCH_DEBOUNCE_WAIT = 500;
 
-const DEFAULT_DROPDOWN_WIDTH = 256;
+const DEFAULT_DROPDOWN_WIDTH = 250;
 const ACTIVE_DROPDOWN_WIDTH = 320;
 
 type Props = {
@@ -172,10 +170,10 @@ export const CategorySearch = ({
     await searchCategories(searchValue, countryCode);
   };
 
-  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleOnKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     // istanbul ignore else
-    if (e.key === 'Escape' && isDropdownOpen) {
-      e.preventDefault();
+    if (event.key === 'Escape' && isDropdownOpen) {
+      event.preventDefault();
       setIsDropdownOpen(false);
     }
   };
@@ -238,6 +236,18 @@ export const CategorySearch = ({
     );
   };
 
+  const handlePreviewMouseEnter = () => {
+    /* istanbul ignore next */
+    if (!previewCategory) {
+      return;
+    }
+    setVisibleTooltip(previewCategory);
+  };
+
+  const handlePreviewMouseLeave = () => {
+    setVisibleTooltip(undefined);
+  };
+
   return (
     <Wrapper>
       <Typography as="p" withMargin variant="labelMedium">
@@ -247,16 +257,20 @@ export const CategorySearch = ({
         </Count>
       </Typography>
       <div className={styles.dropdownWrapper}>
-        <DropdownWrapperNoBorder
-          isDropdownOpen={isDropdownOpen}
-          width={
+        <div
+          className={dropdownStyles.dropdownWrapper}
+          data-has-border-bottom="false"
+          data-height="large"
+          data-is-dropdown-open={isDropdownOpen}
+          data-width={
             previewCategory ? DEFAULT_DROPDOWN_WIDTH : ACTIVE_DROPDOWN_WIDTH
           }
           ref={dropdownWrapperRef}
-          onKeyDown={handleOnKeyDown}
         >
-          <DropdownButton
-            isDropdownOpen={isDropdownOpen}
+          <Button
+            className={dropdownStyles.dropdownButton}
+            type="button"
+            data-is-dropdown-open={isDropdownOpen}
             onClick={() =>
               selectedCategories.length > 1
                 ? setIsDropdownOpen(!isDropdownOpen)
@@ -266,52 +280,66 @@ export const CategorySearch = ({
             aria-expanded={isDropdownOpen}
             aria-label="select category"
             disabled={!previewCategory}
+            onMouseEnter={handlePreviewMouseEnter}
+            onMouseLeave={handlePreviewMouseLeave}
+            onKeyDown={handleOnKeyDown}
           >
             {previewCategory ? (
-              <span
-                onMouseEnter={() => setVisibleTooltip(previewCategory)}
-                onMouseLeave={() => setVisibleTooltip(undefined)}
-              >
+              <Typography as="span" variant="bodySmall">
                 {previewCategory}
-              </span>
+              </Typography>
             ) : (
               'Add categories to display here'
             )}
-            {previewCategory && getCurrentPath(previewCategory) && (
-              <Popover
-                isOpen={visibleTooltip}
-                role="tooltip"
-                style={{ top: '-32px' }}
-              >
-                {getCurrentName(previewCategory)}{' '}
-                {getCurrentPath(previewCategory)}
-              </Popover>
-            )}
-            <ArrowContainer borderLeft={false}>
-              <Arrow isDropdownOpen={isDropdownOpen} />
-            </ArrowContainer>
-          </DropdownButton>
+            {previewCategory &&
+              getCurrentPath(previewCategory) &&
+              visibleTooltip && (
+                <div
+                  className={styles.tooltip}
+                  data-is-open={visibleTooltip}
+                  role="tooltip"
+                >
+                  <Typography as="span" variant="bodySmall">
+                    {getCurrentName(previewCategory)}{' '}
+                    {getCurrentPath(previewCategory)}
+                  </Typography>
+                </div>
+              )}
+            <div className={dropdownStyles.arrowContainer}>
+              <span
+                className={dropdownStyles.arrow}
+                data-is-dropdown-open={isDropdownOpen}
+              />
+            </div>
+          </Button>
 
-          <DropdownContainer isDropdownOpen={isDropdownOpen} role="listbox">
+          <div
+            className={dropdownStyles.dropdownContentContainer}
+            data-is-dropdown-open={isDropdownOpen}
+            role="listbox"
+            tabIndex={-1}
+            onKeyDown={handleOnKeyDown}
+          >
             {selectedCategoriesInfo
               .filter((cat) => cat.id !== previewCategory)
               .map((category) => (
-                <DropdownOption
+                <Button
+                  className={dropdownStyles.dropdownOption}
+                  type="button"
                   key={category.id}
-                  hoverColour="#f5f5f5"
+                  data-hover-grey
                   onClick={() => {
                     setIsDropdownOpen(false);
                     selectPreviewCategory(category.id);
                   }}
-                  align="left"
                 >
                   <DropdownText>
                     {category.id} {formatHTMLStrings(category.name)}
                   </DropdownText>
-                </DropdownOption>
+                </Button>
               ))}
-          </DropdownContainer>
-        </DropdownWrapperNoBorder>
+          </div>
+        </div>
 
         <Button
           theme="filled"

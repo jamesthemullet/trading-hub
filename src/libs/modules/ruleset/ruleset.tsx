@@ -12,14 +12,15 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
+  Button,
   CombinedDropdown,
-  DropdownOption,
   ErrorMessage,
   Loader,
   Tabs,
   Text,
   Typography,
 } from '@/libs/components';
+import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { BulkActions } from '@/libs/containers/rulesets/bulk-actions-products';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
@@ -678,8 +679,9 @@ export const Ruleset = ({
                               ariaLabel="Select country view for visual editor"
                               width={155}
                             >
-                              <DropdownOption
-                                as="button"
+                              <Button
+                                className={dropdownStyles.dropdownOption}
+                                data-hover-grey
                                 onClick={() => {
                                   track({
                                     event:
@@ -695,8 +697,10 @@ export const Ruleset = ({
                                   alt="IE flag"
                                 />
                                 &nbsp; IE view
-                              </DropdownOption>
-                              <DropdownOption
+                              </Button>
+                              <Button
+                                className={dropdownStyles.dropdownOption}
+                                data-hover-grey
                                 as="button"
                                 onClick={() => {
                                   track({
@@ -713,7 +717,7 @@ export const Ruleset = ({
                                   alt="UK flag"
                                 />
                                 &nbsp; UK view
-                              </DropdownOption>
+                              </Button>
                             </CountryPreviewDropdown>
                           </CountryPreviewWrapper>
                         )}

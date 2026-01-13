@@ -5,3 +5,20 @@
   gap: var(--mns-spacing-1);
   align-items: center;
 }
+
+.tooltip {
+  position: absolute;
+  display: block;
+  top: -32px;
+  background-color: var(--color-surface-surface-container);
+  border-radius: 4px;
+  z-index: 1;
+  padding: var(--mns-spacing-1) var(--mns-spacing-2);
+  white-space: nowrap;
+  box-shadow: 0 2px 4px 0 #0000003d;
+}
+
+.tooltip:not([data-is-open]),
+.tooltip[data-is-open='false'] {
+  display: none;
+}

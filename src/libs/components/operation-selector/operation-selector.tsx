@@ -4,8 +4,9 @@ import { labels } from '@/libs/utils/ruleset-attributes';
 
 import Image from 'next/image';
 
+import { Button } from '../button/button';
 import { CombinedDropdown } from '../dropdown/dropdown';
-import { DropdownOption } from '../dropdown/dropdown.styles';
+import dropdownStyles from '../dropdown/dropdown.module.css';
 import styles from './operation-selector.module.css';
 
 export const OperationSelector = ({
@@ -36,7 +37,10 @@ export const OperationSelector = ({
           setCloseDropdown(false);
         }}
       >
-        <DropdownOption
+        <Button
+          className={dropdownStyles.dropdownOption}
+          data-hover-grey
+          type="button"
           onClick={() => {
             setCloseDropdown(true);
             setSelectedOperation('boost');
@@ -51,8 +55,11 @@ export const OperationSelector = ({
             height={20}
           />
           Boost
-        </DropdownOption>
-        <DropdownOption
+        </Button>
+        <Button
+          className={dropdownStyles.dropdownOption}
+          data-hover-grey
+          type="button"
           onClick={() => {
             setCloseDropdown(true);
             setSelectedOperation('bury');
@@ -67,10 +74,13 @@ export const OperationSelector = ({
             height={20}
           />
           Bury
-        </DropdownOption>
+        </Button>
         {hasIncludeExclude && (
           <>
-            <DropdownOption
+            <Button
+              className={dropdownStyles.dropdownOption}
+              data-hover-grey
+              type="button"
               onClick={() => {
                 setCloseDropdown(true);
                 setSelectedOperation('include');
@@ -85,9 +95,12 @@ export const OperationSelector = ({
                 height={20}
               />
               Include only
-            </DropdownOption>
+            </Button>
 
-            <DropdownOption
+            <Button
+              className={dropdownStyles.dropdownOption}
+              data-hover-grey
+              type="button"
               onClick={() => {
                 setCloseDropdown(true);
                 setSelectedOperation('exclude');
@@ -102,7 +115,7 @@ export const OperationSelector = ({
                 height={20}
               />
               Exclude only
-            </DropdownOption>
+            </Button>
           </>
         )}
       </CombinedDropdown>

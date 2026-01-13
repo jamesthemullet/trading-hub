@@ -562,19 +562,22 @@ describe('CategorySearch', () => {
         />
       );
 
-      expect(screen.queryByText('Dresses /l/dresses')).not.toBeVisible();
-      const category = screen.getByText('SubCategory_507');
+      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+      const dropdownButton = screen.getByRole('button', {
+        name: 'select category',
+      });
+      expect(within(dropdownButton).getByText('SubCategory_507')).toBeVisible();
 
-      await user.hover(category);
+      await user.hover(dropdownButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Dresses /l/dresses')).toBeVisible();
+        expect(screen.getByRole('tooltip')).toBeVisible();
       });
 
-      await user.hover(screen.getByText('Category'));
+      await user.unhover(dropdownButton);
 
       await waitFor(() => {
-        expect(screen.queryByText('Dresses /l/dresses')).not.toBeVisible();
+        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
       });
     });
 

@@ -44,8 +44,8 @@ describe('Search Keywords', () => {
 
     expect(screen.getByText('Search Keywords')).toBeInTheDocument();
     expect(screen.getByText('keyword1')).toBeVisible();
-    expect(screen.getByText('keyword2')).not.toBeVisible();
-    expect(screen.getByText('keyword3')).not.toBeVisible();
+    expect(screen.queryByText('keyword2')).not.toBeInTheDocument();
+    expect(screen.queryByText('keyword3')).not.toBeInTheDocument();
     expect(screen.queryByText('keyword4')).not.toBeInTheDocument();
   });
 

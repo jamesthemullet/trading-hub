@@ -7,14 +7,15 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
+  Button,
   ButtonDeprecated,
   CombinedDropdown,
-  DropdownOption,
   ErrorMessage,
   Search,
   Text,
   Typography,
 } from '@/libs/components';
+import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
@@ -573,8 +574,10 @@ export const FacetList = ({
                 icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}
                 ariaLabel="Select country for preview"
               >
-                <DropdownOption
-                  as="button"
+                <Button
+                  className={dropdownStyles.dropdownOption}
+                  data-hover-grey
+                  type="button"
                   onClick={() => {
                     track({ event: 'Change search facets preview to IE' });
                     setSelectedPreviewCountryCode?.('IE');
@@ -586,10 +589,14 @@ export const FacetList = ({
                     height={20}
                     alt="IE flag"
                   />
-                  &nbsp; IE view
-                </DropdownOption>
-                <DropdownOption
-                  as="button"
+                  <Typography as="span" variant="bodySmall">
+                    &nbsp; IE view
+                  </Typography>
+                </Button>
+                <Button
+                  className={dropdownStyles.dropdownOption}
+                  data-hover-grey
+                  type="button"
                   onClick={() => {
                     track({ event: 'Change search facets preview to UK' });
                     setSelectedPreviewCountryCode?.('UK');
@@ -602,7 +609,7 @@ export const FacetList = ({
                     alt="UK flag"
                   />
                   &nbsp; UK view
-                </DropdownOption>
+                </Button>
               </CombinedDropdown>
             </div>
           )}

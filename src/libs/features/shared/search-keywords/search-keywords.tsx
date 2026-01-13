@@ -1,16 +1,8 @@
-import { useEffect, useState } from 'react';
+import { type KeyboardEvent, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button, Count, ErrorMessage } from '@/libs/components';
-import {
-  Arrow,
-  ArrowContainer,
-  DropdownButton,
-  DropdownContainer,
-  DropdownHeading,
-  DropdownOption,
-  DropdownWrapperNoBorder,
-} from '@/libs/components/dropdown/dropdown.styles';
+import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { SearchBox } from '@/libs/components/search/search';
 import { Typography } from '@/libs/components/typography/typography';
 import { useOnOutsideClick } from '@/libs/hooks';
@@ -18,10 +10,10 @@ import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
 
 import Image from 'next/image';
 
-import styles from './search-keywords.module.css';
-
-const DEFAULT_DROPDOWN_WIDTH = 256;
+const DEFAULT_DROPDOWN_WIDTH = 250;
 const ACTIVE_DROPDOWN_WIDTH = 320;
+
+import styles from './search-keywords.module.css';
 
 export type Props = {
   addSearchTerm: (keyword: string) => void;
@@ -62,10 +54,10 @@ export const SearchKeywords = ({
     setDuplicationError('');
   };
 
-  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleOnKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     // istanbul ignore else
-    if (e.key === 'Escape' && isDropdownOpen) {
-      e.preventDefault();
+    if (event.key === 'Escape' && isDropdownOpen) {
+      event.preventDefault();
       setIsDropdownOpen(false);
     }
   };
@@ -124,16 +116,20 @@ export const SearchKeywords = ({
           <Count aria-label="number of keywords">{searchTerms.length}</Count>
         </Typography>
         <div className={styles.searchBoxContainer}>
-          <DropdownWrapperNoBorder
-            isDropdownOpen={isDropdownOpen}
-            width={
+          <div
+            className={dropdownStyles.dropdownWrapper}
+            data-has-border-bottom="false"
+            data-is-dropdown-open={isDropdownOpen}
+            data-width={
               previewSearchTerm ? DEFAULT_DROPDOWN_WIDTH : ACTIVE_DROPDOWN_WIDTH
             }
+            data-height="large"
             ref={dropdownWrapperRef}
-            onKeyDown={handleOnKeyDown}
           >
-            <DropdownButton
-              isDropdownOpen={isDropdownOpen}
+            <Button
+              type="button"
+              className={dropdownStyles.dropdownButton}
+              data-is-dropdown-open={isDropdownOpen}
               onClick={() =>
                 sortedSearchTerms.length > 1
                   ? setIsDropdownOpen(!isDropdownOpen)
@@ -143,35 +139,49 @@ export const SearchKeywords = ({
               aria-expanded={isDropdownOpen}
               aria-label="select keyword"
               disabled={!previewSearchTerm}
+              onKeyDown={handleOnKeyDown}
             >
-              <DropdownHeading>
+              <Typography as="span" variant="bodySmall">
                 {previewSearchTerm
                   ? previewSearchTerm
                   : 'Add categories to display here'}
-              </DropdownHeading>
-              <ArrowContainer borderLeft={false}>
-                <Arrow isDropdownOpen={isDropdownOpen} />
-              </ArrowContainer>
-            </DropdownButton>
+              </Typography>
+              <div className={dropdownStyles.arrowContainer}>
+                <span
+                  className={dropdownStyles.arrow}
+                  data-is-dropdown-open={isDropdownOpen}
+                />
+              </div>
+            </Button>
 
-            <DropdownContainer isDropdownOpen={isDropdownOpen} role="listbox">
-              {additionalSearchTerms.map((searchTerm) => (
-                <DropdownOption
-                  key={`search-term-${searchTerm}`}
-                  hoverColour="#f5f5f5"
-                  onClick={() => {
-                    setIsDropdownOpen(false);
-                    selectPreviewSearchTerm(searchTerm);
-                  }}
-                  align="left"
-                >
-                  <Typography className={styles.dropdownText}>
-                    {searchTerm}
-                  </Typography>
-                </DropdownOption>
-              ))}
-            </DropdownContainer>
-          </DropdownWrapperNoBorder>
+            {isDropdownOpen && (
+              <div
+                className={dropdownStyles.dropdownContentContainer}
+                data-is-dropdown-open={isDropdownOpen}
+                role="listbox"
+              >
+                {additionalSearchTerms.map((searchTerm) => (
+                  <Button
+                    className={dropdownStyles.dropdownOption}
+                    type="button"
+                    key={`search-term-${searchTerm}`}
+                    data-hover-grey
+                    onClick={() => {
+                      setIsDropdownOpen(false);
+                      selectPreviewSearchTerm(searchTerm);
+                    }}
+                  >
+                    <Typography
+                      className={styles.dropdownText}
+                      variant="bodySmall"
+                    >
+                      {searchTerm}
+                    </Typography>
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <Button
             theme="filled"

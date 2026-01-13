@@ -5,7 +5,6 @@ export * from './checkboxes/checkbox';
 export * from './checkboxes/checkboxes';
 export * from './count/count';
 export * from './dropdown/dropdown';
-export * from './dropdown/dropdown.styles';
 export * from './error-message/error-message';
 export * from './facet-order-input/facet-order-input';
 export * from './filter/filter';
