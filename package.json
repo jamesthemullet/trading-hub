@@ -5,7 +5,7 @@
   "engines": {
     "npm": ">=9.6.7",
     "yarn": "please-use-npm",
-    "node": "20.19.6",
+    "node": "20.20.0",
     "pnpm": "please-use-npm"
   },
   "scripts": {
@@ -79,13 +79,13 @@
     "@testing-library/user-event": "14.6.1",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.23",
-    "@types/node": "22.19.5",
+    "@types/node": "22.19.6",
     "@types/pluralize": "0.0.33",
     "@types/react": "19.2.8",
     "@types/react-dom": "19.2.3",
-    "@typescript-eslint/eslint-plugin": "8.52.0",
-    "@typescript-eslint/parser": "8.52.0",
-    "accented": "1.2.2",
+    "@typescript-eslint/eslint-plugin": "8.53.0",
+    "@typescript-eslint/parser": "8.53.0",
+    "accented": "1.2.3",
     "all-contributors-cli": "6.26.1",
     "concurrently": "9.2.1",
     "dotenv": "17.2.3",
@@ -128,7 +128,7 @@
     "swagger-typescript-api": "13.2.16",
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.52.0",
+    "typescript-eslint": "8.53.0",
     "typescript-plugin-css-modules": "5.2.0",
     "wait-on": "9.0.3"
   },
