@@ -13,7 +13,7 @@ import Image from 'next/image';
 
 import { InputDeprecated } from '../input/input';
 import { DatePicker } from './date-picker';
-import { Content } from './date-picker.styles';
+import datepickerStyles from './date-picker.module.css';
 import { DatePickerSingle } from './date-picker-single';
 import { formatDateMonthYearTimeRange } from './format-date-range';
 
@@ -194,7 +194,10 @@ export const DateTimePickerModal = ({
                 />
               )}
 
-              <Content isDisabled={tempDateRange[0] === null}>
+              <div
+                className={datepickerStyles.datepickerContent}
+                data-is-disabled={tempDateRange[0] === null}
+              >
                 <RangeSelector>
                   <Checkbox
                     label="No end date"
@@ -203,7 +206,7 @@ export const DateTimePickerModal = ({
                     onChange={() => setHasDateRange(!hasDateRange)}
                   />
                 </RangeSelector>
-              </Content>
+              </div>
             </StyledModalBody>
 
             <Footer>

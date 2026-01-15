@@ -1,62 +1,17 @@
-import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
 import { useRef } from 'react';
 import { ActionIcon } from '@mantine/core';
 import type { DatePickerProps } from '@mantine/dates';
-import { DatePicker as MantineDatePicker } from '@mantine/dates';
+import { DatePicker as MantineDatePicker, TimeInput } from '@mantine/dates';
 
+import { Typography } from '@/libs/components';
 import { Toggle } from '@/libs/components/toggle/toggle';
-import { color } from '@/libs/utils/constants';
 
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
-import {
-  CalendarContainer,
-  Content,
-  Header,
-  OnAllTimeContainer,
-  OnAllTimeLabel,
-  StyledInfoContainer,
-  StyledInfoLabel,
-  StyledTimeInput,
-  StyledTimeInputGroup,
-  StyledValueLabel,
-} from './date-picker.styles';
+import styles from './date-picker.module.css';
 import { formatMonthDayDateTimeRange } from './format-date-range';
-
-const StyledDatePicker = styled(MantineDatePicker<'default'>)`
-  & .mantine-DatePicker-day[data-outside='true'] {
-    opacity: 0;
-  }
-
-  & .mantine-DatePicker-day[data-weekend='true'] {
-    color: #000000;
-  }
-
-  & .mantine-DatePicker-day[data-weekend='true']:where([data-selected]),
-  & .mantine-DatePicker-day:where([data-selected]) {
-    color: #ffffff;
-    background-color: transparent;
-    position: relative;
-    z-index: 1;
-  }
-  & .mantine-DatePicker-day:where([data-selected])::before {
-    content: '';
-    position: absolute;
-    background-color: ${color.accent.primary.primary};
-    border-radius: 50%;
-    top: 0;
-    bottom: 0;
-    left: 0%;
-    right: 0;
-    z-index: -1;
-  }
-
-  & .mantine-DatePicker-weekday {
-    color: #000000;
-  }
-`;
 
 const weekDayFormat = (day: Date) => {
   return dayjs(day).format('ddd').charAt(0);
@@ -81,15 +36,21 @@ export const DatePickerSingle = ({
   const startTimeRef = useRef<HTMLInputElement>(null);
 
   const isToggleEnabled = value === null;
+  const valueLabelText = isToggleEnabled
+    ? 'All the time'
+    : value
+      ? formatMonthDayDateTimeRange([value, null], startTime)
+      : '';
+  const isTimeValueLabel = Boolean(value) && !isToggleEnabled;
 
   // istanbul ignore next
   const handleChange = (val: string | null) =>
     onChange(val ? new Date(val) : null);
 
   return (
-    <CalendarContainer>
-      <Header>
-        <OnAllTimeContainer>
+    <div className={styles.datepickerContainer}>
+      <div className={styles.datepickerHeader}>
+        <div className={styles.onAllTimeContainer}>
           <Toggle
             checked={isToggleEnabled}
             onChange={() => {
@@ -100,24 +61,27 @@ export const DatePickerSingle = ({
               }
             }}
           />
-          <OnAllTimeLabel>On all the time</OnAllTimeLabel>
-        </OnAllTimeContainer>
-      </Header>
+          <Typography>On all the time</Typography>
+        </div>
+      </div>
 
-      <StyledInfoContainer>
-        <StyledInfoLabel as="h4">Rule date and time duration</StyledInfoLabel>
+      <div className={styles.infoContainer}>
+        <Typography as="h2">Rule date and time duration</Typography>
 
-        <StyledValueLabel as={value && !isToggleEnabled ? 'time' : 'span'}>
-          {isToggleEnabled
-            ? 'All the time'
-            : value
-              ? formatMonthDayDateTimeRange([value, null], startTime)
-              : ''}
-        </StyledValueLabel>
-      </StyledInfoContainer>
+        {isTimeValueLabel ? (
+          <Typography variant="titleSmall" as="time">
+            {valueLabelText}
+          </Typography>
+        ) : (
+          <Typography variant="titleSmall">{valueLabelText}</Typography>
+        )}
+      </div>
 
-      <Content isDisabled={isToggleEnabled}>
-        <StyledDatePicker
+      <div
+        className={styles.datepickerContent}
+        data-is-disabled={isToggleEnabled}
+      >
+        <MantineDatePicker
           size="sm"
           numberOfColumns={2}
           type="default"
@@ -130,8 +94,8 @@ export const DatePickerSingle = ({
           {...datePickerProps}
         />
 
-        <StyledTimeInputGroup>
-          <StyledTimeInput
+        <div className={styles.timeInputGroup}>
+          <TimeInput
             label="Start time (GMT +1)"
             radius="xs"
             minTime="00:00"
@@ -158,7 +122,7 @@ export const DatePickerSingle = ({
             }
           />
 
-          <StyledTimeInput
+          <TimeInput
             label="End time (GMT +1)"
             radius="xs"
             maxTime="23:59"
@@ -175,8 +139,8 @@ export const DatePickerSingle = ({
               </ActionIcon>
             }
           />
-        </StyledTimeInputGroup>
-      </Content>
-    </CalendarContainer>
+        </div>
+      </div>
+    </div>
   );
 };

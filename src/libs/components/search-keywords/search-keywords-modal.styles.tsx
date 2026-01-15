@@ -75,15 +75,3 @@ export const ModalFooter = styled.div`
 export const StyledCloseButton = styled(ButtonDeprecated)`
   margin-left: auto;
 `;
-
-export const Popover = styled.div<{ isOpen: string | undefined }>`
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
-  position: absolute;
-  background-color: ${color.surface.surfaceContainer};
-  border-radius: 4px;
-  z-index: 1;
-  padding: ${spacing(1)} ${spacing(2)};
-  font-size: 14px;
-  white-space: nowrap;
-  box-shadow: 0px 2px 4px 0px #0000003d;
-`;

@@ -29,6 +29,12 @@
   }
 }
 
+.valueLabel {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .datepickerContent {
   --datepicker-range-highlight: #dfece2;
   display: flex;
@@ -39,6 +45,29 @@
   }
   & :global([class~='mantine-DatePicker-day'][data-weekend='true']) {
     color: var(--color-surface-bright-on-surface-bright);
+  }
+  &
+    :global(
+      [class~='mantine-DatePicker-day'][data-weekend='true']:where(
+          [data-selected]
+        )
+    ),
+  & :global([class~='mantine-DatePicker-day']:where([data-selected])) {
+    color: var(--color-surface-bright-surface-bright);
+    background-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+  & :global([class~='mantine-DatePicker-day']:where([data-selected]))::before {
+    content: '';
+    position: absolute;
+    background-color: var(--color-accent-primary-primary);
+    border-radius: 50%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
   }
   & :global([class~='mantine-DatePicker-day'][data-in-range]) {
     background: var(--datepicker-range-highlight);
