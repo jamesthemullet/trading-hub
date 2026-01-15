@@ -2,56 +2,50 @@ import { Skeleton } from '@mantine/core';
 
 import { Typography } from '@/libs/components';
 import { COLUMNS } from '@/libs/constants/facets-panel-columns';
-import {
-  ActionContainer,
-  Actions,
-  AttributesTable,
-  Col,
-  LowerHeading,
-  Row,
-  SectionWrapper,
-} from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 
 export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
   return (
     <>
-      <ActionContainer>
+      <div className={styles.actionContainer}>
         <h1>{title}</h1>
-        <Actions>
+        <div className={styles.actions}>
           <Skeleton miw={150} />
           <Skeleton miw={150} />
           <Skeleton miw={150} />
-        </Actions>
-      </ActionContainer>
-      <SectionWrapper>
-        <LowerHeading isStrong>Rule scope</LowerHeading>
+        </div>
+      </div>
+      <div className={styles.sectionWrapper}>
+        <Typography variant="bodyMedium" isStrong>
+          Rule scope
+        </Typography>
         <Skeleton height={96} width="100%" />
-      </SectionWrapper>
-      <SectionWrapper>
+      </div>
+      <div className={styles.sectionWrapper}>
         <Skeleton height={41} />
-      </SectionWrapper>
-      <AttributesTable>
-        <Row>
+      </div>
+      <div className={styles.attributesTable}>
+        <div className={styles.facetTableRow}>
           {COLUMNS.map(({ label }) => (
-            <Col key={`column-${label}`}>
+            <div key={`column-${label}`} className={styles.tableCol}>
               <Typography isStrong variant="bodySmall">
                 {label}
               </Typography>
-            </Col>
+            </div>
           ))}
-        </Row>
+        </div>
         {Array.from({ length: 5 }).map((_, index) => {
           return (
-            <Row key={index}>
+            <div key={index} className={styles.facetTableRow}>
               {COLUMNS.map(({ label }) => (
-                <Col key={`column-${label}`}>
+                <div key={`column-${label}`} className={styles.tableCol}>
                   <Skeleton miw={150} mih={43} />
-                </Col>
+                </div>
               ))}
-            </Row>
+            </div>
           );
         })}
-      </AttributesTable>
+      </div>
     </>
   );
 };

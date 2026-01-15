@@ -7,7 +7,7 @@ import type {
 } from '@/libs/api';
 import { Loader } from '@/libs/components/loader/loader';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
-import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import type {
   FormattedRow,
@@ -135,7 +135,7 @@ export const GlobalEditableLabel = ({
   };
 
   return (
-    <Col>
+    <div className={styles.tableCol}>
       <EditableLabel
         displayValue={displayName}
         onCancel={() => handleError('')}
@@ -167,6 +167,6 @@ export const GlobalEditableLabel = ({
         writeEnabled={writeEnabled}
       />
       {isAwaitingUpdate && <Loader isInModal />}
-    </Col>
+    </div>
   );
 };

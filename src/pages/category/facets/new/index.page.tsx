@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { FacetsList } from '@/libs/features';
 import { useRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { FacetList } from '@/libs/modules/facet-list/facet-list';
 
 import Head from 'next/head';
 
@@ -85,7 +85,7 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      <FacetList
+      <FacetsList
         facetType="category"
         isNewRuleset
         onCancel={handleCancel}

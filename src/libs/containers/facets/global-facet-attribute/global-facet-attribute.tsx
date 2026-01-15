@@ -8,7 +8,7 @@ import {
   MergedValue,
   RemoveMergedFacet,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 
 const StyledText = styled(Text)`
@@ -77,7 +77,7 @@ export const GlobalFacetAttribute = ({
 
   return (
     <>
-      <Col>
+      <div className={styles.tableCol}>
         {writeEnabled && (
           <Checkbox
             checked={isChecked}
@@ -86,9 +86,9 @@ export const GlobalFacetAttribute = ({
             showLabel={false}
           />
         )}
-      </Col>
+      </div>
 
-      <Col>
+      <div className={styles.tableCol}>
         <AttributeWrapper>
           {attributes.length > 1 ? (
             <div>
@@ -131,7 +131,7 @@ export const GlobalFacetAttribute = ({
           )}
         </AttributeWrapper>
         {isAwaitingUpdate && <Loader isInModal />}
-      </Col>
+      </div>
     </>
   );
 };

@@ -41,7 +41,7 @@ import { GlobalArrowButtons } from '@/libs/containers/facets/global-arrow-button
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -49,8 +49,6 @@ import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-r
 import { globalAttributesReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 import { color } from '@/libs/utils/constants';
 import { spacing } from '@/libs/utils/spacing';
-
-import styles from './global-facets-panel-modal.module.css';
 
 const ModalContainer = styled.div`
   height: 100%;
@@ -442,7 +440,7 @@ export const GlobalFacetPanelModalContent = ({
                 setEditingValues={setEditingValues}
               />
 
-              <Col>
+              <div className={styles.tableCol}>
                 {displayType === 'included' && (
                   <GlobalArrowButtons
                     displayName={displayName}
@@ -456,9 +454,9 @@ export const GlobalFacetPanelModalContent = ({
                     dispatch={dispatch}
                   />
                 )}
-              </Col>
+              </div>
 
-              <Col>
+              <div className={styles.tableCol}>
                 <CombinedDropdown
                   variant="facetOrder"
                   status={displayType}
@@ -470,7 +468,7 @@ export const GlobalFacetPanelModalContent = ({
                   hasAlgoControl
                   ariaLabel="Select to set as included, excluded or algo control"
                 />
-              </Col>
+              </div>
             </GlobalFacetAttributeValuesTableRow>
           );
         }
@@ -572,14 +570,17 @@ export const GlobalFacetPanelModalContent = ({
           <ModalAttributesTable>
             <GlobalFacetAttributeValuesTableRow modal>
               {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-                <Col key={`add-facet-modal-column-${label}`}>
+                <div
+                  key={`add-facet-modal-column-${label}`}
+                  className={styles.tableCol}
+                >
                   {label ? (
                     <Typography isStrong variant="bodySmall">
                       {label}
                     </Typography>
                   ) : (
                     label === null && (
-                      <Col>
+                      <div className={styles.tableCol}>
                         <Checkbox
                           label="Select all facet attributes"
                           showLabel={false}
@@ -602,10 +603,10 @@ export const GlobalFacetPanelModalContent = ({
                             });
                           }}
                         />
-                      </Col>
+                      </div>
                     )
                   )}
-                </Col>
+                </div>
               ))}
             </GlobalFacetAttributeValuesTableRow>
           </ModalAttributesTable>

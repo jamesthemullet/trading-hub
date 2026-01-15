@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { FacetsList } from '@/libs/features';
 import { useSearchRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { FacetList } from '@/libs/modules/facet-list/facet-list';
 
 import Head from 'next/head';
 
@@ -82,7 +82,7 @@ const NewRuleSetPage = () => {
         breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
       />
 
-      <FacetList
+      <FacetsList
         facetType="search"
         isNewRuleset
         onCancel={handleCancel}

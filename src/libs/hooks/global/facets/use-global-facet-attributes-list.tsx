@@ -13,10 +13,10 @@ import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-la
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import type { FacetDisplayType } from '@/libs/features/facets/facets-list/facets-list';
+import facetsPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
-import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
 import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 import type {
   FormattedRow,
@@ -200,7 +200,9 @@ export const useGlobalFacetAttributesList = ({
                 onInputBlur={handleInputBlur}
                 onInputKeyDown={handleInputKeyDown}
               />
-              <div className={styles.facetOrderInput}>
+              <div
+                className={`${facetsPanelStyles.tableCol} ${styles.facetOrderInput}`}
+              >
                 {displayType === 'included' && order && (
                   <FacetOrderInput
                     displayValue={displayName}
@@ -238,7 +240,7 @@ export const useGlobalFacetAttributesList = ({
                 writeEnabled={writeEnabled}
               />
 
-              <Col>
+              <div className={facetsPanelStyles.tableCol}>
                 <CombinedDropdown
                   variant="facetOrder"
                   status={displayType}
@@ -251,9 +253,12 @@ export const useGlobalFacetAttributesList = ({
                   ariaLabel="Select to set as included, excluded or algo control"
                   width={150}
                 />
-              </Col>
+              </div>
 
-              <Col aria-hidden={displayType !== 'included'}>
+              <div
+                className={facetsPanelStyles.tableCol}
+                aria-hidden={displayType !== 'included'}
+              >
                 {displayType === 'included' ? (
                   <DragHandleButton
                     type="button"
@@ -272,7 +277,7 @@ export const useGlobalFacetAttributesList = ({
                     />
                   </DragHandleButton>
                 ) : null}
-              </Col>
+              </div>
             </GlobalFacetAttributeValuesTableRow>
           );
 

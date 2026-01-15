@@ -1,0 +1,59 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--mns-spacing-4);
+  padding: var(--mns-spacing-2) var(--mns-spacing-2-5);
+  border-top: 1px solid var(--color-accent-primary-primary);
+}
+
+.buttonsContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--mns-spacing-1-5);
+
+  & button {
+    padding: var(--mns-spacing-1) var(--mns-spacing-2);
+    background: var(--color-surface-bright-surface-bright);
+    display: flex;
+    align-items: center;
+    gap: var(--mns-spacing-1);
+    border: 1px solid var(--color-accent-primary-primary);
+    color: var(--color-accent-primary-primary);
+    border-radius: 4px;
+    transition: all 0.1s ease-in;
+
+    &:hover {
+      background-color: #dfece2;
+    }
+    &:disabled {
+      opacity: 1;
+      border-color: var(--color-state-disabled-disabled);
+      color: var(--color-state-disabled-disabled);
+      cursor: not-allowed;
+      & .mergeIcon {
+        --color-fill: var(--color-state-disabled-disabled);
+      }
+    }
+    &:hover:disabled {
+      background-color: var(--color-surface-bright-surface-bright);
+    }
+  }
+}
+.mergeIcon {
+  --color-fill: var(--color-accent-primary-primary);
+}
+
+.dragText {
+  color: var(--color-surface-on-surface-variant);
+
+  font-style: italic;
+}
+
+.searchWrapper {
+  justify-content: flex-end;
+  display: flex;
+  flex-grow: 1;
+  max-width: 520px;
+}

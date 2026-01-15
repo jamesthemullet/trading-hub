@@ -12,7 +12,7 @@ import {
 } from '@/libs/components/modals/modal.styles';
 import { Input } from '@/libs/containers/shared';
 import { EditFacetAttributesModalTableRow } from '@/libs/containers/shared/table/table.styles';
-import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import facetsPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import type {
   GlobalAttributesPageReducer,
   GlobalAttributesPageState,
@@ -184,18 +184,21 @@ export const GlobalFacetAttributesEditModal = ({
             <EditFacetAttributesModalTable>
               <EditFacetAttributesModalTableRow>
                 {EDIT_FACET_ATTRIBUTES_MODALCOLUMNS.map(({ label }) => (
-                  <Col key={`edit-facet-attributes-modal-column-${label}`}>
+                  <div
+                    key={`edit-facet-attributes-modal-column-${label}`}
+                    className={facetsPanelStyles.tableCol}
+                  >
                     <Typography isStrong variant="bodySmall">
                       {label}
                     </Typography>
-                  </Col>
+                  </div>
                 ))}
               </EditFacetAttributesModalTableRow>
 
               <EditFacetAttributesModalTableRow
                 data-testid={`edit attribute modal ${displayName} row`}
               >
-                <Col>
+                <div className={facetsPanelStyles.tableCol}>
                   <AttributesContainer>
                     <Text isStrong>Merged Value Group</Text>
 
@@ -229,9 +232,9 @@ export const GlobalFacetAttributesEditModal = ({
                       </StyledText>
                     )}
                   </AttributesContainer>
-                </Col>
+                </div>
 
-                <Col>
+                <div className={facetsPanelStyles.tableCol}>
                   <div className={styles.inputWrapper}>
                     <div className={styles.inputContainer}>
                       <Input
@@ -262,7 +265,7 @@ export const GlobalFacetAttributesEditModal = ({
 
                     {!!error && <StyledError>{error}</StyledError>}
                   </div>
-                </Col>
+                </div>
               </EditFacetAttributesModalTableRow>
             </EditFacetAttributesModalTable>
           </ModalContainer>

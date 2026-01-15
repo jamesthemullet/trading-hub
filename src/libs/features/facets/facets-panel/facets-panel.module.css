@@ -60,3 +60,60 @@
 .lowerHeading {
   margin-bottom: var(--mns-spacing-2);
 }
+
+.actionContainer {
+  display: flex;
+}
+
+.actionContainer h1 {
+  padding: var(--mns-spacing-3) var(--mns-spacing-2);
+}
+
+.actionContainer a,
+.actionContainer button {
+  min-width: 150px;
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  gap: var(--mns-spacing-2);
+  margin-left: auto;
+  padding: var(--mns-spacing-2);
+}
+
+.scopeWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mns-spacing-2);
+  align-items: flex-end;
+}
+
+.duration {
+  display: flex;
+  flex-direction: column;
+}
+
+.duration label {
+  margin-top: var(--mns-spacing-0-5);
+}
+
+.attributesTable {
+  display: flex;
+  flex-direction: column;
+  margin: var(--mns-spacing-2);
+}
+
+.sectionWrapper {
+  box-shadow: #000 0 0 10px -5px;
+  margin: var(--mns-spacing-2);
+  margin-bottom: 0;
+  border-radius: 4px;
+  padding: var(--mns-spacing-2);
+}
+
+.orderColumn {
+  display: flex;
+  gap: var(--mns-spacing-1);
+  padding-right: var(--mns-spacing-1);
+}

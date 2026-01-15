@@ -4,9 +4,9 @@ import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { FacetsPanelSkeleton } from '@/libs/containers';
+import { FacetsList } from '@/libs/features';
 import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
-import { FacetList } from '@/libs/modules/facet-list/facet-list';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -94,7 +94,7 @@ const Page = ({ id }: { id: string }) => {
       {isLoading ? (
         <FacetsPanelSkeleton title="Facet Rule Editor" aria-busy="true" />
       ) : (
-        <FacetList
+        <FacetsList
           facetType="category"
           categoriesInfo={ruleSetDetail.categoriesInfo}
           isNewRuleset={false}

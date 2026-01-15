@@ -32,7 +32,7 @@ import {
   ModalFooter,
 } from '@/libs/components/modals/modal.styles';
 import { SearchCategoryFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -205,13 +205,13 @@ export const SearchAndCategoryFacetsPanelModal = ({
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
             modal
           >
-            <Col>
+            <div className={styles.tableCol}>
               <AttributeWrapper>
                 <Text>{displayValue}</Text>
               </AttributeWrapper>
-            </Col>
+            </div>
 
-            <Col>
+            <div className={styles.tableCol}>
               {displayType === 'included' && (
                 <AttributeWrapper>
                   <FacetOrderInput
@@ -231,15 +231,15 @@ export const SearchAndCategoryFacetsPanelModal = ({
                   />
                 </AttributeWrapper>
               )}
-            </Col>
+            </div>
 
-            <Col>
+            <div className={styles.tableCol}>
               <Text data-testid={`Label for ${displayValue}`}>
                 {displayValue}
               </Text>
-            </Col>
+            </div>
 
-            <Col>
+            <div className={styles.tableCol}>
               {displayType === 'included' && (
                 <OrderArrowsContainer>
                   <ArrowButton
@@ -269,9 +269,9 @@ export const SearchAndCategoryFacetsPanelModal = ({
                   />
                 </OrderArrowsContainer>
               )}
-            </Col>
+            </div>
 
-            <Col>
+            <div className={styles.tableCol}>
               <CombinedDropdown
                 variant="facetOrder"
                 hasAlgoControl
@@ -286,7 +286,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
                 writeEnabled={writeEnabled}
                 ariaLabel="Select to set as included, excluded or algo control"
               />
-            </Col>
+            </div>
           </SearchCategoryFacetAttributeValuesTableRow>
         );
       });
@@ -356,11 +356,14 @@ export const SearchAndCategoryFacetsPanelModal = ({
               <ModalAttributesTable>
                 <SearchCategoryFacetAttributeValuesTableRow modal>
                   {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-                    <Col key={`add-facet-modal-column-${label}`}>
+                    <div
+                      key={`add-facet-modal-column-${label}`}
+                      className={styles.tableCol}
+                    >
                       <Typography isStrong variant="bodySmall">
                         {label}
                       </Typography>
-                    </Col>
+                    </div>
                   ))}
                 </SearchCategoryFacetAttributeValuesTableRow>
               </ModalAttributesTable>

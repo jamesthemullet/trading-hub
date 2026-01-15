@@ -218,6 +218,7 @@ export const GlobalFacetAttributesPageLayout = ({
         isMergeDisabled={checkedRows.length < 2}
         onMergeClick={handleMerge}
         writeEnabled={writeEnabled}
+        checkedRows={checkedRows.length}
       />
 
       <GlobalFacetAttributesList

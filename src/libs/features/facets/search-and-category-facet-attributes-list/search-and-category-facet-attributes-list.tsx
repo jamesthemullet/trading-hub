@@ -10,10 +10,10 @@ import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SearchCategoryFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import type { FacetDisplayType } from '@/libs/features/facets/facets-list/facets-list';
+import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
-import type { FacetDisplayType } from '@/libs/modules/facet-list/facet-list';
 import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 
 import {
@@ -162,7 +162,7 @@ export const SearchAndCategoryFacetAttributesList = ({
             isExcluded={displayType === 'excluded'}
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
           >
-            <Col>
+            <div className={styles.tableCol}>
               {displayType === 'included' && order !== undefined && (
                 <FacetOrderInput
                   displayValue={displayValue}
@@ -180,21 +180,21 @@ export const SearchAndCategoryFacetAttributesList = ({
                   writeEnabled={writeEnabled}
                 />
               )}
-            </Col>
+            </div>
 
-            <Col>
+            <div className={styles.tableCol}>
               <AttributeWrapper>
                 <Text>{displayValue}</Text>
               </AttributeWrapper>
-            </Col>
+            </div>
 
-            <Col>
+            <div className={styles.tableCol}>
               <Text data-testid={`Label for ${displayValue}`}>
                 {displayValue}
               </Text>
-            </Col>
+            </div>
 
-            <Col>
+            <div className={styles.tableCol}>
               <CombinedDropdown
                 variant="facetOrder"
                 hasAlgoControl
@@ -209,9 +209,9 @@ export const SearchAndCategoryFacetAttributesList = ({
                 writeEnabled={writeEnabled}
                 ariaLabel="Select to set as included, excluded or algo control"
               />
-            </Col>
+            </div>
 
-            <Col>
+            <div className={styles.tableCol}>
               {displayType === 'included' && order !== undefined && (
                 <DragHandleButton
                   type="button"
@@ -230,7 +230,7 @@ export const SearchAndCategoryFacetAttributesList = ({
                   />
                 </DragHandleButton>
               )}
-            </Col>
+            </div>
           </SearchCategoryFacetAttributeValuesTableRow>
         );
 
@@ -294,11 +294,14 @@ export const SearchAndCategoryFacetAttributesList = ({
     <>
       <SearchCategoryFacetAttributeValuesTableRow>
         {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-          <Col key={`add-facet-modal-column-${label}`}>
+          <div
+            key={`add-facet-modal-column-${label}`}
+            className={styles.tableCol}
+          >
             <Typography isStrong variant="bodySmall">
               {label}
             </Typography>
-          </Col>
+          </div>
         ))}
       </SearchCategoryFacetAttributeValuesTableRow>
 

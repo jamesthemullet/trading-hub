@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@/libs/components';
 import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import { Col } from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGlobalFacetAttributesList } from '@/libs/hooks/global/facets/use-global-facet-attributes-list';
 import type {
   GlobalAttributesPageReducer,
@@ -176,14 +176,17 @@ export const GlobalFacetAttributesList = ({
     <>
       <GlobalFacetAttributeValuesTableRow>
         {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-          <Col key={`add-facet-modal-column-${label}`}>
+          <div
+            key={`add-facet-modal-column-${label}`}
+            className={styles.tableCol}
+          >
             {label ? (
               <Typography isStrong variant="bodySmall">
                 {label}
               </Typography>
             ) : (
               label === null && (
-                <Col>
+                <div className={styles.tableCol}>
                   {writeEnabled && (
                     <Checkbox
                       label="Select all facet attributes"
@@ -202,10 +205,10 @@ export const GlobalFacetAttributesList = ({
                       }}
                     />
                   )}
-                </Col>
+                </div>
               )
             )}
-          </Col>
+          </div>
         ))}
       </GlobalFacetAttributeValuesTableRow>
 

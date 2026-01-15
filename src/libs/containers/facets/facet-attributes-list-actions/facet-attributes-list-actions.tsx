@@ -1,82 +1,68 @@
-import isPropValid from '@emotion/is-prop-valid';
-import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
 
-import { ButtonDeprecated, Search } from '@/libs/components';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
+import { Button, Search } from '@/libs/components';
+import { Typography } from '@/libs/components/typography/typography';
 
-import Image from 'next/image';
-
-const FacetAttributesListActionsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: ${spacing(4)};
-  padding: ${spacing(2)} ${spacing(2.5)};
-  border-top: 1px solid ${color.accent.primary.primary};
-`;
-const FacetAttributesActionsButtonsContainer = styled.div`
-  height: 100%;
-  min-width: 290px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-grow: 2;
-`;
-
-const FacetAttributesActionsButton = styled(ButtonDeprecated, {
-  shouldForwardProp: (prop) => isPropValid(prop) || prop === 'theme',
-})`
-  display: flex;
-  align-items: center;
-  width: auto;
-  gap: ${spacing(1)};
-  line-height: 1;
-`;
-
-const SearchWrapper = styled.div`
-  justify-content: flex-end;
-  display: flex;
-  flex-grow: 3;
-`;
+import styles from './facet-attributes-list-actions.module.css';
 
 export const FacetAttributesListActions = ({
   onSearchChange,
   onMergeClick,
+  writeEnabled,
   isMergeHidden = false,
   isMergeDisabled = true,
-  writeEnabled,
+  checkedRows = 0,
 }: {
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onMergeClick?: () => void;
+  writeEnabled: boolean;
   isMergeHidden?: boolean;
   isMergeDisabled?: boolean;
-  writeEnabled: boolean;
+  checkedRows?: number;
 }) => {
+  const isDisabled = isMergeDisabled || !writeEnabled;
   return (
-    <FacetAttributesListActionsContainer>
-      <FacetAttributesActionsButtonsContainer>
+    <div className={styles.container}>
+      <div className={styles.buttonsContainer}>
         {!isMergeHidden && (
-          <FacetAttributesActionsButton
-            theme="secondary"
-            onClick={onMergeClick}
-            disabled={isMergeDisabled || !writeEnabled}
-          >
-            <Image
-              src="/trading-hub/asset/icon-merge.svg"
-              width="18"
-              height="18"
-              alt=""
-            />
-            <span>Merge</span>
-          </FacetAttributesActionsButton>
-        )}
-      </FacetAttributesActionsButtonsContainer>
+          <>
+            <Button
+              className={styles.button}
+              theme="primary"
+              onClick={onMergeClick}
+              isDisabled={isDisabled}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <use
+                  href="/trading-hub/asset/icon-merge.svg"
+                  className={styles.mergeIcon}
+                />
+              </svg>
 
-      <SearchWrapper>
+              <span>Merge</span>
+            </Button>
+
+            <Typography
+              variant="bodyMedium"
+              className={checkedRows > 0 ? '' : styles.dragText}
+            >
+              {checkedRows > 0
+                ? `${checkedRows} selected`
+                : 'Drag and drop to change ranking below'}
+            </Typography>
+          </>
+        )}
+      </div>
+
+      <div className={styles.searchWrapper}>
         <Search onChange={onSearchChange} placeholder="Search" fullWidth />
-      </SearchWrapper>
-    </FacetAttributesListActionsContainer>
+      </div>
+    </div>
   );
 };

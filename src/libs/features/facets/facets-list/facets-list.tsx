@@ -30,18 +30,7 @@ import {
   Preview,
   SearchAndCategoryFacetsPanelModal,
 } from '@/libs/features';
-import {
-  AttributesTable,
-  Col,
-  Duration,
-  LowerHeading,
-  NoAttributesBlock,
-  OrderColumn,
-  Row,
-  ScopeWrapper,
-  SearchWrapper,
-  SectionWrapper,
-} from '@/libs/features/facets/facets-panel/facets-panel.styles';
+import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { useFacetsList } from '@/libs/hooks';
@@ -92,7 +81,7 @@ type SearchTerms = { searchTerms: string[] };
 
 type SaveType = MerchandisingRuleSet & (CategoryIds | SearchTerms);
 
-export type Props = {
+export type FacetsListProps = {
   facetType: 'search' | 'category' | 'global';
   isNewRuleset: boolean;
   onCancel: () => void;
@@ -107,7 +96,7 @@ export type Props = {
   searchTerms?: string[];
 };
 
-export const FacetList = ({
+export const FacetsList = ({
   currentRuleset,
   facetType,
   isNewRuleset,
@@ -116,7 +105,7 @@ export const FacetList = ({
   onCancel,
   onSave,
   writeEnabled,
-}: Props) => {
+}: FacetsListProps) => {
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
   const router = useRouter();
   const [ruleset, dispatch] = useReducer(
@@ -298,21 +287,22 @@ export const FacetList = ({
     const isDragDisabled = !writeEnabled || boostedFacets.length <= 1;
 
     const renderRow = (sortableProps?: SortableRowRenderArgs) => (
-      <Row
-        optionSelected={displayType}
+      <div
+        className={styles.facetTableRow}
+        data-option={displayType}
         data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
         key={sortableProps ? undefined : id}
         ref={sortableProps?.setNodeRef}
         style={sortableProps?.style}
       >
-        <Col>
+        <div className={styles.tableCol}>
           <Text>{facet.indexPropertyName}</Text>
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.tableCol}>
           <Text>{facet.displayValue}</Text>
-        </Col>
-        <Col>
-          <OrderColumn>
+        </div>
+        <div className={styles.tableCol}>
+          <div className={styles.orderColumn}>
             <CombinedDropdown
               variant="facetOrder"
               status={displayType}
@@ -331,9 +321,9 @@ export const FacetList = ({
               writeEnabled={writeEnabled}
               ariaLabel="Select to set as included, excluded or algo control"
             />
-          </OrderColumn>
-        </Col>
-        <Col>
+          </div>
+        </div>
+        <div className={styles.tableCol}>
           {displayType === 'included' && showNewFacetValuesPage && (
             <ButtonDeprecated
               as="a"
@@ -388,8 +378,8 @@ export const FacetList = ({
                 Edit values
               </ButtonDeprecated>
             )}
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.tableCol}>
           {isIncludedFacet && (
             <DragHandleButton
               type="button"
@@ -408,8 +398,8 @@ export const FacetList = ({
               />
             </DragHandleButton>
           )}
-        </Col>
-      </Row>
+        </div>
+      </div>
     );
 
     if (isIncludedFacet) {
@@ -490,9 +480,11 @@ export const FacetList = ({
         </ErrorMessage>
       )}
 
-      <SectionWrapper>
-        <LowerHeading isStrong>Rule scope</LowerHeading>
-        <ScopeWrapper>
+      <div className={styles.sectionWrapper}>
+        <Typography variant="bodyMedium" isStrong withMargin>
+          Rule scope
+        </Typography>
+        <div className={styles.scopeWrapper}>
           <div>
             <Typography as="p" withMargin variant="labelMedium">
               Influence
@@ -540,7 +532,7 @@ export const FacetList = ({
             />
           )}
           {facetType !== 'global' && (
-            <Duration>
+            <div className={styles.duration}>
               <Typography as="p" withMargin variant="labelMedium">
                 Duration
               </Typography>
@@ -560,7 +552,7 @@ export const FacetList = ({
                 ]}
                 writeEnabled={writeEnabled}
               />
-            </Duration>
+            </div>
           )}
           {facetType === 'search' && ruleset.countryCode === 'UK_IE' && (
             <div>
@@ -613,36 +605,36 @@ export const FacetList = ({
               </CombinedDropdown>
             </div>
           )}
-        </ScopeWrapper>
+        </div>
 
         <FacetsPanelAccordion
           boostedCount={boostedFacets.length}
           excludedCount={excludedFacets.length}
           nonBoostedExcludedCount={defaultFacets.length}
         />
-      </SectionWrapper>
+      </div>
 
       {(selectedCategories.length > 0 || selectedSearchTerms.length > 0) && (
-        <SectionWrapper>
-          <SearchWrapper>
+        <div className={styles.sectionWrapper}>
+          <div className={styles.searchWrapper}>
             <Search
               onChange={(e) => handleFilter(e.target.value.trim())}
               placeholder="Search"
             />
-          </SearchWrapper>
-        </SectionWrapper>
+          </div>
+        </div>
       )}
 
-      <AttributesTable>
-        <Row>
+      <div className={styles.attributesTable}>
+        <div className={styles.facetTableRow}>
           {COLUMNS.map(({ label }) => (
-            <Col key={`column-${label}`}>
+            <div key={`column-${label}`} className={styles.tableCol}>
               <Typography isStrong variant="bodySmall">
                 {label}
               </Typography>
-            </Col>
+            </div>
           ))}
-        </Row>
+        </div>
 
         <DndContext sensors={sensors} onDragEnd={handleIncludedDragEnd}>
           <SortableContext
@@ -686,19 +678,19 @@ export const FacetList = ({
               />
             )
         )}
-      </AttributesTable>
+      </div>
 
       {filteredFacets.length === 0 && facetType !== 'global' && (
-        <NoAttributesBlock>
+        <div className={styles.noAttributesBlock}>
           <Text>No, there are no attributes yet.</Text>
           <Text>How about adding a subcategory first?</Text>
-        </NoAttributesBlock>
+        </div>
       )}
 
       {filteredFacets.length === 0 && facetType === 'global' && (
-        <NoAttributesBlock>
+        <div className={styles.noAttributesBlock}>
           <Text>Please create the ruleset before editing facets.</Text>
-        </NoAttributesBlock>
+        </div>
       )}
 
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />

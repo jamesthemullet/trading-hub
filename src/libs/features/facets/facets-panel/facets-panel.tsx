@@ -24,17 +24,6 @@ import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-ro
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
-import {
-  AttributesTable,
-  Col,
-  LowerHeading,
-  NoAttributesBlock,
-  OrderColumn,
-  Row,
-  ScopeWrapper,
-  SearchWrapper,
-  SectionWrapper,
-} from '@/libs/features/facets/facets-panel/facets-panel.styles';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetsFilter } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -197,19 +186,20 @@ export const FacetsPanel = ({
     const isDragDisabled = !writeEnabled || boostedCount <= 1;
 
     const renderRow = (sortableProps?: SortableRowRenderArgs) => (
-      <Row
-        optionSelected={displayType}
+      <div
+        className={styles.facetTableRow}
+        data-option={displayType}
         data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
         key={sortableProps ? undefined : id}
         ref={sortableProps?.setNodeRef}
         style={sortableProps?.style}
         {...(sortableProps?.attributes ?? {})}
       >
-        <Col>
+        <div className={styles.tableCol}>
           <Text>{facet.indexPropertyName}</Text>
-        </Col>
+        </div>
 
-        <Col>
+        <div className={styles.tableCol}>
           {writeEnabled ? (
             <EditableLabel
               displayValue={displayValue}
@@ -237,10 +227,10 @@ export const FacetsPanel = ({
           ) : (
             <Text>{facet.displayValue}</Text>
           )}
-        </Col>
+        </div>
 
-        <Col>
-          <OrderColumn>
+        <div className={styles.tableCol}>
+          <div className={styles.orderColumn}>
             <CombinedDropdown
               variant="facetOrder"
               status={displayType}
@@ -251,10 +241,10 @@ export const FacetsPanel = ({
               writeEnabled={writeEnabled}
               ariaLabel="Select to set as included, excluded or algo control"
             />
-          </OrderColumn>
-        </Col>
+          </div>
+        </div>
 
-        <Col>
+        <div className={styles.tableCol}>
           {showNewFacetValuesPage ? (
             <ButtonDeprecated
               as="a"
@@ -281,9 +271,9 @@ export const FacetsPanel = ({
               Edit values
             </ButtonDeprecated>
           )}
-        </Col>
+        </div>
 
-        <Col>
+        <div className={styles.tableCol}>
           {isIncludedFacet && (
             <DragHandleButton
               type="button"
@@ -302,8 +292,8 @@ export const FacetsPanel = ({
               />
             </DragHandleButton>
           )}
-        </Col>
-      </Row>
+        </div>
+      </div>
     );
 
     if (isIncludedFacet) {
@@ -353,11 +343,13 @@ export const FacetsPanel = ({
         rulesetType="global"
       />
 
-      <SectionWrapper>
+      <div className={styles.sectionWrapper}>
         <div className={styles.lowerHeading}>
-          <LowerHeading isStrong>Rule scope</LowerHeading>
+          <Typography variant="bodyMedium" isStrong withMargin>
+            Rule scope
+          </Typography>
         </div>
-        <ScopeWrapper>
+        <div className={styles.scopeWrapper}>
           <div>
             <Typography variant="bodySmall" withMargin>
               Influence
@@ -376,34 +368,34 @@ export const FacetsPanel = ({
           </div>
 
           <InfoBox text="You are currently editing all pages on the M&S website and app" />
-        </ScopeWrapper>
+        </div>
 
         <FacetsPanelAccordion
           boostedCount={boostedCount}
           excludedCount={excludedCount}
           nonBoostedExcludedCount={nonBoostedExcludedCount}
         />
-      </SectionWrapper>
+      </div>
 
-      <SectionWrapper>
-        <SearchWrapper>
+      <div className={styles.sectionWrapper}>
+        <div className={styles.searchWrapper}>
           <Search
             onChange={(e) => handleSearch(e.target.value.trim())}
             placeholder="Search"
           />
-        </SearchWrapper>
-      </SectionWrapper>
+        </div>
+      </div>
 
-      <AttributesTable>
-        <Row>
+      <div className={styles.attributesTable}>
+        <div className={styles.facetTableRow}>
           {COLUMNS.map(({ label }) => (
-            <Col key={`column-${label}`}>
+            <div key={`column-${label}`} className={styles.tableCol}>
               <Typography isStrong variant="bodySmall">
                 {label}
               </Typography>
-            </Col>
+            </div>
           ))}
-        </Row>
+        </div>
 
         <DndContext sensors={sensors} onDragEnd={handleIncludedDragEnd}>
           <SortableContext
@@ -415,7 +407,7 @@ export const FacetsPanel = ({
         </DndContext>
 
         {nonIncludedFacets.map(FacetRow)}
-      </AttributesTable>
+      </div>
 
       {selectedFacet && isEditValuesModalOpen && (
         <Modal.Root
@@ -447,10 +439,10 @@ export const FacetsPanel = ({
       )}
 
       {filteredFacets.length === 0 && (
-        <NoAttributesBlock>
+        <div className={styles.noAttributesBlock}>
           <Text>No, there are no attributes yet.</Text>
           <Text>How about adding a subcategory first?</Text>
-        </NoAttributesBlock>
+        </div>
       )}
 
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />
