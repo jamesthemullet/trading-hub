@@ -39,7 +39,10 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     headers.set('Authorization', `${process.env.SMOKE_TEST_TOKEN}`);
   }
 
-  if (req.body) {
+  const isDelete = req.method === 'DELETE';
+  const hasBody = !isDelete && req.body && Object.keys(req.body).length > 0;
+
+  if (hasBody || isDelete) {
     headers.set('Content-Type', 'application/json');
   }
 
@@ -54,10 +57,11 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     process.env.MERCHANDISING_API_APIGEE_KEY || ''
   );
 
+  // Apigee requires Content-Type + body even for DELETE - send empty JSON
   const response = await fetch(url, {
     method: req.method,
     headers,
-    body: req.body ? JSON.stringify(req.body) : undefined,
+    body: isDelete ? '{}' : hasBody ? JSON.stringify(req.body) : undefined,
     cache: 'no-store',
   });
 

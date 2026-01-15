@@ -218,9 +218,10 @@ describe('Search api proxy', () => {
           `${baseUrl}/search/beta/merchandising/facet/1?apikey=${apiKey}`
         );
         expect(httpDelete.mock.calls[0][0].method).toBe('DELETE');
-        expect(httpDelete.mock.calls[0][0].body).toBeNull();
+        expect(httpDelete.mock.calls[0][0].body).toStrictEqual({});
         expect([...httpDelete.mock.calls[0][0].headers]).toEqual([
           ['authorization', 'Bearer token'],
+          ['content-type', 'application/json'],
         ]);
 
         expect(res.status).toHaveBeenCalledWith(response.status);
@@ -251,9 +252,10 @@ describe('Search api proxy', () => {
         `${baseUrl}/search/beta/merchandising/facet/1?apikey=${apiKey}`
       );
       expect(httpDelete.mock.calls[0][0].method).toBe('DELETE');
-      expect(httpDelete.mock.calls[0][0].body).toBeNull();
+      expect(httpDelete.mock.calls[0][0].body).toStrictEqual({});
       expect([...httpDelete.mock.calls[0][0].headers]).toEqual([
         ['authorization', 'Bearer token'],
+        ['content-type', 'application/json'],
       ]);
 
       expect(res.status).toHaveBeenCalledWith(response.status);
@@ -412,9 +414,10 @@ describe('Search api proxy', () => {
           `${baseUrl}/search/beta/merchandising/facet/2?apikey=${apiKey}`
         );
         expect(httpDelete.mock.calls[0][0].method).toBe('DELETE');
-        expect(httpDelete.mock.calls[0][0].body).toBeNull();
-        expect([...httpDelete.mock.calls[0][0].headers]).toEqual([]);
-
+        expect(httpDelete.mock.calls[0][0].body).toStrictEqual({});
+        expect([...httpDelete.mock.calls[0][0].headers]).toEqual([
+          ['content-type', 'application/json'],
+        ]);
         expect(res.status).toHaveBeenCalledWith(response.status);
       }
     );
