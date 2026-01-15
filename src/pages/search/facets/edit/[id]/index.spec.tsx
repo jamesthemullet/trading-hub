@@ -70,11 +70,6 @@ jest.mock('@/libs/hooks', () => ({
   },
 }));
 
-jest.mock('@/libs/hooks/use-get-facet-attributes', () => ({
-  ...jest.requireActual('@/libs/hooks/use-get-facet-attributes'),
-  useGetFacetAttributes: jest.fn(),
-}));
-
 jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
   ...jest.requireActual('@/libs/hooks/use-get-facet-attribute-values'),
   useGetFacetAttributeValues: jest.fn(),
