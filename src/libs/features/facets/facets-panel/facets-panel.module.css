@@ -117,3 +117,9 @@
   gap: var(--mns-spacing-1);
   padding-right: var(--mns-spacing-1);
 }
+
+.skeletonRow {
+  width: 100%;
+  height: 75px;
+  margin-bottom: var(--mns-spacing-1);
+}

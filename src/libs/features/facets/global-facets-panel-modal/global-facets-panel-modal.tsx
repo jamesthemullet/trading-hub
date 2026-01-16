@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import {
   useCallback,
   useEffect,
@@ -7,7 +6,7 @@ import {
   useReducer,
   useState,
 } from 'react';
-import { Modal } from '@mantine/core';
+import { Modal, Skeleton } from '@mantine/core';
 
 import type {
   MerchandisingAttributeValuesResponse,
@@ -20,58 +19,24 @@ import {
   CombinedDropdown,
   ErrorMessage,
   FacetOrderInput,
-  Header3,
   Loader,
   Search,
-  Text,
   Typography,
 } from '@/libs/components';
-import {
-  AttributesModalHeader,
-  MergeAndSearchContainer,
-  SkeletonRow,
-} from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import {
-  HeadingContainer,
-  ModalAttributesTable,
-} from '@/libs/components/modals/modal.styles';
 import { GlobalFacetAttribute } from '@/libs/containers';
 import { GlobalArrowButtons } from '@/libs/containers/facets/global-arrow-buttons/global-arrow-buttons';
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
+import facetPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-reducer';
 import { globalAttributesReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
 
-const ModalContainer = styled.div`
-  height: 100%;
-  min-width: 860px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ModalFooter = styled.div`
-  background-color: ${color.surface.surfaceContainer};
-  position: sticky;
-  bottom: 0;
-  width: 100%;
-  border-top: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
-  padding: ${spacing(1)};
-  display: flex;
-  justify-content: flex-end;
-  gap: ${spacing(2)};
-
-  button {
-    width: 160px;
-  }
-`;
+import styles from './global-facets-panel-modal.module.css';
 
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null | false;
@@ -405,7 +370,7 @@ export const GlobalFacetPanelModalContent = ({
                 displayType={displayType}
               />
 
-              <div className={styles.facetOrderInput}>
+              <div className={facetPanelStyles.facetOrderInput}>
                 {displayType === 'included' && order && (
                   <FacetOrderInput
                     displayValue={displayName}
@@ -440,7 +405,7 @@ export const GlobalFacetPanelModalContent = ({
                 setEditingValues={setEditingValues}
               />
 
-              <div className={styles.tableCol}>
+              <div className={facetPanelStyles.tableCol}>
                 {displayType === 'included' && (
                   <GlobalArrowButtons
                     displayName={displayName}
@@ -456,7 +421,7 @@ export const GlobalFacetPanelModalContent = ({
                 )}
               </div>
 
-              <div className={styles.tableCol}>
+              <div className={facetPanelStyles.tableCol}>
                 <CombinedDropdown
                   variant="facetOrder"
                   status={displayType}
@@ -543,88 +508,88 @@ export const GlobalFacetPanelModalContent = ({
 
   return (
     <>
-      <ModalContainer>
-        <AttributesModalHeader>
-          <HeadingContainer>
-            <Text isStrong as={Header3}>
-              Facet value settings of: {facet.displayValue}
-            </Text>
-          </HeadingContainer>
-
-          {updateGlobalFacetError && (
-            <ErrorMessage>
-              Error updating facet: {updateGlobalFacetError}
-            </ErrorMessage>
-          )}
-
-          <MergeAndSearchContainer>
-            <Text isStrong>All values listed</Text>
-
-            <Button isDisabled={totalSelectedItems < 2} onClick={handleMerge}>
-              Merge ({totalSelectedItems})
-            </Button>
-
-            <Search onChange={handleSearch} />
-          </MergeAndSearchContainer>
-
-          <ModalAttributesTable>
-            <GlobalFacetAttributeValuesTableRow modal>
-              {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-                <div
-                  key={`add-facet-modal-column-${label}`}
-                  className={styles.tableCol}
-                >
-                  {label ? (
-                    <Typography isStrong variant="bodySmall">
-                      {label}
-                    </Typography>
-                  ) : (
-                    label === null && (
-                      <div className={styles.tableCol}>
-                        <Checkbox
-                          label="Select all facet attributes"
-                          showLabel={false}
-                          checked={hasSelectedAllAttributes}
-                          onChange={() => {
-                            setIsAwaitingUpdate(true);
-
-                            const selectedAttributes = hasSelectedAllAttributes
-                              ? []
-                              : attributeValues.map((val) => val.displayValue);
-                            requestAnimationFrame(() => {
-                              dispatch({
-                                type: 'TOGGLE_ALL_ATTRIBUTES',
-                                payload: {
-                                  allSelected:
-                                    selectedAttributes.length ===
-                                    attributeValues.length,
-                                },
-                              });
-                            });
-                          }}
-                        />
-                      </div>
-                    )
-                  )}
-                </div>
-              ))}
-            </GlobalFacetAttributeValuesTableRow>
-          </ModalAttributesTable>
-        </AttributesModalHeader>
-
-        <div>
-          {boostedValuesRows}
-
-          {defaultValuesRows}
-
-          {excludedValuesRows}
-
-          {isAwaitingUpdate && <Loader isInModal />}
-
-          <FilteredResultsPanel filteredFacets={totalFilteredResults} />
+      <div className={styles.attributesModalHeader}>
+        <div className={styles.headingContainer}>
+          <Typography isStrong as="h3" variant="titleSmall">
+            Facet value settings of: {facet.displayValue}
+          </Typography>
         </div>
-      </ModalContainer>
-      <ModalFooter>
+
+        {updateGlobalFacetError && (
+          <ErrorMessage>
+            Error updating facet: {updateGlobalFacetError}
+          </ErrorMessage>
+        )}
+
+        <div className={styles.mergeAndSearchContainer}>
+          <Typography isStrong variant="bodySmall">
+            All values listed
+          </Typography>
+
+          <Button isDisabled={totalSelectedItems < 2} onClick={handleMerge}>
+            Merge ({totalSelectedItems})
+          </Button>
+
+          <Search onChange={handleSearch} />
+        </div>
+
+        <div className={styles.modalAttributesTable}>
+          <GlobalFacetAttributeValuesTableRow modal>
+            {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
+              <div
+                key={`add-facet-modal-column-${label}`}
+                className={facetPanelStyles.tableCol}
+              >
+                {label ? (
+                  <Typography isStrong variant="bodySmall">
+                    {label}
+                  </Typography>
+                ) : (
+                  label === null && (
+                    <div className={facetPanelStyles.tableCol}>
+                      <Checkbox
+                        label="Select all facet attributes"
+                        showLabel={false}
+                        checked={hasSelectedAllAttributes}
+                        onChange={() => {
+                          setIsAwaitingUpdate(true);
+
+                          const selectedAttributes = hasSelectedAllAttributes
+                            ? []
+                            : attributeValues.map((val) => val.displayValue);
+                          requestAnimationFrame(() => {
+                            dispatch({
+                              type: 'TOGGLE_ALL_ATTRIBUTES',
+                              payload: {
+                                allSelected:
+                                  selectedAttributes.length ===
+                                  attributeValues.length,
+                              },
+                            });
+                          });
+                        }}
+                      />
+                    </div>
+                  )
+                )}
+              </div>
+            ))}
+          </GlobalFacetAttributeValuesTableRow>
+        </div>
+      </div>
+
+      <div>
+        {boostedValuesRows}
+
+        {defaultValuesRows}
+
+        {excludedValuesRows}
+
+        {isAwaitingUpdate && <Loader isInModal />}
+
+        <FilteredResultsPanel filteredFacets={totalFilteredResults} />
+      </div>
+      <div className={styles.modalFooter}>
         <Button onClick={() => onClose()}>Cancel</Button>{' '}
         <Button
           onClick={handleSave}
@@ -634,7 +599,7 @@ export const GlobalFacetPanelModalContent = ({
         >
           Save
         </Button>
-      </ModalFooter>
+      </div>
       <Modal.Root
         centered
         opened={isConfirmationModalOpen}
@@ -683,43 +648,43 @@ export const GlobalFacetPanelModal = ({
 
   return isLoading || attributeValuesError ? (
     <>
-      <ModalContainer>
-        <AttributesModalHeader>
-          <HeadingContainer>
-            <Text isStrong as={Header3}>
-              Facet value settings of: {facet.displayValue}
-            </Text>
-          </HeadingContainer>
-
-          {attributeValuesError && (
-            <ErrorMessage>
-              Error retrieving values: {attributeValuesError}
-            </ErrorMessage>
-          )}
-
-          <MergeAndSearchContainer>
-            <Text isStrong>All values listed</Text>
-
-            <Button isDisabled>Merge (0)</Button>
-
-            <Search />
-          </MergeAndSearchContainer>
-        </AttributesModalHeader>
-
-        <div data-testid="loader">
-          <SkeletonRow aria-busy="true" />
-          <SkeletonRow aria-busy="true" />
-          <SkeletonRow aria-busy="true" />
-          <SkeletonRow aria-busy="true" />
-          <SkeletonRow aria-busy="true" />
+      <div className={styles.attributesModalHeader}>
+        <div className={styles.headingContainer}>
+          <Typography isStrong as="h3" variant="titleSmall">
+            Facet value settings of: {facet.displayValue}
+          </Typography>
         </div>
-      </ModalContainer>
-      <ModalFooter>
+
+        {attributeValuesError && (
+          <ErrorMessage>
+            Error retrieving values: {attributeValuesError}
+          </ErrorMessage>
+        )}
+
+        <div className={styles.mergeAndSearchContainer}>
+          <Typography isStrong variant="bodySmall">
+            All values listed
+          </Typography>
+
+          <Button isDisabled>Merge (0)</Button>
+
+          <Search />
+        </div>
+      </div>
+
+      <div data-testid="loader">
+        <Skeleton className={styles.skeletonRow} aria-busy="true" />
+        <Skeleton className={styles.skeletonRow} aria-busy="true" />
+        <Skeleton className={styles.skeletonRow} aria-busy="true" />
+        <Skeleton className={styles.skeletonRow} aria-busy="true" />
+        <Skeleton className={styles.skeletonRow} aria-busy="true" />
+      </div>
+      <div className={styles.modalFooter}>
         <Button onClick={() => onClose()} type="button">
           Cancel
         </Button>{' '}
         <Button isDisabled>Save</Button>
-      </ModalFooter>
+      </div>
     </>
   ) : (
     <GlobalFacetPanelModalContent

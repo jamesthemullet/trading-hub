@@ -1,7 +1,6 @@
 // istanbul ignore file
 import type {
   BetaMerchandisingFacetListData,
-  MerchandisingAttributesResponse,
   MerchandisingAttributeValuesResponse,
   MerchandisingBoostsBuries,
   MerchandisingIncludesExcludes,
@@ -182,31 +181,6 @@ export const facetsListMock: BetaMerchandisingFacetListData = {
         user: 'Test User',
       },
       merged: [],
-    },
-  ],
-};
-
-export const attributesMock: MerchandisingAttributesResponse = {
-  attributes: [
-    {
-      type: 'alphanumeric',
-      name: 'Cotton',
-    },
-    {
-      type: 'alphanumeric',
-      name: 'Duck Down',
-    },
-    {
-      type: 'alphanumeric',
-      name: 'Duck Down And Feather',
-    },
-    {
-      type: 'alphanumeric',
-      name: 'Duck Down And Feathery',
-    },
-    {
-      type: 'alphanumeric',
-      name: 'Duck Down And Very Feathery',
     },
   ],
 };
