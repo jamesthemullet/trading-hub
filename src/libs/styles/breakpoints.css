@@ -10,6 +10,7 @@
 @custom-media --mns-media-lg-up (min-width: 1024px);
 @custom-media --mns-media-xl-up (min-width: 1280px);
 @custom-media --mns-media-xxl-up (min-width: 1728px);
+@custom-media --mns-media-xxxl-up (min-width: 1968px);
 
 @custom-media --mns-media-up-to-md (max-width: 767px);
 @custom-media --mns-media-up-to-lg (max-width: 1023px);

@@ -82,7 +82,7 @@
 .tableActions {
   position: relative;
   display: flex;
-  margin-left: var(--mns-spacing-5);
+  margin-left: var(--mns-spacing-1);
 }
 
 .dropdownOptions {
@@ -155,8 +155,8 @@
 
   .row[data-show-breadcrumb='true'][data-num-columns='8'] {
     grid-template-columns:
-      minmax(140px, 2fr) minmax(120px, 2fr)
-      minmax(120px, 2fr) 90px 90px 120px 150px 130px;
+      minmax(240px, 2fr) minmax(120px, 2fr)
+      90px 90px 120px 150px 130px;
   }
 
   .row[data-show-breadcrumb='true'][data-num-columns='7'] {
@@ -172,14 +172,14 @@
   }
 }
 
-@media (min-width: 1920px) {
+@media (--mns-media-xxxl-up) {
   .row[data-num-columns='7'] {
     grid-template-columns:
       minmax(140px, 2fr) minmax(140px, 2fr)
       90px 90px 120px 150px 130px;
   }
 
-  .row[data-num-columns='8'] {
+  .row[data-show-breadcrumb='true'][data-num-columns='8'] {
     grid-template-columns:
       minmax(140px, 2fr) minmax(140px, 2fr) minmax(140px, 2fr)
       90px 90px 120px 150px 130px;
@@ -266,7 +266,7 @@
   display: none;
 }
 
-@media (--mns-media-xxl-up) {
+@media (--mns-media-xxxl-up) {
   .dynamicTableCol[data-heading='Schedule'] {
     display: block;
   }
@@ -316,7 +316,7 @@
   padding: var(--mns-spacing-1) var(--mns-spacing-1) var(--mns-spacing-1) 0;
 }
 
-@media (--mns-media-xxl-up) {
+@media (--mns-media-xxxl-up) {
   .schedulingColumn {
     display: flex;
     align-items: center;

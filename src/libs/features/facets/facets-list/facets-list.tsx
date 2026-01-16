@@ -682,8 +682,12 @@ export const FacetsList = ({
 
       {filteredFacets.length === 0 && facetType !== 'global' && (
         <div className={styles.noAttributesBlock}>
-          <Text>No, there are no attributes yet.</Text>
-          <Text>How about adding a subcategory first?</Text>
+          <Typography variant="bodyLarge">
+            No, there are no attributes yet.
+          </Typography>
+          <Typography variant="bodyLarge">
+            How about adding a subcategory first?
+          </Typography>
         </div>
       )}
 

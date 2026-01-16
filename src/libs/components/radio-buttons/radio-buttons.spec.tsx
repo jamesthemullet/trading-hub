@@ -14,6 +14,7 @@ describe('RadioButtons', () => {
       <RadioButtons
         hasDivider
         isBold
+        size="default"
         onSelect={() => jest.fn()}
         values={values}
       />
@@ -22,12 +23,30 @@ describe('RadioButtons', () => {
     expect(screen.getAllByText('availabilityRating')[0]).toBeVisible();
   });
 
+  it('should render small typography when requested', () => {
+    render(
+      <RadioButtons
+        hasDivider
+        isBold
+        size="small"
+        onSelect={() => jest.fn()}
+        values={values}
+      />
+    );
+
+    expect(screen.getAllByText('availabilityRating')[0]).toHaveAttribute(
+      'data-variant',
+      'bodySmall'
+    );
+  });
+
   it('call callback on click', async () => {
     const mockOnSelect = jest.fn();
     render(
       <RadioButtons
         hasDivider={false}
         isBold={false}
+        size="default"
         onSelect={mockOnSelect}
         values={values}
       />

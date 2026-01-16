@@ -11,6 +11,7 @@ type Props = {
   isBold: boolean;
   values: Value[];
   onSelect: (name: string) => void;
+  size?: 'small' | 'default';
 };
 
 export const RadioButtons = ({
@@ -18,6 +19,7 @@ export const RadioButtons = ({
   isBold,
   values,
   onSelect,
+  size = 'default',
 }: Props) => (
   <div>
     {values.map(({ name, isSelected }) => (
@@ -29,7 +31,12 @@ export const RadioButtons = ({
           checked={isSelected}
           onChange={() => onSelect(name)}
         />
-        <Typography aria-label={name} as="span" isStrong={isBold}>
+        <Typography
+          aria-label={name}
+          as="span"
+          isStrong={isBold}
+          variant={size === 'small' ? 'bodySmall' : 'bodyMedium'}
+        >
           {name}
         </Typography>
       </label>

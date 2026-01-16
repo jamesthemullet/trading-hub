@@ -289,7 +289,9 @@ export const CategorySearch = ({
                 {previewCategory}
               </Typography>
             ) : (
-              'Add categories to display here'
+              <Typography as="span" variant="bodySmall">
+                Add categories to display here
+              </Typography>
             )}
             {previewCategory &&
               getCurrentPath(previewCategory) &&

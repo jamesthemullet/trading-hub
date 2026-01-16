@@ -393,6 +393,7 @@ export const AddAttribute = ({
               <RadioButtons
                 hasDivider
                 isBold
+                size="small"
                 values={numericAttributes
                   .filter((attribute: MerchandisingAttributeResponseItem) =>
                     attribute.name

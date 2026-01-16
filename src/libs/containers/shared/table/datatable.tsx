@@ -302,7 +302,7 @@ export const DataTable = ({
                           <span title={categoryPlpUrl}>
                             <Typography
                               as="span"
-                              variant="bodyMedium"
+                              variant="bodySmall"
                               className={styles.styledUrlText}
                             >
                               {categoryPlpUrl}
@@ -489,24 +489,22 @@ export const DataTable = ({
                         )}
                       </div>
                     </div>
-                    <div className={styles.fullWidthRow}>
-                      {startDate && (
-                        <>
-                          <Image
-                            alt=""
-                            src="/trading-hub/asset/icon-calendar.svg"
-                            width={24}
-                            height={24}
-                          />
-                          <Typography as="time" variant="bodySmall">
-                            {format(new Date(startDate), 'dd MMM yyyy')}
-                            {endDate
-                              ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
-                              : ' - No end date'}
-                          </Typography>
-                        </>
-                      )}
-                    </div>
+                    {startDate && (
+                      <div className={styles.fullWidthRow}>
+                        <Image
+                          alt=""
+                          src="/trading-hub/asset/icon-calendar.svg"
+                          width={24}
+                          height={24}
+                        />
+                        <Typography as="time" variant="bodySmall">
+                          {format(new Date(startDate), 'dd MMM yyyy')}
+                          {endDate
+                            ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
+                            : ' - No end date'}
+                        </Typography>
+                      </div>
+                    )}
                   </div>
                 );
               }
