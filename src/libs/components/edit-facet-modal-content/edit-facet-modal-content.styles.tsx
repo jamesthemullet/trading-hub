@@ -44,13 +44,11 @@ export const AttributeWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: ${spacing(2)};
-`;
 
-export const MergedValue = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: ${spacing(1)};
+  button {
+    font-size: 14px;
+    padding-left: 4px;
+  }
 `;
 
 export const GlobalFacetAttributesPageMergedValue = styled.div`

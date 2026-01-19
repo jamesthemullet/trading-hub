@@ -1,18 +1,8 @@
-import { ErrorMessage, Text, Typography } from '@/libs/components';
+import { Button, ErrorMessage, Typography } from '@/libs/components';
 
 import Image from 'next/image';
 
-import {
-  ButtonContainer,
-  CancelButton,
-  FlagAndButtons,
-  FlagAndText,
-  SaveButton,
-  StyledText,
-  Summary,
-  SummaryBox,
-  Wrapper,
-} from './facet-attributes-page-layout-header-styles';
+import styles from './facet-attributes-page-layout-header.module.css';
 
 type HeaderProps = {
   algoControlValues: number;
@@ -40,55 +30,58 @@ export const FacetAttributesPageLayoutHeader = ({
   writeEnabled,
 }: HeaderProps) => {
   return (
-    <Wrapper>
-      <FlagAndButtons>
-        <FlagAndText>
+    <div className={styles.wrapper}>
+      <div className={styles.flagAndButtons}>
+        <div className={styles.flagAndText}>
           <Image
             src="/trading-hub/asset/icon-uk-flag.svg"
             width={20}
             height={20}
             alt="UK flag"
           />
-          <Text>All pages</Text>
-        </FlagAndText>
-        <ButtonContainer>
-          <CancelButton
+          <Typography variant="bodySmall">All pages</Typography>
+        </div>
+        <div className={styles.buttonContainer}>
+          <Button
             theme="outlined"
+            isTextCentred
             onClick={() => {
               onClose(facetType);
             }}
             type="button"
           >
             Cancel
-          </CancelButton>
+          </Button>
 
-          <SaveButton
+          <Button
             theme="primary"
             isDisabled={isSaveDisabled || !writeEnabled}
             onClick={onSave}
           >
             Save
-          </SaveButton>
-        </ButtonContainer>
-      </FlagAndButtons>
-      <StyledText>Value settings of: {displayName}</StyledText>
+          </Button>
+        </div>
+      </div>
+      <Typography variant="titleLarge">
+        Value settings of: {displayName}
+      </Typography>
 
       {error && <ErrorMessage>Error updating facet: {error}</ErrorMessage>}
 
-      <Summary>
-        <SummaryBox data-testid="include-only-count">
+      <div className={styles.summary}>
+        <div className={styles.summaryBox} data-testid="include-only-count">
           <Typography variant="headlineSmall">{includedValues}</Typography>
           <Typography variant="labelMedium">Include only</Typography>
-        </SummaryBox>
-        <SummaryBox data-testid="algo-control-count">
+        </div>
+        <div className={styles.summaryBox} data-testid="algo-control-count">
           <Typography variant="headlineSmall">{algoControlValues}</Typography>
           <Typography variant="labelMedium">Algo control</Typography>
-        </SummaryBox>
-        <SummaryBox data-testid="exclude-only-count">
+        </div>
+        <div className={styles.summaryBox} data-testid="exclude-only-count">
           <Typography variant="headlineSmall">{excludedValues}</Typography>
           <Typography variant="labelMedium">Exclude only</Typography>
-        </SummaryBox>
-      </Summary>
-    </Wrapper>
+        </div>
+      </div>
+    </div>
   );
 };

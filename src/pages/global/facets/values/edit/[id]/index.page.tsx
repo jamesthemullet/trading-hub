@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { type ChangeEvent, useMemo, useState } from 'react';
 
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
@@ -12,12 +11,7 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
 
-const CentredContainer = styled.div`
-  margin-top: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+import styles from './index.module.css';
 
 const Page = () => {
   const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
@@ -97,7 +91,7 @@ const Page = () => {
           writeEnabled={hasWriteAccess}
         />
       ) : (
-        <CentredContainer>Coming soon/loading</CentredContainer>
+        <div className={styles.centredContainer}>Coming soon/loading</div>
       )}
     </>
   );

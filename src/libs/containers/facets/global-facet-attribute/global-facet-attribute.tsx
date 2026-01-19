@@ -1,22 +1,11 @@
-import styled from '@emotion/styled';
 import type { Dispatch } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Checkbox, Loader, Text } from '@/libs/components';
-import {
-  AttributeWrapper,
-  MergedValue,
-  RemoveMergedFacet,
-} from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
+import { Checkbox, Loader, Typography } from '@/libs/components';
+import facetPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 
-const StyledText = styled(Text)`
-  text-decoration: underline;
-  cursor: pointer;
-  border: none;
-  background: none;
-`;
+import styles from './global-facet-attribute.module.css';
 
 export const GlobalFacetAttribute = ({
   attributes,
@@ -77,7 +66,7 @@ export const GlobalFacetAttribute = ({
 
   return (
     <>
-      <div className={styles.tableCol}>
+      <div className={facetPanelStyles.tableCol}>
         {writeEnabled && (
           <Checkbox
             checked={isChecked}
@@ -88,17 +77,21 @@ export const GlobalFacetAttribute = ({
         )}
       </div>
 
-      <div className={styles.tableCol}>
-        <AttributeWrapper>
+      <div className={facetPanelStyles.tableCol}>
+        <div className={styles.attributeWrapper}>
           {attributes.length > 1 ? (
-            <div>
-              <Text isStrong>Merged Value Group</Text>
+            <>
+              <Typography variant="bodySmall" isStrong>
+                Merged Value Group
+              </Typography>
 
               {visibleAttributes.map((value, i) => (
-                <MergedValue key={`${i}-${value}`}>
-                  <Text>{value}</Text>{' '}
+                <div className={styles.mergedValue} key={`${i}-${value}`}>
+                  <Typography variant="bodySmall">{value}</Typography>{' '}
                   {isMergeGroup && value !== displayName && writeEnabled && (
-                    <RemoveMergedFacet
+                    <button
+                      type="button"
+                      className={styles.removeMergedValueButton}
                       onClick={() => {
                         setIsAwaitingUpdate(true);
                         requestAnimationFrame(() => {
@@ -112,24 +105,27 @@ export const GlobalFacetAttribute = ({
                       disabled={isAwaitingUpdate}
                     />
                   )}
-                </MergedValue>
+                </div>
               ))}
 
               {attributes.length > maxVisible && (
-                <StyledText
-                  as="button"
+                <button
+                  type="button"
+                  className={styles.toggleLink}
                   onClick={() => {
                     setIsExpanded(!isExpanded);
                   }}
                 >
-                  {isExpanded ? 'Show Fewer' : 'Show More'}
-                </StyledText>
+                  <Typography variant="bodySmall" as="span">
+                    {isExpanded ? 'Show Fewer' : 'Show More'}
+                  </Typography>
+                </button>
               )}
-            </div>
+            </>
           ) : (
-            <Text>{attributes[0]}</Text>
+            <Typography variant="bodySmall">{attributes[0]}</Typography>
           )}
-        </AttributeWrapper>
+        </div>
         {isAwaitingUpdate && <Loader isInModal />}
       </div>
     </>

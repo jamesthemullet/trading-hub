@@ -2,8 +2,9 @@ import { type Dispatch, useEffect, useState } from 'react';
 
 import { Loader } from '@/libs/components';
 import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
-import { OrderArrowsContainer } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
+
+import styles from './global-arrow-buttons.module.css';
 
 type FormattedRow = {
   displayName: string;
@@ -42,7 +43,7 @@ export const GlobalArrowButtons = ({
   }, [isAwaitingUpdate]);
 
   return (
-    <OrderArrowsContainer>
+    <div className={styles.orderArrowsContainer}>
       <ArrowButton
         direction="up"
         label={`Move ${displayName} row up`}
@@ -120,6 +121,6 @@ export const GlobalArrowButtons = ({
         }}
       />
       {isAwaitingUpdate && <Loader isInModal />}
-    </OrderArrowsContainer>
+    </div>
   );
 };

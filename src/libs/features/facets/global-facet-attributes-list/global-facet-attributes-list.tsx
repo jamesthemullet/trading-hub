@@ -12,8 +12,8 @@ import {
   Loader,
   Typography,
 } from '@/libs/components';
-import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
+import tableStyles from '@/libs/containers/shared/table/table.module.css';
+import facetPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGlobalFacetAttributesList } from '@/libs/hooks/global/facets/use-global-facet-attributes-list';
 import type {
   GlobalAttributesPageReducer,
@@ -174,11 +174,13 @@ export const GlobalFacetAttributesList = ({
 
   return (
     <>
-      <GlobalFacetAttributeValuesTableRow>
+      <div
+        className={`${tableStyles.tableRow} ${tableStyles.facetAttributeValuesTableRow} ${tableStyles.globalFacetAttributeValuesTableRow}`}
+      >
         {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
           <div
             key={`add-facet-modal-column-${label}`}
-            className={styles.tableCol}
+            className={facetPanelStyles.tableCol}
           >
             {label ? (
               <Typography isStrong variant="bodySmall">
@@ -186,7 +188,7 @@ export const GlobalFacetAttributesList = ({
               </Typography>
             ) : (
               label === null && (
-                <div className={styles.tableCol}>
+                <div className={facetPanelStyles.tableCol}>
                   {writeEnabled && (
                     <Checkbox
                       label="Select all facet attributes"
@@ -210,7 +212,7 @@ export const GlobalFacetAttributesList = ({
             )}
           </div>
         ))}
-      </GlobalFacetAttributeValuesTableRow>
+      </div>
 
       <DndContext sensors={sensors} onDragEnd={handleBoostedDragEnd}>
         <SortableContext
