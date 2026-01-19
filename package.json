@@ -29,7 +29,8 @@
     "storybook:dev": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "test-storybook": "npx @storybook/test-runner",
-    "knip": "knip"
+    "knip": "knip",
+    "bundle:analyze": "next experimental-analyze"
   },
   "dependencies": {
     "@axe-core/playwright": "4.11.0",
