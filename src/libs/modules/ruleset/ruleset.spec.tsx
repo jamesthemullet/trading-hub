@@ -1414,7 +1414,7 @@ describe('Ruleset', () => {
         />
       );
 
-      expect(screen.getByLabelText('Position 1')).toBeVisible();
+      expect(screen.getByTestId('Position 1')).toBeVisible();
       expect(screen.queryByTestId('Position 2')).not.toBeInTheDocument();
 
       const searchProduct = screen.getByPlaceholderText('Search for product');

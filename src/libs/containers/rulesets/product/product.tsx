@@ -1,8 +1,10 @@
 import type {
+  ButtonHTMLAttributes,
   ChangeEvent,
   DetailedHTMLProps,
   Dispatch,
   HTMLAttributes,
+  ReactNode,
 } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Skeleton } from '@mantine/core';
@@ -18,29 +20,8 @@ import { Typography } from '@/libs/components/typography/typography.styles';
 
 import Image from 'next/image';
 
-import {
-  BlockedPin,
-  BoostPin,
-  BuriedPin,
-  ErrorText,
-  LockActions,
-  LockInput,
-  LockMenu,
-  OutOfStockMessage,
-  ProductCard,
-  ProductHeader,
-  ProductInfo,
-  ProductInfoWrapper,
-  ProductMenu,
-  ProductMenuButton,
-  ProductMenuHead,
-  ProductMenuOverlay,
-  ProductMenuToggle,
-  ProductNumber,
-  ProductPin,
-  ProductWrapper,
-  SupplementaryInfo,
-} from './product.styles';
+import { Input } from '../../shared';
+import styles from './product.module.css';
 
 const ProductDetails = ({
   imageUrl,
@@ -60,16 +41,17 @@ const ProductDetails = ({
   hasSupplementaryInfo?: boolean;
   ranking?: Array<MerchandisingRankingAttribute>;
 }) => {
+  const productInfoVariant = isSearchResult ? 'labelLarge' : 'bodySmall';
+
   return (
     <>
-      <ProductCard hasSupplementaryInfo={hasSupplementaryInfo}>
+      <div className={styles.productCard}>
         <Image
           src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
           alt=""
           data-testid="productImage"
           width={100}
           height={176}
-          style={{ objectFit: 'contain' }}
           priority
           sizes="100%"
           onError={(element) => {
@@ -78,31 +60,95 @@ const ProductDetails = ({
               'https://dummyimage.com/300x400/cccccc/ffffff?text=missing+image';
           }}
         />
-        {isOutOfStock && <OutOfStockMessage>Out of stock</OutOfStockMessage>}
-      </ProductCard>
-      <ProductInfo isSearchResult={isSearchResult}>
+        {isOutOfStock && (
+          <div className={styles.outOfStockMessage}>
+            <Typography variant="bodySmall">Out of stock</Typography>
+          </div>
+        )}
+      </div>
+      <div className={styles.productInfo}>
         <Typography
-          variant="bodySmall"
+          variant={productInfoVariant}
           isStrong={isBrandStrong ?? true}
           data-testid="product title"
         >
           {brand} {title}
         </Typography>
-        <Typography variant="bodySmall">{price}</Typography>
-        <Typography variant="bodySmall" data-testid="product id" align="right">
+        <Typography variant={productInfoVariant}>{price}</Typography>
+        <Typography
+          variant={productInfoVariant}
+          data-testid="product id"
+          align="right"
+        >
           ID: {productId}
         </Typography>
-      </ProductInfo>
+      </div>
       {hasSupplementaryInfo && ranking && (
-        <SupplementaryInfo>
+        <div className={styles.supplementaryInfo}>
           {ranking.map((item) => (
             <Typography variant="bodySmall" key={item.property}>
-              {item.property} <span>{item.values[0]}</span>
+              {item.property}{' '}
+              <Typography as="span" isStrong variant="bodySmall">
+                {item.values[0]}
+              </Typography>
             </Typography>
           ))}
-        </SupplementaryInfo>
+        </div>
       )}
     </>
+  );
+};
+
+const PinIndicator = ({
+  testId,
+  className,
+  label,
+}: {
+  testId: string;
+  className: string;
+  label: string;
+}) => {
+  return (
+    <div className={`${styles.pinBadge} ${className}`} data-testid={testId}>
+      <Typography variant="labelSmall">{label}</Typography>
+    </div>
+  );
+};
+
+type MenuIcon = 'restore' | 'pin' | 'boost' | 'bury' | 'block';
+
+type ProductMenuActionProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  icon: MenuIcon;
+  children: ReactNode;
+};
+
+const iconClassNameMap: Record<MenuIcon, string> = {
+  restore: styles.productMenuButtonRestore,
+  pin: styles.productMenuButtonPin,
+  boost: styles.productMenuButtonBoost,
+  bury: styles.productMenuButtonBury,
+  block: styles.productMenuButtonBlock,
+};
+
+const ProductMenuAction = ({
+  icon,
+  className,
+  children,
+  type = 'button',
+  ...props
+}: ProductMenuActionProps) => {
+  const combinedClassName = [
+    styles.productMenuButton,
+    iconClassNameMap[icon],
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <button type={type} className={combinedClassName} {...props}>
+      <Typography variant="bodySmall">{children}</Typography>
+    </button>
   );
 };
 
@@ -146,7 +192,6 @@ export const Product = ({
   price,
   productId,
   title,
-  ...rest
 }: ProductProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLockToPositionMenuOpen, setIsLockToPositionMenuOpen] =
@@ -155,6 +200,10 @@ export const Product = ({
   const [error, setError] = useState('');
   const totalPinnedProducts =
     pinnedProductsCount || /* istanbul ignore next */ 0;
+  const slotPositionInputId = `slot-position-${id}`;
+  const canOpenPinPositionMenu =
+    isPinnable && (!isPinned || totalPinnedProducts > 1);
+  const lockActionLabelVariant = isSearchResult ? 'bodySmall' : 'bodyMedium';
 
   const lockToPosition = (positionToPin: number) => {
     setIsMenuOpen(false);
@@ -211,51 +260,64 @@ export const Product = ({
   }, [isLockToPositionMenuOpen]);
 
   return (
-    <ProductWrapper aria-label={`Position ${index + 1}`} {...rest}>
+    <div
+      className={styles.productWrapper}
+      data-testid={`Position ${index + 1}`}
+    >
       {isMenuOpen && (
-        <ProductMenuOverlay
+        <button
           data-testid="menu overlay"
           onClick={() => {
             setIsMenuOpen(!isMenuOpen);
             setIsLockToPositionMenuOpen(false);
           }}
           aria-label="Close product menu"
-          role="button"
+          type="button"
         />
       )}
-      <ProductHeader>
+      <div className={styles.productHeader}>
         <Checkbox
           label={`Select ${title}`}
           disabled={isSelectionDisabled}
           checked={isSelected}
           onChange={() => onSelectProduct?.({ id, isSelected })}
         />
-        <ProductInfoWrapper>
+        <div className={styles.productInfoWrapper}>
           {(isProductNumberEnabled ?? true) && (
-            <ProductNumber>{index + 1}</ProductNumber>
+            <div className={styles.productNumber}>
+              <Typography variant="bodySmall">{index + 1}</Typography>
+            </div>
           )}
           {isBoosted && (
-            <BoostPin aria-label="Boosted product">
-              <Typography variant="labelSmall">Boost</Typography>
-            </BoostPin>
+            <PinIndicator
+              className={styles.boostPin}
+              testId="Boosted product"
+              label="Boost"
+            />
           )}
           {isBuried && (
-            <BuriedPin aria-label="Buried product">
-              <Typography variant="labelSmall">Bury</Typography>
-            </BuriedPin>
+            <PinIndicator
+              className={styles.buriedPin}
+              testId="Buried product"
+              label="Bury"
+            />
           )}
           {isPinned && (
-            <ProductPin aria-label="Pinned product">
-              <Typography variant="labelSmall">Pinned</Typography>
-            </ProductPin>
+            <PinIndicator
+              className={styles.productPin}
+              testId="Pinned product"
+              label="Pinned"
+            />
           )}
           {isBlocked && (
-            <BlockedPin aria-label="Blocked product">
-              <Typography variant="labelSmall">Block</Typography>
-            </BlockedPin>
+            <PinIndicator
+              className={styles.blockedPin}
+              testId="Blocked product"
+              label="Block"
+            />
           )}
-        </ProductInfoWrapper>
-        <ProductMenuToggle
+        </div>
+        <Button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
           disabled={isSelectionDisabled}
@@ -266,29 +328,22 @@ export const Product = ({
             width={20}
             height={20}
           />
-        </ProductMenuToggle>
+        </Button>
         {isMenuOpen && (
-          <ProductMenu>
-            <ProductMenuHead>
+          <div className={styles.productMenu}>
+            <div className={styles.productMenuHeader}>
               <Typography variant="bodySmall" isStrong>
                 Product actions
               </Typography>
-            </ProductMenuHead>
+            </div>
             {isPinned && isPinnable && (
-              <ProductMenuButton
-                icon="restore"
-                as="button"
-                size="16px 16px"
-                onClick={() => clearChanges()}
-              >
+              <ProductMenuAction icon="restore" onClick={() => clearChanges()}>
                 Restore
-              </ProductMenuButton>
+              </ProductMenuAction>
             )}
             {isBoosted && (
-              <ProductMenuButton
+              <ProductMenuAction
                 icon="restore"
-                as="button"
-                size="16px 16px"
                 onClick={() => {
                   dispatch({
                     type: 'product',
@@ -302,13 +357,11 @@ export const Product = ({
                 }}
               >
                 Unboost
-              </ProductMenuButton>
+              </ProductMenuAction>
             )}
             {isBuried && (
-              <ProductMenuButton
+              <ProductMenuAction
                 icon="restore"
-                as="button"
-                size="16px 16px"
                 onClick={() => {
                   dispatch({
                     type: 'product',
@@ -322,13 +375,11 @@ export const Product = ({
                 }}
               >
                 Unbury
-              </ProductMenuButton>
+              </ProductMenuAction>
             )}
             {isBlocked && (
-              <ProductMenuButton
+              <ProductMenuAction
                 icon="restore"
-                as="button"
-                size="16px 16px"
                 onClick={() => {
                   dispatch({
                     type: 'product',
@@ -342,23 +393,21 @@ export const Product = ({
                 }}
               >
                 Restore
-              </ProductMenuButton>
+              </ProductMenuAction>
             )}
             {!isLockToPositionMenuOpen && (
               <>
-                {isPinnable && (
-                  <ProductMenuButton
+                {canOpenPinPositionMenu && (
+                  <ProductMenuAction
                     icon="pin"
-                    as="button"
                     onClick={() => setIsLockToPositionMenuOpen(true)}
                   >
                     {isPinned ? 'Edit position' : 'Pin in position'}
-                  </ProductMenuButton>
+                  </ProductMenuAction>
                 )}
                 {!isBoosted && (
-                  <ProductMenuButton
+                  <ProductMenuAction
                     icon="boost"
-                    as="button"
                     onClick={() => {
                       dispatch({
                         type: 'product',
@@ -372,13 +421,12 @@ export const Product = ({
                     }}
                   >
                     Boost to Top
-                  </ProductMenuButton>
+                  </ProductMenuAction>
                 )}
 
                 {!isBuried && (
-                  <ProductMenuButton
+                  <ProductMenuAction
                     icon="bury"
-                    as="button"
                     onClick={() => {
                       dispatch({
                         type: 'product',
@@ -392,13 +440,12 @@ export const Product = ({
                     }}
                   >
                     Bury to Bottom
-                  </ProductMenuButton>
+                  </ProductMenuAction>
                 )}
 
                 {!isBlocked && (
-                  <ProductMenuButton
+                  <ProductMenuAction
                     icon="block"
-                    as="button"
                     onClick={() => {
                       dispatch({
                         type: 'product',
@@ -412,17 +459,13 @@ export const Product = ({
                     }}
                   >
                     Block Product
-                  </ProductMenuButton>
+                  </ProductMenuAction>
                 )}
               </>
             )}
 
             {isLockToPositionMenuOpen && (
-              <LockMenu
-                style={{
-                  height: error ? '330px' : '245px',
-                }}
-              >
+              <div className={styles.lockMenu} data-error={!!error.length}>
                 <Typography
                   variant="bodySmall"
                   isStrong
@@ -446,35 +489,51 @@ export const Product = ({
                     }
                   }}
                 >
-                  <LockInput
+                  <Input
+                    id={slotPositionInputId}
+                    label="Slot position"
+                    isLabelHidden
                     ref={inputRef}
                     placeholder="i.e. 3"
                     onChange={onInputChange}
-                    defaultValue={positionToLockTo || ''}
                     type="number"
-                    hasError={!!error.length}
+                    aria-invalid={!!error.length}
                   />
                   {error && (
-                    <ErrorText aria-label="Error message">{error}</ErrorText>
+                    <div
+                      className={styles.errorText}
+                      data-testid="Error message"
+                    >
+                      <Typography as="span" variant="bodySmall">
+                        {error}
+                      </Typography>
+                    </div>
                   )}
-                  <LockActions isSearchResult={isSearchResult}>
+                  <div
+                    className={styles.lockActions}
+                    data-is-search-result={isSearchResult}
+                  >
                     <Button onClick={() => setIsLockToPositionMenuOpen(false)}>
-                      Cancel
+                      <Typography as="span" variant={lockActionLabelVariant}>
+                        Cancel
+                      </Typography>
                     </Button>
                     <Button
                       theme="primary"
                       type="submit"
                       isDisabled={!!error || !positionToLockTo}
                     >
-                      Confirm
+                      <Typography as="span" variant={lockActionLabelVariant}>
+                        Confirm
+                      </Typography>
                     </Button>
-                  </LockActions>
+                  </div>
                 </form>
-              </LockMenu>
+              </div>
             )}
-          </ProductMenu>
+          </div>
         )}
-      </ProductHeader>
+      </div>
       <ProductDetails
         imageUrl={imageUrl}
         brand={brand}
@@ -487,7 +546,7 @@ export const Product = ({
         hasSupplementaryInfo={hasSupplementaryInfo}
         ranking={ranking}
       />
-    </ProductWrapper>
+    </div>
   );
 };
 
@@ -503,7 +562,6 @@ export const MissingProduct = ({
   onSelectProduct,
   isSelected,
   isSelectionDisabled,
-  ...rest
 }: {
   dispatch: Dispatch<RuleSetActions>;
   index: number;
@@ -532,48 +590,62 @@ export const MissingProduct = ({
   };
 
   return (
-    <ProductWrapper aria-label={`Position ${index + 1}`} {...rest}>
+    <div
+      className={styles.productWrapper}
+      data-testid={`Position ${index + 1}`}
+    >
       {isMenuOpen && (
-        <ProductMenuOverlay
+        <button
           aria-label="menu overlay"
           onClick={() => {
             setIsMenuOpen(!isMenuOpen);
           }}
+          type="button"
         />
       )}
-      <ProductHeader>
+      <div className={styles.productHeader}>
         <Checkbox
           label={`Select ${id}`}
           disabled={isSelectionDisabled}
           checked={isSelected}
           onChange={() => onSelectProduct?.({ id, isSelected })}
         />
-        <ProductInfoWrapper>
+        <div className={styles.productInfoWrapper}>
           {(isProductNumberEnabled ?? true) && (
-            <ProductNumber>{index + 1}</ProductNumber>
+            <div className={styles.productNumber}>
+              <Typography variant="bodySmall">{index + 1}</Typography>
+            </div>
           )}
           {isBoosted && (
-            <BoostPin aria-label="Boosted product">
-              <Typography variant="labelSmall">Boost</Typography>
-            </BoostPin>
+            <PinIndicator
+              className={styles.boostPin}
+              testId="Boosted product"
+              label="Boost"
+            />
           )}
           {isBuried && (
-            <BuriedPin aria-label="Buried product">
-              <Typography variant="labelSmall">Bury</Typography>
-            </BuriedPin>
+            <PinIndicator
+              className={styles.buriedPin}
+              testId="Buried product"
+              label="Bury"
+            />
           )}
           {isPinned && (
-            <ProductPin aria-label="Pinned product">
-              <Typography variant="labelSmall">Pinned</Typography>
-            </ProductPin>
+            <PinIndicator
+              className={styles.productPin}
+              testId="Pinned product"
+              label="Pinned"
+            />
           )}
           {isBlocked && (
-            <BlockedPin aria-label="Blocked product">
-              <Typography variant="labelSmall">Block</Typography>
-            </BlockedPin>
+            <PinIndicator
+              className={styles.blockedPin}
+              testId="Blocked product"
+              label="Block"
+            />
           )}
-        </ProductInfoWrapper>
-        <ProductMenuToggle
+        </div>
+        <Button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           title={`${isMenuOpen ? 'Close' : 'Open'} menu`}
         >
@@ -583,29 +655,22 @@ export const MissingProduct = ({
             width={20}
             height={20}
           />
-        </ProductMenuToggle>
+        </Button>
         {isMenuOpen && (
-          <ProductMenu>
-            <ProductMenuHead>
+          <div className={styles.productMenu}>
+            <div className={styles.productMenuHeader}>
               <Typography variant="bodySmall" isStrong as="h4">
                 Product actions
               </Typography>
-            </ProductMenuHead>
+            </div>
             {isPinned && (
-              <ProductMenuButton
-                icon="restore"
-                as="button"
-                size="16px 16px"
-                onClick={() => clearChanges()}
-              >
+              <ProductMenuAction icon="restore" onClick={() => clearChanges()}>
                 Restore
-              </ProductMenuButton>
+              </ProductMenuAction>
             )}
             {isBoosted && (
-              <ProductMenuButton
+              <ProductMenuAction
                 icon="restore"
-                as="button"
-                size="16px 16px"
                 onClick={() => {
                   dispatch({
                     type: 'product',
@@ -619,13 +684,11 @@ export const MissingProduct = ({
                 }}
               >
                 Unboost
-              </ProductMenuButton>
+              </ProductMenuAction>
             )}
             {isBuried && (
-              <ProductMenuButton
+              <ProductMenuAction
                 icon="restore"
-                as="button"
-                size="16px 16px"
                 onClick={() => {
                   dispatch({
                     type: 'product',
@@ -639,13 +702,11 @@ export const MissingProduct = ({
                 }}
               >
                 Unbury
-              </ProductMenuButton>
+              </ProductMenuAction>
             )}
             {isBlocked && (
-              <ProductMenuButton
+              <ProductMenuAction
                 icon="restore"
-                as="button"
-                size="16px 16px"
                 onClick={() => {
                   dispatch({
                     type: 'product',
@@ -659,11 +720,11 @@ export const MissingProduct = ({
                 }}
               >
                 Restore
-              </ProductMenuButton>
+              </ProductMenuAction>
             )}
-          </ProductMenu>
+          </div>
         )}
-      </ProductHeader>
+      </div>
       <Skeleton
         key={index}
         aria-busy="true"
@@ -671,14 +732,14 @@ export const MissingProduct = ({
         height={175}
         animate={false}
       />
-      <ProductInfo aria-label="Product details">
+      <div className={styles.productInfo}>
         <Typography variant="bodySmall" isStrong data-testid="product title">
           Product {id} not found
         </Typography>
         <Typography variant="bodySmall" align="right" data-testid="product id">
           ID:&nbsp;{id}
         </Typography>
-      </ProductInfo>
-    </ProductWrapper>
+      </div>
+    </div>
   );
 };

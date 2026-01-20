@@ -34,10 +34,6 @@ export const formActiveStyles = () => css`
   }
 `;
 
-export const boxShadow = () => css`
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
-`;
-
 export const PageWrapper = styled.div`
   box-shadow: #000 0 0 10px -5px;
   margin: ${spacing(2)};

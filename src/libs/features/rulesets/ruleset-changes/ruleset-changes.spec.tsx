@@ -366,7 +366,7 @@ describe('RulesetChanges', () => {
 
     const pinnedProducts = screen.getByTestId('Pinned Products');
     const product9 = await waitFor(() =>
-      within(pinnedProducts).getByLabelText('Position 9')
+      within(pinnedProducts).getByTestId('Position 9')
     );
 
     expect(product9).toBeInTheDocument();
@@ -376,7 +376,7 @@ describe('RulesetChanges', () => {
     });
 
     expect(
-      within(pinnedProducts).queryByLabelText('Position 10')
+      within(pinnedProducts).queryByTestId('Position 10')
     ).not.toBeInTheDocument();
   });
 

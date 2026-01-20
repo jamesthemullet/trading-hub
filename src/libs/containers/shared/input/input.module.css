@@ -15,7 +15,6 @@
   border-radius: 0;
   box-sizing: border-box;
   display: inline-block;
-  outline: none;
   padding: var(--mns-spacing-1);
   width: 100%;
   height: var(--mns-spacing-6);
@@ -31,13 +30,13 @@
   &[data-is-mouse-focus='true'],
   &[data-is-empty='false'] {
     border-color: var(--color-surface-dark-on-surface-dark-variant);
-    border-width: 2px;
+    border-width: 1px;
     &:focus {
       box-shadow: none;
     }
   }
 
   &[aria-invalid='true'] {
-    border-color: var(--color-state-error-error);
+    border-bottom-color: var(--color-state-error-error);
   }
 }

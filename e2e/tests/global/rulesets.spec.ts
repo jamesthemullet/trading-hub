@@ -117,27 +117,27 @@ test.describe('global rulesets', () => {
     await page.getByPlaceholder('Search for product').fill('dress');
     await expect(
       page
-        .getByLabel('Position 1')
+        .getByTestId('Position 1')
         .first()
         .getByRole('button', { name: 'Open menu' })
     ).toBeVisible();
 
     await page
-      .getByLabel('Position 2')
+      .getByTestId('Position 2')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
     await page
-      .getByLabel('Position 3')
+      .getByTestId('Position 3')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
 
     await page
-      .getByLabel('Position 5')
+      .getByTestId('Position 5')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();

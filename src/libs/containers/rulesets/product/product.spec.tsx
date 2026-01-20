@@ -93,7 +93,7 @@ describe('Product', () => {
     it('should show pinned label', () => {
       render(<Product {...productProps} metadata={{ isPinned: true }} />);
 
-      expect(screen.getByLabelText('Pinned product')).toBeInTheDocument();
+      expect(screen.getByTestId('Pinned product')).toBeInTheDocument();
     });
 
     it('should boost to top', () => {
@@ -231,9 +231,25 @@ describe('Product', () => {
         confirmButton.click();
       });
 
-      expect(screen.getByLabelText('Error message')).toHaveTextContent(
+      expect(screen.getByTestId('Error message')).toHaveTextContent(
         expectedError
       );
+    });
+
+    it('should hide edit position when fewer than two products are pinned', () => {
+      render(
+        <Product
+          {...productProps}
+          metadata={{ ...productProps.metadata, isPinned: true }}
+          pinnedProductsCount={1}
+        />
+      );
+
+      openActionsMenu(screen);
+
+      expect(
+        screen.queryByRole('button', { name: 'Edit position' })
+      ).not.toBeInTheDocument();
     });
 
     it('should only allow pinning from position 1', async () => {
@@ -254,7 +270,7 @@ describe('Product', () => {
         confirmButton.click();
       });
 
-      expect(screen.getByLabelText('Error message')).toHaveTextContent(
+      expect(screen.getByTestId('Error message')).toHaveTextContent(
         expectedError
       );
     });

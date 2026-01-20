@@ -187,31 +187,31 @@ test.describe('Keyword search', () => {
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
 
     await page
-      .getByLabel('Position 1')
+      .getByTestId('Position 1')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
     await page
-      .getByLabel('Position 2')
+      .getByTestId('Position 2')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
 
     await page
-      .getByLabel('Position 3')
+      .getByTestId('Position 3')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Pin in position' }).click();
 
     await page.getByPlaceholder('i.e. 3').fill('1');
     await page
-      .getByLabel('Position 3')
+      .getByTestId('Position 3')
       .getByRole('button', { name: 'Confirm' })
       .click();
 
     await page
-      .getByLabel('Position 4')
+      .getByTestId('Position 4')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();
@@ -233,13 +233,13 @@ test.describe('Keyword search', () => {
     await page.getByPlaceholder('Search for product').fill('dress');
     await expect(
       page
-        .getByLabel('Position 2')
+        .getByTestId('Position 2')
         .first()
         .getByRole('button', { name: 'Open menu' })
     ).toBeVisible();
 
     await page
-      .getByLabel('Position 2')
+      .getByTestId('Position 2')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();
@@ -249,14 +249,14 @@ test.describe('Keyword search', () => {
     ).toBeVisible();
 
     await page
-      .getByLabel('Position 3')
+      .getByTestId('Position 3')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
 
     await page
-      .getByLabel('Position 4')
+      .getByTestId('Position 4')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();
@@ -264,13 +264,13 @@ test.describe('Keyword search', () => {
 
     await page.getByPlaceholder('i.e. 3').fill('1');
     await page
-      .getByLabel('Position 4')
+      .getByTestId('Position 4')
       .first()
       .getByRole('button', { name: 'Confirm' })
       .click();
 
     await page
-      .getByLabel('Position 5')
+      .getByTestId('Position 5')
       .first()
       .getByRole('button', { name: 'Open menu' })
       .click();
