@@ -111,7 +111,7 @@
     "jest-fail-on-console": "3.3.4",
     "jest-junit": "16.0.0",
     "jest-watch-typeahead": "3.0.1",
-    "knip": "5.81.0",
+    "knip": "5.82.1",
     "msw": "2.12.7",
     "node-fetch": "3.3.2",
     "openapi-types": "12.1.3",
