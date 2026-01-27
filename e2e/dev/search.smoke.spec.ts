@@ -63,14 +63,14 @@ test.describe('Search Ranking', () => {
     await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
     await page
-      .getByLabel('Position 1', { exact: true })
+      .getByTestId('Position 1')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
-    await expect(page.getByLabel('Position 2', { exact: true })).toBeVisible();
+    await expect(page.getByTestId('Position 2')).toBeVisible();
     await page
-      .getByLabel('Position 2', { exact: true })
+      .getByTestId('Position 2')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();

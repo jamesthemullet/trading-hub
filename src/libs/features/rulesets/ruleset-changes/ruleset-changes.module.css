@@ -1,0 +1,45 @@
+.rulesetChangesWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.changeSection {
+  padding: 0 var(--mns-spacing-2);
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  width: 100%;
+  margin: var(--mns-spacing-2) 0;
+
+  section {
+    padding: 0;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.selectAll {
+  margin-left: var(--mns-spacing-4);
+  padding: var(--mns-spacing-2) 0;
+}
+
+.layout {
+  padding: var(--mns-spacing-2-5) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mns-spacing-2);
+}
+
+.productBox {
+  width: 235px;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--mns-spacing-2);
+}

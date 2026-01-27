@@ -105,22 +105,20 @@ test.describe('Global Ranking', () => {
 
     await page.getByPlaceholder('Search for product').fill('black dress');
     await expect(
-      page
-        .getByTestId('product-search-result')
-        .getByLabel('Position 1', { exact: true })
+      page.getByTestId('product-search-result').getByTestId('Position 1')
     ).toBeVisible();
 
     await page
       .getByTestId('product-search-result')
-      .getByLabel('Position 1', { exact: true })
+      .getByTestId('Position 1')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
-    await expect(page.getByLabel('Position 2', { exact: true })).toBeVisible();
+    await expect(page.getByTestId('Position 2')).toBeVisible();
     await page
       .getByTestId('product-search-result')
-      .getByLabel('Position 2', { exact: true })
+      .getByTestId('Position 2')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();

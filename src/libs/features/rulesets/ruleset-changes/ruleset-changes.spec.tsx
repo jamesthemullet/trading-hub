@@ -360,7 +360,7 @@ describe('RulesetChanges', () => {
 
     expect(loadMoreButton).toBeInTheDocument();
 
-    act(() => {
+    await act(async () => {
       loadMoreButton.click();
     });
 
@@ -371,7 +371,7 @@ describe('RulesetChanges', () => {
 
     expect(product9).toBeInTheDocument();
 
-    act(() => {
+    await act(async () => {
       loadMoreButton.click();
     });
 
@@ -447,9 +447,9 @@ describe('RulesetChanges', () => {
 
       expect(blockProductsTitle).toBeInTheDocument();
 
-      const selectAll = screen.getAllByLabelText('Select all');
+      const selectAll = await screen.findAllByLabelText('Select all');
 
-      act(() => {
+      await act(async () => {
         selectAll[0].click();
       });
 
@@ -535,15 +535,15 @@ describe('RulesetChanges', () => {
         />
       );
 
-      const blockProductsTitle = await screen.findByText(
-        'Blocked Products (2)'
-      );
+      const blockProductsTitle = await screen.findByRole('heading', {
+        name: 'Blocked Products (2)',
+      });
 
       expect(blockProductsTitle).toBeVisible();
 
-      const selectAll = screen.getAllByLabelText('Select all');
+      const selectAll = await screen.findAllByLabelText('Select all');
 
-      act(() => {
+      await act(async () => {
         selectAll[0].click();
       });
 
@@ -624,9 +624,9 @@ describe('RulesetChanges', () => {
         />
       );
 
-      const blockProductsTitle = await screen.findByText(
-        'Blocked Products (1)'
-      );
+      const blockProductsTitle = screen.getByRole('heading', {
+        name: 'Blocked Products (1)',
+      });
 
       expect(blockProductsTitle).toBeInTheDocument();
 

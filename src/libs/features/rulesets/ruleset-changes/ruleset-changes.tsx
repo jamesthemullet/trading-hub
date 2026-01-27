@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import type { Dispatch } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
@@ -8,7 +7,7 @@ import type {
   MerchandisingProduct as ProductType,
   MerchandisingRules,
 } from '@/libs/api';
-import { Button, Text } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-attribute';
@@ -18,44 +17,8 @@ import {
   Product,
 } from '@/libs/containers/rulesets/product/product';
 import { useCategoryProductSearch } from '@/libs/hooks';
-import { spacing } from '@/libs/utils/spacing';
 
-import { Layout, ProductBox } from '../visual-editor/visual-editor.styles';
-
-const Heading = styled(Text)`
-  font-size: 20px;
-  padding: ${spacing(2)} 0;
-`;
-const RulesetChangesWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 20px;
-`;
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: ${spacing(2)};
-`;
-
-const Header = styled.div`
-  display: flex;
-`;
-
-const SelectAll = styled.div`
-  padding: ${spacing(3)} 0 0 ${spacing(4)};
-`;
-const ChangeSection = styled.section`
-  padding: 0 ${spacing(2)};
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  width: 100%;
-
-  section {
-    padding: 0;
-  }
-}`;
+import styles from './ruleset-changes.module.css';
 
 const PRODUCTS_TO_LOAD = 8;
 const PRODUCTS_TO_LOAD_INCREMENT = 4;
@@ -158,13 +121,13 @@ const ProductsLoader = ({
   };
 
   return (
-    <ChangeSection>
-      <Header>
-        <Heading as="h2" isStrong>
+    <section className={styles.changeSection}>
+      <div className={styles.header}>
+        <Typography as="h2" isStrong variant="titleSmall">
           {`${heading} (${products.length})`}
-        </Heading>
+        </Typography>
 
-        <SelectAll>
+        <div className={styles.selectAll}>
           <Checkbox
             label="Select all"
             onChange={onSelectAllProducts}
@@ -175,9 +138,9 @@ const ProductsLoader = ({
             showLabel
             disabled={isSelectionDisabled}
           />
-        </SelectAll>
-      </Header>
-      <Layout data-testid={heading.split('(')[0]}>
+        </div>
+      </div>
+      <section className={styles.layout} data-testid={heading.split('(')[0]}>
         {products.map(({ id }, index) => {
           if (index + 1 > productsShown) {
             return null;
@@ -187,11 +150,14 @@ const ProductsLoader = ({
           );
 
           return (
-            <ProductBox key={`ruleset-changes-product-${id}`}>
+            <div
+              className={styles.productBox}
+              key={`ruleset-changes-product-${id}`}
+            >
               {!product ? (
                 isLoading && !missingProductDetails.includes(id) ? (
                   <Skeleton
-                    key={index}
+                    key={id}
                     aria-busy="true"
                     data-testid="Product loader"
                     width={235}
@@ -224,14 +190,14 @@ const ProductsLoader = ({
                   onSelectProduct={onSelectProduct}
                 />
               )}
-            </ProductBox>
+            </div>
           );
         })}
-      </Layout>
+      </section>
 
       {productsShown < products.length &&
         products.length > PRODUCTS_TO_LOAD_INCREMENT && (
-          <ButtonWrapper>
+          <div className={styles.buttonWrapper}>
             <Button
               onClick={() => {
                 setProductsShown(productsShown + PRODUCTS_TO_LOAD_INCREMENT);
@@ -239,9 +205,9 @@ const ProductsLoader = ({
             >
               Load more products
             </Button>
-          </ButtonWrapper>
+          </div>
         )}
-    </ChangeSection>
+    </section>
   );
 };
 
@@ -309,17 +275,17 @@ export const RulesetChanges = ({
   );
 
   return (
-    <RulesetChangesWrapper>
+    <div className={styles.rulesetChangesWrapper}>
       {hasAttributeChanges && (
-        <ChangeSection>
-          <Heading as="h2" isStrong>
+        <section className={styles.changeSection}>
+          <Typography as="h2" isStrong variant="titleSmall">
             Attribute-level changes ({countOfAttributeChanges})
-          </Heading>
+          </Typography>
           {numericBoosts.length > 0 &&
-            numericBoosts.map(({ field, weight }, index) => {
+            numericBoosts.map(({ field, weight }) => {
               return (
                 <NumericAttribute
-                  key={`boost-numeric-${index}`}
+                  key={`boost-numeric-${field}`}
                   name={field}
                   operation="boost"
                   weight={weight}
@@ -327,19 +293,19 @@ export const RulesetChanges = ({
               );
             })}
           {alphanumericBoost.length > 0 &&
-            alphanumericBoost.map(({ fields, weight }, index) => (
+            alphanumericBoost.map(({ fields, weight }) => (
               <AlphanumericAttribute
-                key={`boost-alphanumeric-${index}`}
+                key={`boost-alphanumeric-${fields.join('-')}`}
                 fields={fields}
                 operation="boost"
                 weight={weight}
               />
             ))}
           {numericBury.length > 0 &&
-            numericBury.map(({ field, weight }, index) => {
+            numericBury.map(({ field, weight }) => {
               return (
                 <NumericAttribute
-                  key={`bury-numeric-${index}`}
+                  key={`bury-numeric-${field}`}
                   name={field}
                   operation="bury"
                   weight={weight}
@@ -347,10 +313,10 @@ export const RulesetChanges = ({
               );
             })}
           {alphanumericBuries.length > 0 &&
-            alphanumericBuries.map(({ fields, weight }, index) => {
+            alphanumericBuries.map(({ fields, weight }) => {
               return (
                 <AlphanumericAttribute
-                  key={`bury-alphanumeric-${index}`}
+                  key={`bury-alphanumeric-${fields.join('-')}`}
                   fields={fields}
                   operation="bury"
                   weight={weight}
@@ -358,26 +324,26 @@ export const RulesetChanges = ({
               );
             })}
           {alphanumericIncludes.length > 0 &&
-            alphanumericIncludes.map(({ fields }, index) => {
+            alphanumericIncludes.map(({ fields }) => {
               return (
                 <AlphanumericAttribute
-                  key={`include-alphanumeric-${index}`}
+                  key={`include-alphanumeric-${fields.join('-')}`}
                   fields={fields}
                   operation="include"
                 />
               );
             })}
           {alphanumericExcludes.length > 0 &&
-            alphanumericExcludes.map(({ fields }, index) => {
+            alphanumericExcludes.map(({ fields }) => {
               return (
                 <AlphanumericAttribute
-                  key={`exclude-alphanumeric-${index}`}
+                  key={`exclude-alphanumeric-${fields.join('-')}`}
                   fields={fields}
                   operation="exclude"
                 />
               );
             })}
-        </ChangeSection>
+        </section>
       )}
 
       {blockedProductsCount > 0 && (
@@ -459,6 +425,6 @@ export const RulesetChanges = ({
           onSelectAll={onSelectAll}
         />
       )}
-    </RulesetChangesWrapper>
+    </div>
   );
 };

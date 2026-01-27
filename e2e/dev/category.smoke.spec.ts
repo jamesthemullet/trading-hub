@@ -96,19 +96,19 @@ test.describe('Category Ranking', () => {
 
     const product2Id =
       (await page
-        .getByLabel('Position 2', { exact: true })
+        .getByTestId('Position 2')
         .getByTestId('product id')
         .textContent()) ?? '';
 
     await page
-      .getByLabel('Position 1', { exact: true })
+      .getByTestId('Position 1')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
-    await expect(page.getByLabel('Position 2', { exact: true })).toBeVisible();
+    await expect(page.getByTestId('Position 2')).toBeVisible();
     await page
-      .getByLabel('Position 2', { exact: true })
+      .getByTestId('Position 2')
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
@@ -143,11 +143,11 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Product', exact: true }).click();
 
     await page
-      .getByLabel('Position 5', { exact: true })
+      .getByTestId('Position 5')
       .getByLabel('Select', { exact: false })
       .click();
     await page
-      .getByLabel('Position 6', { exact: true })
+      .getByTestId('Position 6')
       .getByLabel('Select', { exact: false })
       .click();
 
@@ -160,7 +160,7 @@ test.describe('Category Ranking', () => {
     await expect(
       page
         .getByTestId('Product Search Container')
-        .getByLabel('Position 1', { exact: true })
+        .getByTestId('Position 1')
         .getByLabel('Select', { exact: false })
     ).toBeDisabled();
 
