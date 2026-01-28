@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import type { ChangeEvent } from 'react';
 import { useEffect, useId, useState } from 'react';
 import { Modal } from '@mantine/core';
@@ -24,16 +23,8 @@ import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import { track } from '@/libs/hooks/utils/analytics';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
-import { PageWrapper, ToolsContainer } from '@/libs/utils/shared.styles';
-import { spacing } from '@/libs/utils/spacing';
 
-const ButtonGroup = styled.div`
-  width: 410px;
-  display: flex;
-  margin-left: auto;
-  gap: ${spacing(2)};
-  justify-content: end;
-`;
+import styles from './table-panel.module.css';
 
 export const TablePanel = <
   A extends { pagination: { totalItems?: number } },
@@ -137,8 +128,8 @@ export const TablePanel = <
   const descriptionId = useId();
 
   return (
-    <PageWrapper>
-      <ToolsContainer>
+    <div className={styles.wrapper}>
+      <div className={styles.toolsContainer}>
         <Search value={searchInputValue} onChange={handleSearchInputChange} />
         <CombinedDropdown
           variant="countryFilter"
@@ -151,7 +142,7 @@ export const TablePanel = <
         {writeEnabled && (
           <>
             {ruleType !== 'redirect' && (
-              <ButtonGroup>
+              <div className={styles.buttonGroup}>
                 <Button
                   as="a"
                   isInline
@@ -175,10 +166,10 @@ export const TablePanel = <
                 >
                   Add ranking rule
                 </Button>
-              </ButtonGroup>
+              </div>
             )}
             {ruleType === 'redirect' && (
-              <ButtonGroup>
+              <div className={styles.buttonGroup}>
                 <Button
                   as="a"
                   isInline
@@ -189,11 +180,11 @@ export const TablePanel = <
                 >
                   Add redirect rule
                 </Button>
-              </ButtonGroup>
+              </div>
             )}
           </>
         )}
-      </ToolsContainer>
+      </div>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
@@ -238,6 +229,6 @@ export const TablePanel = <
           />
         </Modal.Content>
       </Modal.Root>
-    </PageWrapper>
+    </div>
   );
 };

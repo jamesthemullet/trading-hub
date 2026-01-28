@@ -1,0 +1,29 @@
+.wrapper {
+  box-shadow: #000 0 0 10px -5px;
+  margin: var(--mns-spacing-2);
+  padding-top: var(--mns-spacing-1);
+  border-radius: 4px;
+  min-width: var(--mns-breakpoints-lg);
+}
+
+@media (--mns-media-xxl-up) {
+  .wrapper {
+    margin: var(--mns-spacing-2) var(--mns-spacing-3);
+  }
+}
+
+.toolsContainer {
+  display: flex;
+  margin: var(--mns-spacing-2);
+  gap: var(--mns-spacing-2);
+  max-width: 100%;
+  align-items: center;
+}
+
+.buttonGroup {
+  width: 410px;
+  display: flex;
+  margin-left: auto;
+  gap: var(--mns-spacing-2);
+  justify-content: end;
+}

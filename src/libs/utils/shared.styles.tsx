@@ -34,18 +34,6 @@ export const formActiveStyles = () => css`
   }
 `;
 
-export const PageWrapper = styled.div`
-  box-shadow: #000 0 0 10px -5px;
-  margin: ${spacing(2)};
-  padding-top: ${spacing(1)};
-  border-radius: 4px;
-  min-width: 1024px;
-
-  ${mediaQuery('xxl')} {
-    margin: ${spacing(2)} ${spacing(3)};
-  }
-`;
-
 export const PageNameLabel = styled.h1<{ marginBottom?: boolean }>`
   font-size: 1.5em;
   margin: ${spacing(3)} ${spacing(2)}
@@ -57,12 +45,4 @@ export const PageNameLabel = styled.h1<{ marginBottom?: boolean }>`
     margin: ${spacing(3)} ${spacing(3)}
       ${({ marginBottom }) => (marginBottom ? spacing(3) : 0)};
   }
-`;
-
-export const ToolsContainer = styled.div`
-  display: flex;
-  margin: ${spacing(2)};
-  gap: ${spacing(2)};
-  max-width: 100%;
-  align-items: center;
 `;
