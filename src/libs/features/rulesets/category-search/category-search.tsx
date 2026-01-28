@@ -14,12 +14,6 @@ import type {
 } from '@/libs/api';
 import { Button, Count, ErrorMessage, Typography } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
-import {
-  KeyWordPill,
-  ModalFooter,
-  RemoveKeyWordPill,
-  StyledCloseButton,
-} from '@/libs/components/search-keywords/search-keywords-modal.styles';
 import { useGetCategories, useOnOutsideClick } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
@@ -27,20 +21,6 @@ import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
 
 import Image from 'next/image';
 
-import {
-  Container,
-  DropdownText,
-  ModalCategoriesList,
-  ModalSelectedCategory,
-  ModalWrapper,
-  Row,
-  SearchForm,
-  SearchInput,
-  SearchValue,
-  SearchWrapper,
-  StyledIcon,
-  Wrapper,
-} from './category.styles';
 import styles from './category-search.module.css';
 
 const SEARCH_DEBOUNCE_WAIT = 500;
@@ -207,7 +187,9 @@ export const CategorySearch = ({
   };
 
   const CategoryRow = (category: Required<MerchandisingCategory>) => (
-    <Row
+    <button
+      className={styles.row}
+      type="button"
       key={`row-${category.identifier}-${category.name}-${category.path}`}
       onClick={() => {
         onAddCategory(category);
@@ -223,7 +205,7 @@ export const CategorySearch = ({
         {category.identifier} | {formatHTMLStrings(category.name)}{' '}
         {category.path && `| ${category.path}`}
       </Typography>
-    </Row>
+    </button>
   );
 
   const getCurrentPath = (category: string) => {
@@ -249,7 +231,7 @@ export const CategorySearch = ({
   };
 
   return (
-    <Wrapper>
+    <div>
       <Typography as="p" withMargin variant="labelMedium">
         Category
         <Count aria-label="number of categories">
@@ -320,6 +302,7 @@ export const CategorySearch = ({
             data-is-dropdown-open={isDropdownOpen}
             role="listbox"
             tabIndex={-1}
+            aria-label="Select category to preview"
             onKeyDown={handleOnKeyDown}
           >
             {selectedCategoriesInfo
@@ -330,14 +313,16 @@ export const CategorySearch = ({
                   type="button"
                   key={category.id}
                   data-hover-grey
+                  role="option"
+                  aria-selected={false}
                   onClick={() => {
                     setIsDropdownOpen(false);
                     selectPreviewCategory(category.id);
                   }}
                 >
-                  <DropdownText>
+                  <Typography as="span" variant="bodySmall">
                     {category.id} {formatHTMLStrings(category.name)}
-                  </DropdownText>
+                  </Typography>
                 </Button>
               ))}
           </div>
@@ -366,41 +351,42 @@ export const CategorySearch = ({
         <Modal.Overlay blur={3} />
         <Modal.Content aria-label="Category search modal">
           <Modal.Body>
-            <ModalWrapper>
+            <div className={styles.modalWrapper}>
               <Typography variant="titleSmall" isStrong withMargin as="h2">
                 Search Categories
               </Typography>
 
               {writeEnabled && (
-                <SearchWrapper>
-                  <SearchForm onSubmit={onSubmit}>
-                    <SearchInput
+                <div className={styles.searchWrapper}>
+                  <form className={styles.searchForm} onSubmit={onSubmit}>
+                    <input
+                      className={styles.searchInput}
                       placeholder="Search..."
                       value={searchValue}
                       onChange={onSearchChange}
                     />
-                    <StyledIcon
+                    <Image
                       src="https://static.marksandspencer.com/icons/svgs/Search-v3-1.svg"
                       width={24}
                       height={24}
                       alt=""
                     />
-                  </SearchForm>
-                </SearchWrapper>
+                  </form>
+                </div>
               )}
 
               {categoryResults.categories.length > 0 && (
-                <Container>
+                <div className={styles.resultsContainer}>
                   {categoryResults.categories.map(CategoryRow)}
-                </Container>
+                </div>
               )}
 
               {previewCategory && (
-                <ModalSelectedCategory>
+                <div className={styles.modalSelectedCategory}>
                   <Typography as="h3" variant="bodyMedium">
                     Selected:
                   </Typography>
-                  <KeyWordPill isSelected as="div">
+                  <div className={styles.keywordPill} data-is-selected="true">
                     <div>
                       <Typography variant="bodySmall" isStrong>
                         {previewCategory}
@@ -413,7 +399,9 @@ export const CategorySearch = ({
                     </div>
 
                     {writeEnabled && (
-                      <RemoveKeyWordPill
+                      <button
+                        className={styles.removeKeywordPill}
+                        type="button"
                         onClick={() => {
                           onClearSelection(previewCategory);
                           selectPreviewCategory(
@@ -430,21 +418,23 @@ export const CategorySearch = ({
                           width={16}
                           height={16}
                         />
-                      </RemoveKeyWordPill>
+                      </button>
                     )}
-                  </KeyWordPill>
-                </ModalSelectedCategory>
+                  </div>
+                </div>
               )}
 
-              <ModalCategoriesList>
+              <ul className={styles.modalCategoriesList}>
                 {selectedCategories
                   .filter((category) => category !== previewCategory)
                   .map((category) => (
-                    <KeyWordPill
-                      isSelected={false}
+                    <li
+                      className={styles.keywordPill}
                       key={`category-${category}`}
                     >
-                      <SearchValue
+                      <button
+                        className={styles.searchValue}
+                        type="button"
                         onClick={() => selectPreviewCategory(category)}
                         aria-label={`Additional category ${category}`}
                       >
@@ -458,9 +448,11 @@ export const CategorySearch = ({
                             {getCurrentPath(category)}
                           </Typography>
                         </div>
-                      </SearchValue>
+                      </button>
                       {writeEnabled && (
-                        <RemoveKeyWordPill
+                        <button
+                          className={styles.removeKeywordPill}
+                          type="button"
                           onClick={() => onClearSelection(category)}
                           aria-label={`Remove category from modal: ${category}`}
                         >
@@ -470,27 +462,24 @@ export const CategorySearch = ({
                             width={16}
                             height={16}
                           />
-                        </RemoveKeyWordPill>
+                        </button>
                       )}
-                    </KeyWordPill>
+                    </li>
                   ))}
-              </ModalCategoriesList>
-            </ModalWrapper>
+              </ul>
+            </div>
 
             {duplicationError && (
               <ErrorMessage>{duplicationError}</ErrorMessage>
             )}
           </Modal.Body>
-          <ModalFooter>
-            <StyledCloseButton
-              theme="secondary"
-              onClick={() => setIsModalOpen(false)}
-            >
+          <div className={styles.modalFooter}>
+            <Button theme="secondary" onClick={() => setIsModalOpen(false)}>
               Close
-            </StyledCloseButton>
-          </ModalFooter>
+            </Button>
+          </div>
         </Modal.Content>
       </Modal.Root>
-    </Wrapper>
+    </div>
   );
 };

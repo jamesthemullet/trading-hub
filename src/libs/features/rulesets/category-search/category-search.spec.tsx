@@ -639,7 +639,7 @@ describe('CategorySearch', () => {
 
       await user.click(dropdownButton);
 
-      const otherCategory = screen.getByRole('button', {
+      const otherCategory = screen.getByRole('option', {
         name: 'SubCategory_1387 Orchids',
       });
       await user.click(otherCategory);

@@ -4,7 +4,7 @@ import type { MerchandisingProduct as ProductType } from '@/libs/api';
 import type { RuleSetActions } from '@/libs/components/types';
 import { Product } from '@/libs/containers/rulesets/product/product';
 
-import { Layout, ProductBox } from './visual-editor.styles';
+import styles from './visual-editor.module.css';
 
 type Props = {
   dispatch: Dispatch<RuleSetActions>;
@@ -34,9 +34,9 @@ export const VisualEditor = ({
   ).length;
 
   return (
-    <Layout>
+    <section className={styles.layout}>
       {products.map((product, index) => (
-        <ProductBox key={`product-${product.id}`}>
+        <div className={styles.productBox} key={`product-${product.id}`}>
           <Product
             {...product}
             index={index}
@@ -48,8 +48,8 @@ export const VisualEditor = ({
             pinnedProductsCount={pinnedProductsCount}
             hasSupplementaryInfo
           />
-        </ProductBox>
+        </div>
       ))}
-    </Layout>
+    </section>
   );
 };

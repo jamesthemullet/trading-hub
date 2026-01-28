@@ -1,0 +1,10 @@
+.layout {
+  padding: var(--mns-spacing-2-5) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mns-spacing-2);
+}
+
+.productBox {
+  width: 235px;
+}
