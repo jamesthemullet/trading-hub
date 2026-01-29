@@ -72,6 +72,7 @@ export const Label = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
 type TypographyProps = {
   isStrong?: boolean;
   withMargin?: boolean;
+  uppercase?: boolean;
   variant?:
     | 'bodyLarge'
     | 'bodyMedium'
@@ -100,7 +101,7 @@ type TypographyProps = {
     | 'label'
     | 'output'
     | 'time';
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'center';
   children: React.ReactNode;
 };
 
@@ -147,6 +148,7 @@ export const Typography = ({
   children,
   isStrong = false,
   withMargin = false,
+  uppercase = false,
   ...rest
 }: TypographyProps) => {
   const StyledTypography = styled.p<TypographyProps>`
@@ -158,6 +160,7 @@ export const Typography = ({
     line-height: ${lineHeights[variant]};
     text-align: ${align};
     margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
+    text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : 'none')};
   `;
 
   return (
@@ -166,6 +169,7 @@ export const Typography = ({
       as={as}
       isStrong={isStrong}
       withMargin={withMargin}
+      uppercase={uppercase}
       {...rest}
     >
       {children}

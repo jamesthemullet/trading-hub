@@ -1,5 +1,4 @@
-import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -8,17 +7,17 @@ import type {
   MerchandisingRules,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import { CombinedDropdown, Loader, Search } from '@/libs/components';
 import {
-  fonts,
-  Label,
-  Text,
-} from '@/libs/components/typography/typography.styles';
+  CombinedDropdown,
+  Loader,
+  Search,
+  Typography,
+} from '@/libs/components';
 import { usePreview } from '@/libs/hooks';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
+
+import styles from './preview.module.css';
 
 export type Props = {
   countryCode: 'UK' | 'IE';
@@ -30,258 +29,6 @@ export type Props = {
   previewTitle?: string;
   excludedFacets?: MerchandisingExcludedFacets;
 };
-
-const Wrapper = styled.div`
-  background: #fff;
-  z-index: 10;
-  height: calc(100vh - 84px);
-  overflow: scroll;
-  max-height: calc(100vh - 90px);
-  min-width: 700px;
-  position: relative;
-  padding-top: 140px;
-`;
-
-const Header = styled.div`
-  padding: ${spacing(2)} ${spacing(2)} 0;
-  display: flex;
-  flex-wrap: wrap;
-  border-bottom: solid 1px #707070;
-  position: fixed;
-  z-index: 10;
-  width: 100%;
-  top: 0;
-  background: #fff;
-`;
-
-const Title = styled(Text)`
-  font-size: 24px;
-  display: block;
-  width: 100%;
-`;
-
-const CloseButton = styled.button`
-  background: url('/trading-hub/asset/icon-close-black.svg');
-  width: 25px;
-  height: 25px;
-  display: inline-block;
-  border: none;
-  position: absolute;
-  right: ${spacing(2)};
-  top: ${spacing(2)};
-  background-size: contain;
-`;
-
-const PreviewTypeSelector = styled.div`
-  margin-left: auto;
-  display: inline-flex;
-  align-items: baseline;
-`;
-
-const LabelText = styled(Label)`
-  margin-right: ${spacing(2)};
-  padding-top: ${spacing(1)};
-`;
-
-const Item = styled(Text)`
-  padding: ${spacing(1)};
-  cursor: pointer;
-  border: none;
-  width: 100%;
-  background: none;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
-
-const Content = styled.div`
-  padding: 0 ${spacing(2)};
-`;
-
-const Facets = styled.div`
-  padding: ${spacing(2)} ${spacing(20)} ${spacing(1)} 0;
-  border-top: solid 1px ${color.lightGrey};
-  border-bottom: solid 1px ${color.lightGrey};
-  position: relative;
-  margin-bottom: ${spacing(2)};
-`;
-
-const FacetButton = styled.button`
-  border: none;
-  background-color: transparent;
-  padding: ${spacing(1)} 0 0;
-  width: fit-content;
-`;
-
-const FacetText = styled(Text)`
-  font-family: ${fonts.semiBold};
-  font-size: 14px;
-  margin-bottom: ${spacing(2)};
-  display: flex;
-  margin-right: ${spacing(3)};
-`;
-
-const FacetName = styled(Text)`
-  display: flex;
-  margin-bottom: ${spacing(1)};
-  font-size: 16px;
-`;
-
-const FacetCount = styled.span`
-  margin-left: auto;
-  font-weight: bold;
-  color: ${color.surfaceDark.onSurfaceDarkVariant};
-`;
-
-const ShowAllButton = styled.button`
-  border: 0;
-  background: none;
-  position: absolute;
-  right: ${spacing(2)};
-  display: inline-flex;
-  align-items: center;
-  top: 20px;
-`;
-const FilterIcon = styled.img`
-  margin-right: ${spacing(1)};
-`;
-
-const FacetWrapper = styled.div`
-  position: relative;
-  display: inline;
-`;
-
-const FacetDropdown = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: 0;
-  top: 24px;
-  background-color: #fff;
-  z-index: 2;
-  width: 290px;
-  overflow: hidden;
-  border: none;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 8px 12px 0px;
-  padding: ${spacing(2)};
-
-  > div {
-    margin-bottom: ${spacing(2)};
-  }
-`;
-
-const StyledSearch = styled(Search)`
-  width: 100%;
-  margin-bottom: ${spacing(2)};
-`;
-
-const PriceFilter = styled.div`
-  padding: ${spacing(2)};
-`;
-
-const PriceFilterContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 45px;
-  width: 100%;
-`;
-
-const PriceFilterValues = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: ${spacing(2)};
-`;
-
-const PriceFilterSlider = styled.div`
-  position: relative;
-  width: calc(100% - ${spacing(2)});
-  margin: 0 ${spacing(1)};
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    height: ${spacing(3)};
-    width: ${spacing(3)};
-    background-image: url(https://static.marksandspencer.com/icons/svgs/SliderHandle.svg);
-    background-size: 100%;
-    border-radius: 50%;
-  }
-  &::before {
-    left: -8px;
-    top: -12px;
-  }
-  &::after {
-    right: -8px;
-    top: -12px;
-  }
-`;
-
-const PriceFilterSliderValue = styled.div`
-  height: 2px;
-  position: absolute;
-  background-color: #000;
-  left: 0;
-  top: -1px;
-  width: 100%;
-`;
-
-const Products = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  height: max-content;
-`;
-
-const Product = styled.div`
-  width: calc(25% - 16px);
-`;
-
-const ProductWrapper = styled.div`
-  width: 100%;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-`;
-
-const ProductOutOfStock = styled(Text)`
-  background-color: rgba(224, 228, 231, 0.85);
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  padding: ${spacing(0.5)};
-`;
-
-const ProductImage = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  aspect-ratio: auto 384 / 500;
-  align-items: end;
-
-  img {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-  }
-`;
-
-const ProductInfo = styled.div`
-  padding: ${spacing(1)} 0;
-`;
-const DropdownIcon = styled.img<{ isDropdownOpen: boolean }>`
-  margin-left: auto;
-
-  ${({ isDropdownOpen }) =>
-    isDropdownOpen
-      ? `
-    transform: rotate(180deg);
-  `
-      : ''}
-`;
 
 const FacetInfo = ({
   currency,
@@ -298,22 +45,29 @@ const FacetInfo = ({
   const [filter, setFilter] = useState('');
 
   return (
-    <FacetWrapper>
-      <FacetButton onClick={() => setIsDropdownOpen(id)}>
-        <FacetText as="span">
+    <div className={styles.facetWrapper}>
+      <button
+        className={styles.facetButton}
+        type="button"
+        onClick={() => setIsDropdownOpen(id)}
+      >
+        <Typography as="span" isStrong variant="bodySmall">
           {id}{' '}
-          <DropdownIcon
-            isDropdownOpen={isDropdownOpen}
+          <Image
+            className={styles.dropdownIcon}
+            data-open={isDropdownOpen}
             src="https://static.marksandspencer.com/icons/svgs/ChevronUpDefault.svg"
             width={20}
             height={20}
+            alt=""
+            sizes="20px"
           />
-        </FacetText>
-      </FacetButton>
+        </Typography>
+      </button>
       {isDropdownOpen && (
-        <FacetDropdown>
+        <div className={styles.facetDropdown}>
           {id !== 'Price' && (
-            <StyledSearch
+            <Search
               placeholder="Search"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
@@ -327,36 +81,33 @@ const FacetInfo = ({
               count?: number;
             }) =>
               id === 'Price' ? (
-                <PriceFilter key="price">
-                  <PriceFilterContent>
-                    <PriceFilterValues>
-                      <Text isStrong>
-                        {currency}
-                        {facet.minimum}
-                      </Text>
-                      <Text isStrong>
-                        {currency}
-                        {facet.maximum}
-                      </Text>
-                    </PriceFilterValues>
-                    <PriceFilterSlider>
-                      <PriceFilterSliderValue />
-                    </PriceFilterSlider>
-                  </PriceFilterContent>
-                </PriceFilter>
+                <div className={styles.priceFilter} key="price">
+                  <div className={styles.priceFilterValues}>
+                    <Typography variant="bodySmall" isStrong>
+                      {currency}
+                      {facet.minimum}
+                    </Typography>
+                    <Typography variant="bodySmall" isStrong>
+                      {currency}
+                      {facet.maximum}
+                    </Typography>
+                  </div>
+                  <div className={styles.priceFilterSlider}>
+                    <div className={styles.priceFilterSliderTrack} />
+                  </div>
+                </div>
               ) : (
-                facet.name &&
-                facet.name.toLowerCase().includes(filter.toLowerCase()) && (
-                  <FacetName key={facet.name}>
-                    {facet.name}
-                    <FacetCount>({facet.count})</FacetCount>
-                  </FacetName>
+                facet.name?.toLowerCase().includes(filter.toLowerCase()) && (
+                  <span className={styles.facetItem} key={facet.name}>
+                    <Typography>{facet.name}</Typography>
+                    <Typography as="span">({facet.count})</Typography>
+                  </span>
                 )
               )
           )}
-        </FacetDropdown>
+        </div>
       )}
-    </FacetWrapper>
+    </div>
   );
 };
 
@@ -370,6 +121,7 @@ export const Preview = ({
   previewTitle,
   searchTerm,
 }: Props) => {
+  const modalTitleId = useId();
   const [withRules, setWithRules] = useState(true);
   const [rules, setRules] = useState(merchandisingRules);
   const [showAllFacets, setShowAllFacets] = useState(false);
@@ -404,148 +156,164 @@ export const Preview = ({
   };
 
   return (
-    <Modal.Root
-      opened
-      onClose={onClose}
-      centered
-      padding={0}
-      size="1280px"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Preview modal"
-    >
+    <Modal.Root opened onClose={onClose} centered padding={0} size="1280px">
       <Modal.Overlay blur={3} />
-      <Modal.Content>
+      <Modal.Content aria-labelledby={modalTitleId}>
         <Modal.Body>
-          <Wrapper>
-            <Header>
-              <Title as="h2">Preview</Title>
-              <CloseButton onClick={onClose} aria-label="close modal" />
-              <Text style={{ paddingTop: '10px', fontSize: '16px' }}>
-                View rule changes made on the website below
-              </Text>
+          <div className={styles.modalWrapper}>
+            <section className={styles.modalHeader}>
+              <div className={styles.titleAndButton}>
+                <Modal.Title id={modalTitleId}>
+                  <Typography variant="titleMedium">Preview</Typography>
+                </Modal.Title>
+                <button
+                  type="button"
+                  className={styles.closeButton}
+                  onClick={onClose}
+                  aria-label="close modal"
+                />
+              </div>
+              <div className={styles.previewRow}>
+                <Typography variant="bodyMedium">
+                  View rule changes made on the website below
+                </Typography>
 
-              <PreviewTypeSelector>
-                <LabelText as="p">Preview</LabelText>
-                <CombinedDropdown
-                  variant="generic"
-                  width={220}
-                  label={`${withRules ? 'with new rule change' : 'current state'}`}
-                  ariaLabel="Preview type selector"
-                >
-                  <Item
-                    as="button"
-                    onClick={() => {
-                      toggleView(true);
-                    }}
-                    role="option"
-                    aria-selected={withRules}
+                <div className={styles.previewTypeSelector}>
+                  <Typography variant="bodySmall">Preview</Typography>
+                  <CombinedDropdown
+                    variant="generic"
+                    width={220}
+                    label={`${withRules ? 'with new rule change' : 'current state'}`}
+                    ariaLabel="Preview type selector"
                   >
-                    with new rule change
-                  </Item>
-                  <Item
-                    as="button"
-                    onClick={() => {
-                      toggleView(false);
-                    }}
-                    role="option"
-                    aria-selected={!withRules}
-                  >
-                    current state
-                  </Item>
-                </CombinedDropdown>
-              </PreviewTypeSelector>
-            </Header>
-            <Content>
-              <Title style={{ marginBottom: spacing(2) }}>{previewTitle}</Title>
-              <Facets>
-                {data.facets
-                  .slice(0, showAllFacets ? data.facets.length : 5)
-                  .map((facet: MerchandisingFacet) => (
-                    <FacetInfo
-                      key={facet.id}
-                      facet={facet}
-                      isDropdownOpen={openFacetId === facet.id}
-                      setIsDropdownOpen={(id: string) => {
-                        setOpenFacetId(openFacetId === id ? '' : id);
+                    <button
+                      className={styles.item}
+                      type="button"
+                      onClick={() => {
+                        toggleView(true);
                       }}
-                      currency={countryCode === 'UK' ? '£' : '€'}
-                    />
-                  ))}
+                      role="option"
+                      aria-selected={withRules}
+                    >
+                      <Typography variant="bodySmall" align="center">
+                        with new rule change
+                      </Typography>
+                    </button>
+                    <button
+                      className={styles.item}
+                      type="button"
+                      onClick={() => {
+                        toggleView(false);
+                      }}
+                      role="option"
+                      aria-selected={!withRules}
+                    >
+                      <Typography variant="bodySmall" align="center">
+                        current state
+                      </Typography>
+                    </button>
+                  </CombinedDropdown>
+                </div>
+              </div>
+            </section>
+            <div className={styles.content}>
+              <Typography>{previewTitle}</Typography>
+              <div className={styles.facetRowWrapper}>
+                <div className={styles.facetContainer}>
+                  {data.facets
+                    .slice(0, showAllFacets ? data.facets.length : 5)
+                    .map((facet: MerchandisingFacet) => (
+                      <FacetInfo
+                        key={facet.id}
+                        facet={facet}
+                        isDropdownOpen={openFacetId === facet.id}
+                        setIsDropdownOpen={(id: string) => {
+                          setOpenFacetId(openFacetId === id ? '' : id);
+                        }}
+                        currency={countryCode === 'UK' ? '£' : '€'}
+                      />
+                    ))}
+                </div>
                 {data.facets.length > 5 && (
-                  <ShowAllButton
+                  <button
+                    className={styles.showAllButton}
+                    type="button"
                     onClick={() => setShowAllFacets(!showAllFacets)}
                   >
-                    <FilterIcon
+                    <Image
                       src="https://static.marksandspencer.com/icons/svgs/FilterSwitch-v2.svg"
                       alt="filterSwitch"
                       width={32}
                       height={32}
                     />
-                    <Text as="span" isStrong style={{ fontSize: '16px' }}>
+                    <Typography as="span" isStrong>
                       {showAllFacets ? 'Fewer' : 'All'} Filters
-                    </Text>
-                  </ShowAllButton>
+                    </Typography>
+                  </button>
                 )}
-              </Facets>
+              </div>
 
               {!!data.pagination.totalItems && (
-                <Text
-                  style={{
-                    color: color.surfaceDark.onSurfaceDarkVariant,
-                    marginBottom: spacing(2),
-                  }}
-                >
-                  1 to{' '}
-                  {data.pagination.totalItems &&
-                  data.pagination.totalItems < 140
-                    ? data.pagination.totalItems
-                    : 140}{' '}
-                  of {data.pagination.totalItems} items
-                </Text>
+                <div className={styles.itemsFound}>
+                  <Typography variant="bodySmall">
+                    1 to{' '}
+                    {data.pagination.totalItems &&
+                    data.pagination.totalItems < 140
+                      ? data.pagination.totalItems
+                      : 140}{' '}
+                    of {data.pagination.totalItems} items
+                  </Typography>
+                </div>
               )}
 
-              <Products>
+              <section className={styles.products}>
                 {data.products.map(
                   ({ productId, imageUrl, isInStock, brand, title, price }) => (
-                    <Product key={`product-${productId}`}>
-                      <ProductWrapper>
-                        <ProductImage>
+                    <div
+                      className={styles.product}
+                      key={`product-${productId}`}
+                    >
+                      <div className={styles.productWrapper}>
+                        <div className={styles.productImage}>
                           <Image
                             src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
                             alt=""
                             data-testid="productImage"
                             width={100}
                             height={176}
-                            style={{ objectFit: 'contain' }}
-                            priority
                             sizes="100%"
-                            onError={(element) =>
+                            onError={(element) => {
                               // eslint-disable-next-line functional/immutable-data
-                              (element.currentTarget.src =
-                                'https://dummyimage.com/307x400/cccccc/ffffff?text=missing+image')
-                            }
+                              element.currentTarget.src =
+                                'https://dummyimage.com/307x400/cccccc/ffffff?text=missing+image';
+                            }}
                           />
                           {!isInStock && (
-                            <ProductOutOfStock>Out of stock</ProductOutOfStock>
+                            <div className={styles.productOutOfStock}>
+                              <Typography variant="bodySmall">
+                                Out of stock
+                              </Typography>
+                            </div>
                           )}
-                        </ProductImage>
-                        <ProductInfo>
-                          <Text isStrong>{price}</Text>
-                          <Text isStrong style={{ textTransform: 'uppercase' }}>
+                        </div>
+                        <div className={styles.productInfo}>
+                          <Typography variant="bodySmall" isStrong>
+                            {price}
+                          </Typography>
+                          <Typography variant="bodySmall" isStrong uppercase>
                             {brand}
-                          </Text>
-                          <Text>{title}</Text>
-                        </ProductInfo>
-                      </ProductWrapper>
-                    </Product>
+                          </Typography>
+                          <Typography variant="bodySmall">{title}</Typography>
+                        </div>
+                      </div>
+                    </div>
                   )
                 )}
-              </Products>
-            </Content>
+              </section>
+            </div>
 
             {isLoading && <Loader />}
-          </Wrapper>
+          </div>
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>

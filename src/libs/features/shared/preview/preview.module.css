@@ -1,0 +1,245 @@
+.modalWrapper {
+  background: var(--color-surface-bright-surface-bright);
+  z-index: 10;
+  height: calc(100vh - 84px);
+  overflow: scroll;
+  max-height: calc(100vh - 90px);
+  min-width: 700px;
+  position: relative;
+  padding-top: 140px;
+}
+
+.modalHeader {
+  padding: var(--mns-spacing-2) var(--mns-spacing-2) 0;
+  display: flex;
+  flex-direction: column;
+  border-bottom: solid 1px var(--color-surface-bright-on-surface-bright-variant);
+  padding-bottom: var(--mns-spacing-2);
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  top: 0;
+  background: var(--color-surface-bright-surface-bright);
+  gap: var(--mns-spacing-1);
+}
+
+.titleAndButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.previewRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closeButton {
+  background: url('/trading-hub/asset/icon-close-black.svg');
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  border: none;
+  background-size: contain;
+}
+
+.previewTypeSelector {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: baseline;
+
+  p {
+    margin-right: var(--mns-spacing-2);
+  }
+}
+
+.item {
+  padding: var(--mns-spacing-1);
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  background: none;
+
+  &:hover {
+    background-color: var(--color-accent-secondary-secondary-container);
+  }
+}
+
+.content {
+  padding: 0 var(--mns-spacing-2);
+}
+
+.facetRowWrapper {
+  padding: var(--mns-spacing-2) 0;
+  border-top: solid 1px var(--color-state-disabled-disabled);
+  border-bottom: solid 1px var(--color-state-disabled-disabled);
+  position: relative;
+  margin-bottom: var(--mns-spacing-2);
+  display: flex;
+}
+
+.facetContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 17;
+}
+
+.showAllButton {
+  border: 0;
+  background: none;
+  right: var(--mns-spacing-2);
+  display: inline-flex;
+  flex: 3;
+  align-items: center;
+}
+
+.facetWrapper {
+  position: relative;
+  display: inline;
+}
+
+.facetButton {
+  border: none;
+  background-color: transparent;
+  padding: var(--mns-spacing-1) 0 0;
+  width: fit-content;
+
+  span {
+    margin-right: var(--mns-spacing-3);
+    display: flex;
+  }
+}
+
+.dropdownIcon {
+  margin-left: auto;
+  transition: transform 0.3s ease-in;
+}
+
+.dropdownIcon[data-open='true'] {
+  transform: rotate(180deg);
+}
+
+.facetDropdown {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: var(--mns-spacing-3);
+  background-color: var(--color-surface-bright-surface-bright);
+  z-index: 2;
+  width: 290px;
+  overflow: hidden;
+  box-shadow: rgb(0 0 0 / 24%) 0 8px 12px 0;
+  padding: var(--mns-spacing-2);
+
+  > div {
+    margin-bottom: var(--mns-spacing-2);
+  }
+}
+
+.priceFilter {
+  padding: var(--mns-spacing-2);
+}
+
+.priceFilterValues {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--mns-spacing-2);
+}
+
+.priceFilterSlider {
+  position: relative;
+  width: calc(100% - var(--mns-spacing-2));
+  margin: 0 var(--mns-spacing-1);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: var(--mns-spacing-3);
+    height: var(--mns-spacing-3);
+    background-image: url('https://static.marksandspencer.com/icons/svgs/SliderHandle.svg');
+    background-size: 100%;
+    border-radius: 50%;
+  }
+  &::before {
+    left: -8px;
+    top: -12px;
+  }
+  &::after {
+    right: -8px;
+    top: -12px;
+  }
+}
+
+.priceFilterSliderTrack {
+  width: 100%;
+  height: 2px;
+  position: absolute;
+  background-color: var(--color-surface-dark-surface-dark);
+  left: 0;
+  top: -1px;
+}
+
+.itemsFound {
+  margin-bottom: var(--mns-spacing-2);
+  color: var(--color-surface-dark-on-surface-dark-variant);
+}
+
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mns-spacing-2);
+  height: max-content;
+}
+
+.product {
+  width: calc(25% - var(--mns-spacing-2));
+}
+
+.productWrapper {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.productImage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  aspect-ratio: auto 384 / 500;
+  align-items: end;
+
+  img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+.productOutOfStock {
+  background-color: #e0e4e7;
+  opacity: 0.85;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  padding: var(--mns-spacing-0-5);
+}
+
+.productInfo {
+  padding: var(--mns-spacing-1) 0;
+}
+
+.facetItem {
+  display: flex;
+  margin-bottom: var(--mns-spacing-1);
+  justify-content: space-between;
+  span {
+    color: var(--color-surface-dark-on-surface-dark-variant);
+  }
+}

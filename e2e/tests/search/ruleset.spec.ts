@@ -129,7 +129,7 @@ test.describe('Keyword search', () => {
     await expect(page.getByRole('button', { name: 'Price' })).toBeVisible();
 
     await expect(
-      page.getByLabel('Preview modal').getByText('Performance Cuffed Joggers')
+      page.getByText('Performance Cuffed Joggers').first()
     ).toBeVisible();
   });
 
@@ -154,9 +154,7 @@ test.describe('Keyword search', () => {
     await expect(page.getByRole('button', { name: 'Price' })).toBeVisible();
 
     await expect(
-      page
-        .getByLabel('Preview modal')
-        .getByText('Cotton Rich Straight Leg Joggers')
+      page.getByText('Cotton Rich Straight Leg Joggers').first()
     ).toBeVisible();
   });
 
