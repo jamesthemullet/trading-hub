@@ -1,168 +1,19 @@
-import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
 import type {
   MerchandisingAttributeResponseItem,
   MerchandisingAttributesResponse,
 } from '@/libs/api';
-import { Button, Label, Text } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { Checkboxes } from '@/libs/components/checkboxes/checkboxes';
 import { OperationSelector } from '@/libs/components/operation-selector/operation-selector';
 import { RadioButtons } from '@/libs/components/radio-buttons/radio-buttons';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-attribute';
-import { AttributeSelection } from '@/libs/components/ruleset-attributes/ruleset-attributes.styles';
 import { Search } from '@/libs/components/search/search';
 import type { AttributeEdit, RulesetAttribute } from '@/libs/components/types';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
 
-const MODAL_WIDTH = 522;
-
-const ModalContainer = styled.div`
-  height: 600px;
-  display: flex;
-`;
-
-const ModalSideBase = styled.section`
-  position: relative;
-  background-color: #fff;
-  overflow: hidden;
-  z-index: 1;
-`;
-
-const ModalSide = styled(ModalSideBase)`
-  padding: ${spacing(8)} ${spacing(2)} ${spacing(2)};
-  width: 40%;
-`;
-
-const ModalRightSide = styled(ModalSideBase)`
-  width: 60%;
-`;
-
-const SelectedAttribute = styled.div`
-  border-right: solid 1px ${color.lightGrey};
-  height: 100%;
-  padding-right: ${spacing(1)};
-  overflow-y: scroll;
-`;
-
-const ModalSection = styled.div`
-  border-bottom: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
-  padding: 12px;
-  position: relative;
-`;
-
-const StyledNumber = styled.span<{ isActive: boolean }>`
-  background-color: ${({ isActive }) =>
-    isActive ? color.lightGreen : color.lightGrey};
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${spacing(1)};
-`;
-
-const ModalAttributeHeader = styled.div`
-  border-bottom: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
-  padding: ${spacing(2)};
-  display: flex;
-  align-items: center;
-  background-color: ${color.accent.secondary.secondaryContainer};
-  margin: 0;
-`;
-
-const Divider = styled.span`
-  width: 35px;
-  border-bottom: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
-`;
-
-const ModalContent = styled.div`
-  transition: transform 0.1s ease-in;
-  transform: translateX(-${MODAL_WIDTH}px);
-  position: absolute;
-  width: 100%;
-`;
-
-const ModalButton = styled(Label)`
-  border: none;
-  background: none;
-  color: ${color.selectionBox};
-  width: 100%;
-  text-align: left;
-  padding-left: 0;
-`;
-
-const NextStep = styled(Label)`
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  padding-left: 0;
-
-  &::after {
-    content: '';
-    background: url('/trading-hub/asset/chevron-right.svg');
-    width: 18px;
-    height: 18px;
-    position: absolute;
-    right: ${spacing(5)};
-  }
-`;
-
-const PreviousStep = styled(NextStep)`
-  &::after {
-    display: none;
-  }
-  &::before {
-    content: '';
-    background: url('/trading-hub/asset/chevron-left.svg');
-    width: 12px;
-    height: 19px;
-    display: inline-block;
-    margin-right: ${spacing(1)};
-    margin-bottom: -4px;
-  }
-`;
-
-const Count = styled(Text)`
-  position: absolute;
-  right: ${spacing(2)};
-  top: 18px;
-`;
-
-const SearchWrapper = styled.div`
-  padding-top: ${spacing(2)};
-
-  label {
-    visibility: hidden;
-    display: block;
-    height: 0px;
-  }
-`;
-
-const ModalFooter = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  border-top: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
-  padding: ${spacing(1)};
-  display: flex;
-  justify-content: end;
-  gap: ${spacing(1)};
-`;
-
-const Filters = styled.div`
-  display: flex;
-  align-items: end;
-`;
+import styles from './add-attribute.module.css';
 
 const SectionLabel = ({
   number,
@@ -175,12 +26,14 @@ const SectionLabel = ({
 }) => {
   return (
     <>
-      <StyledNumber isActive={isActive}>
-        <Label as="span" isStrong={isActive}>
+      <span className={styles.styledNumber} data-is-active={isActive}>
+        <Typography as="span" isStrong={isActive} variant="bodySmall">
           {number}
-        </Label>
-      </StyledNumber>
-      <Label isStrong={isActive}>{text}</Label>
+        </Typography>
+      </span>
+      <Typography isStrong={isActive} variant="bodySmall">
+        {text}
+      </Typography>
     </>
   );
 };
@@ -193,16 +46,19 @@ const StepContent = ({
   stepIndex: number;
   currentStep: number;
   children: React.ReactNode;
-}) => (
-  <ModalContent
-    style={{
-      transform: `translateX(${(currentStep - stepIndex) * MODAL_WIDTH * -1}px)`,
-    }}
-    {...(currentStep !== stepIndex && { inert: true })}
-  >
-    {children}
-  </ModalContent>
-);
+}) => {
+  const stepOffset = currentStep - stepIndex;
+
+  return (
+    <div
+      className={styles.modalContent}
+      data-step-offset={stepOffset}
+      {...(currentStep !== stepIndex && { inert: true })}
+    >
+      {children}
+    </div>
+  );
+};
 
 type Props = {
   onCancel: () => void;
@@ -272,9 +128,12 @@ export const AddAttribute = ({
   }, [isEditMode, alphanumericAttributes, editData]);
 
   return (
-    <ModalContainer>
-      <ModalSide>
-        <SelectedAttribute data-testid="Selected Attribute">
+    <div className={styles.modalContainer}>
+      <section className={styles.modalSide} data-side="left">
+        <div
+          className={styles.selectedAttribute}
+          data-testid="Selected Attribute"
+        >
           {selectedAttributeType === 'numeric' && !!selectedNumericField && (
             <NumericAttribute
               operation={selectedOperation}
@@ -297,76 +156,92 @@ export const AddAttribute = ({
                 }
               />
             )}
-        </SelectedAttribute>
-      </ModalSide>
+        </div>
+      </section>
 
-      <ModalRightSide>
-        <ModalSection>
-          <ModalHeader>
+      <section className={styles.modalSide} data-side="right">
+        <div className={styles.modalSection}>
+          <div className={styles.modalHeader}>
             <SectionLabel
               number={1}
               text="Choose type"
               isActive={modalStep === 0}
             />
-            <Divider />
+            <span className={styles.divider} />
             <SectionLabel
               number={2}
               text="Choose value"
               isActive={modalStep !== 0}
             />
-          </ModalHeader>
-        </ModalSection>
+          </div>
+        </div>
 
         <StepContent stepIndex={0} currentStep={modalStep}>
-          <ModalSection>
-            <Label isStrong as="h4">
+          <div className={styles.modalSection}>
+            <Typography isStrong as="h4" variant="bodySmall">
               Choose attribute type
-            </Label>
-          </ModalSection>
+            </Typography>
+          </div>
 
-          <ModalSection>
-            <ModalButton as="button" isStrong onClick={() => setModalStep(1)}>
-              Numeric attributes
-            </ModalButton>
-          </ModalSection>
-
-          <ModalSection>
-            <ModalButton as="button" isStrong onClick={() => setModalStep(2)}>
-              Product description attributes
-            </ModalButton>
-          </ModalSection>
+          <div className={styles.modalSection}>
+            <button
+              className={styles.modalButton}
+              onClick={() => setModalStep(1)}
+              type="button"
+            >
+              <Typography isStrong as="span" variant="bodySmall">
+                Numeric attributes
+              </Typography>
+            </button>
+          </div>
+          <div className={styles.modalSection}>
+            <button
+              className={styles.modalButton}
+              type="button"
+              onClick={() => setModalStep(2)}
+            >
+              <Typography isStrong as="span" variant="bodySmall">
+                Product description attributes
+              </Typography>
+            </button>
+          </div>
         </StepContent>
 
         <StepContent stepIndex={1} currentStep={modalStep}>
           {!isEditMode && (
-            <ModalSection>
-              <PreviousStep
-                as="button"
-                isStrong
+            <div className={styles.modalSection}>
+              <button
+                className={styles.step}
+                type="button"
+                data-step-type="previous"
                 onClick={() => {
                   setModalStep(0);
                   setSelectedNumericField('');
                 }}
               >
-                Back
-              </PreviousStep>
-            </ModalSection>
+                <Typography isStrong as="span" variant="bodySmall">
+                  Back
+                </Typography>
+              </button>
+            </div>
           )}
 
-          <ModalSection>
-            <Label isStrong>Numeric Attributes</Label>
-            <Text>
+          <div className={styles.modalSection}>
+            <Typography isStrong variant="bodySmall">
+              Numeric Attributes
+            </Typography>
+            <Typography variant="bodySmall">
               Select one numeric attribute below to boost linearly (larger the
               value, stronger the boost). Attributes are aggregated from the
               account level
-            </Text>
-            <Filters>
+            </Typography>
+            <div className={styles.filters}>
               <OperationSelector
                 hasIncludeExclude={false}
                 selectedOperation={selectedOperation}
                 setSelectedOperation={setSelectedOperation}
               />
-              <SearchWrapper>
+              <div className={styles.searchWrapper}>
                 <label htmlFor="filerNumericAttributes">
                   Filter numeric attributes
                 </label>
@@ -376,14 +251,19 @@ export const AddAttribute = ({
                   value={numericSearchValue}
                   onChange={(e) => setNumericSearchValue(e.target.value)}
                 />
-              </SearchWrapper>
-            </Filters>
-          </ModalSection>
+              </div>
+            </div>
+          </div>
 
-          <AttributeSelection data-testid="modal numeric attributes list">
-            <ModalAttributeHeader>
-              <Label isStrong>Relevant attributes</Label>
-            </ModalAttributeHeader>
+          <div
+            className={styles.attributeSelection}
+            data-testid="modal numeric attributes list"
+          >
+            <div className={styles.attributeHeader}>
+              <Typography isStrong variant="bodySmall">
+                Relevant attributes
+              </Typography>
+            </div>
             {numericAttributes.filter(
               (attribute: MerchandisingAttributeResponseItem) =>
                 attribute.name
@@ -410,17 +290,22 @@ export const AddAttribute = ({
                 }}
               />
             ) : (
-              <Text style={{ padding: spacing(2) }}>0 Results</Text>
+              <div className={styles.noResults}>
+                <Typography as="span" variant="bodySmall">
+                  0 Results
+                </Typography>
+              </div>
             )}
-          </AttributeSelection>
+          </div>
         </StepContent>
 
         <StepContent stepIndex={2} currentStep={modalStep}>
           {!isEditMode && (
-            <ModalSection>
-              <PreviousStep
-                as="button"
-                isStrong
+            <div className={styles.modalSection}>
+              <button
+                className={styles.step}
+                type="button"
+                data-step-type="previous"
                 onClick={() => {
                   setSelectedAlphanumericValues([]);
                   setSelectedNumericField('');
@@ -428,23 +313,27 @@ export const AddAttribute = ({
                   setSelectedOperation('boost');
                 }}
               >
-                Back
-              </PreviousStep>
-            </ModalSection>
+                <Typography isStrong as="span" variant="bodySmall">
+                  Back
+                </Typography>
+              </button>
+            </div>
           )}
 
-          <ModalSection>
-            <Label isStrong as="h4">
+          <div className={styles.modalSection}>
+            <Typography isStrong variant="bodySmall">
               Product description attributes
-            </Label>
-            <Text>Attributes are aggregated from the account level</Text>
-            <Filters>
+            </Typography>
+            <Typography variant="bodySmall">
+              Attributes are aggregated from the account level
+            </Typography>
+            <div className={styles.filters}>
               <OperationSelector
                 hasIncludeExclude
                 selectedOperation={selectedOperation}
                 setSelectedOperation={setSelectedOperation}
               />
-              <SearchWrapper>
+              <div className={styles.searchWrapper}>
                 <label htmlFor="filerAlphanumericAttributes">
                   Filter alphanumeric attributes
                 </label>
@@ -454,17 +343,20 @@ export const AddAttribute = ({
                   value={alphanumericSearchValue}
                   onChange={(e) => setAlphanumericSearchValue(e.target.value)}
                 />
-              </SearchWrapper>
-            </Filters>
-          </ModalSection>
+              </div>
+            </div>
+          </div>
 
-          <AttributeSelection
+          <div
+            className={styles.attributeSelection}
             data-testid="modal alphanumeric attributes list"
-            style={{ maxHeight: '290px' }}
+            data-height="290"
           >
-            <ModalAttributeHeader>
-              <Label isStrong>Relevant attributes</Label>
-            </ModalAttributeHeader>
+            <div className={styles.attributeHeader}>
+              <Typography isStrong variant="bodySmall">
+                Relevant attributes
+              </Typography>
+            </div>
             {alphanumericAttributes
               .filter((attribute: MerchandisingAttributeResponseItem) =>
                 attribute.name
@@ -472,9 +364,10 @@ export const AddAttribute = ({
                   .includes(alphanumericSearchValue.toLowerCase())
               )
               .map((attribute: MerchandisingAttributeResponseItem) => (
-                <ModalSection key={attribute.name}>
-                  <NextStep
-                    as="button"
+                <div className={styles.modalSection} key={attribute.name}>
+                  <button
+                    className={styles.step}
+                    type="button"
                     onClick={() => {
                       // istanbul ignore next
                       if (!attribute.values) return;
@@ -484,29 +377,38 @@ export const AddAttribute = ({
                       setAlphanumericField(attribute.name);
                       setModalStep(3);
                     }}
-                    isStrong
+                    data-step-type="next"
                   >
-                    {attribute.name}
-                  </NextStep>
-                </ModalSection>
+                    <Typography isStrong as="span" variant="bodySmall">
+                      {attribute.name}
+                    </Typography>
+                  </button>
+                </div>
               ))}
-          </AttributeSelection>
+          </div>
         </StepContent>
 
         <StepContent stepIndex={3} currentStep={modalStep}>
-          <ModalSection>
-            <PreviousStep
+          <div className={styles.modalSection}>
+            <button
+              className={styles.step}
+              type="button"
+              data-step-type="previous"
               aria-label="Move back to step 2"
-              as="button"
-              isStrong
               onClick={() => setModalStep(2)}
             >
-              {alphanumericField}
-            </PreviousStep>
+              <Typography isStrong as="span" variant="bodySmall">
+                {alphanumericField}
+              </Typography>
+            </button>
 
-            <Count>Showing: {alphanumericAttributeValues.length}</Count>
+            <div className={styles.count}>
+              <Typography variant="bodySmall">
+                Showing: {alphanumericAttributeValues.length}
+              </Typography>
+            </div>
 
-            <SearchWrapper>
+            <div className={styles.searchWrapper}>
               <label htmlFor="filerSelectedAttributes">
                 Filter selected attributes
               </label>
@@ -516,13 +418,15 @@ export const AddAttribute = ({
                 value={alphanumericFilterValue}
                 onChange={(e) => setAlphanumericFilterValue(e.target.value)}
               />
-            </SearchWrapper>
-          </ModalSection>
+            </div>
+          </div>
 
-          <AttributeSelection style={{ maxHeight: '360px' }}>
-            <ModalAttributeHeader>
-              <Label isStrong>Current matching attribute values</Label>
-            </ModalAttributeHeader>
+          <div className={styles.attributeSelection} data-height="350">
+            <div className={styles.attributeHeader}>
+              <Typography isStrong variant="bodySmall">
+                Current matching attribute values
+              </Typography>
+            </div>
             <div data-testid="Selected attributes">
               <Checkboxes
                 onSelect={(isSelected, name) => {
@@ -561,10 +465,10 @@ export const AddAttribute = ({
                   }))}
               />
             </div>
-          </AttributeSelection>
+          </div>
         </StepContent>
 
-        <ModalFooter>
+        <div className={styles.modalFooter}>
           <Button
             onClick={() => {
               onCancel();
@@ -601,8 +505,8 @@ export const AddAttribute = ({
               Done
             </Button>
           )}
-        </ModalFooter>
-      </ModalRightSide>
-    </ModalContainer>
+        </div>
+      </section>
+    </div>
   );
 };

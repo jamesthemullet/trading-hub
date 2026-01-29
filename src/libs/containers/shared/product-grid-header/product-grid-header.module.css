@@ -1,0 +1,18 @@
+.ruleSetOptions {
+  display: flex;
+
+  h1 {
+    padding: var(--mns-spacing-2) var(--mns-spacing-1-5) var(--mns-spacing-1-5);
+  }
+
+  button {
+    min-width: 110px;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: var(--mns-spacing-2);
+  margin-left: auto;
+  padding: var(--mns-spacing-1-5);
+}

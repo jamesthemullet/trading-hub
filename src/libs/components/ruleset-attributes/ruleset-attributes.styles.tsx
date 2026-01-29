@@ -53,11 +53,6 @@ export const AttributeValuePill = styled.li`
   }
 `;
 
-export const AttributeSelection = styled.div`
-  max-height: 250px;
-  overflow: auto;
-`;
-
 export const Buttons = styled.div`
   display: flex;
   align-items: center;

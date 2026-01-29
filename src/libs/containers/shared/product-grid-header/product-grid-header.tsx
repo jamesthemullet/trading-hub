@@ -1,32 +1,10 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { Button } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { track } from '@/libs/hooks/utils/analytics';
-import { spacing } from '@/libs/utils/spacing';
 
 import { ModalUnsavedChanges } from '../modals';
-const RuleSetOptions = styled.div`
-  display: flex;
-
-  h1 {
-    font-size: 1.5em;
-    padding: ${spacing(2)} ${spacing(1.5)} ${spacing(1.5)};
-  }
-
-  a,
-  button {
-    min-width: 110px;
-    text-align: center;
-  }
-`;
-
-const Actions = styled.div`
-  display: flex;
-  gap: ${spacing(2)};
-  margin-left: auto;
-  padding: ${spacing(1.5)};
-`;
+import styles from './product-grid-header.module.css';
 
 type Props = {
   canSave: boolean;
@@ -69,9 +47,11 @@ export const ProductGridHeader = ({
 
   return (
     <>
-      <RuleSetOptions>
-        <h1>{title}</h1>
-        <Actions>
+      <div className={styles.ruleSetOptions}>
+        <Typography as="h1" isStrong variant="titleMedium">
+          {title}
+        </Typography>
+        <div className={styles.actions}>
           <Button onClick={onCancelChange}>Cancel</Button>
           {!shouldHidePreview && (
             <Button onClick={onPreview} isDisabled={!hasPreview}>
@@ -92,8 +72,8 @@ export const ProductGridHeader = ({
               {isNewRuleSet ? 'Create' : 'Save'}
             </Button>
           )}
-        </Actions>
-      </RuleSetOptions>
+        </div>
+      </div>
 
       {showModal && (
         <ModalUnsavedChanges

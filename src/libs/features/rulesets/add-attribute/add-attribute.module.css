@@ -1,0 +1,198 @@
+.modalContainer {
+  height: 600px;
+  display: flex;
+}
+
+.modalSide {
+  position: relative;
+  background-color: var(--color-surface-bright-surface-bright);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.modalSide[data-side='left'] {
+  padding: var(--mns-spacing-8) var(--mns-spacing-2) var(--mns-spacing-2);
+  width: 40%;
+}
+
+.modalSide[data-side='right'] {
+  width: 60%;
+}
+
+.selectedAttribute {
+  border-right: solid 1px var(--color-state-disabled-disabled);
+  height: 100%;
+  padding-right: var(--mns-spacing-1);
+  overflow-y: scroll;
+}
+
+.modalSection {
+  border-bottom: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  padding: var(--mns-spacing-1-5);
+  position: relative;
+}
+
+.styledNumber {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-state-disabled-disabled);
+}
+
+.styledNumber[data-is-active='true'] {
+  background-color: #dfece2;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--mns-spacing-1);
+}
+
+.divider {
+  width: 35px;
+  border-bottom: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+}
+
+.modalContent {
+  --modal-step-offset: 1;
+  transition: transform 0.1s ease-in;
+  transform: translateX(calc(var(--modal-step-offset) * -100%));
+  position: absolute;
+  width: 100%;
+}
+
+.modalContent[data-step-offset='-3'] {
+  --modal-step-offset: -3;
+}
+
+.modalContent[data-step-offset='-2'] {
+  --modal-step-offset: -2;
+}
+
+.modalContent[data-step-offset='-1'] {
+  --modal-step-offset: -1;
+}
+
+.modalContent[data-step-offset='0'] {
+  --modal-step-offset: 0;
+}
+
+.modalContent[data-step-offset='1'] {
+  --modal-step-offset: 1;
+}
+
+.modalContent[data-step-offset='2'] {
+  --modal-step-offset: 2;
+}
+
+.modalContent[data-step-offset='3'] {
+  --modal-step-offset: 3;
+}
+
+.modalButton {
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  padding-left: 0;
+
+  span {
+    color: #4273b7;
+  }
+}
+
+.step {
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  padding-left: 0;
+}
+
+.step[data-step-type='next'] {
+  &::after {
+    content: '';
+    background: url('/trading-hub/asset/chevron-right.svg');
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    right: var(--mns-spacing-5);
+  }
+}
+
+.step[data-step-type='previous'] {
+  &::after {
+    display: none;
+  }
+  &::before {
+    content: '';
+    background: url('/trading-hub/asset/chevron-left.svg');
+    width: 12px;
+    height: 19px;
+    display: inline-block;
+    margin-right: var(--mns-spacing-1);
+    margin-bottom: -4px;
+  }
+}
+
+.filters {
+  display: flex;
+  align-items: end;
+}
+
+.searchWrapper {
+  padding-top: var(--mns-spacing-2);
+
+  label {
+    visibility: hidden;
+    display: block;
+    height: 0;
+  }
+}
+
+.attributeSelection {
+  max-height: 250px;
+  overflow: auto;
+}
+
+.attributeSelection[data-height='290'] {
+  max-height: 290px;
+}
+
+.attributeSelection[data-height='350'] {
+  max-height: 350px;
+}
+
+.attributeHeader {
+  border-bottom: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  padding: var(--mns-spacing-2);
+  display: flex;
+  align-items: center;
+  background-color: var(--color-accent-secondary-secondary-container);
+  margin: 0;
+}
+
+.noResults {
+  padding: var(--mns-spacing-2);
+}
+
+.count {
+  position: absolute;
+  right: var(--mns-spacing-2);
+  top: 18px;
+}
+
+.modalFooter {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-top: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  padding: var(--mns-spacing-1);
+  display: flex;
+  justify-content: end;
+  gap: var(--mns-spacing-1);
+}

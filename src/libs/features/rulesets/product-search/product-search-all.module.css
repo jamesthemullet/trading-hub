@@ -1,0 +1,63 @@
+.productSearchContainer {
+  height: 100%;
+}
+
+.containerHeader[data-ruleset-type='global'] {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: var(--mns-spacing-1) 0 var(--mns-spacing-3);
+}
+
+.topContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: var(--mns-spacing-1);
+  align-items: stretch;
+}
+
+.infoContainer {
+  display: flex;
+  height: 34px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.infoContainer[data-ruleset-type='global'] {
+  flex-direction: column-reverse;
+  align-items: flex-end;
+}
+
+.selectAll {
+  margin-left: auto;
+  display: flex;
+  height: 34px;
+  align-items: center;
+}
+
+.selectAll[data-ruleset-type='global'] {
+  align-items: flex-end;
+}
+
+.productsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  height: 100%;
+  padding-bottom: 108px;
+  overflow: auto;
+  gap: var(--mns-spacing-1);
+
+  > div {
+    margin: 0;
+    min-height: auto;
+    flex: 1;
+  }
+}
+
+.productsContainer[data-ruleset-type='global'] {
+  > div {
+    max-width: 322px;
+  }
+}

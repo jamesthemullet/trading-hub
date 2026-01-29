@@ -123,7 +123,7 @@ const ProductCount = styled.div`
 const ProductSearchTabContent = styled(TabContent)`
   height: calc(100vh - 278px);
   overflow: hidden;
-  padding-right: 10px;
+  padding-right: 8px;
 `;
 
 const CategorySearchWrapper = styled.div`

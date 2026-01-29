@@ -206,7 +206,7 @@ describe('RulesetAttributes', () => {
     });
 
     expect(
-      screen.getByRole('heading', { name: 'Product description attributes' })
+      screen.getByRole('button', { name: 'Product description attributes' })
     ).toBeVisible();
 
     const brandStepButton = screen.getByRole('button', { name: 'brand' });
@@ -230,7 +230,7 @@ describe('RulesetAttributes', () => {
     });
 
     expect(
-      screen.getByRole('heading', { name: 'Product description attributes' })
+      screen.getByRole('button', { name: 'Product description attributes' })
     ).toBeVisible();
 
     const firstStepButton = screen.getAllByRole('button', { name: 'Back' })[1];

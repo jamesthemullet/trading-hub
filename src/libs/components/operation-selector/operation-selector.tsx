@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Typography } from '@/libs/components';
 import { labels } from '@/libs/utils/ruleset-attributes';
 
 import Image from 'next/image';
@@ -54,7 +55,9 @@ export const OperationSelector = ({
             width={20}
             height={20}
           />
-          Boost
+          <Typography variant="bodySmall" as="span">
+            Boost
+          </Typography>
         </Button>
         <Button
           className={dropdownStyles.dropdownOption}
@@ -73,7 +76,9 @@ export const OperationSelector = ({
             width={20}
             height={20}
           />
-          Bury
+          <Typography variant="bodySmall" as="span">
+            Bury
+          </Typography>
         </Button>
         {hasIncludeExclude && (
           <>
@@ -94,7 +99,9 @@ export const OperationSelector = ({
                 width={20}
                 height={20}
               />
-              Include only
+              <Typography variant="bodySmall" as="span">
+                Include only
+              </Typography>
             </Button>
 
             <Button
@@ -114,7 +121,9 @@ export const OperationSelector = ({
                 width={20}
                 height={20}
               />
-              Exclude only
+              <Typography variant="bodySmall" as="span">
+                Exclude only
+              </Typography>
             </Button>
           </>
         )}

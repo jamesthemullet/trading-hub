@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import type { Dispatch } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -13,89 +12,10 @@ import type { RuleSetActions } from '@/libs/components/types';
 import { Product } from '@/libs/containers/rulesets/product/product';
 import { useCategoryProductSearch } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
-import { spacing } from '@/libs/utils/spacing';
 
 import pluralize from 'pluralize';
 
-const ProductSearchRootContainer = styled.div`
-  height: 100%;
-`;
-const TopContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 9px;
-  align-items: stretch;
-`;
-
-const StyledSearch = styled(Search)<{
-  rulesetType: 'global' | 'category' | 'search';
-}>`
-  width: ${(props) => (props.rulesetType === 'global' ? '336px' : '100%')};
-  max-width: 360px;
-  & > div {
-    & > input {
-      height: 53px;
-    }
-  }
-`;
-
-const ProductsContainer = styled.div<{
-  rulesetType: 'global' | 'category' | 'search';
-}>`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0;
-  height: 100%;
-  padding-bottom: 108px;
-  overflow: auto;
-  gap: 5px;
-  & > div {
-    margin: 0;
-    flex: ${(props) => props.rulesetType !== 'global' && 'calc(50% - 10px)'};
-    min-height: auto;
-    max-width: ${(props) => props.rulesetType === 'global' && '322px'};
-  }
-`;
-
-const StyledProduct = styled(Product)`
-  width: 100%;
-`;
-
-const InfoContainer = styled.div<{
-  rulesetType: 'global' | 'category' | 'search';
-}>`
-  display: flex;
-  height: 34px;
-  align-items: center;
-
-  flex-direction: ${(props) =>
-    props.rulesetType === 'global' && 'column-reverse'};
-  align-items: ${(props) => props.rulesetType === 'global' && 'flex-end'};
-  justify-content: flex-end;
-  gap: 10px;
-`;
-
-const SelectAll = styled.div<{
-  rulesetType: 'global' | 'category' | 'search';
-}>`
-  margin-left: auto;
-  display: flex;
-  height: 34px;
-  align-items: center;
-
-  align-items: ${(props) => props.rulesetType === 'global' && 'flex-end'};
-`;
-
-const ContainerHeader = styled.div<{
-  rulesetType: 'global' | 'category' | 'search';
-}>`
-  display: ${(props) => props.rulesetType === 'global' && 'flex'};
-  flex-direction: row;
-  justify-content: space-between;
-  margin: ${(props) =>
-    props.rulesetType === 'global' && `${spacing(1)} 0 ${spacing(3)}`};
-`;
+import styles from './product-search-all.module.css';
 
 export type ProductSearchProps = {
   countryCode?: MerchandisingCountryCode;
@@ -184,25 +104,27 @@ export const ProductSearchAll = ({
   };
 
   return (
-    <ProductSearchRootContainer data-testid="Product Search Container">
-      <ContainerHeader rulesetType={rulesetType}>
-        <TopContainer>
-          <StyledSearch
-            rulesetType={rulesetType}
+    <div
+      className={styles.productSearchContainer}
+      data-testid="Product Search Container"
+    >
+      <div className={styles.containerHeader} data-ruleset-type={rulesetType}>
+        <div className={styles.topContainer}>
+          <Search
             placeholder="Search for product"
             onChange={(e) => {
               handleSearch(e.target.value);
             }}
             fullWidth
           />
-        </TopContainer>
-        <InfoContainer rulesetType={rulesetType}>
+        </div>
+        <div className={styles.infoContainer} data-ruleset-type={rulesetType}>
           {products.length > 0 && (
             <>
               <output aria-live="polite" aria-label="number of results">
                 {products.length} {pluralize('results', products.length)}
               </output>
-              <SelectAll rulesetType={rulesetType}>
+              <div className={styles.selectAll} data-ruleset-type={rulesetType}>
                 <Checkbox
                   label="Select all"
                   onChange={onSelectAllProducts}
@@ -213,20 +135,21 @@ export const ProductSearchAll = ({
                   showLabel
                   disabled={isSelectionDisabled}
                 />
-              </SelectAll>
+              </div>
             </>
           )}
-        </InfoContainer>
-      </ContainerHeader>
-      <ProductsContainer
+        </div>
+      </div>
+      <div
+        className={styles.productsContainer}
         data-testid="product-search-result"
-        rulesetType={rulesetType}
+        data-ruleset-type={rulesetType}
       >
         {products.map((product, index) => {
           const id = `${product.id}-${index}`;
           const isSelected = selectedProducts.includes(product.id);
           return (
-            <StyledProduct
+            <Product
               key={id}
               {...product}
               index={index}
@@ -243,7 +166,7 @@ export const ProductSearchAll = ({
             />
           );
         })}
-      </ProductsContainer>
-    </ProductSearchRootContainer>
+      </div>
+    </div>
   );
 };
