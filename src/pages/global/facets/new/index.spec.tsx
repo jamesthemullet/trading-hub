@@ -20,6 +20,7 @@ jest.mock('@/libs/hooks', () => ({
 describe('Global Facet Management New', () => {
   const mockRouter = {
     push: jest.fn(),
+    query: { id: 'test-ruleset-id' },
   };
 
   beforeEach(() => {

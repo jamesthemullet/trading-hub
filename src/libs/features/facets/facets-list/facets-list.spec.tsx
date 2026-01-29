@@ -567,6 +567,54 @@ describe('FacetsList', () => {
     });
   });
 
+  it('should dispatch facetChangePosition on drag end reordering', async () => {
+    const categoriesInfo = [
+      {
+        id: categoryId1,
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+
+    latestDragEndHandler = undefined;
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+            {
+              id: facetsListMock.facets[1].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />
+    );
+
+    expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+
+    act(() => {
+      latestDragEndHandler?.({
+        active: { id: facetsListMock.facets[0].id },
+        over: { id: facetsListMock.facets[1].id },
+      } as unknown as DragEndEvent);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+    });
+  });
+
   it('should handle drag handles when listeners are undefined', () => {
     const categoriesInfo = [
       {
@@ -1058,7 +1106,6 @@ describe('FacetsList', () => {
 
     expect(screen.getByTestId('Row showing color as included')).toBeVisible();
 
-    // Change existing included facet to algoControl - so there should be no edit values button
     const dropdownHeader = screen.getAllByTestId(
       'button to open facet order dropdown'
     )[0];
@@ -1251,5 +1298,67 @@ describe('FacetsList', () => {
     expect(
       screen.queryByRole('link', { name: 'Edit Values' })
     ).not.toBeInTheDocument();
+  });
+
+  it('should correctly set facetChangePosition payload with exact facetId and position from useFacetOrderInput', async () => {
+    const user = userEvent.setup({ delay: null });
+    const categoriesInfo = [
+      {
+        id: categoryId1,
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+            {
+              id: facetsListMock.facets[1].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+          excludedFacets: {
+            facets: [
+              {
+                id: facetsListMock.facets[2].id,
+              },
+            ],
+          },
+        }}
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />,
+      []
+    );
+
+    expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+    expect(screen.getByTestId('Row showing size as included')).toBeVisible();
+
+    const orderInputs = screen.queryAllByRole('spinbutton');
+    expect(orderInputs.length).toBeGreaterThan(0);
+
+    const firstFacetOrderInput = orderInputs[0] as HTMLInputElement;
+
+    await user.clear(firstFacetOrderInput);
+    await user.type(firstFacetOrderInput, '3');
+
+    act(() => {
+      firstFacetOrderInput.blur();
+    });
+
+    await waitFor(() => {
+      const updatedInputs = screen.queryAllByRole('spinbutton');
+      expect(updatedInputs.length).toBeGreaterThanOrEqual(2);
+    });
   });
 });

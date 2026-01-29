@@ -31,6 +31,7 @@ const NEW_RULE_BUTTON_TEXT = 'Create';
 describe('Search Facet Management New', () => {
   const mockRouter = {
     push: jest.fn(),
+    query: { id: 'test-ruleset-id' },
   };
 
   beforeEach(() => {

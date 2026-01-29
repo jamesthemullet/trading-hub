@@ -81,6 +81,7 @@ const mockGetCategories = {
 describe('Category Facet Management Editing', () => {
   const mockRouter = {
     push: jest.fn(),
+    query: { id: ruleSetId },
   };
 
   beforeEach(() => {

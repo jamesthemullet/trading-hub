@@ -9,6 +9,10 @@
   padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
   background-color: var(--color-accent-primary-on-primary);
   grid-template-columns: repeat(3, minmax(280px, 2fr)) 136px 40px;
+
+  &[data-with-reorder='true'] {
+    grid-template-columns: 106px repeat(3, minmax(280px, 2fr)) 136px 40px;
+  }
 }
 
 .facetTableRow:first-of-type {
@@ -118,6 +122,10 @@
   padding-right: var(--mns-spacing-1);
 }
 
+.facetOrderInput {
+  width: 98px;
+  padding-right: var(--mns-spacing-2);
+}
 .skeletonRow {
   width: 100%;
   height: 75px;

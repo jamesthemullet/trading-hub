@@ -144,6 +144,7 @@ const updateMock = {
 describe('Search Facet Management Editing', () => {
   const mockRouter = {
     push: jest.fn(),
+    query: { id: ruleSetId },
   };
 
   beforeEach(() => {

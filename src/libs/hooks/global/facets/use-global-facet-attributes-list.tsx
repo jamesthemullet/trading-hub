@@ -9,11 +9,11 @@ import type {
 import { CombinedDropdown, FacetOrderInput } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { GlobalFacetAttribute } from '@/libs/containers';
+import type { FacetDisplayType } from '@/libs/containers/facets/facet-row';
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import type { FacetDisplayType } from '@/libs/features/facets/facets-list/facets-list';
 import facetsPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';

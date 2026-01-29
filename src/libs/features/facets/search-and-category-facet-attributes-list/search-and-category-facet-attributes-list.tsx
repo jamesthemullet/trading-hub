@@ -7,10 +7,10 @@ import {
   DragHandleButton,
 } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
+import type { FacetDisplayType } from '@/libs/containers/facets/facet-row';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SearchCategoryFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import type { FacetDisplayType } from '@/libs/features/facets/facets-list/facets-list';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';

@@ -1,4 +1,4 @@
-import { useMemo, useReducer, useState } from 'react';
+import { useCallback, useMemo, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -8,7 +8,6 @@ import type {
 } from '@/libs/api';
 import {
   Button,
-  ButtonDeprecated,
   CombinedDropdown,
   ErrorMessage,
   Search,
@@ -16,13 +15,10 @@ import {
   Typography,
 } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
-import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
-import { getFacetRoute } from '@/libs/constants';
+import { FacetRow } from '@/libs/containers/facets/facet-row';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
-import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
-import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import {
@@ -34,6 +30,7 @@ import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css'
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { useFacetsList } from '@/libs/hooks';
+import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { track } from '@/libs/hooks/utils/analytics';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
@@ -55,6 +52,7 @@ import Image from 'next/image';
 const COLUMNS: {
   label: string;
 }[] = [
+  { label: 'Ranking' },
   {
     label: 'Attribute',
   },
@@ -68,13 +66,6 @@ const COLUMNS: {
     label: 'Value options',
   },
 ];
-
-export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
-
-type FacetRowDisplayValue = MerchandisingReturnedFacet & {
-  displayType: FacetDisplayType;
-  index: number;
-};
 
 type CategoryIds = { categoryIds: string[] };
 type SearchTerms = { searchTerms: string[] };
@@ -107,7 +98,10 @@ export const FacetsList = ({
   writeEnabled,
 }: FacetsListProps) => {
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
+
   const router = useRouter();
+  const rulesetId = router.query.id as string;
+
   const [ruleset, dispatch] = useReducer(
     rulesetReducer,
     currentRuleset || {
@@ -243,6 +237,34 @@ export const FacetsList = ({
     [ruleset.facets]
   );
 
+  const initialFacetOrders = useMemo(
+    () =>
+      ruleset.facets?.reduce(
+        (acc, facet, index) => ({
+          ...acc,
+          [facet.id]: index + 1,
+        }),
+        {} as Record<string, number>
+      ) || {},
+    [ruleset.facets]
+  );
+
+  const {
+    inputRefs,
+    localOrders,
+    handleInputChange,
+    handleInputBlur,
+    handleInputKeyDown,
+  } = useFacetOrderInput((facetId: string, newIndex: number) => {
+    dispatch({
+      type: 'facetChangePosition',
+      payload: {
+        id: facetId,
+        position: newIndex,
+      },
+    });
+  }, initialFacetOrders);
+
   const filteredFacets = filter.length
     ? facets.filter(
         (facet) =>
@@ -281,137 +303,16 @@ export const FacetsList = ({
     [dispatch, includedFacetOrder, writeEnabled]
   );
 
-  const FacetRow = (facet: FacetRowDisplayValue) => {
-    const { displayValue, displayType, id } = facet;
-    const isIncludedFacet = displayType === 'included';
-    const isDragDisabled = !writeEnabled || boostedFacets.length <= 1;
-
-    const renderRow = (sortableProps?: SortableRowRenderArgs) => (
-      <div
-        className={styles.facetTableRow}
-        data-option={displayType}
-        data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
-        key={sortableProps ? undefined : id}
-        ref={sortableProps?.setNodeRef}
-        style={sortableProps?.style}
-      >
-        <div className={styles.tableCol}>
-          <Text>{facet.indexPropertyName}</Text>
-        </div>
-        <div className={styles.tableCol}>
-          <Text>{facet.displayValue}</Text>
-        </div>
-        <div className={styles.tableCol}>
-          <div className={styles.orderColumn}>
-            <CombinedDropdown
-              variant="facetOrder"
-              status={displayType}
-              onChange={(status) => {
-                if (status === displayType) return;
-                dispatch({
-                  type: 'facetChangeDisplayType',
-                  payload: {
-                    id: facet.id,
-                    newType: status as FacetDisplayType,
-                    oldType: displayType,
-                  },
-                });
-              }}
-              hasAlgoControl
-              writeEnabled={writeEnabled}
-              ariaLabel="Select to set as included, excluded or algo control"
-            />
-          </div>
-        </div>
-        <div className={styles.tableCol}>
-          {displayType === 'included' && showNewFacetValuesPage && (
-            <ButtonDeprecated
-              as="a"
-              theme="secondary"
-              href={(() => {
-                const ruleSetId = router.query.id as string;
-                const baseUrl = getFacetRoute(
-                  facetType,
-                  'valuesEdit',
-                  facet.id
-                );
-                const params = new URLSearchParams({
-                  ruleSetId,
-                  displayName: facet.displayValue,
-                  countryCode: ruleset.countryCode || 'UK_IE',
-                });
-
-                if (facetType === 'category' && selectedCategories.length > 0) {
-                  selectedCategories.forEach((categoryId) => {
-                    params.append('categories', categoryId);
-                  });
-                }
-
-                if (facetType === 'search' && selectedSearchTerms.length > 0) {
-                  selectedSearchTerms.forEach((term) => {
-                    params.append('searchTerms', term);
-                  });
-                }
-
-                return `${baseUrl}?${params.toString()}`;
-              })()}
-            >
-              {writeEnabled ? 'Edit values' : 'View values'}
-            </ButtonDeprecated>
-          )}
-          {displayType === 'included' &&
-            writeEnabled &&
-            !showNewFacetValuesPage && (
-              <ButtonDeprecated
-                onClick={() => {
-                  setIsFacetValuesModalOpen(true);
-                  const rulesetConfig = ruleset.facets?.find(
-                    (f) => f.id === facet.id
-                  );
-                  setSelectedFacet({
-                    ...facet,
-                    boosted: rulesetConfig?.boosted,
-                    excludedValues: rulesetConfig?.excludedValues,
-                  });
-                }}
-              >
-                Edit values
-              </ButtonDeprecated>
-            )}
-        </div>
-        <div className={styles.tableCol}>
-          {isIncludedFacet && (
-            <DragHandleButton
-              type="button"
-              aria-label={`Reorder ${displayValue}`}
-              ref={sortableProps?.setActivatorNodeRef}
-              {...(sortableProps?.listeners ?? {})}
-              disabled={isDragDisabled}
-              aria-disabled={isDragDisabled}
-              data-testid={`drag-handle-${displayValue}`}
-            >
-              <Image
-                width={24}
-                height={24}
-                src="/trading-hub/asset/drag-handle.svg"
-                alt="Drag handle"
-              />
-            </DragHandleButton>
-          )}
-        </div>
-      </div>
-    );
-
-    if (isIncludedFacet) {
-      return (
-        <SortableRow key={id} id={id} disabled={isDragDisabled}>
-          {(sortableProps) => renderRow(sortableProps)}
-        </SortableRow>
-      );
-    }
-
-    return renderRow();
-  };
+  const handleFacetOrderInputRef = useCallback(
+    (facetId: string) => (el: HTMLInputElement | null) => {
+      if (el) {
+        // eslint-disable-next-line functional/immutable-data
+        inputRefs.current[facetId] = el;
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const excludedFacets = filteredFacets
     .map((facet) =>
@@ -626,7 +527,7 @@ export const FacetsList = ({
       )}
 
       <div className={styles.attributesTable}>
-        <div className={styles.facetTableRow}>
+        <div className={styles.facetTableRow} data-with-reorder>
           {COLUMNS.map(({ label }) => (
             <div key={`column-${label}`} className={styles.tableCol}>
               <Typography isStrong variant="bodySmall">
@@ -648,7 +549,25 @@ export const FacetsList = ({
                     key={facet.id}
                     {...facet}
                     displayType="included"
+                    isDragDisabled={!writeEnabled || boostedFacets.length <= 1}
                     index={index}
+                    includedFacetOrder={includedFacetOrder}
+                    localOrders={localOrders}
+                    handleInputChange={handleInputChange}
+                    handleInputBlur={handleInputBlur}
+                    handleInputKeyDown={handleInputKeyDown}
+                    handleFacetOrderInputRef={handleFacetOrderInputRef}
+                    writeEnabled={writeEnabled}
+                    showNewFacetValuesPage={showNewFacetValuesPage}
+                    selectedCategories={selectedCategories}
+                    selectedSearchTerms={selectedSearchTerms}
+                    facetType={facetType}
+                    countryCode={ruleset.countryCode || 'UK_IE'}
+                    rulesetId={rulesetId}
+                    onDispatch={dispatch}
+                    onSetIsFacetValuesModalOpen={setIsFacetValuesModalOpen}
+                    onSetSelectedFacet={setSelectedFacet}
+                    rulesetFacets={ruleset.facets}
                   />
                 )
             )}
@@ -663,6 +582,8 @@ export const FacetsList = ({
                 {...facet}
                 displayType="algoControl"
                 index={index}
+                writeEnabled={writeEnabled}
+                onDispatch={dispatch}
               />
             )
         )}
@@ -675,6 +596,8 @@ export const FacetsList = ({
                 {...facet}
                 displayType="excluded"
                 index={index}
+                writeEnabled={writeEnabled}
+                onDispatch={dispatch}
               />
             )
         )}
