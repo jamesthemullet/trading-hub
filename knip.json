@@ -4,7 +4,9 @@
     "@biomejs/biome",
     "@biomejs/js-api",
     "@swc/helpers",
-    "eslint-config-next"
+    "eslint-config-next",
+    "eslint-plugin-jest-formatting",
+    "jest-environment-jsdom"
   ],
   "ignoreBinaries": ["magenta,blue", "storybook-static"]
 }
