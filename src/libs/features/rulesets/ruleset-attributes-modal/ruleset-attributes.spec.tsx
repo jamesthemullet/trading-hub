@@ -1,4 +1,10 @@
-import { act, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { MerchandisingCountryCode, MerchandisingRules } from '@/libs/api';
@@ -496,7 +502,6 @@ describe('RulesetAttributes', () => {
     });
 
     it('adds buried numeric attribute', async () => {
-      const user = userEvent.setup();
       const expectedCall: RuleSetActions = {
         payload: {
           change: 'add',
@@ -542,8 +547,7 @@ describe('RulesetAttributes', () => {
 
       const input = screen.getByLabelText('Strength %');
 
-      await user.clear(input);
-      await user.type(input, '12');
+      fireEvent.change(input, { target: { value: '12' } });
 
       const doneButton = screen.getByRole('button', {
         name: 'Done',
@@ -601,7 +605,6 @@ describe('RulesetAttributes', () => {
     });
 
     it('adds alphanumeric attributes', async () => {
-      const user = userEvent.setup();
       const expectedCall: RuleSetActions = {
         payload: {
           data: {
@@ -646,8 +649,7 @@ describe('RulesetAttributes', () => {
 
       const input = screen.getByLabelText('Strength %');
 
-      await user.clear(input);
-      await user.type(input, '20');
+      fireEvent.change(input, { target: { value: '20' } });
 
       act(() => {
         screen.getByLabelText('Move back to step 2').click();
@@ -713,7 +715,6 @@ describe('RulesetAttributes', () => {
 
   describe('attribute editing', () => {
     it('opens modal and adds alphanumeric attribute value', async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <RulesetAttributes
           {...mockProps}
@@ -767,8 +768,7 @@ describe('RulesetAttributes', () => {
 
       const input = screen.getByLabelText('Strength %');
 
-      await user.clear(input);
-      await user.type(input, '20');
+      fireEvent.change(input, { target: { value: '20' } });
 
       act(() => {
         screen.getByRole('button', { name: 'Done' }).click();
@@ -1347,7 +1347,6 @@ describe('RulesetAttributes', () => {
     });
 
     it('opens modal and changes numeric attribute value', async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <RulesetAttributes
           {...mockProps}
@@ -1385,8 +1384,7 @@ describe('RulesetAttributes', () => {
 
       const input = screen.getByLabelText('Strength %');
 
-      await user.clear(input);
-      await user.type(input, '20');
+      fireEvent.change(input, { target: { value: '20' } });
 
       act(() => {
         screen.getByRole('button', { name: 'Done' }).click();

@@ -1,22 +1,11 @@
-import styled from '@emotion/styled';
-
 import type { MerchandisingNumericBoostBury } from '@/libs/api';
-import { Text, Typography } from '@/libs/components';
+import { Typography } from '@/libs/components';
 import { labels } from '@/libs/utils/ruleset-attributes';
 
 import Image from 'next/image';
 
-import {
-  AlignedText,
-  AttributeHeading,
-  AttributeRow,
-  AttributeWrapper,
-} from './ruleset-attributes.styles';
+import styles from './ruleset-attributes.module.css';
 import { AttributeWeight } from './weight';
-
-const AttributeNameText = styled(Typography)`
-  word-break: break-word;
-`;
 
 export const NumericAttribute = ({
   isEditable,
@@ -42,15 +31,15 @@ export const NumericAttribute = ({
   };
 
   return (
-    <AttributeWrapper>
-      <AttributeHeading>
-        <AttributeNameText variant="bodyMedium" isStrong>
+    <div className={styles.attributeWrapper}>
+      <div className={styles.attributeHeading}>
+        <Typography variant="bodyMedium" isStrong>
           {name}
-        </AttributeNameText>
-      </AttributeHeading>
+        </Typography>
+      </div>
 
-      <AttributeRow>
-        <AlignedText>
+      <div className={styles.attributeRow}>
+        <Typography variant="bodySmall">
           Operation{' '}
           <Image
             width={20}
@@ -59,8 +48,8 @@ export const NumericAttribute = ({
             src={`/trading-hub/asset/icon-${operation}.svg`}
           />{' '}
           {labels[operation].text}
-        </AlignedText>
-      </AttributeRow>
+        </Typography>
+      </div>
 
       {!isEditMode && (
         <AttributeWeight
@@ -74,11 +63,11 @@ export const NumericAttribute = ({
       )}
 
       {isEditMode && (
-        <AttributeRow>
-          <Text as="label">
+        <div className={styles.attributeRow}>
+          <Typography as="label" variant="bodySmall">
             Strength{' '}
             <input
-              value={weight ? weight : ''}
+              value={weight}
               onChange={(e) => {
                 const { value } = e.target;
                 // istanbul ignore next
@@ -90,9 +79,9 @@ export const NumericAttribute = ({
               max={100}
             />{' '}
             %
-          </Text>
-        </AttributeRow>
+          </Typography>
+        </div>
       )}
-    </AttributeWrapper>
+    </div>
   );
 };

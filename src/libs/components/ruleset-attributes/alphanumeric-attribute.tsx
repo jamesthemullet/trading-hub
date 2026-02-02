@@ -1,32 +1,15 @@
-import styled from '@emotion/styled';
-
 import type {
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
 } from '@/libs/api';
-import {
-  Text,
-  Typography,
-} from '@/libs/components/typography/typography.styles';
+import { Typography } from '@/libs/components/typography/typography.styles';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
 import { labels } from '@/libs/utils/ruleset-attributes';
-import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
 
-import {
-  AlignedText,
-  AttributeHeading,
-  AttributeRow,
-  AttributeValueList,
-  AttributeValuePill,
-  AttributeWrapper,
-} from './ruleset-attributes.styles';
+import styles from './ruleset-attributes.module.css';
 import { AttributeWeight } from './weight';
-
-const AttributeNameText = styled.span`
-  word-break: break-word;
-`;
 
 export const AlphanumericAttribute = ({
   fields,
@@ -56,29 +39,29 @@ export const AlphanumericAttribute = ({
   };
 
   return (
-    <AttributeWrapper>
-      <AttributeHeading>
+    <div className={styles.attributeWrapper}>
+      <div className={styles.attributeHeading}>
         {fields.map(({ field, values }) => (
           <div key={`field-${field}`}>
             <Typography variant="bodyMedium" isStrong>
               {field}
             </Typography>
 
-            <AttributeValueList>
+            <div className={styles.attributeValueList}>
               {values.map((value) => (
-                <AttributeValuePill key={value}>
-                  <AttributeNameText>
+                <div className={styles.attributeValuePill} key={value}>
+                  <Typography variant="bodySmall">
                     {formatHTMLStrings(value)}
-                  </AttributeNameText>
-                </AttributeValuePill>
+                  </Typography>
+                </div>
               ))}
-            </AttributeValueList>
+            </div>
           </div>
         ))}
-      </AttributeHeading>
+      </div>
 
-      <AttributeRow style={{ padding: spacing(1) }}>
-        <AlignedText>
+      <div className={styles.attributeRow}>
+        <Typography variant="bodySmall">
           Operation
           <Image
             width={20}
@@ -87,15 +70,15 @@ export const AlphanumericAttribute = ({
             src={`/trading-hub/asset/icon-${operation}.svg`}
           />{' '}
           {labels[operation].text}
-        </AlignedText>
-      </AttributeRow>
+        </Typography>
+      </div>
 
       {isEditMode && canEditWeight ? (
-        <AttributeRow>
-          <Text as="label">
+        <div className={styles.attributeRow}>
+          <Typography as="label" variant="bodySmall">
             Strength{' '}
             <input
-              value={weight ? weight : ''}
+              value={weight}
               onChange={(e) => {
                 const { value } = e.target;
                 // istanbul ignore next
@@ -107,8 +90,8 @@ export const AlphanumericAttribute = ({
               max={100}
             />{' '}
             %
-          </Text>
-        </AttributeRow>
+          </Typography>
+        </div>
       ) : (
         <AttributeWeight
           weight={weight || 0}
@@ -119,6 +102,6 @@ export const AlphanumericAttribute = ({
           canEditWeight={canEditWeight}
         />
       )}
-    </AttributeWrapper>
+    </div>
   );
 };

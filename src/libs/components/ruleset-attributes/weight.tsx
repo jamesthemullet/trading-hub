@@ -1,21 +1,10 @@
-import styled from '@emotion/styled';
-import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Text } from '@/libs/components';
+import { Typography } from '@/libs/components';
 
 import Image from 'next/image';
 
-import {
-  AttributeRow,
-  Buttons,
-  ErrorText,
-  RulesetAttributeButton,
-} from './ruleset-attributes.styles';
-
-const Input = styled.input`
-  min-width: 60px;
-`;
+import styles from './ruleset-attributes.module.css';
 
 export const AttributeWeight = ({
   weight,
@@ -52,17 +41,12 @@ export const AttributeWeight = ({
   return (
     <>
       {canEditWeight && (
-        <AttributeRow>
+        <div className={styles.attributeRow}>
           {isEditing ? (
-            <form
-              onSubmit={(e: FormEvent<HTMLFormElement>) => {
-                e.preventDefault();
-                onSubmit();
-              }}
-            >
-              <Text as="label">
+            <form>
+              <Typography as="label" variant="bodySmall">
                 Strength{' '}
-                <Input
+                <input
                   value={value ? value : ''}
                   onChange={(e) => {
                     const { value } = e.target;
@@ -81,17 +65,20 @@ export const AttributeWeight = ({
                   max={100}
                 />{' '}
                 %
-              </Text>
+              </Typography>
             </form>
           ) : (
-            <Text>Strength {Math.round(isEditable ? value : weight)}%</Text>
+            <Typography variant="bodySmall">
+              Strength {Math.round(isEditable ? value : weight)}%
+            </Typography>
           )}
-        </AttributeRow>
+        </div>
       )}
       {isEditable && !isEditing && (
-        <AttributeRow>
-          <Buttons>
-            <RulesetAttributeButton
+        <div className={styles.attributeRow}>
+          <div className={styles.buttons}>
+            <button
+              type="button"
               onClick={() => onStartChanges()}
               aria-label={`Edit attribute ${field}`}
             >
@@ -101,9 +88,10 @@ export const AttributeWeight = ({
                 src="/trading-hub/asset/icon-edit.svg"
                 alt=""
               />
-            </RulesetAttributeButton>
+            </button>
 
-            <RulesetAttributeButton
+            <button
+              type="button"
               onClick={onDelete}
               aria-label="Delete attribute"
             >
@@ -113,17 +101,18 @@ export const AttributeWeight = ({
                 src="/trading-hub/asset/icon-delete.svg"
                 alt=""
               />
-            </RulesetAttributeButton>
-          </Buttons>
-        </AttributeRow>
+            </button>
+          </div>
+        </div>
       )}
       {isEditable && isEditing && (
-        <AttributeRow>
+        <div className={styles.attributeRow}>
           {error ? (
-            <ErrorText>{error}</ErrorText>
+            <div className={styles.error}>{error}</div>
           ) : (
-            <Buttons style={{ justifyContent: 'end' }}>
-              <RulesetAttributeButton
+            <div className={styles.buttons}>
+              <button
+                type="button"
                 onClick={onSubmit}
                 aria-label={`Save attribute ${field} change`}
               >
@@ -133,8 +122,9 @@ export const AttributeWeight = ({
                   src="/trading-hub/asset/icon-tick-in-circle.svg"
                   alt=""
                 />
-              </RulesetAttributeButton>
-              <RulesetAttributeButton
+              </button>
+              <button
+                type="button"
                 onClick={
                   /* istanbul ignore next */
                   () => {
@@ -150,10 +140,10 @@ export const AttributeWeight = ({
                   src="/trading-hub/asset/icon-cross-in-circle.svg"
                   alt=""
                 />
-              </RulesetAttributeButton>
-            </Buttons>
+              </button>
+            </div>
           )}
-        </AttributeRow>
+        </div>
       )}
     </>
   );

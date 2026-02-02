@@ -1,0 +1,62 @@
+.attributeWrapper {
+  border: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.attributeHeading {
+  margin: var(--mns-spacing-1);
+
+  p {
+    overflow-wrap: anywhere;
+  }
+}
+
+.attributeRow {
+  padding: var(--mns-spacing-1);
+  border-top: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  background-color: var(--color-accent-secondary-secondary-container);
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: var(--mns-spacing-0-5);
+
+    img {
+      margin-left: var(--mns-spacing-1);
+    }
+  }
+}
+
+.attributeValueList {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: var(--mns-spacing-1);
+}
+
+.attributeValuePill {
+  background-color: var(--color-accent-tertiary-tertiary-container);
+  border-radius: 6px;
+  padding: var(--mns-spacing-1);
+  margin: var(--mns-spacing-1) var(--mns-spacing-1) 0 0;
+
+  p {
+    overflow-wrap: anywhere;
+    color: var(--color-accent-tertiary-on-tertiary-container);
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+
+  button {
+    border: none;
+    background: none;
+    display: flex;
+  }
+}
+
+.error {
+  color: var(--color-state-error-error);
+}

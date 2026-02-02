@@ -87,10 +87,13 @@ describe('AttributeWeight', () => {
     const input = screen.getByRole('spinbutton', {
       name: 'Strength %',
     });
-    await user.clear(input);
-    await user.type(input, '99');
 
-    fireEvent.submit(input);
+    fireEvent.change(input, { target: { value: '99' } });
+
+    const saveButton = screen.getByRole('button', {
+      name: 'Save attribute category change',
+    });
+    await user.click(saveButton);
 
     expect(mockOnChange).toHaveBeenCalledWith({ weight: 99 });
   });
