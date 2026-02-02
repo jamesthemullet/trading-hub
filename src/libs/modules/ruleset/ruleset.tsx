@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -17,7 +16,6 @@ import {
   ErrorMessage,
   Loader,
   Tabs,
-  Text,
   Typography,
 } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
@@ -37,114 +35,14 @@ import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-ke
 import { usePreview } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
 
 import isEqual from 'lodash/isEqual';
 import Image from 'next/image';
 import pluralize from 'pluralize';
 
+import styles from './ruleset.module.css';
+
 const MAX_PINNED_PRODUCTS_ALLOWED = 100;
-
-const CategoryPanel = styled.div`
-  border-top: 2px solid #707070;
-  padding: ${spacing(1)};
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${spacing(2)};
-  align-items: end;
-`;
-
-const MainContainerPanel = styled.div`
-  border-top: 1px solid #b1b1b1;
-  margin: 0 ${spacing(1)};
-  display: flex;
-  position: relative;
-`;
-
-const ProductSearchPanel = styled.div<{ isFullWidth?: boolean }>`
-  background-color: ${color.surfaceBright.surfaceBright};
-  border-right: 1px solid #707070;
-  margin: 0;
-  margin-top: ${spacing(2.5)};
-  width: ${(props) => (props.isFullWidth ? '100%' : '360px')};
-`;
-
-const VisualEditorPanel = styled.div`
-  background-color: ${color.surfaceBright.surfaceBright};
-  width: calc(100% - 360px);
-  padding-left: 10px;
-`;
-
-const PanelTop = styled.div`
-  background-color: ${color.surfaceBright.surfaceBright};
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  border-bottom: solid 1px #b1b1b1;
-  min-height: 76px;
-
-  & > div {
-    flex: 1;
-  }
-`;
-
-const CountryPreviewWrapper = styled.div`
-  position: relative;
-  justify-content: end;
-  display: flex;
-`;
-
-const CountryPreviewDropdown = styled(CombinedDropdown)`
-  width: 155px;
-  border-radius: 0;
-  margin-bottom: 0;
-
-  img {
-    margin-left: -${spacing(2)};
-    margin-right: ${spacing(1)};
-  }
-
-  span {
-    padding-left: 0;
-  }
-`;
-
-const TabContent = styled.div`
-  height: calc(100vh - 334px);
-  overflow: auto;
-`;
-
-const ProductCount = styled.div`
-  padding: ${spacing(1)};
-  text-align: right;
-`;
-
-const ProductSearchTabContent = styled(TabContent)`
-  height: calc(100vh - 278px);
-  overflow: hidden;
-  padding-right: 8px;
-`;
-
-const CategorySearchWrapper = styled.div`
-  margin-right: ${spacing(1)};
-`;
-
-const InfluenceWrapper = styled.div`
-  width: 220px;
-`;
-
-const TextContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${spacing(1)};
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-`;
-const VisualEditorText = styled(Text)`
-  font-size: 16px;
-`;
 
 export const Ruleset = ({
   endDate,
@@ -483,8 +381,8 @@ export const Ruleset = ({
 
       {
         <>
-          <CategoryPanel>
-            <InfluenceWrapper>
+          <div className={styles.categoryPanel}>
+            <div className={styles.influenceWrapper}>
               <Typography as="p" withMargin variant="labelMedium">
                 Influence
               </Typography>
@@ -508,12 +406,12 @@ export const Ruleset = ({
                 ariaLabel="Select country"
                 selectedCountryCode={ruleset.countryCode}
               />
-            </InfluenceWrapper>
+            </div>
 
             {rulesetType !== 'global' && (
               <>
                 {rulesetType === 'category' && (
-                  <CategorySearchWrapper>
+                  <div className={styles.categorySearchWrapper}>
                     <CategorySearch
                       selectedCategories={selectedCategories}
                       onClearSelection={(category: string) => {
@@ -540,7 +438,7 @@ export const Ruleset = ({
                       }}
                       writeEnabled={writeEnabled}
                     />
-                  </CategorySearchWrapper>
+                  </div>
                 )}
 
                 {rulesetType === 'search' && (
@@ -585,7 +483,7 @@ export const Ruleset = ({
                 />
               </div>
             )}
-          </CategoryPanel>
+          </div>
 
           {merchandisingRules.pinnedProducts.length >
             MAX_PINNED_PRODUCTS_ALLOWED && (
@@ -607,11 +505,17 @@ export const Ruleset = ({
             currentTab={currentEditorTab}
           />
 
-          <MainContainerPanel>
+          <div className={styles.mainContainerPanel}>
             {(currentEditorTab === 0 || currentEditorTab === 1) && (
               <>
-                <ProductSearchPanel isFullWidth={rulesetType === 'global'}>
-                  <ProductSearchTabContent>
+                <div
+                  className={`${styles.productSearchPanel} ${
+                    rulesetType === 'global'
+                      ? styles.productSearchPanelFullWidth
+                      : ''
+                  }`}
+                >
+                  <div className={styles.productSearchTabContent}>
                     {currentEditorTab === 0 && (
                       <ProductSearchAll
                         isPinnable={rulesetType !== 'global'}
@@ -656,23 +560,23 @@ export const Ruleset = ({
                         rulesetType={rulesetType}
                       />
                     )}
-                  </ProductSearchTabContent>
-                </ProductSearchPanel>
+                  </div>
+                </div>
 
                 {rulesetType !== 'global' && (
-                  <VisualEditorPanel>
-                    <PanelTop>
-                      <VisualEditorText>
-                        <VisualEditorText as="span" isStrong>
-                          VisualEditor -{' '}
-                        </VisualEditorText>
+                  <div className={styles.visualEditorPanel}>
+                    <div className={styles.panelTop}>
+                      <Typography>
+                        <Typography as="span" isStrong>
+                          Visual Editor -{' '}
+                        </Typography>
                         {previewValue}
-                      </VisualEditorText>
+                      </Typography>
 
                       {rulesetType === 'search' &&
                         ruleset.countryCode === 'UK_IE' && (
-                          <CountryPreviewWrapper>
-                            <CountryPreviewDropdown
+                          <div className={styles.countryPreviewWrapper}>
+                            <CombinedDropdown
                               variant="generic"
                               label={`${selectedPreviewCountryCode} view`}
                               icon={`icon-${selectedPreviewCountryCode.toLowerCase()}-flag`}
@@ -718,12 +622,12 @@ export const Ruleset = ({
                                 />
                                 &nbsp; UK view
                               </Button>
-                            </CountryPreviewDropdown>
-                          </CountryPreviewWrapper>
+                            </CombinedDropdown>
+                          </div>
                         )}
-                    </PanelTop>
+                    </div>
 
-                    <TabContent>
+                    <div className={styles.tabContent}>
                       {previewError && (
                         <ErrorMessage>Error: {previewError}</ErrorMessage>
                       )}
@@ -731,16 +635,16 @@ export const Ruleset = ({
                       {selectedCategories.length ||
                       rulesetSearchTerms.length ? (
                         <>
-                          <ProductCount>
-                            <Text>
+                          <div className={styles.productCount}>
+                            <Typography as="span" variant="bodySmall">
                               {data.products.length}{' '}
                               {data.pagination.totalItems &&
                               data.pagination.totalItems > data.products.length
                                 ? `out of ${data.pagination.totalItems}`
                                 : ''}
                               {` algo ${pluralize(' product', data.products.length)} loaded`}
-                            </Text>
-                          </ProductCount>
+                            </Typography>
+                          </div>
 
                           <VisualEditor
                             products={data.products}
@@ -761,15 +665,17 @@ export const Ruleset = ({
                           />
                         </>
                       ) : (
-                        <TextContent>
-                          <p>No, there are no product rankings yet.</p>
-                          <p>
+                        <div className={styles.textContent}>
+                          <Typography>
+                            No, there are no product rankings yet.
+                          </Typography>
+                          <Typography>
                             You need to select a category or sub-category first.
-                          </p>
-                        </TextContent>
+                          </Typography>
+                        </div>
                       )}
-                    </TabContent>
-                  </VisualEditorPanel>
+                    </div>
+                  </div>
                 )}
               </>
             )}
@@ -794,7 +700,7 @@ export const Ruleset = ({
                 }
               />
             )}
-          </MainContainerPanel>
+          </div>
 
           {(selectedProducts.length > 0 ||
             selectedSearchProducts.length > 0) && (

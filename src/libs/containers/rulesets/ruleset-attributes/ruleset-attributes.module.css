@@ -1,0 +1,35 @@
+.rulesetAttributesContainer {
+  height: calc(100vh - 375px);
+  overflow-y: auto;
+}
+
+.buttonContainer {
+  margin: 0;
+
+  button {
+    width: 100%;
+  }
+}
+
+.buttonContainerGlobal {
+  margin: var(--mns-spacing-1) 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  button {
+    max-width: 312px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.buttonContainerNonGlobal {
+  flex-direction: column;
+}
+
+.attributeCount {
+  margin-left: var(--mns-spacing-1);
+}

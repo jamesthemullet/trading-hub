@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import type { Dispatch } from 'react';
 import { useState } from 'react';
 
@@ -9,44 +8,15 @@ import type {
   MerchandisingNumericBoostBury,
   MerchandisingRules,
 } from '@/libs/api';
-import { ButtonDeprecated, Typography } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-attribute';
-import { AttributeCount } from '@/libs/components/ruleset-attributes/ruleset-attributes.styles';
 import type { AttributeEdit, RuleSetActions } from '@/libs/components/types';
 import { RulesetAttributesModal } from '@/libs/features/rulesets/ruleset-attributes-modal/ruleset-attributes-modal';
-import { spacing } from '@/libs/utils/spacing';
 
 import pluralize from 'pluralize';
 
-const Wrapper = styled.div`
-  position: relative;
-`;
-
-const RuleSetAttributesContainer = styled.div`
-  height: calc(100vh - 375px);
-  overflow-y: auto;
-`;
-
-const ButtonContainer = styled.div<{
-  rulesetType: 'global' | 'category' | 'search';
-}>`
-  margin: ${(props) =>
-    props.rulesetType === 'global' ? `${spacing(1)} 0` : '0'};
-  display: ${(props) => props.rulesetType === 'global' && 'flex'};
-  justify-content: space-between;
-  align-items: baseline;
-  flex-direction: ${(props) => props.rulesetType !== 'global' && 'column'};
-
-  button {
-    max-width: ${(props) => props.rulesetType === 'global' && '312px'};
-    width: 100%;
-  }
-
-  p {
-    margin-bottom: ${(props) => props.rulesetType === 'global' && '0'};
-  }
-`;
+import styles from './ruleset-attributes.module.css';
 
 type RulesetAttributesProps = {
   countryCode: MerchandisingCountryCode;
@@ -102,27 +72,42 @@ export const RulesetAttributes = ({
   };
 
   return (
-    <Wrapper>
+    <div>
       {writeEnabled && (
-        <ButtonContainer rulesetType={rulesetType}>
-          <ButtonDeprecated
+        <div
+          className={`${styles.buttonContainer} ${
+            rulesetType === 'global'
+              ? styles.buttonContainerGlobal
+              : styles.buttonContainerNonGlobal
+          }`}
+        >
+          <Button
             theme="outlined"
             icon="plus-simple-green"
             isTextCentred
             onClick={() => setIsModalOpen(!isModalOpen)}
           >
             Create new attribute rule
-          </ButtonDeprecated>
+          </Button>
           {countOfAttributeChanges > 0 && (
-            <AttributeCount as="output" aria-label="number of attribute rules">
-              {countOfAttributeChanges} attribute{' '}
-              {pluralize('rule', countOfAttributeChanges)}
-            </AttributeCount>
+            <div className={styles.attributeCount}>
+              <Typography
+                as="output"
+                aria-label="number of attribute rules"
+                variant="labelLarge"
+              >
+                {countOfAttributeChanges} attribute{' '}
+                {pluralize('rule', countOfAttributeChanges)}
+              </Typography>
+            </div>
           )}
-        </ButtonContainer>
+        </div>
       )}
       {countOfAttributeChanges > 0 && (
-        <RuleSetAttributesContainer data-testid="Ruleset attributes">
+        <div
+          className={styles.rulesetAttributesContainer}
+          data-testid="Ruleset attributes"
+        >
           {(!!alphanumericBoost.length || !!alphanumericBuries.length) && (
             <Typography variant="bodyMedium" isStrong withMargin>
               Product Description Attribute Rules
@@ -334,7 +319,7 @@ export const RulesetAttributes = ({
                 }
               />
             ))}
-        </RuleSetAttributesContainer>
+        </div>
       )}
 
       <RulesetAttributesModal
@@ -346,6 +331,6 @@ export const RulesetAttributes = ({
         searchTerms={searchTerms}
         editData={editData}
       />
-    </Wrapper>
+    </div>
   );
 };

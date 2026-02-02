@@ -17,13 +17,11 @@ const setTheme = ({
   isPrimary,
   isSecondary,
   isTertiary,
-  isOutlined,
 }: {
   isDisabled?: boolean;
   isPrimary?: boolean;
   isSecondary?: boolean;
   isTertiary?: boolean;
-  isOutlined?: boolean;
 }) => {
   if (isTertiary) {
     return css`
@@ -88,21 +86,6 @@ const setTheme = ({
       }
     `;
   }
-  if (isOutlined) {
-    return css`
-      text-align: left;
-      border: ${color.accent.primary.primary} solid 1px;
-      background: #fff;
-      color: ${color.accent.primary.primary};
-
-      &:hover {
-        background-color: #f0f5f4;
-      }
-      &:focus {
-        background-color: #dee9e6;
-      }
-    `;
-  }
 
   return css`
     color: rgba(29, 29, 27, 1);
@@ -122,19 +105,6 @@ const setTheme = ({
   `;
 };
 
-const setIcon = ({ icon }: { icon: string }) => css`
-  &::before {
-    content: '';
-    width: 10px;
-    height: 10px;
-    background-image: url(${`/trading-hub/asset/icon-${icon}.svg`});
-    background-repeat: no-repeat;
-    background-size: contain;
-    display: inline-block;
-    margin-right: ${spacing(1)};
-  }
-`;
-
 const sharedButtonStyles = css`
   border: solid 1px ${color.lightGrey};
   border-radius: 4px;
@@ -153,16 +123,13 @@ const sharedButtonStyles = css`
 
 const StyledButton = styled.button<ButtonProps>`
   ${sharedButtonStyles};
-  ${({ isDisabled, isPrimary, isSecondary, isTertiary, isOutlined }) =>
+  ${({ isDisabled, isPrimary, isSecondary, isTertiary }) =>
     setTheme({
       isDisabled,
       isPrimary,
       isSecondary,
       isTertiary,
-      isOutlined,
     })};
-  ${({ icon }) => icon && setIcon({ icon })};
-  ${({ isTextCentred }) => isTextCentred && 'text-align: center;'}
 `;
 
 const StyledLink = styled(Link, {
@@ -172,19 +139,17 @@ const StyledLink = styled(Link, {
       'isSecondary',
       'isTertiary',
       'isFilled',
-      'isOutlined',
       'isDisabled',
       'iconPosition',
     ].includes(prop),
 })<RawButtonProps>`
   ${sharedButtonStyles};
-  ${({ isDisabled, isPrimary, isSecondary, isTertiary, isOutlined }) =>
+  ${({ isDisabled, isPrimary, isSecondary, isTertiary }) =>
     setTheme({
       isDisabled,
       isPrimary,
       isSecondary,
       isTertiary,
-      isOutlined,
     })};
 `;
 
@@ -194,7 +159,6 @@ type RawButtonProps = {
   isPrimary?: boolean;
   isSecondary?: boolean;
   isTertiary?: boolean;
-  isOutlined?: boolean;
   as?: ElementType;
   isDisabled?: boolean;
   href?: string;
@@ -229,10 +193,8 @@ export const ButtonDeprecated = forwardRef<HTMLButtonElement, ButtonProps>(
           isPrimary={theme === 'primary'}
           isSecondary={theme === 'secondary'}
           isTertiary={theme === 'tertiary'}
-          isOutlined={theme === 'outlined'}
           {...(isDisabled && { 'aria-disabled': isDisabled })}
           isDisabled={isDisabled}
-          icon={rest.icon}
         >
           {children}
         </StyledLink>
@@ -246,7 +208,6 @@ export const ButtonDeprecated = forwardRef<HTMLButtonElement, ButtonProps>(
         isPrimary={theme === 'primary'}
         isSecondary={theme === 'secondary'}
         isTertiary={theme === 'tertiary'}
-        isOutlined={theme === 'outlined'}
         {...(onClick && !isDisabled && { onClick })}
         {...(isDisabled && { disabled: isDisabled })}
         isDisabled={isDisabled}
