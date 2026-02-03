@@ -13,26 +13,14 @@ import {
   ErrorMessage,
   FacetOrderInput,
   FilteredResultsPanel,
-  Header3,
   Search,
   Text,
   Typography,
 } from '@/libs/components';
-import {
-  AttributesModalHeader,
-  AttributeWrapper,
-  MergeAndSearchContainer,
-  OrderArrowsContainer,
-  SkeletonRow,
-} from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import {
-  HeadingContainer,
-  ModalAttributesTable,
-  ModalContainer,
-  ModalFooter,
-} from '@/libs/components/modals/modal.styles';
+import editFacetStyles from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.module.css';
+import modalStyles from '@/libs/components/modals/modal.module.css';
 import { SearchCategoryFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
+import facetPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGetFacetAttributeValues } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -205,15 +193,15 @@ export const SearchAndCategoryFacetsPanelModal = ({
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
             modal
           >
-            <div className={styles.tableCol}>
-              <AttributeWrapper>
+            <div className={facetPanelStyles.tableCol}>
+              <div className={editFacetStyles.attributeWrapper}>
                 <Text>{displayValue}</Text>
-              </AttributeWrapper>
+              </div>
             </div>
 
-            <div className={styles.tableCol}>
+            <div className={facetPanelStyles.tableCol}>
               {displayType === 'included' && (
-                <AttributeWrapper>
+                <div className={editFacetStyles.attributeWrapper}>
                   <FacetOrderInput
                     displayValue={displayValue}
                     order={order}
@@ -229,19 +217,19 @@ export const SearchAndCategoryFacetsPanelModal = ({
                     onInputKeyDown={handleInputKeyDown}
                     writeEnabled={writeEnabled}
                   />
-                </AttributeWrapper>
+                </div>
               )}
             </div>
 
-            <div className={styles.tableCol}>
+            <div className={facetPanelStyles.tableCol}>
               <Text data-testid={`Label for ${displayValue}`}>
                 {displayValue}
               </Text>
             </div>
 
-            <div className={styles.tableCol}>
+            <div className={facetPanelStyles.tableCol}>
               {displayType === 'included' && (
-                <OrderArrowsContainer>
+                <div className={editFacetStyles.orderArrowsContainer}>
                   <ArrowButton
                     direction="up"
                     label={`Move ${displayValue} row up`}
@@ -267,11 +255,11 @@ export const SearchAndCategoryFacetsPanelModal = ({
                       });
                     }}
                   />
-                </OrderArrowsContainer>
+                </div>
               )}
             </div>
 
-            <div className={styles.tableCol}>
+            <div className={facetPanelStyles.tableCol}>
               <CombinedDropdown
                 variant="facetOrder"
                 hasAlgoControl
@@ -333,67 +321,66 @@ export const SearchAndCategoryFacetsPanelModal = ({
       <Modal.Overlay blur={3} />
       <Modal.Content>
         <Modal.Body>
-          <ModalContainer>
-            <AttributesModalHeader>
-              <HeadingContainer>
-                <Text isStrong as={Header3}>
-                  Facet value settings of: {facet.displayValue}
-                </Text>
-              </HeadingContainer>
+          <div className={modalStyles.modalContainer}>
+            <div className={modalStyles.headingContainer}>
+              <Typography isStrong as="h3" variant="titleMedium">
+                Facet value settings of: {facet.displayValue}
+              </Typography>
+            </div>
 
-              {attributeValuesError && (
-                <ErrorMessage>
-                  Error whilst retrieving values: {attributeValuesError}
-                </ErrorMessage>
-              )}
+            {attributeValuesError && (
+              <ErrorMessage>
+                Error whilst retrieving values: {attributeValuesError}
+              </ErrorMessage>
+            )}
 
-              <MergeAndSearchContainer>
-                <Text isStrong>All values listed</Text>
+            <div className={editFacetStyles.mergeAndSearchContainer}>
+              <Text isStrong>All values listed</Text>
 
-                <Search onChange={handleSearch} />
-              </MergeAndSearchContainer>
+              <Search onChange={handleSearch} />
+            </div>
 
-              <ModalAttributesTable>
-                <SearchCategoryFacetAttributeValuesTableRow modal>
-                  {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
-                    <div
-                      key={`add-facet-modal-column-${label}`}
-                      className={styles.tableCol}
-                    >
-                      <Typography isStrong variant="bodySmall">
-                        {label}
-                      </Typography>
-                    </div>
-                  ))}
-                </SearchCategoryFacetAttributeValuesTableRow>
-              </ModalAttributesTable>
-            </AttributesModalHeader>
+            <div className={modalStyles.modalAttributesTable}>
+              <SearchCategoryFacetAttributeValuesTableRow modal>
+                {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
+                  <div
+                    key={`add-facet-modal-column-${label}`}
+                    className={facetPanelStyles.tableCol}
+                  >
+                    <Typography isStrong variant="bodySmall">
+                      {label}
+                    </Typography>
+                  </div>
+                ))}
+              </SearchCategoryFacetAttributeValuesTableRow>
+            </div>
 
             <div>
               {isLoading ? (
                 attributeValues.map((attribute) => (
-                  <SkeletonRow
+                  <div
                     key={`attribute-value-skeleton-${attribute.displayValue}`}
                     data-testid="attribute-value-skeleton"
                     aria-busy="true"
+                    className={editFacetStyles.skeletonRow}
                   />
                 ))
               ) : (
-                <ModalAttributesTable>
+                <div className={modalStyles.modalAttributesTable}>
                   {boostedValuesRows}
 
                   {defaultValuesRows}
 
                   {excludedValuesRows}
-                </ModalAttributesTable>
+                </div>
               )}
 
               <FilteredResultsPanel filteredFacets={attributeValues.length} />
             </div>
-          </ModalContainer>
+          </div>
         </Modal.Body>
 
-        <ModalFooter>
+        <div className={modalStyles.modalFooter}>
           <Button onClick={onClose} aria-label="Close attributes modal">
             Cancel
           </Button>{' '}
@@ -404,7 +391,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
           >
             {saveButtonLabel}
           </Button>
-        </ModalFooter>
+        </div>
       </Modal.Content>
     </Modal.Root>
   );

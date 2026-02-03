@@ -2,14 +2,8 @@ import { type ActionDispatch, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button, Text, Typography } from '@/libs/components';
-import {
-  GlobalFacetAttributesPageMergedValue,
-  RemoveMergedFacet,
-} from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
-import {
-  EditFacetAttributesModalTable,
-  ModalStickyHeader,
-} from '@/libs/components/modals/modal.styles';
+import editFacetStyles from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.module.css';
+import modalStyles from '@/libs/components/modals/modal.module.css';
 import { Input } from '@/libs/containers/shared';
 import { EditFacetAttributesModalTableRow } from '@/libs/containers/shared/table/table.styles';
 import facetsPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
@@ -24,27 +18,6 @@ import Image from 'next/image';
 import { styled } from 'storybook/theming';
 
 import styles from './global-facet-attributes-edit-modal.module.css';
-
-const ModalContainer = styled.div`
-  height: 100%;
-  min-width: 860px;
-  display: flex;
-  flex-direction: column;
-`;
-const ModalFooter = styled.div`
-  background-color: ${color.surface.surfaceContainer};
-  position: sticky;
-  bottom: 0;
-  width: 100%;
-  border-top: solid 1px ${color.surfaceDark.onSurfaceDarkVariant};
-  padding: ${spacing(1)};
-  display: flex;
-  justify-content: flex-end;
-  gap: ${spacing(2)};
-  button {
-    width: 160px;
-  }
-`;
 
 const StyledHeading = styled(Text)`
   margin: ${spacing(1.5)};
@@ -176,12 +149,12 @@ export const GlobalFacetAttributesEditModal = ({
 
       <Modal.Content>
         <Modal.Body>
-          <ModalContainer>
-            <ModalStickyHeader>
+          <div className={modalStyles.modalContainer}>
+            <div className={modalStyles.modalStickyHeader}>
               <StyledHeading isStrong>Edit merge</StyledHeading>
-            </ModalStickyHeader>
+            </div>
 
-            <EditFacetAttributesModalTable>
+            <div className={modalStyles.editFacetAttributesModalTable}>
               <EditFacetAttributesModalTableRow>
                 {EDIT_FACET_ATTRIBUTES_MODALCOLUMNS.map(({ label }) => (
                   <div
@@ -203,11 +176,15 @@ export const GlobalFacetAttributesEditModal = ({
                     <Text isStrong>Merged Value Group</Text>
 
                     {visibleAttributes.map((value, i) => (
-                      <GlobalFacetAttributesPageMergedValue
+                      <div
                         key={`${i}-${value}`}
+                        className={
+                          editFacetStyles.globalFacetAttributesPageMergedValue
+                        }
                       >
                         <Text>{value}</Text>
-                        <RemoveMergedFacet
+                        <button
+                          className={editFacetStyles.removeMergedFacet}
                           onClick={() => {
                             requestAnimationFrame(() => {
                               handleRemoveFromMerge({
@@ -217,8 +194,9 @@ export const GlobalFacetAttributesEditModal = ({
                             });
                           }}
                           aria-label={`Remove merged facet for ${value}`}
+                          type="button"
                         />
-                      </GlobalFacetAttributesPageMergedValue>
+                      </div>
                     ))}
 
                     {attributes.length > maxVisible && (
@@ -267,10 +245,10 @@ export const GlobalFacetAttributesEditModal = ({
                   </div>
                 </div>
               </EditFacetAttributesModalTableRow>
-            </EditFacetAttributesModalTable>
-          </ModalContainer>
+            </div>
+          </div>
 
-          <ModalFooter>
+          <div className={modalStyles.modalFooter}>
             <Button onClick={handleClose}>Cancel</Button>
             <Button
               onClick={handleSave}
@@ -285,7 +263,7 @@ export const GlobalFacetAttributesEditModal = ({
             >
               Save
             </Button>
-          </ModalFooter>
+          </div>
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>

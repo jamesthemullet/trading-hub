@@ -14,7 +14,7 @@ import {
   Text,
   Typography,
 } from '@/libs/components';
-import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
+import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
@@ -45,7 +45,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import Image from 'next/image';
 
 import { GlobalFacetPanelModal } from '../global-facets-panel-modal/global-facets-panel-modal';
 import styles from './facets-panel.module.css';
@@ -276,21 +275,11 @@ export const FacetsPanel = ({
         <div className={styles.tableCol}>
           {isIncludedFacet && (
             <DragHandleButton
-              type="button"
-              aria-label={`Reorder ${displayValue}`}
-              ref={sortableProps?.setActivatorNodeRef}
-              {...(sortableProps?.listeners ?? {})}
               disabled={isDragDisabled}
-              aria-disabled={isDragDisabled}
-              data-testid={`drag-handle-${displayValue}`}
-            >
-              <Image
-                width={24}
-                height={24}
-                src="/trading-hub/asset/drag-handle.svg"
-                alt="Drag handle"
-              />
-            </DragHandleButton>
+              displayName={displayValue}
+              setActivatorNodeRef={sortableProps?.setActivatorNodeRef}
+              listeners={sortableProps?.listeners ?? {}}
+            />
           )}
         </div>
       </div>

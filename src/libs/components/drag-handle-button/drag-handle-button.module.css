@@ -1,0 +1,21 @@
+.dragHandleButton {
+  width: 48px;
+  height: 48px;
+  padding: var(--mns-spacing-1-5);
+  margin: 0;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.dragHandleButton:active {
+  cursor: grabbing;
+}
+
+.dragHandleButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}

@@ -10,14 +10,12 @@ import {
   FacetOrderInput,
   Text,
 } from '@/libs/components';
-import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
+import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import type { RuleSetActions } from '@/libs/components/types';
 import { getFacetRoute } from '@/libs/constants';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
-
-import Image from 'next/image';
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
 
@@ -201,21 +199,11 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
       <div className={styles.tableCol}>
         {isIncludedFacet && (
           <DragHandleButton
-            type="button"
-            aria-label={`Reorder ${displayValue}`}
-            ref={sortableProps?.setActivatorNodeRef}
-            {...(sortableProps?.listeners ?? {})}
             disabled={props.isDragDisabled}
-            aria-disabled={props.isDragDisabled}
-            data-testid={`drag-handle-${displayValue}`}
-          >
-            <Image
-              width={24}
-              height={24}
-              src="/trading-hub/asset/drag-handle.svg"
-              alt="Drag handle"
-            />
-          </DragHandleButton>
+            displayName={displayValue}
+            setActivatorNodeRef={sortableProps?.setActivatorNodeRef}
+            listeners={sortableProps?.listeners ?? {}}
+          />
         )}
       </div>
     </div>

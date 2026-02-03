@@ -7,7 +7,7 @@ import type {
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import { CombinedDropdown, FacetOrderInput } from '@/libs/components';
-import { DragHandleButton } from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
+import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import { GlobalFacetAttribute } from '@/libs/containers';
 import type { FacetDisplayType } from '@/libs/containers/facets/facet-row';
 import { GlobalEditableLabel } from '@/libs/containers/facets/global-editable-label/global-editable-label';
@@ -31,7 +31,6 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import Image from 'next/image';
 
 import styles from './use-global-facet-attributes-list.module.css';
 
@@ -261,21 +260,11 @@ export const useGlobalFacetAttributesList = ({
               >
                 {displayType === 'included' ? (
                   <DragHandleButton
-                    type="button"
-                    aria-label={`Reorder ${displayName}`}
-                    ref={sortableProps?.setActivatorNodeRef}
-                    {...(sortableProps?.listeners ?? {})}
                     disabled={disableDrag}
-                    aria-disabled={disableDrag}
-                    data-testid={`drag-handle-${displayName}`}
-                  >
-                    <Image
-                      width={24}
-                      height={24}
-                      src="/trading-hub/asset/drag-handle.svg"
-                      alt="Drag handle"
-                    />
-                  </DragHandleButton>
+                    displayName={displayName}
+                    setActivatorNodeRef={sortableProps?.setActivatorNodeRef}
+                    listeners={sortableProps?.listeners ?? {}}
+                  />
                 ) : null}
               </div>
             </GlobalFacetAttributeValuesTableRow>

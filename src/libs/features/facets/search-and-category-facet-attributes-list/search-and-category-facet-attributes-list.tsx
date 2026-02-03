@@ -2,16 +2,14 @@ import { type ActionDispatch, useCallback, useMemo } from 'react';
 
 import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/open-api';
 import { CombinedDropdown, Text, Typography } from '@/libs/components';
-import {
-  AttributeWrapper,
-  DragHandleButton,
-} from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.styles';
+import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
+import editFacetStyles from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.module.css';
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
 import type { FacetDisplayType } from '@/libs/containers/facets/facet-row';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SearchCategoryFacetAttributeValuesTableRow } from '@/libs/containers/shared/table/table.styles';
-import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
+import facetPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
@@ -28,7 +26,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import Image from 'next/image';
 
 const EDITFACETVALUESMODALCOLUMNS: {
   label: string | null | false;
@@ -162,7 +159,7 @@ export const SearchAndCategoryFacetAttributesList = ({
             isExcluded={displayType === 'excluded'}
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
           >
-            <div className={styles.tableCol}>
+            <div className={facetPanelStyles.tableCol}>
               {displayType === 'included' && order !== undefined && (
                 <FacetOrderInput
                   displayValue={displayValue}
@@ -182,19 +179,19 @@ export const SearchAndCategoryFacetAttributesList = ({
               )}
             </div>
 
-            <div className={styles.tableCol}>
-              <AttributeWrapper>
+            <div className={facetPanelStyles.tableCol}>
+              <div className={editFacetStyles.attributeWrapper}>
                 <Text>{displayValue}</Text>
-              </AttributeWrapper>
+              </div>
             </div>
 
-            <div className={styles.tableCol}>
+            <div className={facetPanelStyles.tableCol}>
               <Text data-testid={`Label for ${displayValue}`}>
                 {displayValue}
               </Text>
             </div>
 
-            <div className={styles.tableCol}>
+            <div className={facetPanelStyles.tableCol}>
               <CombinedDropdown
                 variant="facetOrder"
                 hasAlgoControl
@@ -211,24 +208,14 @@ export const SearchAndCategoryFacetAttributesList = ({
               />
             </div>
 
-            <div className={styles.tableCol}>
+            <div className={facetPanelStyles.tableCol}>
               {displayType === 'included' && order !== undefined && (
                 <DragHandleButton
-                  type="button"
-                  aria-label={`Reorder ${displayValue}`}
-                  ref={sortableProps?.setActivatorNodeRef}
-                  {...(sortableProps?.listeners ?? {})}
                   disabled={disableDrag}
-                  aria-disabled={disableDrag}
-                  data-testid={`drag-handle-${displayValue}`}
-                >
-                  <Image
-                    width={24}
-                    height={24}
-                    src="/trading-hub/asset/drag-handle.svg"
-                    alt="Drag handle"
-                  />
-                </DragHandleButton>
+                  displayName={displayValue}
+                  setActivatorNodeRef={sortableProps?.setActivatorNodeRef}
+                  listeners={sortableProps?.listeners ?? {}}
+                />
               )}
             </div>
           </SearchCategoryFacetAttributeValuesTableRow>
@@ -296,7 +283,7 @@ export const SearchAndCategoryFacetAttributesList = ({
         {EDITFACETVALUESMODALCOLUMNS.map(({ label }) => (
           <div
             key={`add-facet-modal-column-${label}`}
-            className={styles.tableCol}
+            className={facetPanelStyles.tableCol}
           >
             <Typography isStrong variant="bodySmall">
               {label}
