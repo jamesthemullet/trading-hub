@@ -1,239 +1,230 @@
 /* istanbul ignore file */
 
-import styled from '@emotion/styled';
-
-import {
-  Button,
-  Header1,
-  Header2,
-  Header3,
-  Label,
-  Text,
-  Title,
-} from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 
-const Container = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 100px;
-`;
-
-const Guide = styled.div`
-  width: 33%;
-  margin: 0 0 16px;
-`;
-
-const Colour = styled.div`
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  display: block;
-`;
+import styles from './index.module.css';
 
 const StyleGuide = () => {
   return (
-    <Container>
-      <Header1 style={{ width: '100%', marginBottom: '8px' }}>
+    <div className={styles.container}>
+      <Typography as="h1" variant="headlineLarge" isStrong>
         Style guide
-      </Header1>
-      <Header2 style={{ width: '100%', marginBottom: '8px' }}>Headings</Header2>
-      <Guide>
-        <Header1>Header1</Header1>
-        <Text>New MS London</Text>
-        <Text>Size: 35px</Text>
-        <Text>Type: Bold</Text>
-        <Text>
+      </Typography>
+      <Typography as="h2" variant="headlineMedium" isStrong>
+        Headings
+      </Typography>
+      <div className={styles.guide}>
+        <Typography as="h1" variant="headlineLarge" isStrong>
+          Header1
+        </Typography>
+        <Typography variant="bodySmall">New MS London</Typography>
+        <Typography variant="bodySmall">Size: 35px</Typography>
+        <Typography variant="bodySmall">Type: Bold</Typography>
+        <Typography>
           <code>&lt;Header1 /&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Header2>Header2</Header2>
-        <Text>New MS London</Text>
-        <Text>Size: 25px</Text>
-        <Text>Type: Bold</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <Typography as="h2" variant="headlineMedium" isStrong>
+          Header2
+        </Typography>
+        <Typography>New MS London</Typography>
+        <Typography variant="bodySmall">Size: 25px</Typography>
+        <Typography variant="bodySmall">Type: Bold</Typography>
+        <Typography>
           <code>&lt;Header2 /&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Header3>Header3</Header3>
-        <Text>New MS London</Text>
-        <Text>Size: 20px</Text>
-        <Text>Type: Bold</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <Typography as="h3" variant="headlineSmall" isStrong>
+          Header3
+        </Typography>
+        <Typography variant="bodySmall">New MS London</Typography>
+        <Typography variant="bodySmall">Size: 20px</Typography>
+        <Typography variant="bodySmall">Type: Bold</Typography>
+        <Typography>
           <code>&lt;Header3 /&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Title>Title</Title>
-        <Text>New MS London</Text>
-        <Text>Size: 14px</Text>
-        <Text>Type: Bold</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <Typography variant="titleSmall">Title</Typography>
+        <Typography variant="bodySmall">New MS London</Typography>
+        <Typography variant="bodySmall">Size: 14px</Typography>
+        <Typography variant="bodySmall">Type: Bold</Typography>
+        <Typography>
           <code>&lt;Title /&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Text>Text</Text>
-        <Text>New MS London</Text>
-        <Text>Size: 14px</Text>
-        <Text>Type: Regular</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <Typography variant="bodySmall">Text</Typography>
+        <Typography variant="bodySmall">New MS London</Typography>
+        <Typography variant="bodySmall">Size: 14px</Typography>
+        <Typography variant="bodySmall">Type: Regular</Typography>
+        <Typography>
           <code>&lt;Text /&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Text isStrong>Text</Text>
-        <Text>New MS London</Text>
-        <Text>Size: 14px</Text>
-        <Text>Type: Regular</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <Typography variant="bodySmall" isStrong>
+          Text
+        </Typography>
+        <Typography variant="bodySmall">New MS London</Typography>
+        <Typography variant="bodySmall">Size: 14px</Typography>
+        <Typography variant="bodySmall">Type: Regular</Typography>
+        <Typography>
           <code>&lt;Text isStrong /&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Label>Label</Label>
-        <Text>New MS London</Text>
-        <Text>Size: 16px</Text>
-        <Text>Type: Regular</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <Typography variant="labelLarge">Label</Typography>
+        <Typography variant="bodySmall">New MS London</Typography>
+        <Typography variant="bodySmall">Size: 16px</Typography>
+        <Typography variant="bodySmall">Type: Regular</Typography>
+        <Typography>
           <code>&lt;Label /&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Label isStrong>Label</Label>
-        <Text>New MS London</Text>
-        <Text>Size: 16px</Text>
-        <Text>Type: Bold</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <Typography variant="labelLarge" isStrong>
+          Label
+        </Typography>
+        <Typography variant="bodySmall">New MS London</Typography>
+        <Typography variant="bodySmall">Size: 16px</Typography>
+        <Typography variant="bodySmall">Type: Bold</Typography>
+        <Typography>
           <code>&lt;Label isStrong /&gt;</code>
-        </Text>
-      </Guide>
+        </Typography>
+      </div>
 
-      <Header2 style={{ width: '100%', marginBottom: '8px' }}>Buttons</Header2>
-      <Guide>
+      <Typography as="h2" variant="headlineMedium" isStrong>
+        Buttons
+      </Typography>
+      <div className={styles.guide}>
         <div style={{ width: '60%' }}>
           <Button theme="primary">Button</Button>
         </div>
-        <Text>Primary</Text>
-        <Text>
+        <Typography variant="bodySmall">Primary</Typography>
+        <Typography variant="bodySmall">
           <code>
             &lt;Button theme=&quot;primary&quot; &gt;Button&lt;/Button&gt;
           </code>
-        </Text>
-      </Guide>
-      <Guide>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
         <div style={{ width: '60%' }}>
           <Button>Button</Button>
         </div>
-        <Text>Secondary</Text>
-        <Text>
+        <Typography variant="bodySmall">Secondary</Typography>
+        <Typography variant="bodySmall">
           <code>&lt;Button&gt;Button&lt;/Button&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
         <div style={{ width: '60%' }}>
           <Button isDisabled>Button</Button>
         </div>
-        <Text>Inactive</Text>
-        <Text>
+        <Typography variant="bodySmall">Inactive</Typography>
+        <Typography variant="bodySmall">
           <code>&lt;Button isDisabled&gt;Button&lt;/Button&gt;</code>
-        </Text>
-      </Guide>
-      <Guide>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
         <div style={{ width: '60%' }}>
           <Button theme="tertiary">Button</Button>
         </div>
-        <Text>Tertiary</Text>
-        <Text>
+        <Typography variant="bodySmall">Tertiary</Typography>
+        <Typography variant="bodySmall">
           <code>
             &lt;Button theme=&quot;tertiary&quot; &gt;Button&lt;/Button&gt;
           </code>
-        </Text>
-      </Guide>
-      <Guide>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
         <div style={{ width: '60%' }}>
           <Button theme="tertiary" isDisabled>
             Button
           </Button>
         </div>
-        <Text>Tertiary Inactive</Text>
-        <Text>
+        <Typography variant="bodySmall">Tertiary Inactive</Typography>
+        <Typography variant="bodySmall">
           <code>
             &lt;Button theme=&quot;tertiary&quot;
             isDisabled&gt;Button&lt;/Button&gt;
           </code>
-        </Text>
-      </Guide>
-      <Guide />
-      <Guide>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
         <div style={{ width: '60%' }}>
           <Button theme="filled" isInline>
             Button
           </Button>
         </div>
-        <Text>Filled</Text>
-        <Text>
+        <Typography variant="bodySmall">Filled</Typography>
+        <Typography variant="bodySmall">
           <code>
             &lt;Button theme=&quot;filled&quot;
             isInline&gt;Button&lt;/Button&gt;
           </code>
-        </Text>
-      </Guide>
-      <Guide>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
         <div style={{ width: '60%' }}>
           <Button theme="outlined" isInline>
             Button
           </Button>
         </div>
-        <Text>Outlined</Text>
-        <Text>
+        <Typography variant="bodySmall">Outlined</Typography>
+        <Typography variant="bodySmall">
           <code>
             &lt;Button theme=&quot;outlined&quot;
             isInline&gt;Button&lt;/Button&gt;
           </code>
-        </Text>
-      </Guide>
+        </Typography>
+      </div>
 
-      <Header2 style={{ width: '100%', marginBottom: '8px' }}>Colours</Header2>
+      <Typography as="h2" variant="headlineMedium">
+        Colours
+      </Typography>
 
-      <Guide>
-        <Colour style={{ backgroundColor: color.infoBlueBackground }} />
-        <Text>color.infoBlueBackground</Text>
-        <Text>
+      <div className={styles.guide}>
+        <div className={`${styles.colour} ${styles.infoBlueBackground}`} />
+        <Typography variant="bodySmall">color.infoBlueBackground</Typography>
+        <Typography variant="bodySmall">
           <code>{color.infoBlueBackground}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.lightGreen }} />
-        <Text>color.lightGreen</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <div className={`${styles.colour} ${styles.lightGreen}`} />
+        <Typography variant="bodySmall">color.lightGreen</Typography>
+        <Typography variant="bodySmall">
           <code>{color.lightGreen}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.lightGrey }} />
-        <Text>color.lightGrey</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <div className={`${styles.colour} ${styles.lightGrey}`} />
+        <Typography variant="bodySmall">color.lightGrey</Typography>
+        <Typography variant="bodySmall">
           <code>{color.lightGrey}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.selectionBox }} />
-        <Text>color.selectionBox</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <div className={`${styles.colour} ${styles.selectionBox}`} />
+        <Typography variant="bodySmall">color.selectionBox</Typography>
+        <Typography variant="bodySmall">
           <code>{color.selectionBox}</code>
-        </Text>
-      </Guide>
-      <Guide>
-        <Colour style={{ backgroundColor: color.successGreenBackground }} />
-        <Text>color.successGreenBackground</Text>
-        <Text>
+        </Typography>
+      </div>
+      <div className={styles.guide}>
+        <div className={`${styles.colour} ${styles.successGreenBackground}`} />
+        <Typography variant="bodySmall">
+          color.successGreenBackground
+        </Typography>
+        <Typography variant="bodySmall">
           <code>{color.successGreenBackground}</code>
-        </Text>
-      </Guide>
-    </Container>
+        </Typography>
+      </div>
+    </div>
   );
 };
 

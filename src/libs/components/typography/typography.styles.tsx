@@ -20,18 +20,6 @@ const commonStyles = css`
   margin: 0;
 `;
 
-export const Header1 = styled.h1`
-  ${commonStyles}
-  font-family: ${fonts.bold};
-  font-size: 35px;
-`;
-
-export const Header2 = styled.h2`
-  ${commonStyles}
-  font-family: ${fonts.bold};
-  font-size: 25px;
-`;
-
 export const Header3 = styled.h3`
   ${commonStyles}
   font-family: ${fonts.bold};
@@ -56,15 +44,6 @@ export const Text = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
   font-family: ${fonts.regular};
   font-weight: ${({ isStrong }) => (isStrong ? 600 : 'normal')};
   font-size: 0.875rem;
-  line-height: 1.5714;
-  margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
-`;
-
-export const Label = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
-  ${commonStyles}
-  font-family: ${fonts.regular};
-  font-weight: ${({ isStrong }) => (isStrong ? 600 : 'normal')};
-  font-size: 14px;
   line-height: 1.5714;
   margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
 `;

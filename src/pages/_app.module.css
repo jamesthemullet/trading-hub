@@ -1,0 +1,11 @@
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+.main {
+  margin-left: 90px;
+  width: 100%;
+  overflow-y: auto;
+  height: 100vh;
+}

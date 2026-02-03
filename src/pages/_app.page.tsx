@@ -2,7 +2,6 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@/libs/styles/globals.css';
 
-import styled from '@emotion/styled';
 import { useContext, useEffect } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { createTheme, MantineProvider, Portal } from '@mantine/core';
@@ -19,6 +18,7 @@ import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 
 import { Navigation } from '../libs/components/navigation/navigation';
+import styles from './_app.module.css';
 
 const theme = createTheme({
   components: {
@@ -29,18 +29,6 @@ const theme = createTheme({
     }),
   },
 });
-
-const Layout = styled.div`
-  display: flex;
-  height: 100vh;
-`;
-
-const StyledMain = styled.main`
-  margin-left: 90px;
-  width: 100%;
-  overflow-y: auto;
-  height: 100vh;
-`;
 
 const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
   const [cookies] = useCookies([
@@ -152,12 +140,12 @@ export default function App({
               <LoginCheck
                 autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
               />
-              <Layout>
+              <div className={styles.layout}>
                 <Navigation />
-                <StyledMain>
+                <main className={styles.main}>
                   <Component {...pageProps} />
-                </StyledMain>
-              </Layout>
+                </main>
+              </div>
             </ErrorBoundary>
           </MantineProvider>
         </SessionProvider>

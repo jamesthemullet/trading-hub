@@ -2,31 +2,28 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
-import styled from '@emotion/styled';
 import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
 
-const Example = styled.div`
-  padding: 20px;
-`;
+import styles from './index.module.css';
 
 const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
   return (
     <>
       <h1>Sandbox examples</h1>
-      <Example>
+      <div className={styles.example}>
         <h3>Running on Node version {nodeVersion}</h3>
-      </Example>
-      <Example>
+      </div>
+      <div className={styles.example}>
         <h2>Arrow Button</h2>
         <ArrowButton direction="up" />
         <ArrowButton direction="down" />
         <ArrowButton isDisabled />
-      </Example>
-      <Example>
+      </div>
+      <div className={styles.example}>
         <h2>New arrow icons</h2>
         <img src="/trading-hub/asset/icon-boost-button.svg" alt="" />
         <img src="/trading-hub/asset/icon-bury-button.svg" alt="" />
-      </Example>
+      </div>
     </>
   );
 };

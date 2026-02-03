@@ -1,0 +1,8 @@
+.container {
+  padding: var(--mns-spacing-2);
+
+  p,
+  h1 {
+    margin-bottom: var(--mns-spacing-2);
+  }
+}

@@ -1,18 +1,8 @@
-import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 
-import { Button, Header1, Text } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 
-const Wrapper = styled.div`
-  margin-top: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  button {
-    margin-top: 20px;
-  }
-`;
+import styles from './error.module.css';
 
 export default function AuthError() {
   const router = useRouter();
@@ -33,12 +23,14 @@ export default function AuthError() {
     errorMessages[error as keyof typeof errorMessages] || errorMessages.default;
 
   return (
-    <Wrapper>
-      <Header1>{sourceOfError}Error</Header1>
-      <Text>{errorMessage}</Text>
+    <div className={styles.wrapper}>
+      <Typography as="h1" variant="headlineMedium" isStrong>
+        {sourceOfError}Error
+      </Typography>
+      <Typography>{errorMessage}</Typography>
       <Button theme="primary" isInline onClick={() => router.push('/')}>
         Go Back to Sign In
       </Button>
-    </Wrapper>
+    </div>
   );
 }

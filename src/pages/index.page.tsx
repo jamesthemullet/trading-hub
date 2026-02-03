@@ -1,23 +1,9 @@
-import styled from '@emotion/styled';
-
-import { Button, Text } from '@/libs/components';
-import { spacing } from '@/libs/utils/spacing';
+import { Button, Typography } from '@/libs/components';
 
 import Head from 'next/head';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
-const Container = styled.div`
-  padding: ${spacing(2)};
-
-  p,
-  h1 {
-    margin-bottom: ${spacing(2)};
-  }
-`;
-
-const StyledText = styled(Text)`
-  font-size: 16px;
-`;
+import styles from './index.module.css';
 
 const Index = () => {
   const session = useSession();
@@ -27,11 +13,13 @@ const Index = () => {
       <Head>
         <title>Merchandising Hub | M&S</title>
       </Head>
-      <Container>
-        <h1>Trading Hub</h1>
+      <div className={styles.container}>
+        <Typography as="h1" variant="headlineSmall" isStrong>
+          Merchandising Hub
+        </Typography>
         {session?.status === 'authenticated' ? (
           <>
-            <StyledText>Hello, {session.data.user?.email}</StyledText>
+            <Typography>Hello, {session.data.user?.email}</Typography>
 
             <Button isInline theme="primary" onClick={() => signOut()}>
               Sign out
@@ -39,14 +27,14 @@ const Index = () => {
           </>
         ) : (
           <>
-            <StyledText>Unauthorised, please </StyledText>
+            <Typography>Unauthorised, please </Typography>
 
             <Button isInline theme="primary" onClick={() => signIn('azure-ad')}>
               Sign in
             </Button>
           </>
         )}
-      </Container>
+      </div>
     </>
   );
 };

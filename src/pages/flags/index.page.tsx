@@ -1,27 +1,13 @@
 /* istanbul ignore file */
 
-import styled from '@emotion/styled';
 import { useCookies } from 'react-cookie';
 import { Select, Stack } from '@mantine/core';
 
-import { Toggle } from '@/libs/components';
-import { spacing } from '@/libs/utils/spacing';
+import { Toggle, Typography } from '@/libs/components';
 
 import dynamic from 'next/dynamic';
 
-const Wrapper = styled.div`
-  padding: ${spacing(2)};
-
-  h1 {
-    margin-bottom: ${spacing(2)};
-  }
-`;
-
-const Flag = styled.div`
-  display: flex;
-  margin-bottom: ${spacing(2)};
-  align-items: center;
-`;
+import styles from './index.module.css';
 
 const FeatureFlags = () => {
   const [cookies, setCookie] = useCookies(
@@ -40,10 +26,12 @@ const FeatureFlags = () => {
   const { flagAuthorization, flagShowNewFacetValuesPage } = cookies;
 
   return (
-    <Wrapper>
-      <h1>Feature Flags</h1>
-      <Flag>
-        <p>Historical Log Of Changes:&nbsp;</p>
+    <div className={styles.wrapper}>
+      <Typography as="h1" variant="headlineMedium" isStrong>
+        Feature Flags
+      </Typography>
+      <div className={styles.flag}>
+        <Typography>Historical Log Of Changes:&nbsp;</Typography>
         <Toggle
           checked={cookies.flagHistoricalLogOfChanges}
           onChange={() => {
@@ -53,9 +41,9 @@ const FeatureFlags = () => {
             );
           }}
         />
-      </Flag>
-      <Flag>
-        <p>New Facet Values Page:&nbsp;</p>
+      </div>
+      <div className={styles.flag}>
+        <Typography>New Facet Values Page:&nbsp;</Typography>
         <Toggle
           checked={flagShowNewFacetValuesPage}
           onChange={() => {
@@ -65,27 +53,27 @@ const FeatureFlags = () => {
             );
           }}
         />
-      </Flag>
+      </div>
 
-      <Flag>
-        <p>Authorization:&nbsp;</p>
+      <div className={styles.flag}>
+        <Typography>Authorization:&nbsp;</Typography>
         <Toggle
           checked={flagAuthorization}
           onChange={() => {
             setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
           }}
         />
-      </Flag>
+      </div>
 
-      <Flag>
-        <p>One Trust:&nbsp;</p>
+      <div className={styles.flag}>
+        <Typography>One Trust:&nbsp;</Typography>
         <Toggle
           checked={cookies.flagOneTrust}
           onChange={() => {
             setCookie('flagOneTrust', JSON.stringify(!cookies.flagOneTrust));
           }}
         />
-      </Flag>
+      </div>
 
       {cookies.flagAuthorization && (
         <Stack w={400}>
@@ -148,7 +136,7 @@ const FeatureFlags = () => {
           />
         </Stack>
       )}
-    </Wrapper>
+    </div>
   );
 };
 
