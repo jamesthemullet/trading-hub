@@ -28,7 +28,9 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    reportErrorToDynatrace(error);
+    reportErrorToDynatrace(error, {
+      'error.componentStack': errorInfo.componentStack,
+    });
     console.error('ErrorBoundary caught an error:', error, errorInfo);
     this.props.onError?.({ error, info: errorInfo });
   }

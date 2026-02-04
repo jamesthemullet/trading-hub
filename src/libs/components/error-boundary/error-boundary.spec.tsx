@@ -71,6 +71,9 @@ describe('ErrorBoundary', () => {
     expect(dynatrace.reportErrorToDynatrace).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'Test error',
+      }),
+      expect.objectContaining({
+        'error.componentStack': expect.any(String),
       })
     );
   });
