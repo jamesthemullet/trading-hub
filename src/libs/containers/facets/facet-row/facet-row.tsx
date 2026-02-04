@@ -8,7 +8,7 @@ import {
   ButtonDeprecated,
   CombinedDropdown,
   FacetOrderInput,
-  Text,
+  Typography,
 } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import type { RuleSetActions } from '@/libs/components/types';
@@ -109,10 +109,10 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
         )}
       </div>
       <div className={styles.tableCol}>
-        <Text>{indexPropertyName}</Text>
+        <Typography variant="bodySmall">{indexPropertyName}</Typography>
       </div>
       <div className={styles.tableCol}>
-        <Text>{displayValue}</Text>
+        <Typography variant="bodySmall">{displayValue}</Typography>
       </div>
       <div className={styles.tableCol}>
         <div className={styles.orderColumn}>

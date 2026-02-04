@@ -1,9 +1,4 @@
-import { css } from '@emotion/react';
-
-import { fonts } from '@/libs/components';
-import { color } from '@/libs/utils/constants';
-
-export const fontStyles = css`
+:global {
   @font-face {
     font-family: mnsLondonRegular;
     font-weight: 400;
@@ -44,67 +39,59 @@ export const fontStyles = css`
       url('https://static.marksandspencer.com/fonts/mnsLondon/mnsLondonBoldCondensed.woff')
         format('woff');
   }
-`;
+}
 
-// istanbul ignore next
-export const resetStyles = () => css`
-  html {
-    box-sizing: border-box;
-    font-size: 16px;
-  }
-  body {
-    min-height: 100vh;
-    min-width: 990px;
-    scroll-behavior: smooth;
-    text-rendering: optimizeSpeed;
-    font-weight: normal;
-    font-family: ${fonts.regular};
-    color: #222;
-    &:focus,
-    .focus-visible {
-      outline: 0;
-      box-shadow: ${`0 0 0 0.125rem #fff, 0 0 0 0.25rem ${color.infoBlueBackground}, 0 0 0.25rem 0.25rem ${color.infoBlueBackground}`};
-    }
-  }
+:global(html) {
+  box-sizing: border-box;
+}
 
-  button {
-    cursor: pointer;
-  }
+:global(body) {
+  min-height: 100vh;
+  min-width: 990px;
+  scroll-behavior: smooth;
+  text-rendering: optimizespeed;
+  font-weight: normal;
+  font-family: mnsLondonRegular, Helvetica, Arial, sans-serif;
+  color: var(--color-accent-secondary-on-secondary-container);
+}
 
-  hr {
-    margin: 0;
-  }
+:global(button) {
+  cursor: pointer;
+}
 
-  *,
-  *::before,
-  *::after {
-    box-sizing: inherit;
-  }
+:global(hr) {
+  margin: 0;
+}
 
-  ul,
-  ol {
-    padding: 0;
-    list-style: none;
-  }
+:global(*),
+:global(*::before),
+:global(*::after) {
+  box-sizing: inherit;
+}
 
-  body,
-  h1,
-  h2,
-  h3,
-  h4,
-  p,
-  ul,
-  ol,
-  li {
-    margin: 0;
-  }
+:global(ul),
+:global(ol) {
+  padding: 0;
+  list-style: none;
+}
 
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
+:global(body),
+:global(h1),
+:global(h2),
+:global(h3),
+:global(h4),
+:global(p),
+:global(ul),
+:global(ol),
+:global(li) {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(*) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-`;
+}

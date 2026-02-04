@@ -11,7 +11,6 @@ import {
   CombinedDropdown,
   ErrorMessage,
   Search,
-  Text,
   Typography,
 } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
@@ -616,7 +615,9 @@ export const FacetsList = ({
 
       {filteredFacets.length === 0 && facetType === 'global' && (
         <div className={styles.noAttributesBlock}>
-          <Text>Please create the ruleset before editing facets.</Text>
+          <Typography variant="bodySmall">
+            Please create the ruleset before editing facets.
+          </Typography>
         </div>
       )}
 

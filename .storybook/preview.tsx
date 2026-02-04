@@ -2,27 +2,13 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@/libs/styles/globals.css';
 
-import { css, Global } from '@emotion/react';
 import type React from 'react';
 import { createTheme, MantineProvider } from '@mantine/core';
 
 import type { Preview } from '@storybook/nextjs-vite';
 
-import { fontStyles, resetStyles } from '../src/libs/utils/base-styles';
-
 const theme = createTheme({});
 
-const withGlobalStyles = (Story: React.ComponentType) => (
-  <>
-    <Global
-      styles={css`
-        ${resetStyles()}
-        ${fontStyles}
-      `}
-    />
-    <Story />
-  </>
-);
 const withMantineProvider = (Story: React.ComponentType) => (
   <MantineProvider theme={theme}>
     <Story />
@@ -30,7 +16,7 @@ const withMantineProvider = (Story: React.ComponentType) => (
 );
 
 const preview: Preview = {
-  decorators: [withGlobalStyles, withMantineProvider],
+  decorators: [withMantineProvider],
   parameters: {
     controls: {
       matchers: {

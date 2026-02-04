@@ -1,10 +1,11 @@
 import { type ActionDispatch, useCallback, useMemo } from 'react';
 
 import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/open-api';
-import { CombinedDropdown, Text, Typography } from '@/libs/components';
+import { CombinedDropdown } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import editFacetStyles from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.module.css';
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
+import { Typography } from '@/libs/components/typography/typography';
 import type { FacetDisplayType } from '@/libs/containers/facets/facet-row';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
@@ -176,14 +177,17 @@ export const SearchAndCategoryFacetAttributesList = ({
 
             <div className={facetPanelStyles.tableCol}>
               <div className={editFacetStyles.attributeWrapper}>
-                <Text>{displayValue}</Text>
+                <Typography variant="bodySmall">{displayValue}</Typography>
               </div>
             </div>
 
             <div className={facetPanelStyles.tableCol}>
-              <Text data-testid={`Label for ${displayValue}`}>
+              <Typography
+                variant="bodySmall"
+                data-testid={`Label for ${displayValue}`}
+              >
                 {displayValue}
-              </Text>
+              </Typography>
             </div>
 
             <div className={facetPanelStyles.tableCol}>

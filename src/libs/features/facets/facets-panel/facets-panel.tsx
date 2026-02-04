@@ -12,7 +12,6 @@ import {
   CombinedDropdown,
   FacetOrderInput,
   Search,
-  Text,
   Typography,
 } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
@@ -235,7 +234,7 @@ export const FacetsPanel = ({
         </div>
 
         <div className={styles.tableCol}>
-          <Text>{facet.indexPropertyName}</Text>
+          <Typography variant="bodySmall">{facet.indexPropertyName}</Typography>
         </div>
 
         <div className={styles.tableCol}>
@@ -264,7 +263,7 @@ export const FacetsPanel = ({
               writeEnabled={writeEnabled}
             />
           ) : (
-            <Text>{facet.displayValue}</Text>
+            <Typography variant="bodySmall">{facet.displayValue}</Typography>
           )}
         </div>
 

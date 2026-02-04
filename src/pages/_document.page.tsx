@@ -1,7 +1,4 @@
-import { css, Global } from '@emotion/react';
 import { ColorSchemeScript } from '@mantine/core';
-
-import { fontStyles, resetStyles } from '@/libs/utils/base-styles';
 
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
@@ -43,12 +40,6 @@ class RootDocument extends Document<MerchHubInitialProps> {
             href="https://static.marksandspencer.com/images/favicon.ico"
           />
         </Head>
-        <Global
-          styles={css`
-            ${resetStyles()}
-            ${fontStyles}
-          `}
-        />
         <body>
           <Main />
           <NextScript />
