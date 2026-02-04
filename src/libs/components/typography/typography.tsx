@@ -1,6 +1,6 @@
 import styles from './typography.module.css';
 
-type TypographyProps = {
+type TypographyBaseProps = {
   isStrong?: boolean;
   withMargin?: boolean;
   variant?:
@@ -19,6 +19,18 @@ type TypographyProps = {
     | 'titleLarge'
     | 'titleMedium'
     | 'titleSmall';
+  align?: 'left' | 'right' | 'center';
+  className?: string;
+  role?: string;
+  children: React.ReactNode;
+};
+
+type LabelTypographyProps = TypographyBaseProps & {
+  as: 'label';
+  htmlFor: string;
+};
+
+type StandardTypographyProps = TypographyBaseProps & {
   as?:
     | 'h1'
     | 'h2'
@@ -28,14 +40,12 @@ type TypographyProps = {
     | 'h6'
     | 'p'
     | 'span'
-    | 'label'
     | 'output'
     | 'time';
-  align?: 'left' | 'right' | 'center';
-  className?: string;
-  role?: string;
-  children: React.ReactNode;
+  htmlFor?: never;
 };
+
+type TypographyProps = LabelTypographyProps | StandardTypographyProps;
 
 export const Typography = ({
   align = 'left',

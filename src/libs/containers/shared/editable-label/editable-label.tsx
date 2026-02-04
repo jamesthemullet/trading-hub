@@ -1,79 +1,10 @@
-import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { ButtonDeprecated, Text } from '@/libs/components';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
+import { Typography } from '@/libs/components/typography/typography';
 
 import Image from 'next/image';
 
-import { InputDeprecated } from '../input/input';
-
-const DisplayName = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-right: ${spacing(2)};
-`;
-
-const NameContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const EditConfirmationButtons = styled.div`
-  display: flex;
-  align-items: center;
-
-  button {
-    margin-left: ${spacing(1)};
-  }
-`;
-
-const EditButton = styled(ButtonDeprecated)`
-  padding: 0;
-  border: none;
-  background: none;
-  width: 20px;
-  display: flex;
-  margin-left: ${spacing(1)};
-  height: 100%;
-  align-items: center;
-
-  &:hover {
-    background: none;
-  }
-`;
-
-const InputContainer = styled.div`
-  position: relative;
-  width: 100%;
-`;
-
-const StyledInput = styled(InputDeprecated)<{ showErrorState: boolean }>`
-  font-size: 14px;
-  max-height: 2.5rem;
-  border-radius: 4px;
-  padding-right: 30px;
-
-  ${({ showErrorState }) =>
-    showErrorState && `border: 1px solid ${color.state.error.error}`};
-`;
-
-const StyledText = styled(Text)`
-  margin-left: ${spacing(0.5)};
-`;
-
-const StyledIcon = styled(Image)`
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-`;
-
-const StyledError = styled(Text)`
-  color: ${color.state.error.error};
-  margin-top: ${spacing(0.5)};
-`;
+import styles from './editable-label.module.css';
 
 type EditableLabelProps = {
   displayValue: string;
@@ -112,12 +43,12 @@ export const EditableLabel = ({
   }, [showErrorState, showEditState, displayValue]);
 
   return (
-    <DisplayName>
-      <NameContainer>
+    <div className={styles.displayName}>
+      <div className={styles.nameContainer}>
         {isEditMode ? (
           <>
-            <InputContainer>
-              <StyledInput
+            <div className={styles.inputContainer}>
+              <input
                 id="input"
                 ref={(inputRef) => {
                   inputRef?.focus();
@@ -126,7 +57,6 @@ export const EditableLabel = ({
                   handleUpdatedValue(event);
                   setValue(event.target.value);
                 }}
-                label=""
                 value={value}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' && !showErrorState) {
@@ -141,27 +71,29 @@ export const EditableLabel = ({
                   }
                 }}
                 aria-label={`Edit ${displayValue} input field`}
-                showErrorState={showErrorState}
+                data-error={showErrorState}
+                className={`${styles.input} typographyBodySmall`}
               />
 
               {showErrorState && (
-                <StyledIcon
+                <Image
                   width={20}
                   height={20}
                   src="/trading-hub/asset/icon-warning.svg"
                   alt=""
                 />
               )}
-            </InputContainer>
+            </div>
 
-            <EditConfirmationButtons>
-              <EditButton
+            <div className={styles.editConfirmationButtons}>
+              <button
+                className={styles.editButton}
                 onClick={() => {
                   onDisplayValueChange(value);
                   setIsEditMode(false);
                 }}
                 aria-label={`Save ${displayValue} change`}
-                isDisabled={showErrorState}
+                disabled={showErrorState}
               >
                 <Image
                   width={20}
@@ -169,9 +101,10 @@ export const EditableLabel = ({
                   src="/trading-hub/asset/icon-tick-in-circle.svg"
                   alt=""
                 />
-              </EditButton>
+              </button>
               {canCancelEdit && (
-                <EditButton
+                <button
+                  className={styles.editButton}
                   onClick={() => {
                     setValue(originalValue);
                     setIsEditMode(false);
@@ -187,18 +120,22 @@ export const EditableLabel = ({
                     src="/trading-hub/asset/icon-cross-in-circle.svg"
                     alt=""
                   />
-                </EditButton>
+                </button>
               )}
-            </EditConfirmationButtons>
+            </div>
           </>
         ) : (
           <>
-            <StyledText data-testid={`Label for ${displayValue}`}>
+            <Typography
+              data-testid={`Label for ${displayValue}`}
+              variant="bodySmall"
+            >
               {displayValue}
-            </StyledText>
+            </Typography>
 
             {writeEnabled && (
-              <EditButton
+              <button
+                className={styles.editButton}
                 onClick={() => {
                   setIsEditMode(true);
                 }}
@@ -210,12 +147,16 @@ export const EditableLabel = ({
                   src="/trading-hub/asset/icon-edit-pencil.svg"
                   alt=""
                 />
-              </EditButton>
+              </button>
             )}
           </>
         )}
-      </NameContainer>
-      {showErrorState && <StyledError>{disallowedErrorMessage}</StyledError>}
-    </DisplayName>
+      </div>
+      {showErrorState && (
+        <div className={styles.errorMessage}>
+          <Typography variant="bodySmall">{disallowedErrorMessage}</Typography>
+        </div>
+      )}
+    </div>
   );
 };

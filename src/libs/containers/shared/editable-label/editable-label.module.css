@@ -1,0 +1,61 @@
+.displayName {
+  display: flex;
+  flex-direction: column;
+  padding-right: var(--mns-spacing-2);
+}
+
+.nameContainer {
+  display: flex;
+  align-items: center;
+}
+
+.inputContainer {
+  position: relative;
+  width: 100%;
+
+  img {
+    position: absolute;
+    right: var(--mns-spacing-1);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.input {
+  height: 40px;
+  border-radius: 4px;
+  padding-right: var(--mns-spacing-4);
+  padding-left: var(--mns-spacing-1);
+}
+
+.input[data-error='true'] {
+  border: 1px solid var(--color-state-error-error);
+}
+
+.editConfirmationButtons {
+  display: flex;
+  align-items: center;
+}
+
+.editButton {
+  padding: 0;
+  border: none;
+  background: none;
+  width: 20px;
+  display: flex;
+  margin-left: var(--mns-spacing-1);
+
+  &:disabled {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+}
+
+.errorMessage {
+  margin-top: var(--mns-spacing-1);
+
+  p {
+    color: var(--color-state-error-error);
+  }
+}

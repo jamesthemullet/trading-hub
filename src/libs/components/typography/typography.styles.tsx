@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import type { ElementType, ReactElement } from 'react';
 
 import { spacing } from '@/libs/utils/spacing';
 
@@ -48,7 +49,7 @@ export const Text = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
   margin-bottom: ${({ withMargin }) => (withMargin ? spacing(1) : 0)};
 `;
 
-type TypographyProps = {
+type TypographyBaseProps = {
   isStrong?: boolean;
   withMargin?: boolean;
   uppercase?: boolean;
@@ -68,6 +69,16 @@ type TypographyProps = {
     | 'titleLarge'
     | 'titleMedium'
     | 'titleSmall';
+  align?: 'left' | 'right' | 'center';
+  children: React.ReactNode;
+};
+
+type LabelTypographyProps = TypographyBaseProps & {
+  as: 'label';
+  htmlFor?: string;
+};
+
+type NonLabelTypographyProps = TypographyBaseProps & {
   as?:
     | 'h1'
     | 'h2'
@@ -77,11 +88,16 @@ type TypographyProps = {
     | 'h6'
     | 'p'
     | 'span'
-    | 'label'
     | 'output'
     | 'time';
-  align?: 'left' | 'right' | 'center';
-  children: React.ReactNode;
+  htmlFor?: never;
+};
+
+type TypographyProps = LabelTypographyProps | NonLabelTypographyProps;
+
+type StyledTypographyProps = TypographyBaseProps & {
+  as?: ElementType;
+  htmlFor?: string;
 };
 
 const fontSizes = {
@@ -120,7 +136,9 @@ const lineHeights = {
   titleSmall: '28px',
 };
 
-export const Typography = ({
+export function Typography(props: LabelTypographyProps): ReactElement;
+export function Typography(props: NonLabelTypographyProps): ReactElement;
+export function Typography({
   align = 'left',
   as = 'p',
   variant = 'bodyMedium',
@@ -129,8 +147,8 @@ export const Typography = ({
   withMargin = false,
   uppercase = false,
   ...rest
-}: TypographyProps) => {
-  const StyledTypography = styled.p<TypographyProps>`
+}: TypographyProps) {
+  const StyledTypography = styled.p<StyledTypographyProps>`
     ${commonStyles}
     font-family: ${({ isStrong }) =>
       isStrong ? fonts.semiBold : fonts.regular};
@@ -154,4 +172,4 @@ export const Typography = ({
       {children}
     </StyledTypography>
   );
-};
+}

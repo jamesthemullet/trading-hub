@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import type {
@@ -6,63 +5,13 @@ import type {
   MerchandisingKeywordRedirect,
   MerchandisingReturnedKeywordRedirect,
 } from '@/libs/api';
-import {
-  CombinedDropdown,
-  RadioButtons,
-  SubHeader2,
-  Text,
-  Typography,
-} from '@/libs/components';
+import { CombinedDropdown, RadioButtons, Typography } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { track } from '@/libs/hooks/utils/analytics';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
 
-const RedirectType = styled.div`
-  border-top: solid 1px ${color.accent.primary.primary};
-  border-bottom: solid 1px ${color.accent.primary.primary};
-  span {
-    font-size: 16px;
-  }
-`;
-const RedirectContent = styled.div`
-  padding: ${spacing(2)};
-`;
-
-const Row = styled.div`
-  margin-top: ${spacing(4)};
-`;
-
-const FullInputRow = styled.div`
-  margin-top: ${spacing(4)};
-  display: flex;
-  flex-direction: column;
-`;
-
-const StyledLabel = styled.label`
-  font-size: 14px;
-  margin-bottom: ${spacing(1)};
-`;
-
-const Input = styled.input`
-  background-color: ${color.accent.secondary.secondaryContainer};
-  border: none;
-  border-bottom: 1px solid ${color.role.outline.outline};
-  min-height: 64px;
-  max-width: 1038px;
-  width: 100%;
-`;
-
-const Duration = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  label {
-    margin-top: ${spacing(0.5)};
-  }
-`;
+import styles from './redirect.module.css';
 
 type Props = {
   onCreate?: (args: MerchandisingKeywordRedirect) => void;
@@ -158,9 +107,11 @@ export const Redirect = ({
         rulesetType="redirect"
         writeEnabled={writeEnabled}
       />
-      <RedirectType>
-        <RedirectContent>
-          <SubHeader2>Redirect type</SubHeader2>
+      <div className={styles.redirectType}>
+        <div className={styles.redirectContent}>
+          <Typography as="h2" variant="titleSmall">
+            Redirect type
+          </Typography>
 
           <RadioButtons
             hasDivider={false}
@@ -186,16 +137,16 @@ export const Redirect = ({
               });
             }}
           />
-        </RedirectContent>
-      </RedirectType>
+        </div>
+      </div>
 
-      <RedirectContent>
-        <SubHeader2>
+      <div className={styles.redirectContent}>
+        <Typography as="h2" variant="titleSmall">
           {redirect.type === 'redirectTerm'
             ? 'Redirect Term(s)'
             : 'Redirect Phrase(s)'}
-        </SubHeader2>
-        <Row style={{ display: 'flex', flexWrap: 'wrap', gap: spacing(2) }}>
+        </Typography>
+        <div className={styles.row}>
           <div>
             <Typography as="p" withMargin variant="labelMedium">
               Influence
@@ -223,7 +174,7 @@ export const Redirect = ({
             }}
             writeEnabled={writeEnabled}
           />
-          <Duration>
+          <div className={styles.duration}>
             <Typography as="p" withMargin variant="labelMedium">
               Duration
             </Typography>
@@ -242,13 +193,19 @@ export const Redirect = ({
               }}
               writeEnabled={writeEnabled}
             />
-          </Duration>
-        </Row>
-        <FullInputRow>
-          <StyledLabel htmlFor="destination-url-input">
+          </div>
+        </div>
+        <div className={styles.fullInputRow}>
+          <Typography
+            as="label"
+            htmlFor="destination-url-input"
+            variant="labelLarge"
+            withMargin
+          >
             Destination URL*
-          </StyledLabel>
-          <Input
+          </Typography>
+          <input
+            className={styles.input}
             id="destination-url-input"
             placeholder="c/"
             value={redirect.destinationUrl}
@@ -257,12 +214,18 @@ export const Redirect = ({
             })}
             readOnly={!writeEnabled}
           />
-        </FullInputRow>
-        <FullInputRow>
-          <StyledLabel htmlFor="rule-title-input">
-            <Text>Rule Title</Text>
-          </StyledLabel>
-          <Input
+        </div>
+        <div className={styles.fullInputRow}>
+          <Typography
+            as="label"
+            htmlFor="rule-title-input"
+            variant="labelLarge"
+            withMargin
+          >
+            Rule Title
+          </Typography>
+          <input
+            className={styles.input}
             id="rule-title-input"
             placeholder="Enter redirect title"
             value={redirect.ruleTitle}
@@ -271,8 +234,8 @@ export const Redirect = ({
             })}
             readOnly={!writeEnabled}
           />
-        </FullInputRow>
-      </RedirectContent>
+        </div>
+      </div>
     </>
   );
 };
