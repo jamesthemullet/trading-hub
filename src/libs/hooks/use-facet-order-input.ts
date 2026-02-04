@@ -7,6 +7,9 @@ export const useFacetOrderInput = (
   initialOrders: Record<string, number>
 ) => {
   const inputRefs = useRef<Record<string, HTMLInputElement>>({});
+  const inputRefCallbacks = useRef<
+    Record<string, (el: HTMLInputElement | null) => void>
+  >({});
   const [orderChanged, setOrderChanged] = useState<string | null>(null);
   const [localOrders, setLocalOrders] = useState<
     Record<string, number | string>
@@ -95,8 +98,26 @@ export const useFacetOrderInput = (
     [handleOrderChange]
   );
 
+  const getInputRef = useCallback((displayValue: string) => {
+    // not a fan of this but can't find a better way to do it
+    /* eslint-disable functional/immutable-data */
+    if (!inputRefCallbacks.current[displayValue]) {
+      inputRefCallbacks.current[displayValue] = (el) => {
+        if (el) {
+          inputRefs.current[displayValue] = el;
+        } else {
+          delete inputRefs.current[displayValue];
+        }
+      };
+    }
+    /* eslint-enable */
+
+    return inputRefCallbacks.current[displayValue];
+  }, []);
+
   return {
     inputRefs,
+    getInputRef,
     localOrders,
     handleInputChange,
     handleInputBlur,

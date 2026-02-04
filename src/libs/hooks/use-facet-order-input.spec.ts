@@ -186,4 +186,34 @@ describe('useFacetOrderInput', () => {
       expect(result.current.inputRefs.current).toEqual({});
     });
   });
+
+  describe('getInputRef', () => {
+    it('should return stable callbacks per display value', () => {
+      const { result } = renderHook(() =>
+        useFacetOrderInput(mockOnOrderChange, initialOrders)
+      );
+
+      const first = result.current.getInputRef('item1');
+      const second = result.current.getInputRef('item1');
+      const other = result.current.getInputRef('item2');
+
+      expect(first).toBe(second);
+      expect(first).not.toBe(other);
+    });
+
+    it('should register and clean up input elements', () => {
+      const { result } = renderHook(() =>
+        useFacetOrderInput(mockOnOrderChange, initialOrders)
+      );
+
+      const ref = result.current.getInputRef('item1');
+      const mockElement = document.createElement('input');
+
+      ref(mockElement);
+      expect(result.current.inputRefs.current.item1).toBe(mockElement);
+
+      ref(null);
+      expect(result.current.inputRefs.current.item1).toBeUndefined();
+    });
+  });
 });

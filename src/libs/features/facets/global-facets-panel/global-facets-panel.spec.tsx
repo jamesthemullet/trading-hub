@@ -142,6 +142,10 @@ const initialIncludedFacetsMock = [
 const facetsPanelLocalStateMock = {
   includedFacets: initialIncludedFacetsMock,
   excludedFacets: [],
+  orders: {
+    'b04eaac3-f4ea-4f21-9459-0b4302dc2a84': 1,
+    'b04eaac3-f4ea-4f21-9459-0b4302dc2a86': 2,
+  },
 };
 
 describe('Global Facet Panel', () => {
@@ -270,6 +274,7 @@ describe('Global Facet Panel', () => {
       {
         includedFacets: [],
         excludedFacets: [],
+        orders: {},
       },
       dispatchMock,
     ]);
@@ -293,6 +298,11 @@ describe('Global Facet Panel', () => {
           (facet) => facet.id
         ),
         countryCode: 'UK_IE',
+        orders: {
+          'b04eaac3-f4ea-4f21-9459-0b4302dc2a84': 1,
+          'b04eaac3-f4ea-4f21-9459-0b4302dc2a86': 2,
+          'b04eaac3-f4ea-4f21-9459-0b4302dc2a87': 3,
+        },
       },
       type: 'INITIALISE_STATE',
     });
@@ -303,6 +313,7 @@ describe('Global Facet Panel', () => {
       {
         includedFacets: [],
         excludedFacets: [],
+        orders: {},
       },
       dispatchMock,
     ]);
@@ -324,6 +335,7 @@ describe('Global Facet Panel', () => {
         includedFacets: [],
         excludedFacets: [],
         countryCode: 'UK_IE',
+        orders: {},
       },
       type: 'INITIALISE_STATE',
     });

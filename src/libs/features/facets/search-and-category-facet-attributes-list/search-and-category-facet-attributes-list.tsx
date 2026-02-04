@@ -104,7 +104,7 @@ export const SearchAndCategoryFacetAttributesList = ({
   );
 
   const {
-    inputRefs,
+    getInputRef,
     localOrders,
     handleInputChange,
     handleInputBlur,
@@ -165,12 +165,7 @@ export const SearchAndCategoryFacetAttributesList = ({
                   displayValue={displayValue}
                   order={order}
                   localOrder={localOrder}
-                  inputRef={(el) => {
-                    if (el) {
-                      // eslint-disable-next-line functional/immutable-data
-                      inputRefs.current[displayValue] = el;
-                    }
-                  }}
+                  inputRef={getInputRef(displayValue)}
                   onInputChange={handleInputChange}
                   onInputBlur={handleInputBlur}
                   onInputKeyDown={handleInputKeyDown}
@@ -245,7 +240,7 @@ export const SearchAndCategoryFacetAttributesList = ({
       handleInputChange,
       handleInputKeyDown,
       localOrders,
-      inputRefs,
+      getInputRef,
     ]
   );
 

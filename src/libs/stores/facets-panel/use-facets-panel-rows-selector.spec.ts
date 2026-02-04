@@ -15,6 +15,10 @@ describe('useFacetsRowsSelector', () => {
           ],
           excludedFacets: ['b04eaac3-f4ea-4f21-9459-0b4302dc2a87'],
           countryCode: 'UK_IE',
+          orders: {
+            'b04eaac3-f4ea-4f21-9459-0b4302dc2a84': 1,
+            'b04eaac3-f4ea-4f21-9459-0b4302dc2a86': 2,
+          },
         },
         facetsListMock.facets
       )

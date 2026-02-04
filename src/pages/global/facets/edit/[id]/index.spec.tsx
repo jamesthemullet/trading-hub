@@ -202,6 +202,7 @@ describe('Global Facet Management Editing', () => {
   it('should render column headings', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
+    expect(screen.getByText('Ranking')).toBeVisible();
     expect(screen.getByText('Attribute')).toBeVisible();
     expect(screen.getByText('Display name')).toBeVisible();
     expect(screen.getByText('Order')).toBeVisible();

@@ -209,6 +209,14 @@ const defaultProps = {
   excludedFacets: mockExcludedFacets,
   dispatch: dispatchSpy,
   refreshData: jest.fn(),
+  initialOrders: {
+    'b04eaac3-f4ea-4f21-9459-0b4302dc2a84': 1,
+    'b04eaac3-f4ea-4f21-9459-0b4302dc2a86': 2,
+  },
+  orders: {
+    'b04eaac3-f4ea-4f21-9459-0b4302dc2a84': 1,
+    'b04eaac3-f4ea-4f21-9459-0b4302dc2a86': 2,
+  },
 };
 
 describe('Facet Panel', () => {
@@ -253,6 +261,7 @@ describe('Facet Panel', () => {
   it('should render column headings', () => {
     renderWithProviders(<FacetsPanel {...defaultProps} />);
 
+    expect(screen.getByText('Ranking')).toBeVisible();
     expect(screen.getByText('Attribute')).toBeVisible();
     expect(screen.getByText('Display name')).toBeVisible();
     expect(screen.getByText('Order')).toBeVisible();
@@ -305,6 +314,31 @@ describe('Facet Panel', () => {
       type: 'SET_INCLUDED_ORDER',
       payload: {
         id: mockFacetsState[0].id,
+        newIndex: 1,
+      },
+    });
+  });
+
+  it('should dispatch order change when manual order input is submitted', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetsPanel {...defaultProps} displayRowOrderControls />
+    );
+
+    Element.prototype.scrollIntoView = jest.fn();
+
+    const colorFacetId = mockFacetsState[0].id;
+    const orderInput = screen.getByDisplayValue('1');
+
+    await user.clear(orderInput);
+    await user.type(orderInput, '2');
+    await user.keyboard('{Enter}');
+
+    expect(dispatchSpy).toHaveBeenCalledWith({
+      type: 'SET_INCLUDED_ORDER',
+      payload: {
+        id: colorFacetId,
         newIndex: 1,
       },
     });

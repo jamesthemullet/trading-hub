@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -10,6 +10,7 @@ import type {
 import {
   ButtonDeprecated,
   CombinedDropdown,
+  FacetOrderInput,
   Search,
   Text,
   Typography,
@@ -26,6 +27,7 @@ import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetsFilter } from '@/libs/hooks';
+import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import type {
   Action,
@@ -64,6 +66,7 @@ interface FacetsPanelProps {
   excludedFacets: MerchandisingExcludedFacets;
   selectedPreviewCountryCode?: 'UK' | 'IE';
   writeEnabled: boolean;
+  orders: Record<string, number>;
   dispatch: (action: Action) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -83,6 +86,7 @@ export const FacetsPanel = ({
   facetsState,
   countryCode,
   writeEnabled,
+  orders,
   dispatch,
   onSave,
   onCancel,
@@ -178,11 +182,31 @@ export const FacetsPanel = ({
 
   const disallowedValues = facetsState.map((facet) => facet.displayValue);
 
+  const handleOrderChangeCallback = useCallback(
+    (id: string, newIndex: number) => {
+      dispatch({
+        type: 'SET_INCLUDED_ORDER',
+        payload: { id, newIndex },
+      });
+    },
+    [dispatch]
+  );
+
+  const {
+    getInputRef,
+    localOrders,
+    handleInputChange,
+    handleInputBlur,
+    handleInputKeyDown,
+  } = useFacetOrderInput(handleOrderChangeCallback, orders);
+
   const FacetRow = (facet: FacetRowDisplayValue) => {
     const { displayValue, displayType, id } = facet;
     const errorState = errorStates[id] || { message: '' };
     const isIncludedFacet = displayType === 'included';
     const isDragDisabled = !writeEnabled || boostedCount <= 1;
+    const order = orders[id] ?? includedFacetOrder.indexOf(id) + 1;
+    const localOrder = localOrders[id] ?? order;
 
     const renderRow = (sortableProps?: SortableRowRenderArgs) => (
       <div
@@ -193,7 +217,23 @@ export const FacetsPanel = ({
         ref={sortableProps?.setNodeRef}
         style={sortableProps?.style}
         {...(sortableProps?.attributes ?? {})}
+        data-with-reorder
       >
+        <div className={`${styles.tableCol} ${styles.facetOrderInput}`}>
+          {displayType === 'included' && (
+            <FacetOrderInput
+              displayValue={id}
+              order={order}
+              localOrder={localOrder}
+              inputRef={getInputRef(id)}
+              onInputChange={handleInputChange}
+              onInputBlur={handleInputBlur}
+              onInputKeyDown={handleInputKeyDown}
+              writeEnabled={writeEnabled}
+            />
+          )}
+        </div>
+
         <div className={styles.tableCol}>
           <Text>{facet.indexPropertyName}</Text>
         </div>
@@ -376,7 +416,7 @@ export const FacetsPanel = ({
       </div>
 
       <div className={styles.attributesTable}>
-        <div className={styles.facetTableRow}>
+        <div className={styles.facetTableRow} data-with-reorder>
           {COLUMNS.map(({ label }) => (
             <div key={`column-${label}`} className={styles.tableCol}>
               <Typography isStrong variant="bodySmall">

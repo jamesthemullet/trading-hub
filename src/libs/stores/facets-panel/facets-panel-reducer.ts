@@ -2,7 +2,6 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedFacet,
 } from '@/libs/api';
-import { toArrayWithSwappedElements } from '@/libs/features/facets/utils/swap-array-elements';
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
 
@@ -13,20 +12,6 @@ type BaseDisplayValueMeta = {
 export type FacetRowDisplayValue = MerchandisingReturnedFacet & {
   meta?: BaseDisplayValueMeta;
   displayType: FacetDisplayType;
-};
-
-type MoveRowUpAction = {
-  type: 'MOVE_INCLUDED_ROW_UP';
-  payload: {
-    id: string;
-  };
-};
-
-type MoveRowDownAction = {
-  type: 'MOVE_INCLUDED_ROW_DOWN';
-  payload: {
-    id: string;
-  };
 };
 
 type ChangeDisplayTypeAction = {
@@ -56,8 +41,6 @@ type ChangeCountryAction = {
 };
 
 export type Action =
-  | MoveRowUpAction
-  | MoveRowDownAction
   | ChangeDisplayTypeAction
   | SetIncludedOrderAction
   | InitialiseStateAction
@@ -67,6 +50,7 @@ export type FacetPanelState = {
   excludedFacets: string[];
   includedFacets: string[];
   countryCode: MerchandisingCountryCode;
+  orders: Record<string, number>;
 };
 
 export const facetsPanelReducer = (
@@ -74,33 +58,18 @@ export const facetsPanelReducer = (
   action: Action
 ): FacetPanelState => {
   switch (action.type) {
-    case 'MOVE_INCLUDED_ROW_UP': {
-      const currentIncluded = state.includedFacets;
-      const currentIndex = currentIncluded.indexOf(action.payload.id);
-      return currentIndex > 0
-        ? {
-            ...state,
-            includedFacets: toArrayWithSwappedElements(
-              currentIncluded,
-              currentIndex,
-              currentIndex - 1
-            ),
-          }
-        : state;
-    }
     case 'SET_INCLUDED_ORDER': {
       const { id, newIndex } = action.payload;
       const currentIncluded = state.includedFacets;
       const currentIndex = currentIncluded.indexOf(id);
 
-      if (
-        currentIndex === -1 ||
-        newIndex < 0 ||
-        newIndex >= currentIncluded.length ||
-        currentIndex === newIndex
-      ) {
+      if (currentIndex === -1 || newIndex < 0) {
         return state;
       }
+
+      // Clamp the newIndex to valid range
+      const maxIndex = currentIncluded.length - 1;
+      const clampedIndex = Math.min(newIndex, maxIndex);
 
       const movedFacet = currentIncluded[currentIndex];
       const updatedIncluded = [
@@ -108,45 +77,43 @@ export const facetsPanelReducer = (
         ...currentIncluded.slice(currentIndex + 1),
       ];
       const finalIncluded = [
-        ...updatedIncluded.slice(0, newIndex),
+        ...updatedIncluded.slice(0, clampedIndex),
         movedFacet,
-        ...updatedIncluded.slice(newIndex),
+        ...updatedIncluded.slice(clampedIndex),
       ];
+
+      const updatedOrders = Object.fromEntries(
+        finalIncluded.map((facetId, index) => [facetId, index + 1])
+      );
 
       return {
         ...state,
         includedFacets: finalIncluded,
+        orders: updatedOrders,
       };
-    }
-    case 'MOVE_INCLUDED_ROW_DOWN': {
-      const currentIncluded = state.includedFacets;
-      const currentIndex = currentIncluded.indexOf(action.payload.id);
-      return currentIndex < currentIncluded.length - 1
-        ? {
-            ...state,
-            includedFacets: toArrayWithSwappedElements(
-              currentIncluded,
-              currentIndex,
-              currentIndex + 1
-            ),
-          }
-        : state;
     }
     case 'CHANGE_DISPLAY_TYPE': {
       const { id, newDisplayType } = action.payload;
       const currentIncluded = state.includedFacets.filter((val) => val !== id);
       const currentExcluded = state.excludedFacets.filter((val) => val !== id);
 
+      const finalIncluded =
+        newDisplayType === 'included'
+          ? [...currentIncluded, id]
+          : currentIncluded;
+
+      const reorderedIncluded = Object.fromEntries(
+        finalIncluded.map((facetId, index) => [facetId, index + 1])
+      );
+
       return {
         ...state,
-        includedFacets:
-          newDisplayType === 'included'
-            ? [...currentIncluded, id]
-            : currentIncluded,
+        includedFacets: finalIncluded,
         excludedFacets:
           newDisplayType === 'excluded'
             ? [...currentExcluded, id]
             : currentExcluded,
+        orders: reorderedIncluded,
       };
     }
     case 'INITIALISE_STATE': {

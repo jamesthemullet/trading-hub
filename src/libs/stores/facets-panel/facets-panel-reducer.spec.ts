@@ -7,89 +7,25 @@ const mockFacetsPanelState: FacetPanelState = {
   includedFacets: ['1', '2', '3'],
   excludedFacets: [],
   countryCode: 'UK_IE',
+  orders: {
+    '1': 1,
+    '2': 2,
+    '3': 3,
+  },
 };
 
 describe('facetsPanelReducer', () => {
-  describe('MOVE_INCLUDED_ROW_UP', () => {
-    it('should move includedFacets row up', () => {
-      const state: FacetPanelState = {
-        ...mockFacetsPanelState,
-      };
-      const action = {
-        type: 'MOVE_INCLUDED_ROW_UP' as const,
-        payload: {
-          id: '3',
-        },
-      };
-      const result = facetsPanelReducer(state, action);
-      expect(result).toEqual({
-        ...mockFacetsPanelState,
-        includedFacets: ['1', '3', '2'],
-      });
-    });
-
-    it('should not move includedFacets row up if it is already at the top', () => {
-      const state: FacetPanelState = {
-        ...mockFacetsPanelState,
-        includedFacets: ['1', '2', '3'],
-      };
-      const action = {
-        type: 'MOVE_INCLUDED_ROW_UP' as const,
-        payload: {
-          id: '1',
-        },
-      };
-      const result = facetsPanelReducer(state, action);
-      expect(result).toEqual({
-        ...mockFacetsPanelState,
-        includedFacets: ['1', '2', '3'],
-      });
-    });
-  });
-
-  describe('MOVE_INCLUDED_ROW_DOWN', () => {
-    it('should move includedFacets row down', () => {
-      const state: FacetPanelState = {
-        ...mockFacetsPanelState,
-        includedFacets: ['1', '2', '3'],
-      };
-      const action = {
-        type: 'MOVE_INCLUDED_ROW_DOWN' as const,
-        payload: {
-          id: '1',
-        },
-      };
-      const result = facetsPanelReducer(state, action);
-      expect(result).toEqual({
-        ...mockFacetsPanelState,
-        includedFacets: ['2', '1', '3'],
-      });
-    });
-
-    it('should not move includedFacets row down if it is already at the bottom', () => {
-      const state: FacetPanelState = {
-        ...mockFacetsPanelState,
-        includedFacets: ['1', '2', '3'],
-      };
-      const action = {
-        type: 'MOVE_INCLUDED_ROW_DOWN' as const,
-        payload: {
-          id: '3',
-        },
-      };
-      const result = facetsPanelReducer(state, action);
-      expect(result).toEqual({
-        ...mockFacetsPanelState,
-        includedFacets: ['1', '2', '3'],
-      });
-    });
-  });
-
   describe('SET_INCLUDED_ORDER', () => {
     it('should position the selected facet at the requested index', () => {
       const state: FacetPanelState = {
         ...mockFacetsPanelState,
         includedFacets: ['1', '2', '3', '4'],
+        orders: {
+          '1': 1,
+          '2': 2,
+          '3': 3,
+          '4': 4,
+        },
       };
 
       const action = {
@@ -104,6 +40,12 @@ describe('facetsPanelReducer', () => {
       expect(result).toEqual({
         ...mockFacetsPanelState,
         includedFacets: ['1', '4', '2', '3'],
+        orders: {
+          '1': 1,
+          '4': 2,
+          '2': 3,
+          '3': 4,
+        },
       });
     });
 
@@ -155,6 +97,7 @@ describe('facetsPanelReducer', () => {
       const state: FacetPanelState = {
         ...mockFacetsPanelState,
         includedFacets: [],
+        orders: {},
       };
       const action = {
         type: 'CHANGE_DISPLAY_TYPE' as const,
@@ -168,6 +111,9 @@ describe('facetsPanelReducer', () => {
         ...mockFacetsPanelState,
         includedFacets: ['1'],
         excludedFacets: [],
+        orders: {
+          '1': 1,
+        },
       });
     });
 
@@ -176,6 +122,9 @@ describe('facetsPanelReducer', () => {
         ...mockFacetsPanelState,
         includedFacets: ['1'],
         excludedFacets: [],
+        orders: {
+          '1': 1,
+        },
       };
       const action = {
         type: 'CHANGE_DISPLAY_TYPE' as const,
@@ -189,6 +138,7 @@ describe('facetsPanelReducer', () => {
         ...mockFacetsPanelState,
         includedFacets: [],
         excludedFacets: ['1'],
+        orders: {},
       });
     });
 
@@ -197,6 +147,10 @@ describe('facetsPanelReducer', () => {
         ...mockFacetsPanelState,
         includedFacets: ['2', '4'],
         excludedFacets: ['1', '3'],
+        orders: {
+          '2': 1,
+          '4': 2,
+        },
       };
       const action = {
         type: 'CHANGE_DISPLAY_TYPE' as const,
@@ -210,6 +164,10 @@ describe('facetsPanelReducer', () => {
         ...mockFacetsPanelState,
         includedFacets: ['2', '4'],
         excludedFacets: ['1', '3'],
+        orders: {
+          '2': 1,
+          '4': 2,
+        },
       });
     });
   });

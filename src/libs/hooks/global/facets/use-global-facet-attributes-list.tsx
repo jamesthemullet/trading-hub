@@ -81,7 +81,7 @@ export const useGlobalFacetAttributesList = ({
   );
 
   const {
-    inputRefs,
+    getInputRef,
     localOrders,
     handleInputChange,
     handleInputBlur,
@@ -185,19 +185,6 @@ export const useGlobalFacetAttributesList = ({
                 dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                 writeEnabled={writeEnabled}
                 displayType={displayType}
-                order={order}
-                localOrder={localOrder}
-                inputRef={
-                  /* istanbul ignore next */ (el) => {
-                    if (el) {
-                      // eslint-disable-next-line functional/immutable-data
-                      inputRefs.current[displayName] = el;
-                    }
-                  }
-                }
-                onInputChange={handleInputChange}
-                onInputBlur={handleInputBlur}
-                onInputKeyDown={handleInputKeyDown}
               />
               <div
                 className={`${facetsPanelStyles.tableCol} ${styles.facetOrderInput}`}
@@ -207,14 +194,7 @@ export const useGlobalFacetAttributesList = ({
                     displayValue={displayName}
                     order={order}
                     localOrder={localOrder}
-                    inputRef={
-                      /* istanbul ignore next */ (el) => {
-                        if (el) {
-                          // eslint-disable-next-line functional/immutable-data
-                          inputRefs.current[displayName] = el;
-                        }
-                      }
-                    }
+                    inputRef={getInputRef(displayName)}
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
                     onInputKeyDown={handleInputKeyDown}
@@ -299,7 +279,7 @@ export const useGlobalFacetAttributesList = ({
       handleInputBlur,
       handleInputChange,
       handleInputKeyDown,
-      inputRefs,
+      getInputRef,
       localOrders,
       searchQuery,
       setEditingValues,

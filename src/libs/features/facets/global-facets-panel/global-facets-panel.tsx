@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 
 import type {
   MerchandisingCountryCode,
@@ -60,6 +60,7 @@ const GlobalFacetsPanel = ({
     includedFacets: initialIncludedFacets,
     excludedFacets: initialExcludedFacets,
     countryCode,
+    orders: {},
   });
 
   useEffect(() => {
@@ -87,6 +88,14 @@ const GlobalFacetsPanel = ({
     setInitialExcludedFacets(excludedFacets);
   }, [ruleSetIncludedFacets, ruleSetExcludedFacets?.facets]);
 
+  const initialOrders = useMemo(
+    () =>
+      Object.fromEntries(
+        initialIncludedFacets.map((item, index) => [item, index + 1])
+      ),
+    [initialIncludedFacets]
+  );
+
   useEffect(() => {
     dispatch({
       type: 'INITIALISE_STATE',
@@ -94,6 +103,7 @@ const GlobalFacetsPanel = ({
         includedFacets: initialIncludedFacets,
         excludedFacets: initialExcludedFacets,
         countryCode: facetPanelLocalState.countryCode || countryCode,
+        orders: initialOrders,
       },
     });
   }, [
@@ -101,6 +111,7 @@ const GlobalFacetsPanel = ({
     initialExcludedFacets,
     countryCode,
     facetPanelLocalState.countryCode,
+    initialOrders,
   ]);
 
   const handleSave = () => {
@@ -168,6 +179,7 @@ const GlobalFacetsPanel = ({
           countryCode={facetPanelLocalState.countryCode}
           includedFacets={includedFacets}
           excludedFacets={excludedFacets}
+          orders={facetPanelLocalState.orders}
           dispatch={dispatch}
           onSave={handleSave}
           onCancel={onCancel}

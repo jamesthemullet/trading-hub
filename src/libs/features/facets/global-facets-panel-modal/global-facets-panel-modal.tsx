@@ -150,7 +150,7 @@ export const GlobalFacetPanelModalContent = ({
   );
 
   const {
-    inputRefs,
+    getInputRef,
     localOrders,
     handleInputChange,
     handleInputBlur,
@@ -376,12 +376,7 @@ export const GlobalFacetPanelModalContent = ({
                     displayValue={displayName}
                     order={order}
                     localOrder={localOrder}
-                    inputRef={(el) => {
-                      if (el) {
-                        // eslint-disable-next-line functional/immutable-data
-                        inputRefs.current[displayName] = el;
-                      }
-                    }}
+                    inputRef={getInputRef(displayName)}
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
                     onInputKeyDown={handleInputKeyDown}
@@ -454,7 +449,7 @@ export const GlobalFacetPanelModalContent = ({
       handleInputChange,
       handleInputBlur,
       handleInputKeyDown,
-      inputRefs,
+      getInputRef,
     ]
   );
 

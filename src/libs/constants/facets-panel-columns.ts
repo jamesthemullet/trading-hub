@@ -2,6 +2,9 @@ export const COLUMNS: {
   label: string;
 }[] = [
   {
+    label: 'Ranking',
+  },
+  {
     label: 'Attribute',
   },
   {
