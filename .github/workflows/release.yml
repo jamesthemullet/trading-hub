@@ -50,6 +50,13 @@ jobs:
           DYNATRACE_RUM_SCRIPT_URL_PROD: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_PROD }}
           CLARITY_KEY: ${{ secrets.CLARITY_KEY }}
 
+      - name: Validate standalone output
+        run: |
+          set -euxo pipefail
+          ls -la .next
+          ls -la .next/standalone
+          test -f .next/standalone/server.js
+
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it.
         run: |
