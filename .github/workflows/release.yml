@@ -53,15 +53,13 @@ jobs:
       - name: Validate standalone output
         run: |
           set -euxo pipefail
-          ls -la .next
           ls -la .next/standalone
           test -f .next/standalone/server.js
 
       - name: Zip all files for upload between jobs
-        # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it.
         run: |
           cd .next/standalone
-          zip next.zip ./* .next -qr
+          zip -qr next.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v6

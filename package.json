@@ -14,7 +14,7 @@
     "dev:turbo-verbose": "pnpm run codegen && next dev --turbo --show-all",
     "codegen": "swagger-typescript-api generate --path src/libs/api/api.yml --output src/libs/api/generated/ --name open-api.ts --extract-response-body --extract-response-error --extract-enums --generate-union-enums",
     "build": "pnpm run codegen && next build && cp -R public .next/standalone/public && cp -R .next/static .next/standalone/.next/static",
-    "start": "next start",
+    "start": "node .next/standalone/server.js",
     "lint": "eslint . && stylelint '**/*.css'",
     "lint:fix": "eslint --fix . && stylelint --fix '**/*.css'",
     "tdd": "TZ=UTC NODE_OPTIONS=--max-old-space-size=4096 pnpm exec jest --watchAll --coverage",
