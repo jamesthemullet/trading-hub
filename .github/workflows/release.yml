@@ -264,7 +264,8 @@ jobs:
               "AZURE_AD_CLIENT_ID=${{ secrets._AZURE_AD_CLIENT_ID }}" \
               "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
-              "CLARITY_KEY=${{ secrets.CLARITY_KEY }}"
+              "CLARITY_KEY=${{ secrets.CLARITY_KEY }}" \
+              "WEBSITES_PORT=4200"
 
       - name: Deploy to Azure Web Apps slot
         uses: azure/cli@v2

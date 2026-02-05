@@ -132,17 +132,35 @@ jobs:
               "AZURE_AD_CLIENT_ID=${{ secrets._AZURE_AD_CLIENT_ID }}" \
               "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
+              "WEBSITES_PORT=4200"
         env:
           AZURE_CORE_USE_MSAL_HTTP_CACHE: false
 
       - name: Deploy to Azure Web Apps
-        shell: bash
-        run: |
-          set -x
-          az webapp deployment source config-zip \
-            --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
-            --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
-            --src ./next.zip --timeout 360
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.75.0
+          inlineScript: |
+            az webapp deploy \
+              --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
+              --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
+              --src-path ./next.zip \
+              --type zip \
+              --async true
+
+      - name: Validate deployment
+        uses: nick-fields/retry@v3.0.2
+        with:
+          timeout_seconds: 20
+          max_attempts: 15
+          retry_wait_seconds: 10
+          command: |
+            set -x
+            SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)
+            VERSION_CHECK_URL="https://dev-merchandising-hub.search.marksandspencer.app/version.txt"
+            VERSION=$(curl -sf "${VERSION_CHECK_URL}")
+            echo "Deployed version: ${VERSION}"
+            echo ${VERSION} | grep ${SHORT_COMMIT_SHA}
 
       - name: Delete zip file
         run: rm next.zip
@@ -213,7 +231,8 @@ jobs:
               "AZURE_AD_CLIENT_ID=${{ secrets._AZURE_AD_CLIENT_ID }}" \
               "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
-              "CLARITY_KEY=${{ secrets.CLARITY_KEY }}"
+              "CLARITY_KEY=${{ secrets.CLARITY_KEY }}" \
+              "WEBSITES_PORT=4200"
         env:
           AZURE_CORE_USE_MSAL_HTTP_CACHE: false
 
