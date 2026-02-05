@@ -40,35 +40,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Get Node version from package.json
-        id: get-versions-from-package-json
-        run: |
-          node_version=$(node -p "require('./package.json').engines.node")
-          echo "node-version=$node_version" >> "$GITHUB_OUTPUT"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6.2.0
-        with:
-          node-version: ${{ steps.get-versions-from-package-json.outputs.node-version }}
-          cache: 'npm'
-
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
 
       - name: Rebuild SWC bindings
-        run: npm rebuild @swc/core
+        run: pnpm rebuild @swc/core
 
       - name: Check formatting
-        run: npm run format:check
+        run: pnpm run format:check
 
       - name: Codegen
-        run: npm run codegen
+        run: pnpm run codegen
 
       - name: Check typescript
-        run: npm run ts-check
+        run: pnpm run ts-check
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Track job timing
         if: success()
@@ -138,7 +126,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Test
-        run: npm run codegen && npm test --coverage
+        run: pnpm run codegen && pnpm test --coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -211,7 +199,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
@@ -525,12 +513,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache npm dependencies
+      - name: Cache pnpm store
         uses: actions/cache@v5
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
 
       - name: Cache Playwright browsers
         uses: actions/cache/restore@v5
@@ -539,23 +527,23 @@ jobs:
           path: |
             ~/.cache/ms-playwright
             ~/.cache/playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/playwright.config.ts') }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/playwright.config.ts') }}
           restore-keys: |
-            ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}-
             ${{ runner.os }}-playwright-
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Prepare node and install dependencies
+        uses: ./.github/actions/prepare
 
       - name: Build app
-        run: npm run build
+        run: pnpm run build
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run Playwright tests
-        run: npx playwright test --project=${{ matrix.project }}
+        run: pnpm exec playwright test --project=${{ matrix.project }}
 
       - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
@@ -649,36 +637,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6.2.0
-        with:
-          node-version: '20.20.0'
-          cache: 'npm'
-
-      - name: Clean cache
-        run: |
-          rm -rf node_modules
-
-      - name: Install dependencies
-        run: npm ci
+      - name: Prepare node and install dependencies
+        uses: ./.github/actions/prepare
 
       - name: Fix Rollup native bindings
-        run: npm install @rollup/rollup-linux-x64-gnu --no-save
+        run: pnpm add -D @rollup/rollup-linux-x64-gnu --ignore-workspace-root-check
 
       - name: Generate API code
-        run: npm run codegen
+        run: pnpm run codegen
 
       - name: Build Storybook
-        run: npm run storybook:build
+        run: pnpm run storybook:build
 
       - name: Install Playwright (for test-runner)
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Start Storybook and run accessibility tests
         run: |
-          npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
-            "npx http-server storybook-static --port 6006" \
-            "wait-on http://localhost:6006 && npm run test-storybook"
+          pnpm exec concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+            "pnpm exec http-server storybook-static --port 6006" \
+            "wait-on http://localhost:6006 && pnpm run test-storybook"
 
       - name: Upload accessibility test results
         if: always()

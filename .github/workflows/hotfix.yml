@@ -20,28 +20,16 @@ jobs:
       - uses: actions/cache@v5
         with:
           path: |
-            ~/.npm
+            ~/.pnpm-store
             ${{ github.workspace }}/.next/cache
           # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
-      - name: Get versions from package.json
-        id: get-versions-from-package-json
-        shell: bash
-        run: |
-          set -x
-          NODE_VERSION=$(jq -r '.engines.node' < package.json)
-          echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/setup-node@v6.2.0
-        env:
-          SEGMENT_DOWNLOAD_TIMEOUT_MINS: '10'
-        with:
-          node-version: ${{ steps.get-versions-from-package-json.outputs.node-version }}
-          cache: npm
+      - name: Prepare node and install dependencies
+        uses: ./.github/actions/prepare
 
       - name: add version.txt
         run: |
@@ -51,13 +39,11 @@ jobs:
           echo "${APP_VERSION}" > ./public/version.txt
           ls -lA
 
-      - name: npm install and build
+      - name: Build
         run: |
           set -x
-          echo "npm version: $(npm --version)"
           echo "node version: $(node --version)"
-          npm install
-          NEXT_TELEMETRY_DISABLED=1 npm run build
+          NEXT_TELEMETRY_DISABLED=1 pnpm run build
         env:
           DYNATRACE_RUM_SCRIPT_URL_DEV: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_DEV }}
           DYNATRACE_RUM_SCRIPT_URL_PROD: ${{ secrets.DYNATRACE_RUM_SCRIPT_URL_PROD }}

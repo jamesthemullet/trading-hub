@@ -9,7 +9,14 @@ runs:
       run: |
         set -x
         NODE_VERSION=$(jq -r '.engines.node' < package.json)
+        PNPM_VERSION=$(jq -r '.packageManager' < package.json | sed 's/pnpm@//')
         echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
+        echo "pnpm-version=${PNPM_VERSION}" >> "$GITHUB_OUTPUT"
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ steps.get-versions-from-package-json.outputs.pnpm-version }}
 
     - name: Set up node
       uses: actions/setup-node@v6.2.0
@@ -17,8 +24,8 @@ runs:
         SEGMENT_DOWNLOAD_TIMEOUT_MINS: '10'
       with:
         node-version: ${{ steps.get-versions-from-package-json.outputs.node-version }}
-        cache: npm
+        cache: pnpm
 
     - name: Install dependencies
       shell: bash
-      run: npm install --frozen-lockfile --ignore-scripts
+      run: pnpm install --frozen-lockfile --ignore-scripts

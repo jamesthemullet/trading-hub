@@ -7,8 +7,9 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 # Install dependencies
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN corepack enable && corepack prepare "pnpm@$(node -p \"require('./package.json').packageManager.split('@')[1]\")" --activate
+RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -16,8 +17,9 @@ ARG NEXT_PUBLIC_AUTO_LOGIN
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN corepack enable && corepack prepare "pnpm@$(node -p \"require('./package.json').packageManager.split('@')[1]\")" --activate
 ENV NEXT_TELEMETRY_DISABLED 1
-RUN npm run build
+RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -46,11 +48,12 @@ CMD HOSTNAME="0.0.0.0" node server.js
 FROM mcr.microsoft.com/playwright:v1.56.1-jammy AS e2e
 RUN apt-get update
 WORKDIR /app
-COPY /package.json ./package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN corepack enable && corepack prepare "pnpm@$(node -p \"require('./package.json').packageManager.split('@')[1]\")" --activate
+RUN pnpm install --frozen-lockfile
 COPY /e2e ./e2e
 COPY /playwright.config.ts ./
-CMD npm run test:e2e
+CMD pnpm run test:e2e
 
 # External APIs Rest endpoints for local and pipeline use with automated tests
 FROM wiremock/wiremock:3.13.2 AS external-apis-dev

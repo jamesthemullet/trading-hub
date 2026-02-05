@@ -7,7 +7,7 @@
 - **Location**: `src/**/*.spec.ts(x)`
 - **Runner**: Jest
 - **Coverage Requirements**: 100%
-- **Command**: `npm run test`
+- **Command**: `pnpm run test`
 
 #### Example
 
@@ -30,7 +30,7 @@ describe('RulesetEditor', () => {
 
 - **Location**: `e2e/**/*.spec.ts`
 - **Runner**: Playwright
-- **Command**: `npm run test:e2e:ui`
+- **Command**: `pnpm run test:e2e:ui`
 
 #### Test Categories
 
@@ -54,13 +54,13 @@ describe('RulesetEditor', () => {
 
 ```bash
 # Unit and E2E Tests
-NEXT_PUBLIC_AUTO_LOGIN=false npm run test
+NEXT_PUBLIC_AUTO_LOGIN=false pnpm run test
 
 # E2E Tests with UI
-npm run test:e2e:ui
+pnpm run test:e2e:ui
 
 # E2E Tests headless
-npm run test:e2e
+pnpm run test:e2e
 ```
 
 ### CI/CD Testing
@@ -86,8 +86,8 @@ npm run test:e2e
 
 ```bash
 # Debug specific test
-npm run test -- -t "test name"
+pnpm run test -- -t "test name"
 
 # Watch mode
-npm run test -- --watch
+pnpm run test -- --watch
 ```

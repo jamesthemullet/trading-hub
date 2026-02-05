@@ -8,7 +8,7 @@ Merch Hub is a UI for Merchandising team to manage merchandising rules, product 
 
 Our agreed API contract with the backend team is stored in the [search-service](https://github.com/DigitalInnovation/search-service/blob/main/search-service-app/src/main/resources/static/search-merchandising.yml) repo and duplicated in this repo. It is used for all requests.
 
-You can check or generate the code by running `npm run codegen` which uses the local [api.yml](src/libs/api/api.yml) file
+You can check or generate the code by running `pnpm run codegen` which uses the local [api.yml](src/libs/api/api.yml) file
 
 ## Key Features
 

@@ -46,7 +46,7 @@ services:
     environment:
       E2E_TARGET_URL: http://merchandising-hub:3000
       ELASTIC_URL: http://elastic-dev:9200
-    entrypoint: npm run test:e2e
+    entrypoint: pnpm run test:e2e
   application-dev:
     image: ghcr.io/digitalinnovation/search-service/search-service-webapp:783
     # testing with a locally built image

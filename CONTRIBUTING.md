@@ -25,13 +25,13 @@ Documentation is location in [README](./README.md)
 ## Installation Instructions
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Build Instructions
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ## Test Instructions
@@ -39,13 +39,13 @@ npm run build
 ### Unit tests
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 ### E2E tests
 
 ```
-npm run test:e2e:ui
+pnpm run test:e2e:ui
 ```
 
 ## Release Instructions
