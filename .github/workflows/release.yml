@@ -142,6 +142,18 @@ jobs:
             --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
             --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
             --src ./next.zip --timeout 360
+        continue-on-error: true
+        id: deploy
+
+      - name: Check deployment logs on failure
+        if: steps.deploy.outcome == 'failure'
+        run: |
+          echo "Deployment timed out. Checking logs..."
+          az webapp log tail \
+            --resource-group ${{ steps.get-tf-settings.outputs.eun-resource-group-alias-layer3 }} \
+            --name ${{ steps.get-tf-settings.outputs.eun-app-alias }} \
+            || echo "Could not fetch logs"
+          exit 1
 
       - name: Delete zip file
         run: rm next.zip
