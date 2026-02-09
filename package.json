@@ -135,6 +135,6 @@
   },
   "overrides": {
     "storybook": "$storybook",
-    "nodemailer": "^7.0.7"
+    "nodemailer": "^8.0.0"
   }
 }
