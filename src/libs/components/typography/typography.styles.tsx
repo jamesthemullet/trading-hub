@@ -27,19 +27,6 @@ export const Header3 = styled.h3`
   font-size: 20px;
 `;
 
-export const SubHeader2 = styled.h2`
-  ${commonStyles}
-  font-family: ${fonts.regular};
-  font-size: 20px;
-`;
-
-export const Title = styled.h4`
-  ${commonStyles}
-  font-family: ${fonts.bold};
-  font-size: 0.875rem;
-  line-height: 1.5714;
-`;
-
 export const Text = styled.p<{ isStrong?: boolean; withMargin?: boolean }>`
   ${commonStyles}
   font-family: ${fonts.regular};

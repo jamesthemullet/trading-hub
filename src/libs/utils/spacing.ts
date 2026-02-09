@@ -64,7 +64,7 @@ type RoundNumberSpacingUnit =
   | 72
   | -72;
 
-export type SpacingUnit =
+type SpacingUnit =
   | PercentageSpacingUnit
   | RoundNumberSpacingUnit
   | FourAndTwelvePixelUnit

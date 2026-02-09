@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 
-import { InputDeprecated } from './input';
+import { Input } from './input';
 
-const meta: Meta<typeof InputDeprecated> = {
+const meta: Meta<typeof Input> = {
   title: 'Components/Input',
-  component: InputDeprecated,
+  component: Input,
   tags: ['autodocs'],
   argTypes: {
     id: {
@@ -31,7 +31,7 @@ const meta: Meta<typeof InputDeprecated> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof InputDeprecated>;
+type Story = StoryObj<typeof Input>;
 
 export const Default = {
   args: {
@@ -40,5 +40,5 @@ export const Default = {
     isLabelHidden: false,
     onChange: fn(),
   },
-  render: (args) => <InputDeprecated {...args} />,
+  render: (args) => <Input {...args} />,
 } satisfies Story;

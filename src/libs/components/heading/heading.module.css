@@ -18,3 +18,7 @@
 .headingSpacer {
   height: var(--mns-spacing-5);
 }
+
+.titleBlock {
+  margin: var(--mns-spacing-3) var(--mns-spacing-2) 0;
+}

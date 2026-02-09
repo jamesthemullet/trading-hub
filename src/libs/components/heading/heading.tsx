@@ -4,9 +4,10 @@ import styles from './heading.module.css';
 
 type Props = {
   breadcrumbs: string[];
+  title?: string;
 };
 
-export const Heading = ({ breadcrumbs }: Props) => {
+export const Heading = ({ breadcrumbs, title }: Props) => {
   return (
     <>
       <div className={styles.headingSpacer} />
@@ -24,6 +25,13 @@ export const Heading = ({ breadcrumbs }: Props) => {
           ))}
         </Breadcrumb>
       </div>
+      {title && (
+        <div className={styles.titleBlock}>
+          <Typography variant="titleMedium" isStrong as="h1">
+            {title}
+          </Typography>
+        </div>
+      )}
     </>
   );
 };

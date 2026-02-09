@@ -11,7 +11,6 @@ import { ROUTES } from '@/libs/constants/routes';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
 import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
-import { PageNameLabel } from '@/libs/utils/shared.styles';
 
 import Head from 'next/head';
 
@@ -89,9 +88,11 @@ const RuleSets = () => {
         <title>Merchandising Hub | M&S | Categories</title>
       </Head>
 
-      <Heading breadcrumbs={['Search & Merchandising', 'Categories']} />
+      <Heading
+        breadcrumbs={['Search & Merchandising', 'Categories']}
+        title="Categories"
+      />
 
-      <PageNameLabel marginBottom>Categories</PageNameLabel>
       <TablePanel
         basePath="/category"
         headings={headings}

@@ -4,7 +4,6 @@ import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
 import { HistoryList } from '@/libs/features/history-list/history-list';
 import { useAccess } from '@/libs/hooks/use-access';
-import { PageNameLabel } from '@/libs/utils/shared.styles';
 
 import Head from 'next/head';
 
@@ -66,9 +65,8 @@ export const HistoryPage = ({
         <title>Merchandising Hub | M&amp;S | {title}</title>
       </Head>
 
-      <Heading breadcrumbs={breadcrumbs} />
+      <Heading breadcrumbs={breadcrumbs} title="Subcategory History" />
 
-      <PageNameLabel>Subcategory History</PageNameLabel>
       <div className={styles.labelWrapper}>
         <Typography variant="bodySmall" withMargin>
           {identifier}

@@ -10,7 +10,6 @@ import type { RuleSetMapping } from '@/libs/components/types';
 import { ROUTES } from '@/libs/constants/routes';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
-import { PageNameLabel } from '@/libs/utils/shared.styles';
 
 import Head from 'next/head';
 
@@ -82,9 +81,8 @@ const RedirectRuleSets = () => {
       </Head>
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Redirects']}
+        title="Keyword Redirect"
       />
-
-      <PageNameLabel marginBottom>Keyword Redirect</PageNameLabel>
 
       <TablePanel
         basePath="/search"

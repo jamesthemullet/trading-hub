@@ -10,7 +10,6 @@ import type { RuleSetMapping } from '@/libs/components/types';
 import { ROUTES } from '@/libs/constants/routes';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
-import { PageNameLabel } from '@/libs/utils/shared.styles';
 
 import Head from 'next/head';
 
@@ -70,9 +69,9 @@ const RuleSets = () => {
 
       <Heading
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
+        title="Global"
       />
 
-      <PageNameLabel marginBottom>Global</PageNameLabel>
       <TablePanel
         basePath="/global"
         headings={headings}

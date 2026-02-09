@@ -10,7 +10,6 @@ import type { RuleSetMapping } from '@/libs/components/types';
 import { ROUTES } from '@/libs/constants/routes';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
-import { PageNameLabel } from '@/libs/utils/shared.styles';
 
 import Head from 'next/head';
 
@@ -83,8 +82,9 @@ const SearchRuleSets = () => {
 
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Search']}
+        title="Search"
       />
-      <PageNameLabel marginBottom>Search</PageNameLabel>
+
       <TablePanel
         basePath="/search"
         headings={headings}
