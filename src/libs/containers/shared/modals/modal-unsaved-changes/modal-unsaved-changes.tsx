@@ -1,30 +1,10 @@
-import styled from '@emotion/styled';
 import { useId } from 'react';
 import { Modal } from '@mantine/core';
 
-import { Button, Text, Title } from '@/libs/components';
-import { spacing } from '@/libs/utils/spacing';
+import { Button } from '@/libs/components';
+import { Typography } from '@/libs/components/typography/typography';
 
-const Divider = styled.span`
-  border-bottom: solid 1px #000;
-  width: 100%;
-  display: inline-block;
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: right;
-
-  button {
-    width: auto;
-    margin-left: ${spacing(2)};
-  }
-`;
-
-const Heading = styled(Title)`
-  margin-bottom: ${spacing(2)};
-`;
+import styles from './modal-unsaved-changes.module.css';
 
 type Props = {
   onClose: () => void;
@@ -45,20 +25,22 @@ export const ModalUnsavedChanges = ({
       <Modal.Overlay blur={3} />
       <Modal.Content aria-labelledby={titleId} aria-describedby={descriptionId}>
         <Modal.Body>
-          <Heading id={titleId}>Close without saving edits</Heading>
-          <Text id={descriptionId}>
+          <Typography variant="bodySmall" isStrong className={styles.heading}>
+            Close without saving edits
+          </Typography>
+          <Typography variant="bodySmall">
             Are you sure you want to navigate away from this page without saving
             your edits?
-          </Text>
-          <Divider />
-          <Buttons>
+          </Typography>
+          <span className={styles.divider} />
+          <div className={styles.buttons}>
             <Button isInline onClick={onClose}>
               Close without saving
             </Button>
             <Button onClick={onContinue} theme="primary" isInline>
               Continue editing
             </Button>
-          </Buttons>
+          </div>
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>

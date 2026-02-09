@@ -1,0 +1,57 @@
+.styledModalBody {
+  background-color: #fbf6f4;
+}
+
+.footer {
+  display: flex;
+  border-top: 1px solid var(--color-surface-on-surface);
+  padding: var(--mns-spacing-2);
+  gap: var(--mns-spacing-2);
+
+  button {
+    align-self: flex-start;
+    width: 96px;
+  }
+  > button:first-of-type {
+    margin-left: auto;
+  }
+}
+
+.styledInput {
+  background-color: var(--color-accent-secondary-secondary-container);
+  border: none;
+  height: 56px;
+  border-radius: 4px 4px 0 0;
+  padding-right: var(--mns-spacing-3);
+  cursor: pointer;
+}
+
+.styledInputContainer {
+  background-color: var(--color-accent-secondary-secondary-container);
+  border-bottom: 1px solid var(--color-state-disabled-disabled);
+  width: 316px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--mns-spacing-1);
+  border-radius: 4px 4px 0 0;
+  position: relative;
+}
+
+.rangeSelector {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding-right: 150px;
+}
+
+.calendarIconContainer {
+  position: absolute;
+  right: var(--mns-spacing-1);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

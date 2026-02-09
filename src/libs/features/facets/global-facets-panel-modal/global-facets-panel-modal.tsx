@@ -610,7 +610,6 @@ export const GlobalFacetPanelModalContent = ({
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
             titleId={titleId}
-            descriptionId={descriptionId}
           />
         </Modal.Content>
       </Modal.Root>

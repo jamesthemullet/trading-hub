@@ -1,9 +1,10 @@
 import { type ActionDispatch, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import { Button, Text, Typography } from '@/libs/components';
+import { Button } from '@/libs/components';
 import editFacetStyles from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.module.css';
 import modalStyles from '@/libs/components/modals/modal.module.css';
+import { Typography } from '@/libs/components/typography/typography';
 import { Input } from '@/libs/containers/shared';
 import { EditFacetAttributesModalTableRow } from '@/libs/containers/shared/table/table.styles';
 import facetsPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
@@ -11,40 +12,10 @@ import type {
   GlobalAttributesPageReducer,
   GlobalAttributesPageState,
 } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
 
 import Image from 'next/image';
-import { styled } from 'storybook/theming';
 
 import styles from './global-facet-attributes-edit-modal.module.css';
-
-const StyledHeading = styled(Text)`
-  margin: ${spacing(1.5)};
-  font-size: 20px;
-`;
-const StyledText = styled(Text)`
-  text-decoration: underline;
-  cursor: pointer;
-  border: none;
-  background: none;
-`;
-
-const StyledIcon = styled(Image)`
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-`;
-const StyledError = styled(Text)`
-  color: ${color.state.error.error};
-  margin-top: ${spacing(0.5)};
-`;
-const AttributesContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${spacing(2)};
-`;
 
 const EDIT_FACET_ATTRIBUTES_MODALCOLUMNS: {
   label: string | null | false;
@@ -151,7 +122,13 @@ export const GlobalFacetAttributesEditModal = ({
         <Modal.Body>
           <div className={modalStyles.modalContainer}>
             <div className={modalStyles.modalStickyHeader}>
-              <StyledHeading isStrong>Edit merge</StyledHeading>
+              <Typography
+                isStrong
+                variant="titleSmall"
+                className={styles.heading}
+              >
+                Edit merge
+              </Typography>
             </div>
 
             <div className={modalStyles.editFacetAttributesModalTable}>
@@ -172,8 +149,10 @@ export const GlobalFacetAttributesEditModal = ({
                 data-testid={`edit attribute modal ${displayName} row`}
               >
                 <div className={facetsPanelStyles.tableCol}>
-                  <AttributesContainer>
-                    <Text isStrong>Merged Value Group</Text>
+                  <div className={styles.attributesContainer}>
+                    <Typography variant="bodySmall" isStrong>
+                      Merged Value Group
+                    </Typography>
 
                     {visibleAttributes.map((value, i) => (
                       <div
@@ -182,7 +161,7 @@ export const GlobalFacetAttributesEditModal = ({
                           editFacetStyles.globalFacetAttributesPageMergedValue
                         }
                       >
-                        <Text>{value}</Text>
+                        <Typography variant="bodySmall">{value}</Typography>
                         <button
                           className={editFacetStyles.removeMergedFacet}
                           onClick={() => {
@@ -200,16 +179,19 @@ export const GlobalFacetAttributesEditModal = ({
                     ))}
 
                     {attributes.length > maxVisible && (
-                      <StyledText
-                        as="button"
+                      <button
+                        type="button"
+                        className={styles.styledText}
                         onClick={() => {
                           setIsExpanded(!isExpanded);
                         }}
                       >
-                        {isExpanded ? 'Show Fewer' : 'Show More'}
-                      </StyledText>
+                        <Typography variant="bodySmall">
+                          {isExpanded ? 'Show Fewer' : 'Show More'}
+                        </Typography>
+                      </button>
                     )}
-                  </AttributesContainer>
+                  </div>
                 </div>
 
                 <div className={facetsPanelStyles.tableCol}>
@@ -232,7 +214,8 @@ export const GlobalFacetAttributesEditModal = ({
                       />
 
                       {!!error && (
-                        <StyledIcon
+                        <Image
+                          className={styles.icon}
                           width={20}
                           height={20}
                           src="/trading-hub/asset/icon-warning.svg"
@@ -241,7 +224,11 @@ export const GlobalFacetAttributesEditModal = ({
                       )}
                     </div>
 
-                    {!!error && <StyledError>{error}</StyledError>}
+                    {!!error && (
+                      <Typography variant="bodySmall" className={styles.error}>
+                        {error}
+                      </Typography>
+                    )}
                   </div>
                 </div>
               </EditFacetAttributesModalTableRow>

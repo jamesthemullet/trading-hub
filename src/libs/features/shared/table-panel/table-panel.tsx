@@ -225,7 +225,6 @@ export const TablePanel = <
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
             titleId={titleId}
-            descriptionId={descriptionId}
           />
         </Modal.Content>
       </Modal.Root>

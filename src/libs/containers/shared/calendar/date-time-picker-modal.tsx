@@ -1,81 +1,19 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 import { MantineProvider, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { ButtonDeprecated } from '@/libs/components';
+import { Button } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
-import { color } from '@/libs/utils/constants';
-import { spacing } from '@/libs/utils/spacing';
+import { Input } from '@/libs/containers/shared';
 
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
-import { InputDeprecated } from '../input/input';
 import { DatePicker } from './date-picker';
 import datepickerStyles from './date-picker.module.css';
 import { DatePickerSingle } from './date-picker-single';
+import styles from './date-time-picker-modal.module.css';
 import { formatDateMonthYearTimeRange } from './format-date-range';
-
-const StyledModalBody = styled(Modal.Body)`
-  background-color: #fbf6f4;
-`;
-
-const Footer = styled.div`
-  display: flex;
-  border-top: 1px solid black;
-  padding: 16px;
-  gap: 16px;
-
-  & > Button:first-of-type {
-    margin-left: auto;
-  }
-`;
-
-const StyledButton = styled(ButtonDeprecated)`
-  align-self: flex-start;
-  width: 96px;
-  border-radius: 20px;
-`;
-
-const StyledInput = styled(InputDeprecated)`
-  background-color: #f5f5f5;
-  border: none;
-  height: 56px;
-  border-radius: 4px 4px 0 0;
-  padding-right: ${spacing(6)};
-  cursor: pointer;
-`;
-
-const StyledInputContainer = styled.div`
-  background-color: #f5f5f5;
-  border-bottom: 1px solid ${color.role.outline.outline};
-  width: 316px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 ${spacing(1)};
-  border-radius: 4px 4px 0 0;
-  position: relative;
-`;
-
-const RangeSelector = styled.div`
-  display: flex;
-  align-items: end;
-  justify-content: right;
-  padding-right: 150px;
-`;
-
-const CalendarIconContainer = styled.div`
-  position: absolute;
-  right: ${spacing(1)};
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 export const DateTimePickerModal = ({
   dateTime,
@@ -136,8 +74,9 @@ export const DateTimePickerModal = ({
 
   return (
     <>
-      <StyledInputContainer>
-        <StyledInput
+      <div className={styles.styledInputContainer}>
+        <Input
+          className={styles.styledInput}
           id=""
           label={label || ''}
           placeholder="Select date range"
@@ -154,7 +93,7 @@ export const DateTimePickerModal = ({
         />
 
         {showCalendarIcon && (
-          <CalendarIconContainer>
+          <div className={styles.calendarIconContainer}>
             <Image
               alt=""
               src="/trading-hub/asset/icon-blank-calendar.svg"
@@ -162,9 +101,9 @@ export const DateTimePickerModal = ({
               height={20}
               aria-hidden="true"
             />
-          </CalendarIconContainer>
+          </div>
         )}
-      </StyledInputContainer>
+      </div>
 
       <MantineProvider>
         <Modal.Root opened={opened} onClose={close} size="auto" withinPortal>
@@ -174,7 +113,7 @@ export const DateTimePickerModal = ({
             aria-modal="true"
             aria-label="Datepicker modal"
           >
-            <StyledModalBody>
+            <Modal.Body className={styles.styledModalBody}>
               {hasDateRange ? (
                 <DatePicker
                   value={tempDateRange}
@@ -198,22 +137,22 @@ export const DateTimePickerModal = ({
                 className={datepickerStyles.datepickerContent}
                 data-is-disabled={tempDateRange[0] === null}
               >
-                <RangeSelector>
+                <div className={styles.rangeSelector}>
                   <Checkbox
                     label="No end date"
                     showLabel
                     checked={!hasDateRange}
                     onChange={() => setHasDateRange(!hasDateRange)}
                   />
-                </RangeSelector>
+                </div>
               </div>
-            </StyledModalBody>
+            </Modal.Body>
 
-            <Footer>
-              <StyledButton theme="tertiary" onClick={close}>
+            <div className={styles.footer}>
+              <Button theme="tertiary" onClick={close}>
                 Cancel
-              </StyledButton>
-              <StyledButton
+              </Button>
+              <Button
                 theme="tertiary"
                 isDisabled={
                   tempDateRange[0] !== null &&
@@ -224,8 +163,8 @@ export const DateTimePickerModal = ({
                 aria-label="Close schedule editor"
               >
                 Done
-              </StyledButton>
-            </Footer>
+              </Button>
+            </div>
           </Modal.Content>
         </Modal.Root>
       </MantineProvider>

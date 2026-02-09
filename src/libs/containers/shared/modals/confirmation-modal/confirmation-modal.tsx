@@ -1,44 +1,30 @@
-import styled from '@emotion/styled';
 import { Divider, Modal } from '@mantine/core';
 
-import { Button, Header3, Text } from '@/libs/components';
-import { spacing } from '@/libs/utils/spacing';
+import { Button, Header3, Typography } from '@/libs/components';
 
-const Buttons = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: right;
-  margin-top: ${spacing(1)};
-
-  button {
-    width: auto;
-    margin-left: ${spacing(2)};
-  }
-`;
+import styles from './confirmation-modal.module.css';
 
 const ConfirmationModal = ({
   onCloseModal,
   handleModalConfirm,
   titleId,
-  descriptionId,
 }: {
   onCloseModal: () => void;
   handleModalConfirm: () => void;
   titleId: string;
-  descriptionId: string;
 }) => {
   return (
     <Modal.Body>
       <Header3 id={titleId}>Apply global changes</Header3>
 
-      <Text withMargin id={descriptionId}>
+      <Typography variant="bodySmall" withMargin>
         This action will apply live changes on the M&S website and app. Do you
         want to proceed?
-      </Text>
+      </Typography>
 
       <Divider />
 
-      <Buttons>
+      <div className={styles.buttons}>
         <Button
           onClick={onCloseModal}
           theme="secondary"
@@ -58,7 +44,7 @@ const ConfirmationModal = ({
         >
           Apply action
         </Button>
-      </Buttons>
+      </div>
     </Modal.Body>
   );
 };

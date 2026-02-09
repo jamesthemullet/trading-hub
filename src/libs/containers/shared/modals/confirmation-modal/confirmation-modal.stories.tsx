@@ -64,7 +64,6 @@ const DefaultTemplate = (args: Story['args'] = {}) => {
             onCloseModal={() => setIsOpen(false)}
             handleModalConfirm={handleModalConfirm}
             titleId={titleId}
-            descriptionId={descriptionId}
           />
         </Modal.Content>
       </Modal.Root>

@@ -13,3 +13,33 @@
     background: var(--color-surface-surface);
   }
 }
+
+.heading {
+  margin: var(--mns-spacing-1-5);
+}
+
+.styledText {
+  text-decoration: underline;
+  cursor: pointer;
+  border: none;
+  background: none;
+  margin-left: var(--mns-spacing-4);
+}
+
+.icon {
+  position: absolute;
+  right: var(--mns-spacing-1);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.error {
+  color: var(--color-state-error-error);
+  margin-top: var(--mns-spacing-0-5);
+}
+
+.attributesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-2);
+}

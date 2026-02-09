@@ -250,7 +250,6 @@ export const GlobalFacetAttributesPageLayout = ({
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
             titleId={titleId}
-            descriptionId={descriptionId}
           />
         </Modal.Content>
       </Modal.Root>

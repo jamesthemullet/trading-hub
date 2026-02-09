@@ -1,0 +1,20 @@
+.divider {
+  border-bottom: solid 1px var(--color-surface-on-surface-container);
+  width: 100%;
+  display: inline-block;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+
+  button {
+    width: auto;
+    margin-left: var(--mns-spacing-2);
+  }
+}
+
+.heading {
+  margin-bottom: var(--mns-spacing-2);
+}
