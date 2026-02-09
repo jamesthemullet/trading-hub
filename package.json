@@ -21,8 +21,10 @@
     "test": "TZ=UTC NODE_OPTIONS=--max-old-space-size=4096 pnpm exec jest",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e": "playwright test",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "prettier --write . && pnpm run format:lock",
+    "format:check": "prettier --check . && pnpm run format:check:lock",
+    "format:lock": "prettier --write pnpm-lock.yaml",
+    "format:check:lock": "prettier --check pnpm-lock.yaml",
     "ts-check": "tsc  --build --force --verbose tsconfig.json",
     "pr-validate": "pnpm run codegen && pnpm run lint && pnpm run format:check && pnpm run ts-check && pnpm test --coverage --maxConcurrency=1 && pnpm exec playwright test --project=mock --workers=4",
     "contributors:add": "all-contributors add",
@@ -31,7 +33,8 @@
     "storybook:build": "storybook build",
     "test-storybook": "pnpm exec test-storybook",
     "knip": "knip",
-    "bundle:analyze": "next experimental-analyze"
+    "bundle:analyze": "next experimental-analyze",
+    "postinstall": "pnpm run format:lock"
   },
   "dependencies": {
     "@axe-core/playwright": "4.11.1",
