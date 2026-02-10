@@ -77,16 +77,19 @@ export const facetAttributesPageReducer = (
     case 'CHANGE_DISPLAY_TYPE': {
       const currentBoosted = state.boosted ?? [];
       const currentExcludedValues = state.excludedValues ?? [];
+
       return {
         ...state,
         boosted:
           action.payload.newDisplayType !== 'included'
             ? state.boosted?.filter((val) => val !== action.payload.id)
-            : [...currentBoosted, action.payload.id],
+            : Array.from(new Set([...currentBoosted, action.payload.id])),
         excludedValues:
           action.payload.newDisplayType !== 'excluded'
             ? state.excludedValues?.filter((val) => val !== action.payload.id)
-            : [...currentExcludedValues, action.payload.id],
+            : Array.from(
+                new Set([...currentExcludedValues, action.payload.id])
+              ),
       };
     }
 

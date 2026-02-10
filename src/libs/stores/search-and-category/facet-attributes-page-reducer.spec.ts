@@ -128,6 +128,27 @@ describe('facetAttributesPageReducer', () => {
   });
 
   describe('CHANGE_DISPLAY_TYPE', () => {
+    it('should not create duplicate when already included', () => {
+      const state: MerchandisingReturnedGlobalFacet = {
+        ...mockReturnedGlobalFacetState,
+        boosted: ['1', '2'],
+        excludedValues: [],
+      };
+      const action = {
+        type: 'CHANGE_DISPLAY_TYPE' as const,
+        payload: {
+          id: '1',
+          newDisplayType: 'included' as const,
+        },
+      };
+      const result = facetAttributesPageReducer(state, action);
+      expect(result).toEqual({
+        ...mockReturnedGlobalFacetState,
+        boosted: ['1', '2'],
+        excludedValues: [],
+      });
+    });
+
     it('should change display type to boosted', () => {
       const state: MerchandisingReturnedGlobalFacet = {
         ...mockReturnedGlobalFacetState,
