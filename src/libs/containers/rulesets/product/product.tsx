@@ -13,10 +13,9 @@ import type {
   MerchandisingProduct as ProductType,
   MerchandisingRankingAttribute,
 } from '@/libs/api';
-import { Button } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
 import type { RuleSetActions } from '@/libs/components/types';
-import { Typography } from '@/libs/components/typography/typography.styles';
 
 import Image from 'next/image';
 

@@ -2,7 +2,7 @@ import type {
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
 } from '@/libs/api';
-import { Typography } from '@/libs/components/typography/typography.styles';
+import { Typography } from '@/libs/components';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
 import { labels } from '@/libs/utils/ruleset-attributes';
 

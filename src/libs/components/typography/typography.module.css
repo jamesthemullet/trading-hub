@@ -13,6 +13,10 @@
   font-weight: var(--typography-weight-semibold);
 }
 
+.typography[data-uppercase='true'] {
+  text-transform: uppercase;
+}
+
 .typography[data-with-margin='true'] {
   margin-bottom: var(--mns-spacing-1);
 }

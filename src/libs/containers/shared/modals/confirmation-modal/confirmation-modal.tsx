@@ -1,13 +1,12 @@
 import { Divider, Modal } from '@mantine/core';
 
-import { Button, Header3, Typography } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 
 import styles from './confirmation-modal.module.css';
 
 const ConfirmationModal = ({
   onCloseModal,
   handleModalConfirm,
-  titleId,
 }: {
   onCloseModal: () => void;
   handleModalConfirm: () => void;
@@ -15,7 +14,9 @@ const ConfirmationModal = ({
 }) => {
   return (
     <Modal.Body>
-      <Header3 id={titleId}>Apply global changes</Header3>
+      <Typography as="h3" variant="titleMedium" withMargin isStrong>
+        Apply global changes
+      </Typography>
 
       <Typography variant="bodySmall" withMargin>
         This action will apply live changes on the M&S website and app. Do you

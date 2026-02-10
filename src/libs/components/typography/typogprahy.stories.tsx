@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { ComponentProps } from 'react';
 
-import { Typography } from './typography.styles';
+import { Typography } from '@/libs/components';
+
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof Typography> = {
   title: 'Components/Typography',
@@ -36,13 +38,15 @@ const meta: Meta<typeof Typography> = {
 export default meta;
 type Story = StoryObj<typeof Typography>;
 
-export const Default = {
+type DefaultStoryArgs = ComponentProps<typeof Typography>;
+
+export const Default: Story = {
   args: {
     children: 'Lorem ipsum',
     variant: 'bodyMedium',
     as: 'p',
     isStrong: false,
     withMargin: false,
-  },
-  render: (args) => <Typography {...args} />,
+  } satisfies DefaultStoryArgs,
+  render: (args: DefaultStoryArgs) => <Typography {...args} />,
 } satisfies Story;

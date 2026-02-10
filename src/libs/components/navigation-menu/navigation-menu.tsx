@@ -1,8 +1,9 @@
+import { Typography } from '@/libs/components';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Typography } from '../typography/typography.styles';
 import styles from './navigation-menu.module.css';
 
 export type MenuItem = {

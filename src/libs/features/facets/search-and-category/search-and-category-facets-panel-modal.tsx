@@ -14,7 +14,6 @@ import {
   FacetOrderInput,
   FilteredResultsPanel,
   Search,
-  Text,
   Typography,
 } from '@/libs/components';
 import editFacetStyles from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.module.css';
@@ -195,7 +194,7 @@ export const SearchAndCategoryFacetsPanelModal = ({
           >
             <div className={facetPanelStyles.tableCol}>
               <div className={editFacetStyles.attributeWrapper}>
-                <Text>{displayValue}</Text>
+                <Typography variant="bodySmall">{displayValue}</Typography>
               </div>
             </div>
 
@@ -217,9 +216,12 @@ export const SearchAndCategoryFacetsPanelModal = ({
             </div>
 
             <div className={facetPanelStyles.tableCol}>
-              <Text data-testid={`Label for ${displayValue}`}>
+              <Typography
+                variant="bodySmall"
+                data-testid={`Label for ${displayValue}`}
+              >
                 {displayValue}
-              </Text>
+              </Typography>
             </div>
 
             <div className={facetPanelStyles.tableCol}>
@@ -330,7 +332,9 @@ export const SearchAndCategoryFacetsPanelModal = ({
             )}
 
             <div className={editFacetStyles.mergeAndSearchContainer}>
-              <Text isStrong>All values listed</Text>
+              <Typography variant="bodySmall" isStrong>
+                All values listed
+              </Typography>
 
               <Search onChange={handleSearch} />
             </div>

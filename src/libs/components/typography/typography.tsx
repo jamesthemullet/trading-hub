@@ -2,6 +2,7 @@ import styles from './typography.module.css';
 
 type TypographyBaseProps = {
   isStrong?: boolean;
+  uppercase?: boolean;
   withMargin?: boolean;
   variant?:
     | 'bodyLarge'
@@ -27,7 +28,7 @@ type TypographyBaseProps = {
 
 type LabelTypographyProps = TypographyBaseProps & {
   as: 'label';
-  htmlFor: string;
+  htmlFor?: string;
 };
 
 type StandardTypographyProps = TypographyBaseProps & {
@@ -53,6 +54,7 @@ export const Typography = ({
   variant = 'bodyMedium',
   children,
   isStrong = false,
+  uppercase = false,
   withMargin = false,
   className,
   ...rest
@@ -63,6 +65,7 @@ export const Typography = ({
     }
     data-variant={variant}
     data-strong={isStrong}
+    data-uppercase={uppercase}
     data-with-margin={withMargin}
     data-align={align}
     {...rest}

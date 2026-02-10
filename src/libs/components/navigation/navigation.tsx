@@ -1,10 +1,11 @@
+import { Typography } from '@/libs/components';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import type { MenuItem } from '../navigation-menu/navigation-menu';
 import { NavigationMenu } from '../navigation-menu/navigation-menu';
-import { Typography } from '../typography/typography.styles';
 import styles from './navigation.module.css';
 
 export const Navigation = () => {
