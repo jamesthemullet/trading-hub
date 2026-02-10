@@ -5,7 +5,7 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
-  ButtonDeprecated,
+  Button,
   CombinedDropdown,
   FacetOrderInput,
   Typography,
@@ -138,7 +138,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
       </div>
       <div className={styles.tableCol}>
         {displayType === 'included' && props.showNewFacetValuesPage && (
-          <ButtonDeprecated
+          <Button
             as="a"
             theme="secondary"
             href={(() => {
@@ -171,12 +171,13 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
             })()}
           >
             {writeEnabled ? 'Edit values' : 'View values'}
-          </ButtonDeprecated>
+          </Button>
         )}
         {displayType === 'included' &&
           writeEnabled &&
           !props.showNewFacetValuesPage && (
-            <ButtonDeprecated
+            <Button
+              theme="secondary"
               onClick={() => {
                 props.onSetIsFacetValuesModalOpen(true);
                 const rulesetConfig = props.rulesetFacets?.find(
@@ -193,7 +194,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
               }}
             >
               Edit values
-            </ButtonDeprecated>
+            </Button>
           )}
       </div>
       <div className={styles.tableCol}>

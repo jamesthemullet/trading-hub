@@ -8,7 +8,7 @@ import type {
   MerchandisingReturnedFacet,
 } from '@/libs/api';
 import {
-  ButtonDeprecated,
+  Button,
   CombinedDropdown,
   FacetOrderInput,
   Search,
@@ -284,9 +284,9 @@ export const FacetsPanel = ({
 
         <div className={styles.tableCol}>
           {showNewFacetValuesPage ? (
-            <ButtonDeprecated
-              as="a"
+            <Button
               theme="secondary"
+              as="a"
               href={(() => {
                 const ruleSetId = router.query.id as string;
                 const baseUrl = ROUTES.GLOBAL.FACETS.VALUES.EDIT(facet.id);
@@ -300,14 +300,15 @@ export const FacetsPanel = ({
               disabled={!writeEnabled}
             >
               {writeEnabled ? 'Edit values' : 'View values'}
-            </ButtonDeprecated>
+            </Button>
           ) : (
-            <ButtonDeprecated
+            <Button
+              theme="secondary"
               onClick={() => handleOpenFacetEditModal(facet)}
               disabled={!writeEnabled}
             >
               Edit values
-            </ButtonDeprecated>
+            </Button>
           )}
         </div>
 
