@@ -1,12 +1,6 @@
 import '@testing-library/jest-dom';
 import failOnConsole from 'jest-fail-on-console';
 
-import { createSerializer, matchers } from '@emotion/jest';
-
-expect.addSnapshotSerializer(createSerializer());
-
-expect.extend(matchers);
-
 const { TextDecoder, TextEncoder } = require('node:util');
 const {
   ReadableStream,

@@ -131,14 +131,7 @@ const eslint = [
         {
           groups: [
             ['^\\u0000'],
-            [
-              '^@emotion',
-              '^react',
-              '^@testing',
-              '^@mantine',
-              'next/router',
-              '^msw',
-            ],
+            ['^react', '^@testing', '^@mantine', 'next/router', '^msw'],
             ['^@/'],
             ['^[^.]'],
             ['^\\.'],
