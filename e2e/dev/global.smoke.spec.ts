@@ -168,16 +168,7 @@ test.describe('Global Ranking', () => {
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
   });
 
-  test('views history', async ({ page, context }) => {
-    await context.addCookies([
-      {
-        name: 'flagHistoricalLogOfChanges',
-        value: 'true',
-        domain: 'localhost',
-        path: '/',
-      },
-    ]);
-
+  test('views history', async ({ page }) => {
     await page.goto('/global');
 
     await page.getByRole('button', { name: 'More options' }).first().click();

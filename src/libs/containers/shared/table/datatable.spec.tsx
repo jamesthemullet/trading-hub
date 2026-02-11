@@ -302,6 +302,7 @@ describe('DataTable', () => {
       await user.tab();
       await user.tab();
       await user.tab();
+      await user.tab();
       await user.keyboard('{Enter}');
       await waitFor(() => {
         expect(
@@ -452,6 +453,7 @@ describe('DataTable', () => {
 
       await user.click(screen.getAllByTitle('More options')[0]);
 
+      await user.tab();
       await user.tab();
       await user.tab();
       await user.tab();
@@ -830,11 +832,7 @@ describe('DataTable', () => {
   describe('Historical Log Of Changes', () => {
     it('should process click for historical log of changes for category rulesets', async () => {
       const user = userEvent.setup();
-      renderWithProviders(<DataTable {...defaultProps} />, [], {
-        featureFlags: {
-          historicalLogOfChanges: true,
-        },
-      });
+      renderWithProviders(<DataTable {...defaultProps} />, []);
 
       await user.click(screen.getAllByTitle('More options')[0]);
       const viewHistoryButton = screen.getByRole('link', {
@@ -849,12 +847,7 @@ describe('DataTable', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <DataTable {...defaultProps} ruleType="global" />,
-        [],
-        {
-          featureFlags: {
-            historicalLogOfChanges: true,
-          },
-        }
+        []
       );
 
       await user.click(screen.getAllByTitle('More options')[0]);
@@ -870,12 +863,7 @@ describe('DataTable', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <DataTable {...defaultProps} ruleType="redirect" />,
-        [],
-        {
-          featureFlags: {
-            historicalLogOfChanges: true,
-          },
-        }
+        []
       );
 
       await user.click(screen.getAllByTitle('More options')[0]);
@@ -891,12 +879,7 @@ describe('DataTable', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <DataTable {...defaultProps} ruleType="searchRanking" />,
-        [],
-        {
-          featureFlags: {
-            historicalLogOfChanges: true,
-          },
-        }
+        []
       );
 
       await user.click(screen.getAllByTitle('More options')[0]);

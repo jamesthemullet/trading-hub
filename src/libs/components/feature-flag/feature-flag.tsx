@@ -15,7 +15,6 @@ export type FeatureFlags = {
   authorizationRoleOverride: AuthorizationRoleOverride;
   oneTrust: boolean;
   showNewFacetValuesPage: boolean;
-  historicalLogOfChanges: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -27,7 +26,6 @@ export const defaultFeatureFlags: FeatureFlags = {
   },
   oneTrust: false,
   showNewFacetValuesPage: false,
-  historicalLogOfChanges: false,
 };
 
 export const FeatureFlagContext =
@@ -77,16 +75,4 @@ export const useShowNewFacetValuesPage = () => {
   }, [featureFlags.showNewFacetValuesPage]);
 
   return showNewFacetValuesPage;
-};
-
-export const useHistoricalLogOfChangesFlag = () => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [historicalLogOfChangesEnabled, setHistoricalLogOfChangesEnabled] =
-    useState(false);
-
-  useEffect(() => {
-    setHistoricalLogOfChangesEnabled(featureFlags.historicalLogOfChanges);
-  }, [featureFlags.historicalLogOfChanges]);
-
-  return historicalLogOfChangesEnabled;
 };

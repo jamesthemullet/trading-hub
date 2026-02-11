@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Modal, Skeleton } from '@mantine/core';
 
 import { Button } from '@/libs/components';
-import { useHistoricalLogOfChangesFlag } from '@/libs/components/feature-flag/feature-flag';
 import { Toggle } from '@/libs/components/toggle/toggle';
 import { Typography } from '@/libs/components/typography/typography';
 import {
@@ -123,8 +122,6 @@ export const DataTable = ({
           word
         )
       );
-
-  const showHistoricalLogOfChanges = useHistoricalLogOfChangesFlag();
 
   const editViewText = writeEnabled ? 'Edit' : 'View';
 
@@ -440,19 +437,17 @@ export const DataTable = ({
                                 {editViewText} redirect rule
                               </Link>
                             )}
-                            {showHistoricalLogOfChanges && (
-                              <Link
-                                className={styles.tableLink}
-                                title="view history"
-                                href={getHistoryRoute(
-                                  ruleType,
-                                  id,
-                                  formattedIdentifier
-                                )}
-                              >
-                                View history
-                              </Link>
-                            )}
+                            <Link
+                              className={styles.tableLink}
+                              title="view history"
+                              href={getHistoryRoute(
+                                ruleType,
+                                id,
+                                formattedIdentifier
+                              )}
+                            >
+                              View history
+                            </Link>
                             {writeEnabled && (
                               <button
                                 className={styles.tableDropdown}
