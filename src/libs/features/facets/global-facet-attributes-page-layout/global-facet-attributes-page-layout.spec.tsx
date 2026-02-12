@@ -172,6 +172,15 @@ describe('GlobalFacetAttributesPageLayout', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await user.click(saveButton);
 
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /Apply action/i })
+      ).toBeInTheDocument();
+    });
+
+    const confirmButton = screen.getByRole('button', { name: /Apply action/i });
+    await user.click(confirmButton);
+
     await waitFor(
       () => {
         expect(screen.queryByText(/Apply action/i)).not.toBeInTheDocument();

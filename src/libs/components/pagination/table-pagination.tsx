@@ -1,7 +1,6 @@
 import { Skeleton } from '@mantine/core';
 
 import type { MerchandisingPagination as PaginationType } from '@/libs/api/generated/open-api';
-import { Button } from '@/libs/components/button/button';
 
 import { CombinedDropdown } from '../dropdown/dropdown';
 import { Typography } from '../typography/typography';
@@ -63,28 +62,12 @@ export const TablePagination = ({
               label={`${currentPageSize}`}
               width={125}
               ariaLabel="Select rows per page"
-            >
-              {pageSizes.map((size) => (
-                <Button
-                  key={size}
-                  onClick={() => {
-                    if (
-                      currentPage * size >
-                      Math.ceil(pagination.totalItems ?? 0 / size)
-                    ) {
-                      handlePageChange(1, size);
-                    } else {
-                      handlePageChange(currentPage, size);
-                    }
-                  }}
-                  role="option"
-                  aria-selected={currentPageSize === size}
-                  isInline
-                >
-                  {size}
-                </Button>
-              ))}
-            </CombinedDropdown>
+              pageSizes={pageSizes}
+              currentPage={currentPage}
+              currentPageSize={currentPageSize}
+              totalItems={pagination.totalItems ?? 0}
+              onPageSizeChange={handlePageChange}
+            />
           </div>
         </>
       )}

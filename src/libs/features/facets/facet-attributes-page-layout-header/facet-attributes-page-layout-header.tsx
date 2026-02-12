@@ -62,7 +62,7 @@ export const FacetAttributesPageLayoutHeader = ({
           </Button>
         </div>
       </div>
-      <Typography variant="titleLarge">
+      <Typography as="h1" variant="titleLarge">
         Value settings of: {displayName}
       </Typography>
 

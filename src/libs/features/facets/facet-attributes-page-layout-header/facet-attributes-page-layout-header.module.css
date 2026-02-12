@@ -6,7 +6,7 @@
   flex-direction: column;
   gap: var(--mns-spacing-2);
 
-  > p {
+  > h1 {
     margin-left: var(--mns-spacing-1-5);
     padding: 0 var(--mns-spacing-1);
   }

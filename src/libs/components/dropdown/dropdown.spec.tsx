@@ -313,6 +313,78 @@ describe('CombinedDropdown', () => {
     });
   });
 
+  describe('pageSize variant', () => {
+    it('should call onPageSizeChange with current page when in range', async () => {
+      const user = userEvent.setup();
+      const onPageSizeChange = jest.fn();
+
+      render(
+        <CombinedDropdown
+          variant="pageSize"
+          label="10"
+          pageSizes={[10, 20]}
+          currentPage={2}
+          currentPageSize={10}
+          totalItems={100}
+          onPageSizeChange={onPageSizeChange}
+        />
+      );
+
+      await user.click(
+        screen.getByRole('button', { name: 'pageSize dropdown' })
+      );
+      await user.click(screen.getByRole('option', { name: '10' }));
+
+      expect(onPageSizeChange).toHaveBeenCalledWith(2, 10);
+    });
+
+    it('should reset to page 1 when totalItems is undefined', async () => {
+      const user = userEvent.setup();
+      const onPageSizeChange = jest.fn();
+
+      render(
+        <CombinedDropdown
+          variant="pageSize"
+          label="50"
+          pageSizes={[50]}
+          currentPage={2}
+          currentPageSize={10}
+          onPageSizeChange={onPageSizeChange}
+        />
+      );
+
+      await user.click(
+        screen.getByRole('button', { name: 'pageSize dropdown' })
+      );
+      await user.click(screen.getByRole('option', { name: '50' }));
+
+      expect(onPageSizeChange).toHaveBeenCalledWith(1, 50);
+    });
+
+    it('should not call onPageSizeChange when currentPage is undefined', async () => {
+      const user = userEvent.setup();
+      const onPageSizeChange = jest.fn();
+
+      render(
+        <CombinedDropdown
+          variant="pageSize"
+          label="10"
+          pageSizes={[10]}
+          currentPageSize={10}
+          totalItems={100}
+          onPageSizeChange={onPageSizeChange}
+        />
+      );
+
+      await user.click(
+        screen.getByRole('button', { name: 'pageSize dropdown' })
+      );
+      await user.click(screen.getByRole('option', { name: '10' }));
+
+      expect(onPageSizeChange).not.toHaveBeenCalled();
+    });
+  });
+
   describe('countryFilter variant', () => {
     it('should render the dropdown', () => {
       render(

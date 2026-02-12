@@ -42,13 +42,22 @@ type FacetOrderProps = {
   onChange?: (status: FacetDisplayType) => void;
 };
 
+type PageSizeProps = {
+  pageSizes?: number[];
+  currentPage?: number;
+  currentPageSize?: number;
+  totalItems?: number;
+  onPageSizeChange?: (page: number, pageSize: number) => void;
+};
+
 type CombinedDropdownProps = {
   variant: DropdownVariant;
   width?: number;
   writeEnabled?: boolean;
 } & GenericDropdownProps &
   CountryDropdownProps &
-  FacetOrderProps;
+  FacetOrderProps &
+  PageSizeProps;
 
 export const CombinedDropdown = ({
   variant,
@@ -66,6 +75,11 @@ export const CombinedDropdown = ({
   status,
   attribute,
   hasAlgoControl = false,
+  pageSizes,
+  currentPage,
+  currentPageSize,
+  totalItems,
+  onPageSizeChange,
 }: CombinedDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -366,6 +380,33 @@ export const CombinedDropdown = ({
             </button>
           ));
 
+      case 'pageSize':
+        return pageSizes?.map((size) => (
+          <button
+            type="button"
+            className={styles.dropdownOption}
+            key={size}
+            data-hover-grey
+            onClick={() => {
+              if (
+                currentPage &&
+                currentPage * size > Math.ceil(totalItems ?? 0 / size)
+              ) {
+                onPageSizeChange?.(1, size);
+              } else if (currentPage !== undefined) {
+                onPageSizeChange?.(currentPage, size);
+              }
+              closeDropdown();
+            }}
+            role="option"
+            aria-selected={currentPageSize === size}
+          >
+            <Typography as="span" variant="bodySmall">
+              {size}
+            </Typography>
+          </button>
+        ));
+
       default:
         return children;
     }
@@ -452,7 +493,7 @@ export const CombinedDropdown = ({
         data-testid={testId}
         id={buttonId}
       >
-        {dropdownHeading}
+        <div className={styles.dropdownHeading}>{dropdownHeading}</div>
 
         <div
           className={styles.arrowContainer}
