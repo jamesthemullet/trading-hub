@@ -99,7 +99,7 @@ test.describe('global facets', () => {
 
     await page
       .getByTestId('Row showing Age as algoControl')
-      .getByRole('option', { name: 'Include only', exact: true })
+      .getByRole('menuitemradio', { name: 'Include only', exact: true })
       .click();
     await page.getByLabel('Edit display name for Age').click();
     await page.getByLabel('Edit Age input field').press('ArrowLeft');
@@ -126,7 +126,7 @@ test.describe('global facets', () => {
       .click();
     await page
       .getByTestId('Row showing Age as algoControl')
-      .getByRole('option', { name: 'Include only', exact: true })
+      .getByRole('menuitemradio', { name: 'Include only', exact: true })
       .click();
 
     await page
@@ -135,7 +135,7 @@ test.describe('global facets', () => {
       .click();
     await page
       .getByTestId('Row showing Alcohol Type as algoControl')
-      .getByRole('option', { name: 'Exclude only', exact: true })
+      .getByRole('menuitemradio', { name: 'Exclude only', exact: true })
       .click();
 
     await expect(page.getByTestId('Row showing Age as included')).toBeVisible();
@@ -169,7 +169,7 @@ test.describe('global facets', () => {
         'button to open facet order dropdown for Not suitable under 36 mth'
       )
       .click();
-    await page.getByRole('option', { name: 'Include only' }).click();
+    await page.getByRole('menuitemradio', { name: 'Include only' }).click();
 
     await expect(
       page.getByTestId('included attribute 3 Not suitable under 36 mth')
@@ -178,7 +178,7 @@ test.describe('global facets', () => {
     await page
       .getByTestId('button to open facet order dropdown for 3-5 years')
       .click();
-    await page.getByRole('option', { name: 'Exclude only' }).click();
+    await page.getByRole('menuitemradio', { name: 'Exclude only' }).click();
 
     await expect(
       page.getByTestId('excluded attribute 1 3-5 years')

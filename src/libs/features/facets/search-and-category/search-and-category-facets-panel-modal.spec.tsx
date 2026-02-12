@@ -308,7 +308,7 @@ describe('ModalEditValues', () => {
       await userEvent.click(dropdownButton);
 
       const excludeOnlyOption = within(dropdownButton.parentElement!).getByRole(
-        'option',
+        'menuitemradio',
         {
           name: 'Exclude only',
         }

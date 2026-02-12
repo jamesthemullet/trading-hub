@@ -1,6 +1,5 @@
 /* stylelint-disable property-disallowed-list */
 @import './fonts.css';
-@import './breakpoints.css';
 @import './colors.css';
 
 body {

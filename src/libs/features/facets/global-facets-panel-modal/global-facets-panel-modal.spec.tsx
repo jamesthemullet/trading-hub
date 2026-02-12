@@ -548,7 +548,7 @@ describe('GlobalFacetPanelModalContent', () => {
       });
 
       const algoControlButton = within(select.parentElement!).getByRole(
-        'option',
+        'menuitemradio',
         {
           name: `Algo control`,
         }
@@ -592,7 +592,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const button = within(select.parentElement!).getByRole('option', {
+      const button = within(select.parentElement!).getByRole('menuitemradio', {
         name: `Include only`,
       });
 
@@ -633,7 +633,7 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const button = within(select.parentElement!).getByRole('option', {
+      const button = within(select.parentElement!).getByRole('menuitemradio', {
         name: `Exclude only`,
       });
 
@@ -679,9 +679,12 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const includeButton = within(select.parentElement!).getByRole('option', {
-        name: `Include only`,
-      });
+      const includeButton = within(select.parentElement!).getByRole(
+        'menuitemradio',
+        {
+          name: `Include only`,
+        }
+      );
 
       await user.click(includeButton);
 
@@ -725,9 +728,12 @@ describe('GlobalFacetPanelModalContent', () => {
 
       await user.click(select);
 
-      const excludeButton = within(select.parentElement!).getByRole('option', {
-        name: `Exclude only`,
-      });
+      const excludeButton = within(select.parentElement!).getByRole(
+        'menuitemradio',
+        {
+          name: `Exclude only`,
+        }
+      );
 
       await user.click(excludeButton);
 
@@ -772,7 +778,7 @@ describe('GlobalFacetPanelModalContent', () => {
       await user.click(select);
 
       const algoControlButton = within(select.parentElement!).getByRole(
-        'option',
+        'menuitemradio',
         {
           name: `Algo control`,
         }
@@ -821,7 +827,7 @@ describe('GlobalFacetPanelModalContent', () => {
       await user.click(select);
 
       const algoControlButton = within(select.parentElement!).getByRole(
-        'option',
+        'menuitemradio',
         {
           name: `Algo control`,
         }

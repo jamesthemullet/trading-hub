@@ -178,7 +178,7 @@ export const AddAttribute = ({
 
         <StepContent stepIndex={0} currentStep={modalStep}>
           <div className={styles.modalSection}>
-            <Typography isStrong as="h4" variant="bodySmall">
+            <Typography isStrong as="h2" variant="bodySmall">
               Choose attribute type
             </Typography>
           </div>

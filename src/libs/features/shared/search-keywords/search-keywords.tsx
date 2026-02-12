@@ -135,7 +135,7 @@ export const SearchKeywords = ({
                   ? setIsDropdownOpen(!isDropdownOpen)
                   : setShowModal(true)
               }
-              aria-haspopup="listbox"
+              aria-haspopup="menu"
               aria-expanded={isDropdownOpen}
               aria-label="select keyword"
               disabled={!previewSearchTerm}
@@ -158,7 +158,7 @@ export const SearchKeywords = ({
               <div
                 className={dropdownStyles.dropdownContentContainer}
                 data-is-dropdown-open={isDropdownOpen}
-                role="listbox"
+                role="menu"
               >
                 {additionalSearchTerms.map((searchTerm) => (
                   <Button
@@ -166,6 +166,7 @@ export const SearchKeywords = ({
                     type="button"
                     key={`search-term-${searchTerm}`}
                     data-hover-grey
+                    role="menuitem"
                     onClick={() => {
                       setIsDropdownOpen(false);
                       selectPreviewSearchTerm(searchTerm);
@@ -303,22 +304,24 @@ export const SearchKeywords = ({
                     </li>
                   ))}
                   {writeEnabled && (
-                    <input
-                      type="text"
-                      className={styles.keywordInput}
-                      value={inputValue}
-                      placeholder="Add new keyword"
-                      onChange={(event) =>
-                        setInputValue(event.target.value.toLowerCase())
-                      }
-                      onKeyDown={(event) => {
-                        setUnfinishedKeyword(false);
-                        if (event.key === 'Enter') {
-                          onAddKeyword();
+                    <li className={styles.keywordInputItem}>
+                      <input
+                        type="text"
+                        className={styles.keywordInput}
+                        value={inputValue}
+                        placeholder="Add new keyword"
+                        onChange={(event) =>
+                          setInputValue(event.target.value.toLowerCase())
                         }
-                      }}
-                      aria-label="Add keyword to list"
-                    />
+                        onKeyDown={(event) => {
+                          setUnfinishedKeyword(false);
+                          if (event.key === 'Enter') {
+                            onAddKeyword();
+                          }
+                        }}
+                        aria-label="Add keyword to list"
+                      />
+                    </li>
                   )}
                 </ul>
               </div>

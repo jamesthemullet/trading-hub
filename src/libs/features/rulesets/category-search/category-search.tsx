@@ -258,7 +258,7 @@ export const CategorySearch = ({
                 ? setIsDropdownOpen(!isDropdownOpen)
                 : setIsModalOpen(true)
             }
-            aria-haspopup="listbox"
+            aria-haspopup="menu"
             aria-expanded={isDropdownOpen}
             aria-label="select category"
             disabled={!previewCategory}
@@ -300,7 +300,7 @@ export const CategorySearch = ({
           <div
             className={dropdownStyles.dropdownContentContainer}
             data-is-dropdown-open={isDropdownOpen}
-            role="listbox"
+            role="menu"
             tabIndex={-1}
             aria-label="Select category to preview"
             onKeyDown={handleOnKeyDown}
@@ -313,8 +313,7 @@ export const CategorySearch = ({
                   type="button"
                   key={category.id}
                   data-hover-grey
-                  role="option"
-                  aria-selected={false}
+                  role="menuitem"
                   onClick={() => {
                     setIsDropdownOpen(false);
                     selectPreviewCategory(category.id);

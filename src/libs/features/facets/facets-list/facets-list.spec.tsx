@@ -830,7 +830,7 @@ describe('FacetsList', () => {
       selectPreview.click();
     });
 
-    const selectIE = screen.getByRole('button', {
+    const selectIE = screen.getByRole('menuitemradio', {
       name: 'IE flag IE view',
     });
     act(() => {
@@ -859,7 +859,7 @@ describe('FacetsList', () => {
       selectPreview.click();
     });
 
-    const selectUK = screen.getByRole('button', {
+    const selectUK = screen.getByRole('menuitemradio', {
       name: 'UK flag UK view',
     });
     act(() => {
@@ -916,9 +916,12 @@ describe('FacetsList', () => {
       selectMarket.click();
     });
 
-    const selectIE = within(selectMarket.parentElement!).getByRole('option', {
-      name: 'IE market only',
-    });
+    const selectIE = within(selectMarket.parentElement!).getByRole(
+      'menuitemradio',
+      {
+        name: 'IE market only',
+      }
+    );
     act(() => {
       selectIE.click();
     });
@@ -1112,7 +1115,7 @@ describe('FacetsList', () => {
     await userEvent.click(dropdownHeader);
 
     const algoControlOption = within(dropdownHeader.parentElement!).getByRole(
-      'option',
+      'menuitemradio',
       {
         name: 'Algo control',
       }

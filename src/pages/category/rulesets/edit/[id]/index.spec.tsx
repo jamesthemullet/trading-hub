@@ -197,7 +197,7 @@ describe('Index', () => {
 
     await user.click(dropdownButton);
 
-    const irelandOption = screen.getByRole('option', {
+    const irelandOption = screen.getByRole('menuitemradio', {
       name: 'IE market only',
     });
     await user.click(irelandOption);

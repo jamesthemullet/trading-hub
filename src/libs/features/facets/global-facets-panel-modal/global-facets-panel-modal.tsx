@@ -603,6 +603,7 @@ export const GlobalFacetPanelModalContent = ({
       >
         <Modal.Overlay blur={3} />
         <Modal.Content
+          aria-label="Confirmation modal"
           aria-labelledby={titleId}
           aria-describedby={descriptionId}
         >

@@ -240,6 +240,6 @@
   margin-bottom: var(--mns-spacing-1);
   justify-content: space-between;
   span {
-    color: var(--color-surface-dark-on-surface-dark-variant);
+    color: var(--color-surface-on-surface-variant);
   }
 }

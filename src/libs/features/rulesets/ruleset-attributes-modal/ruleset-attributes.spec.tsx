@@ -396,7 +396,7 @@ describe('RulesetAttributes', () => {
     });
 
     const dropdownWrapper = dropdownButton.parentElement!;
-    const buryButton = within(dropdownWrapper).getByRole('option', {
+    const buryButton = within(dropdownWrapper).getByRole('menuitemradio', {
       name: 'Bury',
     });
 
@@ -527,7 +527,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownWrapper = dropdownButton.parentElement!;
-      const buryButton = within(dropdownWrapper).getByRole('option', {
+      const buryButton = within(dropdownWrapper).getByRole('menuitemradio', {
         name: 'Bury',
       });
 
@@ -919,7 +919,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownWrapper = dropdownButton.parentElement!;
-      const buryButton = within(dropdownWrapper).getByRole('option', {
+      const buryButton = within(dropdownWrapper).getByRole('menuitemradio', {
         name: 'Bury',
       });
 
@@ -996,7 +996,7 @@ describe('RulesetAttributes', () => {
       });
 
       act(() => {
-        screen.getByRole('option', { name: 'Exclude only' }).click();
+        screen.getByRole('menuitemradio', { name: 'Exclude only' }).click();
       });
 
       act(() => {
@@ -1233,7 +1233,7 @@ describe('RulesetAttributes', () => {
       });
 
       act(() => {
-        screen.getByRole('option', { name: 'Exclude only' }).click();
+        screen.getByRole('menuitemradio', { name: 'Exclude only' }).click();
       });
 
       act(() => {
@@ -1305,7 +1305,9 @@ describe('RulesetAttributes', () => {
       const dropdownWrapper = dropdownButton.parentElement!;
 
       act(() => {
-        within(dropdownWrapper).getByRole('option', { name: 'Boost' }).click();
+        within(dropdownWrapper)
+          .getByRole('menuitemradio', { name: 'Boost' })
+          .click();
       });
 
       act(() => {
@@ -1436,7 +1438,9 @@ describe('RulesetAttributes', () => {
       const dropdownWrapper = dropdownButton.parentElement!;
 
       act(() => {
-        within(dropdownWrapper).getByRole('option', { name: 'Bury' }).click();
+        within(dropdownWrapper)
+          .getByRole('menuitemradio', { name: 'Bury' })
+          .click();
       });
 
       act(() => {
@@ -1501,7 +1505,9 @@ describe('RulesetAttributes', () => {
       const dropdownWrapper = dropdownButton.parentElement!;
 
       act(() => {
-        within(dropdownWrapper).getByRole('option', { name: 'Boost' }).click();
+        within(dropdownWrapper)
+          .getByRole('menuitemradio', { name: 'Boost' })
+          .click();
       });
 
       act(() => {
@@ -1680,7 +1686,7 @@ describe('RulesetAttributes', () => {
         dropdownButton.click();
       });
 
-      const includeButton = screen.getAllByRole('option', {
+      const includeButton = screen.getAllByRole('menuitemradio', {
         name: 'Include only',
       });
 
@@ -1744,7 +1750,7 @@ describe('RulesetAttributes', () => {
 
       await user.click(dropdownButton);
 
-      const excludeButton = screen.getByRole('option', {
+      const excludeButton = screen.getByRole('menuitemradio', {
         name: 'Exclude only',
       });
 

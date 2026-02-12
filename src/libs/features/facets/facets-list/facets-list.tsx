@@ -474,6 +474,8 @@ export const FacetsList = ({
                     track({ event: 'Change search facets preview to IE' });
                     setSelectedPreviewCountryCode?.('IE');
                   }}
+                  role="menuitemradio"
+                  aria-checked={selectedPreviewCountryCode === 'IE'}
                 >
                   <Image
                     src="/trading-hub/asset/icon-ie-flag.svg"
@@ -493,6 +495,8 @@ export const FacetsList = ({
                     track({ event: 'Change search facets preview to UK' });
                     setSelectedPreviewCountryCode?.('UK');
                   }}
+                  role="menuitemradio"
+                  aria-checked={selectedPreviewCountryCode === 'UK'}
                 >
                   <Image
                     src="/trading-hub/asset/icon-uk-flag.svg"

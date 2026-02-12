@@ -115,7 +115,7 @@ describe('FacetAttributesList', () => {
     });
     await user.click(dropdownButton);
 
-    const excludeOption = within(boostedRow).getByRole('option', {
+    const excludeOption = within(boostedRow).getByRole('menuitemradio', {
       name: /exclude only/i,
     });
     await user.click(excludeOption);
@@ -170,7 +170,7 @@ describe('FacetAttributesList', () => {
     });
     await userEvent.click(dropdownButton);
 
-    const includedOption = within(boostedRow).getByRole('option', {
+    const includedOption = within(boostedRow).getByRole('menuitemradio', {
       name: /include only/i,
     });
     await userEvent.click(includedOption);
@@ -191,7 +191,7 @@ describe('FacetAttributesList', () => {
       name: /select to set as included, excluded or algo control/i,
     });
     await userEvent.click(dropdownButton);
-    const excludeOption = within(boostedRow).getByRole('option', {
+    const excludeOption = within(boostedRow).getByRole('menuitemradio', {
       name: /exclude only/i,
     });
     await userEvent.click(excludeOption);
@@ -206,7 +206,7 @@ describe('FacetAttributesList', () => {
       name: /select to set as included, excluded or algo control/i,
     });
     await userEvent.click(algoDropdown);
-    const excludeOption2 = within(algoRow).getByRole('option', {
+    const excludeOption2 = within(algoRow).getByRole('menuitemradio', {
       name: /exclude only/i,
     });
     await userEvent.click(excludeOption2);
@@ -221,7 +221,7 @@ describe('FacetAttributesList', () => {
       name: /select to set as included, excluded or algo control/i,
     });
     await userEvent.click(excludedDropdown);
-    const includeOption = within(excludedRow).getByRole('option', {
+    const includeOption = within(excludedRow).getByRole('menuitemradio', {
       name: /include only/i,
     });
     await userEvent.click(includeOption);

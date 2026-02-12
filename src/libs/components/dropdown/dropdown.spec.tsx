@@ -192,7 +192,7 @@ describe('CombinedDropdown', () => {
       const dropdownHeader = screen.getByTestId(
         'button to open facet order dropdown'
       );
-      expect(dropdownHeader).toHaveAttribute('aria-haspopup', 'listbox');
+      expect(dropdownHeader).toHaveAttribute('aria-haspopup', 'menu');
       expect(dropdownHeader).toHaveAttribute('aria-expanded', 'false');
       expect(screen.getByText('Select an action')).toBeVisible();
     });
@@ -415,10 +415,10 @@ describe('CombinedDropdown', () => {
       await user.click(dropdownButton);
 
       expect(
-        screen.getByRole('option', { name: 'UK market only' })
+        screen.getByRole('menuitemradio', { name: 'UK market only' })
       ).toBeVisible();
       expect(
-        screen.getByRole('option', { name: 'IE market only' })
+        screen.getByRole('menuitemradio', { name: 'IE market only' })
       ).toBeVisible();
     });
 
@@ -440,7 +440,9 @@ describe('CombinedDropdown', () => {
 
       await user.click(dropdownButton);
 
-      const showUK = screen.getByRole('option', { name: 'UK market only' });
+      const showUK = screen.getByRole('menuitemradio', {
+        name: 'UK market only',
+      });
 
       await user.click(showUK);
 

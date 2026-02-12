@@ -77,7 +77,7 @@ test.describe('Global Ranking', () => {
 
     await page.getByRole('button', { name: 'Algo control' }).first().click();
     await page
-      .getByRole('option', { name: 'Include only', exact: true })
+      .getByRole('menuitemradio', { name: 'Include only', exact: true })
       .click();
 
     await expect(

@@ -192,8 +192,8 @@ export const Preview = ({
                       onClick={() => {
                         toggleView(true);
                       }}
-                      role="option"
-                      aria-selected={withRules}
+                      role="menuitemradio"
+                      aria-checked={withRules}
                     >
                       <Typography variant="bodySmall" align="center">
                         with new rule change
@@ -205,8 +205,8 @@ export const Preview = ({
                       onClick={() => {
                         toggleView(false);
                       }}
-                      role="option"
-                      aria-selected={!withRules}
+                      role="menuitemradio"
+                      aria-checked={!withRules}
                     >
                       <Typography variant="bodySmall" align="center">
                         current state

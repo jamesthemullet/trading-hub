@@ -311,8 +311,8 @@ export const CombinedDropdown = ({
             data-hover-grey
             aria-label={option.ariaLabel}
             onClick={() => handleCountryFilterSelect(option.index)}
-            role="option"
-            aria-selected={option.selected}
+            role="menuitemradio"
+            aria-checked={option.selected}
           >
             <Typography as="span" variant="bodySmall">
               {option.label}
@@ -328,8 +328,8 @@ export const CombinedDropdown = ({
             key={option.label}
             data-hover-grey
             onClick={() => handleCountrySelectorSelect(option.index)}
-            role="option"
-            aria-selected={option.selected}
+            role="menuitemradio"
+            aria-checked={option.selected}
           >
             {option.flagsToShow.map((flag) => (
               <Image
@@ -356,8 +356,8 @@ export const CombinedDropdown = ({
               key={option.label}
               data-hover-grey
               onClick={() => handleFacetOrderSelect(option.index)}
-              role="option"
-              aria-selected={option.selected}
+              role="menuitemradio"
+              aria-checked={option.selected}
             >
               <Image src={option.src as string} alt="" width={24} height={24} />
               <Typography as="span" variant="bodySmall">
@@ -399,10 +399,10 @@ export const CombinedDropdown = ({
     }
   }, [variant, attribute]);
 
-  const buttonId = useMemo(
-    () => `dropdown-button-${variant}${attribute ? `-${attribute}` : ''}`,
-    [variant, attribute]
-  );
+  const buttonId = useMemo(() => {
+    const raw = `dropdown-button-${variant}${attribute ? `-${attribute}` : ''}`;
+    return raw.replace(/[^a-zA-Z0-9-_]/g, '-');
+  }, [variant, attribute]);
 
   if (!writeEnabled && variant === 'facetOrder') {
     const current =
@@ -446,7 +446,7 @@ export const CombinedDropdown = ({
         type="button"
         onKeyDown={handleOnKeyDown}
         onClick={() => (isOpen ? closeDropdown() : openDropdown())}
-        aria-haspopup="listbox"
+        aria-haspopup="menu"
         aria-expanded={isOpen}
         aria-label={ariaLabel ? ariaLabel : `${variant} dropdown`}
         data-testid={testId}
@@ -465,7 +465,7 @@ export const CombinedDropdown = ({
       <div
         className={styles.dropdownContentContainer}
         data-is-dropdown-open={isOpen}
-        role="listbox"
+        role="menu"
         aria-labelledby={buttonId}
       >
         {renderDropdownContent()}

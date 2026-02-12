@@ -171,7 +171,6 @@ export const useGlobalFacetAttributesList = ({
               key={key}
               ref={sortableProps?.setNodeRef}
               style={sortableProps?.style}
-              {...(sortableProps?.attributes ?? {})}
               isPinned={displayType === 'included'}
               isExcluded={displayType === 'excluded'}
               data-testid={`${displayType} attribute ${index} ${displayName}`}

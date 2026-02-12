@@ -91,7 +91,7 @@ test.describe('Category rulesets', () => {
       .first()
       .click();
     await page
-      .getByRole('option', { name: 'Include only', exact: true })
+      .getByRole('menuitemradio', { name: 'Include only', exact: true })
       .click();
 
     await expect(
@@ -110,7 +110,7 @@ test.describe('Category rulesets', () => {
       .first()
       .click();
     await page
-      .getByRole('option', { name: 'Exclude only', exact: true })
+      .getByRole('menuitemradio', { name: 'Exclude only', exact: true })
       .click();
 
     await expect(
@@ -166,13 +166,13 @@ test.describe('Category rulesets', () => {
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')
       .click();
-    await page.getByRole('option', { name: 'Include only' }).click();
+    await page.getByRole('menuitemradio', { name: 'Include only' }).click();
     await page.getByLabel('Move SMOKE row up').click();
 
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')
       .click();
-    await page.getByRole('option', { name: 'Exclude only' }).click();
+    await page.getByRole('menuitemradio', { name: 'Exclude only' }).click();
 
     await expect(page.getByLabel('Move SMOKE row up')).toBeHidden();
   });

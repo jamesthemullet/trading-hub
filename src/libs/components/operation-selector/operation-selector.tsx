@@ -46,8 +46,8 @@ export const OperationSelector = ({
             setCloseDropdown(true);
             setSelectedOperation('boost');
           }}
-          role="option"
-          aria-selected={selectedOperation === 'boost'}
+          role="menuitemradio"
+          aria-checked={selectedOperation === 'boost'}
         >
           <Image
             src="/trading-hub/asset/boost-signifier.svg"
@@ -67,8 +67,8 @@ export const OperationSelector = ({
             setCloseDropdown(true);
             setSelectedOperation('bury');
           }}
-          role="option"
-          aria-selected={selectedOperation === 'bury'}
+          role="menuitemradio"
+          aria-checked={selectedOperation === 'bury'}
         >
           <Image
             src="/trading-hub/asset/bury-signifier.svg"
@@ -90,8 +90,8 @@ export const OperationSelector = ({
                 setCloseDropdown(true);
                 setSelectedOperation('include');
               }}
-              role="option"
-              aria-selected={selectedOperation === 'include'}
+              role="menuitemradio"
+              aria-checked={selectedOperation === 'include'}
             >
               <Image
                 src="/trading-hub/asset/icon-include.svg"
@@ -112,8 +112,8 @@ export const OperationSelector = ({
                 setCloseDropdown(true);
                 setSelectedOperation('exclude');
               }}
-              role="option"
-              aria-selected={selectedOperation === 'exclude'}
+              role="menuitemradio"
+              aria-checked={selectedOperation === 'exclude'}
             >
               <Image
                 src="/trading-hub/asset/icon-exclude.svg"

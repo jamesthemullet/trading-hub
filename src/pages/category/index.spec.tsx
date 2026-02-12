@@ -305,7 +305,7 @@ describe('Categories', () => {
     await waitFor(() => {
       expect(
         screen.getByRole('heading', {
-          level: 3,
+          level: 2,
           name: 'Do you want to delete this rule?',
         })
       ).toBeVisible();
@@ -315,7 +315,7 @@ describe('Categories', () => {
     await waitFor(() => {
       expect(
         screen.getByRole('heading', {
-          level: 3,
+          level: 2,
           name: 'Do you want to delete this rule?',
         })
       ).not.toBeVisible();

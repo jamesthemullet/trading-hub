@@ -261,7 +261,7 @@ export const RulesetAttributesModal = ({
       aria-label="Add attribute modal"
     >
       <Modal.Overlay blur={3} />
-      <Modal.Content>
+      <Modal.Content aria-label="Add attribute modal">
         <Modal.Body>
           <AddSetAttribute
             categories={categories}

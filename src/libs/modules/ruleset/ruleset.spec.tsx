@@ -444,7 +444,7 @@ describe('Ruleset', () => {
 
     await user.click(dropdownButton);
 
-    const selectIE = screen.getByRole('option', {
+    const selectIE = screen.getByRole('menuitemradio', {
       name: 'UK/IE Market',
     });
 
@@ -974,7 +974,7 @@ describe('Ruleset', () => {
       });
 
       expect(
-        screen.getByRole('button', { name: 'IE flag IE view' })
+        screen.getByRole('menuitemradio', { name: 'IE flag IE view' })
       ).toBeVisible();
 
       act(() => {
@@ -1031,7 +1031,7 @@ describe('Ruleset', () => {
         selectDropdown.click();
       });
 
-      const selectIE = screen.getByRole('button', {
+      const selectIE = screen.getByRole('menuitemradio', {
         name: 'IE flag IE view',
       });
       act(() => {
@@ -1042,7 +1042,7 @@ describe('Ruleset', () => {
         expect.objectContaining({ countryCode: 'IE' })
       );
 
-      const selectUK = screen.getByRole('button', {
+      const selectUK = screen.getByRole('menuitemradio', {
         name: 'UK flag UK view',
       });
 
@@ -1100,7 +1100,7 @@ describe('Ruleset', () => {
         selectMarket.click();
       });
 
-      const selectIE = screen.getByRole('option', {
+      const selectIE = screen.getByRole('menuitemradio', {
         name: 'IE market only',
       });
 
@@ -1158,7 +1158,7 @@ describe('Ruleset', () => {
         selectMarket.click();
       });
 
-      const selectIE = screen.getByRole('option', {
+      const selectIE = screen.getByRole('menuitemradio', {
         name: 'UK market only',
       });
       act(() => {
@@ -1634,7 +1634,7 @@ describe('Ruleset', () => {
         });
 
         const dropdownWrapper = dropdownButton.parentElement!;
-        const buryButton = within(dropdownWrapper).getByRole('option', {
+        const buryButton = within(dropdownWrapper).getByRole('menuitemradio', {
           name: 'Bury',
         });
 
@@ -1653,9 +1653,12 @@ describe('Ruleset', () => {
         });
 
         const dropdownWrapper = dropdownButton.parentElement!;
-        const includeButton = within(dropdownWrapper).getByRole('option', {
-          name: 'Include only',
-        });
+        const includeButton = within(dropdownWrapper).getByRole(
+          'menuitemradio',
+          {
+            name: 'Include only',
+          }
+        );
 
         act(() => {
           includeButton.click();

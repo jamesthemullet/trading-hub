@@ -236,7 +236,7 @@ describe('Global Facet Management Editing', () => {
 
     await user.click(dropdownButton);
 
-    const selectUKIE = screen.getByRole('option', {
+    const selectUKIE = screen.getByRole('menuitemradio', {
       name: 'UK market only',
     });
 

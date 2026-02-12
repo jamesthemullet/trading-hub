@@ -118,7 +118,7 @@ export const GlobalFacetAttributesEditModal = ({
     >
       <Modal.Overlay blur={3} />
 
-      <Modal.Content>
+      <Modal.Content aria-label="Edit facet attribute values modal">
         <Modal.Body>
           <div className={modalStyles.modalContainer}>
             <div className={modalStyles.modalStickyHeader}>

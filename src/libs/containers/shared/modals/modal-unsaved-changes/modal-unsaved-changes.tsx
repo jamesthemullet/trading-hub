@@ -23,9 +23,18 @@ export const ModalUnsavedChanges = ({
   return (
     <Modal.Root opened={opened} onClose={onContinue} centered padding={10}>
       <Modal.Overlay blur={3} />
-      <Modal.Content aria-labelledby={titleId} aria-describedby={descriptionId}>
+      <Modal.Content
+        aria-label="Close without saving edits"
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+      >
         <Modal.Body>
-          <Typography variant="bodySmall" isStrong className={styles.heading}>
+          <Typography
+            as="h2"
+            variant="bodySmall"
+            isStrong
+            className={styles.heading}
+          >
             Close without saving edits
           </Typography>
           <Typography variant="bodySmall">

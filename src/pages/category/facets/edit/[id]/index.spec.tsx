@@ -250,7 +250,7 @@ describe('Category Facet Management Editing', () => {
 
     await user.click(countryDropdown);
     const irelandOption = within(countryDropdown.parentElement!).getByRole(
-      'option',
+      'menuitemradio',
       {
         name: 'IE market only',
       }
@@ -542,7 +542,7 @@ describe('Category Facet Management Editing', () => {
     );
     await user.click(moreSilkRow);
     const includeOnlyOption = within(moreSilkRow.parentElement!).getByRole(
-      'option',
+      'menuitemradio',
       {
         name: 'Include only',
       }

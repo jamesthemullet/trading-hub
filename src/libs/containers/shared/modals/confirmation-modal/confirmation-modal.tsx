@@ -14,7 +14,7 @@ const ConfirmationModal = ({
 }) => {
   return (
     <Modal.Body>
-      <Typography as="h3" variant="titleMedium" withMargin isStrong>
+      <Typography as="h2" variant="titleMedium" withMargin isStrong>
         Apply global changes
       </Typography>
 

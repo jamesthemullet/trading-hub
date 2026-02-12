@@ -131,7 +131,7 @@ export const BulkActions = ({
               />
               <div className={styles.productMenu}>
                 <div className={styles.bulkActionsHeader}>
-                  <Typography as="h4" isStrong variant="bodySmall">
+                  <Typography as="h3" isStrong variant="bodySmall">
                     Bulk actions
                   </Typography>
                 </div>
@@ -200,11 +200,9 @@ export const BulkActions = ({
         opened={isModalOpen}
         onClose={onCloseModal}
         padding={10}
-        role="dialog"
-        aria-modal="true"
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content>
+        <Modal.Content aria-label="Apply bulk action confirmation">
           <Modal.Body>
             <Typography variant="titleSmall" isStrong as="h3">
               Apply new bulk action

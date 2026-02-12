@@ -206,9 +206,12 @@ describe('SearchAndCategoryFacetAttributesList', () => {
     )[0];
     await userEvent.click(dropdown);
 
-    const excludedOption = within(dropdown.parentElement!).getByRole('option', {
-      name: 'Exclude only',
-    });
+    const excludedOption = within(dropdown.parentElement!).getByRole(
+      'menuitemradio',
+      {
+        name: 'Exclude only',
+      }
+    );
     await userEvent.click(excludedOption);
 
     expect(dispatch).toHaveBeenCalledWith({

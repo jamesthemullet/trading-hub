@@ -63,7 +63,7 @@ test.describe('Category Ranking', () => {
       .first()
       .click();
     await page
-      .getByRole('option', { name: 'Include only', exact: true })
+      .getByRole('menuitemradio', { name: 'Include only', exact: true })
       .click();
 
     await page
@@ -72,7 +72,7 @@ test.describe('Category Ranking', () => {
       .first()
       .click();
     await page
-      .getByRole('option', { name: 'Exclude only', exact: true })
+      .getByRole('menuitemradio', { name: 'Exclude only', exact: true })
       .click();
 
     await page.getByRole('button', { name: 'Preview', exact: true }).click();
@@ -246,7 +246,7 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'Select country' }).click();
 
-    await page.getByRole('option', { name: 'IE market only' }).click();
+    await page.getByRole('menuitemradio', { name: 'IE market only' }).click();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
 

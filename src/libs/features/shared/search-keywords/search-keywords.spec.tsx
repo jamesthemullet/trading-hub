@@ -453,7 +453,7 @@ describe('Search Keywords', () => {
 
     await user.click(dropdownButton);
 
-    const otherCategory = screen.getByRole('button', {
+    const otherCategory = screen.getByRole('menuitem', {
       name: longerSearchTermsList[1],
     });
     await user.click(otherCategory);

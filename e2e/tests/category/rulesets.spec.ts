@@ -173,7 +173,7 @@ test.describe('Categories', () => {
     await page.getByRole('button', { name: 'Select country' }).click();
 
     await page
-      .getByRole('option', {
+      .getByRole('menuitemradio', {
         name: 'IE market only',
       })
       .click();
@@ -540,7 +540,9 @@ test.describe('Categories', () => {
       })
       .click();
 
-    await page.getByRole('option', { name: 'Bury', exact: true }).click();
+    await page
+      .getByRole('menuitemradio', { name: 'Bury', exact: true })
+      .click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 
@@ -577,7 +579,7 @@ test.describe('Categories', () => {
       })
       .click();
 
-    await page.getByRole('option', { name: 'Include only' }).click();
+    await page.getByRole('menuitemradio', { name: 'Include only' }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 
@@ -614,7 +616,7 @@ test.describe('Categories', () => {
       })
       .click();
 
-    await page.getByRole('option', { name: 'Exclude only' }).click();
+    await page.getByRole('menuitemradio', { name: 'Exclude only' }).click();
 
     await page.getByRole('button', { name: 'fit' }).first().click();
 

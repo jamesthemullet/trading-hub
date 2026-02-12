@@ -519,9 +519,11 @@ export const DataTable = ({
         aria-label={`Modal to confirm ${ruleSetEditOption === 'delete' ? 'deleting of rule' : 'duplicating of rule'}`}
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content>
+        <Modal.Content
+          aria-label={`Modal to confirm ${ruleSetEditOption === 'delete' ? 'deleting of rule' : 'duplicating of rule'}`}
+        >
           <Modal.Body>
-            <Typography as="h3" withMargin variant="bodyMedium">
+            <Typography as="h2" withMargin variant="bodyMedium">
               {ruleSetEditOption === 'delete'
                 ? 'Do you want to delete this rule?'
                 : `Create a duplicate ${ruleType === 'redirect' ? 'redirect' : ''} rule`}

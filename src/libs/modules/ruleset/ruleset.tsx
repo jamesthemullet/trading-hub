@@ -593,6 +593,10 @@ export const Ruleset = ({
                                   });
                                   setSelectedPreviewCountryCode('IE');
                                 }}
+                                role="menuitemradio"
+                                aria-checked={
+                                  selectedPreviewCountryCode === 'IE'
+                                }
                               >
                                 <Image
                                   src="/trading-hub/asset/icon-ie-flag.svg"
@@ -613,6 +617,10 @@ export const Ruleset = ({
                                   });
                                   setSelectedPreviewCountryCode('UK');
                                 }}
+                                role="menuitemradio"
+                                aria-checked={
+                                  selectedPreviewCountryCode === 'UK'
+                                }
                               >
                                 <Image
                                   src="/trading-hub/asset/icon-uk-flag.svg"
