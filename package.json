@@ -8,7 +8,7 @@
     "node": "20.20.0",
     "pnpm": ">=10.28.2"
   },
-  "packageManager": "pnpm@10.29.2",
+  "packageManager": "pnpm@10.29.3",
   "scripts": {
     "dev": "pnpm run codegen && next dev --turbo",
     "dev:turbo-verbose": "pnpm run codegen && next dev --turbo --show-all",
