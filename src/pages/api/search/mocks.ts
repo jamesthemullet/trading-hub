@@ -9,8 +9,6 @@ import type {
   MerchandisingReturnedKeywordRedirect,
 } from '@/libs/api';
 
-import type { NextApiRequest } from 'next';
-
 const mockProducts: MerchandisingProductBoostBury[] = [
   {
     id: '2',
@@ -240,18 +238,3 @@ export const returnedRedirectMock: MerchandisingReturnedKeywordRedirect = {
     user: 'Jo Smith',
   },
 };
-
-// istanbul ignore next
-export const getMockMapping: () => Record<
-  string,
-  Partial<
-    Record<
-      'put' | 'post' | 'get' | 'delete',
-      (
-        req: NextApiRequest,
-        status: number,
-        jsonBody: object
-      ) => { body: object; status: number }
-    >
-  >
-> = () => ({});

@@ -3,8 +3,6 @@ import type { MerchandisingErrorResponse } from '@/libs/api';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
-import { validateAndMockResponse as validateOrMockResponse } from './mocks-support';
-
 export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
 };
@@ -67,7 +65,6 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
 
   let jsonBody = {};
   let jsonText = '';
-  let status = response.status;
   try {
     jsonText = await response.text();
     jsonBody = jsonText ? JSON.parse(jsonText) : null;
@@ -97,13 +94,6 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
         status: `${response.status}`,
       });
     }
-
-    const result = validateOrMockResponse(req, response.status, jsonBody);
-    if ('error' in result) {
-      return res.status(500).json({ message: result.error, status: '500' });
-    }
-    jsonBody = result.updatedJsonBody;
-    status = result.updatedStatus;
   } catch (e) /* istanbul ignore next */ {
     console.error('ERROR: Error parsing JSON', e, jsonBody);
     return res.status(response.status).json({
@@ -118,7 +108,9 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
     });
   }
 
-  return res.status(status).json(req.method === 'DELETE' ? {} : jsonBody);
+  return res
+    .status(response.status)
+    .json(req.method === 'DELETE' ? {} : jsonBody);
 };
 
 export default proxy;

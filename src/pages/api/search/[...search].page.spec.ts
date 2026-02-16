@@ -8,15 +8,10 @@ import { getToken } from 'next-auth/jwt';
 
 import type { MerchandisingEnvironment } from './[...search].page';
 import proxy from './[...search].page';
-import { validateAndMockResponse } from './mocks-support';
 
 jest.mock('next-auth/jwt', () => ({
   getToken: jest.fn(),
   getServerSession: jest.fn(),
-}));
-
-jest.mock('./mocks-support', () => ({
-  validateAndMockResponse: jest.fn(),
 }));
 
 const httpGet = jest.fn();
@@ -120,14 +115,6 @@ describe('Search api proxy', () => {
     process.env.AZURE_AD_CLIENT_SECRET = 'client_secret';
     process.env.AZURE_AD_TENANT_ID = 'tenant_id';
     process.env.NEXTAUTH_SECRET = 'secret';
-    jest
-      .mocked(validateAndMockResponse)
-      .mockImplementation((_req, status, jsonBody) => {
-        return {
-          updatedJsonBody: jsonBody,
-          updatedStatus: status,
-        };
-      });
   });
 
   afterEach(() => {
@@ -266,14 +253,6 @@ describe('Search api proxy', () => {
   describe('when not logged in', () => {
     beforeEach(() => {
       jest.mocked(getToken).mockResolvedValueOnce(null);
-      jest
-        .mocked(validateAndMockResponse)
-        .mockImplementation((_req, status, jsonBody) => {
-          return {
-            updatedJsonBody: jsonBody,
-            updatedStatus: status,
-          };
-        });
     });
 
     it('when url is equal to /search/beta/merchandising/facet', async () => {
@@ -285,38 +264,9 @@ describe('Search api proxy', () => {
 
       expect(httpGet).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(validateAndMockResponse).toHaveBeenCalledWith(
-        expect.objectContaining({
-          method: 'GET',
-          url: '/search/beta/merchandising/facet?query=nonexisting',
-        }),
-        200,
-        response.body
-      );
       expect(res.json).toHaveBeenCalledWith({
         products: [],
         hello: 'world',
-      });
-    });
-
-    it('should fail with 500 when validateAndMockResponse fails', async () => {
-      jest.mocked(validateAndMockResponse).mockImplementation(() => {
-        return { error: 'No url or method found in request' };
-      });
-      const response = {
-        status: 200,
-        body: { someNonExistingSchema: 123 },
-      };
-      const res = await performGet(
-        '/search/beta/merchandising/facet/1',
-        response
-      );
-
-      expect(httpGet).toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        message: 'No url or method found in request',
-        status: '500',
       });
     });
 
