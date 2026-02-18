@@ -36,7 +36,7 @@ export const SearchKeywords = ({
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
-  const [inputValue, setInputValue] = useState('');
+  const [keywordInputResetKey, setKeywordInputResetKey] = useState(0);
   const [duplicationError, setDuplicationError] = useState('');
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -63,6 +63,16 @@ export const SearchKeywords = ({
   };
 
   const onAddKeyword = () => {
+    const inputElement = document.getElementById(
+      'newKeywordInput'
+    ) as HTMLInputElement | null;
+    const inputValue = inputElement?.value.trim().toLowerCase() ?? '';
+
+    if (inputValue === '') {
+      setDuplicationError('Keyword cannot be blank');
+      return;
+    }
+
     const hasDuplicates = checkForDuplicates(
       [...searchTerms],
       inputValue,
@@ -73,7 +83,7 @@ export const SearchKeywords = ({
       setDuplicationError(hasDuplicates);
     } else {
       addSearchTerm(inputValue);
-      setInputValue('');
+      setKeywordInputResetKey((prev) => prev + 1);
       setDuplicationError('');
 
       if (!previewSearchTerm) {
@@ -93,7 +103,11 @@ export const SearchKeywords = ({
   }, [filterValue, searchTerms, previewSearchTerm]);
 
   const handleClose = () => {
-    if (inputValue === '') {
+    const inputElement = document.getElementById(
+      'newKeywordInput'
+    ) as HTMLInputElement | null;
+
+    if ((inputElement?.value || '') === '') {
       onClose();
     } else {
       setUnfinishedKeyword(true);
@@ -111,7 +125,7 @@ export const SearchKeywords = ({
   return (
     <>
       <div>
-        <Typography as="p" withMargin variant="labelMedium">
+        <Typography withMargin variant="labelMedium">
           {title}
           <Count aria-label="number of keywords">{searchTerms.length}</Count>
         </Typography>
@@ -230,10 +244,7 @@ export const SearchKeywords = ({
                   </div>
                 )}
                 {previewSearchTerm && (
-                  <div
-                    className={styles.modalSelectedKeyword}
-                    aria-label="Preview keyword"
-                  >
+                  <div className={styles.modalSelectedKeyword}>
                     <Typography as="h3" variant="bodyMedium">
                       Selected:
                     </Typography>
@@ -306,13 +317,14 @@ export const SearchKeywords = ({
                   {writeEnabled && (
                     <li className={styles.keywordInputItem}>
                       <input
+                        id="newKeywordInput"
+                        key={keywordInputResetKey}
                         type="text"
                         className={styles.keywordInput}
-                        value={inputValue}
                         placeholder="Add new keyword"
-                        onChange={(event) =>
-                          setInputValue(event.target.value.toLowerCase())
-                        }
+                        onChange={() => {
+                          setUnfinishedKeyword(false);
+                        }}
                         onKeyDown={(event) => {
                           setUnfinishedKeyword(false);
                           if (event.key === 'Enter') {

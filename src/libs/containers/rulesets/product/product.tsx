@@ -51,7 +51,6 @@ const ProductDetails = ({
           data-testid="productImage"
           width={100}
           height={176}
-          priority
           sizes="100%"
           onError={(element) => {
             // eslint-disable-next-line functional/immutable-data

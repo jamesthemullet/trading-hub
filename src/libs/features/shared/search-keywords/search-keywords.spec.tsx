@@ -199,6 +199,61 @@ describe('Search Keywords', () => {
     expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
   });
 
+  it('should show error when adding a keyword and input element is missing', async () => {
+    const user = userEvent.setup({ delay: null });
+    const addSearchTermStub = jest.fn();
+
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={longerSearchTermsList}
+        addSearchTerm={addSearchTermStub}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }));
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    const getElementByIdSpy = jest
+      .spyOn(document, 'getElementById')
+      .mockReturnValue(null);
+
+    await user.type(screen.getByLabelText('Add keyword to list'), '{Enter}');
+
+    expect(addSearchTermStub).not.toHaveBeenCalled();
+    expect(screen.getByText('Keyword cannot be blank')).toBeVisible();
+
+    getElementByIdSpy.mockRestore();
+  });
+
+  it('should show error and not add keyword when input is blank', async () => {
+    const addSearchTermStub = jest.fn();
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={longerSearchTermsList}
+        addSearchTerm={addSearchTermStub}
+      />
+    );
+
+    await waitFor(async () => {
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
+    });
+
+    await waitFor(async () => {
+      await user.type(
+        screen.getByLabelText('Add keyword to list'),
+        '   {Enter}'
+      );
+    });
+
+    expect(addSearchTermStub).not.toHaveBeenCalled();
+    expect(screen.getByText('Keyword cannot be blank')).toBeVisible();
+  });
+
   it('should filter attributes on user input', async () => {
     const user = userEvent.setup({ delay: null });
     renderWithProviders(
