@@ -152,14 +152,6 @@ describe('GlobalFacetAttributesPageLayout', () => {
     });
   });
 
-  it('renders the correct number of included, excluded, and algo control values', () => {
-    renderWithProviders(<GlobalFacetAttributesPageLayout {...defaultProps} />);
-
-    expect(screen.getByTestId('include-only-count')).toHaveTextContent('2');
-    expect(screen.getByTestId('exclude-only-count')).toHaveTextContent('1');
-    expect(screen.getByTestId('algo-control-count')).toHaveTextContent('5');
-  });
-
   it('handles error response in onSave', async () => {
     const user = userEvent.setup();
 
@@ -193,29 +185,6 @@ describe('GlobalFacetAttributesPageLayout', () => {
         screen.getByText('Error updating facet: error')
       ).toBeInTheDocument();
     });
-  });
-
-  it('calculates algoControlValues correctly for nonzero included/excluded', () => {
-    const props = {
-      ...defaultProps,
-      attributeValues: [
-        { displayValue: 'A' },
-        { displayValue: 'B' },
-        { displayValue: 'C' },
-        { displayValue: 'D' },
-      ],
-      facet: {
-        ...defaultProps.facet,
-        boosted: ['A'],
-        excludedValues: ['B'],
-      },
-      searchQuery: '',
-      onSearchChange: jest.fn(),
-    };
-    renderWithProviders(<GlobalFacetAttributesPageLayout {...props} />);
-    expect(screen.getByTestId('include-only-count')).toHaveTextContent('1');
-    expect(screen.getByTestId('exclude-only-count')).toHaveTextContent('1');
-    expect(screen.getByTestId('algo-control-count')).toHaveTextContent('2');
   });
 
   it('handles merging of two attribute values', async () => {

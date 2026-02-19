@@ -84,14 +84,6 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-const mockDefaultOrderData = [
-  { defaultOrder: 'Include only' },
-  { defaultOrder: 'Exclude only' },
-  { defaultOrder: 'Exclude only' },
-  { defaultOrder: 'Include only' },
-  { defaultOrder: 'Include only' },
-];
-
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
 const dispatchSpy = jest.fn();
@@ -269,9 +261,7 @@ describe('Facet Panel', () => {
   });
 
   it('should show drag handles for included facets when row ordering is enabled', () => {
-    renderWithProviders(
-      <FacetsPanel {...defaultProps} displayRowOrderControls />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} />);
 
     expect(screen.getByTestId('drag-handle-color')).toBeVisible();
     expect(screen.getByTestId('drag-handle-brand')).toBeVisible();
@@ -287,11 +277,7 @@ describe('Facet Panel', () => {
     ];
 
     renderWithProviders(
-      <FacetsPanel
-        {...defaultProps}
-        facetsState={singleIncludedFacetState}
-        displayRowOrderControls
-      />
+      <FacetsPanel {...defaultProps} facetsState={singleIncludedFacetState} />
     );
 
     const dragHandle = screen.getByTestId('drag-handle-color');
@@ -299,9 +285,7 @@ describe('Facet Panel', () => {
   });
 
   it('should dispatch drag-and-drop ordering changes for included facets', () => {
-    renderWithProviders(
-      <FacetsPanel {...defaultProps} displayRowOrderControls />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} />);
 
     act(() => {
       latestDragEndHandler?.({
@@ -322,9 +306,7 @@ describe('Facet Panel', () => {
   it('should dispatch order change when manual order input is submitted', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(
-      <FacetsPanel {...defaultProps} displayRowOrderControls />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} />);
 
     Element.prototype.scrollIntoView = jest.fn();
 
@@ -358,9 +340,7 @@ describe('Facet Panel', () => {
       isDragging: false,
     }));
 
-    renderWithProviders(
-      <FacetsPanel {...defaultProps} displayRowOrderControls />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} />);
 
     const dragHandle = screen.getByTestId('drag-handle-color');
     expect(dragHandle).toBeVisible();
@@ -371,13 +351,7 @@ describe('Facet Panel', () => {
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(
-      <FacetsPanel
-        {...defaultProps}
-        countryCode="UK"
-        defaultOrderData={mockDefaultOrderData}
-      />
-    );
+    renderWithProviders(<FacetsPanel {...defaultProps} countryCode="UK" />);
 
     const dropdown = screen.getAllByTestId(
       'button to open facet order dropdown'

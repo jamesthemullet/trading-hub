@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 
 import type {
   MerchandisingCountryCode,
-  MerchandisingExcludedFacets,
   MerchandisingReturnedFacet,
 } from '@/libs/api';
 import {
@@ -50,20 +49,11 @@ import {
 import { GlobalFacetPanelModal } from '../global-facets-panel-modal/global-facets-panel-modal';
 import styles from './facets-panel.module.css';
 
-type defaultOrderDataType = {
-  defaultOrder: string;
-}[];
-
 interface FacetsPanelProps {
-  displayRowOrderControls?: boolean;
   title: string;
-  canMergeValueAttributes?: boolean;
-  defaultOrderData?: defaultOrderDataType;
   facetsState: FacetRowDisplayValue[];
   countryCode: MerchandisingCountryCode;
   includedFacets: MerchandisingReturnedFacet[];
-  excludedFacets: MerchandisingExcludedFacets;
-  selectedPreviewCountryCode?: 'UK' | 'IE';
   writeEnabled: boolean;
   orders: Record<string, number>;
   dispatch: (action: Action) => void;
@@ -80,7 +70,6 @@ interface FacetsPanelProps {
 }
 
 export const FacetsPanel = ({
-  displayRowOrderControls = false,
   title,
   facetsState,
   countryCode,
@@ -154,9 +143,9 @@ export const FacetsPanel = ({
             type: 'SET_INCLUDED_ORDER',
             payload: action.payload,
           }),
-        writeEnabled: writeEnabled && displayRowOrderControls,
+        writeEnabled,
       }),
-    [dispatch, displayRowOrderControls, includedFacetOrder, writeEnabled]
+    [dispatch, includedFacetOrder, writeEnabled]
   );
 
   const onClose = () => {
@@ -285,7 +274,6 @@ export const FacetsPanel = ({
         <div className={styles.tableCol}>
           {showNewFacetValuesPage ? (
             <Button
-              theme="secondary"
               as="a"
               href={(() => {
                 const ruleSetId = router.query.id as string;
@@ -297,15 +285,14 @@ export const FacetsPanel = ({
                 });
                 return `${baseUrl}?${params.toString()}`;
               })()}
-              disabled={!writeEnabled}
+              isDisabled={!writeEnabled}
             >
               {writeEnabled ? 'Edit values' : 'View values'}
             </Button>
           ) : (
             <Button
-              theme="secondary"
               onClick={() => handleOpenFacetEditModal(facet)}
-              disabled={!writeEnabled}
+              isDisabled={!writeEnabled}
             >
               Edit values
             </Button>

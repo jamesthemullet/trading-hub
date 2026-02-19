@@ -17,6 +17,13 @@ describe('GlobalFacetAttribute', () => {
         dispatch={jest.fn()}
         writeEnabled
         displayType="algoControl"
+        displayValue="displayValue"
+        order={5}
+        localOrder={5}
+        inputRef={jest.fn()}
+        onInputChange={jest.fn()}
+        onInputBlur={jest.fn()}
+        onInputKeyDown={jest.fn()}
       />
     );
     expect(screen.getByText('value1')).toBeVisible();
@@ -43,6 +50,13 @@ describe('GlobalFacetAttribute', () => {
         dispatch={jest.fn()}
         writeEnabled
         displayType="algoControl"
+        displayValue="displayValue"
+        order={5}
+        localOrder={5}
+        inputRef={jest.fn()}
+        onInputChange={jest.fn()}
+        onInputBlur={jest.fn()}
+        onInputKeyDown={jest.fn()}
       />
     );
 

@@ -1,10 +1,8 @@
 import { type ActionDispatch, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
-import { Button } from '@/libs/components';
-import editFacetStyles from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.module.css';
+import { Button, Typography } from '@/libs/components';
 import modalStyles from '@/libs/components/modals/modal.module.css';
-import { Typography } from '@/libs/components/typography/typography';
 import { Input } from '@/libs/containers/shared';
 import { EditFacetAttributesModalTableRow } from '@/libs/containers/shared/table/table.styles';
 import facetsPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
@@ -158,12 +156,12 @@ export const GlobalFacetAttributesEditModal = ({
                       <div
                         key={`${i}-${value}`}
                         className={
-                          editFacetStyles.globalFacetAttributesPageMergedValue
+                          facetsPanelStyles.globalFacetAttributesPageMergedValue
                         }
                       >
                         <Typography variant="bodySmall">{value}</Typography>
                         <button
-                          className={editFacetStyles.removeMergedFacet}
+                          className={facetsPanelStyles.removeMergedFacet}
                           onClick={() => {
                             requestAnimationFrame(() => {
                               handleRemoveFromMerge({

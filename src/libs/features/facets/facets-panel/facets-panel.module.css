@@ -7,11 +7,12 @@
     0 2px 3px 0 var(--color-surface-dark-on-surface-dark-container);
   margin-bottom: var(--mns-spacing-2);
   padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
+  height: 80px;
   background-color: var(--color-accent-primary-on-primary);
   grid-template-columns: repeat(3, minmax(280px, 2fr)) 136px 40px;
 
   &[data-with-reorder='true'] {
-    grid-template-columns: 106px repeat(3, minmax(280px, 2fr)) 136px 40px;
+    grid-template-columns: 165px repeat(3, minmax(280px, 2fr)) 136px 40px;
   }
 }
 
@@ -36,7 +37,10 @@
 .tableCol {
   text-overflow: ellipsis;
   display: flex;
-  padding: var(--mns-spacing-1) var(--mns-spacing-1) var(--mns-spacing-1) 0;
+
+  button {
+    border-color: var(--color-surface-dark-on-surface-dark-variant);
+  }
 }
 
 .col {
@@ -123,11 +127,43 @@
 }
 
 .facetOrderInput {
-  width: 98px;
-  padding-right: var(--mns-spacing-2);
+  width: 82px;
+  padding: 0;
+
+  input {
+    height: 56px;
+    border-radius: 4px;
+    border-color: var(--color-surface-dark-on-surface-dark-variant);
+  }
 }
 .skeletonRow {
   width: 100%;
   height: 75px;
   margin-bottom: var(--mns-spacing-1);
+}
+
+.attributeWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--mns-spacing-2);
+
+  button {
+    padding-left: var(--mns-spacing-0-5);
+  }
+}
+
+.globalFacetAttributesPageMergedValue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mns-spacing-1);
+  margin-left: var(--mns-spacing-4);
+}
+
+.removeMergedFacet {
+  background: url('/trading-hub/asset/icon-close-black.svg');
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  border: none;
 }

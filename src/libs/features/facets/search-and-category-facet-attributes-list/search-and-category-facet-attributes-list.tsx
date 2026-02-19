@@ -3,7 +3,6 @@ import { type ActionDispatch, useCallback, useMemo } from 'react';
 import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/open-api';
 import { CombinedDropdown } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
-import editFacetStyles from '@/libs/components/edit-facet-modal-content/edit-facet-modal-content.module.css';
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
 import { Typography } from '@/libs/components/typography/typography';
 import type { FacetDisplayType } from '@/libs/containers/facets/facet-row';
@@ -160,7 +159,9 @@ export const SearchAndCategoryFacetAttributesList = ({
             isExcluded={displayType === 'excluded'}
             data-testid={`${displayType} attribute ${index} ${displayValue}`}
           >
-            <div className={facetPanelStyles.tableCol}>
+            <div
+              className={`${facetPanelStyles.tableCol} ${facetPanelStyles.facetOrderInput}`}
+            >
               {displayType === 'included' && order !== undefined && (
                 <FacetOrderInput
                   displayValue={displayValue}
@@ -176,7 +177,7 @@ export const SearchAndCategoryFacetAttributesList = ({
             </div>
 
             <div className={facetPanelStyles.tableCol}>
-              <div className={editFacetStyles.attributeWrapper}>
+              <div className={facetPanelStyles.attributeWrapper}>
                 <Typography variant="bodySmall">{displayValue}</Typography>
               </div>
             </div>

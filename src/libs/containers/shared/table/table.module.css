@@ -21,7 +21,7 @@
 .facetAttributeValuesTableRow {
   border-bottom: none;
   align-items: center;
-  margin: 0 var(--mns-spacing-3) var(--mns-spacing-2);
+  margin: 0 var(--mns-spacing-1-5) var(--mns-spacing-2-5);
   box-shadow: #000 0 0 10px -5px;
   padding: var(--mns-spacing-2);
   grid-template-columns: 160px repeat(3, minmax(280px, 2fr)) 80px 40px;
@@ -29,13 +29,13 @@
 
 .globalFacetAttributeValuesTableRow {
   grid-template-columns:
-    52px minmax(280px, 2fr) 120px repeat(2, minmax(280px, 2fr))
+    52px 120px minmax(280px, 2fr) repeat(2, minmax(280px, 2fr))
     40px;
 }
 
 .globalFacetAttributeValuesTableRow[data-modal='true'] {
   grid-template-columns:
-    40px minmax(200px, 2fr) 100px minmax(200px, 2fr)
+    40px 100px minmax(200px, 2fr) minmax(200px, 2fr)
     120px 240px;
 }
 

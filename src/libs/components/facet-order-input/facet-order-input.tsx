@@ -8,9 +8,9 @@ import { memo } from 'react';
 
 import { Input } from '@/libs/containers/shared/input/input';
 
-type FacetOrderInputProps = {
+export type FacetOrderInputProps = {
   displayValue: string;
-  order: number;
+  order: number | undefined;
   localOrder: number | string | undefined;
   inputRef: RefCallback<HTMLInputElement>;
   onInputChange: (displayValue: string, value: string) => void;
@@ -32,31 +32,37 @@ const FacetOrderInputComponent = ({
   onInputBlur,
   onInputKeyDown,
   writeEnabled,
-}: FacetOrderInputProps) => (
-  <Input
-    ref={inputRef}
-    id={`order-input-${displayValue}`}
-    label={`Order for ${displayValue}`}
-    isLabelHidden
-    type="number"
-    value={localOrder}
-    min={1}
-    aria-label={`Order for ${displayValue}`}
-    disabled={!writeEnabled}
-    onFocus={(e: FocusEvent<HTMLInputElement>) => {
-      e.target.select();
-    }}
-    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-      onInputChange(displayValue, e.target.value);
-    }}
-    onBlur={(e: FocusEvent<HTMLInputElement>) =>
-      onInputBlur(displayValue, e.currentTarget.value, order)
-    }
-    onKeyDown={(e: KeyboardEvent<HTMLInputElement>) =>
-      onInputKeyDown(e, displayValue, order)
-    }
-  />
-);
+}: FacetOrderInputProps) => {
+  if (order === undefined) {
+    return null;
+  }
+
+  return (
+    <Input
+      ref={inputRef}
+      id={`order-input-${displayValue}`}
+      label={`Order for ${displayValue}`}
+      isLabelHidden
+      type="number"
+      value={localOrder}
+      min={1}
+      aria-label={`Order for ${displayValue}`}
+      disabled={!writeEnabled}
+      onFocus={(e: FocusEvent<HTMLInputElement>) => {
+        e.target.select();
+      }}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        onInputChange(displayValue, e.target.value);
+      }}
+      onBlur={(e: FocusEvent<HTMLInputElement>) =>
+        onInputBlur(displayValue, e.currentTarget.value, order)
+      }
+      onKeyDown={(e: KeyboardEvent<HTMLInputElement>) =>
+        onInputKeyDown(e, displayValue, order)
+      }
+    />
+  );
+};
 
 export const FacetOrderInput = memo(FacetOrderInputComponent);
 FacetOrderInput.displayName = 'FacetOrderInput';

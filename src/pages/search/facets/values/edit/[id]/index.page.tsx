@@ -152,6 +152,8 @@ const Page = () => {
           onSearchChange={handleSearch}
           onSave={handleSave}
           writeEnabled={hasWriteAccess}
+          headerText={searchTermsArray?.join(', ')}
+          countryCode={countryCode}
         />
       ) : (
         <div className={styles.centredContainer}>Coming soon/loading</div>

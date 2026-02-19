@@ -131,14 +131,10 @@ export const GlobalFacetAttributesPageLayout = ({
         ...facet,
         merged: globalAttributesLocalState.merged,
         // TODO update logic for included and excluded values
-        // istanbul ignore next
         excludedValues: globalAttributesLocalState.excludedRows.flatMap(
-          // istanbul ignore next
           (val) => val.displayName
         ),
-        // istanbul ignore next
         boosted: globalAttributesLocalState.boostedRows.flatMap(
-          // istanbul ignore next
           (val) => val.displayName
         ),
       },
@@ -193,24 +189,18 @@ export const GlobalFacetAttributesPageLayout = ({
     handleEditModalError('');
   };
 
-  // render
   return (
     <>
       <FacetAttributesPageLayoutHeader
-        algoControlValues={
-          globalAttributesLocalState.nonBoostedExcludedRows.length
-        }
-        includedValues={globalAttributesLocalState.boostedRows.length}
-        excludedValues={globalAttributesLocalState.excludedRows.length}
         displayName={displayName}
         facetType="global"
-        isSaveDisabled={false}
         onClose={() => {
           router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
         }}
         onSave={handleSave}
         error={updateGlobalFacetError}
         writeEnabled={writeEnabled}
+        countryCode={countryCode}
       />
 
       <FacetAttributesListActions

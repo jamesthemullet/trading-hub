@@ -1,21 +1,19 @@
 import type { Dispatch } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Checkbox, Loader, Typography } from '@/libs/components';
+import type { FacetOrderInputProps } from '@/libs/components';
+import {
+  Checkbox,
+  FacetOrderInput,
+  Loader,
+  Typography,
+} from '@/libs/components';
 import facetPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 
 import styles from './global-facet-attribute.module.css';
 
-export const GlobalFacetAttribute = ({
-  attributes,
-  isMergeGroup,
-  isChecked,
-  displayName,
-  handleRemoveFromMerge,
-  dispatch,
-  writeEnabled,
-}: {
+type GlobalFacetAttributeProps = {
   attributes: string[];
   isMergeGroup: boolean;
   isChecked: boolean;
@@ -30,17 +28,25 @@ export const GlobalFacetAttribute = ({
   dispatch: Dispatch<GlobalAttributeReducer>;
   writeEnabled: boolean;
   displayType: 'included' | 'excluded' | 'algoControl';
-  order?: number;
-  localOrder?: number | string;
-  inputRef?: (el: HTMLInputElement | null) => void;
-  onInputChange?: (displayValue: string, value: string) => void;
-  onInputBlur?: (displayValue: string, value: string, order: number) => void;
-  onInputKeyDown?: (
-    event: React.KeyboardEvent<HTMLInputElement>,
-    displayValue: string,
-    order: number
-  ) => void;
-}) => {
+  showInput?: boolean;
+} & FacetOrderInputProps;
+
+export const GlobalFacetAttribute = ({
+  attributes,
+  isMergeGroup,
+  isChecked,
+  displayName,
+  handleRemoveFromMerge,
+  dispatch,
+  writeEnabled,
+  displayType,
+  order,
+  localOrder,
+  inputRef,
+  onInputChange: handleInputChange,
+  onInputBlur: handleInputBlur,
+  onInputKeyDown: handleInputKeyDown,
+}: GlobalFacetAttributeProps) => {
   const maxVisible = 4;
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);
@@ -73,6 +79,23 @@ export const GlobalFacetAttribute = ({
             onChange={() => handleSelect(displayName)}
             label={`Select ${displayName} to merge`}
             showLabel={false}
+          />
+        )}
+      </div>
+
+      <div
+        className={`${facetPanelStyles.tableCol} ${facetPanelStyles.facetOrderInput}`}
+      >
+        {displayType === 'included' && order && (
+          <FacetOrderInput
+            displayValue={displayName}
+            order={order}
+            localOrder={localOrder}
+            inputRef={inputRef}
+            onInputChange={handleInputChange}
+            onInputBlur={handleInputBlur}
+            onInputKeyDown={handleInputKeyDown}
+            writeEnabled={writeEnabled}
           />
         )}
       </div>

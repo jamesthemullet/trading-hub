@@ -15,25 +15,20 @@ const defaultProps = {
   onSave: jest.fn(),
   isSaveDisabled: false,
   writeEnabled: true,
+  countryCode: 'UK_IE',
 };
 
 describe('Facet Page Layout Header', () => {
   it('should render', () => {
     render(
-      <FacetAttributesPageLayoutHeader {...defaultProps} isSaveDisabled />
+      <FacetAttributesPageLayoutHeader
+        {...defaultProps}
+        facetType="category"
+        headerText="Category specific text"
+      />
     );
 
-    expect(screen.getByText('Value settings of: Age')).toBeInTheDocument();
-
-    expect(screen.getByTestId('algo-control-count')).toHaveTextContent(
-      '30Algo control'
-    );
-    expect(screen.getByTestId('include-only-count')).toHaveTextContent(
-      '22Include only'
-    );
-    expect(screen.getByTestId('exclude-only-count')).toHaveTextContent(
-      '7Exclude only'
-    );
+    expect(screen.getByText('Category specific text')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
   });
@@ -47,5 +42,50 @@ describe('Facet Page Layout Header', () => {
     await user.click(cancelButton);
 
     await waitFor(() => expect(onCloseMock).toHaveBeenCalledWith('global'));
+  });
+
+  it('should render UK flag when countryCode is UK', () => {
+    render(
+      <FacetAttributesPageLayoutHeader {...defaultProps} countryCode="UK" />
+    );
+
+    const ukFlag = screen.getByAltText('UK rule');
+    expect(ukFlag).toBeInTheDocument();
+    expect(ukFlag).toHaveAttribute(
+      'src',
+      expect.stringContaining('icon-uk-flag')
+    );
+  });
+
+  it('should render IE flag when countryCode is IE', () => {
+    render(
+      <FacetAttributesPageLayoutHeader {...defaultProps} countryCode="IE" />
+    );
+
+    const ieFlag = screen.getByAltText('IE rule');
+    expect(ieFlag).toBeInTheDocument();
+    expect(ieFlag).toHaveAttribute(
+      'src',
+      expect.stringContaining('icon-ie-flag')
+    );
+  });
+
+  it('should render both UK and IE flags when countryCode is UK_IE', () => {
+    render(
+      <FacetAttributesPageLayoutHeader {...defaultProps} countryCode="UK_IE" />
+    );
+
+    const ukFlag = screen.getByAltText('UK rule');
+    const ieFlag = screen.getByAltText('IE rule');
+    expect(ukFlag).toBeInTheDocument();
+    expect(ieFlag).toBeInTheDocument();
+  });
+
+  it('should disable save button when writeEnabled is false', () => {
+    render(
+      <FacetAttributesPageLayoutHeader {...defaultProps} writeEnabled={false} />
+    );
+
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
   });
 });

@@ -6,7 +6,7 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import { CombinedDropdown, FacetOrderInput } from '@/libs/components';
+import { CombinedDropdown } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import { GlobalFacetAttribute } from '@/libs/containers';
 import type { FacetDisplayType } from '@/libs/containers/facets/facet-row';
@@ -31,8 +31,6 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-
-import styles from './use-global-facet-attributes-list.module.css';
 
 type UseGlobalFacetAttributesListParams = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
@@ -184,23 +182,15 @@ export const useGlobalFacetAttributesList = ({
                 dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                 writeEnabled={writeEnabled}
                 displayType={displayType}
+                showInput
+                displayValue={displayName}
+                order={order}
+                localOrder={localOrder}
+                inputRef={getInputRef(displayName)}
+                onInputChange={handleInputChange}
+                onInputBlur={handleInputBlur}
+                onInputKeyDown={handleInputKeyDown}
               />
-              <div
-                className={`${facetsPanelStyles.tableCol} ${styles.facetOrderInput}`}
-              >
-                {displayType === 'included' && order && (
-                  <FacetOrderInput
-                    displayValue={displayName}
-                    order={order}
-                    localOrder={localOrder}
-                    inputRef={getInputRef(displayName)}
-                    onInputChange={handleInputChange}
-                    onInputBlur={handleInputBlur}
-                    onInputKeyDown={handleInputKeyDown}
-                    writeEnabled={writeEnabled}
-                  />
-                )}
-              </div>
 
               <GlobalEditableLabel
                 displayName={displayName}

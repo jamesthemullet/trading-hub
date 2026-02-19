@@ -18,7 +18,6 @@ import {
   Checkbox,
   CombinedDropdown,
   ErrorMessage,
-  FacetOrderInput,
   Loader,
   Search,
   Typography,
@@ -368,22 +367,14 @@ export const GlobalFacetPanelModalContent = ({
                 dispatch={dispatch}
                 writeEnabled={writeEnabled}
                 displayType={displayType}
+                displayValue={displayName}
+                order={order}
+                localOrder={localOrder}
+                inputRef={getInputRef(displayName)}
+                onInputChange={handleInputChange}
+                onInputBlur={handleInputBlur}
+                onInputKeyDown={handleInputKeyDown}
               />
-
-              <div className={facetPanelStyles.facetOrderInput}>
-                {displayType === 'included' && order && (
-                  <FacetOrderInput
-                    displayValue={displayName}
-                    order={order}
-                    localOrder={localOrder}
-                    inputRef={getInputRef(displayName)}
-                    onInputChange={handleInputChange}
-                    onInputBlur={handleInputBlur}
-                    onInputKeyDown={handleInputKeyDown}
-                    writeEnabled={writeEnabled}
-                  />
-                )}
-              </div>
 
               <GlobalEditableLabel
                 displayName={displayName}

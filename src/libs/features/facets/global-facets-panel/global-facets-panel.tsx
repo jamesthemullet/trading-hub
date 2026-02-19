@@ -174,11 +174,9 @@ const GlobalFacetsPanel = ({
       ) : (
         <FacetsPanel
           title="Global Facet Rule Editor"
-          canMergeValueAttributes
           facetsState={facetsState}
           countryCode={facetPanelLocalState.countryCode}
           includedFacets={includedFacets}
-          excludedFacets={excludedFacets}
           orders={facetPanelLocalState.orders}
           dispatch={dispatch}
           onSave={handleSave}
@@ -186,7 +184,6 @@ const GlobalFacetsPanel = ({
           refreshData={onRefreshFacetList}
           onFacetDataChange={onFacetDataChange}
           writeEnabled={writeEnabled}
-          displayRowOrderControls
         />
       )}
     </>

@@ -25,6 +25,8 @@ type PageLayout = {
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onSave: (newFacet: MerchandisingRuleSetFacetConfigWithId) => void;
   writeEnabled: boolean;
+  headerText?: string;
+  countryCode?: string;
 };
 
 export const CategoryAndSearchFacetsPanelPageLayout = ({
@@ -37,6 +39,8 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   onSearchChange,
   onSave,
   writeEnabled,
+  headerText,
+  countryCode = 'UK_IE',
 }: PageLayout) => {
   const router = useRouter();
 
@@ -82,6 +86,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         excludedValues={excludedValues.length}
         displayName={displayName}
         facetType={facetType}
+        headerText={headerText}
         onClose={
           // istanbul ignore next
           () => {
@@ -91,10 +96,8 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
           }
         }
         onSave={handleSave}
-        // this is just set to false in the original component too
-        // istanbul ignore next
-        isSaveDisabled={false}
         writeEnabled={writeEnabled}
+        countryCode={countryCode}
       />
 
       <FacetAttributesListActions

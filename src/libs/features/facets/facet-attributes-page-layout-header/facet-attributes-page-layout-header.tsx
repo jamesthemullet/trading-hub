@@ -1,45 +1,59 @@
-import { Button, ErrorMessage, Typography } from '@/libs/components';
+import { Button, ErrorMessage, InfoBox, Typography } from '@/libs/components';
+import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
+import { getFlagFromCountryCode } from '@/libs/utils/get-flag-from-country-code';
 
 import Image from 'next/image';
 
 import styles from './facet-attributes-page-layout-header.module.css';
 
-type HeaderProps = {
+type CommonHeaderProps = {
+  displayName: string;
+  error?: string;
+  onSave: () => void;
+  writeEnabled: boolean;
+  countryCode: string;
+  onClose: (facetType: 'category' | 'search' | 'global') => void;
+};
+
+type GlobalHeaderProps = CommonHeaderProps & {
+  facetType: 'global';
+};
+
+type NonGlobalHeaderProps = CommonHeaderProps & {
+  facetType: 'category' | 'search';
+  headerText?: string;
   algoControlValues: number;
   includedValues: number;
   excludedValues: number;
-  displayName: string;
-  facetType: 'category' | 'search' | 'global';
-  isSaveDisabled: boolean;
-  error?: string;
-  onClose: (facetType: 'category' | 'search' | 'global') => void;
-  onSave: () => void;
-  writeEnabled: boolean;
 };
 
-export const FacetAttributesPageLayoutHeader = ({
-  algoControlValues,
-  includedValues,
-  excludedValues,
-  displayName,
-  facetType,
-  isSaveDisabled,
-  error,
-  onClose,
-  onSave,
-  writeEnabled,
-}: HeaderProps) => {
+type HeaderProps = GlobalHeaderProps | NonGlobalHeaderProps;
+
+export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
+  const {
+    displayName,
+    facetType,
+    error,
+    onClose,
+    onSave,
+    writeEnabled,
+    countryCode,
+  } = props;
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.flagAndButtons}>
         <div className={styles.flagAndText}>
-          <Image
-            src="/trading-hub/asset/icon-uk-flag.svg"
-            width={20}
-            height={20}
-            alt="UK flag"
-          />
-          <Typography variant="bodySmall">All pages</Typography>
+          {countryCode &&
+            getFlagFromCountryCode(countryCode).map(({ flags, alt }, index) => (
+              <Image key={index} src={flags} width={20} height={20} alt={alt} />
+            ))}
+
+          {facetType === 'global' ? (
+            <InfoBox text="All pages on the M&S website and app" />
+          ) : (
+            <Typography variant="bodySmall">{props.headerText}</Typography>
+          )}
         </div>
         <div className={styles.buttonContainer}>
           <Button
@@ -53,11 +67,7 @@ export const FacetAttributesPageLayoutHeader = ({
             Cancel
           </Button>
 
-          <Button
-            theme="primary"
-            isDisabled={isSaveDisabled || !writeEnabled}
-            onClick={onSave}
-          >
+          <Button theme="primary" isDisabled={!writeEnabled} onClick={onSave}>
             Save
           </Button>
         </div>
@@ -68,20 +78,19 @@ export const FacetAttributesPageLayoutHeader = ({
 
       {error && <ErrorMessage>Error updating facet: {error}</ErrorMessage>}
 
-      <div className={styles.summary}>
-        <div className={styles.summaryBox} data-testid="include-only-count">
-          <Typography variant="headlineSmall">{includedValues}</Typography>
-          <Typography variant="labelMedium">Include only</Typography>
-        </div>
-        <div className={styles.summaryBox} data-testid="algo-control-count">
-          <Typography variant="headlineSmall">{algoControlValues}</Typography>
-          <Typography variant="labelMedium">Algo control</Typography>
-        </div>
-        <div className={styles.summaryBox} data-testid="exclude-only-count">
-          <Typography variant="headlineSmall">{excludedValues}</Typography>
-          <Typography variant="labelMedium">Exclude only</Typography>
-        </div>
-      </div>
+      {facetType !== 'global' && (
+        <>
+          <span className={styles.divider} />
+
+          <div className={styles.summaryWrapper}>
+            <FacetsPanelAccordion
+              boostedCount={props.includedValues}
+              excludedCount={props.excludedValues}
+              nonBoostedExcludedCount={props.algoControlValues}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

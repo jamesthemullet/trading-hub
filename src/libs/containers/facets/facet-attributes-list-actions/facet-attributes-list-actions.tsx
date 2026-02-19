@@ -24,7 +24,11 @@ export const FacetAttributesListActions = ({
   return (
     <div className={styles.container}>
       <div className={styles.buttonsContainer}>
-        {!isMergeHidden && (
+        {isMergeHidden ? (
+          <Typography variant="bodyMedium">
+            Drag and drop to change ranking below
+          </Typography>
+        ) : (
           <>
             <Button
               className={styles.button}
