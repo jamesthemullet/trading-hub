@@ -121,3 +121,23 @@
 3. **Always use `--append`** for zero-downtime rotation
 4. **Test in non-production first**
 5. **Ensure the team are aware before rotating secrets** in team channels
+
+## PROD smoke-test yaccount password reset
+
+Use these steps when production Playwright smoke tests fail due to authentication, or when `PROD_TEST_USER` credentials must be rotated.
+
+1. **Identify the test account**
+
+   Go to the [Access Management](https://mnscorp-rod-myit.onbmc.com/dwp/app/#/itemprofile/403)
+
+2. **Reset password in Azure/Entra**
+
+   Click "Request now" and then fill the form in, and submit. After a while, someone will contact you with a password in the Azure Key Vault, which you can then copy and paste into GitHub secrets.
+
+3. **Update GitHub secret**
+
+   Update `PROD_TEST_USER_PASSWORD` in repository Settings → Secrets and variables → Actions.
+
+4. **Validate end-to-end smoke tests**
+
+   Trigger the [production smoke workflow](../.github/workflows/smoke-tests-prod.yml) using workflow dispatch and verify login-dependent tests pass.

@@ -68,6 +68,7 @@ pnpm run test:e2e
 - PR validation runs all tests
 - Smoke tests run automatically
 - Production tests require credentials
+- For credential reset/rotation steps, see [secret rotation guidance](./secret-rotation.md#prod-smoke-test-user-password-reset)
 
 ## Test Data Management
 

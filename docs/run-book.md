@@ -109,6 +109,15 @@ Dev: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenu
 
 Prod: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/79325e76-57c8-4d1d-83b9-08e3a5a14760
 
+#### Scenario: Production smoke tests fail to authenticate
+
+If production Playwright smoke tests fail at sign-in, rotate/reset the test account credentials used by the workflow secrets:
+
+- `PROD_TEST_USER`
+- `PROD_TEST_USER_PASSWORD`
+
+Follow the full procedure in [secret rotation guidance](./secret-rotation.md#prod-smoke-test-user-password-reset).
+
 ### Incident management
 
 [Pagerduty Merchandising Hub Escalation](https://mands.pagerduty.com/escalation_policies#P4WPYI5)
