@@ -87,6 +87,7 @@ export const EditableLabel = ({
 
             <div className={styles.editConfirmationButtons}>
               <button
+                type="button"
                 className={styles.editButton}
                 onClick={() => {
                   onDisplayValueChange(value);
@@ -104,6 +105,7 @@ export const EditableLabel = ({
               </button>
               {canCancelEdit && (
                 <button
+                  type="button"
                   className={styles.editButton}
                   onClick={() => {
                     setValue(originalValue);
@@ -135,6 +137,7 @@ export const EditableLabel = ({
 
             {writeEnabled && (
               <button
+                type="button"
                 className={styles.editButton}
                 onClick={() => {
                   setIsEditMode(true);

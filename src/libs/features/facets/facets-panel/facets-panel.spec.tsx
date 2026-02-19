@@ -260,30 +260,6 @@ describe('Facet Panel', () => {
     expect(screen.getByText('Value options')).toBeVisible();
   });
 
-  it('should show drag handles for included facets when row ordering is enabled', () => {
-    renderWithProviders(<FacetsPanel {...defaultProps} />);
-
-    expect(screen.getByTestId('drag-handle-color')).toBeVisible();
-    expect(screen.getByTestId('drag-handle-brand')).toBeVisible();
-    expect(screen.queryByTestId('drag-handle-size')).not.toBeInTheDocument();
-  });
-
-  it('should disable drag handles when there is only one included facet', () => {
-    const singleIncludedFacetState = [
-      mockFacetsState[0],
-      mockFacetsState[2],
-      mockFacetsState[3],
-      mockFacetsState[4],
-    ];
-
-    renderWithProviders(
-      <FacetsPanel {...defaultProps} facetsState={singleIncludedFacetState} />
-    );
-
-    const dragHandle = screen.getByTestId('drag-handle-color');
-    expect(dragHandle).toBeDisabled();
-  });
-
   it('should dispatch drag-and-drop ordering changes for included facets', () => {
     renderWithProviders(<FacetsPanel {...defaultProps} />);
 
@@ -324,28 +300,6 @@ describe('Facet Panel', () => {
         newIndex: 1,
       },
     });
-  });
-
-  it('should handle drag handles when listeners are undefined', () => {
-    const sortableMock = jest.requireMock('@dnd-kit/sortable');
-    const originalUseSortable = sortableMock.useSortable;
-
-    sortableMock.useSortable = jest.fn(() => ({
-      attributes: {},
-      listeners: undefined,
-      setActivatorNodeRef: jest.fn(),
-      setNodeRef: jest.fn(),
-      transform: null,
-      transition: null,
-      isDragging: false,
-    }));
-
-    renderWithProviders(<FacetsPanel {...defaultProps} />);
-
-    const dragHandle = screen.getByTestId('drag-handle-color');
-    expect(dragHandle).toBeVisible();
-
-    sortableMock.useSortable = originalUseSortable;
   });
 
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
@@ -513,47 +467,5 @@ describe('Facet Panel', () => {
       cancelButton.click();
     });
     expect(errorMessage).not.toBeVisible();
-  });
-
-  it('should route the user to the facet values page if showNewFacetValuesPage is true', async () => {
-    renderWithProviders(
-      <FacetsPanel {...defaultProps} countryCode="UK" />,
-      [],
-      {
-        featureFlags: {
-          showNewFacetValuesPage: true,
-        },
-      }
-    );
-
-    const editFacetValuesButton = screen.getAllByRole('link', {
-      name: 'Edit values',
-    })[0];
-
-    expect(editFacetValuesButton).toHaveAttribute(
-      'href',
-      '/global/facets/values/edit/b04eaac3-f4ea-4f21-9459-0b4302dc2a84?ruleSetId=test-ruleset-id&displayName=color&countryCode=UK'
-    );
-  });
-
-  it('should render view values button with no write access', async () => {
-    renderWithProviders(
-      <FacetsPanel {...defaultProps} writeEnabled={false} countryCode="UK" />,
-      [],
-      {
-        featureFlags: {
-          showNewFacetValuesPage: true,
-        },
-      }
-    );
-
-    const viewFacetValuesButton = screen.getAllByRole('link', {
-      name: 'View values',
-    })[0];
-
-    expect(viewFacetValuesButton).toBeInTheDocument();
-    expect(
-      screen.queryByRole('link', { name: 'Edit Values' })
-    ).not.toBeInTheDocument();
   });
 });

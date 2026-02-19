@@ -54,6 +54,9 @@ export const useFacetOrderInput = (
   const handleInputBlur = useCallback(
     (displayValue: string, value: string, order: number) => {
       const newOrder = Number(value);
+      if (newOrder === order) {
+        return;
+      }
 
       if (value === '' || !Number.isInteger(newOrder)) {
         setLocalOrders((prev) => ({

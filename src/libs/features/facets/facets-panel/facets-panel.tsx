@@ -6,22 +6,12 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedFacet,
 } from '@/libs/api';
-import {
-  Button,
-  CombinedDropdown,
-  FacetOrderInput,
-  Search,
-  Typography,
-} from '@/libs/components';
-import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
+import { CombinedDropdown, Search, Typography } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
-import { COLUMNS, ROUTES } from '@/libs/constants';
+import { COLUMNS } from '@/libs/constants';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
-import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
-import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
-import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetsFilter } from '@/libs/hooks';
@@ -47,9 +37,11 @@ import {
 } from '@dnd-kit/sortable';
 
 import { GlobalFacetPanelModal } from '../global-facets-panel-modal/global-facets-panel-modal';
+import { FacetRow } from './facet-row';
 import styles from './facets-panel.module.css';
 
-interface FacetsPanelProps {
+type FacetsPanelProps = {
+  displayRowOrderControls?: boolean;
   title: string;
   facetsState: FacetRowDisplayValue[];
   countryCode: MerchandisingCountryCode;
@@ -67,7 +59,7 @@ interface FacetsPanelProps {
     facet: MerchandisingReturnedFacet;
   }) => void;
   refreshData: () => void;
-}
+};
 
 export const FacetsPanel = ({
   title,
@@ -94,12 +86,12 @@ export const FacetsPanel = ({
     Record<string, { message: string }>
   >({});
 
-  const setError = (id: string, message: string) => {
+  const setError = useCallback((id: string, message: string) => {
     setErrorStates((prev) => ({
       ...Object.fromEntries(Object.entries(prev).filter(([key]) => key !== id)),
       ...(message && { [id]: { message } }),
     }));
-  };
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -152,23 +144,28 @@ export const FacetsPanel = ({
     setIsEditValuesModalOpen(false);
   };
 
-  const handleOpenFacetEditModal = (facet: MerchandisingReturnedFacet) => {
-    setIsEditValuesModalOpen(true);
-    setSelectedFacet(facet);
-  };
-
-  const handleOrderChange =
-    (attributeState: FacetRowDisplayValue) => (newOrder: FacetDisplayType) => {
+  const handleDisplayTypeChange = useCallback(
+    (id: string, newDisplayType: FacetDisplayType) => {
       dispatch({
         type: 'CHANGE_DISPLAY_TYPE',
-        payload: {
-          id: attributeState.id,
-          newDisplayType: newOrder,
-        },
+        payload: { id, newDisplayType },
       });
-    };
+    },
+    [dispatch]
+  );
 
-  const disallowedValues = facetsState.map((facet) => facet.displayValue);
+  const disallowedValues = useMemo(
+    () => facetsState.map((facet) => facet.displayValue),
+    [facetsState]
+  );
+
+  const handleOpenFacetEditModal = useCallback(
+    (facet: MerchandisingReturnedFacet) => {
+      setIsEditValuesModalOpen(true);
+      setSelectedFacet(facet);
+    },
+    []
+  );
 
   const handleOrderChangeCallback = useCallback(
     (id: string, newIndex: number) => {
@@ -188,140 +185,7 @@ export const FacetsPanel = ({
     handleInputKeyDown,
   } = useFacetOrderInput(handleOrderChangeCallback, orders);
 
-  const FacetRow = (facet: FacetRowDisplayValue) => {
-    const { displayValue, displayType, id } = facet;
-    const errorState = errorStates[id] || { message: '' };
-    const isIncludedFacet = displayType === 'included';
-    const isDragDisabled = !writeEnabled || boostedCount <= 1;
-    const order = orders[id] ?? includedFacetOrder.indexOf(id) + 1;
-    const localOrder = localOrders[id] ?? order;
-
-    const renderRow = (sortableProps?: SortableRowRenderArgs) => (
-      <div
-        className={styles.facetTableRow}
-        data-option={displayType}
-        data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
-        key={sortableProps ? undefined : id}
-        ref={sortableProps?.setNodeRef}
-        style={sortableProps?.style}
-        {...(sortableProps?.attributes ?? {})}
-        data-with-reorder
-      >
-        <div className={`${styles.tableCol} ${styles.facetOrderInput}`}>
-          {displayType === 'included' && (
-            <FacetOrderInput
-              displayValue={id}
-              order={order}
-              localOrder={localOrder}
-              inputRef={getInputRef(id)}
-              onInputChange={handleInputChange}
-              onInputBlur={handleInputBlur}
-              onInputKeyDown={handleInputKeyDown}
-              writeEnabled={writeEnabled}
-            />
-          )}
-        </div>
-
-        <div className={styles.tableCol}>
-          <Typography variant="bodySmall">{facet.indexPropertyName}</Typography>
-        </div>
-
-        <div className={styles.tableCol}>
-          {writeEnabled ? (
-            <EditableLabel
-              displayValue={displayValue}
-              onCancel={() => setError(id, '')}
-              onDisplayValueChange={(newValue) =>
-                onFacetDataChange({ value: newValue, facet })
-              }
-              canCancelEdit
-              showErrorState={!!errorState.message}
-              setError={(message) => setError(id, message)}
-              disallowedValues={facetsState.map((facet) => facet.displayValue)}
-              disallowedErrorMessage={errorState.message}
-              handleUpdatedValue={(event) => {
-                event.stopPropagation();
-                if (event.target.value === '') {
-                  setError(id, 'You must supply a value');
-                } else if (disallowedValues?.includes(event.target.value)) {
-                  setError(id, `${event.target.value} is not a unique value`);
-                } else {
-                  setError(id, '');
-                }
-              }}
-              writeEnabled={writeEnabled}
-            />
-          ) : (
-            <Typography variant="bodySmall">{facet.displayValue}</Typography>
-          )}
-        </div>
-
-        <div className={styles.tableCol}>
-          <div className={styles.orderColumn}>
-            <CombinedDropdown
-              variant="facetOrder"
-              status={displayType}
-              onChange={(newOrder) =>
-                handleOrderChange(facet)(newOrder as FacetDisplayType)
-              }
-              hasAlgoControl
-              writeEnabled={writeEnabled}
-              ariaLabel="Select to set as included, excluded or algo control"
-            />
-          </div>
-        </div>
-
-        <div className={styles.tableCol}>
-          {showNewFacetValuesPage ? (
-            <Button
-              as="a"
-              href={(() => {
-                const ruleSetId = router.query.id as string;
-                const baseUrl = ROUTES.GLOBAL.FACETS.VALUES.EDIT(facet.id);
-                const params = new URLSearchParams({
-                  ruleSetId,
-                  displayName: facet.displayValue,
-                  countryCode,
-                });
-                return `${baseUrl}?${params.toString()}`;
-              })()}
-              isDisabled={!writeEnabled}
-            >
-              {writeEnabled ? 'Edit values' : 'View values'}
-            </Button>
-          ) : (
-            <Button
-              onClick={() => handleOpenFacetEditModal(facet)}
-              isDisabled={!writeEnabled}
-            >
-              Edit values
-            </Button>
-          )}
-        </div>
-
-        <div className={styles.tableCol}>
-          {isIncludedFacet && (
-            <DragHandleButton
-              disabled={isDragDisabled}
-              displayName={displayValue}
-              setActivatorNodeRef={sortableProps?.setActivatorNodeRef}
-              listeners={sortableProps?.listeners ?? {}}
-            />
-          )}
-        </div>
-      </div>
-    );
-
-    if (isIncludedFacet) {
-      return (
-        <SortableRow key={id} id={id} disabled={!writeEnabled}>
-          {(sortableProps) => renderRow(sortableProps)}
-        </SortableRow>
-      );
-    }
-
-    return renderRow();
-  };
+  const ruleSetId = router.query.id as string;
 
   const [boostedCount, excludedCount, nonBoostedExcludedCount] = useMemo(() => {
     const boosted = facetsState.filter(
@@ -336,6 +200,59 @@ export const FacetsPanel = ({
 
     return [boosted, excluded, nonBoostedExcluded];
   }, [facetsState]);
+
+  const renderFacetRow = useCallback(
+    (facet: FacetRowDisplayValue) => {
+      const { id } = facet;
+      const errorMessage = errorStates[id]?.message ?? '';
+      const order = orders[id] ?? includedFacetOrder.indexOf(id) + 1;
+      const localOrder = localOrders[id] ?? order;
+
+      return (
+        <FacetRow
+          key={id}
+          facet={facet}
+          errorMessage={errorMessage}
+          writeEnabled={writeEnabled}
+          boostedCount={boostedCount}
+          order={order}
+          localOrder={localOrder}
+          disallowedValues={disallowedValues}
+          showNewFacetValuesPage={showNewFacetValuesPage}
+          countryCode={countryCode}
+          ruleSetId={ruleSetId}
+          setError={setError}
+          onFacetDataChange={onFacetDataChange}
+          onDisplayTypeChange={handleDisplayTypeChange}
+          onOpenFacetEditModal={handleOpenFacetEditModal}
+          getInputRef={getInputRef}
+          handleInputChange={handleInputChange}
+          handleInputBlur={handleInputBlur}
+          handleInputKeyDown={handleInputKeyDown}
+        />
+      );
+    },
+    [
+      errorStates,
+      orders,
+      includedFacetOrder,
+      localOrders,
+      writeEnabled,
+      boostedCount,
+      disallowedValues,
+      showNewFacetValuesPage,
+      countryCode,
+      ruleSetId,
+      setError,
+      onFacetDataChange,
+      handleDisplayTypeChange,
+      handleOpenFacetEditModal,
+      getInputRef,
+      handleInputChange,
+      handleInputBlur,
+      handleInputKeyDown,
+    ]
+  );
 
   const includedFacets = filteredFacets.filter(
     (facet) => facet.displayType === 'included'
@@ -418,11 +335,11 @@ export const FacetsPanel = ({
             items={visibleIncludedFacetIds}
             strategy={verticalListSortingStrategy}
           >
-            {includedFacets.map(FacetRow)}
+            {includedFacets.map(renderFacetRow)}
           </SortableContext>
         </DndContext>
 
-        {nonIncludedFacets.map(FacetRow)}
+        {nonIncludedFacets.map(renderFacetRow)}
       </div>
 
       {selectedFacet && isEditValuesModalOpen && (
