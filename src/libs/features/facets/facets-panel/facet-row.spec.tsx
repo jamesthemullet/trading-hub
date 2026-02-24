@@ -46,14 +46,17 @@ const algoControlFacet: FacetRowDisplayValue = {
   displayType: 'algoControl',
 };
 
-const createProps = (facet: FacetRowDisplayValue, boostedCount = 2) => ({
+const createProps = (
+  facet: FacetRowDisplayValue,
+  canReorderIncludedFacets = true
+) => ({
   facet,
   errorMessage: '',
   writeEnabled: true,
-  boostedCount,
+  canReorderIncludedFacets,
   order: 1,
   localOrder: 1,
-  disallowedValues: ['color', 'brand', 'size'],
+  isDisplayValueDuplicate: jest.fn(() => false),
   showNewFacetValuesPage: false,
   countryCode: 'UK' as const,
   ruleSetId: 'test-ruleset-id',
@@ -82,7 +85,7 @@ describe('FacetRow', () => {
   });
 
   it('disables drag handle when there is only one included facet', () => {
-    renderWithProviders(<FacetRow {...createProps(includedFacet, 1)} />);
+    renderWithProviders(<FacetRow {...createProps(includedFacet, false)} />);
 
     expect(screen.getByTestId('drag-handle-color')).toBeDisabled();
   });

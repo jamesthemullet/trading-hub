@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { NextRouter } from 'next/router';
@@ -26,9 +26,14 @@ let latestDragEndHandler: ((event: DragEndEvent) => void) | undefined;
 jest.mock('@dnd-kit/core', () => {
   const actual = jest.requireActual('@dnd-kit/core');
 
+  type DndContextProps = {
+    children: ReactNode;
+    onDragEnd: (event: DragEndEvent) => void;
+  };
+
   return {
     ...actual,
-    DndContext: ({ children, onDragEnd }: any) => {
+    DndContext: ({ children, onDragEnd }: DndContextProps) => {
       latestDragEndHandler = onDragEnd;
       return <div data-testid="dnd-context">{children}</div>;
     },
@@ -51,7 +56,7 @@ jest.mock('@dnd-kit/sortable', () => {
 
   return {
     ...actual,
-    SortableContext: ({ children }: { children: React.ReactNode }) => (
+    SortableContext: ({ children }: { children: ReactNode }) => (
       <div data-testid="sortable-context">{children}</div>
     ),
     verticalListSortingStrategy: jest.fn(),
@@ -86,7 +91,6 @@ jest.mock('next/router', () => ({
 
 const onSaveSpy = jest.fn();
 const onCancelSpy = jest.fn();
-const dispatchSpy = jest.fn();
 
 const mockFacetsState: FacetRowDisplayValue[] = [
   {
@@ -171,14 +175,12 @@ const mockFacetsState: FacetRowDisplayValue[] = [
   },
 ];
 
-const mockIncludedFacets = [
-  facetsListMock.facets[0],
-  facetsListMock.facets[2],
-  facetsListMock.facets[3],
+const mockIncludedFacetIds = [
+  facetsListMock.facets[0].id,
+  facetsListMock.facets[2].id,
+  facetsListMock.facets[3].id,
 ];
-const mockExcludedFacets = {
-  facets: [{ id: facetsListMock.facets[1].id }],
-};
+const mockExcludedFacetIds = [facetsListMock.facets[1].id];
 
 const mockUpdateGlobalFacet = jest.fn(() =>
   Promise.resolve({} as MerchandisingReturnedGlobalFacet | { status: string })
@@ -196,10 +198,13 @@ const defaultProps = {
   onSave: onSaveSpy,
   onCancel: onCancelSpy,
   onFacetDataChange: jest.fn(),
-  facetsState: mockFacetsState,
-  includedFacets: mockIncludedFacets,
-  excludedFacets: mockExcludedFacets,
-  dispatch: dispatchSpy,
+  facetsData: mockFacetsState.map(({ displayType, meta, ...rest }) => {
+    void displayType;
+    void meta;
+    return rest;
+  }),
+  initialIncludedFacetIds: mockIncludedFacetIds,
+  initialExcludedFacetIds: mockExcludedFacetIds,
   refreshData: jest.fn(),
   initialOrders: {
     'b04eaac3-f4ea-4f21-9459-0b4302dc2a84': 1,
@@ -260,8 +265,18 @@ describe('Facet Panel', () => {
     expect(screen.getByText('Value options')).toBeVisible();
   });
 
-  it('should dispatch drag-and-drop ordering changes for included facets', () => {
+  it('should reorder included facets with drag-and-drop', () => {
     renderWithProviders(<FacetsPanel {...defaultProps} />);
+
+    const colorIncludedRowBefore = screen.getByTestId(
+      'Row showing color as included'
+    );
+    const brandIncludedRowBefore = screen.getByTestId(
+      'Row showing brand as included'
+    );
+    expect(
+      colorIncludedRowBefore.compareDocumentPosition(brandIncludedRowBefore)
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 
     act(() => {
       latestDragEndHandler?.({
@@ -270,36 +285,39 @@ describe('Facet Panel', () => {
       } as DragEndEvent);
     });
 
-    expect(dispatchSpy).toHaveBeenCalledWith({
-      type: 'SET_INCLUDED_ORDER',
-      payload: {
-        id: mockFacetsState[0].id,
-        newIndex: 1,
-      },
-    });
+    const brandIncludedRowAfter = screen.getByTestId(
+      'Row showing brand as included'
+    );
+    const colorIncludedRowAfter = screen.getByTestId(
+      'Row showing color as included'
+    );
+    expect(
+      brandIncludedRowAfter.compareDocumentPosition(colorIncludedRowAfter)
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
-  it('should dispatch order change when manual order input is submitted', async () => {
+  it('should reorder rows when manual order input is submitted', async () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(<FacetsPanel {...defaultProps} />);
 
     Element.prototype.scrollIntoView = jest.fn();
 
-    const colorFacetId = mockFacetsState[0].id;
     const orderInput = screen.getByDisplayValue('1');
 
     await user.clear(orderInput);
     await user.type(orderInput, '2');
     await user.keyboard('{Enter}');
 
-    expect(dispatchSpy).toHaveBeenCalledWith({
-      type: 'SET_INCLUDED_ORDER',
-      payload: {
-        id: colorFacetId,
-        newIndex: 1,
-      },
-    });
+    const brandIncludedRowAfter = screen.getByTestId(
+      'Row showing brand as included'
+    );
+    const colorIncludedRowAfter = screen.getByTestId(
+      'Row showing color as included'
+    );
+    expect(
+      brandIncludedRowAfter.compareDocumentPosition(colorIncludedRowAfter)
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
   it('should highlight the row in the correct background colour depending on whether exclude/include only is selected', async () => {
@@ -316,13 +334,9 @@ describe('Facet Panel', () => {
 
     await user.click(excludeOnlyOption);
     await waitFor(() => {
-      expect(dispatchSpy).toHaveBeenCalledWith({
-        payload: {
-          id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          newDisplayType: 'excluded',
-        },
-        type: 'CHANGE_DISPLAY_TYPE',
-      });
+      expect(
+        screen.getByTestId('Row showing color as excluded')
+      ).toBeInTheDocument();
     });
   });
 
@@ -467,5 +481,40 @@ describe('Facet Panel', () => {
       cancelButton.click();
     });
     expect(errorMessage).not.toBeVisible();
+  });
+
+  it('should show duplicate error when keeping the same value and duplicates exist', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    const facetsDataWithDuplicateColor = defaultProps.facetsData.map(
+      (facet, index) =>
+        index === 1
+          ? {
+              ...facet,
+              displayValue: 'color',
+            }
+          : facet
+    );
+
+    renderWithProviders(
+      <FacetsPanel
+        {...defaultProps}
+        countryCode="UK"
+        facetsData={facetsDataWithDuplicateColor}
+      />
+    );
+
+    const editButtons = await screen.findAllByLabelText(
+      'Edit display name for color'
+    );
+    await user.click(editButtons[0]);
+
+    const inputFields = await screen.findAllByLabelText(
+      'Edit color input field'
+    );
+    await user.clear(inputFields[0]);
+    await user.type(inputFields[0], 'color');
+
+    expect(screen.getByText('color is not a unique value')).toBeVisible();
   });
 });

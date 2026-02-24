@@ -36,7 +36,7 @@ type InitialiseStateAction = {
 };
 
 type ChangeCountryAction = {
-  type: 'changeCountry';
+  type: 'CHANGE_COUNTRY';
   payload: MerchandisingCountryCode;
 };
 
@@ -119,7 +119,7 @@ export const facetsPanelReducer = (
     case 'INITIALISE_STATE': {
       return action.payload;
     }
-    case 'changeCountry': {
+    case 'CHANGE_COUNTRY': {
       const { payload } = action;
 
       return {

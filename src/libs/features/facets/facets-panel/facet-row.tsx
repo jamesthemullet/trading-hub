@@ -26,18 +26,18 @@ type OnFacetDataChange = ({
   value,
   facet,
 }: {
-  value: string | 'included' | 'excluded' | 'algoControl';
+  value: string;
   facet: MerchandisingReturnedFacet;
 }) => void;
 
-export type FacetRowProps = {
+type FacetRowProps = {
   facet: FacetRowDisplayValue;
   errorMessage: string;
   writeEnabled: boolean;
-  boostedCount: number;
+  canReorderIncludedFacets: boolean;
   order: number;
   localOrder: number | string;
-  disallowedValues: string[];
+  isDisplayValueDuplicate: (facetId: string, value: string) => boolean;
   showNewFacetValuesPage: boolean;
   countryCode: MerchandisingCountryCode;
   ruleSetId: string;
@@ -60,10 +60,10 @@ export const FacetRow = memo(
     facet,
     errorMessage,
     writeEnabled,
-    boostedCount,
+    canReorderIncludedFacets,
     order,
     localOrder,
-    disallowedValues,
+    isDisplayValueDuplicate,
     showNewFacetValuesPage,
     countryCode,
     ruleSetId,
@@ -78,7 +78,7 @@ export const FacetRow = memo(
   }: FacetRowProps) => {
     const { displayValue, displayType, id } = facet;
     const isIncludedFacet = displayType === 'included';
-    const isDragDisabled = !writeEnabled || boostedCount <= 1;
+    const isDragDisabled = !writeEnabled || !canReorderIncludedFacets;
 
     const renderRow = (sortableProps?: SortableRowRenderArgs) => (
       <div
@@ -121,13 +121,12 @@ export const FacetRow = memo(
               canCancelEdit
               showErrorState={!!errorMessage}
               setError={(message) => setError(id, message)}
-              disallowedValues={disallowedValues}
               disallowedErrorMessage={errorMessage}
               handleUpdatedValue={(event) => {
                 event.stopPropagation();
                 if (event.target.value === '') {
                   setError(id, 'You must supply a value');
-                } else if (disallowedValues?.includes(event.target.value)) {
+                } else if (isDisplayValueDuplicate(id, event.target.value)) {
                   setError(id, `${event.target.value} is not a unique value`);
                 } else {
                   setError(id, '');

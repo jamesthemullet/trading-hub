@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import type {
   MerchandisingCountryCode,
@@ -10,8 +10,6 @@ import { ErrorMessage } from '@/libs/components';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { FacetsPanel } from '@/libs/features/facets/facets-panel/facets-panel';
 import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
-import { facetsPanelReducer } from '@/libs/stores/facets-panel/facets-panel-reducer';
-import { useFacetsRowsSelector } from '@/libs/stores/facets-panel/use-facets-panel-rows-selector';
 
 type GlobalFacetsPanelProps = {
   ruleSetIncludedFacets?: MerchandisingRuleSetFacetConfigWithId[];
@@ -45,90 +43,54 @@ const GlobalFacetsPanel = ({
   const { handleGlobalFacetUpdate, error: updatingGlobalFacetError } =
     useGlobalFacetUpdate();
 
-  const [facetsData, setFacetsData] = useState<MerchandisingReturnedFacet[]>(
-    []
+  const [displayValueOverrides, setDisplayValueOverrides] = useState<
+    Record<string, string>
+  >({});
+
+  const initialIncludedFacetIds = useMemo(
+    () => ruleSetIncludedFacets?.map((facet) => facet.id) || [],
+    [ruleSetIncludedFacets]
   );
 
-  const [initialIncludedFacets, setInitialIncludedFacets] = useState<string[]>(
-    []
-  );
-  const [initialExcludedFacets, setInitialExcludedFacets] = useState<string[]>(
-    []
-  );
-
-  const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
-    includedFacets: initialIncludedFacets,
-    excludedFacets: initialExcludedFacets,
-    countryCode,
-    orders: {},
-  });
-
-  useEffect(() => {
-    setFacetsData(facets);
-  }, [facets]);
-
-  const { facetsState, includedFacets, excludedFacets } = useFacetsRowsSelector(
-    facetPanelLocalState,
-    facetsData
-  );
-
-  useEffect(() => {
-    const includedFacets = ruleSetIncludedFacets?.map((facet) => {
-      return facet.id;
-    });
-
-    const excludedFacets =
+  const initialExcludedFacetIds = useMemo(
+    () =>
       ruleSetExcludedFacets?.facets?.map(
         (facet) =>
           // istanbul ignore next
           facet.id || ''
-      ) || [];
-
-    setInitialIncludedFacets(includedFacets || []);
-    setInitialExcludedFacets(excludedFacets);
-  }, [ruleSetIncludedFacets, ruleSetExcludedFacets?.facets]);
-
-  const initialOrders = useMemo(
-    () =>
-      Object.fromEntries(
-        initialIncludedFacets.map((item, index) => [item, index + 1])
-      ),
-    [initialIncludedFacets]
+      ) || [],
+    [ruleSetExcludedFacets?.facets]
   );
 
-  useEffect(() => {
-    dispatch({
-      type: 'INITIALISE_STATE',
-      payload: {
-        includedFacets: initialIncludedFacets,
-        excludedFacets: initialExcludedFacets,
-        countryCode: facetPanelLocalState.countryCode || countryCode,
-        orders: initialOrders,
-      },
-    });
-  }, [
-    initialIncludedFacets,
-    initialExcludedFacets,
-    countryCode,
-    facetPanelLocalState.countryCode,
-    initialOrders,
-  ]);
+  const facetsData = useMemo(
+    () =>
+      facets.map((facet) => {
+        const overriddenDisplayValue = displayValueOverrides[facet.id];
 
-  const handleSave = () => {
-    onSave({
-      includedFacets,
-      excludedFacets,
-      countryCode: facetPanelLocalState.countryCode || 'UK_IE',
-    });
-  };
+        if (overriddenDisplayValue === undefined) {
+          return facet;
+        }
+
+        return {
+          ...facet,
+          displayValue: overriddenDisplayValue,
+        };
+      }),
+    [facets, displayValueOverrides]
+  );
 
   const onFacetDataChange = async ({
     value,
     facet,
   }: {
-    value: string | 'included' | 'excluded';
+    value: string;
     facet: MerchandisingReturnedFacet;
   }) => {
+    setDisplayValueOverrides((prev) => ({
+      ...prev,
+      [facet.id]: value,
+    }));
+
     const response = await handleGlobalFacetUpdate({
       facetId: facet.id,
       data: {
@@ -139,18 +101,13 @@ const GlobalFacetsPanel = ({
       },
     });
 
-    if (!response || !('displayValue' in response)) {
+    if (response && 'status' in response && response.status === 'error') {
+      setDisplayValueOverrides((prev) => ({
+        ...prev,
+        [facet.id]: facet.displayValue,
+      }));
       return;
     }
-
-    const updatedGlobalFacets = facetsData.map((globalFacet) => {
-      if (globalFacet.id === facet.id) {
-        return { ...globalFacet, displayValue: response?.displayValue };
-      }
-      return globalFacet;
-    });
-
-    setFacetsData(updatedGlobalFacets);
   };
 
   return (
@@ -174,12 +131,11 @@ const GlobalFacetsPanel = ({
       ) : (
         <FacetsPanel
           title="Global Facet Rule Editor"
-          facetsState={facetsState}
-          countryCode={facetPanelLocalState.countryCode}
-          includedFacets={includedFacets}
-          orders={facetPanelLocalState.orders}
-          dispatch={dispatch}
-          onSave={handleSave}
+          facetsData={facetsData}
+          initialIncludedFacetIds={initialIncludedFacetIds}
+          initialExcludedFacetIds={initialExcludedFacetIds}
+          countryCode={countryCode}
+          onSave={onSave}
           onCancel={onCancel}
           refreshData={onRefreshFacetList}
           onFacetDataChange={onFacetDataChange}

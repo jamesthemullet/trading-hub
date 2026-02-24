@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 import type { MerchandisingReturnedFacet } from '@/libs/api';
 
@@ -10,78 +10,111 @@ import type {
 
 const truthy = <T>(x: T | undefined): x is T => x !== undefined;
 
+type RowCacheEntry = {
+  facetFingerprint: string;
+  displayType: FacetDisplayType;
+  isBeginningOfDisplayTypeGroup: boolean;
+  isEndOfDisplayTypeGroup: boolean;
+  row: FacetRowDisplayValue;
+};
+
 export const useFacetsRowsSelector = (
   panelState: FacetPanelState,
   facetsData: MerchandisingReturnedFacet[]
 ) => {
+  const rowCacheRef = useRef<Map<string, RowCacheEntry>>(new Map());
+
   const facetsState = useMemo(() => {
-    const includedFacets = panelState.includedFacets;
-    const excludedFacets = panelState.excludedFacets;
+    const previousCache = rowCacheRef.current;
+    const nextCache = new Map<string, RowCacheEntry>();
 
-    const defaultFacets = facetsData.filter(({ id }) => {
-      const isIncluded = includedFacets.includes(id);
-      const isExcluded = excludedFacets.includes(id);
-      return !isIncluded && !isExcluded;
-    });
+    const facetById = new Map(facetsData.map((facet) => [facet.id, facet]));
+    const includedSet = new Set(panelState.includedFacets);
+    const excludedSet = new Set(panelState.excludedFacets);
 
-    const displayTypeMapper =
-      (displayType: FacetDisplayType) => (row: MerchandisingReturnedFacet) => {
-        return {
-          ...row,
-          displayType,
-        };
-      };
+    const includedIds = panelState.includedFacets.filter((id) =>
+      facetById.has(id)
+    );
+    const excludedIds = panelState.excludedFacets.filter((id) =>
+      facetById.has(id)
+    );
+    const defaultIds = facetsData
+      .filter(({ id }) => !includedSet.has(id) && !excludedSet.has(id))
+      .map((facet) => facet.id);
 
-    const beginningAndEndMapper = (
-      row: FacetRowDisplayValue,
-      index: number,
-      array: FacetRowDisplayValue[]
-    ) => {
-      return {
-        ...row,
-        meta: {
-          isBeginningOfDisplayTypeGroup: index === 0,
-          isEndOfDisplayTypeGroup: index === array.length - 1,
-        },
-      };
-    };
+    const createRowsForGroup = (
+      ids: string[],
+      displayType: FacetDisplayType
+    ): FacetRowDisplayValue[] =>
+      ids
+        .map((id, index) => {
+          const facet = facetById.get(id);
+          // ids are pre-filtered via facetById.has(id), so this is defensive only
+          // istanbul ignore next
+          if (!facet) {
+            return undefined;
+          }
 
-    const includedResult = includedFacets
-      .map((id) => facetsData.find((facet) => facet.id === id))
-      .filter(truthy)
-      .map(displayTypeMapper('included'))
-      .map(beginningAndEndMapper);
+          const facetFingerprint = JSON.stringify(facet);
 
-    const defaultResult = defaultFacets
-      .map(displayTypeMapper('algoControl'))
-      .map(beginningAndEndMapper);
+          const isBeginningOfDisplayTypeGroup = index === 0;
+          const isEndOfDisplayTypeGroup = index === ids.length - 1;
 
-    const excludedResult = excludedFacets
-      .map((id) => facetsData.find((facet) => facet.id === id))
-      .filter(truthy)
-      .map(displayTypeMapper('excluded'))
-      .map(beginningAndEndMapper);
+          const cached = previousCache.get(id);
+
+          if (
+            cached?.facetFingerprint === facetFingerprint &&
+            cached.displayType === displayType &&
+            cached.isBeginningOfDisplayTypeGroup ===
+              isBeginningOfDisplayTypeGroup &&
+            cached.isEndOfDisplayTypeGroup === isEndOfDisplayTypeGroup
+          ) {
+            // eslint-disable-next-line functional/immutable-data
+            nextCache.set(id, cached);
+            return cached.row;
+          }
+
+          const row: FacetRowDisplayValue = {
+            ...facet,
+            displayType,
+            meta: {
+              isBeginningOfDisplayTypeGroup,
+              isEndOfDisplayTypeGroup,
+            },
+          };
+
+          // eslint-disable-next-line functional/immutable-data
+          nextCache.set(id, {
+            facetFingerprint,
+            displayType,
+            isBeginningOfDisplayTypeGroup,
+            isEndOfDisplayTypeGroup,
+            row,
+          });
+
+          return row;
+        })
+        .filter(truthy);
 
     const rows: FacetRowDisplayValue[] = [
-      ...includedResult,
-      ...defaultResult,
-      ...excludedResult,
+      ...createRowsForGroup(includedIds, 'included'),
+      ...createRowsForGroup(defaultIds, 'algoControl'),
+      ...createRowsForGroup(excludedIds, 'excluded'),
     ];
-    return rows;
-  }, [facetsData, panelState]);
 
-  const includedFacets = useMemo<MerchandisingReturnedFacet[]>(
-    () =>
-      facetsState
-        .filter((facet) => facet.displayType === 'included')
-        .map((facet: FacetRowDisplayValue) => {
-          // removing displayType and meta from the facet
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { displayType, meta, ...rest } = facet;
-          return rest;
-        }),
-    [facetsState]
-  );
+    // eslint-disable-next-line functional/immutable-data
+    rowCacheRef.current = nextCache;
+
+    return rows;
+  }, [facetsData, panelState.excludedFacets, panelState.includedFacets]);
+
+  const includedFacets = useMemo<MerchandisingReturnedFacet[]>(() => {
+    const facetById = new Map(facetsData.map((facet) => [facet.id, facet]));
+
+    return panelState.includedFacets
+      .map((id) => facetById.get(id))
+      .filter(truthy);
+  }, [facetsData, panelState.includedFacets]);
   const excludedFacets = useMemo(
     () => ({
       facets: facetsState

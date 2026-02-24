@@ -33,14 +33,21 @@ export const EditableLabel = ({
   writeEnabled = true,
 }: EditableLabelProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [originalValue] = useState(displayValue);
+  const [originalValue, setOriginalValue] = useState(displayValue);
   const [value, setValue] = useState(displayValue);
 
   useEffect(() => {
     if (showErrorState || showEditState) {
       setIsEditMode(true);
     }
-  }, [showErrorState, showEditState, displayValue]);
+  }, [showErrorState, showEditState]);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      setOriginalValue(displayValue);
+      setValue(displayValue);
+    }
+  }, [displayValue, isEditMode]);
 
   return (
     <div className={styles.displayName}>
@@ -140,6 +147,8 @@ export const EditableLabel = ({
                 type="button"
                 className={styles.editButton}
                 onClick={() => {
+                  setOriginalValue(displayValue);
+                  setValue(displayValue);
                   setIsEditMode(true);
                 }}
                 aria-label={`Edit display name for ${displayValue}`}

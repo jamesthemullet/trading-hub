@@ -172,13 +172,13 @@ describe('facetsPanelReducer', () => {
     });
   });
 
-  describe('changeCountry', () => {
+  describe('CHANGE_COUNTRY', () => {
     it('should change country', () => {
       const state: FacetPanelState = {
         ...mockFacetsPanelState,
       };
       const action = {
-        type: 'changeCountry' as const,
+        type: 'CHANGE_COUNTRY' as const,
         payload: 'UK' as MerchandisingCountryCode,
       };
       const result = facetsPanelReducer(state, action);

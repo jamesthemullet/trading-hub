@@ -1,9 +1,17 @@
-import { useCallback, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type {
   MerchandisingCountryCode,
+  MerchandisingExcludedFacets,
   MerchandisingReturnedFacet,
 } from '@/libs/api';
 import { CombinedDropdown, Search, Typography } from '@/libs/components';
@@ -17,11 +25,12 @@ import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create
 import { useFacetsFilter } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
-import type {
-  Action,
-  FacetDisplayType,
-  FacetRowDisplayValue,
+import {
+  type FacetDisplayType,
+  type FacetRowDisplayValue,
+  facetsPanelReducer,
 } from '@/libs/stores/facets-panel/facets-panel-reducer';
+import { useFacetsRowsSelector } from '@/libs/stores/facets-panel/use-facets-panel-rows-selector';
 
 import {
   DndContext,
@@ -43,19 +52,22 @@ import styles from './facets-panel.module.css';
 type FacetsPanelProps = {
   displayRowOrderControls?: boolean;
   title: string;
-  facetsState: FacetRowDisplayValue[];
   countryCode: MerchandisingCountryCode;
-  includedFacets: MerchandisingReturnedFacet[];
+  facetsData: MerchandisingReturnedFacet[];
+  initialIncludedFacetIds: string[];
+  initialExcludedFacetIds: string[];
   writeEnabled: boolean;
-  orders: Record<string, number>;
-  dispatch: (action: Action) => void;
-  onSave: () => void;
+  onSave: (value: {
+    includedFacets: MerchandisingReturnedFacet[];
+    excludedFacets: MerchandisingExcludedFacets;
+    countryCode: MerchandisingCountryCode;
+  }) => void;
   onCancel: () => void;
   onFacetDataChange: ({
     value,
     facet,
   }: {
-    value: string | 'included' | 'excluded' | 'algoControl';
+    value: string;
     facet: MerchandisingReturnedFacet;
   }) => void;
   refreshData: () => void;
@@ -63,11 +75,11 @@ type FacetsPanelProps = {
 
 export const FacetsPanel = ({
   title,
-  facetsState,
   countryCode,
+  facetsData,
+  initialIncludedFacetIds,
+  initialExcludedFacetIds,
   writeEnabled,
-  orders,
-  dispatch,
   onSave,
   onCancel,
   onFacetDataChange,
@@ -75,6 +87,44 @@ export const FacetsPanel = ({
 }: FacetsPanelProps) => {
   const router = useRouter();
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
+
+  const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
+    includedFacets: [],
+    excludedFacets: [],
+    countryCode,
+    orders: {},
+  });
+
+  const initialOrders = useMemo(
+    () =>
+      Object.fromEntries(
+        initialIncludedFacetIds.map((item, index) => [item, index + 1])
+      ),
+    [initialIncludedFacetIds]
+  );
+
+  useEffect(() => {
+    dispatch({
+      type: 'INITIALISE_STATE',
+      payload: {
+        includedFacets: initialIncludedFacetIds,
+        excludedFacets: initialExcludedFacetIds,
+        countryCode,
+        orders: initialOrders,
+      },
+    });
+  }, [
+    initialIncludedFacetIds,
+    initialExcludedFacetIds,
+    countryCode,
+    initialOrders,
+  ]);
+
+  const {
+    facetsState,
+    includedFacets: includedFacetsForSave,
+    excludedFacets: excludedFacetsForSave,
+  } = useFacetsRowsSelector(facetPanelLocalState, facetsData);
 
   const [selectedFacet, setSelectedFacet] = useState<
     MerchandisingReturnedFacet | undefined
@@ -137,12 +187,33 @@ export const FacetsPanel = ({
           }),
         writeEnabled,
       }),
-    [dispatch, includedFacetOrder, writeEnabled]
+    [includedFacetOrder, writeEnabled]
   );
 
   const onClose = () => {
     setIsEditValuesModalOpen(false);
   };
+
+  const onFacetDataChangeRef = useRef(onFacetDataChange);
+
+  useEffect(() => {
+    // This only mutates the local ref, so we won't trigger a re-render.
+    // eslint-disable-next-line functional/immutable-data
+    onFacetDataChangeRef.current = onFacetDataChange;
+  }, [onFacetDataChange]);
+
+  const handleFacetDataChange = useCallback(
+    ({
+      value,
+      facet,
+    }: {
+      value: string;
+      facet: MerchandisingReturnedFacet;
+    }) => {
+      onFacetDataChangeRef.current({ value, facet });
+    },
+    []
+  );
 
   const handleDisplayTypeChange = useCallback(
     (id: string, newDisplayType: FacetDisplayType) => {
@@ -151,12 +222,48 @@ export const FacetsPanel = ({
         payload: { id, newDisplayType },
       });
     },
-    [dispatch]
+    []
   );
 
-  const disallowedValues = useMemo(
-    () => facetsState.map((facet) => facet.displayValue),
-    [facetsState]
+  const displayValueByIdRef = useRef<Map<string, string>>(new Map());
+  const displayValueCountRef = useRef<Map<string, number>>(new Map());
+
+  useEffect(() => {
+    const nextDisplayValueById = new Map(
+      facetsState.map((facet) => [facet.id, facet.displayValue] as const)
+    );
+
+    const uniqueDisplayValues = Array.from(
+      new Set(facetsState.map((facet) => facet.displayValue))
+    );
+
+    const nextDisplayValueCount = new Map(
+      uniqueDisplayValues.map((displayValue) => [
+        displayValue,
+        facetsState.filter((facet) => facet.displayValue === displayValue)
+          .length,
+      ])
+    );
+
+    // These only mutate local refs, so we won't trigger a re-render.
+    // eslint-disable-next-line functional/immutable-data
+    displayValueByIdRef.current = nextDisplayValueById;
+    // eslint-disable-next-line functional/immutable-data
+    displayValueCountRef.current = nextDisplayValueCount;
+  }, [facetsState]);
+
+  const isDisplayValueDuplicate = useCallback(
+    (facetId: string, value: string) => {
+      const currentValue = displayValueByIdRef.current.get(facetId);
+      const occurrences = displayValueCountRef.current.get(value) || 0;
+
+      if (currentValue === value) {
+        return occurrences > 1;
+      }
+
+      return occurrences > 0;
+    },
+    []
   );
 
   const handleOpenFacetEditModal = useCallback(
@@ -174,7 +281,7 @@ export const FacetsPanel = ({
         payload: { id, newIndex },
       });
     },
-    [dispatch]
+    []
   );
 
   const {
@@ -183,7 +290,10 @@ export const FacetsPanel = ({
     handleInputChange,
     handleInputBlur,
     handleInputKeyDown,
-  } = useFacetOrderInput(handleOrderChangeCallback, orders);
+  } = useFacetOrderInput(
+    handleOrderChangeCallback,
+    facetPanelLocalState.orders
+  );
 
   const ruleSetId = router.query.id as string;
 
@@ -201,11 +311,17 @@ export const FacetsPanel = ({
     return [boosted, excluded, nonBoostedExcluded];
   }, [facetsState]);
 
+  const canReorderIncludedFacets = useMemo(
+    () => boostedCount > 1,
+    [boostedCount]
+  );
+
   const renderFacetRow = useCallback(
     (facet: FacetRowDisplayValue) => {
       const { id } = facet;
       const errorMessage = errorStates[id]?.message ?? '';
-      const order = orders[id] ?? includedFacetOrder.indexOf(id) + 1;
+      const order =
+        facetPanelLocalState.orders[id] ?? includedFacetOrder.indexOf(id) + 1;
       const localOrder = localOrders[id] ?? order;
 
       return (
@@ -214,15 +330,15 @@ export const FacetsPanel = ({
           facet={facet}
           errorMessage={errorMessage}
           writeEnabled={writeEnabled}
-          boostedCount={boostedCount}
+          canReorderIncludedFacets={canReorderIncludedFacets}
           order={order}
           localOrder={localOrder}
-          disallowedValues={disallowedValues}
+          isDisplayValueDuplicate={isDisplayValueDuplicate}
           showNewFacetValuesPage={showNewFacetValuesPage}
-          countryCode={countryCode}
+          countryCode={facetPanelLocalState.countryCode}
           ruleSetId={ruleSetId}
           setError={setError}
-          onFacetDataChange={onFacetDataChange}
+          onFacetDataChange={handleFacetDataChange}
           onDisplayTypeChange={handleDisplayTypeChange}
           onOpenFacetEditModal={handleOpenFacetEditModal}
           getInputRef={getInputRef}
@@ -234,17 +350,17 @@ export const FacetsPanel = ({
     },
     [
       errorStates,
-      orders,
+      facetPanelLocalState.orders,
       includedFacetOrder,
       localOrders,
       writeEnabled,
-      boostedCount,
-      disallowedValues,
+      canReorderIncludedFacets,
+      isDisplayValueDuplicate,
       showNewFacetValuesPage,
-      countryCode,
+      facetPanelLocalState.countryCode,
       ruleSetId,
       setError,
-      onFacetDataChange,
+      handleFacetDataChange,
       handleDisplayTypeChange,
       handleOpenFacetEditModal,
       getInputRef,
@@ -261,11 +377,19 @@ export const FacetsPanel = ({
     (facet) => facet.displayType !== 'included'
   );
 
+  const handleSave = () => {
+    onSave({
+      includedFacets: includedFacetsForSave,
+      excludedFacets: excludedFacetsForSave,
+      countryCode: facetPanelLocalState.countryCode,
+    });
+  };
+
   return (
     <>
       <ProductGridHeader
         canSave
-        onSave={() => onSave()}
+        onSave={handleSave}
         hasPreview={false}
         isNewRuleSet={false}
         hasChanges
@@ -287,15 +411,16 @@ export const FacetsPanel = ({
             <Typography variant="bodySmall" withMargin>
               Influence
             </Typography>
+
             <CombinedDropdown
               variant="countrySelector"
               onChange={(country) => {
                 dispatch({
-                  type: 'changeCountry',
+                  type: 'CHANGE_COUNTRY',
                   payload: country as MerchandisingCountryCode,
                 });
               }}
-              selectedCountryCode={countryCode}
+              selectedCountryCode={facetPanelLocalState.countryCode}
               ariaLabel="Select country"
             />
           </div>
@@ -357,7 +482,7 @@ export const FacetsPanel = ({
           <Modal.Content>
             <Modal.Body>
               <GlobalFacetPanelModal
-                countryCode={countryCode}
+                countryCode={facetPanelLocalState.countryCode}
                 facet={selectedFacet}
                 onClose={(shouldRefetch) => {
                   // istanbul ignore else
