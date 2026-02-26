@@ -21,13 +21,13 @@ Trading Hub uses Dynatrace for comprehensive application monitoring, consisting 
 - Purpose: Server-side tracking (mostly NextAuth)
 - Implementation: Vercel's `registerOTel` functionality (OpenTelemetry)
 - Status: ✅ Implemented
-- Code location: `/src/instrumentation.ts`
+- Code location: `/src/instrumentation.page.ts`
 
 ### 3. Real User Monitoring (RUM)
 
 - Purpose: Frontend performance and user experience
-- Status: ⚠️ Partially implemented (see [Known Issues](#known-issues))
-- Script location: Injected via `_document.tsx`
+- Status: ✅ Implemented (see [Known Issues](#known-issues) for environment-specific caveats)
+- Script location: Injected via `_document.page.tsx`
 
 ## Configuration
 
@@ -43,13 +43,14 @@ Trading Hub uses Dynatrace for comprehensive application monitoring, consisting 
 ### Production Dashboard
 
 - URL: [Production Dashboard](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.dashboards/dashboard/5cba456a-92b1-4fcb-86a7-ec56e458f394)
-- Key Metrics: Azure network performance, server errors, JavaScript errors, Core Web Vitals
+- Key Metrics: Azure network performance, server errors, JavaScript errors, Core Web Vitals, smoke test results
 - Variables: `serviceName=trading-hub`, `rumAppId=APPLICATION-8B5FD38038E5E2D3`
 
 ### Development Dashboard
 
 - URL: [Development Dashboard](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.dashboards/dashboard/0ce584b1-9c5e-434c-94b3-566f17d886c2)
-- Status: ⚠️ RUM charts non-functional in dev (see [Known Issues](#known-issues))
+- Key Metrics: Azure network performance, server errors, JavaScript errors, Core Web Vitals, smoke test results, PR Validate And Deploy build times
+- Variables: `serviceName=trading-hub`, `rumAppId=APPLICATION-085234AF123535B2`
 
 ### Creating Custom Charts
 
@@ -67,11 +68,6 @@ Server-side events tracked via `registerOTel` function, primarily capturing:
 - API route performance
 - Error tracking
 
-**Access Links:**
-
-- [Production Tracing](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.distributedtracing/explorer?tf=now-6h%3Bnow&v=spans&filter=service.name+%3D+trading-hub)
-- [Development Tracing](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.distributedtracing/explorer?filter=dt.entity.service.entity.name+%3D+trading-hub&tf=now-24h%3Bnow)
-
 ### Frontend Monitoring
 
 RUM data collection and configuration:
@@ -84,7 +80,8 @@ RUM data collection and configuration:
 #### Smoke Test Failure Alert
 
 Purpose: Notify team of consecutive test failures
-Location: [Workflow Configuration](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.automations/workflows/763c1fea-3092-4ccf-966a-8dfbf32d4fa8)
+Dev Smoke Tests: [Workflow Configuration - Development](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.automations/workflows/763c1fea-3092-4ccf-966a-8dfbf32d4fa8)
+Prod Smoke Test: [Workflow Configuration - Production](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.automations/workflows/d0e2d9c1-1fd1-4eb0-8355-ea41a2070b2b?trigger=&view=live)
 
 **Workflow Steps:**
 
@@ -95,6 +92,12 @@ Location: [Workflow Configuration](https://kqi08127.apps.dynatrace.com/ui/apps/d
    - Early warning to FE devs after 1 failure
    - Prevents spam by only sending until issue is resolved
 
+#### Daily Notification Of JavaScript Failures
+
+Purpose: Send a daily summary of JavaScript errors to the team
+Dev: [Daily Failure Workflow](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.automations/workflows/b31546ad-9a7c-4bc8-bdd3-b7b692bced93?trigger=&view=live)
+Prod: [Daily Failure Workflow](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.automations/workflows/fa3dff9e-8b51-46be-93d1-bb0fff35147b?trigger=&view=live)
+
 ## Known Issues
 
 ### RUM Environment Detection
@@ -104,18 +107,12 @@ Location: [Workflow Configuration](https://kqi08127.apps.dynatrace.com/ui/apps/d
 - Mitigation: [XHR exclusion rule](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.classic.custom.applications/ui/settings/APPLICATION-8B5FD38038E5E2D3/builtin:rum.web.xhr-exclusion) configured for production
 - Assessment: Minimal impact due to low traffic volume
 
-### Development RUM Charts
-
-- Issue: RUM monitoring charts non-functional in development
-- Root Cause: Environment separation issues
-- Workaround: Use production dashboard for RUM insights
-
 ## Troubleshooting
 
 ### Common Issues
 
 1. Missing traces: Verify `OTEL_SERVICE_NAME` environment variable
-2. RUM not loading: Check script injection in `_document.tsx`
+2. RUM not loading: Check script injection in `_document.page.tsx`
 3. Dashboard variables: Ensure correct `serviceName` and `rumAppId` values
 
 ## References
@@ -131,13 +128,11 @@ Location: [Workflow Configuration](https://kqi08127.apps.dynatrace.com/ui/apps/d
 **Production Environment:**
 
 - [Dashboard](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.dashboards/dashboard/5cba456a-92b1-4fcb-86a7-ec56e458f394)
-- [Distributed Tracing](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.distributedtracing/explorer?tf=now-6h%3Bnow&v=spans&filter=service.name+%3D+trading-hub)
 - [Frontend Monitoring](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.classic.frontend/#uemapplications/uemappmetrics;uemapplicationId=APPLICATION-8B5FD38038E5E2D3)
 - [Workflows](https://hso67908.apps.dynatrace.com/ui/apps/dynatrace.automations/workflows)
 
 **Development Environment:**
 
 - [Dashboard](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.dashboards/dashboard/0ce584b1-9c5e-434c-94b3-566f17d886c2)
-- [Distributed Tracing](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.distributedtracing/explorer?filter=dt.entity.service.entity.name+%3D+trading-hub&tf=now-24h%3Bnow)
 - [Frontend Monitoring](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.classic.frontend/#uemapplications/uemappmetrics;uemapplicationId=APPLICATION-085234AF123535B2)
 - [Workflows](https://kqi08127.apps.dynatrace.com/ui/apps/dynatrace.automations/workflows)
