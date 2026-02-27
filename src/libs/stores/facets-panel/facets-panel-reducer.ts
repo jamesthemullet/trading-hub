@@ -40,7 +40,7 @@ type ChangeCountryAction = {
   payload: MerchandisingCountryCode;
 };
 
-export type Action =
+type Action =
   | ChangeDisplayTypeAction
   | SetIncludedOrderAction
   | InitialiseStateAction
