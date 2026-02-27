@@ -238,7 +238,7 @@ export const GlobalFacetAttributesEditModal = ({
             <Button
               onClick={handleSave}
               theme="primary"
-              disabled={
+              isDisabled={
                 Object.values(globalAttributesLocalState.errorStates).some(
                   (state) => state
                 ) ||

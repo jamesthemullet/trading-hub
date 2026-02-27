@@ -144,10 +144,17 @@ const eslint = [
       'react/jsx-boolean-value': 'error',
       'react/jsx-no-useless-fragment': 'error',
       'react/jsx-curly-brace-presence': ['error', 'never'],
+      'react/forbid-dom-props': ['error', { forbid: ['style'] }],
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       'no-lone-blocks': 'error',
       // '@typescript-eslint/prefer-nullish-coalescing': 'error',
       'react/jsx-fragments': ['error', 'syntax'],
+    },
+  },
+  {
+    files: ['**/*.stories.*'],
+    rules: {
+      'react/forbid-dom-props': 'off',
     },
   },
   {
@@ -164,6 +171,7 @@ const eslint = [
       'functional/no-return-void': 'off',
       'functional/no-throw-statements': 'off',
       'no-unused-vars': 'off',
+      'react/forbid-dom-props': 'off',
       'simple-import-sort/exports': 'error',
       'simple-import-sort/imports': 'error',
       'testing-library/await-async-events': 'error',

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { Button } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
 
 import Image from 'next/image';
@@ -93,7 +94,8 @@ export const EditableLabel = ({
             </div>
 
             <div className={styles.editConfirmationButtons}>
-              <button
+              <Button
+                appearance="icon"
                 type="button"
                 className={styles.editButton}
                 onClick={() => {
@@ -101,7 +103,7 @@ export const EditableLabel = ({
                   setIsEditMode(false);
                 }}
                 aria-label={`Save ${displayValue} change`}
-                disabled={showErrorState}
+                isDisabled={showErrorState}
               >
                 <Image
                   width={20}
@@ -109,9 +111,10 @@ export const EditableLabel = ({
                   src="/trading-hub/asset/icon-tick-in-circle.svg"
                   alt=""
                 />
-              </button>
+              </Button>
               {canCancelEdit && (
-                <button
+                <Button
+                  appearance="icon"
                   type="button"
                   className={styles.editButton}
                   onClick={() => {
@@ -129,7 +132,7 @@ export const EditableLabel = ({
                     src="/trading-hub/asset/icon-cross-in-circle.svg"
                     alt=""
                   />
-                </button>
+                </Button>
               )}
             </div>
           </>
@@ -143,7 +146,8 @@ export const EditableLabel = ({
             </Typography>
 
             {writeEnabled && (
-              <button
+              <Button
+                appearance="icon"
                 type="button"
                 className={styles.editButton}
                 onClick={() => {
@@ -159,7 +163,7 @@ export const EditableLabel = ({
                   src="/trading-hub/asset/icon-edit-pencil.svg"
                   alt=""
                 />
-              </button>
+              </Button>
             )}
           </>
         )}

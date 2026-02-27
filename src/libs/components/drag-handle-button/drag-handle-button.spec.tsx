@@ -11,7 +11,7 @@ describe('DragHandleButton', () => {
   };
 
   it('should render button correctly', () => {
-    render(<DragHandleButton {...defaultProps} />);
+    const { container } = render(<DragHandleButton {...defaultProps} />);
 
     expect(screen.getByRole('button')).toBeInTheDocument();
     expect(screen.getByRole('button')).toHaveClass('dragHandleButton');
@@ -22,9 +22,10 @@ describe('DragHandleButton', () => {
     expect(
       screen.getByTestId('drag-handle-test-attribute')
     ).toBeInTheDocument();
-    const image = screen.getByAltText('Drag handle');
+    const image = container.querySelector('img');
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute('src');
+    expect(image).toHaveAttribute('alt', '');
   });
 
   it('should be disabled when disabled prop is true', () => {

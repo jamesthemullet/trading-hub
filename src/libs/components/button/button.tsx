@@ -1,4 +1,10 @@
-import type { ButtonHTMLAttributes, ElementType } from 'react';
+import {
+  type AnchorHTMLAttributes,
+  type ButtonHTMLAttributes,
+  type ElementType,
+  forwardRef,
+  type ReactNode,
+} from 'react';
 
 import Link from 'next/link';
 
@@ -15,60 +21,99 @@ type RawButtonProps = {
   href?: string;
   isInline?: boolean;
   icon?: Icon;
-  onClick?: () => void;
+  onClick?:
+    | ButtonHTMLAttributes<HTMLButtonElement>['onClick']
+    | AnchorHTMLAttributes<HTMLAnchorElement>['onClick'];
+  appearance?: 'text' | 'icon';
+  isAutoSize?: boolean;
   theme?: 'primary' | 'secondary' | 'tertiary' | 'filled' | 'outlined';
   type?: 'submit' | 'reset' | 'button' | undefined;
   isTextCentred?: boolean;
 };
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & RawButtonProps;
 
-export const Button = ({
-  as = 'button',
-  isDisabled,
-  href,
-  onClick,
-  theme,
-  type = 'button',
-  children,
-  icon,
-  isInline,
-  isTextCentred,
-  ...rest
-}: ButtonProps) => {
-  const className = `${styles.button} typographyBodyMedium`;
+type TextButtonProps = {
+  appearance?: 'text';
+  children?: ReactNode;
+};
 
-  if (as === 'a' && href) {
+type IconButtonProps = {
+  appearance: 'icon';
+  children?: ReactNode;
+  'aria-label': string;
+};
+
+type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> &
+  RawButtonProps &
+  (TextButtonProps | IconButtonProps);
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      as = 'button',
+      isDisabled,
+      href,
+      onClick,
+      appearance = 'text',
+      isAutoSize,
+      theme,
+      type = 'button',
+      children,
+      icon,
+      isInline,
+      isTextCentred,
+      className,
+      ...rest
+    },
+    ref
+  ) => {
+    const combinedClassName = [styles.button, 'typographyBodyMedium', className]
+      .filter(Boolean)
+      .join(' ');
+
+    if (as === 'a' && href) {
+      return (
+        <Link
+          href={href}
+          className={combinedClassName}
+          data-theme={theme}
+          data-is-disabled={isDisabled}
+          data-icon={icon}
+          data-appearance={appearance}
+          data-is-auto-size={isAutoSize}
+          data-is-inline={isInline}
+          data-is-text-centred={isTextCentred}
+          {...(onClick &&
+            !isDisabled && {
+              onClick:
+                onClick as AnchorHTMLAttributes<HTMLAnchorElement>['onClick'],
+            })}
+          {...(isDisabled && { 'aria-disabled': isDisabled })}
+        >
+          {children}
+        </Link>
+      );
+    }
+
     return (
-      <Link
-        href={href}
-        className={className}
+      <button
+        ref={ref}
+        className={combinedClassName}
+        type={type}
         data-theme={theme}
         data-is-disabled={isDisabled}
         data-icon={icon}
+        data-appearance={appearance}
+        data-is-auto-size={isAutoSize}
         data-is-inline={isInline}
         data-is-text-centred={isTextCentred}
         {...(onClick && !isDisabled && { onClick })}
-        {...(isDisabled && { 'aria-disabled': isDisabled })}
+        {...(isDisabled && { disabled: isDisabled })}
+        {...rest}
       >
         {children}
-      </Link>
+      </button>
     );
   }
+);
 
-  return (
-    <button
-      className={className}
-      type={type}
-      data-theme={theme}
-      data-is-disabled={isDisabled}
-      data-icon={icon}
-      data-is-inline={isInline}
-      data-is-text-centred={isTextCentred}
-      {...(onClick && !isDisabled && { onClick })}
-      {...(isDisabled && { disabled: isDisabled })}
-      {...rest}
-    >
-      {children}
-    </button>
-  );
-};
+Button.displayName = 'Button';

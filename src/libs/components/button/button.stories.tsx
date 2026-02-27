@@ -39,6 +39,12 @@ const meta: Meta<typeof Button> = {
         type: 'boolean',
       },
     },
+    appearance: {
+      control: {
+        type: 'select',
+        options: ['text', 'icon'],
+      },
+    },
     theme: {
       control: {
         type: 'select',
@@ -96,6 +102,19 @@ export const Link: Story = {
     theme: 'primary',
     isInline: false,
     children: 'Link Button',
+    onClick: fn(),
+  },
+  render: (args) => <Button {...args}>{args.children}</Button>,
+};
+
+export const Icon: Story = {
+  args: {
+    isDisabled: false,
+    theme: 'secondary',
+    as: 'button',
+    appearance: 'icon',
+    'aria-label': 'Reorder products',
+    children: '↕',
     onClick: fn(),
   },
   render: (args) => <Button {...args}>{args.children}</Button>,

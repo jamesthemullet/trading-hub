@@ -149,3 +149,28 @@
 .button[data-is-text-centred='true'] {
   text-align: center;
 }
+
+.button[data-appearance='icon'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: 1px;
+  padding-inline: 6px;
+  aspect-ratio: 1 / 1;
+
+  &:hover,
+  &:focus,
+  &:disabled {
+    background-color: transparent;
+  }
+}
+
+.button[data-appearance='icon'][data-is-auto-size='true'] {
+  width: auto;
+  height: auto;
+  aspect-ratio: auto;
+}
+
+.button[data-appearance='icon'][data-icon]::before {
+  margin-right: 0;
+}

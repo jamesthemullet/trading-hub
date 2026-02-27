@@ -261,7 +261,7 @@ export const CategorySearch = ({
             aria-haspopup="menu"
             aria-expanded={isDropdownOpen}
             aria-label="select category"
-            disabled={!previewCategory}
+            isDisabled={!previewCategory}
             onMouseEnter={handlePreviewMouseEnter}
             onMouseLeave={handlePreviewMouseLeave}
             onKeyDown={handleOnKeyDown}
@@ -398,7 +398,8 @@ export const CategorySearch = ({
                     </div>
 
                     {writeEnabled && (
-                      <button
+                      <Button
+                        appearance="icon"
                         className={styles.removeKeywordPill}
                         type="button"
                         onClick={() => {
@@ -417,7 +418,7 @@ export const CategorySearch = ({
                           width={16}
                           height={16}
                         />
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -449,7 +450,8 @@ export const CategorySearch = ({
                         </div>
                       </button>
                       {writeEnabled && (
-                        <button
+                        <Button
+                          appearance="icon"
                           className={styles.removeKeywordPill}
                           type="button"
                           onClick={() => onClearSelection(category)}
@@ -461,7 +463,7 @@ export const CategorySearch = ({
                             width={16}
                             height={16}
                           />
-                        </button>
+                        </Button>
                       )}
                     </li>
                   ))}

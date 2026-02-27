@@ -1,5 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act, screen } from '@testing-library/react';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -10,9 +9,7 @@ describe('AttributeWeight', () => {
     renderWithProviders(
       <AttributeWeight
         canEditWeight
-        onChangeSubmit={jest.fn()}
         field="category"
-        isEditing={false}
         onStartChanges={jest.fn()}
         weight={1}
       />
@@ -27,9 +24,7 @@ describe('AttributeWeight', () => {
     renderWithProviders(
       <AttributeWeight
         canEditWeight
-        onChangeSubmit={jest.fn()}
         field="category"
-        isEditing={false}
         onStartChanges={onStartChanges}
         weight={1}
         isEditable
@@ -45,56 +40,28 @@ describe('AttributeWeight', () => {
     expect(onStartChanges).toHaveBeenCalledTimes(1);
   });
 
-  it('clears the attribute weight', async () => {
-    const user = userEvent.setup();
+  it('calls onDelete when delete button clicked', () => {
+    const onDelete = jest.fn();
+
     renderWithProviders(
       <AttributeWeight
         canEditWeight
-        onChangeSubmit={jest.fn()}
         field="category"
-        isEditing
         onStartChanges={jest.fn()}
+        onDelete={onDelete}
         weight={1}
         isEditable
       />
     );
 
-    const input = screen.getByRole('spinbutton', {
-      name: 'Strength %',
-    });
-    await user.clear(input);
-
-    expect(
-      screen.getByText('Weight must be between 1 and 100')
-    ).toBeInTheDocument();
-  });
-
-  it('saves the attribute weight change', async () => {
-    const user = userEvent.setup();
-    const mockOnChange = jest.fn();
-    renderWithProviders(
-      <AttributeWeight
-        canEditWeight
-        onChangeSubmit={mockOnChange}
-        field="category"
-        isEditing
-        onStartChanges={jest.fn()}
-        weight={1}
-        isEditable
-      />
-    );
-
-    const input = screen.getByRole('spinbutton', {
-      name: 'Strength %',
+    const deleteButton = screen.getByRole('button', {
+      name: 'Delete attribute',
     });
 
-    fireEvent.change(input, { target: { value: '99' } });
-
-    const saveButton = screen.getByRole('button', {
-      name: 'Save attribute category change',
+    act(() => {
+      deleteButton.click();
     });
-    await user.click(saveButton);
 
-    expect(mockOnChange).toHaveBeenCalledWith({ weight: 99 });
+    expect(onDelete).toHaveBeenCalledTimes(1);
   });
 });

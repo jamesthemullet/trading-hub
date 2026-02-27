@@ -87,6 +87,7 @@ export const FacetRow = memo(
         data-testid={`Row showing ${facet.displayValue} as ${displayType}`}
         key={sortableProps ? undefined : id}
         ref={sortableProps?.setNodeRef}
+        // eslint-disable-next-line react/forbid-dom-props
         style={sortableProps?.style}
         {...(sortableProps?.attributes ?? {})}
         data-with-reorder

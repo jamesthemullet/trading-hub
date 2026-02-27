@@ -101,7 +101,7 @@ const StyleGuide = () => {
         Buttons
       </Typography>
       <div className={styles.guide}>
-        <div style={{ width: '60%' }}>
+        <div className={styles.buttonExample}>
           <Button theme="primary">Button</Button>
         </div>
         <Typography variant="bodySmall">Primary</Typography>
@@ -112,7 +112,7 @@ const StyleGuide = () => {
         </Typography>
       </div>
       <div className={styles.guide}>
-        <div style={{ width: '60%' }}>
+        <div className={styles.buttonExample}>
           <Button>Button</Button>
         </div>
         <Typography variant="bodySmall">Secondary</Typography>
@@ -121,7 +121,7 @@ const StyleGuide = () => {
         </Typography>
       </div>
       <div className={styles.guide}>
-        <div style={{ width: '60%' }}>
+        <div className={styles.buttonExample}>
           <Button isDisabled>Button</Button>
         </div>
         <Typography variant="bodySmall">Inactive</Typography>
@@ -130,7 +130,7 @@ const StyleGuide = () => {
         </Typography>
       </div>
       <div className={styles.guide}>
-        <div style={{ width: '60%' }}>
+        <div className={styles.buttonExample}>
           <Button theme="tertiary">Button</Button>
         </div>
         <Typography variant="bodySmall">Tertiary</Typography>
@@ -141,7 +141,7 @@ const StyleGuide = () => {
         </Typography>
       </div>
       <div className={styles.guide}>
-        <div style={{ width: '60%' }}>
+        <div className={styles.buttonExample}>
           <Button theme="tertiary" isDisabled>
             Button
           </Button>
@@ -155,7 +155,7 @@ const StyleGuide = () => {
         </Typography>
       </div>
       <div className={styles.guide}>
-        <div style={{ width: '60%' }}>
+        <div className={styles.buttonExample}>
           <Button theme="filled" isInline>
             Button
           </Button>
@@ -169,7 +169,7 @@ const StyleGuide = () => {
         </Typography>
       </div>
       <div className={styles.guide}>
-        <div style={{ width: '60%' }}>
+        <div className={styles.buttonExample}>
           <Button theme="outlined" isInline>
             Button
           </Button>

@@ -1,0 +1,10 @@
+.fallbackContainer {
+  padding: var(--mns-spacing-5);
+  text-align: center;
+  margin-top: var(--mns-spacing-10);
+}
+
+.refreshButton {
+  margin-top: var(--mns-spacing-2-5);
+  cursor: pointer;
+}

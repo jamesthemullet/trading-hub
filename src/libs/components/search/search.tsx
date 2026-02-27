@@ -4,6 +4,7 @@ import { Input, type InputProps } from '@/libs/containers/shared/input/input';
 
 import Image from 'next/image';
 
+import { Button } from '../button/button';
 import styles from './search.module.css';
 
 type SearchProps = {
@@ -80,7 +81,8 @@ export const SearchBox = ({ inputProps }: SearchBoxProps) => {
       />
       <Input className={styles.input} type="search" {...inputProps} />
       {inputProps.value && (
-        <button
+        <Button
+          appearance="icon"
           className={styles.clearButton}
           type="button"
           onClick={handleClear}
@@ -92,7 +94,7 @@ export const SearchBox = ({ inputProps }: SearchBoxProps) => {
             width={14}
             height={14}
           />
-        </button>
+        </Button>
       )}
     </div>
   );

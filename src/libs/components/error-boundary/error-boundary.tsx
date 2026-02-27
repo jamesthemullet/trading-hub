@@ -2,6 +2,9 @@ import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 import { reportErrorToDynatrace } from '@/libs/utils/dynatrace';
 
+import { Button } from '../button/button';
+import styles from './error-boundary.module.css';
+
 type Props = {
   children: ReactNode;
   fallback?: ReactNode;
@@ -39,29 +42,19 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div
-            style={{
-              padding: '40px',
-              textAlign: 'center',
-              marginTop: '100px',
-            }}
-          >
+          <div className={styles.fallbackContainer}>
             <h1>Something went wrong</h1>
             <p>
               We&apos;re sorry, but something unexpected happened. Please try
               refreshing the page.
             </p>
-            <button
+            <Button
               type="button"
               onClick={() => window.location.reload()}
-              style={{
-                marginTop: '20px',
-                padding: '10px 20px',
-                cursor: 'pointer',
-              }}
+              className={styles.refreshButton}
             >
               Refresh Page
-            </button>
+            </Button>
           </div>
         )
       );

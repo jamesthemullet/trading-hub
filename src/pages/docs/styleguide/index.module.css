@@ -15,6 +15,10 @@
   margin: 0 0 var(--mns-spacing-2);
 }
 
+.buttonExample {
+  width: 60%;
+}
+
 .colour {
   width: 150px;
   height: 150px;

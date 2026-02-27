@@ -152,7 +152,7 @@ export const SearchKeywords = ({
               aria-haspopup="menu"
               aria-expanded={isDropdownOpen}
               aria-label="select keyword"
-              disabled={!previewSearchTerm}
+              isDisabled={!previewSearchTerm}
               onKeyDown={handleOnKeyDown}
             >
               <Typography as="span" variant="bodySmall">
@@ -253,7 +253,8 @@ export const SearchKeywords = ({
                         {previewSearchTerm}
                       </Typography>
                       {writeEnabled && (
-                        <button
+                        <Button
+                          appearance="icon"
                           className={styles.removeKeywordButton}
                           type="submit"
                           onClick={
@@ -276,7 +277,7 @@ export const SearchKeywords = ({
                             width={16}
                             height={16}
                           />
-                        </button>
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -298,7 +299,8 @@ export const SearchKeywords = ({
                         </Typography>
                       </button>
                       {writeEnabled && (
-                        <button
+                        <Button
+                          appearance="icon"
                           className={styles.removeKeywordButton}
                           type="submit"
                           onClick={() => removeSearchTerm(keyword)}
@@ -310,7 +312,7 @@ export const SearchKeywords = ({
                             width={16}
                             height={16}
                           />
-                        </button>
+                        </Button>
                       )}
                     </li>
                   ))}

@@ -1,27 +1,29 @@
-import { forwardRef } from 'react';
+import { type ButtonHTMLAttributes, forwardRef } from 'react';
 
 import Image from 'next/image';
 
+import { Button } from '../button/button';
 import styles from './drag-handle-button.module.css';
 
 interface DragHandleButtonProps {
   disabled: boolean;
   displayName: string;
-  setActivatorNodeRef?: (node: HTMLElement | null) => void;
-  listeners?: Record<string, unknown>;
+  setActivatorNodeRef?: (node: HTMLButtonElement | null) => void;
+  listeners?: ButtonHTMLAttributes<HTMLButtonElement>;
 }
 
 export const DragHandleButton = forwardRef<
   HTMLButtonElement,
   DragHandleButtonProps
 >(({ disabled, displayName, setActivatorNodeRef, listeners = {} }, ref) => (
-  <button
+  <Button
+    appearance="icon"
     ref={setActivatorNodeRef || ref}
     className={styles.dragHandleButton}
     type="button"
     aria-label={`Reorder ${displayName}`}
     {...listeners}
-    disabled={disabled}
+    isDisabled={disabled}
     aria-disabled={disabled}
     data-testid={`drag-handle-${displayName}`}
   >
@@ -29,9 +31,9 @@ export const DragHandleButton = forwardRef<
       width={24}
       height={24}
       src="/trading-hub/asset/drag-handle.svg"
-      alt="Drag handle"
+      alt=""
     />
-  </button>
+  </Button>
 ));
 
 DragHandleButton.displayName = 'DragHandleButton';

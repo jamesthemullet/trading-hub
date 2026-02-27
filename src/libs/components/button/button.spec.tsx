@@ -37,6 +37,18 @@ describe('Button', () => {
     expect(mockClickHandler).toHaveBeenCalled();
   });
 
+  it('should render icon button with accessible name', () => {
+    render(
+      <Button appearance="icon" aria-label="Reorder products">
+        <span aria-hidden>↕</span>
+      </Button>
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Reorder products' })
+    ).toBeInTheDocument();
+  });
+
   it('should not call a button onclick handler when disabled', async () => {
     const mockClickHandler = jest.fn();
     render(
@@ -46,6 +58,28 @@ describe('Button', () => {
     );
 
     const button = screen.getByRole('button', { name: 'foo' });
+    await userEvent.click(button, {
+      pointerEventsCheck: PointerEventsCheckLevel.Never,
+    });
+
+    expect(mockClickHandler).not.toHaveBeenCalled();
+  });
+
+  it('should not call an icon button onclick handler when disabled', async () => {
+    const mockClickHandler = jest.fn();
+
+    render(
+      <Button
+        appearance="icon"
+        aria-label="Reorder products"
+        onClick={mockClickHandler}
+        isDisabled
+      >
+        <span aria-hidden>↕</span>
+      </Button>
+    );
+
+    const button = screen.getByRole('button', { name: 'Reorder products' });
     await userEvent.click(button, {
       pointerEventsCheck: PointerEventsCheckLevel.Never,
     });
