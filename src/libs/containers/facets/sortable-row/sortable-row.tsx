@@ -29,9 +29,12 @@ export const SortableRow = ({ id, disabled, children }: SortableRowProps) => {
     disabled,
   });
 
+  // Restrict horizontal movement by clamping x-axis to 0
+  const restrictedTransform = transform ? { ...transform, x: 0 } : transform;
+
   const style: CSSProperties = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+    transform: restrictedTransform
+      ? `translate3d(${restrictedTransform.x}px, ${restrictedTransform.y}px, 0)`
       : undefined,
     transition,
     zIndex: isDragging ? 10 : undefined,

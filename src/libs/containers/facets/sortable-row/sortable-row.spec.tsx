@@ -45,7 +45,7 @@ describe('FacetAttributeSortableRow', () => {
         setActivatorNodeRef: expect.any(Function),
         setNodeRef: expect.any(Function),
         style: {
-          transform: 'translate3d(12px, -8px, 0)',
+          transform: 'translate3d(0px, -8px, 0)',
           transition: 'ease 200ms',
           zIndex: 10,
         },
