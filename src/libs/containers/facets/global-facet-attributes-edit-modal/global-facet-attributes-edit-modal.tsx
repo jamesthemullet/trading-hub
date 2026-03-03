@@ -160,7 +160,8 @@ export const GlobalFacetAttributesEditModal = ({
                         }
                       >
                         <Typography variant="bodySmall">{value}</Typography>
-                        <button
+                        <Button
+                          appearance="icon"
                           className={facetsPanelStyles.removeMergedFacet}
                           onClick={() => {
                             requestAnimationFrame(() => {
@@ -172,7 +173,14 @@ export const GlobalFacetAttributesEditModal = ({
                           }}
                           aria-label={`Remove merged facet for ${value}`}
                           type="button"
-                        />
+                        >
+                          <Image
+                            width={18}
+                            height={18}
+                            src="/trading-hub/asset/icon-close-black.svg"
+                            alt=""
+                          />
+                        </Button>
                       </div>
                     ))}
 

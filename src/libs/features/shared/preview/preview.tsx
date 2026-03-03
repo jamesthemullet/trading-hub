@@ -167,8 +167,8 @@ export const Preview = ({
                 <Modal.Title id={modalTitleId}>
                   <Typography variant="titleMedium">Preview</Typography>
                 </Modal.Title>
-                <button
-                  type="button"
+                <Button
+                  appearance="icon"
                   className={styles.closeButton}
                   onClick={onClose}
                   aria-label="close modal"

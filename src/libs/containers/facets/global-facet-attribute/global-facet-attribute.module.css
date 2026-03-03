@@ -22,9 +22,12 @@
 }
 
 .removeMergedValueButton {
-  background: url('/trading-hub/asset/icon-close-black.svg');
   width: 18px;
   height: 18px;
-  display: inline-block;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }

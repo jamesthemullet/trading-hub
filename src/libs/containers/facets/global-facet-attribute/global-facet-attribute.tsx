@@ -12,6 +12,8 @@ import {
 import facetPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 
+import Image from 'next/image';
+
 import styles from './global-facet-attribute.module.css';
 
 type GlobalFacetAttributeProps = {
@@ -113,8 +115,8 @@ export const GlobalFacetAttribute = ({
                 <div className={styles.mergedValue} key={`${i}-${value}`}>
                   <Typography variant="bodySmall">{value}</Typography>{' '}
                   {isMergeGroup && value !== displayName && writeEnabled && (
-                    <button
-                      type="button"
+                    <Button
+                      appearance="icon"
                       className={styles.removeMergedValueButton}
                       onClick={() => {
                         setIsAwaitingUpdate(true);
@@ -126,8 +128,15 @@ export const GlobalFacetAttribute = ({
                         });
                       }}
                       aria-label={`Remove merged facet for ${value}`}
-                      disabled={isAwaitingUpdate}
-                    />
+                      isDisabled={isAwaitingUpdate}
+                    >
+                      <Image
+                        width={18}
+                        height={18}
+                        src="/trading-hub/asset/icon-close-black.svg"
+                        alt=""
+                      />
+                    </Button>
                   )}
                 </div>
               ))}

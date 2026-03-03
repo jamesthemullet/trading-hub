@@ -347,8 +347,8 @@ export const DataTable = ({
                     </div>
                     <div className={styles.tableCol}>
                       <div className={styles.tableActions}>
-                        <button
-                          type="button"
+                        <Button
+                          appearance="icon"
                           className={styles.arrowContainer}
                           onKeyDown={(e) => {
                             // istanbul ignore else
@@ -364,10 +364,11 @@ export const DataTable = ({
                             e.stopPropagation();
                             handleOptionToggle(id);
                           }}
+                          aria-label="More options"
                           title="More options"
                         >
                           <span className={styles.menuButton} />
-                        </button>
+                        </Button>
                         {isOptionDropdownOpen && (
                           <div
                             className={styles.dropdownOptions}
