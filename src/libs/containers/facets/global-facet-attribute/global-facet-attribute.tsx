@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import type { FacetOrderInputProps } from '@/libs/components';
 import {
+  Button,
   Checkbox,
   FacetOrderInput,
   Loader,
@@ -132,8 +133,9 @@ export const GlobalFacetAttribute = ({
               ))}
 
               {attributes.length > maxVisible && (
-                <button
+                <Button
                   type="button"
+                  appearance="plain"
                   className={styles.toggleLink}
                   onClick={() => {
                     setIsExpanded(!isExpanded);
@@ -142,7 +144,7 @@ export const GlobalFacetAttribute = ({
                   <Typography variant="bodySmall" as="span">
                     {isExpanded ? 'Show Fewer' : 'Show More'}
                   </Typography>
-                </button>
+                </Button>
               )}
             </>
           ) : (

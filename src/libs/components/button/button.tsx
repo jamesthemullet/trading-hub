@@ -24,7 +24,7 @@ type RawButtonProps = {
   onClick?:
     | ButtonHTMLAttributes<HTMLButtonElement>['onClick']
     | AnchorHTMLAttributes<HTMLAnchorElement>['onClick'];
-  appearance?: 'text' | 'icon';
+  appearance?: 'text' | 'icon' | 'plain';
   isAutoSize?: boolean;
   theme?: 'primary' | 'secondary' | 'tertiary' | 'filled' | 'outlined';
   type?: 'submit' | 'reset' | 'button' | undefined;
@@ -36,6 +36,11 @@ type TextButtonProps = {
   children?: ReactNode;
 };
 
+type PlainButtonProps = {
+  appearance: 'plain';
+  children?: ReactNode;
+};
+
 type IconButtonProps = {
   appearance: 'icon';
   children?: ReactNode;
@@ -44,7 +49,7 @@ type IconButtonProps = {
 
 type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> &
   RawButtonProps &
-  (TextButtonProps | IconButtonProps);
+  (TextButtonProps | PlainButtonProps | IconButtonProps);
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (

@@ -125,7 +125,7 @@ export const AddAttribute = ({
           break;
       }
     }
-  }, [isEditMode, alphanumericAttributes, editData]);
+  }, [isEditMode, editData]);
 
   return (
     <div className={styles.modalContainer}>
@@ -184,7 +184,8 @@ export const AddAttribute = ({
           </div>
 
           <div className={styles.modalSection}>
-            <button
+            <Button
+              appearance="plain"
               className={styles.modalButton}
               onClick={() => setModalStep(1)}
               type="button"
@@ -192,10 +193,11 @@ export const AddAttribute = ({
               <Typography isStrong as="span" variant="bodySmall">
                 Numeric attributes
               </Typography>
-            </button>
+            </Button>
           </div>
           <div className={styles.modalSection}>
-            <button
+            <Button
+              appearance="plain"
               className={styles.modalButton}
               type="button"
               onClick={() => setModalStep(2)}
@@ -203,14 +205,15 @@ export const AddAttribute = ({
               <Typography isStrong as="span" variant="bodySmall">
                 Product description attributes
               </Typography>
-            </button>
+            </Button>
           </div>
         </StepContent>
 
         <StepContent stepIndex={1} currentStep={modalStep}>
           {!isEditMode && (
             <div className={styles.modalSection}>
-              <button
+              <Button
+                appearance="plain"
                 className={styles.step}
                 type="button"
                 data-step-type="previous"
@@ -222,7 +225,7 @@ export const AddAttribute = ({
                 <Typography isStrong as="span" variant="bodySmall">
                   Back
                 </Typography>
-              </button>
+              </Button>
             </div>
           )}
 
@@ -302,7 +305,8 @@ export const AddAttribute = ({
         <StepContent stepIndex={2} currentStep={modalStep}>
           {!isEditMode && (
             <div className={styles.modalSection}>
-              <button
+              <Button
+                appearance="plain"
                 className={styles.step}
                 type="button"
                 data-step-type="previous"
@@ -316,7 +320,7 @@ export const AddAttribute = ({
                 <Typography isStrong as="span" variant="bodySmall">
                   Back
                 </Typography>
-              </button>
+              </Button>
             </div>
           )}
 
@@ -365,7 +369,8 @@ export const AddAttribute = ({
               )
               .map((attribute: MerchandisingAttributeResponseItem) => (
                 <div className={styles.modalSection} key={attribute.name}>
-                  <button
+                  <Button
+                    appearance="plain"
                     className={styles.step}
                     type="button"
                     onClick={() => {
@@ -382,7 +387,7 @@ export const AddAttribute = ({
                     <Typography isStrong as="span" variant="bodySmall">
                       {attribute.name}
                     </Typography>
-                  </button>
+                  </Button>
                 </div>
               ))}
           </div>
@@ -390,7 +395,8 @@ export const AddAttribute = ({
 
         <StepContent stepIndex={3} currentStep={modalStep}>
           <div className={styles.modalSection}>
-            <button
+            <Button
+              appearance="plain"
               className={styles.step}
               type="button"
               data-step-type="previous"
@@ -400,7 +406,7 @@ export const AddAttribute = ({
               <Typography isStrong as="span" variant="bodySmall">
                 {alphanumericField}
               </Typography>
-            </button>
+            </Button>
 
             <div className={styles.count}>
               <Typography variant="bodySmall">

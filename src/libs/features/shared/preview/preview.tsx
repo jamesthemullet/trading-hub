@@ -8,6 +8,7 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
+  Button,
   CombinedDropdown,
   Loader,
   Search,
@@ -186,7 +187,7 @@ export const Preview = ({
                     label={`${withRules ? 'with new rule change' : 'current state'}`}
                     ariaLabel="Preview type selector"
                   >
-                    <button
+                    <Button
                       className={styles.item}
                       type="button"
                       onClick={() => {
@@ -198,8 +199,8 @@ export const Preview = ({
                       <Typography variant="bodySmall" align="center">
                         with new rule change
                       </Typography>
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       className={styles.item}
                       type="button"
                       onClick={() => {
@@ -211,7 +212,7 @@ export const Preview = ({
                       <Typography variant="bodySmall" align="center">
                         current state
                       </Typography>
-                    </button>
+                    </Button>
                   </CombinedDropdown>
                 </div>
               </div>

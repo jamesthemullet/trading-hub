@@ -9,7 +9,7 @@
 }
 
 .attributeWrapper {
-  button {
+  button[data-appearance='plain'] {
     padding: 0 var(--mns-spacing-0-5);
   }
 }

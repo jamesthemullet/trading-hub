@@ -174,3 +174,19 @@
 .button[data-appearance='icon'][data-icon]::before {
   margin-right: 0;
 }
+
+.button[data-appearance='plain'] {
+  border: none;
+  background: none;
+  border-radius: 0;
+  height: auto;
+  padding: 0;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &:disabled {
+    background: none;
+    border: none;
+  }
+}

@@ -23,7 +23,7 @@
   cursor: pointer;
   border: none;
   background: none;
-  margin-left: var(--mns-spacing-4);
+  margin-left: var(--mns-spacing-5);
 }
 
 .icon {

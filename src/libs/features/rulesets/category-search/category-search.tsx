@@ -187,7 +187,7 @@ export const CategorySearch = ({
   };
 
   const CategoryRow = (category: Required<MerchandisingCategory>) => (
-    <button
+    <Button
       className={styles.row}
       type="button"
       key={`row-${category.identifier}-${category.name}-${category.path}`}
@@ -201,11 +201,11 @@ export const CategorySearch = ({
       }}
       aria-label={`Select category ${category.identifier}`}
     >
-      <Typography variant="bodySmall">
+      <Typography variant="bodySmall" as="span">
         {category.identifier} | {formatHTMLStrings(category.name)}{' '}
         {category.path && `| ${category.path}`}
       </Typography>
-    </button>
+    </Button>
   );
 
   const getCurrentPath = (category: string) => {

@@ -1,3 +1,4 @@
+import { Button } from '../button/button';
 import { Typography } from '../typography/typography';
 import styles from './tabs.module.css';
 
@@ -12,9 +13,10 @@ export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {
     <div className={styles.tabsContainerWrapper}>
       <div className={styles.tabsWrapper}>
         {tabs.map((tab, ind) => (
-          <button
+          <Button
             className={styles.tabButton}
             type="button"
+            appearance="plain"
             key={tab.title}
             onClick={() => currentTab !== ind && onTabChange(ind)}
             data-active={currentTab === ind}
@@ -31,7 +33,7 @@ export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {
                 </Typography>
               )}
             </Typography>
-          </button>
+          </Button>
         ))}
       </div>
     </div>

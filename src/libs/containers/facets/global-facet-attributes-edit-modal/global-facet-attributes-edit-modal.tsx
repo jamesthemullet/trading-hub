@@ -177,8 +177,9 @@ export const GlobalFacetAttributesEditModal = ({
                     ))}
 
                     {attributes.length > maxVisible && (
-                      <button
+                      <Button
                         type="button"
+                        appearance="plain"
                         className={styles.styledText}
                         onClick={() => {
                           setIsExpanded(!isExpanded);
@@ -187,7 +188,7 @@ export const GlobalFacetAttributesEditModal = ({
                         <Typography variant="bodySmall">
                           {isExpanded ? 'Show Fewer' : 'Show More'}
                         </Typography>
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
