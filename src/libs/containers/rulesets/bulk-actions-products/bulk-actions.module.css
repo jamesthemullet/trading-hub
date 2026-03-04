@@ -70,11 +70,28 @@
   gap: 2px;
 }
 
+.productMenuButton[data-appearance='plain'] {
+  border: none;
+  background: var(--color-surface-surface-container);
+  border-radius: 0;
+  height: auto;
+  padding-block: 1px;
+  padding-inline: 6px;
+}
+
 .productMenuButton:hover,
 .productMenuButton:focus {
   background-color: #dfece2;
   outline: none;
   box-shadow: none;
+}
+
+.productMenuButton[data-appearance='plain']:hover,
+.productMenuButton[data-appearance='plain']:focus,
+.productMenuButton[data-appearance='plain']:active,
+.productMenuButton[data-appearance='plain']:disabled {
+  background: #dfece2;
+  border: none;
 }
 
 .productMenuButton::before {

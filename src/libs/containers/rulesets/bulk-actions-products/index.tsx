@@ -121,7 +121,7 @@ export const BulkActions = ({
 
           {showBulkActionsMenu && (
             <>
-              <button
+              <Button
                 className={styles.productMenuOverlay}
                 type="submit"
                 aria-label="select available bulk actions"
@@ -136,8 +136,9 @@ export const BulkActions = ({
                   </Typography>
                 </div>
                 {hasRestore && (
-                  <button
+                  <Button
                     className={`${styles.productMenuButton} ${styles.iconRestore}`}
+                    appearance="plain"
                     type="submit"
                     onClick={() => {
                       setChangeToPerform('remove');
@@ -145,12 +146,13 @@ export const BulkActions = ({
                     }}
                   >
                     <Typography variant="bodySmall">Restore</Typography>
-                  </button>
+                  </Button>
                 )}
 
                 {!allSelectedProductsBoosted && (
-                  <button
+                  <Button
                     className={`${styles.productMenuButton} ${styles.iconBoost}`}
+                    appearance="plain"
                     type="button"
                     onClick={() => {
                       setActionToPerform('boost');
@@ -159,12 +161,13 @@ export const BulkActions = ({
                     }}
                   >
                     <Typography variant="bodySmall">Boost to Top</Typography>
-                  </button>
+                  </Button>
                 )}
 
                 {!allSelectedProductsBuried && (
-                  <button
+                  <Button
                     className={`${styles.productMenuButton} ${styles.iconBury}`}
+                    appearance="plain"
                     type="button"
                     onClick={() => {
                       setActionToPerform('bury');
@@ -173,12 +176,13 @@ export const BulkActions = ({
                     }}
                   >
                     <Typography variant="bodySmall">Bury to Bottom</Typography>
-                  </button>
+                  </Button>
                 )}
 
                 {!allSelectedProductsBlocked && (
-                  <button
+                  <Button
                     className={`${styles.productMenuButton} ${styles.iconBlock}`}
+                    appearance="plain"
                     type="button"
                     onClick={() => {
                       setActionToPerform('block');
@@ -187,7 +191,7 @@ export const BulkActions = ({
                     }}
                   >
                     <Typography variant="bodySmall">Block Product</Typography>
-                  </button>
+                  </Button>
                 )}
               </div>
             </>

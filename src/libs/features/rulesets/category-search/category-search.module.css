@@ -153,15 +153,6 @@
   align-content: baseline;
   border-bottom: 1px solid var(--color-surface-dark-on-surface-dark-variant);
 }
-.searchValue {
-  border: none;
-  background: none;
-
-  &:disabled {
-    cursor: auto;
-  }
-}
-
 .modalFooter {
   position: sticky;
   bottom: 0;

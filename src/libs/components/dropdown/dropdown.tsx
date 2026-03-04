@@ -8,6 +8,7 @@ import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-r
 
 import Image from 'next/image';
 
+import { Button } from '../button/button';
 import { Typography } from '../typography/typography';
 import styles from './dropdown.module.css';
 
@@ -318,7 +319,7 @@ export const CombinedDropdown = ({
     switch (variant) {
       case 'countryFilter':
         return countryFilterOptions.map((option) => (
-          <button
+          <Button
             type="button"
             className={styles.dropdownOption}
             key={option.label}
@@ -331,12 +332,12 @@ export const CombinedDropdown = ({
             <Typography as="span" variant="bodySmall">
               {option.label}
             </Typography>
-          </button>
+          </Button>
         ));
 
       case 'countrySelector':
         return countrySelectorOptions.map((option) => (
-          <button
+          <Button
             type="button"
             className={styles.dropdownOption}
             key={option.label}
@@ -357,14 +358,14 @@ export const CombinedDropdown = ({
             <Typography as="span" variant="bodySmall">
               {option.label}
             </Typography>
-          </button>
+          </Button>
         ));
 
       case 'facetOrder':
         return facetOptions
           .filter((o) => o.src)
           .map((option) => (
-            <button
+            <Button
               type="button"
               className={styles.dropdownOption}
               key={option.label}
@@ -377,12 +378,12 @@ export const CombinedDropdown = ({
               <Typography as="span" variant="bodySmall">
                 {option.label}
               </Typography>
-            </button>
+            </Button>
           ));
 
       case 'pageSize':
         return pageSizes?.map((size) => (
-          <button
+          <Button
             type="button"
             className={styles.dropdownOption}
             key={size}
@@ -404,7 +405,7 @@ export const CombinedDropdown = ({
             <Typography as="span" variant="bodySmall">
               {size}
             </Typography>
-          </button>
+          </Button>
         ));
 
       default:
@@ -482,7 +483,7 @@ export const CombinedDropdown = ({
         variant === 'facetOrder' || variant === 'pageSize' ? 'default' : 'large'
       }
     >
-      <button
+      <Button
         className={styles.dropdownButton}
         type="button"
         onKeyDown={handleOnKeyDown}
@@ -501,7 +502,7 @@ export const CombinedDropdown = ({
         >
           <span className={styles.arrow} data-is-dropdown-open={isOpen} />
         </div>
-      </button>
+      </Button>
 
       <div
         className={styles.dropdownContentContainer}

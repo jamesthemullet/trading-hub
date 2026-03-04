@@ -47,8 +47,9 @@ const FacetInfo = ({
 
   return (
     <div className={styles.facetWrapper}>
-      <button
+      <Button
         className={styles.facetButton}
+        appearance="plain"
         type="button"
         onClick={() => setIsDropdownOpen(id)}
       >
@@ -64,7 +65,7 @@ const FacetInfo = ({
             sizes="20px"
           />
         </Typography>
-      </button>
+      </Button>
       {isDropdownOpen && (
         <div className={styles.facetDropdown}>
           {id !== 'Price' && (
@@ -236,8 +237,9 @@ export const Preview = ({
                     ))}
                 </div>
                 {data.facets.length > 5 && (
-                  <button
+                  <Button
                     className={styles.showAllButton}
+                    appearance="plain"
                     type="button"
                     onClick={() => setShowAllFacets(!showAllFacets)}
                   >
@@ -250,7 +252,7 @@ export const Preview = ({
                     <Typography as="span" isStrong>
                       {showAllFacets ? 'Fewer' : 'All'} Filters
                     </Typography>
-                  </button>
+                  </Button>
                 )}
               </div>
 

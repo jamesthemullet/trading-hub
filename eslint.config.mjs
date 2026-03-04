@@ -145,6 +145,14 @@ const eslint = [
       'react/jsx-no-useless-fragment': 'error',
       'react/jsx-curly-brace-presence': ['error', 'never'],
       'react/forbid-dom-props': ['error', { forbid: ['style'] }],
+      'no-restricted-syntax': [
+        'warn',
+        {
+          selector: "JSXOpeningElement[name.name='button']",
+          message:
+            'Avoid native <button>; use the shared <Button> component from @/libs/components. If native button semantics are required (e.g. full-screen dismiss overlays), document with an inline eslint-disable comment.',
+        },
+      ],
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       'no-lone-blocks': 'error',
       // '@typescript-eslint/prefer-nullish-coalescing': 'error',

@@ -283,21 +283,21 @@ export const SearchKeywords = ({
                   </div>
                 )}
                 <ul className={styles.keywordList}>
-                  {filteredKeywords.map((keyword, index) => (
+                  {filteredKeywords.map((keyword) => (
                     <li
-                      key={`${keyword}-${index}`}
+                      key={keyword}
                       data-is-selected="false"
                       className={styles.keywordPill}
                     >
-                      <button
-                        className={styles.selectKeywordButton}
+                      <Button
+                        appearance="plain"
                         type="button"
                         onClick={() => selectPreviewSearchTerm(keyword)}
                       >
                         <Typography variant="bodySmall" isStrong>
                           {keyword}
                         </Typography>
-                      </button>
+                      </Button>
                       {writeEnabled && (
                         <Button
                           appearance="icon"

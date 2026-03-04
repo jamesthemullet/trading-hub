@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Typography } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 
 import styles from './facets-panel-accordion.module.css';
@@ -60,8 +60,9 @@ export const FacetsPanelAccordion = ({
         )}
       </div>
 
-      <button
+      <Button
         type="button"
+        appearance="plain"
         className={styles.toggleButton}
         onClick={() => setIsOpen((open) => !open)}
       >
@@ -80,7 +81,7 @@ export const FacetsPanelAccordion = ({
           />
         </svg>
         {isOpen ? 'Hide Summary' : 'View Summary'}
-      </button>
+      </Button>
     </div>
   );
 };

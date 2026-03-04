@@ -144,9 +144,14 @@ const ProductMenuAction = ({
     .join(' ');
 
   return (
-    <button type={type} className={combinedClassName} {...props}>
+    <Button
+      type={type}
+      appearance="plain"
+      className={combinedClassName}
+      {...props}
+    >
       <Typography variant="bodySmall">{children}</Typography>
-    </button>
+    </Button>
   );
 };
 
@@ -263,6 +268,8 @@ export const Product = ({
       data-testid={`Position ${index + 1}`}
     >
       {isMenuOpen && (
+        // Note: This is a full-screen invisible button that sits behind the menu to capture clicks outside of the menu for closing it.
+        // eslint-disable-next-line no-restricted-syntax
         <button
           data-testid="menu overlay"
           onClick={() => {
@@ -593,6 +600,8 @@ export const MissingProduct = ({
       data-testid={`Position ${index + 1}`}
     >
       {isMenuOpen && (
+        // Note: This is a full-screen invisible button that sits behind the menu to capture clicks outside of the menu for closing it.
+        // eslint-disable-next-line no-restricted-syntax
         <button
           aria-label="menu overlay"
           onClick={() => {

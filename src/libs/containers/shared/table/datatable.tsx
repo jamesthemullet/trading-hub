@@ -432,8 +432,9 @@ export const DataTable = ({
                               View history
                             </Link>
                             {writeEnabled && (
-                              <button
+                              <Button
                                 className={styles.tableDropdown}
+                                appearance="plain"
                                 type="button"
                                 title="Delete"
                                 onMouseDown={onConfirmDelete}
@@ -446,11 +447,12 @@ export const DataTable = ({
                                 data-testid="Delete rule via dropdown"
                               >
                                 Delete
-                              </button>
+                              </Button>
                             )}
                             {writeEnabled && !!onDuplicate && (
-                              <button
+                              <Button
                                 className={styles.tableDropdown}
+                                appearance="plain"
                                 type="button"
                                 onMouseDown={onConfirmDuplicate}
                                 onKeyDown={(e) => {
@@ -461,7 +463,7 @@ export const DataTable = ({
                                 }}
                               >
                                 Duplicate
-                              </button>
+                              </Button>
                             )}
                           </div>
                         )}

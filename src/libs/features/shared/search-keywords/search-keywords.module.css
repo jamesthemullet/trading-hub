@@ -101,11 +101,6 @@
   align-items: center;
 }
 
-.selectKeywordButton {
-  background: none;
-  border: none;
-}
-
 .keywordInput {
   background-color: var(--color-surface-surface);
   flex: 1;

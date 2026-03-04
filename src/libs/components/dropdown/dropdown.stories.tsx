@@ -74,6 +74,7 @@ const GenericTemplate = (args: Story['args']) => {
       <div style={{ padding: '1rem', width: '200px' }}>
         {content}
         <br />
+        {/* eslint-disable-next-line no-restricted-syntax */}
         <button type="button" onClick={() => setContent('Updated content')}>
           Update Content
         </button>

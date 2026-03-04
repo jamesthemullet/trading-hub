@@ -198,9 +198,26 @@
   align-items: center;
 }
 
+.productMenuButton[data-appearance='plain'] {
+  border: none;
+  background: var(--color-surface-bright-surface-bright);
+  border-radius: 0;
+  height: auto;
+  padding-block: 1px;
+  padding-inline: 6px;
+}
+
 .productMenuButton:hover,
 .productMenuButton:focus-visible {
   background-color: #dfece2;
+}
+
+.productMenuButton[data-appearance='plain']:hover,
+.productMenuButton[data-appearance='plain']:focus-visible,
+.productMenuButton[data-appearance='plain']:active,
+.productMenuButton[data-appearance='plain']:disabled {
+  background: #dfece2;
+  border: none;
 }
 
 .productMenuButton:focus-visible {

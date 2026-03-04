@@ -432,8 +432,8 @@ export const CategorySearch = ({
                       className={styles.keywordPill}
                       key={`category-${category}`}
                     >
-                      <button
-                        className={styles.searchValue}
+                      <Button
+                        appearance="plain"
                         type="button"
                         onClick={() => selectPreviewCategory(category)}
                         aria-label={`Additional category ${category}`}
@@ -448,7 +448,7 @@ export const CategorySearch = ({
                             {getCurrentPath(category)}
                           </Typography>
                         </div>
-                      </button>
+                      </Button>
                       {writeEnabled && (
                         <Button
                           appearance="icon"

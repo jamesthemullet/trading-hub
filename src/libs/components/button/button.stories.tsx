@@ -48,7 +48,7 @@ const meta: Meta<typeof Button> = {
     theme: {
       control: {
         type: 'select',
-        options: ['primary', 'secondary', 'tertiary'],
+        options: ['primary', 'secondary', 'tertiary', 'filled', 'outlined'],
       },
     },
     type: {

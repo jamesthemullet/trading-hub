@@ -100,6 +100,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
+      // The native button has to come from somewhere.
+      // eslint-disable-next-line no-restricted-syntax
       <button
         ref={ref}
         className={combinedClassName}

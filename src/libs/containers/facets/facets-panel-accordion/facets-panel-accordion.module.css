@@ -38,10 +38,14 @@
   color: var(--color-role-link-link);
   cursor: pointer;
   width: 200px;
-  padding: 10px 12px;
+
   display: flex;
   align-items: center;
   gap: var(--mns-spacing-1);
+
+  &[data-appearance='plain'] {
+    padding: 10px 12px;
+  }
 }
 
 .animatedSvg {
