@@ -19,6 +19,76 @@ import tseslint from 'typescript-eslint';
 import storybookPlugin from 'eslint-plugin-storybook';
 import playwright from 'eslint-plugin-playwright';
 
+const securityRules = {
+  rules: {
+    'sanitize-dangerously-set-inner-html': {
+      meta: {
+        type: 'problem',
+        docs: {
+          description:
+            'Require sanitize(...) for dangerouslySetInnerHTML.__html values',
+        },
+        schema: [],
+        messages: {
+          requireSanitize:
+            'dangerouslySetInnerHTML must set __html via sanitize(...).',
+        },
+      },
+      create(context) {
+        const hasSanitizedHtmlProperty = (expression) => {
+          if (!expression || expression.type !== 'ObjectExpression') {
+            return false;
+          }
+
+          return expression.properties.some((property) => {
+            if (property.type !== 'Property' || property.computed) {
+              return false;
+            }
+
+            const isHtmlKey =
+              (property.key.type === 'Identifier' &&
+                property.key.name === '__html') ||
+              (property.key.type === 'Literal' &&
+                property.key.value === '__html');
+
+            if (!isHtmlKey || property.value.type !== 'CallExpression') {
+              return false;
+            }
+
+            return (
+              property.value.callee.type === 'Identifier' &&
+              property.value.callee.name === 'sanitize'
+            );
+          });
+        };
+
+        return {
+          JSXAttribute(node) {
+            if (node.name.type !== 'JSXIdentifier') {
+              return;
+            }
+
+            if (node.name.name !== 'dangerouslySetInnerHTML') {
+              return;
+            }
+
+            if (
+              !node.value ||
+              node.value.type !== 'JSXExpressionContainer' ||
+              !hasSanitizedHtmlProperty(node.value.expression)
+            ) {
+              context.report({
+                node,
+                messageId: 'requireSanitize',
+              });
+            }
+          },
+        };
+      },
+    },
+  },
+};
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -62,6 +132,7 @@ const eslint = [
       'simple-import-sort': simpleImportSort,
       'testing-library': testingLibrary,
       functional,
+      'security-rules': securityRules,
       '@next/next': nextPlugin,
       react,
       'react-hooks': reactHooks,
@@ -155,6 +226,7 @@ const eslint = [
       ],
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       'no-lone-blocks': 'error',
+      'security-rules/sanitize-dangerously-set-inner-html': 'error',
       // '@typescript-eslint/prefer-nullish-coalescing': 'error',
       'react/jsx-fragments': ['error', 'syntax'],
     },

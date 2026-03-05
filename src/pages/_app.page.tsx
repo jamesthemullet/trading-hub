@@ -17,6 +17,7 @@ import type { AppProps } from 'next/app';
 import Script from 'next/script';
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
+import sanitize from 'xss';
 
 import { Navigation } from '../libs/components/navigation/navigation';
 import styles from './_app.module.css';
@@ -79,7 +80,7 @@ const OneTrustScripts = () => {
         type="text/javascript"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
-          __html: 'function OptanonWrapper() {}',
+          __html: sanitize('function OptanonWrapper() {}'),
         }}
       />
       <Script id="onetrust-clarity-consent" strategy="afterInteractive">
@@ -154,7 +155,7 @@ export default function App({
         {process.env.CLARITY_KEY && (
           <script
             dangerouslySetInnerHTML={{
-              __html: `
+              __html: sanitize(`
                 (function(c,l,a,r,i,t,y){
                   c[a] = c[a] || function () { 
                     (c[a].q = c[a].q || []).push(arguments) 
@@ -165,7 +166,7 @@ export default function App({
                   y=l.getElementsByTagName(r)[0];
                   y.parentNode.insertBefore(t,y);
                 })(window, document, "clarity", "script", "${process.env.CLARITY_KEY}");
-              `,
+              `),
             }}
           />
         )}

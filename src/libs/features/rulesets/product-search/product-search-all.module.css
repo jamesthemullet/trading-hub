@@ -53,6 +53,7 @@
     margin: 0;
     min-height: auto;
     flex: 1;
+    min-width: calc(50% - var(--mns-spacing-2));
   }
 }
 
