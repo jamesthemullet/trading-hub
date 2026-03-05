@@ -24,6 +24,13 @@ jest.mock('lodash', () => ({
   without: jest.fn(),
 }));
 
+const mockUseDraftRuleset = {
+  getDraft: jest.fn(),
+  saveDraft: jest.fn(),
+  clearDraft: jest.fn(),
+  isDraftRuleset: jest.fn(),
+};
+
 const mockRulesetDetailResponse = {
   ...mockUseRuleSetPreviewData,
   isLoading: false,
@@ -52,6 +59,7 @@ jest.mock('@/libs/hooks', () => ({
   useFacetsList: () => {
     return mockUseFacetsList;
   },
+  useDraftRuleset: () => mockUseDraftRuleset,
 }));
 
 describe('Index', () => {
@@ -355,5 +363,137 @@ describe('Index', () => {
         exact: false,
       })
     ).toBeVisible();
+  });
+
+  describe('draft rulesets', () => {
+    it('should load and use draft ruleset when ruleSetId is "draft"', async () => {
+      const mockDraftData = {
+        ruleset: {
+          id: '123',
+          isEnabled: true,
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              displayValue: 'color',
+              indexPropertyName: 'color',
+              boosted: ['red'],
+              excludedValues: [],
+            },
+          ],
+          searchTerms: ['test'],
+          rules: {
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: { alphanumeric: [] },
+            excludes: { alphanumeric: [] },
+          },
+        },
+        type: 'search' as const,
+        timestamp: Date.now(),
+      };
+
+      mockUseDraftRuleset.getDraft.mockReturnValue(mockDraftData);
+
+      (useRouter as jest.Mock).mockReturnValue({
+        ...defaultMockRouter,
+        query: {
+          ...defaultMockRouter.query,
+          ruleSetId: 'draft',
+        },
+      });
+
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
+
+      expect(mockUseDraftRuleset.getDraft).toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+      });
+    });
+
+    it('should save draft and navigate when onSave is called in draft mode', async () => {
+      const mockDraftData = {
+        ruleset: {
+          id: '123',
+          isEnabled: true,
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              displayValue: 'color',
+              indexPropertyName: 'color',
+              boosted: ['red'],
+              excludedValues: [],
+            },
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+              displayValue: 'size',
+              indexPropertyName: 'size',
+              boosted: ['m'],
+              excludedValues: [],
+            },
+          ],
+          searchTerms: ['test'],
+          rules: {
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: { alphanumeric: [] },
+            excludes: { alphanumeric: [] },
+          },
+        },
+        type: 'category' as const,
+        timestamp: Date.now(),
+      };
+
+      mockUseDraftRuleset.getDraft.mockReturnValue(mockDraftData);
+
+      (useRouter as jest.Mock).mockReturnValue({
+        ...defaultMockRouter,
+        query: {
+          ...defaultMockRouter.query,
+          ruleSetId: 'draft',
+        },
+      });
+
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
+
+      const saveButton = screen.getByRole('button', { name: 'Save' });
+      await user.click(saveButton);
+
+      expect(mockUseDraftRuleset.saveDraft).toHaveBeenCalledWith({
+        ruleset: expect.objectContaining({
+          facets: expect.arrayContaining([
+            expect.objectContaining({
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              boosted: ['blue', 'green'],
+              excludedValues: ['test exclude'],
+            }),
+            expect.objectContaining({
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+              boosted: ['m'],
+              excludedValues: [],
+            }),
+          ]),
+        }),
+        type: 'category',
+      });
+
+      expect(defaultMockRouter.push).toHaveBeenCalledWith(
+        '/category/facets/new?ruleSetId=draft'
+      );
+    });
   });
 });

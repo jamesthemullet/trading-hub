@@ -7,7 +7,7 @@ import type {
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useSearchRuleSetPreview = (id: string) => {
+export const useSearchRuleSetPreview = (id: string, disabled = false) => {
   const api = useMemo(() => search(), []);
   const [ruleSet, setRuleSet] = useState<MerchandisingReturnedKeywordRuleSet>({
     searchTerms: [],
@@ -40,7 +40,7 @@ export const useSearchRuleSetPreview = (id: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) {
+    if (!id || disabled) {
       setIsLoading(false);
       return;
     }
@@ -91,7 +91,7 @@ export const useSearchRuleSetPreview = (id: string) => {
     };
     setIsLoading(true);
     void asyncCall();
-  }, [id, api]);
+  }, [id, api, disabled]);
 
   return { ruleSet, products, error, isLoading };
 };

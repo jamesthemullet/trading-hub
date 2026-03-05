@@ -4,12 +4,14 @@ import { useRouter } from 'next/router';
 
 import type {
   MerchandisingReturnedFacet,
+  MerchandisingRuleSet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
+  useDraftRuleset,
   useFacetsList,
   useGetFacetAttributeValues,
   useRuleSetDetail,
@@ -31,6 +33,7 @@ const Page = () => {
 
   const { updateCategoryRuleSet, error: updateRulesetError } =
     useUpdateRuleSet();
+  const { getDraft, saveDraft } = useDraftRuleset();
 
   const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
   const facetId = getStringParam('id');
@@ -42,6 +45,10 @@ const Page = () => {
   const [selectedFacet, setSelectedFacet] = useState<
     MerchandisingReturnedFacet | undefined
   >(undefined);
+  const [isDraft, setIsDraft] = useState(false);
+  const [draftRuleset, setDraftRuleset] = useState<
+    (MerchandisingRuleSet & { categoryIds: string[] }) | null
+  >(null);
 
   const { callback: handleSearch } = useDebounce(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +56,15 @@ const Page = () => {
     },
     300
   );
+
+  // Check if this is a draft ruleset on mount
+  useEffect(() => {
+    const draft = getDraft();
+    if (ruleSetId === 'draft' && draft && draft.type === 'category') {
+      setIsDraft(true);
+      setDraftRuleset(draft.ruleset);
+    }
+  }, [ruleSetId, getDraft]);
 
   const categoriesArray = useMemo(() => {
     const categories = router.query.categories;
@@ -72,7 +88,7 @@ const Page = () => {
     ruleSetDetail,
     isLoading,
     error: getRulesetDetailError,
-  } = useRuleSetDetail(ruleSetId);
+  } = useRuleSetDetail(ruleSetId, ruleSetId === 'draft');
 
   const { facets } = useFacetsList({
     query: categoriesArray ?? [],
@@ -83,11 +99,14 @@ const Page = () => {
 
   const facet = facets.find((facet) => facet.id === facetId);
 
+  const effectiveRulesetDetail =
+    isDraft && draftRuleset ? draftRuleset : ruleSetDetail;
+
   useEffect(() => {
     // istanbul ignore else
     if (facets.length > 0 && facet) {
-      const rulesetConfig = ruleSetDetail.facets?.find(
-        (f) => f.id === facet.id
+      const rulesetConfig = effectiveRulesetDetail.facets?.find(
+        (f: MerchandisingRuleSetFacetConfigWithId) => f.id === facet.id
       );
       setSelectedFacet({
         ...facet,
@@ -96,39 +115,60 @@ const Page = () => {
         indexPropertyName: facet.indexPropertyName,
       });
     }
-  }, [facets, facet, ruleSetDetail]);
+  }, [facets, facet, effectiveRulesetDetail]);
 
   const handleSave = async (
     newFacet: MerchandisingRuleSetFacetConfigWithId
   ) => {
-    const {
-      // no need for last changed
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      lastChanged: _,
-      facets,
-      id,
-      categoriesInfo,
-      ...rest
-    } = ruleSetDetail;
-    const newFacets = facets?.map((facet) => {
-      if (facet.id === newFacet.id) {
-        return newFacet;
-      }
+    if (isDraft && draftRuleset) {
+      // istanbul ignore next
+      const newFacets = draftRuleset.facets?.map(
+        (facet: MerchandisingRuleSetFacetConfigWithId) => {
+          if (facet.id === newFacet.id) {
+            return newFacet;
+          }
+          return facet;
+        }
+      ) || [newFacet];
 
-      return facet;
-    });
-    const response = await updateCategoryRuleSet({
-      ...rest,
-      categoryIds:
-        categoriesInfo.map(({ id }) => id) ||
-        // istanbul ignore next
-        [],
-      facets: newFacets,
-      ruleSetId: id,
-    });
-    // istanbul ignore else
-    if (response && response.status !== 'error') {
-      return router.push('/category');
+      const updatedDraft: MerchandisingRuleSet & { categoryIds: string[] } = {
+        ...draftRuleset,
+        facets: newFacets,
+      };
+
+      saveDraft({ ruleset: updatedDraft, type: 'category' });
+
+      return router.push(`/category/facets/new?ruleSetId=draft`);
+    } else {
+      const {
+        // no need for last changed
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        lastChanged: _,
+        facets,
+        id,
+        categoriesInfo,
+        ...rest
+      } = ruleSetDetail;
+      const newFacets = facets?.map((facet) => {
+        if (facet.id === newFacet.id) {
+          return newFacet;
+        }
+
+        return facet;
+      });
+      const response = await updateCategoryRuleSet({
+        ...rest,
+        categoryIds:
+          categoriesInfo.map(({ id }) => id) ||
+          // istanbul ignore next
+          [],
+        facets: newFacets,
+        ruleSetId: id,
+      });
+      // istanbul ignore else
+      if (response && response.status !== 'error') {
+        return router.push('/category');
+      }
     }
   };
 
@@ -162,7 +202,11 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      {!isLoading && showNewFacetValuesPage && selectedFacet ? (
+      {(!isLoading ||
+        // istanbul ignore next
+        isDraft) &&
+      showNewFacetValuesPage &&
+      selectedFacet ? (
         <CategoryAndSearchFacetsPanelPageLayout
           attributeValues={attributeValues}
           facet={selectedFacet}
@@ -175,6 +219,7 @@ const Page = () => {
           writeEnabled={hasWriteAccess}
           headerText={categoriesArray?.join(', ')}
           countryCode={countryCode}
+          isDraftRuleset={isDraft}
         />
       ) : (
         <div className={styles.centredContainer}>Coming soon/loading</div>

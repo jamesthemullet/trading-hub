@@ -19,6 +19,7 @@ import {
 } from '@/libs/constants/routes';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { DataTable } from '@/libs/containers/shared/table/datatable';
+import { useDraftRuleset } from '@/libs/hooks';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import { track } from '@/libs/hooks/utils/analytics';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
@@ -64,6 +65,7 @@ export const TablePanel = <
   const [countryCode, setCountryCode] = useState<
     MerchandisingCountryCode | undefined
   >();
+  const { clearDraft } = useDraftRuleset();
 
   const [searchInputValue, setSearchInputValue] = useState<string>(
     router.query.searchQuery?.toString() || ''
@@ -149,7 +151,10 @@ export const TablePanel = <
                   theme="outlined"
                   icon="plus-simple-green"
                   href={getNewFacetRoute(ruleType)}
-                  onClick={() => track({ event: `Add ${ruleType} facet rule` })}
+                  onClick={() => {
+                    track({ event: `Add ${ruleType} facet rule` });
+                    clearDraft();
+                  }}
                 >
                   Add facet rule
                 </Button>

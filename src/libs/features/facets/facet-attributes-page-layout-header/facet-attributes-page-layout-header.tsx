@@ -13,6 +13,7 @@ type CommonHeaderProps = {
   writeEnabled: boolean;
   countryCode: string;
   onClose: (facetType: 'category' | 'search' | 'global') => void;
+  isDraftRuleset?: boolean;
 };
 
 type GlobalHeaderProps = CommonHeaderProps & {

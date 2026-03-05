@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
+import type {
+  MerchandisingRuleSet,
+  MerchandisingRuleSetFacetConfigWithId,
+} from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
+  useDraftRuleset,
   useFacetsList,
   useGetFacetAttributeValues,
   useSearchRuleSetPreview,
@@ -25,6 +29,7 @@ const Page = () => {
   const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
 
   const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
+  const { getDraft, saveDraft } = useDraftRuleset();
 
   const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
@@ -34,6 +39,10 @@ const Page = () => {
   const countryCode = getCountryCodeParam('countryCode');
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [isDraft, setIsDraft] = useState(false);
+  const [draftRuleset, setDraftRuleset] = useState<
+    (MerchandisingRuleSet & { searchTerms: string[] }) | null
+  >(null);
 
   const [selectedFacet, setSelectedFacet] = useState<
     MerchandisingRuleSetFacetConfigWithId | undefined
@@ -45,6 +54,14 @@ const Page = () => {
     },
     300
   );
+
+  useEffect(() => {
+    const draft = getDraft();
+    if (ruleSetId === 'draft' && draft && draft.type === 'search') {
+      setIsDraft(true);
+      setDraftRuleset(draft.ruleset);
+    }
+  }, [ruleSetId, getDraft]);
 
   const searchTermsArray = useMemo(() => {
     const searchTerms = router.query.searchTerms;
@@ -65,7 +82,10 @@ const Page = () => {
     countryCode,
   });
 
-  const { ruleSet, error, isLoading } = useSearchRuleSetPreview(ruleSetId);
+  const { ruleSet, error, isLoading } = useSearchRuleSetPreview(
+    ruleSetId,
+    ruleSetId === 'draft'
+  );
 
   const { facets } = useFacetsList({
     query: searchTermsArray ?? [],
@@ -76,10 +96,15 @@ const Page = () => {
 
   const facet = facets.find((facet) => facet.id === facetId);
 
+  // Use draft ruleset data or fetched data
+  const effectiveRuleSet = isDraft && draftRuleset ? draftRuleset : ruleSet;
+
   useEffect(() => {
     // istanbul ignore else
     if (facets.length > 0 && facet) {
-      const rulesetConfig = ruleSet.facets?.find((f) => f.id === facet.id);
+      const rulesetConfig = effectiveRuleSet.facets?.find(
+        (f: MerchandisingRuleSetFacetConfigWithId) => f.id === facet.id
+      );
 
       setSelectedFacet({
         ...facet,
@@ -87,21 +112,46 @@ const Page = () => {
         excludedValues: rulesetConfig?.excludedValues || [],
       });
     }
-  }, [facets, facet, ruleSet.facets]);
+  }, [facets, facet, effectiveRuleSet.facets]);
 
   const handleSave = async (
     newFacet: MerchandisingRuleSetFacetConfigWithId
   ) => {
-    const newFacets = ruleSet.facets?.map((facet) => {
-      if (facet.id === newFacet.id) {
-        return newFacet;
-      }
+    if (isDraft && draftRuleset) {
+      // istanbul ignore next
+      const newFacets = draftRuleset.facets?.map(
+        (facet: MerchandisingRuleSetFacetConfigWithId) => {
+          if (facet.id === newFacet.id) {
+            return newFacet;
+          }
+          return facet;
+        }
+      ) || [newFacet];
 
-      return facet;
-    });
+      const updatedDraft: MerchandisingRuleSet & { searchTerms: string[] } = {
+        ...draftRuleset,
+        facets: newFacets,
+      };
+
+      saveDraft({ ruleset: updatedDraft, type: 'search' });
+
+      await router.push(`/search/facets/new?ruleSetId=draft`);
+      return;
+    }
+
+    const newFacets = effectiveRuleSet.facets?.map(
+      (facet: MerchandisingRuleSetFacetConfigWithId) => {
+        if (facet.id === newFacet.id) {
+          return newFacet;
+        }
+
+        return facet;
+      }
+    );
 
     const response = await updateRuleSet({
-      ...ruleSet,
+      ...effectiveRuleSet,
+      searchTerms: effectiveRuleSet.searchTerms || [],
       ruleSetId,
       facets: newFacets,
     });
@@ -141,7 +191,7 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      {!isLoading && showNewFacetValuesPage && selectedFacet ? (
+      {(!isLoading || isDraft) && showNewFacetValuesPage && selectedFacet ? (
         <CategoryAndSearchFacetsPanelPageLayout
           attributeValues={attributeValues}
           facet={selectedFacet}
@@ -154,6 +204,7 @@ const Page = () => {
           writeEnabled={hasWriteAccess}
           headerText={searchTermsArray?.join(', ')}
           countryCode={countryCode}
+          isDraftRuleset={isDraft}
         />
       ) : (
         <div className={styles.centredContainer}>Coming soon/loading</div>

@@ -129,6 +129,13 @@ const mockUpdateRuleSet = {
   error: '',
 };
 
+const mockUseDraftRuleset = {
+  getDraft: jest.fn(),
+  saveDraft: jest.fn(),
+  clearDraft: jest.fn(),
+  isDraftRuleset: jest.fn(),
+};
+
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useSearchRuleSetUpdate: jest.fn(),
@@ -137,6 +144,7 @@ jest.mock('@/libs/hooks', () => ({
   useFacetsList: () => {
     return mockUseFacetsList;
   },
+  useDraftRuleset: () => mockUseDraftRuleset,
 }));
 
 describe('Index', () => {
@@ -152,6 +160,7 @@ describe('Index', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseDraftRuleset.getDraft.mockReturnValue(null);
     (useRouter as jest.Mock).mockReturnValue(defaultMockRouter);
     (lodash.intersection as jest.Mock).mockReturnValue(['red']);
     (lodash.without as jest.Mock).mockReturnValue(['blue', 'green']);
@@ -169,6 +178,35 @@ describe('Index', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('should show coming soon when isLoading is true and isDraft is false', async () => {
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
+      isLoading: true,
+    }));
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Coming soon/loading')).toBeVisible();
+    });
+  });
+
+  it('should show coming soon when showNewFacetValuesPage is false', async () => {
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: false,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Coming soon/loading')).toBeVisible();
+    });
   });
 
   it('should render coming soon if feature flag is not enabled', async () => {
@@ -326,5 +364,261 @@ describe('Index', () => {
         exact: false,
       })
     ).toBeVisible();
+  });
+
+  describe('draft rulesets', () => {
+    it('should load and use draft ruleset when ruleSetId is "draft"', async () => {
+      const mockDraftData = {
+        ruleset: {
+          id: '123',
+          isEnabled: true,
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              displayValue: 'color',
+              indexPropertyName: 'color',
+              boosted: ['red'],
+              excludedValues: [],
+            },
+          ],
+          searchTerms: ['test'],
+          rules: {
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: { alphanumeric: [] },
+            excludes: { alphanumeric: [] },
+          },
+        },
+        type: 'search' as const,
+        timestamp: Date.now(),
+      };
+
+      mockUseDraftRuleset.getDraft.mockReturnValue(mockDraftData);
+
+      (useRouter as jest.Mock).mockReturnValue({
+        ...defaultMockRouter,
+        query: {
+          ...defaultMockRouter.query,
+          ruleSetId: 'draft',
+        },
+      });
+
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
+
+      expect(mockUseDraftRuleset.getDraft).toHaveBeenCalled();
+    });
+
+    it('should save draft and navigate when onSave is called in draft mode', async () => {
+      const mockDraftData = {
+        ruleset: {
+          id: '123',
+          isEnabled: true,
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+              displayValue: 'color',
+              indexPropertyName: 'color',
+              boosted: ['red'],
+              excludedValues: [],
+            },
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+              displayValue: 'size',
+              indexPropertyName: 'size',
+              boosted: ['m'],
+              excludedValues: [],
+            },
+          ],
+          searchTerms: ['test'],
+          rules: {
+            pinnedProducts: [],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: { alphanumeric: [] },
+            excludes: { alphanumeric: [] },
+          },
+        },
+        type: 'search' as const,
+        timestamp: Date.now(),
+      };
+
+      mockUseDraftRuleset.getDraft.mockReturnValue(mockDraftData);
+
+      (useRouter as jest.Mock).mockReturnValue({
+        ...defaultMockRouter,
+        query: {
+          ...defaultMockRouter.query,
+          ruleSetId: 'draft',
+        },
+      });
+
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
+
+      const saveButton = screen.getByRole('button', { name: 'Save' });
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(mockUseDraftRuleset.saveDraft).toHaveBeenCalledWith({
+          ruleset: {
+            facets: [
+              {
+                boosted: ['blue', 'green'],
+                displayValue: 'color',
+                excludedValues: ['Brown'],
+                id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+                indexPropertyName: 'color',
+                lastChanged: {
+                  date: '2021-01-01T08:34:15Z',
+                  user: 'Test User',
+                },
+                merged: [
+                  {
+                    displayValue: 'test merged group',
+                    mergedValues: ['merged 1', 'merged 2'],
+                  },
+                ],
+              },
+              {
+                boosted: ['m'],
+                displayValue: 'size',
+                excludedValues: [],
+                id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+                indexPropertyName: 'size',
+              },
+            ],
+            id: '123',
+            isEnabled: true,
+            rules: {
+              blockedProducts: [],
+              boosts: { alphanumeric: [], numeric: [], product: [] },
+              buries: { alphanumeric: [], numeric: [], product: [] },
+              excludes: { alphanumeric: [] },
+              includes: { alphanumeric: [] },
+              pinnedProducts: [],
+            },
+            searchTerms: ['test'],
+          },
+          type: 'search',
+        });
+      });
+
+      await waitFor(() => {
+        expect(defaultMockRouter.push).toHaveBeenCalledWith(
+          '/search/facets/new?ruleSetId=draft'
+        );
+      });
+    });
+
+    it('should update the ruleset when not in draft mode', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
+
+      const saveButton = screen.getByRole('button', { name: 'Save' });
+      await user.click(saveButton);
+
+      expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
+      expect(defaultMockRouter.push).toHaveBeenCalledWith('/search');
+    });
+  });
+
+  it('should render facet panel when isLoading is false and isDraft is true', async () => {
+    const mockDraftData = {
+      ruleset: {
+        id: '123',
+        isEnabled: true,
+        facets: [
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+            displayValue: 'color',
+            indexPropertyName: 'color',
+            boosted: ['red'],
+            excludedValues: [],
+          },
+        ],
+        searchTerms: ['test'],
+        rules: {
+          pinnedProducts: [],
+          blockedProducts: [],
+          boosts: { numeric: [], alphanumeric: [], product: [] },
+          buries: { numeric: [], alphanumeric: [], product: [] },
+          includes: { alphanumeric: [] },
+          excludes: { alphanumeric: [] },
+        },
+      },
+      type: 'search' as const,
+      timestamp: Date.now(),
+    };
+
+    mockUseDraftRuleset.getDraft.mockReturnValue(mockDraftData);
+
+    (useRouter as jest.Mock).mockReturnValue({
+      ...defaultMockRouter,
+      query: {
+        ...defaultMockRouter.query,
+        ruleSetId: 'draft',
+      },
+    });
+
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
+      isLoading: false,
+    }));
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+
+    expect(
+      screen.getByText('Facet values settings: Color')
+    ).toBeInTheDocument();
+  });
+
+  it('should update ruleset facets when not in draft mode with no pre-existing facets', async () => {
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
+      ruleSet: {
+        ...mockUseSearchRuleSetPreviewData.ruleSet,
+        facets: undefined,
+        searchTerms: undefined as unknown as string[],
+      },
+    }));
+
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
+
+    const saveButton = await screen.findByRole('button', { name: 'Save' });
+    await user.click(saveButton);
+
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
+    expect(defaultMockRouter.push).toHaveBeenCalledWith('/search');
   });
 });

@@ -4,7 +4,7 @@ import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useRuleSetDetail = (id: string) => {
+export const useRuleSetDetail = (id: string, disabled = false) => {
   const [shouldRefetch, refetch] = useState({});
   const api = useMemo(() => search(), []);
   const [ruleSetDetail, setRuleSetDetail] =
@@ -42,7 +42,7 @@ export const useRuleSetDetail = (id: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) {
+    if (!id || disabled) {
       setIsLoading(false);
       return;
     }
@@ -64,7 +64,7 @@ export const useRuleSetDetail = (id: string) => {
     };
     setIsLoading(true);
     void asyncCall();
-  }, [id, api, shouldRefetch]);
+  }, [id, api, shouldRefetch, disabled]);
 
   return { ruleSetDetail, error, isLoading, refreshRuleset: () => refetch({}) };
 };

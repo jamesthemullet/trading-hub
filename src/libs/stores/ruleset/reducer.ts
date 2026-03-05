@@ -274,5 +274,9 @@ export const rulesetReducer = (
         facets: updatedFacets,
       };
     }
+
+    case 'loadRuleset': {
+      return action.payload;
+    }
   }
 };

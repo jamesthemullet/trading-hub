@@ -6,7 +6,7 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import { getFacetRoute } from '@/libs/constants';
+import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 
@@ -27,6 +27,7 @@ type PageLayout = {
   writeEnabled: boolean;
   headerText?: string;
   countryCode?: string;
+  isDraftRuleset?: boolean;
 };
 
 export const CategoryAndSearchFacetsPanelPageLayout = ({
@@ -41,6 +42,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   writeEnabled,
   headerText,
   countryCode = 'UK_IE',
+  isDraftRuleset = false,
 }: PageLayout) => {
   const router = useRouter();
 
@@ -87,17 +89,21 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         displayName={displayName}
         facetType={facetType}
         headerText={headerText}
-        onClose={
-          // istanbul ignore next
-          () => {
-            // istanbul ignore next
-
-            router.push(getFacetRoute(facetType, 'edit', ruleSetId));
+        onClose={() => {
+          if (isDraftRuleset) {
+            router.push(
+              getNewFacetRoute(
+                facetType === 'category' ? 'categoryRanking' : 'searchRanking'
+              )
+            );
+            return;
           }
-        }
+          router.push(getFacetRoute(facetType, 'edit', ruleSetId));
+        }}
         onSave={handleSave}
         writeEnabled={writeEnabled}
         countryCode={countryCode}
+        isDraftRuleset={isDraftRuleset}
       />
 
       <FacetAttributesListActions

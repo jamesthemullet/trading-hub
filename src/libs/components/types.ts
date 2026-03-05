@@ -9,6 +9,7 @@ import type {
   MerchandisingNumericBoostBury,
   MerchandisingPagination,
   MerchandisingReturnedNotFound,
+  MerchandisingRuleSet,
 } from '../api';
 import type { FacetDisplayType } from '../containers/facets/facet-row';
 
@@ -132,6 +133,10 @@ export type RuleSetActions =
         boosted: string[];
         excludedValues: string[];
       };
+    }
+  | {
+      type: 'loadRuleset';
+      payload: MerchandisingRuleSet;
     };
 
 export type Row = {

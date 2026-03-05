@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
+import { useDraftRuleset } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -11,6 +12,10 @@ import { TablePanel } from './table-panel';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
+}));
+jest.mock('@/libs/hooks', () => ({
+  ...jest.requireActual('@/libs/hooks'),
+  useDraftRuleset: jest.fn(),
 }));
 jest.mock('@/libs/hooks/utils/analytics', () => ({
   ...jest.requireActual('@/libs/hooks/utils/analytics'),
@@ -118,6 +123,8 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+const mockClearDraft = jest.fn();
+
 describe('TablePanel', () => {
   beforeEach(() => {
     jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
@@ -130,6 +137,13 @@ describe('TablePanel', () => {
         },
       },
       status: 200,
+    });
+
+    jest.mocked(useDraftRuleset).mockReturnValue({
+      saveDraft: jest.fn(),
+      getDraft: jest.fn(() => null),
+      clearDraft: mockClearDraft,
+      isDraftRuleset: jest.fn(),
     });
   });
 
@@ -246,6 +260,8 @@ describe('TablePanel', () => {
       expect(track).toHaveBeenCalledWith({
         event: 'Add searchRanking facet rule',
       });
+
+      expect(mockClearDraft).toHaveBeenCalled();
     });
 
     it('should track creating a new redirect rule', async () => {

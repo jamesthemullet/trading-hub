@@ -4,6 +4,7 @@ import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 
 import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
+import { useDraftRuleset } from '@/libs/hooks/use-draft-ruleset';
 import * as analytics from '@/libs/hooks/utils/analytics';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -98,6 +99,10 @@ jest.mock('@/libs/hooks/utils/analytics', () => {
   };
 });
 
+jest.mock('@/libs/hooks/use-draft-ruleset', () => ({
+  useDraftRuleset: jest.fn(),
+}));
+
 const analyticsSpy = jest.spyOn(analytics, 'track');
 
 const categoryId1 = 'cat_123';
@@ -164,6 +169,13 @@ const defaultFacetProps: FacetsListProps = {
 
 describe('FacetsList', () => {
   beforeEach(() => {
+    jest.mocked(useDraftRuleset).mockReturnValue({
+      saveDraft: jest.fn(),
+      getDraft: jest.fn(() => null),
+      clearDraft: jest.fn(),
+      isDraftRuleset: jest.fn(),
+    });
+
     jest.mocked(useGetCategories).mockReturnValue({
       getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
       getCategoriesError: '',
@@ -1292,6 +1304,106 @@ describe('FacetsList', () => {
     await waitFor(() => {
       const updatedInputs = screen.queryAllByRole('spinbutton');
       expect(updatedInputs.length).toBeGreaterThanOrEqual(2);
+    });
+  });
+
+  it('should restore draft category IDs when initializing selectedCategoriesInfo for new ruleset', async () => {
+    const draftCategoryIds = ['cat_draft_1', 'cat_draft_2'];
+    const mockDraft = {
+      type: 'category' as const,
+      ruleset: {
+        ...mockRuleset,
+        categoryIds: draftCategoryIds,
+      },
+      timestamp: Date.now(),
+    };
+
+    jest.mocked(useDraftRuleset).mockReturnValue({
+      saveDraft: jest.fn(),
+      getDraft: jest.fn(() => mockDraft),
+      clearDraft: jest.fn(),
+      isDraftRuleset: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        isNewRuleset
+        categoriesInfo={undefined}
+      />
+    );
+
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    expect(modalButton).toBeInTheDocument();
+    expect(modalButton).toBeEnabled();
+  });
+
+  it('should set first category as preview for draft rulesets', async () => {
+    const draftCategoryIds = [categoryId1, categoryId2];
+    const mockDraft = {
+      type: 'category' as const,
+      ruleset: {
+        ...mockRuleset,
+        categoryIds: draftCategoryIds,
+      },
+      timestamp: Date.now(),
+    };
+
+    jest.mocked(useDraftRuleset).mockReturnValue({
+      saveDraft: jest.fn(),
+      getDraft: jest.fn(() => mockDraft),
+      clearDraft: jest.fn(),
+      isDraftRuleset: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        isNewRuleset
+        facetType="category"
+        categoriesInfo={undefined}
+      />
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'select category' })
+      ).toHaveTextContent(categoryId1);
+    });
+  });
+
+  it('should restore draft search terms when initializing selectedSearchTerms for new ruleset', async () => {
+    const draftSearchTerms = ['socks', 'shoes'];
+    const mockDraft = {
+      type: 'search' as const,
+      ruleset: {
+        ...mockRuleset,
+        searchTerms: draftSearchTerms,
+      },
+      timestamp: Date.now(),
+    };
+
+    jest.mocked(useDraftRuleset).mockReturnValue({
+      saveDraft: jest.fn(),
+      getDraft: jest.fn(() => mockDraft),
+      clearDraft: jest.fn(),
+      isDraftRuleset: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        isNewRuleset
+        facetType="search"
+        searchTerms={undefined}
+      />
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('socks')).toBeInTheDocument();
     });
   });
 });

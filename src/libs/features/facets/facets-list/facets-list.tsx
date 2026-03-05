@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -28,7 +28,7 @@ import {
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
-import { useFacetsList } from '@/libs/hooks';
+import { useDraftRuleset, useFacetsList } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { track } from '@/libs/hooks/utils/analytics';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -101,37 +101,43 @@ export const FacetsList = ({
   const router = useRouter();
   const rulesetId = router.query.id as string;
 
+  const { getDraft, clearDraft } = useDraftRuleset();
+
+  const defaultRuleset: MerchandisingRuleSet = {
+    isEnabled: facetType !== 'global',
+    startDate: undefined,
+    endDate: undefined,
+    rules: {
+      pinnedProducts: [],
+      blockedProducts: [],
+      boosts: {
+        alphanumeric: [],
+        numeric: [],
+        product: [],
+      },
+      buries: {
+        alphanumeric: [],
+        numeric: [],
+        product: [],
+      },
+      includes: {
+        alphanumeric: [],
+      },
+      excludes: {
+        alphanumeric: [],
+      },
+    },
+    countryCode: 'UK_IE',
+    excludedFacets: { facets: [] },
+    facets: [],
+  };
+
   const [ruleset, dispatch] = useReducer(
     rulesetReducer,
-    currentRuleset || {
-      isEnabled: facetType !== 'global',
-      startDate: undefined,
-      endDate: undefined,
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: {
-          alphanumeric: [],
-          numeric: [],
-          product: [],
-        },
-        buries: {
-          alphanumeric: [],
-          numeric: [],
-          product: [],
-        },
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
-      countryCode: 'UK_IE',
-      excludedFacets: { facets: [] },
-      facets: [],
-    }
+    currentRuleset || defaultRuleset
   );
+
+  const [isDraftLoaded, setIsDraftLoaded] = useState(false);
 
   const [showPreview, setShowPreview] = useState(false);
 
@@ -159,6 +165,34 @@ export const FacetsList = ({
   const [selectedSearchTerms, setSelectedSearchTerms] = useState<Array<string>>(
     searchTerms || []
   );
+
+  // Load draft after hydration to avoid SSR mismatch
+  useEffect(() => {
+    if (!isNewRuleset || isDraftLoaded || currentRuleset) {
+      return;
+    }
+
+    const draft = getDraft();
+    if (!draft || draft.type !== facetType) {
+      setIsDraftLoaded(true);
+      return;
+    }
+
+    dispatch({ type: 'loadRuleset', payload: draft.ruleset });
+
+    if (draft.type === 'category' && draft.ruleset.categoryIds?.length > 0) {
+      setSelectedCategoriesInfo(
+        draft.ruleset.categoryIds.map((id: string) => ({ id }))
+      );
+      setPreviewValue(draft.ruleset.categoryIds[0]);
+    }
+    if (draft.type === 'search' && draft.ruleset.searchTerms?.length > 0) {
+      setSelectedSearchTerms(draft.ruleset.searchTerms);
+      setPreviewValue(draft.ruleset.searchTerms[0]);
+    }
+
+    setIsDraftLoaded(true);
+  }, [isNewRuleset, isDraftLoaded, currentRuleset, facetType, getDraft]);
 
   const onRemoveCategory = (category: string) => {
     setSelectedCategoriesInfo(
@@ -330,6 +364,11 @@ export const FacetsList = ({
     )
     .filter(Boolean);
 
+  const handleCancel = () => {
+    clearDraft();
+    onCancel();
+  };
+
   return (
     <>
       {showPreview && (
@@ -363,7 +402,7 @@ export const FacetsList = ({
         }}
         isNewRuleSet={!!isNewRuleset}
         hasChanges
-        onCancel={onCancel}
+        onCancel={handleCancel}
         title={
           facetType === 'global'
             ? 'Global Facet Rule Editor'
@@ -571,6 +610,8 @@ export const FacetsList = ({
                     onSetIsFacetValuesModalOpen={setIsFacetValuesModalOpen}
                     onSetSelectedFacet={setSelectedFacet}
                     rulesetFacets={ruleset.facets}
+                    isNewRuleset={isNewRuleset}
+                    currentRuleset={ruleset}
                   />
                 )
             )}

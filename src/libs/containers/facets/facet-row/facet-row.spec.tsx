@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import type { MerchandisingCountryCode } from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { FacetRowProps } from './facet-row';
@@ -9,6 +10,50 @@ import { FacetRow } from './facet-row';
 const mockDispatch = jest.fn();
 const mockSetIsFacetValuesModalOpen = jest.fn();
 const mockSetSelectedFacet = jest.fn();
+const mockSaveDraft = jest.fn();
+
+const mockRuleset = {
+  isEnabled: true,
+  rules: {
+    pinnedProducts: [],
+    blockedProducts: [],
+    boosts: {
+      alphanumeric: [],
+      numeric: [],
+      product: [],
+    },
+    buries: {
+      alphanumeric: [],
+      numeric: [],
+      product: [],
+    },
+    includes: {
+      alphanumeric: [],
+    },
+    excludes: {
+      alphanumeric: [],
+    },
+  },
+  excludedFacets: { facets: [] },
+  facets: [],
+};
+
+jest.mock('@/libs/hooks/use-draft-ruleset', () => ({
+  useDraftRuleset: () => ({
+    saveDraft: mockSaveDraft,
+    getDraft: jest.fn(),
+    clearDraft: jest.fn(),
+    isDraftRuleset: jest.fn(),
+  }),
+}));
+
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    query: {},
+    pathname: '',
+  }),
+}));
 
 const defaultProps: FacetRowProps = {
   displayValue: 'color',
@@ -37,16 +82,22 @@ const includedProps: FacetRowProps = {
   selectedCategories: [],
   selectedSearchTerms: [],
   facetType: 'category',
-  countryCode: 'UK_IE',
+  countryCode: 'UK_IE' as MerchandisingCountryCode,
   rulesetId: 'test-ruleset-id',
   onSetIsFacetValuesModalOpen: mockSetIsFacetValuesModalOpen,
   onSetSelectedFacet: mockSetSelectedFacet,
   rulesetFacets: [],
+  currentRuleset: mockRuleset,
 };
 
 describe('FacetRow', () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  beforeEach(() => {
+    // Suppress console.error for navigation not implemented in jsdom
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   it('should render facet row with correct display values', () => {
@@ -140,5 +191,148 @@ describe('FacetRow', () => {
       'href',
       expect.stringContaining('countryCode=UK_IE')
     );
+  });
+
+  it('should save draft to session storage when editing values for new ruleset with category facets', async () => {
+    const user = userEvent.setup({ delay: null });
+    const mockRuleset = {
+      id: 'draft',
+      isEnabled: true,
+      startDate: undefined,
+      endDate: undefined,
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        includes: { alphanumeric: [] },
+        excludes: { alphanumeric: [] },
+      },
+      countryCode: 'UK_IE' as MerchandisingCountryCode,
+      excludedFacets: { facets: [] },
+      facets: [{ id: 'color-123', boosted: [], excludedValues: [] }],
+    };
+
+    const selectedCategories = ['cat-1', 'cat-2'];
+
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        writeEnabled
+        showNewFacetValuesPage
+        isNewRuleset
+        currentRuleset={mockRuleset}
+        selectedCategories={selectedCategories}
+        rulesetFacets={[{ id: 'color-123', boosted: [], excludedValues: [] }]}
+      />
+    );
+
+    const editButton = screen.getByRole('link', { name: 'Edit values' });
+    await user.click(editButton);
+
+    expect(mockSaveDraft).toHaveBeenCalledWith({
+      ruleset: {
+        ...mockRuleset,
+        categoryIds: selectedCategories,
+      },
+      type: 'category',
+    });
+  });
+
+  it('should save draft with search terms for new search ruleset', async () => {
+    const user = userEvent.setup({ delay: null });
+    const mockRuleset = {
+      id: 'draft',
+      isEnabled: true,
+      startDate: undefined,
+      endDate: undefined,
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        includes: { alphanumeric: [] },
+        excludes: { alphanumeric: [] },
+      },
+      countryCode: 'UK_IE' as const,
+      excludedFacets: { facets: [] },
+      facets: [],
+    };
+
+    const searchTerms = ['test', 'search'];
+
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        // @ts-expect-error - rulesetId is required but we want to test the defaulting to 'draft' logic
+        rulesetId={undefined}
+        displayType="included"
+        isDragDisabled={false}
+        writeEnabled
+        showNewFacetValuesPage
+        facetType="search"
+        isNewRuleset
+        currentRuleset={mockRuleset}
+        selectedSearchTerms={searchTerms}
+        rulesetFacets={[]}
+      />
+    );
+
+    const editButton = screen.getByRole('link', { name: 'Edit values' });
+    expect(editButton).toBeInTheDocument();
+    expect(editButton).toHaveAttribute(
+      'href',
+      expect.stringContaining('ruleSetId=draft')
+    );
+    await user.click(editButton);
+
+    expect(mockSaveDraft).toHaveBeenCalledWith({
+      ruleset: {
+        ...mockRuleset,
+        searchTerms,
+      },
+      type: 'search',
+    });
+  });
+
+  it('should not save draft when isNewRuleset is false', async () => {
+    const user = userEvent.setup({ delay: null });
+    const mockRuleset = {
+      id: 'existing-id',
+      isEnabled: true,
+      startDate: undefined,
+      endDate: undefined,
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { alphanumeric: [], numeric: [], product: [] },
+        buries: { alphanumeric: [], numeric: [], product: [] },
+        includes: { alphanumeric: [] },
+        excludes: { alphanumeric: [] },
+      },
+      countryCode: 'UK_IE' as MerchandisingCountryCode,
+      excludedFacets: { facets: [] },
+      facets: [],
+    };
+
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        writeEnabled
+        showNewFacetValuesPage
+        isNewRuleset={false}
+        currentRuleset={mockRuleset}
+        rulesetFacets={[]}
+      />
+    );
+
+    const editButton = screen.getByRole('link', { name: 'Edit values' });
+    await user.click(editButton);
+
+    expect(mockSaveDraft).not.toHaveBeenCalled();
   });
 });

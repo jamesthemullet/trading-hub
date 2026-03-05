@@ -15,6 +15,13 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+jest.mock('@/libs/constants', () => ({
+  getFacetRoute: jest.fn(
+    (facetType, action, id) => `/facets/${facetType}/${action}/${id}`
+  ),
+  getNewFacetRoute: jest.fn((routeType) => `/facets/new/${routeType}`),
+}));
+
 const mockRouter: Partial<NextRouter> = {
   push: jest.fn(),
   query: {},
@@ -100,5 +107,46 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
 
     expect(screen.getByTestId('Label for 13 - 14.4')).toBeInTheDocument();
     expect(screen.queryByText('Under 10')).not.toBeInTheDocument();
+  });
+
+  it('navigates to new category facet route when closing draft category ruleset', async () => {
+    const user = userEvent.setup({ delay: null });
+    const { mockRouter } = setup({
+      isDraftRuleset: true,
+      facetType: 'category',
+    });
+
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+    await user.click(cancelButton);
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/facets/new/categoryRanking');
+  });
+
+  it('navigates to new search facet route when closing draft search ruleset', async () => {
+    const user = userEvent.setup({ delay: null });
+    const { mockRouter } = setup({
+      isDraftRuleset: true,
+      facetType: 'search',
+    });
+
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+    await user.click(cancelButton);
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/facets/new/searchRanking');
+  });
+
+  it('navigates to edit facet route when closing non-draft ruleset', async () => {
+    const user = userEvent.setup({ delay: null });
+    const { mockRouter } = setup({
+      isDraftRuleset: false,
+      facetType: 'category',
+    });
+
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+    await user.click(cancelButton);
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      `/facets/category/edit/${ruleSetId}`
+    );
   });
 });

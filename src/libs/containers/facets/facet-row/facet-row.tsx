@@ -1,7 +1,8 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 import type {
   MerchandisingReturnedFacet,
+  MerchandisingRuleSet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
@@ -16,6 +17,7 @@ import { getFacetRoute } from '@/libs/constants';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
+import { useDraftRuleset } from '@/libs/hooks';
 
 export type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
 
@@ -61,6 +63,8 @@ type IncludedFacetRowProps = FacetRowDisplayValue &
         Partial<MerchandisingRuleSetFacetConfigWithId>
     ) => void;
     rulesetFacets?: MerchandisingRuleSetFacetConfigWithId[];
+    isNewRuleset?: boolean;
+    currentRuleset: MerchandisingRuleSet;
   };
 
 type NonIncludedFacetRowProps = FacetRowDisplayValue &
@@ -80,7 +84,41 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
     onDispatch,
   } = props;
 
+  const { saveDraft } = useDraftRuleset();
+
   const isIncludedFacet = displayType === 'included';
+
+  const handleEditValuesForNewRuleset = useCallback(() => {
+    if (isIncludedFacet && 'isNewRuleset' in props && props.isNewRuleset) {
+      // istanbul ignore else
+      if (props.currentRuleset) {
+        switch (props.facetType) {
+          case 'category':
+            saveDraft({
+              ruleset: {
+                ...props.currentRuleset,
+                categoryIds: props.selectedCategories,
+              },
+              type: 'category',
+            });
+            break;
+          case 'search':
+            saveDraft({
+              ruleset: {
+                ...props.currentRuleset,
+                searchTerms: props.selectedSearchTerms,
+              },
+              type: 'search',
+            });
+            break;
+          // istanbul ignore next
+          default:
+            // istanbul ignore next
+            break;
+        }
+      }
+    }
+  }, [props, isIncludedFacet, saveDraft]);
 
   const renderRow = (sortableProps?: SortableRowRenderArgs) => (
     <div
@@ -142,10 +180,14 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
           <Button
             as="a"
             theme="secondary"
+            onClick={handleEditValuesForNewRuleset}
             href={(() => {
               const baseUrl = getFacetRoute(props.facetType, 'valuesEdit', id);
+              const ruleSetIdParam = !props.rulesetId
+                ? 'draft'
+                : props.rulesetId;
               const params = new URLSearchParams({
-                ruleSetId: props.rulesetId,
+                ruleSetId: ruleSetIdParam,
                 displayName: displayValue,
                 countryCode: props.countryCode || 'UK_IE',
               });
