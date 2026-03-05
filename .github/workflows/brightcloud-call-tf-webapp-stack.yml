@@ -38,54 +38,21 @@ jobs:
         uses: actions/checkout@v6
       - name: Check composite parameter for the reusable pipeline
         id : check-composite-vars
-        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@v1.0.0-rc.1
+        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
     outputs:
       linux-fx-version: ${{ steps.check-composite-vars.outputs.linux-fx-version }}
-      oidc: ${{ steps.check-composite-vars.outputs.oidc}}
-
-  call-tf-webapp-stack:
-    needs:
-      - check-vars
-    if: ${{ needs.check-vars.outputs.linux-fx-version != 'docker' && needs.check-vars.outputs.oidc != 'true' }}
-    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-stack.yml@v1.0.0-rc.1
-    with:
-      TRIGGER_EVENT: ${{ github.event_name }}
-      BRIGHTCLOUD_REF: v1.0.0-rc.1
-    secrets:
-      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
-      SP_PASSWORD: ${{ secrets.SP_PASSWORD }}
-      SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
-      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
-      ALL_SECRETS: ('${{ toJSON(secrets) }}')
 
   call-tf-webapp-stack-oidc:
     needs:
       - check-vars
-    if: ${{ needs.check-vars.outputs.linux-fx-version != 'docker' && needs.check-vars.outputs.oidc == 'true' }}
-    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-stack-oidc.yml@v1.0.0-rc.1
+    if: ${{ needs.check-vars.outputs.linux-fx-version != 'docker' }}
+    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-stack-oidc.yml@feat/oidcn
     with:
       TRIGGER_EVENT: ${{ github.event_name }}
-      BRIGHTCLOUD_REF: v1.0.0-rc.1
+      BRIGHTCLOUD_REF: feat/oidcn
     secrets:
       SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
-      SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
-      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
-      ALL_SECRETS: ('${{ toJSON(secrets) }}')
-
-  call-tf-webapp-container-stack:
-    needs:
-      - check-vars
-    if: ${{ needs.check-vars.outputs.linux-fx-version == 'docker' && needs.check-vars.outputs.oidc != 'true' }}
-    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-container-stack.yml@v1.0.0-rc.1
-    with:
-      TRIGGER_EVENT: ${{ github.event_name }}
-      BRIGHTCLOUD_REF: v1.0.0-rc.1
-    secrets:
-      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
-      SP_PASSWORD: ${{ secrets.SP_PASSWORD }}
       SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
       BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
       ALL_SECRETS: ('${{ toJSON(secrets) }}')
@@ -93,11 +60,11 @@ jobs:
   call-tf-webapp-container-stack-oidc:
     needs:
       - check-vars
-    if: ${{ needs.check-vars.outputs.linux-fx-version == 'docker' && needs.check-vars.outputs.oidc == 'true' }}
-    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-container-stack-oidc.yml@v1.0.0-rc.1
+    if: ${{ needs.check-vars.outputs.linux-fx-version == 'docker' }}
+    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-container-stack-oidc.yml@feat/oidcn
     with:
       TRIGGER_EVENT: ${{ github.event_name }}
-      BRIGHTCLOUD_REF: v1.0.0-rc.1
+      BRIGHTCLOUD_REF: feat/oidcn
     secrets:
       SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}

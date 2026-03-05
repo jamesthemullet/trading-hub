@@ -34,3 +34,6 @@ domain_suffix = "web.engineering.mnscorp.net"
 site_config = {
   app_command_line = "node server.js"
 }
+
+frontdoor_sku    = "Premium_AzureFrontDoor"
+use_frontdoor_v2 = true

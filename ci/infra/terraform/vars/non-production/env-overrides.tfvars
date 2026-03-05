@@ -13,6 +13,3 @@ frontdoor_waf_mode   = "Prevention"
 akamai_enabled       = true
 
 # Bump me for update of Bright Cloud latest changes 1
-
-frontdoor_sku    = "Premium_AzureFrontDoor"
-use_frontdoor_v2 = true
