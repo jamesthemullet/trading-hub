@@ -3,7 +3,10 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
+import type {
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingReturnedCategoryRuleSets,
+} from '@/libs/api';
 import { useDraftRuleset } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -90,19 +93,20 @@ const mappingMock = {
   queryRuleSetById: jest.fn(),
   updateRuleSetById: jest.fn(),
   newRuleSet: jest.fn(),
-  ruleSetToRow: (ruleSet: any) => ({
+  ruleSetToRow: (ruleSet: MerchandisingReturnedCategoryRuleSet) => ({
     ...ruleSet,
     identifier: 'foo | bar',
     url: `/category/rulesets/edit/${ruleSet.id}`,
   }),
-  toggleRuleSet: (ruleSet: any) => ({
+  toggleRuleSet: (ruleSet: MerchandisingReturnedCategoryRuleSet) => ({
     ...ruleSet,
     isEnabled: !ruleSet.isEnabled,
     url: `/category/edit/${ruleSet.id}`,
   }),
-  allToTotalItems: (data: any) => data.pagination.totalItems,
-  allToArray: (data: any) => data.ruleSets,
-  returnedToRuleSet: (data: any) => data,
+  allToTotalItems: (data: MerchandisingReturnedCategoryRuleSets) =>
+    data.pagination.totalItems,
+  allToArray: (data: MerchandisingReturnedCategoryRuleSets) => data.ruleSets,
+  returnedToRuleSet: (data: MerchandisingReturnedCategoryRuleSet) => data,
   readRole: 'Search.R',
   writeRole: 'Search.W',
 };

@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom';
 
+import type { ImgHTMLAttributes } from 'react';
+import { createElement } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { render, screen } from '@testing-library/react';
 
@@ -22,9 +24,8 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props: any) => {
-    // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
-    return <img {...props} />;
+  default: (props: ImgHTMLAttributes<HTMLImageElement>) => {
+    return createElement('img', { alt: '', ...props });
   },
 }));
 

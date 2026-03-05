@@ -60,7 +60,8 @@ const server = setupServer(
   http.get('/api/search/beta/merchandising/category/ruleset/:id', (ctx) => {
     const data = useRuleSet();
     const ruleSetReturned = data.categoryRuleSets.find(
-      (ruleSet: any) => ruleSet.id === ctx.params.id
+      (ruleSet: MerchandisingReturnedCategoryRuleSet) =>
+        ruleSet.id === ctx.params.id
     );
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
@@ -69,7 +70,8 @@ const server = setupServer(
     async (ctx) => {
       const data = useRuleSet();
       const ruleSetReturned = data.categoryRuleSets.find(
-        (ruleSet: any) => ruleSet.id === ctx.params.id
+        (ruleSet: MerchandisingReturnedCategoryRuleSet) =>
+          ruleSet.id === ctx.params.id
       );
       const ruleSet = (await ctx.request.json()) as object;
       mockUpdateRuleSet({ ...ruleSet, ruleSetId: ctx.params.id });

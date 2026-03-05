@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { DragEndEvent } from '@dnd-kit/core';
+import type { DndContextProps, DragEndEvent } from '@dnd-kit/core';
 import lodash from 'lodash';
 
 import { SearchAndCategoryFacetAttributesList } from './search-and-category-facet-attributes-list';
@@ -16,7 +16,7 @@ jest.mock('@dnd-kit/core', () => {
 
   return {
     ...actual,
-    DndContext: ({ children, onDragEnd }: any) => {
+    DndContext: ({ children, onDragEnd }: DndContextProps) => {
       latestDragEndHandler = onDragEnd;
       return <div data-testid="dnd-context">{children}</div>;
     },

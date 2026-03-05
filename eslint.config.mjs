@@ -244,7 +244,7 @@ const eslint = [
       '@next/next/no-document-import-in-page': 'off',
       '@next/next/no-head-element': 'off',
       '@next/next/no-server-import-in-page': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
       'functional/immutable-data': 'off',
       'functional/no-expression-statements': 'off',

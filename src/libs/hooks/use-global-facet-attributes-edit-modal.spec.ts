@@ -51,7 +51,10 @@ describe('useGlobalFacetAttributesEditModal', () => {
     jest.clearAllMocks();
     rafSpy = jest
       .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
   });
 
   afterEach(() => {

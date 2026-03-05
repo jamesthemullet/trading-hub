@@ -8,6 +8,9 @@ import mocked = jest.mocked;
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
+type JwtCallbackArgs = Parameters<ReturnType<typeof jwtCallback>>[0];
+type SessionCallbackArgs = Parameters<typeof sessionCallback>[0];
+
 jest.mock('next-auth', () => jest.fn());
 
 const refreshToken = jest.fn();
@@ -100,7 +103,7 @@ describe('...NextAuth', () => {
       };
       expect(
         await jwtCallback(mockAuthEnv)({
-          token: undefined as any,
+          token: undefined as unknown as JwtCallbackArgs['token'],
           user: {
             id: 'id',
             email: 'email',
@@ -114,8 +117,8 @@ describe('...NextAuth', () => {
             )}`,
             refresh_token: 'refresh_token',
             ext_expires_in: 123,
-          } as any,
-        })
+          } as JwtCallbackArgs['account'],
+        } as JwtCallbackArgs)
       ).toEqual({
         accessToken: 'token.eyJyb2xlcyI6WyJST0xFMS5Xcml0ZSJdfQ==',
         accessTokenExpires: 223000,
@@ -139,7 +142,7 @@ describe('...NextAuth', () => {
       };
       expect(
         await jwtCallback(mockAuthEnv)({
-          token: undefined as any,
+          token: undefined as unknown as JwtCallbackArgs['token'],
           user: {
             id: 'id',
             email: 'email',
@@ -153,8 +156,8 @@ describe('...NextAuth', () => {
             )}`,
             refresh_token: 'refresh_token',
             ext_expires_in: 123,
-          } as any,
-        })
+          } as JwtCallbackArgs['account'],
+        } as JwtCallbackArgs)
       ).toEqual({
         accessToken: 'token.e30=',
         accessTokenExpires: 223000,
@@ -181,7 +184,7 @@ describe('...NextAuth', () => {
           token: {
             accessTokenExpires: 100001,
           },
-        } as any)
+        } as JwtCallbackArgs)
       ).toEqual({
         accessTokenExpires: 100001,
       });
@@ -201,7 +204,7 @@ describe('...NextAuth', () => {
           token: {
             accessTokenExpires: 99999,
           },
-        } as any)
+        } as JwtCallbackArgs)
       ).toEqual({
         accessToken: 'access_token',
         accessTokenExpires: 223000,
@@ -224,7 +227,7 @@ describe('...NextAuth', () => {
             accessTokenExpires: 99999,
             refreshToken: 'refresh_token_old_value',
           },
-        } as any)
+        } as JwtCallbackArgs)
       ).toEqual({
         accessToken: 'access_token',
         accessTokenExpires: 223000,
@@ -238,9 +241,9 @@ describe('sessionCallback', () => {
   it('should return session if no token', () => {
     expect(
       sessionCallback({
-        session: {} as any,
-        token: undefined as any,
-      } as any)
+        session: {} as SessionCallbackArgs['session'],
+        token: undefined as unknown as SessionCallbackArgs['token'],
+      } as SessionCallbackArgs)
     ).toEqual({});
   });
 
@@ -258,7 +261,7 @@ describe('sessionCallback', () => {
       sessionCallback({
         session,
         token,
-      } as any)
+      } as SessionCallbackArgs)
     ).toEqual({
       user: {
         id: 'id',

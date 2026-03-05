@@ -7,6 +7,10 @@ import {
   useDraftRuleset,
 } from './use-draft-ruleset';
 
+type DraftRulesetState = NonNullable<
+  ReturnType<ReturnType<typeof useDraftRuleset>['getDraft']>
+>;
+
 describe('useDraftRuleset', () => {
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -42,6 +46,15 @@ describe('useDraftRuleset', () => {
     jest.clearAllMocks();
   });
 
+  const parseStoredDraft = (): DraftRulesetState => {
+    const stored = sessionStorage.getItem(DRAFT_RULESET_SESSION_KEY);
+    expect(stored).toBeTruthy();
+    if (!stored) {
+      throw new Error('Draft ruleset not found in sessionStorage');
+    }
+    return JSON.parse(stored) as DraftRulesetState;
+  };
+
   afterEach(() => {
     sessionStorage.clear();
     consoleErrorSpy.mockRestore();
@@ -59,10 +72,7 @@ describe('useDraftRuleset', () => {
         result.current.saveDraft({ ruleset: draftRuleset, type: 'category' });
       });
 
-      const stored = sessionStorage.getItem(DRAFT_RULESET_SESSION_KEY);
-      expect(stored).toBeTruthy();
-
-      const parsed = JSON.parse(stored!);
+      const parsed = parseStoredDraft();
       expect(parsed.ruleset).toEqual(draftRuleset);
       expect(parsed.type).toBe('category');
       expect(parsed.timestamp).toBeDefined();
@@ -80,10 +90,11 @@ describe('useDraftRuleset', () => {
         result.current.saveDraft({ ruleset: draftRuleset, type: 'search' });
       });
 
-      const stored = sessionStorage.getItem(DRAFT_RULESET_SESSION_KEY);
-      const parsed = JSON.parse(stored!);
-      expect(parsed.ruleset.searchTerms).toEqual(['term1', 'term2']);
+      const parsed = parseStoredDraft();
       expect(parsed.type).toBe('search');
+      expect(
+        (parsed.ruleset as { searchTerms?: string[] }).searchTerms
+      ).toEqual(['term1', 'term2']);
     });
 
     it('should overwrite existing draft when saving new one', () => {
@@ -101,17 +112,15 @@ describe('useDraftRuleset', () => {
         result.current.saveDraft({ ruleset: firstDraft, type: 'category' });
       });
 
-      let stored = sessionStorage.getItem(DRAFT_RULESET_SESSION_KEY);
-      let parsed = JSON.parse(stored!);
-      expect(parsed.ruleset.name).toBe('First Draft');
+      let parsed = parseStoredDraft();
+      expect((parsed.ruleset as { name?: string }).name).toBe('First Draft');
 
       act(() => {
         result.current.saveDraft({ ruleset: secondDraft, type: 'search' });
       });
 
-      stored = sessionStorage.getItem(DRAFT_RULESET_SESSION_KEY);
-      parsed = JSON.parse(stored!);
-      expect(parsed.ruleset.name).toBe('Second Draft');
+      parsed = parseStoredDraft();
+      expect((parsed.ruleset as { name?: string }).name).toBe('Second Draft');
       expect(parsed.type).toBe('search');
     });
 
@@ -264,7 +273,7 @@ describe('useDraftRuleset', () => {
       });
 
       const { result: isDraftResult } = renderHook(() => useDraftRuleset());
-      let isDraft;
+      let isDraft: boolean | undefined;
 
       act(() => {
         isDraft = isDraftResult.current.isDraftRuleset();
@@ -275,7 +284,7 @@ describe('useDraftRuleset', () => {
 
     it('should return false when no draft exists', () => {
       const { result } = renderHook(() => useDraftRuleset());
-      let isDraft;
+      let isDraft: boolean | undefined;
 
       act(() => {
         isDraft = result.current.isDraftRuleset();
@@ -296,7 +305,7 @@ describe('useDraftRuleset', () => {
       });
 
       const { result: isDraftResult } = renderHook(() => useDraftRuleset());
-      let isDraft;
+      let isDraft: boolean | undefined;
 
       act(() => {
         isDraft = isDraftResult.current.isDraftRuleset('rule-123');
@@ -317,7 +326,7 @@ describe('useDraftRuleset', () => {
       });
 
       const { result: isDraftResult } = renderHook(() => useDraftRuleset());
-      let isDraft;
+      let isDraft: boolean | undefined;
 
       act(() => {
         isDraft = isDraftResult.current.isDraftRuleset('');
@@ -351,8 +360,10 @@ describe('useDraftRuleset', () => {
       act(() => {
         draft = result.current.getDraft();
       });
-      expect((draft?.ruleset as any)?.name).toBe('Test Ruleset');
       expect(draft?.type).toBe('category');
+      expect((draft?.ruleset as { name?: string } | undefined)?.name).toBe(
+        'Test Ruleset'
+      );
 
       act(() => {
         result.current.clearDraft();
@@ -395,7 +406,14 @@ describe('useDraftRuleset', () => {
         draft = result.current.getDraft();
       });
       expect(draft?.type).toBe('category');
-      expect((draft?.ruleset as any)?.categoryIds).toEqual(['cat1']);
+      expect(draft).toEqual(
+        expect.objectContaining({
+          ruleset: expect.objectContaining({
+            categoryIds: ['cat1'],
+          }),
+          type: 'category',
+        })
+      );
 
       // Save search draft (should replace)
       act(() => {
@@ -406,8 +424,15 @@ describe('useDraftRuleset', () => {
         draft = result.current.getDraft();
       });
       expect(draft?.type).toBe('search');
-      expect((draft?.ruleset as any)?.searchTerms).toEqual(['term1']);
-      expect((draft?.ruleset as any)?.categoryIds).toBeUndefined();
+      expect(draft).toEqual(
+        expect.objectContaining({
+          ruleset: expect.objectContaining({
+            searchTerms: ['term1'],
+          }),
+          type: 'search',
+        })
+      );
+      expect(draft?.type === 'category').toBe(false);
     });
   });
 });

@@ -63,7 +63,8 @@ const server = setupServer(
   http.get('/api/search/beta/merchandising/keyword/ruleset/:id', (ctx) => {
     const data = useSearchRulesetList();
     const ruleSetReturned = data.ruleSets.find(
-      (ruleSet: any) => ruleSet.id === ctx.params.id
+      (ruleSet: MerchandisingReturnedKeywordRuleSet) =>
+        ruleSet.id === ctx.params.id
     );
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
@@ -72,7 +73,10 @@ const server = setupServer(
     async (ctx) => {
       const data = useSearchRulesetList();
       const ruleSetReturned: MerchandisingReturnedKeywordRuleSet =
-        data.ruleSets.find((ruleSet: any) => ruleSet.id === ctx.params.id);
+        data.ruleSets.find(
+          (ruleSet: MerchandisingReturnedKeywordRuleSet) =>
+            ruleSet.id === ctx.params.id
+        );
       const rules = (await ctx.request.json()) as MerchandisingKeywordRuleSet;
       mockUpdateRuleSet({
         searchTerms: ruleSetReturned.searchTerms,

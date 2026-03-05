@@ -9,7 +9,7 @@ import * as analytics from '@/libs/hooks/utils/analytics';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import type { DragEndEvent } from '@dnd-kit/core';
+import type { DndContextProps, DragEndEvent } from '@dnd-kit/core';
 
 import { FacetsList, type FacetsListProps } from './facets-list';
 
@@ -38,7 +38,7 @@ jest.mock('@dnd-kit/core', () => {
 
   return {
     ...actual,
-    DndContext: ({ children, onDragEnd }: any) => {
+    DndContext: ({ children, onDragEnd }: DndContextProps) => {
       latestDragEndHandler = onDragEnd;
       return <div data-testid="dnd-context">{children}</div>;
     },

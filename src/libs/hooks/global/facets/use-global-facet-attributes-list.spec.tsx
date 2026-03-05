@@ -156,7 +156,9 @@ describe('useGlobalFacetAttributesList', () => {
       ((result.current.boostedValuesRows ?? []) as ReactElement[]) ?? [];
 
     expect(boostedRows).toHaveLength(1);
-    expect((boostedRows[0].props as any).disabled).toBe(true);
+    expect((boostedRows[0].props as { disabled?: boolean }).disabled).toBe(
+      true
+    );
   });
 
   it('does not dispatch when drag end lacks a drop target', () => {

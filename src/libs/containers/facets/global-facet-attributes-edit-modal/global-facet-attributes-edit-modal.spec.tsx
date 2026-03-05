@@ -268,7 +268,10 @@ describe('GlobalFacetAttributesEditModal', () => {
   it('removes value from display and passes to onSave when remove merged facet clicked and saved', async () => {
     const raf = jest
       .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
 
     const { globalAttributesPageReducer } =
       await import('@/libs/stores/global-attributes-page/global-attributes-page-reducer');
@@ -349,7 +352,10 @@ describe('GlobalFacetAttributesEditModal', () => {
 
     const raf = jest
       .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
 
     renderWithProviders(
       <GlobalFacetAttributesEditModal

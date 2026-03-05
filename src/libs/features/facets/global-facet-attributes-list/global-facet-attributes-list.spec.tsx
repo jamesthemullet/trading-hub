@@ -420,7 +420,10 @@ describe('FacetAttributesList', () => {
 
     const raf = jest
       .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
 
     await user.click(checkbox);
 
@@ -475,7 +478,10 @@ describe('FacetAttributesList', () => {
 
     const raf = jest
       .spyOn(window, 'requestAnimationFrame')
-      .mockImplementation((cb: any) => cb(0));
+      .mockImplementation((cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
 
     await user.click(checkbox);
 

@@ -6,6 +6,7 @@ import type {
   MerchandisingReturnedCategoryRuleSet,
   MerchandisingReturnedCategoryRuleSets,
 } from '@/libs/api';
+import type { Row } from '@/libs/components/types';
 
 import { useRuleSetRowsState } from './use-rule-set-rows-state';
 
@@ -53,14 +54,16 @@ const mappingMock = {
   queryRuleSetById: jest.fn(),
   updateRuleSetById: jest.fn(),
   newRuleSet: jest.fn(),
-  ruleSetToRow: (ruleSet: any) => ruleSet,
-  toggleRuleSet: (ruleSet: any) => ({
+  ruleSetToRow: (ruleSet: MerchandisingReturnedCategoryRuleSet) =>
+    ruleSet as unknown as Row,
+  toggleRuleSet: (ruleSet: MerchandisingReturnedCategoryRuleSet) => ({
     ...ruleSet,
     isEnabled: !ruleSet.isEnabled,
   }),
-  allToTotalItems: (data: any) => data.pagination.totalItems,
-  allToArray: (data: any) => data.ruleSets,
-  returnedToRuleSet: (data: any) => data,
+  allToTotalItems: (data: MerchandisingReturnedCategoryRuleSets) =>
+    data.pagination.totalItems,
+  allToArray: (data: MerchandisingReturnedCategoryRuleSets) => data.ruleSets,
+  returnedToRuleSet: (data: MerchandisingReturnedCategoryRuleSet) => data,
   readRole: 'Glob.R',
   writeRole: 'Glob.W',
 };

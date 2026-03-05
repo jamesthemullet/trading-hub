@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
+import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api/generated/open-api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
@@ -65,14 +66,16 @@ const server = setupServer(
   http.get('/api/search/beta/merchandising/global/ruleset/:id', (ctx) => {
     const data = useRuleSet();
     const ruleSetReturned = data.globalRuleSets.find(
-      (ruleSet: any) => ruleSet.id === ctx.params.id
+      (ruleSet: MerchandisingReturnedGlobalRuleSet) =>
+        ruleSet.id === ctx.params.id
     );
     return HttpResponse.json(ruleSetReturned, { status: 200 });
   }),
   http.put('/api/search/beta/merchandising/global/ruleset/:id', async (ctx) => {
     const data = useRuleSet();
     const ruleSetReturned = data.globalRuleSets.find(
-      (ruleSet: any) => ruleSet.id === ctx.params.id
+      (ruleSet: MerchandisingReturnedGlobalRuleSet) =>
+        ruleSet.id === ctx.params.id
     );
     const ruleSet = (await ctx.request.json()) as object;
     mockUpdateRuleSet({ ruleSet, ruleSetId: ctx.params.id });
