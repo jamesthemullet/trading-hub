@@ -45,7 +45,7 @@ const mapping: RuleSetMapping<
   returnedToRuleSet: (returnedRuleSet) => {
     return {
       searchTerms: returnedRuleSet.searchTerms,
-      countryCode: returnedRuleSet.countryCode || 'UK_IE',
+      countryCode: returnedRuleSet.countryCode ?? 'UK_IE',
       endDate: returnedRuleSet.endDate,
       excludedFacets: returnedRuleSet.excludedFacets,
       facets: returnedRuleSet.facets,

@@ -17,7 +17,7 @@ import { AddSetAttribute } from '../add-set-attribute/add-set-attribute';
 
 const MODAL_WIDTH = 435;
 
-interface RulesetAttributesModalProps {
+type RulesetAttributesModalProps = {
   isModalOpen: boolean;
   countryCode: MerchandisingCountryCode;
   categories?: string[];
@@ -25,7 +25,7 @@ interface RulesetAttributesModalProps {
   editData: AttributeEdit | null;
   onCloseModal: () => void;
   dispatch: Dispatch<RuleSetActions>;
-}
+};
 export const RulesetAttributesModal = ({
   isModalOpen,
   categories,

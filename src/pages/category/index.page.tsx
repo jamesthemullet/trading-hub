@@ -26,7 +26,7 @@ const mapping: RuleSetMapping<
   newRuleSet: (returnedRuleSet) =>
     search().betaMerchandisingCategoryRulesetCreate({
       ...returnedRuleSet,
-      facets: returnedRuleSet.facets || [],
+      facets: returnedRuleSet.facets ?? [],
     }),
   ruleSetToRow: ({
     id,

@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import type { MerchandisingRuleSet } from '@/libs/api';
 
 export const DRAFT_RULESET_SESSION_KEY = 'draftRuleset';
-export const DRAFT_RULESET_TYPE_SESSION_KEY = 'draftRulesetType';
 
 type BaseRulesetType = {
   timestamp: number;

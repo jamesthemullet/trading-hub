@@ -2,13 +2,13 @@ import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
 import { expect } from '@playwright/test';
 
-interface AccessibilityCheckOptions {
+type AccessibilityCheckOptions = {
   exclude?: string[];
   include?: string[];
   tags?: string[];
   rules?: string[];
   disableRules?: string[];
-}
+};
 
 export const checkAccessibility = async (
   page: Page,

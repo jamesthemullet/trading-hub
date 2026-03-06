@@ -120,7 +120,7 @@ const Page = ({ id }: PageProps) => {
           ruleSetIncludedFacets={facetsFromGlobalRuleSet}
           ruleSetExcludedFacets={globalRuleSet.excludedFacets}
           isLoading={isLoading}
-          countryCode={globalRuleSet.countryCode || 'UK_IE'}
+          countryCode={globalRuleSet.countryCode ?? 'UK_IE'}
           onSave={({ countryCode, includedFacets, excludedFacets }) => {
             setCountryCodeToSave(countryCode);
             setIncludedFacetsToSave(includedFacets);

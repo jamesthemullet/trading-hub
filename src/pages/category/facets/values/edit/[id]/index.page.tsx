@@ -94,7 +94,7 @@ const Page = () => {
     query: categoriesArray ?? [],
     queryBy: 'categoryIds',
     enabled: true,
-    countryCode: countryCode || 'UK_IE',
+    countryCode: countryCode ?? 'UK_IE',
   });
 
   const facet = facets.find((facet) => facet.id === facetId);
@@ -110,8 +110,8 @@ const Page = () => {
       );
       setSelectedFacet({
         ...facet,
-        boosted: rulesetConfig?.boosted || [],
-        excludedValues: rulesetConfig?.excludedValues || [],
+        boosted: rulesetConfig?.boosted ?? [],
+        excludedValues: rulesetConfig?.excludedValues ?? [],
         indexPropertyName: facet.indexPropertyName,
       });
     }
@@ -129,7 +129,7 @@ const Page = () => {
           }
           return facet;
         }
-      ) || [newFacet];
+      ) ?? [newFacet];
 
       const updatedDraft: MerchandisingRuleSet & { categoryIds: string[] } = {
         ...draftRuleset,

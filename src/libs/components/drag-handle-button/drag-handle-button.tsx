@@ -5,12 +5,12 @@ import Image from 'next/image';
 import { Button } from '../button/button';
 import styles from './drag-handle-button.module.css';
 
-interface DragHandleButtonProps {
+type DragHandleButtonProps = {
   disabled: boolean;
   displayName: string;
   setActivatorNodeRef?: (node: HTMLButtonElement | null) => void;
   listeners?: ButtonHTMLAttributes<HTMLButtonElement>;
-}
+};
 
 export const DragHandleButton = forwardRef<
   HTMLButtonElement,

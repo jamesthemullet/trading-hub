@@ -52,7 +52,7 @@ const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
 
   url.searchParams.set(
     'apikey',
-    process.env.MERCHANDISING_API_APIGEE_KEY || ''
+    process.env.MERCHANDISING_API_APIGEE_KEY ?? ''
   );
 
   // Apigee requires Content-Type + body even for DELETE - send empty JSON
