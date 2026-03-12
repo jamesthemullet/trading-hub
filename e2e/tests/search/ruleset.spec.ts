@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
 
+import {
+  getProductSearchResultPosition,
+  searchForProductAndWaitForResults,
+} from '../../helpers';
 import { checkAccessibility } from '../accessibility-utils';
 import {
   mockCategoryAlphanumericAttributes,
@@ -228,17 +232,14 @@ test.describe('Keyword search', () => {
 
     await expect(page.getByRole('button', { name: 'Changes2' })).toBeVisible();
 
-    await page.getByPlaceholder('Search for product').fill('dress');
+    await searchForProductAndWaitForResults(page, 'dress', 5);
     await expect(
-      page
-        .getByTestId('Position 2')
-        .first()
-        .getByRole('button', { name: 'Open menu' })
+      getProductSearchResultPosition(page, 2).getByRole('button', {
+        name: 'Open menu',
+      })
     ).toBeVisible();
 
-    await page
-      .getByTestId('Position 2')
-      .first()
+    await getProductSearchResultPosition(page, 2)
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
@@ -246,30 +247,22 @@ test.describe('Keyword search', () => {
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
 
-    await page
-      .getByTestId('Position 3')
-      .first()
+    await getProductSearchResultPosition(page, 3)
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
 
-    await page
-      .getByTestId('Position 4')
-      .first()
+    await getProductSearchResultPosition(page, 4)
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Pin in position' }).click();
 
     await page.getByPlaceholder('i.e. 3').fill('1');
-    await page
-      .getByTestId('Position 4')
-      .first()
+    await getProductSearchResultPosition(page, 4)
       .getByRole('button', { name: 'Confirm' })
       .click();
 
-    await page
-      .getByTestId('Position 5')
-      .first()
+    await getProductSearchResultPosition(page, 5)
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();
@@ -507,7 +500,7 @@ test.describe('Keyword search', () => {
       await page.locator('button:has-text("16")').nth(1).click();
       await page.locator('button:has-text("22")').nth(1).click();
       await page.getByText('00:00').click();
-      await page.fill('input[type="time"]', '10:30');
+      await page.locator('input[type="time"]').first().fill('10:30');
 
       await expect(page.getByText('00:00')).toBeHidden();
 

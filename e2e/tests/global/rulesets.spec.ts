@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
 
+import {
+  getProductSearchResultPosition,
+  searchForProductAndWaitForResults,
+} from '../../helpers';
 import { checkAccessibility } from '../accessibility-utils';
 import {
   mockCategoryAlphanumericAttributes,
@@ -114,31 +118,24 @@ test.describe('global rulesets', () => {
 
     await checkAccessibility(page);
 
-    await page.getByPlaceholder('Search for product').fill('dress');
+    await searchForProductAndWaitForResults(page, 'dress', 5);
     await expect(
-      page
-        .getByTestId('Position 1')
-        .first()
-        .getByRole('button', { name: 'Open menu' })
+      getProductSearchResultPosition(page, 1).getByRole('button', {
+        name: 'Open menu',
+      })
     ).toBeVisible();
 
-    await page
-      .getByTestId('Position 2')
-      .first()
+    await getProductSearchResultPosition(page, 2)
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
 
-    await page
-      .getByTestId('Position 3')
-      .first()
+    await getProductSearchResultPosition(page, 3)
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Bury to Bottom' }).click();
 
-    await page
-      .getByTestId('Position 5')
-      .first()
+    await getProductSearchResultPosition(page, 5)
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Block Product' }).click();

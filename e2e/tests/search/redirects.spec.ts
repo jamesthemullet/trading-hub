@@ -158,7 +158,7 @@ test.describe('Keyword Redirects', () => {
       await page.locator('button:has-text("16")').nth(1).click();
       await page.locator('button:has-text("22")').nth(1).click();
       await page.getByText('00:00').click();
-      await page.fill('input[type="time"]', '10:30');
+      await page.locator('input[type="time"]').first().fill('10:30');
 
       await expect(page.getByText('00:00')).toBeHidden();
 
