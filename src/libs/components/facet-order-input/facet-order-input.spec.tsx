@@ -26,14 +26,6 @@ describe('FacetOrderInput', () => {
     expect(input).toHaveValue(5);
   });
 
-  it('should return null when order is undefined', () => {
-    const { container } = render(
-      <FacetOrderInput {...defaultProps} order={undefined} />
-    );
-
-    expect(container).toBeEmptyDOMElement();
-  });
-
   it('should render input with correct id and aria-label', () => {
     render(<FacetOrderInput {...defaultProps} />);
 

@@ -1,7 +1,6 @@
-import type { Dispatch } from 'react';
+import type { Dispatch, KeyboardEvent, RefCallback } from 'react';
 import { useEffect, useState } from 'react';
 
-import type { FacetOrderInputProps } from '@/libs/components';
 import {
   Button,
   Checkbox,
@@ -31,8 +30,18 @@ type GlobalFacetAttributeProps = {
   dispatch: Dispatch<GlobalAttributeReducer>;
   writeEnabled: boolean;
   displayType: 'included' | 'excluded' | 'algoControl';
-  showInput?: boolean;
-} & FacetOrderInputProps;
+  displayValue: string;
+  order: number | undefined;
+  localOrder: number | '';
+  inputRef: RefCallback<HTMLInputElement>;
+  onInputChange: (displayValue: string, value: string) => void;
+  onInputBlur: (displayValue: string, value: string, order: number) => void;
+  onInputKeyDown: (
+    e: KeyboardEvent<HTMLInputElement>,
+    displayValue: string,
+    order: number
+  ) => void;
+};
 
 export const GlobalFacetAttribute = ({
   attributes,

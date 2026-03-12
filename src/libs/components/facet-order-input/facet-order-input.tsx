@@ -8,10 +8,10 @@ import { memo } from 'react';
 
 import { Input } from '@/libs/containers/shared/input/input';
 
-export type FacetOrderInputProps = {
+type FacetOrderInputProps = {
   displayValue: string;
-  order: number | undefined;
-  localOrder: number | string | undefined;
+  order: number;
+  localOrder: number | '';
   inputRef: RefCallback<HTMLInputElement>;
   onInputChange: (displayValue: string, value: string) => void;
   onInputBlur: (displayValue: string, value: string, order: number) => void;
@@ -33,10 +33,6 @@ const FacetOrderInputComponent = ({
   onInputKeyDown,
   writeEnabled,
 }: FacetOrderInputProps) => {
-  if (order === undefined) {
-    return null;
-  }
-
   return (
     <Input
       ref={inputRef}

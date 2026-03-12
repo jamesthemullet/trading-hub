@@ -140,7 +140,7 @@ export const SearchAndCategoryFacetAttributesList = ({
         const rowKey = `${displayType}-${displayValue}`;
 
         let order: number | undefined;
-        let localOrder: number | string | undefined;
+        let localOrder: number | '' = '';
 
         if ('order' in row && typeof row.order === 'number') {
           order = row.order;

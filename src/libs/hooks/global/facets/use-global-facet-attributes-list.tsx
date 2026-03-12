@@ -182,7 +182,6 @@ export const useGlobalFacetAttributesList = ({
                 dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                 writeEnabled={writeEnabled}
                 displayType={displayType}
-                showInput
                 displayValue={displayName}
                 order={order}
                 localOrder={localOrder}

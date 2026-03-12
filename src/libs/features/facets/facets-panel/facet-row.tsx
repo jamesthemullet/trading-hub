@@ -36,7 +36,7 @@ type FacetRowProps = {
   writeEnabled: boolean;
   canReorderIncludedFacets: boolean;
   order: number;
-  localOrder: number | string;
+  localOrder: number | '';
   isDisplayValueDuplicate: (facetId: string, value: string) => boolean;
   showNewFacetValuesPage: boolean;
   countryCode: MerchandisingCountryCode;

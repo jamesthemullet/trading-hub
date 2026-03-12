@@ -36,7 +36,7 @@ type IncludedFacetRowProps = FacetRowDisplayValue &
     displayType: 'included';
     isDragDisabled: boolean;
     includedFacetOrder: string[];
-    localOrders: Record<string, number | string>;
+    localOrders: Record<string, number | ''>;
     handleInputChange: (displayValue: string, value: string) => void;
     handleInputBlur: (
       displayValue: string,

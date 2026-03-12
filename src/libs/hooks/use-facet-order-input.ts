@@ -11,9 +11,9 @@ export const useFacetOrderInput = (
     Record<string, (el: HTMLInputElement | null) => void>
   >({});
   const [orderChanged, setOrderChanged] = useState<string | null>(null);
-  const [localOrders, setLocalOrders] = useState<
-    Record<string, number | string>
-  >({});
+  const [localOrders, setLocalOrders] = useState<Record<string, number | ''>>(
+    {}
+  );
 
   useEffect(() => {
     setLocalOrders(initialOrders);
