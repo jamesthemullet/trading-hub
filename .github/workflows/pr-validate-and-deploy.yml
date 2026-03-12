@@ -213,7 +213,7 @@ jobs:
           zip -qr next.zip .
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: node-app
           path: .next/standalone/next.zip
@@ -550,7 +550,7 @@ jobs:
       - name: Run Playwright tests
         run: pnpm exec playwright test --project=${{ matrix.project }}
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.project }}
@@ -665,7 +665,7 @@ jobs:
 
       - name: Upload accessibility test results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: storybook-accessibility-report
           path: |
