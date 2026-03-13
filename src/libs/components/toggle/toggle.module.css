@@ -16,8 +16,8 @@
     border-radius: 16px;
     width: 52px;
     height: 32px;
-    background-color: #e6e0e9;
-    border: 2px solid #79747e;
+    background-color: var(--color-surface-dark-on-surface-dark-container);
+    border: 2px solid var(--color-state-disabled-on-disabled);
     vertical-align: top;
     transition:
       background-color 0.2s,
