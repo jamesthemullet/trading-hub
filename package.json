@@ -8,7 +8,7 @@
     "node": "20.20.1",
     "pnpm": ">=10.28.2"
   },
-  "packageManager": "pnpm@10.32.0",
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "pnpm run codegen && next dev --turbo",
     "dev:turbo-verbose": "pnpm run codegen && next dev --turbo --show-all",
@@ -121,7 +121,7 @@
     "stylelint": "17.4.0",
     "stylelint-config-standard": "40.0.0",
     "stylelint-order": "7.0.1",
-    "swagger-typescript-api": "13.3.1",
+    "swagger-typescript-api": "13.6.1",
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.57.0",
