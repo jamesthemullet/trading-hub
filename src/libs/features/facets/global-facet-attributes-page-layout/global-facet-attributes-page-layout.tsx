@@ -28,6 +28,7 @@ import { GlobalFacetAttributesList } from '../global-facet-attributes-list/globa
 type PageLayout = {
   facet: MerchandisingReturnedGlobalFacet;
   attributeValues: MerchandisingAttributeValuesResponse['values'];
+  searchedAttributeValues?: MerchandisingAttributeValuesResponse['values'];
   facetId: string;
   displayName: string;
   ruleSetId: string;
@@ -40,6 +41,7 @@ type PageLayout = {
 export const GlobalFacetAttributesPageLayout = ({
   facet,
   attributeValues,
+  searchedAttributeValues = [],
   facetId,
   displayName,
   ruleSetId,
@@ -105,6 +107,19 @@ export const GlobalFacetAttributesPageLayout = ({
       },
     });
   }, [facet, attributeValues]);
+
+  useEffect(() => {
+    if (!searchQuery.trim() || searchedAttributeValues.length === 0) {
+      return;
+    }
+
+    dispatch({
+      type: 'ADD_NONBOOSTEDEXCLUDED_VALUES',
+      payload: {
+        values: searchedAttributeValues,
+      },
+    });
+  }, [searchQuery, searchedAttributeValues]);
 
   // save logic
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -214,6 +229,7 @@ export const GlobalFacetAttributesPageLayout = ({
 
       <GlobalFacetAttributesList
         attributeValues={attributeValues}
+        searchedResultsCount={searchedAttributeValues.length}
         searchQuery={searchQuery}
         countryCode={countryCode}
         editingValues={editingValues}

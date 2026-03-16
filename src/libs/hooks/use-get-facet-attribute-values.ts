@@ -60,7 +60,7 @@ export const useGetFacetAttributeValues = ({
                   categoryId,
                   ...(query && { q: query }),
                   start: 0,
-                  rows: 2000,
+                  rows: 500,
                   catalogue: convertCategoryIdToCatalogue(categoryId),
                 })
                 .then((response) => response.data.values)
@@ -70,7 +70,7 @@ export const useGetFacetAttributeValues = ({
                 .betaMerchandisingFacetAttributeValuesList(facetId, {
                   ...(query && { q: query }),
                   start: 0,
-                  rows: 2000,
+                  rows: 500,
                   catalogue,
                   searchTerm: searchTerms,
                 })

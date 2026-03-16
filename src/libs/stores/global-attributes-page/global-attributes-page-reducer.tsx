@@ -163,6 +163,13 @@ type ResetCurrentMergeLocalState = {
   type: 'RESET_CURRENT_MERGE_LOCAL_STATE';
 };
 
+type AddNonBoostedExcludedValues = {
+  type: 'ADD_NONBOOSTEDEXCLUDED_VALUES';
+  payload: {
+    values: { displayValue: string }[];
+  };
+};
+
 export type GlobalAttributesPageReducer =
   | ToggleAllAttributes
   | ToggleSelectedAttribute
@@ -182,7 +189,8 @@ export type GlobalAttributesPageReducer =
   | RemoveFromCurrentMerge
   | UpdateCurrentMergeValues
   | AddDemergedValue
-  | ResetCurrentMergeLocalState;
+  | ResetCurrentMergeLocalState
+  | AddNonBoostedExcludedValues;
 
 export type GlobalAttributesPageState = {
   boostedRows: FormattedBoostedRow[];
@@ -371,6 +379,39 @@ export const globalAttributesPageReducer = (
         nonBoostedExcludedRows: uniqueNonBoostedExcludedRows,
         excludedRows: uniqueExcludedRows,
         merged,
+      };
+    }
+
+    case 'ADD_NONBOOSTEDEXCLUDED_VALUES': {
+      const { values } = action.payload;
+      const existingValues = new Set(
+        [
+          ...state.boostedRows,
+          ...state.excludedRows,
+          ...state.nonBoostedExcludedRows,
+        ].flatMap((row) => row.attributes)
+      );
+
+      const valuesToAdd = values
+        .map((row) => row.displayValue)
+        .filter((displayValue) => !existingValues.has(displayValue))
+        .map((displayValue) => ({
+          displayName: displayValue,
+          attributes: [displayValue],
+          isMergeGroup: false,
+          isChecked: false,
+        }));
+
+      if (valuesToAdd.length === 0) {
+        return state;
+      }
+
+      return {
+        ...state,
+        nonBoostedExcludedRows: [
+          ...state.nonBoostedExcludedRows,
+          ...valuesToAdd,
+        ],
       };
     }
 

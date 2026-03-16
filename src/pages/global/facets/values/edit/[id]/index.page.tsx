@@ -33,6 +33,15 @@ const Page = () => {
       countryCode,
     });
 
+  const {
+    attributeValues: searchedAttributeValues,
+    error: searchedAttributeValuesError,
+  } = useGetFacetAttributeValues({
+    facetId,
+    query: searchQuery,
+    countryCode,
+  });
+
   const { facets, error: globalFacetsListError } = useGlobalFacetsList();
 
   const facet = useMemo(
@@ -67,9 +76,10 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      {attributeValuesError && (
+      {(attributeValuesError || searchedAttributeValuesError) && (
         <ErrorMessage>
-          Error retrieving values: {attributeValuesError}
+          Error retrieving values:{' '}
+          {attributeValuesError || searchedAttributeValuesError}
         </ErrorMessage>
       )}
 
@@ -77,6 +87,7 @@ const Page = () => {
         <GlobalFacetAttributesPageLayout
           facet={facet}
           attributeValues={attributeValues}
+          searchedAttributeValues={searchedAttributeValues}
           facetId={facetId}
           displayName={displayName}
           ruleSetId={ruleSetId}

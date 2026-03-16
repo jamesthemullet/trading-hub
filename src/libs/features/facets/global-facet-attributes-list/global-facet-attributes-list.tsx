@@ -49,6 +49,7 @@ const EDITFACETVALUESMODALCOLUMNS: {
 
 export type GlobalFacetAttributesListProps = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
+  searchedResultsCount?: number;
   searchQuery: string;
   countryCode: MerchandisingCountryCode;
   editingValues: string[];
@@ -63,6 +64,7 @@ export type GlobalFacetAttributesListProps = {
 
 export const GlobalFacetAttributesList = ({
   attributeValues,
+  searchedResultsCount,
   searchQuery,
   countryCode,
   editingValues,
@@ -136,8 +138,42 @@ export const GlobalFacetAttributesList = ({
       )
   );
 
+  const localFilteredResults = useMemo(() => {
+    const baselineCount =
+      filteredAttributeValuesNotInAMergeGroup.length +
+      filteredMergeGroups.length;
+
+    const knownAttributeValues = new Set(
+      attributeValues.map(({ displayValue }) => displayValue)
+    );
+
+    const additionalFetchedValues =
+      globalAttributesLocalState.nonBoostedExcludedRows.filter((row) => {
+        if (row.isMergeGroup || knownAttributeValues.has(row.displayName)) {
+          return false;
+        }
+
+        return (
+          row.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row.attributes.some((val) =>
+            val.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        );
+      }).length;
+
+    return baselineCount + additionalFetchedValues;
+  }, [
+    attributeValues,
+    filteredAttributeValuesNotInAMergeGroup.length,
+    filteredMergeGroups.length,
+    globalAttributesLocalState.nonBoostedExcludedRows,
+    searchQuery,
+  ]);
+
   const totalFilteredResults =
-    filteredAttributeValuesNotInAMergeGroup.length + filteredMergeGroups.length;
+    searchQuery.trim() && searchedResultsCount !== undefined
+      ? searchedResultsCount
+      : localFilteredResults;
 
   const hasSelectedAllAttributes =
     totalSelectedItems ===

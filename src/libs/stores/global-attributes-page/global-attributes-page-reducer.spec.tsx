@@ -754,6 +754,37 @@ describe('Global Attribute Reducer', () => {
     });
   });
 
+  describe('ADD_NONBOOSTEDEXCLUDED_VALUES', () => {
+    it('should append new values as non boosted excluded rows and avoid duplicates', () => {
+      const state: GlobalAttributesPageState = {
+        ...mockState,
+      };
+
+      const action = {
+        type: 'ADD_NONBOOSTEDEXCLUDED_VALUES' as const,
+        payload: {
+          values: [
+            { displayValue: 'Fresh Value' },
+            { displayValue: 'Vegan' },
+            { displayValue: 'Under 10' },
+          ],
+        },
+      };
+
+      const result = globalAttributesPageReducer(state, action);
+
+      expect(result.nonBoostedExcludedRows).toEqual([
+        ...state.nonBoostedExcludedRows,
+        {
+          displayName: 'Fresh Value',
+          attributes: ['Fresh Value'],
+          isMergeGroup: false,
+          isChecked: false,
+        },
+      ]);
+    });
+  });
+
   describe('CHANGE_ROW_ORDER', () => {
     it('should change row order', () => {
       const state: GlobalAttributesPageState = {
