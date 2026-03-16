@@ -49,20 +49,8 @@ describe('Index', () => {
     jest.clearAllMocks();
   });
 
-  it('should render coming soon if feature flag is not enabled', async () => {
+  it('should render new facet values page', async () => {
     renderWithProviders(<Page />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Coming soon/loading')).toBeVisible();
-    });
-  });
-
-  it('should render new facet values page if feature flag is enabled', async () => {
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -72,11 +60,7 @@ describe('Index', () => {
   describe('searching', () => {
     it('should display the correct amount of filtered items when the merge group name matches the filter', async () => {
       const user = userEvent.setup({ delay: null });
-      renderWithProviders(<Page />, [], {
-        featureFlags: {
-          showNewFacetValuesPage: true,
-        },
-      });
+      renderWithProviders(<Page />);
 
       await waitFor(() => {
         expect(screen.getByText('12 results')).toBeInTheDocument();
@@ -93,11 +77,7 @@ describe('Index', () => {
 
     it('should display the correct amount of filtered items when the attribute values matches the filter', async () => {
       const user = userEvent.setup({ delay: null });
-      renderWithProviders(<Page />, [], {
-        featureFlags: {
-          showNewFacetValuesPage: true,
-        },
-      });
+      renderWithProviders(<Page />);
 
       const searchInput = screen.getByPlaceholderText('Search');
 
@@ -110,11 +90,7 @@ describe('Index', () => {
 
     it('should display the correct amount of filtered items when the merged value group includes it', async () => {
       const user = userEvent.setup({ delay: null });
-      renderWithProviders(<Page />, [], {
-        featureFlags: {
-          showNewFacetValuesPage: true,
-        },
-      });
+      renderWithProviders(<Page />);
 
       const searchInput = screen.getByPlaceholderText('Search');
 
@@ -129,7 +105,6 @@ describe('Index', () => {
       renderWithProviders(<Page />, [], {
         featureFlags: {
           hasAuthorization: true,
-          showNewFacetValuesPage: true,
         },
       });
 

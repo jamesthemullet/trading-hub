@@ -3,7 +3,6 @@ import { memo, useCallback } from 'react';
 import type {
   MerchandisingReturnedFacet,
   MerchandisingRuleSet,
-  MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import {
   Button,
@@ -51,18 +50,11 @@ type IncludedFacetRowProps = FacetRowDisplayValue &
     handleFacetOrderInputRef: (
       facetId: string
     ) => (el: HTMLInputElement | null) => void;
-    showNewFacetValuesPage: boolean;
     selectedCategories: string[];
     selectedSearchTerms: string[];
     facetType: 'search' | 'category' | 'global';
     countryCode: string;
     rulesetId: string;
-    onSetIsFacetValuesModalOpen: (value: boolean) => void;
-    onSetSelectedFacet: (
-      facet: MerchandisingReturnedFacet &
-        Partial<MerchandisingRuleSetFacetConfigWithId>
-    ) => void;
-    rulesetFacets?: MerchandisingRuleSetFacetConfigWithId[];
     isNewRuleset?: boolean;
     currentRuleset: MerchandisingRuleSet;
   };
@@ -176,7 +168,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
         </div>
       </div>
       <div className={styles.tableCol}>
-        {displayType === 'included' && props.showNewFacetValuesPage && (
+        {displayType === 'included' && (
           <Button
             as="a"
             theme="secondary"
@@ -216,29 +208,6 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
             {writeEnabled ? 'Edit values' : 'View values'}
           </Button>
         )}
-        {displayType === 'included' &&
-          writeEnabled &&
-          !props.showNewFacetValuesPage && (
-            <Button
-              theme="secondary"
-              onClick={() => {
-                props.onSetIsFacetValuesModalOpen(true);
-                const rulesetConfig = props.rulesetFacets?.find(
-                  (f) => f.id === id
-                );
-                props.onSetSelectedFacet({
-                  displayValue,
-                  id,
-                  indexPropertyName,
-                  boosted: rulesetConfig?.boosted,
-                  excludedValues: rulesetConfig?.excludedValues,
-                } as MerchandisingReturnedFacet &
-                  Partial<MerchandisingRuleSetFacetConfigWithId>);
-              }}
-            >
-              Edit values
-            </Button>
-          )}
       </div>
       <div className={styles.tableCol}>
         {isIncludedFacet && (

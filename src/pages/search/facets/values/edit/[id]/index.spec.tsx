@@ -180,40 +180,16 @@ describe('Index', () => {
     jest.clearAllMocks();
   });
 
-  it('should show coming soon when isLoading is true and isDraft is false', async () => {
+  it('should not render layout when isLoading is true and isDraft is false', async () => {
     jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
       ...mockUseSearchRuleSetPreviewData,
       isLoading: true,
     }));
 
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Coming soon/loading')).toBeVisible();
-    });
-  });
-
-  it('should show coming soon when showNewFacetValuesPage is false', async () => {
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: false,
-      },
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Coming soon/loading')).toBeVisible();
-    });
-  });
-
-  it('should render coming soon if feature flag is not enabled', async () => {
     renderWithProviders(<Page />);
 
     await waitFor(() => {
-      expect(screen.getByText('Coming soon/loading')).toBeVisible();
+      expect(screen.queryByText('New Facet Values')).not.toBeInTheDocument();
     });
   });
 
@@ -226,11 +202,7 @@ describe('Index', () => {
       },
     });
 
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
     });
@@ -245,11 +217,7 @@ describe('Index', () => {
       },
     });
 
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -266,11 +234,7 @@ describe('Index', () => {
       },
     });
 
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -278,11 +242,7 @@ describe('Index', () => {
   });
 
   it('should render new facet values page if feature flag is enabled', async () => {
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -291,11 +251,7 @@ describe('Index', () => {
 
   it('should handle searchQuery changes', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -322,11 +278,7 @@ describe('Index', () => {
   it('should save changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -339,11 +291,7 @@ describe('Index', () => {
     mockUpdateRuleSet.error = 'Failed to update';
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(
@@ -355,7 +303,6 @@ describe('Index', () => {
     renderWithProviders(<Page />, [], {
       featureFlags: {
         hasAuthorization: true,
-        showNewFacetValuesPage: true,
       },
     });
 
@@ -405,11 +352,7 @@ describe('Index', () => {
         },
       });
 
-      renderWithProviders(<Page />, [], {
-        featureFlags: {
-          showNewFacetValuesPage: true,
-        },
-      });
+      renderWithProviders(<Page />);
 
       expect(mockUseDraftRuleset.getDraft).toHaveBeenCalled();
     });
@@ -461,11 +404,7 @@ describe('Index', () => {
 
       const user = userEvent.setup({ delay: null });
 
-      renderWithProviders(<Page />, [], {
-        featureFlags: {
-          showNewFacetValuesPage: true,
-        },
-      });
+      renderWithProviders(<Page />);
 
       const saveButton = screen.getByRole('button', { name: 'Save' });
       await user.click(saveButton);
@@ -525,11 +464,7 @@ describe('Index', () => {
     it('should update the ruleset when not in draft mode', async () => {
       const user = userEvent.setup({ delay: null });
 
-      renderWithProviders(<Page />, [], {
-        featureFlags: {
-          showNewFacetValuesPage: true,
-        },
-      });
+      renderWithProviders(<Page />);
 
       const saveButton = screen.getByRole('button', { name: 'Save' });
       await user.click(saveButton);
@@ -582,11 +517,7 @@ describe('Index', () => {
       isLoading: false,
     }));
 
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -609,11 +540,7 @@ describe('Index', () => {
 
     const user = userEvent.setup({ delay: null });
 
-    renderWithProviders(<Page />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<Page />);
 
     const saveButton = await screen.findByRole('button', { name: 'Save' });
     await user.click(saveButton);

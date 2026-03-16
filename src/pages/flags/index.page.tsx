@@ -11,37 +11,19 @@ import styles from './index.module.css';
 
 const FeatureFlags = () => {
   const [cookies, setCookie] = useCookies(
-    [
-      'flagAuthorization',
-      'flagAuthorizationRoleOverride',
-      'flagOneTrust',
-      'flagShowNewFacetValuesPage',
-    ],
+    ['flagAuthorization', 'flagAuthorizationRoleOverride', 'flagOneTrust'],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization, flagShowNewFacetValuesPage } = cookies;
+  const { flagAuthorization } = cookies;
 
   return (
     <div className={styles.wrapper}>
       <Typography as="h1" variant="headlineMedium" isStrong>
         Feature Flags
       </Typography>
-      <div className={styles.flag}>
-        <Typography>New Facet Values Page:&nbsp;</Typography>
-        <Toggle
-          checked={flagShowNewFacetValuesPage}
-          onChange={() => {
-            setCookie(
-              'flagShowNewFacetValuesPage',
-              JSON.stringify(!flagShowNewFacetValuesPage)
-            );
-          }}
-        />
-      </div>
-
       <div className={styles.flag}>
         <Typography>Authorization:&nbsp;</Typography>
         <Toggle

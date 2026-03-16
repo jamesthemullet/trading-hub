@@ -146,11 +146,7 @@ describe('DataTable', () => {
   });
 
   it('should render correctly', () => {
-    renderWithProviders(<DataTable {...defaultProps} />, [], {
-      featureFlags: {
-        showNewFacetValuesPage: true,
-      },
-    });
+    renderWithProviders(<DataTable {...defaultProps} />);
 
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
     expect(screen.getByText('Bob')).toBeInTheDocument();

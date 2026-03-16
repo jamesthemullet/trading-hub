@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type {
@@ -15,7 +14,6 @@ import type {
   MerchandisingReturnedFacet,
 } from '@/libs/api';
 import { CombinedDropdown, Search, Typography } from '@/libs/components';
-import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { COLUMNS } from '@/libs/constants';
@@ -45,7 +43,6 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 
-import { GlobalFacetPanelModal } from '../global-facets-panel-modal/global-facets-panel-modal';
 import { FacetRow } from './facet-row';
 import styles from './facets-panel.module.css';
 
@@ -83,10 +80,8 @@ export const FacetsPanel = ({
   onSave,
   onCancel,
   onFacetDataChange,
-  refreshData,
 }: FacetsPanelProps) => {
   const router = useRouter();
-  const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
   const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
     includedFacets: [],
@@ -125,12 +120,6 @@ export const FacetsPanel = ({
     includedFacets: includedFacetsForSave,
     excludedFacets: excludedFacetsForSave,
   } = useFacetsRowsSelector(facetPanelLocalState, facetsData);
-
-  const [selectedFacet, setSelectedFacet] = useState<
-    MerchandisingReturnedFacet | undefined
-  >(undefined);
-
-  const [isEditValuesModalOpen, setIsEditValuesModalOpen] = useState(false);
 
   const [errorStates, setErrorStates] = useState<
     Record<string, { message: string }>
@@ -189,10 +178,6 @@ export const FacetsPanel = ({
       }),
     [includedFacetOrder, writeEnabled]
   );
-
-  const onClose = () => {
-    setIsEditValuesModalOpen(false);
-  };
 
   const onFacetDataChangeRef = useRef(onFacetDataChange);
 
@@ -266,14 +251,6 @@ export const FacetsPanel = ({
     []
   );
 
-  const handleOpenFacetEditModal = useCallback(
-    (facet: MerchandisingReturnedFacet) => {
-      setIsEditValuesModalOpen(true);
-      setSelectedFacet(facet);
-    },
-    []
-  );
-
   const handleOrderChangeCallback = useCallback(
     (id: string, newIndex: number) => {
       dispatch({
@@ -334,13 +311,11 @@ export const FacetsPanel = ({
           order={order}
           localOrder={localOrder}
           isDisplayValueDuplicate={isDisplayValueDuplicate}
-          showNewFacetValuesPage={showNewFacetValuesPage}
           countryCode={facetPanelLocalState.countryCode}
           ruleSetId={ruleSetId}
           setError={setError}
           onFacetDataChange={handleFacetDataChange}
           onDisplayTypeChange={handleDisplayTypeChange}
-          onOpenFacetEditModal={handleOpenFacetEditModal}
           getInputRef={getInputRef}
           handleInputChange={handleInputChange}
           handleInputBlur={handleInputBlur}
@@ -356,13 +331,11 @@ export const FacetsPanel = ({
       writeEnabled,
       canReorderIncludedFacets,
       isDisplayValueDuplicate,
-      showNewFacetValuesPage,
       facetPanelLocalState.countryCode,
       ruleSetId,
       setError,
       handleFacetDataChange,
       handleDisplayTypeChange,
-      handleOpenFacetEditModal,
       getInputRef,
       handleInputChange,
       handleInputBlur,
@@ -466,35 +439,6 @@ export const FacetsPanel = ({
 
         {nonIncludedFacets.map(renderFacetRow)}
       </div>
-
-      {selectedFacet && isEditValuesModalOpen && (
-        <Modal.Root
-          opened
-          onClose={onClose}
-          centered
-          size={1150}
-          padding={0}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Edit facet values modal"
-        >
-          <Modal.Overlay blur={3} />
-          <Modal.Content>
-            <Modal.Body>
-              <GlobalFacetPanelModal
-                countryCode={facetPanelLocalState.countryCode}
-                facet={selectedFacet}
-                onClose={(shouldRefetch) => {
-                  // istanbul ignore else
-                  if (refreshData && shouldRefetch) refreshData();
-                  onClose();
-                }}
-                writeEnabled={writeEnabled}
-              />
-            </Modal.Body>
-          </Modal.Content>
-        </Modal.Root>
-      )}
 
       {filteredFacets.length === 0 && (
         <div className={styles.noAttributesBlock}>

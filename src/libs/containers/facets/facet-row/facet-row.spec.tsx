@@ -8,8 +8,6 @@ import type { FacetRowProps } from './facet-row';
 import { FacetRow } from './facet-row';
 
 const mockDispatch = jest.fn();
-const mockSetIsFacetValuesModalOpen = jest.fn();
-const mockSetSelectedFacet = jest.fn();
 const mockSaveDraft = jest.fn();
 
 const mockRuleset = {
@@ -78,15 +76,11 @@ const includedProps: FacetRowProps = {
   handleInputKeyDown: jest.fn(),
   handleFacetOrderInputRef: jest.fn(() => jest.fn()),
   isDragDisabled: false,
-  showNewFacetValuesPage: true,
   selectedCategories: [],
   selectedSearchTerms: [],
   facetType: 'category',
   countryCode: 'UK_IE' as MerchandisingCountryCode,
   rulesetId: 'test-ruleset-id',
-  onSetIsFacetValuesModalOpen: mockSetIsFacetValuesModalOpen,
-  onSetSelectedFacet: mockSetSelectedFacet,
-  rulesetFacets: [],
   currentRuleset: mockRuleset,
 };
 
@@ -130,6 +124,20 @@ describe('FacetRow', () => {
     });
   });
 
+  it('should render view values button for read-only included facets', () => {
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        writeEnabled={false}
+      />
+    );
+
+    const link = screen.getByRole('link', { name: 'View values' });
+    expect(link).toBeInTheDocument();
+  });
+
   it('should render edit values button for included facets with writeEnabled', async () => {
     const user = userEvent.setup({ delay: null });
     renderWithProviders(
@@ -138,33 +146,13 @@ describe('FacetRow', () => {
         displayType="included"
         isDragDisabled={false}
         writeEnabled
-        showNewFacetValuesPage={false}
-        rulesetFacets={[{ id: 'color-123', boosted: [], excludedValues: [] }]}
       />
     );
 
-    const editButton = screen.getByRole('button', { name: 'Edit values' });
+    const editButton = screen.getByRole('link', { name: 'Edit values' });
     expect(editButton).toBeInTheDocument();
 
     await user.click(editButton);
-
-    expect(mockSetIsFacetValuesModalOpen).toHaveBeenCalledWith(true);
-    expect(mockSetSelectedFacet).toHaveBeenCalled();
-  });
-
-  it('should render view values button for read-only included facets', () => {
-    renderWithProviders(
-      <FacetRow
-        {...includedProps}
-        displayType="included"
-        isDragDisabled={false}
-        writeEnabled={false}
-        showNewFacetValuesPage
-      />
-    );
-
-    const link = screen.getByRole('link', { name: 'View values' });
-    expect(link).toBeInTheDocument();
   });
 
   it('should render excluded facet type correctly', () => {
@@ -182,7 +170,6 @@ describe('FacetRow', () => {
         displayType="included"
         isDragDisabled={false}
         countryCode=""
-        showNewFacetValuesPage
       />
     );
 
@@ -221,11 +208,9 @@ describe('FacetRow', () => {
         displayType="included"
         isDragDisabled={false}
         writeEnabled
-        showNewFacetValuesPage
         isNewRuleset
         currentRuleset={mockRuleset}
         selectedCategories={selectedCategories}
-        rulesetFacets={[{ id: 'color-123', boosted: [], excludedValues: [] }]}
       />
     );
 
@@ -271,7 +256,6 @@ describe('FacetRow', () => {
         displayType="included"
         isDragDisabled={false}
         writeEnabled
-        showNewFacetValuesPage
         facetType="search"
         isNewRuleset
         currentRuleset={mockRuleset}
@@ -323,10 +307,8 @@ describe('FacetRow', () => {
         displayType="included"
         isDragDisabled={false}
         writeEnabled
-        showNewFacetValuesPage
         isNewRuleset={false}
         currentRuleset={mockRuleset}
-        rulesetFacets={[]}
       />
     );
 
