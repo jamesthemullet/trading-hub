@@ -362,7 +362,6 @@ export const DataTable = ({
                       <div className={styles.tableActions}>
                         <Button
                           appearance="icon"
-                          className={styles.arrowContainer}
                           onKeyDown={(e) => {
                             // istanbul ignore else
                             if (e.key === 'Enter') {

@@ -1,8 +1,0 @@
-.orderArrowsContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  max-width: var(--mns-spacing-12);
-  margin-right: var(--mns-spacing-2);
-}

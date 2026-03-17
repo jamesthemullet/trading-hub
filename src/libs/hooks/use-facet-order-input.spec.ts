@@ -77,6 +77,18 @@ describe('useFacetOrderInput', () => {
       expect(mockOnOrderChange).toHaveBeenCalledWith('item1', 4); // newIndex = value - 1
     });
 
+    it('should not call onOrderChange when value equals current order', () => {
+      const { result } = renderHook(() =>
+        useFacetOrderInput(mockOnOrderChange, initialOrders)
+      );
+
+      act(() => {
+        result.current.handleInputBlur('item1', '1', 1);
+      });
+
+      expect(mockOnOrderChange).not.toHaveBeenCalled();
+    });
+
     it('should reset to original order on empty string', () => {
       const { result } = renderHook(() =>
         useFacetOrderInput(mockOnOrderChange, initialOrders)

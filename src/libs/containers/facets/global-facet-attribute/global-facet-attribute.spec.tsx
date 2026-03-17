@@ -79,4 +79,50 @@ describe('GlobalFacetAttribute', () => {
 
     raf.mockRestore();
   });
+
+  it('toggles visibility when Show More/Show Fewer button is clicked', async () => {
+    renderWithProviders(
+      <GlobalFacetAttribute
+        attributes={[
+          'value1',
+          'value2',
+          'value3',
+          'value4',
+          'value5',
+          'value6',
+        ]}
+        isMergeGroup={false}
+        isChecked={false}
+        displayName="test"
+        handleRemoveFromMerge={jest.fn()}
+        dispatch={jest.fn()}
+        writeEnabled
+        displayType="algoControl"
+        displayValue="displayValue"
+        order={5}
+        localOrder={5}
+        inputRef={jest.fn()}
+        onInputChange={jest.fn()}
+        onInputBlur={jest.fn()}
+        onInputKeyDown={jest.fn()}
+      />
+    );
+
+    expect(screen.getByText('value1')).toBeVisible();
+    expect(screen.getByText('value4')).toBeVisible();
+    expect(screen.queryByText('value5')).not.toBeInTheDocument();
+    expect(screen.queryByText('value6')).not.toBeInTheDocument();
+
+    const showMoreButton = screen.getByRole('button', { name: /show more/i });
+    await userEvent.click(showMoreButton);
+
+    expect(screen.getByText('value5')).toBeVisible();
+    expect(screen.getByText('value6')).toBeVisible();
+
+    const showFewerButton = screen.getByRole('button', { name: /show fewer/i });
+    await userEvent.click(showFewerButton);
+
+    expect(screen.queryByText('value5')).not.toBeInTheDocument();
+    expect(screen.queryByText('value6')).not.toBeInTheDocument();
+  });
 });

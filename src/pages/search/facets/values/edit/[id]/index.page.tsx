@@ -6,7 +6,6 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
-import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
   useDraftRuleset,
@@ -21,8 +20,6 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
 
-import styles from './index.module.css';
-
 const Page = () => {
   const router = useRouter();
 
@@ -30,8 +27,6 @@ const Page = () => {
 
   const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
   const { getDraft, saveDraft } = useDraftRuleset();
-
-  const showNewFacetValuesPage = useShowNewFacetValuesPage();
 
   const facetId = getStringParam('id');
   const ruleSetId = getStringParam('ruleSetId');
@@ -191,7 +186,7 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      {(!isLoading || isDraft) && showNewFacetValuesPage && selectedFacet ? (
+      {(!isLoading || isDraft) && selectedFacet && (
         <CategoryAndSearchFacetsPanelPageLayout
           attributeValues={attributeValues}
           facet={selectedFacet}
@@ -206,8 +201,6 @@ const Page = () => {
           countryCode={countryCode}
           isDraftRuleset={isDraft}
         />
-      ) : (
-        <div className={styles.centredContainer}>Coming soon/loading</div>
       )}
     </>
   );

@@ -1,7 +1,6 @@
 import { type ChangeEvent, useMemo, useState } from 'react';
 
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
-import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { GlobalFacetAttributesPageLayout } from '@/libs/features';
 import { useGlobalFacetsList } from '@/libs/hooks/global/facets/use-global-facets-list';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -10,8 +9,6 @@ import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
-
-import styles from './index.module.css';
 
 const Page = () => {
   const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
@@ -52,8 +49,6 @@ const Page = () => {
     [facets, facetId]
   );
 
-  const showNewFacetValuesPage = useShowNewFacetValuesPage();
-
   const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Glob');
 
   if (!hasReadAccess) {
@@ -88,7 +83,7 @@ const Page = () => {
         </ErrorMessage>
       )}
 
-      {!!attributeValues && showNewFacetValuesPage && facet ? (
+      {!!attributeValues && facet && (
         <GlobalFacetAttributesPageLayout
           facet={facet}
           attributeValues={attributeValues}
@@ -101,8 +96,6 @@ const Page = () => {
           onSearchChange={handleSearch}
           writeEnabled={hasWriteAccess}
         />
-      ) : (
-        <div className={styles.centredContainer}>Coming soon/loading</div>
       )}
     </>
   );

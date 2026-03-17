@@ -127,14 +127,6 @@ export type RuleSetActions =
       };
     }
   | {
-      type: 'facetUpdateValues';
-      payload: {
-        id: string;
-        boosted: string[];
-        excludedValues: string[];
-      };
-    }
-  | {
       type: 'loadRuleset';
       payload: MerchandisingRuleSet;
     };

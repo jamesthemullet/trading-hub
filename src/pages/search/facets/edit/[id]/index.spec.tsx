@@ -452,66 +452,6 @@ describe('Search Facet Management Editing', () => {
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
   });
 
-  it('should update facet values', async () => {
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(<Page id={ruleSetId} />);
-
-    await user.click(screen.getAllByRole('button', { name: 'Edit values' })[0]);
-    expect(screen.getAllByText('More Silk')[0]).toBeVisible();
-
-    const moreSilkRow = screen.getByTestId(
-      'button to open facet order dropdown for More Silk'
-    );
-    await user.click(moreSilkRow);
-    const includeOnlyOption = within(moreSilkRow.parentElement!).getByRole(
-      'menuitemradio',
-      { name: 'Include only' }
-    );
-    await user.click(includeOnlyOption);
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: 'Save changes to attributes' })
-      ).toBeEnabled();
-    });
-
-    act(() => {
-      screen
-        .getByRole('button', { name: 'Save changes to attributes' })
-        .click();
-    });
-
-    await waitFor(() => {
-      expect(screen.queryByText('More Silk')).not.toBeInTheDocument();
-    });
-
-    act(() => {
-      screen.getByRole('button', { name: 'Save' }).click();
-    });
-
-    await waitFor(() => {
-      expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith({
-        ...updateMock,
-        facets: [
-          {
-            boosted: ['Pink', 'Navy', 'Grey', 'Blue', 'Green', 'More Silk'],
-            excludedValues: ['Brown'],
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-          },
-          {
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
-          },
-          {
-            boosted: [],
-            excludedValues: [],
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-          },
-        ],
-      });
-    });
-  }, 10000);
-
   describe('Scheduling', () => {
     beforeAll(() => {
       jest.useFakeTimers();
