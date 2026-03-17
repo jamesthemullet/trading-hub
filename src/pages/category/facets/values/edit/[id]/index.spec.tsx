@@ -91,8 +91,24 @@ describe('Index', () => {
     jest.clearAllMocks();
   });
 
-  it('should render new facet values page', async () => {
-    renderWithProviders(<Page />);
+  it('should render coming soon if feature flag is disabled', async () => {
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        hasAuthorization: false,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Coming soon/loading')).toBeVisible();
+    });
+  });
+
+  it('should render new facet values page if feature flag is enabled', async () => {
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -108,7 +124,11 @@ describe('Index', () => {
       },
     });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
     });
@@ -123,7 +143,11 @@ describe('Index', () => {
       },
     });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -140,7 +164,11 @@ describe('Index', () => {
       },
     });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -163,7 +191,11 @@ describe('Index', () => {
       },
     });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -172,7 +204,11 @@ describe('Index', () => {
 
   it('should handle searchQuery changes', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -199,7 +235,11 @@ describe('Index', () => {
   it('should call updateCategoryRuleSet on save', async () => {
     const user = userEvent.setup();
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -276,7 +316,11 @@ describe('Index', () => {
   it('should display error message when updating ruleset fails', async () => {
     updateRuleSet.error = 'Failed to update';
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -294,7 +338,11 @@ describe('Index', () => {
       },
     });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
     });
@@ -304,6 +352,7 @@ describe('Index', () => {
     renderWithProviders(<Page />, [], {
       featureFlags: {
         hasAuthorization: true,
+        showNewFacetValuesPage: true,
       },
     });
 
@@ -353,7 +402,11 @@ describe('Index', () => {
         },
       });
 
-      renderWithProviders(<Page />);
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
 
       expect(mockUseDraftRuleset.getDraft).toHaveBeenCalled();
 
@@ -409,7 +462,11 @@ describe('Index', () => {
 
       const user = userEvent.setup({ delay: null });
 
-      renderWithProviders(<Page />);
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
 
       const saveButton = screen.getByRole('button', { name: 'Save' });
       await user.click(saveButton);

@@ -14,6 +14,7 @@ export type FeatureFlags = {
   hasAuthorization: boolean;
   authorizationRoleOverride: AuthorizationRoleOverride;
   hasOneTrustFlag: boolean;
+  showNewFacetValuesPage: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -24,6 +25,7 @@ export const defaultFeatureFlags: FeatureFlags = {
     globalOverride: 'No Override',
   },
   hasOneTrustFlag: false,
+  showNewFacetValuesPage: false,
 };
 
 export const FeatureFlagContext =
@@ -62,4 +64,15 @@ export const useOneTrustFlag = () => {
   }, [featureFlags.hasOneTrustFlag]);
 
   return isOneTrustEnabled;
+};
+
+export const useShowNewFacetValuesPage = () => {
+  const featureFlags = useContext(FeatureFlagContext);
+  const [showNewFacetValuesPage, setShowNewFacetValuesPage] = useState(false);
+
+  useEffect(() => {
+    setShowNewFacetValuesPage(featureFlags.showNewFacetValuesPage);
+  }, [featureFlags.showNewFacetValuesPage]);
+
+  return showNewFacetValuesPage;
 };

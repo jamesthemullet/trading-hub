@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
@@ -337,6 +337,119 @@ describe('Facet Panel', () => {
       expect(
         screen.getByTestId('Row showing color as excluded')
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('Edit Facet Values Modal', () => {
+    it('should open the modal', async () => {
+      jest.useRealTimers();
+      const user = userEvent.setup();
+
+      renderWithProviders(<FacetsPanel {...defaultProps} countryCode="UK" />);
+
+      const editFacetValuesButton = screen.getAllByRole('button', {
+        name: 'Edit values',
+      })[0];
+
+      expect(editFacetValuesButton).toBeVisible();
+
+      await user.click(editFacetValuesButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 3,
+            name: 'Facet value settings of: color',
+          })
+        ).toBeVisible();
+      });
+    });
+
+    it('should close the modal on click of the close button', async () => {
+      const user = userEvent.setup({ delay: null });
+      const refreshMock = jest.fn();
+
+      renderWithProviders(
+        <FacetsPanel
+          {...defaultProps}
+          countryCode="UK"
+          refreshData={refreshMock}
+        />
+      );
+
+      const editFacetValuesButton = screen.getAllByRole('button', {
+        name: 'Edit values',
+      })[0];
+
+      act(() => {
+        editFacetValuesButton.click();
+      });
+
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Facet value settings of: color',
+        })
+      ).toBeVisible();
+
+      const closeButton = screen.getAllByRole('button', { name: 'Cancel' })[1];
+
+      await user.click(closeButton);
+
+      await waitFor(async () => {
+        expect(
+          screen.queryAllByRole('heading', {
+            level: 3,
+            name: 'Facet value settings of: color',
+          }).length
+        ).toBe(0);
+      });
+      expect(refreshMock).not.toHaveBeenCalled();
+    });
+
+    it('should close the modal and refetch on click of the save button', async () => {
+      const user = userEvent.setup({ delay: null });
+      const refreshMock = jest.fn();
+
+      renderWithProviders(
+        <FacetsPanel
+          {...defaultProps}
+          countryCode="UK"
+          refreshData={refreshMock}
+        />
+      );
+
+      const editFacetValuesButton = screen.getAllByRole('button', {
+        name: 'Edit values',
+      })[0];
+
+      await user.click(editFacetValuesButton);
+
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: 'Facet value settings of: color',
+        })
+      ).toBeVisible();
+
+      const modal = screen.getByLabelText('Edit facet values modal');
+      expect(modal).toBeVisible();
+      const saveButton = within(modal).getAllByRole('button', {
+        name: 'Save',
+      })[0];
+
+      await user.click(saveButton);
+
+      const heading = await screen.findByRole('heading', {
+        name: 'Apply global changes',
+      });
+      expect(heading).toBeVisible();
+
+      await user.click(screen.getByRole('button', { name: 'Apply action' }));
+
+      await waitFor(() => {
+        expect(refreshMock).toHaveBeenCalled();
+      });
     });
   });
 

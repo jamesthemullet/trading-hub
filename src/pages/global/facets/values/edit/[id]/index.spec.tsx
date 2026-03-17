@@ -49,8 +49,24 @@ describe('Index', () => {
     jest.clearAllMocks();
   });
 
-  it('should render new facet values page', async () => {
-    renderWithProviders(<Page />);
+  it('should render coming soon if feature flag is not enabled', async () => {
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: false,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Coming soon/loading')).toBeVisible();
+    });
+  });
+
+  it('should render new facet values page if feature flag is enabled', async () => {
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
@@ -83,7 +99,11 @@ describe('Index', () => {
 
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
-    renderWithProviders(<Page />);
+    renderWithProviders(<Page />, [], {
+      featureFlags: {
+        showNewFacetValuesPage: true,
+      },
+    });
 
     const searchInput = screen.getByPlaceholderText('Search');
     await user.type(searchInput, 'Duck');
@@ -106,7 +126,11 @@ describe('Index', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
-      renderWithProviders(<Page />);
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
 
       const searchInput = screen.getByPlaceholderText('Search');
       await user.type(searchInput, 'Duck');
@@ -142,7 +166,11 @@ describe('Index', () => {
         }));
 
       const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-      renderWithProviders(<Page />);
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
 
       await waitFor(() => {
         expect(screen.getByText('12 results')).toBeInTheDocument();
@@ -182,7 +210,11 @@ describe('Index', () => {
         }));
 
       const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-      renderWithProviders(<Page />);
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
 
       const searchInput = screen.getByPlaceholderText('Search');
 
@@ -219,7 +251,11 @@ describe('Index', () => {
         }));
 
       const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-      renderWithProviders(<Page />);
+      renderWithProviders(<Page />, [], {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      });
 
       const searchInput = screen.getByPlaceholderText('Search');
 
@@ -240,6 +276,7 @@ describe('Index', () => {
       renderWithProviders(<Page />, [], {
         featureFlags: {
           hasAuthorization: true,
+          showNewFacetValuesPage: true,
         },
       });
 

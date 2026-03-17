@@ -11,8 +11,9 @@ import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css'
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import type {
   FormattedRow,
-  GlobalAttributesPageReducer,
-} from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
+  GlobalAttributeReducer,
+} from '@/libs/stores/global-attribute/global-attribute-reducer';
+import type { GlobalAttributesPageReducer } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
 
 type MergeGroup = MerchandisingGlobalOnlyFacetConfig['merged'];
 
@@ -37,9 +38,11 @@ export const GlobalEditableLabel = ({
   excludedRows: FormattedRow[];
   countryCode: MerchandisingCountryCode;
   merged: MergeGroup | undefined;
-  dispatch: Dispatch<GlobalAttributesPageReducer>;
+  dispatch:
+    | Dispatch<GlobalAttributeReducer>
+    | Dispatch<GlobalAttributesPageReducer>;
   setEditingValues: React.Dispatch<React.SetStateAction<string[]>>;
-  writeEnabled: boolean;
+  writeEnabled?: boolean;
 }) => {
   const [error, setError] = useState<string>('');
   const allBoostedValues = boostedRows.map((row) => row.displayName);

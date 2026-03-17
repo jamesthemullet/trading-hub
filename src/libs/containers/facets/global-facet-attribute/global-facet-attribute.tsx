@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@/libs/components';
 import facetPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
-import type { GlobalAttributesPageReducer } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
+import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 
 import Image from 'next/image';
 
@@ -27,7 +27,7 @@ type GlobalFacetAttributeProps = {
     valueToRemove: string;
     mergeDisplayName: string;
   }) => void;
-  dispatch: Dispatch<GlobalAttributesPageReducer>;
+  dispatch: Dispatch<GlobalAttributeReducer>;
   writeEnabled: boolean;
   displayType: 'included' | 'excluded' | 'algoControl';
   displayValue: string;

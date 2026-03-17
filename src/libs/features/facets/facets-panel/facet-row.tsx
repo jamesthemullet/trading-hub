@@ -38,11 +38,13 @@ type FacetRowProps = {
   order: number;
   localOrder: number | '';
   isDisplayValueDuplicate: (facetId: string, value: string) => boolean;
+  showNewFacetValuesPage: boolean;
   countryCode: MerchandisingCountryCode;
   ruleSetId: string;
   setError: (id: string, message: string) => void;
   onFacetDataChange: OnFacetDataChange;
   onDisplayTypeChange: (id: string, newDisplayType: FacetDisplayType) => void;
+  onOpenFacetEditModal: (facet: MerchandisingReturnedFacet) => void;
   getInputRef: (id: string) => (el: HTMLInputElement | null) => void;
   handleInputChange: (displayValue: string, value: string) => void;
   handleInputBlur: (displayValue: string, value: string, order: number) => void;
@@ -62,11 +64,13 @@ export const FacetRow = memo(
     order,
     localOrder,
     isDisplayValueDuplicate,
+    showNewFacetValuesPage,
     countryCode,
     ruleSetId,
     setError,
     onFacetDataChange,
     onDisplayTypeChange,
+    onOpenFacetEditModal,
     getInputRef,
     handleInputChange,
     handleInputBlur,
@@ -152,22 +156,32 @@ export const FacetRow = memo(
         </div>
 
         <div className={styles.tableCol}>
-          <Button
-            theme="secondary"
-            as="a"
-            href={(() => {
-              const baseUrl = ROUTES.GLOBAL.FACETS.VALUES.EDIT(facet.id);
-              const params = new URLSearchParams({
-                ruleSetId,
-                displayName: facet.displayValue,
-                countryCode,
-              });
-              return `${baseUrl}?${params.toString()}`;
-            })()}
-            disabled={!writeEnabled}
-          >
-            {writeEnabled ? 'Edit values' : 'View values'}
-          </Button>
+          {showNewFacetValuesPage ? (
+            <Button
+              theme="secondary"
+              as="a"
+              href={(() => {
+                const baseUrl = ROUTES.GLOBAL.FACETS.VALUES.EDIT(facet.id);
+                const params = new URLSearchParams({
+                  ruleSetId,
+                  displayName: facet.displayValue,
+                  countryCode,
+                });
+                return `${baseUrl}?${params.toString()}`;
+              })()}
+              disabled={!writeEnabled}
+            >
+              {writeEnabled ? 'Edit values' : 'View values'}
+            </Button>
+          ) : (
+            <Button
+              theme="secondary"
+              onClick={() => onOpenFacetEditModal(facet)}
+              disabled={!writeEnabled}
+            >
+              Edit values
+            </Button>
+          )}
         </div>
 
         <div className={styles.tableCol}>

@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingRuleSet } from '@/libs/api';
+import type {
+  MerchandisingReturnedFacet,
+  MerchandisingRuleSet,
+  MerchandisingRuleSetFacetConfigWithId,
+} from '@/libs/api';
 import {
   Button,
   CombinedDropdown,
@@ -10,12 +14,17 @@ import {
   Typography,
 } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
+import { useShowNewFacetValuesPage } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { FacetRow } from '@/libs/containers/facets/facet-row';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
-import { CategorySearch, Preview } from '@/libs/features';
+import {
+  CategorySearch,
+  Preview,
+  SearchAndCategoryFacetsPanelModal,
+} from '@/libs/features';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
@@ -87,6 +96,8 @@ export const FacetsList = ({
   onSave,
   writeEnabled,
 }: FacetsListProps) => {
+  const showNewFacetValuesPage = useShowNewFacetValuesPage();
+
   const router = useRouter();
   const rulesetId = router.query.id as string;
 
@@ -137,6 +148,11 @@ export const FacetsList = ({
   const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
     'UK' | 'IE'
   >('UK');
+
+  const [selectedFacet, setSelectedFacet] = useState<
+    MerchandisingReturnedFacet | undefined
+  >(undefined);
+  const [isFacetValuesModalOpen, setIsFacetValuesModalOpen] = useState(false);
 
   const [selectedCategoriesInfo, setSelectedCategoriesInfo] = useState<
     {
@@ -584,12 +600,16 @@ export const FacetsList = ({
                     handleInputKeyDown={handleInputKeyDown}
                     handleFacetOrderInputRef={handleFacetOrderInputRef}
                     writeEnabled={writeEnabled}
+                    showNewFacetValuesPage={showNewFacetValuesPage}
                     selectedCategories={selectedCategories}
                     selectedSearchTerms={selectedSearchTerms}
                     facetType={facetType}
                     countryCode={ruleset.countryCode || 'UK_IE'}
                     rulesetId={rulesetId}
                     onDispatch={dispatch}
+                    onSetIsFacetValuesModalOpen={setIsFacetValuesModalOpen}
+                    onSetSelectedFacet={setSelectedFacet}
+                    rulesetFacets={ruleset.facets}
                     isNewRuleset={isNewRuleset}
                     currentRuleset={ruleset}
                   />
@@ -647,6 +667,28 @@ export const FacetsList = ({
       )}
 
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />
+
+      {isFacetValuesModalOpen && selectedFacet && (
+        <SearchAndCategoryFacetsPanelModal
+          onClose={() => setIsFacetValuesModalOpen(false)}
+          saveButtonLabel="Done"
+          onSave={(facet: MerchandisingRuleSetFacetConfigWithId) => {
+            setIsFacetValuesModalOpen(false);
+            dispatch({
+              type: 'facetUpdateValues',
+              payload: {
+                id: facet.id,
+                boosted: facet.boosted!,
+                excludedValues: facet.excludedValues!,
+              },
+            });
+          }}
+          facet={selectedFacet}
+          categories={facetType === 'category' ? selectedCategories : undefined}
+          countryCode={ruleset.countryCode!}
+          writeEnabled={writeEnabled}
+        />
+      )}
     </>
   );
 };

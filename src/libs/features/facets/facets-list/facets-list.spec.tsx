@@ -937,6 +937,98 @@ describe('FacetsList', () => {
     });
   });
 
+  it('should open and close the facet values modal', async () => {
+    const categoriesInfo = [
+      {
+        id: categoryId1,
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />
+    );
+
+    const editValuesButton = screen.getByRole('button', {
+      name: 'Edit values',
+    });
+
+    act(() => {
+      editValuesButton.click();
+    });
+
+    expect(screen.getByText('Facet value settings of: color')).toBeVisible();
+
+    const cancelButton = within(
+      screen.getByLabelText('Edit facet values modal')
+    ).getByRole('button', { name: 'Close attributes modal' });
+
+    act(() => {
+      cancelButton.click();
+    });
+
+    expect(
+      screen.queryByText('Facet value settings of: color')
+    ).not.toBeInTheDocument();
+  });
+
+  it('should open and return changes from the facet values modal', async () => {
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        isNewRuleset={false}
+        facetType="search"
+        searchTerms={['socks']}
+      />
+    );
+
+    const editValuesButton = screen.getByRole('button', {
+      name: 'Edit values',
+    });
+
+    act(() => {
+      editValuesButton.click();
+    });
+
+    expect(screen.getByText('Facet value settings of: color')).toBeVisible();
+
+    const doneButton = within(
+      screen.getByLabelText('Edit facet values modal')
+    ).getByRole('button', { name: 'Save changes to attributes' });
+
+    act(() => {
+      doneButton.click();
+    });
+
+    expect(
+      screen.queryByText('Facet value settings of: color')
+    ).not.toBeInTheDocument();
+  });
+
   it('should not allow to edit values of an algoControl facet', async () => {
     renderWithProviders(
       <FacetsList
@@ -1036,7 +1128,7 @@ describe('FacetsList', () => {
     expect(onSaveSpy).toHaveBeenCalledWith(expectedCall);
   });
 
-  it('should route the user to the facet values page', async () => {
+  it('should route the user to the facet values page if showNewFacetValuesPage is true', async () => {
     const categoriesInfo = [
       {
         id: categoryId1,
@@ -1062,7 +1154,12 @@ describe('FacetsList', () => {
         isNewRuleset={false}
         categoriesInfo={categoriesInfo}
       />,
-      []
+      [],
+      {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      }
     );
 
     const editValuesButton = screen.getByRole('link', {
@@ -1092,7 +1189,13 @@ describe('FacetsList', () => {
         facetType="search"
         isNewRuleset={false}
         searchTerms={['term 1', 'term 2']}
-      />
+      />,
+      [],
+      {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      }
     );
 
     const editFacetValuesButton = screen.getAllByRole('link', {
@@ -1123,7 +1226,13 @@ describe('FacetsList', () => {
         facetType="search"
         isNewRuleset={false}
         searchTerms={['term 1', 'term 2']}
-      />
+      />,
+      [],
+      {
+        featureFlags: {
+          showNewFacetValuesPage: true,
+        },
+      }
     );
 
     const viewFacetValuesButton = screen.getAllByRole('link', {

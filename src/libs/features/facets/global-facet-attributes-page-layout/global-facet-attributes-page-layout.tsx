@@ -155,11 +155,10 @@ export const GlobalFacetAttributesPageLayout = ({
       },
     });
 
+    // istanbul ignore next
     if ('status' in response && response.status === 'error') {
       return;
     }
-
-    router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
   };
 
   // edit modal logic

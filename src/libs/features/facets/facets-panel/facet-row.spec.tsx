@@ -57,6 +57,7 @@ const createProps = (
   order: 1,
   localOrder: 1,
   isDisplayValueDuplicate: jest.fn(() => false),
+  showNewFacetValuesPage: false,
   countryCode: 'UK' as const,
   ruleSetId: 'test-ruleset-id',
   setError: jest.fn(),
@@ -106,8 +107,10 @@ describe('FacetRow', () => {
     expect(screen.getByTestId('drag-handle-color')).toBeVisible();
   });
 
-  it('renders edit values link', () => {
-    renderWithProviders(<FacetRow {...createProps(includedFacet)} />);
+  it('renders edit values link when showNewFacetValuesPage is enabled', () => {
+    renderWithProviders(
+      <FacetRow {...createProps(includedFacet)} showNewFacetValuesPage />
+    );
 
     const editValuesLink = screen.getByRole('link', { name: 'Edit values' });
 
@@ -119,7 +122,11 @@ describe('FacetRow', () => {
 
   it('renders view values link when write access is disabled', () => {
     renderWithProviders(
-      <FacetRow {...createProps(includedFacet)} writeEnabled={false} />
+      <FacetRow
+        {...createProps(includedFacet)}
+        showNewFacetValuesPage
+        writeEnabled={false}
+      />
     );
 
     const viewValuesLink = screen.getByRole('link', { name: 'View values' });

@@ -529,6 +529,99 @@ describe('Category Facet Management Editing', () => {
     });
   });
 
+  it('should update facet values', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getAllByRole('button', { name: 'Edit values' })[0]);
+    expect(screen.getAllByText('More Silk')[0]).toBeVisible();
+
+    const moreSilkRow = screen.getByTestId(
+      'button to open facet order dropdown for More Silk'
+    );
+    await user.click(moreSilkRow);
+    const includeOnlyOption = within(moreSilkRow.parentElement!).getByRole(
+      'menuitemradio',
+      {
+        name: 'Include only',
+      }
+    );
+    await user.click(includeOnlyOption);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Save changes to attributes' })
+      ).toBeEnabled();
+    });
+
+    act(() => {
+      screen
+        .getByRole('button', { name: 'Save changes to attributes' })
+        .click();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('More Silk')).not.toBeInTheDocument();
+    });
+
+    act(() => {
+      screen.getByRole('button', { name: 'Save' }).click();
+    });
+
+    await waitFor(() => {
+      expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+        categoryIds: ['SubCategory_428'],
+        countryCode: 'UK_IE',
+        excludedFacets: {
+          facets: [
+            {
+              id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',
+            },
+          ],
+        },
+        ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+
+        rules: {
+          pinnedProducts: [{ id: 'a1' }],
+          blockedProducts: [],
+          boosts: {
+            numeric: [],
+            alphanumeric: [],
+            product: [],
+          },
+          buries: {
+            numeric: [],
+            alphanumeric: [],
+            product: [],
+          },
+          includes: {
+            alphanumeric: [],
+          },
+          excludes: {
+            alphanumeric: [],
+          },
+        },
+        isEnabled: false,
+        facets: [
+          {
+            boosted: ['test include', 'More Silk'],
+            excludedValues: ['test exclude'],
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+          },
+          {
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
+          },
+          {
+            boosted: [],
+            excludedValues: [],
+            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
+          },
+        ],
+      });
+    });
+  }, 10000);
+
   describe('Scheduling', () => {
     beforeAll(() => {
       jest.useFakeTimers();

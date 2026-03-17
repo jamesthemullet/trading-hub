@@ -136,31 +136,29 @@ test.describe('Search rulesets', () => {
   });
 
   test('edits facet values', async ({ page }) => {
-    page.goto('/search/facets/edit/abcdcae5-c3c4-455b-aeff-b7d2af65b702');
+    await page.goto('/search/facets/edit/abcdcae5-c3c4-455b-aeff-b7d2af65b702');
 
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit values' }).first().click();
+    await page.getByRole('button', { name: 'Edit values' }).first().click();
 
     await expect(
-      page.getByRole('heading', { name: 'Value settings of: Colours' })
+      page.getByTestId('algoControl attribute 0 SMOKE')
     ).toBeVisible();
 
     await page
       .getByTestId('button to open facet order dropdown for SMOKE')
       .click();
     await page.getByRole('menuitemradio', { name: 'Include only' }).click();
+    await page.getByLabel('Move SMOKE row up').click();
 
-    await expect(page.getByTestId('included attribute 1 SMOKE')).toBeVisible();
-
-    await page.getByRole('spinbutton', { name: 'Order for SMOKE' }).click();
-    await page.getByRole('spinbutton', { name: 'Order for SMOKE' }).fill('1');
     await page
-      .getByRole('spinbutton', { name: 'Order for SMOKE' })
-      .press('Enter');
+      .getByTestId('button to open facet order dropdown for SMOKE')
+      .click();
+    await page.getByRole('menuitemradio', { name: 'Exclude only' }).click();
 
-    await expect(page.getByTestId('included attribute 0 SMOKE')).toBeVisible();
+    await expect(page.getByLabel('Move SMOKE row up')).toBeHidden();
   });
 });

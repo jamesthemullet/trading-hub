@@ -254,6 +254,27 @@ export const rulesetReducer = (
       };
     }
 
+    case 'facetUpdateValues': {
+      const { payload } = action;
+      const { id, boosted, excludedValues } = payload;
+
+      const updatedFacets = state.facets?.map((facet) => {
+        if (facet.id === id) {
+          return {
+            ...facet,
+            boosted,
+            excludedValues,
+          };
+        }
+        return facet;
+      });
+
+      return {
+        ...state,
+        facets: updatedFacets,
+      };
+    }
+
     case 'loadRuleset': {
       return action.payload;
     }

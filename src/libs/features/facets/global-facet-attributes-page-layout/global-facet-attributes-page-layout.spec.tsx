@@ -25,9 +25,7 @@ const mockRouter = {
 };
 
 const mockUpdateGlobalFacet = jest.fn(() =>
-  Promise.resolve({ status: 'success' } as
-    | MerchandisingReturnedGlobalFacet
-    | { status: string })
+  Promise.resolve({} as MerchandisingReturnedGlobalFacet | { status: string })
 );
 const updateGlobalFacet = {
   handleGlobalFacetUpdate: mockUpdateGlobalFacet,
@@ -300,12 +298,6 @@ describe('GlobalFacetAttributesPageLayout', () => {
         excludedValues: ['Ducky Downy'],
         boosted: ['Cotton', 'Duck Down'],
       },
-    });
-
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith(
-        `/global/facets/edit/${ruleSetId}`
-      );
     });
   });
 });

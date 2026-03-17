@@ -148,25 +148,17 @@ test.describe('global facets', () => {
     page,
   }) => {
     await page.goto('/global/facets/edit/b118cd93-1767-447b-ace5-74084bcf56eb');
-    await page.getByRole('link', { name: 'Edit values' }).nth(1).click();
+    await page.getByRole('button', { name: 'Edit values' }).nth(1).click();
 
     await expect(
-      page.getByRole('heading', { name: 'Value settings of: Age' })
+      page.getByRole('heading', { name: 'Facet value settings of: Age' })
     ).toBeVisible();
-
-    await checkAccessibility(page);
 
     await expect(
       page.getByTestId('included attribute 1 3+ years')
     ).toBeVisible();
 
-    await page.getByRole('spinbutton', { name: 'Order for 3+ years' }).click();
-    await page
-      .getByRole('spinbutton', { name: 'Order for 3+ years' })
-      .fill('3');
-    await page
-      .getByRole('spinbutton', { name: 'Order for 3+ years' })
-      .press('Enter');
+    await page.getByLabel('Move 3+ years row down').click();
 
     await expect(
       page.getByTestId('included attribute 2 3+ years')
@@ -195,10 +187,10 @@ test.describe('global facets', () => {
 
   test('merges facet values', async ({ page }) => {
     await page.goto('/global/facets/edit/b118cd93-1767-447b-ace5-74084bcf56eb');
-    await page.getByRole('link', { name: 'Edit values' }).nth(1).click();
+    await page.getByRole('button', { name: 'Edit values' }).nth(1).click();
 
     await expect(
-      page.getByRole('heading', { name: 'Value settings of: Age' })
+      page.getByRole('heading', { name: 'Facet value settings of: Age' })
     ).toBeVisible();
 
     await checkAccessibility(page);
@@ -206,50 +198,47 @@ test.describe('global facets', () => {
     await page.getByLabel('Select 0-2 Years to merge').click();
     await page.getByLabel('Select 3-5 Years to merge').click();
 
-    await expect(page.getByText('2 selected')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Merge (2)' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Merge', exact: true }).click();
+    await page.getByRole('button', { name: 'Merge (2)' }).click();
 
+    await page.getByLabel('Edit 0-2 Years input field').click();
     await page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Save' })
-      .click();
+      .getByLabel('Edit 0-2 Years input field')
+      .fill('A merged group name');
+
+    await page.getByLabel('Save 0-2 Years change').click();
 
     await expect(
-      page
-        .getByTestId('algoControl attribute 0 0-2 Years')
-        .getByText('Merged Value Group')
-    ).toBeVisible();
-
-    await expect(
-      page.getByLabel('Edit display name for 0-2 Years')
+      page.getByLabel('Edit display name for A merged group name')
     ).toBeVisible();
 
     await page.getByLabel('Select Not suitable under 36 mth to merge').click();
-    await page.getByLabel('Select 0-2 Years to merge').click();
+    await page.getByLabel('Select A merged group name to merge').click();
 
-    await expect(page.getByText('2 selected')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Merge (3)' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Merge', exact: true }).click();
+    await page.getByRole('button', { name: 'Merge (3)' }).click();
 
+    await page.getByLabel('Edit 0-2 years').click();
     await page
-      .getByRole('dialog')
-      .getByRole('textbox')
+      .getByLabel('Edit 0-2 years')
       .fill('A merge into a merged group name');
 
-    await page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Save' })
-      .click();
+    await page.getByLabel('Save 0-2 years change').click();
 
     await expect(
       page.getByLabel('Edit display name for A merge into a merged group name')
     ).toBeVisible();
 
-    await page.getByLabel('Remove merged facet for 3-5 years').click();
+    await expect(
+      page.getByLabel('Edit display name for Name your mergey')
+    ).toBeVisible();
+
+    await page.getByLabel('Remove merged facet for 6+ years').click();
 
     await expect(
-      page.getByLabel('Edit display name for 3-5 years')
+      page.getByLabel('Edit display name for 6+ years')
     ).toBeVisible();
   });
 });

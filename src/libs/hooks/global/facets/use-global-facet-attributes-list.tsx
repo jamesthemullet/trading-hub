@@ -17,6 +17,7 @@ import { GlobalFacetAttributeValuesTableRow } from '@/libs/containers/shared/tab
 import facetsPanelStyles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
+import type { GlobalAttributeReducer } from '@/libs/stores/global-attribute/global-attribute-reducer';
 import type {
   FormattedRow,
   GlobalAttributesPageReducer,
@@ -178,7 +179,7 @@ export const useGlobalFacetAttributesList = ({
                 isChecked={isChecked}
                 displayName={displayName}
                 handleRemoveFromMerge={handleRemoveFromMerge}
-                dispatch={dispatch}
+                dispatch={dispatch as Dispatch<GlobalAttributeReducer>}
                 writeEnabled={writeEnabled}
                 displayType={displayType}
                 displayValue={displayName}
