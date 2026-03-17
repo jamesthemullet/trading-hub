@@ -90,7 +90,7 @@ export const GlobalFacetAttribute = ({
             checked={isChecked}
             onChange={() => handleSelect(displayName)}
             label={`Select ${displayName} to merge`}
-            showLabel={false}
+            shouldShowLabel={false}
           />
         )}
       </div>

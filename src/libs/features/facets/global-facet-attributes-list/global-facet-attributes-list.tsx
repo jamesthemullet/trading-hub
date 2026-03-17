@@ -228,7 +228,7 @@ export const GlobalFacetAttributesList = ({
                   {writeEnabled && (
                     <Checkbox
                       label="Select all facet attributes"
-                      showLabel={false}
+                      shouldShowLabel={false}
                       checked={hasSelectedAllAttributes}
                       onChange={() => {
                         setIsAwaitingUpdate(true);

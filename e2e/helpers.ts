@@ -1,8 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 
-export const cookies = [];
-
-export const getProductSearchResults = (page: Page) =>
+const getProductSearchResults = (page: Page) =>
   page.getByTestId('product-search-result');
 
 export const getProductSearchResultPosition = (page: Page, position: number) =>

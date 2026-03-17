@@ -36,7 +36,7 @@ describe('useOneTrustFlag', () => {
   it('should return true when OneTrust feature flag is enabled', () => {
     const enabledFeatureFlags: FeatureFlags = {
       ...defaultFeatureFlags,
-      oneTrust: true,
+      hasOneTrustFlag: true,
     };
 
     const { result } = renderHook(() => useOneTrustFlag(), {

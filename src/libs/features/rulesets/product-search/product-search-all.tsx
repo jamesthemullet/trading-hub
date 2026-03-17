@@ -132,7 +132,7 @@ export const ProductSearchAll = ({
                     selectedProducts.length > 0 &&
                     selectedProducts.length === products.length
                   }
-                  showLabel
+                  shouldShowLabel
                   disabled={isSelectionDisabled}
                 />
               </div>

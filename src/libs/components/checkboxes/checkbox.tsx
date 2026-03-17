@@ -10,13 +10,13 @@ type InputProps = Omit<
 > & {
   label: string;
   onChange: () => void;
-  showLabel?: boolean;
+  shouldShowLabel?: boolean;
 };
 
-export const Checkbox = ({ label, showLabel, ...rest }: InputProps) => {
+export const Checkbox = ({ label, shouldShowLabel, ...rest }: InputProps) => {
   const id = useId();
 
-  return showLabel ? (
+  return shouldShowLabel ? (
     <label className={styles.checkboxLabel} htmlFor={id}>
       <input
         className={styles.checkbox}

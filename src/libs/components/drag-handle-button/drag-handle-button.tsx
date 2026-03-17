@@ -18,7 +18,7 @@ export const DragHandleButton = forwardRef<
 >(({ disabled, displayName, setActivatorNodeRef, listeners = {} }, ref) => (
   <Button
     appearance="icon"
-    ref={setActivatorNodeRef || ref}
+    ref={setActivatorNodeRef ?? ref}
     className={styles.dragHandleButton}
     type="button"
     aria-label={`Reorder ${displayName}`}

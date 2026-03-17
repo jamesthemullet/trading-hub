@@ -42,7 +42,7 @@ export const reportErrorToDynatrace = (
       'page.title': sanitizedTitle,
       'page.referrer': sanitizedReferrer,
       'client.userAgent': sanitizedUserAgent,
-      ...(context || {}),
+      ...(context ?? {}),
       level: 'error',
     });
   }
@@ -53,7 +53,7 @@ export const setupGlobalErrorHandlers = (): (() => void) | void => {
 
   const handleError = (event: ErrorEvent | Event): void => {
     const errorEvent = event as ErrorEvent;
-    reportErrorToDynatrace(errorEvent.error || new Error(errorEvent.message));
+    reportErrorToDynatrace(errorEvent.error ?? new Error(errorEvent.message));
   };
 
   const handleUnhandledRejection = (event: PromiseRejectionEvent): void => {

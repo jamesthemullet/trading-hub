@@ -12,7 +12,7 @@ const meta: Meta<typeof Checkbox> = {
       control: 'text',
       description: 'Label content for checkbox',
     },
-    showLabel: {
+    shouldShowLabel: {
       control: 'boolean',
       description: 'Controls whether the label is visible',
     },
@@ -32,7 +32,7 @@ type Story = StoryObj<typeof Checkbox>;
 export const Default: Story = {
   args: {
     label: 'Checkbox Label',
-    showLabel: true,
+    shouldShowLabel: true,
     disabled: false,
     onChange: fn(),
   },
@@ -46,6 +46,6 @@ export const Disabled: Story = {
 export const HiddenLabel: Story = {
   args: {
     ...Default.args,
-    showLabel: false,
+    shouldShowLabel: false,
   },
 };

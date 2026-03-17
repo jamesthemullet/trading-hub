@@ -140,7 +140,7 @@ export const DateTimePickerModal = ({
                 <div className={styles.rangeSelector}>
                   <Checkbox
                     label="No end date"
-                    showLabel
+                    shouldShowLabel
                     checked={!hasDateRange}
                     onChange={() => setHasDateRange(!hasDateRange)}
                   />

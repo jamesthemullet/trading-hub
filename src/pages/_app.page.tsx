@@ -43,12 +43,12 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
     <FeatureFlagContext.Provider
       value={{
         hasAuthorization: cookies.flagAuthorization,
-        authorizationRoleOverride: cookies.flagAuthorizationRoleOverride || {
+        authorizationRoleOverride: cookies.flagAuthorizationRoleOverride ?? {
           catOverride: 'No Override',
           searchOverride: 'No Override',
           globalOverride: 'No Override',
         },
-        oneTrust: cookies.flagOneTrust,
+        hasOneTrustFlag: cookies.flagOneTrust,
       }}
     >
       {children}
@@ -57,11 +57,11 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 const OneTrustScripts = () => {
-  const { oneTrust } = useContext(FeatureFlagContext);
+  const { hasOneTrustFlag } = useContext(FeatureFlagContext);
   const isLocal =
     typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
-  if (!oneTrust || isLocal) {
+  if (!hasOneTrustFlag || isLocal) {
     return null;
   }
   return (
