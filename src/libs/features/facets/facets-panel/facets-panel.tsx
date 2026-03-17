@@ -288,10 +288,7 @@ export const FacetsPanel = ({
     return [boosted, excluded, nonBoostedExcluded];
   }, [facetsState]);
 
-  const canReorderIncludedFacets = useMemo(
-    () => boostedCount > 1,
-    [boostedCount]
-  );
+  const canReorderIncludedFacets = boostedCount > 1;
 
   const renderFacetRow = useCallback(
     (facet: FacetRowDisplayValue) => {

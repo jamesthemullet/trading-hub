@@ -46,8 +46,8 @@ export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
       <div className={styles.flagAndButtons}>
         <div className={styles.flagAndText}>
           {countryCode &&
-            getFlagFromCountryCode(countryCode).map(({ flags, alt }, index) => (
-              <Image key={index} src={flags} width={20} height={20} alt={alt} />
+            getFlagFromCountryCode(countryCode).map(({ flags, alt }) => (
+              <Image key={flags} src={flags} width={20} height={20} alt={alt} />
             ))}
 
           {facetType === 'global' ? (

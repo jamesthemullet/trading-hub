@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { DndContextProps, DragEndEvent } from '@dnd-kit/core';
-import lodash from 'lodash';
+import without from 'lodash/without';
 
 import { SearchAndCategoryFacetAttributesList } from './search-and-category-facet-attributes-list';
 
@@ -56,11 +56,7 @@ jest.mock('@dnd-kit/sortable', () => {
   };
 });
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
-  intersection: jest.fn(),
-  without: jest.fn(),
-}));
+jest.mock('lodash/without', () => jest.fn());
 
 const setup = (props = {}) => {
   const defaultProps = {
@@ -268,7 +264,7 @@ describe('SearchAndCategoryFacetAttributesList', () => {
     it('should dispatch SET_BOOSTED_ORDER if new value within the range of boosted items', async () => {
       const dispatch = jest.fn();
       const user = userEvent.setup({ delay: null });
-      (lodash.without as jest.Mock).mockReturnValue([
+      (without as jest.Mock).mockReturnValue([
         'Cotton',
         'Silk',
         'Satin',
@@ -294,7 +290,7 @@ describe('SearchAndCategoryFacetAttributesList', () => {
     it('should not dispatch SET_BOOSTED_ORDER if new value is less than 1', async () => {
       const user = userEvent.setup({ delay: null });
       const dispatch = jest.fn();
-      (lodash.without as jest.Mock).mockReturnValue([
+      (without as jest.Mock).mockReturnValue([
         'Cotton',
         'Silk',
         'Satin',
@@ -321,7 +317,7 @@ describe('SearchAndCategoryFacetAttributesList', () => {
     it('should keep the existing order if the user deletes, then clicks outside without inputting a new order', async () => {
       const dispatch = jest.fn();
       const user = userEvent.setup({ delay: null });
-      (lodash.without as jest.Mock).mockReturnValue([
+      (without as jest.Mock).mockReturnValue([
         'Cotton',
         'Silk',
         'Satin',
@@ -346,7 +342,7 @@ describe('SearchAndCategoryFacetAttributesList', () => {
     it('should keep the existing order if the user deletes, then clicks enter without inputting a new order', async () => {
       const dispatch = jest.fn();
       const user = userEvent.setup({ delay: null });
-      (lodash.without as jest.Mock).mockReturnValue([
+      (without as jest.Mock).mockReturnValue([
         'Cotton',
         'Silk',
         'Satin',

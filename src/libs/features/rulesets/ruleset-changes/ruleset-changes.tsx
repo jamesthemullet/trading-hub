@@ -199,9 +199,14 @@ const ProductsLoader = ({
         products.length > PRODUCTS_TO_LOAD_INCREMENT && (
           <div className={styles.buttonWrapper}>
             <Button
-              onClick={() => {
-                setProductsShown(productsShown + PRODUCTS_TO_LOAD_INCREMENT);
-              }}
+              onClick={() =>
+                setProductsShown((current) =>
+                  Math.min(
+                    current + PRODUCTS_TO_LOAD_INCREMENT,
+                    products.length
+                  )
+                )
+              }
             >
               Load more products
             </Button>

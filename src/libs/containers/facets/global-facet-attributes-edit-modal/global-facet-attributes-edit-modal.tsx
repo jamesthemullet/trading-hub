@@ -152,9 +152,9 @@ export const GlobalFacetAttributesEditModal = ({
                       Merged Value Group
                     </Typography>
 
-                    {visibleAttributes.map((value, i) => (
+                    {visibleAttributes.map((value) => (
                       <div
-                        key={`${i}-${value}`}
+                        key={value}
                         className={
                           facetsPanelStyles.globalFacetAttributesPageMergedValue
                         }

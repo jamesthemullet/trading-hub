@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { MerchandisingCountryCode } from '@/libs/api';
 import { search } from '@/libs/api';
 
-import { uniqBy } from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 
 import {
   convertCategoryIdToCatalogue,

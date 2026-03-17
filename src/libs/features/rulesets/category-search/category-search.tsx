@@ -28,6 +28,41 @@ const SEARCH_DEBOUNCE_WAIT = 500;
 const DEFAULT_DROPDOWN_WIDTH = 250;
 const ACTIVE_DROPDOWN_WIDTH = 320;
 
+type CategoryRowProps = {
+  category: Required<MerchandisingCategory>;
+  onAddCategory: (category: {
+    identifier: string;
+    name: string;
+    path: string;
+  }) => void;
+  onSearchValueChange: (value: string) => void;
+  onCategoryResultsClear: () => void;
+};
+
+const CategoryRow = ({
+  category,
+  onAddCategory,
+  onSearchValueChange,
+  onCategoryResultsClear,
+}: CategoryRowProps) => (
+  <Button
+    className={styles.row}
+    type="button"
+    key={`row-${category.identifier}-${category.name}-${category.path}`}
+    onClick={() => {
+      onAddCategory(category);
+      onSearchValueChange('');
+      onCategoryResultsClear();
+    }}
+    aria-label={`Select category ${category.identifier}`}
+  >
+    <Typography variant="bodySmall" as="span">
+      {category.identifier} | {formatHTMLStrings(category.name)}{' '}
+      {category.path && `| ${category.path}`}
+    </Typography>
+  </Button>
+);
+
 type Props = {
   onClearSelection: (category: string) => void;
   onSelectCategory: (category: {
@@ -186,27 +221,13 @@ export const CategorySearch = ({
     }
   };
 
-  const CategoryRow = (category: Required<MerchandisingCategory>) => (
-    <Button
-      className={styles.row}
-      type="button"
-      key={`row-${category.identifier}-${category.name}-${category.path}`}
-      onClick={() => {
-        onAddCategory(category);
-        setSearchValue('');
-        setCategoryResults({
-          categories: [],
-          pagination: {},
-        });
-      }}
-      aria-label={`Select category ${category.identifier}`}
-    >
-      <Typography variant="bodySmall" as="span">
-        {category.identifier} | {formatHTMLStrings(category.name)}{' '}
-        {category.path && `| ${category.path}`}
-      </Typography>
-    </Button>
-  );
+  const handleCategoryResultsClear = () => {
+    setSearchValue('');
+    setCategoryResults({
+      categories: [],
+      pagination: {},
+    });
+  };
 
   const getCurrentPath = (category: string) => {
     return selectedCategoriesInfo?.find((c) => c.id === category)?.plpUrl;
@@ -376,7 +397,15 @@ export const CategorySearch = ({
 
               {categoryResults.categories.length > 0 && (
                 <div className={styles.resultsContainer}>
-                  {categoryResults.categories.map(CategoryRow)}
+                  {categoryResults.categories.map((category) => (
+                    <CategoryRow
+                      key={`row-${category.identifier}-${category.name}-${category.path}`}
+                      category={category}
+                      onAddCategory={onAddCategory}
+                      onSearchValueChange={setSearchValue}
+                      onCategoryResultsClear={handleCategoryResultsClear}
+                    />
+                  ))}
                 </div>
               )}
 

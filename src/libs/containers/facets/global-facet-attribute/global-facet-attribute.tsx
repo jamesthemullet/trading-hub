@@ -120,8 +120,8 @@ export const GlobalFacetAttribute = ({
                 Merged Value Group
               </Typography>
 
-              {visibleAttributes.map((value, i) => (
-                <div className={styles.mergedValue} key={`${i}-${value}`}>
+              {visibleAttributes.map((value) => (
+                <div className={styles.mergedValue} key={value}>
                   <Typography variant="bodySmall">{value}</Typography>{' '}
                   {isMergeGroup && value !== displayName && writeEnabled && (
                     <Button

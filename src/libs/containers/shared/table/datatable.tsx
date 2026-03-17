@@ -111,18 +111,30 @@ export const DataTable = ({
     return 'rule';
   };
 
-  const formatByQuery = (identifier: string) =>
-    identifier
-      .split(
-        new RegExp(`(${query?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
-      )
-      .map((word, ind) =>
-        word.toLowerCase() === query?.toLowerCase() ? (
-          <b key={`${word}-${ind}`}>{word}</b>
-        ) : (
-          word
-        )
+  const formatByQuery = (identifier: string) => {
+    const safeQuery = query?.toLowerCase();
+
+    if (!safeQuery) {
+      return identifier;
+    }
+
+    const words = identifier.split(
+      new RegExp(`(${safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+    );
+
+    let cursor = 0;
+
+    return words.map((word) => {
+      const startPosition = identifier.indexOf(word, cursor);
+      cursor = Math.max(cursor, startPosition + word.length);
+
+      return word.toLowerCase() === safeQuery ? (
+        <b key={`${word}-${startPosition}`}>{word}</b>
+      ) : (
+        word
       );
+    });
+  };
 
   const editViewText = writeEnabled ? 'Edit' : 'View';
 
@@ -147,43 +159,44 @@ export const DataTable = ({
           ))}
         </div>
         {isLoading
-          ? Array.from({ length: Number(currentPageSize || 10) }).map(
-              (_, index) => {
-                return (
-                  <div
-                    className={styles.row}
-                    data-testid={`datatable-skeleton-row-${index}`}
-                    key={`skeleton-row-${index}`}
-                    data-num-columns={headings.length}
-                  >
-                    <div className={styles.firstColumn} aria-busy="true">
-                      <Skeleton height={48} width="100%" />
-                    </div>
-                    <div className={styles.breadcrumbColumn} aria-busy="true">
-                      <Skeleton height={48} width="100%" />
-                    </div>
-                    <div className={styles.schedulingColumn} aria-busy="true">
-                      <Skeleton height={48} width="100%" />
-                    </div>
-                    <div className={styles.tableCol} aria-busy="true">
-                      <Skeleton height={48} width="100%" />
-                    </div>
-                    <div className={styles.tableCol} aria-busy="true">
-                      <Skeleton height={48} width="100%" />
-                    </div>
-                    <div className={styles.tableCol} aria-busy="true">
-                      <Skeleton height={48} width="100%" />
-                    </div>
-                    <div className={styles.tableCol} aria-busy="true">
-                      <Skeleton height={48} width="100%" />
-                    </div>
-                    <div className={styles.tableCol} aria-busy="true">
-                      <Skeleton height={48} width={113.3} />
-                    </div>
+          ? Array.from(
+              { length: Number(currentPageSize || 10) },
+              (_, i) => `datatable-skeleton-row-${i}`
+            ).map((rowId) => {
+              return (
+                <div
+                  className={styles.row}
+                  data-testid={rowId}
+                  key={rowId}
+                  data-num-columns={headings.length}
+                >
+                  <div className={styles.firstColumn} aria-busy="true">
+                    <Skeleton height={48} width="100%" />
                   </div>
-                );
-              }
-            )
+                  <div className={styles.breadcrumbColumn} aria-busy="true">
+                    <Skeleton height={48} width="100%" />
+                  </div>
+                  <div className={styles.schedulingColumn} aria-busy="true">
+                    <Skeleton height={48} width="100%" />
+                  </div>
+                  <div className={styles.tableCol} aria-busy="true">
+                    <Skeleton height={48} width="100%" />
+                  </div>
+                  <div className={styles.tableCol} aria-busy="true">
+                    <Skeleton height={48} width="100%" />
+                  </div>
+                  <div className={styles.tableCol} aria-busy="true">
+                    <Skeleton height={48} width="100%" />
+                  </div>
+                  <div className={styles.tableCol} aria-busy="true">
+                    <Skeleton height={48} width="100%" />
+                  </div>
+                  <div className={styles.tableCol} aria-busy="true">
+                    <Skeleton height={48} width={113.3} />
+                  </div>
+                </div>
+              );
+            })
           : rows.map(
               ({
                 id,
@@ -228,9 +241,9 @@ export const DataTable = ({
                       <div className={styles.flagAndIdentifier}>
                         {countryCode &&
                           getFlagFromCountryCode(countryCode).map(
-                            ({ flags, alt }, index) => (
+                            ({ flags, alt }) => (
                               <Image
-                                key={index}
+                                key={flags}
                                 src={flags}
                                 width={20}
                                 height={20}

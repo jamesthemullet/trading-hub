@@ -5,6 +5,8 @@ import { COLUMNS } from '@/libs/constants/facets-panel-columns';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 
 export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
+  const placeholderRows = ['row-1', 'row-2', 'row-3', 'row-4', 'row-5'];
+
   return (
     <>
       <div className={styles.actionContainer}>
@@ -34,9 +36,9 @@ export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
             </div>
           ))}
         </div>
-        {Array.from({ length: 5 }).map((_, index) => {
+        {placeholderRows.map((rowId) => {
           return (
-            <div key={index} className={styles.facetTableRow}>
+            <div key={rowId} className={styles.facetTableRow}>
               {COLUMNS.map(({ label }) => (
                 <div key={`column-${label}`} className={styles.tableCol}>
                   <Skeleton miw={150} mih={43} />

@@ -10,7 +10,8 @@ import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 
-import { intersection, without } from 'lodash';
+import intersection from 'lodash/intersection';
+import without from 'lodash/without';
 
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { SearchAndCategoryFacetAttributesList } from '../search-and-category-facet-attributes-list/search-and-category-facet-attributes-list';

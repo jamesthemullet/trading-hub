@@ -12,7 +12,8 @@ import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { mockUseSearchRuleSetPreviewData } from '@/test/data/mock-use-search-ruleset-preview';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import * as lodash from 'lodash';
+import intersection from 'lodash/intersection';
+import without from 'lodash/without';
 
 import Page from './index.page';
 
@@ -26,11 +27,8 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
-  intersection: jest.fn(),
-  without: jest.fn(),
-}));
+jest.mock('lodash/intersection', () => jest.fn());
+jest.mock('lodash/without', () => jest.fn());
 
 const updateMock = {
   searchTerms: ['foo', 'bar'],
@@ -162,8 +160,8 @@ describe('Index', () => {
     jest.clearAllMocks();
     mockUseDraftRuleset.getDraft.mockReturnValue(null);
     (useRouter as jest.Mock).mockReturnValue(defaultMockRouter);
-    (lodash.intersection as jest.Mock).mockReturnValue(['red']);
-    (lodash.without as jest.Mock).mockReturnValue(['blue', 'green']);
+    (intersection as jest.Mock).mockReturnValue(['red']);
+    (without as jest.Mock).mockReturnValue(['blue', 'green']);
     jest.mocked(useSearchRuleSetUpdate).mockReturnValue(mockUpdateRuleSet);
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,

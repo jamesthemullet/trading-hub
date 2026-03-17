@@ -216,6 +216,20 @@ const eslint = [
       'react/jsx-no-useless-fragment': 'error',
       'react/jsx-curly-brace-presence': ['error', 'never'],
       'react/forbid-dom-props': ['error', { forbid: ['style'] }],
+      'react/no-array-index-key': 'error',
+      'react/no-unstable-nested-components': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'lodash',
+              message:
+                'Avoid importing the full lodash package. Import from lodash/<method> instead.',
+            },
+          ],
+        },
+      ],
       'no-restricted-syntax': [
         'warn',
         {

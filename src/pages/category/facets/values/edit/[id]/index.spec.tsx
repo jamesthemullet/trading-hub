@@ -10,7 +10,8 @@ import {
 } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import * as lodash from 'lodash';
+import intersection from 'lodash/intersection';
+import without from 'lodash/without';
 
 import Page from './index.page';
 
@@ -18,11 +19,8 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
-  intersection: jest.fn(),
-  without: jest.fn(),
-}));
+jest.mock('lodash/intersection', () => jest.fn());
+jest.mock('lodash/without', () => jest.fn());
 
 const mockUseDraftRuleset = {
   getDraft: jest.fn(),
@@ -77,8 +75,8 @@ describe('Index', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(defaultMockRouter);
-    (lodash.intersection as jest.Mock).mockReturnValue(['red']);
-    (lodash.without as jest.Mock).mockReturnValue(['blue', 'green']);
+    (intersection as jest.Mock).mockReturnValue(['red']);
+    (without as jest.Mock).mockReturnValue(['blue', 'green']);
     jest.mocked(useGetFacetAttributeValues).mockReturnValue({
       attributeValues: attributeValuesMock,
       error: '',
