@@ -157,7 +157,7 @@ export const FacetsList = ({
     }
 
     const draft = getDraft();
-    if (!draft || draft.type !== facetType) {
+    if (draft?.type !== facetType) {
       setIsDraftLoaded(true);
       return;
     }

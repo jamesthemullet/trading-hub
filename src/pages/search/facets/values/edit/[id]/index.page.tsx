@@ -8,6 +8,8 @@ import type {
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
+  type DraftRulesetState,
+  type DraftSearchRuleset,
   useDraftRuleset,
   useFacetsList,
   useGetFacetAttributeValues,
@@ -19,6 +21,10 @@ import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
+
+const isSearchDraft = (
+  draft: DraftRulesetState | null
+): draft is DraftSearchRuleset => draft?.type === 'search';
 
 const Page = () => {
   const router = useRouter();
@@ -52,10 +58,13 @@ const Page = () => {
 
   useEffect(() => {
     const draft = getDraft();
-    if (ruleSetId === 'draft' && draft && draft.type === 'search') {
-      setIsDraft(true);
-      setDraftRuleset(draft.ruleset);
+
+    if (ruleSetId !== 'draft' || !isSearchDraft(draft)) {
+      return;
     }
+
+    setIsDraft(true);
+    setDraftRuleset(draft.ruleset);
   }, [ruleSetId, getDraft]);
 
   const searchTermsArray = useMemo(() => {

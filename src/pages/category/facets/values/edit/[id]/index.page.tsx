@@ -10,6 +10,8 @@ import type {
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
+  type DraftCategoryRuleset,
+  type DraftRulesetState,
   useDraftRuleset,
   useFacetsList,
   useGetFacetAttributeValues,
@@ -21,6 +23,10 @@ import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
+
+const isCategoryDraft = (
+  draft: DraftRulesetState | null
+): draft is DraftCategoryRuleset => draft?.type === 'category';
 
 const Page = () => {
   const router = useRouter();
@@ -55,10 +61,13 @@ const Page = () => {
   // Check if this is a draft ruleset on mount
   useEffect(() => {
     const draft = getDraft();
-    if (ruleSetId === 'draft' && draft && draft.type === 'category') {
-      setIsDraft(true);
-      setDraftRuleset(draft.ruleset);
+
+    if (ruleSetId !== 'draft' || !isCategoryDraft(draft)) {
+      return;
     }
+
+    setIsDraft(true);
+    setDraftRuleset(draft.ruleset);
   }, [ruleSetId, getDraft]);
 
   const categoriesArray = useMemo(() => {

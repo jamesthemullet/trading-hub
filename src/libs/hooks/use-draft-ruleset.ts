@@ -4,23 +4,23 @@ import type { MerchandisingRuleSet } from '@/libs/api';
 
 export const DRAFT_RULESET_SESSION_KEY = 'draftRuleset';
 
-type BaseRulesetType = {
+export type DraftBaseRuleset = {
   timestamp: number;
 };
-type SearchRulesetType = BaseRulesetType & {
+export type DraftSearchRuleset = DraftBaseRuleset & {
   ruleset: MerchandisingRuleSet & {
     searchTerms: string[];
   };
   type: 'search';
 };
-type CategoryRulesetType = BaseRulesetType & {
+export type DraftCategoryRuleset = DraftBaseRuleset & {
   ruleset: MerchandisingRuleSet & {
     categoryIds: string[];
   };
   type: 'category';
 };
 
-type DraftRulesetState = SearchRulesetType | CategoryRulesetType;
+export type DraftRulesetState = DraftSearchRuleset | DraftCategoryRuleset;
 
 export const useDraftRuleset = () => {
   const saveDraft = useCallback(
