@@ -118,7 +118,7 @@ jobs:
           name: node-app
 
       - name: Set up environment variables
-        uses: azure/cli@v2
+        uses: azure/cli@v3
         with:
           azcliversion: 2.75.0
           inlineScript: |
@@ -136,7 +136,7 @@ jobs:
               "WEBSITES_PORT=4200"
 
       - name: Deploy to Azure Web Apps
-        uses: azure/cli@v2
+        uses: azure/cli@v3
         with:
           azcliversion: 2.75.0
           inlineScript: |
@@ -249,7 +249,7 @@ jobs:
           name: node-app
 
       - name: Set up environment variables
-        uses: azure/cli@v2
+        uses: azure/cli@v3
         with:
           azcliversion: 2.75.0
           inlineScript: |
@@ -268,7 +268,7 @@ jobs:
               "WEBSITES_PORT=4200"
 
       - name: Deploy to Azure Web Apps slot
-        uses: azure/cli@v2
+        uses: azure/cli@v3
         with:
           azcliversion: 2.75.0
           inlineScript: |
@@ -295,7 +295,7 @@ jobs:
             echo ${VERSION} | grep ${APP_COMMIT_SHA}
 
       - name: Swap EUN from pre prod to prod
-        uses: azure/cli@v2.2.0
+        uses: azure/cli@v3.0.0
         with:
           azcliversion: 2.75.0
           inlineScript: |

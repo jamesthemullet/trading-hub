@@ -65,7 +65,7 @@ jobs:
           echo "value=$SUFFIX" >> "$GITHUB_OUTPUT"
 
       - name: Kill leaked
-        uses: azure/CLI@v2
+        uses: azure/CLI@v3
         with:
           inlineScript: |
             OPEN_PRS=`echo '${{ steps.open-prs.outputs.result }}' | jq  --raw-output '.[].number | "dev-pr-\( . )${{ steps.pr-suffix.outputs.value }}"'`
