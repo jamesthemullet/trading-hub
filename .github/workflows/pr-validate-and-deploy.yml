@@ -327,7 +327,7 @@ jobs:
 
       - name: Check if PR infra is deployed
         id: check-infra-deployed
-        uses: nick-fields/retry@v3.0.2
+        uses: nick-fields/retry@v4.0.0
         with:
           timeout_seconds: 60
           max_attempts: 10
@@ -359,7 +359,7 @@ jobs:
 
       - name: Deploy artifact to PR environment
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        uses: nick-fields/retry@v3.0.2
+        uses: nick-fields/retry@v4.0.0
         with:
           timeout_seconds: 360
           max_attempts: 5

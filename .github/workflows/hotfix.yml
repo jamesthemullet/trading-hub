@@ -149,7 +149,7 @@ jobs:
               --async true
 
       - name: Validate deployment
-        uses: nick-fields/retry@v3.0.2
+        uses: nick-fields/retry@v4.0.0
         with:
           timeout_seconds: 20
           max_attempts: 15
@@ -252,7 +252,7 @@ jobs:
           AZURE_CORE_USE_MSAL_HTTP_CACHE: false
 
       - name: Validate version number
-        uses: nick-fields/retry@v3.0.2
+        uses: nick-fields/retry@v4.0.0
         with:
           timeout_seconds: 20
           max_attempts: 10
