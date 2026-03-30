@@ -120,7 +120,7 @@
     "storybook-addon-deep-controls": "^0.10.0",
     "stylelint": "17.4.0",
     "stylelint-config-standard": "40.0.0",
-    "stylelint-order": "7.0.1",
+    "stylelint-order": "8.1.1",
     "swagger-typescript-api": "13.6.5",
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
