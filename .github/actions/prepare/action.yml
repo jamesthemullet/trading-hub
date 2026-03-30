@@ -14,7 +14,7 @@ runs:
         echo "pnpm-version=${PNPM_VERSION}" >> "$GITHUB_OUTPUT"
 
     - name: Install pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v5
       with:
         version: ${{ steps.get-versions-from-package-json.outputs.pnpm-version }}
 
