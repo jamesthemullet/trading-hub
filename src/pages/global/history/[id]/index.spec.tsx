@@ -40,6 +40,7 @@ const mockHistoryData = {
       },
     },
   ],
+  pagination: { totalItems: 1 },
 };
 
 describe('Global History', () => {
@@ -82,6 +83,7 @@ describe('Global History', () => {
     jest.mocked(useGlobalHistory).mockReturnValue({
       history: {
         changes: [],
+        pagination: { totalItems: 0 },
       },
       error: 'Failed to fetch history',
       isLoading: false,

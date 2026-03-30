@@ -1,9 +1,15 @@
 import { useRouter } from 'next/router';
 
-import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
+import {
+  AccessDeny,
+  ErrorMessage,
+  Heading,
+  TablePagination,
+} from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
 import { HistoryList } from '@/libs/features/history-list/history-list';
 import { useAccess } from '@/libs/hooks/use-access';
+import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 
 import Head from 'next/head';
 
@@ -50,6 +56,18 @@ export const HistoryPage = ({
   const { hasReadAccess, requiredReadRole } = useAccess(accessType);
   const router = useRouter();
   const identifier = router.query.identifier;
+  const pageSizes = [10, 20, 50, 100];
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
+  const startIndex = (currentPage - 1) * currentPageSize;
+
+  const handlePageChange = (page: number, pageSize: number) => {
+    updateQueryParams(router, {
+      currentPage: page,
+      currentPageSize: pageSize,
+      searchQuery: '',
+    });
+  };
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -61,6 +79,12 @@ export const HistoryPage = ({
     user: item.change.lastChanged.user,
     rulesetId: item.change.id,
   }));
+  const normalisedTotalItems =
+    history.pagination?.totalItems ?? historyItems?.length ?? 0;
+  const normalisedPagination = {
+    ...history.pagination,
+    totalItems: normalisedTotalItems,
+  };
 
   return (
     <section className={styles.container}>
@@ -82,9 +106,23 @@ export const HistoryPage = ({
       )}
       <section className={styles.listContainer}>
         {!isLoading && !error && historyItems?.length && (
-          <HistoryList items={historyItems} ruleType={ruleType} />
+          <HistoryList
+            items={historyItems}
+            ruleType={ruleType}
+            totalItems={normalisedTotalItems}
+            startIndex={startIndex}
+          />
         )}
       </section>
+
+      <TablePagination
+        pagination={normalisedPagination}
+        pageSizes={pageSizes}
+        handlePageChange={handlePageChange}
+        currentPage={currentPage}
+        currentPageSize={currentPageSize}
+        isLoading={isLoading}
+      />
     </section>
   );
 };

@@ -14,12 +14,17 @@ type CategoryHistoryChange =
 
 type CategoryHistory = {
   changes: CategoryHistoryChange[];
-  pagination?: MerchandisingPagination;
+  pagination: MerchandisingPagination;
 };
 
-export const useCategoryHistory = (id: string) => {
+export const useCategoryHistory = (
+  id: string,
+  currentPage: number,
+  currentPageSize: number
+) => {
   const [history, setHistory] = useState<CategoryHistory>({
     changes: [],
+    pagination: { totalItems: 0 },
   });
 
   const [error, setError] = useState('');
@@ -34,7 +39,10 @@ export const useCategoryHistory = (id: string) => {
     const asyncCall = async () => {
       try {
         const response =
-          await search().betaMerchandisingCategoryRulesetHistoryList(id);
+          await search().betaMerchandisingCategoryRulesetHistoryList(id, {
+            start: (currentPage - 1) * currentPageSize,
+            rows: currentPageSize,
+          });
 
         setHistory(response.data as CategoryHistory);
       } catch (error) {
@@ -46,7 +54,7 @@ export const useCategoryHistory = (id: string) => {
     };
     setIsLoading(true);
     void asyncCall();
-  }, [id]);
+  }, [id, currentPage, currentPageSize]);
 
   return { history, error, isLoading };
 };

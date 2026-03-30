@@ -1,10 +1,20 @@
+import { useRouter } from 'next/router';
+
 import { HistoryPage } from '@/libs/features';
 import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-redirect-history';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 const RedirectsHistory = ({ id }: { id: string }) => {
-  const { history, isLoading, error } = useRedirectHistory(id);
+  const router = useRouter();
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
+
+  const { history, isLoading, error } = useRedirectHistory(
+    id,
+    currentPage,
+    currentPageSize
+  );
 
   return (
     <HistoryPage

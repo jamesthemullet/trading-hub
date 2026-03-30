@@ -36,7 +36,7 @@ jest.mock('@/libs/hooks/use-preview', () => ({
 }));
 jest.mock('@/libs/hooks/search/history/use-search-history', () => ({
   useSearchHistory: jest.fn(() => ({
-    history: { changes: [] },
+    history: { changes: [], pagination: { totalItems: 0 } },
     isLoading: false,
     error: '',
   })),
@@ -271,7 +271,7 @@ describe('Search ranking rules', () => {
 
     beforeEach(() => {
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: false,
         error: '',
       });
@@ -284,7 +284,10 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });
@@ -307,7 +310,10 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });
@@ -334,7 +340,7 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: true,
         error: '',
       });
@@ -357,7 +363,7 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: false,
         error: 'Failed to load history',
       });
@@ -378,7 +384,10 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });

@@ -19,8 +19,14 @@ type Props = {
 const EditRedirect = ({ id }: Props) => {
   const router = useRouter();
   const isHistoryView = router.query.history === 'true';
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
 
-  const historyData = useRedirectHistory(isHistoryView ? id : '');
+  const historyData = useRedirectHistory(
+    isHistoryView ? id : '',
+    currentPage,
+    currentPageSize
+  );
   const {
     redirect,
     error,

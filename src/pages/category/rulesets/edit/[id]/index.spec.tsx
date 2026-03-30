@@ -39,7 +39,7 @@ jest.mock('@/libs/hooks/use-attributes', () => ({
 }));
 jest.mock('@/libs/hooks/category/history/use-category-history', () => ({
   useCategoryHistory: jest.fn(() => ({
-    history: { changes: [] },
+    history: { changes: [], pagination: { totalItems: 0 } },
     isLoading: false,
     error: '',
   })),
@@ -325,7 +325,10 @@ describe('Index', () => {
       });
 
       jest.mocked(useCategoryHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange] },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });
@@ -344,7 +347,10 @@ describe('Index', () => {
       });
 
       jest.mocked(useCategoryHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange] },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });
@@ -367,7 +373,7 @@ describe('Index', () => {
       });
 
       jest.mocked(useCategoryHistory).mockReturnValue({
-        history: { changes: [] },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: true,
         error: '',
       });
@@ -386,7 +392,7 @@ describe('Index', () => {
       });
 
       jest.mocked(useCategoryHistory).mockReturnValue({
-        history: { changes: [] },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: false,
         error: 'Failed to load history',
       });
@@ -403,7 +409,10 @@ describe('Index', () => {
       });
 
       jest.mocked(useCategoryHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange] },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });

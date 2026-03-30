@@ -76,4 +76,21 @@ describe('HistoryList', () => {
       '/category/rulesets/edit/ruleset-1?history=true&historyId=change-3'
     );
   });
+
+  it('should show paginated row numbers and no current version on later pages', () => {
+    render(
+      <HistoryList
+        items={mockItems}
+        ruleType="categoryRanking"
+        totalItems={25}
+        startIndex={10}
+      />
+    );
+
+    expect(screen.getByText('15')).toBeInTheDocument();
+    expect(screen.getByText('14')).toBeInTheDocument();
+    expect(screen.getByText('13')).toBeInTheDocument();
+    expect(screen.queryByText('Current version')).not.toBeInTheDocument();
+    expect(screen.getAllByText('View version')).toHaveLength(3);
+  });
 });

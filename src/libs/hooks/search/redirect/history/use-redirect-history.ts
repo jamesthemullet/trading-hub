@@ -14,12 +14,17 @@ type RedirectHistoryChange =
 
 type RedirectHistory = {
   changes: RedirectHistoryChange[];
-  pagination?: MerchandisingPagination;
+  pagination: MerchandisingPagination;
 };
 
-export const useRedirectHistory = (id: string) => {
+export const useRedirectHistory = (
+  id: string,
+  currentPage: number,
+  currentPageSize: number
+) => {
   const [history, setHistory] = useState<RedirectHistory>({
     changes: [],
+    pagination: { totalItems: 0 },
   });
 
   const [error, setError] = useState('');
@@ -34,7 +39,10 @@ export const useRedirectHistory = (id: string) => {
     const asyncCall = async () => {
       try {
         const response =
-          await search().betaMerchandisingKeywordRedirectHistoryList(id);
+          await search().betaMerchandisingKeywordRedirectHistoryList(id, {
+            start: (currentPage - 1) * currentPageSize,
+            rows: currentPageSize,
+          });
 
         setHistory(response.data as RedirectHistory);
       } catch (error) {
@@ -46,7 +54,7 @@ export const useRedirectHistory = (id: string) => {
     };
     setIsLoading(true);
     void asyncCall();
-  }, [id]);
+  }, [id, currentPage, currentPageSize]);
 
   return { history, error, isLoading };
 };

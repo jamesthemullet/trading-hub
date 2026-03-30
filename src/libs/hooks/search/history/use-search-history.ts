@@ -14,12 +14,17 @@ type SearchHistoryChange =
 
 type SearchHistory = {
   changes: SearchHistoryChange[];
-  pagination?: MerchandisingPagination;
+  pagination: MerchandisingPagination;
 };
 
-export const useSearchHistory = (id: string) => {
+export const useSearchHistory = (
+  id: string,
+  currentPage: number,
+  currentPageSize: number
+) => {
   const [history, setHistory] = useState<SearchHistory>({
     changes: [],
+    pagination: { totalItems: 0 },
   });
 
   const [error, setError] = useState('');
@@ -34,7 +39,10 @@ export const useSearchHistory = (id: string) => {
     const asyncCall = async () => {
       try {
         const response =
-          await search().betaMerchandisingKeywordRulesetHistoryList(id);
+          await search().betaMerchandisingKeywordRulesetHistoryList(id, {
+            start: (currentPage - 1) * currentPageSize,
+            rows: currentPageSize,
+          });
 
         setHistory(response.data as SearchHistory);
       } catch (error) {
@@ -46,7 +54,7 @@ export const useSearchHistory = (id: string) => {
     };
     setIsLoading(true);
     void asyncCall();
-  }, [id]);
+  }, [id, currentPage, currentPageSize]);
 
   return { history, error, isLoading };
 };

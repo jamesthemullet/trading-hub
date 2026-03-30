@@ -35,7 +35,7 @@ const mockHistoryData = {
       },
     },
   ],
-  pagination: {},
+  pagination: { totalItems: 1 },
 };
 
 describe('Redirect History', () => {
@@ -78,7 +78,7 @@ describe('Redirect History', () => {
     jest.mocked(useRedirectHistory).mockReturnValue({
       history: {
         changes: [],
-        pagination: {},
+        pagination: { totalItems: 0 },
       },
       error: 'Failed to fetch history',
       isLoading: false,

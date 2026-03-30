@@ -51,7 +51,7 @@ jest.mock('@/libs/hooks/global/rulesets/use-global-rule-set-detail', () => ({
 
 jest.mock('@/libs/hooks/global/history/use-global-history', () => ({
   useGlobalHistory: jest.fn(() => ({
-    history: { changes: [] },
+    history: { changes: [], pagination: { totalItems: 0 } },
     isLoading: false,
     error: '',
   })),
@@ -287,7 +287,7 @@ describe('Index', () => {
     beforeEach(() => {
       mockError = undefined;
       jest.mocked(useGlobalHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: false,
         error: '',
       });
@@ -300,7 +300,10 @@ describe('Index', () => {
       });
 
       jest.mocked(useGlobalHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });
@@ -319,7 +322,10 @@ describe('Index', () => {
       });
 
       jest.mocked(useGlobalHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });
@@ -342,7 +348,7 @@ describe('Index', () => {
       });
 
       jest.mocked(useGlobalHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: true,
         error: '',
       });
@@ -361,7 +367,7 @@ describe('Index', () => {
       });
 
       jest.mocked(useGlobalHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: false,
         error: 'Failed to load history',
       });
@@ -378,7 +384,10 @@ describe('Index', () => {
       });
 
       jest.mocked(useGlobalHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });

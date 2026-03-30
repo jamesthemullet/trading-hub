@@ -23,8 +23,14 @@ const Page = ({ id }: PageProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const isHistoryView = router.query.history === 'true';
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
 
-  const historyData = useGlobalHistory(isHistoryView ? id : '');
+  const historyData = useGlobalHistory(
+    isHistoryView ? id : '',
+    currentPage,
+    currentPageSize
+  );
   const { globalRuleSet, isLoading: isRuleSetLoading } = useGlobalRuleSetDetail(
     isHistoryView ? '' : id
   );

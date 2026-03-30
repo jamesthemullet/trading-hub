@@ -14,12 +14,17 @@ type GlobalHistoryChange =
 
 type GlobalHistory = {
   changes: GlobalHistoryChange[];
-  pagination?: MerchandisingPagination;
+  pagination: MerchandisingPagination;
 };
 
-export const useGlobalHistory = (id: string) => {
+export const useGlobalHistory = (
+  id: string,
+  currentPage: number,
+  currentPageSize: number
+) => {
   const [history, setHistory] = useState<GlobalHistory>({
     changes: [],
+    pagination: { totalItems: 0 },
   });
 
   const [error, setError] = useState('');
@@ -34,7 +39,10 @@ export const useGlobalHistory = (id: string) => {
     const asyncCall = async () => {
       try {
         const response =
-          await search().betaMerchandisingGlobalRulesetHistoryList(id);
+          await search().betaMerchandisingGlobalRulesetHistoryList(id, {
+            start: (currentPage - 1) * currentPageSize,
+            rows: currentPageSize,
+          });
 
         setHistory(response.data as GlobalHistory);
       } catch (error) {
@@ -46,7 +54,7 @@ export const useGlobalHistory = (id: string) => {
     };
     setIsLoading(true);
     void asyncCall();
-  }, [id]);
+  }, [id, currentPage, currentPageSize]);
 
   return { history, error, isLoading };
 };

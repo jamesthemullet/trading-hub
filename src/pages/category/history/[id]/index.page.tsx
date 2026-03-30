@@ -1,10 +1,20 @@
+import { useRouter } from 'next/router';
+
 import { HistoryPage } from '@/libs/features';
 import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 const CategoryHistory = ({ id }: { id: string }) => {
-  const { history, isLoading, error } = useCategoryHistory(id);
+  const router = useRouter();
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
+
+  const { history, isLoading, error } = useCategoryHistory(
+    id,
+    currentPage,
+    currentPageSize
+  );
 
   return (
     <HistoryPage

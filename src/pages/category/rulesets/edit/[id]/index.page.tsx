@@ -20,8 +20,14 @@ type PageProps = {
 const Page = ({ id }: PageProps) => {
   const router = useRouter();
   const isHistoryView = router.query.history === 'true';
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
 
-  const historyData = useCategoryHistory(isHistoryView ? id : '');
+  const historyData = useCategoryHistory(
+    isHistoryView ? id : '',
+    currentPage,
+    currentPageSize
+  );
   const { ruleSetDetail, isLoading: isRuleSetLoading } = useRuleSetDetail(
     isHistoryView ? '' : id
   );

@@ -29,16 +29,21 @@ type HistoryItem = {
 
 type HistoryRowProps = {
   item: HistoryItem;
-  index: number;
-  total: number;
+  rowNumber: number;
+  absoluteIndex: number;
   ruleType: RuleType;
 };
 
-const HistoryRow = ({ item, index, total, ruleType }: HistoryRowProps) => {
+const HistoryRow = ({
+  item,
+  rowNumber,
+  absoluteIndex,
+  ruleType,
+}: HistoryRowProps) => {
   const date = new Date(item.date);
   const formattedDate = date.toLocaleDateString('en-US', DATE_FORMAT_OPTIONS);
   const formattedTime = date.toLocaleTimeString('en-GB', TIME_FORMAT_OPTIONS);
-  const isLatest = index === 0;
+  const isLatest = absoluteIndex === 0;
   const linkText = isLatest ? 'Current version' : 'View version';
   const href = isLatest
     ? getRulesetEditRoute(ruleType, item.rulesetId)
@@ -46,7 +51,7 @@ const HistoryRow = ({ item, index, total, ruleType }: HistoryRowProps) => {
 
   return (
     <li className={styles.historyRow} key={item.id}>
-      <Typography variant="bodyMedium">{total - index}</Typography>
+      <Typography variant="bodyMedium">{rowNumber}</Typography>
       <Typography variant="bodyMedium">
         {formattedDate}
         {isLatest && ' (current)'}
@@ -61,9 +66,16 @@ const HistoryRow = ({ item, index, total, ruleType }: HistoryRowProps) => {
 type HistoryListProps = {
   items: HistoryItem[];
   ruleType: RuleType;
+  totalItems?: number;
+  startIndex?: number;
 };
 
-export const HistoryList = ({ items, ruleType }: HistoryListProps) => {
+export const HistoryList = ({
+  items,
+  ruleType,
+  totalItems = items.length,
+  startIndex = 0,
+}: HistoryListProps) => {
   return (
     <ul className={styles.historyList}>
       <li className={styles.historyHeader}>
@@ -77,8 +89,8 @@ export const HistoryList = ({ items, ruleType }: HistoryListProps) => {
         <HistoryRow
           key={item.id}
           item={item}
-          index={index}
-          total={items.length}
+          rowNumber={totalItems - startIndex - index}
+          absoluteIndex={startIndex + index}
           ruleType={ruleType}
         />
       ))}

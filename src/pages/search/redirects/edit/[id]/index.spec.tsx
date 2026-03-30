@@ -24,7 +24,7 @@ jest.mock('@/libs/hooks/search/redirect/use-redirect-update', () => ({
 }));
 jest.mock('@/libs/hooks/search/redirect/history/use-redirect-history', () => ({
   useRedirectHistory: jest.fn(() => ({
-    history: { changes: [] },
+    history: { changes: [], pagination: { totalItems: 0 } },
     isLoading: false,
     error: '',
   })),
@@ -147,7 +147,7 @@ describe('Edit keyword redirect', () => {
 
     beforeEach(() => {
       jest.mocked(useRedirectHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: false,
         error: '',
       });
@@ -160,7 +160,10 @@ describe('Edit keyword redirect', () => {
       });
 
       jest.mocked(useRedirectHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });
@@ -179,7 +182,10 @@ describe('Edit keyword redirect', () => {
       });
 
       jest.mocked(useRedirectHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });
@@ -202,7 +208,7 @@ describe('Edit keyword redirect', () => {
       });
 
       jest.mocked(useRedirectHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: true,
         error: '',
       });
@@ -221,7 +227,7 @@ describe('Edit keyword redirect', () => {
       });
 
       jest.mocked(useRedirectHistory).mockReturnValue({
-        history: { changes: [], pagination: {} },
+        history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: false,
         error: 'Failed to load history',
       });
@@ -238,7 +244,10 @@ describe('Edit keyword redirect', () => {
       });
 
       jest.mocked(useRedirectHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange], pagination: {} },
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
         isLoading: false,
         error: '',
       });

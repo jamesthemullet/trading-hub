@@ -19,8 +19,14 @@ type PageProps = {
 const Page = ({ id }: PageProps) => {
   const router = useRouter();
   const isHistoryView = router.query.history === 'true';
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
 
-  const historyData = useSearchHistory(isHistoryView ? id : '');
+  const historyData = useSearchHistory(
+    isHistoryView ? id : '',
+    currentPage,
+    currentPageSize
+  );
   const {
     ruleSet,
     error,
