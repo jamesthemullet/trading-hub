@@ -346,7 +346,7 @@ jobs:
 
       - name: Login via Azure CLI
         if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        uses: azure/login@v2.3.0
+        uses: azure/login@v3.0.0
         with:
           client-id: ${{ secrets._AZURE_AD_CLIENT_ID }}
           tenant-id: ${{ secrets._AZURE_AD_TENANT_ID }}
