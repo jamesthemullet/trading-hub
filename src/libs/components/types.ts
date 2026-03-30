@@ -1,4 +1,5 @@
 import type {
+  BetaMerchandisingCategoryRulesetListParamsHavingRulesEnum,
   HttpResponse,
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
@@ -147,11 +148,16 @@ export type Row = {
   countryCode?: string;
 };
 
+export type RuleTypeFilter =
+  BetaMerchandisingCategoryRulesetListParamsHavingRulesEnum;
+export type HavingRules = RuleTypeFilter;
+
 export type GetRowsFn = (
   currentPage: number,
   currentPageSize: number,
   query: string,
-  countryCode?: MerchandisingCountryCode
+  countryCode?: MerchandisingCountryCode,
+  havingRules?: RuleTypeFilter
 ) => Promise<void>;
 export type DeleteRowFn = (row: { id: string }) => Promise<void>;
 export type DuplicateRowFn = (id: string) => Promise<void>;
@@ -161,6 +167,7 @@ export type RuleSetMapping<A, T, N> = {
   getEmptyRuleSet?: () => N;
   queryAllRuleSets: (query: {
     countryCode?: MerchandisingCountryCode;
+    havingRules?: RuleTypeFilter;
     q?: string;
     rows: number;
     start: number;

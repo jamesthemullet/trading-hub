@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 
-import type { MerchandisingReturnedCategoryRuleSetHistory } from '@/libs/api';
+import type {
+  MerchandisingPagination,
+  MerchandisingReturnedCategoryRuleSetHistory,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
 type CategoryHistoryChange =
   MerchandisingReturnedCategoryRuleSetHistory['changes'][number] & {
     id: string;
-    entityId: string;
-    savedAt: string;
-    savedBy: string;
-    schemaVersion: string;
   };
 
 type CategoryHistory = {
   changes: CategoryHistoryChange[];
+  pagination?: MerchandisingPagination;
 };
 
 export const useCategoryHistory = (id: string) => {

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { CombinedDropdown } from './dropdown';
+import { CombinedDropdown, getSelectedRuleTypeFilterOption } from './dropdown';
 
 const defaultProps = {
   variant: 'generic' as const,
@@ -12,6 +12,50 @@ const defaultProps = {
 };
 
 describe('CombinedDropdown', () => {
+  describe('getSelectedRuleTypeFilterOption', () => {
+    it('should return the selected option when one is selected', () => {
+      const option = getSelectedRuleTypeFilterOption([
+        {
+          index: 0,
+          label: 'All rule types',
+          selected: false,
+          value: undefined,
+          ariaLabel: 'show all rule types',
+        },
+        {
+          index: 1,
+          label: 'Ranking rules',
+          selected: true,
+          value: 'RANKING',
+          ariaLabel: 'show rule types with ranking rules',
+        },
+      ]);
+
+      expect(option.label).toBe('Ranking rules');
+    });
+
+    it('should fall back to first option when none selected', () => {
+      const option = getSelectedRuleTypeFilterOption([
+        {
+          index: 0,
+          label: 'All rule types',
+          selected: false,
+          value: undefined,
+          ariaLabel: 'show all rule types',
+        },
+        {
+          index: 1,
+          label: 'Ranking rules',
+          selected: false,
+          value: 'RANKING',
+          ariaLabel: 'show rule types with ranking rules',
+        },
+      ]);
+
+      expect(option.label).toBe('All rule types');
+    });
+  });
+
   describe('generic variant', () => {
     afterEach(() => {
       defaultProps.onOpen.mockClear();
@@ -382,6 +426,70 @@ describe('CombinedDropdown', () => {
       await user.click(screen.getByRole('option', { name: '10' }));
 
       expect(onPageSizeChange).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('ruleTypeFilter variant', () => {
+    it('should call onRuleTypeChange with RANKING when Ranking rules is selected', async () => {
+      const user = userEvent.setup();
+      const onRuleTypeChange = jest.fn();
+
+      render(
+        <CombinedDropdown
+          variant="ruleTypeFilter"
+          onRuleTypeChange={onRuleTypeChange}
+          ariaLabel="Filter by rule type"
+        />
+      );
+
+      await user.click(
+        screen.getByRole('button', { name: 'Filter by rule type' })
+      );
+      await user.click(screen.getByText('Ranking rules'));
+
+      expect(onRuleTypeChange).toHaveBeenCalledWith('RANKING');
+    });
+
+    it('should call onRuleTypeChange with FACET when Facet rules is selected', async () => {
+      const user = userEvent.setup();
+      const onRuleTypeChange = jest.fn();
+
+      render(
+        <CombinedDropdown
+          variant="ruleTypeFilter"
+          onRuleTypeChange={onRuleTypeChange}
+          ariaLabel="Filter by rule type"
+        />
+      );
+
+      await user.click(
+        screen.getByRole('button', { name: 'Filter by rule type' })
+      );
+      await user.click(screen.getByText('Facet rules'));
+
+      expect(onRuleTypeChange).toHaveBeenCalledWith('FACET');
+    });
+
+    it('should call onRuleTypeChange with undefined when All rule types is selected', async () => {
+      const user = userEvent.setup();
+      const onRuleTypeChange = jest.fn();
+
+      render(
+        <CombinedDropdown
+          variant="ruleTypeFilter"
+          onRuleTypeChange={onRuleTypeChange}
+          ariaLabel="Filter by rule type"
+        />
+      );
+
+      await user.click(
+        screen.getByRole('button', { name: 'Filter by rule type' })
+      );
+      await user.click(
+        screen.getByRole('menuitemradio', { name: 'show all rule types' })
+      );
+
+      expect(onRuleTypeChange).toHaveBeenCalledWith(undefined);
     });
   });
 

@@ -271,7 +271,7 @@ describe('Search ranking rules', () => {
 
     beforeEach(() => {
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [] },
+        history: { changes: [], pagination: {} },
         isLoading: false,
         error: '',
       });
@@ -284,7 +284,7 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange] },
+        history: { changes: [mockHistoryChange], pagination: {} },
         isLoading: false,
         error: '',
       });
@@ -307,7 +307,7 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange] },
+        history: { changes: [mockHistoryChange], pagination: {} },
         isLoading: false,
         error: '',
       });
@@ -334,7 +334,7 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [] },
+        history: { changes: [], pagination: {} },
         isLoading: true,
         error: '',
       });
@@ -357,7 +357,7 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [] },
+        history: { changes: [], pagination: {} },
         isLoading: false,
         error: 'Failed to load history',
       });
@@ -378,7 +378,7 @@ describe('Search ranking rules', () => {
       });
 
       jest.mocked(useSearchHistory).mockReturnValue({
-        history: { changes: [mockHistoryChange] },
+        history: { changes: [mockHistoryChange], pagination: {} },
         isLoading: false,
         error: '',
       });

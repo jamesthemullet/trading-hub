@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 
-import type { MerchandisingReturnedKeywordRedirectHistory } from '@/libs/api';
+import type {
+  MerchandisingPagination,
+  MerchandisingReturnedKeywordRedirectHistory,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
 type RedirectHistoryChange =
   MerchandisingReturnedKeywordRedirectHistory['changes'][number] & {
     id: string;
-    entityId: string;
-    savedAt: string;
-    savedBy: string;
-    schemaVersion: string;
   };
 
 type RedirectHistory = {
   changes: RedirectHistoryChange[];
+  pagination?: MerchandisingPagination;
 };
 
 export const useRedirectHistory = (id: string) => {

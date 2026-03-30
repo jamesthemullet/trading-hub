@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
+import type { RuleTypeFilter } from '@/libs/components/types';
 import { useOnOutsideClick } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-reducer';
@@ -19,7 +20,8 @@ type DropdownVariant =
   | 'countryFilter'
   | 'countrySelector'
   | 'facetOrder'
-  | 'pageSize';
+  | 'pageSize'
+  | 'ruleTypeFilter';
 
 type GenericDropdownProps = {
   label?: string;
@@ -51,6 +53,22 @@ type PageSizeProps = {
   onPageSizeChange?: (page: number, pageSize: number) => void;
 };
 
+type RuleTypeFilterProps = {
+  onRuleTypeChange?: (ruleType?: RuleTypeFilter) => void;
+};
+
+type RuleTypeFilterOption = {
+  index: number;
+  label: string;
+  selected: boolean;
+  value: RuleTypeFilter | undefined;
+  ariaLabel: string;
+};
+
+export const getSelectedRuleTypeFilterOption = (
+  options: RuleTypeFilterOption[]
+) => options.find((option) => option.selected) || options[0];
+
 type CombinedDropdownProps = {
   variant: DropdownVariant;
   width?: number;
@@ -58,7 +76,8 @@ type CombinedDropdownProps = {
 } & GenericDropdownProps &
   CountryDropdownProps &
   FacetOrderProps &
-  PageSizeProps;
+  PageSizeProps &
+  RuleTypeFilterProps;
 
 export const CombinedDropdown = ({
   variant,
@@ -81,6 +100,7 @@ export const CombinedDropdown = ({
   currentPageSize,
   totalItems,
   onPageSizeChange,
+  onRuleTypeChange,
 }: CombinedDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -152,6 +172,47 @@ export const CombinedDropdown = ({
       event: `Change datatable filter to ${countryFilterOptions[index].label}`,
     });
     setCountryFilterOptions(updated);
+    closeDropdown();
+  };
+
+  const [ruleTypeFilterOptions, setRuleTypeFilterOptions] = useState<
+    RuleTypeFilterOption[]
+  >([
+    {
+      index: 0,
+      label: 'All rule types',
+      selected: true,
+      value: undefined as RuleTypeFilter | undefined,
+      ariaLabel: 'show all rule types',
+    },
+    {
+      index: 1,
+      label: 'Ranking rules',
+      selected: false,
+      value: 'RANKING' as RuleTypeFilter,
+      ariaLabel: 'show rule types with ranking rules',
+    },
+    {
+      index: 2,
+      label: 'Facet rules',
+      selected: false,
+      value: 'FACET' as RuleTypeFilter,
+      ariaLabel: 'show rule types with facet rules',
+    },
+  ]);
+
+  const handleRuleTypeFilterSelect = (index: number) => {
+    const updated = ruleTypeFilterOptions.map((option) => {
+      if (option.index === index) {
+        onRuleTypeChange?.(option.value);
+        return { ...option, selected: true };
+      }
+      return { ...option, selected: false };
+    });
+    track({
+      event: `Change rule type filter to ${ruleTypeFilterOptions[index].label}`,
+    });
+    setRuleTypeFilterOptions(updated);
     closeDropdown();
   };
 
@@ -304,12 +365,17 @@ export const CombinedDropdown = ({
           </>
         );
       }
+      case 'ruleTypeFilter': {
+        const current = getSelectedRuleTypeFilterOption(ruleTypeFilterOptions);
+        return <Typography variant="bodySmall">{current.label}</Typography>;
+      }
     }
   }, [
     variant,
     countryFilterOptions,
     countrySelectorOptions,
     facetOptions,
+    ruleTypeFilterOptions,
     status,
     label,
     icon,
@@ -408,6 +474,24 @@ export const CombinedDropdown = ({
           </Button>
         ));
 
+      case 'ruleTypeFilter':
+        return ruleTypeFilterOptions.map((option) => (
+          <Button
+            type="button"
+            className={styles.dropdownOption}
+            key={option.label}
+            data-hover-grey
+            aria-label={option.ariaLabel}
+            onClick={() => handleRuleTypeFilterSelect(option.index)}
+            role="menuitemradio"
+            aria-checked={option.selected}
+          >
+            <Typography as="span" variant="bodySmall">
+              {option.label}
+            </Typography>
+          </Button>
+        ));
+
       default:
         return children;
     }
@@ -421,6 +505,8 @@ export const CombinedDropdown = ({
         return 220;
       case 'facetOrder':
         return 237;
+      case 'ruleTypeFilter':
+        return 170;
       default:
         return width;
     }
@@ -432,6 +518,8 @@ export const CombinedDropdown = ({
         return 'button to open country filter dropdown';
       case 'countrySelector':
         return 'button to open country selector dropdown';
+      case 'ruleTypeFilter':
+        return 'button to open rule type filter dropdown';
       case 'facetOrder':
         return `button to open facet order dropdown${
           attribute ? ` for ${attribute}` : ''

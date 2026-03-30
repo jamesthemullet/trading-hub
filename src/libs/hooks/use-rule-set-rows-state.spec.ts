@@ -120,6 +120,27 @@ describe('useCategoryRuleSetApi', () => {
         'Error whilst retrieving ruleset: "Error something went wrong 500"'
       );
     });
+
+    it('should include havingRules when provided', async () => {
+      mappingMock.queryAllRuleSets.mockResolvedValue({
+        data: mockResponse,
+        status: { status: 200 },
+      });
+
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
+
+      await act(async () => {
+        await result.current.getRows(1, 10, '', 'UK', 'RANKING');
+      });
+
+      expect(mappingMock.queryAllRuleSets).toHaveBeenCalledWith({
+        q: '',
+        start: 0,
+        rows: 10,
+        countryCode: 'UK',
+        havingRules: 'RANKING',
+      });
+    });
   });
 
   describe('deleteRow', () => {

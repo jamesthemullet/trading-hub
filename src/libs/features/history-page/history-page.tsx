@@ -23,6 +23,9 @@ type HistoryData = {
       };
     };
   }>;
+  pagination?: {
+    totalItems?: number;
+  };
 };
 
 type HistoryPageProps = {

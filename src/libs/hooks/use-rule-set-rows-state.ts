@@ -48,37 +48,41 @@ export const useRuleSetRowsState = <
   const [isLoading, setIsLoading] = useState(false);
 
   const getRows = useCallback<GetRowsFn>(
-    (currentPage, currentPageSize, query, countryCode) => {
+    (currentPage, currentPageSize, query, countryCode, havingRules) => {
       const asyncCall = async () => {
         setIsLoading(true);
-        const [error, data] = await handlePromise(
-          mapping.queryAllRuleSets({
-            q: query,
-            start: (currentPage - 1) * currentPageSize,
-            rows: currentPageSize,
-            countryCode,
-          })
-        );
-
-        // istanbul ignore else
-        if (error) {
-          setError(
-            `Error whilst retrieving ruleset: ${JSON.stringify(handleError(error))}`
+        try {
+          const [error, data] = await handlePromise(
+            mapping.queryAllRuleSets({
+              q: query,
+              start: (currentPage - 1) * currentPageSize,
+              rows: currentPageSize,
+              countryCode,
+              ...(havingRules !== undefined ? { havingRules } : {}),
+            })
           );
-          return;
-        }
 
-        setRowsState({
-          pagination: {
-            totalItems: getPaginationTotalItems(data.data),
-          },
-          rows: mapping
-            .allToArray(data.data)
-            .map((ruleSet) =>
-              mapping.ruleSetToRow(ruleSet, { searchQuery: query })
-            ),
-        });
-        setIsLoading(false);
+          // istanbul ignore else
+          if (error) {
+            setError(
+              `Error whilst retrieving ruleset: ${JSON.stringify(handleError(error))}`
+            );
+            return;
+          }
+
+          setRowsState({
+            pagination: {
+              totalItems: getPaginationTotalItems(data.data),
+            },
+            rows: mapping
+              .allToArray(data.data)
+              .map((ruleSet) =>
+                mapping.ruleSetToRow(ruleSet, { searchQuery: query })
+              ),
+          });
+        } finally {
+          setIsLoading(false);
+        }
       };
       return asyncCall();
     },

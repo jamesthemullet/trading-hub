@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 
-import type { MerchandisingReturnedGlobalRuleSetHistory } from '@/libs/api';
+import type {
+  MerchandisingPagination,
+  MerchandisingReturnedGlobalRuleSetHistory,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
 type GlobalHistoryChange =
   MerchandisingReturnedGlobalRuleSetHistory['changes'][number] & {
     id: string;
-    entityId: string;
-    savedAt: string;
-    savedBy: string;
-    schemaVersion: string;
   };
 
 type GlobalHistory = {
   changes: GlobalHistoryChange[];
+  pagination?: MerchandisingPagination;
 };
 
 export const useGlobalHistory = (id: string) => {

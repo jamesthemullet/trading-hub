@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 
-import type { MerchandisingReturnedKeywordRuleSetHistory } from '@/libs/api';
+import type {
+  MerchandisingPagination,
+  MerchandisingReturnedKeywordRuleSetHistory,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
 type SearchHistoryChange =
   MerchandisingReturnedKeywordRuleSetHistory['changes'][number] & {
     id: string;
-    entityId: string;
-    savedAt: string;
-    savedBy: string;
-    schemaVersion: string;
   };
 
 type SearchHistory = {
   changes: SearchHistoryChange[];
+  pagination?: MerchandisingPagination;
 };
 
 export const useSearchHistory = (id: string) => {

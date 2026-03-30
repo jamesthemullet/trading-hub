@@ -11,7 +11,7 @@ import {
   Search,
   TablePagination,
 } from '@/libs/components';
-import type { RuleSetMapping } from '@/libs/components/types';
+import type { RuleSetMapping, RuleTypeFilter } from '@/libs/components/types';
 import {
   getNewFacetRoute,
   getNewRulesetRoute,
@@ -65,6 +65,7 @@ export const TablePanel = <
   const [countryCode, setCountryCode] = useState<
     MerchandisingCountryCode | undefined
   >();
+  const [filterRules, setFilterRules] = useState<RuleTypeFilter | undefined>();
   const { clearDraft } = useDraftRuleset();
 
   const [searchInputValue, setSearchInputValue] = useState<string>(
@@ -81,9 +82,9 @@ export const TablePanel = <
       setCurrentPage(currentPage);
       setCurrentPageSize(currentPageSize);
 
-      getRows(currentPage, currentPageSize, query, countryCode);
+      getRows(currentPage, currentPageSize, query, countryCode, filterRules);
     }
-  }, [router.query, router.isReady, getRows, countryCode]);
+  }, [router.query, router.isReady, getRows, countryCode, filterRules]);
 
   const { callback: handleSearch } = useDebounce(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -140,6 +141,14 @@ export const TablePanel = <
           }
           ariaLabel="Select country"
         />
+
+        {ruleType !== 'redirect' && (
+          <CombinedDropdown
+            variant="ruleTypeFilter"
+            onRuleTypeChange={setFilterRules}
+            ariaLabel="Filter by rule type"
+          />
+        )}
 
         {writeEnabled && (
           <>

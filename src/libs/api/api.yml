@@ -5,9 +5,9 @@
 
 openapi: 3.0.3
 info:
-  title: Trading Hub API
+  title: Merchandising Hub API
   description: |
-    The Trading Hub API
+    The Merchandising Hub API
   version: 0.0.1
 servers:
   - url: 'https://api.tradinghub.azurewebsites.com/v1'
@@ -175,6 +175,7 @@ paths:
             type: integer
           required: true
         - $ref: '#/components/parameters/countryCodeParam'
+        - $ref: '#/components/parameters/havingRulesParam'
       responses:
         '200':
           description: A JSON array with representations of rule sets
@@ -404,6 +405,19 @@ paths:
             type: string
           required: true
           description: The Rule Set to retrieve
+        - in: query
+          name: start
+          schema:
+            type: integer
+            default: 0
+          required: false
+          description: Display history changes after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: false
+          description: Number of history changes to return
       responses:
         '200':
           description: A JSON representation of merchandising rules
@@ -542,6 +556,7 @@ paths:
             type: integer
           required: true
         - $ref: '#/components/parameters/countryCodeParam'
+        - $ref: '#/components/parameters/havingRulesParam'
       responses:
         '200':
           description: A JSON array with representations of rule sets
@@ -771,6 +786,19 @@ paths:
             type: string
           required: true
           description: The Rule Set to retrieve
+        - in: query
+          name: start
+          schema:
+            type: integer
+            default: 0
+          required: false
+          description: Display history changes after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: false
+          description: Number of history changes to return
       responses:
         '200':
           description: A JSON representation of merchandising rules
@@ -891,6 +919,7 @@ paths:
             type: integer
           required: true
         - $ref: '#/components/parameters/countryCodeParam'
+        - $ref: '#/components/parameters/havingRulesParam'
       responses:
         '200':
           description: A JSON array with representations of rule sets
@@ -1120,6 +1149,19 @@ paths:
             type: string
           required: true
           description: The Rule Set to retrieve
+        - in: query
+          name: start
+          schema:
+            type: integer
+            default: 0
+          required: false
+          description: Display history changes after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: false
+          description: Number of history changes to return
       responses:
         '200':
           description: A JSON representation of merchandising rules
@@ -1382,6 +1424,19 @@ paths:
             type: string
           required: true
           description: The facet to retrieve
+        - in: query
+          name: start
+          schema:
+            type: integer
+            default: 0
+          required: false
+          description: Display history changes after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: false
+          description: Number of history changes to return
       responses:
         '200':
           description: A JSON representation of merchandising rules
@@ -1598,6 +1653,54 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
         '503':
           description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/beta/merchandising/product/diagnostics:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API
+      summary: Diagnose whether a product is online
+      description: >
+        Returns whether a product is online for a given catalogue and country.
+        If the product is online, the existing product response is returned.
+        If the product is offline, a list of blocking issues is returned.
+      parameters:
+        - in: query
+          name: productId
+          schema:
+            type: string
+          required: true
+          description: The product ID to diagnose
+        - $ref: '#/components/parameters/catalogueParam'
+      responses:
+        '200':
+          description: Product online status and details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/MerchandisingProductSearchResponse'
+                  - $ref: '#/components/schemas/ProductOfflineDiagnosticResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '500':
+          description: Error
           content:
             application/json:
               schema:
@@ -1871,6 +1974,19 @@ paths:
             type: string
           required: true
           description: The Redirect to retrieve
+        - in: query
+          name: start
+          schema:
+            type: integer
+            default: 0
+          required: false
+          description: Display history changes after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: false
+          description: Number of history changes to return
       responses:
         '200':
           description: A JSON representation of redirect
@@ -2031,27 +2147,15 @@ components:
       required:
         - redirects
         - pagination
+    MerchandisingKeywordRedirectWithInfo:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingKeywordRedirect'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
     MerchandisingReturnedKeywordRedirect:
       type: object
       allOf:
-        - $ref: '#/components/schemas/MerchandisingKeywordRedirect'
-      properties:
-        id:
-          type: string
-        lastChanged:
-          type: object
-          properties:
-            date:
-              type: string
-              format: date-time
-            user:
-              type: string
-          required:
-            - date
-            - user
-      required:
-        - id
-        - lastChanged
+        - $ref: '#/components/schemas/MerchandisingKeywordRedirectWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingKeywordRedirect:
       type: object
       properties:
@@ -2070,7 +2174,7 @@ components:
         type:
           type: string
           enum: ['redirectTerm', 'redirectPhrase']
-          description: A redirect term is a partial match, a redirect phrase is an exact match, both are case insensisitve.
+          description: A redirect term is a partial match, a redirect phrase is an exact match, both are case insensitive.
         startDate:
           type: string
           pattern: '\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}\.\d{3}[Z]'
@@ -2147,13 +2251,35 @@ components:
       required:
         - rules
         - isEnabled
-    MerchandisingReturnedCategoryRuleSet:
+    MerchandisingIdentifier:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+    MerchandisingLastChanged:
+      type: object
+      properties:
+        lastChanged:
+          type: object
+          properties:
+            date:
+              type: string
+              format: date-time
+            user:
+              type: string
+          required:
+            - date
+            - user
+      required:
+        - lastChanged
+    MerchandisingCategoryRulesetWithInfo:
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSet'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
         - type: object
           properties:
-            countryCode:
-              $ref: '#/components/schemas/MerchandisingCountryCode'
             categoriesInfo:
               type: array
               items:
@@ -2167,77 +2293,32 @@ components:
                     type: string
                 required:
                   - id
-            id:
-              type: string
-            startDate:
-              type: string
-              pattern: '\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}\.\d{3}[Z]'
-              example: '2024-01-01T00:00:00.000Z'
-            endDate:
-              type: string
-              pattern: '\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}\.\d{3}[Z]'
-              example: '2024-12-31T23:59:59.999Z'
-            lastChanged:
-              type: object
-              properties:
-                date:
-                  type: string
-                  format: date-time
-                user:
-                  type: string
-              required:
-                - date
-                - user
           required:
-            - id
             - categoriesInfo
-            - lastChanged
-    MerchandisingReturnedKeywordRuleSet:
+    MerchandisingReturnedCategoryRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingCategoryRulesetWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
+    MerchandisingKeywordRuleSetWithInfo:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRuleSet'
-        - type: object
-          properties:
-            id:
-              type: string
-            lastChanged:
-              type: object
-              properties:
-                date:
-                  type: string
-                  format: date-time
-                user:
-                  type: string
-              required:
-                - date
-                - user
-          required:
-            - id
-            - lastChanged
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
+    MerchandisingReturnedKeywordRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingKeywordRuleSetWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingReturnedRuleSet:
       deprecated: true
       allOf:
         - $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
-    MerchandisingReturnedGlobalRuleSet:
+    MerchandisingGlobalRuleSetWithInfo:
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSet'
-        - type: object
-          properties:
-            id:
-              type: string
-            lastChanged:
-              type: object
-              properties:
-                date:
-                  type: string
-                  format: date-time
-                user:
-                  type: string
-              required:
-                - date
-                - user
-          required:
-            - id
-            - lastChanged
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
+    MerchandisingReturnedGlobalRuleSet:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingGlobalRuleSetWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingReturnedCategoryRuleSetHistory:
       type: object
       properties:
@@ -2250,8 +2331,11 @@ components:
                 $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
             required:
               - change
+        pagination:
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - changes
+        - pagination
     MerchandisingReturnedKeywordRuleSetHistory:
       type: object
       properties:
@@ -2264,8 +2348,11 @@ components:
                 $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
             required:
               - change
+        pagination:
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - changes
+        - pagination
     MerchandisingReturnedGlobalRuleSetHistory:
       type: object
       properties:
@@ -2278,8 +2365,11 @@ components:
                 $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
             required:
               - change
+        pagination:
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - changes
+        - pagination
     MerchandisingReturnedKeywordRedirectHistory:
       type: object
       properties:
@@ -2292,8 +2382,11 @@ components:
                 $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
             required:
               - change
+        pagination:
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - changes
+        - pagination
     MerchandisingReturnedGlobalFacetHistory:
       type: object
       properties:
@@ -2306,8 +2399,11 @@ components:
                 $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
             required:
               - change
+        pagination:
+          $ref: '#/components/schemas/MerchandisingPagination'
       required:
         - changes
+        - pagination
     MerchandisingReturnedNotFound:
       type: object
       properties:
@@ -2332,33 +2428,20 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSetFacetConfig'
         - $ref: '#/components/schemas/MerchandisingGlobalOnlyFacetConfig'
+    MerchandisingFacetConfigWithInfo:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingFacetConfig'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
     MerchandisingReturnedGlobalFacet:
       type: object
       allOf:
-        - $ref: '#/components/schemas/MerchandisingGlobalOnlyFacetConfig'
-        - $ref: '#/components/schemas/MerchandisingRuleSetFacetConfig'
-        - type: object
-          properties:
-            id:
-              type: string
-            lastChanged:
-              type: object
-              properties:
-                date:
-                  type: string
-                  format: date-time
-                user:
-                  type: string
-              required:
-                - date
-                - user
-          required:
-            - id
-            - lastChanged
+        - $ref: '#/components/schemas/MerchandisingFacetConfigWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingReturnedRuleSetFacet:
       type: object
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSetFacetConfig'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
         - type: object
           properties:
             id:
@@ -2372,20 +2455,8 @@ components:
             displayValue:
               type: string
               description: The value displayed to customers
-            lastChanged:
-              type: object
-              properties:
-                date:
-                  type: string
-                  format: date-time
-                user:
-                  type: string
-              required:
-                - date
-                - user
           required:
             - id
-            - lastChanged
             - displayValue
             - indexPropertyName
     MerchandisingReturnedFacet:
@@ -2506,6 +2577,29 @@ components:
             $ref: '#/components/schemas/MerchandisingRankingAttribute'
       required:
         - isPinned
+    ProductOfflineDiagnosticResponse:
+      type: object
+      properties:
+        issues:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductOfflineIssue'
+      required:
+        - issues
+    ProductOfflineIssue:
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Reason the product is offline
+          example: Product is not marked saleable in Product Assembly
+        action:
+          type: string
+          description: Suggested action or owning team
+          example: Contact Product Domain team
+      required:
+        - reason
+        - action
     MerchandisingRuleDescription:
       type: object
       allOf:
@@ -2909,3 +3003,16 @@ components:
         enum:
           - MANDSUK
           - MANDSIE
+    havingRulesParam:
+      name: havingRules
+      in: query
+      description: Filter rulesets based on the type of rules they have attached
+      required: false
+      schema:
+        type: string
+        enum:
+          - ANY
+          - NONE
+          - RANKING
+          - FACET
+          - BOTH
