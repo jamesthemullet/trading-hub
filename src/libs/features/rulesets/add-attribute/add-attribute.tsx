@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 
 import type {
   MerchandisingAttributeResponseItem,
@@ -12,6 +12,7 @@ import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alph
 import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-attribute';
 import { Search } from '@/libs/components/search/search';
 import type { AttributeEdit, RulesetAttribute } from '@/libs/components/types';
+import { addAttributeReducer } from '@/libs/stores/ruleset/add-attribute-reducer';
 
 import styles from './add-attribute.module.css';
 
@@ -76,54 +77,35 @@ export const AddAttribute = ({
   isEditMode,
   editData,
 }: Props) => {
-  const [modalStep, setModalStep] = useState(0);
-
   const [numericSearchValue, setNumericSearchValue] = useState('');
   const [alphanumericSearchValue, setAlphanumericSearchValue] = useState('');
   const [alphanumericFilterValue, setAlphanumericFilterValue] = useState('');
-  const [alphanumericField, setAlphanumericField] = useState<string>('');
-  const [alphanumericAttributeValues, setAlphanumericAttributeValues] =
-    useState<string[]>([]);
 
-  const [selectedAlphanumericValues, setSelectedAlphanumericValues] = useState<
-    Array<{
-      field: string;
-      values: Array<string>;
-    }>
-  >([]);
-  const [selectedNumericField, setSelectedNumericField] = useState<string>('');
-  const [selectedOperation, setSelectedOperation] = useState<
-    'boost' | 'bury' | 'include' | 'exclude'
-  >('boost');
-  const [selectedAttributeType, setSelectedAttributeType] = useState<
-    'numeric' | 'alphanumeric'
-  >(isEditMode ? 'alphanumeric' : 'numeric');
+  const [state, dispatch] = useReducer(addAttributeReducer, {
+    modalStep: 0,
+    selectedAttributeType: isEditMode ? 'alphanumeric' : 'numeric',
+    selectedOperation: 'boost',
+    weight: 100,
+    selectedNumericField: '',
+    selectedAlphanumericValues: [],
+    alphanumericField: '',
+    alphanumericAttributeValues: [],
+  });
 
-  const [weight, setWeight] = useState(100);
+  const {
+    modalStep,
+    selectedAttributeType,
+    selectedOperation,
+    weight,
+    selectedNumericField,
+    selectedAlphanumericValues,
+    alphanumericField,
+    alphanumericAttributeValues,
+  } = state;
 
   useEffect(() => {
     if (isEditMode && editData) {
-      setSelectedOperation(editData.operation);
-
-      switch (editData.type) {
-        case 'numericBoostBury':
-          setModalStep(1);
-          setSelectedAttributeType('numeric');
-          setSelectedNumericField(editData.field.field);
-          setWeight(editData.weight);
-          break;
-        case 'alphanumericBoostBury':
-          setModalStep(2);
-          setSelectedAttributeType('alphanumeric');
-          setSelectedAlphanumericValues(editData.fields);
-          setWeight(editData.weight);
-          break;
-        case 'alphanumericIncludeExclude':
-          setModalStep(2);
-          setSelectedAttributeType('alphanumeric');
-          setSelectedAlphanumericValues(editData.fields);
-          break;
-      }
+      dispatch({ type: 'initialize', payload: editData });
     }
   }, [isEditMode, editData]);
 
@@ -140,7 +122,7 @@ export const AddAttribute = ({
               name={selectedNumericField}
               isEditMode
               weight={weight}
-              setWeight={setWeight}
+              setWeight={(w) => dispatch({ type: 'setWeight', payload: w })}
             />
           )}
           {selectedAttributeType === 'alphanumeric' &&
@@ -150,7 +132,7 @@ export const AddAttribute = ({
                 fields={selectedAlphanumericValues}
                 isEditMode
                 weight={weight}
-                setWeight={setWeight}
+                setWeight={(w) => dispatch({ type: 'setWeight', payload: w })}
                 canEditWeight={
                   selectedOperation === 'boost' || selectedOperation === 'bury'
                 }
@@ -187,7 +169,7 @@ export const AddAttribute = ({
             <Button
               appearance="plain"
               className={styles.modalButton}
-              onClick={() => setModalStep(1)}
+              onClick={() => dispatch({ type: 'goToStep', payload: 1 })}
               type="button"
             >
               <Typography isStrong as="span" variant="bodySmall">
@@ -200,7 +182,7 @@ export const AddAttribute = ({
               appearance="plain"
               className={styles.modalButton}
               type="button"
-              onClick={() => setModalStep(2)}
+              onClick={() => dispatch({ type: 'goToStep', payload: 2 })}
             >
               <Typography isStrong as="span" variant="bodySmall">
                 Product description attributes
@@ -217,10 +199,7 @@ export const AddAttribute = ({
                 className={styles.step}
                 type="button"
                 data-step-type="previous"
-                onClick={() => {
-                  setModalStep(0);
-                  setSelectedNumericField('');
-                }}
+                onClick={() => dispatch({ type: 'goBackFromNumeric' })}
               >
                 <Typography isStrong as="span" variant="bodySmall">
                   Back
@@ -242,7 +221,9 @@ export const AddAttribute = ({
               <OperationSelector
                 hasIncludeExclude={false}
                 selectedOperation={selectedOperation}
-                setSelectedOperation={setSelectedOperation}
+                setSelectedOperation={(op) =>
+                  dispatch({ type: 'setOperation', payload: op })
+                }
               />
               <div className={styles.searchWrapper}>
                 <label htmlFor="filerNumericAttributes">
@@ -287,10 +268,9 @@ export const AddAttribute = ({
                     name: attribute.name,
                     isSelected: selectedNumericField === attribute.name,
                   }))}
-                onSelect={(name) => {
-                  setSelectedNumericField(name);
-                  setSelectedAttributeType('numeric');
-                }}
+                onSelect={(name) =>
+                  dispatch({ type: 'selectNumericField', payload: name })
+                }
               />
             ) : (
               <div className={styles.noResults}>
@@ -310,12 +290,9 @@ export const AddAttribute = ({
                 className={styles.step}
                 type="button"
                 data-step-type="previous"
-                onClick={() => {
-                  setSelectedAlphanumericValues([]);
-                  setSelectedNumericField('');
-                  setModalStep(0);
-                  setSelectedOperation('boost');
-                }}
+                onClick={() =>
+                  dispatch({ type: 'goBackFromAlphanumericAttributes' })
+                }
               >
                 <Typography isStrong as="span" variant="bodySmall">
                   Back
@@ -335,7 +312,9 @@ export const AddAttribute = ({
               <OperationSelector
                 hasIncludeExclude
                 selectedOperation={selectedOperation}
-                setSelectedOperation={setSelectedOperation}
+                setSelectedOperation={(op) =>
+                  dispatch({ type: 'setOperation', payload: op })
+                }
               />
               <div className={styles.searchWrapper}>
                 <label htmlFor="filerAlphanumericAttributes">
@@ -376,11 +355,13 @@ export const AddAttribute = ({
                     onClick={() => {
                       // istanbul ignore next
                       if (!attribute.values) return;
-                      setAlphanumericAttributeValues(
-                        attribute.values.map((value) => value.value)
-                      );
-                      setAlphanumericField(attribute.name);
-                      setModalStep(3);
+                      dispatch({
+                        type: 'selectAlphanumericField',
+                        payload: {
+                          field: attribute.name,
+                          values: attribute.values.map((value) => value.value),
+                        },
+                      });
                     }}
                     data-step-type="next"
                   >
@@ -401,7 +382,7 @@ export const AddAttribute = ({
               type="button"
               data-step-type="previous"
               aria-label="Move back to step 2"
-              onClick={() => setModalStep(2)}
+              onClick={() => dispatch({ type: 'goBackFromAlphanumericValues' })}
             >
               <Typography isStrong as="span" variant="bodySmall">
                 {alphanumericField}
@@ -435,27 +416,12 @@ export const AddAttribute = ({
             </div>
             <div data-testid="Selected attributes">
               <Checkboxes
-                onSelect={(isSelected, name) => {
-                  setSelectedAttributeType('alphanumeric');
-
-                  const currentValues =
-                    selectedAlphanumericValues.find(
-                      (attribute) => attribute.field === alphanumericField
-                    )?.values || [];
-
-                  const newValues = isSelected
-                    ? [...currentValues, name]
-                    : currentValues.filter((i) => i !== name);
-
-                  const updatedField = selectedAlphanumericValues.filter(
-                    (attr) => attr.field !== alphanumericField
-                  );
-
-                  setSelectedAlphanumericValues([
-                    ...updatedField,
-                    { field: alphanumericField, values: newValues },
-                  ]);
-                }}
+                onSelect={(isSelected, name) =>
+                  dispatch({
+                    type: 'toggleAlphanumericValue',
+                    payload: { name, isSelected },
+                  })
+                }
                 values={alphanumericAttributeValues
                   .filter((value) =>
                     value
