@@ -82,7 +82,7 @@
     "@types/react-dom": "19.2.3",
     "@typescript-eslint/eslint-plugin": "8.57.2",
     "@typescript-eslint/parser": "8.57.2",
-    "accented": "1.2.4",
+    "accented": "1.2.5",
     "all-contributors-cli": "6.26.1",
     "concurrently": "9.2.1",
     "dotenv": "17.3.1",

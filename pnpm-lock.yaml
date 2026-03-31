@@ -148,8 +148,8 @@ importers:
         specifier: 8.57.2
         version: 8.57.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       accented:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       all-contributors-cli:
         specifier: 6.26.1
         version: 6.26.1
@@ -1775,8 +1775,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@preact/signals-core@1.12.2':
-    resolution: {integrity: sha512-5Yf8h1Ke3SMHr15xl630KtwPTW4sYDFkkxS0vQ8UiQLWwZQnrF9IKaVG1mN5VcJz52EcWs2acsc/Npjha/7ysA==}
+  '@preact/signals-core@1.14.0':
+    resolution: {integrity: sha512-AowtCcCU/33lFlh1zRFf/u+12rfrhtNakj7UpaGEsmMwUKpKWMVvcktOGcwBBNiB4lWrZWc01LhiyyzVklJyaQ==}
 
   '@rollup/pluginutils@5.3.0':
     resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
@@ -2607,8 +2607,8 @@ packages:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
     deprecated: Use your platform's native atob() and btoa() methods instead
 
-  accented@1.2.4:
-    resolution: {integrity: sha512-q7jerDQRF+sfmZzfPnIyuKd7mC0ep0Pj84Oza7amkvbqXWQ5xJjXoDTv8Ie46rRCQsgjUevcuSqeXZKBcyNf7w==}
+  accented@1.2.5:
+    resolution: {integrity: sha512-oC/3j3aYuFe2b+t0VXW/Tv6PAX6EsN0qBnIYFlFJ8TD/28Eg1ddqK3YaP6RJTh5K77omB2k1qfK0Kj/RyjbUdw==}
 
   acorn-globals@7.0.1:
     resolution: {integrity: sha512-umOSDSDrfHbTNPuNpC2NSnnA3LUrqpevPb4T9jRx4MagXNS0rs+gwiTcAvqCRmsD6utzsrzNt+ebm00SNWiC3Q==}
@@ -7854,7 +7854,7 @@ snapshots:
     dependencies:
       playwright: 1.58.2
 
-  '@preact/signals-core@1.12.2': {}
+  '@preact/signals-core@1.14.0': {}
 
   '@rollup/pluginutils@5.3.0(rollup@4.57.0)':
     dependencies:
@@ -8671,9 +8671,9 @@ snapshots:
 
   abab@2.0.6: {}
 
-  accented@1.2.4:
+  accented@1.2.5:
     dependencies:
-      '@preact/signals-core': 1.12.2
+      '@preact/signals-core': 1.14.0
       axe-core: 4.11.1
 
   acorn-globals@7.0.1:
