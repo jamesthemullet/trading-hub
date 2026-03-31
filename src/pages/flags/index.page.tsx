@@ -11,7 +11,7 @@ import styles from './index.module.css';
 
 const FeatureFlags = () => {
   const [cookies, setCookie] = useCookies(
-    ['flagAuthorization', 'flagAuthorizationRoleOverride', 'flagOneTrust'],
+    ['flagAuthorization', 'flagAuthorizationRoleOverride'],
     {
       doNotUpdate: true,
     }
@@ -30,16 +30,6 @@ const FeatureFlags = () => {
           checked={flagAuthorization}
           onChange={() => {
             setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
-          }}
-        />
-      </div>
-
-      <div className={styles.flag}>
-        <Typography>One Trust:&nbsp;</Typography>
-        <Toggle
-          checked={cookies.flagOneTrust}
-          onChange={() => {
-            setCookie('flagOneTrust', JSON.stringify(!cookies.flagOneTrust));
           }}
         />
       </div>

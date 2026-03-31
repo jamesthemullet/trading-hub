@@ -13,7 +13,6 @@ type AuthorizationRoleOverride = {
 export type FeatureFlags = {
   hasAuthorization: boolean;
   authorizationRoleOverride: AuthorizationRoleOverride;
-  hasOneTrustFlag: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -23,7 +22,6 @@ export const defaultFeatureFlags: FeatureFlags = {
     searchOverride: 'No Override',
     globalOverride: 'No Override',
   },
-  hasOneTrustFlag: false,
 };
 
 export const FeatureFlagContext =
@@ -51,15 +49,4 @@ export const useAuthorizationRoleOverride = () => {
   }, [featureFlags.authorizationRoleOverride]);
 
   return authorizationRoleOverride;
-};
-
-export const useOneTrustFlag = () => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [isOneTrustEnabled, setIsOneTrustEnabled] = useState(false);
-
-  useEffect(() => {
-    setIsOneTrustEnabled(featureFlags.hasOneTrustFlag);
-  }, [featureFlags.hasOneTrustFlag]);
-
-  return isOneTrustEnabled;
 };

@@ -3,7 +3,7 @@ import '@mantine/dates/styles.css';
 import '@/libs/styles/globals.css';
 import '@/libs/utils/base-styles.module.css';
 
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { createTheme, MantineProvider, Portal } from '@mantine/core';
 
@@ -36,7 +36,6 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
   const [cookies] = useCookies([
     'flagAuthorization',
     'flagAuthorizationRoleOverride',
-    'flagOneTrust',
   ]);
 
   return (
@@ -48,52 +47,10 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
           searchOverride: 'No Override',
           globalOverride: 'No Override',
         },
-        hasOneTrustFlag: cookies.flagOneTrust,
       }}
     >
       {children}
     </FeatureFlagContext.Provider>
-  );
-};
-
-const OneTrustScripts = () => {
-  const { hasOneTrustFlag } = useContext(FeatureFlagContext);
-  const isLocal =
-    typeof window !== 'undefined' && window.location.hostname === 'localhost';
-
-  if (!hasOneTrustFlag || isLocal) {
-    return null;
-  }
-  return (
-    <>
-      <Script
-        src="https://cdn-ukwest.onetrust.com/scripttemplates/otSDKStub.js"
-        type="text/javascript"
-        charSet="UTF-8"
-        data-domain-script="01999609-8173-7554-b57e-cebe580c3242"
-        strategy="afterInteractive"
-      />
-      <Script
-        id="onetrust-inline"
-        type="text/javascript"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: sanitize('function OptanonWrapper() {}'),
-        }}
-      />
-      <Script id="onetrust-clarity-consent" strategy="afterInteractive">
-        {`
-          function sendClarityConsent() {
-            if (typeof OneTrust === 'undefined' || typeof clarity === 'undefined') return;
-            console.log(OneTrust);
-            // to be completed
-          }
-
-          window.addEventListener('OneTrustGroupsUpdated', sendClarityConsent);
-          window.addEventListener('load', sendClarityConsent);
-        `}
-      </Script>
-    </>
   );
 };
 
@@ -147,8 +104,6 @@ export default function App({
             </ErrorBoundary>
           </MantineProvider>
         </SessionProvider>
-
-        <OneTrustScripts />
 
         {process.env.CLARITY_KEY && (
           <script
