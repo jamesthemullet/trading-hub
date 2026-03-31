@@ -1,6 +1,6 @@
 import type { AttributeEdit } from '@/libs/components/types';
 
-export type AddAttributeState = {
+type AddAttributeState = {
   modalStep: number;
   selectedAttributeType: 'numeric' | 'alphanumeric';
   selectedOperation: 'boost' | 'bury' | 'include' | 'exclude';
@@ -11,7 +11,7 @@ export type AddAttributeState = {
   alphanumericAttributeValues: string[];
 };
 
-export type AddAttributeAction =
+type AddAttributeAction =
   | { type: 'goToStep'; payload: number }
   | { type: 'goBackFromNumeric' }
   | { type: 'goBackFromAlphanumericAttributes' }

@@ -150,7 +150,6 @@ export type Row = {
 
 export type RuleTypeFilter =
   BetaMerchandisingCategoryRulesetListParamsHavingRulesEnum;
-export type HavingRules = RuleTypeFilter;
 
 export type GetRowsFn = (
   currentPage: number,

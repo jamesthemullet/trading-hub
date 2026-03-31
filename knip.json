@@ -6,7 +6,7 @@
     "@swc/helpers",
     "eslint-config-next",
     "eslint-plugin-jest-formatting",
-    "jest-environment-jsdom"
+    "ts-node"
   ],
-  "ignoreBinaries": ["magenta,blue", "storybook-static"]
+  "ignoreBinaries": ["magenta,blue", "storybook-static", "first"]
 }
