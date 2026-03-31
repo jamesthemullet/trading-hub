@@ -1118,16 +1118,16 @@ describe('Global Attribute Reducer', () => {
         ...mockState,
         boostedRows: [
           {
-            displayName: 'value1',
-            attributes: ['value1', 'value2', 'value3'],
-            isMergeGroup: true,
+            displayName: 'Vegan',
+            attributes: ['Vegan'],
+            isMergeGroup: false,
             isChecked: false,
             order: 1,
           },
           {
-            displayName: 'Vegan',
-            attributes: ['Vegan'],
-            isMergeGroup: false,
+            displayName: 'value1',
+            attributes: ['value1', 'value2', 'value3'],
+            isMergeGroup: true,
             isChecked: false,
             order: 2,
           },
@@ -1148,6 +1148,58 @@ describe('Global Attribute Reducer', () => {
           },
         ],
       });
+    });
+
+    it('should preserve the original merge group position when extending an existing non-boosted merge group', () => {
+      const state: GlobalAttributesPageState = {
+        ...mockState,
+        nonBoostedExcludedRows: [
+          {
+            displayName: 'Under 10',
+            attributes: ['Under 10'],
+            isMergeGroup: false,
+            isChecked: false,
+          },
+          {
+            displayName: 'test',
+            attributes: ['value1', 'value2'],
+            isMergeGroup: true,
+            isChecked: false,
+          },
+          {
+            displayName: 'Over 20',
+            attributes: ['Over 20'],
+            isMergeGroup: false,
+            isChecked: false,
+          },
+        ],
+      };
+      const action = {
+        type: 'UPDATE_MERGE_GROUP' as const,
+        payload: {
+          attributes: ['value1', 'value2', 'Over 20'],
+          isFirstAttributeBoosted: false,
+          isFirstAttributeExcluded: false,
+          displayValue: 'test',
+        },
+      };
+
+      const result = globalAttributesPageReducer(state, action);
+
+      expect(result.nonBoostedExcludedRows).toEqual([
+        {
+          displayName: 'Under 10',
+          attributes: ['Under 10'],
+          isMergeGroup: false,
+          isChecked: false,
+        },
+        {
+          displayName: 'test',
+          attributes: ['value1', 'value2', 'Over 20'],
+          isMergeGroup: true,
+          isChecked: false,
+        },
+      ]);
     });
 
     it('should add new attribute and keep as excluded to existing merge group', () => {
@@ -1176,15 +1228,15 @@ describe('Global Attribute Reducer', () => {
         ...mockState,
         excludedRows: [
           {
-            displayName: 'value1',
-            attributes: ['value1', 'value2', 'value3'],
-            isMergeGroup: true,
-            isChecked: false,
-          },
-          {
             displayName: 'Vegetarian',
             attributes: ['Vegetarian'],
             isMergeGroup: false,
+            isChecked: false,
+          },
+          {
+            displayName: 'value1',
+            attributes: ['value1', 'value2', 'value3'],
+            isMergeGroup: true,
             isChecked: false,
           },
         ],

@@ -700,6 +700,16 @@ export const globalAttributesPageReducer = (
         isFirstAttributeExcluded,
       } = action.payload;
 
+      const getInsertionIndex = <T extends { attributes: string[] }>(
+        rows: T[]
+      ) => {
+        const index = rows.findIndex((row) =>
+          row.attributes.some((val) => attributes.includes(val))
+        );
+
+        return index === -1 ? rows.length : index;
+      };
+
       const boostedRowsWithoutMergeGroup = state.boostedRows.filter(
         (row) => !row.attributes.some((val) => attributes.includes(val))
       );
@@ -732,17 +742,44 @@ export const globalAttributesPageReducer = (
         isChecked: false,
       };
 
+      const boostedInsertionIndex = getInsertionIndex(state.boostedRows);
+      const excludedInsertionIndex = getInsertionIndex(state.excludedRows);
+      const nonBoostedExcludedInsertionIndex = getInsertionIndex(
+        state.nonBoostedExcludedRows
+      );
+
+      const boostedRowsWithUpdatedMergeGroup = [
+        ...boostedRowsWithoutMergeGroup.slice(0, boostedInsertionIndex),
+        newMergeGroup,
+        ...boostedRowsWithoutMergeGroup.slice(boostedInsertionIndex),
+      ];
+
+      const excludedRowsWithUpdatedMergeGroup = [
+        ...excludedRowsWithoutMergeGroup.slice(0, excludedInsertionIndex),
+        newMergeGroup,
+        ...excludedRowsWithoutMergeGroup.slice(excludedInsertionIndex),
+      ];
+
+      const nonBoostedExcludedRowsWithUpdatedMergeGroup = [
+        ...nonBoostedExcludedRowsWithoutMergeGroup.slice(
+          0,
+          nonBoostedExcludedInsertionIndex
+        ),
+        newMergeGroup,
+        ...nonBoostedExcludedRowsWithoutMergeGroup.slice(
+          nonBoostedExcludedInsertionIndex
+        ),
+      ];
+
       return {
         ...state,
         boostedRows: isFirstAttributeBoosted
-          ? [newMergeGroup, ...boostedRowsWithoutMergeGroup].map(
-              (row, index) => {
-                return {
-                  ...row,
-                  order: index + 1,
-                };
-              }
-            )
+          ? boostedRowsWithUpdatedMergeGroup.map((row, index) => {
+              return {
+                ...row,
+                order: index + 1,
+              };
+            })
           : boostedRowsWithoutMergeGroup.map((row, index) => {
               return {
                 ...row,
@@ -750,11 +787,11 @@ export const globalAttributesPageReducer = (
               };
             }),
         excludedRows: isFirstAttributeExcluded
-          ? [newMergeGroup, ...excludedRowsWithoutMergeGroup]
+          ? excludedRowsWithUpdatedMergeGroup
           : excludedRowsWithoutMergeGroup,
         nonBoostedExcludedRows:
           !isFirstAttributeBoosted && !isFirstAttributeExcluded
-            ? [newMergeGroup, ...nonBoostedExcludedRowsWithoutMergeGroup]
+            ? nonBoostedExcludedRowsWithUpdatedMergeGroup
             : nonBoostedExcludedRowsWithoutMergeGroup,
         merged: [
           ...updatedMerged,
