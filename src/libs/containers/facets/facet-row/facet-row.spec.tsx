@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
+import { FacetType } from '@/libs/constants/rule-types';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { FacetRowProps } from './facet-row';
@@ -78,7 +79,7 @@ const includedProps: FacetRowProps = {
   isDragDisabled: false,
   selectedCategories: [],
   selectedSearchTerms: [],
-  facetType: 'category',
+  facetType: FacetType.Category,
   countryCode: 'UK_IE' as MerchandisingCountryCode,
   rulesetId: 'test-ruleset-id',
   currentRuleset: mockRuleset,
@@ -256,7 +257,7 @@ describe('FacetRow', () => {
         displayType="included"
         isDragDisabled={false}
         writeEnabled
-        facetType="search"
+        facetType={FacetType.Search}
         isNewRuleset
         currentRuleset={mockRuleset}
         selectedSearchTerms={searchTerms}

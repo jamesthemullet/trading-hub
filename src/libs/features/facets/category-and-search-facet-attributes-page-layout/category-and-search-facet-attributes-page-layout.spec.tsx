@@ -7,6 +7,7 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
+import { FacetType } from '@/libs/constants/rule-types';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { CategoryAndSearchFacetsPanelPageLayout } from './category-and-search-facet-attributes-page-layout';
@@ -53,7 +54,7 @@ const setup = (props = {}) => {
     attributeValues: attributeValuesMock,
     facet: facetMock,
     displayName: 'Screen Size',
-    facetType: 'category' as const,
+    facetType: FacetType.Category as const,
     ruleSetId,
     searchQuery: '',
     onSearchChange: jest.fn(),
@@ -87,7 +88,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
   });
 
   it('renders the component with search facet type', () => {
-    setup({ facetType: 'search' });
+    setup({ facetType: FacetType.Search });
 
     expect(screen.getByPlaceholderText('Search')).toBeInTheDocument();
   });
@@ -113,33 +114,33 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
     const user = userEvent.setup({ delay: null });
     const { mockRouter } = setup({
       isDraftRuleset: true,
-      facetType: 'category',
+      facetType: FacetType.Category,
     });
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
     await user.click(cancelButton);
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/facets/new/categoryRanking');
+    expect(mockRouter.push).toHaveBeenCalledWith('/facets/new/category');
   });
 
   it('navigates to new search facet route when closing draft search ruleset', async () => {
     const user = userEvent.setup({ delay: null });
     const { mockRouter } = setup({
       isDraftRuleset: true,
-      facetType: 'search',
+      facetType: FacetType.Search,
     });
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
     await user.click(cancelButton);
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/facets/new/searchRanking');
+    expect(mockRouter.push).toHaveBeenCalledWith('/facets/new/search');
   });
 
   it('navigates to edit facet route when closing non-draft ruleset', async () => {
     const user = userEvent.setup({ delay: null });
     const { mockRouter } = setup({
       isDraftRuleset: false,
-      facetType: 'category',
+      facetType: FacetType.Category,
     });
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });

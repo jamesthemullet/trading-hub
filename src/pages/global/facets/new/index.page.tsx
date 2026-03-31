@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsList } from '@/libs/features';
 import { useGlobalRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -46,7 +47,7 @@ const Page = () => {
       )}
 
       <FacetsList
-        facetType="global"
+        facetType={FacetType.Global}
         isNewRuleset
         onCancel={handleCancel}
         onSave={createNewGlobalRuleSet}

@@ -6,6 +6,7 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
+import { FacetType } from '@/libs/constants/rule-types';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
   type DraftRulesetState,
@@ -200,7 +201,7 @@ const Page = () => {
           attributeValues={attributeValues}
           facet={selectedFacet}
           displayName={displayName}
-          facetType="search"
+          facetType={FacetType.Search}
           ruleSetId={ruleSetId}
           searchQuery={searchQuery}
           onSearchChange={handleSearch}

@@ -17,6 +17,8 @@ import {
   getNewRulesetRoute,
   ROUTES,
 } from '@/libs/constants/routes';
+import type { FacetType } from '@/libs/constants/rule-types';
+import { RuleType } from '@/libs/constants/rule-types';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { DataTable } from '@/libs/containers/shared/table/datatable';
 import { useDraftRuleset } from '@/libs/hooks';
@@ -36,12 +38,14 @@ export const TablePanel = <
   headings,
   mapping,
   ruleType,
+  facetType,
   writeEnabled,
 }: {
   basePath: string;
   headings: string[];
   mapping: RuleSetMapping<A, T, N>;
-  ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
+  ruleType: RuleType;
+  facetType?: FacetType;
   writeEnabled: boolean;
 }) => {
   const {
@@ -112,7 +116,7 @@ export const TablePanel = <
   };
 
   const onToggleRow = ({ id }: { id: string }) => {
-    if (ruleType === 'global') {
+    if (ruleType === RuleType.Global) {
       setIsModalOpen(true);
       setIdToUpdate(id);
     } else {
@@ -142,7 +146,7 @@ export const TablePanel = <
           ariaLabel="Select country"
         />
 
-        {ruleType !== 'redirect' && (
+        {ruleType !== RuleType.Redirect && (
           <CombinedDropdown
             variant="ruleTypeFilter"
             onRuleTypeChange={setFilterRules}
@@ -152,14 +156,14 @@ export const TablePanel = <
 
         {writeEnabled && (
           <>
-            {ruleType !== 'redirect' && (
+            {ruleType !== RuleType.Redirect && facetType && (
               <div className={styles.buttonGroup}>
                 <Button
                   as="a"
                   isInline
                   theme="outlined"
                   icon="plus-simple-green"
-                  href={getNewFacetRoute(ruleType)}
+                  href={getNewFacetRoute(facetType)}
                   onClick={() => {
                     track({ event: `Add ${ruleType} facet rule` });
                     clearDraft();
@@ -182,7 +186,7 @@ export const TablePanel = <
                 </Button>
               </div>
             )}
-            {ruleType === 'redirect' && (
+            {ruleType === RuleType.Redirect && (
               <div className={styles.buttonGroup}>
                 <Button
                   as="a"

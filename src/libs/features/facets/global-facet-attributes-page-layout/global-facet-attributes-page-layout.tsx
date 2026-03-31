@@ -14,6 +14,7 @@ import type {
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import { ROUTES } from '@/libs/constants';
+import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { GlobalFacetAttributesEditModal } from '@/libs/containers/facets/global-facet-attributes-edit-modal/global-facet-attributes-edit-modal';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
@@ -209,7 +210,7 @@ export const GlobalFacetAttributesPageLayout = ({
     <>
       <FacetAttributesPageLayoutHeader
         displayName={displayName}
-        facetType="global"
+        facetType={FacetType.Global}
         onClose={() => {
           router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
         }}

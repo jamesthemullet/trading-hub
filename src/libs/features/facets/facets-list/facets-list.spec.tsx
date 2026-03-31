@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 
+import { FacetType } from '@/libs/constants/rule-types';
 import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
 import { useDraftRuleset } from '@/libs/hooks/use-draft-ruleset';
 import * as analytics from '@/libs/hooks/utils/analytics';
@@ -160,7 +161,7 @@ const mockRuleset = {
 };
 
 const defaultFacetProps: FacetsListProps = {
-  facetType: 'category',
+  facetType: FacetType.Category,
   isNewRuleset: true,
   onCancel: () => jest.fn(),
   onSave: () => jest.fn(),
@@ -207,7 +208,7 @@ describe('FacetsList', () => {
     try {
       mockUseFacetsList.facets = [];
       renderWithProviders(
-        <FacetsList {...defaultFacetProps} facetType="global" />
+        <FacetsList {...defaultFacetProps} facetType={FacetType.Global} />
       );
 
       expect(
@@ -725,7 +726,7 @@ describe('FacetsList', () => {
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, facets: undefined }}
         isNewRuleset={false}
-        facetType="search"
+        facetType={FacetType.Search}
         searchTerms={['socks']}
       />
     );
@@ -758,7 +759,7 @@ describe('FacetsList', () => {
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
         isNewRuleset={false}
-        facetType="search"
+        facetType={FacetType.Search}
         searchTerms={['socks']}
       />
     );
@@ -788,7 +789,7 @@ describe('FacetsList', () => {
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
         isNewRuleset={false}
-        facetType="search"
+        facetType={FacetType.Search}
         searchTerms={['socks']}
       />
     );
@@ -817,7 +818,7 @@ describe('FacetsList', () => {
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
         isNewRuleset={false}
-        facetType="search"
+        facetType={FacetType.Search}
         searchTerms={['socks']}
       />
     );
@@ -844,7 +845,7 @@ describe('FacetsList', () => {
         {...defaultFacetProps}
         currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
         isNewRuleset={false}
-        facetType="search"
+        facetType={FacetType.Search}
         searchTerms={['socks']}
       />
     );
@@ -892,7 +893,7 @@ describe('FacetsList', () => {
             startDate: '2022-04-11T23:00:00.000Z',
           }}
           isNewRuleset={false}
-          facetType="search"
+          facetType={FacetType.Search}
           searchTerms={['socks']}
         />
       );
@@ -952,7 +953,7 @@ describe('FacetsList', () => {
           ],
         }}
         isNewRuleset={false}
-        facetType="search"
+        facetType={FacetType.Search}
         searchTerms={['socks']}
       />
     );
@@ -1058,7 +1059,7 @@ describe('FacetsList', () => {
             },
           ],
         }}
-        facetType="category"
+        facetType={FacetType.Category}
         isNewRuleset={false}
         categoriesInfo={categoriesInfo}
       />,
@@ -1089,7 +1090,7 @@ describe('FacetsList', () => {
             },
           ],
         }}
-        facetType="search"
+        facetType={FacetType.Search}
         isNewRuleset={false}
         searchTerms={['term 1', 'term 2']}
       />
@@ -1120,7 +1121,7 @@ describe('FacetsList', () => {
             },
           ],
         }}
-        facetType="search"
+        facetType={FacetType.Search}
         isNewRuleset={false}
         searchTerms={['term 1', 'term 2']}
       />
@@ -1254,7 +1255,7 @@ describe('FacetsList', () => {
       <FacetsList
         {...defaultFacetProps}
         isNewRuleset
-        facetType="category"
+        facetType={FacetType.Category}
         categoriesInfo={undefined}
       />
     );
@@ -1288,7 +1289,7 @@ describe('FacetsList', () => {
       <FacetsList
         {...defaultFacetProps}
         isNewRuleset
-        facetType="search"
+        facetType={FacetType.Search}
         searchTerms={undefined}
       />
     );

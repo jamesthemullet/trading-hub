@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { FacetType } from '@/libs/constants/rule-types';
+
 import { FacetAttributesPageLayoutHeader } from './facet-attributes-page-layout-header';
 
 const onCloseMock = jest.fn();
@@ -10,7 +12,7 @@ const defaultProps = {
   includedValues: 22,
   excludedValues: 7,
   displayName: 'Age',
-  facetType: 'global' as const,
+  facetType: FacetType.Global,
   onClose: onCloseMock,
   onSave: jest.fn(),
   isSaveDisabled: false,
@@ -23,7 +25,7 @@ describe('Facet Page Layout Header', () => {
     render(
       <FacetAttributesPageLayoutHeader
         {...defaultProps}
-        facetType="category"
+        facetType={FacetType.Category}
         headerText="Category specific text"
       />
     );

@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
+import { RuleType } from '@/libs/constants/rule-types';
+
 import { HistoryList } from './history-list';
 
 jest.mock('@/libs/hooks/utils/analytics', () => ({
@@ -29,7 +31,9 @@ describe('HistoryList', () => {
   ];
 
   it('should render the history list with all columns', () => {
-    render(<HistoryList items={mockItems} ruleType="categoryRanking" />);
+    render(
+      <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
+    );
 
     expect(screen.getByText('#')).toBeInTheDocument();
     expect(screen.getByText('Date')).toBeInTheDocument();
@@ -41,20 +45,26 @@ describe('HistoryList', () => {
   });
 
   it('should mark the first item as current version', () => {
-    render(<HistoryList items={mockItems} ruleType="categoryRanking" />);
+    render(
+      <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
+    );
 
     expect(screen.getByText('Current version')).toBeInTheDocument();
     expect(screen.getAllByText('View version')).toHaveLength(2);
   });
 
   it('should display "current" next to the latest date', () => {
-    render(<HistoryList items={mockItems} ruleType="categoryRanking" />);
+    render(
+      <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
+    );
 
     expect(screen.getByText(/Jan 15, 2024 \(current\)/)).toBeInTheDocument();
   });
 
   it('should create correct link for current version', () => {
-    render(<HistoryList items={mockItems} ruleType="categoryRanking" />);
+    render(
+      <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
+    );
 
     const currentLink = screen.getByText('Current version').closest('a');
     expect(currentLink).toHaveAttribute(
@@ -64,7 +74,9 @@ describe('HistoryList', () => {
   });
 
   it('should create correct links for historical versions', () => {
-    render(<HistoryList items={mockItems} ruleType="categoryRanking" />);
+    render(
+      <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
+    );
 
     const historyLinks = screen.getAllByText('View version');
     expect(historyLinks[0].closest('a')).toHaveAttribute(
@@ -81,7 +93,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         items={mockItems}
-        ruleType="categoryRanking"
+        ruleType={RuleType.CategoryRanking}
         totalItems={25}
         startIndex={10}
       />

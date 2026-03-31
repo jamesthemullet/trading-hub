@@ -1,13 +1,12 @@
 import { Typography } from '@/libs/components/typography/typography';
 import { getRulesetEditRoute } from '@/libs/constants/routes';
+import type { RuleType } from '@/libs/constants/rule-types';
 
 import Link from 'next/link';
 
 import styles from './history-list.module.css';
 
 const HISTORY_COLUMNS = ['#', 'Date', 'Time', 'User', ''] as const;
-
-type RuleType = 'categoryRanking' | 'searchRanking' | 'global' | 'redirect';
 
 const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   month: 'short',

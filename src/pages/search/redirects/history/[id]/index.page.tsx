@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 
+import { RuleType } from '@/libs/constants/rule-types';
 import { HistoryPage } from '@/libs/features';
 import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-redirect-history';
 
@@ -21,7 +22,7 @@ const RedirectsHistory = ({ id }: { id: string }) => {
       title="Redirects History"
       breadcrumbs={['Search Redirects', 'History']}
       accessType="Search"
-      ruleType="redirect"
+      ruleType={RuleType.Redirect}
       history={history}
       isLoading={isLoading}
       error={error}

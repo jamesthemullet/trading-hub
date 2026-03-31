@@ -8,6 +8,7 @@ import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import type { RuleSetMapping } from '@/libs/components/types';
 import { ROUTES } from '@/libs/constants/routes';
+import { FacetType, RuleType } from '@/libs/constants/rule-types';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
 
@@ -76,7 +77,8 @@ const RuleSets = () => {
         basePath="/global"
         headings={headings}
         mapping={mapping}
-        ruleType="global"
+        ruleType={RuleType.Global}
+        facetType={FacetType.Global}
         writeEnabled={hasWriteAccess}
       />
     </>

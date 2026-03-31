@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { FacetsList } from '@/libs/features';
 import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
@@ -95,7 +96,7 @@ const Page = ({ id }: { id: string }) => {
         <FacetsPanelSkeleton title="Facet Rule Editor" aria-busy="true" />
       ) : (
         <FacetsList
-          facetType="category"
+          facetType={FacetType.Category}
           categoriesInfo={ruleSetDetail.categoriesInfo}
           isNewRuleset={false}
           currentRuleset={ruleSetDetail}

@@ -1,6 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { RuleType } from '@/libs/constants/rule-types';
 import * as analytics from '@/libs/hooks/utils/analytics';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -136,7 +137,7 @@ const defaultProps: DataTableProps = {
   rows,
   onDeleteRuleSet: jest.fn(),
   onDuplicate: jest.fn(),
-  ruleType: 'categoryRanking',
+  ruleType: RuleType.CategoryRanking,
   basePath: '/category',
 };
 
@@ -413,7 +414,7 @@ describe('DataTable', () => {
           {...defaultProps}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          ruleType="redirect"
+          ruleType={RuleType.Redirect}
         />
       );
 
@@ -480,7 +481,7 @@ describe('DataTable', () => {
           rows={[{ ...rows[0], searchTerms: ['foo', 'bar'] }]}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          ruleType="searchRanking"
+          ruleType={RuleType.SearchRanking}
         />
       );
 
@@ -506,7 +507,7 @@ describe('DataTable', () => {
           rows={[{ ...rows[0], searchTerms: ['one', 'two', 'three', 'four'] }]}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          ruleType="searchRanking"
+          ruleType={RuleType.SearchRanking}
         />
       );
 
@@ -592,7 +593,9 @@ describe('DataTable', () => {
     it('should track editing a redirect rule', async () => {
       const user = userEvent.setup();
 
-      renderWithProviders(<DataTable {...defaultProps} ruleType="redirect" />);
+      renderWithProviders(
+        <DataTable {...defaultProps} ruleType={RuleType.Redirect} />
+      );
 
       await user.click(
         screen.getAllByRole('button', { name: 'More options' })[0]
@@ -610,7 +613,7 @@ describe('DataTable', () => {
       const user = userEvent.setup();
 
       renderWithProviders(
-        <DataTable {...defaultProps} ruleType="categoryRanking" />
+        <DataTable {...defaultProps} ruleType={RuleType.CategoryRanking} />
       );
 
       await user.click(
@@ -627,7 +630,7 @@ describe('DataTable', () => {
       const user = userEvent.setup();
 
       renderWithProviders(
-        <DataTable {...defaultProps} ruleType="searchRanking" />
+        <DataTable {...defaultProps} ruleType={RuleType.SearchRanking} />
       );
 
       await user.click(
@@ -787,7 +790,7 @@ describe('DataTable', () => {
         headings={headings}
         rows={[{ ...rows[0], identifier: 'foo | bar' }]}
         onDuplicate={jest.fn()}
-        ruleType="searchRanking"
+        ruleType={RuleType.SearchRanking}
         query="bar"
       />
     );
@@ -801,7 +804,7 @@ describe('DataTable', () => {
         headings={headings}
         rows={[{ ...rows[0], identifier: 'foo | bar' }]}
         onDuplicate={jest.fn()}
-        ruleType="searchRanking"
+        ruleType={RuleType.SearchRanking}
         query="FOO"
       />
     );
@@ -817,7 +820,7 @@ describe('DataTable', () => {
           { ...rows[0], lastChanged: { date: '2021-10-01', user: 'Mr Foo' } },
         ]}
         onDuplicate={jest.fn()}
-        ruleType="searchRanking"
+        ruleType={RuleType.SearchRanking}
         query="FOO"
       />
     );
@@ -842,7 +845,7 @@ describe('DataTable', () => {
     it('should process click for historical log of changes for global rulesets', async () => {
       const user = userEvent.setup();
       renderWithProviders(
-        <DataTable {...defaultProps} ruleType="global" />,
+        <DataTable {...defaultProps} ruleType={RuleType.Global} />,
         []
       );
 
@@ -858,7 +861,7 @@ describe('DataTable', () => {
     it('should process click for historical log of changes for redirects', async () => {
       const user = userEvent.setup();
       renderWithProviders(
-        <DataTable {...defaultProps} ruleType="redirect" />,
+        <DataTable {...defaultProps} ruleType={RuleType.Redirect} />,
         []
       );
 
@@ -874,7 +877,7 @@ describe('DataTable', () => {
     it('should process click for historical log of changes for search rulesets', async () => {
       const user = userEvent.setup();
       renderWithProviders(
-        <DataTable {...defaultProps} ruleType="searchRanking" />,
+        <DataTable {...defaultProps} ruleType={RuleType.SearchRanking} />,
         []
       );
 

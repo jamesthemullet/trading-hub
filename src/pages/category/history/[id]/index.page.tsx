@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 
+import { RuleType } from '@/libs/constants/rule-types';
 import { HistoryPage } from '@/libs/features';
 import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 
@@ -21,7 +22,7 @@ const CategoryHistory = ({ id }: { id: string }) => {
       title="Category History"
       breadcrumbs={['Categories', 'Ranking rules']}
       accessType="Cat"
-      ruleType="categoryRanking"
+      ruleType={RuleType.CategoryRanking}
       history={history}
       isLoading={isLoading}
       error={error}

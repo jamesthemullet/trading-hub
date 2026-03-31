@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsList } from '@/libs/features';
 import { useSearchRuleSetCreate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -83,7 +84,7 @@ const NewRuleSetPage = () => {
       />
 
       <FacetsList
-        facetType="search"
+        facetType={FacetType.Search}
         isNewRuleset
         onCancel={handleCancel}
         onSave={handleSave}

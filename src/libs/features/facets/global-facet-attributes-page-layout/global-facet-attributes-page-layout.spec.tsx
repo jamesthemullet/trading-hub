@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
+import { FacetType } from '@/libs/constants/rule-types';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
 import { facetsListMock } from '@/pages/api/search/mocks';
 import { mockGlobalRuleData } from '@/test/data/mock-use-rule-set-preview.data';
@@ -47,7 +48,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
     facetId: 'color',
     displayName: 'Color',
     facet: facetsListMock.facets[0],
-    facetType: 'category' as const,
+    facetType: FacetType.Category,
     searchQuery: '',
     onSearchChange: jest.fn(),
     ruleSetId,

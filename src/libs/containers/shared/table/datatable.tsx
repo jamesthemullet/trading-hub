@@ -10,6 +10,8 @@ import {
   getRulesetEditRoute,
   ROUTES,
 } from '@/libs/constants/routes';
+import type { FacetType } from '@/libs/constants/rule-types';
+import { RuleType } from '@/libs/constants/rule-types';
 import { useOnOutsideClick } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
@@ -51,7 +53,7 @@ export type DataTableProps = {
   onToggleRuleSet?: ({ id }: { id: string }) => void;
   rows: Row[];
   isLoading: boolean;
-  ruleType: 'redirect' | 'searchRanking' | 'categoryRanking' | 'global';
+  ruleType: RuleType;
   onDuplicate: (id: string) => void;
   query?: string;
   writeEnabled: boolean;
@@ -98,12 +100,12 @@ export const DataTable = ({
     categoriesInfo,
     searchTerms,
   }: Pick<Row, 'categoriesInfo' | 'searchTerms'>) => {
-    if (ruleType === 'categoryRanking' && categoriesInfo) {
+    if (ruleType === RuleType.CategoryRanking && categoriesInfo) {
       const firstThree = [...categoriesInfo].slice(0, 3);
       return `${formatCategoriesInfo(firstThree)}${categoriesInfo.length > 3 ? ' [...]' : ''}`;
     }
     if (
-      (ruleType === 'redirect' || ruleType === 'searchRanking') &&
+      (ruleType === RuleType.Redirect || ruleType === RuleType.SearchRanking) &&
       searchTerms
     ) {
       return `${searchTerms.slice(0, 3).join(', ')}${searchTerms.length > 3 ? ' [...]' : ''}`;
@@ -386,7 +388,7 @@ export const DataTable = ({
                             className={styles.dropdownOptions}
                             ref={dropdownWrapperRef}
                           >
-                            {ruleType !== 'redirect' && (
+                            {ruleType !== RuleType.Redirect && (
                               <>
                                 <Link
                                   className={styles.tableLink}
@@ -402,10 +404,7 @@ export const DataTable = ({
                                 <Link
                                   className={styles.tableLink}
                                   href={getFacetRoute(
-                                    basePath.replace('/', '') as
-                                      | 'category'
-                                      | 'search'
-                                      | 'global',
+                                    basePath.replace('/', '') as FacetType,
                                     'edit',
                                     id
                                   )}
@@ -419,7 +418,7 @@ export const DataTable = ({
                                 </Link>
                               </>
                             )}
-                            {ruleType === 'redirect' && (
+                            {ruleType === RuleType.Redirect && (
                               <Link
                                 className={styles.tableLink}
                                 href={ROUTES.SEARCH.REDIRECTS.EDIT(id)}
@@ -523,7 +522,7 @@ export const DataTable = ({
             <Typography as="h2" withMargin variant="bodyMedium">
               {ruleSetEditOption === 'delete'
                 ? 'Do you want to delete this rule?'
-                : `Create a duplicate ${ruleType === 'redirect' ? 'redirect' : ''} rule`}
+                : `Create a duplicate ${ruleType === RuleType.Redirect ? 'redirect' : ''} rule`}
             </Typography>
 
             {ruleSetEditOption === 'duplicate' && (

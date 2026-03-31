@@ -1,3 +1,5 @@
+import type { FacetType, NonRedirectRuleType, RuleType } from './rule-types';
+
 export const ROUTES = {
   CATEGORY: {
     FACETS: {
@@ -49,7 +51,7 @@ export const ROUTES = {
 } as const;
 
 export const getFacetRoute = (
-  facetType: 'search' | 'category' | 'global',
+  facetType: FacetType,
   routeType: 'edit' | 'valuesEdit',
   id: string
 ): string => {
@@ -68,21 +70,17 @@ export const getFacetRoute = (
   return route.FACETS.VALUES.EDIT(id);
 };
 
-export const getNewFacetRoute = (
-  ruleType: 'categoryRanking' | 'searchRanking' | 'global'
-): string => {
+export const getNewFacetRoute = (facetType: FacetType): string => {
   const routeMap = {
-    categoryRanking: ROUTES.CATEGORY.FACETS.NEW,
-    searchRanking: ROUTES.SEARCH.FACETS.NEW,
+    category: ROUTES.CATEGORY.FACETS.NEW,
+    search: ROUTES.SEARCH.FACETS.NEW,
     global: ROUTES.GLOBAL.FACETS.NEW,
   };
 
-  return routeMap[ruleType];
+  return routeMap[facetType];
 };
 
-export const getNewRulesetRoute = (
-  ruleType: 'categoryRanking' | 'searchRanking' | 'global'
-): string => {
+export const getNewRulesetRoute = (ruleType: NonRedirectRuleType): string => {
   const routeMap = {
     categoryRanking: ROUTES.CATEGORY.RULESETS.NEW,
     searchRanking: ROUTES.SEARCH.RULESETS.NEW,
@@ -92,10 +90,7 @@ export const getNewRulesetRoute = (
   return routeMap[ruleType];
 };
 
-export const getRulesetEditRoute = (
-  ruleType: 'categoryRanking' | 'searchRanking' | 'global' | 'redirect',
-  id: string
-): string => {
+export const getRulesetEditRoute = (ruleType: RuleType, id: string): string => {
   const routeMap = {
     categoryRanking: ROUTES.CATEGORY.RULESETS.EDIT,
     searchRanking: ROUTES.SEARCH.RULESETS.EDIT,
@@ -107,7 +102,7 @@ export const getRulesetEditRoute = (
 };
 
 export const getHistoryRoute = (
-  ruleType: 'categoryRanking' | 'searchRanking' | 'global' | 'redirect',
+  ruleType: RuleType,
   id: string,
   label: string
 ): string => {

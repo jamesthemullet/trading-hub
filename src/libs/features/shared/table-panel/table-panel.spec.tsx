@@ -7,6 +7,7 @@ import type {
   MerchandisingReturnedCategoryRuleSet,
   MerchandisingReturnedCategoryRuleSets,
 } from '@/libs/api';
+import { FacetType, RuleType } from '@/libs/constants/rule-types';
 import { useDraftRuleset } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -129,6 +130,15 @@ jest.mock('next/router', () => ({
 
 const mockClearDraft = jest.fn();
 
+const defaultProps = {
+  basePath: '/global',
+  headings,
+  mapping: mappingMock,
+  ruleType: RuleType.Global,
+  facetType: FacetType.Global,
+  writeEnabled: true,
+} as const;
+
 describe('TablePanel', () => {
   beforeEach(() => {
     jest.mocked(useRouter as jest.Mock).mockReturnValue(mockRouter);
@@ -156,15 +166,7 @@ describe('TablePanel', () => {
   });
 
   it('should render the component', async () => {
-    renderWithProviders(
-      <TablePanel
-        writeEnabled
-        basePath="/category"
-        headings={headings}
-        mapping={mappingMock}
-        ruleType="global"
-      />
-    );
+    renderWithProviders(<TablePanel {...defaultProps} basePath="/category" />);
     await waitFor(() => {
       expect(screen.getByText('Add ranking rule')).toBeInTheDocument();
     });
@@ -172,13 +174,7 @@ describe('TablePanel', () => {
 
   it('should render the component with no access', async () => {
     renderWithProviders(
-      <TablePanel
-        writeEnabled={false}
-        basePath="/category"
-        headings={headings}
-        mapping={mappingMock}
-        ruleType="global"
-      />,
+      <TablePanel {...defaultProps} writeEnabled={false} />,
       [],
       {
         featureFlags: { hasAuthorization: true },
@@ -197,15 +193,7 @@ describe('TablePanel', () => {
       },
     });
 
-    renderWithProviders(
-      <TablePanel
-        writeEnabled
-        basePath="/category"
-        headings={headings}
-        mapping={mappingMock}
-        ruleType="global"
-      />
-    );
+    renderWithProviders(<TablePanel {...defaultProps} basePath="/category" />);
     await waitFor(() => {
       expect(
         screen.queryByText(
@@ -227,11 +215,10 @@ describe('TablePanel', () => {
     it('should track creating a new category ranking rule', async () => {
       renderWithProviders(
         <TablePanel
-          writeEnabled
+          {...defaultProps}
           basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="categoryRanking"
+          ruleType={RuleType.CategoryRanking}
+          facetType={FacetType.Category}
         />
       );
 
@@ -248,11 +235,10 @@ describe('TablePanel', () => {
     it('should track creating a new search facet rule', async () => {
       renderWithProviders(
         <TablePanel
-          writeEnabled
+          {...defaultProps}
           basePath="/search"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="searchRanking"
+          ruleType={RuleType.SearchRanking}
+          facetType={FacetType.Search}
         />
       );
 
@@ -275,7 +261,7 @@ describe('TablePanel', () => {
           basePath="/search"
           headings={headings}
           mapping={mappingMock}
-          ruleType="redirect"
+          ruleType={RuleType.Redirect}
         />
       );
 
@@ -311,11 +297,10 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
-          writeEnabled
+          {...defaultProps}
           basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="categoryRanking"
+          ruleType={RuleType.CategoryRanking}
+          facetType={FacetType.Category}
         />
       );
 
@@ -342,15 +327,7 @@ describe('TablePanel', () => {
         status: 200,
       });
 
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       const rulesetToggle = await screen.findAllByTitle('Toggle');
       await userEvent.click(rulesetToggle[0]);
@@ -374,15 +351,7 @@ describe('TablePanel', () => {
     it('should close the confirmation modal when cancel button on modal clicked', async () => {
       const user = userEvent.setup({ delay: null });
 
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       const rulesetToggle = await screen.findAllByTitle('Toggle');
       await userEvent.click(rulesetToggle[0]);
@@ -411,15 +380,7 @@ describe('TablePanel', () => {
         },
       });
 
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
       const rulesetToggle = await screen.findAllByTitle('Toggle');
       await userEvent.click(rulesetToggle[0]);
 
@@ -453,15 +414,7 @@ describe('TablePanel', () => {
       });
       const user = userEvent.setup();
 
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       const rulesetDropdown = await screen.findAllByTitle('More options');
 
@@ -494,15 +447,7 @@ describe('TablePanel', () => {
         },
       });
 
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       const rulesetDropdown = await screen.findAllByTitle('More options');
 
@@ -534,15 +479,7 @@ describe('TablePanel', () => {
       jest.mocked(mappingMock.deleteRuleSetById).mockResolvedValue(undefined);
 
       const user = userEvent.setup();
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       await user.click((await screen.findAllByTitle('More options'))[0]);
       await user.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
@@ -568,15 +505,7 @@ describe('TablePanel', () => {
         },
       });
 
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       const user = userEvent.setup();
       await user.click((await screen.findAllByTitle('More options'))[0]);
@@ -603,15 +532,7 @@ describe('TablePanel', () => {
 
   describe('country code functionality', () => {
     it('should display country flags and filter', async () => {
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       expect(await screen.findByAltText('UK rule')).toBeInTheDocument();
       expect(
@@ -621,15 +542,7 @@ describe('TablePanel', () => {
 
     it('should refetch the ruleset list when the country is changed', async () => {
       const user = userEvent.setup();
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       const dropdown = screen.getByRole('button', {
         name: 'Select country',
@@ -665,15 +578,7 @@ describe('TablePanel', () => {
     it('should search', async () => {
       const user = userEvent.setup();
 
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       const search = screen.getByPlaceholderText(/Search\.\.\./i);
 
@@ -718,11 +623,10 @@ describe('TablePanel', () => {
       const user = userEvent.setup();
       renderWithProviders(
         <TablePanel
-          writeEnabled
+          {...defaultProps}
           basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
+          ruleType={RuleType.CategoryRanking}
+          facetType={FacetType.Category}
         />
       );
 
@@ -786,11 +690,10 @@ describe('TablePanel', () => {
       });
       renderWithProviders(
         <TablePanel
-          writeEnabled
+          {...defaultProps}
           basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
+          ruleType={RuleType.CategoryRanking}
+          facetType={FacetType.Category}
         />
       );
 
@@ -819,13 +722,7 @@ describe('TablePanel', () => {
       });
 
       const { rerender } = renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
+        <TablePanel {...defaultProps} />
       );
       jest.mocked(useRouter as jest.Mock).mockReturnValue({
         pathname: '/search',
@@ -834,15 +731,7 @@ describe('TablePanel', () => {
         push: mockPush,
       });
 
-      rerender(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      rerender(<TablePanel {...defaultProps} basePath="/category" />);
 
       await waitFor(() => {
         expect(screen.getByText('Page 1 of 1')).toBeVisible();
@@ -854,11 +743,10 @@ describe('TablePanel', () => {
 
       renderWithProviders(
         <TablePanel
-          writeEnabled
+          {...defaultProps}
           basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
+          ruleType={RuleType.CategoryRanking}
+          facetType={FacetType.Category}
         />
       );
 
@@ -915,15 +803,7 @@ describe('TablePanel', () => {
         },
         status: 200,
       });
-      renderWithProviders(
-        <TablePanel
-          writeEnabled
-          basePath="/category"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType="global"
-        />
-      );
+      renderWithProviders(<TablePanel {...defaultProps} />);
 
       await waitFor(() => {
         const timeElement = screen.getByRole('time');

@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 
+import { RuleType } from '@/libs/constants/rule-types';
 import { HistoryPage } from '@/libs/features';
 import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
 
@@ -21,7 +22,7 @@ const SearchHistory = ({ id }: { id: string }) => {
       title="Search History"
       breadcrumbs={['Search Rules', 'History']}
       accessType="Search"
-      ruleType="searchRanking"
+      ruleType={RuleType.SearchRanking}
       history={history}
       isLoading={isLoading}
       error={error}

@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import { RuleType } from '@/libs/constants/rule-types';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 
 import { HistoryPage } from './history-page';
@@ -76,7 +77,7 @@ describe('HistoryPage', () => {
         title="Category History"
         breadcrumbs={['Categories', 'Ranking rules']}
         accessType="Cat"
-        ruleType="categoryRanking"
+        ruleType={RuleType.CategoryRanking}
         history={{
           changes: [
             {
@@ -119,7 +120,7 @@ describe('HistoryPage', () => {
         title="Category History"
         breadcrumbs={['Categories', 'Ranking rules']}
         accessType="Cat"
-        ruleType="categoryRanking"
+        ruleType={RuleType.CategoryRanking}
         history={{
           pagination: { totalItems: 42 },
           changes: [
@@ -159,7 +160,7 @@ describe('HistoryPage', () => {
         title="Category History"
         breadcrumbs={['Categories', 'Ranking rules']}
         accessType="Cat"
-        ruleType="categoryRanking"
+        ruleType={RuleType.CategoryRanking}
         history={{
           pagination: {},
           changes: [
@@ -203,7 +204,7 @@ describe('HistoryPage', () => {
         title="Category History"
         breadcrumbs={['Categories', 'Ranking rules']}
         accessType="Cat"
-        ruleType="categoryRanking"
+        ruleType={RuleType.CategoryRanking}
         history={{}}
         isLoading={false}
         error=""
@@ -226,7 +227,7 @@ describe('HistoryPage', () => {
         title="Category History"
         breadcrumbs={['Categories', 'Ranking rules']}
         accessType="Cat"
-        ruleType="categoryRanking"
+        ruleType={RuleType.CategoryRanking}
         history={{
           changes: [
             {

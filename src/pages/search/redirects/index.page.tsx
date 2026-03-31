@@ -8,6 +8,7 @@ import { Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import type { RuleSetMapping } from '@/libs/components/types';
 import { ROUTES } from '@/libs/constants/routes';
+import { RuleType } from '@/libs/constants/rule-types';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
 
@@ -88,7 +89,7 @@ const RedirectRuleSets = () => {
         basePath="/search"
         headings={headings}
         mapping={mapping}
-        ruleType="redirect"
+        ruleType={RuleType.Redirect}
         writeEnabled={hasWriteAccess}
       />
     </>

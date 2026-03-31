@@ -7,6 +7,7 @@ import type {
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
+import type { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 
@@ -20,7 +21,7 @@ type PageLayout = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
   facet: MerchandisingRuleSetFacetConfigWithId;
   displayName: string;
-  facetType: 'category' | 'search';
+  facetType: FacetType.Category | FacetType.Search;
   ruleSetId: string;
   searchQuery: string;
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -92,11 +93,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         headerText={headerText}
         onClose={() => {
           if (isDraftRuleset) {
-            router.push(
-              getNewFacetRoute(
-                facetType === 'category' ? 'categoryRanking' : 'searchRanking'
-              )
-            );
+            router.push(getNewFacetRoute(facetType));
             return;
           }
           router.push(getFacetRoute(facetType, 'edit', ruleSetId));

@@ -1,4 +1,5 @@
 import { Button, ErrorMessage, InfoBox, Typography } from '@/libs/components';
+import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { getFlagFromCountryCode } from '@/libs/utils/get-flag-from-country-code';
 
@@ -12,16 +13,16 @@ type CommonHeaderProps = {
   onSave: () => void;
   writeEnabled: boolean;
   countryCode: string;
-  onClose: (facetType: 'category' | 'search' | 'global') => void;
+  onClose: (facetType: FacetType) => void;
   isDraftRuleset?: boolean;
 };
 
 type GlobalHeaderProps = CommonHeaderProps & {
-  facetType: 'global';
+  facetType: FacetType.Global;
 };
 
 type NonGlobalHeaderProps = CommonHeaderProps & {
-  facetType: 'category' | 'search';
+  facetType: FacetType.Category | FacetType.Search;
   headerText?: string;
   algoControlValues: number;
   includedValues: number;
@@ -50,7 +51,7 @@ export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
               <Image key={flags} src={flags} width={20} height={20} alt={alt} />
             ))}
 
-          {facetType === 'global' ? (
+          {facetType === FacetType.Global ? (
             <InfoBox text="All pages on the M&S website and app" />
           ) : (
             <Typography variant="bodySmall">{props.headerText}</Typography>
@@ -79,7 +80,7 @@ export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
 
       {error && <ErrorMessage>Error updating facet: {error}</ErrorMessage>}
 
-      {facetType !== 'global' && (
+      {facetType !== FacetType.Global && (
         <>
           <span className={styles.divider} />
 

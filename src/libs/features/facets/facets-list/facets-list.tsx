@@ -11,6 +11,7 @@ import {
 } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { FacetType } from '@/libs/constants/rule-types';
 import { FacetRow } from '@/libs/containers/facets/facet-row';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
@@ -63,7 +64,7 @@ type SearchTerms = { searchTerms: string[] };
 type SaveType = MerchandisingRuleSet & (CategoryIds | SearchTerms);
 
 export type FacetsListProps = {
-  facetType: 'search' | 'category' | 'global';
+  facetType: FacetType;
   isNewRuleset: boolean;
   onCancel: () => void;
   onSave: (args: SaveType) => void;
@@ -93,7 +94,7 @@ export const FacetsList = ({
   const { getDraft, clearDraft } = useDraftRuleset();
 
   const defaultRuleset: MerchandisingRuleSet = {
-    isEnabled: facetType !== 'global',
+    isEnabled: facetType !== FacetType.Global,
     startDate: undefined,
     endDate: undefined,
     rules: {
@@ -232,8 +233,11 @@ export const FacetsList = ({
   );
 
   const { facets, error: getFacetsDataError } = useFacetsList({
-    query: facetType === 'category' ? selectedCategories : selectedSearchTerms,
-    queryBy: facetType === 'category' ? 'categoryIds' : 'searchTerms',
+    query:
+      facetType === FacetType.Category
+        ? selectedCategories
+        : selectedSearchTerms,
+    queryBy: facetType === FacetType.Category ? 'categoryIds' : 'searchTerms',
     enabled: true,
     countryCode: ruleset.countryCode || 'UK_IE',
   });
@@ -358,8 +362,10 @@ export const FacetsList = ({
       {showPreview && (
         <Preview
           onClose={() => setShowPreview(!showPreview)}
-          categoryId={facetType === 'category' ? previewValue : undefined}
-          searchTerm={facetType === 'search' ? previewValue : undefined}
+          categoryId={
+            facetType === FacetType.Category ? previewValue : undefined
+          }
+          searchTerm={facetType === FacetType.Search ? previewValue : undefined}
           merchandisingRules={ruleset.rules}
           facetConfig={ruleset.facets || []}
           excludedFacets={ruleset.excludedFacets}
@@ -372,7 +378,7 @@ export const FacetsList = ({
         canSave={
           !!selectedCategoriesInfo.length ||
           !!selectedSearchTerms.length ||
-          facetType === 'global'
+          facetType === FacetType.Global
         }
         onSave={handleSave}
         hasPreview={
@@ -381,18 +387,18 @@ export const FacetsList = ({
         onPreview={() => {
           setShowPreview(!showPreview);
           track({
-            event: `Preview ${facetType} facets - ${facetType === 'category' ? previewValue : selectedSearchTerms.join(', ')}`,
+            event: `Preview ${facetType} facets - ${facetType === FacetType.Category ? previewValue : selectedSearchTerms.join(', ')}`,
           });
         }}
         isNewRuleSet={!!isNewRuleset}
         hasChanges
         onCancel={handleCancel}
         title={
-          facetType === 'global'
+          facetType === FacetType.Global
             ? 'Global Facet Rule Editor'
             : 'Facet Rule Editor'
         }
-        shouldHidePreview={facetType === 'global'}
+        shouldHidePreview={facetType === FacetType.Global}
         rulesetType={facetType}
         writeEnabled={writeEnabled}
       />
@@ -431,7 +437,7 @@ export const FacetsList = ({
               ariaLabel="Select country"
             />
           </div>
-          {facetType === 'category' && (
+          {facetType === FacetType.Category && (
             <CategorySearch
               selectedCategories={selectedCategories}
               countryCode={ruleset.countryCode}
@@ -443,7 +449,7 @@ export const FacetsList = ({
               writeEnabled={writeEnabled}
             />
           )}
-          {facetType === 'search' && (
+          {facetType === FacetType.Search && (
             <SearchKeywords
               title="Search Keywords"
               searchTerms={selectedSearchTerms}
@@ -454,7 +460,7 @@ export const FacetsList = ({
               writeEnabled={writeEnabled}
             />
           )}
-          {facetType !== 'global' && (
+          {facetType !== FacetType.Global && (
             <div className={styles.duration}>
               <Typography as="p" withMargin variant="labelMedium">
                 Duration
@@ -477,61 +483,62 @@ export const FacetsList = ({
               />
             </div>
           )}
-          {facetType === 'search' && ruleset.countryCode === 'UK_IE' && (
-            <div>
-              <Typography as="p" withMargin variant="labelMedium">
-                Preview Country
-              </Typography>
-              <CombinedDropdown
-                variant="generic"
-                label={`${selectedPreviewCountryCode} view`}
-                width={155}
-                icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}
-                ariaLabel="Select country for preview"
-              >
-                <Button
-                  className={dropdownStyles.dropdownOption}
-                  data-hover-grey
-                  type="button"
-                  onClick={() => {
-                    track({ event: 'Change search facets preview to IE' });
-                    setSelectedPreviewCountryCode?.('IE');
-                  }}
-                  role="menuitemradio"
-                  aria-checked={selectedPreviewCountryCode === 'IE'}
+          {facetType === FacetType.Search &&
+            ruleset.countryCode === 'UK_IE' && (
+              <div>
+                <Typography as="p" withMargin variant="labelMedium">
+                  Preview Country
+                </Typography>
+                <CombinedDropdown
+                  variant="generic"
+                  label={`${selectedPreviewCountryCode} view`}
+                  width={155}
+                  icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}
+                  ariaLabel="Select country for preview"
                 >
-                  <Image
-                    src="/trading-hub/asset/icon-ie-flag.svg"
-                    width={20}
-                    height={20}
-                    alt="IE flag"
-                  />
-                  <Typography as="span" variant="bodySmall">
-                    &nbsp; IE view
-                  </Typography>
-                </Button>
-                <Button
-                  className={dropdownStyles.dropdownOption}
-                  data-hover-grey
-                  type="button"
-                  onClick={() => {
-                    track({ event: 'Change search facets preview to UK' });
-                    setSelectedPreviewCountryCode?.('UK');
-                  }}
-                  role="menuitemradio"
-                  aria-checked={selectedPreviewCountryCode === 'UK'}
-                >
-                  <Image
-                    src="/trading-hub/asset/icon-uk-flag.svg"
-                    width={20}
-                    height={20}
-                    alt="UK flag"
-                  />
-                  &nbsp; UK view
-                </Button>
-              </CombinedDropdown>
-            </div>
-          )}
+                  <Button
+                    className={dropdownStyles.dropdownOption}
+                    data-hover-grey
+                    type="button"
+                    onClick={() => {
+                      track({ event: 'Change search facets preview to IE' });
+                      setSelectedPreviewCountryCode?.('IE');
+                    }}
+                    role="menuitemradio"
+                    aria-checked={selectedPreviewCountryCode === 'IE'}
+                  >
+                    <Image
+                      src="/trading-hub/asset/icon-ie-flag.svg"
+                      width={20}
+                      height={20}
+                      alt="IE flag"
+                    />
+                    <Typography as="span" variant="bodySmall">
+                      &nbsp; IE view
+                    </Typography>
+                  </Button>
+                  <Button
+                    className={dropdownStyles.dropdownOption}
+                    data-hover-grey
+                    type="button"
+                    onClick={() => {
+                      track({ event: 'Change search facets preview to UK' });
+                      setSelectedPreviewCountryCode?.('UK');
+                    }}
+                    role="menuitemradio"
+                    aria-checked={selectedPreviewCountryCode === 'UK'}
+                  >
+                    <Image
+                      src="/trading-hub/asset/icon-uk-flag.svg"
+                      width={20}
+                      height={20}
+                      alt="UK flag"
+                    />
+                    &nbsp; UK view
+                  </Button>
+                </CombinedDropdown>
+              </div>
+            )}
         </div>
 
         <FacetsPanelAccordion
@@ -627,7 +634,7 @@ export const FacetsList = ({
         )}
       </div>
 
-      {filteredFacets.length === 0 && facetType !== 'global' && (
+      {filteredFacets.length === 0 && facetType !== FacetType.Global && (
         <div className={styles.noAttributesBlock}>
           <Typography variant="bodyLarge">
             No, there are no attributes yet.
@@ -638,7 +645,7 @@ export const FacetsList = ({
         </div>
       )}
 
-      {filteredFacets.length === 0 && facetType === 'global' && (
+      {filteredFacets.length === 0 && facetType === FacetType.Global && (
         <div className={styles.noAttributesBlock}>
           <Typography variant="bodySmall">
             Please create the ruleset before editing facets.

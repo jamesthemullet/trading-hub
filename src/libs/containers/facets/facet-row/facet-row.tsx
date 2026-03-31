@@ -13,6 +13,7 @@ import {
 import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import type { RuleSetActions } from '@/libs/components/types';
 import { getFacetRoute } from '@/libs/constants';
+import { FacetType } from '@/libs/constants/rule-types';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
@@ -52,7 +53,7 @@ type IncludedFacetRowProps = FacetRowDisplayValue &
     ) => (el: HTMLInputElement | null) => void;
     selectedCategories: string[];
     selectedSearchTerms: string[];
-    facetType: 'search' | 'category' | 'global';
+    facetType: FacetType;
     countryCode: string;
     rulesetId: string;
     isNewRuleset?: boolean;
@@ -185,7 +186,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
               });
 
               if (
-                props.facetType === 'category' &&
+                props.facetType === FacetType.Category &&
                 props.selectedCategories.length > 0
               ) {
                 props.selectedCategories.forEach((categoryId) => {
@@ -194,7 +195,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
               }
 
               if (
-                props.facetType === 'search' &&
+                props.facetType === FacetType.Search &&
                 props.selectedSearchTerms.length > 0
               ) {
                 props.selectedSearchTerms.forEach((term) => {

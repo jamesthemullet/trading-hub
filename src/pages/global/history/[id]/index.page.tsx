@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 
+import { RuleType } from '@/libs/constants/rule-types';
 import { HistoryPage } from '@/libs/features';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
 
@@ -21,7 +22,7 @@ const GlobalHistory = ({ id }: { id: string }) => {
       title="Global History"
       breadcrumbs={['Global Ranking Rules', 'History']}
       accessType="Glob"
-      ruleType="global"
+      ruleType={RuleType.Global}
       history={history}
       isLoading={isLoading}
       error={error}

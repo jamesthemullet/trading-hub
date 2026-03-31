@@ -7,6 +7,7 @@ import {
   TablePagination,
 } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
+import type { RuleType } from '@/libs/constants/rule-types';
 import { HistoryList } from '@/libs/features/history-list/history-list';
 import { useAccess } from '@/libs/hooks/use-access';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
@@ -16,7 +17,6 @@ import Head from 'next/head';
 import styles from './history-page.module.css';
 
 type AccessType = 'Cat' | 'Search' | 'Glob';
-type RuleType = 'categoryRanking' | 'searchRanking' | 'global' | 'redirect';
 
 type HistoryData = {
   changes?: Array<{
