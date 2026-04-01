@@ -51,7 +51,7 @@
     "next-auth": "4.24.13",
     "pluralize": "8.0.0",
     "react": "19.2.4",
-    "react-cookie": "8.0.1",
+    "react-cookie": "8.1.0",
     "react-dom": "19.2.4",
     "tslib": "2.8.1",
     "xss": "1.0.15",
