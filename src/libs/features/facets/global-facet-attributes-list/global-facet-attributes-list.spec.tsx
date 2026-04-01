@@ -431,7 +431,7 @@ describe('FacetAttributesList', () => {
       expect(setIsAwaitingUpdateMock).toHaveBeenCalledWith(true);
       expect(dispatchMock).toHaveBeenCalledWith({
         type: 'TOGGLE_ALL_ATTRIBUTES',
-        payload: { allSelected: true },
+        payload: { areAllSelected: true },
       });
     });
 
@@ -489,7 +489,7 @@ describe('FacetAttributesList', () => {
       expect(setIsAwaitingUpdateMock).toHaveBeenCalledWith(true);
       expect(dispatchMock).toHaveBeenCalledWith({
         type: 'TOGGLE_ALL_ATTRIBUTES',
-        payload: { allSelected: false },
+        payload: { areAllSelected: false },
       });
     });
 

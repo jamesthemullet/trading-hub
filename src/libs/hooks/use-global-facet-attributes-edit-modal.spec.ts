@@ -213,7 +213,7 @@ describe('useGlobalFacetAttributesEditModal', () => {
 
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'TOGGLE_ALL_ATTRIBUTES',
-      payload: { allSelected: false },
+      payload: { areAllSelected: false },
     });
   });
 

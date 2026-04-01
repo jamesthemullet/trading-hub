@@ -168,7 +168,7 @@ export const useGlobalFacetAttributesEditModal = ({
       dispatch({
         type: 'TOGGLE_ALL_ATTRIBUTES',
         payload: {
-          allSelected: false,
+          areAllSelected: false,
         },
       });
       dispatch({ type: 'CLOSE_MERGE_GROUP_MODAL' });

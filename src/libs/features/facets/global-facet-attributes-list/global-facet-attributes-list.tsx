@@ -236,7 +236,7 @@ export const GlobalFacetAttributesList = ({
                           dispatch({
                             type: 'TOGGLE_ALL_ATTRIBUTES',
                             payload: {
-                              allSelected: !hasSelectedAllAttributes,
+                              areAllSelected: !hasSelectedAllAttributes,
                             },
                           });
                         });

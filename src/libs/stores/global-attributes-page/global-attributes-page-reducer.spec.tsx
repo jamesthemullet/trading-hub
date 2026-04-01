@@ -92,7 +92,7 @@ describe('Global Attribute Reducer', () => {
         type: 'TOGGLE_ALL_ATTRIBUTES' as const,
         payload: {
           attributes: ['1'],
-          allSelected: false,
+          areAllSelected: false,
         },
       };
       const result = globalAttributesPageReducer(state, action);
@@ -109,7 +109,7 @@ describe('Global Attribute Reducer', () => {
         type: 'TOGGLE_ALL_ATTRIBUTES' as const,
         payload: {
           attributes: ['1'],
-          allSelected: true,
+          areAllSelected: true,
         },
       };
       const result = globalAttributesPageReducer(state, action);
@@ -752,9 +752,66 @@ describe('Global Attribute Reducer', () => {
         ],
       });
     });
+
+    it('should keep a row unmerged when a merge entry only matches by displayValue', () => {
+      const state: GlobalAttributesPageState = {
+        ...mockInitialState,
+      };
+
+      const action = {
+        type: 'INITIALISE_STATE' as const,
+        payload: {
+          boostedValues: [],
+          excludedValues: [
+            {
+              displayValue: 'Vegetarian',
+            },
+          ],
+          nonBoostedExcludedValues: [],
+          merged: [
+            {
+              displayValue: 'Vegetarian',
+            },
+          ],
+        },
+      };
+
+      const result = globalAttributesPageReducer(state, action);
+
+      expect(result.excludedRows).toEqual([
+        {
+          displayName: 'Vegetarian',
+          attributes: ['Vegetarian'],
+          isMergeGroup: false,
+          isChecked: false,
+        },
+      ]);
+      expect(result.merged).toEqual([
+        {
+          displayValue: 'Vegetarian',
+        },
+      ]);
+    });
   });
 
   describe('ADD_NONBOOSTEDEXCLUDED_VALUES', () => {
+    it('should return state unchanged when all values already exist', () => {
+      const state: GlobalAttributesPageState = {
+        ...mockState,
+      };
+
+      const action = {
+        type: 'ADD_NONBOOSTEDEXCLUDED_VALUES' as const,
+        payload: {
+          values: [{ displayValue: 'Vegan' }, { displayValue: 'Under 10' }],
+        },
+      };
+
+      const result = globalAttributesPageReducer(state, action);
+
+      expect(result).toBe(state);
+    });
+
     it('should append new values as non boosted excluded rows and avoid duplicates', () => {
       const state: GlobalAttributesPageState = {
         ...mockState,
@@ -1257,6 +1314,38 @@ describe('Global Attribute Reducer', () => {
         ],
       });
     });
+
+    it('should preserve merge entries without mergedValues when updating a merge group', () => {
+      const state: GlobalAttributesPageState = {
+        ...mockState,
+        merged: [
+          { displayValue: 'No Values Group' },
+          { displayValue: 'test', mergedValues: ['value1', 'value2'] },
+        ],
+        nonBoostedExcludedRows: [
+          {
+            displayName: 'test',
+            attributes: ['value1', 'value2'],
+            isMergeGroup: true,
+            isChecked: false,
+          },
+        ],
+      };
+
+      const result = globalAttributesPageReducer(state, {
+        type: 'UPDATE_MERGE_GROUP' as const,
+        payload: {
+          attributes: ['value1', 'value2', 'value3'],
+          isFirstAttributeBoosted: false,
+          isFirstAttributeExcluded: false,
+          displayValue: 'value1',
+        },
+      });
+
+      expect(
+        result.merged.find((m) => m.displayValue === 'No Values Group')
+      ).toBeDefined();
+    });
   });
 
   describe('REMOVE_FROM_MERGE_GROUP', () => {
@@ -1646,6 +1735,72 @@ describe('Global Attribute Reducer', () => {
     expect(result).toBe(initialState);
   });
 
+  it('handles REMOVE_FROM_MERGE_GROUP when a sibling merge entry has no mergedValues', () => {
+    const initialState: GlobalAttributesPageState = {
+      ...mockInitialState,
+      nonBoostedExcludedRows: [
+        {
+          displayName: 'Group A',
+          attributes: ['x', 'y', 'z'],
+          isMergeGroup: true,
+          isChecked: false,
+        },
+      ],
+      merged: [
+        { displayValue: 'No Values Group' },
+        { displayValue: 'Group A', mergedValues: ['x', 'y', 'z'] },
+      ],
+    };
+
+    const result = globalAttributesPageReducer(initialState, {
+      type: 'REMOVE_FROM_MERGE_GROUP' as const,
+      payload: { valueToRemove: 'z', mergeDisplayName: 'Group A' },
+    });
+
+    expect(
+      result.merged.find((m) => m.displayValue === 'Group A')?.mergedValues
+    ).toEqual(['x', 'y']);
+    expect(
+      result.merged.find((m) => m.displayValue === 'No Values Group')
+    ).toBeUndefined();
+  });
+
+  it('returns state unchanged when target merge entry has no mergedValues', () => {
+    const initialState: GlobalAttributesPageState = {
+      ...mockInitialState,
+      nonBoostedExcludedRows: [
+        {
+          displayName: 'No Values Group',
+          attributes: [],
+          isMergeGroup: true,
+          isChecked: false,
+        },
+      ],
+      merged: [{ displayValue: 'No Values Group' }],
+    };
+
+    const result = globalAttributesPageReducer(initialState, {
+      type: 'REMOVE_FROM_MERGE_GROUP' as const,
+      payload: { valueToRemove: 'x', mergeDisplayName: 'No Values Group' },
+    });
+
+    expect(result).toBe(initialState);
+  });
+
+  it('returns state unchanged when valueToRemove is not in mergedValues', () => {
+    const initialState: GlobalAttributesPageState = {
+      ...mockInitialState,
+      merged: [{ displayValue: 'Group A', mergedValues: ['x', 'y'] }],
+    };
+
+    const result = globalAttributesPageReducer(initialState, {
+      type: 'REMOVE_FROM_MERGE_GROUP' as const,
+      payload: { valueToRemove: 'z', mergeDisplayName: 'Group A' },
+    });
+
+    expect(result).toBe(initialState);
+  });
+
   describe('SET_ERROR', () => {
     it('should set error state', () => {
       const state: GlobalAttributesPageState = {
@@ -1689,6 +1844,15 @@ describe('Global Attribute Reducer', () => {
   });
 
   describe('SET_BOOSTED_ORDER', () => {
+    it('should return state unchanged when id is not found', () => {
+      const result = globalAttributesPageReducer(mockState, {
+        type: 'SET_BOOSTED_ORDER' as const,
+        payload: { id: 'nonexistent', newIndex: 0 },
+      });
+
+      expect(result).toBe(mockState);
+    });
+
     it('should reorder boosted rows when SET_BOOSTED_ORDER called', () => {
       const state: GlobalAttributesPageState = {
         ...mockState,
@@ -1829,6 +1993,29 @@ describe('Global Attribute Reducer', () => {
       expect(result.currentMerge.mergedValues).toEqual(['a', 'b', 'c']);
       expect(result.currentMerge.demergedValues).toEqual([]);
       expect(result.currentMerge.displayValue).toBe('Group A');
+    });
+  });
+
+  describe('ADD_DEMERGED_VALUE', () => {
+    it('should move value from currentMergeValues to demergedValues', () => {
+      const initialState = {
+        ...mockInitialState,
+        currentMerge: {
+          isOpen: true,
+          displayValue: 'Group A',
+          mergedValues: ['a', 'b', 'c'],
+          demergedValues: [],
+          currentMergeValues: ['a', 'b', 'c'],
+        },
+      };
+
+      const result = globalAttributesPageReducer(initialState, {
+        type: 'ADD_DEMERGED_VALUE' as const,
+        payload: { valueToRemove: 'b' },
+      });
+
+      expect(result.currentMerge.demergedValues).toEqual(['b']);
+      expect(result.currentMerge.currentMergeValues).toEqual(['a', 'c']);
     });
   });
 

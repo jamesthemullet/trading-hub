@@ -175,7 +175,7 @@ export const rulesetReducer = (
               ...rules,
               includes: {
                 ...rules.includes,
-                alphanumeric: update(rules.includes.alphanumeric || []),
+                alphanumeric: update(rules.includes.alphanumeric ?? []),
               },
             },
           }
@@ -185,7 +185,7 @@ export const rulesetReducer = (
               ...rules,
               excludes: {
                 ...rules.excludes,
-                alphanumeric: update(rules.excludes.alphanumeric || []),
+                alphanumeric: update(rules.excludes.alphanumeric ?? []),
               },
             },
           };

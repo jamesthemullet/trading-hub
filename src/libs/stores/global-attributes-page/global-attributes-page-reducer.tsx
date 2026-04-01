@@ -19,7 +19,7 @@ type FormattedBoostedRow = {
 type ToggleAllAttributes = {
   type: 'TOGGLE_ALL_ATTRIBUTES';
   payload: {
-    allSelected: boolean;
+    areAllSelected: boolean;
   };
 };
 
@@ -218,21 +218,21 @@ export const globalAttributesPageReducer = (
 ): GlobalAttributesPageState => {
   switch (action.type) {
     case 'TOGGLE_ALL_ATTRIBUTES': {
-      const { allSelected } = action.payload;
+      const { areAllSelected } = action.payload;
 
       return {
         ...state,
         boostedRows: state.boostedRows.map((row) => ({
           ...row,
-          isChecked: !!allSelected,
+          isChecked: !!areAllSelected,
         })),
         excludedRows: state.excludedRows.map((row) => ({
           ...row,
-          isChecked: !!allSelected,
+          isChecked: !!areAllSelected,
         })),
         nonBoostedExcludedRows: state.nonBoostedExcludedRows.map((row) => ({
           ...row,
-          isChecked: !!allSelected,
+          isChecked: !!areAllSelected,
         })),
       };
     }
@@ -309,10 +309,10 @@ export const globalAttributesPageReducer = (
       } = action.payload;
 
       const formatRow = (row: { displayValue: string }): FormattedRow => {
-        const match = merged.find(
-          (merge) =>
-            merge.mergedValues?.includes(row.displayValue) ||
-            merge.displayValue === row.displayValue
+        const match = merged.find((merge) =>
+          merge.mergedValues
+            ? merge.mergedValues.includes(row.displayValue)
+            : merge.displayValue === row.displayValue
         );
 
         return match?.displayValue && match.mergedValues
@@ -417,16 +417,15 @@ export const globalAttributesPageReducer = (
 
     case 'AMEND_BOOSTED_ROW': {
       const { newStatus, displayName } = action.payload;
-      const found = state.boostedRows.find(
-        (row) => row.displayName === displayName
-      )!;
+      const rowsToMove = state.boostedRows
+        .filter((row) => row.displayName === displayName)
+        .map((row) => ({
+          displayName: row.displayName,
+          attributes: row.attributes,
+          isMergeGroup: row.isMergeGroup,
+          isChecked: row.isChecked,
+        }));
 
-      const rowToMove = {
-        displayName: found.displayName,
-        attributes: found.attributes,
-        isMergeGroup: found.isMergeGroup,
-        isChecked: found.isChecked,
-      };
       return {
         ...state,
         boostedRows: state.boostedRows
@@ -437,18 +436,18 @@ export const globalAttributesPageReducer = (
           })),
         excludedRows:
           newStatus === 'excluded'
-            ? [...state.excludedRows, rowToMove]
+            ? [...state.excludedRows, ...rowsToMove]
             : state.excludedRows,
         nonBoostedExcludedRows:
           newStatus === 'algoControl'
-            ? [...state.nonBoostedExcludedRows, rowToMove]
+            ? [...state.nonBoostedExcludedRows, ...rowsToMove]
             : state.nonBoostedExcludedRows,
       };
     }
 
     case 'AMEND_NONBOOSTEDEXCLUDED_ROW': {
       const { newStatus, displayName } = action.payload;
-      const rowToMove = state.nonBoostedExcludedRows.find(
+      const rowsToMove = state.nonBoostedExcludedRows.filter(
         (row) => row.displayName === displayName
       );
 
@@ -459,13 +458,16 @@ export const globalAttributesPageReducer = (
         ),
         excludedRows:
           newStatus === 'excluded'
-            ? [...state.excludedRows, rowToMove!]
+            ? [...state.excludedRows, ...rowsToMove]
             : state.excludedRows,
         boostedRows:
           newStatus === 'included'
             ? [
                 ...state.boostedRows,
-                { ...rowToMove!, order: state.boostedRows.length + 1 },
+                ...rowsToMove.map((row) => ({
+                  ...row,
+                  order: state.boostedRows.length + 1,
+                })),
               ]
             : state.boostedRows,
       };
@@ -473,7 +475,7 @@ export const globalAttributesPageReducer = (
 
     case 'AMEND_EXCLUDED_ROW': {
       const { newStatus, displayName } = action.payload;
-      const rowToMove = state.excludedRows.find(
+      const rowsToMove = state.excludedRows.filter(
         (row) => row.displayName === displayName
       );
 
@@ -486,12 +488,15 @@ export const globalAttributesPageReducer = (
           newStatus === 'included'
             ? [
                 ...state.boostedRows,
-                { ...rowToMove!, order: state.boostedRows.length + 1 },
+                ...rowsToMove.map((row) => ({
+                  ...row,
+                  order: state.boostedRows.length + 1,
+                })),
               ]
             : state.boostedRows,
         nonBoostedExcludedRows:
           newStatus === 'algoControl'
-            ? [...state.nonBoostedExcludedRows, rowToMove!]
+            ? [...state.nonBoostedExcludedRows, ...rowsToMove]
             : state.nonBoostedExcludedRows,
       };
     }
@@ -724,7 +729,7 @@ export const globalAttributesPageReducer = (
         );
 
       const updatedMerged = state.merged.filter((merge) => {
-        const hasMatchingValues = merge.mergedValues!.some((value) =>
+        const hasMatchingValues = (merge.mergedValues ?? []).some((value) =>
           attributes.includes(value)
         );
 
@@ -814,13 +819,17 @@ export const globalAttributesPageReducer = (
         return state;
       }
 
-      const remainingValues = originalMergeGroup?.mergedValues?.filter(
+      if (!originalMergeGroup.mergedValues?.includes(valueToRemove)) {
+        return state;
+      }
+
+      const remainingValues = originalMergeGroup.mergedValues.filter(
         (val) => val !== valueToRemove
       );
 
       let rowsToRecreate = [];
 
-      if (remainingValues?.length === 1) {
+      if (remainingValues.length === 1) {
         rowsToRecreate = [
           {
             displayName: remainingValues[0],
@@ -850,7 +859,7 @@ export const globalAttributesPageReducer = (
         if (merge.displayValue === mergeDisplayName) {
           return {
             ...merge,
-            mergedValues: merge.mergedValues!.filter(
+            mergedValues: merge.mergedValues?.filter(
               (val) => val !== valueToRemove
             ),
           };
@@ -858,7 +867,7 @@ export const globalAttributesPageReducer = (
         return merge;
       });
 
-      const shouldRemoveWholeMergeRow = remainingValues?.length === 1;
+      const shouldRemoveWholeMergeRow = remainingValues.length === 1;
 
       const updatedBoostedRows = state.boostedRows.flatMap((row) => {
         if (row.displayName === mergeDisplayName) {
@@ -915,7 +924,9 @@ export const globalAttributesPageReducer = (
         }),
         excludedRows: updatedExcludedRows,
         nonBoostedExcludedRows: updatedNonBoostedExcludedRows,
-        merged: updatedMerged.filter((merge) => merge.mergedValues!.length > 1),
+        merged: updatedMerged.filter(
+          (merge) => (merge.mergedValues ?? []).length > 1
+        ),
       };
     }
 
@@ -941,8 +952,12 @@ export const globalAttributesPageReducer = (
       const currentIndex = currentBoosted.findIndex(
         (item) => item.displayName === action.payload.id
       );
-      const newIndex = action.payload.newIndex;
 
+      if (currentIndex === -1) {
+        return state;
+      }
+
+      const newIndex = action.payload.newIndex;
       const item = currentBoosted[currentIndex];
       const withoutItem = currentBoosted.toSpliced(currentIndex, 1);
       const newBoostedArray = withoutItem.toSpliced(newIndex, 0, item);

@@ -78,7 +78,7 @@ export const addAttributeReducer = (
       const currentValues =
         state.selectedAlphanumericValues.find(
           (attr) => attr.field === state.alphanumericField
-        )?.values || [];
+        )?.values ?? [];
 
       const newValues = isSelected
         ? [...currentValues, name]
