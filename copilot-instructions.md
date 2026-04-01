@@ -1,5 +1,9 @@
 # Copilot Instructions for Trading Hub
 
+## General
+
+- If you encounter something surprising or confusing in this project, or something that can be improved that isn't currently being worked on, flag it as a to-do comment.
+
 ## Package Manager
 
 - Always use `pnpm` for package management
