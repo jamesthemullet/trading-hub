@@ -26,6 +26,8 @@ class RootDocument extends Document<MerchHubInitialProps> {
     return (
       <Html lang="en">
         <Head>
+          <meta name="color-scheme" content="light dark" />
+          <meta name="theme-color" content="#000000" />
           {dynatraceRumScriptUrl && (
             <Script
               type="text/javascript"

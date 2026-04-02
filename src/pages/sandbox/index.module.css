@@ -1,3 +1,35 @@
 .example {
   padding: var(--mns-spacing-2-5);
 }
+
+.shadowGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 16px 0;
+}
+
+.shadowCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  width: 220px;
+}
+
+.shadowBox {
+  width: 180px;
+  height: 80px;
+  background: var(--color-surface-surface-container, #fff);
+  border-radius: 6px;
+}
+
+.shadowLabel {
+  color: var(--color-surface-on-surface-container, #444);
+  word-break: break-all;
+}
+
+.shadowSource {
+  color: var(--color-surface-on-surface-container, #888);
+  opacity: 0.7;
+}
