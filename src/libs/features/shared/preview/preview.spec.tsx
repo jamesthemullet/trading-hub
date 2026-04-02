@@ -213,7 +213,7 @@ describe('Preview', () => {
 
     expect(image).toHaveAttribute(
       'src',
-      'https://dummyimage.com/307x400/cccccc/ffffff?text=missing+image'
+      expect.stringContaining('data:image/svg+xml')
     );
   });
 

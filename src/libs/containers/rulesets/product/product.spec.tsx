@@ -86,7 +86,7 @@ describe('Product', () => {
 
       expect(image).toHaveAttribute(
         'src',
-        'https://dummyimage.com/300x400/cccccc/ffffff?text=missing+image'
+        expect.stringMatching(/^data:image\/svg\+xml/)
       );
     });
 
