@@ -54,6 +54,7 @@ describe('Global Editable label', () => {
       checkMergeNameUnique: () =>
         Promise.resolve({
           isUniqueValue: true,
+          error: undefined,
         }),
       error: '',
     });
@@ -79,6 +80,7 @@ describe('Global Editable label', () => {
     jest.mocked(useCheckMergeNameUnique).mockReturnValue({
       checkMergeNameUnique: jest.fn().mockResolvedValue({
         isUniqueValue: true,
+        error: undefined,
       }),
       error: '',
     });
@@ -238,6 +240,7 @@ describe('Global Editable label', () => {
     jest.mocked(useCheckMergeNameUnique).mockReturnValue({
       checkMergeNameUnique: jest.fn().mockResolvedValue({
         isUniqueValue: false,
+        error: undefined,
       }),
       error: '',
     });
@@ -286,6 +289,7 @@ describe('Global Editable label', () => {
   it('should pass exceptions when editing an existing merge group', async () => {
     const checkMergeNameUniqueMock = jest.fn().mockResolvedValue({
       isUniqueValue: true,
+      error: undefined,
     });
 
     jest.mocked(useCheckMergeNameUnique).mockReturnValue({
@@ -422,6 +426,7 @@ describe('Global Editable label', () => {
     jest.mocked(useCheckMergeNameUnique).mockReturnValue({
       checkMergeNameUnique: jest.fn().mockResolvedValue({
         isUniqueValue: true,
+        error: undefined,
       }),
       error: '',
     });
@@ -471,6 +476,7 @@ describe('Global Editable label', () => {
     jest.mocked(useCheckMergeNameUnique).mockReturnValue({
       checkMergeNameUnique: jest.fn().mockResolvedValue({
         isUniqueValue: true,
+        error: undefined,
       }),
       error: '',
     });
@@ -519,6 +525,7 @@ describe('Global Editable label', () => {
   it('should include nonBoostedExcludedRows in localAttributeValues when checking uniqueness', async () => {
     const checkMergeNameUniqueMock = jest.fn().mockResolvedValue({
       isUniqueValue: true,
+      error: undefined,
     });
 
     jest.mocked(useCheckMergeNameUnique).mockReturnValue({
@@ -569,6 +576,7 @@ describe('Global Editable label', () => {
     jest.mocked(useCheckMergeNameUnique).mockReturnValue({
       checkMergeNameUnique: jest.fn().mockResolvedValue({
         isUniqueValue: true,
+        error: undefined,
       }),
       error: '',
     });

@@ -37,7 +37,7 @@ export const useCheckMergeNameUnique = () => {
                 categoryId,
                 ...(searchQuery && { q: searchQuery }),
                 start: 0,
-                rows: 2000,
+                rows: 1000,
                 catalogue: convertCategoryIdToCatalogue(categoryId),
               })
               .then((response) => response.data.values)
@@ -47,7 +47,7 @@ export const useCheckMergeNameUnique = () => {
               .betaMerchandisingFacetAttributeValuesList(facetId, {
                 ...(searchQuery && { q: searchQuery }),
                 start: 0,
-                rows: 2000,
+                rows: 1000,
                 catalogue,
               })
               .then((response) => response.data.values)
@@ -57,6 +57,7 @@ export const useCheckMergeNameUnique = () => {
 
       const result = uniqBy(results.flat(), 'displayValue');
 
+      setError('');
       return {
         isUniqueValue: Boolean(
           (!result.some(
@@ -73,11 +74,14 @@ export const useCheckMergeNameUnique = () => {
               item?.trim().toLowerCase() === searchQuery.trim().toLowerCase()
           )
         ),
+        error: undefined,
       };
     } catch {
-      setError('Failed to get Facet Attribute Values');
+      const message = 'Failed to get Facet Attribute Values';
+      setError(message);
       return {
         isUniqueValue: false,
+        error: message,
       };
     }
   };

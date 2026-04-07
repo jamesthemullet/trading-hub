@@ -184,4 +184,72 @@ describe('useGetFacetAttributeValues', () => {
       expect(isUniqueValue).toBe(true);
     });
   });
+
+  it('should not request more than 1000 rows', async () => {
+    const capturedRows: number[] = [];
+
+    server.use(
+      http.get(
+        `${baseUrl}/search/beta/merchandising/facet/color-id/attributeValues`,
+        ({ request }) => {
+          capturedRows.push(
+            Number(new URL(request.url).searchParams.get('rows'))
+          );
+          return HttpResponse.json(
+            { values: [], pagination: { totalItems: 0 } },
+            { status: 200 }
+          );
+        }
+      )
+    );
+
+    const { result } = renderHook(() => useCheckMergeNameUnique());
+
+    await act(async () => {
+      await result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'Red',
+        countryCode: 'UK_IE',
+      });
+    });
+
+    expect(capturedRows.length).toBeGreaterThan(0);
+    expect(capturedRows.every((rows) => rows <= 1000)).toBe(true);
+  });
+
+  it('should clear the hook-level error after a successful request following a failure', async () => {
+    server.use(
+      http.get(
+        `${baseUrl}/search/beta/merchandising/facet/color-id/attributeValues`,
+        () =>
+          HttpResponse.json(
+            { message: 'Internal Server Error' },
+            { status: 500 }
+          ),
+        { once: true }
+      )
+    );
+
+    const { result } = renderHook(() => useCheckMergeNameUnique());
+
+    await act(async () => {
+      await result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'Red',
+        countryCode: 'UK',
+      });
+    });
+
+    expect(result.current.error).toBe('Failed to get Facet Attribute Values');
+
+    await act(async () => {
+      await result.current.checkMergeNameUnique({
+        facetId: 'color-id',
+        searchQuery: 'Red',
+        countryCode: 'UK',
+      });
+    });
+
+    expect(result.current.error).toBe('');
+  });
 });

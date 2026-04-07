@@ -753,6 +753,45 @@ describe('Global Attribute Reducer', () => {
       });
     });
 
+    it('should reconstruct merge group when display name is a new invented name not in mergedValues', () => {
+      const state: GlobalAttributesPageState = {
+        ...mockInitialState,
+      };
+
+      // Simulates reload after saving a merge group where "Warm Colors" is a new
+      // invented display name, stored in boosted. "Red" and "Blue" are the raw values.
+      const action = {
+        type: 'INITIALISE_STATE' as const,
+        payload: {
+          boostedValues: [{ displayValue: 'Warm Colors' }],
+          excludedValues: [],
+          nonBoostedExcludedValues: [
+            { displayValue: 'Red' },
+            { displayValue: 'Blue' },
+          ],
+          merged: [
+            {
+              displayValue: 'Warm Colors',
+              mergedValues: ['Red', 'Blue'],
+            },
+          ],
+        },
+      };
+
+      const result = globalAttributesPageReducer(state, action);
+
+      expect(result.boostedRows).toEqual([
+        {
+          displayName: 'Warm Colors',
+          attributes: ['Red', 'Blue'],
+          isMergeGroup: true,
+          isChecked: false,
+          order: 1,
+        },
+      ]);
+      expect(result.nonBoostedExcludedRows).toEqual([]);
+    });
+
     it('should keep a row unmerged when a merge entry only matches by displayValue', () => {
       const state: GlobalAttributesPageState = {
         ...mockInitialState,

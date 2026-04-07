@@ -133,6 +133,50 @@ describe('useGlobalFacetAttributesEditModal', () => {
     expect(mockCheckMergeNameUnique).not.toHaveBeenCalled();
   });
 
+  it('handleEditModalSave surfaces API error from checkMergeNameUnique and resets awaiting state', async () => {
+    mockCheckMergeNameUnique.mockResolvedValue({
+      isUniqueValue: false,
+      error: 'API unavailable',
+    });
+
+    const state: GlobalAttributesPageState = {
+      ...baseState,
+      boostedRows: [
+        {
+          displayName: 'A',
+          attributes: ['A'],
+          isMergeGroup: false,
+          isChecked: true,
+          order: 1,
+        },
+      ],
+    };
+
+    const { result } = renderHook(() =>
+      useGlobalFacetAttributesEditModal({
+        facet: mockFacet,
+        displayName: 'dn',
+        dispatch: mockDispatch,
+        globalAttributesLocalState: state,
+        setIsAwaitingUpdate: mockSetIsAwaitingUpdate,
+      })
+    );
+
+    await act(async () => {
+      await result.current.handleEditModalSave('candidate');
+    });
+
+    expect(result.current.editModalError).toBe('API unavailable');
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_ERROR',
+      payload: { displayName: 'dn', message: 'API unavailable' },
+    });
+    expect(mockSetIsAwaitingUpdate).toHaveBeenCalledWith(false);
+    expect(mockDispatch).not.toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'CREATE_MERGE_GROUP' })
+    );
+  });
+
   it('handleEditModalSave handles non-unique response from remote check', async () => {
     mockCheckMergeNameUnique.mockResolvedValue({ isUniqueValue: false });
 

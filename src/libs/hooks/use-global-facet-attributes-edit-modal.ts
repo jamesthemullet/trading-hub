@@ -87,24 +87,33 @@ export const useGlobalFacetAttributesEditModal = ({
       return;
     }
 
-    const { isUniqueValue } = await checkMergeNameUnique({
-      facetId: facet.id,
-      searchQuery: trimmedNewValue,
-      countryCode: countryCode ?? ('UK_IE' as MerchandisingCountryCode),
-      exceptions: selectedRows
-        .flatMap((row) => row.attributes)
-        .filter((val) => !demergedValues.includes(val)),
-      localAttributeValues: [
-        ...globalAttributesLocalState.boostedRows.map((row) => row.displayName),
-        ...globalAttributesLocalState.excludedRows.map(
-          (row) => row.displayName
-        ),
-        ...globalAttributesLocalState.nonBoostedExcludedRows.map(
-          (row) => row.displayName
-        ),
-        ...demergedValues,
-      ],
-    });
+    const { isUniqueValue, error: uniqueCheckError } =
+      await checkMergeNameUnique({
+        facetId: facet.id,
+        searchQuery: trimmedNewValue,
+        countryCode: countryCode ?? ('UK_IE' as MerchandisingCountryCode),
+        exceptions: selectedRows
+          .flatMap((row) => row.attributes)
+          .filter((val) => !demergedValues.includes(val)),
+        localAttributeValues: [
+          ...globalAttributesLocalState.boostedRows.map(
+            (row) => row.displayName
+          ),
+          ...globalAttributesLocalState.excludedRows.map(
+            (row) => row.displayName
+          ),
+          ...globalAttributesLocalState.nonBoostedExcludedRows.map(
+            (row) => row.displayName
+          ),
+          ...demergedValues,
+        ],
+      });
+
+    if (uniqueCheckError) {
+      handleEditModalError(uniqueCheckError);
+      setIsAwaitingUpdate(false);
+      return;
+    }
 
     if (!isUniqueValue) {
       handleEditModalError(`${trimmedNewValue} is not a unique value`);

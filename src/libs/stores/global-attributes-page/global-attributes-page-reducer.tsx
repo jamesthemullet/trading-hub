@@ -311,7 +311,8 @@ export const globalAttributesPageReducer = (
       const formatRow = (row: { displayValue: string }): FormattedRow => {
         const match = merged.find((merge) =>
           merge.mergedValues
-            ? merge.mergedValues.includes(row.displayValue)
+            ? merge.mergedValues.includes(row.displayValue) ||
+              merge.displayValue === row.displayValue
             : merge.displayValue === row.displayValue
         );
 
