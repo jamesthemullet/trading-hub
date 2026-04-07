@@ -54,11 +54,11 @@ const nextConfig = {
           key: 'Content-Security-Policy',
           value: [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cloud.umami.is https://www.clarity.ms https://*.dynatrace.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cloud.umami.is https://*.clarity.ms https://*.dynatrace.com",
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: https://asset1.cxnmarksandspencer.com https://static.marksandspencer.com",
             "font-src 'self' https://static.marksandspencer.com",
-            "connect-src 'self' https://*.marksandspencer.com https://*.dynatrace.com https://cloud.umami.is https://www.clarity.ms",
+            "connect-src 'self' https://*.marksandspencer.com https://*.dynatrace.com https://cloud.umami.is https://api-gateway.umami.dev https://*.clarity.ms",
             "object-src 'none'",
             "frame-src 'none'",
             "worker-src 'self'",
