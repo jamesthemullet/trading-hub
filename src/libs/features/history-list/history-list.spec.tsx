@@ -79,14 +79,51 @@ describe('HistoryList', () => {
     );
 
     const historyLinks = screen.getAllByText('View version');
-    expect(historyLinks[0].closest('a')).toHaveAttribute(
-      'href',
-      '/category/rulesets/edit/ruleset-1?history=true&historyId=change-2'
+
+    const firstHref = historyLinks[0].closest('a')?.getAttribute('href') ?? '';
+    const firstUrl = new URL(firstHref, 'http://localhost');
+    expect(firstUrl.pathname).toBe('/category/rulesets/edit/ruleset-1');
+    expect(firstUrl.searchParams.get('history')).toBe('true');
+    expect(firstUrl.searchParams.get('historyId')).toBe('change-2');
+    expect(firstUrl.searchParams.get('currentPage')).toBe('1');
+    expect(firstUrl.searchParams.get('currentPageSize')).toBe('20');
+
+    const secondHref = historyLinks[1].closest('a')?.getAttribute('href') ?? '';
+    const secondUrl = new URL(secondHref, 'http://localhost');
+    expect(secondUrl.pathname).toBe('/category/rulesets/edit/ruleset-1');
+    expect(secondUrl.searchParams.get('history')).toBe('true');
+    expect(secondUrl.searchParams.get('historyId')).toBe('change-3');
+    expect(secondUrl.searchParams.get('currentPage')).toBe('1');
+    expect(secondUrl.searchParams.get('currentPageSize')).toBe('20');
+  });
+
+  it('should propagate non-default pagination values into historical version links', () => {
+    render(
+      <HistoryList
+        items={mockItems}
+        ruleType={RuleType.CategoryRanking}
+        currentPage={3}
+        currentPageSize={50}
+      />
     );
-    expect(historyLinks[1].closest('a')).toHaveAttribute(
-      'href',
-      '/category/rulesets/edit/ruleset-1?history=true&historyId=change-3'
-    );
+
+    const historyLinks = screen.getAllByText('View version');
+
+    const firstHref = historyLinks[0].closest('a')?.getAttribute('href') ?? '';
+    const firstUrl = new URL(firstHref, 'http://localhost');
+    expect(firstUrl.pathname).toBe('/category/rulesets/edit/ruleset-1');
+    expect(firstUrl.searchParams.get('history')).toBe('true');
+    expect(firstUrl.searchParams.get('historyId')).toBe('change-2');
+    expect(firstUrl.searchParams.get('currentPage')).toBe('3');
+    expect(firstUrl.searchParams.get('currentPageSize')).toBe('50');
+
+    const secondHref = historyLinks[1].closest('a')?.getAttribute('href') ?? '';
+    const secondUrl = new URL(secondHref, 'http://localhost');
+    expect(secondUrl.pathname).toBe('/category/rulesets/edit/ruleset-1');
+    expect(secondUrl.searchParams.get('history')).toBe('true');
+    expect(secondUrl.searchParams.get('historyId')).toBe('change-3');
+    expect(secondUrl.searchParams.get('currentPage')).toBe('3');
+    expect(secondUrl.searchParams.get('currentPageSize')).toBe('50');
   });
 
   it('should show paginated row numbers and no current version on later pages', () => {

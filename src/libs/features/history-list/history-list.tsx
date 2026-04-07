@@ -31,6 +31,8 @@ type HistoryRowProps = {
   rowNumber: number;
   absoluteIndex: number;
   ruleType: RuleType;
+  currentPage: number;
+  currentPageSize: number;
 };
 
 const HistoryRow = ({
@@ -38,6 +40,8 @@ const HistoryRow = ({
   rowNumber,
   absoluteIndex,
   ruleType,
+  currentPage,
+  currentPageSize,
 }: HistoryRowProps) => {
   const date = new Date(item.date);
   const formattedDate = date.toLocaleDateString('en-US', DATE_FORMAT_OPTIONS);
@@ -46,7 +50,15 @@ const HistoryRow = ({
   const linkText = isLatest ? 'Current version' : 'View version';
   const href = isLatest
     ? getRulesetEditRoute(ruleType, item.rulesetId)
-    : `${getRulesetEditRoute(ruleType, item.rulesetId)}?history=true&historyId=${item.id}`;
+    : {
+        pathname: getRulesetEditRoute(ruleType, item.rulesetId),
+        query: {
+          history: 'true',
+          historyId: item.id,
+          currentPage,
+          currentPageSize,
+        },
+      };
 
   return (
     <li className={styles.historyRow} key={item.id}>
@@ -67,6 +79,8 @@ type HistoryListProps = {
   ruleType: RuleType;
   totalItems?: number;
   startIndex?: number;
+  currentPage?: number;
+  currentPageSize?: number;
 };
 
 export const HistoryList = ({
@@ -74,6 +88,8 @@ export const HistoryList = ({
   ruleType,
   totalItems = items.length,
   startIndex = 0,
+  currentPage = 1,
+  currentPageSize = 20,
 }: HistoryListProps) => {
   return (
     <ul className={styles.historyList}>
@@ -91,6 +107,8 @@ export const HistoryList = ({
           rowNumber={totalItems - startIndex - index}
           absoluteIndex={startIndex + index}
           ruleType={ruleType}
+          currentPage={currentPage}
+          currentPageSize={currentPageSize}
         />
       ))}
     </ul>

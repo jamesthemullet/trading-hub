@@ -111,6 +111,8 @@ export const HistoryPage = ({
             ruleType={ruleType}
             totalItems={normalisedTotalItems}
             startIndex={startIndex}
+            currentPage={currentPage}
+            currentPageSize={currentPageSize}
           />
         )}
       </section>
