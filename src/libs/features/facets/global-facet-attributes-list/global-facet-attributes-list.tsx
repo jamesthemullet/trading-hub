@@ -22,6 +22,10 @@ import type {
 
 import { DndContext } from '@dnd-kit/core';
 import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
@@ -250,12 +254,16 @@ export const GlobalFacetAttributesList = ({
         ))}
       </div>
 
-      <DndContext sensors={sensors} onDragEnd={handleBoostedDragEnd}>
+      <DndContext
+        sensors={sensors}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+        onDragEnd={handleBoostedDragEnd}
+      >
         <SortableContext
           items={boostedVisibleIds}
           strategy={verticalListSortingStrategy}
         >
-          {boostedValuesRows}
+          <div>{boostedValuesRows}</div>
         </SortableContext>
       </DndContext>
 

@@ -22,6 +22,10 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -292,12 +296,16 @@ export const SearchAndCategoryFacetAttributesList = ({
         ))}
       </SearchCategoryFacetAttributeValuesTableRow>
 
-      <DndContext sensors={sensors} onDragEnd={handleBoostedDragEnd}>
+      <DndContext
+        sensors={sensors}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+        onDragEnd={handleBoostedDragEnd}
+      >
         <SortableContext
           items={boostedVisibleIds}
           strategy={verticalListSortingStrategy}
         >
-          {boostedValuesRows}
+          <div>{boostedValuesRows}</div>
         </SortableContext>
       </DndContext>
 

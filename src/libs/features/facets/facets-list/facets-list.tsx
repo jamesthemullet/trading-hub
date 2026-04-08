@@ -34,6 +34,10 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -570,38 +574,46 @@ export const FacetsList = ({
           ))}
         </div>
 
-        <DndContext sensors={sensors} onDragEnd={handleIncludedDragEnd}>
+        <DndContext
+          sensors={sensors}
+          modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+          onDragEnd={handleIncludedDragEnd}
+        >
           <SortableContext
             items={filteredIncludedFacetIds}
             strategy={verticalListSortingStrategy}
           >
-            {boostedFacets.map(
-              (facet, index) =>
-                facet && (
-                  <FacetRow
-                    key={facet.id}
-                    {...facet}
-                    displayType="included"
-                    isDragDisabled={!writeEnabled || boostedFacets.length <= 1}
-                    index={index}
-                    includedFacetOrder={includedFacetOrder}
-                    localOrders={localOrders}
-                    handleInputChange={handleInputChange}
-                    handleInputBlur={handleInputBlur}
-                    handleInputKeyDown={handleInputKeyDown}
-                    handleFacetOrderInputRef={handleFacetOrderInputRef}
-                    writeEnabled={writeEnabled}
-                    selectedCategories={selectedCategories}
-                    selectedSearchTerms={selectedSearchTerms}
-                    facetType={facetType}
-                    countryCode={ruleset.countryCode || 'UK_IE'}
-                    rulesetId={rulesetId}
-                    onDispatch={dispatch}
-                    isNewRuleset={isNewRuleset}
-                    currentRuleset={ruleset}
-                  />
-                )
-            )}
+            <div>
+              {boostedFacets.map(
+                (facet, index) =>
+                  facet && (
+                    <FacetRow
+                      key={facet.id}
+                      {...facet}
+                      displayType="included"
+                      isDragDisabled={
+                        !writeEnabled || boostedFacets.length <= 1
+                      }
+                      index={index}
+                      includedFacetOrder={includedFacetOrder}
+                      localOrders={localOrders}
+                      handleInputChange={handleInputChange}
+                      handleInputBlur={handleInputBlur}
+                      handleInputKeyDown={handleInputKeyDown}
+                      handleFacetOrderInputRef={handleFacetOrderInputRef}
+                      writeEnabled={writeEnabled}
+                      selectedCategories={selectedCategories}
+                      selectedSearchTerms={selectedSearchTerms}
+                      facetType={facetType}
+                      countryCode={ruleset.countryCode || 'UK_IE'}
+                      rulesetId={rulesetId}
+                      onDispatch={dispatch}
+                      isNewRuleset={isNewRuleset}
+                      currentRuleset={ruleset}
+                    />
+                  )
+              )}
+            </div>
           </SortableContext>
         </DndContext>
 

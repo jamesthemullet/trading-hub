@@ -38,6 +38,10 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -425,12 +429,16 @@ export const FacetsPanel = ({
           ))}
         </div>
 
-        <DndContext sensors={sensors} onDragEnd={handleIncludedDragEnd}>
+        <DndContext
+          sensors={sensors}
+          modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+          onDragEnd={handleIncludedDragEnd}
+        >
           <SortableContext
             items={visibleIncludedFacetIds}
             strategy={verticalListSortingStrategy}
           >
-            {includedFacets.map(renderFacetRow)}
+            <div>{includedFacets.map(renderFacetRow)}</div>
           </SortableContext>
         </DndContext>
 
