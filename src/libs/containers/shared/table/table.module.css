@@ -3,6 +3,11 @@
   margin-bottom: var(--mns-spacing-1);
 }
 
+.dataTable {
+  --row-height: 83px;
+  min-height: calc(11 * var(--row-height)); /* 10 rows + 1 header row */
+}
+
 .tableRow {
   display: grid;
   grid-template-columns: minmax(180px, 2fr) 200px 350px 180px;
@@ -172,7 +177,7 @@
 .row {
   display: grid;
   grid-template-columns: minmax(140px, 2fr) 90px 90px 120px 150px 130px;
-  min-height: 83px;
+  min-height: var(--row-height);
   border-bottom: 1px solid var(--color-state-disabled-on-disabled-on-dark);
   align-items: center;
   padding-left: var(--mns-spacing-2);

@@ -142,7 +142,10 @@ export const DataTable = ({
 
   return (
     <>
-      <div data-testid={isLoading ? 'datatable-skeleton' : 'datatable'}>
+      <div
+        data-testid={isLoading ? 'datatable-skeleton' : 'datatable'}
+        className={styles.dataTable}
+      >
         <div
           className={styles.row}
           data-num-columns={headings.length}

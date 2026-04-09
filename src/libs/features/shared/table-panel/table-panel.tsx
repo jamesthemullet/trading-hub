@@ -70,6 +70,7 @@ export const TablePanel = <
     MerchandisingCountryCode | undefined
   >();
   const [filterRules, setFilterRules] = useState<RuleTypeFilter | undefined>();
+
   const { clearDraft } = useDraftRuleset();
 
   const [searchInputValue, setSearchInputValue] = useState<string>(

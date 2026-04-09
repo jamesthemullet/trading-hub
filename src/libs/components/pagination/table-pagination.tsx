@@ -30,13 +30,12 @@ export const TablePagination = ({
             <Skeleton
               height={40}
               width={84}
-              mb={24}
               data-testid="table-pagination-skeleton"
             />
           </div>
-          <Skeleton height={40} width={173} mb={24} aria-busy="true" />
-          <div className={`${styles.rowsPerPageContainer} `}>
-            <Skeleton height={40} width={235} mb={24} aria-busy="true" />
+          <Skeleton height={40} width={173} aria-busy="true" />
+          <div className={styles.rowsPerPageContainer}>
+            <Skeleton height={40} width={235} aria-busy="true" />
           </div>
         </>
       ) : (
