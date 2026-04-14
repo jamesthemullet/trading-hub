@@ -7,6 +7,7 @@ import type { MerchandisingCountryCode } from '@/libs/api';
 import {
   Button,
   CombinedDropdown,
+  DropdownVariant,
   ErrorMessage,
   Search,
   TablePagination,
@@ -140,7 +141,7 @@ export const TablePanel = <
       <div className={styles.toolsContainer}>
         <Search value={searchInputValue} onChange={handleSearchInputChange} />
         <CombinedDropdown
-          variant="countryFilter"
+          variant={DropdownVariant.CountryFilter}
           onChange={(country) =>
             setCountryCode(country as MerchandisingCountryCode)
           }
@@ -149,7 +150,7 @@ export const TablePanel = <
 
         {ruleType !== RuleType.Redirect && (
           <CombinedDropdown
-            variant="ruleTypeFilter"
+            variant={DropdownVariant.RuleTypeFilter}
             onRuleTypeChange={setFilterRules}
             ariaLabel="Filter by rule type"
           />

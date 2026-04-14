@@ -2,7 +2,7 @@ import { Skeleton } from '@mantine/core';
 
 import type { MerchandisingPagination as PaginationType } from '@/libs/api/generated/open-api';
 
-import { CombinedDropdown } from '../dropdown/dropdown';
+import { CombinedDropdown, DropdownVariant } from '../dropdown/dropdown';
 import { Typography } from '../typography/typography';
 import { Pagination } from './pagination';
 import styles from './pagination.module.css';
@@ -57,7 +57,7 @@ export const TablePagination = ({
           <div className={`${styles.rowsPerPageContainer}`}>
             <Typography variant="bodySmall">Rows per page</Typography>
             <CombinedDropdown
-              variant="pageSize"
+              variant={DropdownVariant.PageSize}
               label={`${currentPageSize}`}
               width={125}
               ariaLabel="Select rows per page"

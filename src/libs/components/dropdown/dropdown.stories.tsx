@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 
-import { CombinedDropdown } from './dropdown';
+import { CombinedDropdown, DropdownVariant } from './dropdown';
 
 const meta: Meta<typeof CombinedDropdown> = {
   title: 'Components/Dropdowns/CombinedDropdown',
@@ -12,7 +12,12 @@ const meta: Meta<typeof CombinedDropdown> = {
   argTypes: {
     variant: {
       control: 'radio',
-      options: ['generic', 'countryFilter', 'countrySelector', 'facetOrder'],
+      options: [
+        DropdownVariant.Generic,
+        DropdownVariant.CountryFilter,
+        DropdownVariant.CountrySelector,
+        DropdownVariant.FacetOrder,
+      ],
       description: 'Select the dropdown variant',
     },
     writeEnabled: {
@@ -68,7 +73,7 @@ type Story = StoryObj<typeof CombinedDropdown>;
 
 const GenericTemplate = (args: Story['args']) => {
   const [content, setContent] = useState('Some custom dropdown content');
-  const { variant = 'generic', ...rest } = args ?? {};
+  const { variant = DropdownVariant.Generic, ...rest } = args ?? {};
   return (
     <CombinedDropdown variant={variant} {...rest}>
       <div style={{ padding: '1rem', width: '200px' }}>
@@ -85,7 +90,7 @@ const GenericTemplate = (args: Story['args']) => {
 
 export const Generic: Story = {
   args: {
-    variant: 'generic',
+    variant: DropdownVariant.Generic,
     writeEnabled: true,
     label: 'Open Generic Dropdown',
   },
@@ -94,7 +99,7 @@ export const Generic: Story = {
 
 export const CountryFilter: Story = {
   args: {
-    variant: 'countryFilter',
+    variant: DropdownVariant.CountryFilter,
     writeEnabled: true,
   },
   render: (args) => <CombinedDropdown {...args} />,
@@ -102,7 +107,7 @@ export const CountryFilter: Story = {
 
 export const CountrySelector: Story = {
   args: {
-    variant: 'countrySelector',
+    variant: DropdownVariant.CountrySelector,
     writeEnabled: true,
     selectedCountryCode: 'UK_IE',
   },
@@ -119,7 +124,7 @@ export const CountrySelector: Story = {
 
 export const FacetOrder: Story = {
   args: {
-    variant: 'facetOrder',
+    variant: DropdownVariant.FacetOrder,
     status: 'included',
     attribute: 'Example Attribute',
     hasAlgoControl: true,
@@ -130,7 +135,7 @@ export const FacetOrder: Story = {
 
 export const FacetOrderReadOnly: Story = {
   args: {
-    variant: 'facetOrder',
+    variant: DropdownVariant.FacetOrder,
     status: 'included',
     hasAlgoControl: false,
     writeEnabled: false,

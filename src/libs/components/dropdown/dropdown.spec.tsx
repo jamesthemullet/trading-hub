@@ -1,10 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { CombinedDropdown, getSelectedRuleTypeFilterOption } from './dropdown';
+import {
+  CombinedDropdown,
+  DropdownVariant,
+  getSelectedRuleTypeFilterOption,
+} from './dropdown';
 
 const defaultProps = {
-  variant: 'generic' as const,
+  variant: DropdownVariant.Generic,
   isOpen: false,
   onOpen: jest.fn(),
   label: 'CombinedDropdown',
@@ -227,7 +231,7 @@ describe('CombinedDropdown', () => {
     it('should render the dropdown', () => {
       render(
         <CombinedDropdown
-          variant="facetOrder"
+          variant={DropdownVariant.FacetOrder}
           writeEnabled
           onChange={jest.fn()}
         />
@@ -244,7 +248,7 @@ describe('CombinedDropdown', () => {
     it('should only show the status in read only mode', () => {
       render(
         <CombinedDropdown
-          variant="facetOrder"
+          variant={DropdownVariant.FacetOrder}
           writeEnabled={false}
           onChange={jest.fn()}
           status="algoControl"
@@ -259,7 +263,7 @@ describe('CombinedDropdown', () => {
       const user = userEvent.setup();
       render(
         <CombinedDropdown
-          variant="facetOrder"
+          variant={DropdownVariant.FacetOrder}
           writeEnabled
           onChange={jest.fn()}
           attribute="color"
@@ -281,7 +285,7 @@ describe('CombinedDropdown', () => {
       const user = userEvent.setup();
       render(
         <CombinedDropdown
-          variant="facetOrder"
+          variant={DropdownVariant.FacetOrder}
           writeEnabled
           onChange={jest.fn()}
           hasAlgoControl
@@ -304,7 +308,7 @@ describe('CombinedDropdown', () => {
       const user = userEvent.setup();
       render(
         <CombinedDropdown
-          variant="facetOrder"
+          variant={DropdownVariant.FacetOrder}
           writeEnabled
           onChange={jest.fn()}
         />
@@ -331,7 +335,7 @@ describe('CombinedDropdown', () => {
       const user = userEvent.setup();
       render(
         <CombinedDropdown
-          variant="facetOrder"
+          variant={DropdownVariant.FacetOrder}
           writeEnabled
           onChange={jest.fn()}
           hasAlgoControl
@@ -364,7 +368,7 @@ describe('CombinedDropdown', () => {
 
       render(
         <CombinedDropdown
-          variant="pageSize"
+          variant={DropdownVariant.PageSize}
           label="10"
           pageSizes={[10, 20]}
           currentPage={2}
@@ -377,7 +381,7 @@ describe('CombinedDropdown', () => {
       await user.click(
         screen.getByRole('button', { name: 'pageSize dropdown' })
       );
-      await user.click(screen.getByRole('option', { name: '10' }));
+      await user.click(screen.getByRole('menuitemradio', { name: '10' }));
 
       expect(onPageSizeChange).toHaveBeenCalledWith(2, 10);
     });
@@ -388,7 +392,7 @@ describe('CombinedDropdown', () => {
 
       render(
         <CombinedDropdown
-          variant="pageSize"
+          variant={DropdownVariant.PageSize}
           label="50"
           pageSizes={[50]}
           currentPage={2}
@@ -400,7 +404,7 @@ describe('CombinedDropdown', () => {
       await user.click(
         screen.getByRole('button', { name: 'pageSize dropdown' })
       );
-      await user.click(screen.getByRole('option', { name: '50' }));
+      await user.click(screen.getByRole('menuitemradio', { name: '50' }));
 
       expect(onPageSizeChange).toHaveBeenCalledWith(1, 50);
     });
@@ -411,7 +415,7 @@ describe('CombinedDropdown', () => {
 
       render(
         <CombinedDropdown
-          variant="pageSize"
+          variant={DropdownVariant.PageSize}
           label="10"
           pageSizes={[10]}
           currentPageSize={10}
@@ -423,7 +427,7 @@ describe('CombinedDropdown', () => {
       await user.click(
         screen.getByRole('button', { name: 'pageSize dropdown' })
       );
-      await user.click(screen.getByRole('option', { name: '10' }));
+      await user.click(screen.getByRole('menuitemradio', { name: '10' }));
 
       expect(onPageSizeChange).not.toHaveBeenCalled();
     });
@@ -436,7 +440,7 @@ describe('CombinedDropdown', () => {
 
       render(
         <CombinedDropdown
-          variant="ruleTypeFilter"
+          variant={DropdownVariant.RuleTypeFilter}
           onRuleTypeChange={onRuleTypeChange}
           ariaLabel="Filter by rule type"
         />
@@ -456,7 +460,7 @@ describe('CombinedDropdown', () => {
 
       render(
         <CombinedDropdown
-          variant="ruleTypeFilter"
+          variant={DropdownVariant.RuleTypeFilter}
           onRuleTypeChange={onRuleTypeChange}
           ariaLabel="Filter by rule type"
         />
@@ -476,7 +480,7 @@ describe('CombinedDropdown', () => {
 
       render(
         <CombinedDropdown
-          variant="ruleTypeFilter"
+          variant={DropdownVariant.RuleTypeFilter}
           onRuleTypeChange={onRuleTypeChange}
           ariaLabel="Filter by rule type"
         />
@@ -497,7 +501,7 @@ describe('CombinedDropdown', () => {
     it('should render the dropdown', () => {
       render(
         <CombinedDropdown
-          variant="countryFilter"
+          variant={DropdownVariant.CountryFilter}
           onChange={jest.fn()}
           ariaLabel="Select country"
         />
@@ -516,7 +520,7 @@ describe('CombinedDropdown', () => {
       const user = userEvent.setup();
       render(
         <CombinedDropdown
-          variant="countryFilter"
+          variant={DropdownVariant.CountryFilter}
           onChange={jest.fn()}
           ariaLabel="Select country"
         />
@@ -539,7 +543,7 @@ describe('CombinedDropdown', () => {
       const onChange = jest.fn();
       render(
         <CombinedDropdown
-          variant="countryFilter"
+          variant={DropdownVariant.CountryFilter}
           onChange={onChange}
           ariaLabel="Select country"
         />
@@ -563,7 +567,7 @@ describe('CombinedDropdown', () => {
     it('should render the dropdown', () => {
       render(
         <CombinedDropdown
-          variant="countrySelector"
+          variant={DropdownVariant.CountrySelector}
           selectedCountryCode="UK_IE"
           writeEnabled
           onChange={jest.fn()}
@@ -582,7 +586,7 @@ describe('CombinedDropdown', () => {
       const user = userEvent.setup();
       render(
         <CombinedDropdown
-          variant="countrySelector"
+          variant={DropdownVariant.CountrySelector}
           writeEnabled
           onChange={jest.fn()}
           ariaLabel="Select country"
@@ -607,7 +611,7 @@ describe('CombinedDropdown', () => {
       const onChange = jest.fn();
       render(
         <CombinedDropdown
-          variant="countrySelector"
+          variant={DropdownVariant.CountrySelector}
           writeEnabled
           onChange={onChange}
           ariaLabel="Select country"

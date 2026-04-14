@@ -5,7 +5,12 @@ import type {
   MerchandisingKeywordRedirect,
   MerchandisingReturnedKeywordRedirect,
 } from '@/libs/api';
-import { CombinedDropdown, RadioButtons, Typography } from '@/libs/components';
+import {
+  CombinedDropdown,
+  DropdownVariant,
+  RadioButtons,
+  Typography,
+} from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
@@ -152,7 +157,7 @@ export const Redirect = ({
               Influence
             </Typography>
             <CombinedDropdown
-              variant="countrySelector"
+              variant={DropdownVariant.CountrySelector}
               onChange={(country) => {
                 onUpdate('countryCode', country as MerchandisingCountryCode);
                 track({ event: `Change redirect influence to ${country}` });

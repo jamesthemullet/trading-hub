@@ -13,6 +13,7 @@ import type {
 import {
   Button,
   CombinedDropdown,
+  DropdownVariant,
   ErrorMessage,
   Loader,
   Tabs,
@@ -387,7 +388,7 @@ export const Ruleset = ({
                 Influence
               </Typography>
               <CombinedDropdown
-                variant="countrySelector"
+                variant={DropdownVariant.CountrySelector}
                 onChange={(country) => {
                   dispatch({
                     type: 'changeCountry',
@@ -577,7 +578,7 @@ export const Ruleset = ({
                         ruleset.countryCode === 'UK_IE' && (
                           <div className={styles.countryPreviewWrapper}>
                             <CombinedDropdown
-                              variant="generic"
+                              variant={DropdownVariant.Generic}
                               label={`${selectedPreviewCountryCode} view`}
                               icon={`icon-${selectedPreviewCountryCode.toLowerCase()}-flag`}
                               ariaLabel="Select country view for visual editor"

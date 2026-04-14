@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
@@ -11,17 +11,22 @@ import Image from 'next/image';
 
 import { Button } from '../button/button';
 import { Typography } from '../typography/typography';
+import {
+  COUNTRY_FILTER_OPTIONS,
+  COUNTRY_SELECTOR_OPTIONS,
+  DropdownVariant,
+  RULE_TYPE_FILTER_OPTIONS,
+  VARIANT_TEST_IDS,
+  VARIANT_WIDTHS,
+} from './dropdown.constants';
 import styles from './dropdown.module.css';
 
-type ClosingType = 'icon' | 'button' | 'esc' | 'outsideClick' | 'tab';
+export {
+  DropdownVariant,
+  getSelectedRuleTypeFilterOption,
+} from './dropdown.constants';
 
-type DropdownVariant =
-  | 'generic'
-  | 'countryFilter'
-  | 'countrySelector'
-  | 'facetOrder'
-  | 'pageSize'
-  | 'ruleTypeFilter';
+type ClosingType = 'icon' | 'button' | 'esc' | 'outsideClick' | 'tab';
 
 type GenericDropdownProps = {
   label?: string;
@@ -57,18 +62,6 @@ type RuleTypeFilterProps = {
   onRuleTypeChange?: (ruleType?: RuleTypeFilter) => void;
 };
 
-type RuleTypeFilterOption = {
-  index: number;
-  label: string;
-  selected: boolean;
-  value: RuleTypeFilter | undefined;
-  ariaLabel: string;
-};
-
-export const getSelectedRuleTypeFilterOption = (
-  options: RuleTypeFilterOption[]
-) => options.find((option) => option.selected) || options[0];
-
 type CombinedDropdownProps = {
   variant: DropdownVariant;
   width?: number;
@@ -78,6 +71,37 @@ type CombinedDropdownProps = {
   FacetOrderProps &
   PageSizeProps &
   RuleTypeFilterProps;
+
+type DropdownOptionButtonProps = {
+  ariaLabel?: string;
+  onClick: () => void;
+  role?: string;
+  ariaChecked?: boolean;
+  ariaSelected?: boolean;
+  children: ReactNode;
+};
+
+const DropdownOptionButton = ({
+  ariaLabel,
+  onClick,
+  role = 'menuitemradio',
+  ariaChecked,
+  ariaSelected,
+  children,
+}: DropdownOptionButtonProps) => (
+  <Button
+    type="button"
+    className={styles.dropdownOption}
+    data-hover-grey
+    aria-label={ariaLabel}
+    onClick={onClick}
+    role={role}
+    aria-checked={ariaChecked}
+    aria-selected={ariaSelected}
+  >
+    {children}
+  </Button>
+);
 
 export const CombinedDropdown = ({
   variant,
@@ -137,176 +161,92 @@ export const CombinedDropdown = ({
     shouldEnableOutsideClick: isOpen,
   });
 
-  const [countryFilterOptions, setCountryFilterOptions] = useState([
-    {
-      index: 0,
-      label: 'All marksandspencer.com',
-      selected: true,
-      countryCodeSelected: undefined,
-      ariaLabel: 'select all marksandspencer.com',
-    },
-    {
-      index: 1,
-      label: 'UK only marksandspencer',
-      selected: false,
-      countryCodeSelected: 'UK' as MerchandisingCountryCode,
-      ariaLabel: 'select UK marksandspencer.com',
-    },
-    {
-      index: 2,
-      label: 'IE only marksandspencer',
-      selected: false,
-      countryCodeSelected: 'IE' as MerchandisingCountryCode,
-      ariaLabel: 'select IE marksandspencer.com',
-    },
-  ]);
+  const [selectedCountryFilterIndex, setSelectedCountryFilterIndex] =
+    useState(0);
+
   const handleCountryFilterSelect = (index: number) => {
-    const updated = countryFilterOptions.map((option) => {
-      if (option.index === index) {
-        onChange?.(option.countryCodeSelected);
-        return { ...option, selected: true };
-      }
-      return { ...option, selected: false };
-    });
+    setSelectedCountryFilterIndex(index);
+    onChange?.(COUNTRY_FILTER_OPTIONS[index].countryCode);
     track({
-      event: `Change datatable filter to ${countryFilterOptions[index].label}`,
+      event: `Change datatable filter to ${COUNTRY_FILTER_OPTIONS[index].label}`,
     });
-    setCountryFilterOptions(updated);
     closeDropdown();
   };
 
-  const [ruleTypeFilterOptions, setRuleTypeFilterOptions] = useState<
-    RuleTypeFilterOption[]
-  >([
-    {
-      index: 0,
-      label: 'All rule types',
-      selected: true,
-      value: undefined as RuleTypeFilter | undefined,
-      ariaLabel: 'show all rule types',
-    },
-    {
-      index: 1,
-      label: 'Ranking rules',
-      selected: false,
-      value: 'RANKING' as RuleTypeFilter,
-      ariaLabel: 'show rule types with ranking rules',
-    },
-    {
-      index: 2,
-      label: 'Facet rules',
-      selected: false,
-      value: 'FACET' as RuleTypeFilter,
-      ariaLabel: 'show rule types with facet rules',
-    },
-  ]);
+  const [selectedRuleTypeIndex, setSelectedRuleTypeIndex] = useState(0);
 
   const handleRuleTypeFilterSelect = (index: number) => {
-    const updated = ruleTypeFilterOptions.map((option) => {
-      if (option.index === index) {
-        onRuleTypeChange?.(option.value);
-        return { ...option, selected: true };
-      }
-      return { ...option, selected: false };
-    });
+    setSelectedRuleTypeIndex(index);
+    onRuleTypeChange?.(RULE_TYPE_FILTER_OPTIONS[index].value);
     track({
-      event: `Change rule type filter to ${ruleTypeFilterOptions[index].label}`,
+      event: `Change rule type filter to ${RULE_TYPE_FILTER_OPTIONS[index].label}`,
     });
-    setRuleTypeFilterOptions(updated);
     closeDropdown();
   };
-
-  const createCountrySelectDropdownOptions = (
-    index: number,
-    label: string,
-    selected: boolean,
-    countryCode: MerchandisingCountryCode
-  ) => ({
-    index,
-    label,
-    selected,
-    countryCode,
-    ariaLabel: `select ${label}`,
-    flagsToShow: countryCode === 'UK_IE' ? ['UK', 'IE'] : [countryCode],
-  });
-
-  const [countrySelectorOptions, setCountrySelectorOptions] = useState([
-    createCountrySelectDropdownOptions(0, 'UK/IE Market', true, 'UK_IE'),
-    createCountrySelectDropdownOptions(1, 'UK market only', false, 'UK'),
-    createCountrySelectDropdownOptions(2, 'IE market only', false, 'IE'),
-  ]);
-
-  useEffect(() => {
-    setCountrySelectorOptions((val) =>
-      val.map((option) => ({
-        ...option,
-        selected: option.countryCode === selectedCountryCode,
-      }))
-    );
-  }, [selectedCountryCode]);
 
   const handleCountrySelectorSelect = (index: number) => {
-    const updated = countrySelectorOptions.map((option) => {
-      if (option.index === index) {
-        onChange?.(option.countryCode);
-        return { ...option, selected: true };
-      }
-      return { ...option, selected: false };
-    });
-    setCountrySelectorOptions(updated);
+    onChange?.(COUNTRY_SELECTOR_OPTIONS[index].countryCode);
     closeDropdown();
   };
 
-  const [facetOptions, setFacetOptions] = useState([
+  const facetOptions = useMemo<
     {
-      index: 0,
-      label: 'Select an action',
-      name: 'select' as FacetDisplayType | 'select',
-      src: null,
-      selected: true,
-      ariaLabel: `select${attribute ? ` ${attribute}` : ''}`,
-    },
-    {
-      index: 1,
-      label: 'Include only',
-      name: 'included' as FacetDisplayType,
-      src: '/trading-hub/asset/icon-include.svg',
-      selected: false,
-      ariaLabel: `include${attribute ? ` ${attribute}` : ''}`,
-    },
-    {
-      index: 2,
-      label: 'Algo control',
-      name: 'algoControl' as FacetDisplayType,
-      src: hasAlgoControl ? '/trading-hub/asset/icon-attribute.svg' : null,
-      selected: false,
-      ariaLabel: `algoControl${attribute ? ` ${attribute}` : ''}`,
-    },
-    {
-      index: 3,
-      label: 'Exclude only',
-      name: 'excluded' as FacetDisplayType,
-      src: '/trading-hub/asset/icon-exclude.svg',
-      selected: false,
-      ariaLabel: `exclude${attribute ? ` ${attribute}` : ''}`,
-    },
-  ]);
+      index: number;
+      label: string;
+      name: FacetDisplayType | 'select';
+      src: string | null;
+      ariaLabel: string;
+    }[]
+  >(
+    () => [
+      {
+        index: 0,
+        label: 'Select an action',
+        name: 'select' as FacetDisplayType | 'select',
+        src: null,
+        ariaLabel: `select${attribute ? ` ${attribute}` : ''}`,
+      },
+      {
+        index: 1,
+        label: 'Include only',
+        name: 'included' as FacetDisplayType,
+        src: '/trading-hub/asset/icon-include.svg',
+        ariaLabel: `include${attribute ? ` ${attribute}` : ''}`,
+      },
+      {
+        index: 2,
+        label: 'Algo control',
+        name: 'algoControl' as FacetDisplayType,
+        src: hasAlgoControl ? '/trading-hub/asset/icon-attribute.svg' : null,
+        ariaLabel: `algoControl${attribute ? ` ${attribute}` : ''}`,
+      },
+      {
+        index: 3,
+        label: 'Exclude only',
+        name: 'excluded' as FacetDisplayType,
+        src: '/trading-hub/asset/icon-exclude.svg',
+        ariaLabel: `exclude${attribute ? ` ${attribute}` : ''}`,
+      },
+    ],
+    [hasAlgoControl, attribute]
+  );
+
+  const [selectedFacetName, setSelectedFacetName] = useState<
+    FacetDisplayType | 'select'
+  >('select');
 
   const handleFacetOrderSelect = (index: number) => {
-    const updated = facetOptions.map((option) => {
-      if (option.index === index && option.name !== 'select') {
-        onChange?.(option.name);
-        return { ...option, selected: true };
-      }
-      return { ...option, selected: false };
-    });
-    setFacetOptions(updated);
+    const option = facetOptions[index];
+    // istanbul ignore next - 'select' options have no src and are filtered out before being rendered as buttons
+    if (option.name === 'select') return;
+    onChange?.(option.name);
+    setSelectedFacetName(option.name);
     closeDropdown();
   };
 
-  const dropdownHeading = useMemo<ReactElement | string>(() => {
+  const dropdownHeading = useMemo(() => {
     switch (variant) {
-      case 'generic':
+      case DropdownVariant.Generic:
         return (
           <>
             {icon && (
@@ -321,10 +261,10 @@ export const CombinedDropdown = ({
             <Typography variant="bodySmall">{label}</Typography>
           </>
         );
-      case 'pageSize':
+      case DropdownVariant.PageSize:
         return label;
-      case 'countryFilter': {
-        const current = countryFilterOptions.find((o) => o.selected);
+      case DropdownVariant.CountryFilter: {
+        const current = COUNTRY_FILTER_OPTIONS[selectedCountryFilterIndex];
         // istanbul ignore next - there won't be a case where label is undefined but since we get current from find it has undefined type
         return (
           <Typography variant="bodySmall">
@@ -332,13 +272,15 @@ export const CombinedDropdown = ({
           </Typography>
         );
       }
-      case 'countrySelector': {
-        const current = countrySelectorOptions.find((o) => o.selected);
-        const label = current?.label || 'Select country';
+      case DropdownVariant.CountrySelector: {
+        const current =
+          COUNTRY_SELECTOR_OPTIONS.find(
+            (o) => o.countryCode === selectedCountryCode
+          ) || COUNTRY_SELECTOR_OPTIONS[0];
         return (
           <>
             <span className={styles.flagContainer}>
-              {current?.flagsToShow?.map((flag) => (
+              {current.flagsToShow.map((flag) => (
                 <Image
                   key={flag}
                   src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
@@ -348,14 +290,14 @@ export const CombinedDropdown = ({
                 />
               ))}
             </span>
-            <Typography variant="bodySmall">{label}</Typography>
+            <Typography variant="bodySmall">{current.label}</Typography>
           </>
         );
       }
-      case 'facetOrder': {
-        const selectedByStatus = facetOptions.find((o) => o.name === status);
+      case DropdownVariant.FacetOrder: {
         const current =
-          selectedByStatus || facetOptions.find((o) => o.selected);
+          facetOptions.find((o) => o.name === status) ||
+          facetOptions.find((o) => o.name === selectedFacetName);
         return (
           <>
             {current?.src && (
@@ -365,52 +307,45 @@ export const CombinedDropdown = ({
           </>
         );
       }
-      case 'ruleTypeFilter': {
-        const current = getSelectedRuleTypeFilterOption(ruleTypeFilterOptions);
+      case DropdownVariant.RuleTypeFilter: {
+        const current = RULE_TYPE_FILTER_OPTIONS[selectedRuleTypeIndex];
         return <Typography variant="bodySmall">{current.label}</Typography>;
       }
     }
   }, [
     variant,
-    countryFilterOptions,
-    countrySelectorOptions,
+    selectedCountryFilterIndex,
+    selectedCountryCode,
     facetOptions,
-    ruleTypeFilterOptions,
     status,
+    selectedFacetName,
+    selectedRuleTypeIndex,
     label,
     icon,
   ]);
 
   const renderDropdownContent = () => {
     switch (variant) {
-      case 'countryFilter':
-        return countryFilterOptions.map((option) => (
-          <Button
-            type="button"
-            className={styles.dropdownOption}
+      case DropdownVariant.CountryFilter:
+        return COUNTRY_FILTER_OPTIONS.map((option) => (
+          <DropdownOptionButton
             key={option.label}
-            data-hover-grey
-            aria-label={option.ariaLabel}
+            ariaLabel={option.ariaLabel}
             onClick={() => handleCountryFilterSelect(option.index)}
-            role="menuitemradio"
-            aria-checked={option.selected}
+            ariaChecked={option.index === selectedCountryFilterIndex}
           >
             <Typography as="span" variant="bodySmall">
               {option.label}
             </Typography>
-          </Button>
+          </DropdownOptionButton>
         ));
 
-      case 'countrySelector':
-        return countrySelectorOptions.map((option) => (
-          <Button
-            type="button"
-            className={styles.dropdownOption}
+      case DropdownVariant.CountrySelector:
+        return COUNTRY_SELECTOR_OPTIONS.map((option) => (
+          <DropdownOptionButton
             key={option.label}
-            data-hover-grey
             onClick={() => handleCountrySelectorSelect(option.index)}
-            role="menuitemradio"
-            aria-checked={option.selected}
+            ariaChecked={option.countryCode === selectedCountryCode}
           >
             {option.flagsToShow.map((flag) => (
               <Image
@@ -424,36 +359,29 @@ export const CombinedDropdown = ({
             <Typography as="span" variant="bodySmall">
               {option.label}
             </Typography>
-          </Button>
+          </DropdownOptionButton>
         ));
 
-      case 'facetOrder':
+      case DropdownVariant.FacetOrder:
         return facetOptions
           .filter((o) => o.src)
           .map((option) => (
-            <Button
-              type="button"
-              className={styles.dropdownOption}
+            <DropdownOptionButton
               key={option.label}
-              data-hover-grey
               onClick={() => handleFacetOrderSelect(option.index)}
-              role="menuitemradio"
-              aria-checked={option.selected}
+              ariaChecked={option.name === selectedFacetName}
             >
               <Image src={option.src as string} alt="" width={24} height={24} />
               <Typography as="span" variant="bodySmall">
                 {option.label}
               </Typography>
-            </Button>
+            </DropdownOptionButton>
           ));
 
-      case 'pageSize':
+      case DropdownVariant.PageSize:
         return pageSizes?.map((size) => (
-          <Button
-            type="button"
-            className={styles.dropdownOption}
+          <DropdownOptionButton
             key={size}
-            data-hover-grey
             onClick={() => {
               if (
                 currentPage &&
@@ -465,31 +393,26 @@ export const CombinedDropdown = ({
               }
               closeDropdown();
             }}
-            role="option"
-            aria-selected={currentPageSize === size}
+            ariaChecked={currentPageSize === size}
           >
             <Typography as="span" variant="bodySmall">
               {size}
             </Typography>
-          </Button>
+          </DropdownOptionButton>
         ));
 
-      case 'ruleTypeFilter':
-        return ruleTypeFilterOptions.map((option) => (
-          <Button
-            type="button"
-            className={styles.dropdownOption}
+      case DropdownVariant.RuleTypeFilter:
+        return RULE_TYPE_FILTER_OPTIONS.map((option) => (
+          <DropdownOptionButton
             key={option.label}
-            data-hover-grey
-            aria-label={option.ariaLabel}
+            ariaLabel={option.ariaLabel}
             onClick={() => handleRuleTypeFilterSelect(option.index)}
-            role="menuitemradio"
-            aria-checked={option.selected}
+            ariaChecked={option.index === selectedRuleTypeIndex}
           >
             <Typography as="span" variant="bodySmall">
               {option.label}
             </Typography>
-          </Button>
+          </DropdownOptionButton>
         ));
 
       default:
@@ -497,44 +420,20 @@ export const CombinedDropdown = ({
     }
   };
 
-  const dropdownWidth = useMemo(() => {
-    switch (variant) {
-      case 'countryFilter':
-        return 250;
-      case 'countrySelector':
-        return 220;
-      case 'facetOrder':
-        return 237;
-      case 'ruleTypeFilter':
-        return 170;
-      default:
-        return width;
-    }
-  }, [variant, width]);
+  const dropdownWidth = VARIANT_WIDTHS[variant] ?? width;
 
-  const testId = useMemo(() => {
-    switch (variant) {
-      case 'countryFilter':
-        return 'button to open country filter dropdown';
-      case 'countrySelector':
-        return 'button to open country selector dropdown';
-      case 'ruleTypeFilter':
-        return 'button to open rule type filter dropdown';
-      case 'facetOrder':
-        return `button to open facet order dropdown${
-          attribute ? ` for ${attribute}` : ''
-        }`;
-      default:
-        return 'generic-dropdown';
-    }
-  }, [variant, attribute]);
+  const testId =
+    variant === DropdownVariant.FacetOrder
+      ? `button to open facet order dropdown${attribute ? ` for ${attribute}` : ''}`
+      : (VARIANT_TEST_IDS[variant] ?? 'generic-dropdown');
 
-  const buttonId = useMemo(() => {
-    const raw = `dropdown-button-${variant}${attribute ? `-${attribute}` : ''}`;
-    return raw.replace(/[^a-zA-Z0-9-_]/g, '-');
-  }, [variant, attribute]);
+  const buttonId =
+    `dropdown-button-${variant}${attribute ? `-${attribute}` : ''}`.replace(
+      /[^a-zA-Z0-9-_]/g,
+      '-'
+    );
 
-  if (!writeEnabled && variant === 'facetOrder') {
+  if (!writeEnabled && variant === DropdownVariant.FacetOrder) {
     const current =
       facetOptions.find((o) => o.name === status) ||
       // facetOptions.find makes it possible to have undefined type so added a fallback which would not happen
@@ -563,12 +462,16 @@ export const CombinedDropdown = ({
       ref={wrapperRef}
       data-is-dropdown-open={isOpen}
       data-width={dropdownWidth}
-      data-has-border={variant === 'facetOrder'}
+      data-has-border={variant === DropdownVariant.FacetOrder}
       data-has-border-bottom={
-        variant !== 'facetOrder' && variant !== 'pageSize'
+        variant !== DropdownVariant.FacetOrder &&
+        variant !== DropdownVariant.PageSize
       }
       data-height={
-        variant === 'facetOrder' || variant === 'pageSize' ? 'default' : 'large'
+        variant === DropdownVariant.FacetOrder ||
+        variant === DropdownVariant.PageSize
+          ? 'default'
+          : 'large'
       }
     >
       <Button
@@ -586,7 +489,7 @@ export const CombinedDropdown = ({
 
         <div
           className={styles.arrowContainer}
-          data-border-left={variant === 'facetOrder'}
+          data-border-left={variant === DropdownVariant.FacetOrder}
         >
           <span className={styles.arrow} data-is-dropdown-open={isOpen} />
         </div>

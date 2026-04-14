@@ -6,7 +6,7 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import { CombinedDropdown } from '@/libs/components';
+import { CombinedDropdown, DropdownVariant } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import { GlobalFacetAttribute } from '@/libs/containers';
 import type { FacetDisplayType } from '@/libs/containers/facets/facet-row';
@@ -208,7 +208,7 @@ export const useGlobalFacetAttributesList = ({
 
               <div className={facetsPanelStyles.tableCol}>
                 <CombinedDropdown
-                  variant="facetOrder"
+                  variant={DropdownVariant.FacetOrder}
                   status={displayType}
                   attribute={displayName}
                   onChange={(status) =>

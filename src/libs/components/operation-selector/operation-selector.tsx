@@ -6,7 +6,7 @@ import { labels } from '@/libs/utils/ruleset-attributes';
 import Image from 'next/image';
 
 import { Button } from '../button/button';
-import { CombinedDropdown } from '../dropdown/dropdown';
+import { CombinedDropdown, DropdownVariant } from '../dropdown/dropdown';
 import dropdownStyles from '../dropdown/dropdown.module.css';
 import styles from './operation-selector.module.css';
 
@@ -28,7 +28,7 @@ export const OperationSelector = ({
   return (
     <div className={styles.dropdownWrapper}>
       <CombinedDropdown
-        variant="generic"
+        variant={DropdownVariant.Generic}
         label={label.text}
         icon={label.icon}
         width={150}

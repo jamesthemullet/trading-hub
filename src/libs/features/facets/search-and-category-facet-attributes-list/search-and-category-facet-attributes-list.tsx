@@ -1,7 +1,7 @@
 import { type ActionDispatch, useCallback, useMemo } from 'react';
 
 import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/open-api';
-import { CombinedDropdown } from '@/libs/components';
+import { CombinedDropdown, DropdownVariant } from '@/libs/components';
 import { DragHandleButton } from '@/libs/components/drag-handle-button/drag-handle-button';
 import { FacetOrderInput } from '@/libs/components/facet-order-input/facet-order-input';
 import { Typography } from '@/libs/components/typography/typography';
@@ -197,7 +197,7 @@ export const SearchAndCategoryFacetAttributesList = ({
 
             <div className={facetPanelStyles.tableCol}>
               <CombinedDropdown
-                variant="facetOrder"
+                variant={DropdownVariant.FacetOrder}
                 hasAlgoControl
                 onChange={(newDisplayType) => {
                   handleDisplayTypeChange(

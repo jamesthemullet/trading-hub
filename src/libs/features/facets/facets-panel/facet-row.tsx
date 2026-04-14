@@ -7,6 +7,7 @@ import type {
 import {
   Button,
   CombinedDropdown,
+  DropdownVariant,
   FacetOrderInput,
   Typography,
 } from '@/libs/components';
@@ -139,7 +140,7 @@ export const FacetRow = memo(
         <div className={styles.tableCol}>
           <div className={styles.orderColumn}>
             <CombinedDropdown
-              variant="facetOrder"
+              variant={DropdownVariant.FacetOrder}
               status={displayType}
               onChange={(newOrder) =>
                 onDisplayTypeChange(id, newOrder as FacetDisplayType)

@@ -10,6 +10,7 @@ import type {
 import {
   Button,
   CombinedDropdown,
+  DropdownVariant,
   Loader,
   Search,
   Typography,
@@ -183,7 +184,7 @@ export const Preview = ({
                 <div className={styles.previewTypeSelector}>
                   <Typography variant="bodySmall">Preview</Typography>
                   <CombinedDropdown
-                    variant="generic"
+                    variant={DropdownVariant.Generic}
                     width={220}
                     label={`${withRules ? 'with new rule change' : 'current state'}`}
                     ariaLabel="Preview type selector"

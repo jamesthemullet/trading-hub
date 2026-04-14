@@ -5,6 +5,7 @@ import type { MerchandisingRuleSet } from '@/libs/api';
 import {
   Button,
   CombinedDropdown,
+  DropdownVariant,
   ErrorMessage,
   Search,
   Typography,
@@ -429,7 +430,7 @@ export const FacetsList = ({
               Influence
             </Typography>
             <CombinedDropdown
-              variant="countrySelector"
+              variant={DropdownVariant.CountrySelector}
               onChange={(country) => {
                 dispatch({
                   type: 'changeCountry',
@@ -503,7 +504,7 @@ export const FacetsList = ({
                   Preview Country
                 </Typography>
                 <CombinedDropdown
-                  variant="generic"
+                  variant={DropdownVariant.Generic}
                   label={`${selectedPreviewCountryCode} view`}
                   width={155}
                   icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}

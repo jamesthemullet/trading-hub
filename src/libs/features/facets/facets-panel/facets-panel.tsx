@@ -13,7 +13,12 @@ import type {
   MerchandisingExcludedFacets,
   MerchandisingReturnedFacet,
 } from '@/libs/api';
-import { CombinedDropdown, Search, Typography } from '@/libs/components';
+import {
+  CombinedDropdown,
+  DropdownVariant,
+  Search,
+  Typography,
+} from '@/libs/components';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { COLUMNS } from '@/libs/constants';
@@ -387,7 +392,7 @@ export const FacetsPanel = ({
             </Typography>
 
             <CombinedDropdown
-              variant="countrySelector"
+              variant={DropdownVariant.CountrySelector}
               onChange={(country) => {
                 dispatch({
                   type: 'CHANGE_COUNTRY',
