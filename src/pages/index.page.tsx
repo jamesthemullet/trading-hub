@@ -1,11 +1,14 @@
+import type { ReactElement } from 'react';
+
 import { Button, Typography } from '@/libs/components';
 
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import styles from './index.module.css';
 
-const Index = () => {
+const Index = (): ReactElement => {
   const session = useSession();
 
   return (
@@ -39,7 +42,7 @@ const Index = () => {
   );
 };
 
-export const getServerSideProps = () => {
+export const getServerSideProps: GetServerSideProps = () => {
   return Promise.resolve({
     props: {},
   });

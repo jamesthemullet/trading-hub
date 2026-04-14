@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api/generated/open-api';
@@ -9,7 +10,7 @@ import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import Head from 'next/head';
 
-const NewRuleSetPage = () => {
+const NewRuleSetPage = (): ReactElement => {
   const { createGlobalRuleSet, error } = useGlobalRuleSetCreate();
   const router = useRouter();
 

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
@@ -20,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = (
   });
 };
 
-const Page = ({ id }: { id: string }) => {
+const Page = ({ id }: { id: string }): ReactElement => {
   const router = useRouter();
 
   const { updateCategoryRuleSet, error: updateRulesetError } =

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useId, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
@@ -19,7 +20,7 @@ type PageProps = {
   id: string;
 };
 
-const Page = ({ id }: PageProps) => {
+const Page = ({ id }: PageProps): ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const isHistoryView = router.query.history === 'true';

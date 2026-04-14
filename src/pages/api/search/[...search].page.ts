@@ -24,7 +24,10 @@ const isErrorSchemaCompatible = (
   return false;
 };
 
-const proxy = async (req: NextApiRequest, res: NextApiResponse) => {
+const proxy = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<void> => {
   const token = await getToken({ req });
 
   const headers = new Headers();

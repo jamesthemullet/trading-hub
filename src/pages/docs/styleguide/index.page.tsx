@@ -1,12 +1,14 @@
 /* istanbul ignore file */
 /* eslint-disable react/forbid-dom-props */
 
+import type { ReactElement } from 'react';
+
 import { Button, Typography } from '@/libs/components';
 import { color } from '@/libs/utils/constants';
 
 import styles from './index.module.css';
 
-const StyleGuide = () => {
+const StyleGuide = (): ReactElement => {
   const stateColorTokens = [
     { label: 'Success', value: color.state.success.success },
     { label: 'On Success', value: color.state.success.onSuccess },

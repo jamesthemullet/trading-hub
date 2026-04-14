@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import type {
   MerchandisingKeywordRuleSet,
   MerchandisingReturnedKeywordRuleSet,
@@ -57,7 +59,7 @@ const mapping: RuleSetMapping<
   },
 };
 
-const SearchRuleSets = () => {
+const SearchRuleSets = (): ReactElement => {
   const headings = [
     'Identifier',
     'Schedule',

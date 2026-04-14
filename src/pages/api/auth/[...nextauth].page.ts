@@ -130,7 +130,7 @@ const getVerifiedAuthEnvironment = (): AuthEnvironment | null => {
   return null;
 };
 
-const auth = (req: NextApiRequest, res: NextApiResponse) => {
+const auth = (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   const env = getVerifiedAuthEnvironment();
   if (env) {
     return NextAuth(req, res, authOptions(env));

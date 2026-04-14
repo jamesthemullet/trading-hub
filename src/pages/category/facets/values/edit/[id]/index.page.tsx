@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -29,7 +29,7 @@ const isCategoryDraft = (
   draft: DraftRulesetState | null
 ): draft is DraftCategoryRuleset => draft?.type === 'category';
 
-const Page = () => {
+const Page = (): ReactElement => {
   const router = useRouter();
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 

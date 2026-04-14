@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import { RuleType } from '@/libs/constants/rule-types';
@@ -6,7 +7,7 @@ import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-red
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-const RedirectsHistory = ({ id }: { id: string }) => {
+const RedirectsHistory = ({ id }: { id: string }): ReactElement => {
   const router = useRouter();
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;

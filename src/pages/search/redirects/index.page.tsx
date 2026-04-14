@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import type {
   MerchandisingKeywordRedirect,
   MerchandisingReturnedKeywordRedirect,
@@ -57,7 +59,7 @@ const mapping: RuleSetMapping<
   },
 };
 
-const RedirectRuleSets = () => {
+const RedirectRuleSets = (): ReactElement => {
   const headings = [
     'Identifier',
     'Schedule',

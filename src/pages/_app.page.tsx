@@ -3,6 +3,7 @@ import '@mantine/dates/styles.css';
 import '@/libs/styles/globals.css';
 import '@/libs/utils/base-styles.module.css';
 
+import type { ReactElement } from 'react';
 import { useEffect } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { createTheme, MantineProvider, Portal } from '@mantine/core';
@@ -32,7 +33,11 @@ const theme = createTheme({
   },
 });
 
-const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
+const FeatureFlagWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): ReactElement => {
   const [cookies] = useCookies([
     'flagAuthorization',
     'flagAuthorizationRoleOverride',
@@ -57,7 +62,7 @@ const FeatureFlagWrapper = ({ children }: { children: React.ReactNode }) => {
 export default function App({
   Component,
   pageProps,
-}: AppProps<{ session: Session | null }>) {
+}: AppProps<{ session: Session | null }>): ReactElement {
   const { session } = pageProps;
 
   // istanbul ignore next

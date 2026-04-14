@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useEffect, useId, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
@@ -22,7 +23,7 @@ type PageProps = {
   id: string;
 };
 
-const Page = ({ id }: PageProps) => {
+const Page = ({ id }: PageProps): ReactElement => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 

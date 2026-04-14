@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingKeywordRedirect } from '@/libs/api';
@@ -9,7 +10,7 @@ import { Redirect } from '@/libs/modules/redirect/redirect';
 
 import Head from 'next/head';
 
-const CreateRedirect = () => {
+const CreateRedirect = (): ReactElement => {
   const { createRedirect, isSaving, error } = useRedirectCreate();
   const router = useRouter();
 

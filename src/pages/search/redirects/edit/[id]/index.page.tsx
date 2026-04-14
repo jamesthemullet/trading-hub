@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingKeywordRedirect } from '@/libs/api';
@@ -16,7 +17,7 @@ type Props = {
   id: string;
 };
 
-const EditRedirect = ({ id }: Props) => {
+const EditRedirect = ({ id }: Props): ReactElement => {
   const router = useRouter();
   const isHistoryView = router.query.history === 'true';
   const currentPage = Number(router.query.currentPage) || 1;

@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import type {
   MerchandisingReturnedGlobalRuleSet,
   MerchandisingReturnedGlobalRuleSets,
@@ -46,7 +48,7 @@ const mapping: RuleSetMapping<
   },
 };
 
-const RuleSets = () => {
+const RuleSets = (): ReactElement => {
   const headings = [
     'Identifier',
     'Influence',

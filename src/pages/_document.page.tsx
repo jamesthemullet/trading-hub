@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { ColorSchemeScript } from '@mantine/core';
 
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
@@ -21,7 +22,7 @@ class RootDocument extends Document<MerchHubInitialProps> {
   }
 
   // istanbul ignore next
-  render() {
+  render(): ReactElement {
     const { dynatraceRumScriptUrl } = this.props;
     return (
       <Html lang="en">

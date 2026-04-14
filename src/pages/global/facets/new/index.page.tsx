@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
@@ -10,7 +11,7 @@ import { useAccess } from '@/libs/hooks/use-access';
 
 import Head from 'next/head';
 
-const Page = () => {
+const Page = (): ReactElement => {
   const { createGlobalRuleSet, error } = useGlobalRuleSetCreate();
   const router = useRouter();
 

@@ -1,4 +1,5 @@
-import { type ChangeEvent, useMemo, useState } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
+import { useMemo, useState } from 'react';
 
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { GlobalFacetAttributesPageLayout } from '@/libs/features';
@@ -10,7 +11,7 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
 
-const Page = () => {
+const Page = (): ReactElement => {
   const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
 
   const facetId = getStringParam('id');

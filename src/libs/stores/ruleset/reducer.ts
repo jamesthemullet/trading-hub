@@ -9,7 +9,7 @@ import type { RuleSetActions } from '@/libs/components/types';
 export const rulesetReducer = (
   state: MerchandisingRuleSet,
   action: RuleSetActions
-) => {
+): MerchandisingRuleSet => {
   const { rules } = state;
   switch (action.type) {
     case 'product': {

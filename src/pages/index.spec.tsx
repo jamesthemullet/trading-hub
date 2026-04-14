@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
+import type { GetServerSidePropsContext } from 'next';
 import { SessionProvider, signIn, signOut } from 'next-auth/react';
 
 import Index, { getServerSideProps } from './index.page';
@@ -127,7 +128,8 @@ describe('Index', () => {
   });
 
   it('loads the home page site stripe in get server side props', async () => {
-    const result = await getServerSideProps();
+    const mockContext = {} as GetServerSidePropsContext;
+    const result = await getServerSideProps(mockContext);
     expect(result).toBeDefined();
   });
 });

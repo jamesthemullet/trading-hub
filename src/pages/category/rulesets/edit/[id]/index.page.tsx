@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
@@ -17,7 +18,7 @@ type PageProps = {
   id: string;
 };
 
-const Page = ({ id }: PageProps) => {
+const Page = ({ id }: PageProps): ReactElement => {
   const router = useRouter();
   const isHistoryView = router.query.history === 'true';
   const currentPage = Number(router.query.currentPage) || 1;

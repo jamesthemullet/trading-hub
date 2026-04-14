@@ -1,10 +1,11 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import { Button, Typography } from '@/libs/components';
 
 import styles from './error.module.css';
 
-export default function AuthError() {
+export default function AuthError(): ReactElement {
   const router = useRouter();
   const { error = 'default', source = '' } = router.query;
 

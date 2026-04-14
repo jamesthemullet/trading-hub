@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -27,7 +28,7 @@ const isSearchDraft = (
   draft: DraftRulesetState | null
 ): draft is DraftSearchRuleset => draft?.type === 'search';
 
-const Page = () => {
+const Page = (): ReactElement => {
   const router = useRouter();
 
   const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();

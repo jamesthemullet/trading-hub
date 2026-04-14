@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import { RuleType } from '@/libs/constants/rule-types';
@@ -6,7 +7,7 @@ import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-const GlobalHistory = ({ id }: { id: string }) => {
+const GlobalHistory = ({ id }: { id: string }): ReactElement => {
   const router = useRouter();
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
