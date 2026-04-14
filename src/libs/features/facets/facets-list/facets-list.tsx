@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
@@ -43,6 +43,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import Image from 'next/image';
+
+import { FacetListReducer } from './facets-list-ui-reducer';
 
 const COLUMNS: {
   label: string;
@@ -131,29 +133,25 @@ export const FacetsList = ({
     currentRuleset || defaultRuleset
   );
 
-  const [isDraftLoaded, setIsDraftLoaded] = useState(false);
+  const [facetListState, dispatchFacetList] = useReducer(FacetListReducer, {
+    isDraftLoaded: false,
+    showPreview: false,
+    previewValue: categoriesInfo?.[0].id || searchTerms?.[0],
+    selectedPreviewCountryCode: 'UK',
+    selectedCategoriesInfo: categoriesInfo || [],
+    selectedSearchTerms: searchTerms || [],
+    filter: '',
+  });
 
-  const [showPreview, setShowPreview] = useState(false);
-
-  const [previewValue, setPreviewValue] = useState<string | undefined>(
-    categoriesInfo?.[0].id || searchTerms?.[0]
-  );
-
-  const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
-    'UK' | 'IE'
-  >('UK');
-
-  const [selectedCategoriesInfo, setSelectedCategoriesInfo] = useState<
-    {
-      id: string;
-      name?: string;
-      plpUrl?: string;
-    }[]
-  >(categoriesInfo || []);
-
-  const [selectedSearchTerms, setSelectedSearchTerms] = useState<Array<string>>(
-    searchTerms || []
-  );
+  const {
+    isDraftLoaded,
+    showPreview,
+    previewValue,
+    selectedPreviewCountryCode,
+    selectedCategoriesInfo,
+    selectedSearchTerms,
+    filter,
+  } = facetListState;
 
   // Load draft after hydration to avoid SSR mismatch
   useEffect(() => {
@@ -163,32 +161,38 @@ export const FacetsList = ({
 
     const draft = getDraft();
     if (draft?.type !== facetType) {
-      setIsDraftLoaded(true);
+      dispatchFacetList({ type: 'setDraftLoaded' });
       return;
     }
 
     dispatch({ type: 'loadRuleset', payload: draft.ruleset });
 
     if (draft.type === 'category' && draft.ruleset.categoryIds?.length > 0) {
-      setSelectedCategoriesInfo(
-        draft.ruleset.categoryIds.map((id: string) => ({ id }))
-      );
-      setPreviewValue(draft.ruleset.categoryIds[0]);
+      dispatchFacetList({
+        type: 'setCategories',
+        payload: draft.ruleset.categoryIds.map((id: string) => ({ id })),
+      });
+      dispatchFacetList({
+        type: 'setPreviewValue',
+        payload: draft.ruleset.categoryIds[0],
+      });
     }
     if (draft.type === 'search' && draft.ruleset.searchTerms?.length > 0) {
-      setSelectedSearchTerms(draft.ruleset.searchTerms);
-      setPreviewValue(draft.ruleset.searchTerms[0]);
+      dispatchFacetList({
+        type: 'setSearchTerms',
+        payload: draft.ruleset.searchTerms,
+      });
+      dispatchFacetList({
+        type: 'setPreviewValue',
+        payload: draft.ruleset.searchTerms[0],
+      });
     }
 
-    setIsDraftLoaded(true);
+    dispatchFacetList({ type: 'setDraftLoaded' });
   }, [isNewRuleset, isDraftLoaded, currentRuleset, facetType, getDraft]);
 
   const onRemoveCategory = (category: string) => {
-    setSelectedCategoriesInfo(
-      selectedCategoriesInfo?.filter(
-        (categoriesInfo) => categoriesInfo.id !== category
-      )
-    );
+    dispatchFacetList({ type: 'removeCategory', payload: category });
   };
 
   const onSelectCategory = (category: {
@@ -196,27 +200,26 @@ export const FacetsList = ({
     name: string;
     path: string;
   }) => {
-    setSelectedCategoriesInfo([
-      ...selectedCategoriesInfo,
-      {
+    dispatchFacetList({
+      type: 'addCategory',
+      payload: {
         id: category.identifier,
         name: category.name,
         plpUrl: category.path,
       },
-    ]);
-    setSelectedPreviewCountryCode?.(
-      category.identifier.includes('IE_') ? 'IE' : 'UK'
-    );
+    });
+    dispatchFacetList({
+      type: 'setPreviewCountryCode',
+      payload: category.identifier.includes('IE_') ? 'IE' : 'UK',
+    });
   };
 
   const onRemoveSearchTerm = (term: string) => {
-    setSelectedSearchTerms(
-      selectedSearchTerms.filter((searchTerm) => searchTerm !== term)
-    );
+    dispatchFacetList({ type: 'removeSearchTerm', payload: term });
   };
 
   const onAddSearchTerm = (term: string) => {
-    setSelectedSearchTerms([...selectedSearchTerms, term]);
+    dispatchFacetList({ type: 'addSearchTerm', payload: term });
   };
 
   const handleSave = () => {
@@ -227,10 +230,13 @@ export const FacetsList = ({
     });
   };
 
-  const [filter, setFilter] = useState('');
   const { callback: handleFilter } = useDebounce((val: string) => {
-    setFilter(val);
+    dispatchFacetList({ type: 'setFilter', payload: val });
   }, 300);
+
+  const handleSetPreviewValue = useCallback((value: string | undefined) => {
+    dispatchFacetList({ type: 'setPreviewValue', payload: value });
+  }, []);
 
   const selectedCategories = selectedCategoriesInfo.map(
     (category) => category.id
@@ -365,7 +371,7 @@ export const FacetsList = ({
     <>
       {showPreview && (
         <Preview
-          onClose={() => setShowPreview(!showPreview)}
+          onClose={() => dispatchFacetList({ type: 'togglePreview' })}
           categoryId={
             facetType === FacetType.Category ? previewValue : undefined
           }
@@ -389,7 +395,7 @@ export const FacetsList = ({
           !!selectedCategoriesInfo?.length || !!selectedSearchTerms?.length
         }
         onPreview={() => {
-          setShowPreview(!showPreview);
+          dispatchFacetList({ type: 'togglePreview' });
           track({
             event: `Preview ${facetType} facets - ${facetType === FacetType.Category ? previewValue : selectedSearchTerms.join(', ')}`,
           });
@@ -434,7 +440,10 @@ export const FacetsList = ({
                 });
                 // istanbul ignore else
                 if (country !== 'UK_IE') {
-                  setSelectedPreviewCountryCode(country as 'UK' | 'IE');
+                  dispatchFacetList({
+                    type: 'setPreviewCountryCode',
+                    payload: country as 'UK' | 'IE',
+                  });
                 }
               }}
               selectedCountryCode={ruleset.countryCode}
@@ -449,7 +458,7 @@ export const FacetsList = ({
               onClearSelection={onRemoveCategory}
               onSelectCategory={onSelectCategory}
               selectedCategoriesInfo={selectedCategoriesInfo}
-              selectPreviewCategory={setPreviewValue}
+              selectPreviewCategory={handleSetPreviewValue}
               writeEnabled={writeEnabled}
             />
           )}
@@ -460,7 +469,7 @@ export const FacetsList = ({
               addSearchTerm={onAddSearchTerm}
               removeSearchTerm={onRemoveSearchTerm}
               previewSearchTerm={previewValue}
-              selectPreviewSearchTerm={setPreviewValue}
+              selectPreviewSearchTerm={handleSetPreviewValue}
               writeEnabled={writeEnabled}
             />
           )}
@@ -506,7 +515,10 @@ export const FacetsList = ({
                     type="button"
                     onClick={() => {
                       track({ event: 'Change search facets preview to IE' });
-                      setSelectedPreviewCountryCode?.('IE');
+                      dispatchFacetList({
+                        type: 'setPreviewCountryCode',
+                        payload: 'IE',
+                      });
                     }}
                     role="menuitemradio"
                     aria-checked={selectedPreviewCountryCode === 'IE'}
@@ -527,7 +539,10 @@ export const FacetsList = ({
                     type="button"
                     onClick={() => {
                       track({ event: 'Change search facets preview to UK' });
-                      setSelectedPreviewCountryCode?.('UK');
+                      dispatchFacetList({
+                        type: 'setPreviewCountryCode',
+                        payload: 'UK',
+                      });
                     }}
                     role="menuitemradio"
                     aria-checked={selectedPreviewCountryCode === 'UK'}
