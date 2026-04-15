@@ -8,10 +8,11 @@ export const useFacetsFilter = (facets: FacetRowDisplayValue[]) => {
   const filteredFacets = useMemo<FacetRowDisplayValue[]>(() => {
     if (search === '') return facets;
 
+    const searchLower = search.toLowerCase();
     return facets.filter(
       (facet) =>
-        facet.displayValue?.toLowerCase().includes(search.toLowerCase()) ||
-        facet.indexPropertyName.toLowerCase().includes(search.toLowerCase())
+        facet.displayValue?.toLowerCase().includes(searchLower) ||
+        facet.indexPropertyName.toLowerCase().includes(searchLower)
     );
   }, [facets, search]);
 
