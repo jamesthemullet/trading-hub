@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { Button } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
+import { Input } from '@/libs/containers/shared/input/input';
 
 import Image from 'next/image';
 
@@ -36,6 +37,14 @@ export const EditableLabel = ({
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalValue, setOriginalValue] = useState(displayValue);
   const [value, setValue] = useState(displayValue);
+  const inputId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditMode) {
+      inputRef.current?.focus();
+    }
+  }, [isEditMode]);
 
   useEffect(() => {
     if (showErrorState || showEditState) {
@@ -56,11 +65,11 @@ export const EditableLabel = ({
         {isEditMode ? (
           <>
             <div className={styles.inputContainer}>
-              <input
-                id="input"
-                ref={(inputRef) => {
-                  inputRef?.focus();
-                }}
+              <Input
+                id={inputId}
+                ref={inputRef}
+                label={`Edit ${displayValue} input field`}
+                isLabelHidden
                 onChange={(event) => {
                   handleUpdatedValue(event);
                   setValue(event.target.value);
@@ -78,8 +87,7 @@ export const EditableLabel = ({
                     if (onCancel) onCancel();
                   }
                 }}
-                aria-label={`Edit ${displayValue} input field`}
-                data-error={showErrorState}
+                aria-invalid={showErrorState}
                 className={`${styles.input} typographyBodySmall`}
               />
 

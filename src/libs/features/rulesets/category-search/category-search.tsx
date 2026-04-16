@@ -14,6 +14,7 @@ import type {
 } from '@/libs/api';
 import { Button, Count, ErrorMessage, Typography } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
+import { Input } from '@/libs/containers/shared/input/input';
 import { useGetCategories, useOnOutsideClick } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
@@ -379,7 +380,10 @@ export const CategorySearch = ({
               {writeEnabled && (
                 <div className={styles.searchWrapper}>
                   <form className={styles.searchForm} onSubmit={onSubmit}>
-                    <input
+                    <Input
+                      id="category-search-input"
+                      label="Search categories"
+                      isLabelHidden
                       className={styles.searchInput}
                       placeholder="Search..."
                       value={searchValue}

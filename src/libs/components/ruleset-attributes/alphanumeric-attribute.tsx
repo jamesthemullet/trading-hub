@@ -1,8 +1,11 @@
+import { useId } from 'react';
+
 import type {
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
 } from '@/libs/api';
 import { Typography } from '@/libs/components';
+import { Input } from '@/libs/containers/shared/input/input';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
 import { labels } from '@/libs/utils/ruleset-attributes';
 
@@ -34,6 +37,8 @@ export const AlphanumericAttribute = ({
     fields: MerchandisingAlphanumericBoostBuryField[];
   }) => void;
 }) => {
+  const strengthInputId = useId();
+
   const handleStartChanges = () => {
     onEdit?.({ fields });
   };
@@ -77,12 +82,16 @@ export const AlphanumericAttribute = ({
         <div className={styles.attributeRow}>
           <Typography as="label" variant="bodySmall">
             Strength{' '}
-            <input
+            <Input
+              id={strengthInputId}
+              label="Strength"
+              isLabelHidden
               value={weight}
+              size="medium"
+              isInline
               onChange={(e) => {
-                const { value } = e.target;
                 // istanbul ignore next
-                setWeight?.(parseInt(value || '0'));
+                setWeight?.(parseInt(e.target.value || '0'));
               }}
               type="number"
               step={1}

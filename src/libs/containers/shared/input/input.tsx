@@ -1,17 +1,23 @@
 import type { ChangeEvent, ComponentProps } from 'react';
 import { forwardRef, useCallback, useState } from 'react';
 
+import { Typography } from '@/libs/components/typography/typography';
 import { useMouseFocus } from '@/libs/hooks/utils/use-mouse-focus';
 
 import styles from './input.module.css';
 
+type LabelVariant = 'labelLarge' | 'labelMedium' | 'labelSmall';
+
 export type InputProps = Omit<
   ComponentProps<'input'>,
-  'isEmpty' | 'isMouseFocus' | 'ref'
+  'isEmpty' | 'isMouseFocus' | 'ref' | 'size'
 > & {
   id: string;
   label: string;
   isLabelHidden?: boolean;
+  size?: 'default' | 'small' | 'medium';
+  labelVariant?: LabelVariant;
+  isInline?: boolean;
   as?: never;
 };
 
@@ -22,9 +28,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       name,
       label,
       isLabelHidden = false,
+      size = 'default',
+      labelVariant = 'labelMedium',
+      isInline = false,
       onChange,
       onBlur,
       onMouseDown,
+      className,
       ...rest
     }: InputProps,
     ref
@@ -48,13 +58,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <>
         {!isLabelHidden && (
           <div className={styles.labelWrapper}>
-            <label className={styles.label} htmlFor={id} {...mouseFocusProps}>
+            <Typography
+              as="label"
+              variant={labelVariant}
+              className={styles.label}
+              htmlFor={id}
+              {...mouseFocusProps}
+            >
               {label}
-            </label>
+            </Typography>
           </div>
         )}
         <input
-          className={styles.input}
+          className={[styles.input, className].filter(Boolean).join(' ')}
           ref={ref}
           name={name}
           id={id}
@@ -62,6 +78,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-label={isLabelHidden ? label : undefined}
           data-is-mouse-focus={isMouseFocus}
           data-is-empty={isEmpty}
+          data-size={size}
+          data-inline={isInline}
           {...mouseFocusProps}
           {...rest}
           onChange={handleChange}

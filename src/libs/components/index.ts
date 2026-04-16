@@ -7,7 +7,6 @@ export * from './count/count';
 export * from './dropdown/dropdown';
 export * from './error-message/error-message';
 export * from './facet-order-input/facet-order-input';
-export * from './filter/filter';
 export * from './filtered-results-panel/filtered-results-panel';
 export * from './heading/heading';
 export * from './infoBox/info-box';

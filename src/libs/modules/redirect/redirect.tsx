@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@/libs/components';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
+import { Input } from '@/libs/containers/shared/input/input';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { track } from '@/libs/hooks/utils/analytics';
@@ -201,43 +202,31 @@ export const Redirect = ({
           </div>
         </div>
         <div className={styles.fullInputRow}>
-          <Typography
-            as="label"
-            htmlFor="destination-url-input"
-            variant="labelLarge"
-            withMargin
-          >
-            Destination URL*
-          </Typography>
-          <input
-            className={styles.input}
+          <Input
             id="destination-url-input"
+            label="Destination URL*"
+            isLabelHidden={false}
+            labelVariant="labelLarge"
+            type="text"
             placeholder="c/"
+            className={styles.input}
             value={redirect.destinationUrl}
-            {...(writeEnabled && {
-              onChange: (e) => onUpdate('destinationUrl', e.target.value),
-            })}
-            readOnly={!writeEnabled}
+            onChange={(e) => onUpdate('destinationUrl', e.target.value)}
+            disabled={!writeEnabled}
           />
         </div>
         <div className={styles.fullInputRow}>
-          <Typography
-            as="label"
-            htmlFor="rule-title-input"
-            variant="labelLarge"
-            withMargin
-          >
-            Rule Title
-          </Typography>
-          <input
-            className={styles.input}
+          <Input
             id="rule-title-input"
+            label="Rule Title"
+            isLabelHidden={false}
+            labelVariant="labelLarge"
+            type="text"
             placeholder="Enter redirect title"
+            className={styles.input}
             value={redirect.ruleTitle}
-            {...(writeEnabled && {
-              onChange: (e) => onUpdate('ruleTitle', e.target.value),
-            })}
-            readOnly={!writeEnabled}
+            onChange={(e) => onUpdate('ruleTitle', e.target.value)}
+            disabled={!writeEnabled}
           />
         </div>
       </div>

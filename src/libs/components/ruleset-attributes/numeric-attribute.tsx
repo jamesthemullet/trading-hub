@@ -1,5 +1,8 @@
+import { useId } from 'react';
+
 import type { MerchandisingNumericBoostBury } from '@/libs/api';
 import { Typography } from '@/libs/components';
+import { Input } from '@/libs/containers/shared/input/input';
 import { labels } from '@/libs/utils/ruleset-attributes';
 
 import Image from 'next/image';
@@ -26,6 +29,8 @@ export const NumericAttribute = ({
   onEdit?: (args: { field: MerchandisingNumericBoostBury }) => void;
   setWeight?: (weight: number) => void;
 }) => {
+  const strengthInputId = useId();
+
   const handleStartChanges = () => {
     onEdit?.({ field: { weight, field: name } });
   };
@@ -66,12 +71,16 @@ export const NumericAttribute = ({
         <div className={styles.attributeRow}>
           <Typography as="label" variant="bodySmall">
             Strength{' '}
-            <input
+            <Input
+              id={strengthInputId}
+              label="Strength"
+              isLabelHidden
               value={weight}
+              size="medium"
+              isInline
               onChange={(e) => {
-                const { value } = e.target;
                 // istanbul ignore next
-                setWeight?.(parseInt(value || '0'));
+                setWeight?.(parseInt(e.target.value || '0'));
               }}
               type="number"
               step={1}

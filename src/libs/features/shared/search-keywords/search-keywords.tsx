@@ -5,6 +5,7 @@ import { Button, Count, ErrorMessage } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { SearchBox } from '@/libs/components/search/search';
 import { Typography } from '@/libs/components/typography/typography';
+import { Input } from '@/libs/containers/shared/input/input';
 import { useOnOutsideClick } from '@/libs/hooks';
 import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
 
@@ -318,11 +319,14 @@ export const SearchKeywords = ({
                   ))}
                   {writeEnabled && (
                     <li className={styles.keywordInputItem}>
-                      <input
+                      <Input
                         id="newKeywordInput"
                         key={keywordInputResetKey}
+                        label="Add keyword to list"
+                        isLabelHidden
                         type="text"
                         className={styles.keywordInput}
+                        size="small"
                         placeholder="Add new keyword"
                         onChange={() => {
                           setUnfinishedKeyword(false);
@@ -333,7 +337,6 @@ export const SearchKeywords = ({
                             onAddKeyword();
                           }
                         }}
-                        aria-label="Add keyword to list"
                       />
                     </li>
                   )}

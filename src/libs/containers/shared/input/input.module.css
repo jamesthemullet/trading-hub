@@ -39,4 +39,23 @@
   &[aria-invalid='true'] {
     border-bottom-color: var(--color-state-error-error);
   }
+
+  &[data-size='small'] {
+    height: 20px;
+  }
+
+  &[data-size='medium'] {
+    width: auto;
+    height: auto;
+    padding-block: 2px;
+    padding-inline: 3px;
+    border: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+    border-radius: 2px;
+  }
+
+  &[data-inline='true'] {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
 }
