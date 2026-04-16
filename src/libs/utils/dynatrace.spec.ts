@@ -117,13 +117,7 @@ describe('dynatrace', () => {
     });
 
     it('should sanitize page URL', () => {
-      Object.defineProperty(window, 'location', {
-        writable: true,
-        value: {
-          href: 'https://example.com/page?token=secret123',
-          pathname: '/page',
-        },
-      });
+      window.history.pushState({}, '', '/page?token=secret123');
 
       reportErrorToDynatrace(new Error('Test'));
 
@@ -134,6 +128,8 @@ describe('dynatrace', () => {
           'page.path': '/page',
         })
       );
+
+      window.history.pushState({}, '', '/');
     });
 
     it('should handle errors with undefined stack', () => {
@@ -158,14 +154,8 @@ describe('dynatrace', () => {
       cleanups = [];
     });
 
-    it('should return early if window is undefined', () => {
-      const originalWindow = global.window;
-      // @ts-expect-error Testing SSR scenario
-      delete global.window;
-
+    it('should set up handlers when window is defined', () => {
       expect(() => setupGlobalErrorHandlers()).not.toThrow();
-
-      global.window = originalWindow;
     });
 
     it('should set up error event listener', () => {

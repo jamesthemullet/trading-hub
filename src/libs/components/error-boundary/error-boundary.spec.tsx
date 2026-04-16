@@ -80,11 +80,6 @@ describe('ErrorBoundary', () => {
 
   it('should reload page when refresh button is clicked', async () => {
     const user = userEvent.setup();
-    const reloadMock = jest.fn();
-    Object.defineProperty(window, 'location', {
-      value: { reload: reloadMock },
-      writable: true,
-    });
 
     render(
       <ErrorBoundary>
@@ -92,9 +87,15 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
+    (console.error as jest.Mock).mockClear();
+
     await user.click(screen.getByRole('button', { name: /refresh/i }));
 
-    expect(reloadMock).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Not implemented: navigation (except hash changes)',
+      })
+    );
   });
 
   it('should call onError callback when error occurs', () => {

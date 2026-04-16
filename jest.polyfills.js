@@ -7,7 +7,7 @@ if (!globalThis.TextEncoder) {
   });
 }
 
-if (!globalThis.window.matchMedia) {
+if (globalThis.window && !globalThis.window.matchMedia) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
