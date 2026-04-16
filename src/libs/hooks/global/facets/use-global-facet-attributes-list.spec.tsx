@@ -152,8 +152,8 @@ describe('useGlobalFacetAttributesList', () => {
     const params = createHookParams({ searchQuery: 'alpha' });
     const { result } = renderHook(() => useGlobalFacetAttributesList(params));
 
-    const boostedRows =
-      ((result.current.boostedValuesRows ?? []) as ReactElement[]) ?? [];
+    const boostedRows = (result.current.boostedValuesRows ??
+      []) as ReactElement[];
 
     expect(boostedRows).toHaveLength(1);
     expect((boostedRows[0].props as { disabled?: boolean }).disabled).toBe(

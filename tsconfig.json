@@ -11,7 +11,6 @@
     "module": "esnext",
     "lib": ["dom", "dom.iterable", "esnext", "ES2021"],
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
