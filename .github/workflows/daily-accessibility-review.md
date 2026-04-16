@@ -7,7 +7,7 @@ description: |
   continuously throughout the development cycle.
 
 on:
-  schedule: daily
+  schedule: daily on weekdays
   workflow_dispatch:
 
 permissions: read-all
@@ -64,8 +64,16 @@ The code of the application has been checked out to the current working director
 
 Steps:
 
-1. Use the Playwright MCP tool to browse to `localhost:3000`. Review the website for accessibility problems by navigating around, clicking
-   links, pressing keys, taking snapshots and/or screenshots to review, etc. using the appropriate Playwright MCP commands.
+1. Use the Playwright MCP tool to browse to `localhost:3000`.
+   To avoid workflow timeouts, review only **one** area of the site per run, based on the current UTC weekday:
+   - Monday: Category pages
+   - Tuesday: Search pages
+   - Wednesday: Global pages
+   - Thursday: Flags/setup/admin pages
+   - Friday: Any remaining area with the highest user impact
+     Stay within that chosen area and audit at most 3 pages/screens total for this run.
+     Review for accessibility problems by navigating around, clicking links, pressing keys,
+     taking snapshots and/or screenshots to review, etc. using the appropriate Playwright MCP commands.
 
 2. Review the source code of the application to look for accessibility issues in the code. Use the Grep, LS, Read, etc. tools.
 
