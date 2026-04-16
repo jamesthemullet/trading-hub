@@ -122,24 +122,37 @@ export const GlobalFacetAttributesList = ({
     globalAttributesLocalState.nonBoostedExcludedRows,
   ]);
 
-  const filteredAttributeValues = attributeValues.filter((attribute) =>
-    attribute.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
+  const searchQueryInLowerCase = searchQuery.toLowerCase();
+
+  const filteredAttributeValues = useMemo(
+    () =>
+      attributeValues.filter((attribute) =>
+        attribute.displayValue.toLowerCase().includes(searchQueryInLowerCase)
+      ),
+    [attributeValues, searchQueryInLowerCase]
   );
 
-  const filteredAttributeValuesNotInAMergeGroup =
-    filteredAttributeValues.filter(
-      (attribute) =>
-        !globalAttributesLocalState.merged?.some((group) =>
-          group.mergedValues?.includes(attribute.displayValue)
-        )
-    );
+  const filteredAttributeValuesNotInAMergeGroup = useMemo(
+    () =>
+      filteredAttributeValues.filter(
+        (attribute) =>
+          !globalAttributesLocalState.merged?.some((group) =>
+            group.mergedValues?.includes(attribute.displayValue)
+          )
+      ),
+    [filteredAttributeValues, globalAttributesLocalState.merged]
+  );
 
-  const filteredMergeGroups = globalAttributesLocalState.merged?.filter(
-    (group) =>
-      group.displayValue?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      group.mergedValues?.some((val) =>
-        val.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+  const filteredMergeGroups = useMemo(
+    () =>
+      globalAttributesLocalState.merged?.filter(
+        (group) =>
+          group.displayValue?.toLowerCase().includes(searchQueryInLowerCase) ||
+          group.mergedValues?.some((val) =>
+            val.toLowerCase().includes(searchQueryInLowerCase)
+          )
+      ),
+    [globalAttributesLocalState.merged, searchQueryInLowerCase]
   );
 
   const localFilteredResults = useMemo(() => {
@@ -158,9 +171,9 @@ export const GlobalFacetAttributesList = ({
         }
 
         return (
-          row.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row.displayName.toLowerCase().includes(searchQueryInLowerCase) ||
           row.attributes.some((val) =>
-            val.toLowerCase().includes(searchQuery.toLowerCase())
+            val.toLowerCase().includes(searchQueryInLowerCase)
           )
         );
       }).length;
@@ -171,7 +184,7 @@ export const GlobalFacetAttributesList = ({
     filteredAttributeValuesNotInAMergeGroup.length,
     filteredMergeGroups.length,
     globalAttributesLocalState.nonBoostedExcludedRows,
-    searchQuery,
+    searchQueryInLowerCase,
   ]);
 
   const totalFilteredResults =
@@ -179,15 +192,23 @@ export const GlobalFacetAttributesList = ({
       ? searchedResultsCount
       : localFilteredResults;
 
-  const hasSelectedAllAttributes =
-    totalSelectedItems ===
-    globalAttributesLocalState.excludedRows.flatMap((val) => val.attributes)
-      .length +
-      globalAttributesLocalState.boostedRows.flatMap((val) => val.attributes)
+  const hasSelectedAllAttributes = useMemo(
+    () =>
+      totalSelectedItems ===
+      globalAttributesLocalState.excludedRows.flatMap((val) => val.attributes)
         .length +
-      globalAttributesLocalState.nonBoostedExcludedRows.flatMap(
-        (val) => val.attributes
-      ).length;
+        globalAttributesLocalState.boostedRows.flatMap((val) => val.attributes)
+          .length +
+        globalAttributesLocalState.nonBoostedExcludedRows.flatMap(
+          (val) => val.attributes
+        ).length,
+    [
+      totalSelectedItems,
+      globalAttributesLocalState.excludedRows,
+      globalAttributesLocalState.boostedRows,
+      globalAttributesLocalState.nonBoostedExcludedRows,
+    ]
+  );
 
   const {
     sensors,
