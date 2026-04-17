@@ -1,4 +1,5 @@
 import { Typography } from '@/libs/components';
+import { useProductStatusFlag } from '@/libs/components/feature-flag/feature-flag';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +12,7 @@ import styles from './navigation.module.css';
 export const Navigation = () => {
   const session = useSession();
   const isLoggedIn = session?.status === 'authenticated';
+  const hasProductStatus = useProductStatusFlag();
 
   const menuItems: MenuItem = [
     {
@@ -46,6 +48,18 @@ export const Navigation = () => {
       alt: 'Global Ranking Rules',
       shortTitle: 'Global',
     },
+    ...(hasProductStatus
+      ? [
+          {
+            title: 'Product Status',
+            path: '/product-status',
+            icon: '/trading-hub/asset/menu-product-status.svg',
+            activeIcon: '/trading-hub/asset/menu-product-status.svg',
+            alt: 'Product Status',
+            shortTitle: 'Product Status',
+          },
+        ]
+      : []),
   ];
 
   return (

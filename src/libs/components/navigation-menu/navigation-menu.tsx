@@ -55,7 +55,9 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
                   width={25}
                 />
               )}
-              <Typography variant="bodySmall">{menuItem.shortTitle}</Typography>
+              <Typography align="center" variant="bodySmall">
+                {menuItem.shortTitle}
+              </Typography>
             </Link>
           </div>
         );

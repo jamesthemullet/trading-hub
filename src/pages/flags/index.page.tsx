@@ -11,13 +11,13 @@ import styles from './index.module.css';
 
 const FeatureFlags = () => {
   const [cookies, setCookie] = useCookies(
-    ['flagAuthorization', 'flagAuthorizationRoleOverride'],
+    ['flagAuthorization', 'flagAuthorizationRoleOverride', 'flagProductStatus'],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization } = cookies;
+  const { flagAuthorization, flagProductStatus } = cookies;
 
   return (
     <div className={styles.wrapper}>
@@ -30,6 +30,15 @@ const FeatureFlags = () => {
           checked={flagAuthorization}
           onChange={() => {
             setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
+          }}
+        />
+      </div>
+      <div className={styles.flag}>
+        <Typography>Product Status:&nbsp;</Typography>
+        <Toggle
+          checked={flagProductStatus}
+          onChange={() => {
+            setCookie('flagProductStatus', JSON.stringify(!flagProductStatus));
           }}
         />
       </div>

@@ -41,6 +41,7 @@ const FeatureFlagWrapper = ({
   const [cookies] = useCookies([
     'flagAuthorization',
     'flagAuthorizationRoleOverride',
+    'flagProductStatus',
   ]);
 
   return (
@@ -52,6 +53,7 @@ const FeatureFlagWrapper = ({
           searchOverride: 'No Override',
           globalOverride: 'No Override',
         },
+        hasProductStatus: cookies.flagProductStatus,
       }}
     >
       {children}

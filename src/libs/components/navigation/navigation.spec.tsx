@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { renderWithProviders } from '@/test/render-with-providers';
+
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
@@ -93,6 +95,22 @@ describe('Navigation', () => {
     await user.click(screen.getByText('Sign out'));
 
     expect(signOut).toHaveBeenCalled();
+  });
+
+  it('should not show Product Status nav item when flag is disabled', () => {
+    renderWithProviders(<Navigation />, undefined, {
+      featureFlags: { hasProductStatus: false },
+    });
+
+    expect(screen.queryByTitle('Product Status')).not.toBeInTheDocument();
+  });
+
+  it('should show Product Status nav item when flag is enabled', () => {
+    renderWithProviders(<Navigation />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
+
+    expect(screen.getByTitle('Product Status')).toBeInTheDocument();
   });
 
   it.each([

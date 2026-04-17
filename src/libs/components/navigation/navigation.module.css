@@ -2,6 +2,7 @@
   background-color: var(--color-surface-on-surface);
   z-index: 12;
   position: fixed;
+  max-width: 92px;
 }
 
 .navigationList {
