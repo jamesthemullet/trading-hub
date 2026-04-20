@@ -43,7 +43,7 @@ jobs:
           token: ${{ secrets.SAML_GITHUB_TOKEN }}
           ref: feat/oidcn
           path: brightcloud
-      - uses: de-vri-es/setup-git-credentials@v2.1.2
+      - uses: de-vri-es/setup-git-credentials@v2.2.0
         with:
           credentials: https://foo:${{ secrets.SAML_GITHUB_TOKEN }}@github.com
       - name: non-production
@@ -81,7 +81,7 @@ jobs:
           token: ${{ secrets.SAML_GITHUB_TOKEN }}
           ref: feat/oidcn
           path: brightcloud
-      - uses: de-vri-es/setup-git-credentials@v2.1.2
+      - uses: de-vri-es/setup-git-credentials@v2.2.0
         with:
           credentials: https://foo:${{ secrets.SAML_GITHUB_TOKEN }}@github.com
       - name: production
