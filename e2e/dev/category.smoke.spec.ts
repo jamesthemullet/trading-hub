@@ -9,6 +9,22 @@ const TEST_CATEGORY_NAME = 'SubCategory_1842397 | Socks | l/men/socks';
 const TEST_CATEGORY_IDENTIFIER = 'SubCategory_1842397 - Socks';
 
 test.describe('Category Ranking', () => {
+  test.beforeAll(async ({ request }) => {
+    const res = await request.get(
+      `/api/search/beta/merchandising/category/ruleset?q=${TEST_CATEGORY_ID}&start=0&rows=100`
+    );
+    if (!res.ok()) throw new Error(`Cleanup GET failed: ${res.status()}`);
+    const { ruleSets = [] } = await res.json();
+    const deletes = await Promise.all(
+      ruleSets.map(({ id }: { id: string }) =>
+        request.delete(`/api/search/beta/merchandising/category/ruleset/${id}`)
+      )
+    );
+    for (const del of deletes) {
+      if (!del.ok()) throw new Error(`Cleanup DELETE failed: ${del.status()}`);
+    }
+  });
+
   test('creates new ruleset', async ({ page }) => {
     await page.goto('/category');
     await expect(

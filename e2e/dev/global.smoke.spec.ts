@@ -3,6 +3,27 @@ import { expect, test } from '@playwright/test';
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Global Ranking', () => {
+  test.beforeAll(async ({ request }) => {
+    // Keep the first page (10 rules) as long-term fixtures; delete anything beyond that.
+    let ruleSets: { id: string }[] = [];
+    do {
+      const res = await request.get(
+        `/api/search/beta/merchandising/global/ruleset?start=10&rows=100`
+      );
+      if (!res.ok()) throw new Error(`Cleanup GET failed: ${res.status()}`);
+      ({ ruleSets = [] } = await res.json());
+      const deletes = await Promise.all(
+        ruleSets.map(({ id }: { id: string }) =>
+          request.delete(`/api/search/beta/merchandising/global/ruleset/${id}`)
+        )
+      );
+      for (const del of deletes) {
+        if (!del.ok())
+          throw new Error(`Cleanup DELETE failed: ${del.status()}`);
+      }
+    } while (ruleSets.length > 0);
+  });
+
   test('creates new ruleset', async ({ page }) => {
     await page.goto('/global');
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();

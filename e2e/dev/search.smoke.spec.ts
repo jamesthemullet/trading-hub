@@ -5,6 +5,22 @@ import { searchAndWaitForResults } from '../helpers';
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Search Ranking', () => {
+  test.beforeAll(async ({ request }) => {
+    const res = await request.get(
+      `/api/search/beta/merchandising/keyword/ruleset?q=Sequin+Dress&start=0&rows=100`
+    );
+    if (!res.ok()) throw new Error(`Cleanup GET failed: ${res.status()}`);
+    const { ruleSets = [] } = await res.json();
+    const deletes = await Promise.all(
+      ruleSets.map(({ id }: { id: string }) =>
+        request.delete(`/api/search/beta/merchandising/keyword/ruleset/${id}`)
+      )
+    );
+    for (const del of deletes) {
+      if (!del.ok()) throw new Error(`Cleanup DELETE failed: ${del.status()}`);
+    }
+  });
+
   test('creates new ruleset', async ({ page }) => {
     await page.goto('/search');
     await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();

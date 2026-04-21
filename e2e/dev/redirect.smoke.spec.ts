@@ -5,6 +5,22 @@ import { searchAndWaitForResults } from '../helpers';
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Search Redirect', () => {
+  test.beforeAll(async ({ request }) => {
+    const res = await request.get(
+      `/api/search/beta/merchandising/keyword/redirect?q=Gravy&start=0&rows=100`
+    );
+    if (!res.ok()) throw new Error(`Cleanup GET failed: ${res.status()}`);
+    const { redirects = [] } = await res.json();
+    const deletes = await Promise.all(
+      redirects.map(({ id }: { id: string }) =>
+        request.delete(`/api/search/beta/merchandising/keyword/redirect/${id}`)
+      )
+    );
+    for (const del of deletes) {
+      if (!del.ok()) throw new Error(`Cleanup DELETE failed: ${del.status()}`);
+    }
+  });
+
   test('creates new redirect', async ({ page }) => {
     await page.goto('/search/redirects');
     await expect(
