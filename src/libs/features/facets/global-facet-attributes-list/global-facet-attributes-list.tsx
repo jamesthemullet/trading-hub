@@ -59,7 +59,7 @@ export type GlobalFacetAttributesListProps = {
   editingValues: string[];
   dispatch: ActionDispatch<[action: GlobalAttributesPageReducer]>;
   globalAttributesLocalState: GlobalAttributesPageState;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   setEditingValues: Dispatch<SetStateAction<string[]>>;
   isAwaitingUpdate: boolean;
   setIsAwaitingUpdate: Dispatch<SetStateAction<boolean>>;
@@ -74,7 +74,7 @@ export const GlobalFacetAttributesList = ({
   editingValues,
   dispatch,
   globalAttributesLocalState,
-  writeEnabled,
+  isWriteEnabled,
   setEditingValues,
   isAwaitingUpdate,
   setIsAwaitingUpdate,
@@ -224,7 +224,7 @@ export const GlobalFacetAttributesList = ({
     editingValues,
     setEditingValues,
     globalAttributesLocalState,
-    writeEnabled,
+    isWriteEnabled,
     setIsAwaitingUpdate,
     facet,
     dispatch,
@@ -250,7 +250,7 @@ export const GlobalFacetAttributesList = ({
             ) : (
               label === null && (
                 <div className={facetPanelStyles.tableCol}>
-                  {writeEnabled && (
+                  {isWriteEnabled && (
                     <Checkbox
                       label="Select all facet attributes"
                       shouldShowLabel={false}

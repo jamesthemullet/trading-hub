@@ -70,5 +70,5 @@ type SpacingUnit =
   | FourAndTwelvePixelUnit
   | number;
 
-export const spacing = (unit: SpacingUnit) =>
+export const spacing = (unit: SpacingUnit): string =>
   typeof unit === 'string' ? unit : `${(unit * 8) / 16}rem`;

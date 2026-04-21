@@ -30,7 +30,7 @@ type FacetRowDisplayValue = MerchandisingReturnedFacet & {
 };
 
 type CommonFacetRowProps = {
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   onDispatch: (action: RuleSetActions) => void;
   hasChanges: boolean;
   isNewlyIncluded?: boolean;
@@ -78,7 +78,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
     displayType,
     id,
     indexPropertyName,
-    writeEnabled,
+    isWriteEnabled,
     onDispatch,
     hasChanges,
     isNewlyIncluded,
@@ -166,7 +166,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
             onInputChange={props.handleInputChange}
             onInputBlur={props.handleInputBlur}
             onInputKeyDown={props.handleInputKeyDown}
-            writeEnabled={writeEnabled}
+            isWriteEnabled={isWriteEnabled}
           />
         )}
       </div>
@@ -193,7 +193,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
               });
             }}
             hasAlgoControl
-            writeEnabled={writeEnabled}
+            isWriteEnabled={isWriteEnabled}
             ariaLabel="Select to set as included, excluded or algo control"
           />
         </div>
@@ -238,7 +238,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
                 }
                 href={editValuesHref}
               >
-                {writeEnabled ? 'Edit values' : 'View values'}
+                {isWriteEnabled ? 'Edit values' : 'View values'}
               </Button>
             );
           })()}

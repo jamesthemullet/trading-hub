@@ -25,7 +25,7 @@ const mockProps = {
   onSelectCategory: jest.fn(),
   previewCategory: undefined,
   selectPreviewCategory: jest.fn(),
-  writeEnabled: true,
+  isWriteEnabled: true,
 };
 
 const mockCategoryId = 'SubCategory_507';
@@ -66,7 +66,9 @@ describe('CategorySearch', () => {
   });
 
   it('should not be editable in read only mode', () => {
-    renderWithProviders(<CategorySearch {...mockProps} writeEnabled={false} />);
+    renderWithProviders(
+      <CategorySearch {...mockProps} isWriteEnabled={false} />
+    );
 
     expect(screen.getByRole('button', { name: 'Edit' })).toBeDisabled();
   });

@@ -27,7 +27,7 @@ export const GlobalEditableLabel = ({
   merged,
   dispatch,
   setEditingValues,
-  writeEnabled,
+  isWriteEnabled,
 }: {
   displayName: string;
   editingValues: string[];
@@ -39,7 +39,7 @@ export const GlobalEditableLabel = ({
   merged: MergeGroup | undefined;
   dispatch: Dispatch<GlobalAttributesPageReducer>;
   setEditingValues: React.Dispatch<React.SetStateAction<string[]>>;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
 }) => {
   const [error, setError] = useState<string>('');
   const allBoostedValues = boostedRows.map((row) => row.displayName);
@@ -161,7 +161,7 @@ export const GlobalEditableLabel = ({
             handleError('');
           }
         }}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
       />
       {isAwaitingUpdate && <Loader isInModal />}
     </div>

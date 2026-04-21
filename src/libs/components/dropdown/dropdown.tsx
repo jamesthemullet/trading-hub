@@ -65,7 +65,7 @@ type RuleTypeFilterProps = {
 type CombinedDropdownProps = {
   variant: DropdownVariant;
   width?: number;
-  writeEnabled?: boolean;
+  isWriteEnabled?: boolean;
 } & GenericDropdownProps &
   CountryDropdownProps &
   FacetOrderProps &
@@ -106,7 +106,7 @@ const DropdownOptionButton = ({
 export const CombinedDropdown = ({
   variant,
   width,
-  writeEnabled = true,
+  isWriteEnabled = true,
   label = 'Select',
   icon,
   children,
@@ -433,7 +433,7 @@ export const CombinedDropdown = ({
       '-'
     );
 
-  if (!writeEnabled && variant === DropdownVariant.FacetOrder) {
+  if (!isWriteEnabled && variant === DropdownVariant.FacetOrder) {
     const current =
       facetOptions.find((o) => o.name === status) ||
       // facetOptions.find makes it possible to have undefined type so added a fallback which would not happen

@@ -89,7 +89,7 @@ const EditRedirect = ({ id }: Props): ReactElement => {
           onSave={onSaveRedirect}
           redirect={redirectData}
           title="Edit Keyword Redirect"
-          writeEnabled={hasWriteAccess && !isHistoryView}
+          isWriteEnabled={hasWriteAccess && !isHistoryView}
         />
       )}
 

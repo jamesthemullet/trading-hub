@@ -89,7 +89,7 @@ const NewRuleSetPage = (): ReactElement => {
         isNewRuleset
         onCancel={handleCancel}
         onSave={handleSave}
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
     </>
   );

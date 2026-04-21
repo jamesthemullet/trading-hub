@@ -11,7 +11,7 @@ describe('FacetOrderInput', () => {
     onInputChange: jest.fn(),
     onInputBlur: jest.fn(),
     onInputKeyDown: jest.fn(),
-    writeEnabled: true,
+    isWriteEnabled: true,
   };
 
   beforeEach(() => {
@@ -35,15 +35,15 @@ describe('FacetOrderInput', () => {
     expect(input).toHaveAttribute('min', '1');
   });
 
-  it('should disable input when writeEnabled is false', () => {
-    render(<FacetOrderInput {...defaultProps} writeEnabled={false} />);
+  it('should disable input when isWriteEnabled is false', () => {
+    render(<FacetOrderInput {...defaultProps} isWriteEnabled={false} />);
 
     const input = screen.getByLabelText('Order for test-attribute');
     expect(input).toBeDisabled();
   });
 
-  it('should enable input when writeEnabled is true', () => {
-    render(<FacetOrderInput {...defaultProps} writeEnabled />);
+  it('should enable input when isWriteEnabled is true', () => {
+    render(<FacetOrderInput {...defaultProps} isWriteEnabled />);
 
     const input = screen.getByLabelText('Order for test-attribute');
     expect(input).toBeEnabled();

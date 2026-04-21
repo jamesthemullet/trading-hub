@@ -25,7 +25,7 @@ const mockProps: Props = {
   removeSearchTerm: jest.fn(),
   previewSearchTerm: undefined,
   selectPreviewSearchTerm: jest.fn(),
-  writeEnabled: true,
+  isWriteEnabled: true,
 };
 
 describe('Search Keywords', () => {
@@ -55,7 +55,7 @@ describe('Search Keywords', () => {
         {...mockProps}
         searchTerms={shorterSearchTermsList}
         previewSearchTerm={shorterSearchTermsList[0]}
-        writeEnabled={false}
+        isWriteEnabled={false}
       />
     );
 

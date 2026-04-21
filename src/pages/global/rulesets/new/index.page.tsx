@@ -48,7 +48,7 @@ const NewRuleSetPage = (): ReactElement => {
         onCreateGlobalRuleset={createNewGlobalRuleSet}
         onCancel={() => router.push('/global')}
         rulesetType="global"
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
     </>
   );

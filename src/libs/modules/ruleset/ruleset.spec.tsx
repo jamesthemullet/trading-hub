@@ -232,7 +232,7 @@ const selectCategory = async (screen: Screen, user: UserEvent) => {
 
 const defaultProps = {
   isEnabled: true,
-  writeEnabled: true,
+  isWriteEnabled: true,
 };
 
 describe('Ruleset', () => {

@@ -4,43 +4,31 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import { ProductGridHeader } from './product-grid-header';
 
+const defaultProps = {
+  canSave: false,
+  hasPreview: false,
+  onPreview: jest.fn(),
+  onSave: jest.fn(),
+  onCancel: jest.fn(),
+  hasChanges: false,
+  isNewRuleSet: false,
+  shouldHidePreview: false,
+  title: 'Title',
+  rulesetType: 'search',
+  isWriteEnabled: true,
+};
+
 describe('ProductGridHeader', () => {
   it('should render correctly', () => {
-    renderWithProviders(
-      <ProductGridHeader
-        canSave={false}
-        hasPreview={false}
-        onPreview={jest.fn()}
-        onSave={jest.fn()}
-        onCancel={jest.fn()}
-        hasChanges={false}
-        isNewRuleSet={false}
-        shouldHidePreview={false}
-        title="Title"
-        rulesetType="search"
-        writeEnabled
-      />
-    );
+    renderWithProviders(<ProductGridHeader {...defaultProps} />);
 
     expect(screen.getByText('Title')).toBeVisible();
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 
-  it('should only display cancel button when writeEnabled=false', () => {
+  it('should only display cancel button when isWriteEnabled=false', () => {
     renderWithProviders(
-      <ProductGridHeader
-        canSave={false}
-        hasPreview={false}
-        onPreview={jest.fn()}
-        onSave={jest.fn()}
-        onCancel={jest.fn()}
-        hasChanges={false}
-        isNewRuleSet={false}
-        shouldHidePreview={false}
-        title="Title"
-        writeEnabled={false}
-        rulesetType="search"
-      />
+      <ProductGridHeader {...defaultProps} isWriteEnabled={false} />
     );
 
     expect(
@@ -51,19 +39,7 @@ describe('ProductGridHeader', () => {
 
   it('should show Create for new rulesets', () => {
     renderWithProviders(
-      <ProductGridHeader
-        canSave
-        hasPreview={false}
-        onPreview={jest.fn()}
-        onSave={jest.fn()}
-        onCancel={jest.fn()}
-        hasChanges={false}
-        isNewRuleSet
-        shouldHidePreview={false}
-        title="Title"
-        rulesetType="search"
-        writeEnabled
-      />
+      <ProductGridHeader {...defaultProps} canSave isNewRuleSet />
     );
 
     expect(screen.getByRole('button', { name: 'Create' })).toBeVisible();
@@ -73,17 +49,10 @@ describe('ProductGridHeader', () => {
     const mockSave = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        {...defaultProps}
         canSave
         hasPreview
-        onPreview={jest.fn()}
         onSave={mockSave}
-        onCancel={jest.fn()}
-        hasChanges={false}
-        isNewRuleSet={false}
-        shouldHidePreview={false}
-        title="Title"
-        rulesetType="search"
-        writeEnabled
       />
     );
 
@@ -100,17 +69,9 @@ describe('ProductGridHeader', () => {
     const mockSave = jest.fn();
     renderWithProviders(
       <ProductGridHeader
-        canSave={false}
-        hasPreview={false}
-        onPreview={jest.fn()}
+        {...defaultProps}
         onSave={mockSave}
-        onCancel={jest.fn()}
-        hasChanges={false}
-        isNewRuleSet={false}
-        shouldHidePreview={false}
-        title="Title"
         rulesetType="global"
-        writeEnabled
       />
     );
 
@@ -127,17 +88,11 @@ describe('ProductGridHeader', () => {
     const mockPreview = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        {...defaultProps}
         canSave
         hasPreview
         onPreview={mockPreview}
-        onSave={jest.fn()}
-        onCancel={jest.fn()}
-        hasChanges={false}
-        isNewRuleSet={false}
-        shouldHidePreview={false}
-        title="Title"
         rulesetType="global"
-        writeEnabled
       />
     );
 
@@ -154,17 +109,12 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        {...defaultProps}
         canSave
         hasPreview
-        onPreview={jest.fn()}
-        onSave={jest.fn()}
         onCancel={mockCancel}
         hasChanges
-        isNewRuleSet={false}
-        shouldHidePreview={false}
-        title="Title"
         rulesetType="global"
-        writeEnabled
       />
     );
 
@@ -187,17 +137,11 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        {...defaultProps}
         canSave
         hasPreview
-        onPreview={jest.fn()}
-        onSave={jest.fn()}
         onCancel={mockCancel}
-        hasChanges={false}
-        isNewRuleSet={false}
-        shouldHidePreview={false}
-        title="Title"
         rulesetType="category"
-        writeEnabled
       />
     );
 
@@ -213,17 +157,12 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        {...defaultProps}
         canSave
         hasPreview
-        onPreview={jest.fn()}
-        onSave={jest.fn()}
         onCancel={mockCancel}
         hasChanges
-        isNewRuleSet={false}
-        shouldHidePreview={false}
-        title="Title"
         rulesetType="category"
-        writeEnabled
       />
     );
 
@@ -246,17 +185,13 @@ describe('ProductGridHeader', () => {
     const mockCancel = jest.fn();
     renderWithProviders(
       <ProductGridHeader
+        {...defaultProps}
         canSave
         hasPreview
-        onPreview={jest.fn()}
-        onSave={jest.fn()}
         onCancel={mockCancel}
         hasChanges
-        isNewRuleSet={false}
         shouldHidePreview
-        title="Title"
         rulesetType="redirect"
-        writeEnabled
       />
     );
 

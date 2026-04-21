@@ -125,7 +125,7 @@ const createHookParams = (overrides: Partial<HookParams> = {}): HookParams => {
       overrides.setEditingValues ??
       (jest.fn() as unknown as HookParams['setEditingValues']),
     globalAttributesLocalState: state,
-    writeEnabled: true,
+    isWriteEnabled: true,
     setIsAwaitingUpdate,
     facet: mockFacet,
     dispatch,

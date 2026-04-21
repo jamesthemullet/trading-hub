@@ -59,7 +59,7 @@ const NewRuleSetPage = (): ReactElement => {
         onCreateKeywordSearchRuleset={createNewKeywordRuleset}
         onCancel={() => router.push('/search')}
         rulesetType="search"
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
     </>
   );

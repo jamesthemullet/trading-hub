@@ -64,7 +64,7 @@ const NewRuleSetPage = (): ReactElement => {
         onCreate={createNewCategoryRuleSet}
         onCancel={() => router.push('/category')}
         rulesetType="category"
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
     </>
   );

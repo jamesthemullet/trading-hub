@@ -62,7 +62,7 @@ type SearchAndCategoryFacetAttributesListProps = {
   excludedValues: MerchandisingAttributeValuesResponse['values'];
   dispatch: ActionDispatch<[action: Action]>;
   searchQuery: string;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
 };
 
 export const SearchAndCategoryFacetAttributesList = ({
@@ -71,7 +71,7 @@ export const SearchAndCategoryFacetAttributesList = ({
   excludedValues,
   dispatch,
   searchQuery,
-  writeEnabled,
+  isWriteEnabled,
 }: SearchAndCategoryFacetAttributesListProps) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -151,7 +151,7 @@ export const SearchAndCategoryFacetAttributesList = ({
           localOrder = localOrders[displayValue] ?? order;
         }
         const disableDrag =
-          !!searchQuery || !writeEnabled || filteredRows.length <= 1;
+          !!searchQuery || !isWriteEnabled || filteredRows.length <= 1;
 
         const renderRow = (sortableProps?: SortableRowRenderArgs) => (
           <SearchCategoryFacetAttributeValuesTableRow
@@ -175,7 +175,7 @@ export const SearchAndCategoryFacetAttributesList = ({
                   onInputChange={handleInputChange}
                   onInputBlur={handleInputBlur}
                   onInputKeyDown={handleInputKeyDown}
-                  writeEnabled={writeEnabled}
+                  isWriteEnabled={isWriteEnabled}
                 />
               )}
             </div>
@@ -207,7 +207,7 @@ export const SearchAndCategoryFacetAttributesList = ({
                 }}
                 status={displayType}
                 attribute={displayValue}
-                writeEnabled={writeEnabled}
+                isWriteEnabled={isWriteEnabled}
                 ariaLabel="Select to set as included, excluded or algo control"
               />
             </div>
@@ -244,7 +244,7 @@ export const SearchAndCategoryFacetAttributesList = ({
     [
       dispatch,
       searchQuery,
-      writeEnabled,
+      isWriteEnabled,
       handleInputBlur,
       handleInputChange,
       handleInputKeyDown,
@@ -275,10 +275,10 @@ export const SearchAndCategoryFacetAttributesList = ({
       createBoostedDragEndHandler({
         boostedOrder,
         dispatch,
-        writeEnabled,
+        isWriteEnabled,
         shouldAbort: () => !!searchQuery,
       }),
-    [boostedOrder, dispatch, searchQuery, writeEnabled]
+    [boostedOrder, dispatch, searchQuery, isWriteEnabled]
   );
 
   return (

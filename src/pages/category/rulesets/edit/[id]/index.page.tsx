@@ -110,7 +110,7 @@ const Page = ({ id }: PageProps): ReactElement => {
             startDate={rulesetData.startDate}
             endDate={rulesetData.endDate}
             countryCode={rulesetData.countryCode}
-            writeEnabled={hasWriteAccess && !isHistoryView}
+            isWriteEnabled={hasWriteAccess && !isHistoryView}
           />
         )
       )}

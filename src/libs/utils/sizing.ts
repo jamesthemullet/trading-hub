@@ -131,5 +131,5 @@ type SizingUnit =
   | RoundNumberSizingUnit
   | FourAndTwelvePixelUnit;
 
-export const sizing = (unit: SizingUnit) =>
+export const sizing = (unit: SizingUnit): string =>
   typeof unit === 'string' ? unit : `${(unit * 8) / 16}rem`;

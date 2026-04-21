@@ -20,7 +20,7 @@ type FacetOrderInputProps = {
     displayValue: string,
     order: number
   ) => void;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
 };
 
 const FacetOrderInputComponent = ({
@@ -31,7 +31,7 @@ const FacetOrderInputComponent = ({
   onInputChange,
   onInputBlur,
   onInputKeyDown,
-  writeEnabled,
+  isWriteEnabled,
 }: FacetOrderInputProps) => {
   return (
     <Input
@@ -43,7 +43,7 @@ const FacetOrderInputComponent = ({
       value={localOrder}
       min={1}
       aria-label={`Order for ${displayValue}`}
-      disabled={!writeEnabled}
+      disabled={!isWriteEnabled}
       onFocus={(e: FocusEvent<HTMLInputElement>) => {
         e.target.select();
       }}

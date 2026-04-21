@@ -26,7 +26,7 @@ type PageLayout = {
   searchQuery: string;
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onSave: (newFacet: MerchandisingRuleSetFacetConfigWithId) => void;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   headerText?: string;
   countryCode?: string;
   isDraftRuleset?: boolean;
@@ -41,7 +41,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   searchQuery,
   onSearchChange,
   onSave,
-  writeEnabled,
+  isWriteEnabled,
   headerText,
   countryCode = 'UK_IE',
   isDraftRuleset = false,
@@ -99,7 +99,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
           router.push(getFacetRoute(facetType, 'edit', ruleSetId));
         }}
         onSave={handleSave}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
         countryCode={countryCode}
         isDraftRuleset={isDraftRuleset}
       />
@@ -107,7 +107,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
       <FacetAttributesListActions
         onSearchChange={onSearchChange}
         isMergeHidden
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
       />
 
       <SearchAndCategoryFacetAttributesList
@@ -116,7 +116,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         excludedValues={excludedValues}
         dispatch={dispatch}
         searchQuery={searchQuery}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
       />
     </>
   );

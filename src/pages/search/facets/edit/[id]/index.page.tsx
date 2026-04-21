@@ -98,7 +98,7 @@ const Page = ({ id }: { id: string }): ReactElement => {
           isNewRuleset={false}
           onCancel={handleCancel}
           onSave={handleSave}
-          writeEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess}
         />
       )}
     </>

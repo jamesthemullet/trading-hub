@@ -38,7 +38,7 @@ type UseGlobalFacetAttributesListParams = {
   editingValues: string[];
   setEditingValues: Dispatch<SetStateAction<string[]>>;
   globalAttributesLocalState: GlobalAttributesPageState;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   setIsAwaitingUpdate: Dispatch<SetStateAction<boolean>>;
   facet: MerchandisingReturnedGlobalFacet;
   dispatch: ActionDispatch<[action: GlobalAttributesPageReducer]>;
@@ -53,7 +53,7 @@ export const useGlobalFacetAttributesList = ({
   editingValues,
   setEditingValues,
   globalAttributesLocalState,
-  writeEnabled,
+  isWriteEnabled,
   setIsAwaitingUpdate,
   facet,
   dispatch,
@@ -158,7 +158,9 @@ export const useGlobalFacetAttributesList = ({
           const localOrder = localOrders[displayName] ?? order;
           const rowKey = `${displayType}-${displayName}`;
           const disableDrag =
-            !writeEnabled || totalSelectedItems > 0 || filteredRows.length <= 1;
+            !isWriteEnabled ||
+            totalSelectedItems > 0 ||
+            filteredRows.length <= 1;
 
           const renderRow = (
             sortableProps?: SortableRowRenderArgs,
@@ -179,7 +181,7 @@ export const useGlobalFacetAttributesList = ({
                 displayName={displayName}
                 handleRemoveFromMerge={handleRemoveFromMerge}
                 dispatch={dispatch}
-                writeEnabled={writeEnabled}
+                isWriteEnabled={isWriteEnabled}
                 displayType={displayType}
                 displayValue={displayName}
                 order={order}
@@ -203,7 +205,7 @@ export const useGlobalFacetAttributesList = ({
                 countryCode={countryCode}
                 dispatch={dispatch}
                 setEditingValues={setEditingValues}
-                writeEnabled={writeEnabled}
+                isWriteEnabled={isWriteEnabled}
               />
 
               <div className={facetsPanelStyles.tableCol}>
@@ -214,7 +216,7 @@ export const useGlobalFacetAttributesList = ({
                   onChange={(status) =>
                     onOrderChange(status as FacetDisplayType)
                   }
-                  writeEnabled={writeEnabled}
+                  isWriteEnabled={isWriteEnabled}
                   hasAlgoControl
                   ariaLabel="Select to set as included, excluded or algo control"
                   width={150}
@@ -272,7 +274,7 @@ export const useGlobalFacetAttributesList = ({
       setEditingValues,
       setIsAwaitingUpdate,
       totalSelectedItems,
-      writeEnabled,
+      isWriteEnabled,
     ]
   );
 
@@ -302,10 +304,10 @@ export const useGlobalFacetAttributesList = ({
       createBoostedDragEndHandler({
         boostedOrder,
         dispatch,
-        writeEnabled,
+        isWriteEnabled,
         shouldAbort: () => !!searchQuery,
       }),
-    [boostedOrder, dispatch, searchQuery, writeEnabled]
+    [boostedOrder, dispatch, searchQuery, isWriteEnabled]
   );
 
   return {

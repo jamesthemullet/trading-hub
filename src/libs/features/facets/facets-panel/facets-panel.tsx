@@ -62,7 +62,7 @@ type FacetsPanelProps = {
   facetsData: MerchandisingReturnedFacet[];
   initialIncludedFacetIds: string[];
   initialExcludedFacetIds: string[];
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   onSave: (value: {
     includedFacets: MerchandisingReturnedFacet[];
     excludedFacets: MerchandisingExcludedFacets;
@@ -85,7 +85,7 @@ export const FacetsPanel = ({
   facetsData,
   initialIncludedFacetIds,
   initialExcludedFacetIds,
-  writeEnabled,
+  isWriteEnabled,
   onSave,
   onCancel,
   onFacetDataChange,
@@ -183,9 +183,9 @@ export const FacetsPanel = ({
             type: 'SET_INCLUDED_ORDER',
             payload: action.payload,
           }),
-        writeEnabled,
+        isWriteEnabled,
       }),
-    [includedFacetOrder, writeEnabled]
+    [includedFacetOrder, isWriteEnabled]
   );
 
   const onFacetDataChangeRef = useRef(onFacetDataChange);
@@ -312,7 +312,7 @@ export const FacetsPanel = ({
           key={id}
           facet={facet}
           errorMessage={errorMessage}
-          writeEnabled={writeEnabled}
+          isWriteEnabled={isWriteEnabled}
           canReorderIncludedFacets={canReorderIncludedFacets}
           order={order}
           localOrder={localOrder}
@@ -334,7 +334,7 @@ export const FacetsPanel = ({
       facetPanelLocalState.orders,
       includedFacetOrder,
       localOrders,
-      writeEnabled,
+      isWriteEnabled,
       canReorderIncludedFacets,
       isDisplayValueDuplicate,
       facetPanelLocalState.countryCode,
@@ -375,7 +375,7 @@ export const FacetsPanel = ({
         onCancel={onCancel}
         shouldHidePreview
         title={title}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
         rulesetType="global"
       />
 

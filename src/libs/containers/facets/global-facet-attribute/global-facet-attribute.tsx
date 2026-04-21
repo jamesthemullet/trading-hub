@@ -28,7 +28,7 @@ type GlobalFacetAttributeProps = {
     mergeDisplayName: string;
   }) => void;
   dispatch: Dispatch<GlobalAttributesPageReducer>;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   displayType: 'included' | 'excluded' | 'algoControl';
   displayValue: string;
   order: number | undefined;
@@ -50,7 +50,7 @@ export const GlobalFacetAttribute = ({
   displayName,
   handleRemoveFromMerge,
   dispatch,
-  writeEnabled,
+  isWriteEnabled,
   displayType,
   order,
   localOrder,
@@ -85,7 +85,7 @@ export const GlobalFacetAttribute = ({
   return (
     <>
       <div className={facetPanelStyles.tableCol}>
-        {writeEnabled && (
+        {isWriteEnabled && (
           <Checkbox
             checked={isChecked}
             onChange={() => handleSelect(displayName)}
@@ -107,7 +107,7 @@ export const GlobalFacetAttribute = ({
             onInputChange={handleInputChange}
             onInputBlur={handleInputBlur}
             onInputKeyDown={handleInputKeyDown}
-            writeEnabled={writeEnabled}
+            isWriteEnabled={isWriteEnabled}
           />
         )}
       </div>
@@ -123,7 +123,7 @@ export const GlobalFacetAttribute = ({
               {visibleAttributes.map((value) => (
                 <div className={styles.mergedValue} key={value}>
                   <Typography variant="bodySmall">{value}</Typography>{' '}
-                  {isMergeGroup && value !== displayName && writeEnabled && (
+                  {isMergeGroup && value !== displayName && isWriteEnabled && (
                     <Button
                       appearance="icon"
                       className={styles.removeMergedValueButton}

@@ -129,7 +129,7 @@ const Page = ({ id }: PageProps): ReactElement => {
             setIsModalOpen(true);
           }}
           onCancel={handleCancel}
-          writeEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess}
         />
       )}
       <Modal.Root

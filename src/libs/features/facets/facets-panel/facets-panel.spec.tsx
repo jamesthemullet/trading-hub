@@ -191,7 +191,7 @@ const updateGlobalFacet = {
 };
 
 const defaultProps = {
-  writeEnabled: true,
+  isWriteEnabled: true,
   title: 'Facet Rule Editor',
   countryCode: 'UK_IE' as const,
   selectedPreviewCountryCode: 'UK' as const,

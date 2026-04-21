@@ -220,7 +220,7 @@ const Page = (): ReactElement => {
             searchQuery={searchQuery}
             onSearchChange={handleSearch}
             onSave={handleSave}
-            writeEnabled={hasWriteAccess}
+            isWriteEnabled={hasWriteAccess}
             headerText={categoriesArray?.join(', ')}
             countryCode={countryCode}
             isDraftRuleset={isDraft}

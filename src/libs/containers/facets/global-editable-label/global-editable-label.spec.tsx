@@ -39,7 +39,7 @@ const defaultProps = {
   merged: [],
   setEditingValues: jest.fn(),
   dispatch: dispatchMock,
-  writeEnabled: true,
+  isWriteEnabled: true,
 };
 
 jest.mock('@/libs/hooks/use-check-merge-name-unique', () => ({

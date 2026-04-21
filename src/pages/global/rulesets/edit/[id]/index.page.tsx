@@ -122,7 +122,7 @@ const Page = ({ id }: PageProps): ReactElement => {
             rulesetType="global"
             rulesetId={id}
             countryCode={rulesetData.countryCode}
-            writeEnabled={hasWriteAccess && !isHistoryView}
+            isWriteEnabled={hasWriteAccess && !isHistoryView}
           />
         )
       )}

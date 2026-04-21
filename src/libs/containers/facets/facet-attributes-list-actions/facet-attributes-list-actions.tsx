@@ -8,19 +8,19 @@ import styles from './facet-attributes-list-actions.module.css';
 export const FacetAttributesListActions = ({
   onSearchChange,
   onMergeClick,
-  writeEnabled,
+  isWriteEnabled,
   isMergeHidden = false,
   isMergeDisabled = true,
   checkedRows = 0,
 }: {
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onMergeClick?: () => void;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   isMergeHidden?: boolean;
   isMergeDisabled?: boolean;
   checkedRows?: number;
 }) => {
-  const isDisabled = isMergeDisabled || !writeEnabled;
+  const isDisabled = isMergeDisabled || !isWriteEnabled;
   return (
     <div className={styles.container}>
       <div className={styles.buttonsContainer}>

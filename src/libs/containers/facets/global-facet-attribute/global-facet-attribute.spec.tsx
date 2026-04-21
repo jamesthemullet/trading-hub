@@ -15,7 +15,7 @@ describe('GlobalFacetAttribute', () => {
         displayName="test"
         handleRemoveFromMerge={jest.fn()}
         dispatch={jest.fn()}
-        writeEnabled
+        isWriteEnabled
         displayType="algoControl"
         displayValue="displayValue"
         order={5}
@@ -48,7 +48,7 @@ describe('GlobalFacetAttribute', () => {
         displayName="test"
         handleRemoveFromMerge={mockHandleRemoveFromMerge}
         dispatch={jest.fn()}
-        writeEnabled
+        isWriteEnabled
         displayType="algoControl"
         displayValue="displayValue"
         order={5}
@@ -96,7 +96,7 @@ describe('GlobalFacetAttribute', () => {
         displayName="test"
         handleRemoveFromMerge={jest.fn()}
         dispatch={jest.fn()}
-        writeEnabled
+        isWriteEnabled
         displayType="algoControl"
         displayValue="displayValue"
         order={5}

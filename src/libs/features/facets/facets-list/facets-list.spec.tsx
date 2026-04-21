@@ -165,7 +165,7 @@ const defaultFacetProps: FacetsListProps = {
   isNewRuleset: true,
   onCancel: () => jest.fn(),
   onSave: () => jest.fn(),
-  writeEnabled: true,
+  isWriteEnabled: true,
 };
 
 describe('FacetsList', () => {
@@ -1252,7 +1252,7 @@ describe('FacetsList', () => {
     renderWithProviders(
       <FacetsList
         {...defaultFacetProps}
-        writeEnabled={false}
+        isWriteEnabled={false}
         currentRuleset={{
           ...mockRuleset,
           facets: [

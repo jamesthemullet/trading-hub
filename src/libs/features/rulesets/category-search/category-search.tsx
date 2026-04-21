@@ -74,7 +74,7 @@ type Props = {
   previewCategory: string | undefined;
   selectedCategories: string[];
   selectPreviewCategory: (category: string | undefined) => void;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   selectedCategoriesInfo: Array<{
     id?: string;
     name?: string;
@@ -91,7 +91,7 @@ export const CategorySearch = ({
   selectPreviewCategory,
   selectedCategoriesInfo,
   countryCode = 'UK_IE',
-  writeEnabled,
+  isWriteEnabled,
 }: Props) => {
   const [searchValue, setSearchValue] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -353,7 +353,7 @@ export const CategorySearch = ({
           theme="filled"
           isInline
           onClick={() => setIsModalOpen(true)}
-          isDisabled={!writeEnabled}
+          isDisabled={!isWriteEnabled}
         >
           Edit
         </Button>
@@ -377,7 +377,7 @@ export const CategorySearch = ({
                 Search Categories
               </Typography>
 
-              {writeEnabled && (
+              {isWriteEnabled && (
                 <div className={styles.searchWrapper}>
                   <form className={styles.searchForm} onSubmit={onSubmit}>
                     <Input
@@ -430,7 +430,7 @@ export const CategorySearch = ({
                       </Typography>
                     </div>
 
-                    {writeEnabled && (
+                    {isWriteEnabled && (
                       <Button
                         appearance="icon"
                         className={styles.removeKeywordPill}
@@ -482,7 +482,7 @@ export const CategorySearch = ({
                           </Typography>
                         </div>
                       </Button>
-                      {writeEnabled && (
+                      {isWriteEnabled && (
                         <Button
                           appearance="icon"
                           className={styles.removeKeywordPill}

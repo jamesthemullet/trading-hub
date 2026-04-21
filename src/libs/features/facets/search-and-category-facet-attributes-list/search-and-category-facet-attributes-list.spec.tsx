@@ -76,7 +76,7 @@ const setup = (props = {}) => {
     ],
     dispatch: jest.fn(),
     searchQuery: '',
-    writeEnabled: true,
+    isWriteEnabled: true,
   };
 
   return renderWithProviders(

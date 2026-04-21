@@ -17,7 +17,7 @@ describe('createBoostedDragEndHandler', () => {
     const handler = createBoostedDragEndHandler({
       boostedOrder: ['a', 'b', 'c'],
       dispatch,
-      writeEnabled: true,
+      isWriteEnabled: true,
     });
 
     handler(createDragEndEvent('a', 'b'));
@@ -33,7 +33,7 @@ describe('createBoostedDragEndHandler', () => {
     const handler = createBoostedDragEndHandler({
       boostedOrder: ['a', 'b'],
       dispatch,
-      writeEnabled: false,
+      isWriteEnabled: false,
     });
 
     handler(createDragEndEvent('a', 'b'));
@@ -47,7 +47,7 @@ describe('createBoostedDragEndHandler', () => {
     const handler = createBoostedDragEndHandler({
       boostedOrder: ['a', 'b'],
       dispatch,
-      writeEnabled: true,
+      isWriteEnabled: true,
       shouldAbort,
     });
 
@@ -68,7 +68,7 @@ describe('createBoostedDragEndHandler', () => {
     const handler = createBoostedDragEndHandler({
       boostedOrder: ['a', 'b'],
       dispatch,
-      writeEnabled: true,
+      isWriteEnabled: true,
       onBeforeDispatch,
     });
 

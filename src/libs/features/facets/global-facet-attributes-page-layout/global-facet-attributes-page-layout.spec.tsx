@@ -53,7 +53,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
     onSearchChange: jest.fn(),
     ruleSetId,
     countryCode: 'UK_IE' as const,
-    writeEnabled: true,
+    isWriteEnabled: true,
   };
 
   beforeEach(() => {

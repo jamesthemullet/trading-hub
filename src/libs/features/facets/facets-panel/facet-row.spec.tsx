@@ -52,7 +52,7 @@ const createProps = (
 ) => ({
   facet,
   errorMessage: '',
-  writeEnabled: true,
+  isWriteEnabled: true,
   canReorderIncludedFacets,
   order: 1,
   localOrder: 1,
@@ -119,7 +119,7 @@ describe('FacetRow', () => {
 
   it('renders view values link when write access is disabled', () => {
     renderWithProviders(
-      <FacetRow {...createProps(includedFacet)} writeEnabled={false} />
+      <FacetRow {...createProps(includedFacet)} isWriteEnabled={false} />
     );
 
     const viewValuesLink = screen.getByRole('link', { name: 'View values' });

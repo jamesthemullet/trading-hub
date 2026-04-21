@@ -207,7 +207,7 @@ const Page = (): ReactElement => {
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
           onSave={handleSave}
-          writeEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess}
           headerText={searchTermsArray?.join(', ')}
           countryCode={countryCode}
           isDraftRuleset={isDraft}

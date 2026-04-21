@@ -232,7 +232,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant={DropdownVariant.FacetOrder}
-          writeEnabled
+          isWriteEnabled
           onChange={jest.fn()}
         />
       );
@@ -249,7 +249,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant={DropdownVariant.FacetOrder}
-          writeEnabled={false}
+          isWriteEnabled={false}
           onChange={jest.fn()}
           status="algoControl"
         />
@@ -264,7 +264,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant={DropdownVariant.FacetOrder}
-          writeEnabled
+          isWriteEnabled
           onChange={jest.fn()}
           attribute="color"
         />
@@ -286,7 +286,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant={DropdownVariant.FacetOrder}
-          writeEnabled
+          isWriteEnabled
           onChange={jest.fn()}
           hasAlgoControl
           attribute="color"
@@ -309,7 +309,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant={DropdownVariant.FacetOrder}
-          writeEnabled
+          isWriteEnabled
           onChange={jest.fn()}
         />
       );
@@ -336,7 +336,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant={DropdownVariant.FacetOrder}
-          writeEnabled
+          isWriteEnabled
           onChange={jest.fn()}
           hasAlgoControl
         />
@@ -569,7 +569,7 @@ describe('CombinedDropdown', () => {
         <CombinedDropdown
           variant={DropdownVariant.CountrySelector}
           selectedCountryCode="UK_IE"
-          writeEnabled
+          isWriteEnabled
           onChange={jest.fn()}
           ariaLabel="Select country"
         />
@@ -587,7 +587,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant={DropdownVariant.CountrySelector}
-          writeEnabled
+          isWriteEnabled
           onChange={jest.fn()}
           ariaLabel="Select country"
         />
@@ -612,7 +612,7 @@ describe('CombinedDropdown', () => {
       render(
         <CombinedDropdown
           variant={DropdownVariant.CountrySelector}
-          writeEnabled
+          isWriteEnabled
           onChange={onChange}
           ariaLabel="Select country"
         />

@@ -17,7 +17,7 @@ type Props = {
   shouldHidePreview: boolean;
   title: string;
   rulesetType: string;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
 };
 
 export const ProductGridHeader = ({
@@ -31,7 +31,7 @@ export const ProductGridHeader = ({
   shouldHidePreview,
   title,
   rulesetType,
-  writeEnabled,
+  isWriteEnabled,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -58,7 +58,7 @@ export const ProductGridHeader = ({
               Preview
             </Button>
           )}
-          {writeEnabled && (
+          {isWriteEnabled && (
             <Button
               theme="primary"
               isDisabled={isSaveButtonDisabled}

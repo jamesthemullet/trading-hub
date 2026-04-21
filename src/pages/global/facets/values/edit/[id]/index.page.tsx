@@ -95,7 +95,7 @@ const Page = (): ReactElement => {
           countryCode={countryCode}
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
-          writeEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess}
         />
       )}
     </>

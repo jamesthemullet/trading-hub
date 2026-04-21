@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -62,7 +63,7 @@ export const Ruleset = ({
   searchTerms,
   startDate,
   countryCode,
-  writeEnabled,
+  isWriteEnabled,
 }: {
   isEnabled: boolean;
   onSave?: ({
@@ -97,8 +98,8 @@ export const Ruleset = ({
   startDate?: string;
   endDate?: string;
   countryCode?: MerchandisingCountryCode;
-  writeEnabled: boolean;
-}) => {
+  isWriteEnabled: boolean;
+}): ReactElement => {
   const categoryIds = categoriesInfo?.map((category) => category.id);
 
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
@@ -117,7 +118,7 @@ export const Ruleset = ({
   );
   const [currentEditorTab, setCurrentEditorTab] = useState(0);
   const [hasChanges, setHasChanges] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [shouldShowPreview, setShouldShowPreview] = useState(false);
 
   const defaultPreviewCountryCode =
     categoryIds?.[0].includes('IE_') ||
@@ -330,9 +331,9 @@ export const Ruleset = ({
 
   return (
     <>
-      {showPreview && (
+      {shouldShowPreview && (
         <Preview
-          onClose={() => setShowPreview(!showPreview)}
+          onClose={() => setShouldShowPreview(!shouldShowPreview)}
           categoryId={rulesetType === 'category' ? previewValue : undefined}
           searchTerm={rulesetType === 'search' ? previewValue : undefined}
           merchandisingRules={merchandisingRules}
@@ -343,14 +344,14 @@ export const Ruleset = ({
 
       <ProductGridHeader
         canSave={
-          (writeEnabled &&
+          (isWriteEnabled &&
             !!selectedCategories.length &&
             merchandisingRules.pinnedProducts.length <=
               MAX_PINNED_PRODUCTS_ALLOWED) ||
           (!!rulesetSearchTerms.length &&
             merchandisingRules.pinnedProducts.length <=
               MAX_PINNED_PRODUCTS_ALLOWED) ||
-          (writeEnabled && rulesetType === 'global')
+          (isWriteEnabled && rulesetType === 'global')
         }
         onSave={() => {
           onSaveRuleset();
@@ -358,7 +359,7 @@ export const Ruleset = ({
         }}
         hasPreview={!!selectedCategories.length || !!rulesetSearchTerms.length}
         onPreview={() => {
-          setShowPreview(!showPreview);
+          setShouldShowPreview(!shouldShowPreview);
           track({
             event: `Preview ${rulesetType} rule - ${rulesetType === 'category' ? previewValue : rulesetSearchTerms[0]}`,
           });
@@ -377,7 +378,7 @@ export const Ruleset = ({
         shouldHidePreview={rulesetType === 'global'}
         title="Product Grid"
         rulesetType={rulesetType}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
       />
 
       {
@@ -437,7 +438,7 @@ export const Ruleset = ({
                           category?.includes('IE_') ? 'IE' : 'UK'
                         );
                       }}
-                      writeEnabled={writeEnabled}
+                      isWriteEnabled={isWriteEnabled}
                     />
                   </div>
                 )}
@@ -450,7 +451,7 @@ export const Ruleset = ({
                     removeSearchTerm={onRemoveSearchTerm}
                     previewSearchTerm={previewValue}
                     selectPreviewSearchTerm={setPreviewValue}
-                    writeEnabled={writeEnabled}
+                    isWriteEnabled={isWriteEnabled}
                   />
                 )}
               </>
@@ -480,7 +481,7 @@ export const Ruleset = ({
                     ruleset.startDate ? new Date(ruleset.startDate) : null,
                     ruleset.endDate ? new Date(ruleset.endDate) : null,
                   ]}
-                  writeEnabled={writeEnabled}
+                  isWriteEnabled={isWriteEnabled}
                 />
               </div>
             )}
@@ -528,7 +529,7 @@ export const Ruleset = ({
                         countryCode={ruleset.countryCode}
                         selectedProducts={selectedSearchProducts}
                         isSelectionDisabled={
-                          !writeEnabled || !!selectedProducts.length
+                          !isWriteEnabled || !!selectedProducts.length
                         }
                         onSelectAll={setSelectedSearchProducts}
                         onSelectProduct={({ id, isSelected }) => {
@@ -557,7 +558,7 @@ export const Ruleset = ({
                         }
                         dispatch={dispatch}
                         searchTerms={rulesetSearchTerms}
-                        writeEnabled={writeEnabled}
+                        isWriteEnabled={isWriteEnabled}
                         rulesetType={rulesetType}
                       />
                     )}
@@ -660,7 +661,7 @@ export const Ruleset = ({
                             dispatch={dispatch}
                             selectedProducts={selectedProducts}
                             isSelectionDisabled={
-                              !writeEnabled || !!selectedSearchProducts.length
+                              !isWriteEnabled || !!selectedSearchProducts.length
                             }
                             onSelectProduct={({ id, isSelected }) => {
                               setSelectedProducts(
@@ -705,7 +706,7 @@ export const Ruleset = ({
                   );
                 }}
                 isSelectionDisabled={
-                  !writeEnabled || selectedSearchProducts.length > 0
+                  !isWriteEnabled || selectedSearchProducts.length > 0
                 }
               />
             )}

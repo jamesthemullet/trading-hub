@@ -11,7 +11,7 @@ type CommonHeaderProps = {
   displayName: string;
   error?: string;
   onSave: () => void;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   countryCode: string;
   onClose: (facetType: FacetType) => void;
   isDraftRuleset?: boolean;
@@ -38,7 +38,7 @@ export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
     error,
     onClose,
     onSave,
-    writeEnabled,
+    isWriteEnabled,
     countryCode,
   } = props;
 
@@ -69,7 +69,7 @@ export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
             Cancel
           </Button>
 
-          <Button theme="primary" isDisabled={!writeEnabled} onClick={onSave}>
+          <Button theme="primary" isDisabled={!isWriteEnabled} onClick={onSave}>
             Save
           </Button>
         </div>

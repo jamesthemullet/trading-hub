@@ -57,7 +57,7 @@ describe('FacetAttributesList', () => {
         currentMergeValues: [],
       },
     },
-    writeEnabled: true,
+    isWriteEnabled: true,
     setEditingValues: jest.fn(),
     facet: {
       id: 'color',

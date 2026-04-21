@@ -1,8 +1,13 @@
 import { useMemo } from 'react';
 
-import type { GlobalAttributesPageState } from './global-attributes-page-reducer';
+import type {
+  FormattedRow,
+  GlobalAttributesPageState,
+} from './global-attributes-page-reducer';
 
-export const useCheckedRowsSelector = (state: GlobalAttributesPageState) => {
+export const useCheckedRowsSelector = (
+  state: GlobalAttributesPageState
+): FormattedRow[] => {
   const checkedRows = useMemo(() => {
     const checkedSet = new Set([
       ...state.boostedRows.filter((row) => row.isChecked),

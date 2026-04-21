@@ -13,7 +13,7 @@ describe('Redirect', () => {
 
     renderWithProviders(
       <Redirect
-        writeEnabled
+        isWriteEnabled
         onCancel={() => jest.fn()}
         onCreate={mockCreate}
         title="Add Keyword Redirect rule"
@@ -78,7 +78,7 @@ describe('Redirect', () => {
 
     renderWithProviders(
       <Redirect
-        writeEnabled
+        isWriteEnabled
         onCancel={() => jest.fn()}
         onCreate={mockCreate}
         title="Add Keyword Redirect rule"
@@ -153,7 +153,7 @@ describe('Redirect', () => {
     };
     renderWithProviders(
       <Redirect
-        writeEnabled
+        isWriteEnabled
         onCancel={() => jest.fn()}
         onCreate={mockCreate}
         title="Add Keyword Redirect rule"
@@ -199,7 +199,7 @@ describe('Redirect', () => {
 
     renderWithProviders(
       <Redirect
-        writeEnabled
+        isWriteEnabled
         onCancel={() => jest.fn()}
         onSave={mockSave}
         title="Edit Keyword Redirect rule"
@@ -241,7 +241,7 @@ describe('Redirect', () => {
 
     renderWithProviders(
       <Redirect
-        writeEnabled
+        isWriteEnabled
         onCancel={() => jest.fn()}
         onSave={mockSave}
         title="Edit Keyword Redirect rule"
@@ -286,7 +286,7 @@ describe('Redirect', () => {
 
       renderWithProviders(
         <Redirect
-          writeEnabled
+          isWriteEnabled
           onCancel={() => jest.fn()}
           onSave={mockSave}
           title="Edit Keyword Redirect rule"
@@ -317,7 +317,7 @@ describe('Redirect', () => {
 
       renderWithProviders(
         <Redirect
-          writeEnabled
+          isWriteEnabled
           onCancel={() => jest.fn()}
           onSave={mockSave}
           title="Edit Keyword Redirect rule"
@@ -349,7 +349,7 @@ describe('Redirect', () => {
 
       renderWithProviders(
         <Redirect
-          writeEnabled
+          isWriteEnabled
           onCancel={() => jest.fn()}
           onSave={mockSave}
           title="Edit Keyword Redirect rule"
@@ -422,7 +422,7 @@ describe('Redirect', () => {
 
       renderWithProviders(
         <Redirect
-          writeEnabled
+          isWriteEnabled
           onCancel={() => jest.fn()}
           onSave={mockSave}
           title="Edit Keyword Redirect rule"

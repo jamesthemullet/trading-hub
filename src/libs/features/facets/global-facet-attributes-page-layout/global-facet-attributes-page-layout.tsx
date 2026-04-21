@@ -36,7 +36,7 @@ type PageLayout = {
   countryCode: MerchandisingCountryCode | undefined;
   searchQuery: string;
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
 };
 
 export const GlobalFacetAttributesPageLayout = ({
@@ -49,7 +49,7 @@ export const GlobalFacetAttributesPageLayout = ({
   countryCode = 'UK_IE',
   searchQuery,
   onSearchChange,
-  writeEnabled,
+  isWriteEnabled,
 }: PageLayout) => {
   const router = useRouter();
 
@@ -216,7 +216,7 @@ export const GlobalFacetAttributesPageLayout = ({
         }}
         onSave={handleSave}
         error={updateGlobalFacetError}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
         countryCode={countryCode}
       />
 
@@ -224,7 +224,7 @@ export const GlobalFacetAttributesPageLayout = ({
         onSearchChange={onSearchChange}
         isMergeDisabled={checkedRows.length < 2}
         onMergeClick={handleMerge}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
         checkedRows={checkedRows.length}
       />
 
@@ -240,7 +240,7 @@ export const GlobalFacetAttributesPageLayout = ({
         facet={facet}
         isAwaitingUpdate={isAwaitingUpdate}
         setIsAwaitingUpdate={setIsAwaitingUpdate}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
       />
 
       <Modal.Root

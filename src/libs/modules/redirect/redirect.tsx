@@ -25,7 +25,7 @@ type Props = {
   onCancel: () => void;
   redirect?: MerchandisingReturnedKeywordRedirect;
   title: string;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
 };
 
 export const Redirect = ({
@@ -34,7 +34,7 @@ export const Redirect = ({
   onSave,
   redirect: savedRedirect,
   title,
-  writeEnabled,
+  isWriteEnabled,
 }: Props) => {
   const [redirect, setRedirect] = useState<MerchandisingKeywordRedirect>(
     savedRedirect
@@ -99,7 +99,7 @@ export const Redirect = ({
     <>
       <ProductGridHeader
         canSave={
-          writeEnabled &&
+          isWriteEnabled &&
           !!redirect.destinationUrl &&
           redirect.keywords.length > 0
         }
@@ -111,7 +111,7 @@ export const Redirect = ({
         isNewRuleSet={!!onCreate}
         hasChanges={false}
         rulesetType="redirect"
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
       />
       <div className={styles.redirectType}>
         <div className={styles.redirectContent}>
@@ -178,7 +178,7 @@ export const Redirect = ({
             selectPreviewSearchTerm={(term: string | undefined) => {
               setDefaultValue(term);
             }}
-            writeEnabled={writeEnabled}
+            isWriteEnabled={isWriteEnabled}
           />
           <div className={styles.duration}>
             <Typography as="p" withMargin variant="labelMedium">
@@ -197,7 +197,7 @@ export const Redirect = ({
                   endDate: endDate ? endDate.toISOString() : '',
                 });
               }}
-              writeEnabled={writeEnabled}
+              isWriteEnabled={isWriteEnabled}
             />
           </div>
         </div>
@@ -212,7 +212,7 @@ export const Redirect = ({
             className={styles.input}
             value={redirect.destinationUrl}
             onChange={(e) => onUpdate('destinationUrl', e.target.value)}
-            disabled={!writeEnabled}
+            disabled={!isWriteEnabled}
           />
         </div>
         <div className={styles.fullInputRow}>
@@ -226,7 +226,7 @@ export const Redirect = ({
             className={styles.input}
             value={redirect.ruleTitle}
             onChange={(e) => onUpdate('ruleTitle', e.target.value)}
-            disabled={!writeEnabled}
+            disabled={!isWriteEnabled}
           />
         </div>
       </div>

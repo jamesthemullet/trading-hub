@@ -16,7 +16,7 @@ const meta: Meta<typeof DateTimePickerModal> = {
       action: 'onUpdateDateTimeRange',
       description: 'Callback when date/time range changes',
     },
-    writeEnabled: {
+    isWriteEnabled: {
       control: 'boolean',
       description: 'Toggles whether the date/time picker is interactive',
     },
@@ -40,7 +40,7 @@ export const Default: Story = {
     dateTime: [null, null],
     label: 'Select a date range',
     showCalendarIcon: true,
-    writeEnabled: true,
+    isWriteEnabled: true,
     onUpdateDateTimeRange: fn(),
   },
 };

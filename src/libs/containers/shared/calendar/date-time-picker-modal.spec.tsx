@@ -15,7 +15,7 @@ describe('DateTimePickerModal', () => {
 
   it('should render correctly', async () => {
     render(
-      <DateTimePickerModal writeEnabled onUpdateDateTimeRange={jest.fn()} />
+      <DateTimePickerModal isWriteEnabled onUpdateDateTimeRange={jest.fn()} />
     );
     expect(
       screen.queryByRole('button', { name: 'Close schedule editor' })
@@ -46,7 +46,7 @@ describe('DateTimePickerModal', () => {
   it('should not be editable in ready only mode', async () => {
     render(
       <DateTimePickerModal
-        writeEnabled={false}
+        isWriteEnabled={false}
         onUpdateDateTimeRange={jest.fn()}
       />
     );
@@ -57,7 +57,7 @@ describe('DateTimePickerModal', () => {
 
   it('should call save', async () => {
     render(
-      <DateTimePickerModal writeEnabled onUpdateDateTimeRange={jest.fn()} />
+      <DateTimePickerModal isWriteEnabled onUpdateDateTimeRange={jest.fn()} />
     );
 
     const input = screen.getByPlaceholderText('Select date range');
@@ -108,7 +108,7 @@ describe('DateTimePickerModal', () => {
     const onUpdateDateTimeRange = jest.fn();
     render(
       <DateTimePickerModal
-        writeEnabled
+        isWriteEnabled
         onUpdateDateTimeRange={onUpdateDateTimeRange}
       />
     );
@@ -186,7 +186,7 @@ describe('DateTimePickerModal', () => {
     const onUpdateDateTimeRange = jest.fn();
     render(
       <DateTimePickerModal
-        writeEnabled
+        isWriteEnabled
         onUpdateDateTimeRange={onUpdateDateTimeRange}
       />
     );
@@ -267,7 +267,7 @@ describe('DateTimePickerModal', () => {
     const onUpdateDateTimeRange = jest.fn();
     render(
       <DateTimePickerModal
-        writeEnabled
+        isWriteEnabled
         onUpdateDateTimeRange={onUpdateDateTimeRange}
         showCalendarIcon
       />
@@ -330,7 +330,7 @@ describe('DateTimePickerModal', () => {
     const onUpdateDateTimeRange = jest.fn();
     render(
       <DateTimePickerModal
-        writeEnabled
+        isWriteEnabled
         dateTime={[
           new Date('2022-03-01T12:00:00.000Z'),
           new Date('2022-03-20T12:00:00.000Z'),
@@ -381,7 +381,7 @@ describe('DateTimePickerModal', () => {
     const onUpdateDateTimeRange = jest.fn();
     render(
       <DateTimePickerModal
-        writeEnabled
+        isWriteEnabled
         dateTime={[new Date('2022-03-01T12:00:00.000Z'), null]}
         onUpdateDateTimeRange={onUpdateDateTimeRange}
       />

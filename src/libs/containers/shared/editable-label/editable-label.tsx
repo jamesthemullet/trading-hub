@@ -19,7 +19,7 @@ type EditableLabelProps = {
   onCancel?: () => void;
   disallowedValues?: string[];
   disallowedErrorMessage?: string;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
 };
 
 export const EditableLabel = ({
@@ -32,7 +32,7 @@ export const EditableLabel = ({
   canCancelEdit,
   onCancel,
   disallowedErrorMessage,
-  writeEnabled,
+  isWriteEnabled,
 }: EditableLabelProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalValue, setOriginalValue] = useState(displayValue);
@@ -153,7 +153,7 @@ export const EditableLabel = ({
               {displayValue}
             </Typography>
 
-            {writeEnabled && (
+            {isWriteEnabled && (
               <Button
                 appearance="icon"
                 type="button"

@@ -49,7 +49,7 @@ const CreateRedirect = (): ReactElement => {
         onCreate={createNewRedirect}
         onCancel={() => router.push('/search/redirects')}
         title="Add Keyword Redirect rule"
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
 
       {isSaving && <Loader />}

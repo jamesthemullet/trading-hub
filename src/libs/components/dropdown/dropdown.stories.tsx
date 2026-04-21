@@ -20,7 +20,7 @@ const meta: Meta<typeof CombinedDropdown> = {
       ],
       description: 'Select the dropdown variant',
     },
-    writeEnabled: {
+    isWriteEnabled: {
       control: 'boolean',
       description: 'Enables or disables editing functionality',
     },
@@ -91,7 +91,7 @@ const GenericTemplate = (args: Story['args']) => {
 export const Generic: Story = {
   args: {
     variant: DropdownVariant.Generic,
-    writeEnabled: true,
+    isWriteEnabled: true,
     label: 'Open Generic Dropdown',
   },
   render: (args) => <GenericTemplate {...args} />,
@@ -100,7 +100,7 @@ export const Generic: Story = {
 export const CountryFilter: Story = {
   args: {
     variant: DropdownVariant.CountryFilter,
-    writeEnabled: true,
+    isWriteEnabled: true,
   },
   render: (args) => <CombinedDropdown {...args} />,
 };
@@ -108,7 +108,7 @@ export const CountryFilter: Story = {
 export const CountrySelector: Story = {
   args: {
     variant: DropdownVariant.CountrySelector,
-    writeEnabled: true,
+    isWriteEnabled: true,
     selectedCountryCode: 'UK_IE',
   },
   render: (args) => {
@@ -128,7 +128,7 @@ export const FacetOrder: Story = {
     status: 'included',
     attribute: 'Example Attribute',
     hasAlgoControl: true,
-    writeEnabled: true,
+    isWriteEnabled: true,
   },
   render: (args) => <CombinedDropdown {...args} />,
 };
@@ -138,7 +138,7 @@ export const FacetOrderReadOnly: Story = {
     variant: DropdownVariant.FacetOrder,
     status: 'included',
     hasAlgoControl: false,
-    writeEnabled: false,
+    isWriteEnabled: false,
     attribute: 'ReadOnly Attribute',
   },
   render: (args) => <CombinedDropdown {...args} />,

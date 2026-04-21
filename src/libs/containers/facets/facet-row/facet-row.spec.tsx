@@ -58,7 +58,7 @@ const defaultProps: FacetRowProps = {
   id: 'color-123',
   indexPropertyName: 'color',
   index: 0,
-  writeEnabled: true,
+  isWriteEnabled: true,
   onDispatch: mockDispatch,
   hasChanges: false,
   lastChanged: {
@@ -135,7 +135,7 @@ describe('FacetRow', () => {
         {...includedProps}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled={false}
+        isWriteEnabled={false}
       />
     );
 
@@ -143,14 +143,14 @@ describe('FacetRow', () => {
     expect(link).toBeInTheDocument();
   });
 
-  it('should render edit values button for included facets with writeEnabled', async () => {
+  it('should render edit values button for included facets with isWriteEnabled', async () => {
     const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <FacetRow
         {...includedProps}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled
+        isWriteEnabled
       />
     );
 
@@ -212,7 +212,7 @@ describe('FacetRow', () => {
         {...includedProps}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled
+        isWriteEnabled
         isNewRuleset
         currentRuleset={mockRuleset}
         selectedCategories={selectedCategories}
@@ -260,7 +260,7 @@ describe('FacetRow', () => {
         rulesetId={undefined}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled
+        isWriteEnabled
         facetType={FacetType.Search}
         isNewRuleset
         currentRuleset={mockRuleset}
@@ -311,7 +311,7 @@ describe('FacetRow', () => {
         {...includedProps}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled
+        isWriteEnabled
         isNewRuleset={false}
         currentRuleset={mockRuleset}
       />
@@ -331,7 +331,7 @@ describe('FacetRow', () => {
         {...includedProps}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled
+        isWriteEnabled
         hasChanges
       />
     );
@@ -349,7 +349,7 @@ describe('FacetRow', () => {
         {...includedProps}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled
+        isWriteEnabled
         hasChanges
       />
     );
@@ -372,7 +372,7 @@ describe('FacetRow', () => {
         {...includedProps}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled
+        isWriteEnabled
         hasChanges
       />
     );
@@ -395,7 +395,7 @@ describe('FacetRow', () => {
         {...includedProps}
         displayType="included"
         isDragDisabled={false}
-        writeEnabled
+        isWriteEnabled
         hasChanges
         isNewlyIncluded
       />

@@ -21,7 +21,11 @@ type RowCacheEntry = {
 export const useFacetsRowsSelector = (
   panelState: FacetPanelState,
   facetsData: MerchandisingReturnedFacet[]
-) => {
+): {
+  facetsState: FacetRowDisplayValue[];
+  includedFacets: MerchandisingReturnedFacet[];
+  excludedFacets: { facets: Array<{ id: string }> };
+} => {
   const rowCacheRef = useRef<Map<string, RowCacheEntry>>(new Map());
 
   const facetsState = useMemo(() => {

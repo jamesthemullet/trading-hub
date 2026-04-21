@@ -75,7 +75,7 @@ export type FacetsListProps = {
   isNewRuleset: boolean;
   onCancel: () => void;
   onSave: (args: SaveType) => void;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   currentRuleset?: MerchandisingRuleSet;
   categoriesInfo?: Array<{
     id: string;
@@ -93,7 +93,7 @@ export const FacetsList = ({
   searchTerms,
   onCancel,
   onSave,
-  writeEnabled,
+  isWriteEnabled,
 }: FacetsListProps) => {
   const router = useRouter();
   const rulesetId = router.query.id as string;
@@ -354,9 +354,9 @@ export const FacetsList = ({
               position: action.payload.newIndex,
             },
           }),
-        writeEnabled,
+        isWriteEnabled,
       }),
-    [dispatch, includedFacetOrder, writeEnabled]
+    [dispatch, includedFacetOrder, isWriteEnabled]
   );
 
   const handleFacetOrderInputRef = useCallback(
@@ -435,7 +435,7 @@ export const FacetsList = ({
         }
         shouldHidePreview={facetType === FacetType.Global}
         rulesetType={facetType}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
       />
 
       {getFacetsDataError && (
@@ -484,7 +484,7 @@ export const FacetsList = ({
               onSelectCategory={onSelectCategory}
               selectedCategoriesInfo={selectedCategoriesInfo}
               selectPreviewCategory={handleSetPreviewValue}
-              writeEnabled={writeEnabled}
+              isWriteEnabled={isWriteEnabled}
             />
           )}
           {facetType === FacetType.Search && (
@@ -495,7 +495,7 @@ export const FacetsList = ({
               removeSearchTerm={onRemoveSearchTerm}
               previewSearchTerm={previewValue}
               selectPreviewSearchTerm={handleSetPreviewValue}
-              writeEnabled={writeEnabled}
+              isWriteEnabled={isWriteEnabled}
             />
           )}
           {facetType !== FacetType.Global && (
@@ -517,7 +517,7 @@ export const FacetsList = ({
                   ruleset.startDate ? new Date(ruleset.startDate) : null,
                   ruleset.endDate ? new Date(ruleset.endDate) : null,
                 ]}
-                writeEnabled={writeEnabled}
+                isWriteEnabled={isWriteEnabled}
               />
             </div>
           )}
@@ -632,7 +632,7 @@ export const FacetsList = ({
                       {...facet}
                       displayType="included"
                       isDragDisabled={
-                        !writeEnabled || boostedFacets.length <= 1
+                        !isWriteEnabled || boostedFacets.length <= 1
                       }
                       index={index}
                       includedFacetOrder={includedFacetOrder}
@@ -641,7 +641,7 @@ export const FacetsList = ({
                       handleInputBlur={handleInputBlur}
                       handleInputKeyDown={handleInputKeyDown}
                       handleFacetOrderInputRef={handleFacetOrderInputRef}
-                      writeEnabled={writeEnabled}
+                      isWriteEnabled={isWriteEnabled}
                       selectedCategories={selectedCategories}
                       selectedSearchTerms={selectedSearchTerms}
                       facetType={facetType}
@@ -667,7 +667,7 @@ export const FacetsList = ({
                 {...facet}
                 displayType="algoControl"
                 index={index}
-                writeEnabled={writeEnabled}
+                isWriteEnabled={isWriteEnabled}
                 onDispatch={dispatch}
                 hasChanges={false}
               />
@@ -682,7 +682,7 @@ export const FacetsList = ({
                 {...facet}
                 displayType="excluded"
                 index={index}
-                writeEnabled={writeEnabled}
+                isWriteEnabled={isWriteEnabled}
                 onDispatch={dispatch}
                 hasChanges={false}
               />

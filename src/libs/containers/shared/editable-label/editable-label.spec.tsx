@@ -29,7 +29,7 @@ describe('editable-label', () => {
           setError={jest.fn()}
           showErrorState={false}
           handleUpdatedValue={jest.fn()}
-          writeEnabled
+          isWriteEnabled
         />
       );
 
@@ -48,7 +48,7 @@ describe('editable-label', () => {
           setError={jest.fn()}
           handleUpdatedValue={jest.fn()}
           showErrorState={false}
-          writeEnabled
+          isWriteEnabled
         />
       );
 
@@ -86,7 +86,7 @@ describe('editable-label', () => {
           setError={jest.fn()}
           showErrorState={false}
           handleUpdatedValue={jest.fn()}
-          writeEnabled
+          isWriteEnabled
         />
       );
 
@@ -134,7 +134,7 @@ describe('editable-label', () => {
           setError={jest.fn()}
           showErrorState={false}
           handleUpdatedValue={jest.fn()}
-          writeEnabled
+          isWriteEnabled
         />
       );
 
@@ -177,7 +177,7 @@ describe('editable-label', () => {
           setError={jest.fn()}
           showErrorState
           handleUpdatedValue={jest.fn()}
-          writeEnabled
+          isWriteEnabled
         />
       );
 
@@ -204,7 +204,7 @@ describe('editable-label', () => {
           setError={jest.fn()}
           showErrorState={false}
           handleUpdatedValue={jest.fn()}
-          writeEnabled
+          isWriteEnabled
         />
       );
 

@@ -16,7 +16,7 @@ const defaultProps = {
   onClose: onCloseMock,
   onSave: jest.fn(),
   isSaveDisabled: false,
-  writeEnabled: true,
+  isWriteEnabled: true,
   countryCode: 'UK_IE',
 };
 
@@ -83,9 +83,12 @@ describe('Facet Page Layout Header', () => {
     expect(ieFlag).toBeInTheDocument();
   });
 
-  it('should disable save button when writeEnabled is false', () => {
+  it('should disable save button when isWriteEnabled is false', () => {
     render(
-      <FacetAttributesPageLayoutHeader {...defaultProps} writeEnabled={false} />
+      <FacetAttributesPageLayoutHeader
+        {...defaultProps}
+        isWriteEnabled={false}
+      />
     );
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();

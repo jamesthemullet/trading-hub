@@ -5,7 +5,7 @@ import { FacetAttributesListActions } from './facet-attributes-list-actions';
 
 const defaultProps = {
   onSearchChange: jest.fn(),
-  writeEnabled: true,
+  isWriteEnabled: true,
 };
 
 describe('FacetAttributesListActions', () => {
@@ -52,19 +52,19 @@ describe('FacetAttributesListActions', () => {
     expect(screen.getByText('3 selected')).toBeInTheDocument();
   });
 
-  it('disables merge button when writeEnabled is false', () => {
+  it('disables merge button when isWriteEnabled is false', () => {
     render(
-      <FacetAttributesListActions {...defaultProps} writeEnabled={false} />
+      <FacetAttributesListActions {...defaultProps} isWriteEnabled={false} />
     );
     expect(screen.getByRole('button', { name: /Merge/i })).toBeDisabled();
   });
 
-  it('enables merge button when both isMergeDisabled is false and writeEnabled is true', () => {
+  it('enables merge button when both isMergeDisabled is false and isWriteEnabled is true', () => {
     render(
       <FacetAttributesListActions
         {...defaultProps}
         isMergeDisabled={false}
-        writeEnabled
+        isWriteEnabled
       />
     );
     expect(screen.getByRole('button', { name: /Merge/i })).toBeEnabled();

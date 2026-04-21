@@ -20,11 +20,11 @@ export const DateTimePickerModal = ({
   onUpdateDateTimeRange,
   label,
   showCalendarIcon,
-  writeEnabled,
+  isWriteEnabled,
 }: {
   dateTime?: [Date | null, Date | null];
   onUpdateDateTimeRange: (dateTime: [Date | null, Date | null]) => void;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   label?: string;
   showCalendarIcon?: boolean;
 }) => {
@@ -86,9 +86,9 @@ export const DateTimePickerModal = ({
             endTime,
             true
           )}
-          {...(writeEnabled && { onClick: openDatePicker })}
+          {...(isWriteEnabled && { onClick: openDatePicker })}
           isLabelHidden
-          readOnly={!writeEnabled}
+          readOnly={!isWriteEnabled}
           aria-label="Select date range"
         />
 

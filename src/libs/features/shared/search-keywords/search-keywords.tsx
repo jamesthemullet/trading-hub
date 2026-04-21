@@ -21,7 +21,7 @@ export type Props = {
   removeSearchTerm: (keyword: string) => void;
   searchTerms: string[];
   title: string;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   previewSearchTerm: string | undefined;
   selectPreviewSearchTerm: (keyword: string | undefined) => void;
 };
@@ -33,7 +33,7 @@ export const SearchKeywords = ({
   searchTerms,
   selectPreviewSearchTerm,
   title,
-  writeEnabled,
+  isWriteEnabled,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -203,7 +203,7 @@ export const SearchKeywords = ({
             theme="filled"
             isInline
             onClick={() => setShowModal(true)}
-            isDisabled={!writeEnabled}
+            isDisabled={!isWriteEnabled}
           >
             Edit
           </Button>
@@ -227,7 +227,7 @@ export const SearchKeywords = ({
                 <Typography variant="titleSmall" isStrong withMargin as="h2">
                   {title}
                 </Typography>
-                {writeEnabled && (
+                {isWriteEnabled && (
                   <div className={styles.modalSearchBoxContainer}>
                     <SearchBox
                       inputProps={{
@@ -253,7 +253,7 @@ export const SearchKeywords = ({
                       <Typography variant="bodySmall" isStrong>
                         {previewSearchTerm}
                       </Typography>
-                      {writeEnabled && (
+                      {isWriteEnabled && (
                         <Button
                           appearance="icon"
                           className={styles.removeKeywordButton}
@@ -299,7 +299,7 @@ export const SearchKeywords = ({
                           {keyword}
                         </Typography>
                       </Button>
-                      {writeEnabled && (
+                      {isWriteEnabled && (
                         <Button
                           appearance="icon"
                           className={styles.removeKeywordButton}
@@ -317,7 +317,7 @@ export const SearchKeywords = ({
                       )}
                     </li>
                   ))}
-                  {writeEnabled && (
+                  {isWriteEnabled && (
                     <li className={styles.keywordInputItem}>
                       <Input
                         id="newKeywordInput"

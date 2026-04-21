@@ -34,7 +34,7 @@ type OnFacetDataChange = ({
 type FacetRowProps = {
   facet: FacetRowDisplayValue;
   errorMessage: string;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   canReorderIncludedFacets: boolean;
   order: number;
   localOrder: number | '';
@@ -58,7 +58,7 @@ export const FacetRow = memo(
   ({
     facet,
     errorMessage,
-    writeEnabled,
+    isWriteEnabled,
     canReorderIncludedFacets,
     order,
     localOrder,
@@ -75,7 +75,7 @@ export const FacetRow = memo(
   }: FacetRowProps) => {
     const { displayValue, displayType, id } = facet;
     const isIncludedFacet = displayType === 'included';
-    const isDragDisabled = !writeEnabled || !canReorderIncludedFacets;
+    const isDragDisabled = !isWriteEnabled || !canReorderIncludedFacets;
 
     const renderRow = (sortableProps?: SortableRowRenderArgs) => (
       <div
@@ -99,7 +99,7 @@ export const FacetRow = memo(
               onInputChange={handleInputChange}
               onInputBlur={handleInputBlur}
               onInputKeyDown={handleInputKeyDown}
-              writeEnabled={writeEnabled}
+              isWriteEnabled={isWriteEnabled}
             />
           )}
         </div>
@@ -109,7 +109,7 @@ export const FacetRow = memo(
         </div>
 
         <div className={styles.tableCol}>
-          {writeEnabled ? (
+          {isWriteEnabled ? (
             <EditableLabel
               displayValue={displayValue}
               onCancel={() => setError(id, '')}
@@ -130,7 +130,7 @@ export const FacetRow = memo(
                   setError(id, '');
                 }
               }}
-              writeEnabled={writeEnabled}
+              isWriteEnabled={isWriteEnabled}
             />
           ) : (
             <Typography variant="bodySmall">{facet.displayValue}</Typography>
@@ -146,7 +146,7 @@ export const FacetRow = memo(
                 onDisplayTypeChange(id, newOrder as FacetDisplayType)
               }
               hasAlgoControl
-              writeEnabled={writeEnabled}
+              isWriteEnabled={isWriteEnabled}
               ariaLabel="Select to set as included, excluded or algo control"
             />
           </div>
@@ -165,9 +165,9 @@ export const FacetRow = memo(
               });
               return `${baseUrl}?${params.toString()}`;
             })()}
-            disabled={!writeEnabled}
+            disabled={!isWriteEnabled}
           >
-            {writeEnabled ? 'Edit values' : 'View values'}
+            {isWriteEnabled ? 'Edit values' : 'View values'}
           </Button>
         </div>
 
@@ -186,7 +186,7 @@ export const FacetRow = memo(
 
     if (isIncludedFacet) {
       return (
-        <SortableRow key={id} id={id} disabled={!writeEnabled}>
+        <SortableRow key={id} id={id} disabled={!isWriteEnabled}>
           {(sortableProps) => renderRow(sortableProps)}
         </SortableRow>
       );

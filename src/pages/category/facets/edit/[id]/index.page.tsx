@@ -103,7 +103,7 @@ const Page = ({ id }: { id: string }): ReactElement => {
           currentRuleset={ruleSetDetail}
           onCancel={handleCancel}
           onSave={handleSave}
-          writeEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess}
         />
       )}
     </>

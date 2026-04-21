@@ -9,7 +9,7 @@ type SetBoostedOrderAction = {
 };
 
 type CreateBoostedDragEndHandlerOptions = {
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   boostedOrder: string[];
   dispatch: (action: SetBoostedOrderAction) => void;
   shouldAbort?: (args: { activeId: string; overId: string }) => boolean;
@@ -18,14 +18,14 @@ type CreateBoostedDragEndHandlerOptions = {
 
 export const createBoostedDragEndHandler =
   ({
-    writeEnabled,
+    isWriteEnabled,
     boostedOrder,
     dispatch,
     shouldAbort,
     onBeforeDispatch,
   }: CreateBoostedDragEndHandlerOptions) =>
   ({ active, over }: DragEndEvent) => {
-    if (!over || !writeEnabled || active.id === over.id) {
+    if (!over || !isWriteEnabled || active.id === over.id) {
       return;
     }
 
