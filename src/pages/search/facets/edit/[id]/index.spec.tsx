@@ -230,6 +230,11 @@ describe('Search Facet Management Editing', () => {
 
     renderWithProviders(<Page id={ruleSetId} />);
 
+    await user.click(screen.getAllByText('Exclude only')[0]);
+    await waitFor(() => {
+      expect(screen.getByTestId('Row showing color as excluded')).toBeVisible();
+    });
+
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     const confirmCancelButton = await screen.findByText('Close without saving');

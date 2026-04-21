@@ -103,7 +103,17 @@ describe('Category Facet Management New', () => {
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
+    jest.mocked(useRuleSetCreate).mockReturnValue({
+      createRuleset: jest.fn(),
+      error: '',
+    });
+
     renderWithProviders(<NewFacetRuleset />);
+
+    await user.click(screen.getAllByText('Exclude only')[0]);
+    await waitFor(() => {
+      expect(screen.getByTestId('Row showing color as excluded')).toBeVisible();
+    });
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 

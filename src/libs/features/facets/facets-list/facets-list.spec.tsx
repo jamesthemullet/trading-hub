@@ -872,6 +872,148 @@ describe('FacetsList', () => {
     expect(screen.getAllByText('IE market only')).toHaveLength(2);
   });
 
+  describe('unsaved changes', () => {
+    it('should not show the unsaved changes modal when Cancel is clicked with no changes', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCancel = jest.fn();
+
+      renderWithProviders(
+        <FacetsList
+          {...defaultFacetProps}
+          currentRuleset={mockRuleset}
+          isNewRuleset={false}
+          facetType={FacetType.Search}
+          searchTerms={['socks']}
+          onCancel={onCancel}
+        />
+      );
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      expect(
+        screen.queryByText('Close without saving edits')
+      ).not.toBeInTheDocument();
+      expect(onCancel).toHaveBeenCalled();
+    });
+
+    it('should show the unsaved changes modal when Cancel is clicked after changing a facet display type', async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(
+        <FacetsList
+          {...defaultFacetProps}
+          currentRuleset={mockRuleset}
+          isNewRuleset={false}
+          facetType={FacetType.Search}
+          searchTerms={['socks']}
+        />
+      );
+
+      await user.click(screen.getAllByText('Exclude only')[0]);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('Row showing color as excluded')
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      expect(
+        screen.getByText('Close without saving edits')
+      ).toBeInTheDocument();
+    });
+
+    it('should navigate away when Close without saving is clicked in the unsaved changes modal', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCancel = jest.fn();
+
+      renderWithProviders(
+        <FacetsList
+          {...defaultFacetProps}
+          currentRuleset={mockRuleset}
+          isNewRuleset={false}
+          facetType={FacetType.Search}
+          searchTerms={['socks']}
+          onCancel={onCancel}
+        />
+      );
+
+      await user.click(screen.getAllByText('Exclude only')[0]);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('Row showing color as excluded')
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await user.click(
+        screen.getByRole('button', { name: 'Close without saving' })
+      );
+
+      expect(onCancel).toHaveBeenCalled();
+    });
+
+    it('should dismiss the unsaved changes modal and stay on page when Continue editing is clicked', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCancel = jest.fn();
+
+      renderWithProviders(
+        <FacetsList
+          {...defaultFacetProps}
+          currentRuleset={mockRuleset}
+          isNewRuleset={false}
+          facetType={FacetType.Search}
+          searchTerms={['socks']}
+          onCancel={onCancel}
+        />
+      );
+
+      await user.click(screen.getAllByText('Exclude only')[0]);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('Row showing color as excluded')
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await user.click(
+        screen.getByRole('button', { name: 'Continue editing' })
+      );
+
+      expect(
+        screen.queryByText('Close without saving edits')
+      ).not.toBeInTheDocument();
+      expect(onCancel).not.toHaveBeenCalled();
+    });
+
+    it('should treat undefined facets as empty when computing hasChanges', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onCancel = jest.fn();
+
+      renderWithProviders(
+        <FacetsList
+          {...defaultFacetProps}
+          currentRuleset={{
+            ...mockRuleset,
+            facets: undefined,
+            excludedFacets: undefined,
+          }}
+          isNewRuleset={false}
+          facetType={FacetType.Search}
+          searchTerms={['socks']}
+          onCancel={onCancel}
+        />
+      );
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      expect(
+        screen.queryByText('Close without saving edits')
+      ).not.toBeInTheDocument();
+      expect(onCancel).toHaveBeenCalled();
+    });
+  });
+
   describe('scheduling', () => {
     beforeAll(() => {
       jest.useFakeTimers();

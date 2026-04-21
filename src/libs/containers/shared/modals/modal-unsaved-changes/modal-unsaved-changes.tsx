@@ -23,21 +23,18 @@ export const ModalUnsavedChanges = ({
   return (
     <Modal.Root opened={opened} onClose={onContinue} centered padding={10}>
       <Modal.Overlay blur={3} />
-      <Modal.Content
-        aria-label="Close without saving edits"
-        aria-labelledby={titleId}
-        aria-describedby={descriptionId}
-      >
+      <Modal.Content aria-labelledby={titleId} aria-describedby={descriptionId}>
         <Modal.Body>
           <Typography
             as="h2"
+            id={titleId}
             variant="bodySmall"
             isStrong
             className={styles.heading}
           >
             Close without saving edits
           </Typography>
-          <Typography variant="bodySmall">
+          <Typography id={descriptionId} variant="bodySmall">
             Are you sure you want to navigate away from this page without saving
             your edits?
           </Typography>

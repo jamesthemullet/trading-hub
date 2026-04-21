@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
@@ -133,6 +133,30 @@ export const FacetsList = ({
     rulesetReducer,
     currentRuleset || defaultRuleset
   );
+
+  const initialRuleset = useRef(currentRuleset || defaultRuleset);
+
+  const initialFacetIdSet = useMemo(
+    () => new Set((initialRuleset.current.facets ?? []).map((f) => f.id)),
+    []
+  );
+
+  const hasChanges = useMemo(() => {
+    const initial = initialRuleset.current;
+    const initialFacetIds = (initial.facets ?? []).map((f) => f.id).join(',');
+    const currentFacetIds = (ruleset.facets ?? []).map((f) => f.id).join(',');
+    const initialExcluded = (initial.excludedFacets?.facets ?? [])
+      .map((f) => f.id)
+      .sort()
+      .join(',');
+    const currentExcluded = (ruleset.excludedFacets?.facets ?? [])
+      .map((f) => f.id)
+      .sort()
+      .join(',');
+    return (
+      initialFacetIds !== currentFacetIds || initialExcluded !== currentExcluded
+    );
+  }, [ruleset.facets, ruleset.excludedFacets]);
 
   const [facetListState, dispatchFacetList] = useReducer(FacetListReducer, {
     isDraftLoaded: false,
@@ -402,7 +426,7 @@ export const FacetsList = ({
           });
         }}
         isNewRuleSet={!!isNewRuleset}
-        hasChanges
+        hasChanges={hasChanges}
         onCancel={handleCancel}
         title={
           facetType === FacetType.Global
@@ -626,6 +650,8 @@ export const FacetsList = ({
                       onDispatch={dispatch}
                       isNewRuleset={isNewRuleset}
                       currentRuleset={ruleset}
+                      hasChanges={hasChanges}
+                      isNewlyIncluded={!initialFacetIdSet.has(facet.id)}
                     />
                   )
               )}
@@ -643,6 +669,7 @@ export const FacetsList = ({
                 index={index}
                 writeEnabled={writeEnabled}
                 onDispatch={dispatch}
+                hasChanges={false}
               />
             )
         )}
@@ -657,6 +684,7 @@ export const FacetsList = ({
                 index={index}
                 writeEnabled={writeEnabled}
                 onDispatch={dispatch}
+                hasChanges={false}
               />
             )
         )}

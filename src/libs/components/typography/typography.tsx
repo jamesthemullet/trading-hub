@@ -1,6 +1,7 @@
 import styles from './typography.module.css';
 
 type TypographyBaseProps = {
+  id?: string;
   isStrong?: boolean;
   uppercase?: boolean;
   withMargin?: boolean;

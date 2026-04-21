@@ -1,4 +1,5 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import type {
   MerchandisingReturnedFacet,
@@ -17,6 +18,7 @@ import { getFacetRoute } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import type { SortableRowRenderArgs } from '@/libs/containers/facets/sortable-row/sortable-row';
 import { SortableRow } from '@/libs/containers/facets/sortable-row/sortable-row';
+import { ModalEditValuesUnsavedChanges } from '@/libs/containers/shared/modals';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useDraftRuleset } from '@/libs/hooks';
 
@@ -30,6 +32,8 @@ type FacetRowDisplayValue = MerchandisingReturnedFacet & {
 type CommonFacetRowProps = {
   writeEnabled: boolean;
   onDispatch: (action: RuleSetActions) => void;
+  hasChanges: boolean;
+  isNewlyIncluded?: boolean;
 };
 
 type IncludedFacetRowProps = FacetRowDisplayValue &
@@ -76,11 +80,17 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
     indexPropertyName,
     writeEnabled,
     onDispatch,
+    hasChanges,
+    isNewlyIncluded,
   } = props;
 
   const { saveDraft } = useDraftRuleset();
+  const router = useRouter();
 
   const isIncludedFacet = displayType === 'included';
+
+  const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false);
+  const [pendingEditValuesHref, setPendingEditValuesHref] = useState('');
 
   const handleEditValuesForNewRuleset = useCallback(() => {
     if (isIncludedFacet && 'isNewRuleset' in props && props.isNewRuleset) {
@@ -113,6 +123,25 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
       }
     }
   }, [props, isIncludedFacet, saveDraft]);
+
+  const handleEditValuesClick = useCallback(
+    (e: React.MouseEvent, href: string) => {
+      if (hasChanges) {
+        e.preventDefault();
+        setPendingEditValuesHref(href);
+        setShowUnsavedChangesModal(true);
+      } else {
+        handleEditValuesForNewRuleset();
+      }
+    },
+    [hasChanges, handleEditValuesForNewRuleset]
+  );
+
+  const handleModalConfirm = useCallback(() => {
+    setShowUnsavedChangesModal(false);
+    handleEditValuesForNewRuleset();
+    router.push(pendingEditValuesHref);
+  }, [handleEditValuesForNewRuleset, pendingEditValuesHref, router]);
 
   const renderRow = (sortableProps?: SortableRowRenderArgs) => (
     <div
@@ -170,46 +199,49 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
         </div>
       </div>
       <div className={styles.tableCol}>
-        {displayType === 'included' && (
-          <Button
-            as="a"
-            theme="secondary"
-            onClick={handleEditValuesForNewRuleset}
-            href={(() => {
-              const baseUrl = getFacetRoute(props.facetType, 'valuesEdit', id);
-              const ruleSetIdParam = !props.rulesetId
-                ? 'draft'
-                : props.rulesetId;
-              const params = new URLSearchParams({
-                ruleSetId: ruleSetIdParam,
-                displayName: displayValue,
-                countryCode: props.countryCode || 'UK_IE',
+        {displayType === 'included' &&
+          (() => {
+            const baseUrl = getFacetRoute(props.facetType, 'valuesEdit', id);
+            const ruleSetIdParam = !props.rulesetId ? 'draft' : props.rulesetId;
+            const params = new URLSearchParams({
+              ruleSetId: ruleSetIdParam,
+              displayName: displayValue,
+              countryCode: props.countryCode || 'UK_IE',
+            });
+
+            if (
+              props.facetType === FacetType.Category &&
+              props.selectedCategories.length > 0
+            ) {
+              props.selectedCategories.forEach((categoryId) => {
+                params.append('categories', categoryId);
               });
+            }
 
-              if (
-                props.facetType === FacetType.Category &&
-                props.selectedCategories.length > 0
-              ) {
-                props.selectedCategories.forEach((categoryId) => {
-                  params.append('categories', categoryId);
-                });
-              }
+            if (
+              props.facetType === FacetType.Search &&
+              props.selectedSearchTerms.length > 0
+            ) {
+              props.selectedSearchTerms.forEach((term) => {
+                params.append('searchTerms', term);
+              });
+            }
 
-              if (
-                props.facetType === FacetType.Search &&
-                props.selectedSearchTerms.length > 0
-              ) {
-                props.selectedSearchTerms.forEach((term) => {
-                  params.append('searchTerms', term);
-                });
-              }
+            const editValuesHref = `${baseUrl}?${params.toString()}`;
 
-              return `${baseUrl}?${params.toString()}`;
-            })()}
-          >
-            {writeEnabled ? 'Edit values' : 'View values'}
-          </Button>
-        )}
+            return (
+              <Button
+                as="a"
+                theme="secondary"
+                onClick={(e: React.MouseEvent) =>
+                  handleEditValuesClick(e, editValuesHref)
+                }
+                href={editValuesHref}
+              >
+                {writeEnabled ? 'Edit values' : 'View values'}
+              </Button>
+            );
+          })()}
       </div>
       <div className={styles.tableCol}>
         {isIncludedFacet && (
@@ -226,9 +258,18 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
 
   if (isIncludedFacet) {
     return (
-      <SortableRow key={id} id={id} disabled={props.isDragDisabled}>
-        {(sortableProps) => renderRow(sortableProps)}
-      </SortableRow>
+      <>
+        <SortableRow key={id} id={id} disabled={props.isDragDisabled}>
+          {(sortableProps) => renderRow(sortableProps)}
+        </SortableRow>
+        {showUnsavedChangesModal && (
+          <ModalEditValuesUnsavedChanges
+            onConfirm={handleModalConfirm}
+            onCancel={() => setShowUnsavedChangesModal(false)}
+            isNewlyIncluded={isNewlyIncluded}
+          />
+        )}
+      </>
     );
   }
 

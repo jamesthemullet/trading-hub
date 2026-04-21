@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
 import { FacetType } from '@/libs/constants/rule-types';
@@ -10,6 +11,7 @@ import { FacetRow } from './facet-row';
 
 const mockDispatch = jest.fn();
 const mockSaveDraft = jest.fn();
+const mockPush = jest.fn();
 
 const mockRuleset = {
   isEnabled: true,
@@ -47,11 +49,7 @@ jest.mock('@/libs/hooks/use-draft-ruleset', () => ({
 }));
 
 jest.mock('next/router', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-    query: {},
-    pathname: '',
-  }),
+  useRouter: jest.fn(),
 }));
 
 const defaultProps: FacetRowProps = {
@@ -62,6 +60,7 @@ const defaultProps: FacetRowProps = {
   index: 0,
   writeEnabled: true,
   onDispatch: mockDispatch,
+  hasChanges: false,
   lastChanged: {
     date: '2021-01-01T08:34:15Z',
     user: 'Test User',
@@ -91,6 +90,11 @@ describe('FacetRow', () => {
   });
 
   beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+      query: {},
+      pathname: '',
+    });
     // Suppress console.error for navigation not implemented in jsdom
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -317,5 +321,92 @@ describe('FacetRow', () => {
     await user.click(editButton);
 
     expect(mockSaveDraft).not.toHaveBeenCalled();
+  });
+
+  it('should show unsaved changes modal when hasChanges is true and edit values is clicked', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        writeEnabled
+        hasChanges
+      />
+    );
+
+    await user.click(screen.getByRole('link', { name: 'Edit values' }));
+
+    expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+  });
+
+  it('should navigate to edit values href when confirming unsaved changes modal', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        writeEnabled
+        hasChanges
+      />
+    );
+
+    await user.click(screen.getByRole('link', { name: 'Edit values' }));
+    await user.click(
+      screen.getByRole('button', { name: 'Discard changes and continue' })
+    );
+
+    expect(mockPush).toHaveBeenCalledWith(
+      expect.stringContaining('/facets/values/edit/color-123')
+    );
+  });
+
+  it('should close unsaved changes modal and stay on page when continuing to edit', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        writeEnabled
+        hasChanges
+      />
+    );
+
+    await user.click(screen.getByRole('link', { name: 'Edit values' }));
+    expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Stay on page' }));
+
+    expect(
+      screen.queryByText('You have unsaved changes')
+    ).not.toBeInTheDocument();
+  });
+
+  it('should show the newly-included warning in the modal when isNewlyIncluded is true', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        writeEnabled
+        hasChanges
+        isNewlyIncluded
+      />
+    );
+
+    await user.click(screen.getByRole('link', { name: 'Edit values' }));
+
+    expect(
+      screen.getByText(
+        /any changes made in the edit values screen will also not be saved/i
+      )
+    ).toBeInTheDocument();
   });
 });

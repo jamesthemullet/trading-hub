@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useGlobalRuleSetCreate } from '@/libs/hooks';
+import { facetsListMock } from '@/pages/api/search/mocks';
 
 import { renderWithProviders } from '../../../../test/render-with-providers';
 import Page from './index.page';
@@ -15,6 +16,11 @@ jest.mock('next/router', () => ({
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGlobalRuleSetCreate: jest.fn(),
+  useFacetsList: () => ({
+    isLoading: false,
+    facets: facetsListMock.facets,
+    error: '',
+  }),
 }));
 
 describe('Global Facet Management New', () => {
@@ -62,6 +68,11 @@ describe('Global Facet Management New', () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(<Page />);
+
+    await user.click(screen.getAllByText('Exclude only')[0]);
+    await waitFor(() => {
+      expect(screen.getByTestId('Row showing color as excluded')).toBeVisible();
+    });
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
