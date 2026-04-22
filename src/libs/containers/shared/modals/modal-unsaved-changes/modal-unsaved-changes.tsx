@@ -25,15 +25,16 @@ export const ModalUnsavedChanges = ({
       <Modal.Overlay blur={3} />
       <Modal.Content aria-labelledby={titleId} aria-describedby={descriptionId}>
         <Modal.Body>
-          <Typography
-            as="h2"
-            id={titleId}
-            variant="bodySmall"
-            isStrong
-            className={styles.heading}
-          >
-            Close without saving edits
-          </Typography>
+          <Modal.Title component="div" id={titleId}>
+            <Typography
+              as="h2"
+              variant="bodySmall"
+              isStrong
+              className={styles.heading}
+            >
+              Close without saving edits
+            </Typography>
+          </Modal.Title>
           <Typography id={descriptionId} variant="bodySmall">
             Are you sure you want to navigate away from this page without saving
             your edits?

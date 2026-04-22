@@ -338,7 +338,9 @@ describe('FacetRow', () => {
 
     await user.click(screen.getByRole('link', { name: 'Edit values' }));
 
-    expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'You have unsaved changes' })
+    ).toBeInTheDocument();
   });
 
   it('should navigate to edit values href when confirming unsaved changes modal', async () => {
@@ -378,12 +380,14 @@ describe('FacetRow', () => {
     );
 
     await user.click(screen.getByRole('link', { name: 'Edit values' }));
-    expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'You have unsaved changes' })
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Stay on page' }));
 
     expect(
-      screen.queryByText('You have unsaved changes')
+      screen.queryByRole('heading', { name: 'You have unsaved changes' })
     ).not.toBeInTheDocument();
   });
 
@@ -404,8 +408,11 @@ describe('FacetRow', () => {
     await user.click(screen.getByRole('link', { name: 'Edit values' }));
 
     expect(
+      screen.getByRole('heading', { name: 'Save required to continue' })
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(
-        /any changes made in the edit values screen will also not be saved/i
+        /Until this change is saved, any updates made in Edit facet values cannot be saved/i
       )
     ).toBeInTheDocument();
   });

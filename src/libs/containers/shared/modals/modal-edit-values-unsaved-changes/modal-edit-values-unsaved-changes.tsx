@@ -25,29 +25,23 @@ export const ModalEditValuesUnsavedChanges = ({
       <Modal.Overlay blur={3} />
       <Modal.Content aria-labelledby={titleId} aria-describedby={descriptionId}>
         <Modal.Body>
-          <Typography
-            as="h2"
-            id={titleId}
-            variant="bodySmall"
-            isStrong
-            className={styles.heading}
-          >
-            You have unsaved changes
-          </Typography>
+          <Modal.Title component="div" id={titleId}>
+            <Typography
+              as="h2"
+              variant="bodySmall"
+              isStrong
+              className={styles.heading}
+            >
+              {isNewlyIncluded
+                ? 'Save required to continue'
+                : 'You have unsaved changes'}
+            </Typography>
+          </Modal.Title>
           <Typography id={descriptionId} variant="bodySmall">
-            Navigating to edit facet values will discard your unsaved changes.
-            Do you want to continue?
+            {isNewlyIncluded
+              ? 'You’ve changed this facet to Include only, but haven’t saved it. Until this change is saved, any updates made in Edit facet values cannot be saved and will be lost. Do you want to continue?'
+              : 'Navigating to edit facet values will discard your unsaved changes. Do you want to continue?'}
           </Typography>
-          {isNewlyIncluded && (
-            <>
-              <br />
-              <Typography variant="bodySmall">
-                Note: as this facet was recently set to &lsquo;include
-                only&rsquo;, any changes made in the edit values screen will
-                also not be saved.
-              </Typography>
-            </>
-          )}
           <span className={styles.divider} />
           <div className={styles.buttons}>
             <Button onClick={onCancel} theme="primary" isInline data-autofocus>

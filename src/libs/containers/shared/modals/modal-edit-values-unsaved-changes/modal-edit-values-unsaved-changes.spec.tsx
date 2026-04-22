@@ -14,7 +14,9 @@ describe('ModalEditValuesUnsavedChanges', () => {
       />
     );
 
-    expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'You have unsaved changes' })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Stay on page' })
     ).toBeInTheDocument();
@@ -24,23 +26,17 @@ describe('ModalEditValuesUnsavedChanges', () => {
     expect(
       screen.queryByText(/any changes made in the edit values screen/i)
     ).not.toBeInTheDocument();
-  });
-
-  it('should not show the extra values warning when isNewlyIncluded is false', () => {
-    renderWithProviders(
-      <ModalEditValuesUnsavedChanges
-        onConfirm={jest.fn()}
-        onCancel={jest.fn()}
-        isNewlyIncluded={false}
-      />
-    );
-
     expect(
-      screen.queryByText(/any changes made in the edit values screen/i)
+      screen.getByText(
+        'Navigating to edit facet values will discard your unsaved changes. Do you want to continue?'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Save required to continue' })
     ).not.toBeInTheDocument();
   });
 
-  it('should show the extra values warning when isNewlyIncluded is true', () => {
+  it('should show save-required title and description when isNewlyIncluded is true', () => {
     renderWithProviders(
       <ModalEditValuesUnsavedChanges
         onConfirm={jest.fn()}
@@ -50,10 +46,16 @@ describe('ModalEditValuesUnsavedChanges', () => {
     );
 
     expect(
+      screen.getByRole('heading', { name: 'Save required to continue' })
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(
-        /any changes made in the edit values screen will also not be saved/i
+        /Until this change is saved, any updates made in Edit facet values cannot be saved/i
       )
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'You have unsaved changes' })
+    ).not.toBeInTheDocument();
   });
 
   it('should call onCancel when Stay on page is clicked', async () => {
