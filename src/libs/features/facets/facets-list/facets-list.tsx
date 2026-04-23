@@ -300,7 +300,7 @@ export const FacetsList = ({
           ...acc,
           [facet.id]: index + 1,
         }),
-        {} as Record<string, number>
+        {}
       ) || {},
     [ruleset.facets]
   );

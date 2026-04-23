@@ -118,7 +118,7 @@ describe('...NextAuth', () => {
             refresh_token: 'refresh_token',
             ext_expires_in: 123,
           } as JwtCallbackArgs['account'],
-        } as JwtCallbackArgs)
+        })
       ).toEqual({
         accessToken: 'token.eyJyb2xlcyI6WyJST0xFMS5Xcml0ZSJdfQ==',
         accessTokenExpires: 223000,
@@ -157,7 +157,7 @@ describe('...NextAuth', () => {
             refresh_token: 'refresh_token',
             ext_expires_in: 123,
           } as JwtCallbackArgs['account'],
-        } as JwtCallbackArgs)
+        })
       ).toEqual({
         accessToken: 'token.e30=',
         accessTokenExpires: 223000,

@@ -91,7 +91,7 @@ export const useGlobalFacetAttributesEditModal = ({
       await checkMergeNameUnique({
         facetId: facet.id,
         searchQuery: trimmedNewValue,
-        countryCode: countryCode ?? ('UK_IE' as MerchandisingCountryCode),
+        countryCode: countryCode ?? 'UK_IE',
         exceptions: selectedRows
           .flatMap((row) => row.attributes)
           .filter((val) => !demergedValues.includes(val)),

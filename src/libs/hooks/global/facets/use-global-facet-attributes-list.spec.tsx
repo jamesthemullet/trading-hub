@@ -108,22 +108,15 @@ const createInitialOrders = (state: GlobalAttributesPageState) =>
 const createHookParams = (overrides: Partial<HookParams> = {}): HookParams => {
   const state = overrides.globalAttributesLocalState ?? createBaseState();
   const dispatch: ActionDispatch<[action: GlobalAttributesPageReducer]> =
-    overrides.dispatch ??
-    (jest.fn() as unknown as ActionDispatch<
-      [action: GlobalAttributesPageReducer]
-    >);
-  const setIsAwaitingUpdate =
-    overrides.setIsAwaitingUpdate ??
-    (jest.fn() as unknown as HookParams['setIsAwaitingUpdate']);
+    overrides.dispatch ?? jest.fn();
+  const setIsAwaitingUpdate = overrides.setIsAwaitingUpdate ?? jest.fn();
 
   return {
     attributeValues: [] as MerchandisingAttributeValuesResponse['values'],
     searchQuery: '',
     countryCode: 'GB' as MerchandisingCountryCode,
     editingValues: [],
-    setEditingValues:
-      overrides.setEditingValues ??
-      (jest.fn() as unknown as HookParams['setEditingValues']),
+    setEditingValues: overrides.setEditingValues ?? jest.fn(),
     globalAttributesLocalState: state,
     isWriteEnabled: true,
     setIsAwaitingUpdate,

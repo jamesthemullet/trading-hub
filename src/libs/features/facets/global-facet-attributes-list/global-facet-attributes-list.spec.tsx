@@ -1,10 +1,6 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type {
-  MerchandisingCountryCode,
-  MerchandisingReturnedGlobalFacet,
-} from '@/libs/api';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { GlobalFacetAttributesListProps } from './global-facet-attributes-list';
@@ -37,7 +33,7 @@ describe('FacetAttributesList', () => {
     setIsAwaitingUpdate: jest.fn(),
     isAwaitingUpdate: false,
     searchQuery: '',
-    countryCode: 'UK' as MerchandisingCountryCode,
+    countryCode: 'UK',
     editingValues: [],
     dispatch: dispatchMock,
     globalAttributesLocalState: {
@@ -70,7 +66,7 @@ describe('FacetAttributesList', () => {
         date: '2023-01-01',
         user: 'test-user',
       },
-    } as MerchandisingReturnedGlobalFacet,
+    },
   };
 
   beforeEach(() => {

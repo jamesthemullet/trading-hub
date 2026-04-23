@@ -79,7 +79,7 @@ const includedProps: FacetRowProps = {
   selectedCategories: [],
   selectedSearchTerms: [],
   facetType: FacetType.Category,
-  countryCode: 'UK_IE' as MerchandisingCountryCode,
+  countryCode: 'UK_IE',
   rulesetId: 'test-ruleset-id',
   currentRuleset: mockRuleset,
 };

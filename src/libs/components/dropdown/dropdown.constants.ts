@@ -72,14 +72,14 @@ export const RULE_TYPE_FILTER_OPTIONS: RuleTypeFilterOption[] = [
     index: 1,
     label: 'Ranking rules',
     selected: false,
-    value: 'RANKING' as RuleTypeFilter,
+    value: 'RANKING',
     ariaLabel: 'show rule types with ranking rules',
   },
   {
     index: 2,
     label: 'Facet rules',
     selected: false,
-    value: 'FACET' as RuleTypeFilter,
+    value: 'FACET',
     ariaLabel: 'show rule types with facet rules',
   },
 ];
