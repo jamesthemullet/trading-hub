@@ -1,0 +1,59 @@
+name: Sync API schema
+
+on:
+  schedule:
+    # Runs every weekday at 08:00 UTC
+    - cron: '0 8 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Sync search-merchandising.yml and regenerate types
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download latest API schema
+        run: |
+          curl -sfL \
+            "https://raw.githubusercontent.com/DigitalInnovation/search-service/develop/search-service-app/src/main/resources/static/search-merchandising.yml" \
+            -o src/libs/api/api.yml
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet src/libs/api/api.yml; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare node and install dependencies
+        if: steps.diff.outputs.changed == 'true'
+        uses: ./.github/actions/prepare
+
+      - name: Regenerate TypeScript client
+        if: steps.diff.outputs.changed == 'true'
+        run: pnpm run codegen
+
+      - name: Open pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v8.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/sync-api-schema
+          commit-message: 'chore: sync API schema from search-service'
+          title: 'chore: sync API schema from search-service'
+          body: |
+            Automated sync of `src/libs/api/api.yml` from the [search-service](https://github.com/DigitalInnovation/search-service/blob/develop/search-service-app/src/main/resources/static/search-merchandising.yml).
+
+            TypeScript client has been regenerated via `pnpm run codegen`.
+
+            Please review the diff and merge if the changes look correct.
+          labels: dependencies
+          delete-branch: true
