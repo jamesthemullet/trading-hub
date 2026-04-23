@@ -1,0 +1,60 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.error {
+  color: var(--color-state-error-error);
+}
+
+.results {
+  padding: var(--mns-spacing-3) var(--mns-spacing-4);
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-2);
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: var(--mns-spacing-2);
+}
+
+.statusBadge {
+  padding: var(--mns-spacing-0-5) var(--mns-spacing-1);
+  border-radius: 4px;
+  background-color: var(--color-state-success-success-container);
+
+  p {
+    color: var(--color-state-success-on-success-container);
+  }
+}
+
+.issues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-1);
+}
+
+.issueList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-1);
+}
+
+.issue {
+  padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
+  border: 1px solid var(--color-states-black-pressed);
+  border-radius: 4px;
+}
+
+.action {
+  color: var(--color-role-link-link-on-bright);
+}
