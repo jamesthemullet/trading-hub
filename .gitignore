@@ -64,8 +64,5 @@ test-results.json
 /playwright/.cache/
 .swc/
 
-# New Relic
-newrelic_agent.log
-
 *storybook.log
 biome.json

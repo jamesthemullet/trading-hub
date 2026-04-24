@@ -1,4 +1,4 @@
-name: PR validate and deploy
+name: PR validate
 
 on:
   pull_request:
@@ -7,10 +7,7 @@ on:
       - main
       - hotfix
 permissions:
-  issues: write
-  pull-requests: write
   contents: read
-  id-token: write
 
 concurrency:
   cancel-in-progress: true
@@ -239,11 +236,6 @@ jobs:
           ls -la .next/standalone
           test -f .next/standalone/server.js
 
-      - name: Zip all files for upload between jobs
-        run: |
-          cd .next/standalone
-          zip -qr next.zip .
-
       - name: Track bundle sizes
         if: success()
         run: |
@@ -298,12 +290,6 @@ jobs:
               }
             }' || echo "Failed to send bundle size event to Dynatrace"
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v7
-        with:
-          name: node-app
-          path: .next/standalone/next.zip
-
       - name: Track build timing
         if: success()
         run: |
@@ -355,224 +341,6 @@ jobs:
                 ]
               }
             }' || echo "Failed to send build timing event to Dynatrace"
-
-  comment-deployment-message:
-    if: ${{ github.event_name == 'pull_request' }}
-    name: Comment deployment message
-    needs: deploy-pr-env
-    runs-on: ubuntu-latest
-    steps:
-      - name: Find Comment
-        uses: peter-evans/find-comment@v4
-        id: find-comment
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-includes: Deploying PR environments
-
-      - name: Create comment
-        if: steps.find-comment.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## Deploying PR environments 🖌
-
-            PR URLs follow the following format:
-            ```
-            https://${{ github.event.pull_request.number }}-[8-letter-app-hash].azurewebsites.net
-            ```
-            > [!NOTE]
-            > 1. PR environments are destroyed overnight
-            > 2. More info on PR URLs format (seen above) [here](https://onyx.engineering.mnscorp.net/how-to/pipelines/pr-envs.html#pr-url-naming-convention)
-
-            | App | URL |
-            | --- | --- |
-
-  deploy-pr-env:
-    name: Deploy PR Environment
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
-      contents: read
-    needs: build
-    environment:
-      name: deveun
-    steps:
-      - name: Record job start time
-        id: job-start
-        run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
-
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - id: dynamic-env-name
-        name: Get PR environment name
-        uses: DigitalInnovation/brightcloud/.github/actions/get-app-name@feat/oidcn
-
-      - name: Check if PR infra is deployed
-        id: check-infra-deployed
-        uses: nick-fields/retry@v4.0.0
-        with:
-          timeout_seconds: 60
-          max_attempts: 10
-          retry_wait_seconds: 30
-          command: |
-            set +e
-            echo "infra_deployed=true" >> "$GITHUB_OUTPUT"
-            curl -I https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net
-            EXITCODE=$?
-            if [ "$EXITCODE" -eq "6" ]; then
-              echo "infra_deployed=false" >> "$GITHUB_OUTPUT"
-              exit 1
-            fi
-            set -e
-            exit 0
-
-      - name: Login via Azure CLI
-        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        uses: azure/login@v3.0.0
-        with:
-          client-id: ${{ secrets._AZURE_AD_CLIENT_ID }}
-          tenant-id: ${{ secrets._AZURE_AD_TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
-      - name: Download artifact
-        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        uses: actions/download-artifact@v8
-        with:
-          name: node-app
-
-      - name: Deploy artifact to PR environment
-        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        uses: nick-fields/retry@v4.0.0
-        with:
-          timeout_seconds: 360
-          max_attempts: 5
-          retry_wait_seconds: 10
-          command: |
-            set -x
-            resource_group_name=dev-${{ steps.dynamic-env-name.outputs.dynamic-env-name }}-v1-eun-layer3-rg
-            app_name=${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
-            echo deploying $app_name to $resource_group_name
-            az webapp deploy \
-              --resource-group $resource_group_name \
-              --name $app_name \
-              --src-path ./next.zip --timeout 360 \
-              --type zip \
-              --async true
-
-      - name: Find deployment comment
-        if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
-        id: find-deployment-comment
-        uses: peter-evans/find-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-includes: Deploying PR environments
-
-      - name: Check if already includes URL
-        if: ${{ steps.check-infra-deployed.outputs.infra_deployed == 'true' && github.event_name == 'pull_request' }}
-        id: check-if-already-includes
-        uses: peter-evans/find-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-includes: ${{ steps.dynamic-env-name.outputs.dynamic-env-name }}
-
-      - name: Update deployment comment
-        if: |
-          steps.check-infra-deployed.outputs.infra_deployed == 'true'
-          && steps.find-deployment-comment.outputs.comment-id != ''
-          && steps.check-if-already-includes.outputs.comment-id == ''
-          && github.event_name == 'pull_request'
-        continue-on-error: true
-        uses: peter-evans/create-or-update-comment@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          comment-id: ${{ steps.find-deployment-comment.outputs.comment-id }}
-          body: |
-            | `${{ steps.dynamic-env-name.outputs.dynamic-env-name }}` | https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net |
-          edit-mode: append
-
-      - name: Update description
-        uses: actions/github-script@v9
-        env:
-          INPUT_PR_NUMBER: ${{ github.event.number }}
-        with:
-          script: |
-            const prNumber = process.env.INPUT_PR_NUMBER;    
-            const currentPr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber
-            });
-            const currentPrBody = currentPr.data.body;
-            const newPrBody = currentPrBody.replaceAll('http://localhost:3000', `https://${{ steps.dynamic-env-name.outputs.dynamic-env-name }}.azurewebsites.net`);
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-              body: newPrBody
-            });
-
-      - name: Delete zip file
-        if: steps.check-infra-deployed.outputs.infra_deployed == 'true'
-        run: rm next.zip
-
-      - name: Cancel build due to failure
-        if: ${{ failure() }}
-        uses: andymckay/cancel-action@0.5
-
-      - name: Track deploy-pr-env timing
-        if: success()
-        run: |
-          end_time=$(date +%s)
-          duration=$((end_time - ${{ steps.job-start.outputs.start_time }}))
-          echo "Deploy PR env duration: ${duration} seconds"
-
-          minutes=$((duration / 60))
-          seconds=$((duration % 60))
-
-          DYNATRACE_URL="${{ secrets.DYNATRACE_URL }}"
-          DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
-          SERVICE_NAME="trading-hub"
-
-          curl -X POST "$DYNATRACE_URL/api/v2/events/ingest" \
-            -H "Authorization: Api-Token $DYNATRACE_API_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "eventType": "CUSTOM_ANNOTATION",
-              "title": "GitHub Workflow Job Completed: deploy-pr-env",
-              "description": "PR environment deployment completed in '"${minutes}m ${seconds}s"' ('"$duration"' seconds) with status: ${{ job.status }}",
-              "properties": {
-                "serviceName": "'"$SERVICE_NAME"'",
-                "jobName": "deploy-pr-env",
-                "duration": '"$duration"',
-                "status": "${{ job.status }}",
-                "workflow": "${{ github.workflow }}",
-                "branch": "${{ github.ref_name }}",
-                "repository": "${{ github.repository }}",
-                "runId": "${{ github.run_id }}",
-                "prNumber": "${{ github.event.number }}",
-                "actor": "${{ github.actor }}"
-              },
-              "attachRules": {
-                "tagRule": [
-                  {
-                    "meTypes": ["SERVICE"],
-                    "tags": [
-                      {
-                        "key": "service",
-                        "value": "'"$SERVICE_NAME"'"
-                      },
-                      {
-                        "key": "environment",
-                        "value": "dev"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }' || echo "Failed to send deploy-pr-env timing event to Dynatrace"
 
   e2e-tests-shards:
     runs-on: ubuntu-latest
@@ -813,16 +581,7 @@ jobs:
   track-workflow-timing:
     name: Track Workflow Performance
     runs-on: ubuntu-latest
-    needs:
-      [
-        code-quality,
-        unit-tests,
-        build,
-        comment-deployment-message,
-        deploy-pr-env,
-        end-to-end-tests,
-        storybook-a11y,
-      ]
+    needs: [code-quality, unit-tests, build, end-to-end-tests, storybook-a11y]
     if: success()
     steps:
       - name: Calculate and send workflow metrics
@@ -845,13 +604,11 @@ jobs:
           if [[ "${{ needs.code-quality.result }}" == "failure" || \
                 "${{ needs.unit-tests.result }}" == "failure" || \
                 "${{ needs.build.result }}" == "failure" || \
-                "${{ needs.deploy-pr-env.result }}" == "failure" || \
                 "${{ needs.end-to-end-tests.result }}" == "failure" ]]; then
             workflow_status="failure"
           elif [[ "${{ needs.code-quality.result }}" == "cancelled" || \
                   "${{ needs.unit-tests.result }}" == "cancelled" || \
                   "${{ needs.build.result }}" == "cancelled" || \
-                  "${{ needs.deploy-pr-env.result }}" == "cancelled" || \
                   "${{ needs.end-to-end-tests.result }}" == "cancelled" ]]; then
             workflow_status="cancelled"
           else
@@ -882,7 +639,6 @@ jobs:
                 "codeQualityResult": "${{ needs.code-quality.result }}",
                 "unitTestsResult": "${{ needs.unit-tests.result }}",
                 "buildResult": "${{ needs.build.result }}",
-                "deployResult": "${{ needs.deploy-pr-env.result }}",
                 "e2eTestsResult": "${{ needs.end-to-end-tests.result }}"
               },
               "attachRules": {
@@ -909,7 +665,6 @@ jobs:
           echo "  - code-quality: ${{ needs.code-quality.result }}"
           echo "  - unit-tests: ${{ needs.unit-tests.result }}"
           echo "  - build: ${{ needs.build.result }}"
-          echo "  - deploy-pr-env: ${{ needs.deploy-pr-env.result }}"
           echo "  - end-to-end-tests: ${{ needs.end-to-end-tests.result }}"
         env:
           DYNATRACE_URL: ${{ secrets.DYNATRACE_URL }}

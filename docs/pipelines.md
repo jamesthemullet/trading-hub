@@ -31,16 +31,18 @@
 
 ## PR Validation Pipeline (`pr-validate-and-deploy.yml`)
 
-- **Purpose**: Validates pull requests and creates preview environments
+- **Purpose**: Validates pull requests
 - **_Notes_** This rule is set as a required check for merging to `main` branch, but not for `hotfix` branch as pipeline for release has a `sync-branches` job that fails if branch protection is enabled on `hotfix` branch, if merging anything to `hotfix` make sure not to merge without this pipeline check.
 - **Steps**:
   1. **Code Quality**
      - Runs tests and linting
      - Type checking and formatting validation
-  2. **Preview Deployment**
-     - Creates PR preview environment
-     - Authentication setup using `github-trading-hub` Service Principal
-     - Preview URL provided in PR comments
+  2. **Build**
+     - Builds the application and validates standalone output
+  3. **E2E Tests**
+     - Runs Playwright end-to-end tests
+  4. **Storybook Accessibility**
+     - Runs accessibility tests against Storybook
 
 ## Smoke Tests Pipeline (`smoke-tests.yml`)
 
@@ -53,14 +55,6 @@
   - Dynatrace integration for failure alerts
   - Email notifications after 2 consecutive failures
   - Early warning after single failure
-
-## Infrastructure Pipeline (`pr-infrastructure.yml`)
-
-- **Purpose**: Manages Azure infrastructure
-- **Features**:
-  - App registration management
-  - PR preview environment setup
-  - Uses Azure federated credentials for security
 
 ## Security Features
 

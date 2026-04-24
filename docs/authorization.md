@@ -126,7 +126,16 @@ To modify your own app registration please follow those steps:
 3. Navigate to roles section, in Azure it is called `App roles`
 4. It will contain no roles if you are adding them for the first time, but there might be already some roles there if you have been following this guide before.
    ![App Roles](img/authorization-roles-azure.png 'App Roles')
-5. The list of roles currently supported can be found [here](./../.github/workflows/pr-infrastructure.yml) look for '"App does not exist, creating..."' section. Alternatively you can look up kk-trading-hub app registration and copy its setup - though that is not guaranteed to be up to date.
+5. The supported roles are:
+   - `Cat.W` - MerchHubCategory.Write
+   - `Cat.R` - MerchHubCategory.Read
+   - `Search.W` - MerchHubSearch.Write
+   - `Search.R` - MerchHubSearch.Read
+   - `Glob.W` - MerchHubGlobal.Write
+   - `Glob.R` - MerchHubGlobal.Read
+
+   Alternatively you can look up kk-trading-hub app registration and copy its setup - though that is not guaranteed to be up to date.
+
 6. For each role that you are missing:
    1. Click `Create app role`, this will open a panel on the right side
    2. Set `Display name` like `MerchHubGlobal.Read`
