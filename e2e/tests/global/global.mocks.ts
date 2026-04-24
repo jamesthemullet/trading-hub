@@ -56,6 +56,7 @@ export const mockGlobalRuleset: MerchandisingReturnedGlobalRuleSet = {
 export const mockGlobalFacet: MerchandisingFacetsList = {
   facets: [
     {
+      type: 'root',
       id: 'f62d4de1-563e-11ef-a364-000000000000',
       indexPropertyName: 'absorbencyLevel',
       displayValue: 'Absorbency Levels',
@@ -65,6 +66,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'f0bc2d42-563e-11ef-a364-000000000000',
       indexPropertyName: 'recommendedAgeRange',
       displayValue: 'Age',
@@ -80,6 +82,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       ],
     },
     {
+      type: 'root',
       id: '4f8d4800-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'alcoholContent',
       displayValue: 'Alcohol Percentage',
@@ -89,6 +92,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [{ displayValue: 'Over 200000', mergedValues: ['Over 20'] }],
     },
     {
+      type: 'root',
       id: '29102aa3-54d4-11ef-af66-000000000000',
       indexPropertyName: 'drinkStyle',
       displayValue: 'Alcohol Type',
@@ -102,6 +106,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       ],
     },
     {
+      type: 'root',
       id: '50f6ea20-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'furnitureAssemblyType',
       displayValue: 'Assembly Typey',
@@ -111,6 +116,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'f04094a0-563e-11ef-a364-000000000000',
       indexPropertyName: 'babySize',
       displayValue: 'Baby Sizes',
@@ -163,6 +169,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'f07475e4-563e-11ef-a364-000000000000',
       indexPropertyName: 'homeFeature2',
       displayValue: 'Benefit',
@@ -172,6 +179,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'f07475e5-563e-11ef-a364-000000000000',
       indexPropertyName: 'homeFeature2',
       displayValue: 'Benefits',
@@ -181,6 +189,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: '51019882-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'personalCareBenefit',
       displayValue: 'Benefity',
@@ -190,6 +199,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'f0fc4380-563e-11ef-a364-000000000000',
       indexPropertyName: 'wineTaste',
       displayValue: 'Body',
@@ -199,6 +209,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'f06840e4-563e-11ef-a364-000000000000',
       indexPropertyName: 'bodyFit',
       displayValue: 'Body Fit',
@@ -208,6 +219,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [{ displayValue: 'Taller than Tall', mergedValues: ['Tall'] }],
     },
     {
+      type: 'root',
       id: '1e511220-3240-11ef-aa09-000000000000',
       indexPropertyName: 'bodyFit',
       displayValue: 'Body Fitto',
@@ -217,6 +229,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: '5113e800-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'braShape',
       displayValue: 'Bra Shape',
@@ -226,6 +239,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: '1794d3e1-3240-11ef-aa09-000000000000',
       indexPropertyName: 'brand_1',
       displayValue: 'Brand_1',
@@ -244,6 +258,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'ff2bdb02-563e-11ef-a364-000000000000',
       indexPropertyName: 'bulbColour',
       displayValue: 'Bulb Colour',
@@ -253,6 +268,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'f0884c00-563e-11ef-a364-000000000000',
       indexPropertyName: 'homeLongevity',
       displayValue: 'Burn Time',
@@ -262,6 +278,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: '4f8d4801-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'careInstruction',
       displayValue: 'Care Instruction',
@@ -275,6 +292,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: 'f0421b40-563e-11ef-a364-000000000000',
       indexPropertyName: 'careInstruction',
       displayValue: 'Care Instructions',
@@ -284,6 +302,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: '528e50d2-5f32-4248-868b-72cdce842597',
       indexPropertyName: 'colourGroup',
       displayValue: 'Colour',
@@ -293,6 +312,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: '4f8d4802-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'colourGroup',
       displayValue: 'Colourgroup',
@@ -302,6 +322,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       merged: [],
     },
     {
+      type: 'root',
       id: '4f8d4803-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'colour',
       displayValue: 'Colours',
@@ -314,6 +335,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
 };
 
 export const mockEditedFacet: MerchandisingReturnedGlobalFacet = {
+  type: 'root',
   id: 'f0bc2d42-563e-11ef-a364-000000000000',
   indexPropertyName: 'recommendedAgeRange',
   displayValue: 'Hue',

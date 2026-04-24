@@ -56,6 +56,7 @@ describe('FacetAttributesList', () => {
     isWriteEnabled: true,
     setEditingValues: jest.fn(),
     facet: {
+      type: 'root',
       id: 'color',
       boosted: [],
       excludedValues: [],

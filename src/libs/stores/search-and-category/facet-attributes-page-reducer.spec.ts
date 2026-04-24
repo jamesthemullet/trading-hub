@@ -3,6 +3,7 @@ import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 import { facetAttributesPageReducer } from './facet-attributes-page-reducer';
 
 const mockReturnedGlobalFacetState: MerchandisingReturnedGlobalFacet = {
+  type: 'root',
   id: 'color',
   lastChanged: {
     date: '2021-10-01',

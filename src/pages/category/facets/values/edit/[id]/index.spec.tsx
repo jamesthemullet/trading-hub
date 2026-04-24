@@ -258,6 +258,7 @@ describe('Index', () => {
               mergedValues: ['merged 1', 'merged 2'],
             },
           ],
+          type: 'root',
         },
         {
           id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',

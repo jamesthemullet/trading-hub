@@ -1,8 +1,3 @@
-# This file should be kept up to date with the source
-#
-# copied from https://github.com/DigitalInnovation/search-service/blob/develop/search-service-app/src/main/resources/static/search-merchandising.yml
-#
-
 openapi: 3.0.3
 info:
   title: Merchandising Hub API
@@ -1409,6 +1404,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Facets
+      summary: Delete a Global Facet
+      description: Deletes a global facet.
+      parameters:
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The facet to delete
+      responses:
+        '200':
+          description: Facet was deleted successfully
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/facet/{facetId}/history:
     get:
       security:
@@ -2269,6 +2295,7 @@ components:
               format: date-time
             user:
               type: string
+              description: The user who last changed the entity. Note - this field is redacted ("[redacted]") in Kafka event payloads to prevent PII leakage.
           required:
             - date
             - user
@@ -2432,6 +2459,16 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingFacetConfig'
         - $ref: '#/components/schemas/MerchandisingIdentifier'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - root
+                - variant
+              description: The level of the facet, either root level or variant (nested) level
+          required:
+            - type
     MerchandisingReturnedGlobalFacet:
       type: object
       allOf:

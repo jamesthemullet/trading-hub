@@ -137,10 +137,12 @@ export const facetsListMock: BetaMerchandisingFacetListData = {
           mergedValues: ['merged 1', 'merged 2'],
         },
       ],
+      type: 'root',
       boosted: ['Cotton', 'Duck Down'],
       excludedValues: ['Ducky Downy'],
     },
     {
+      type: 'root',
       displayValue: 'size',
       indexPropertyName: 'size',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a85',
@@ -151,6 +153,7 @@ export const facetsListMock: BetaMerchandisingFacetListData = {
       merged: [],
     },
     {
+      type: 'root',
       displayValue: 'brand',
       indexPropertyName: 'brand',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
@@ -161,6 +164,7 @@ export const facetsListMock: BetaMerchandisingFacetListData = {
       merged: [],
     },
     {
+      type: 'root',
       displayValue: 'category',
       indexPropertyName: 'category',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
@@ -171,6 +175,7 @@ export const facetsListMock: BetaMerchandisingFacetListData = {
       merged: [],
     },
     {
+      type: 'root',
       displayValue: 'price',
       indexPropertyName: 'price',
       id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a88',

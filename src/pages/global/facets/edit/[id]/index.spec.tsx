@@ -274,6 +274,7 @@ describe('Global Facet Management Editing', () => {
                 mergedValues: ['merged 1', 'merged 2'],
               },
             ],
+            type: 'root',
           },
           {
             boosted: undefined,
@@ -286,6 +287,7 @@ describe('Global Facet Management Editing', () => {
               user: 'Test User',
             },
             merged: [],
+            type: 'root',
           },
           {
             boosted: undefined,
@@ -298,6 +300,7 @@ describe('Global Facet Management Editing', () => {
               user: 'Test User',
             },
             merged: [],
+            type: 'root',
           },
         ],
         rules: mockMerchandisingRules,

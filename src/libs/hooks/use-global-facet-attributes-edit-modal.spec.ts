@@ -18,6 +18,7 @@ jest.mock('@/libs/hooks', () => ({
 }));
 
 const mockFacet: MerchandisingReturnedGlobalFacet = {
+  type: 'root',
   id: 'facet-1',
   indexPropertyName: 'facet-1',
   displayValue: 'facet-1',

@@ -51,6 +51,10 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         run: pnpm run codegen
 
+      - name: Format generated files
+        if: steps.diff.outputs.changed == 'true'
+        run: pnpm run format
+
       - name: Open pull request
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v8.1.1

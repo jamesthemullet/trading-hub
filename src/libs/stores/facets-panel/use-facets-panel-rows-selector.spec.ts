@@ -42,6 +42,7 @@ describe('useFacetsRowsSelector', () => {
             mergedValues: ['merged 1', 'merged 2'],
           },
         ],
+        type: 'root',
         meta: {
           isBeginningOfDisplayTypeGroup: true,
           isEndOfDisplayTypeGroup: false,
@@ -57,6 +58,7 @@ describe('useFacetsRowsSelector', () => {
           user: 'Test User',
         },
         merged: [],
+        type: 'root',
         meta: {
           isBeginningOfDisplayTypeGroup: false,
           isEndOfDisplayTypeGroup: true,
@@ -72,6 +74,7 @@ describe('useFacetsRowsSelector', () => {
           user: 'Test User',
         },
         merged: [],
+        type: 'root',
         meta: {
           isBeginningOfDisplayTypeGroup: true,
           isEndOfDisplayTypeGroup: false,
@@ -87,6 +90,7 @@ describe('useFacetsRowsSelector', () => {
           user: 'Test User',
         },
         merged: [],
+        type: 'root',
         meta: {
           isBeginningOfDisplayTypeGroup: false,
           isEndOfDisplayTypeGroup: true,
@@ -102,6 +106,7 @@ describe('useFacetsRowsSelector', () => {
           user: 'Test User',
         },
         merged: [],
+        type: 'root',
         meta: {
           isBeginningOfDisplayTypeGroup: true,
           isEndOfDisplayTypeGroup: true,

@@ -1,7 +1,10 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import type { MerchandisingCountryCode } from '@/libs/api/generated/open-api';
+import type {
+  MerchandisingCountryCode,
+  MerchandisingReturnedGlobalFacet,
+} from '@/libs/api/generated/open-api';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -9,16 +12,11 @@ import { GlobalEditableLabel } from './global-editable-label';
 
 const debounceTime = 100;
 
-const mockFacet = {
-  displayName: 'test attribute',
-  type: 'global-only',
-  isEnabled: true,
-  countryCode: 'UK',
+const mockFacet: MerchandisingReturnedGlobalFacet = {
+  type: 'root',
   merged: [],
   indexPropertyName: 'test',
-  excludedFacets: [],
   displayValue: 'test attribute',
-  displayType: 'included',
   id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
   lastChanged: {
     date: '2021-01-01T08:34:15Z',

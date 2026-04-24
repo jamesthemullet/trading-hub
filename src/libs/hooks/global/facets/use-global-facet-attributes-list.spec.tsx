@@ -47,6 +47,7 @@ jest.mock('@/libs/containers/facets/sortable-row/sortable-row', () => ({
 type HookParams = Parameters<typeof useGlobalFacetAttributesList>[0];
 
 const mockFacet: MerchandisingReturnedGlobalFacet = {
+  type: 'root',
   id: 'facet-id',
   displayValue: 'Facet',
   indexPropertyName: 'facetIndex',

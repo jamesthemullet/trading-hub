@@ -1590,6 +1590,7 @@ export const mockProducts: MerchandisingProductSearchResponse = {
 export const mockFacets: BetaMerchandisingFacetListData = {
   facets: [
     {
+      type: 'root',
       id: 'a43271cf-bf57-4e40-8fe3-f3d59f9c4c2e',
       indexPropertyName: 'categoryId',
       displayValue: 'Categories',
@@ -1599,6 +1600,7 @@ export const mockFacets: BetaMerchandisingFacetListData = {
       merged: [],
     },
     {
+      type: 'root',
       id: '513a0da0-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'homeCollection',
       displayValue: 'Collections',
@@ -1608,6 +1610,7 @@ export const mockFacets: BetaMerchandisingFacetListData = {
       merged: [],
     },
     {
+      type: 'root',
       id: '528e50d2-5f32-4248-868b-72cdce842597',
       indexPropertyName: 'colourGroup',
       displayValue: 'Colour',
@@ -1617,6 +1620,7 @@ export const mockFacets: BetaMerchandisingFacetListData = {
       merged: [],
     },
     {
+      type: 'root',
       id: '4f8d4802-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'colourGroup',
       displayValue: 'Colourgroup',
@@ -1626,6 +1630,7 @@ export const mockFacets: BetaMerchandisingFacetListData = {
       merged: [],
     },
     {
+      type: 'root',
       id: '4f8d4803-3eb0-11ef-9a6a-000000000000',
       indexPropertyName: 'colour',
       displayValue: 'Colours',
@@ -1635,6 +1640,7 @@ export const mockFacets: BetaMerchandisingFacetListData = {
       merged: [],
     },
     {
+      type: 'root',
       id: '1e404940-3240-11ef-aa09-000000000000',
       indexPropertyName: 'styles',
       displayValue: 'Style',

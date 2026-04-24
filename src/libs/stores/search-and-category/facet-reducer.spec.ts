@@ -7,6 +7,7 @@ type FacetStateWithOrder = MerchandisingReturnedGlobalFacet & {
 };
 
 const mockReturnedGlobalFacetState: FacetStateWithOrder = {
+  type: 'root',
   id: 'color',
   lastChanged: {
     date: '2021-10-01',
