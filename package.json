@@ -107,7 +107,7 @@
     "jest": "30.3.0",
     "jest-environment-jsdom": "30.3.0",
     "jest-fail-on-console": "3.3.4",
-    "jest-junit": "16.0.0",
+    "jest-junit": "17.0.0",
     "jest-watch-typeahead": "3.0.1",
     "knip": "6.6.1",
     "msw": "2.12.14",
