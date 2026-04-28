@@ -4,7 +4,7 @@ import type { MerchandisingRuleSet } from '@/libs/api';
 
 export const DRAFT_RULESET_SESSION_KEY = 'draftRuleset';
 
-export type DraftBaseRuleset = {
+type DraftBaseRuleset = {
   timestamp: number;
 };
 export type DraftSearchRuleset = DraftBaseRuleset & {

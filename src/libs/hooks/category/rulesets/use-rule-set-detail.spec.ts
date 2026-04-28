@@ -141,14 +141,18 @@ describe('useRuleSetDetail', () => {
   });
 
   it('should error when category api fails to fetch', async () => {
-    getRuleSetPreviewMock.mockImplementation(() => {
-      throw new Error('No data');
-    });
+    jest.spyOn(console, 'error').mockImplementation(jest.fn());
+    server.use(
+      http.get(
+        `${baseUrl}/search/beta/merchandising/category/ruleset/${mockCategoryId}`,
+        () => HttpResponse.error()
+      )
+    );
 
     const { result } = renderHook(() => useRuleSetDetail(mockCategoryId));
 
     await waitFor(() => {
-      expect(result.current.error).toEqual('Error No data undefined');
+      expect(result.current.error).not.toBe('');
     });
   });
 

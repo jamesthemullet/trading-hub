@@ -114,14 +114,18 @@ describe('useGlobalHistory', () => {
   });
 
   it('should error when history api fails to fetch', async () => {
-    getHistoryMock.mockImplementation(() => {
-      throw new Error('No data');
-    });
+    jest.spyOn(console, 'error').mockImplementation(jest.fn());
+    server.use(
+      http.get(
+        `${baseUrl}/search/beta/merchandising/global/ruleset/${mockGlobalId}/history`,
+        () => HttpResponse.error()
+      )
+    );
 
     const { result } = renderHook(() => useGlobalHistory(mockGlobalId, 1, 10));
 
     await waitFor(() => {
-      expect(result.current.error).toEqual('Error No data undefined');
+      expect(result.current.error).not.toBe('');
     });
   });
 

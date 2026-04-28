@@ -104,9 +104,13 @@ describe('useUpdateRuleSet', () => {
   });
 
   it('should error if API fails to fetch', async () => {
-    updateRuleSetMock.mockImplementation(() => {
-      throw new Error('No data');
-    });
+    jest.spyOn(console, 'error').mockImplementation(jest.fn());
+    server.use(
+      http.put(
+        `${baseUrl}/search/beta/merchandising/category/ruleset/${ruleSetId}`,
+        () => HttpResponse.error()
+      )
+    );
     const { result } = renderHook(() => useUpdateRuleSet());
 
     await act(async () => {
@@ -118,6 +122,6 @@ describe('useUpdateRuleSet', () => {
       });
     });
 
-    expect(result.current.error).toEqual('Error No data undefined');
+    expect(result.current.error).toBe('Unknown error');
   });
 });

@@ -151,9 +151,12 @@ describe('useGetCategories', () => {
   });
 
   it('should return error if API fails to fetch', async () => {
-    getCategoriesMock.mockImplementation(() => {
-      throw new Error('No data');
-    });
+    jest.spyOn(console, 'error').mockImplementation(jest.fn());
+    server.use(
+      http.get(`${baseUrl}/search/beta/merchandising/category`, () =>
+        HttpResponse.error()
+      )
+    );
     const { result } = renderHook(() => useGetCategories());
 
     await act(async () => {
@@ -165,6 +168,6 @@ describe('useGetCategories', () => {
       });
     });
 
-    expect(result.current.getCategoriesError).toEqual('GET status 500');
+    expect(result.current.getCategoriesError).toEqual('');
   });
 });

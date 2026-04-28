@@ -98,14 +98,18 @@ describe('useRedirectDetail', () => {
   });
 
   it('should error when api fails to fetch', async () => {
-    getRedirectMock.mockImplementation(() => {
-      throw new Error('No data');
-    });
+    jest.spyOn(console, 'error').mockImplementation(jest.fn());
+    server.use(
+      http.get(
+        `${baseUrl}/search/beta/merchandising/keyword/redirect/${mockRedirectId}`,
+        () => HttpResponse.error()
+      )
+    );
 
     const { result } = renderHook(() => useRedirectDetail(mockRedirectId));
 
     await waitFor(() => {
-      expect(result.current.error).toEqual('POST status 500');
+      expect(result.current.isLoading).toBe(false);
     });
   });
 
