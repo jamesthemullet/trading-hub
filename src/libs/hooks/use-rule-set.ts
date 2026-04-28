@@ -15,7 +15,22 @@ export const useRuleSet = (
   start: number,
   rows: number,
   ruleSetType: 'category' | 'global'
-) => {
+): {
+  categoryRuleSets: Array<MerchandisingReturnedCategoryRuleSet>;
+  globalRuleSets: Array<MerchandisingReturnedGlobalRuleSet>;
+  pagination: MerchandisingPagination;
+  error: string;
+  isLoading: boolean;
+  refetchRuleSetList: (params: {
+    countryCode?: MerchandisingCountryCode;
+  }) => void;
+  setCategoryRuleSets: React.Dispatch<
+    React.SetStateAction<Array<MerchandisingReturnedCategoryRuleSet>>
+  >;
+  setGlobalRuleSets: React.Dispatch<
+    React.SetStateAction<Array<MerchandisingReturnedGlobalRuleSet>>
+  >;
+} => {
   const [shouldRefetch, refetch] = useState({});
   const [categoryRuleSets, setCategoryRuleSets] = useState<
     Array<MerchandisingReturnedCategoryRuleSet>

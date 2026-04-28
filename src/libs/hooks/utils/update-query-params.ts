@@ -6,7 +6,10 @@ type QueryParams = {
   searchQuery: string;
 };
 
-export const updateQueryParams = (router: NextRouter, params: QueryParams) => {
+export const updateQueryParams = (
+  router: NextRouter,
+  params: QueryParams
+): void => {
   const newQuery = { ...router.query, ...params };
 
   const filteredQuery = Object.fromEntries(

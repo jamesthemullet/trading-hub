@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 
 type Options = {
   handler: () => void;
@@ -8,8 +8,8 @@ type Options = {
 export const useOnOutsideClick = <T extends HTMLElement = HTMLElement>({
   handler,
   shouldEnableOutsideClick = true,
-}: Options) => {
-  const wrapperRef = useRef<T>(null);
+}: Options): RefObject<T | null> => {
+  const wrapperRef = useRef<T | null>(null);
 
   useEffect(() => {
     if (shouldEnableOutsideClick) {

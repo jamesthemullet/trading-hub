@@ -103,7 +103,7 @@ export const Ruleset = ({
   const categoryIds = categoriesInfo?.map((category) => category.id);
 
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
-    categoryIds || []
+    categoryIds ?? []
   );
   const [selectedCategoriesInfo, setSelectedCategoriesInfo] = useState<
     {
@@ -111,10 +111,10 @@ export const Ruleset = ({
       name?: string;
       plpUrl?: string;
     }[]
-  >(categoriesInfo || []);
+  >(categoriesInfo ?? []);
 
   const [rulesetSearchTerms, setRulesetSearchTerms] = useState(
-    searchTerms || []
+    searchTerms ?? []
   );
   const [currentEditorTab, setCurrentEditorTab] = useState(0);
   const [hasChanges, setHasChanges] = useState(false);
@@ -160,7 +160,7 @@ export const Ruleset = ({
   };
 
   const [previewValue, setPreviewValue] = useState(
-    categoryIds?.[0] || searchTerms?.[0]
+    categoryIds?.[0] ?? searchTerms?.[0]
   );
 
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
@@ -172,7 +172,7 @@ export const Ruleset = ({
     isEnabled,
     startDate,
     endDate,
-    rules: rulesetMerchandisingRules || {
+    rules: rulesetMerchandisingRules ?? {
       pinnedProducts: [],
       blockedProducts: [],
       boosts: {
@@ -192,7 +192,7 @@ export const Ruleset = ({
         alphanumeric: [],
       },
     },
-    countryCode: countryCode || 'UK_IE',
+    countryCode: countryCode ?? 'UK_IE',
   });
 
   const { rules: merchandisingRules } = ruleset;
@@ -200,16 +200,16 @@ export const Ruleset = ({
   useEffect(() => {
     const warningText =
       'You have unsaved changes - are you sure you wish to leave this page?';
-    const noChanges = !hasChanges;
+    const hasNoChanges = !hasChanges;
     /* istanbul ignore next */
     const handleWindowClose = (e: BeforeUnloadEvent) => {
-      if (noChanges) return;
+      if (hasNoChanges) return;
       e.preventDefault();
       return warningText;
     };
     /* istanbul ignore next */
     const handleBrowseAway = () => {
-      if (noChanges) return;
+      if (hasNoChanges) return;
       if (window.confirm(warningText)) return;
       router.events.emit('routeChangeError');
       throw 'routeChange aborted.';
@@ -258,8 +258,8 @@ export const Ruleset = ({
     (merchandisingRules.buries?.alphanumeric || []).length +
     (merchandisingRules.buries?.numeric || []).length +
     (merchandisingRules.buries?.product || []).length +
-    (merchandisingRules.includes?.alphanumeric || []).length +
-    (merchandisingRules.excludes?.alphanumeric || []).length;
+    (merchandisingRules.includes?.alphanumeric ?? []).length +
+    (merchandisingRules.excludes?.alphanumeric ?? []).length;
 
   const rulesPanelTabs = [
     {
@@ -293,7 +293,7 @@ export const Ruleset = ({
       onSave({
         ruleSetId: rulesetId,
         ruleSet: {
-          facets: rulesetFacets || [],
+          facets: rulesetFacets ?? [],
           isEnabled,
           rules: merchandisingRules,
           excludedFacets: rulesetExcludedFacets,
@@ -337,7 +337,7 @@ export const Ruleset = ({
           categoryId={rulesetType === 'category' ? previewValue : undefined}
           searchTerm={rulesetType === 'search' ? previewValue : undefined}
           merchandisingRules={merchandisingRules}
-          facetConfig={rulesetFacets || []}
+          facetConfig={rulesetFacets ?? []}
           countryCode={selectedPreviewCountryCode}
         />
       )}
@@ -551,7 +551,7 @@ export const Ruleset = ({
                         merchandisingRules={merchandisingRules}
                         categories={selectedCategories}
                         countryCode={
-                          ruleset.countryCode ||
+                          ruleset.countryCode ??
                           // reducer always sets a country code but optional in api
                           // istanbul ignore next
                           'UK_IE'

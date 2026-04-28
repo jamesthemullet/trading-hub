@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import type {
@@ -35,7 +36,7 @@ export const Redirect = ({
   redirect: savedRedirect,
   title,
   isWriteEnabled,
-}: Props) => {
+}: Props): ReactElement => {
   const [redirect, setRedirect] = useState<MerchandisingKeywordRedirect>(
     savedRedirect
       ? {

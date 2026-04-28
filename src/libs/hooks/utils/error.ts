@@ -10,7 +10,7 @@ const validateErrorResponse = (err: unknown) => {
   return 'Unknown error';
 };
 
-export const handleError = (err: unknown) => {
+export const handleError = (err: unknown): string => {
   const errorMessage = validateErrorResponse(err);
 
   // istanbul ignore else

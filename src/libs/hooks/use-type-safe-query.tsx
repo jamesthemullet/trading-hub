@@ -2,7 +2,10 @@ import { useRouter } from 'next/router';
 
 import type { MerchandisingCountryCode } from '../api';
 
-export const useTypeSafeQuery = () => {
+export const useTypeSafeQuery = (): {
+  getStringParam: (key: string) => string;
+  getCountryCodeParam: (key: string) => MerchandisingCountryCode | undefined;
+} => {
   const router = useRouter();
 
   const getStringParam = (key: string): string => {

@@ -1,12 +1,12 @@
 import { useCallback, useRef } from 'react';
 
-export const useDebounce = <TCallbackArgs>(
-  originalCallback: (...args: TCallbackArgs[]) => void,
+export const useDebounce = <TCallbackArgs extends unknown[]>(
+  originalCallback: (...args: TCallbackArgs) => void,
   wait: number
-) => {
+): { callback: (...args: TCallbackArgs) => void; cancel: () => void } => {
   const timeout = useRef<ReturnType<typeof setTimeout>>(null);
   const callback = useCallback(
-    (...args: TCallbackArgs[]) => {
+    (...args: TCallbackArgs) => {
       const later = () => {
         clearTimeout(timeout.current as NodeJS.Timeout);
         originalCallback(...args);
