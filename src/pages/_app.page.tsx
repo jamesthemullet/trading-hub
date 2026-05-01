@@ -10,6 +10,7 @@ import { createTheme, MantineProvider, Portal } from '@mantine/core';
 
 import { ErrorBoundary } from '@/libs/components/error-boundary/error-boundary';
 import { FeatureFlagContext } from '@/libs/components/feature-flag/feature-flag';
+import { SmokeTestTokenWarning } from '@/libs/components/smoke-test-token-warning/smoke-test-token-warning';
 import { LoginCheck } from '@/libs/features/shared/login/login-check';
 import { setupGlobalErrorHandlers } from '@/libs/utils/dynatrace';
 
@@ -85,6 +86,7 @@ export default function App({
 
   return (
     <CookiesProvider>
+      {process.env.NODE_ENV === 'development' && <SmokeTestTokenWarning />}
       {typeof window !== 'undefined' &&
         navigator.userAgent !== 'smoke-test-playwright' &&
         // TODO: when code freeze over change to !== 'development'

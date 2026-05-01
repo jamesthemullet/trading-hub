@@ -1,5 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default function handler(_: NextApiRequest, res: NextApiResponse): void {
-  res.status(200).json({ status: 'ok' });
+type HealthcheckResponse = {
+  status: string;
+  hasSmokeTestToken: boolean;
+};
+
+export default function handler(
+  _: NextApiRequest,
+  res: NextApiResponse<HealthcheckResponse>
+): void {
+  res.status(200).json({
+    status: 'ok',
+    hasSmokeTestToken: Boolean(process.env.SMOKE_TEST_TOKEN),
+  });
 }

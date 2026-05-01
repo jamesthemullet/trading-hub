@@ -10,6 +10,13 @@ import { useSession } from 'next-auth/react';
 import { createMockNextRouter } from '../test/create-mock-next-router';
 import App from './_app.page';
 
+jest.mock(
+  '@/libs/components/smoke-test-token-warning/smoke-test-token-warning',
+  () => ({
+    SmokeTestTokenWarning: () => <div>SmokeTestTokenWarning</div>,
+  })
+);
+
 jest.mock('next-auth/react', () => ({
   ...jest.requireActual('next-auth/react'),
   useSession: jest.fn(),
@@ -73,5 +80,46 @@ describe('App', () => {
     );
 
     expect(screen.getByText('hello')).toBeInTheDocument();
+  });
+
+  it('renders SmokeTestTokenWarning in development', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'development',
+      writable: true,
+    });
+
+    try {
+      render(
+        <CookiesProvider>
+          <App
+            Component={() => <div>hello</div>}
+            pageProps={{ session: null }}
+            router={createMockNextRouter()}
+          />
+        </CookiesProvider>
+      );
+
+      expect(screen.getByText('SmokeTestTokenWarning')).toBeInTheDocument();
+    } finally {
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalNodeEnv,
+        writable: true,
+      });
+    }
+  });
+
+  it('does not render SmokeTestTokenWarning outside development', () => {
+    render(
+      <CookiesProvider>
+        <App
+          Component={() => <div>hello</div>}
+          pageProps={{ session: null }}
+          router={createMockNextRouter()}
+        />
+      </CookiesProvider>
+    );
+
+    expect(screen.queryByText('SmokeTestTokenWarning')).not.toBeInTheDocument();
   });
 });
