@@ -3,16 +3,48 @@ import Image from 'next/image';
 import { Typography } from '../typography/typography';
 import styles from './info-box.module.css';
 
-export const InfoBox = ({ text }: { text: string }) => {
+type Props = {
+  text: string;
+  title?: string;
+  variant?: 'info' | 'error' | 'warning';
+  showIcon?: boolean;
+  width?: string;
+  height?: string;
+};
+
+export const InfoBox = ({
+  text,
+  title,
+  variant = 'info',
+  showIcon = true,
+  width = '340px',
+  height = '56px',
+}: Props) => {
   return (
-    <div className={styles.infoBox}>
-      <Image
-        src="/trading-hub/asset/icon-info.svg"
-        width={20}
-        height={20}
-        alt="IE flag"
-      />
-      <Typography variant="bodySmall">{text}</Typography>
+    <div
+      className={styles.infoBox}
+      data-variant={variant}
+      // eslint-disable-next-line react/forbid-dom-props
+      style={
+        {
+          '--info-box-width': width,
+          '--info-box-height': height,
+        } as React.CSSProperties
+      }
+    >
+      {showIcon && (
+        <Image
+          src="/trading-hub/asset/icon-info.svg"
+          width={20}
+          height={20}
+          alt=""
+          aria-hidden
+        />
+      )}
+      <div className={styles.content}>
+        {title && <Typography variant="bodyMedium">{title}</Typography>}
+        <Typography variant="labelMedium">{text}</Typography>
+      </div>
     </div>
   );
 };

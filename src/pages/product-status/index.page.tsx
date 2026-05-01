@@ -1,6 +1,8 @@
 import { useReducer } from 'react';
 
 import { Heading, Typography } from '@/libs/components';
+import { useProductStatusFlag } from '@/libs/components/feature-flag/feature-flag';
+import { ProductResult } from '@/libs/components/product-result/product-result';
 import ProductStatusHeader from '@/libs/features/product-status/header/product-status-header';
 import { initialState, reducer } from '@/libs/hooks/product-status/reducer';
 import { useFetchProductStatus } from '@/libs/hooks/product-status/use-fetch-product-status';
@@ -11,6 +13,8 @@ import Head from 'next/head';
 import styles from './index.module.css';
 
 const ProductStatus = () => {
+  const hasProductStatus = useProductStatusFlag();
+
   const [state, dispatch] = useReducer(reducer, initialState);
   const fetchProductStatus = useFetchProductStatus(dispatch);
 
@@ -26,7 +30,9 @@ const ProductStatus = () => {
     }
   };
 
-  const isOnline = data && data.products.length > 0;
+  if (!hasProductStatus) {
+    return <Typography variant="bodyMedium">Coming soon</Typography>;
+  }
 
   return (
     <>
@@ -53,43 +59,7 @@ const ProductStatus = () => {
             </Typography>
           )}
 
-          {data && (
-            <div className={styles.result}>
-              <div className={styles.statusRow}>
-                <Typography variant="headlineSmall" isStrong>
-                  {isOnline ? data.products[0].title : `Product ${query}`}
-                </Typography>
-                <span className={styles.statusBadge} data-online={isOnline}>
-                  <Typography variant="labelSmall">
-                    {isOnline ? 'Online' : 'Offline'}
-                  </Typography>
-                </span>
-              </div>
-
-              {!isOnline && data.issues.length > 0 && (
-                <div className={styles.issues}>
-                  <Typography variant="bodySmall" isStrong>
-                    Blocking issues
-                  </Typography>
-                  <ul className={styles.issueList}>
-                    {data.issues.map((issue) => (
-                      <li key={issue.reason} className={styles.issue}>
-                        <Typography variant="bodySmall">
-                          {issue.reason}
-                        </Typography>
-                        <Typography
-                          variant="bodySmall"
-                          className={styles.action}
-                        >
-                          {issue.action}
-                        </Typography>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
+          {data && <ProductResult query={query} data={data} />}
         </div>
       </div>
     </>

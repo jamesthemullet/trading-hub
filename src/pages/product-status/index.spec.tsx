@@ -40,7 +40,7 @@ const mockOfflineResponse = {
   pagination: { totalItems: 0 },
   issues: [
     {
-      reason: 'Product is not marked saleable in Product Assembly',
+      reason: 'Failed to get product data',
       action: 'Contact Product Domain team',
     },
   ],
@@ -59,7 +59,9 @@ afterAll(() => server.close());
 
 describe('ProductStatus page', () => {
   it('should render the search header', () => {
-    renderWithProviders(<ProductStatus />);
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
 
     expect(
       screen.getByRole('heading', { name: 'Product status search' })
@@ -79,7 +81,9 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />);
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -95,7 +99,9 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />);
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -103,7 +109,7 @@ describe('ProductStatus page', () => {
     await waitFor(() => {
       expect(screen.getByText('Green Wool Coat')).toBeInTheDocument();
     });
-    expect(screen.getByText('Online')).toBeInTheDocument();
+    expect(screen.getByText('Product is operational')).toBeInTheDocument();
   });
 
   it('should show Offline badge and blocking issues when product is not found', async () => {
@@ -114,18 +120,17 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />);
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
 
     await waitFor(() => {
-      expect(screen.getByText('Offline')).toBeInTheDocument();
+      expect(screen.getByText('1 issue detected')).toBeInTheDocument();
     });
-    expect(screen.getByText('Blocking issues')).toBeInTheDocument();
-    expect(
-      screen.getByText('Product is not marked saleable in Product Assembly')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Failed to get product data')).toBeInTheDocument();
     expect(screen.getByText('Contact Product Domain team')).toBeInTheDocument();
   });
 
@@ -140,7 +145,9 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />);
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -148,8 +155,10 @@ describe('ProductStatus page', () => {
     await waitFor(() => {
       expect(screen.queryByText('Searching...')).not.toBeInTheDocument();
     });
-    expect(screen.queryByText('Online')).not.toBeInTheDocument();
-    expect(screen.queryByText('Offline')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Product is operational')
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('1 issue detected')).not.toBeInTheDocument();
   });
 
   it('should not search when query is empty', async () => {
@@ -159,7 +168,9 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />);
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '  ');
     await user.keyboard('{Enter}');

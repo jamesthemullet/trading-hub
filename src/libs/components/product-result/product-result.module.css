@@ -1,0 +1,91 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 1084px;
+  width: 100vw;
+  background-color: var(--temporary-will-be-deleted-pewter-10);
+  border-radius: 4px;
+  padding: var(--mns-spacing-3);
+  gap: var(--mns-spacing-3);
+}
+
+.productCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--mns-spacing-3);
+}
+
+.productCardDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-1);
+}
+
+.productId {
+  color: var(--color-surface-dark-surface-dark-container);
+}
+
+.productStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mns-spacing-0-5);
+  padding: var(--mns-spacing-0-5) var(--mns-spacing-1-5);
+  border-radius: 20px;
+  background-color: var(--color-state-success-success-container);
+  width: fit-content;
+
+  p {
+    color: var(--color-state-success-on-success-container);
+  }
+
+  &[data-operational='false'] {
+    background-color: var(--color-state-error-error-container);
+
+    p {
+      color: var(--color-state-error-on-error-container);
+    }
+  }
+}
+
+.productImage {
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.infoCards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-1-5);
+}
+
+.detailList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-0-5);
+}
+
+.issueList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-1);
+}
+
+.imagePlaceholder {
+  width: 213px;
+  height: 277px;
+  background-color: var(--color-state-disabled-disabled);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.titleUnavailable {
+  color: var(--color-surface-dark-surface-dark-container);
+}

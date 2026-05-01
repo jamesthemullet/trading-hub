@@ -1,0 +1,77 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mns-spacing-1);
+  padding: var(--mns-spacing-0-5) 10px;
+  border-radius: 20px;
+  width: fit-content;
+
+  span {
+    padding-top: 1px;
+    font-weight: 600;
+  }
+
+  &[data-variant='operational'] {
+    background-color: var(--color-state-success-success-container);
+
+    span {
+      color: var(--color-state-success-on-success-container);
+    }
+  }
+
+  &[data-variant='waiting'] {
+    background-color: var(--color-role-info-info-container);
+
+    span {
+      color: var(--color-role-info-on-info-container);
+    }
+  }
+
+  &[data-variant='emergency'] {
+    background-color: var(--color-state-warning-warning);
+
+    span {
+      color: var(--color-accent-secondary-on-secondary-container);
+    }
+  }
+
+  &[data-variant='product-operational'] {
+    background-color: var(--color-state-success-success);
+
+    span {
+      color: var(--color-surface-on-surface);
+    }
+  }
+
+  &[data-variant='issue-detected'] {
+    background-color: var(--color-state-error-error-container);
+
+    span {
+      color: var(--color-state-error-on-error-container);
+    }
+  }
+
+  &[data-variant='push-available'] {
+    background-color: var(--color-state-warning-warning-container);
+
+    span {
+      color: var(--color-state-warning-on-warning-container);
+    }
+  }
+
+  &[data-variant='blocked'] {
+    background-color: var(--color-state-warning-warning-container);
+
+    span {
+      color: var(--color-state-warning-on-warning-container);
+    }
+  }
+
+  &[data-variant='error'] {
+    background-color: var(--color-state-error-error);
+
+    span {
+      color: var(--color-surface-on-surface);
+    }
+  }
+}

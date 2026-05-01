@@ -1,13 +1,25 @@
 .infoBox {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: var(--mns-spacing-2) var(--mns-spacing-1-5);
-  width: 340px;
-  height: 56px;
+  width: var(--info-box-width, 340px);
+  height: var(--info-box-height, 56px);
   background-color: var(--color-role-info-info-container);
   border-left: 5px solid var(--color-role-info-on-info-container);
+  gap: var(--mns-spacing-2);
 
-  p {
-    margin-left: 18px;
+  &[data-variant='error'] {
+    background-color: var(--color-state-error-error-container);
+    border-left-color: var(--color-state-error-error);
   }
+  &[data-variant='warning'] {
+    background-color: var(--color-state-unactioned-unactioned-container);
+    border-left-color: var(--color-state-warning-warning);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-2);
 }
