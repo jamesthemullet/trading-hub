@@ -2,7 +2,10 @@ import { useCallback, useState } from 'react';
 
 import { search } from '@/libs/api';
 
-export const useRuleSetDelete = () => {
+export const useRuleSetDelete = (): {
+  handleDelete: (args: { rulesetId: string }) => Promise<void>;
+  error: string;
+} => {
   const [error, setError] = useState('');
 
   const handleDelete = useCallback(
@@ -10,10 +13,7 @@ export const useRuleSetDelete = () => {
       setError('');
 
       try {
-        const response =
-          await search().betaMerchandisingCategoryRulesetDelete(rulesetId);
-
-        return response.data;
+        await search().betaMerchandisingCategoryRulesetDelete(rulesetId);
       } catch (error) {
         setError(`Failed to delete ruleset ${JSON.stringify(error)}`);
       }

@@ -28,7 +28,11 @@ export const useGetFacetAttributeValues = ({
   categories,
   searchTerms,
   query,
-}: Props) => {
+}: Props): {
+  attributeValues: MerchandisingAttributeValuesResponse['values'];
+  error: string;
+  isLoading: boolean;
+} => {
   const [attributeValues, setAttributeValues] = useState<
     MerchandisingAttributeValuesResponse['values']
   >([]);

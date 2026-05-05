@@ -25,7 +25,14 @@ export const useGlobalFacetAttributesEditModal = ({
   dispatch: ActionDispatch<[action: GlobalAttributesPageReducer]>;
   globalAttributesLocalState: GlobalAttributesPageState;
   setIsAwaitingUpdate: (v: boolean) => void;
-}) => {
+}): {
+  editModalError: string;
+  handleEditModalError: (message: string) => void;
+  handleEditModalSave: (
+    newValue: string,
+    demergedValues?: string[]
+  ) => Promise<void>;
+} => {
   const { checkMergeNameUnique } = useCheckMergeNameUnique();
   const [editModalError, setEditModalError] = useState('');
 
@@ -137,15 +144,16 @@ export const useGlobalFacetAttributesEditModal = ({
         );
 
         demergedValues.forEach((valueToRemove) => {
-          const wasInOriginalMergeGroup =
+          const isInOriginalMergeGroup =
             originalMergeGroup?.mergedValues?.includes(valueToRemove);
 
-          if (wasInOriginalMergeGroup) {
+          if (isInOriginalMergeGroup) {
             dispatch({
               type: 'REMOVE_FROM_MERGE_GROUP',
               payload: {
                 valueToRemove,
                 mergeDisplayName:
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                   originalMergeGroup?.displayValue ||
                   globalAttributesLocalState.currentMerge.displayValue,
               },

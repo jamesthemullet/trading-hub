@@ -5,7 +5,13 @@ import { search } from '@/libs/api';
 
 import { handleError } from './utils/error';
 
-export const useUpdateRuleSet = () => {
+export const useUpdateRuleSet = (): {
+  isSaving: boolean;
+  updateCategoryRuleSet: (
+    args: MerchandisingCategoryRuleSet & { ruleSetId: string }
+  ) => Promise<{ status: 'success' | 'error' }>;
+  error: string;
+} => {
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -39,14 +45,14 @@ export const useUpdateRuleSet = () => {
         await search().betaMerchandisingCategoryRulesetUpdate(ruleSetId, body);
 
         setIsSaving(false);
-        return { status: 'success' };
+        return { status: 'success' as const };
       } catch (error) {
         setIsSaving(false);
         setError(handleError(error));
-        return { status: 'error' };
+        return { status: 'error' as const };
       }
     },
-    [setIsSaving]
+    []
   );
 
   return { isSaving, updateCategoryRuleSet, error };

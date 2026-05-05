@@ -1,11 +1,19 @@
 import { useCallback, useState } from 'react';
 
-import type { MerchandisingCategoryRuleSet } from '@/libs/api';
+import type {
+  MerchandisingCategoryRuleSet,
+  MerchandisingReturnedCategoryRuleSet,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 
 import { handleError } from './utils/error';
 
-export const useRuleSetCreate = () => {
+export const useRuleSetCreate = (): {
+  createRuleset: (
+    args: MerchandisingCategoryRuleSet
+  ) => Promise<MerchandisingReturnedCategoryRuleSet | undefined>;
+  error: string;
+} => {
   const [error, setError] = useState('');
 
   const createRuleset = useCallback(

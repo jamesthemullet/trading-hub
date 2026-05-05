@@ -49,7 +49,7 @@ describe('Index', () => {
   const mockUpdateRuleSet = {
     updateCategoryRuleSet: jest.fn(() =>
       Promise.resolve({
-        status: 'success',
+        status: 'success' as const,
       })
     ),
     isSaving: true,
@@ -278,7 +278,7 @@ describe('Index', () => {
     const mockUpdateRuleSet = {
       updateCategoryRuleSet: jest.fn(() =>
         Promise.resolve({
-          status: 'fail',
+          status: 'error' as const,
         })
       ),
       isSaving: true,

@@ -25,7 +25,14 @@ export const usePreview = ({
   categoryId?: string;
   searchTerm?: string;
   excludedFacets?: MerchandisingExcludedFacets;
-}) => {
+}): {
+  data: MerchandisingSearchPreviewResponseBeta;
+  error: string;
+  isLoading: boolean;
+  setFacetConfigRules: (
+    facets: MerchandisingRuleSetFacetConfigWithId[]
+  ) => void;
+} => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
