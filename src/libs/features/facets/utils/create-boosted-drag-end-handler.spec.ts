@@ -41,22 +41,6 @@ describe('createBoostedDragEndHandler', () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it('invokes the guard and aborts when it returns true', () => {
-    const dispatch = jest.fn();
-    const shouldAbort = jest.fn().mockReturnValue(true);
-    const handler = createBoostedDragEndHandler({
-      boostedOrder: ['a', 'b'],
-      dispatch,
-      isWriteEnabled: true,
-      shouldAbort,
-    });
-
-    handler(createDragEndEvent('a', 'b'));
-
-    expect(shouldAbort).toHaveBeenCalledWith({ activeId: 'a', overId: 'b' });
-    expect(dispatch).not.toHaveBeenCalled();
-  });
-
   it('runs onBeforeDispatch prior to dispatching the action', () => {
     const callOrder: string[] = [];
     const dispatch = jest.fn(() => {

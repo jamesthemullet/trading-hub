@@ -150,8 +150,7 @@ export const SearchAndCategoryFacetAttributesList = ({
           order = row.order;
           localOrder = localOrders[displayValue] ?? order;
         }
-        const disableDrag =
-          !!searchQuery || !isWriteEnabled || filteredRows.length <= 1;
+        const disableDrag = !isWriteEnabled || filteredRows.length <= 1;
 
         const renderRow = (sortableProps?: SortableRowRenderArgs) => (
           <SearchCategoryFacetAttributeValuesTableRow
@@ -276,9 +275,8 @@ export const SearchAndCategoryFacetAttributesList = ({
         boostedOrder,
         dispatch,
         isWriteEnabled,
-        shouldAbort: () => !!searchQuery,
       }),
-    [boostedOrder, dispatch, searchQuery, isWriteEnabled]
+    [boostedOrder, dispatch, isWriteEnabled]
   );
 
   return (

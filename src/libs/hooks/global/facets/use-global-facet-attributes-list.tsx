@@ -305,9 +305,8 @@ export const useGlobalFacetAttributesList = ({
         boostedOrder,
         dispatch,
         isWriteEnabled,
-        shouldAbort: () => !!searchQuery,
       }),
-    [boostedOrder, dispatch, searchQuery, isWriteEnabled]
+    [boostedOrder, dispatch, isWriteEnabled]
   );
 
   return {

@@ -212,4 +212,26 @@ describe('useGlobalFacetAttributesList', () => {
     expect(setIsAwaitingUpdate).not.toHaveBeenCalled();
     expect(dispatch).not.toHaveBeenCalled();
   });
+
+  it('dispatches SET_BOOSTED_ORDER when a search filter is active and >=2 boosted rows are visible', () => {
+    const dispatch: ActionDispatch<[action: GlobalAttributesPageReducer]> =
+      jest.fn();
+    // 'Item' matches both 'Alpha Item' and 'Beta Item' — 2 visible rows, drag enabled
+    const params = createHookParams({ dispatch, searchQuery: 'Item' });
+
+    const { result } = renderHook(() => useGlobalFacetAttributesList(params));
+
+    act(() => {
+      result.current.handleBoostedDragEnd({
+        active: { id: 'Alpha Item' },
+        over: { id: 'Beta Item' },
+      } as unknown as DragEndEvent);
+    });
+
+    // Alpha Item is at index 0 in boostedOrder; Beta Item is at index 1
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'SET_BOOSTED_ORDER',
+      payload: { id: 'Alpha Item', newIndex: 1 },
+    });
+  });
 });

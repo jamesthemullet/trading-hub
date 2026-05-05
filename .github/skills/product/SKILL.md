@@ -112,6 +112,7 @@ Report the issue URL once created.
 - **Error reporting:** call `reportErrorToDynatrace()` in catch paths for anything user-impactful
 - **Feature flags:** new features in rollout should be gated behind the cookie-based feature flag system in `src/libs/components/feature-flag/`
 - **Generated API client:** if a feature requires a new backend endpoint, note it explicitly in the Implementation Sketch — flag it as a backend change needed, and describe what the new endpoint should do. The frontend client is regenerated from `api.yml` once the backend is updated.
+- **Rulesets always have ranking rules:** A ruleset's `rules` object is always present and always contains `pinnedProducts`, `blockedProducts`, `boosts`, `buries`, `includes`, and `excludes` arrays — they may be empty, but they are never absent. There is no "genuinely blank / no rules created yet" state for an existing ruleset. Do not propose empty-state CTAs ("Add your first rule") premised on rules being null or missing — the concept is architecturally invalid.
 - **Testing:** every new component or hook must reach 100% statement/branch/function/line coverage; E2E tests use Playwright + WireMock mocks in `e2e/wiremock/`
 - **Component patterns:** wrap Mantine primitives in a custom component in `src/libs/components/` rather than using Mantine directly in feature/page code
 

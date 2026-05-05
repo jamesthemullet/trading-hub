@@ -159,20 +159,22 @@ describe('SearchAndCategoryFacetAttributesList', () => {
     });
   });
 
-  it('does not dispatch when search query is active during drag', () => {
+  it('dispatches when search query is active during drag', () => {
     const dispatch = jest.fn();
-    setup({ dispatch, searchQuery: 'cot' });
+    // 'S' matches Silk and Satin — 2 boosted rows visible, drag enabled
+    setup({ dispatch, searchQuery: 'S' });
 
     act(() => {
       latestDragEndHandler?.({
-        active: { id: 'Cotton' },
-        over: { id: 'Silk' },
+        active: { id: 'Silk' },
+        over: { id: 'Satin' },
       } as DragEndEvent);
     });
 
-    expect(dispatch).not.toHaveBeenCalledWith({
+    // Silk is at index 1 in the full boostedOrder; Satin is at index 2
+    expect(dispatch).toHaveBeenCalledWith({
       type: 'SET_BOOSTED_ORDER',
-      payload: expect.anything(),
+      payload: { id: 'Silk', newIndex: 2 },
     });
   });
 
