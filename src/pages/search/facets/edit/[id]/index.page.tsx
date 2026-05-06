@@ -8,7 +8,9 @@ import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { FacetsList } from '@/libs/features';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
+import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -23,6 +25,9 @@ export const getServerSideProps: GetServerSideProps = (
 
 const Page = ({ id }: { id: string }): ReactElement => {
   const router = useRouter();
+  const isHistoryView = router.query.history === 'true';
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
 
   const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
 
@@ -63,7 +68,31 @@ const Page = ({ id }: { id: string }): ReactElement => {
     router.push('/search');
   };
 
-  const { ruleSet, error, isLoading } = useSearchRuleSetPreview(id);
+  const {
+    ruleSet,
+    error,
+    isLoading: isCurrentLoading,
+  } = useSearchRuleSetPreview(isHistoryView ? '' : id);
+
+  const historyData = useSearchHistory(
+    isHistoryView ? id : '',
+    currentPage,
+    currentPageSize
+  );
+
+  const {
+    rulesetData,
+    isLoading,
+    error: historyError,
+  } = useHistoricalOrCurrentRuleset({
+    id,
+    historyData: {
+      history: historyData.history,
+      isLoading: historyData.isLoading,
+      error: historyData.error,
+    },
+    currentData: { data: ruleSet, isLoading: isCurrentLoading },
+  });
 
   const { hasReadAccess, requiredReadRole, hasWriteAccess } =
     useAccess('Search');
@@ -82,6 +111,11 @@ const Page = ({ id }: { id: string }): ReactElement => {
       {error && (
         <ErrorMessage>Error whilst retrieving ruleset: {error}</ErrorMessage>
       )}
+      {historyError && (
+        <ErrorMessage>
+          Error whilst retrieving history: {historyError}
+        </ErrorMessage>
+      )}
       {updateRuleSetError && (
         <ErrorMessage>
           Error whilst updating ruleset: {updateRuleSetError}
@@ -93,12 +127,12 @@ const Page = ({ id }: { id: string }): ReactElement => {
       ) : (
         <FacetsList
           facetType={FacetType.Search}
-          currentRuleset={ruleSet}
-          searchTerms={ruleSet.searchTerms}
+          currentRuleset={rulesetData}
+          searchTerms={rulesetData?.searchTerms}
           isNewRuleset={false}
           onCancel={handleCancel}
           onSave={handleSave}
-          isWriteEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess && !isHistoryView}
         />
       )}
     </>

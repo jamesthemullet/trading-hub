@@ -11,7 +11,7 @@ type Props = {
 export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {
   return (
     <div className={styles.tabsContainerWrapper}>
-      <div className={styles.tabsWrapper}>
+      <div className={styles.tabsWrapper} data-tabs={tabs.length}>
         {tabs.map((tab, ind) => (
           <Button
             className={styles.tabButton}

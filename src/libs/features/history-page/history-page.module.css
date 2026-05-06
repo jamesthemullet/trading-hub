@@ -10,6 +10,16 @@
   flex: 1;
 }
 
+.headingRow {
+  display: flex;
+  justify-content: space-between;
+  margin-right: var(--mns-spacing-2);
+
+  button {
+    margin-top: 60px;
+  }
+}
+
 .labelWrapper {
-  margin-left: var(--mns-spacing-2);
+  margin: var(--mns-spacing-2);
 }

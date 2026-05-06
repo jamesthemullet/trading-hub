@@ -99,4 +99,38 @@ describe('useTypeSafeQuery', () => {
       expect(result.current.getCountryCodeParam('countryCode')).toBeUndefined();
     });
   });
+
+  describe('getBooleanParam', () => {
+    it('should return true when param equals "true"', () => {
+      mockRouter.query = { readOnly: 'true' };
+      const { result } = renderHook(() => useTypeSafeQuery());
+      expect(result.current.getBooleanParam('readOnly')).toBe(true);
+    });
+
+    it('should return false when param is a different string', () => {
+      mockRouter.query = { readOnly: 'false' };
+      const { result } = renderHook(() => useTypeSafeQuery());
+      expect(result.current.getBooleanParam('readOnly')).toBe(false);
+    });
+
+    it('should return false when param is absent', () => {
+      mockRouter.query = {};
+      const { result } = renderHook(() => useTypeSafeQuery());
+      expect(result.current.getBooleanParam('readOnly')).toBe(false);
+    });
+
+    it('should return false when router.query access throws error', () => {
+      const errorRouter = {
+        get query() {
+          throw new Error('Query access failed');
+        },
+        push: jest.fn(),
+      };
+
+      (useRouter as jest.Mock).mockReturnValue(errorRouter);
+
+      const { result } = renderHook(() => useTypeSafeQuery());
+      expect(result.current.getBooleanParam('readOnly')).toBe(false);
+    });
+  });
 });

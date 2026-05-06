@@ -5,6 +5,7 @@ import type { MerchandisingCountryCode } from '../api';
 export const useTypeSafeQuery = (): {
   getStringParam: (key: string) => string;
   getCountryCodeParam: (key: string) => MerchandisingCountryCode | undefined;
+  getBooleanParam: (key: string) => boolean;
 } => {
   const router = useRouter();
 
@@ -40,5 +41,13 @@ export const useTypeSafeQuery = (): {
     }
   };
 
-  return { getStringParam, getCountryCodeParam };
+  const getBooleanParam = (key: string): boolean => {
+    try {
+      return router.query[key] === 'true';
+    } catch {
+      return false;
+    }
+  };
+
+  return { getStringParam, getCountryCodeParam, getBooleanParam };
 };

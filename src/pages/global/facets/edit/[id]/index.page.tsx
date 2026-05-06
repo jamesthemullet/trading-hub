@@ -14,7 +14,9 @@ import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import GlobalFacetsPanel from '@/libs/features/facets/global-facets-panel/global-facets-panel';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
+import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -25,13 +27,36 @@ type PageProps = {
 
 const Page = ({ id }: PageProps): ReactElement => {
   const router = useRouter();
+  const isHistoryView = router.query.history === 'true';
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     globalRuleSet,
     error: globalRulesetError,
+    isLoading: isCurrentLoading,
+  } = useGlobalRuleSetDetail(isHistoryView ? '' : id);
+
+  const historyData = useGlobalHistory(
+    isHistoryView ? id : '',
+    currentPage,
+    currentPageSize
+  );
+
+  const {
+    rulesetData,
     isLoading,
-  } = useGlobalRuleSetDetail(id);
+    error: historyError,
+  } = useHistoricalOrCurrentRuleset({
+    id,
+    historyData: {
+      history: historyData.history,
+      isLoading: historyData.isLoading,
+      error: historyData.error,
+    },
+    currentData: { data: globalRuleSet, isLoading: isCurrentLoading },
+  });
 
   const [includedFacetsToSave, setIncludedFacetsToSave] = useState<
     MerchandisingReturnedFacet[]
@@ -51,10 +76,10 @@ const Page = ({ id }: PageProps): ReactElement => {
 
   useEffect(() => {
     // istanbul ignore else
-    if (globalRuleSet.facets) {
-      setFacetsFromGlobalRuleSet(globalRuleSet.facets);
+    if (rulesetData?.facets) {
+      setFacetsFromGlobalRuleSet(rulesetData.facets);
     }
-  }, [globalRuleSet]);
+  }, [rulesetData]);
 
   const { saveGlobalRuleset, error: savingGlobalRulesetError } =
     useGlobalRuleSetUpdate();
@@ -110,18 +135,24 @@ const Page = ({ id }: PageProps): ReactElement => {
         </ErrorMessage>
       )}
 
+      {historyError && (
+        <ErrorMessage>
+          Error whilst retrieving history: {historyError}
+        </ErrorMessage>
+      )}
+
       {savingGlobalRulesetError && (
         <ErrorMessage>
           Error whilst saving global ruleset: {savingGlobalRulesetError}
         </ErrorMessage>
       )}
 
-      {!globalRulesetError && (
+      {!globalRulesetError && !historyError && (
         <GlobalFacetsPanel
           ruleSetIncludedFacets={facetsFromGlobalRuleSet}
-          ruleSetExcludedFacets={globalRuleSet.excludedFacets}
+          ruleSetExcludedFacets={rulesetData?.excludedFacets}
           isLoading={isLoading}
-          countryCode={globalRuleSet.countryCode ?? 'UK_IE'}
+          countryCode={rulesetData?.countryCode ?? 'UK_IE'}
           onSave={({ countryCode, includedFacets, excludedFacets }) => {
             setCountryCodeToSave(countryCode);
             setIncludedFacetsToSave(includedFacets);
@@ -129,7 +160,7 @@ const Page = ({ id }: PageProps): ReactElement => {
             setIsModalOpen(true);
           }}
           onCancel={handleCancel}
-          isWriteEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess && !isHistoryView}
         />
       )}
       <Modal.Root

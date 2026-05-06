@@ -462,16 +462,20 @@ export const CombinedDropdown = ({
       ref={wrapperRef}
       data-is-dropdown-open={isOpen}
       data-width={dropdownWidth}
+      data-variant={
+        variant === DropdownVariant.PageSize ? 'page-size' : undefined
+      }
       data-has-border={variant === DropdownVariant.FacetOrder}
       data-has-border-bottom={
         variant !== DropdownVariant.FacetOrder &&
         variant !== DropdownVariant.PageSize
       }
       data-height={
-        variant === DropdownVariant.FacetOrder ||
-        variant === DropdownVariant.PageSize
+        variant === DropdownVariant.FacetOrder
           ? 'default'
-          : 'large'
+          : variant === DropdownVariant.PageSize
+            ? 'page-size'
+            : 'large'
       }
     >
       <Button

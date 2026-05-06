@@ -31,7 +31,8 @@ const isSearchDraft = (
 const Page = (): ReactElement => {
   const router = useRouter();
 
-  const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
+  const { getStringParam, getCountryCodeParam, getBooleanParam } =
+    useTypeSafeQuery();
 
   const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
   const { getDraft, saveDraft } = useDraftRuleset();
@@ -40,6 +41,7 @@ const Page = (): ReactElement => {
   const ruleSetId = getStringParam('ruleSetId');
   const displayName = getStringParam('displayName');
   const countryCode = getCountryCodeParam('countryCode');
+  const isReadOnly = getBooleanParam('readOnly');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isDraft, setIsDraft] = useState(false);
@@ -207,7 +209,7 @@ const Page = (): ReactElement => {
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
           onSave={handleSave}
-          isWriteEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess && !isReadOnly}
           headerText={searchTermsArray?.join(', ')}
           countryCode={countryCode}
           isDraftRuleset={isDraft}

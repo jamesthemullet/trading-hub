@@ -200,13 +200,14 @@ test.describe('Global Ranking', () => {
     await page.getByRole('link', { name: 'View history' }).click();
 
     await expect(
-      page.getByRole('heading', { name: 'Subcategory History' })
+      page.getByRole('heading', { name: 'Changes history' })
     ).toBeVisible();
 
-    await expect(page.getByText('Current version')).toBeVisible();
-    const viewVersionLinks = page.getByRole('link', { name: 'View version' });
+    await expect(page.getByText('View current')).toBeVisible();
+    const viewVersionLinks = page.getByRole('link', { name: 'View' });
     await expect(viewVersionLinks.first()).toBeVisible();
 
+    // View a historical ruleset version — should be read-only
     await viewVersionLinks.first().click();
 
     await expect(
@@ -214,6 +215,42 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Save' })).toBeHidden();
+
+    // Go back to history page and check the Facets tab
+    await page.goBack();
+    await expect(
+      page.getByRole('heading', { name: 'Changes history' })
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Facets' }).click();
+
+    const viewFacetVersionLinks = page.getByRole('link', { name: /View/ });
+    await expect(viewFacetVersionLinks.first()).toBeVisible();
+
+    // View a historical facet version — should be read-only
+    await viewFacetVersionLinks.first().click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Global Facet Rule Editor' })
+    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Save' })).toBeHidden();
+    await expect(
+      page.getByRole('link', { name: 'View values' }).first()
+    ).toBeVisible();
+
+    // Click through to the values page and verify it is also read-only
+    await page.getByRole('link', { name: 'View values' }).first().click();
+    await expect(page.getByRole('button', { name: 'Save' })).toBeDisabled();
+
+    // Go back to history page and verify Close button returns to the listing
+    await page.goBack();
+    await page.goBack();
+    await expect(
+      page.getByRole('heading', { name: 'Changes history' })
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
   });
 
   test('deletes a ruleset', async ({ page }) => {

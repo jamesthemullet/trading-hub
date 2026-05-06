@@ -1,12 +1,23 @@
-import { Typography } from '@/libs/components/typography/typography';
-import { getRulesetEditRoute } from '@/libs/constants/routes';
-import type { RuleType } from '@/libs/constants/rule-types';
+import { useEffect, useState } from 'react';
+
+import { TablePagination, Tabs, Typography } from '@/libs/components';
+import { getFacetRoute, getRulesetEditRoute } from '@/libs/constants/routes';
+import { FacetType, RuleType } from '@/libs/constants/rule-types';
 
 import Link from 'next/link';
 
 import styles from './history-list.module.css';
 
-const HISTORY_COLUMNS = ['#', 'Date', 'Time', 'User', ''] as const;
+const HISTORY_COLUMNS = ['Date', 'Time', 'User', ''] as const;
+
+const HISTORY_TABS = [{ title: 'Rulesets' }, { title: 'Facets' }];
+
+const RULE_TYPE_TO_FACET_TYPE: Record<RuleType, FacetType | null> = {
+  [RuleType.CategoryRanking]: FacetType.Category,
+  [RuleType.SearchRanking]: FacetType.Search,
+  [RuleType.Global]: FacetType.Global,
+  [RuleType.Redirect]: null,
+};
 
 const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   month: 'short',
@@ -28,30 +39,36 @@ type HistoryItem = {
 
 type HistoryRowProps = {
   item: HistoryItem;
-  rowNumber: number;
   absoluteIndex: number;
   ruleType: RuleType;
   currentPage: number;
   currentPageSize: number;
+  isShowingFacets: boolean;
+  facetType: FacetType | null;
 };
 
 const HistoryRow = ({
   item,
-  rowNumber,
   absoluteIndex,
   ruleType,
   currentPage,
   currentPageSize,
+  isShowingFacets,
+  facetType,
 }: HistoryRowProps) => {
   const date = new Date(item.date);
   const formattedDate = date.toLocaleDateString('en-US', DATE_FORMAT_OPTIONS);
   const formattedTime = date.toLocaleTimeString('en-GB', TIME_FORMAT_OPTIONS);
   const isLatest = absoluteIndex === 0;
-  const linkText = isLatest ? 'Current version' : 'View version';
+  const linkText = isLatest ? 'View current' : 'View';
+  const baseHref =
+    isShowingFacets && facetType
+      ? getFacetRoute(facetType, 'edit', item.rulesetId)
+      : getRulesetEditRoute(ruleType, item.rulesetId);
   const href = isLatest
-    ? getRulesetEditRoute(ruleType, item.rulesetId)
+    ? baseHref
     : {
-        pathname: getRulesetEditRoute(ruleType, item.rulesetId),
+        pathname: baseHref,
         query: {
           history: 'true',
           historyId: item.id,
@@ -62,14 +79,12 @@ const HistoryRow = ({
 
   return (
     <li className={styles.historyRow} key={item.id}>
-      <Typography variant="bodyMedium">{rowNumber}</Typography>
-      <Typography variant="bodyMedium">
-        {formattedDate}
-        {isLatest && ' (current)'}
-      </Typography>
+      <Typography variant="bodyMedium">{formattedDate}</Typography>
       <Typography variant="bodyMedium">{formattedTime}</Typography>
       <Typography variant="bodyMedium">{item.user}</Typography>
-      <Link href={href}>{linkText}</Link>
+      <Link href={href} className={styles.historyLink}>
+        {linkText}
+      </Link>
     </li>
   );
 };
@@ -81,36 +96,82 @@ type HistoryListProps = {
   startIndex?: number;
   currentPage?: number;
   currentPageSize?: number;
+  pageSizes?: number[];
+  pagination?: { totalItems?: number };
+  isLoading?: boolean;
+  handlePageChange?: (page: number, pageSize: number) => void;
+  initialTab?: number;
+  onTabChange?: (tab: number) => void;
 };
 
 export const HistoryList = ({
   items,
   ruleType,
-  totalItems = items.length,
   startIndex = 0,
   currentPage = 1,
   currentPageSize = 20,
+  pageSizes,
+  pagination,
+  isLoading,
+  handlePageChange,
+  initialTab = 0,
+  onTabChange,
 }: HistoryListProps) => {
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const facetType = RULE_TYPE_TO_FACET_TYPE[ruleType];
+  const isShowingFacets = activeTab === 1;
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
+
   return (
-    <ul className={styles.historyList}>
-      <li className={styles.historyHeader}>
-        {HISTORY_COLUMNS.map((column) => (
-          <Typography key={column} variant="bodySmall" isStrong>
-            {column}
-          </Typography>
-        ))}
-      </li>
-      {items.map((item, index) => (
-        <HistoryRow
-          key={item.id}
-          item={item}
-          rowNumber={totalItems - startIndex - index}
-          absoluteIndex={startIndex + index}
-          ruleType={ruleType}
-          currentPage={currentPage}
-          currentPageSize={currentPageSize}
-        />
-      ))}
-    </ul>
+    <div>
+      {facetType !== null && (
+        <div className={styles.tabsWrapper}>
+          <Tabs
+            tabs={HISTORY_TABS}
+            currentTab={activeTab}
+            onTabChange={(tab) => {
+              setActiveTab(tab);
+              onTabChange?.(tab);
+            }}
+          />
+        </div>
+      )}
+      <div className={styles.historyListWrapper}>
+        <ul className={styles.historyList}>
+          <li className={styles.historyHeader}>
+            {HISTORY_COLUMNS.map((column) => (
+              <Typography key={column} variant="bodySmall" isStrong>
+                {column}
+              </Typography>
+            ))}
+          </li>
+          {items.map((item, index) => (
+            <HistoryRow
+              key={item.id}
+              item={item}
+              absoluteIndex={startIndex + index}
+              ruleType={ruleType}
+              currentPage={currentPage}
+              currentPageSize={currentPageSize}
+              isShowingFacets={isShowingFacets}
+              facetType={facetType}
+            />
+          ))}
+        </ul>
+        {pagination && handlePageChange && (
+          <TablePagination
+            pagination={pagination}
+            pageSizes={pageSizes ?? []}
+            handlePageChange={handlePageChange}
+            currentPage={currentPage}
+            currentPageSize={currentPageSize}
+            isLoading={isLoading ?? false}
+          />
+        )}
+      </div>
+    </div>
   );
 };

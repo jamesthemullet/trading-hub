@@ -267,7 +267,7 @@ test.describe('Categories', () => {
 
     await expect(page.getByText('SubCategory_429 -').first()).toBeVisible();
 
-    await expect(page.getByText('7 results')).toBeVisible();
+    await expect(page.getByText('1 - 7 out of 7')).toBeVisible();
 
     await checkAccessibility(page);
 
@@ -289,7 +289,7 @@ test.describe('Categories', () => {
     );
     await page.getByTestId('Delete rule').click();
 
-    await expect(page.getByText('6 results')).toBeVisible();
+    await expect(page.getByText('1 - 6 out of 6')).toBeVisible();
   });
 
   test('pin/block/bury/boost from visual editor', async ({ page }) => {

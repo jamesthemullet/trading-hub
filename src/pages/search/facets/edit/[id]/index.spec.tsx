@@ -8,6 +8,7 @@ import {
   useSearchRuleSetUpdate,
 } from '@/libs/hooks';
 import { useGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
+import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
 import { useCheckMergeNameUnique } from '@/libs/hooks/use-check-merge-name-unique';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
@@ -83,6 +84,14 @@ jest.mock('@/libs/hooks/global/facets/use-global-facet-update', () => ({
 jest.mock('@/libs/hooks/use-check-merge-name-unique', () => ({
   ...jest.requireActual('@/libs/hooks/use-check-merge-name-unique'),
   useCheckMergeNameUnique: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/search/history/use-search-history', () => ({
+  useSearchHistory: jest.fn(() => ({
+    history: { changes: [], pagination: { totalItems: 0 } },
+    isLoading: false,
+    error: '',
+  })),
 }));
 
 jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-update', () => ({
@@ -607,6 +616,116 @@ describe('Search Facet Management Editing', () => {
           'Error retrieving facet list: Error fetching facet list'
         )
       ).toBeVisible();
+    });
+  });
+
+  describe('History view', () => {
+    const mockHistoryChange = {
+      id: 'history-change-id',
+      entityId: 'entity-id',
+      savedAt: '2024-01-01T00:00:00Z',
+      savedBy: 'test-user',
+      schemaVersion: '1',
+      change: {
+        ...mockUseSearchRuleSetPreviewData.ruleSet,
+        id: 'historical-ruleset-id',
+      },
+    };
+
+    beforeEach(() => {
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [], pagination: { totalItems: 0 } },
+        isLoading: false,
+        error: '',
+      });
+    });
+
+    it('should render facets from history when history query param is true', async () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
+        isLoading: false,
+        error: '',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        await screen.findByRole('button', { name: 'Cancel' })
+      ).toBeInTheDocument();
+    });
+
+    it('should disable write access when viewing history', async () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: {
+          changes: [mockHistoryChange],
+          pagination: { totalItems: 1 },
+        },
+        isLoading: false,
+        error: '',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        await screen.findByRole('button', { name: 'Cancel' })
+      ).toBeInTheDocument();
+
+      expect(
+        screen.queryByRole('button', { name: 'Save' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show loader when history is loading', () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [], pagination: { totalItems: 0 } },
+        isLoading: true,
+        error: '',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        screen.queryByRole('button', { name: 'Save' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show history error when present', () => {
+      (useRouter as jest.Mock).mockReturnValue({
+        ...mockRouter,
+        query: { history: 'true', historyId: 'history-change-id' },
+      });
+
+      jest.mocked(useSearchHistory).mockReturnValue({
+        history: { changes: [], pagination: { totalItems: 0 } },
+        isLoading: false,
+        error: 'Failed to load history',
+      });
+
+      renderWithProviders(<Page id={ruleSetId} />);
+
+      expect(
+        screen.getByText(
+          'Error whilst retrieving history: Failed to load history'
+        )
+      ).toBeInTheDocument();
     });
   });
 });

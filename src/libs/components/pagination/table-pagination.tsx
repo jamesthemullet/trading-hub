@@ -41,7 +41,15 @@ export const TablePagination = ({
       ) : (
         <>
           <Typography variant="bodySmall" data-testid="results count">
-            {pagination.totalItems} results
+            {(() => {
+              const totalItems = pagination.totalItems ?? 0;
+              const firstItem = (currentPage - 1) * currentPageSize + 1;
+              const lastItem = Math.min(
+                currentPage * currentPageSize,
+                totalItems
+              );
+              return `${firstItem} - ${lastItem} out of ${totalItems}`;
+            })()}
           </Typography>
 
           <Pagination

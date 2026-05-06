@@ -37,11 +37,13 @@ const Page = (): ReactElement => {
     useUpdateRuleSet();
   const { getDraft, saveDraft } = useDraftRuleset();
 
-  const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
+  const { getStringParam, getCountryCodeParam, getBooleanParam } =
+    useTypeSafeQuery();
   const facetId = getStringParam('id');
   const ruleSetId = getStringParam('ruleSetId');
   const displayName = getStringParam('displayName');
   const countryCode = getCountryCodeParam('countryCode');
+  const isReadOnly = getBooleanParam('readOnly');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFacet, setSelectedFacet] = useState<
@@ -220,7 +222,7 @@ const Page = (): ReactElement => {
             searchQuery={searchQuery}
             onSearchChange={handleSearch}
             onSave={handleSave}
-            isWriteEnabled={hasWriteAccess}
+            isWriteEnabled={hasWriteAccess && !isReadOnly}
             headerText={categoriesArray?.join(', ')}
             countryCode={countryCode}
             isDraftRuleset={isDraft}

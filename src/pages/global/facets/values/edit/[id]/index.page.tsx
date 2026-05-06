@@ -12,12 +12,14 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import Head from 'next/head';
 
 const Page = (): ReactElement => {
-  const { getStringParam, getCountryCodeParam } = useTypeSafeQuery();
+  const { getStringParam, getCountryCodeParam, getBooleanParam } =
+    useTypeSafeQuery();
 
   const facetId = getStringParam('id');
   const ruleSetId = getStringParam('ruleSetId');
   const displayName = getStringParam('displayName');
   const countryCode = getCountryCodeParam('countryCode');
+  const isReadOnly = getBooleanParam('readOnly');
 
   const [searchQuery, setSearchQuery] = useState('');
   const { callback: handleSearch } = useDebounce(
@@ -95,7 +97,7 @@ const Page = (): ReactElement => {
           countryCode={countryCode}
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
-          isWriteEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess && !isReadOnly}
         />
       )}
     </>

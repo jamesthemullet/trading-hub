@@ -163,9 +163,11 @@ export const FacetRow = memo(
                 displayName: facet.displayValue,
                 countryCode,
               });
+              if (!isWriteEnabled) {
+                params.set('readOnly', 'true');
+              }
               return `${baseUrl}?${params.toString()}`;
             })()}
-            disabled={!isWriteEnabled}
           >
             {isWriteEnabled ? 'Edit values' : 'View values'}
           </Button>

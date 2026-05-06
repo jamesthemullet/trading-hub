@@ -1,11 +1,6 @@
 import { useRouter } from 'next/router';
 
-import {
-  AccessDeny,
-  ErrorMessage,
-  Heading,
-  TablePagination,
-} from '@/libs/components';
+import { AccessDeny, Button, ErrorMessage, Heading } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
 import type { RuleType } from '@/libs/constants/rule-types';
 import { HistoryList } from '@/libs/features/history-list/history-list';
@@ -59,6 +54,7 @@ export const HistoryPage = ({
   const pageSizes = [10, 20, 50, 100];
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
+  const currentTab = Number(router.query.tab) || 0;
   const startIndex = (currentPage - 1) * currentPageSize;
 
   const handlePageChange = (page: number, pageSize: number) => {
@@ -66,6 +62,13 @@ export const HistoryPage = ({
       currentPage: page,
       currentPageSize: pageSize,
       searchQuery: '',
+    });
+  };
+
+  const handleTabChange = (tab: number) => {
+    void router.replace({
+      pathname: router.pathname,
+      query: { ...router.query, tab },
     });
   };
 
@@ -92,7 +95,17 @@ export const HistoryPage = ({
         <title>Merchandising Hub | M&amp;S | {title}</title>
       </Head>
 
-      <Heading breadcrumbs={breadcrumbs} title="Subcategory History" />
+      <div className={styles.headingRow}>
+        <Heading breadcrumbs={breadcrumbs} title="Changes history" />
+        <Button
+          type="button"
+          aria-label="Close"
+          theme="primary"
+          onClick={() => router.back()}
+        >
+          Close
+        </Button>
+      </div>
 
       <div className={styles.labelWrapper}>
         <Typography variant="bodySmall" withMargin>
@@ -113,18 +126,15 @@ export const HistoryPage = ({
             startIndex={startIndex}
             currentPage={currentPage}
             currentPageSize={currentPageSize}
+            pagination={normalisedPagination}
+            pageSizes={pageSizes}
+            isLoading={isLoading}
+            handlePageChange={handlePageChange}
+            initialTab={currentTab}
+            onTabChange={handleTabChange}
           />
         )}
       </section>
-
-      <TablePagination
-        pagination={normalisedPagination}
-        pageSizes={pageSizes}
-        handlePageChange={handlePageChange}
-        currentPage={currentPage}
-        currentPageSize={currentPageSize}
-        isLoading={isLoading}
-      />
     </section>
   );
 };

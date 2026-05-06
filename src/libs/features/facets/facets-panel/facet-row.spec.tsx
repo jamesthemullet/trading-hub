@@ -111,9 +111,14 @@ describe('FacetRow', () => {
 
     const editValuesLink = screen.getByRole('link', { name: 'Edit values' });
 
+    const params = new URLSearchParams({
+      ruleSetId: 'test-ruleset-id',
+      displayName: 'color',
+      countryCode: 'UK',
+    });
     expect(editValuesLink).toHaveAttribute(
       'href',
-      '/global/facets/values/edit/b04eaac3-f4ea-4f21-9459-0b4302dc2a84?ruleSetId=test-ruleset-id&displayName=color&countryCode=UK'
+      `/global/facets/values/edit/${includedFacet.id}?${params.toString()}`
     );
   });
 
@@ -124,9 +129,15 @@ describe('FacetRow', () => {
 
     const viewValuesLink = screen.getByRole('link', { name: 'View values' });
 
+    const params = new URLSearchParams({
+      ruleSetId: 'test-ruleset-id',
+      displayName: 'color',
+      countryCode: 'UK',
+      readOnly: 'true',
+    });
     expect(viewValuesLink).toHaveAttribute(
       'href',
-      '/global/facets/values/edit/b04eaac3-f4ea-4f21-9459-0b4302dc2a84?ruleSetId=test-ruleset-id&displayName=color&countryCode=UK'
+      `/global/facets/values/edit/${includedFacet.id}?${params.toString()}`
     );
     expect(viewValuesLink).toBeInTheDocument();
   });

@@ -52,4 +52,17 @@ describe('Tabs', () => {
 
     expect(mockTabClick).not.toHaveBeenCalled();
   });
+
+  it('should set data-tabs attribute based on number of tabs', () => {
+    const { container } = render(
+      <Tabs
+        tabs={[{ title: 'Tab 1' }, { title: 'Tab 2' }]}
+        currentTab={0}
+        onTabChange={jest.fn()}
+      />
+    );
+
+    const wrapper = container.querySelector('[class*="tabsWrapper"]');
+    expect(wrapper).toHaveAttribute('data-tabs', '2');
+  });
 });

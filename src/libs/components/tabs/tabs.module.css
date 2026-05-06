@@ -5,8 +5,15 @@
 .tabsWrapper {
   display: flex;
   justify-content: space-between;
-  max-width: 450px;
   margin-top: var(--mns-spacing-1);
+}
+
+.tabsWrapper[data-tabs='2'] {
+  max-width: 300px;
+}
+
+.tabsWrapper[data-tabs='3'] {
+  max-width: 450px;
 }
 
 .tabButton {

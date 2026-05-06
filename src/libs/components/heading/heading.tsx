@@ -9,7 +9,7 @@ type Props = {
 
 export const Heading = ({ breadcrumbs, title }: Props) => {
   return (
-    <>
+    <div>
       <div className={styles.headingSpacer} />
       <div className={styles.headingWrapper}>
         <Breadcrumb>
@@ -32,6 +32,6 @@ export const Heading = ({ breadcrumbs, title }: Props) => {
           </Typography>
         </div>
       )}
-    </>
+    </div>
   );
 };

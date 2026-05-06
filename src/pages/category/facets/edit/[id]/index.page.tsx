@@ -8,7 +8,9 @@ import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { FacetsList } from '@/libs/features';
 import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
+import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -23,6 +25,9 @@ export const getServerSideProps: GetServerSideProps = (
 
 const Page = ({ id }: { id: string }): ReactElement => {
   const router = useRouter();
+  const isHistoryView = router.query.history === 'true';
+  const currentPage = Number(router.query.currentPage) || 1;
+  const currentPageSize = Number(router.query.currentPageSize) || 20;
 
   const { updateCategoryRuleSet, error: updateRulesetError } =
     useUpdateRuleSet();
@@ -65,9 +70,29 @@ const Page = ({ id }: { id: string }): ReactElement => {
 
   const {
     ruleSetDetail,
-    isLoading,
+    isLoading: isCurrentLoading,
     error: getRulesetDetailError,
-  } = useRuleSetDetail(id);
+  } = useRuleSetDetail(isHistoryView ? '' : id);
+
+  const historyData = useCategoryHistory(
+    isHistoryView ? id : '',
+    currentPage,
+    currentPageSize
+  );
+
+  const {
+    rulesetData,
+    isLoading,
+    error: historyError,
+  } = useHistoricalOrCurrentRuleset({
+    id,
+    historyData: {
+      history: historyData.history,
+      isLoading: historyData.isLoading,
+      error: historyData.error,
+    },
+    currentData: { data: ruleSetDetail, isLoading: isCurrentLoading },
+  });
 
   const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Cat');
 
@@ -87,6 +112,11 @@ const Page = ({ id }: { id: string }): ReactElement => {
           Error whilst retrieving ruleset: {getRulesetDetailError}
         </ErrorMessage>
       )}
+      {historyError && (
+        <ErrorMessage>
+          Error whilst retrieving history: {historyError}
+        </ErrorMessage>
+      )}
       {updateRulesetError && (
         <ErrorMessage>
           Error whilst updating ruleset: {updateRulesetError}
@@ -98,12 +128,12 @@ const Page = ({ id }: { id: string }): ReactElement => {
       ) : (
         <FacetsList
           facetType={FacetType.Category}
-          categoriesInfo={ruleSetDetail.categoriesInfo}
+          categoriesInfo={rulesetData?.categoriesInfo}
           isNewRuleset={false}
-          currentRuleset={ruleSetDetail}
+          currentRuleset={rulesetData}
           onCancel={handleCancel}
           onSave={handleSave}
-          isWriteEnabled={hasWriteAccess}
+          isWriteEnabled={hasWriteAccess && !isHistoryView}
         />
       )}
     </>

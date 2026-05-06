@@ -210,6 +210,40 @@ describe('TablePagination', () => {
     expect(handlePageChangeSpy).toHaveBeenCalledWith(1, 100);
   });
 
+  it('should display the correct item range for the current page', () => {
+    const mockProps = {
+      pagination: { totalItems: 360 },
+      currentPage: 2,
+      currentPageSize: 10,
+      handlePageChange: jest.fn(),
+      isLoading: false,
+      pageSizes,
+    };
+
+    renderWithProviders(<TablePagination {...mockProps} />);
+
+    expect(screen.getByTestId('results count')).toHaveTextContent(
+      '11 - 20 out of 360'
+    );
+  });
+
+  it('should clamp the end of range to totalItems on the last page', () => {
+    const mockProps = {
+      pagination: { totalItems: 25 },
+      currentPage: 3,
+      currentPageSize: 10,
+      handlePageChange: jest.fn(),
+      isLoading: false,
+      pageSizes,
+    };
+
+    renderWithProviders(<TablePagination {...mockProps} />);
+
+    expect(screen.getByTestId('results count')).toHaveTextContent(
+      '21 - 25 out of 25'
+    );
+  });
+
   it('should not change page to 1 when there are still items on current page due to page sizes change', async () => {
     const handlePageChangeSpy = jest.fn();
 

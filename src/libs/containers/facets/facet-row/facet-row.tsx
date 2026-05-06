@@ -227,6 +227,10 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
               });
             }
 
+            if (!isWriteEnabled) {
+              params.set('readOnly', 'true');
+            }
+
             const editValuesHref = `${baseUrl}?${params.toString()}`;
 
             return (

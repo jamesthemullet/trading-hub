@@ -70,11 +70,11 @@ describe('Search History', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('heading', { level: 1, name: 'Subcategory History' })
+        screen.getByRole('heading', { level: 1, name: 'Changes history' })
       ).toBeVisible();
     });
 
-    expect(screen.getByText('Dec 6, 2023 (current)')).toBeVisible();
+    expect(screen.getByText('Dec 6, 2023')).toBeVisible();
     expect(screen.getByText('14:24')).toBeVisible();
     expect(screen.getByText('Mark Spencer')).toBeVisible();
   });
