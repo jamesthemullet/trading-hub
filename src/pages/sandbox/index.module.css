@@ -33,3 +33,39 @@
   color: var(--color-surface-on-surface-container, #888);
   opacity: 0.7;
 }
+
+.shadowSuggestion {
+  color: var(--color-state-success-on-success-container, #207d26);
+}
+
+.swatchRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.swatchItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.colorSwatchBox {
+  width: 80px;
+  height: 60px;
+  border-radius: 4px;
+  border: 1px solid var(--color-surface-outline-variant, #ccc);
+}
+
+.swatchArrow {
+  align-self: center;
+  color: var(--color-surface-on-surface-variant, #666);
+}
+
+.borderRadiusBox {
+  width: 80px;
+  height: 60px;
+  background: var(--color-surface-surface-container-high, #e0e0e0);
+  border: 2px solid var(--color-surface-outline, #999);
+}
