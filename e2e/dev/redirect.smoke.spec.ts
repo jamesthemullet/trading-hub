@@ -145,6 +145,7 @@ test.describe('Search Redirect', () => {
 
     const currentCount =
       (await page.getByTestId('results count').textContent()) ?? '';
+    const totalItems = parseInt(currentCount.split('out of')[1]?.trim() ?? '0');
 
     await page.getByRole('button', { name: 'More options' }).first().click();
 
@@ -157,8 +158,8 @@ test.describe('Search Redirect', () => {
     await expect(confirmButton).toBeVisible();
     await confirmButton.click();
 
-    await expect(
-      page.getByText(`${parseInt(currentCount) - 1} results`, { exact: true })
-    ).toBeVisible();
+    await expect(page.getByTestId('results count')).toContainText(
+      `out of ${totalItems - 1}`
+    );
   });
 });

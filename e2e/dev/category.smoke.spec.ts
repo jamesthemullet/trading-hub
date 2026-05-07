@@ -295,12 +295,14 @@ test.describe('Category Ranking', () => {
 
     await searchAndWaitForResults(page, TEST_CATEGORY_ID);
 
-    const currentCountText = await page
-      .getByTestId('results count')
-      .textContent();
-    expect(currentCountText).not.toBeNull();
     const currentCount =
       (await page.getByTestId('results count').textContent()) ?? '';
+    const totalItemsMatch = currentCount.match(/out of\s+(\d+)/);
+    expect(
+      totalItemsMatch,
+      `Unexpected results count format: "${currentCount}"`
+    ).not.toBeNull();
+    const totalItems = parseInt(totalItemsMatch?.[1] ?? '', 10);
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();
@@ -309,8 +311,8 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();
 
-    await expect(
-      page.getByText(`${parseInt(currentCount) - 2} results`, { exact: true })
-    ).toBeVisible();
+    await expect(page.getByTestId('results count')).toContainText(
+      `out of ${totalItems - 2}`
+    );
   });
 });

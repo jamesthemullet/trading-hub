@@ -173,6 +173,7 @@ test.describe('Search Ranking', () => {
 
     const currentCount =
       (await page.getByTestId('results count').textContent()) ?? '';
+    const totalItems = parseInt(currentCount.split('out of')[1]?.trim() ?? '0');
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();
@@ -181,8 +182,8 @@ test.describe('Search Ranking', () => {
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();
 
-    await expect(
-      page.getByText(`${parseInt(currentCount) - 1} results`, { exact: true })
-    ).toBeVisible();
+    await expect(page.getByTestId('results count')).toContainText(
+      `out of ${totalItems - 2}`
+    );
   });
 });

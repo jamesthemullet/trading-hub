@@ -204,7 +204,10 @@ test.describe('Global Ranking', () => {
     ).toBeVisible();
 
     await expect(page.getByText('View current')).toBeVisible();
-    const viewVersionLinks = page.getByRole('link', { name: 'View' });
+    const viewVersionLinks = page.getByRole('link', {
+      name: 'View',
+      exact: true,
+    });
     await expect(viewVersionLinks.first()).toBeVisible();
 
     // View a historical ruleset version — should be read-only
@@ -224,7 +227,7 @@ test.describe('Global Ranking', () => {
 
     await page.getByRole('button', { name: 'Facets' }).click();
 
-    const viewFacetVersionLinks = page.getByRole('link', { name: /View/ });
+    const viewFacetVersionLinks = page.getByRole('link', { name: /^View$/ });
     await expect(viewFacetVersionLinks.first()).toBeVisible();
 
     // View a historical facet version — should be read-only
@@ -234,12 +237,15 @@ test.describe('Global Ranking', () => {
       page.getByRole('heading', { name: 'Global Facet Rule Editor' })
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Save' })).toBeHidden();
-    await expect(
-      page.getByRole('link', { name: 'View values' }).first()
-    ).toBeVisible();
+    const viewValuesLink = page
+      .getByRole('link', { name: 'View values' })
+      .first();
+    await expect(viewValuesLink).toBeVisible();
 
     // Click through to the values page and verify it is also read-only
-    await page.getByRole('link', { name: 'View values' }).first().click();
+    const viewValuesHref = await viewValuesLink.getAttribute('href');
+    expect(viewValuesHref).not.toBeNull();
+    await page.goto(viewValuesHref!);
     await expect(page.getByRole('button', { name: 'Save' })).toBeDisabled();
 
     // Go back to history page and verify Close button returns to the listing
@@ -258,12 +264,13 @@ test.describe('Global Ranking', () => {
 
     const currentCount =
       (await page.getByTestId('results count').textContent()) ?? '';
+    const totalItems = parseInt(currentCount.split('out of')[1]?.trim() ?? '0');
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();
 
-    await expect(
-      page.getByText(`${parseInt(currentCount) - 1} results`, { exact: true })
-    ).toBeVisible();
+    await expect(page.getByTestId('results count')).toContainText(
+      `out of ${totalItems - 1}`
+    );
   });
 });
