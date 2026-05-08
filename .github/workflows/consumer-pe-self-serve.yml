@@ -1,0 +1,78 @@
+# ======================================================================
+# Sample Consumer Workflow — BrightCloud Private Endpoint Self-Service
+# ======================================================================
+# Copy this file into your repo at:
+#   .github/workflows/consumer-pe-self-serve.yml
+#
+# Prerequisites:
+#   1. GitHub Environment secrets (Nonprod / Prod):
+#      - SUBSCRIPTION_ID  — Your Azure subscription ID
+#   2. GitHub Org secret (already available in DigitalInnovation org):
+#      - ORG_BC_LZ_DISPATCH_TOKEN
+#
+# Version tracking:
+#   This workflow references @v1 (major version tag) of the reusable
+#   workflow in brightcloud-landing-zone. Patch and minor updates are
+#   picked up automatically. Major version bumps (e.g. @v1 → @v2) will
+#   be raised as a PR by Renovate if configured on your repo.
+# ======================================================================
+
+name: 'BrightCloud — Request Private Endpoints'
+run-name: 'PE Request — ${{ inputs.environment }} by @${{ github.actor }}'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - Nonprod
+          - Prod
+      resource_group:
+        description:
+          'Resource Group name(s) in comma-separated format (optional — helps
+          reduce workflow run time. Leave blank to scan entire subscription)'
+        required: false
+        default: ''
+        type: string
+      resource_name:
+        description:
+          'Specific resource name(s) in comma-separated format (optional —
+          helps reduce workflow run time. Leave blank to discover all eligible
+          resources)'
+        required: false
+        default: ''
+        type: string
+      ttl_hours:
+        description: 'PE time-to-live in hours (default: 1, max: 8)'
+        required: false
+        default: '1'
+        type: string
+      azure_region:
+        description: 'Target region for PE provisioning'
+        required: false
+        default: 'All'
+        type: choice
+        options:
+          - All
+          - North Europe
+          - West Europe
+
+permissions:
+  contents: read
+
+jobs:
+  request-pe:
+    name: 'Request Private Endpoints'
+    uses: DigitalInnovation/brightcloud-landing-zone/.github/workflows/bc-pe-self-serve.yml@v1
+    with:
+      environment: ${{ inputs.environment }}
+      resource_group: ${{ inputs.resource_group }}
+      resource_name: ${{ inputs.resource_name }}
+      ttl_hours: ${{ inputs.ttl_hours }}
+      azure_region: ${{ inputs.azure_region }}
+    secrets:
+      ORG_BC_LZ_DISPATCH_TOKEN: ${{ secrets.ORG_BC_LZ_DISPATCH_TOKEN }}
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
