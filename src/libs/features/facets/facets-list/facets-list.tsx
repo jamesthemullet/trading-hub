@@ -21,7 +21,11 @@ import { CategorySearch, Preview } from '@/libs/features';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
-import { useDraftRuleset, useFacetsList } from '@/libs/hooks';
+import {
+  useDraftRuleset,
+  useFacetsList,
+  useGlobalFacetsList,
+} from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { track } from '@/libs/hooks/utils/analytics';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -277,6 +281,8 @@ export const FacetsList = ({
     countryCode: ruleset.countryCode || 'UK_IE',
   });
 
+  const { facets: globalFacets } = useGlobalFacetsList();
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -331,10 +337,15 @@ export const FacetsList = ({
 
   const boostedFacets = useMemo(
     () =>
-      ruleset.facets?.map((facet) =>
-        filteredFacets.find((f) => f.id === facet.id)
-      ) || [],
-    [ruleset.facets, filteredFacets]
+      ruleset.facets?.map((facetConfig) => {
+        const found = filteredFacets.find((f) => f.id === facetConfig.id);
+        if (found) return found;
+        const globalFacet = globalFacets.find((f) => f.id === facetConfig.id);
+        if (globalFacet)
+          return { ...globalFacet, isUnavailable: true as const };
+        return undefined;
+      }) || [],
+    [ruleset.facets, filteredFacets, globalFacets]
   );
 
   const filteredIncludedFacetIds = useMemo(

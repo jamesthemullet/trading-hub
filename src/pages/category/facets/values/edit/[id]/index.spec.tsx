@@ -60,6 +60,15 @@ jest.mock('@/libs/hooks', () => ({
   useDraftRuleset: () => mockUseDraftRuleset,
 }));
 
+jest.mock('@/libs/hooks/global/facets/use-global-facets-list', () => ({
+  useGlobalFacetsList: () => ({
+    facets: facetsListMock.facets,
+    isLoading: false,
+    error: '',
+    onRefreshFacetList: jest.fn(),
+  }),
+}));
+
 describe('Index', () => {
   const defaultMockRouter = {
     query: {

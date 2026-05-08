@@ -23,7 +23,17 @@
 }
 
 .facetTableRow[data-option='included'] {
-  background-color: #f4faed;
+  background-color: var(--facet-row-included);
+}
+
+.facetTableRow[data-option='included'][data-unavailable='true'] {
+  background-color: var(--facet-row-included-opacity-50);
+}
+
+.unavailableText {
+  color: var(--color-state-error-error);
+  font-style: italic;
+  white-space: nowrap;
 }
 
 .facetTableRow[data-option='excluded'] {

@@ -4,7 +4,12 @@ import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 
 import { FacetType } from '@/libs/constants/rule-types';
-import { useGetCategories, useGetFacetAttributeValues } from '@/libs/hooks';
+import {
+  useFacetsList,
+  useGetCategories,
+  useGetFacetAttributeValues,
+  useGlobalFacetsList,
+} from '@/libs/hooks';
 import { useDraftRuleset } from '@/libs/hooks/use-draft-ruleset';
 import * as analytics from '@/libs/hooks/utils/analytics';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
@@ -13,12 +18,6 @@ import { renderWithProviders } from '@/test/render-with-providers';
 import type { DndContextProps, DragEndEvent } from '@dnd-kit/core';
 
 import { FacetsList, type FacetsListProps } from './facets-list';
-
-const mockUseFacetsList = {
-  isLoading: false,
-  facets: facetsListMock.facets,
-  error: '',
-};
 
 const pushMock = jest.fn();
 
@@ -82,9 +81,8 @@ jest.mock('@dnd-kit/sortable', () => {
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGetFacetAttributeValues: jest.fn(),
-  useFacetsList: () => {
-    return mockUseFacetsList;
-  },
+  useFacetsList: jest.fn(),
+  useGlobalFacetsList: jest.fn(),
 }));
 
 jest.mock('next/router', () => ({
@@ -188,6 +186,19 @@ describe('FacetsList', () => {
       isLoading: false,
     });
 
+    jest.mocked(useFacetsList).mockReturnValue({
+      facets: facetsListMock.facets,
+      isLoading: false,
+      error: '',
+    });
+
+    jest.mocked(useGlobalFacetsList).mockReturnValue({
+      facets: facetsListMock.facets,
+      isLoading: false,
+      error: '',
+      onRefreshFacetList: jest.fn(),
+    });
+
     jest.mocked(useRouter).mockReturnValue(mockRouter as NextRouter);
   });
 
@@ -204,19 +215,17 @@ describe('FacetsList', () => {
   });
 
   it('should render default empty ruleset message when facetType is global', async () => {
-    const originalFacets = mockUseFacetsList.facets;
-    try {
-      mockUseFacetsList.facets = [];
-      renderWithProviders(
-        <FacetsList {...defaultFacetProps} facetType={FacetType.Global} />
-      );
+    jest
+      .mocked(useFacetsList)
+      .mockReturnValue({ facets: [], isLoading: false, error: '' });
 
-      expect(
-        screen.getByText('Please create the ruleset before editing facets.')
-      ).toBeVisible();
-    } finally {
-      mockUseFacetsList.facets = originalFacets;
-    }
+    renderWithProviders(
+      <FacetsList {...defaultFacetProps} facetType={FacetType.Global} />
+    );
+
+    expect(
+      screen.getByText('Please create the ruleset before editing facets.')
+    ).toBeVisible();
   });
 
   it('should add and set a category', async () => {
@@ -1439,5 +1448,65 @@ describe('FacetsList', () => {
     await waitFor(() => {
       expect(screen.getByText('socks')).toBeInTheDocument();
     });
+  });
+
+  it('should render unavailable boosted facets with ghost styling and "currently not available" text', () => {
+    const unavailableFacetId = facetsListMock.facets[0].id;
+
+    jest
+      .mocked(useFacetsList)
+      .mockReturnValue({ facets: [], isLoading: false, error: '' });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [{ id: unavailableFacetId }],
+        }}
+        isNewRuleset={false}
+        facetType={FacetType.Search}
+        searchTerms={['socks']}
+      />
+    );
+
+    const row = screen.getByTestId('Row showing color as included');
+    expect(row).toBeVisible();
+    expect(row).toHaveAttribute('data-unavailable', 'true');
+    expect(screen.getByText('— currently not available')).toBeVisible();
+    expect(
+      screen.queryByRole('link', { name: 'Edit values' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should not render a facet row for boosted facets not found in global or context facets', () => {
+    const unknownFacetId = 'unknown-facet-id-that-does-not-exist';
+
+    jest
+      .mocked(useFacetsList)
+      .mockReturnValue({ facets: [], isLoading: false, error: '' });
+    jest.mocked(useGlobalFacetsList).mockReturnValue({
+      facets: [],
+      isLoading: false,
+      error: '',
+      onRefreshFacetList: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [{ id: unknownFacetId }],
+        }}
+        isNewRuleset={false}
+        facetType={FacetType.Search}
+        searchTerms={['socks']}
+      />
+    );
+
+    expect(
+      screen.queryByText('— currently not available')
+    ).not.toBeInTheDocument();
   });
 });

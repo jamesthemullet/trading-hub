@@ -23,6 +23,15 @@ jest.mock('@/libs/hooks', () => ({
   }),
 }));
 
+jest.mock('@/libs/hooks/global/facets/use-global-facets-list', () => ({
+  useGlobalFacetsList: () => ({
+    facets: facetsListMock.facets,
+    isLoading: false,
+    error: '',
+    onRefreshFacetList: jest.fn(),
+  }),
+}));
+
 describe('Global Facet Management New', () => {
   const mockRouter = {
     push: jest.fn(),

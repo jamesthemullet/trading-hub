@@ -55,6 +55,15 @@ jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
   useGetFacetAttributeValues: jest.fn(),
 }));
 
+jest.mock('@/libs/hooks/global/facets/use-global-facets-list', () => ({
+  useGlobalFacetsList: () => ({
+    facets: facetsListMock.facets,
+    isLoading: false,
+    error: '',
+    onRefreshFacetList: jest.fn(),
+  }),
+}));
+
 jest.mock('@/libs/hooks/global/facets/use-global-facet-update', () => ({
   ...jest.requireActual('@/libs/hooks/global/facets/use-global-facet-update'),
   useGlobalFacetUpdate: jest.fn(),

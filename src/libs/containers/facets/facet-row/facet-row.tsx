@@ -34,6 +34,7 @@ type CommonFacetRowProps = {
   onDispatch: (action: RuleSetActions) => void;
   hasChanges: boolean;
   isNewlyIncluded?: boolean;
+  isUnavailable?: boolean;
 };
 
 type IncludedFacetRowProps = FacetRowDisplayValue &
@@ -82,6 +83,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
     onDispatch,
     hasChanges,
     isNewlyIncluded,
+    isUnavailable,
   } = props;
 
   const { saveDraft } = useDraftRuleset();
@@ -147,6 +149,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
     <div
       className={styles.facetTableRow}
       data-option={displayType}
+      data-unavailable={isUnavailable || undefined}
       data-testid={`Row showing ${displayValue} as ${displayType}`}
       key={sortableProps ? undefined : id}
       ref={sortableProps?.setNodeRef}
@@ -175,6 +178,11 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
       </div>
       <div className={styles.tableCol}>
         <Typography variant="bodySmall">{displayValue}</Typography>
+        {isUnavailable && (
+          <Typography variant="bodySmall" className={styles.unavailableText}>
+            — currently not available
+          </Typography>
+        )}
       </div>
       <div className={styles.tableCol}>
         <div className={styles.orderColumn}>
@@ -200,6 +208,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
       </div>
       <div className={styles.tableCol}>
         {displayType === 'included' &&
+          !isUnavailable &&
           (() => {
             const baseUrl = getFacetRoute(props.facetType, 'valuesEdit', id);
             const ruleSetIdParam = !props.rulesetId ? 'draft' : props.rulesetId;

@@ -57,7 +57,7 @@
 }
 
 .facetAttributeValuesTableRow[data-is-pinned='true'] {
-  background-color: #f4faed;
+  background-color: var(--facet-row-included);
 }
 
 .facetAttributeValuesTableRow[data-is-excluded='true'] {

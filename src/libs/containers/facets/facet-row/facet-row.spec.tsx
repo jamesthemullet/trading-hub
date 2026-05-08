@@ -416,4 +416,38 @@ describe('FacetRow', () => {
       )
     ).toBeInTheDocument();
   });
+
+  it('should render unavailable facet with ghost styling and "currently not available" text', () => {
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        isUnavailable
+      />
+    );
+
+    const row = screen.getByTestId('Row showing color as included');
+    expect(row).toHaveAttribute('data-unavailable', 'true');
+    expect(screen.getByText('— currently not available')).toBeVisible();
+    expect(
+      screen.queryByRole('link', { name: 'Edit values' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should not show "currently not available" for available facets', () => {
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+      />
+    );
+
+    const row = screen.getByTestId('Row showing color as included');
+    expect(row).not.toHaveAttribute('data-unavailable');
+    expect(
+      screen.queryByText('— currently not available')
+    ).not.toBeInTheDocument();
+  });
 });

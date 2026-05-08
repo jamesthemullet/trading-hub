@@ -81,6 +81,15 @@ jest.mock('@/libs/hooks/global/facets/use-global-facet-update', () => ({
   useGlobalFacetUpdate: jest.fn(),
 }));
 
+jest.mock('@/libs/hooks/global/facets/use-global-facets-list', () => ({
+  useGlobalFacetsList: () => ({
+    facets: facetsListMock.facets,
+    isLoading: false,
+    error: '',
+    onRefreshFacetList: jest.fn(),
+  }),
+}));
+
 jest.mock('@/libs/hooks/use-check-merge-name-unique', () => ({
   ...jest.requireActual('@/libs/hooks/use-check-merge-name-unique'),
   useCheckMergeNameUnique: jest.fn(),

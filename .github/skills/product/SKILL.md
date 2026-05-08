@@ -40,7 +40,17 @@ Use the current minute of the hour to pick **one** of these six lenses. To keep 
 5. **World-Class & Next-Level** — capabilities that would make competing tools (Fredhopper, Bloomreach, Attraqt) look dated: AI-assisted boost/bury suggestions based on sales velocity or search analytics, semantic facet grouping, one-click ruleset cloning across markets, real-time ranking preview against live traffic, A/B test scheduling for competing rulesets, or natural-language search term generation
 6. **Personalisation** — opportunities to make merchandising rules aware of customer context: segment-specific boost/bury overrides, previewing how results look for a given customer persona, exposing ML ranking signals so merchandisers can work with (not against) the algorithm, or surfacing which rules are currently overriding personalised rankings and by how much
 
-### Step 2 — Audit the codebase
+### Step 2 — Review existing open issues
+
+Run the following command to retrieve open GitHub issues labelled `product`:
+
+```bash
+gh issue list --repo DigitalInnovation/trading-hub --label product --state open --limit 50
+```
+
+Read the list. Do **not** propose a feature that duplicates or substantially overlaps an already-open issue. If the audit in Step 3 surfaces a gap that is already captured, move on and find a different opportunity.
+
+### Step 3 — Audit the codebase
 
 Read the files in `src/pages/`, `src/libs/features/`, `src/libs/hooks/`, `src/libs/stores/`, and `src/libs/components/`. Identify a gap where a merchandiser might say "I wish I could…" or "I didn't realise that…". Look for:
 
@@ -51,7 +61,7 @@ Read the files in `src/pages/`, `src/libs/features/`, `src/libs/hooks/`, `src/li
 - **Gaps in history/audit** — the history page exists but change context (who changed what and why) may be incomplete or hard to navigate
 - **Missing write-access affordances** — read-only users can see forms but not edit; is it clear why? Are upgrade/access-request paths surfaced?
 
-### Step 3 — The Pitch
+### Step 4 — The Pitch
 
 Propose a **single, high-impact feature**. Constraints:
 
@@ -60,7 +70,7 @@ Propose a **single, high-impact feature**. Constraints:
 - Must be testable to 100% coverage (Jest + React Testing Library) and have a clear Playwright E2E test path
 - One feature only — not a roadmap
 
-### Step 4 — Report
+### Step 5 — Report
 
 Output exactly this structure:
 
@@ -76,7 +86,7 @@ Output exactly this structure:
 **Success Metric:** <How would we measure if this worked?>
 ```
 
-### Step 5 — Create a GitHub issue
+### Step 6 — Create a GitHub issue
 
 Run this command to log the opportunity as a GitHub issue:
 
@@ -114,6 +124,8 @@ Report the issue URL once created.
 - **Generated API client:** if a feature requires a new backend endpoint, note it explicitly in the Implementation Sketch — flag it as a backend change needed, and describe what the new endpoint should do. The frontend client is regenerated from `api.yml` once the backend is updated.
 - **`attributeRules` is NOT available:** `MerchandisingProductMetadata.attributeRules` is defined in `api.yml` but the backend does not currently return this field — it will always be empty/absent at runtime. Do not suggest features or implementations that rely on `attributeRules` (e.g. "show why a product was boosted/buried based on attributeRules"). Any such capability requires a backend change to populate this field first — flag it as a backend prerequisite.
 - **Country/market separation is NOT a problem:** UK and IE subcategories can share the same ruleset — the same ruleset applies logic across both markets simultaneously. Do not suggest features premised on the idea that merchandisers can't apply a single ruleset to both UK and IE, or that cross-market ruleset management is a gap. It is not.
+- **Merged/unified facet values for category and search is NOT wanted:** Do not suggest merging, consolidating, or unifying facet value management across category and search rulesets. Category facet values and search facet values are managed independently by design — this is intentional, not a gap.
+- **Do not encourage pinning:** Do not propose features that make it easier, faster, or more prominent to pin products (e.g. bulk pin, pin suggestions, pin-from-preview shortcuts). The direction of travel is to reduce reliance on pinning, not increase it.
 - **Rulesets always have ranking rules:** A ruleset's `rules` object is always present and always contains `pinnedProducts`, `blockedProducts`, `boosts`, `buries`, `includes`, and `excludes` arrays — they may be empty, but they are never absent. There is no "genuinely blank / no rules created yet" state for an existing ruleset. Do not propose empty-state CTAs ("Add your first rule") premised on rules being null or missing — the concept is architecturally invalid.
 - **Testing:** every new component or hook must reach 100% statement/branch/function/line coverage; E2E tests use Playwright + WireMock mocks in `e2e/wiremock/`
 - **Component patterns:** wrap Mantine primitives in a custom component in `src/libs/components/` rather than using Mantine directly in feature/page code
