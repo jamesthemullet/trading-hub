@@ -331,6 +331,16 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       boosted: ['NAVY', 'BLACK MIX', 'GREY', 'PINK', 'RED'],
       merged: [],
     },
+    {
+      type: 'root',
+      id: 'a1b2c3d4-1234-5678-0000-000000000002',
+      indexPropertyName: 'materialType',
+      displayValue: 'Material Type',
+      lastChanged: { date: '2024-09-18T10:00:00Z', user: 'Test User' },
+      excludedValues: [],
+      boosted: [],
+      merged: [],
+    },
   ],
 };
 
@@ -635,3 +645,24 @@ export const mockAttributeValues: MerchandisingAttributeValuesResponse = {
     totalItems: 6,
   },
 };
+
+export const mockMaterialTypeAttributeValues: MerchandisingAttributeValuesResponse =
+  {
+    values: [
+      { displayValue: 'Printed' },
+      { displayValue: 'Floral' },
+      { displayValue: 'Checked' },
+      { displayValue: 'Animal' },
+      { displayValue: 'Animal print' },
+      { displayValue: 'Geometric' },
+      { displayValue: 'Novelty' },
+      { displayValue: 'Leopard print' },
+      { displayValue: 'Camouflage' },
+      { displayValue: 'Dinosaur' },
+      { displayValue: 'Stars' },
+      { displayValue: 'Sparkly' },
+    ],
+    pagination: {
+      totalItems: 12,
+    },
+  };

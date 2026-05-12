@@ -7,6 +7,7 @@ import {
   mockGlobalFacet,
   mockGlobalRuleset,
   mockGlobalRulesets,
+  mockMaterialTypeAttributeValues,
 } from './global.mocks';
 
 test.describe('global facets', () => {
@@ -250,6 +251,127 @@ test.describe('global facets', () => {
 
     await expect(
       page.getByLabel('Edit display name for 3-5 years')
+    ).toBeVisible();
+  });
+});
+
+const MATERIAL_TYPE_FACET_ID = 'a1b2c3d4-1234-5678-0000-000000000002';
+const RULESET_ID = 'b118cd93-1767-447b-ace5-74084bcf56eb';
+const materialTypeValuesEditorUrl = `/global/facets/values/edit/${MATERIAL_TYPE_FACET_ID}?ruleSetId=${RULESET_ID}&displayName=Material+Type&countryCode=UK_IE`;
+
+test.describe('global Material Type facet value merging', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route(
+      '*/**/api/search/beta/merchandising/facet*',
+      async (route) => {
+        const json = mockGlobalFacet;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      `*/**/api/search/beta/merchandising/facet/${MATERIAL_TYPE_FACET_ID}/attributeValues*`,
+      async (route) => {
+        const json = mockMaterialTypeAttributeValues;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+  });
+
+  test('merges Material Type facet values and reverses the merge', async ({
+    page,
+  }) => {
+    await page.goto(materialTypeValuesEditorUrl);
+    await expect(
+      page.getByRole('heading', { name: 'Value settings of: Material Type' })
+    ).toBeVisible();
+
+    await checkAccessibility(page);
+
+    await page.getByLabel('Select Animal to merge').click();
+    await page.getByLabel('Select Animal print to merge').click();
+
+    await expect(page.getByText('2 selected')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Merge', exact: true }).click();
+
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save' })
+      .click();
+
+    await expect(
+      page
+        .getByTestId('algoControl attribute 3 Animal')
+        .getByText('Merged Value Group')
+    ).toBeVisible();
+
+    await checkAccessibility(page);
+
+    // Add Geometric to the existing Animal merged group
+    await page.getByLabel('Select Animal to merge').click();
+    await page.getByLabel('Select Geometric to merge').click();
+
+    await expect(page.getByText('2 selected')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Merge', exact: true }).click();
+
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save' })
+      .click();
+
+    await expect(
+      page.getByLabel('Remove merged facet for Geometric')
+    ).toBeVisible();
+
+    await checkAccessibility(page);
+
+    // Reverse: remove Animal print, then Geometric to fully dissolve the group
+    await page.getByLabel('Remove merged facet for Animal print').click();
+
+    await expect(
+      page.getByLabel('Edit display name for Animal print')
+    ).toBeVisible();
+
+    await page.getByLabel('Remove merged facet for Geometric').click();
+
+    await expect(
+      page.getByLabel('Edit display name for Geometric')
+    ).toBeVisible();
+  });
+
+  test('merges Material Type values with a custom display name and reverses', async ({
+    page,
+  }) => {
+    await page.goto(materialTypeValuesEditorUrl);
+    await expect(
+      page.getByRole('heading', { name: 'Value settings of: Material Type' })
+    ).toBeVisible();
+
+    await page.getByLabel('Select Leopard print to merge').click();
+    await page.getByLabel('Select Camouflage to merge').click();
+
+    await expect(page.getByText('2 selected')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Merge', exact: true }).click();
+
+    await page.getByRole('dialog').getByRole('textbox').fill('Wildlife Prints');
+
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save' })
+      .click();
+
+    await expect(
+      page.getByLabel('Edit display name for Wildlife Prints')
+    ).toBeVisible();
+
+    await checkAccessibility(page);
+
+    await page.getByLabel('Remove merged facet for Camouflage').click();
+
+    await expect(
+      page.getByLabel('Edit display name for Camouflage')
     ).toBeVisible();
   });
 });
