@@ -21,7 +21,7 @@ const ProductStatus = () => {
   const setQuery = (query: string) =>
     dispatch({ type: 'SET_QUERY', payload: query });
 
-  const { query, data, isLoading, error } = state;
+  const { query, productDisplay, isLoading, error } = state;
 
   const handleSearch: React.ComponentProps<'form'>['onSubmit'] = (e) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ const ProductStatus = () => {
             </Typography>
           )}
 
-          {data && <ProductResult query={query} data={data} />}
+          {productDisplay && <ProductResult productDisplay={productDisplay} />}
         </div>
       </div>
     </>

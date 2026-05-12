@@ -9,16 +9,16 @@ import type {
   ProductStatusVariant,
 } from '@/libs/components/status-badge/status-badge';
 
-type Product = MerchandisingProduct & { rating?: string };
+export type Product = MerchandisingProduct & { rating?: string };
 
-type DetailItem = { label: string; value: string };
+export type DetailItem = { label: string; value: string };
 
-type SectionStatus = Extract<
+export type SectionStatus = Extract<
   OperationalStatusVariant | ProductStatusVariant,
   'operational' | 'issue-detected' | 'blocked' | 'push-available' | 'waiting'
 >;
 
-type Section<T> = {
+export type Section<T> = {
   content: T;
   issues: Array<ProductOfflineIssue & { type: 'warning' | 'error' }>;
   status: SectionStatus;
@@ -40,6 +40,7 @@ export enum ProductError {
   AssemblyFailed = 'Failed to get product data',
   DataUnavailable = 'Product data is not available',
   NotIndexed = 'Product is not indexed in Elastic yet',
+  OutOfStock = 'Product is out of stock',
   // PriceUnavailable = 'Price data is not available',
 }
 
@@ -48,18 +49,19 @@ const blocked = <T>(content: T): Section<T> => ({
   issues: [],
   status: 'blocked',
 });
+
 const waitingForPush = <T>(content: T): Section<T> => ({
   content,
   issues: [],
   status: 'waiting',
 });
 
-export const useProductDetails = (
+export const getProductDetails = (
   data: BetaMerchandisingProductDiagnosticsListData
 ) => {
-  const isOnline = data.products.length > 0;
+  const isIndexed = data.products.length > 0;
   const issues = data.issues;
-  const product = isOnline ? (data.products[0] as Product) : null;
+  const product = isIndexed ? (data.products[0] as Product) : null;
 
   const ranking = product?.metadata.ranking;
   const predictedRevenueScore = getRankingValue(
@@ -83,28 +85,16 @@ export const useProductDetails = (
   let sections: ProductSections;
 
   if (issues.length === 0) {
-    if (isOnline) {
+    if (isIndexed) {
       sections = {
         productAssembly: {
           content: assemblyDetails,
           issues: [],
           status: 'operational',
         },
-        availability: {
-          content: '',
-          issues: [],
-          status: 'operational',
-        },
-        saleability: {
-          content: '',
-          issues: [],
-          status: 'operational',
-        },
-        associatedRules: {
-          content: '',
-          issues: [],
-          status: 'operational',
-        },
+        availability: { content: '', issues: [], status: 'operational' },
+        saleability: { content: '', issues: [], status: 'operational' },
+        associatedRules: { content: '', issues: [], status: 'operational' },
       };
     } else {
       sections = {
@@ -151,6 +141,18 @@ export const useProductDetails = (
           associatedRules: blocked(null),
         };
         break;
+      case ProductError.OutOfStock:
+        sections = {
+          productAssembly: blocked(assemblyDetails),
+          availability: {
+            content: 'Not available',
+            issues: issues.map((issue) => ({ ...issue, type: 'error' })),
+            status: 'issue-detected',
+          },
+          saleability: blocked(null),
+          associatedRules: blocked(null),
+        };
+        break;
       default:
         sections = {
           productAssembly: {
@@ -158,24 +160,12 @@ export const useProductDetails = (
             issues: issues.map((issue) => ({ ...issue, type: 'error' })),
             status: 'operational',
           },
-          availability: {
-            content: '',
-            issues: [],
-            status: 'operational',
-          },
-          saleability: {
-            content: '',
-            issues: [],
-            status: 'operational',
-          },
-          associatedRules: {
-            content: '',
-            issues: [],
-            status: 'operational',
-          },
+          availability: { content: '', issues: [], status: 'operational' },
+          saleability: { content: '', issues: [], status: 'operational' },
+          associatedRules: { content: '', issues: [], status: 'operational' },
         };
     }
   }
 
-  return { isOnline, product, sections };
+  return { isIndexed, product, sections };
 };

@@ -1,27 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react';
 
-import type { BetaMerchandisingProductDiagnosticsListData } from '@/libs/api/generated/open-api';
+import type { ProductDisplay } from '@/libs/hooks/product-status/reducer';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-jest.mock('@/libs/hooks/product-status/use-product-details', () => ({
-  ...jest.requireActual('@/libs/hooks/product-status/use-product-details'),
-  useProductDetails: jest.fn(),
-}));
-
-import { useProductDetails } from '@/libs/hooks/product-status/use-product-details';
-
 import { ProductResult } from './product-result';
-
-const mockUseProductDetails = useProductDetails as jest.MockedFunction<
-  typeof useProductDetails
->;
-
-const blockedSections = {
-  productAssembly: { content: [], issues: [], status: 'blocked' as const },
-  availability: { content: null, issues: [], status: 'blocked' as const },
-  saleability: { content: null, issues: [], status: 'blocked' as const },
-  associatedRules: { content: null, issues: [], status: 'blocked' as const },
-};
 
 const baseProduct = {
   id: 'p1',
@@ -29,98 +11,156 @@ const baseProduct = {
   title: 'Green Wool Coat',
   price: '£89.00',
   isInStock: true,
+  brand: 'M&S',
+  url: 'https://example.com',
+  imageUrl: [] as string[],
   metadata: { isPinned: false },
 };
 
-const onlineData = (
-  imageUrl: string[] = []
-): BetaMerchandisingProductDiagnosticsListData => ({
-  products: [{ ...baseProduct, imageUrl }],
-  pagination: { totalItems: 1 },
+const operationalSections: ProductDisplay['sections'] = {
+  productAssembly: {
+    content: [
+      { label: 'Brand', value: 'M&S' },
+      { label: 'Price range', value: '£89.00' },
+    ],
+    issues: [],
+    status: 'operational',
+    statusLabel: 'Operational',
+  },
+  availability: {
+    content: null,
+    issues: [],
+    status: 'operational',
+    statusLabel: 'Operational',
+  },
+  saleability: {
+    content: null,
+    issues: [],
+    status: 'operational',
+    statusLabel: 'Operational',
+  },
+  associatedRules: {
+    content: null,
+    issues: [],
+    status: 'operational',
+    statusLabel: 'Operational',
+  },
+};
+
+const blockedSection = {
+  content: null,
   issues: [],
+  status: 'blocked' as const,
+  statusLabel: 'Blocked by an issue',
+};
+
+const makeDisplay = (imageUrl: string[] = []): ProductDisplay => ({
+  isIndexed: true,
+  product: { ...baseProduct, imageUrl },
+  displayId: 'P60538523',
+  mainStatusLabel: 'Product is operational',
+  mainStatusVariant: 'product-operational',
+  sections: operationalSections,
 });
 
-const offlineData = (
+const offlineDisplay = (
   issues: { reason: string; action: string }[]
-): BetaMerchandisingProductDiagnosticsListData => ({
-  products: [],
-  pagination: { totalItems: 0 },
-  issues,
+): ProductDisplay => ({
+  isIndexed: false,
+  product: null,
+  displayId: 'P60538523',
+  mainStatusLabel: `${issues.length} issue${issues.length !== 1 ? 's' : ''} detected`,
+  mainStatusVariant: 'error',
+  sections: {
+    productAssembly: {
+      content: [],
+      issues: issues.map((i) => ({ ...i, type: 'error' as const })),
+      status: 'issue-detected',
+      statusLabel: 'Issue detected',
+    },
+    availability: blockedSection,
+    saleability: blockedSection,
+    associatedRules: blockedSection,
+  },
 });
 
-beforeEach(() => {
-  mockUseProductDetails.mockImplementation(
-    jest.requireActual('@/libs/hooks/product-status/use-product-details')
-      .useProductDetails
-  );
-});
+const pushAvailableDisplay: ProductDisplay = {
+  isIndexed: false,
+  product: null,
+  displayId: 'P60538523',
+  mainStatusLabel: 'Emergency push available',
+  mainStatusVariant: 'emergency',
+  sections: {
+    productAssembly: {
+      content: [],
+      issues: [
+        {
+          reason: 'Product is not indexed in Elastic yet',
+          action: 'Send an Emergency Push request.',
+          type: 'warning',
+        },
+      ],
+      status: 'push-available',
+      statusLabel: 'Push available',
+    },
+    availability: {
+      content: null,
+      issues: [],
+      status: 'waiting',
+      statusLabel: 'Waiting for push',
+    },
+    saleability: {
+      content: null,
+      issues: [],
+      status: 'waiting',
+      statusLabel: 'Waiting for push',
+    },
+    associatedRules: {
+      content: null,
+      issues: [],
+      status: 'waiting',
+      statusLabel: 'Waiting for push',
+    },
+  },
+};
 
 describe('ProductResult', () => {
-  describe('product ID display', () => {
-    it('should prepend P when productId does not include it', () => {
-      renderWithProviders(
-        <ProductResult query="60538523" data={onlineData()} />
-      );
-      expect(screen.getByText('P60538523')).toBeVisible();
-    });
-
-    it('should not double the P when productId already includes it', () => {
-      const dataWithPrefixed: BetaMerchandisingProductDiagnosticsListData = {
-        products: [{ ...baseProduct, productId: 'P60538523', imageUrl: [] }],
-        pagination: { totalItems: 1 },
-        issues: [],
-      };
-      renderWithProviders(
-        <ProductResult query="60538523" data={dataWithPrefixed} />
-      );
-      expect(screen.getByText('P60538523')).toBeVisible();
-      expect(screen.queryByText('PP60538523')).not.toBeInTheDocument();
-    });
-  });
-
   describe('online product', () => {
     it('should render the product title', () => {
-      renderWithProviders(
-        <ProductResult query="60538523" data={onlineData()} />
-      );
+      renderWithProviders(<ProductResult productDisplay={makeDisplay()} />);
       expect(screen.getByText('Green Wool Coat')).toBeVisible();
     });
 
     it('should render the product image when imageUrl is present', () => {
       renderWithProviders(
-        <ProductResult query="60538523" data={onlineData(['image1.jpg'])} />
+        <ProductResult productDisplay={makeDisplay(['image1.jpg'])} />
       );
       expect(screen.getByAltText('Green Wool Coat')).toBeInTheDocument();
     });
 
     it('should render the placeholder when imageUrl is empty', () => {
       const { container } = renderWithProviders(
-        <ProductResult query="60538523" data={onlineData()} />
+        <ProductResult productDisplay={makeDisplay()} />
       );
       expect(container.querySelector('.imagePlaceholder')).toBeInTheDocument();
     });
 
-    it('should render the placeholder when the image fails to load', async () => {
+    it('should render the placeholder when the image fails to load', () => {
       const { container } = renderWithProviders(
-        <ProductResult query="60538523" data={onlineData(['broken.jpg'])} />
+        <ProductResult productDisplay={makeDisplay(['broken.jpg'])} />
       );
-      const img = screen.getByAltText('Green Wool Coat');
-      fireEvent.error(img);
+      fireEvent.error(screen.getByAltText('Green Wool Coat'));
       expect(container.querySelector('.imagePlaceholder')).toBeInTheDocument();
       expect(screen.queryByAltText('Green Wool Coat')).not.toBeInTheDocument();
     });
 
     it('should show "Product is operational" badge', () => {
-      renderWithProviders(
-        <ProductResult query="60538523" data={onlineData()} />
-      );
+      renderWithProviders(<ProductResult productDisplay={makeDisplay()} />);
       expect(screen.getByText('Product is operational')).toBeVisible();
     });
 
     it('should show the info box hint when online with no issues', () => {
-      renderWithProviders(
-        <ProductResult query="60538523" data={onlineData()} />
-      );
+      renderWithProviders(<ProductResult productDisplay={makeDisplay()} />);
       expect(
         screen.getByText("Can't see this on the website yet?")
       ).toBeVisible();
@@ -128,63 +168,27 @@ describe('ProductResult', () => {
   });
 
   describe('offline product — AssemblyFailed', () => {
+    const singleIssueDisplay = offlineDisplay([
+      { reason: 'Failed to get product data', action: 'Fix it' },
+    ]);
+
     it('should show "Title not available" when product is not found', () => {
       renderWithProviders(
-        <ProductResult
-          query="60538523"
-          data={offlineData([
-            { reason: 'Failed to get product data', action: 'Fix it' },
-          ])}
-        />
+        <ProductResult productDisplay={singleIssueDisplay} />
       );
       expect(screen.getByText('Title not available')).toBeVisible();
     });
 
-    it('should prepend P to query when product is not found', () => {
-      renderWithProviders(
-        <ProductResult
-          query="60538523"
-          data={offlineData([
-            { reason: 'Failed to get product data', action: 'Fix it' },
-          ])}
-        />
-      );
-      expect(screen.getByText('P60538523')).toBeVisible();
-    });
-
     it('should show singular "1 issue detected" badge', () => {
       renderWithProviders(
-        <ProductResult
-          query="60538523"
-          data={offlineData([
-            { reason: 'Failed to get product data', action: 'Fix it' },
-          ])}
-        />
+        <ProductResult productDisplay={singleIssueDisplay} />
       );
       expect(screen.getByText('1 issue detected')).toBeVisible();
     });
 
-    it('should show plural "2 issues detected" badge', () => {
-      renderWithProviders(
-        <ProductResult
-          query="60538523"
-          data={offlineData([
-            { reason: 'Failed to get product data', action: 'Fix it' },
-            { reason: 'Another issue', action: 'Do something' },
-          ])}
-        />
-      );
-      expect(screen.getByText('2 issues detected')).toBeVisible();
-    });
-
     it('should show "Issue detected" label on product assembly card', () => {
       renderWithProviders(
-        <ProductResult
-          query="60538523"
-          data={offlineData([
-            { reason: 'Failed to get product data', action: 'Fix it' },
-          ])}
-        />
+        <ProductResult productDisplay={singleIssueDisplay} />
       );
       expect(screen.getByText('Issue detected')).toBeVisible();
     });
@@ -192,8 +196,7 @@ describe('ProductResult', () => {
     it('should render issue reason and action via InfoBox', () => {
       renderWithProviders(
         <ProductResult
-          query="60538523"
-          data={offlineData([
+          productDisplay={offlineDisplay([
             {
               reason: 'Failed to get product data',
               action: 'Contact the team',
@@ -206,47 +209,49 @@ describe('ProductResult', () => {
     });
   });
 
+  describe('availability issues', () => {
+    const baseOffline = offlineDisplay([]);
+    const display: ProductDisplay = {
+      ...baseOffline,
+      mainStatusLabel: '1 issue detected',
+      mainStatusVariant: 'error',
+      sections: {
+        ...baseOffline.sections,
+        availability: {
+          content: null,
+          issues: [
+            {
+              reason: 'Out of stock',
+              action: 'Restock the item.',
+              type: 'error',
+            },
+          ],
+          status: 'issue-detected',
+          statusLabel: 'Issue detected',
+        },
+      },
+    };
+
+    it('should render availability issue reason and action via InfoBox', () => {
+      renderWithProviders(<ProductResult productDisplay={display} />);
+      expect(screen.getByText('Out of stock')).toBeVisible();
+      expect(screen.getByText('Restock the item.')).toBeVisible();
+    });
+  });
+
   describe('not indexed — push-available', () => {
-    it('should show "Emergency push available" badge when product is not indexed', () => {
+    it('should show "Emergency push available" badge', () => {
       renderWithProviders(
-        <ProductResult
-          query="60538523"
-          data={{ products: [], pagination: { totalItems: 0 }, issues: [] }}
-        />
+        <ProductResult productDisplay={pushAvailableDisplay} />
       );
       expect(screen.getByText('Emergency push available')).toBeVisible();
     });
 
     it('should show "Push available" label on product assembly card', () => {
       renderWithProviders(
-        <ProductResult
-          query="60538523"
-          data={{ products: [], pagination: { totalItems: 0 }, issues: [] }}
-        />
+        <ProductResult productDisplay={pushAvailableDisplay} />
       );
       expect(screen.getByText('Push available')).toBeVisible();
-    });
-  });
-
-  describe('mocked hook statuses — branch coverage', () => {
-    const emptyData: BetaMerchandisingProductDiagnosticsListData = {
-      products: [],
-      pagination: { totalItems: 0 },
-      issues: [],
-    };
-
-    afterEach(() => {
-      mockUseProductDetails.mockRestore();
-    });
-
-    it('should show "Blocked" badge and label when productAssembly status is blocked', () => {
-      mockUseProductDetails.mockReturnValue({
-        isOnline: false,
-        product: null,
-        sections: blockedSections,
-      });
-      renderWithProviders(<ProductResult query="60538523" data={emptyData} />);
-      expect(screen.getAllByText('Blocked').length).toBeGreaterThanOrEqual(1);
     });
   });
 });

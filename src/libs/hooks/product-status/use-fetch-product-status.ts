@@ -10,7 +10,11 @@ export const useFetchProductStatus = (dispatch: React.Dispatch<Action>) => {
       const result = await search().betaMerchandisingProductDiagnosticsList({
         productId,
       });
-      dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
+      dispatch({
+        type: 'FETCH_SUCCESS',
+        payload: result.data,
+        submittedQuery: productId,
+      });
     } catch (err) {
       dispatch({ type: 'FETCH_ERROR', payload: handleError(err) });
     }
