@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react';
 
-import type { MerchandisingCountryCode, MerchandisingRules } from '@/libs/api';
+import type {
+  MerchandisingCountryCode,
+  MerchandisingProductSearchResponse,
+  MerchandisingRules,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 
 import uniqBy from 'lodash/uniqBy';
@@ -10,7 +14,20 @@ import {
   convertCountryCodeToCatalogues,
 } from '../utils/convert-country-code-to-catalogues';
 
-export const useCategoryProductSearch = () => {
+export const useCategoryProductSearch = (): {
+  searchForProduct: (args: {
+    merchandisingRules: MerchandisingRules;
+    countryCode: MerchandisingCountryCode;
+    categories?: string[];
+    productIds?: string[];
+    query?: string;
+    rows?: number;
+    searchTerms?: string[];
+    start?: number;
+  }) => Promise<MerchandisingProductSearchResponse>;
+  error: string;
+  isLoading: boolean;
+} => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 

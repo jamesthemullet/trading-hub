@@ -4,7 +4,12 @@ import type { MerchandisingKeywordRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useSearchRuleSetCreate = () => {
+export const useSearchRuleSetCreate = (): {
+  createRuleset: (
+    args: MerchandisingKeywordRuleSet
+  ) => Promise<MerchandisingKeywordRuleSet | undefined>;
+  error: string;
+} => {
   const [error, setError] = useState('');
 
   const createRuleset = useCallback(

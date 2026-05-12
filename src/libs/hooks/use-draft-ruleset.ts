@@ -22,7 +22,12 @@ export type DraftCategoryRuleset = DraftBaseRuleset & {
 
 export type DraftRulesetState = DraftSearchRuleset | DraftCategoryRuleset;
 
-export const useDraftRuleset = () => {
+export const useDraftRuleset = (): {
+  saveDraft: (args: Omit<DraftRulesetState, 'timestamp'>) => void;
+  getDraft: () => DraftRulesetState | null;
+  clearDraft: () => void;
+  isDraftRuleset: (ruleSetId?: string) => boolean;
+} => {
   const saveDraft = useCallback(
     ({ ruleset, type }: Omit<DraftRulesetState, 'timestamp'>) => {
       const draftState = {

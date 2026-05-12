@@ -27,7 +27,10 @@ export const useAttributes = ({
   countryCode,
   searchTerms,
   type,
-}: Props) => {
+}: Props): {
+  attributes: MerchandisingAttributeResponseItem[];
+  fetchError: string;
+} => {
   const [attributes, setAttributes] = useState<
     MerchandisingAttributesResponse['attributes']
   >([]);
@@ -63,16 +66,16 @@ export const useAttributes = ({
 
         // merge and combine values of each attribute
         const mergedAttributes: Array<MerchandisingAttributeResponseItem> = [];
-        results.map((returnedAttributes) => {
-          returnedAttributes.map((attr) => {
+        results.forEach((returnedAttributes) => {
+          returnedAttributes.forEach((attr) => {
             const index = mergedAttributes.findIndex(
               (mergedAttribute) => mergedAttribute.name === attr.name
             );
             if (index > -1) {
               // eslint-disable-next-line functional/immutable-data
               mergedAttributes[index].values = [
-                ...(mergedAttributes[index].values || []),
-                ...(attr.values || []),
+                ...(mergedAttributes[index].values ?? []),
+                ...(attr.values ?? []),
               ];
             } else {
               // eslint-disable-next-line functional/immutable-data

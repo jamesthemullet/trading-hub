@@ -12,14 +12,21 @@ type AccessMap = {
   Glob: '' | 'Glob.R' | 'Glob.W';
 };
 
-export const useAccess = (type: AccessType) => {
+export const useAccess = (
+  type: AccessType
+): {
+  hasReadAccess: boolean;
+  hasWriteAccess: boolean;
+  requiredReadRole: string;
+  requiredWriteRole: string;
+} => {
   const session = useSession();
-  const authorizationEnabled = useAuthorizationFlag();
+  const isAuthorizationEnabled = useAuthorizationFlag();
   const override = useAuthorizationRoleOverride();
   const requiredReadRole = `${type}.R`;
   const requiredWriteRole = `${type}.W`;
 
-  if (!authorizationEnabled) {
+  if (!isAuthorizationEnabled) {
     return {
       hasReadAccess: true,
       hasWriteAccess: true,

@@ -5,8 +5,19 @@ type OrderChangeCallback = (displayValue: string, newIndex: number) => void;
 export const useFacetOrderInput = (
   onOrderChange: OrderChangeCallback,
   initialOrders: Record<string, number>
-) => {
-  const inputRefs = useRef<Record<string, HTMLInputElement>>({});
+): {
+  inputRefs: React.RefObject<Partial<Record<string, HTMLInputElement>>>;
+  getInputRef: (displayValue: string) => (el: HTMLInputElement | null) => void;
+  localOrders: Record<string, number | ''>;
+  handleInputChange: (displayValue: string, value: string) => void;
+  handleInputBlur: (displayValue: string, value: string, order: number) => void;
+  handleInputKeyDown: (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    displayValue: string,
+    order: number
+  ) => void;
+} => {
+  const inputRefs = useRef<Partial<Record<string, HTMLInputElement>>>({});
   const inputRefCallbacks = useRef<
     Record<string, (el: HTMLInputElement | null) => void>
   >({});

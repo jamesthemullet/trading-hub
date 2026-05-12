@@ -10,7 +10,17 @@ import {
   convertCountryCodeToCatalogues,
 } from '../utils/convert-country-code-to-catalogues';
 
-export const useCheckMergeNameUnique = () => {
+export const useCheckMergeNameUnique = (): {
+  error: string;
+  checkMergeNameUnique: (args: {
+    facetId: string;
+    searchQuery: string;
+    countryCode: MerchandisingCountryCode;
+    categories?: string[];
+    exceptions?: (string | undefined)[];
+    localAttributeValues?: string[];
+  }) => Promise<{ isUniqueValue: boolean; error: string | undefined }>;
+} => {
   const [error, setError] = useState('');
 
   const checkMergeNameUnique = async ({

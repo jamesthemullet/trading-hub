@@ -4,7 +4,13 @@ import type { MerchandisingKeywordRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useSearchRuleSetUpdate = () => {
+export const useSearchRuleSetUpdate = (): {
+  isSaving: boolean;
+  updateRuleSet: (
+    args: MerchandisingKeywordRuleSet & { ruleSetId: string }
+  ) => Promise<MerchandisingKeywordRuleSet | undefined>;
+  error: string;
+} => {
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 

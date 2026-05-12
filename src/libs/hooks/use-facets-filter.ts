@@ -2,7 +2,13 @@ import { useMemo, useState } from 'react';
 
 import type { FacetRowDisplayValue } from '../stores/facets-panel/facets-panel-reducer';
 
-export const useFacetsFilter = (facets: FacetRowDisplayValue[]) => {
+export const useFacetsFilter = (
+  facets: FacetRowDisplayValue[]
+): {
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  filteredFacets: FacetRowDisplayValue[];
+} => {
   const [search, setSearch] = useState('');
 
   const filteredFacets = useMemo<FacetRowDisplayValue[]>(() => {

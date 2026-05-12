@@ -7,7 +7,15 @@ import type {
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useSearchRuleSetPreview = (id: string, disabled = false) => {
+export const useSearchRuleSetPreview = (
+  id: string,
+  disabled = false
+): {
+  ruleSet: MerchandisingReturnedKeywordRuleSet;
+  products: MerchandisingProduct[];
+  error: string;
+  isLoading: boolean;
+} => {
   const api = useMemo(() => search(), []);
   const [ruleSet, setRuleSet] = useState<MerchandisingReturnedKeywordRuleSet>({
     searchTerms: [],
