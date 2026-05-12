@@ -20,36 +20,8 @@ const onlineData: BetaMerchandisingProductDiagnosticsListData = {
   issues: [],
 };
 
-const productAssemblyErrorData: BetaMerchandisingProductDiagnosticsListData = {
-  products: [],
-  pagination: { totalItems: 0 },
-  issues: [
-    {
-      reason: ProductError.AssemblyFailed,
-      action:
-        'Contact the Product Domain team to investigate the assembly service.',
-    },
-    {
-      reason: ProductError.DataUnavailable,
-      action: 'Check the data pipeline and retry once the data is available.',
-    },
-  ],
-};
-
-const otherErrorData: BetaMerchandisingProductDiagnosticsListData = {
-  products: [],
-  pagination: { totalItems: 0 },
-  issues: [
-    {
-      reason: 'Product is not marked saleable in Product Assembly',
-      action:
-        'Contact the Product Domain team to mark the product as saleable.',
-    },
-  ],
-};
-
 describe('getProductDetails', () => {
-  describe('online product', () => {
+  describe('online — no issues', () => {
     const { isIndexed, product, sections } = getProductDetails(onlineData);
 
     it('should return online product with all sections operational', () => {
@@ -58,7 +30,6 @@ describe('getProductDetails', () => {
       expect(sections.productAssembly.status).toBe('operational');
       expect(sections.availability.status).toBe('operational');
       expect(sections.saleability.status).toBe('operational');
-      expect(sections.associatedRules.status).toBe('operational');
       expect(sections.productAssembly.issues).toHaveLength(0);
     });
 
@@ -70,80 +41,6 @@ describe('getProductDetails', () => {
     });
   });
 
-  describe('Failed to get product data error', () => {
-    const { isIndexed, sections } = getProductDetails(productAssemblyErrorData);
-
-    it('should set productAssembly to issue-detected and populate all issues', () => {
-      expect(isIndexed).toBe(false);
-      expect(sections.productAssembly.status).toBe('issue-detected');
-      expect(sections.productAssembly.issues).toHaveLength(2);
-      expect(sections.productAssembly.issues[0].reason).toBe(
-        ProductError.AssemblyFailed
-      );
-    });
-
-    it('should set downstream sections to blocked with null content', () => {
-      expect(sections.availability.status).toBe('blocked');
-      expect(sections.availability.content).toBeNull();
-      expect(sections.saleability.status).toBe('blocked');
-      expect(sections.saleability.content).toBeNull();
-      expect(sections.associatedRules.status).toBe('blocked');
-      expect(sections.associatedRules.content).toBeNull();
-    });
-  });
-
-  describe('out of stock error', () => {
-    const outOfStockData: BetaMerchandisingProductDiagnosticsListData = {
-      products: [mockProduct],
-      pagination: { totalItems: 1 },
-      issues: [
-        {
-          reason: ProductError.OutOfStock,
-          action: 'Wait for the product to be restocked.',
-        },
-      ],
-    };
-
-    const { sections } = getProductDetails(outOfStockData);
-
-    it('should set productAssembly to blocked with no issues', () => {
-      expect(sections.productAssembly.status).toBe('blocked');
-      expect(sections.productAssembly.issues).toHaveLength(0);
-    });
-
-    it('should set availability to issue-detected and downstream sections to blocked', () => {
-      expect(sections.availability.status).toBe('issue-detected');
-      expect(sections.availability.issues).toHaveLength(1);
-      expect(sections.availability.issues[0].reason).toBe(
-        ProductError.OutOfStock
-      );
-      expect(sections.availability.issues[0].type).toBe('error');
-      expect(sections.saleability.status).toBe('blocked');
-      expect(sections.associatedRules.status).toBe('blocked');
-    });
-  });
-
-  describe('Product data is not available error', () => {
-    const dataUnavailableData: BetaMerchandisingProductDiagnosticsListData = {
-      products: [],
-      pagination: { totalItems: 0 },
-      issues: [
-        {
-          reason: ProductError.DataUnavailable,
-          action: 'Check the data pipeline.',
-        },
-      ],
-    };
-
-    it('should set productAssembly to issue-detected and downstream sections to blocked', () => {
-      const { sections } = getProductDetails(dataUnavailableData);
-      expect(sections.productAssembly.status).toBe('issue-detected');
-      expect(sections.availability.status).toBe('blocked');
-      expect(sections.saleability.status).toBe('blocked');
-      expect(sections.associatedRules.status).toBe('blocked');
-    });
-  });
-
   describe('not indexed — push-available', () => {
     const notIndexedData: BetaMerchandisingProductDiagnosticsListData = {
       products: [],
@@ -151,11 +48,11 @@ describe('getProductDetails', () => {
       issues: [],
     };
 
-    const { sections } = getProductDetails(notIndexedData);
+    const { isIndexed, sections } = getProductDetails(notIndexedData);
 
     it('should set productAssembly to push-available with not-indexed warning', () => {
+      expect(isIndexed).toBe(false);
       expect(sections.productAssembly.status).toBe('push-available');
-      expect(sections.productAssembly.issues).toHaveLength(1);
       expect(sections.productAssembly.issues[0].reason).toBe(
         ProductError.NotIndexed
       );
@@ -169,13 +66,98 @@ describe('getProductDetails', () => {
     });
   });
 
-  describe('other errors (default case)', () => {
-    it('should set productAssembly to operational and map issue with error type', () => {
-      const { sections } = getProductDetails(otherErrorData);
-      expect(sections.productAssembly.status).toBe('operational');
-      expect(sections.productAssembly.issues[0].reason).toBe(
-        'Product is not marked saleable in Product Assembly'
+  describe('out of stock', () => {
+    const outOfStockData: BetaMerchandisingProductDiagnosticsListData = {
+      products: [mockProduct],
+      pagination: { totalItems: 1 },
+      issues: [
+        {
+          reason: ProductError.OutOfStock,
+          action: 'Wait for the product to be restocked.',
+        },
+      ],
+    };
+
+    const { sections } = getProductDetails(outOfStockData);
+
+    it('should set availability to issue-detected and all other sections to blocked', () => {
+      expect(sections.availability.status).toBe('issue-detected');
+      expect(sections.availability.issues[0].reason).toBe(
+        ProductError.OutOfStock
       );
+      expect(sections.availability.issues[0].type).toBe('error');
+      expect(sections.productAssembly.status).toBe('blocked');
+      expect(sections.saleability.status).toBe('blocked');
+      expect(sections.associatedRules.status).toBe('blocked');
+    });
+  });
+
+  describe('not saleable', () => {
+    const notSaleableData: BetaMerchandisingProductDiagnosticsListData = {
+      products: [mockProduct],
+      pagination: { totalItems: 1 },
+      issues: [
+        { reason: ProductError.NotSaleable, action: 'Mark as saleable.' },
+      ],
+    };
+
+    const { sections } = getProductDetails(notSaleableData);
+
+    it('should set saleability to issue-detected and all other sections to blocked', () => {
+      expect(sections.saleability.status).toBe('issue-detected');
+      expect(sections.saleability.issues[0].reason).toBe(
+        ProductError.NotSaleable
+      );
+      expect(sections.saleability.issues[0].type).toBe('error');
+      expect(sections.productAssembly.status).toBe('blocked');
+      expect(sections.availability.status).toBe('blocked');
+      expect(sections.associatedRules.status).toBe('blocked');
+    });
+  });
+
+  describe('out of stock and not saleable combined', () => {
+    const combinedData: BetaMerchandisingProductDiagnosticsListData = {
+      products: [mockProduct],
+      pagination: { totalItems: 1 },
+      issues: [
+        { reason: ProductError.OutOfStock, action: 'Wait for restock.' },
+        { reason: ProductError.NotSaleable, action: 'Mark as saleable.' },
+      ],
+    };
+
+    const { sections } = getProductDetails(combinedData);
+
+    it('should set both affected sections to issue-detected and remaining to blocked', () => {
+      expect(sections.availability.status).toBe('issue-detected');
+      expect(sections.availability.issues[0].reason).toBe(
+        ProductError.OutOfStock
+      );
+      expect(sections.saleability.status).toBe('issue-detected');
+      expect(sections.saleability.issues[0].reason).toBe(
+        ProductError.NotSaleable
+      );
+      expect(sections.productAssembly.status).toBe('blocked');
+      expect(sections.associatedRules.status).toBe('blocked');
+    });
+  });
+
+  describe('unknown issues', () => {
+    const unknownIssueData: BetaMerchandisingProductDiagnosticsListData = {
+      products: [mockProduct],
+      pagination: { totalItems: 1 },
+      issues: [{ reason: 'Some unexpected issue', action: 'Contact support.' }],
+    };
+
+    const { sections } = getProductDetails(unknownIssueData);
+
+    it('should route unknown issues to productAssembly and block all downstream sections', () => {
+      expect(sections.productAssembly.status).toBe('issue-detected');
+      expect(sections.productAssembly.issues[0].reason).toBe(
+        'Some unexpected issue'
+      );
+      expect(sections.availability.status).toBe('blocked');
+      expect(sections.saleability.status).toBe('blocked');
+      expect(sections.associatedRules.status).toBe('blocked');
     });
   });
 

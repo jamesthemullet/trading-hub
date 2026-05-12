@@ -12,7 +12,7 @@ import type {
 } from './use-product-details';
 import { getProductDetails } from './use-product-details';
 
-type SectionWithLabel<T> = Section<T> & { statusLabel: string };
+export type SectionWithLabel<T> = Section<T> & { statusLabel: string };
 
 export type ProductDisplay = {
   isIndexed: boolean;
@@ -52,23 +52,7 @@ export const initialState: State = {
   error: '',
 };
 
-const getAssemblyStatusLabel = (status: SectionStatus): string => {
-  switch (status) {
-    case 'operational':
-      return 'Operational';
-    case 'issue-detected':
-      return 'Issue detected';
-    case 'blocked':
-      return 'Blocked';
-    /* istanbul ignore next */
-    case 'waiting':
-      return 'Waiting for push';
-    case 'push-available':
-      return 'Push available';
-  }
-};
-
-const getSectionStatusLabel = (status: SectionStatus): string => {
+const getStatusLabel = (status: SectionStatus): string => {
   switch (status) {
     case 'operational':
       return 'Operational';
@@ -76,7 +60,6 @@ const getSectionStatusLabel = (status: SectionStatus): string => {
       return 'Issue detected';
     case 'blocked':
       return 'Blocked by an issue';
-    /* istanbul ignore next */
     case 'push-available':
       return 'Push available';
     case 'waiting':
@@ -85,38 +68,28 @@ const getSectionStatusLabel = (status: SectionStatus): string => {
 };
 
 const getMainStatus = (
-  status: SectionStatus,
-  issueCount: number
+  issueCount: number,
+  isPushAvailable: boolean
 ): {
   mainStatusLabel: string;
   mainStatusVariant: ProductStatusVariant | OperationalStatusVariant;
 } => {
-  switch (status) {
-    case 'operational':
-      return {
-        mainStatusLabel: 'Product is operational',
-        mainStatusVariant: 'product-operational',
-      };
-    case 'issue-detected':
-    case 'blocked':
-      return {
-        mainStatusLabel: `${issueCount} issue${issueCount !== 1 ? 's' : ''} detected`,
-        mainStatusVariant: 'error',
-      };
-    case 'push-available':
-      return {
-        mainStatusLabel: 'Emergency push available',
-        mainStatusVariant: 'emergency',
-      };
-    /* istanbul ignore next */
-    default:
-      return {
-        mainStatusLabel: '',
-        mainStatusVariant: '' as
-          | ProductStatusVariant
-          | OperationalStatusVariant,
-      };
+  if (isPushAvailable) {
+    return {
+      mainStatusLabel: 'Emergency push available',
+      mainStatusVariant: 'emergency',
+    };
   }
+  if (issueCount > 0) {
+    return {
+      mainStatusLabel: `${issueCount} issue${issueCount !== 1 ? 's' : ''} detected`,
+      mainStatusVariant: 'error',
+    };
+  }
+  return {
+    mainStatusLabel: 'Product is operational',
+    mainStatusVariant: 'product-operational',
+  };
 };
 
 export const reducer = (state: State, action: Action): State => {
@@ -130,8 +103,8 @@ export const reducer = (state: State, action: Action): State => {
         action.payload
       );
       const { mainStatusLabel, mainStatusVariant } = getMainStatus(
-        sections.productAssembly.status,
-        action.payload.issues.length
+        action.payload.issues.length,
+        sections.productAssembly.status === 'push-available'
       );
       const rawId = product?.productId ?? action.submittedQuery;
       const displayId = rawId.includes('P') ? rawId : `P${rawId}`;
@@ -149,23 +122,19 @@ export const reducer = (state: State, action: Action): State => {
           sections: {
             productAssembly: {
               ...sections.productAssembly,
-              statusLabel: getAssemblyStatusLabel(
-                sections.productAssembly.status
-              ),
+              statusLabel: getStatusLabel(sections.productAssembly.status),
             },
             availability: {
               ...sections.availability,
-              statusLabel: getSectionStatusLabel(sections.availability.status),
+              statusLabel: getStatusLabel(sections.availability.status),
             },
             saleability: {
               ...sections.saleability,
-              statusLabel: getSectionStatusLabel(sections.saleability.status),
+              statusLabel: getStatusLabel(sections.saleability.status),
             },
             associatedRules: {
               ...sections.associatedRules,
-              statusLabel: getSectionStatusLabel(
-                sections.associatedRules.status
-              ),
+              statusLabel: getStatusLabel(sections.associatedRules.status),
             },
           },
         },

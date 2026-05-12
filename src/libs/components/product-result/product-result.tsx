@@ -129,6 +129,33 @@ export const ProductResult = ({ productDisplay }: Props) => {
             </Typography>
           )}
         </InfoCard>
+
+        <InfoCard
+          title="Saleability"
+          statusVariant={sections.saleability.status}
+          statusLabel={sections.saleability.statusLabel}
+        >
+          {sections.saleability.issues.length > 0 ? (
+            <ul className={styles.issueList}>
+              {sections.saleability.issues.map((issue) => (
+                <li key={issue.reason}>
+                  <InfoBox
+                    showIcon={false}
+                    variant={issue.type}
+                    title={issue.reason}
+                    text={issue.action}
+                    height="auto"
+                    width="auto"
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Typography variant="bodySmall">
+              {isIndexed ? 'In-store and online' : 'Not available'}
+            </Typography>
+          )}
+        </InfoCard>
       </div>
     </div>
   );

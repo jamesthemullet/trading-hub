@@ -37,12 +37,25 @@ const getRankingValue = (
 ) => ranking?.find((r) => r.property === property)?.values[0];
 
 export enum ProductError {
-  AssemblyFailed = 'Failed to get product data',
-  DataUnavailable = 'Product data is not available',
-  NotIndexed = 'Product is not indexed in Elastic yet',
+  NotSaleable = 'Product is not marked saleable in Product Assembly',
   OutOfStock = 'Product is out of stock',
-  // PriceUnavailable = 'Price data is not available',
+  NotIndexed = 'Product is not indexed in Elastic yet',
 }
+
+const withErrors = <T>(
+  content: T,
+  issues: ProductOfflineIssue[]
+): Section<T> => ({
+  content,
+  issues: issues.map((issue) => ({ ...issue, type: 'error' })),
+  status: 'issue-detected',
+});
+
+const operational = <T>(content: T): Section<T> => ({
+  content,
+  issues: [],
+  status: 'operational',
+});
 
 const blocked = <T>(content: T): Section<T> => ({
   content,
@@ -87,14 +100,10 @@ export const getProductDetails = (
   if (issues.length === 0) {
     if (isIndexed) {
       sections = {
-        productAssembly: {
-          content: assemblyDetails,
-          issues: [],
-          status: 'operational',
-        },
-        availability: { content: '', issues: [], status: 'operational' },
-        saleability: { content: '', issues: [], status: 'operational' },
-        associatedRules: { content: '', issues: [], status: 'operational' },
+        productAssembly: operational(assemblyDetails),
+        availability: operational(null),
+        saleability: operational(null),
+        associatedRules: operational(null),
       };
     } else {
       sections = {
@@ -116,55 +125,33 @@ export const getProductDetails = (
       };
     }
   } else {
-    switch (issues[0]?.reason) {
-      case ProductError.AssemblyFailed:
-        sections = {
-          productAssembly: {
-            content: [],
-            issues: issues.map((issue) => ({ ...issue, type: 'error' })),
-            status: 'issue-detected',
-          },
-          availability: blocked(null),
-          saleability: blocked(null),
-          associatedRules: blocked(null),
-        };
-        break;
-      case ProductError.DataUnavailable:
-        sections = {
-          productAssembly: {
-            content: assemblyDetails,
-            issues: issues.map((issue) => ({ ...issue, type: 'error' })),
-            status: 'issue-detected',
-          },
-          availability: blocked(null),
-          saleability: blocked(null),
-          associatedRules: blocked(null),
-        };
-        break;
-      case ProductError.OutOfStock:
-        sections = {
-          productAssembly: blocked(assemblyDetails),
-          availability: {
-            content: 'Not available',
-            issues: issues.map((issue) => ({ ...issue, type: 'error' })),
-            status: 'issue-detected',
-          },
-          saleability: blocked(null),
-          associatedRules: blocked(null),
-        };
-        break;
-      default:
-        sections = {
-          productAssembly: {
-            content: assemblyDetails,
-            issues: issues.map((issue) => ({ ...issue, type: 'error' })),
-            status: 'operational',
-          },
-          availability: { content: '', issues: [], status: 'operational' },
-          saleability: { content: '', issues: [], status: 'operational' },
-          associatedRules: { content: '', issues: [], status: 'operational' },
-        };
-    }
+    const outOfStockIssues = issues.filter(
+      (i) => i.reason === ProductError.OutOfStock
+    );
+    const notSaleableIssues = issues.filter(
+      (i) => i.reason === ProductError.NotSaleable
+    );
+    const unknownIssues = issues.filter(
+      (i) =>
+        i.reason !== ProductError.OutOfStock &&
+        i.reason !== ProductError.NotSaleable
+    );
+
+    sections = {
+      productAssembly:
+        unknownIssues.length > 0
+          ? withErrors(assemblyDetails, unknownIssues)
+          : blocked(assemblyDetails),
+      availability:
+        outOfStockIssues.length > 0
+          ? withErrors(null, outOfStockIssues)
+          : blocked(null),
+      saleability:
+        notSaleableIssues.length > 0
+          ? withErrors(null, notSaleableIssues)
+          : blocked(null),
+      associatedRules: blocked(null),
+    };
   }
 
   return { isIndexed, product, sections };

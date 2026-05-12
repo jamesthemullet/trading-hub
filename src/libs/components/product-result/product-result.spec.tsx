@@ -1,6 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react';
 
-import type { ProductDisplay } from '@/libs/hooks/product-status/reducer';
+import type {
+  ProductDisplay,
+  SectionWithLabel,
+} from '@/libs/hooks/product-status/reducer';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { ProductResult } from './product-result';
@@ -13,45 +16,15 @@ const baseProduct = {
   isInStock: true,
   brand: 'M&S',
   url: 'https://example.com',
-  imageUrl: [] as string[],
+  imageUrl: [],
   metadata: { isPinned: false },
 };
 
-const operationalSections: ProductDisplay['sections'] = {
-  productAssembly: {
-    content: [
-      { label: 'Brand', value: 'M&S' },
-      { label: 'Price range', value: '£89.00' },
-    ],
-    issues: [],
-    status: 'operational',
-    statusLabel: 'Operational',
-  },
-  availability: {
-    content: null,
-    issues: [],
-    status: 'operational',
-    statusLabel: 'Operational',
-  },
-  saleability: {
-    content: null,
-    issues: [],
-    status: 'operational',
-    statusLabel: 'Operational',
-  },
-  associatedRules: {
-    content: null,
-    issues: [],
-    status: 'operational',
-    statusLabel: 'Operational',
-  },
-};
-
-const blockedSection = {
+const operationalSection: SectionWithLabel<string | null> = {
   content: null,
   issues: [],
-  status: 'blocked' as const,
-  statusLabel: 'Blocked by an issue',
+  status: 'operational',
+  statusLabel: 'Operational',
 };
 
 const makeDisplay = (imageUrl: string[] = []): ProductDisplay => ({
@@ -60,27 +33,48 @@ const makeDisplay = (imageUrl: string[] = []): ProductDisplay => ({
   displayId: 'P60538523',
   mainStatusLabel: 'Product is operational',
   mainStatusVariant: 'product-operational',
-  sections: operationalSections,
+  sections: {
+    productAssembly: {
+      content: [
+        { label: 'Brand', value: 'M&S' },
+        { label: 'Price range', value: '£89.00' },
+      ],
+      issues: [],
+      status: 'operational',
+      statusLabel: 'Operational',
+    },
+    availability: operationalSection,
+    saleability: operationalSection,
+    associatedRules: operationalSection,
+  },
 });
 
-const offlineDisplay = (
-  issues: { reason: string; action: string }[]
+const withIssue = (
+  section: 'availability' | 'saleability',
+  reason: string,
+  action: string
 ): ProductDisplay => ({
-  isIndexed: false,
-  product: null,
+  isIndexed: true,
+  product: baseProduct,
   displayId: 'P60538523',
-  mainStatusLabel: `${issues.length} issue${issues.length !== 1 ? 's' : ''} detected`,
+  mainStatusLabel: '1 issue detected',
   mainStatusVariant: 'error',
   sections: {
     productAssembly: {
       content: [],
-      issues: issues.map((i) => ({ ...i, type: 'error' as const })),
+      issues: [],
+      status: 'operational',
+      statusLabel: 'Operational',
+    },
+    availability: operationalSection,
+    saleability: operationalSection,
+    associatedRules: operationalSection,
+    [section]: {
+      content: null,
+      issues: [{ reason, action, type: 'error' }],
       status: 'issue-detected',
       statusLabel: 'Issue detected',
     },
-    availability: blockedSection,
-    saleability: blockedSection,
-    associatedRules: blockedSection,
   },
 });
 
@@ -167,90 +161,50 @@ describe('ProductResult', () => {
     });
   });
 
-  describe('offline product — AssemblyFailed', () => {
-    const singleIssueDisplay = offlineDisplay([
-      { reason: 'Failed to get product data', action: 'Fix it' },
-    ]);
+  describe('availability issue', () => {
+    const display = withIssue(
+      'availability',
+      'Product is out of stock',
+      'Wait for the product to be restocked.'
+    );
 
-    it('should show "Title not available" when product is not found', () => {
-      renderWithProviders(
-        <ProductResult productDisplay={singleIssueDisplay} />
-      );
-      expect(screen.getByText('Title not available')).toBeVisible();
+    it('should show "Title not available" only when product is absent', () => {
+      renderWithProviders(<ProductResult productDisplay={display} />);
+      expect(screen.queryByText('Title not available')).not.toBeInTheDocument();
+      expect(screen.getByText('Green Wool Coat')).toBeVisible();
     });
-
-    it('should show singular "1 issue detected" badge', () => {
-      renderWithProviders(
-        <ProductResult productDisplay={singleIssueDisplay} />
-      );
-      expect(screen.getByText('1 issue detected')).toBeVisible();
-    });
-
-    it('should show "Issue detected" label on product assembly card', () => {
-      renderWithProviders(
-        <ProductResult productDisplay={singleIssueDisplay} />
-      );
-      expect(screen.getByText('Issue detected')).toBeVisible();
-    });
-
-    it('should render issue reason and action via InfoBox', () => {
-      renderWithProviders(
-        <ProductResult
-          productDisplay={offlineDisplay([
-            {
-              reason: 'Failed to get product data',
-              action: 'Contact the team',
-            },
-          ])}
-        />
-      );
-      expect(screen.getByText('Failed to get product data')).toBeVisible();
-      expect(screen.getByText('Contact the team')).toBeVisible();
-    });
-  });
-
-  describe('availability issues', () => {
-    const baseOffline = offlineDisplay([]);
-    const display: ProductDisplay = {
-      ...baseOffline,
-      mainStatusLabel: '1 issue detected',
-      mainStatusVariant: 'error',
-      sections: {
-        ...baseOffline.sections,
-        availability: {
-          content: null,
-          issues: [
-            {
-              reason: 'Out of stock',
-              action: 'Restock the item.',
-              type: 'error',
-            },
-          ],
-          status: 'issue-detected',
-          statusLabel: 'Issue detected',
-        },
-      },
-    };
 
     it('should render availability issue reason and action via InfoBox', () => {
       renderWithProviders(<ProductResult productDisplay={display} />);
-      expect(screen.getByText('Out of stock')).toBeVisible();
-      expect(screen.getByText('Restock the item.')).toBeVisible();
+      expect(screen.getByText('Product is out of stock')).toBeVisible();
+      expect(
+        screen.getByText('Wait for the product to be restocked.')
+      ).toBeVisible();
+    });
+  });
+
+  describe('saleability issue', () => {
+    const display = withIssue(
+      'saleability',
+      'Product is not marked saleable in Product Assembly',
+      'Mark as saleable.'
+    );
+
+    it('should render saleability issue reason and action via InfoBox', () => {
+      renderWithProviders(<ProductResult productDisplay={display} />);
+      expect(
+        screen.getByText('Product is not marked saleable in Product Assembly')
+      ).toBeVisible();
+      expect(screen.getByText('Mark as saleable.')).toBeVisible();
     });
   });
 
   describe('not indexed — push-available', () => {
-    it('should show "Emergency push available" badge', () => {
+    it('should show "Emergency push available" badge and Push available label', () => {
       renderWithProviders(
         <ProductResult productDisplay={pushAvailableDisplay} />
       );
       expect(screen.getByText('Emergency push available')).toBeVisible();
-    });
-
-    it('should show "Push available" label on product assembly card', () => {
-      renderWithProviders(
-        <ProductResult productDisplay={pushAvailableDisplay} />
-      );
       expect(screen.getByText('Push available')).toBeVisible();
     });
   });

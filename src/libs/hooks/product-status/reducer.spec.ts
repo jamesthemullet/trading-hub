@@ -1,6 +1,7 @@
 import type { BetaMerchandisingProductDiagnosticsListData } from '@/libs/api/generated/open-api';
 
 import { initialState, reducer } from './reducer';
+import { ProductError } from './use-product-details';
 
 const mockOnlineData: BetaMerchandisingProductDiagnosticsListData = {
   products: [
@@ -18,22 +19,20 @@ const mockOnlineData: BetaMerchandisingProductDiagnosticsListData = {
   issues: [],
 };
 
-const mockOfflineData: BetaMerchandisingProductDiagnosticsListData = {
-  products: [],
-  pagination: { totalItems: 0 },
-  issues: [
-    {
-      reason: 'Failed to get product data',
-      action: 'Contact the Product Domain team.',
-    },
-  ],
-};
-
 const mockNotIndexedData: BetaMerchandisingProductDiagnosticsListData = {
   products: [],
   pagination: { totalItems: 0 },
   issues: [],
 };
+
+const fetchSuccess = (
+  payload: BetaMerchandisingProductDiagnosticsListData,
+  submittedQuery = '60538523'
+) =>
+  reducer(
+    { ...initialState, query: '60538523' },
+    { type: 'FETCH_SUCCESS', payload, submittedQuery }
+  );
 
 describe('reducer', () => {
   it('should return initial state', () => {
@@ -58,14 +57,7 @@ describe('reducer', () => {
   it('should handle FETCH_START', () => {
     const stateWithDisplay = {
       ...initialState,
-      productDisplay: reducer(
-        { ...initialState, query: '60538523' },
-        {
-          type: 'FETCH_SUCCESS',
-          payload: mockOnlineData,
-          submittedQuery: '60538523',
-        }
-      ).productDisplay,
+      productDisplay: fetchSuccess(mockOnlineData).productDisplay,
       error: 'previous error',
     };
     const state = reducer(stateWithDisplay, { type: 'FETCH_START' });
@@ -85,14 +77,7 @@ describe('reducer', () => {
   });
 
   describe('FETCH_SUCCESS — online product', () => {
-    const state = reducer(
-      { ...initialState, query: '60538523' },
-      {
-        type: 'FETCH_SUCCESS',
-        payload: mockOnlineData,
-        submittedQuery: '60538523',
-      }
-    );
+    const state = fetchSuccess(mockOnlineData);
 
     it('should set isLoading to false and clear error', () => {
       expect(state.isLoading).toBe(false);
@@ -114,115 +99,93 @@ describe('reducer', () => {
     });
   });
 
-  describe('FETCH_SUCCESS — offline product with issue', () => {
-    const state = reducer(
-      { ...initialState, query: '60538523' },
-      {
-        type: 'FETCH_SUCCESS',
-        payload: mockOfflineData,
-        submittedQuery: '60538523',
-      }
-    );
+  describe('FETCH_SUCCESS — out of stock', () => {
+    const mockOutOfStockData: BetaMerchandisingProductDiagnosticsListData = {
+      products: [{ ...mockOnlineData.products[0], isInStock: false }],
+      pagination: { totalItems: 1 },
+      issues: [
+        { reason: ProductError.OutOfStock, action: 'Wait for restock.' },
+      ],
+    };
 
-    it('should use submittedQuery, not state.query, when the user has typed ahead', () => {
-      const s = reducer(
-        { ...initialState, query: '99999999' },
-        {
-          type: 'FETCH_SUCCESS',
-          payload: mockOfflineData,
-          submittedQuery: '60538523',
-        }
-      );
-      expect(s.productDisplay?.displayId).toBe('P60538523');
-    });
+    const state = fetchSuccess(mockOutOfStockData);
 
-    it('should set singular issue count label', () => {
-      expect(state.productDisplay?.isIndexed).toBe(false);
+    it('should mark availability as issue-detected and all other sections as blocked', () => {
       expect(state.productDisplay?.mainStatusLabel).toBe('1 issue detected');
       expect(state.productDisplay?.mainStatusVariant).toBe('error');
-    });
-
-    it('should use plural form when issueCount is not 1', () => {
-      const twoIssuesData: BetaMerchandisingProductDiagnosticsListData = {
-        products: [],
-        pagination: { totalItems: 0 },
-        issues: [
-          { reason: 'Failed to get product data', action: 'Fix it' },
-          { reason: 'Another issue', action: 'Fix that too' },
-        ],
-      };
-      const s = reducer(
-        { ...initialState, query: '60538523' },
-        {
-          type: 'FETCH_SUCCESS',
-          payload: twoIssuesData,
-          submittedQuery: '60538523',
-        }
-      );
-      expect(s.productDisplay?.mainStatusLabel).toBe('2 issues detected');
-    });
-
-    it('should set statusLabels for issue-detected and blocked sections', () => {
       expect(state.productDisplay?.sections.productAssembly.statusLabel).toBe(
-        'Issue detected'
+        'Blocked by an issue'
       );
       expect(state.productDisplay?.sections.availability.statusLabel).toBe(
+        'Issue detected'
+      );
+      expect(state.productDisplay?.sections.saleability.statusLabel).toBe(
+        'Blocked by an issue'
+      );
+      expect(state.productDisplay?.sections.associatedRules.statusLabel).toBe(
         'Blocked by an issue'
       );
     });
   });
 
-  describe('FETCH_SUCCESS — out of stock (blocked productAssembly)', () => {
-    const mockOutOfStockData: BetaMerchandisingProductDiagnosticsListData = {
-      products: [
-        {
-          id: 'p1',
-          productId: '60538523',
-          title: 'Test Product',
-          price: '£10.00',
-          imageUrl: [],
-          isInStock: false,
-          metadata: { isPinned: false },
-        },
-      ],
+  describe('FETCH_SUCCESS — not saleable', () => {
+    const mockNotSaleableData: BetaMerchandisingProductDiagnosticsListData = {
+      products: [mockOnlineData.products[0]],
       pagination: { totalItems: 1 },
       issues: [
-        {
-          reason: 'Product is out of stock',
-          action: 'Wait for the product to be restocked.',
-        },
+        { reason: ProductError.NotSaleable, action: 'Mark as saleable.' },
       ],
     };
 
-    it('should derive issue count label and set blocked/issue-detected statusLabels', () => {
-      const state = reducer(
-        { ...initialState, query: '60538523' },
-        {
-          type: 'FETCH_SUCCESS',
-          payload: mockOutOfStockData,
-          submittedQuery: '60538523',
-        }
-      );
+    const state = fetchSuccess(mockNotSaleableData);
+
+    it('should mark saleability as issue-detected and all other sections as blocked', () => {
       expect(state.productDisplay?.mainStatusLabel).toBe('1 issue detected');
-      expect(state.productDisplay?.mainStatusVariant).toBe('error');
       expect(state.productDisplay?.sections.productAssembly.statusLabel).toBe(
-        'Blocked'
+        'Blocked by an issue'
+      );
+      expect(state.productDisplay?.sections.availability.statusLabel).toBe(
+        'Blocked by an issue'
+      );
+      expect(state.productDisplay?.sections.saleability.statusLabel).toBe(
+        'Issue detected'
+      );
+      expect(state.productDisplay?.sections.associatedRules.statusLabel).toBe(
+        'Blocked by an issue'
+      );
+    });
+  });
+
+  describe('FETCH_SUCCESS — out of stock and not saleable combined', () => {
+    const mockCombinedData: BetaMerchandisingProductDiagnosticsListData = {
+      products: [{ ...mockOnlineData.products[0], isInStock: false }],
+      pagination: { totalItems: 1 },
+      issues: [
+        { reason: ProductError.OutOfStock, action: 'Wait for restock.' },
+        { reason: ProductError.NotSaleable, action: 'Mark as saleable.' },
+      ],
+    };
+
+    it('should use plural form, set both affected sections as issue-detected, and block remaining', () => {
+      const state = fetchSuccess(mockCombinedData);
+      expect(state.productDisplay?.mainStatusLabel).toBe('2 issues detected');
+      expect(state.productDisplay?.sections.productAssembly.statusLabel).toBe(
+        'Blocked by an issue'
       );
       expect(state.productDisplay?.sections.availability.statusLabel).toBe(
         'Issue detected'
+      );
+      expect(state.productDisplay?.sections.saleability.statusLabel).toBe(
+        'Issue detected'
+      );
+      expect(state.productDisplay?.sections.associatedRules.statusLabel).toBe(
+        'Blocked by an issue'
       );
     });
   });
 
   describe('FETCH_SUCCESS — not indexed', () => {
-    const state = reducer(
-      { ...initialState, query: '60538523' },
-      {
-        type: 'FETCH_SUCCESS',
-        payload: mockNotIndexedData,
-        submittedQuery: '60538523',
-      }
-    );
+    const state = fetchSuccess(mockNotIndexedData);
 
     it('should set push-available mainStatus and statusLabels', () => {
       expect(state.productDisplay?.mainStatusLabel).toBe(
@@ -237,32 +200,54 @@ describe('reducer', () => {
     });
   });
 
+  describe('FETCH_SUCCESS — unknown issues go to productAssembly', () => {
+    const mockUnknownIssueData: BetaMerchandisingProductDiagnosticsListData = {
+      products: [mockOnlineData.products[0]],
+      pagination: { totalItems: 1 },
+      issues: [{ reason: 'Some unexpected issue', action: 'Contact support.' }],
+    };
+
+    it('should set productAssembly to issue-detected and block all downstream sections', () => {
+      const state = fetchSuccess(mockUnknownIssueData);
+      expect(state.productDisplay?.mainStatusLabel).toBe('1 issue detected');
+      expect(state.productDisplay?.sections.productAssembly.statusLabel).toBe(
+        'Issue detected'
+      );
+      expect(state.productDisplay?.sections.availability.statusLabel).toBe(
+        'Blocked by an issue'
+      );
+      expect(state.productDisplay?.sections.saleability.statusLabel).toBe(
+        'Blocked by an issue'
+      );
+      expect(state.productDisplay?.sections.associatedRules.statusLabel).toBe(
+        'Blocked by an issue'
+      );
+    });
+  });
+
   describe('FETCH_SUCCESS — displayId already has P prefix', () => {
     it('should not double the P when productId already starts with P', () => {
       const dataWithPPrefix: BetaMerchandisingProductDiagnosticsListData = {
-        products: [
-          {
-            id: 'p1',
-            productId: 'P60538523',
-            title: 'Test Product',
-            price: '£10.00',
-            imageUrl: [],
-            isInStock: true,
-            metadata: { isPinned: false },
-          },
-        ],
+        products: [{ ...mockOnlineData.products[0], productId: 'P60538523' }],
         pagination: { totalItems: 1 },
         issues: [],
       };
-      const state = reducer(
-        { ...initialState, query: '60538523' },
+      const state = fetchSuccess(dataWithPPrefix);
+      expect(state.productDisplay?.displayId).toBe('P60538523');
+    });
+  });
+
+  describe('FETCH_SUCCESS — submittedQuery used for displayId', () => {
+    it('should use submittedQuery, not state.query, when the user has typed ahead', () => {
+      const s = reducer(
+        { ...initialState, query: '99999999' },
         {
           type: 'FETCH_SUCCESS',
-          payload: dataWithPPrefix,
+          payload: mockNotIndexedData,
           submittedQuery: '60538523',
         }
       );
-      expect(state.productDisplay?.displayId).toBe('P60538523');
+      expect(s.productDisplay?.displayId).toBe('P60538523');
     });
   });
 });
