@@ -94,7 +94,9 @@ describe('Navigation', () => {
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByText('Sign out'));
 
-    expect(signOut).toHaveBeenCalled();
+    expect(signOut).toHaveBeenCalledWith({
+      callbackUrl: '/api/auth/azure-logout',
+    });
   });
 
   it('should not show Product Status nav item when flag is disabled', () => {

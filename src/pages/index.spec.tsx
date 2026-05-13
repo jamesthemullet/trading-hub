@@ -121,7 +121,9 @@ describe('Index', () => {
 
     signOutButtonElement?.click();
 
-    expect(signOut).toHaveBeenCalledTimes(1);
+    expect(signOut).toHaveBeenCalledWith({
+      callbackUrl: '/api/auth/azure-logout',
+    });
     expect(signIn).not.toHaveBeenCalled();
 
     delete process.env.NEXT_PUBLIC_AUTO_LOGIN;

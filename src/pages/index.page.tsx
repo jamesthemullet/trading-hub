@@ -24,7 +24,11 @@ const Index = (): ReactElement => {
           <>
             <Typography>Hello, {session.data.user?.email}</Typography>
 
-            <Button isInline theme="primary" onClick={() => signOut()}>
+            <Button
+              isInline
+              theme="primary"
+              onClick={() => signOut({ callbackUrl: '/api/auth/azure-logout' })}
+            >
               Sign out
             </Button>
           </>

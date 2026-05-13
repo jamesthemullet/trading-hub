@@ -1,4 +1,4 @@
-import { Typography } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { useProductStatusFlag } from '@/libs/components/feature-flag/feature-flag';
 
 import Image from 'next/image';
@@ -78,17 +78,26 @@ export const Navigation = () => {
           <NavigationMenu menuItems={menuItems} />
         </li>
         <li className={styles.navigationListItem}>
-          <Link
-            className={styles.link}
-            href="/"
-            onClick={() => (isLoggedIn ? signOut() : signIn())}
-            style={{ textDecoration: 'none' }}
-            prefetch
-          >
-            <Typography variant="bodySmall">
-              {isLoggedIn ? 'Sign out' : 'Sign in'}
-            </Typography>
-          </Link>
+          {isLoggedIn ? (
+            <Button
+              type="button"
+              appearance="plain"
+              className={styles.link}
+              onClick={() => signOut({ callbackUrl: '/api/auth/azure-logout' })}
+            >
+              <Typography variant="bodySmall">Sign out</Typography>
+            </Button>
+          ) : (
+            <Link
+              className={styles.link}
+              href="/"
+              onClick={() => signIn()}
+              style={{ textDecoration: 'none' }}
+              prefetch
+            >
+              <Typography variant="bodySmall">Sign in</Typography>
+            </Link>
+          )}
         </li>
       </ul>
     </nav>
