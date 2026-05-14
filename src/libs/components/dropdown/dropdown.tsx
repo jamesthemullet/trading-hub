@@ -41,6 +41,7 @@ type GenericDropdownProps = {
 type CountryDropdownProps = {
   onChange?: (country?: MerchandisingCountryCode) => void;
   selectedCountryCode?: MerchandisingCountryCode;
+  countrySelectorOptions?: typeof COUNTRY_SELECTOR_OPTIONS;
 };
 
 type FacetOrderProps = {
@@ -116,6 +117,7 @@ export const CombinedDropdown = ({
   onChange,
   closeFromChild,
   selectedCountryCode,
+  countrySelectorOptions = COUNTRY_SELECTOR_OPTIONS,
   status,
   attribute,
   hasAlgoControl = false,
@@ -185,7 +187,7 @@ export const CombinedDropdown = ({
   };
 
   const handleCountrySelectorSelect = (index: number) => {
-    onChange?.(COUNTRY_SELECTOR_OPTIONS[index].countryCode);
+    onChange?.(countrySelectorOptions[index].countryCode);
     closeDropdown();
   };
 
@@ -274,9 +276,9 @@ export const CombinedDropdown = ({
       }
       case DropdownVariant.CountrySelector: {
         const current =
-          COUNTRY_SELECTOR_OPTIONS.find(
+          countrySelectorOptions.find(
             (o) => o.countryCode === selectedCountryCode
-          ) || COUNTRY_SELECTOR_OPTIONS[0];
+          ) || countrySelectorOptions[0];
         return (
           <>
             <span className={styles.flagContainer}>
@@ -316,6 +318,7 @@ export const CombinedDropdown = ({
     variant,
     selectedCountryFilterIndex,
     selectedCountryCode,
+    countrySelectorOptions,
     facetOptions,
     status,
     selectedFacetName,
@@ -341,7 +344,7 @@ export const CombinedDropdown = ({
         ));
 
       case DropdownVariant.CountrySelector:
-        return COUNTRY_SELECTOR_OPTIONS.map((option) => (
+        return countrySelectorOptions.map((option) => (
           <DropdownOptionButton
             key={option.label}
             onClick={() => handleCountrySelectorSelect(option.index)}

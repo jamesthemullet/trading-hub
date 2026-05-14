@@ -20,11 +20,6 @@ const ProductStatusHeader = ({
         <Typography as="h1" variant="headlineMedium" isStrong>
           Product status search
         </Typography>
-
-        {/* TODO: this is in figma, but no other designs are available for it, so added it with styles but will also add a separate story to check with design and add functionality for it */}
-        {/* <Button theme="outlined" type="button">
-        Recent searches
-      </Button> */}
       </div>
 
       <Typography as="span" variant="bodyMedium">

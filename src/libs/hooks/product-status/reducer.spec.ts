@@ -38,6 +38,7 @@ describe('reducer', () => {
   it('should return initial state', () => {
     expect(initialState).toEqual({
       query: '',
+      market: 'UK',
       productDisplay: null,
       isLoading: false,
       error: '',
@@ -52,6 +53,19 @@ describe('reducer', () => {
     expect(state.query).toBe('60538523');
     expect(state.productDisplay).toBeNull();
     expect(state.isLoading).toBe(false);
+  });
+
+  it('should handle SET_MARKET', () => {
+    const stateWithDisplay = {
+      ...initialState,
+      productDisplay: fetchSuccess(mockOnlineData).productDisplay,
+    };
+    const state = reducer(stateWithDisplay, {
+      type: 'SET_MARKET',
+      payload: 'IE',
+    });
+    expect(state.market).toBe('IE');
+    expect(state.productDisplay).toBeNull();
   });
 
   it('should handle FETCH_START', () => {

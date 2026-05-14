@@ -1,14 +1,22 @@
 import { search } from '@/libs/api';
+import type { MerchandisingCountryCode } from '@/libs/api/generated/open-api';
 
 import { handleError } from '../utils/error';
 import type { Action } from './reducer';
 
+const toCatalogue = (market: MerchandisingCountryCode) =>
+  market === 'IE' ? 'MANDSIE' : 'MANDSUK';
+
 export const useFetchProductStatus = (dispatch: React.Dispatch<Action>) => {
-  const fetchProductStatus = async (productId: string) => {
+  const fetchProductStatus = async (
+    productId: string,
+    market: MerchandisingCountryCode
+  ) => {
     dispatch({ type: 'FETCH_START' });
     try {
       const result = await search().betaMerchandisingProductDiagnosticsList({
         productId,
+        catalogue: toCatalogue(market),
       });
       dispatch({
         type: 'FETCH_SUCCESS',

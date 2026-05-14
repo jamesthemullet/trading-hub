@@ -1,4 +1,7 @@
-import type { BetaMerchandisingProductDiagnosticsListData } from '@/libs/api/generated/open-api';
+import type {
+  BetaMerchandisingProductDiagnosticsListData,
+  MerchandisingCountryCode,
+} from '@/libs/api/generated/open-api';
 import type {
   OperationalStatusVariant,
   ProductStatusVariant,
@@ -30,6 +33,7 @@ export type ProductDisplay = {
 
 type State = {
   query: string;
+  market: MerchandisingCountryCode;
   productDisplay: ProductDisplay | null;
   isLoading: boolean;
   error: string;
@@ -37,6 +41,7 @@ type State = {
 
 export type Action =
   | { type: 'SET_QUERY'; payload: string }
+  | { type: 'SET_MARKET'; payload: MerchandisingCountryCode }
   | { type: 'FETCH_START' }
   | {
       type: 'FETCH_SUCCESS';
@@ -47,6 +52,7 @@ export type Action =
 
 export const initialState: State = {
   query: '',
+  market: 'UK',
   productDisplay: null,
   isLoading: false,
   error: '',
@@ -96,6 +102,8 @@ export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_QUERY':
       return { ...state, query: action.payload };
+    case 'SET_MARKET':
+      return { ...state, market: action.payload, productDisplay: null };
     case 'FETCH_START':
       return { ...state, productDisplay: null, isLoading: true, error: '' };
     case 'FETCH_SUCCESS': {

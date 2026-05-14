@@ -8,10 +8,19 @@
   color: var(--color-state-error-error);
 }
 
+.marketSelector {
+  display: flex;
+  gap: var(--mns-spacing-2);
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1084px;
+}
+
 .results {
   padding: 44px 0 var(--mns-spacing-6);
   display: flex;
   flex-direction: column;
-  gap: var(--mns-spacing-2);
+  gap: var(--mns-spacing-3);
   align-items: center;
 }

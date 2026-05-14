@@ -161,6 +161,127 @@ describe('ProductStatus page', () => {
     expect(screen.queryByText('1 issue detected')).not.toBeInTheDocument();
   });
 
+  it('should show UK Market label when results are displayed', async () => {
+    server.use(
+      http.get('/api/search/beta/merchandising/product/diagnostics', () =>
+        HttpResponse.json(mockOnlineResponse)
+      )
+    );
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
+
+    await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
+    await user.keyboard('{Enter}');
+
+    await waitFor(() => {
+      expect(screen.getByText('UK Market')).toBeInTheDocument();
+    });
+  });
+
+  it('should show IE Market label and call the IE catalogue after switching market', async () => {
+    const capturedUrls: string[] = [];
+    server.use(
+      http.get(
+        '/api/search/beta/merchandising/product/diagnostics',
+        ({ request }) => {
+          capturedUrls.push(request.url);
+          return HttpResponse.json(mockOnlineResponse);
+        }
+      )
+    );
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
+
+    await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
+    await user.keyboard('{Enter}');
+    expect(await screen.findByText('UK Market')).toBeInTheDocument();
+
+    await user.click(
+      screen.getByTestId('button to open country selector dropdown')
+    );
+    await user.click(screen.getByText('IE market only'));
+
+    await user.click(screen.getByPlaceholderText('e.g. 60538523'));
+    await user.keyboard('{Enter}');
+    expect(await screen.findByText('IE Market')).toBeInTheDocument();
+
+    const lastUrl = capturedUrls[capturedUrls.length - 1];
+    expect(new URL(lastUrl).searchParams.get('catalogue')).toBe('MANDSIE');
+  });
+
+  it('should refetch when changing market after a successful search', async () => {
+    const capturedUrls: string[] = [];
+    server.use(
+      http.get(
+        '/api/search/beta/merchandising/product/diagnostics',
+        ({ request }) => {
+          capturedUrls.push(request.url);
+          return HttpResponse.json(mockOnlineResponse);
+        }
+      )
+    );
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
+
+    await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
+    await user.keyboard('{Enter}');
+    expect(await screen.findByText('UK Market')).toBeInTheDocument();
+
+    await user.click(
+      screen.getByTestId('button to open country selector dropdown')
+    );
+    await user.click(screen.getByText('IE market only'));
+
+    expect(await screen.findByText('IE Market')).toBeInTheDocument();
+    expect(capturedUrls.length).toBeGreaterThanOrEqual(2);
+    expect(
+      new URL(capturedUrls[capturedUrls.length - 1]).searchParams.get(
+        'catalogue'
+      )
+    ).toBe('MANDSIE');
+  });
+
+  it('should not refetch when changing market after search if the query is cleared', async () => {
+    const capturedUrls: string[] = [];
+    server.use(
+      http.get(
+        '/api/search/beta/merchandising/product/diagnostics',
+        ({ request }) => {
+          capturedUrls.push(request.url);
+          return HttpResponse.json(mockOnlineResponse);
+        }
+      )
+    );
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />, undefined, {
+      featureFlags: { hasProductStatus: true },
+    });
+
+    await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
+    await user.keyboard('{Enter}');
+    expect(await screen.findByText('UK Market')).toBeInTheDocument();
+
+    await user.clear(screen.getByPlaceholderText('e.g. 60538523'));
+
+    await user.click(
+      screen.getByTestId('button to open country selector dropdown')
+    );
+    await user.click(screen.getByText('IE market only'));
+
+    expect(capturedUrls).toHaveLength(1);
+    expect(screen.queryByText('Green Wool Coat')).not.toBeInTheDocument();
+  });
+
   it('should not search when query is empty', async () => {
     const handler = jest.fn(() => HttpResponse.json(mockOnlineResponse));
     server.use(
