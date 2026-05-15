@@ -3,9 +3,6 @@
   flex-direction: column;
   max-width: 1084px;
   width: 100vw;
-  background-color: var(--temporary-will-be-deleted-pewter-10);
-  border-radius: 4px;
-  padding: var(--mns-spacing-3);
   gap: var(--mns-spacing-3);
 }
 
@@ -19,7 +16,13 @@
 .productCardDetails {
   display: flex;
   flex-direction: column;
-  gap: var(--mns-spacing-1);
+  gap: var(--mns-spacing-2);
+}
+
+.titleWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-0-5);
 }
 
 .productId {
@@ -54,12 +57,6 @@
   flex-shrink: 0;
 }
 
-.infoCards {
-  display: flex;
-  flex-direction: column;
-  gap: var(--mns-spacing-1-5);
-}
-
 .detailList {
   list-style: none;
   padding: 0;
@@ -88,4 +85,44 @@
 
 .titleUnavailable {
   color: var(--color-surface-dark-surface-dark-container);
+}
+
+.copyMessageBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-1);
+  margin-top: var(--mns-spacing-1);
+  width: 100%;
+}
+
+.copyInputRow {
+  display: flex;
+  align-items: center;
+}
+
+.copyInput {
+  font: inherit;
+  min-width: 720px;
+  width: max-content;
+  height: 56px;
+  color: var(--color-surface-dark-surface-dark);
+  background: var(--color-surface-bright-surface-bright);
+  padding: var(--mns-spacing-0-5) var(--mns-spacing-1);
+  border: 0;
+  border-bottom: 1px solid var(--color-role-outline-outline);
+  outline: none;
+}
+
+.copyButton {
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover,
+  &:focus {
+    background-color: transparent;
+  }
 }

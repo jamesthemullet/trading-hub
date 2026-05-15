@@ -1,6 +1,7 @@
 import type {
   BetaMerchandisingProductDiagnosticsListData,
   MerchandisingCountryCode,
+  ProductOfflineIssue,
 } from '@/libs/api/generated/open-api';
 import type {
   OperationalStatusVariant,
@@ -13,9 +14,19 @@ import type {
   Section,
   SectionStatus,
 } from './use-product-details';
-import { getProductDetails } from './use-product-details';
+import { getProductDetails, ProductError } from './use-product-details';
 
-export type SectionWithLabel<T> = Section<T> & { statusLabel: string };
+type IssueWithMessage = ProductOfflineIssue & {
+  type: 'warning' | 'error';
+  copyMessage: string;
+};
+
+export type SectionWithLabel<T> = {
+  content: T;
+  issues: IssueWithMessage[];
+  status: SectionStatus;
+  statusLabel: string;
+};
 
 export type ProductDisplay = {
   isIndexed: boolean;
@@ -73,6 +84,29 @@ const getStatusLabel = (status: SectionStatus): string => {
   }
 };
 
+const getCopyMessage = (reason: string, displayId: string): string => {
+  if (reason === ProductError.NotIndexed) {
+    return `I'm requesting for an Emergency Push for '${displayId}' as soon as possible.`;
+  }
+  if (reason === ProductError.OutOfStock) {
+    return `The product status for '${displayId}' is out of stock. Please confirm stock levels.`;
+  }
+  return `The product data for '${displayId}' is not set up properly. Please send more information.`;
+};
+
+const buildSection = <T>(
+  section: Section<T>,
+  displayId: string
+): SectionWithLabel<T> => ({
+  content: section.content,
+  status: section.status,
+  statusLabel: getStatusLabel(section.status),
+  issues: section.issues.map((issue) => ({
+    ...issue,
+    copyMessage: getCopyMessage(issue.reason, displayId),
+  })),
+});
+
 const getMainStatus = (
   issueCount: number,
   isPushAvailable: boolean
@@ -128,22 +162,10 @@ export const reducer = (state: State, action: Action): State => {
           mainStatusLabel,
           mainStatusVariant,
           sections: {
-            productAssembly: {
-              ...sections.productAssembly,
-              statusLabel: getStatusLabel(sections.productAssembly.status),
-            },
-            availability: {
-              ...sections.availability,
-              statusLabel: getStatusLabel(sections.availability.status),
-            },
-            saleability: {
-              ...sections.saleability,
-              statusLabel: getStatusLabel(sections.saleability.status),
-            },
-            associatedRules: {
-              ...sections.associatedRules,
-              statusLabel: getStatusLabel(sections.associatedRules.status),
-            },
+            productAssembly: buildSection(sections.productAssembly, displayId),
+            availability: buildSection(sections.availability, displayId),
+            saleability: buildSection(sections.saleability, displayId),
+            associatedRules: buildSection(sections.associatedRules, displayId),
           },
         },
       };

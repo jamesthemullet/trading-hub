@@ -52,7 +52,8 @@ const makeDisplay = (imageUrl: string[] = []): ProductDisplay => ({
 const withIssue = (
   section: 'availability' | 'saleability',
   reason: string,
-  action: string
+  action: string,
+  copyMessage = 'Please contact support.'
 ): ProductDisplay => ({
   isIndexed: true,
   product: baseProduct,
@@ -63,15 +64,15 @@ const withIssue = (
     productAssembly: {
       content: [],
       issues: [],
-      status: 'operational',
-      statusLabel: 'Operational',
+      status: 'blocked',
+      statusLabel: 'Blocked by an issue',
     },
     availability: operationalSection,
     saleability: operationalSection,
     associatedRules: operationalSection,
     [section]: {
       content: null,
-      issues: [{ reason, action, type: 'error' }],
+      issues: [{ reason, action, type: 'error', copyMessage }],
       status: 'issue-detected',
       statusLabel: 'Issue detected',
     },
@@ -92,6 +93,8 @@ const pushAvailableDisplay: ProductDisplay = {
           reason: 'Product is not indexed in Elastic yet',
           action: 'Send an Emergency Push request.',
           type: 'warning',
+          copyMessage:
+            "I'm requesting for an Emergency Push for 'P60538523' as soon as possible.",
         },
       ],
       status: 'push-available',
@@ -161,6 +164,18 @@ describe('ProductResult', () => {
     });
   });
 
+  describe('blocked productAssembly', () => {
+    it('shows "Not available" when productAssembly is blocked', () => {
+      const display = withIssue(
+        'availability',
+        'Product is out of stock',
+        'Wait for restock.'
+      );
+      renderWithProviders(<ProductResult productDisplay={display} />);
+      expect(screen.getByText('Not available')).toBeVisible();
+    });
+  });
+
   describe('availability issue', () => {
     const display = withIssue(
       'availability',
@@ -197,6 +212,11 @@ describe('ProductResult', () => {
       ).toBeVisible();
       expect(screen.getByText('Mark as saleable.')).toBeVisible();
     });
+
+    it('should render the copy message box', () => {
+      renderWithProviders(<ProductResult productDisplay={display} />);
+      expect(screen.getByText('Copy this message below:')).toBeVisible();
+    });
   });
 
   describe('not indexed — push-available', () => {
@@ -206,6 +226,13 @@ describe('ProductResult', () => {
       );
       expect(screen.getByText('Emergency push available')).toBeVisible();
       expect(screen.getByText('Push available')).toBeVisible();
+    });
+
+    it('should render the copy message box', () => {
+      renderWithProviders(
+        <ProductResult productDisplay={pushAvailableDisplay} />
+      );
+      expect(screen.getByText('Copy this message below:')).toBeVisible();
     });
   });
 });

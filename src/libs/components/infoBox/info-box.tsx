@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import Image from 'next/image';
 
 import { Typography } from '../typography/typography';
@@ -10,6 +12,7 @@ type Props = {
   showIcon?: boolean;
   width?: string;
   height?: string;
+  children?: ReactNode;
 };
 
 export const InfoBox = ({
@@ -19,6 +22,7 @@ export const InfoBox = ({
   showIcon = true,
   width = '340px',
   height = '56px',
+  children,
 }: Props) => {
   return (
     <div
@@ -42,8 +46,9 @@ export const InfoBox = ({
         />
       )}
       <div className={styles.content}>
-        {title && <Typography variant="bodyMedium">{title}</Typography>}
-        <Typography variant="labelMedium">{text}</Typography>
+        {title && <Typography variant="titleMedium">{title}</Typography>}
+        <Typography variant="bodyMedium">{text}</Typography>
+        {children}
       </div>
     </div>
   );

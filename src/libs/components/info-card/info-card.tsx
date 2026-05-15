@@ -21,7 +21,7 @@ export const InfoCard = ({
 }: InfoCardData) => (
   <div className={styles.infoCard}>
     <div className={styles.header}>
-      <Typography variant="bodyMedium" isStrong>
+      <Typography variant="bodyLarge" isStrong>
         {title}
       </Typography>
       <StatusBadge variant={statusVariant} label={statusLabel} />

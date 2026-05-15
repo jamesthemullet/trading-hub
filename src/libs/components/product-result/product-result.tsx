@@ -8,6 +8,7 @@ import type { ProductDisplay } from '@/libs/hooks/product-status/reducer';
 
 import Image from 'next/image';
 
+import { CopyMessageBox } from './copy-message-box';
 import styles from './product-result.module.css';
 
 const MNS_IMAGE_BASE = 'https://asset1.cxnmarksandspencer.com/is/image/mands';
@@ -32,16 +33,18 @@ export const ProductResult = ({ productDisplay }: Props) => {
     <div className={styles.wrapper}>
       <div className={styles.productCard}>
         <div className={styles.productCardDetails}>
-          <Typography
-            variant="titleMedium"
-            className={!isIndexed ? styles.titleUnavailable : undefined}
-          >
-            {product?.title ?? 'Title not available'}
-          </Typography>
+          <div className={styles.titleWrapper}>
+            <Typography
+              variant="titleMedium"
+              className={!isIndexed ? styles.titleUnavailable : undefined}
+            >
+              {product?.title ?? 'Title not available'}
+            </Typography>
 
-          <Typography variant="bodySmall" className={styles.productId}>
-            {displayId}
-          </Typography>
+            <Typography variant="bodySmall" className={styles.productId}>
+              {displayId}
+            </Typography>
+          </div>
 
           <StatusBadge variant={mainStatusVariant} label={mainStatusLabel} />
 
@@ -69,94 +72,100 @@ export const ProductResult = ({ productDisplay }: Props) => {
         )}
       </div>
 
-      <div className={styles.infoCards}>
-        <InfoCard
-          title="Product data (Product Assembly)"
-          statusVariant={productAssembly.status}
-          statusLabel={productAssembly.statusLabel}
-        >
-          {productAssembly.issues.length > 0 ? (
-            <ul className={styles.issueList}>
-              {productAssembly.issues.map((issue) => (
-                <li key={issue.reason}>
-                  <InfoBox
-                    showIcon={false}
-                    variant={issue.type}
-                    title={issue.reason}
-                    text={issue.action}
-                    height="auto"
-                    width="auto"
-                  />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <ul className={styles.detailList}>
-              {productAssembly.content.map(({ label, value }) => (
-                <li key={label}>
-                  <Typography variant="bodySmall">
-                    {label}: {value}
-                  </Typography>
-                </li>
-              ))}
-            </ul>
-          )}
-        </InfoCard>
+      <InfoCard
+        title="Product data (Product Assembly)"
+        statusVariant={productAssembly.status}
+        statusLabel={productAssembly.statusLabel}
+      >
+        {productAssembly.issues.length > 0 ? (
+          <ul className={styles.issueList}>
+            {productAssembly.issues.map((issue) => (
+              <li key={issue.reason}>
+                <InfoBox
+                  showIcon={false}
+                  variant={issue.type}
+                  title={issue.reason}
+                  text={issue.action}
+                  height="auto"
+                  width="auto"
+                >
+                  <CopyMessageBox message={issue.copyMessage} />
+                </InfoBox>
+              </li>
+            ))}
+          </ul>
+        ) : productAssembly.status === 'blocked' ? (
+          <Typography variant="bodySmall">Not available</Typography>
+        ) : (
+          <ul className={styles.detailList}>
+            {productAssembly.content.map(({ label, value }) => (
+              <li key={label}>
+                <Typography variant="bodySmall">
+                  {label}: {value}
+                </Typography>
+              </li>
+            ))}
+          </ul>
+        )}
+      </InfoCard>
 
-        <InfoCard
-          title="Availability"
-          statusVariant={sections.availability.status}
-          statusLabel={sections.availability.statusLabel}
-        >
-          {sections.availability.issues.length > 0 ? (
-            <ul className={styles.issueList}>
-              {sections.availability.issues.map((issue) => (
-                <li key={issue.reason}>
-                  <InfoBox
-                    showIcon={false}
-                    variant={issue.type}
-                    title={issue.reason}
-                    text={issue.action}
-                    height="auto"
-                    width="auto"
-                  />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <Typography variant="bodySmall">
-              {isIndexed ? 'In-store and online' : 'Not available'}
-            </Typography>
-          )}
-        </InfoCard>
+      <InfoCard
+        title="Availability"
+        statusVariant={sections.availability.status}
+        statusLabel={sections.availability.statusLabel}
+      >
+        {sections.availability.issues.length > 0 ? (
+          <ul className={styles.issueList}>
+            {sections.availability.issues.map((issue) => (
+              <li key={issue.reason}>
+                <InfoBox
+                  showIcon={false}
+                  variant={issue.type}
+                  title={issue.reason}
+                  text={issue.action}
+                  height="auto"
+                  width="auto"
+                >
+                  <CopyMessageBox message={issue.copyMessage} />
+                </InfoBox>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Typography variant="bodySmall">
+            {isIndexed ? 'In-store and online' : 'Not available'}
+          </Typography>
+        )}
+      </InfoCard>
 
-        <InfoCard
-          title="Saleability"
-          statusVariant={sections.saleability.status}
-          statusLabel={sections.saleability.statusLabel}
-        >
-          {sections.saleability.issues.length > 0 ? (
-            <ul className={styles.issueList}>
-              {sections.saleability.issues.map((issue) => (
-                <li key={issue.reason}>
-                  <InfoBox
-                    showIcon={false}
-                    variant={issue.type}
-                    title={issue.reason}
-                    text={issue.action}
-                    height="auto"
-                    width="auto"
-                  />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <Typography variant="bodySmall">
-              {isIndexed ? 'In-store and online' : 'Not available'}
-            </Typography>
-          )}
-        </InfoCard>
-      </div>
+      <InfoCard
+        title="Saleability"
+        statusVariant={sections.saleability.status}
+        statusLabel={sections.saleability.statusLabel}
+      >
+        {sections.saleability.issues.length > 0 ? (
+          <ul className={styles.issueList}>
+            {sections.saleability.issues.map((issue) => (
+              <li key={issue.reason}>
+                <InfoBox
+                  showIcon={false}
+                  variant={issue.type}
+                  title={issue.reason}
+                  text={issue.action}
+                  height="auto"
+                  width="auto"
+                >
+                  <CopyMessageBox message={issue.copyMessage} />
+                </InfoBox>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Typography variant="bodySmall">
+            {isIndexed ? 'In-store and online' : 'Not available'}
+          </Typography>
+        )}
+      </InfoCard>
     </div>
   );
 };
