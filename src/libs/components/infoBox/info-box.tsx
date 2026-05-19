@@ -46,8 +46,18 @@ export const InfoBox = ({
         />
       )}
       <div className={styles.content}>
-        {title && <Typography variant="titleMedium">{title}</Typography>}
-        <Typography variant="bodyMedium">{text}</Typography>
+        {title && (
+          <Typography
+            variant={variant === 'error' ? 'bodyLarge' : 'labelLarge'}
+          >
+            {title}
+          </Typography>
+        )}
+        <Typography
+          variant={variant === 'error' ? 'bodyMedium' : 'labelMedium'}
+        >
+          {text}
+        </Typography>
         {children}
       </div>
     </div>

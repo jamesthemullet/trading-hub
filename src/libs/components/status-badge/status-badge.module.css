@@ -39,7 +39,7 @@
     background-color: var(--color-state-success-success);
 
     span {
-      color: var(--color-surface-on-surface);
+      color: var(--color-state-success-on-success);
     }
   }
 
@@ -71,7 +71,7 @@
     background-color: var(--color-state-error-error);
 
     span {
-      color: var(--color-surface-on-surface);
+      color: var(--color-surface-surface-container);
     }
   }
 }

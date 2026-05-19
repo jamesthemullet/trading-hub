@@ -21,7 +21,7 @@ const variantConfig: Record<
     alt: 'Emergency',
   },
   'product-operational': {
-    icon: '/trading-hub/asset/icon-tick-in-circle-success.svg',
+    icon: '/trading-hub/asset/icon-tick-white.svg',
     alt: 'Product is operational',
   },
   'issue-detected': {
@@ -66,7 +66,7 @@ export const StatusBadge = ({ variant, label }: Props) => {
   return (
     <span className={styles.badge} data-variant={variant}>
       <Image src={icon} alt={alt} width={16} height={16} />
-      <Typography as="span" variant="labelSmall">
+      <Typography as="span" variant="bodySmall" isStrong>
         {label}
       </Typography>
     </span>
