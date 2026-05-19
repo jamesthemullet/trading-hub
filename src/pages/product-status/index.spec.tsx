@@ -59,9 +59,7 @@ afterAll(() => server.close());
 
 describe('ProductStatus page', () => {
   it('should render the search header', () => {
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     expect(
       screen.getByRole('heading', { name: 'Product status search' })
@@ -81,9 +79,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -99,9 +95,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -120,9 +114,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -145,9 +137,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -169,9 +159,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -194,9 +182,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -228,9 +214,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -263,9 +247,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
     await user.keyboard('{Enter}');
@@ -289,9 +271,7 @@ describe('ProductStatus page', () => {
     );
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<ProductStatus />, undefined, {
-      featureFlags: { hasProductStatus: true },
-    });
+    renderWithProviders(<ProductStatus />);
 
     await user.type(screen.getByPlaceholderText('e.g. 60538523'), '  ');
     await user.keyboard('{Enter}');

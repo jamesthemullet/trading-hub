@@ -13,7 +13,6 @@ type AuthorizationRoleOverride = {
 export type FeatureFlags = {
   hasAuthorization: boolean;
   authorizationRoleOverride: AuthorizationRoleOverride;
-  hasProductStatus: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -23,7 +22,6 @@ export const defaultFeatureFlags: FeatureFlags = {
     searchOverride: 'No Override',
     globalOverride: 'No Override',
   },
-  hasProductStatus: false,
 };
 
 export const FeatureFlagContext =
@@ -38,17 +36,6 @@ export const useAuthorizationFlag = () => {
   }, [featureFlags.hasAuthorization]);
 
   return authorizationEnabled;
-};
-
-export const useProductStatusFlag = () => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [productStatusEnabled, setProductStatusEnabled] = useState(false);
-
-  useEffect(() => {
-    setProductStatusEnabled(featureFlags.hasProductStatus);
-  }, [featureFlags.hasProductStatus]);
-
-  return productStatusEnabled;
 };
 
 export const useAuthorizationRoleOverride = () => {

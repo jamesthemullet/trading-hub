@@ -7,7 +7,6 @@ import {
   DropdownVariant,
 } from '@/libs/components/dropdown/dropdown';
 import { COUNTRY_SELECTOR_OPTIONS } from '@/libs/components/dropdown/dropdown.constants';
-import { useProductStatusFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ProductResult } from '@/libs/components/product-result/product-result';
 import ProductStatusHeader from '@/libs/features/product-status/header/product-status-header';
 import { initialState, reducer } from '@/libs/hooks/product-status/reducer';
@@ -23,8 +22,6 @@ const MARKET_OPTIONS = COUNTRY_SELECTOR_OPTIONS.filter(
 ).map((o, i) => ({ ...o, index: i }));
 
 const ProductStatus = () => {
-  const hasProductStatus = useProductStatusFlag();
-
   const [state, dispatch] = useReducer(reducer, initialState);
   const fetchProductStatus = useFetchProductStatus(dispatch);
 
@@ -39,10 +36,6 @@ const ProductStatus = () => {
       void fetchProductStatus(query.trim(), market);
     }
   };
-
-  if (!hasProductStatus) {
-    return <Typography variant="bodyMedium">Coming soon</Typography>;
-  }
 
   return (
     <>
