@@ -17,18 +17,21 @@ describe('HistoryList', () => {
       id: 'change-1',
       date: '2024-01-15T14:30:00Z',
       user: 'John Doe',
+      changes: ['12345678 pinned', '87654321 boosted'],
     },
     {
       rulesetId: 'ruleset-1',
       id: 'change-2',
       date: '2024-01-14T10:15:00Z',
       user: 'Jane Smith',
+      changes: ['Disabled'],
     },
     {
       rulesetId: 'ruleset-1',
       id: 'change-3',
       date: '2024-01-13T09:00:00Z',
       user: 'Bob Johnson',
+      changes: [],
     },
   ];
 
@@ -39,6 +42,7 @@ describe('HistoryList', () => {
 
     expect(screen.getByText('Date')).toBeInTheDocument();
     expect(screen.getByText('Time')).toBeInTheDocument();
+    expect(screen.getByText('Changes Made')).toBeInTheDocument();
     expect(screen.getByText('User')).toBeInTheDocument();
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('Jane Smith')).toBeInTheDocument();
@@ -52,6 +56,117 @@ describe('HistoryList', () => {
 
     expect(screen.getByText('View current')).toBeInTheDocument();
     expect(screen.getAllByText('View')).toHaveLength(2);
+  });
+
+  it('should render change descriptions for items with changes', () => {
+    renderWithProviders(
+      <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
+    );
+
+    expect(screen.getByText('12345678 pinned')).toBeInTheDocument();
+    expect(screen.getByText('87654321 boosted')).toBeInTheDocument();
+    expect(screen.getByText('Disabled')).toBeInTheDocument();
+  });
+
+  it('should render "—" for items with an empty changes array', () => {
+    renderWithProviders(
+      <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
+    );
+
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
+
+  it('should show "Show More" and hide overflow when changes exceed MAX_VISIBLE_DIFFS', () => {
+    const manyChanges = [
+      {
+        rulesetId: 'ruleset-1',
+        id: 'change-overflow',
+        date: '2024-01-15T14:30:00Z',
+        user: 'John Doe',
+        changes: [
+          'a pinned',
+          'b boosted',
+          'c blocked',
+          'd buried',
+          'e unpinned',
+        ],
+      },
+    ];
+    renderWithProviders(
+      <HistoryList items={manyChanges} ruleType={RuleType.CategoryRanking} />
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Show More' })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show More' })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    );
+    expect(screen.queryByText('e unpinned')).not.toBeInTheDocument();
+  });
+
+  it('should expand to show all changes when "Show More" is clicked', async () => {
+    const user = userEvent.setup();
+    const manyChanges = [
+      {
+        rulesetId: 'ruleset-1',
+        id: 'change-overflow',
+        date: '2024-01-15T14:30:00Z',
+        user: 'John Doe',
+        changes: [
+          'a pinned',
+          'b boosted',
+          'c blocked',
+          'd buried',
+          'e unpinned',
+        ],
+      },
+    ];
+    renderWithProviders(
+      <HistoryList items={manyChanges} ruleType={RuleType.CategoryRanking} />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Show More' }));
+
+    expect(screen.getByText('e unpinned')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Show Fewer' })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show Fewer' })).toHaveAttribute(
+      'aria-expanded',
+      'true'
+    );
+  });
+
+  it('should collapse back when "Show Fewer" is clicked', async () => {
+    const user = userEvent.setup();
+    const manyChanges = [
+      {
+        rulesetId: 'ruleset-1',
+        id: 'change-overflow',
+        date: '2024-01-15T14:30:00Z',
+        user: 'John Doe',
+        changes: [
+          'a pinned',
+          'b boosted',
+          'c blocked',
+          'd buried',
+          'e unpinned',
+        ],
+      },
+    ];
+    renderWithProviders(
+      <HistoryList items={manyChanges} ruleType={RuleType.CategoryRanking} />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Show More' }));
+    await user.click(screen.getByRole('button', { name: 'Show Fewer' }));
+
+    expect(screen.queryByText('e unpinned')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Show More' })
+    ).toBeInTheDocument();
   });
 
   it('should create correct link for current version', () => {

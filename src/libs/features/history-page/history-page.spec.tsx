@@ -24,6 +24,10 @@ jest.mock('@/libs/hooks/utils/update-query-params', () => ({
   updateQueryParams: jest.fn(),
 }));
 
+jest.mock('@/libs/hooks/global/facets/use-global-facets-list', () => ({
+  useGlobalFacetsList: jest.fn(() => ({ facets: [] })),
+}));
+
 const mockHistoryList = jest.fn();
 const mockTablePagination = jest.fn();
 
@@ -85,50 +89,7 @@ describe('HistoryPage', () => {
     jest.mocked(useRouter).mockReturnValue(router as never);
   });
 
-  it('should use history item count as totalItems when pagination is missing', () => {
-    renderWithProviders(
-      <HistoryPage
-        title="Category History"
-        breadcrumbs={['Categories', 'Ranking rules']}
-        accessType="Cat"
-        ruleType={RuleType.CategoryRanking}
-        history={{
-          changes: [
-            {
-              id: 'change-1',
-              change: {
-                id: 'ruleset-1',
-                lastChanged: {
-                  date: '2024-01-01T00:00:00Z',
-                  user: 'user-1',
-                },
-              },
-            },
-            {
-              id: 'change-2',
-              change: {
-                id: 'ruleset-1',
-                lastChanged: {
-                  date: '2024-01-02T00:00:00Z',
-                  user: 'user-2',
-                },
-              },
-            },
-          ],
-        }}
-        isLoading={false}
-        error=""
-      />
-    );
-
-    expect(mockHistoryList).toHaveBeenCalledWith(
-      expect.objectContaining({
-        totalItems: 2,
-      })
-    );
-  });
-
-  it('should use pagination totalItems when provided', () => {
+  it('should pass pagination totalItems to HistoryList', () => {
     renderWithProviders(
       <HistoryPage
         title="Category History"
@@ -163,7 +124,7 @@ describe('HistoryPage', () => {
     );
   });
 
-  it('should default TablePagination totalItems to history item count when missing', () => {
+  it('should fall back to change count when pagination totalItems is missing', () => {
     renderWithProviders(
       <HistoryPage
         title="Category History"
@@ -177,20 +138,14 @@ describe('HistoryPage', () => {
               id: 'change-1',
               change: {
                 id: 'ruleset-1',
-                lastChanged: {
-                  date: '2024-01-01T00:00:00Z',
-                  user: 'user-1',
-                },
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'user-1' },
               },
             },
             {
               id: 'change-2',
               change: {
                 id: 'ruleset-1',
-                lastChanged: {
-                  date: '2024-01-02T00:00:00Z',
-                  user: 'user-2',
-                },
+                lastChanged: { date: '2024-01-02T00:00:00Z', user: 'user-2' },
               },
             },
           ],
@@ -207,14 +162,14 @@ describe('HistoryPage', () => {
     );
   });
 
-  it('should default TablePagination totalItems to 0 when pagination and history items are missing', () => {
+  it('should render nothing when there are no changes', () => {
     renderWithProviders(
       <HistoryPage
         title="Category History"
         breadcrumbs={['Categories', 'Ranking rules']}
         accessType="Cat"
         ruleType={RuleType.CategoryRanking}
-        history={{}}
+        history={{ changes: [], pagination: { totalItems: 0 } }}
         isLoading={false}
         error=""
       />
@@ -231,6 +186,7 @@ describe('HistoryPage', () => {
         accessType="Cat"
         ruleType={RuleType.CategoryRanking}
         history={{
+          pagination: { totalItems: 1 },
           changes: [
             {
               id: 'change-1',
@@ -274,6 +230,7 @@ describe('HistoryPage', () => {
         accessType="Cat"
         ruleType={RuleType.CategoryRanking}
         history={{
+          pagination: { totalItems: 1 },
           changes: [
             {
               id: 'change-1',
@@ -308,6 +265,7 @@ describe('HistoryPage', () => {
         accessType="Cat"
         ruleType={RuleType.CategoryRanking}
         history={{
+          pagination: { totalItems: 1 },
           changes: [
             {
               id: 'change-1',
@@ -343,7 +301,7 @@ describe('HistoryPage', () => {
         breadcrumbs={['Categories', 'Ranking rules']}
         accessType="Cat"
         ruleType={RuleType.CategoryRanking}
-        history={{}}
+        history={{ changes: [], pagination: { totalItems: 0 } }}
         isLoading={false}
         error=""
       />
@@ -352,5 +310,152 @@ describe('HistoryPage', () => {
     await user.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(router.back).toHaveBeenCalled();
+  });
+
+  it('should compute diffs and pass changes to each history item', () => {
+    renderWithProviders(
+      <HistoryPage
+        title="Category History"
+        breadcrumbs={['Categories', 'Ranking rules']}
+        accessType="Cat"
+        ruleType={RuleType.CategoryRanking}
+        history={{
+          pagination: { totalItems: 2 },
+          changes: [
+            {
+              id: 'change-1',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-02T00:00:00Z', user: 'user-1' },
+                isEnabled: false,
+                rules: {
+                  pinnedProducts: [{ id: 'prod-1' }],
+                  blockedProducts: [],
+                  boosts: { product: [], numeric: [], alphanumeric: [] },
+                  buries: { product: [], numeric: [], alphanumeric: [] },
+                  includes: { alphanumeric: [] },
+                  excludes: { alphanumeric: [] },
+                },
+              },
+            },
+            {
+              id: 'change-2',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'user-2' },
+                isEnabled: true,
+                rules: {
+                  pinnedProducts: [],
+                  blockedProducts: [],
+                  boosts: { product: [], numeric: [], alphanumeric: [] },
+                  buries: { product: [], numeric: [], alphanumeric: [] },
+                  includes: { alphanumeric: [] },
+                  excludes: { alphanumeric: [] },
+                },
+              },
+            },
+          ],
+        }}
+        isLoading={false}
+        error=""
+      />
+    );
+
+    const { items } = mockHistoryList.mock.calls[0][0] as {
+      items: Array<{ id: string; changes: string[] }>;
+    };
+
+    expect(items[0].changes).toContain('prod-1 pinned');
+    expect(items[0].changes).toContain('Ruleset disabled');
+
+    expect(items[1].changes).toEqual([]);
+  });
+
+  it('should resolve facet IDs to display names in diff descriptions', () => {
+    const { useGlobalFacetsList } = jest.requireMock(
+      '@/libs/hooks/global/facets/use-global-facets-list'
+    );
+    (useGlobalFacetsList as jest.Mock).mockReturnValueOnce({
+      facets: [{ id: 'facet-uuid-1', displayValue: 'Colour' }],
+    });
+
+    renderWithProviders(
+      <HistoryPage
+        title="Category History"
+        breadcrumbs={['Categories', 'Ranking rules']}
+        accessType="Cat"
+        ruleType={RuleType.CategoryRanking}
+        history={{
+          pagination: { totalItems: 2 },
+          changes: [
+            {
+              id: 'change-1',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-02T00:00:00Z', user: 'user-1' },
+                facets: [{ id: 'facet-uuid-1' }],
+              },
+            },
+            {
+              id: 'change-2',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'user-2' },
+              },
+            },
+          ],
+        }}
+        isLoading={false}
+        error=""
+      />
+    );
+
+    const { items } = mockHistoryList.mock.calls[0][0] as {
+      items: Array<{ id: string; changes: string[] }>;
+    };
+    expect(items[0].changes).toContain("'Colour' facet set to included");
+  });
+
+  it('should not throw when globalFacets is undefined', () => {
+    const { useGlobalFacetsList } = jest.requireMock(
+      '@/libs/hooks/global/facets/use-global-facets-list'
+    );
+    (useGlobalFacetsList as jest.Mock).mockReturnValueOnce({
+      facets: undefined,
+    });
+
+    expect(() =>
+      renderWithProviders(
+        <HistoryPage
+          title="Category History"
+          breadcrumbs={['Categories', 'Ranking rules']}
+          accessType="Cat"
+          ruleType={RuleType.CategoryRanking}
+          history={{ changes: [], pagination: { totalItems: 0 } }}
+          isLoading={false}
+          error=""
+        />
+      )
+    ).not.toThrow();
+  });
+
+  it('should not fetch global facets for redirect history', () => {
+    const { useGlobalFacetsList } = jest.requireMock(
+      '@/libs/hooks/global/facets/use-global-facets-list'
+    );
+
+    renderWithProviders(
+      <HistoryPage
+        title="Redirect History"
+        breadcrumbs={['Search', 'Redirects']}
+        accessType="Search"
+        ruleType={RuleType.Redirect}
+        history={{ changes: [], pagination: { totalItems: 0 } }}
+        isLoading={false}
+        error=""
+      />
+    );
+
+    expect(useGlobalFacetsList).toHaveBeenCalledWith({ enabled: false });
   });
 });

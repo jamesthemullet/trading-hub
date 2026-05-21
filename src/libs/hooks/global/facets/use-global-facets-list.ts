@@ -4,7 +4,9 @@ import type { MerchandisingFacetsList } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useGlobalFacetsList = () => {
+export const useGlobalFacetsList = ({
+  enabled = true,
+}: { enabled?: boolean } = {}) => {
   const [shouldRefetch, refetch] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [facetsList, setFacetsList] = useState<MerchandisingFacetsList>({
@@ -13,6 +15,7 @@ export const useGlobalFacetsList = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    if (!enabled) return;
     const asyncCall = async () => {
       try {
         const response = await search().betaMerchandisingFacetList();
@@ -20,15 +23,15 @@ export const useGlobalFacetsList = () => {
         const facetList = response.data;
 
         setFacetsList(facetList);
-      } catch {
-        setError(handleError(error));
+      } catch (err) {
+        setError(handleError(err));
       } finally {
         setIsLoading(false);
       }
     };
     void asyncCall();
     setIsLoading(true);
-  }, [shouldRefetch, error]);
+  }, [shouldRefetch, enabled]);
 
   return {
     facets: facetsList.facets,

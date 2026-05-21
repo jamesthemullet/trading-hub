@@ -42,10 +42,7 @@ describe('useFacetsList', () => {
   it('should render the hook with error', async () => {
     server.use(
       http.get(`${baseUrl}/search/beta/merchandising/facet`, () => {
-        return HttpResponse.json(
-          { message: 'Internal Server Error' },
-          { status: 500 }
-        );
+        return HttpResponse.error();
       })
     );
 

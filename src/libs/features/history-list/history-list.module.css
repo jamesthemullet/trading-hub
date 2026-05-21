@@ -10,14 +10,15 @@
 
 .historyRow {
   display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr;
+  grid-template-columns: 1fr 1fr 2fr 2fr 1fr;
   padding: var(--mns-spacing-1) var(--mns-spacing-2);
   border-bottom: 1px solid var(--color-surface-dark-on-surface-dark-variant);
+  align-items: start;
 }
 
 .historyHeader {
   display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr;
+  grid-template-columns: 1fr 1fr 2fr 2fr 1fr;
   padding: var(--mns-spacing-2) var(--mns-spacing-2);
   font-weight: 600;
   border-bottom: 1px solid var(--color-surface-dark-on-surface-dark-variant);
@@ -31,4 +32,23 @@
 .historyLink {
   color: var(--color-role-link-link);
   text-align: right;
+}
+
+.changeDiffs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-0-5);
+  min-width: 0;
+  padding-right: var(--mns-spacing-2);
+}
+
+.diffItem {
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.toggleLink {
+  padding: 0;
+  text-decoration: underline;
+  align-self: flex-start;
 }

@@ -102,11 +102,13 @@ describe('Redirect History', () => {
       },
     });
 
-    expect(
-      screen.getByText('please contact admin on our teams channel', {
-        exact: false,
-      })
-    ).toBeVisible();
+    await waitFor(() => {
+      expect(
+        screen.getByText('please contact admin on our teams channel', {
+          exact: false,
+        })
+      ).toBeVisible();
+    });
   });
 });
 

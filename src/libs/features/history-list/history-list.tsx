@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { TablePagination, Tabs, Typography } from '@/libs/components';
+import { Button, TablePagination, Tabs, Typography } from '@/libs/components';
 import { getFacetRoute, getRulesetEditRoute } from '@/libs/constants/routes';
 import { FacetType, RuleType } from '@/libs/constants/rule-types';
 
@@ -8,7 +8,9 @@ import Link from 'next/link';
 
 import styles from './history-list.module.css';
 
-const HISTORY_COLUMNS = ['Date', 'Time', 'User', ''] as const;
+const HISTORY_COLUMNS = ['Date', 'Time', 'Changes Made', 'User', ''];
+
+const MAX_VISIBLE_DIFFS = 4;
 
 const HISTORY_TABS = [{ title: 'Rulesets' }, { title: 'Facets' }];
 
@@ -35,6 +37,7 @@ type HistoryItem = {
   id: string;
   date: string;
   user: string;
+  changes: string[];
 };
 
 type HistoryRowProps = {
@@ -56,6 +59,7 @@ const HistoryRow = ({
   isShowingFacets,
   facetType,
 }: HistoryRowProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const date = new Date(item.date);
   const formattedDate = date.toLocaleDateString('en-US', DATE_FORMAT_OPTIONS);
   const formattedTime = date.toLocaleTimeString('en-GB', TIME_FORMAT_OPTIONS);
@@ -77,10 +81,47 @@ const HistoryRow = ({
         },
       };
 
+  const allDiffs = item.changes;
+  const hasOverflow = allDiffs.length > MAX_VISIBLE_DIFFS;
+  const visibleDiffs = isExpanded
+    ? allDiffs
+    : allDiffs.slice(0, MAX_VISIBLE_DIFFS);
+
   return (
     <li className={styles.historyRow} key={item.id}>
       <Typography variant="bodyMedium">{formattedDate}</Typography>
       <Typography variant="bodyMedium">{formattedTime}</Typography>
+      <div className={styles.changeDiffs}>
+        {visibleDiffs.length > 0 ? (
+          <>
+            {visibleDiffs.map((desc, i) => (
+              <Typography
+                // eslint-disable-next-line react/no-array-index-key
+                key={`${i}-${desc}`}
+                variant="bodyMedium"
+                className={styles.diffItem}
+              >
+                {desc}
+              </Typography>
+            ))}
+            {hasOverflow && (
+              <Button
+                type="button"
+                appearance="plain"
+                className={styles.toggleLink}
+                aria-expanded={isExpanded}
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                <Typography variant="bodyMedium" as="span">
+                  {isExpanded ? 'Show Fewer' : 'Show More'}
+                </Typography>
+              </Button>
+            )}
+          </>
+        ) : (
+          <Typography variant="bodyMedium">—</Typography>
+        )}
+      </div>
       <Typography variant="bodyMedium">{item.user}</Typography>
       <Link href={href} className={styles.historyLink}>
         {linkText}

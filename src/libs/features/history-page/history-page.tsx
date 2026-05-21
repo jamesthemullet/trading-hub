@@ -2,10 +2,15 @@ import { useRouter } from 'next/router';
 
 import { AccessDeny, Button, ErrorMessage, Heading } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
-import type { RuleType } from '@/libs/constants/rule-types';
+import { RuleType } from '@/libs/constants/rule-types';
 import { HistoryList } from '@/libs/features/history-list/history-list';
+import { useGlobalFacetsList } from '@/libs/hooks/global/facets/use-global-facets-list';
 import { useAccess } from '@/libs/hooks/use-access';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
+import {
+  computeHistoryDiff,
+  type RulesetSnapshot,
+} from '@/libs/utils/compute-history-diff';
 
 import Head from 'next/head';
 
@@ -14,9 +19,9 @@ import styles from './history-page.module.css';
 type AccessType = 'Cat' | 'Search' | 'Glob';
 
 type HistoryData = {
-  changes?: Array<{
+  changes: Array<{
     id: string;
-    change: {
+    change: RulesetSnapshot & {
       id: string;
       lastChanged: {
         date: string;
@@ -24,7 +29,7 @@ type HistoryData = {
       };
     };
   }>;
-  pagination?: {
+  pagination: {
     totalItems?: number;
   };
 };
@@ -48,8 +53,15 @@ export const HistoryPage = ({
   isLoading,
   error,
 }: HistoryPageProps) => {
+  console.log(10, history);
   const { hasReadAccess, requiredReadRole } = useAccess(accessType);
   const router = useRouter();
+  const { facets: globalFacets } = useGlobalFacetsList({
+    enabled: ruleType !== RuleType.Redirect,
+  });
+  const facetNames = Object.fromEntries(
+    globalFacets?.map((f) => [f.id, f.displayValue]) ?? []
+  );
   const identifier = router.query.identifier;
   const pageSizes = [10, 20, 50, 100];
   const currentPage = Number(router.query.currentPage) || 1;
@@ -76,14 +88,21 @@ export const HistoryPage = ({
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
-  const historyItems = history.changes?.map((item) => ({
-    id: item.id,
-    date: item.change.lastChanged.date,
-    user: item.change.lastChanged.user,
-    rulesetId: item.change.id,
-  }));
+  const historyItems = history.changes.map((item, index, changes) => {
+    const previousChange = history.changes?.[index + 1]?.change ?? null;
+    const isOldestOnPage = index === changes.length - 1;
+    return {
+      id: item.id,
+      date: item.change.lastChanged.date,
+      user: item.change.lastChanged.user,
+      rulesetId: item.change.id,
+      changes: isOldestOnPage
+        ? []
+        : computeHistoryDiff(item.change, previousChange, facetNames),
+    };
+  });
   const normalisedTotalItems =
-    history.pagination?.totalItems ?? historyItems?.length ?? 0;
+    history.pagination.totalItems ?? historyItems.length;
   const normalisedPagination = {
     ...history.pagination,
     totalItems: normalisedTotalItems,
