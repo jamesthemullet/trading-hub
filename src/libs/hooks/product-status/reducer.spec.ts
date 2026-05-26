@@ -1,7 +1,12 @@
 import type { BetaMerchandisingProductDiagnosticsListData } from '@/libs/api/generated/open-api';
 
-import { initialState, reducer } from './reducer';
+import type { RecentSearch } from './recent-searches-storage';
+import { createInitialState, initialState, reducer } from './reducer';
 import { ProductError } from './use-product-details';
+
+beforeEach(() => {
+  localStorage.clear();
+});
 
 const mockOnlineData: BetaMerchandisingProductDiagnosticsListData = {
   products: [
@@ -42,7 +47,27 @@ describe('reducer', () => {
       productDisplay: null,
       isLoading: false,
       error: '',
+      recentSearches: [],
+      showRecentSearches: false,
     });
+  });
+
+  it('createInitialState should hydrate recentSearches from localStorage', () => {
+    const stored: RecentSearch[] = [
+      {
+        displayId: 'P60538523',
+        title: 'Green Wool Coat',
+        imageUrl: null,
+        mainStatusLabel: 'Product is operational',
+        mainStatusVariant: 'product-operational',
+        searchedAt: 1000,
+      },
+    ];
+    localStorage.setItem(
+      'product-status-recent-searches',
+      JSON.stringify(stored)
+    );
+    expect(createInitialState().recentSearches).toEqual(stored);
   });
 
   it('should handle SET_QUERY', () => {
@@ -262,6 +287,76 @@ describe('reducer', () => {
         }
       );
       expect(s.productDisplay?.displayId).toBe('P60538523');
+    });
+  });
+
+  describe('OPEN_RECENT_SEARCHES / CLOSE_RECENT_SEARCHES', () => {
+    it('should set showRecentSearches to true', () => {
+      const state = reducer(initialState, { type: 'OPEN_RECENT_SEARCHES' });
+      expect(state.showRecentSearches).toBe(true);
+    });
+
+    it('should set showRecentSearches back to false', () => {
+      const open = reducer(initialState, { type: 'OPEN_RECENT_SEARCHES' });
+      const closed = reducer(open, { type: 'CLOSE_RECENT_SEARCHES' });
+      expect(closed.showRecentSearches).toBe(false);
+    });
+  });
+
+  describe('ADD_RECENT_SEARCH', () => {
+    const makeSearch = (displayId: string): RecentSearch => ({
+      displayId,
+      title: `Product ${displayId}`,
+      imageUrl: null,
+      mainStatusLabel: 'Product is operational',
+      mainStatusVariant: 'product-operational',
+      searchedAt: 1000,
+    });
+
+    it('should prepend a new search to the front', () => {
+      const first = makeSearch('P111');
+      const second = makeSearch('P222');
+      const s1 = reducer(initialState, {
+        type: 'ADD_RECENT_SEARCH',
+        payload: first,
+      });
+      const s2 = reducer(s1, { type: 'ADD_RECENT_SEARCH', payload: second });
+      expect(s2.recentSearches[0]).toEqual(second);
+      expect(s2.recentSearches[1]).toEqual(first);
+    });
+
+    it('should move an existing entry to the front instead of duplicating', () => {
+      const search = makeSearch('P111');
+      const other = makeSearch('P222');
+      const s1 = reducer(initialState, {
+        type: 'ADD_RECENT_SEARCH',
+        payload: other,
+      });
+      const s2 = reducer(s1, { type: 'ADD_RECENT_SEARCH', payload: search });
+      const s3 = reducer(s2, { type: 'ADD_RECENT_SEARCH', payload: other });
+      expect(s3.recentSearches).toHaveLength(2);
+      expect(s3.recentSearches[0].displayId).toBe('P222');
+    });
+
+    it('should trim the list to MAX_RECENT_SEARCHES (20)', () => {
+      let state = initialState;
+      for (let i = 0; i < 21; i++) {
+        state = reducer(state, {
+          type: 'ADD_RECENT_SEARCH',
+          payload: makeSearch(`P${i}`),
+        });
+      }
+      expect(state.recentSearches).toHaveLength(20);
+      expect(state.recentSearches[0].displayId).toBe('P20');
+    });
+
+    it('should persist the updated list to localStorage', () => {
+      const search = makeSearch('P60538523');
+      reducer(initialState, { type: 'ADD_RECENT_SEARCH', payload: search });
+      const stored = JSON.parse(
+        localStorage.getItem('product-status-recent-searches')!
+      ) as RecentSearch[];
+      expect(stored[0]).toEqual(search);
     });
   });
 });

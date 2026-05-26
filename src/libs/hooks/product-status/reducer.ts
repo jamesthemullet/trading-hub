@@ -8,6 +8,12 @@ import type {
   ProductStatusVariant,
 } from '@/libs/components/status-badge/status-badge';
 
+import type { RecentSearch } from './recent-searches-storage';
+import {
+  getStoredSearches,
+  MAX_RECENT_SEARCHES,
+  saveSearches,
+} from './recent-searches-storage';
 import type {
   DetailItem,
   Product,
@@ -48,6 +54,8 @@ type State = {
   productDisplay: ProductDisplay | null;
   isLoading: boolean;
   error: string;
+  recentSearches: RecentSearch[];
+  showRecentSearches: boolean;
 };
 
 export type Action =
@@ -59,7 +67,12 @@ export type Action =
       payload: BetaMerchandisingProductDiagnosticsListData;
       submittedQuery: string;
     }
-  | { type: 'FETCH_ERROR'; payload: string };
+  | { type: 'FETCH_ERROR'; payload: string }
+  | { type: 'ADD_RECENT_SEARCH'; payload: RecentSearch }
+  | { type: 'OPEN_RECENT_SEARCHES' }
+  | { type: 'CLOSE_RECENT_SEARCHES' };
+
+export { type RecentSearch };
 
 export const initialState: State = {
   query: '',
@@ -67,7 +80,14 @@ export const initialState: State = {
   productDisplay: null,
   isLoading: false,
   error: '',
+  recentSearches: [],
+  showRecentSearches: false,
 };
+
+export const createInitialState = (): State => ({
+  ...initialState,
+  recentSearches: getStoredSearches(),
+});
 
 const getStatusLabel = (status: SectionStatus): string => {
   switch (status) {
@@ -172,5 +192,17 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'FETCH_ERROR':
       return { ...state, isLoading: false, error: action.payload };
+    case 'ADD_RECENT_SEARCH': {
+      const filtered = state.recentSearches.filter(
+        (s) => s.displayId !== action.payload.displayId
+      );
+      const next = [action.payload, ...filtered].slice(0, MAX_RECENT_SEARCHES);
+      saveSearches(next);
+      return { ...state, recentSearches: next };
+    }
+    case 'OPEN_RECENT_SEARCHES':
+      return { ...state, showRecentSearches: true };
+    case 'CLOSE_RECENT_SEARCHES':
+      return { ...state, showRecentSearches: false };
   }
 };

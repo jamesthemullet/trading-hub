@@ -1,4 +1,4 @@
-import { Typography } from '@/libs/components';
+import { Button, Typography } from '@/libs/components';
 import { SearchBox } from '@/libs/components/search/search';
 
 import styles from './product-status-header.module.css';
@@ -7,12 +7,14 @@ type ProductStatusHeaderProps = {
   query: string;
   onQueryChange: (value: string) => void;
   onSearch: React.ComponentProps<'form'>['onSubmit'];
+  onRecentSearchesClick: () => void;
 };
 
 const ProductStatusHeader = ({
   query,
   onQueryChange,
   onSearch,
+  onRecentSearchesClick,
 }: ProductStatusHeaderProps) => {
   return (
     <section className={styles.hero}>
@@ -20,6 +22,10 @@ const ProductStatusHeader = ({
         <Typography as="h1" variant="headlineMedium" isStrong>
           Product status search
         </Typography>
+
+        <Button theme="outlined" type="button" onClick={onRecentSearchesClick}>
+          Recent searches
+        </Button>
       </div>
 
       <Typography as="span" variant="bodyMedium">

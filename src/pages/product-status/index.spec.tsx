@@ -278,4 +278,80 @@ describe('ProductStatus page', () => {
 
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it('should open recent searches view when "Recent searches" button is clicked', async () => {
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />);
+
+    await user.click(screen.getByRole('button', { name: 'Recent searches' }));
+
+    expect(
+      screen.getByRole('heading', { name: 'Recent searches' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('From this session')).toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText('e.g. 60538523')
+    ).not.toBeInTheDocument();
+  });
+
+  it('should return to search view when "Back to Product status" is clicked', async () => {
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />);
+
+    await user.click(screen.getByRole('button', { name: 'Recent searches' }));
+    await user.click(
+      screen.getByRole('button', { name: 'Back to Product status' })
+    );
+
+    expect(screen.getByPlaceholderText('e.g. 60538523')).toBeInTheDocument();
+    expect(screen.queryByText('From this session')).not.toBeInTheDocument();
+  });
+
+  it('should show a completed search in recent searches after a successful fetch', async () => {
+    server.use(
+      http.get('/api/search/beta/merchandising/product/diagnostics', () =>
+        HttpResponse.json(mockOnlineResponse)
+      )
+    );
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />);
+
+    await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
+    await user.keyboard('{Enter}');
+    expect(await screen.findByText('Green Wool Coat')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Recent searches' }));
+
+    expect(screen.getByText('1 recent search')).toBeInTheDocument();
+    expect(screen.getByText('P60538523')).toBeInTheDocument();
+    expect(screen.getByText('Product is operational')).toBeInTheDocument();
+  });
+
+  it('should trigger a search when "View product" is clicked in recent searches', async () => {
+    const capturedUrls: string[] = [];
+    server.use(
+      http.get(
+        '/api/search/beta/merchandising/product/diagnostics',
+        ({ request }) => {
+          capturedUrls.push(request.url);
+          return HttpResponse.json(mockOnlineResponse);
+        }
+      )
+    );
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />);
+
+    await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
+    await user.keyboard('{Enter}');
+    expect(await screen.findByText('Green Wool Coat')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Recent searches' }));
+    await user.click(screen.getByRole('button', { name: 'View product' }));
+
+    expect(await screen.findByText('Green Wool Coat')).toBeInTheDocument();
+    expect(capturedUrls.length).toBeGreaterThanOrEqual(2);
+    expect(screen.queryByText('From this session')).not.toBeInTheDocument();
+  });
 });

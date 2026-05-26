@@ -14,6 +14,7 @@ const defaultProps = {
   query: '',
   onQueryChange: mockOnQueryChange,
   onSearch: mockOnSearch,
+  onRecentSearchesClick: jest.fn(),
 };
 
 describe('ProductStatusHeader', () => {

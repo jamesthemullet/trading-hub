@@ -1,0 +1,79 @@
+.hero {
+  background-color: var(--color-accent-secondary-on-secondary-container);
+  padding: var(--mns-spacing-2-5) var(--mns-spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-1-5);
+
+  & button[data-theme='outlined'] {
+    background: transparent;
+    color: var(--color-surface-surface-container);
+    border: 1px solid var(--color-surface-surface-container);
+    width: fit-content;
+
+    &:hover {
+      color: var(--color-accent-secondary-on-secondary-container);
+      border-color: var(--color-accent-secondary-on-secondary-container);
+    }
+  }
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-0-5);
+
+  & h1,
+  & span {
+    color: var(--color-surface-surface-container);
+  }
+}
+
+.list {
+  padding: var(--mns-spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-2);
+  max-width: 1084px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.count {
+  text-align: right;
+}
+
+.card {
+  border: 1px solid var(--color-surface-dark-surface-dark-container);
+  padding: var(--mns-spacing-2);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mns-spacing-2);
+}
+
+.cardDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mns-spacing-2);
+}
+
+.displayId {
+  color: var(--color-surface-on-surface-variant);
+}
+
+.viewButton {
+  width: fit-content;
+  margin-top: auto;
+}
+
+.productImage {
+  flex-shrink: 0;
+}
+
+.imagePlaceholder {
+  width: 213px;
+  height: 277px;
+  background-color: var(--color-state-disabled-disabled);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
