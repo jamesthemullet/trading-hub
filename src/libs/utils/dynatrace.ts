@@ -48,6 +48,22 @@ export const reportErrorToDynatrace = (
   }
 };
 
+export const reportApiLatency = (
+  endpoint: string,
+  method: string,
+  status: number,
+  durationMs: number
+): void => {
+  if (typeof window !== 'undefined' && window.dynatrace) {
+    window.dynatrace.sendBizEvent('Merchandising Hub API Request', {
+      'request.endpoint': endpoint,
+      'request.method': method,
+      'request.status': status,
+      'request.durationMs': durationMs,
+    });
+  }
+};
+
 export const setupGlobalErrorHandlers = (): (() => void) | void => {
   if (typeof window === 'undefined') return;
 

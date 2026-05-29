@@ -1,4 +1,8 @@
-import { reportErrorToDynatrace, setupGlobalErrorHandlers } from './dynatrace';
+import {
+  reportApiLatency,
+  reportErrorToDynatrace,
+  setupGlobalErrorHandlers,
+} from './dynatrace';
 
 describe('dynatrace', () => {
   const mockReportError = jest.fn();
@@ -143,6 +147,40 @@ describe('dynatrace', () => {
           'error.stack': undefined,
         })
       );
+    });
+  });
+
+  describe('reportApiLatency', () => {
+    it('should send a biz event with endpoint latency data', () => {
+      reportApiLatency(
+        '/api/search/beta/merchandising/category/ruleset',
+        'GET',
+        200,
+        123
+      );
+
+      expect(mockSendBizEvent).toHaveBeenCalledWith(
+        'Merchandising Hub API Request',
+        {
+          'request.endpoint': '/api/search/beta/merchandising/category/ruleset',
+          'request.method': 'GET',
+          'request.status': 200,
+          'request.durationMs': 123,
+        }
+      );
+    });
+
+    it('should not throw if dynatrace is not available', () => {
+      delete window.dynatrace;
+
+      expect(() =>
+        reportApiLatency(
+          '/api/search/beta/merchandising/category',
+          'GET',
+          200,
+          50
+        )
+      ).not.toThrow();
     });
   });
 
