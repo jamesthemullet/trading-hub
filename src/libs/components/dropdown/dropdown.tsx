@@ -459,6 +459,12 @@ export const CombinedDropdown = ({
     );
   }
 
+  const VARIANT_HEIGHTS: Partial<Record<DropdownVariant, string>> = {
+    [DropdownVariant.FacetOrder]: 'default',
+    [DropdownVariant.PageSize]: 'page-size',
+  };
+  const dataHeight = VARIANT_HEIGHTS[variant] ?? 'large';
+
   return (
     <div
       className={styles.dropdownWrapper}
@@ -473,13 +479,7 @@ export const CombinedDropdown = ({
         variant !== DropdownVariant.FacetOrder &&
         variant !== DropdownVariant.PageSize
       }
-      data-height={
-        variant === DropdownVariant.FacetOrder
-          ? 'default'
-          : variant === DropdownVariant.PageSize
-            ? 'page-size'
-            : 'large'
-      }
+      data-height={dataHeight}
     >
       <Button
         className={styles.dropdownButton}

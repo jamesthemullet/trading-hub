@@ -269,6 +269,7 @@ const eslint = [
       // ],
       // '@typescript-eslint/prefer-nullish-coalescing': 'error',
       // '@typescript-eslint/explicit-module-boundary-types': 'error',
+      'no-nested-ternary': 'warn',
       'no-lone-blocks': 'error',
       'security-rules/sanitize-dangerously-set-inner-html': 'error',
       'react/jsx-fragments': ['error', 'syntax'],
