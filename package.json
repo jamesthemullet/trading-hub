@@ -8,7 +8,7 @@
     "node": "20.20.2",
     "pnpm": ">=10.28.2"
   },
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@10.34.1",
   "scripts": {
     "dev": "pnpm run codegen && next dev --turbo",
     "dev:turbo-verbose": "pnpm run codegen && next dev --turbo --show-all",
@@ -38,12 +38,12 @@
     "@dnd-kit/core": "6.3.1",
     "@dnd-kit/modifiers": "9.0.0",
     "@dnd-kit/sortable": "10.0.0",
-    "@mantine/core": "9.2.1",
-    "@mantine/dates": "9.2.1",
-    "@mantine/hooks": "9.2.1",
+    "@mantine/core": "9.2.2",
+    "@mantine/dates": "9.2.2",
+    "@mantine/hooks": "9.2.2",
     "@storybook/addon-a11y": "10.4.1",
     "@vercel/otel": "2.1.2",
-    "date-fns": "4.3.0",
+    "date-fns": "4.4.0",
     "dayjs": "1.11.21",
     "deepmerge": "4.3.1",
     "identity-obj-proxy": "3.0.0",
@@ -59,7 +59,7 @@
     "yaml-loader": "0.9.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.15",
+    "@biomejs/biome": "2.4.16",
     "@biomejs/js-api": "4.0.0",
     "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "9.39.4",
@@ -123,7 +123,7 @@
     "stylelint": "17.12.0",
     "stylelint-config-standard": "40.0.0",
     "stylelint-order": "8.1.1",
-    "swagger-typescript-api": "13.10.0",
+    "swagger-typescript-api": "13.12.0",
     "ts-node": "10.9.2",
     "typescript": "6.0.3",
     "typescript-eslint": "8.60.0",
