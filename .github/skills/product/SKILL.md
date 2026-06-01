@@ -36,7 +36,7 @@ Use the current minute of the hour to pick **one** of these six lenses. To keep 
 1. **Merchandiser Efficiency** — reducing the number of steps or decisions required for common tasks (bulk edits, copying rulesets, keyboard navigation, smart defaults)
 2. **Confidence & Safety** — features that prevent costly mistakes before they publish (conflict detection, pre-publish diffs, undo paths, destructive action guardrails)
 3. **Visibility & Insight** — surfacing the status, activity, or impact of rules that is currently hidden (active rule count, last-changed-by, overlapping rules, scheduled rule preview)
-4. **Workflow Completeness** — dead ends or missing steps in existing flows (no post-save confirmation, no way to duplicate a ruleset, no bulk enable/disable, no empty-state guidance)
+4. **Workflow Completeness** — dead ends or missing steps in existing flows (no post-save confirmation, no bulk enable/disable, no empty-state guidance)
 5. **World-Class & Next-Level** — capabilities that would make competing tools (Fredhopper, Bloomreach, Attraqt) look dated: AI-assisted boost/bury suggestions based on sales velocity or search analytics, semantic facet grouping, one-click ruleset cloning across markets, real-time ranking preview against live traffic, A/B test scheduling for competing rulesets, or natural-language search term generation
 6. **Personalisation** — opportunities to make merchandising rules aware of customer context: segment-specific boost/bury overrides, previewing how results look for a given customer persona, exposing ML ranking signals so merchandisers can work with (not against) the algorithm, or surfacing which rules are currently overriding personalised rankings and by how much
 
@@ -129,6 +129,7 @@ Report the issue URL once created.
 - **Rulesets always have ranking rules:** A ruleset's `rules` object is always present and always contains `pinnedProducts`, `blockedProducts`, `boosts`, `buries`, `includes`, and `excludes` arrays — they may be empty, but they are never absent. There is no "genuinely blank / no rules created yet" state for an existing ruleset. Do not propose empty-state CTAs ("Add your first rule") premised on rules being null or missing — the concept is architecturally invalid.
 - **Testing:** every new component or hook must reach 100% statement/branch/function/line coverage; E2E tests use Playwright + WireMock mocks in `e2e/wiremock/`
 - **Component patterns:** wrap Mantine primitives in a custom component in `src/libs/components/` rather than using Mantine directly in feature/page code
+- **Ruleset duplication already exists:** Do not propose cloning, duplicating, or copying rulesets — this functionality is already built into the product. Any suggestion along these lines is not a gap.
 
 ## Rules
 

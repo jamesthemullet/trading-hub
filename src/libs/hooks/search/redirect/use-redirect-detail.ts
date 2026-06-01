@@ -3,7 +3,13 @@ import { useEffect, useMemo, useState } from 'react';
 import type { MerchandisingReturnedKeywordRedirect } from '@/libs/api';
 import { search } from '@/libs/api';
 
-export const useRedirectDetail = (id: string) => {
+export const useRedirectDetail = (
+  id: string
+): {
+  redirect: MerchandisingReturnedKeywordRedirect;
+  error: string;
+  isLoading: boolean;
+} => {
   const api = useMemo(() => search(), []);
 
   const [redirect, setRedirect] =

@@ -1,10 +1,18 @@
 import { useCallback, useState } from 'react';
 
-import type { MerchandisingRuleSet } from '@/libs/api';
+import type {
+  MerchandisingReturnedGlobalRuleSet,
+  MerchandisingRuleSet,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useGlobalRuleSetCreate = () => {
+export const useGlobalRuleSetCreate = (): {
+  createGlobalRuleSet: (
+    params: MerchandisingRuleSet
+  ) => Promise<MerchandisingReturnedGlobalRuleSet | undefined>;
+  error: string;
+} => {
   const [error, setError] = useState('');
 
   const createGlobalRuleSet = useCallback(

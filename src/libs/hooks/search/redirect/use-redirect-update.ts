@@ -1,10 +1,20 @@
 import { useCallback, useState } from 'react';
 
-import type { MerchandisingKeywordRedirect } from '@/libs/api';
+import type {
+  MerchandisingKeywordRedirect,
+  MerchandisingReturnedKeywordRedirect,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useRedirectUpdate = () => {
+export const useRedirectUpdate = (): {
+  isSaving: boolean;
+  updateRedirect: (params: {
+    redirectId: string;
+    redirect: MerchandisingKeywordRedirect;
+  }) => Promise<MerchandisingReturnedKeywordRedirect | undefined>;
+  error: string;
+} => {
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 

@@ -4,7 +4,13 @@ import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useGlobalRuleSetDetail = (id: string) => {
+export const useGlobalRuleSetDetail = (
+  id: string
+): {
+  globalRuleSet: MerchandisingReturnedGlobalRuleSet;
+  error: string;
+  isLoading: boolean;
+} => {
   const api = useMemo(() => search(), []);
   const [globalRuleSet, setGlobalRuleSet] =
     useState<MerchandisingReturnedGlobalRuleSet>({

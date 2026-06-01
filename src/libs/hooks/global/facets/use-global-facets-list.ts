@@ -6,7 +6,12 @@ import { handleError } from '@/libs/hooks/utils/error';
 
 export const useGlobalFacetsList = ({
   enabled = true,
-}: { enabled?: boolean } = {}) => {
+}: { enabled?: boolean } = {}): {
+  facets: MerchandisingFacetsList['facets'];
+  isLoading: boolean;
+  error: string;
+  onRefreshFacetList: () => void;
+} => {
   const [shouldRefetch, refetch] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [facetsList, setFacetsList] = useState<MerchandisingFacetsList>({

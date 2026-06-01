@@ -7,6 +7,7 @@ import type {
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
+// TODO: The API returns `id` on each history entry but the OpenAPI schema does not document it.
 type RedirectHistoryChange =
   MerchandisingReturnedKeywordRedirectHistory['changes'][number] & {
     id: string;
@@ -21,7 +22,11 @@ export const useRedirectHistory = (
   id: string,
   currentPage: number,
   currentPageSize: number
-) => {
+): {
+  history: RedirectHistory;
+  error: string;
+  isLoading: boolean;
+} => {
   const [history, setHistory] = useState<RedirectHistory>({
     changes: [],
     pagination: { totalItems: 0 },
