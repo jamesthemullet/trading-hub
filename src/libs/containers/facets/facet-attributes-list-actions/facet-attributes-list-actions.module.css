@@ -57,3 +57,39 @@
   flex-grow: 1;
   max-width: 520px;
 }
+
+.pinButton {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  opacity: 0.4;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.pinButtonActive {
+  opacity: 1;
+  border-color: var(--color-accent-primary-primary);
+  background-color: color-mix(
+    in srgb,
+    var(--color-accent-primary-primary) 10%,
+    transparent
+  );
+}
+
+.pinIcon {
+  transform: rotate(45deg);
+  filter: brightness(0);
+}

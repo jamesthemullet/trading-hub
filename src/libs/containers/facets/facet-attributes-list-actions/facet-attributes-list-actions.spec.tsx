@@ -76,4 +76,55 @@ describe('FacetAttributesListActions', () => {
       screen.getByText('Drag and drop to change ranking below')
     ).toBeInTheDocument();
   });
+
+  describe('pin button', () => {
+    it('does not render pin button by default', () => {
+      render(<FacetAttributesListActions {...defaultProps} />);
+      expect(
+        screen.queryByRole('button', { name: 'Pin top bar' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders pin button when showPinButton is true', () => {
+      render(<FacetAttributesListActions {...defaultProps} showPinButton />);
+      expect(
+        screen.getByRole('button', { name: 'Pin top bar' })
+      ).toBeInTheDocument();
+    });
+
+    it('shows unpinned state when isPinned is false', () => {
+      render(
+        <FacetAttributesListActions
+          {...defaultProps}
+          showPinButton
+          isPinned={false}
+        />
+      );
+      const btn = screen.getByRole('button', { name: 'Pin top bar' });
+      expect(btn).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('shows pinned state when isPinned is true', () => {
+      render(
+        <FacetAttributesListActions {...defaultProps} showPinButton isPinned />
+      );
+      expect(
+        screen.getByRole('button', { name: 'Unpin top bar' })
+      ).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('calls onTogglePin when pin button is clicked', async () => {
+      const user = userEvent.setup();
+      const onTogglePin = jest.fn();
+      render(
+        <FacetAttributesListActions
+          {...defaultProps}
+          showPinButton
+          onTogglePin={onTogglePin}
+        />
+      );
+      await user.click(screen.getByRole('button', { name: 'Pin top bar' }));
+      expect(onTogglePin).toHaveBeenCalledTimes(1);
+    });
+  });
 });

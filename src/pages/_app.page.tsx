@@ -42,6 +42,8 @@ const FeatureFlagWrapper = ({
   const [cookies] = useCookies([
     'flagAuthorization',
     'flagAuthorizationRoleOverride',
+    'flagStickyBar',
+    'flagStickyBarVariant',
   ]);
 
   return (
@@ -53,6 +55,11 @@ const FeatureFlagWrapper = ({
           searchOverride: 'No Override',
           globalOverride: 'No Override',
         },
+        hasStickyBar: cookies.flagStickyBar === true,
+        stickyBarVariant:
+          cookies.flagStickyBarVariant === 'variant-b'
+            ? 'variant-b'
+            : 'variant-a',
       }}
     >
       {children}

@@ -122,4 +122,27 @@ describe('App', () => {
 
     expect(screen.queryByText('SmokeTestTokenWarning')).not.toBeInTheDocument();
   });
+
+  it('sets stickyBarVariant to variant-b when cookie is variant-b', () => {
+    jest
+      .mocked(useCookies)
+      .mockReturnValue([
+        { flagStickyBarVariant: 'variant-b' },
+        jest.fn(),
+        jest.fn(),
+        jest.fn(),
+      ]);
+
+    render(
+      <CookiesProvider>
+        <App
+          Component={() => <div>hello</div>}
+          pageProps={{ session: null }}
+          router={createMockNextRouter()}
+        />
+      </CookiesProvider>
+    );
+
+    expect(screen.getByText('hello')).toBeInTheDocument();
+  });
 });

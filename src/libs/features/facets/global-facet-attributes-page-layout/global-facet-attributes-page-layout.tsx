@@ -13,6 +13,7 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
+import { useStickyBarFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
@@ -25,6 +26,8 @@ import { useCheckedRowsSelector } from '@/libs/stores/global-attributes-page/use
 
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { GlobalFacetAttributesList } from '../global-facet-attributes-list/global-facet-attributes-list';
+import { GlobalFacetAttributesCompactBar } from './global-facet-attributes-compact-bar';
+import styles from './global-facet-attributes-page-layout.module.css';
 
 type PageLayout = {
   facet: MerchandisingReturnedGlobalFacet;
@@ -55,6 +58,12 @@ export const GlobalFacetAttributesPageLayout = ({
 
   const titleId = useId();
   const descriptionId = useId();
+
+  const { stickyBarEnabled, stickyBarVariant } = useStickyBarFlag();
+  const isVariantA = stickyBarEnabled && stickyBarVariant === 'variant-a';
+  const isVariantB = stickyBarEnabled && stickyBarVariant === 'variant-b';
+  const showPinButton = isVariantA || isVariantB;
+  const [isPinned, setIsPinned] = useState(false);
 
   // reducer
   const [globalAttributesLocalState, dispatch] = useReducer(
@@ -208,25 +217,61 @@ export const GlobalFacetAttributesPageLayout = ({
 
   return (
     <>
-      <FacetAttributesPageLayoutHeader
-        displayName={displayName}
-        facetType={FacetType.Global}
-        onClose={() => {
-          router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
-        }}
-        onSave={handleSave}
-        error={updateGlobalFacetError}
-        isWriteEnabled={isWriteEnabled}
-        countryCode={countryCode}
-      />
+      {/* Variant B: compact bar fades in sticky at top when pinned */}
+      {isVariantB && (
+        <div
+          className={`${styles.compactBar}${isPinned ? ` ${styles.compactBarVisible}` : ''}`}
+          aria-hidden={!isPinned}
+        >
+          <GlobalFacetAttributesCompactBar
+            onClose={() => router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId))}
+            onSave={handleSave}
+            onMergeClick={handleMerge}
+            onSearchChange={onSearchChange}
+            isWriteEnabled={isWriteEnabled}
+            isMergeDisabled={checkedRows.length < 2}
+            checkedRows={checkedRows.length}
+            isPinned={isPinned}
+            onTogglePin={() => setIsPinned((prev) => !prev)}
+          />
+        </div>
+      )}
 
-      <FacetAttributesListActions
-        onSearchChange={onSearchChange}
-        isMergeDisabled={checkedRows.length < 2}
-        onMergeClick={handleMerge}
-        isWriteEnabled={isWriteEnabled}
-        checkedRows={checkedRows.length}
-      />
+      {/* Full header + actions: sticky for variant A; collapses for variant B when pinned */}
+      <div
+        className={
+          [
+            isVariantA && isPinned ? styles.stickyContainer : '',
+            isVariantB ? styles.fullContentWrapper : '',
+            isVariantB && isPinned ? styles.fullContentCollapsed : '',
+          ]
+            .filter(Boolean)
+            .join(' ') || undefined
+        }
+      >
+        <FacetAttributesPageLayoutHeader
+          displayName={displayName}
+          facetType={FacetType.Global}
+          onClose={() => {
+            router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
+          }}
+          onSave={handleSave}
+          error={updateGlobalFacetError}
+          isWriteEnabled={isWriteEnabled}
+          countryCode={countryCode}
+        />
+
+        <FacetAttributesListActions
+          onSearchChange={onSearchChange}
+          isMergeDisabled={checkedRows.length < 2}
+          onMergeClick={handleMerge}
+          isWriteEnabled={isWriteEnabled}
+          checkedRows={checkedRows.length}
+          showPinButton={showPinButton && !(isVariantB && isPinned)}
+          isPinned={isPinned}
+          onTogglePin={() => setIsPinned((prev) => !prev)}
+        />
+      </div>
 
       <GlobalFacetAttributesList
         attributeValues={attributeValues}

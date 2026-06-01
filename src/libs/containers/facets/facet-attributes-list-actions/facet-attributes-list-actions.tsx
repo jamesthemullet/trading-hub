@@ -3,6 +3,8 @@ import type { ChangeEvent } from 'react';
 import { Button, Search } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
 
+import Image from 'next/image';
+
 import styles from './facet-attributes-list-actions.module.css';
 
 export const FacetAttributesListActions = ({
@@ -12,6 +14,9 @@ export const FacetAttributesListActions = ({
   isMergeHidden = false,
   isMergeDisabled = true,
   checkedRows = 0,
+  showPinButton = false,
+  isPinned = false,
+  onTogglePin,
 }: {
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onMergeClick?: () => void;
@@ -19,6 +24,9 @@ export const FacetAttributesListActions = ({
   isMergeHidden?: boolean;
   isMergeDisabled?: boolean;
   checkedRows?: number;
+  showPinButton?: boolean;
+  isPinned?: boolean;
+  onTogglePin?: () => void;
 }) => {
   const isDisabled = isMergeDisabled || !isWriteEnabled;
   return (
@@ -67,6 +75,24 @@ export const FacetAttributesListActions = ({
       <div className={styles.searchWrapper}>
         <Search onChange={onSearchChange} placeholder="Search" fullWidth />
       </div>
+
+      {showPinButton && (
+        <Button
+          appearance="icon"
+          aria-label={isPinned ? 'Unpin top bar' : 'Pin top bar'}
+          aria-pressed={isPinned}
+          className={`${styles.pinButton}${isPinned ? ` ${styles.pinButtonActive}` : ''}`}
+          onClick={onTogglePin}
+        >
+          <Image
+            src="/trading-hub/asset/icon-pin.svg"
+            width={14}
+            height={19}
+            alt=""
+            className={styles.pinIcon}
+          />
+        </Button>
+      )}
     </div>
   );
 };

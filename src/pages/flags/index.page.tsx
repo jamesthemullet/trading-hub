@@ -11,13 +11,18 @@ import styles from './index.module.css';
 
 const FeatureFlags = () => {
   const [cookies, setCookie] = useCookies(
-    ['flagAuthorization', 'flagAuthorizationRoleOverride'],
+    [
+      'flagAuthorization',
+      'flagAuthorizationRoleOverride',
+      'flagStickyBar',
+      'flagStickyBarVariant',
+    ],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization } = cookies;
+  const { flagAuthorization, flagStickyBar } = cookies;
 
   return (
     <div className={styles.wrapper}>
@@ -89,6 +94,33 @@ const FeatureFlags = () => {
                   ...cookies.flagAuthorizationRoleOverride,
                   globalOverride: value,
                 })
+              );
+            }}
+          />
+        </Stack>
+      )}
+      <div className={styles.flag}>
+        <Typography>Sticky Bar:&nbsp;</Typography>
+        <Toggle
+          checked={flagStickyBar}
+          onChange={() => {
+            setCookie('flagStickyBar', JSON.stringify(!flagStickyBar));
+          }}
+        />
+      </div>
+      {cookies.flagStickyBar && (
+        <Stack w={400}>
+          <Select
+            label="Sticky bar variant"
+            data={[
+              { value: 'variant-a', label: 'Variant A' },
+              { value: 'variant-b', label: 'Variant B' },
+            ]}
+            value={cookies.flagStickyBarVariant ?? 'variant-a'}
+            onChange={(value) => {
+              setCookie(
+                'flagStickyBarVariant',
+                JSON.stringify(value ?? 'variant-a')
               );
             }}
           />

@@ -53,7 +53,6 @@ export const HistoryPage = ({
   isLoading,
   error,
 }: HistoryPageProps) => {
-  console.log(10, history);
   const { hasReadAccess, requiredReadRole } = useAccess(accessType);
   const router = useRouter();
   const { facets: globalFacets } = useGlobalFacetsList({

@@ -1,0 +1,43 @@
+.stickyContainer {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-surface-bright-surface-bright);
+}
+
+.compactBar {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.25s ease;
+}
+
+.compactBarVisible {
+  max-height: 80px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.fullContentWrapper {
+  overflow: hidden;
+  max-height: 300px;
+  opacity: 1;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.25s ease;
+}
+
+.fullContentCollapsed {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
