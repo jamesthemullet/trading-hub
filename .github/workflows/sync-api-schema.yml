@@ -62,7 +62,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ github.workspace }}
           sign-commits: true
-          branch: chore/sync-api-schema
+          branch: chore/sync-api-schema-${{ github.run_id }}
           commit-message: 'chore: sync API schema from search-service'
           title: 'chore: sync API schema from search-service'
           body: |

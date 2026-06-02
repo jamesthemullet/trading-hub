@@ -17,7 +17,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API
+        - Search Merchandising API Beta
       summary: Get categories available for merchandising
       description: >-
         Returns the categories available for merchandising, can be queried by
@@ -78,7 +78,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API
+        - Search Merchandising API Beta
       summary: Get merchandising attributes
       description: Returns the merchandising attributes
       parameters:
@@ -143,10 +143,11 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/category/ruleset:
     get:
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Category
+        - Search Merchandising API Beta - Ruleset - Category
       summary: Retrieve the Category Rule Sets
       description: >-
         Returns all category rule sets ordered by the most recently changed. Can be queried by
@@ -208,7 +209,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Category
+        - Search Merchandising API Beta - Ruleset - Category
       summary: Create a Category Rule Set
       requestBody:
         content:
@@ -253,7 +254,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Category
+        - Search Merchandising API Beta - Ruleset - Category
       summary: Update Category Rule Set
       description: Persists merchandising rules and takes effect for customers
       requestBody:
@@ -305,7 +306,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Category
+        - Search Merchandising API Beta - Ruleset - Category
       summary: Retrieve Category Rule Set
       description: Returns a rule set and its merchandising rules.
       parameters:
@@ -358,7 +359,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Category
+        - Search Merchandising API Beta - Ruleset - Category
       summary: Delete Category Rule Set
       description: Deletes a rule set and its merchandising rules.
       parameters:
@@ -390,7 +391,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Category
+        - Search Merchandising API Beta - Ruleset - Category
       summary: Retrieve Category Ruleset History
       description: Returns changes to a rule set from each save
       parameters:
@@ -457,7 +458,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API
+        - Search Merchandising API Beta
       summary: Preview Search Response
       description: Returns a search response with specified rules applied, can be either keyword, or category - not both.
       parameters:
@@ -524,10 +525,11 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/ruleset:
     get:
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Keyword
+        - Search Merchandising API Beta - Ruleset - Keyword
       summary: Retrieve the keyword Rule Sets
       description: >-
         All rule sets ordered by most recently changed, can be queried by
@@ -589,7 +591,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Keyword
+        - Search Merchandising API Beta - Ruleset - Keyword
       summary: Create a Keyword Rule Set
       requestBody:
         content:
@@ -634,7 +636,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Keyword
+        - Search Merchandising API Beta - Ruleset - Keyword
       summary: Update Keyword Rule Set
       description: Persists merchandising rules and takes effect for customers
       requestBody:
@@ -686,7 +688,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Keyword
+        - Search Merchandising API Beta - Ruleset - Keyword
       summary: Retrieve Keyword Rule Set
       description: Returns a rule set and its merchandising rules.
       parameters:
@@ -739,7 +741,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Keyword
+        - Search Merchandising API Beta - Ruleset - Keyword
       summary: Delete Keyword Rule Set
       description: Deletes a rule set and its merchandising rules.
       parameters:
@@ -771,7 +773,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Keyword
+        - Search Merchandising API Beta - Ruleset - Keyword
       summary: Retrieve Keyword Ruleset History
       description: Returns changes to a rule set from each save
       parameters:
@@ -846,7 +848,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Global
+        - Search Merchandising API Beta - Ruleset - Global
       summary: Create a Global Rule Set
       requestBody:
         content:
@@ -888,10 +890,11 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/global/ruleset:
     get:
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Global
+        - Search Merchandising API Beta - Ruleset - Global
       summary: Retrieve the global Rule Sets
       description: >-
         All rule sets ordered by most recently changed, can be queried by recent editor
@@ -952,7 +955,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Global
+        - Search Merchandising API Beta - Ruleset - Global
       summary: Create a Global Rule Set
       requestBody:
         content:
@@ -997,7 +1000,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Global
+        - Search Merchandising API Beta - Ruleset - Global
       summary: Update Global Rule Set
       description: Persists merchandising rules and takes effect for customers
       requestBody:
@@ -1049,7 +1052,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Global
+        - Search Merchandising API Beta - Ruleset - Global
       summary: Retrieve Global Rule Set
       description: Returns a rule set and its merchandising rules.
       parameters:
@@ -1102,7 +1105,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Global
+        - Search Merchandising API Beta - Ruleset - Global
       summary: Delete Global Rule Set
       description: Deletes a rule set and its merchandising rules.
       parameters:
@@ -1134,7 +1137,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Ruleset - Global
+        - Search Merchandising API Beta - Ruleset - Global
       summary: Retrieve Global Ruleset History
       description: Returns changes to a rule set from each save
       parameters:
@@ -1201,7 +1204,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Facets
+        - Search Merchandising API Beta - Facets
       summary: Get all Global facets
       description: >-
         Returns the Global facets, if a categoryId is passed includes facets related to that category,
@@ -1260,7 +1263,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Facets
+        - Search Merchandising API Beta - Facets
       summary: Create a Facet at the global level
       parameters:
         - $ref: '#/components/parameters/catalogueParam'
@@ -1307,7 +1310,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Facets
+        - Search Merchandising API Beta - Facets
       summary: Get Global facet config
       parameters:
         - in: path
@@ -1357,7 +1360,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     put:
       tags:
-        - Search Merchandising API - Facets
+        - Search Merchandising API Beta - Facets
       summary: Update a Facet at the global level
       parameters:
         - in: path
@@ -1408,7 +1411,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Facets
+        - Search Merchandising API Beta - Facets
       summary: Delete a Global Facet
       description: Deletes a global facet.
       parameters:
@@ -1440,7 +1443,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Facets
+        - Search Merchandising API Beta - Facets
       summary: Retrieve Facet History
       description: Returns changes to a facet from each save
       parameters:
@@ -1507,7 +1510,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Facets
+        - Search Merchandising API Beta - Facets
       summary: Facet values response
       description: Returns the available attributes for a specific facet
       parameters:
@@ -1594,7 +1597,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API
+        - Search Merchandising API Beta
       summary: Search products for category
       description: >-
         Returns the products for an (optional) category, can be queried by name, product ids or category
@@ -1688,7 +1691,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API
+        - Search Merchandising API Beta
       summary: Diagnose whether a product is online
       description: >
         Returns whether a product is online for a given catalogue and country.
@@ -1736,7 +1739,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Keyword Redirect
+        - Search Merchandising API Beta - Keyword Redirect
       summary: Retrieve all the redirects
       description: >-
         All redirects ordered by most recently changed, can be queried by recent editor or redirect term/phrase
@@ -1796,7 +1799,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Keyword Redirect
+        - Search Merchandising API Beta - Keyword Redirect
       summary: Create a redirect
       requestBody:
         content:
@@ -1841,7 +1844,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Keyword Redirect
+        - Search Merchandising API Beta - Keyword Redirect
       summary: Retrieve a redirect
       description: Returns a redirect
       parameters:
@@ -1894,7 +1897,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Keyword Redirect
+        - Search Merchandising API Beta - Keyword Redirect
       summary: Update a redirect
       description: Persists a redirect and takes effect for customers
       requestBody:
@@ -1946,7 +1949,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Keyword Redirect
+        - Search Merchandising API Beta - Keyword Redirect
       summary: Delete a redirect
       description: Deletes a redirect.
       parameters:
@@ -1990,7 +1993,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Search Merchandising API - Keyword Redirect
+        - Search Merchandising API Beta - Keyword Redirect
       summary: Retrieve a redirect history
       description: Returns changes to a redirect from each save
       parameters:
@@ -2052,6 +2055,215 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
+  /search/merchandising/v1/{catalogue}/category/ruleset:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Retrieve the Category Rule Sets without relationships
+      description: >-
+        Returns all category rule sets without relationships ordered by the most recently changed. Can be queried by
+        name, category id or most recent editor. Searches are case-insensitve and partial matches are sufficient.
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+          type: string
+          enum: ['CLOTHING_AND_HOME']
+          required: true
+          description: The catalogue the ruleset applies to
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: either category name, category id or most recent editor (or any partial match)
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+        - $ref: '#/components/parameters/countryCodeParam'
+        - $ref: '#/components/parameters/havingRulesParam'
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets without relationships
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSetsLite'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/keyword/ruleset:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Keyword
+      summary: Retrieve the keyword Rule Sets without relationships
+      description: >-
+        All rule sets without relationships ordered by most recently changed, can be queried by
+        search term or most recent editor
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+          type: string
+          enum: ['CLOTHING_AND_HOME']
+          required: true
+          description: The catalogue the ruleset applies to
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: either search term or most recent editor
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display products after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+        - $ref: '#/components/parameters/countryCodeParam'
+        - $ref: '#/components/parameters/havingRulesParam'
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets without relationships
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSetsLite'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/global/ruleset:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Retrieve the global Rule Sets without relationships
+      description: >-
+        All rule sets without relationships ordered by most recently changed, can be queried by recent editor
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+          type: string
+          enum: ['CLOTHING_AND_HOME']
+          required: true
+          description: The catalogue the ruleset applies to
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: search by most recent editor
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: true
+          description: Display Rule Sets after this position
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: true
+        - $ref: '#/components/parameters/countryCodeParam'
+        - $ref: '#/components/parameters/havingRulesParam'
+      responses:
+        '200':
+          description: A JSON array with representations of rule sets without relationships
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSetsLite'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
 components:
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
@@ -2138,6 +2350,7 @@ components:
         - values
         - pagination
     MerchandisingReturnedGlobalRuleSets:
+      deprecated: true
       type: object
       properties:
         ruleSets:
@@ -2149,13 +2362,38 @@ components:
       required:
         - ruleSets
         - pagination
+    MerchandisingReturnedGlobalRuleSetsLite:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSetLite'
+        pagination:
+          $ref: '#/components/schemas/MerchandisingPagination'
+      required:
+        - ruleSets
+        - pagination
     MerchandisingReturnedCategoryRuleSets:
+      deprecated: true
       type: object
       properties:
         ruleSets:
           type: array
           items:
             $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
+        pagination:
+          $ref: '#/components/schemas/MerchandisingPagination'
+      required:
+        - ruleSets
+        - pagination
+    MerchandisingReturnedCategoryRuleSetsLite:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSetLite'
         pagination:
           $ref: '#/components/schemas/MerchandisingPagination'
       required:
@@ -2228,6 +2466,7 @@ components:
         - $ref: '#/components/schemas/MerchandisingRuleSet'
         - $ref: '#/components/schemas/MerchandisingCategorySpecification'
     MerchandisingReturnedKeywordRuleSets:
+      deprecated: true
       type: object
       properties:
         ruleSets:
@@ -2239,9 +2478,32 @@ components:
       required:
         - ruleSets
         - pagination
+    MerchandisingReturnedKeywordRuleSetsLite:
+      type: object
+      properties:
+        ruleSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSetLite'
+        pagination:
+          $ref: '#/components/schemas/MerchandisingPagination'
+      required:
+        - ruleSets
+        - pagination
     MerchandisingKeywordRuleSet:
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSet'
+        - type: object
+          properties:
+            searchTerms:
+              type: array
+              items:
+                type: string
+          required:
+            - searchTerms
+    MerchandisingKeywordRuleSetLite:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingRuleSetLite'
         - type: object
           properties:
             searchTerms:
@@ -2276,6 +2538,23 @@ components:
           $ref: '#/components/schemas/MerchandisingExcludedFacets'
       required:
         - rules
+        - isEnabled
+    MerchandisingRuleSetLite:
+      type: object
+      properties:
+        countryCode:
+          $ref: '#/components/schemas/MerchandisingCountryCode'
+        isEnabled:
+          type: boolean
+        startDate:
+          type: string
+          pattern: '\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}\.\d{3}[Z]'
+          example: '2024-10-01T12:14:30.987Z'
+        endDate:
+          type: string
+          pattern: '\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}\.\d{3}[Z]'
+          example: '2024-10-20T23:59:59.999Z'
+      required:
         - isEnabled
     MerchandisingIdentifier:
       type: object
@@ -2322,17 +2601,50 @@ components:
                   - id
           required:
             - categoriesInfo
+    MerchandisingCategoryRulesetLiteWithInfo:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingRuleSetLite'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
+        - type: object
+          properties:
+            categoriesInfo:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  plpUrl:
+                    type: string
+                required:
+                  - id
+          required:
+            - categoriesInfo
     MerchandisingReturnedCategoryRuleSet:
       allOf:
         - $ref: '#/components/schemas/MerchandisingCategoryRulesetWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
+    MerchandisingReturnedCategoryRuleSetLite:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingCategoryRulesetLiteWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingKeywordRuleSetWithInfo:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRuleSet'
         - $ref: '#/components/schemas/MerchandisingIdentifier'
+    MerchandisingKeywordRuleSetLiteWithInfo:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingKeywordRuleSetLite'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
     MerchandisingReturnedKeywordRuleSet:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRuleSetWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
+    MerchandisingReturnedKeywordRuleSetLite:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingKeywordRuleSetLiteWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingReturnedRuleSet:
       deprecated: true
@@ -2342,9 +2654,17 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSet'
         - $ref: '#/components/schemas/MerchandisingIdentifier'
+    MerchandisingGlobalRuleSetLiteWithInfo:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingRuleSetLite'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
     MerchandisingReturnedGlobalRuleSet:
       allOf:
         - $ref: '#/components/schemas/MerchandisingGlobalRuleSetWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
+    MerchandisingReturnedGlobalRuleSetLite:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingGlobalRuleSetLiteWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingReturnedCategoryRuleSetHistory:
       type: object
