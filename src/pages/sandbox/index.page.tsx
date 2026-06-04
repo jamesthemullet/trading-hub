@@ -261,7 +261,7 @@ const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
     <>
       <h1>Sandbox examples</h1>
       <div className={styles.example}>
-        <h3>Running on Node version {nodeVersion}</h3>
+        <h2>Running on Node version {nodeVersion}</h2>
       </div>
       <div className={styles.example}>
         <h2>Arrow Button</h2>
