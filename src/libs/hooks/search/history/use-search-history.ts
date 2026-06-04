@@ -7,13 +7,8 @@ import type {
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-type SearchHistoryChange =
-  MerchandisingReturnedKeywordRuleSetHistory['changes'][number] & {
-    id: string;
-  };
-
 type SearchHistory = {
-  changes: SearchHistoryChange[];
+  changes: MerchandisingReturnedKeywordRuleSetHistory['changes'][number][];
   pagination: MerchandisingPagination;
 };
 
@@ -44,7 +39,7 @@ export const useSearchHistory = (
             rows: currentPageSize,
           });
 
-        setHistory(response.data as SearchHistory);
+        setHistory(response.data);
       } catch (error) {
         setError(handleError(error));
         setIsLoading(false);

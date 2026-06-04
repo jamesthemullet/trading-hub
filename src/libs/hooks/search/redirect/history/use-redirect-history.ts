@@ -7,14 +7,8 @@ import type {
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-// TODO: The API returns `id` on each history entry but the OpenAPI schema does not document it.
-type RedirectHistoryChange =
-  MerchandisingReturnedKeywordRedirectHistory['changes'][number] & {
-    id: string;
-  };
-
 type RedirectHistory = {
-  changes: RedirectHistoryChange[];
+  changes: MerchandisingReturnedKeywordRedirectHistory['changes'][number][];
   pagination: MerchandisingPagination;
 };
 
@@ -49,7 +43,7 @@ export const useRedirectHistory = (
             rows: currentPageSize,
           });
 
-        setHistory(response.data as RedirectHistory);
+        setHistory(response.data);
       } catch (error) {
         setError(handleError(error));
         setIsLoading(false);

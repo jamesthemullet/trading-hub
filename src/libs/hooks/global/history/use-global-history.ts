@@ -7,13 +7,8 @@ import type {
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-// TODO: The API returns `id` on each history entry but the OpenAPI schema does not document it.
 type GlobalHistory = {
-  changes: Array<
-    MerchandisingReturnedGlobalRuleSetHistory['changes'][number] & {
-      id: string;
-    }
-  >;
+  changes: MerchandisingReturnedGlobalRuleSetHistory['changes'][number][];
   pagination: MerchandisingPagination;
 };
 
@@ -48,7 +43,7 @@ export const useGlobalHistory = (
             rows: currentPageSize,
           });
 
-        setHistory(response.data as GlobalHistory);
+        setHistory(response.data);
       } catch (error) {
         setError(handleError(error));
         setIsLoading(false);

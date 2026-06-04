@@ -2674,9 +2674,12 @@ components:
           items:
             type: object
             properties:
+              id:
+                type: string
               change:
                 $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
             required:
+              - id
               - change
         pagination:
           $ref: '#/components/schemas/MerchandisingPagination'
@@ -2691,9 +2694,12 @@ components:
           items:
             type: object
             properties:
+              id:
+                type: string
               change:
                 $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
             required:
+              - id
               - change
         pagination:
           $ref: '#/components/schemas/MerchandisingPagination'
@@ -2708,9 +2714,12 @@ components:
           items:
             type: object
             properties:
+              id:
+                type: string
               change:
                 $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
             required:
+              - id
               - change
         pagination:
           $ref: '#/components/schemas/MerchandisingPagination'
@@ -2725,9 +2734,12 @@ components:
           items:
             type: object
             properties:
+              id:
+                type: string
               change:
                 $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
             required:
+              - id
               - change
         pagination:
           $ref: '#/components/schemas/MerchandisingPagination'
@@ -2742,9 +2754,12 @@ components:
           items:
             type: object
             properties:
+              id:
+                type: string
               change:
                 $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
             required:
+              - id
               - change
         pagination:
           $ref: '#/components/schemas/MerchandisingPagination'

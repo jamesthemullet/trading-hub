@@ -7,13 +7,8 @@ import type {
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-type CategoryHistoryChange =
-  MerchandisingReturnedCategoryRuleSetHistory['changes'][number] & {
-    id: string;
-  };
-
 type CategoryHistory = {
-  changes: CategoryHistoryChange[];
+  changes: MerchandisingReturnedCategoryRuleSetHistory['changes'][number][];
   pagination: MerchandisingPagination;
 };
 
@@ -44,7 +39,7 @@ export const useCategoryHistory = (
             rows: currentPageSize,
           });
 
-        setHistory(response.data as CategoryHistory);
+        setHistory(response.data);
       } catch (error) {
         setError(handleError(error));
         setIsLoading(false);
