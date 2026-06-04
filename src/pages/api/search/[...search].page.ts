@@ -9,20 +9,13 @@ export type MerchandisingEnvironment = {
 
 const isErrorSchemaCompatible = (
   err: unknown
-): err is MerchandisingErrorResponse => {
-  if (
-    err &&
-    typeof err === 'object' &&
-    err &&
-    'message' in err &&
-    'status' in err &&
-    typeof err.message === 'string' &&
-    typeof err.status === 'string'
-  ) {
-    return true;
-  }
-  return false;
-};
+): err is MerchandisingErrorResponse =>
+  err !== null &&
+  typeof err === 'object' &&
+  'message' in err &&
+  'status' in err &&
+  typeof err.message === 'string' &&
+  typeof err.status === 'string';
 
 const proxy = async (
   req: NextApiRequest,
@@ -59,10 +52,17 @@ const proxy = async (
   );
 
   // Apigee requires Content-Type + body even for DELETE - send empty JSON
+  let requestBody: string | undefined;
+  if (isDelete) {
+    requestBody = '{}';
+  } else if (hasBody) {
+    requestBody = JSON.stringify(req.body);
+  }
+
   const response = await fetch(url, {
     method: req.method,
     headers,
-    body: isDelete ? '{}' : hasBody ? JSON.stringify(req.body) : undefined,
+    body: requestBody,
     cache: 'no-store',
   });
 
