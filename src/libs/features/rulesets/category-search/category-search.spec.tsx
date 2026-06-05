@@ -566,7 +566,7 @@ describe('CategorySearch', () => {
 
       expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
       const dropdownButton = screen.getByRole('button', {
-        name: 'select category',
+        name: /select category/i,
       });
       expect(within(dropdownButton).getByText('SubCategory_507')).toBeVisible();
 
@@ -601,7 +601,7 @@ describe('CategorySearch', () => {
       );
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'select category',
+        name: /select category/i,
       });
 
       await user.click(dropdownButton);
@@ -636,7 +636,7 @@ describe('CategorySearch', () => {
       );
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'select category',
+        name: /select category/i,
       });
 
       await user.click(dropdownButton);
@@ -674,7 +674,7 @@ describe('CategorySearch', () => {
       );
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'select category',
+        name: /select category/i,
       });
 
       await user.click(dropdownButton);

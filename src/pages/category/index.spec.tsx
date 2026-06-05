@@ -598,7 +598,7 @@ describe('Categories', () => {
 
     expect(await screen.findByAltText('IE rule')).toBeVisible();
     expect(
-      screen.getByRole('button', { name: 'Select country' })
+      screen.getByRole('button', { name: /^Filter by country/i })
     ).toBeVisible();
   });
 
@@ -619,7 +619,7 @@ describe('Categories', () => {
     renderWithProviders(<Categories />);
 
     const dropdown = screen.getByRole('button', {
-      name: 'Select country',
+      name: /^Filter by country/i,
     });
 
     await userEvent.click(dropdown);

@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -124,7 +124,6 @@ export const Preview = ({
   previewTitle,
   searchTerm,
 }: Props) => {
-  const modalTitleId = useId();
   const [withRules, setWithRules] = useState(true);
   const [rules, setRules] = useState(merchandisingRules);
   const [showAllFacets, setShowAllFacets] = useState(false);
@@ -161,12 +160,12 @@ export const Preview = ({
   return (
     <Modal.Root opened onClose={onClose} centered padding={0} size="1280px">
       <Modal.Overlay blur={3} />
-      <Modal.Content aria-labelledby={modalTitleId}>
+      <Modal.Content>
         <Modal.Body>
           <div className={styles.modalWrapper}>
             <section className={styles.modalHeader}>
               <div className={styles.titleAndButton}>
-                <Modal.Title id={modalTitleId}>
+                <Modal.Title>
                   <Typography variant="titleMedium">Preview</Typography>
                 </Modal.Title>
                 <Button

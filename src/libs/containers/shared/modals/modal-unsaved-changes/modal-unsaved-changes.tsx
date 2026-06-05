@@ -1,4 +1,3 @@
-import { useId } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button } from '@/libs/components';
@@ -17,15 +16,12 @@ export const ModalUnsavedChanges = ({
   onContinue,
   opened = true,
 }: Props) => {
-  const titleId = useId();
-  const descriptionId = useId();
-
   return (
     <Modal.Root opened={opened} onClose={onContinue} centered padding={10}>
       <Modal.Overlay blur={3} />
-      <Modal.Content aria-labelledby={titleId} aria-describedby={descriptionId}>
+      <Modal.Content>
         <Modal.Body>
-          <Modal.Title component="div" id={titleId}>
+          <Modal.Title component="div">
             <Typography
               as="h2"
               variant="bodySmall"
@@ -35,7 +31,7 @@ export const ModalUnsavedChanges = ({
               Close without saving edits
             </Typography>
           </Modal.Title>
-          <Typography id={descriptionId} variant="bodySmall">
+          <Typography variant="bodySmall">
             Are you sure you want to navigate away from this page without saving
             your edits?
           </Typography>

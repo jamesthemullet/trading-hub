@@ -246,72 +246,86 @@ export const CombinedDropdown = ({
     closeDropdown();
   };
 
-  const dropdownHeading = useMemo(() => {
+  const { dropdownHeading, headingText } = useMemo(() => {
     switch (variant) {
       case DropdownVariant.Generic:
-        return (
-          <>
-            {icon && (
-              <Image
-                className={styles.headingIcon}
-                src={`/trading-hub/asset/${icon}.svg`}
-                alt=""
-                width={20}
-                height={20}
-              />
-            )}
-            <Typography variant="bodySmall">{label}</Typography>
-          </>
-        );
+        return {
+          headingText: label,
+          dropdownHeading: (
+            <>
+              {icon && (
+                <Image
+                  className={styles.headingIcon}
+                  src={`/trading-hub/asset/${icon}.svg`}
+                  alt=""
+                  width={20}
+                  height={20}
+                />
+              )}
+              <Typography variant="bodySmall">{label}</Typography>
+            </>
+          ),
+        };
       case DropdownVariant.PageSize:
-        return label;
+        return { headingText: label, dropdownHeading: label };
       case DropdownVariant.CountryFilter: {
         const current = COUNTRY_FILTER_OPTIONS[selectedCountryFilterIndex];
         // istanbul ignore next - there won't be a case where label is undefined but since we get current from find it has undefined type
-        return (
-          <Typography variant="bodySmall">
-            {current?.label || 'Select country filter'}
-          </Typography>
-        );
+        const text = current?.label || 'Select country filter';
+        return {
+          headingText: text,
+          dropdownHeading: <Typography variant="bodySmall">{text}</Typography>,
+        };
       }
       case DropdownVariant.CountrySelector: {
         const current =
           countrySelectorOptions.find(
             (o) => o.countryCode === selectedCountryCode
           ) || countrySelectorOptions[0];
-        return (
-          <>
-            <span className={styles.flagContainer}>
-              {current.flagsToShow.map((flag) => (
-                <Image
-                  key={flag}
-                  src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
-                  width={24}
-                  height={24}
-                  alt=""
-                />
-              ))}
-            </span>
-            <Typography variant="bodySmall">{current.label}</Typography>
-          </>
-        );
+        return {
+          headingText: current.label,
+          dropdownHeading: (
+            <>
+              <span className={styles.flagContainer}>
+                {current.flagsToShow.map((flag) => (
+                  <Image
+                    key={flag}
+                    src={`/trading-hub/asset/icon-${flag.toLowerCase()}-flag.svg`}
+                    width={24}
+                    height={24}
+                    alt=""
+                  />
+                ))}
+              </span>
+              <Typography variant="bodySmall">{current.label}</Typography>
+            </>
+          ),
+        };
       }
       case DropdownVariant.FacetOrder: {
         const current =
           facetOptions.find((o) => o.name === status) ||
           facetOptions.find((o) => o.name === selectedFacetName);
-        return (
-          <>
-            {current?.src && (
-              <Image src={current.src} alt="" width={24} height={24} />
-            )}
-            <Typography variant="bodySmall">{current?.label}</Typography>
-          </>
-        );
+        return {
+          headingText: current?.label,
+          dropdownHeading: (
+            <>
+              {current?.src && (
+                <Image src={current.src} alt="" width={24} height={24} />
+              )}
+              <Typography variant="bodySmall">{current?.label}</Typography>
+            </>
+          ),
+        };
       }
       case DropdownVariant.RuleTypeFilter: {
         const current = RULE_TYPE_FILTER_OPTIONS[selectedRuleTypeIndex];
-        return <Typography variant="bodySmall">{current.label}</Typography>;
+        return {
+          headingText: current.label,
+          dropdownHeading: (
+            <Typography variant="bodySmall">{current.label}</Typography>
+          ),
+        };
       }
     }
   }, [
@@ -333,7 +347,6 @@ export const CombinedDropdown = ({
         return COUNTRY_FILTER_OPTIONS.map((option) => (
           <DropdownOptionButton
             key={option.label}
-            ariaLabel={option.ariaLabel}
             onClick={() => handleCountryFilterSelect(option.index)}
             ariaChecked={option.index === selectedCountryFilterIndex}
           >
@@ -408,7 +421,6 @@ export const CombinedDropdown = ({
         return RULE_TYPE_FILTER_OPTIONS.map((option) => (
           <DropdownOptionButton
             key={option.label}
-            ariaLabel={option.ariaLabel}
             onClick={() => handleRuleTypeFilterSelect(option.index)}
             ariaChecked={option.index === selectedRuleTypeIndex}
           >
@@ -465,6 +477,12 @@ export const CombinedDropdown = ({
   };
   const dataHeight = VARIANT_HEIGHTS[variant] ?? 'large';
 
+  const buttonAriaLabel = (() => {
+    if (!ariaLabel) return `select ${headingText || variant}`;
+    if (!headingText || ariaLabel.includes(headingText)) return ariaLabel;
+    return `${ariaLabel} - currently ${headingText}`;
+  })();
+
   return (
     <div
       className={styles.dropdownWrapper}
@@ -488,7 +506,7 @@ export const CombinedDropdown = ({
         onClick={() => (isOpen ? closeDropdown() : openDropdown())}
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        aria-label={ariaLabel ? ariaLabel : `${variant} dropdown`}
+        aria-label={buttonAriaLabel}
         data-testid={testId}
         id={buttonId}
       >

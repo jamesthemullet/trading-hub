@@ -259,7 +259,7 @@ describe('FacetsList', () => {
     });
 
     expect(
-      screen.getByRole('button', { name: 'select category' })
+      screen.getByRole('button', { name: /select category/i })
     ).toHaveTextContent(categoryId1);
   });
 
@@ -775,7 +775,7 @@ describe('FacetsList', () => {
 
     expect(screen.getAllByText('IE view')).toHaveLength(1);
     const selectPreview = screen.getByRole('button', {
-      name: 'Select country for preview',
+      name: /Select country for preview/i,
     });
 
     act(() => {
@@ -804,7 +804,7 @@ describe('FacetsList', () => {
     );
 
     const selectPreview = screen.getByRole('button', {
-      name: 'Select country for preview',
+      name: /Select country for preview/i,
     });
 
     act(() => {
@@ -833,7 +833,7 @@ describe('FacetsList', () => {
     );
 
     const selectPreview = screen.getByRole('button', {
-      name: 'Select country for preview',
+      name: /Select country for preview/i,
     });
 
     act(() => {
@@ -861,7 +861,7 @@ describe('FacetsList', () => {
 
     expect(screen.getAllByText('IE view')).toHaveLength(1);
     const selectMarket = screen.getByRole('button', {
-      name: 'Select country',
+      name: /^Select country - currently/i,
     });
 
     act(() => {
@@ -1413,7 +1413,7 @@ describe('FacetsList', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'select category' })
+        screen.getByRole('button', { name: /select category/i })
       ).toHaveTextContent(categoryId1);
     });
   });

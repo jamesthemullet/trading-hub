@@ -282,7 +282,7 @@ describe('Search Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     const countryDropdown = screen.getByRole('button', {
-      name: 'Select country',
+      name: /^Select country - currently/i,
     });
 
     await user.click(countryDropdown);

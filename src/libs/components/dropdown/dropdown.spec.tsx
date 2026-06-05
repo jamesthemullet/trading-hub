@@ -66,6 +66,32 @@ describe('CombinedDropdown', () => {
       defaultProps.onClose.mockClear();
     });
 
+    it('should use ariaLabel without headingText prefix when label is empty', () => {
+      render(
+        <CombinedDropdown {...defaultProps} label="" ariaLabel="custom label">
+          <div>Content</div>
+        </CombinedDropdown>
+      );
+
+      expect(screen.getByRole('button')).toHaveAttribute(
+        'aria-label',
+        'custom label'
+      );
+    });
+
+    it('should fall back to variant name in aria-label when label is empty and no ariaLabel', () => {
+      render(
+        <CombinedDropdown {...defaultProps} label="">
+          <div>Content</div>
+        </CombinedDropdown>
+      );
+
+      expect(screen.getByRole('button')).toHaveAttribute(
+        'aria-label',
+        'select generic'
+      );
+    });
+
     it('should render the button with children', async () => {
       const user = userEvent.setup();
       const { rerender } = render(
@@ -378,9 +404,7 @@ describe('CombinedDropdown', () => {
         />
       );
 
-      await user.click(
-        screen.getByRole('button', { name: 'pageSize dropdown' })
-      );
+      await user.click(screen.getByRole('button', { name: 'select 10' }));
       await user.click(screen.getByRole('menuitemradio', { name: '10' }));
 
       expect(onPageSizeChange).toHaveBeenCalledWith(2, 10);
@@ -401,9 +425,7 @@ describe('CombinedDropdown', () => {
         />
       );
 
-      await user.click(
-        screen.getByRole('button', { name: 'pageSize dropdown' })
-      );
+      await user.click(screen.getByRole('button', { name: 'select 50' }));
       await user.click(screen.getByRole('menuitemradio', { name: '50' }));
 
       expect(onPageSizeChange).toHaveBeenCalledWith(1, 50);
@@ -424,9 +446,7 @@ describe('CombinedDropdown', () => {
         />
       );
 
-      await user.click(
-        screen.getByRole('button', { name: 'pageSize dropdown' })
-      );
+      await user.click(screen.getByRole('button', { name: 'select 10' }));
       await user.click(screen.getByRole('menuitemradio', { name: '10' }));
 
       expect(onPageSizeChange).not.toHaveBeenCalled();
@@ -447,7 +467,9 @@ describe('CombinedDropdown', () => {
       );
 
       await user.click(
-        screen.getByRole('button', { name: 'Filter by rule type' })
+        screen.getByRole('button', {
+          name: 'Filter by rule type - currently All rule types',
+        })
       );
       await user.click(screen.getByText('Ranking rules'));
 
@@ -467,7 +489,9 @@ describe('CombinedDropdown', () => {
       );
 
       await user.click(
-        screen.getByRole('button', { name: 'Filter by rule type' })
+        screen.getByRole('button', {
+          name: 'Filter by rule type - currently All rule types',
+        })
       );
       await user.click(screen.getByText('Facet rules'));
 
@@ -487,10 +511,12 @@ describe('CombinedDropdown', () => {
       );
 
       await user.click(
-        screen.getByRole('button', { name: 'Filter by rule type' })
+        screen.getByRole('button', {
+          name: 'Filter by rule type - currently All rule types',
+        })
       );
       await user.click(
-        screen.getByRole('menuitemradio', { name: 'show all rule types' })
+        screen.getByRole('menuitemradio', { name: 'All rule types' })
       );
 
       expect(onRuleTypeChange).toHaveBeenCalledWith(undefined);
@@ -507,10 +533,14 @@ describe('CombinedDropdown', () => {
         />
       );
 
-      const dropdown = screen.getByLabelText('Select country');
+      const dropdown = screen.getByLabelText(
+        'Select country - currently All marksandspencer.com'
+      );
 
       expect(
-        screen.getByRole('button', { name: 'Select country' })
+        screen.getByRole('button', {
+          name: 'Select country - currently All marksandspencer.com',
+        })
       ).toBeVisible();
 
       expect(dropdown).toHaveAttribute('aria-expanded', 'false');
@@ -527,9 +557,11 @@ describe('CombinedDropdown', () => {
       );
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select country',
+        name: 'Select country - currently All marksandspencer.com',
       });
-      const dropdown = screen.getByLabelText('Select country');
+      const dropdown = screen.getByLabelText(
+        'Select country - currently All marksandspencer.com'
+      );
 
       expect(dropdown).toHaveAttribute('aria-expanded', 'false');
 
@@ -550,7 +582,7 @@ describe('CombinedDropdown', () => {
       );
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select country',
+        name: 'Select country - currently All marksandspencer.com',
       });
 
       await user.click(dropdownButton);
@@ -577,7 +609,7 @@ describe('CombinedDropdown', () => {
 
       expect(
         screen.getByRole('button', {
-          name: 'Select country',
+          name: 'Select country - currently UK/IE Market',
         })
       ).toBeVisible();
     });
@@ -594,7 +626,7 @@ describe('CombinedDropdown', () => {
       );
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select country',
+        name: 'Select country - currently UK/IE Market',
       });
       await user.click(dropdownButton);
 
@@ -619,7 +651,7 @@ describe('CombinedDropdown', () => {
       );
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select country',
+        name: 'Select country - currently UK/IE Market',
       });
 
       await user.click(dropdownButton);

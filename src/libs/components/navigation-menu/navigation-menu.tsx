@@ -37,23 +37,17 @@ export const NavigationMenu = ({ menuItems }: MenuItems) => {
               className={styles.styledLink}
               data-is-active={isActive}
               title={menuItem.title}
-              aria-label={menuItem.title}
               href={menuItem.path}
             >
               {isActive ? (
                 <Image
                   src={menuItem.activeIcon}
-                  alt={menuItem.alt}
+                  alt=""
                   height={25}
                   width={25}
                 />
               ) : (
-                <Image
-                  src={menuItem.icon}
-                  alt={menuItem.alt}
-                  height={25}
-                  width={25}
-                />
+                <Image src={menuItem.icon} alt="" height={25} width={25} />
               )}
               <Typography align="center" variant="bodySmall">
                 {menuItem.shortTitle}

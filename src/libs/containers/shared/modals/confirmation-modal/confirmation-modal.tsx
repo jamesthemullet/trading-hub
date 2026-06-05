@@ -10,13 +10,14 @@ const ConfirmationModal = ({
 }: {
   onCloseModal: () => void;
   handleModalConfirm: () => void;
-  titleId: string;
 }) => {
   return (
     <Modal.Body>
-      <Typography as="h2" variant="titleMedium" withMargin isStrong>
-        Apply global changes
-      </Typography>
+      <Modal.Title>
+        <Typography as="span" variant="titleMedium" withMargin isStrong>
+          Apply global changes
+        </Typography>
+      </Modal.Title>
 
       <Typography variant="bodySmall" withMargin>
         This action will apply live changes on the M&S website and app. Do you

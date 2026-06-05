@@ -439,7 +439,7 @@ describe('Ruleset', () => {
     await selectCategory(screen, user);
 
     const dropdownButton = screen.getByRole('button', {
-      name: 'Select country',
+      name: /^Select country/i,
     });
 
     await user.click(dropdownButton);
@@ -966,7 +966,7 @@ describe('Ruleset', () => {
       );
 
       const selectUK = screen.getByRole('button', {
-        name: 'Select country view for visual editor',
+        name: /Select country view for visual editor/i,
       });
 
       act(() => {
@@ -1024,7 +1024,7 @@ describe('Ruleset', () => {
       );
 
       const selectDropdown = screen.getByRole('button', {
-        name: 'Select country view for visual editor',
+        name: /Select country view for visual editor/i,
       });
 
       act(() => {
@@ -1093,7 +1093,7 @@ describe('Ruleset', () => {
       );
 
       const selectMarket = screen.getByRole('button', {
-        name: 'Select country',
+        name: /^Select country/i,
       });
 
       act(() => {
@@ -1151,7 +1151,7 @@ describe('Ruleset', () => {
       );
 
       const selectMarket = screen.getByRole('button', {
-        name: 'Select country',
+        name: /^Select country/i,
       });
 
       act(() => {
@@ -1626,7 +1626,7 @@ describe('Ruleset', () => {
 
       if (withBury) {
         const dropdownButton = screen.getByRole('button', {
-          name: 'Select to include, exclude, boost or bury',
+          name: /Select to include, exclude, boost or bury/i,
         });
 
         act(() => {
@@ -1645,7 +1645,7 @@ describe('Ruleset', () => {
 
       if (withInclude) {
         const dropdownButton = screen.getByRole('button', {
-          name: 'Select to include, exclude, boost or bury',
+          name: /Select to include, exclude, boost or bury/i,
         });
 
         act(() => {

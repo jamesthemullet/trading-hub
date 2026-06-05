@@ -43,7 +43,7 @@ describe('TablePagination', () => {
     const newText = 'Page 1 of 1';
     expect(await screen.findByText(newText)).toBeVisible();
 
-    const dropdown = screen.getByLabelText('Select rows per page');
+    const dropdown = screen.getByRole('button', { name: /rows per page/i });
 
     if (!dropdown) {
       throw new Error('Dropdown not found');
@@ -80,7 +80,7 @@ describe('TablePagination', () => {
 
     expect(await screen.findByText('Page 1 of 1')).toBeVisible();
 
-    const dropdown = screen.getByLabelText('Select rows per page');
+    const dropdown = screen.getByRole('button', { name: /rows per page/i });
 
     if (!dropdown) {
       throw new Error('Dropdown not found');
@@ -119,7 +119,7 @@ describe('TablePagination', () => {
 
     renderWithProviders(<TablePagination {...mockProps} />);
 
-    const dropdown = screen.getByLabelText('Select rows per page');
+    const dropdown = screen.getByRole('button', { name: /rows per page/i });
 
     if (!dropdown) {
       throw new Error('Dropdown not found');
@@ -189,7 +189,7 @@ describe('TablePagination', () => {
     const newText = 'Page 2 of 2';
     expect(await screen.findByText(newText)).toBeVisible();
 
-    const dropdown = screen.getByLabelText('Select rows per page');
+    const dropdown = screen.getByRole('button', { name: /rows per page/i });
 
     if (!dropdown) {
       throw new Error('Dropdown not found');
@@ -262,7 +262,7 @@ describe('TablePagination', () => {
     const newText = 'Page 2 of 8';
     expect(await screen.findByText(newText)).toBeVisible();
 
-    const dropdown = screen.getByLabelText('Select rows per page');
+    const dropdown = screen.getByRole('button', { name: /rows per page/i });
 
     if (!dropdown) {
       throw new Error('Dropdown not found');

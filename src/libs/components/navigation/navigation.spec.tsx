@@ -139,19 +139,19 @@ describe('Navigation', () => {
       render(<Navigation />);
 
       expect(
-        (await screen.findByLabelText('Category Rules')).childNodes[0]
+        (await screen.findByRole('link', { name: 'Categories' })).childNodes[0]
       ).toHaveAttribute('src', icon1);
 
       expect(
-        (await screen.findByLabelText('Search Ranking Rules')).childNodes[0]
+        (await screen.findByRole('link', { name: 'Search' })).childNodes[0]
       ).toHaveAttribute('src', icon2);
 
       expect(
-        (await screen.findByLabelText('Redirect Rules')).childNodes[0]
+        (await screen.findByRole('link', { name: 'Redirect' })).childNodes[0]
       ).toHaveAttribute('src', icon3);
 
       expect(
-        (await screen.findByLabelText('Global Ranking Rules')).childNodes[0]
+        (await screen.findByRole('link', { name: 'Global' })).childNodes[0]
       ).toHaveAttribute('src', icon4);
     }
   );

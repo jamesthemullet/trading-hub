@@ -200,7 +200,7 @@ describe('SearchAndCategoryFacetAttributesList', () => {
     setup({ dispatch });
 
     const dropdown = screen.getAllByLabelText(
-      'Select to set as included, excluded or algo control'
+      /Select to set as included, excluded or algo control/i
     )[0];
     await userEvent.click(dropdown);
 

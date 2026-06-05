@@ -282,7 +282,11 @@ export const CategorySearch = ({
             }
             aria-haspopup="menu"
             aria-expanded={isDropdownOpen}
-            aria-label="select category"
+            aria-label={
+              previewCategory
+                ? `${previewCategory}, select category`
+                : 'select category'
+            }
             isDisabled={!previewCategory}
             onMouseEnter={handlePreviewMouseEnter}
             onMouseLeave={handlePreviewMouseLeave}

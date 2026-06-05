@@ -382,7 +382,7 @@ describe('RulesetAttributes', () => {
     });
 
     const dropdownButton = screen.getByRole('button', {
-      name: 'Select to boost or bury',
+      name: /Select to boost or bury/i,
     });
 
     act(() => {
@@ -514,7 +514,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to include, exclude, boost or bury',
+        name: /Select to include, exclude, boost or bury/i,
       });
 
       act(() => {
@@ -911,7 +911,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to boost or bury',
+        name: /Select to boost or bury/i,
       });
 
       act(() => {
@@ -988,7 +988,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to include, exclude, boost or bury',
+        name: /Select to include, exclude, boost or bury/i,
       });
 
       act(() => {
@@ -1225,7 +1225,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to include, exclude, boost or bury',
+        name: /Select to include, exclude, boost or bury/i,
       });
 
       act(() => {
@@ -1295,7 +1295,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to boost or bury',
+        name: /Select to boost or bury/i,
       });
 
       act(() => {
@@ -1430,7 +1430,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to include, exclude, boost or bury',
+        name: /Select to include, exclude, boost or bury/i,
       });
 
       act(() => {
@@ -1497,7 +1497,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to include, exclude, boost or bury',
+        name: /Select to include, exclude, boost or bury/i,
       });
 
       act(() => {
@@ -1681,7 +1681,7 @@ describe('RulesetAttributes', () => {
       });
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to include, exclude, boost or bury',
+        name: /Select to include, exclude, boost or bury/i,
       });
 
       act(() => {
@@ -1747,7 +1747,7 @@ describe('RulesetAttributes', () => {
       await user.click(nextStepButton);
 
       const dropdownButton = screen.getByRole('button', {
-        name: 'Select to include, exclude, boost or bury',
+        name: /Select to include, exclude, boost or bury/i,
       });
 
       await user.click(dropdownButton);

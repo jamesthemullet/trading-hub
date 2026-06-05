@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -133,9 +133,6 @@ export const TablePanel = <
     toggleRow({ id: idToUpdate });
   };
 
-  const titleId = useId();
-  const descriptionId = useId();
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.toolsContainer}>
@@ -145,7 +142,7 @@ export const TablePanel = <
           onChange={(country) =>
             setCountryCode(country as MerchandisingCountryCode)
           }
-          ariaLabel="Select country"
+          ariaLabel="Filter by country"
         />
 
         {ruleType !== RuleType.Redirect && (
@@ -237,15 +234,10 @@ export const TablePanel = <
         padding={10}
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content
-          aria-label="Confirmation modal"
-          aria-labelledby={titleId}
-          aria-describedby={descriptionId}
-        >
+        <Modal.Content>
           <ConfirmationModal
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
-            titleId={titleId}
           />
         </Modal.Content>
       </Modal.Root>

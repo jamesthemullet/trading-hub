@@ -1,10 +1,4 @@
-import {
-  type ChangeEvent,
-  useEffect,
-  useId,
-  useReducer,
-  useState,
-} from 'react';
+import { type ChangeEvent, useEffect, useReducer, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -55,9 +49,6 @@ export const GlobalFacetAttributesPageLayout = ({
   isWriteEnabled,
 }: PageLayout) => {
   const router = useRouter();
-
-  const titleId = useId();
-  const descriptionId = useId();
 
   const { stickyBarEnabled, stickyBarVariant } = useStickyBarFlag();
   const isVariantA = stickyBarEnabled && stickyBarVariant === 'variant-a';
@@ -295,15 +286,10 @@ export const GlobalFacetAttributesPageLayout = ({
         padding={10}
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content
-          aria-label="Confirmation modal"
-          aria-labelledby={titleId}
-          aria-describedby={descriptionId}
-        >
+        <Modal.Content>
           <ConfirmationModal
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
-            titleId={titleId}
           />
         </Modal.Content>
       </Modal.Root>

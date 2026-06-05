@@ -240,7 +240,7 @@ describe('Global Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     const dropdownButton = screen.getByRole('button', {
-      name: 'Select country',
+      name: /^Select country/i,
     });
 
     await user.click(dropdownButton);

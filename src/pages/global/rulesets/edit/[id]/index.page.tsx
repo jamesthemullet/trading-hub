@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { useId, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -72,9 +72,6 @@ const Page = ({ id }: PageProps): ReactElement => {
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
 
-  const titleId = useId();
-  const descriptionId = useId();
-
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
@@ -134,15 +131,10 @@ const Page = ({ id }: PageProps): ReactElement => {
         padding={10}
       >
         <Modal.Overlay blur={3} />
-        <Modal.Content
-          aria-label="Confirmation modal"
-          aria-labelledby={titleId}
-          aria-describedby={descriptionId}
-        >
+        <Modal.Content>
           <ConfirmationModal
             onCloseModal={onCloseModal}
             handleModalConfirm={handleModalConfirm}
-            titleId={titleId}
           />
         </Modal.Content>
       </Modal.Root>

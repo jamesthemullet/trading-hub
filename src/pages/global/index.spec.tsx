@@ -366,7 +366,7 @@ describe('Index', () => {
 
       expect(await screen.findByAltText('UK rule')).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: 'Select country' })
+        screen.getByRole('button', { name: /^Filter by country/i })
       ).toBeVisible();
     });
 
@@ -399,7 +399,7 @@ describe('Index', () => {
 
       renderWithProviders(<RuleSets />);
       const dropdown = screen.getByRole('button', {
-        name: 'Select country',
+        name: /^Filter by country/i,
       });
 
       await user.click(dropdown);

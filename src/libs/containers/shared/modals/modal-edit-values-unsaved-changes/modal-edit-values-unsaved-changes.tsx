@@ -1,4 +1,3 @@
-import { useId } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button } from '@/libs/components';
@@ -17,15 +16,12 @@ export const ModalEditValuesUnsavedChanges = ({
   onCancel,
   isNewlyIncluded = false,
 }: Props) => {
-  const titleId = useId();
-  const descriptionId = useId();
-
   return (
     <Modal.Root opened onClose={onCancel} centered padding={10} size={460}>
       <Modal.Overlay blur={3} />
-      <Modal.Content aria-labelledby={titleId} aria-describedby={descriptionId}>
+      <Modal.Content>
         <Modal.Body>
-          <Modal.Title component="div" id={titleId}>
+          <Modal.Title component="div">
             <Typography
               as="h2"
               variant="bodySmall"
@@ -37,7 +33,7 @@ export const ModalEditValuesUnsavedChanges = ({
                 : 'You have unsaved changes'}
             </Typography>
           </Modal.Title>
-          <Typography id={descriptionId} variant="bodySmall">
+          <Typography variant="bodySmall">
             {isNewlyIncluded
               ? 'You’ve changed this facet to Include only, but haven’t saved it. Until this change is saved, any updates made in Edit facet values cannot be saved and will be lost. Do you want to continue?'
               : 'Navigating to edit facet values will discard your unsaved changes. Do you want to continue?'}
