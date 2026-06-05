@@ -128,11 +128,13 @@ Use these steps when production Playwright smoke tests fail due to authenticatio
 
 1. **Identify the test account**
 
-   Go to the [Access Management](https://mnscorp-rod-myit.onbmc.com/dwp/app/#/itemprofile/403)
+   Go to the [Access Management](https://mnscorp-rod-myit.onbmc.com/dwp/app/#/itemprofile/404)
 
 2. **Reset password in Azure/Entra**
 
-   Click "Request now" and then fill the form in, and submit. After a while, someone will contact you with a password in the Azure Key Vault, which you can then copy and paste into GitHub secrets.
+   Click "Request now" and then fill the form in, and submit. Use "Extending a privileged account" as the request type. Note that you will need line manager approval.
+
+   After a while, someone will contact you with a password in the Azure Key Vault, which you can then copy and paste into GitHub secrets.
 
 3. **Update GitHub secret**
 
