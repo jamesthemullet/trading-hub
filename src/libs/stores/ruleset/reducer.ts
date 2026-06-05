@@ -81,14 +81,18 @@ export const rulesetReducer = (
     case 'numericAttribute': {
       const { payload } = action;
 
-      const update = (values: MerchandisingNumericBoostBury[]) =>
-        payload.change === 'remove'
-          ? values.filter((_el, index) => index !== payload.index)
-          : payload.change === 'modify'
-            ? values.map((attr, index) =>
-                index === payload.index ? payload.data : attr
-              )
-            : [...values, payload.data];
+      const update = (values: MerchandisingNumericBoostBury[]) => {
+        switch (payload.change) {
+          case 'remove':
+            return values.filter((_el, index) => index !== payload.index);
+          case 'modify':
+            return values.map((attr, index) =>
+              index === payload.index ? payload.data : attr
+            );
+          default:
+            return [...values, payload.data];
+        }
+      };
 
       return payload.operation === 'boost'
         ? {

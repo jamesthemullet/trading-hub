@@ -58,7 +58,7 @@ const nextConfig = {
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: https://asset1.cxnmarksandspencer.com https://static.marksandspencer.com https://authjs.dev",
             "font-src 'self' https://static.marksandspencer.com",
-            "connect-src 'self' https://*.marksandspencer.com https://*.dynatrace.com https://cloud.umami.is https://api-gateway.umami.dev https://*.clarity.ms",
+            "connect-src 'self' https://*.marksandspencer.com https://*.dynatrace.com https://*.umami.is https://api-gateway.umami.dev https://*.clarity.ms",
             "object-src 'none'",
             "frame-src 'none'",
             "worker-src 'self'",

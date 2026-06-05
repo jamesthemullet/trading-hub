@@ -117,7 +117,7 @@ export const RulesetAttributes = ({
           {!!alphanumericBoost.length &&
             alphanumericBoost.map(({ fields, weight }, index) => (
               <AlphanumericAttribute
-                key={fields[0].field}
+                key={`boost-${fields.map((f) => `${f.field}:${f.values.join(';')}`).join(',')}-${weight}`}
                 isEditable={isWriteEnabled}
                 canEditWeight
                 fields={fields}
@@ -154,7 +154,7 @@ export const RulesetAttributes = ({
           {!!alphanumericBuries.length &&
             alphanumericBuries.map(({ fields, weight }, index) => (
               <AlphanumericAttribute
-                key={fields[0].field}
+                key={`bury-${fields.map((f) => `${f.field}:${f.values.join(';')}`).join(',')}-${weight}`}
                 isEditable={isWriteEnabled}
                 canEditWeight
                 fields={fields}
@@ -191,7 +191,7 @@ export const RulesetAttributes = ({
           {!!alphanumericIncludes.length &&
             alphanumericIncludes.map(({ fields }, index) => (
               <AlphanumericAttribute
-                key={fields[0].field}
+                key={`include-${fields.map((f) => `${f.field}:${f.values.join(';')}`).join(',')}`}
                 isEditable={isWriteEnabled}
                 fields={fields}
                 operation="include"
@@ -221,7 +221,7 @@ export const RulesetAttributes = ({
           {!!alphanumericExcludes.length &&
             alphanumericExcludes.map(({ fields }, index) => (
               <AlphanumericAttribute
-                key={fields[0].field}
+                key={`exclude-${fields.map((f) => `${f.field}:${f.values.join(';')}`).join(',')}`}
                 isEditable={isWriteEnabled}
                 fields={fields}
                 operation="exclude"
@@ -256,7 +256,7 @@ export const RulesetAttributes = ({
           {!!numericBoosts.length &&
             numericBoosts.map(({ field, weight }, index) => (
               <NumericAttribute
-                key={field}
+                key={`boost-numeric-${field}-${weight}`}
                 isEditable={isWriteEnabled}
                 operation="boost"
                 name={field}
@@ -289,7 +289,7 @@ export const RulesetAttributes = ({
           {!!numericBury.length &&
             numericBury.map(({ field, weight }, index) => (
               <NumericAttribute
-                key={field}
+                key={`bury-numeric-${field}-${weight}`}
                 isEditable={isWriteEnabled}
                 operation="bury"
                 name={field}

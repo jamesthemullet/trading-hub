@@ -39,7 +39,7 @@ const ProductStatus = () => {
     isLoading,
     error,
     recentSearches,
-    showRecentSearches,
+    shouldShowRecentSearches,
   } = state;
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const ProductStatus = () => {
     }
   };
 
-  if (showRecentSearches) {
+  if (shouldShowRecentSearches) {
     return (
       <>
         <Head>

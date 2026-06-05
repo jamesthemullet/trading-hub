@@ -48,7 +48,7 @@ describe('reducer', () => {
       isLoading: false,
       error: '',
       recentSearches: [],
-      showRecentSearches: false,
+      shouldShowRecentSearches: false,
     });
   });
 
@@ -291,15 +291,15 @@ describe('reducer', () => {
   });
 
   describe('OPEN_RECENT_SEARCHES / CLOSE_RECENT_SEARCHES', () => {
-    it('should set showRecentSearches to true', () => {
+    it('should set shouldShowRecentSearches to true', () => {
       const state = reducer(initialState, { type: 'OPEN_RECENT_SEARCHES' });
-      expect(state.showRecentSearches).toBe(true);
+      expect(state.shouldShowRecentSearches).toBe(true);
     });
 
-    it('should set showRecentSearches back to false', () => {
+    it('should set shouldShowRecentSearches back to false', () => {
       const open = reducer(initialState, { type: 'OPEN_RECENT_SEARCHES' });
       const closed = reducer(open, { type: 'CLOSE_RECENT_SEARCHES' });
-      expect(closed.showRecentSearches).toBe(false);
+      expect(closed.shouldShowRecentSearches).toBe(false);
     });
   });
 

@@ -55,7 +55,7 @@ type State = {
   isLoading: boolean;
   error: string;
   recentSearches: RecentSearch[];
-  showRecentSearches: boolean;
+  shouldShowRecentSearches: boolean;
 };
 
 export type Action =
@@ -81,7 +81,7 @@ export const initialState: State = {
   isLoading: false,
   error: '',
   recentSearches: [],
-  showRecentSearches: false,
+  shouldShowRecentSearches: false,
 };
 
 export const createInitialState = (): State => ({
@@ -201,8 +201,8 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, recentSearches: next };
     }
     case 'OPEN_RECENT_SEARCHES':
-      return { ...state, showRecentSearches: true };
+      return { ...state, shouldShowRecentSearches: true };
     case 'CLOSE_RECENT_SEARCHES':
-      return { ...state, showRecentSearches: false };
+      return { ...state, shouldShowRecentSearches: false };
   }
 };

@@ -37,22 +37,23 @@ export const useAccess = (
 
   const roles = session.data?.roles ?? [];
 
+  function resolveRole(key: 'Cat'): AccessMap['Cat'];
+  function resolveRole(key: 'Search'): AccessMap['Search'];
+  function resolveRole(key: 'Glob'): AccessMap['Glob'];
+  function resolveRole(key: AccessType) {
+    const writeRole = `${key}.W`;
+    if (roles.includes(writeRole)) return writeRole;
+
+    const readRole = `${key}.R`;
+    if (roles.includes(readRole)) return readRole;
+
+    return '';
+  }
+
   const roleMap: AccessMap = {
-    Cat: roles.includes('Cat.W')
-      ? 'Cat.W'
-      : roles.includes('Cat.R')
-        ? 'Cat.R'
-        : '',
-    Search: roles.includes('Search.W')
-      ? 'Search.W'
-      : roles.includes('Search.R')
-        ? 'Search.R'
-        : '',
-    Glob: roles.includes('Glob.W')
-      ? 'Glob.W'
-      : roles.includes('Glob.R')
-        ? 'Glob.R'
-        : '',
+    Cat: resolveRole('Cat'),
+    Search: resolveRole('Search'),
+    Glob: resolveRole('Glob'),
   };
 
   if (override.catOverride !== 'No Override') {
