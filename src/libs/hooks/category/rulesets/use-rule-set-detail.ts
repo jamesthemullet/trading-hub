@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
+import { EMPTY_MERCHANDISING_RULES } from '@/libs/hooks/utils/constants';
 import { handleError } from '@/libs/hooks/utils/error';
 
 export const useRuleSetDetail = (id: string, disabled = false) => {
@@ -20,22 +21,7 @@ export const useRuleSetDetail = (id: string, disabled = false) => {
         date: '',
         user: '',
       },
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: { alphanumeric: [], numeric: [], product: [] },
-        buries: {
-          alphanumeric: [],
-          numeric: [],
-          product: [],
-        },
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
+      rules: structuredClone(EMPTY_MERCHANDISING_RULES),
     });
 
   const [error, setError] = useState('');

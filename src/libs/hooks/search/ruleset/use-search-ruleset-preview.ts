@@ -5,6 +5,7 @@ import type {
   MerchandisingReturnedKeywordRuleSet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
+import { EMPTY_MERCHANDISING_RULES } from '@/libs/hooks/utils/constants';
 import { handleError } from '@/libs/hooks/utils/error';
 
 export const useSearchRuleSetPreview = (
@@ -25,22 +26,7 @@ export const useSearchRuleSetPreview = (
       date: '',
       user: '',
     },
-    rules: {
-      pinnedProducts: [],
-      blockedProducts: [],
-      boosts: { alphanumeric: [], numeric: [], product: [] },
-      buries: {
-        alphanumeric: [],
-        numeric: [],
-        product: [],
-      },
-      includes: {
-        alphanumeric: [],
-      },
-      excludes: {
-        alphanumeric: [],
-      },
-    },
+    rules: structuredClone(EMPTY_MERCHANDISING_RULES),
     facets: [],
   });
   const [products, setProducts] = useState<MerchandisingProduct[]>([]);

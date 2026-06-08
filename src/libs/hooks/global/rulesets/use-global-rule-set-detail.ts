@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
+import { EMPTY_MERCHANDISING_RULES } from '@/libs/hooks/utils/constants';
 import { handleError } from '@/libs/hooks/utils/error';
 
 export const useGlobalRuleSetDetail = (
@@ -20,22 +21,7 @@ export const useGlobalRuleSetDetail = (
         date: '',
         user: '',
       },
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: { alphanumeric: [], numeric: [], product: [] },
-        buries: {
-          alphanumeric: [],
-          numeric: [],
-          product: [],
-        },
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
+      rules: structuredClone(EMPTY_MERCHANDISING_RULES),
       facets: [],
     });
   const [error, setError] = useState('');
