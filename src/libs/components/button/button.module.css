@@ -115,6 +115,12 @@
   &:focus {
     background-color: #dee9e6;
   }
+
+  &:disabled {
+    color: var(--color-state-disabled-disabled);
+    border-color: var(--color-state-disabled-disabled);
+    background-color: var(--color-surface-surface-container);
+  }
 }
 
 .button[data-theme='tertiary'][data-is-disabled='true'] {

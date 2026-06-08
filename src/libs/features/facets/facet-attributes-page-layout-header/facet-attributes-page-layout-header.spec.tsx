@@ -93,4 +93,56 @@ describe('Facet Page Layout Header', () => {
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
   });
+
+  it('should not render undo button by default', () => {
+    render(<FacetAttributesPageLayoutHeader {...defaultProps} />);
+
+    expect(
+      screen.queryByRole('button', { name: 'Undo' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should render a disabled undo button when isUndoButtonVisible is true and isUndoDisabled is true', () => {
+    render(
+      <FacetAttributesPageLayoutHeader
+        {...defaultProps}
+        isUndoButtonVisible
+        isUndoDisabled
+        onUndo={jest.fn()}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+  });
+
+  it('should render an enabled undo button when isUndoButtonVisible is true and isUndoDisabled is false', () => {
+    render(
+      <FacetAttributesPageLayoutHeader
+        {...defaultProps}
+        isUndoButtonVisible
+        isUndoDisabled={false}
+        onUndo={jest.fn()}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: 'Undo' })).toBeEnabled();
+  });
+
+  it('should call onUndo when undo button is clicked', async () => {
+    const onUndo = jest.fn();
+    const user = userEvent.setup();
+
+    render(
+      <FacetAttributesPageLayoutHeader
+        {...defaultProps}
+        isUndoButtonVisible
+        isUndoDisabled={false}
+        onUndo={onUndo}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Undo' }));
+
+    expect(onUndo).toHaveBeenCalledTimes(1);
+  });
 });

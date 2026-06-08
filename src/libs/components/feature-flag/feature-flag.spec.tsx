@@ -5,6 +5,7 @@ import {
   FeatureFlagContext,
   useAuthorizationFlag,
   useStickyBarFlag,
+  useUndoButtonFlag,
 } from './feature-flag';
 
 describe('useAuthorizationFlag', () => {
@@ -17,6 +18,32 @@ describe('useAuthorizationFlag', () => {
       ),
     });
     expect(result.current).toBe(false);
+  });
+});
+
+describe('useUndoButtonFlag', () => {
+  it('should return false by default', () => {
+    const { result } = renderHook(() => useUndoButtonFlag(), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <FeatureFlagContext.Provider value={defaultFeatureFlags}>
+          {children}
+        </FeatureFlagContext.Provider>
+      ),
+    });
+    expect(result.current).toBe(false);
+  });
+
+  it('should return true when flag is enabled', () => {
+    const { result } = renderHook(() => useUndoButtonFlag(), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <FeatureFlagContext.Provider
+          value={{ ...defaultFeatureFlags, hasUndoButton: true }}
+        >
+          {children}
+        </FeatureFlagContext.Provider>
+      ),
+    });
+    expect(result.current).toBe(true);
   });
 });
 

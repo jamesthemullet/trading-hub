@@ -15,6 +15,9 @@ type CommonHeaderProps = {
   countryCode: string;
   onClose: (facetType: FacetType) => void;
   isDraftRuleset?: boolean;
+  isUndoButtonVisible?: boolean;
+  isUndoDisabled?: boolean;
+  onUndo?: () => void;
 };
 
 type GlobalHeaderProps = CommonHeaderProps & {
@@ -38,8 +41,11 @@ export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
     error,
     onClose,
     onSave,
+    onUndo,
     isWriteEnabled,
     countryCode,
+    isUndoButtonVisible = false,
+    isUndoDisabled = true,
   } = props;
 
   return (
@@ -58,6 +64,17 @@ export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
           )}
         </div>
         <div className={styles.buttonContainer}>
+          {isUndoButtonVisible && onUndo && (
+            <Button
+              theme="outlined"
+              isTextCentred
+              isDisabled={isUndoDisabled}
+              onClick={onUndo}
+              type="button"
+            >
+              Undo
+            </Button>
+          )}
           <Button
             theme="outlined"
             isTextCentred

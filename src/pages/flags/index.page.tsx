@@ -16,13 +16,14 @@ const FeatureFlags = () => {
       'flagAuthorizationRoleOverride',
       'flagStickyBar',
       'flagStickyBarVariant',
+      'flagUndoButton',
     ],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization, flagStickyBar } = cookies;
+  const { flagAuthorization, flagStickyBar, flagUndoButton } = cookies;
 
   return (
     <div className={styles.wrapper}>
@@ -126,6 +127,15 @@ const FeatureFlags = () => {
           />
         </Stack>
       )}
+      <div className={styles.flag}>
+        <Typography>Undo Button:&nbsp;</Typography>
+        <Toggle
+          checked={flagUndoButton}
+          onChange={() => {
+            setCookie('flagUndoButton', JSON.stringify(!flagUndoButton));
+          }}
+        />
+      </div>
     </div>
   );
 };

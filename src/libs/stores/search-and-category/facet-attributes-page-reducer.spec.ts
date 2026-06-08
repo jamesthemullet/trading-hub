@@ -319,4 +319,19 @@ describe('facetAttributesPageReducer', () => {
       });
     });
   });
+
+  describe('RESTORE_STATE', () => {
+    it('should restore to the given state snapshot', () => {
+      const previousState: MerchandisingReturnedGlobalFacet = {
+        ...mockReturnedGlobalFacetState,
+        boosted: ['x'],
+        excludedValues: ['y'],
+      };
+      const result = facetAttributesPageReducer(
+        { ...mockReturnedGlobalFacetState, boosted: ['1', '2', '3'] },
+        { type: 'RESTORE_STATE', payload: previousState }
+      );
+      expect(result).toEqual(previousState);
+    });
+  });
 });

@@ -1,14 +1,16 @@
 import type { ChangeEvent } from 'react';
-import { useMemo, useReducer } from 'react';
+import { useCallback, useMemo, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
+import { useUndoButtonFlag } from '@/libs/components/feature-flag/feature-flag';
 import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
-import type { FacetType } from '@/libs/constants/rule-types';
+import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
+import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 
 import intersection from 'lodash/intersection';
@@ -78,6 +80,32 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
     facetLocalState.excludedValues?.includes(value.displayValue)
   );
 
+  const isUndoFlagEnabled = useUndoButtonFlag();
+  const isUndoButtonVisible =
+    isUndoFlagEnabled && facetType === FacetType.Category;
+
+  const [stateHistory, setStateHistory] = useState<
+    MerchandisingRuleSetFacetConfigWithId[]
+  >([]);
+
+  const dispatchWithHistory = useCallback(
+    (action: Action) => {
+      setStateHistory((prev) => [...prev, { ...facetLocalState }]);
+      dispatch(action);
+    },
+    [facetLocalState]
+  );
+
+  const handleUndo = useCallback(() => {
+    /* istanbul ignore next -- defensive guard behind disabled button */
+    if (stateHistory.length === 0) return;
+    const previousState = stateHistory[stateHistory.length - 1];
+    setStateHistory((prev) => prev.slice(0, -1));
+    dispatch({ type: 'RESTORE_STATE', payload: previousState });
+  }, [stateHistory]);
+
+  const hasChanges = stateHistory.length > 0;
+
   const handleSave = () => {
     onSave(facetLocalState);
   };
@@ -100,6 +128,9 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         }}
         onSave={handleSave}
         isWriteEnabled={isWriteEnabled}
+        isUndoButtonVisible={isUndoButtonVisible}
+        isUndoDisabled={!hasChanges}
+        onUndo={handleUndo}
         countryCode={countryCode}
         isDraftRuleset={isDraftRuleset}
       />
@@ -114,7 +145,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         boostedValues={includedValues}
         algoControlValues={algoControlValues}
         excludedValues={excludedValues}
-        dispatch={dispatch}
+        dispatch={dispatchWithHistory}
         searchQuery={searchQuery}
         isWriteEnabled={isWriteEnabled}
       />

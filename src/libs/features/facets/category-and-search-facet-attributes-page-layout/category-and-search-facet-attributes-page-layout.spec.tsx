@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
@@ -7,6 +7,7 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
+import type { FeatureFlags } from '@/libs/components/feature-flag/feature-flag';
 import { FacetType } from '@/libs/constants/rule-types';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -49,7 +50,7 @@ const facetMock: MerchandisingRuleSetFacetConfigWithId = {
   excludedValues: ['Under 10'],
 };
 
-const setup = (props = {}) => {
+const setup = (props = {}, featureFlags: Partial<FeatureFlags> = {}) => {
   const defaultProps = {
     attributeValues: attributeValuesMock,
     facet: facetMock,
@@ -68,7 +69,9 @@ const setup = (props = {}) => {
 
   return {
     ...renderWithProviders(
-      <CategoryAndSearchFacetsPanelPageLayout {...defaultProps} {...props} />
+      <CategoryAndSearchFacetsPanelPageLayout {...defaultProps} {...props} />,
+      undefined,
+      { featureFlags }
     ),
     mockRouter,
     props: { ...defaultProps, ...props },
@@ -149,5 +152,68 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
     expect(mockRouter.push).toHaveBeenCalledWith(
       `/facets/category/edit/${ruleSetId}`
     );
+  });
+
+  describe('undo button', () => {
+    it('does not render undo button when flag is off', () => {
+      setup();
+
+      expect(
+        screen.queryByRole('button', { name: 'Undo' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders a disabled undo button when flag is on and no changes made', () => {
+      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+    });
+
+    it('does not render undo button for search facet type even when flag is on', () => {
+      setup({ facetType: FacetType.Search }, { hasUndoButton: true });
+
+      expect(
+        screen.queryByRole('button', { name: 'Undo' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders an enabled undo button after a change is made', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+
+      const dropdown = screen.getAllByLabelText(
+        /Select to set as included, excluded or algo control/i
+      )[0];
+      await user.click(dropdown);
+
+      const excludeOption = within(dropdown.parentElement!).getByRole(
+        'menuitemradio',
+        { name: 'Exclude only' }
+      );
+      await user.click(excludeOption);
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeEnabled();
+    });
+
+    it('reverts the last change and disables the undo button when history is empty', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+
+      const dropdown = screen.getAllByLabelText(
+        /Select to set as included, excluded or algo control/i
+      )[0];
+      await user.click(dropdown);
+      const excludeOption = within(dropdown.parentElement!).getByRole(
+        'menuitemradio',
+        { name: 'Exclude only' }
+      );
+      await user.click(excludeOption);
+
+      await user.click(screen.getByRole('button', { name: 'Undo' }));
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+    });
   });
 });

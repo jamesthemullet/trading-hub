@@ -32,11 +32,17 @@ type SetBoostedOrder = {
   };
 };
 
+type RestoreStateAction = {
+  type: 'RESTORE_STATE';
+  payload: MerchandisingRuleSetFacetConfigWithId;
+};
+
 export type Action =
   | MoveRowUpAction
   | MoveRowDownAction
   | SetBoostedOrder
-  | ChangeDisplayTypeAction;
+  | ChangeDisplayTypeAction
+  | RestoreStateAction;
 
 export const facetAttributesPageReducer = (
   state: MerchandisingRuleSetFacetConfigWithId,
@@ -109,6 +115,10 @@ export const facetAttributesPageReducer = (
         ...state,
         boosted: newBoostedArray,
       };
+    }
+
+    case 'RESTORE_STATE': {
+      return action.payload;
     }
   }
 };
