@@ -139,29 +139,30 @@ Output exactly this structure:
 **Risk:** <Could this change break anything? How did you verify it won't?>
 ```
 
-### Step 7 — Create a PR
+### Step 7 — Stage changes
 
-Stage and commit your changes:
+Stage the changed files so the user can commit and push themselves:
 
 ```bash
 git add <changed files>
-git commit -m "<type>: <short description>
+```
+
+Then tell the user the suggested commit message to use:
+
+```
+<type>: <short description>
 
 <body: what changed and why>
 
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
 ```
 
-Then push and open a PR:
+Also provide a suggested PR description they can use when opening the PR:
 
-```bash
-gh pr create \
-  --repo DigitalInnovation/trading-hub \
-  --title "<short title>" \
-  --label "testing" \
-  --body "## What
+```markdown
+## What
 
-<what changed>
+<what changed and in which files>
 
 ## Why
 
@@ -169,12 +170,10 @@ gh pr create \
 
 ## Verification
 
-- [ ] Unit tests pass: \`pnpm run test\`
-- [ ] TypeScript clean: \`pnpm run ts-check\`
-- [ ] Lint clean: \`pnpm run lint\`"
+- [ ] Unit tests pass: `pnpm run test`
+- [ ] TypeScript clean: `pnpm run ts-check`
+- [ ] Lint clean: `pnpm run lint`
 ```
-
-Report the PR URL.
 
 ## Known constraints and conventions
 

@@ -46,7 +46,7 @@ describe('useRedirectUpdate', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.isSaving).toBeTruthy();
+      expect(result.current.isSaving).toBe(true);
     });
   });
 

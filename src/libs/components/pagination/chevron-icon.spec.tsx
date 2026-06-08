@@ -5,7 +5,7 @@ import { ChevronIcon } from './chevron-icon';
 describe('ChevronIcon', () => {
   it('should render the chevron icon', () => {
     const { container } = render(<ChevronIcon type="prev" />);
-    expect(container.getElementsByTagName('path')).toBeTruthy();
+    expect(container.getElementsByTagName('path')).toHaveLength(1);
   });
 
   it('should render the chevron icon with the prev type', () => {

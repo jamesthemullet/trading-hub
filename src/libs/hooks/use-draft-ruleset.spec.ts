@@ -48,7 +48,7 @@ describe('useDraftRuleset', () => {
 
   const parseStoredDraft = (): DraftRulesetState => {
     const stored = sessionStorage.getItem(DRAFT_RULESET_SESSION_KEY);
-    expect(stored).toBeTruthy();
+    expect(stored).not.toBeNull();
     if (!stored) {
       throw new Error('Draft ruleset not found in sessionStorage');
     }
@@ -165,7 +165,7 @@ describe('useDraftRuleset', () => {
         draft = getResult.current.getDraft();
       });
 
-      expect(draft).toBeTruthy();
+      expect(draft).not.toBeNull();
       expect(draft?.ruleset).toEqual(draftRuleset);
       expect(draft?.type).toBe('category');
       expect(draft?.timestamp).toBeDefined();
@@ -232,7 +232,7 @@ describe('useDraftRuleset', () => {
       });
 
       let stored = sessionStorage.getItem(DRAFT_RULESET_SESSION_KEY);
-      expect(stored).toBeTruthy();
+      expect(stored).not.toBeNull();
 
       const { result: clearResult } = renderHook(() => useDraftRuleset());
       act(() => {
