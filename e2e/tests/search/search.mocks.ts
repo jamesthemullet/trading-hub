@@ -1,5 +1,4 @@
 import type {
-  MerchandisingAttributesResponse,
   MerchandisingProductSearchResponse,
   MerchandisingReturnedKeywordRuleSet,
   MerchandisingReturnedKeywordRuleSets,
@@ -1053,51 +1052,7 @@ export const mockProducts: MerchandisingProductSearchResponse = {
   pagination: { totalItems: 130 },
 };
 
-export const mockCategoryNumericAttributes: MerchandisingAttributesResponse = {
-  attributes: [
-    {
-      name: 'predictions.salesIn1Day.normalisedValue',
-      type: 'numeric',
-    },
-    {
-      name: 'newInFreshNess',
-      type: 'numeric',
-    },
-  ],
-};
-
-export const mockCategoryAlphanumericAttributes: MerchandisingAttributesResponse =
-  {
-    attributes: [
-      {
-        name: 'offerFlag',
-        type: 'alphanumeric',
-        values: [
-          {
-            value: '0',
-          },
-          {
-            value: '1',
-          },
-        ],
-      },
-      {
-        name: 'fit',
-        type: 'alphanumeric',
-        values: [
-          {
-            value: 'Regular fit',
-          },
-          {
-            value: 'Relaxed fit',
-          },
-          {
-            value: 'Fitted',
-          },
-          {
-            value: 'Straight leg',
-          },
-        ],
-      },
-    ],
-  };
+export {
+  mockCategoryAlphanumericAttributes,
+  mockCategoryNumericAttributes,
+} from '../shared.mocks';

@@ -1,0 +1,26 @@
+name: Daily test audit
+
+on:
+  schedule:
+    - cron: '0 8 * * 1-5' # 8am UTC Mon-Fri https://crontab.guru/#0_8_*_*_1-5
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  trigger-test-audit:
+    name: Open Copilot test audit issue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue and assign to Copilot
+        run: |
+          LENS=$(( (RANDOM % 6) + 1 ))
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "Daily test quality audit $(date -u +%Y-%m-%d)" \
+            --body "$(printf '/tests skill\n\nlens: %s' "${LENS}")" \
+            --label "testing,agentic-workflows,automation"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

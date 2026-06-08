@@ -291,6 +291,8 @@ test.describe('Keyword search', () => {
 
     await page.getByLabel('newInFreshNess').first().click();
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'Done' }).click();
 
     await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
@@ -326,6 +328,8 @@ test.describe('Keyword search', () => {
       .first()
       .click();
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'Done' }).click();
 
     await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
@@ -355,6 +359,8 @@ test.describe('Keyword search', () => {
     await page.getByRole('button', { name: 'fit' }).first().click();
 
     await page.getByLabel('Regular fit').first().click();
+
+    await checkAccessibility(page);
 
     await page.getByRole('button', { name: 'Done' }).click();
 
@@ -396,6 +402,8 @@ test.describe('Keyword search', () => {
 
     await page.getByLabel('Regular fit').first().click();
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'Done' }).click();
 
     await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
@@ -431,6 +439,8 @@ test.describe('Keyword search', () => {
     await page.getByRole('button', { name: 'fit' }).first().click();
 
     await page.getByLabel('Regular fit').first().click();
+
+    await checkAccessibility(page);
 
     await page.getByRole('button', { name: 'Done' }).click();
 
@@ -468,6 +478,8 @@ test.describe('Keyword search', () => {
 
     await page.getByLabel('Regular fit').first().click();
 
+    await checkAccessibility(page);
+
     await page.getByRole('button', { name: 'Done' }).click();
 
     await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
@@ -490,6 +502,8 @@ test.describe('Keyword search', () => {
       await page.getByPlaceholder('Select date range').click();
 
       await expect(page.getByText('Rule date and time duration')).toBeVisible();
+
+      await checkAccessibility(page);
 
       await page.getByTitle('Toggle').click();
       await expect(
@@ -533,6 +547,8 @@ test.describe('Keyword search', () => {
         page.getByText('Sep 12 2024 15:17 - Dec 19 2024 04:20')
       ).toBeVisible();
 
+      await checkAccessibility(page);
+
       await page.locator('button:has-text("16")').nth(1).click();
       await page.locator('button:has-text("22")').nth(1).click();
 
@@ -572,6 +588,8 @@ test.describe('Keyword search', () => {
       await expect(
         page.getByText('Sep 12 2024 15:17 - Dec 19 2024 04:20')
       ).toBeVisible();
+
+      await checkAccessibility(page);
 
       await page.getByTitle('Toggle').click();
 
