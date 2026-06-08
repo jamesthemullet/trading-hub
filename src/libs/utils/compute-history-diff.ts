@@ -85,12 +85,11 @@ const diffProductBoostBury = (
     ...previous
       .filter((p) => !currentById.has(p.id))
       .map((p) => removeLabel(p.id)),
-    ...current
-      .filter((p) => {
-        const prev = previousById.get(p.id);
-        return prev !== undefined && prev.weight !== p.weight;
-      })
-      .map((p) => weightLabel(p.id, p.weight, previousById.get(p.id)!.weight)),
+    ...current.flatMap((p) => {
+      const prev = previousById.get(p.id);
+      if (prev === undefined || prev.weight === p.weight) return [];
+      return [weightLabel(p.id, p.weight, prev.weight)];
+    }),
   ];
 };
 
@@ -114,18 +113,11 @@ const diffByField = (
     ...previous
       .filter((r) => !currentByField.has(r.field))
       .map((r) => removeLabel(r.field)),
-    ...current
-      .filter((r) => {
-        const prev = previousByField.get(r.field);
-        return prev !== undefined && prev.weight !== r.weight;
-      })
-      .map((r) =>
-        weightChangeLabel(
-          r.field,
-          r.weight,
-          previousByField.get(r.field)!.weight
-        )
-      ),
+    ...current.flatMap((r) => {
+      const prev = previousByField.get(r.field);
+      if (prev === undefined || prev.weight === r.weight) return [];
+      return [weightChangeLabel(r.field, r.weight, prev.weight)];
+    }),
   ];
 };
 
@@ -155,14 +147,11 @@ const diffAlphanumeric = (
       .filter((r) => !currentByFields.has(serialiseFields(r)))
       .map(removeLabel),
     ...(weightChangeLabel
-      ? current
-          .filter((r) => {
-            const prev = previousByFields.get(serialiseFields(r));
-            return prev !== undefined && prev.weight !== r.weight;
-          })
-          .map((r) =>
-            weightChangeLabel(r, previousByFields.get(serialiseFields(r))!)
-          )
+      ? current.flatMap((r) => {
+          const prev = previousByFields.get(serialiseFields(r));
+          if (prev === undefined || prev.weight === r.weight) return [];
+          return [weightChangeLabel(r, prev)];
+        })
       : []),
   ];
 };
