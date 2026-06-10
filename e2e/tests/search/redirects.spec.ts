@@ -180,6 +180,7 @@ test.describe('Keyword Redirects', () => {
       await page.getByRole('link', { name: 'Edit redirect rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
+      await checkAccessibility(page);
 
       await page.getByPlaceholder('Select date range').click();
 
@@ -217,6 +218,7 @@ test.describe('Keyword Redirects', () => {
       await page.getByRole('link', { name: 'Edit redirect rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
+      await checkAccessibility(page);
 
       await page.getByPlaceholder('Select date range').click();
 

@@ -692,6 +692,7 @@ test.describe('Categories', () => {
       await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
+      await checkAccessibility(page);
 
       await page.getByPlaceholder('Select date range').click();
 
@@ -734,6 +735,7 @@ test.describe('Categories', () => {
       await page.getByRole('link', { name: 'Edit ranking rule' }).click();
 
       await expect(page.getByText('Duration')).toBeVisible();
+      await checkAccessibility(page);
 
       await page.getByPlaceholder('Select date range').click();
 

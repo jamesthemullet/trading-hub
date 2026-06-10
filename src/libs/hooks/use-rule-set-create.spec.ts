@@ -2,6 +2,8 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
+
 import { useRuleSetCreate } from './use-rule-set-create';
 
 const getRuleSetCreateMock = jest.fn();
@@ -13,19 +15,6 @@ const handlers = [
     return HttpResponse.json(data, status);
   }),
 ];
-
-const mockMerchandisingRules = {
-  pinnedProducts: [],
-  blockedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
-};
 
 const server = setupServer(...handlers);
 const mockCategoryId = 'catid123';

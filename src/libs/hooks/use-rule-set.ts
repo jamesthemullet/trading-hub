@@ -70,7 +70,6 @@ export const useRuleSet = (
         }
         setPagination(result.data.pagination);
       } catch (error) {
-        // istanbul ignore next
         setError(handleError(error));
       } finally {
         setIsLoading(false);

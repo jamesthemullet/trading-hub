@@ -62,6 +62,25 @@ describe('useRuleSet', () => {
     });
   });
 
+  it('should set error when api call fails', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    try {
+      getRuleSetMock.mockReturnValueOnce({ error: true });
+
+      const { result } = renderHook(() => useRuleSet('', 0, 50, 'category'));
+
+      await waitFor(() => {
+        expect(result.current.error).not.toBe('');
+        expect(result.current.isLoading).toBe(false);
+      });
+    } finally {
+      consoleErrorSpy.mockRestore();
+    }
+  });
+
   it('should refetch data', async () => {
     const mockResponse: MerchandisingReturnedCategoryRuleSets = {
       ruleSets: [],
