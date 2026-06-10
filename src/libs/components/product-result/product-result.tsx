@@ -4,12 +4,56 @@ import { Typography } from '@/libs/components';
 import { InfoCard } from '@/libs/components/info-card/info-card';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { StatusBadge } from '@/libs/components/status-badge/status-badge';
-import type { ProductDisplay } from '@/libs/hooks/product-status/reducer';
+import type {
+  ProductDisplay,
+  SectionWithLabel,
+} from '@/libs/hooks/product-status/reducer';
 
 import Image from 'next/image';
 
 import { CopyMessageBox } from './copy-message-box';
 import styles from './product-result.module.css';
+
+type InfoCardContainerProps = {
+  title: string;
+  section: SectionWithLabel<string | null>;
+  isIndexed: boolean;
+};
+
+const InfoCardContainer = ({
+  title,
+  section,
+  isIndexed,
+}: InfoCardContainerProps) => (
+  <InfoCard
+    title={title}
+    statusVariant={section.status}
+    statusLabel={section.statusLabel}
+  >
+    {section.issues.length > 0 ? (
+      <ul className={styles.issueList}>
+        {section.issues.map((issue) => (
+          <li key={issue.reason}>
+            <InfoBox
+              showIcon={false}
+              variant={issue.type}
+              title={issue.reason}
+              text={issue.action}
+              height="auto"
+              width="auto"
+            >
+              <CopyMessageBox message={issue.copyMessage} />
+            </InfoBox>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <Typography variant="bodySmall">
+        {isIndexed ? 'In-store and online' : 'Not available'}
+      </Typography>
+    )}
+  </InfoCard>
+);
 
 const MNS_IMAGE_BASE = 'https://asset1.cxnmarksandspencer.com/is/image/mands';
 
@@ -36,7 +80,7 @@ export const ProductResult = ({ productDisplay }: Props) => {
           <div className={styles.titleWrapper}>
             <Typography
               variant="titleMedium"
-              className={!isIndexed ? styles.titleUnavailable : undefined}
+              className={isIndexed ? undefined : styles.titleUnavailable}
             >
               {product?.title ?? 'Title not available'}
             </Typography>
@@ -77,7 +121,7 @@ export const ProductResult = ({ productDisplay }: Props) => {
         statusVariant={productAssembly.status}
         statusLabel={productAssembly.statusLabel}
       >
-        {productAssembly.issues.length > 0 ? (
+        {productAssembly.issues.length > 0 && (
           <ul className={styles.issueList}>
             {productAssembly.issues.map((issue) => (
               <li key={issue.reason}>
@@ -94,78 +138,36 @@ export const ProductResult = ({ productDisplay }: Props) => {
               </li>
             ))}
           </ul>
-        ) : productAssembly.status === 'blocked' ? (
-          <Typography variant="bodySmall">Not available</Typography>
-        ) : (
-          <ul className={styles.detailList}>
-            {productAssembly.content.map(({ label, value }) => (
-              <li key={label}>
-                <Typography variant="bodySmall">
-                  {label}: {value}
-                </Typography>
-              </li>
-            ))}
-          </ul>
         )}
+        {productAssembly.issues.length === 0 &&
+          productAssembly.status === 'blocked' && (
+            <Typography variant="bodySmall">Not available</Typography>
+          )}
+        {productAssembly.issues.length === 0 &&
+          productAssembly.status !== 'blocked' && (
+            <ul className={styles.detailList}>
+              {productAssembly.content.map(({ label, value }) => (
+                <li key={label}>
+                  <Typography variant="bodySmall">
+                    {label}: {value}
+                  </Typography>
+                </li>
+              ))}
+            </ul>
+          )}
       </InfoCard>
 
-      <InfoCard
+      <InfoCardContainer
         title="Availability"
-        statusVariant={sections.availability.status}
-        statusLabel={sections.availability.statusLabel}
-      >
-        {sections.availability.issues.length > 0 ? (
-          <ul className={styles.issueList}>
-            {sections.availability.issues.map((issue) => (
-              <li key={issue.reason}>
-                <InfoBox
-                  showIcon={false}
-                  variant={issue.type}
-                  title={issue.reason}
-                  text={issue.action}
-                  height="auto"
-                  width="auto"
-                >
-                  <CopyMessageBox message={issue.copyMessage} />
-                </InfoBox>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <Typography variant="bodySmall">
-            {isIndexed ? 'In-store and online' : 'Not available'}
-          </Typography>
-        )}
-      </InfoCard>
+        section={sections.availability}
+        isIndexed={isIndexed}
+      />
 
-      <InfoCard
+      <InfoCardContainer
         title="Saleability"
-        statusVariant={sections.saleability.status}
-        statusLabel={sections.saleability.statusLabel}
-      >
-        {sections.saleability.issues.length > 0 ? (
-          <ul className={styles.issueList}>
-            {sections.saleability.issues.map((issue) => (
-              <li key={issue.reason}>
-                <InfoBox
-                  showIcon={false}
-                  variant={issue.type}
-                  title={issue.reason}
-                  text={issue.action}
-                  height="auto"
-                  width="auto"
-                >
-                  <CopyMessageBox message={issue.copyMessage} />
-                </InfoBox>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <Typography variant="bodySmall">
-            {isIndexed ? 'In-store and online' : 'Not available'}
-          </Typography>
-        )}
-      </InfoCard>
+        section={sections.saleability}
+        isIndexed={isIndexed}
+      />
     </div>
   );
 };
