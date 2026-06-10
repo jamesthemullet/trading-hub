@@ -140,7 +140,6 @@ export const HistoryPage = ({
           <HistoryList
             items={historyItems}
             ruleType={ruleType}
-            totalItems={normalisedTotalItems}
             startIndex={startIndex}
             currentPage={currentPage}
             currentPageSize={currentPageSize}

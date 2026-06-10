@@ -239,7 +239,6 @@ describe('HistoryList', () => {
       <HistoryList
         items={mockItems}
         ruleType={RuleType.CategoryRanking}
-        totalItems={25}
         startIndex={10}
       />
     );

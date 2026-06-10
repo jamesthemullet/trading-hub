@@ -133,7 +133,6 @@ const HistoryRow = ({
 type HistoryListProps = {
   items: HistoryItem[];
   ruleType: RuleType;
-  totalItems?: number;
   startIndex?: number;
   currentPage?: number;
   currentPageSize?: number;

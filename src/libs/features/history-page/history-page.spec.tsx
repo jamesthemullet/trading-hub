@@ -118,7 +118,6 @@ describe('HistoryPage', () => {
 
     expect(mockHistoryList).toHaveBeenCalledWith(
       expect.objectContaining({
-        totalItems: 42,
         pagination: { totalItems: 42 },
       })
     );
