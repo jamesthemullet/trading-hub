@@ -1,4 +1,10 @@
-import { type ChangeEvent, useEffect, useReducer, useState } from 'react';
+import {
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -12,6 +18,7 @@ import { ROUTES } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { GlobalFacetAttributesEditModal } from '@/libs/containers/facets/global-facet-attributes-edit-modal/global-facet-attributes-edit-modal';
+import { ModalUnsavedChanges } from '@/libs/containers/shared/modals';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
 import { useGlobalFacetAttributesEditModal } from '@/libs/hooks/use-global-facet-attributes-edit-modal';
@@ -124,6 +131,34 @@ export const GlobalFacetAttributesPageLayout = ({
 
   // save logic
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] =
+    useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const navigateBack = useCallback(() => {
+    router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
+  }, [router, ruleSetId]);
+
+  const handleClose = useCallback(() => {
+    if (hasChanges) {
+      setIsUnsavedChangesModalOpen(true);
+      return;
+    }
+    navigateBack();
+  }, [hasChanges, navigateBack]);
+
+  const trackingDispatch: typeof dispatch = useCallback(
+    (action) => {
+      if (
+        action.type !== 'TOGGLE_ALL_ATTRIBUTES' &&
+        action.type !== 'TOGGLE_SELECTED_ATTRIBUTE'
+      ) {
+        setHasChanges(true);
+      }
+      dispatch(action);
+    },
+    [dispatch]
+  );
 
   // istanbul ignore next
   const onCloseModal = () => setIsConfirmationModalOpen(false);
@@ -171,7 +206,7 @@ export const GlobalFacetAttributesPageLayout = ({
       facet,
       countryCode,
       displayName,
-      dispatch,
+      dispatch: trackingDispatch,
       globalAttributesLocalState,
       setIsAwaitingUpdate,
     });
@@ -179,6 +214,7 @@ export const GlobalFacetAttributesPageLayout = ({
   // merge logic
   const handleMerge = () => {
     setIsAwaitingUpdate(true);
+    setHasChanges(true);
 
     const selectedRows = [
       ...globalAttributesLocalState.boostedRows.filter(
@@ -215,7 +251,7 @@ export const GlobalFacetAttributesPageLayout = ({
           aria-hidden={!isPinned}
         >
           <GlobalFacetAttributesCompactBar
-            onClose={() => router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId))}
+            onClose={handleClose}
             onSave={handleSave}
             onMergeClick={handleMerge}
             onSearchChange={onSearchChange}
@@ -243,9 +279,7 @@ export const GlobalFacetAttributesPageLayout = ({
         <FacetAttributesPageLayoutHeader
           displayName={displayName}
           facetType={FacetType.Global}
-          onClose={() => {
-            router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
-          }}
+          onClose={handleClose}
           onSave={handleSave}
           error={updateGlobalFacetError}
           isWriteEnabled={isWriteEnabled}
@@ -270,7 +304,7 @@ export const GlobalFacetAttributesPageLayout = ({
         searchQuery={searchQuery}
         countryCode={countryCode}
         editingValues={editingValues}
-        dispatch={dispatch}
+        dispatch={trackingDispatch}
         globalAttributesLocalState={globalAttributesLocalState}
         setEditingValues={setEditingValues}
         facet={facet}
@@ -297,12 +331,18 @@ export const GlobalFacetAttributesPageLayout = ({
       {globalAttributesLocalState.currentMerge.isOpen && (
         <GlobalFacetAttributesEditModal
           globalAttributesLocalState={globalAttributesLocalState}
-          dispatch={dispatch}
+          dispatch={trackingDispatch}
           error={editModalError}
           handleError={handleEditModalError}
           onSave={handleEditModalSave}
         />
       )}
+
+      <ModalUnsavedChanges
+        opened={isUnsavedChangesModalOpen}
+        onClose={navigateBack}
+        onContinue={() => setIsUnsavedChangesModalOpen(false)}
+      />
     </>
   );
 };

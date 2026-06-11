@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -86,6 +86,74 @@ describe('GlobalFacetAttributesPageLayout', () => {
     expect(mockRouter.push).toHaveBeenCalledWith(
       `/global/facets/edit/${ruleSetId}`
     );
+  });
+
+  describe('unsaved changes modal', () => {
+    const makeChange = async (user: ReturnType<typeof userEvent.setup>) => {
+      const boostedRow = screen.getByTestId('included attribute 0 Cotton');
+      const dropdownButton = within(boostedRow).getByRole('button', {
+        name: /select to set as included, excluded or algo control/i,
+      });
+      await user.click(dropdownButton);
+      const excludeOption = within(boostedRow).getByRole('menuitemradio', {
+        name: /exclude only/i,
+      });
+      await user.click(excludeOption);
+    };
+
+    it('shows modal when closing with unsaved changes', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <GlobalFacetAttributesPageLayout {...defaultProps} />
+      );
+
+      await makeChange(user);
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      expect(
+        await screen.findByRole('heading', {
+          name: 'Close without saving edits',
+        })
+      ).toBeInTheDocument();
+    });
+
+    it('navigates away when confirming close without saving', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <GlobalFacetAttributesPageLayout {...defaultProps} />
+      );
+
+      await makeChange(user);
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await user.click(
+        await screen.findByRole('button', { name: 'Close without saving' })
+      );
+
+      expect(mockRouter.push).toHaveBeenCalledWith(
+        `/global/facets/edit/${ruleSetId}`
+      );
+    });
+
+    it('dismisses modal when continuing editing', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <GlobalFacetAttributesPageLayout {...defaultProps} />
+      );
+
+      await makeChange(user);
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await user.click(
+        await screen.findByRole('button', { name: 'Continue editing' })
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('heading', {
+            name: 'Close without saving edits',
+          })
+        ).not.toBeInTheDocument();
+      });
+    });
   });
 
   it('opens and confirms the save confirmation modal', async () => {

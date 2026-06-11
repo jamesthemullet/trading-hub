@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import type {
   MerchandisingCountryCode,
@@ -63,6 +63,21 @@ export const Redirect = ({
 
   const [defaultValue, setDefaultValue] = useState(savedRedirect?.keywords[0]);
 
+  const hasChanges = useMemo(() => {
+    if (!savedRedirect) return false;
+    return (
+      redirect.destinationUrl !== savedRedirect.destinationUrl ||
+      redirect.isEnabled !== savedRedirect.isEnabled ||
+      redirect.type !== savedRedirect.type ||
+      redirect.ruleTitle !== savedRedirect.ruleTitle ||
+      redirect.startDate !== savedRedirect.startDate ||
+      redirect.endDate !== savedRedirect.endDate ||
+      redirect.countryCode !== savedRedirect.countryCode ||
+      redirect.keywords.length !== savedRedirect.keywords.length ||
+      redirect.keywords.some((k, i) => k !== savedRedirect.keywords[i])
+    );
+  }, [redirect, savedRedirect]);
+
   const onSaveRedirect = () => {
     if (onCreate) {
       onCreate(redirect);
@@ -110,7 +125,7 @@ export const Redirect = ({
         hasPreview={false}
         shouldHidePreview
         isNewRuleSet={!!onCreate}
-        hasChanges={false}
+        hasChanges={hasChanges}
         rulesetType="redirect"
         isWriteEnabled={isWriteEnabled}
       />

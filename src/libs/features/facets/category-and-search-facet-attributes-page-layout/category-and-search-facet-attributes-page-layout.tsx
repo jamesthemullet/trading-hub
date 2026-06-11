@@ -10,6 +10,7 @@ import { useUndoButtonFlag } from '@/libs/components/feature-flag/feature-flag';
 import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
+import { ModalUnsavedChanges } from '@/libs/containers/shared/modals';
 import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 
@@ -106,6 +107,25 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
 
   const hasChanges = stateHistory.length > 0;
 
+  const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] =
+    useState(false);
+
+  const navigateBack = useCallback(() => {
+    if (isDraftRuleset) {
+      router.push(getNewFacetRoute(facetType));
+      return;
+    }
+    router.push(getFacetRoute(facetType, 'edit', ruleSetId));
+  }, [isDraftRuleset, router, facetType, ruleSetId]);
+
+  const handleClose = useCallback(() => {
+    if (hasChanges) {
+      setIsUnsavedChangesModalOpen(true);
+      return;
+    }
+    navigateBack();
+  }, [hasChanges, navigateBack]);
+
   const handleSave = () => {
     onSave(facetLocalState);
   };
@@ -119,13 +139,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         displayName={displayName}
         facetType={facetType}
         headerText={headerText}
-        onClose={() => {
-          if (isDraftRuleset) {
-            router.push(getNewFacetRoute(facetType));
-            return;
-          }
-          router.push(getFacetRoute(facetType, 'edit', ruleSetId));
-        }}
+        onClose={handleClose}
         onSave={handleSave}
         isWriteEnabled={isWriteEnabled}
         isUndoButtonVisible={isUndoButtonVisible}
@@ -148,6 +162,12 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         dispatch={dispatchWithHistory}
         searchQuery={searchQuery}
         isWriteEnabled={isWriteEnabled}
+      />
+
+      <ModalUnsavedChanges
+        opened={isUnsavedChangesModalOpen}
+        onClose={navigateBack}
+        onContinue={() => setIsUnsavedChangesModalOpen(false)}
       />
     </>
   );

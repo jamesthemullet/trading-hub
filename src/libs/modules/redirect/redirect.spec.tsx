@@ -256,6 +256,119 @@ describe('Redirect', () => {
     expect(screen.getByDisplayValue('title of redirect')).toBeVisible();
   });
 
+  describe('unsaved changes modal', () => {
+    it('shows modal when cancelling with unsaved changes', async () => {
+      const user = userEvent.setup({ delay: null });
+      const mockCancel = jest.fn();
+
+      const existingRedirect: MerchandisingReturnedKeywordRedirect = {
+        destinationUrl: 'l/womens/dresses',
+        type: 'redirectTerm',
+        keywords: ['keyword'],
+        id: 'abc123',
+        lastChanged: { date: '', user: '' },
+        isEnabled: true,
+      };
+
+      renderWithProviders(
+        <Redirect
+          isWriteEnabled
+          onCancel={mockCancel}
+          onSave={jest.fn()}
+          title="Edit Keyword Redirect rule"
+          redirect={existingRedirect}
+        />
+      );
+
+      const redirectUrl = screen.getByPlaceholderText('c/');
+      await user.type(redirectUrl, '/changed');
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      expect(
+        await screen.findByRole('heading', {
+          name: 'Close without saving edits',
+        })
+      ).toBeInTheDocument();
+      expect(mockCancel).not.toHaveBeenCalled();
+    });
+
+    it('navigates away when confirming close without saving', async () => {
+      const user = userEvent.setup({ delay: null });
+      const mockCancel = jest.fn();
+
+      const existingRedirect: MerchandisingReturnedKeywordRedirect = {
+        destinationUrl: 'l/womens/dresses',
+        type: 'redirectTerm',
+        keywords: ['keyword'],
+        id: 'abc123',
+        lastChanged: { date: '', user: '' },
+        isEnabled: true,
+      };
+
+      renderWithProviders(
+        <Redirect
+          isWriteEnabled
+          onCancel={mockCancel}
+          onSave={jest.fn()}
+          title="Edit Keyword Redirect rule"
+          redirect={existingRedirect}
+        />
+      );
+
+      const redirectUrl = screen.getByPlaceholderText('c/');
+      await user.type(redirectUrl, '/changed');
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await user.click(
+        await screen.findByRole('button', { name: 'Close without saving' })
+      );
+
+      expect(mockCancel).toHaveBeenCalled();
+    });
+
+    it('dismisses modal when continuing editing', async () => {
+      const user = userEvent.setup({ delay: null });
+      const mockCancel = jest.fn();
+
+      const existingRedirect: MerchandisingReturnedKeywordRedirect = {
+        destinationUrl: 'l/womens/dresses',
+        type: 'redirectTerm',
+        keywords: ['keyword'],
+        id: 'abc123',
+        lastChanged: { date: '', user: '' },
+        isEnabled: true,
+      };
+
+      renderWithProviders(
+        <Redirect
+          isWriteEnabled
+          onCancel={mockCancel}
+          onSave={jest.fn()}
+          title="Edit Keyword Redirect rule"
+          redirect={existingRedirect}
+        />
+      );
+
+      const redirectUrl = screen.getByPlaceholderText('c/');
+      await user.type(redirectUrl, '/changed');
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await user.click(
+        await screen.findByRole('button', { name: 'Continue editing' })
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('heading', {
+            name: 'Close without saving edits',
+          })
+        ).not.toBeInTheDocument();
+      });
+      expect(mockCancel).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Scheduling', () => {
     beforeAll(() => {
       jest.useFakeTimers();

@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
@@ -86,21 +86,21 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
   it('renders the component with category facet type', () => {
     setup();
 
-    expect(screen.getByPlaceholderText('Search')).toBeInTheDocument();
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(screen.getByTestId('Label for 13 - 14.4')).toBeInTheDocument();
   });
 
   it('renders the component with search facet type', () => {
     setup({ facetType: FacetType.Search });
 
-    expect(screen.getByPlaceholderText('Search')).toBeInTheDocument();
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
   });
 
   it('handles search input changes', async () => {
     const onSearchChange = jest.fn();
     setup({ onSearchChange });
 
-    const searchInput = screen.getByPlaceholderText('Search');
+    const searchInput = screen.getByRole('searchbox');
     await userEvent.type(searchInput, 'test');
 
     expect(onSearchChange).toHaveBeenCalled();
@@ -154,6 +154,96 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
     );
   });
 
+  it('calls onSave with current state when save button is clicked', async () => {
+    const user = userEvent.setup({ delay: null });
+    const { props } = setup({ facetType: FacetType.Category });
+
+    const saveButton = screen.getByRole('button', { name: 'Save' });
+    await user.click(saveButton);
+
+    expect(props.onSave).toHaveBeenCalled();
+  });
+
+  describe('unsaved changes modal', () => {
+    it('shows modal when closing with unsaved changes', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
+        /Select to set as included, excluded or algo control/i
+      );
+      await user.click(dropdown);
+      const excludeOption = within(row).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      });
+      await user.click(excludeOption);
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      expect(
+        await screen.findByRole('heading', {
+          name: 'Close without saving edits',
+        })
+      ).toBeInTheDocument();
+    });
+
+    it('navigates away when confirming close without saving', async () => {
+      const user = userEvent.setup({ delay: null });
+      const { mockRouter } = setup(
+        { facetType: FacetType.Category },
+        { hasUndoButton: true }
+      );
+
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
+        /Select to set as included, excluded or algo control/i
+      );
+      await user.click(dropdown);
+      const excludeOption = within(row).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      });
+      await user.click(excludeOption);
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await user.click(
+        await screen.findByRole('button', { name: 'Close without saving' })
+      );
+
+      expect(mockRouter.push).toHaveBeenCalledWith(
+        `/facets/category/edit/${ruleSetId}`
+      );
+    });
+
+    it('dismisses modal when continuing editing', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
+        /Select to set as included, excluded or algo control/i
+      );
+      await user.click(dropdown);
+      const excludeOption = within(row).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      });
+      await user.click(excludeOption);
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await user.click(
+        await screen.findByRole('button', { name: 'Continue editing' })
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('heading', {
+            name: 'Close without saving edits',
+          })
+        ).not.toBeInTheDocument();
+      });
+    });
+  });
+
   describe('undo button', () => {
     it('does not render undo button when flag is off', () => {
       setup();
@@ -183,15 +273,15 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
 
       expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
 
-      const dropdown = screen.getAllByLabelText(
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
         /Select to set as included, excluded or algo control/i
-      )[0];
+      );
       await user.click(dropdown);
 
-      const excludeOption = within(dropdown.parentElement!).getByRole(
-        'menuitemradio',
-        { name: 'Exclude only' }
-      );
+      const excludeOption = within(row).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      });
       await user.click(excludeOption);
 
       expect(screen.getByRole('button', { name: 'Undo' })).toBeEnabled();
@@ -201,14 +291,14 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
       const user = userEvent.setup({ delay: null });
       setup({ facetType: FacetType.Category }, { hasUndoButton: true });
 
-      const dropdown = screen.getAllByLabelText(
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
         /Select to set as included, excluded or algo control/i
-      )[0];
-      await user.click(dropdown);
-      const excludeOption = within(dropdown.parentElement!).getByRole(
-        'menuitemradio',
-        { name: 'Exclude only' }
       );
+      await user.click(dropdown);
+      const excludeOption = within(row).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      });
       await user.click(excludeOption);
 
       await user.click(screen.getByRole('button', { name: 'Undo' }));
