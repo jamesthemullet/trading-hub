@@ -16,7 +16,7 @@ export const useSearchHistory = (
   id: string,
   currentPage: number,
   currentPageSize: number
-) => {
+): { history: SearchHistory; error: string; isLoading: boolean } => {
   const [history, setHistory] = useState<SearchHistory>({
     changes: [],
     pagination: { totalItems: 0 },

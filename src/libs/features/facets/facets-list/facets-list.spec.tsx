@@ -1479,6 +1479,20 @@ describe('FacetsList', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should display an error message when useFacetsList returns an error', () => {
+    jest.mocked(useFacetsList).mockReturnValue({
+      facets: [],
+      isLoading: false,
+      error: 'Failed to load',
+    });
+
+    renderWithProviders(<FacetsList {...defaultFacetProps} />);
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Error retrieving facet list: Failed to load'
+    );
+  });
+
   it('should not render a facet row for boosted facets not found in global or context facets', () => {
     const unknownFacetId = 'unknown-facet-id-that-does-not-exist';
 

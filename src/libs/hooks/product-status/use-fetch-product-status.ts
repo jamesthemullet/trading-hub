@@ -7,7 +7,9 @@ import type { Action } from './reducer';
 const toCatalogue = (market: MerchandisingCountryCode) =>
   market === 'IE' ? 'MANDSIE' : 'MANDSUK';
 
-export const useFetchProductStatus = (dispatch: React.Dispatch<Action>) => {
+export const useFetchProductStatus = (
+  dispatch: React.Dispatch<Action>
+): ((productId: string, market: MerchandisingCountryCode) => Promise<void>) => {
   const fetchProductStatus = async (
     productId: string,
     market: MerchandisingCountryCode

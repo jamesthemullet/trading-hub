@@ -71,7 +71,11 @@ const waitingForPush = <T>(content: T): Section<T> => ({
 
 export const getProductDetails = (
   data: BetaMerchandisingProductDiagnosticsListData
-) => {
+): {
+  isIndexed: boolean;
+  product: Product | null;
+  sections: ProductSections;
+} => {
   const isIndexed = data.products.length > 0;
   const issues = data.issues;
   const product = isIndexed ? (data.products[0] as Product) : null;

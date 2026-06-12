@@ -4,8 +4,8 @@ import userEvent from '@testing-library/user-event';
 import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
+import type { UseGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
 import type { FacetRowDisplayValue } from '@/libs/stores/facets-panel/facets-panel-reducer';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -182,10 +182,8 @@ const mockIncludedFacetIds = [
 ];
 const mockExcludedFacetIds = [facetsListMock.facets[1].id];
 
-const mockUpdateGlobalFacet = jest.fn(() =>
-  Promise.resolve({} as MerchandisingReturnedGlobalFacet | { status: string })
-);
-const updateGlobalFacet = {
+const mockUpdateGlobalFacet = jest.fn().mockResolvedValue({});
+const updateGlobalFacet: UseGlobalFacetUpdate = {
   handleGlobalFacetUpdate: mockUpdateGlobalFacet,
   error: '',
 };

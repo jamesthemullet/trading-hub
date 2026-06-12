@@ -614,18 +614,6 @@ describe('Search Facet Management Editing', () => {
         screen.getByText('Error whilst updating ruleset: Failed to update')
       ).toBeVisible();
     });
-
-    it('should display error message when fetching facet list fails', async () => {
-      mockUseFacetsList.error = 'Error fetching facet list';
-
-      renderWithProviders(<Page id={ruleSetId} />);
-
-      expect(
-        screen.getByText(
-          'Error retrieving facet list: Error fetching facet list'
-        )
-      ).toBeVisible();
-    });
   });
 
   describe('History view', () => {

@@ -93,8 +93,8 @@ export const DataTable = ({
     setOptionToggle(optionToggle === id ? '' : id);
   };
 
-  const showBreadcrumbColumn =
-    headings.filter((heading) => heading === 'Breadcrumb').length > 0;
+  const showBreadcrumbColumn = headings.includes('Breadcrumb');
+  const showScheduleColumn = headings.includes('Schedule');
 
   const setDuplicationName = ({
     categoriesInfo,
@@ -273,27 +273,24 @@ export const DataTable = ({
                           {categoryPlpUrl}
                         </Typography>
                       )}
-                      {startDate &&
-                        headings.filter((heading) => heading === 'Schedule')
-                          .length > 0 && (
-                          <div className={styles.schedulingDetailLeftSide}>
-                            <Image
-                              alt=""
-                              src="/trading-hub/asset/icon-calendar.svg"
-                              width={24}
-                              height={24}
-                            />
-                            <Typography as="span" variant="bodyMedium">
-                              {format(new Date(startDate), 'dd MMM yyyy')}
-                              {endDate
-                                ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
-                                : ' - No end date'}
-                            </Typography>
-                          </div>
-                        )}
+                      {startDate && showScheduleColumn && (
+                        <div className={styles.schedulingDetailLeftSide}>
+                          <Image
+                            alt=""
+                            src="/trading-hub/asset/icon-calendar.svg"
+                            width={24}
+                            height={24}
+                          />
+                          <Typography as="span" variant="bodyMedium">
+                            {format(new Date(startDate), 'dd MMM yyyy')}
+                            {endDate
+                              ? ` - ${format(new Date(endDate), 'dd MMM yyyy')}`
+                              : ' - No end date'}
+                          </Typography>
+                        </div>
+                      )}
                     </div>
-                    {headings.filter((heading) => heading === 'Breadcrumb')
-                      .length > 0 && (
+                    {showBreadcrumbColumn && (
                       <div className={styles.breadcrumbColumn}>
                         {categoryPlpUrl && (
                           <span title={categoryPlpUrl}>
@@ -308,8 +305,7 @@ export const DataTable = ({
                         )}
                       </div>
                     )}
-                    {headings.filter((heading) => heading === 'Schedule')
-                      .length > 0 && (
+                    {showScheduleColumn && (
                       <div className={styles.schedulingColumn}>
                         {startDate ? (
                           <>

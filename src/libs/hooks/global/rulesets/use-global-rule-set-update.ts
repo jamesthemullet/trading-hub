@@ -4,7 +4,21 @@ import type { MerchandisingRuleSet } from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useGlobalRuleSetUpdate = () => {
+type SuccessResult = { status: 'success' };
+type ErrorResult = { status: 'error'; error: unknown };
+type SaveResult = SuccessResult | ErrorResult;
+
+type UseGlobalRuleSetUpdate = {
+  saveGlobalRuleset: (params: {
+    ruleSetId: string;
+    ruleSet: MerchandisingRuleSet;
+  }) => Promise<SaveResult>;
+  error: string;
+};
+
+const SUCCESS_RESULT: SuccessResult = { status: 'success' };
+
+export const useGlobalRuleSetUpdate = (): UseGlobalRuleSetUpdate => {
   const [error, setError] = useState('');
 
   const saveGlobalRuleset = useCallback(
@@ -14,13 +28,13 @@ export const useGlobalRuleSetUpdate = () => {
     }: {
       ruleSetId: string;
       ruleSet: MerchandisingRuleSet;
-    }) => {
+    }): Promise<SaveResult> => {
       setError('');
 
       try {
         await search().betaMerchandisingGlobalRulesetUpdate(ruleSetId, ruleSet);
 
-        return { status: 'success' };
+        return SUCCESS_RESULT;
       } catch (error) {
         setError(handleError(error));
         return { status: 'error', error };

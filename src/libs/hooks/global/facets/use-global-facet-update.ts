@@ -1,10 +1,23 @@
 import { useCallback, useState } from 'react';
 
-import type { MerchandisingFacetConfig } from '@/libs/api';
+import type {
+  MerchandisingFacetConfig,
+  MerchandisingReturnedGlobalFacet,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useGlobalFacetUpdate = () => {
+type ErrorResult = { status: 'error' };
+
+export type UseGlobalFacetUpdate = {
+  handleGlobalFacetUpdate: (params: {
+    facetId: string;
+    data: MerchandisingFacetConfig;
+  }) => Promise<MerchandisingReturnedGlobalFacet | ErrorResult>;
+  error: string;
+};
+
+export const useGlobalFacetUpdate = (): UseGlobalFacetUpdate => {
   const [error, setError] = useState('');
 
   const handleGlobalFacetUpdate = useCallback(
@@ -14,7 +27,8 @@ export const useGlobalFacetUpdate = () => {
     }: {
       facetId: string;
       data: MerchandisingFacetConfig;
-    }) => {
+    }): Promise<MerchandisingReturnedGlobalFacet | ErrorResult> => {
+      setError('');
       try {
         const response = await search().betaMerchandisingFacetUpdate(
           facetId,

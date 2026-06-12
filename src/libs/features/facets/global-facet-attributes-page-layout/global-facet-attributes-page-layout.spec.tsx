@@ -2,9 +2,9 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 import { FacetType } from '@/libs/constants/rule-types';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
+import type { UseGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
 import { facetsListMock } from '@/pages/api/search/mocks';
 import { mockGlobalRuleData } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -25,12 +25,10 @@ const mockRouter = {
   push: jest.fn(),
 };
 
-const mockUpdateGlobalFacet = jest.fn(() =>
-  Promise.resolve({ status: 'success' } as
-    | MerchandisingReturnedGlobalFacet
-    | { status: string })
-);
-const updateGlobalFacet = {
+const mockUpdateGlobalFacet = jest
+  .fn()
+  .mockResolvedValue({ status: 'success' });
+const updateGlobalFacet: UseGlobalFacetUpdate = {
   handleGlobalFacetUpdate: mockUpdateGlobalFacet,
   error: '',
 };
