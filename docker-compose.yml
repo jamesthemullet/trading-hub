@@ -120,7 +120,7 @@ services:
       start_period: 60s
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.19.7
+    image: docker.elastic.co/kibana/kibana:9.4.2
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=http://elastic-dev:9200
