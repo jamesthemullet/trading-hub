@@ -98,7 +98,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   elastic-dev:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.19.7
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.2
     restart: always
     environment:
       - ELASTIC_PASSWORD=changeme
