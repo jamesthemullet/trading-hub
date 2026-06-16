@@ -1,59 +1,16 @@
-import { useEffect, useState } from 'react';
-
-import type {
-  MerchandisingPagination,
-  MerchandisingReturnedGlobalRuleSetHistory,
-} from '@/libs/api';
+import type { MerchandisingReturnedGlobalRuleSetHistory } from '@/libs/api';
 import { search } from '@/libs/api';
-import { handleError } from '@/libs/hooks/utils/error';
+import type { HistoryResult } from '@/libs/hooks/utils/use-history-pagination';
+import { useHistoryPagination } from '@/libs/hooks/utils/use-history-pagination';
 
-type GlobalHistory = {
-  changes: MerchandisingReturnedGlobalRuleSetHistory['changes'][number][];
-  pagination: MerchandisingPagination;
-};
+type GlobalHistoryChange =
+  MerchandisingReturnedGlobalRuleSetHistory['changes'][number];
 
 export const useGlobalHistory = (
   id: string,
   currentPage: number,
   currentPageSize: number
-): {
-  history: GlobalHistory;
-  error: string;
-  isLoading: boolean;
-} => {
-  const [history, setHistory] = useState<GlobalHistory>({
-    changes: [],
-    pagination: { totalItems: 0 },
-  });
-
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (!id) {
-      setIsLoading(false);
-      return;
-    }
-
-    const asyncCall = async () => {
-      try {
-        const response =
-          await search().betaMerchandisingGlobalRulesetHistoryList(id, {
-            start: (currentPage - 1) * currentPageSize,
-            rows: currentPageSize,
-          });
-
-        setHistory(response.data);
-      } catch (error) {
-        setError(handleError(error));
-        setIsLoading(false);
-        return;
-      }
-      setIsLoading(false);
-    };
-    setIsLoading(true);
-    void asyncCall();
-  }, [id, currentPage, currentPageSize]);
-
-  return { history, error, isLoading };
-};
+): HistoryResult<GlobalHistoryChange> =>
+  useHistoryPagination(id, currentPage, currentPageSize, (histId, params) =>
+    search().betaMerchandisingGlobalRulesetHistoryList(histId, params)
+  );

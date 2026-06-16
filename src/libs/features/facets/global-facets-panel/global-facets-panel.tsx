@@ -36,7 +36,6 @@ const GlobalFacetsPanel = ({
 }: GlobalFacetsPanelProps) => {
   const {
     facets,
-    onRefreshFacetList,
     isLoading: isLoadingFacets,
     error: globalFacetsListError,
   } = useGlobalFacetsList();
@@ -137,7 +136,6 @@ const GlobalFacetsPanel = ({
           countryCode={countryCode}
           onSave={onSave}
           onCancel={onCancel}
-          refreshData={onRefreshFacetList}
           onFacetDataChange={onFacetDataChange}
           isWriteEnabled={isWriteEnabled}
         />

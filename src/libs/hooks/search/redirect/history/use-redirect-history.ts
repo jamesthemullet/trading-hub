@@ -1,59 +1,16 @@
-import { useEffect, useState } from 'react';
-
-import type {
-  MerchandisingPagination,
-  MerchandisingReturnedKeywordRedirectHistory,
-} from '@/libs/api';
+import type { MerchandisingReturnedKeywordRedirectHistory } from '@/libs/api';
 import { search } from '@/libs/api';
-import { handleError } from '@/libs/hooks/utils/error';
+import type { HistoryResult } from '@/libs/hooks/utils/use-history-pagination';
+import { useHistoryPagination } from '@/libs/hooks/utils/use-history-pagination';
 
-type RedirectHistory = {
-  changes: MerchandisingReturnedKeywordRedirectHistory['changes'][number][];
-  pagination: MerchandisingPagination;
-};
+type RedirectHistoryChange =
+  MerchandisingReturnedKeywordRedirectHistory['changes'][number];
 
 export const useRedirectHistory = (
   id: string,
   currentPage: number,
   currentPageSize: number
-): {
-  history: RedirectHistory;
-  error: string;
-  isLoading: boolean;
-} => {
-  const [history, setHistory] = useState<RedirectHistory>({
-    changes: [],
-    pagination: { totalItems: 0 },
-  });
-
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (!id) {
-      setIsLoading(false);
-      return;
-    }
-
-    const asyncCall = async () => {
-      try {
-        const response =
-          await search().betaMerchandisingKeywordRedirectHistoryList(id, {
-            start: (currentPage - 1) * currentPageSize,
-            rows: currentPageSize,
-          });
-
-        setHistory(response.data);
-      } catch (error) {
-        setError(handleError(error));
-        setIsLoading(false);
-        return;
-      }
-      setIsLoading(false);
-    };
-    setIsLoading(true);
-    void asyncCall();
-  }, [id, currentPage, currentPageSize]);
-
-  return { history, error, isLoading };
-};
+): HistoryResult<RedirectHistoryChange> =>
+  useHistoryPagination(id, currentPage, currentPageSize, (histId, params) =>
+    search().betaMerchandisingKeywordRedirectHistoryList(histId, params)
+  );

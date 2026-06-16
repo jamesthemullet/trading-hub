@@ -77,7 +77,6 @@ type FacetsPanelProps = {
     value: string;
     facet: MerchandisingReturnedFacet;
   }) => void;
-  refreshData: () => void;
 };
 
 export const FacetsPanel = ({
