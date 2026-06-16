@@ -141,9 +141,7 @@ test.describe('Search Ranking', () => {
       page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
 
-    await page
-      .getByRole('button', { name: 'Select country', exact: true })
-      .click();
+    await page.getByTestId('button to open country selector dropdown').click();
     await page.getByRole('menuitemradio', { name: 'IE market only' }).click();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();

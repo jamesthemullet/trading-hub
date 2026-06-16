@@ -221,7 +221,7 @@ test.describe('Category Ranking', () => {
       page.getByTestId('Row showing Categories as excluded')
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Category Rules' }).click();
+    await page.getByTitle('Category Rules').click();
 
     await expect(
       page.getByRole('heading', { name: 'Categories' })
