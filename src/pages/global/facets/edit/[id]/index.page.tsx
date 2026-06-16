@@ -11,12 +11,14 @@ import type {
 } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ROUTES } from '@/libs/constants/routes';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import GlobalFacetsPanel from '@/libs/features/facets/global-facets-panel/global-facets-panel';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -107,6 +109,13 @@ const Page = ({ id }: PageProps): ReactElement => {
   };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
+
+  useTrackRecentlyViewed({
+    id,
+    label: rulesetData ? '*' : undefined,
+    url: ROUTES.GLOBAL.RULESETS.EDIT(id),
+    type: 'global',
+  });
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;

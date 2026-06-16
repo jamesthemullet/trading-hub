@@ -130,6 +130,7 @@ Report the issue URL once created.
 - **Testing:** every new component or hook must reach 100% statement/branch/function/line coverage; E2E tests use Playwright + WireMock mocks in `e2e/wiremock/`
 - **Component patterns:** wrap Mantine primitives in a custom component in `src/libs/components/` rather than using Mantine directly in feature/page code
 - **Ruleset duplication already exists:** Do not propose cloning, duplicating, or copying rulesets — this functionality is already built into the product. Any suggestion along these lines is not a gap.
+- **Enable/disable confirmation is intentionally Global-only:** The confirmation modal before toggling a ruleset on or off is deliberately restricted to Global rulesets, because only Global changes carry enough site-wide impact to warrant the friction. Category and Search ruleset toggles take effect immediately by design — the impact of a mistake is minor and the extra confirmation step would be an unnecessary UI annoyance. Do not propose extending the enable/disable confirmation modal to Category or Search rulesets.
 
 ## Rules
 

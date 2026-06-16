@@ -17,13 +17,15 @@ const FeatureFlags = () => {
       'flagStickyBar',
       'flagStickyBarVariant',
       'flagUndoButton',
+      'flagProfilePage',
     ],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization, flagStickyBar, flagUndoButton } = cookies;
+  const { flagAuthorization, flagStickyBar, flagUndoButton, flagProfilePage } =
+    cookies;
 
   return (
     <div className={styles.wrapper}>
@@ -133,6 +135,15 @@ const FeatureFlags = () => {
           checked={flagUndoButton}
           onChange={() => {
             setCookie('flagUndoButton', JSON.stringify(!flagUndoButton));
+          }}
+        />
+      </div>
+      <div className={styles.flag}>
+        <Typography>Profile Page:&nbsp;</Typography>
+        <Toggle
+          checked={flagProfilePage}
+          onChange={() => {
+            setCookie('flagProfilePage', JSON.stringify(!flagProfilePage));
           }}
         />
       </div>

@@ -4,6 +4,7 @@ import {
   defaultFeatureFlags,
   FeatureFlagContext,
   useAuthorizationFlag,
+  useProfilePageFlag,
   useStickyBarFlag,
   useUndoButtonFlag,
 } from './feature-flag';
@@ -76,5 +77,31 @@ describe('useStickyBarFlag', () => {
     });
     expect(result.current.stickyBarEnabled).toBe(true);
     expect(result.current.stickyBarVariant).toBe('variant-b');
+  });
+});
+
+describe('useProfilePageFlag', () => {
+  it('should return false by default', () => {
+    const { result } = renderHook(() => useProfilePageFlag(), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <FeatureFlagContext.Provider value={defaultFeatureFlags}>
+          {children}
+        </FeatureFlagContext.Provider>
+      ),
+    });
+    expect(result.current).toBe(false);
+  });
+
+  it('should return true when flag is enabled', () => {
+    const { result } = renderHook(() => useProfilePageFlag(), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <FeatureFlagContext.Provider
+          value={{ ...defaultFeatureFlags, hasProfilePage: true }}
+        >
+          {children}
+        </FeatureFlagContext.Provider>
+      ),
+    });
+    expect(result.current).toBe(true);
   });
 });

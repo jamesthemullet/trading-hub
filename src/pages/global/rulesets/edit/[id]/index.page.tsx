@@ -6,11 +6,13 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ROUTES } from '@/libs/constants/routes';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -55,6 +57,13 @@ const Page = ({ id }: PageProps): ReactElement => {
     useState<MerchandisingRuleSet>(globalRuleSet);
 
   const { saveGlobalRuleset, error } = useGlobalRuleSetUpdate();
+
+  useTrackRecentlyViewed({
+    id: rulesetData?.id,
+    label: rulesetData?.id ? '*' : undefined,
+    url: ROUTES.GLOBAL.RULESETS.EDIT(id),
+    type: 'global',
+  });
 
   const onCloseModal = () => setIsModalOpen(false);
 

@@ -4,10 +4,12 @@ import { useRouter } from 'next/router';
 import type { MerchandisingKeywordRedirect } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ROUTES } from '@/libs/constants/routes';
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
 import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-redirect-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 import { Redirect } from '@/libs/modules/redirect/redirect';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -49,6 +51,13 @@ const EditRedirect = ({ id }: Props): ReactElement => {
   });
 
   const { updateRedirect } = useRedirectUpdate();
+
+  useTrackRecentlyViewed({
+    id: redirectData?.id,
+    label: redirectData?.ruleTitle || redirectData?.keywords?.join(', '),
+    url: ROUTES.SEARCH.REDIRECTS.EDIT(id),
+    type: 'redirect',
+  });
 
   const onSaveRedirect = async (redirect: MerchandisingKeywordRedirect) => {
     const response = await updateRedirect({ redirect, redirectId: id });

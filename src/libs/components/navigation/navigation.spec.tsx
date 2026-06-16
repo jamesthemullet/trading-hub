@@ -1,5 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
@@ -28,25 +30,25 @@ describe('Navigation', () => {
   });
 
   it('should render trading hub navigation', () => {
-    render(<Navigation />);
+    renderWithProviders(<Navigation />);
 
     expect(screen.getByTitle('Category Rules')).toBeInTheDocument();
   });
 
   it('should not show login button when auto login enabled', () => {
-    render(<Navigation />);
+    renderWithProviders(<Navigation />);
 
     expect(screen.queryByText('Login')).not.toBeInTheDocument();
   });
 
   it('should show Sign in when signed out', () => {
-    render(<Navigation />);
+    renderWithProviders(<Navigation />);
 
     expect(screen.getByText('Sign in')).toBeVisible();
   });
 
   it('should call auth Sign in when signed out', async () => {
-    render(<Navigation />);
+    renderWithProviders(<Navigation />);
 
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByText('Sign in'));
@@ -68,7 +70,7 @@ describe('Navigation', () => {
       status: 'authenticated',
       update: jest.fn(),
     });
-    render(<Navigation />);
+    renderWithProviders(<Navigation />);
 
     expect(screen.getByText('Sign out')).toBeVisible();
   });
@@ -87,7 +89,7 @@ describe('Navigation', () => {
       status: 'authenticated',
       update: jest.fn(),
     });
-    render(<Navigation />);
+    renderWithProviders(<Navigation />);
 
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByText('Sign out'));
@@ -98,8 +100,44 @@ describe('Navigation', () => {
   });
 
   it('should always show Product Status nav item', () => {
-    render(<Navigation />);
+    renderWithProviders(<Navigation />);
     expect(screen.getByTitle('Product Status')).toBeInTheDocument();
+  });
+
+  it('should not show Profile link when flag is off', () => {
+    renderWithProviders(<Navigation />);
+
+    expect(
+      screen.queryByRole('link', { name: 'Profile' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should show Profile link with icon when flag is on', () => {
+    renderWithProviders(<Navigation />, [], {
+      featureFlags: { hasProfilePage: true },
+    });
+
+    const link = screen.getByRole('link', { name: 'Profile' });
+    expect(link).toBeInTheDocument();
+    expect(link.querySelector('img')).toHaveAttribute(
+      'src',
+      '/trading-hub/asset/menu-profile.svg'
+    );
+    expect(link).toHaveAttribute('data-is-active', 'false');
+  });
+
+  it('should show Profile link as active when on /profile', () => {
+    jest.mocked(usePathname).mockReturnValue('/profile');
+    renderWithProviders(<Navigation />, [], {
+      featureFlags: { hasProfilePage: true },
+    });
+
+    const link = screen.getByRole('link', { name: 'Profile' });
+    expect(link).toHaveAttribute('data-is-active', 'true');
+    expect(link.querySelector('img')).toHaveAttribute(
+      'src',
+      '/trading-hub/asset/menu-profile-active.svg'
+    );
   });
 
   it.each([
@@ -136,7 +174,7 @@ describe('Navigation', () => {
     async (url, icon1, icon2, icon3, icon4) => {
       jest.mocked(usePathname).mockReturnValue(url);
 
-      render(<Navigation />);
+      renderWithProviders(<Navigation />);
 
       expect(
         (await screen.findByRole('link', { name: 'Categories' })).childNodes[0]

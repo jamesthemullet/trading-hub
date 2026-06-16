@@ -23,12 +23,19 @@ import { RuleType } from '@/libs/constants/rule-types';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { DataTable } from '@/libs/containers/shared/table/datatable';
 import { useDraftRuleset } from '@/libs/hooks';
+import type { PageSize } from '@/libs/hooks/use-rows-per-page-setting';
+import { getStoredRowsPerPage } from '@/libs/hooks/use-rows-per-page-setting';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import { track } from '@/libs/hooks/utils/analytics';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import styles from './table-panel.module.css';
+
+const pageSizes: PageSize[] = [10, 20, 50, 100];
+
+const isPageSize = (value: number): value is PageSize =>
+  (pageSizes as number[]).includes(value);
 
 export const TablePanel = <
   A extends { pagination: { totalItems?: number } },
@@ -61,8 +68,9 @@ export const TablePanel = <
 
   const router = useRouter();
 
-  const pageSizes = [10, 20, 50, 100];
-  const [currentPageSize, setCurrentPageSize] = useState(pageSizes[0]);
+  const [currentPageSize, setCurrentPageSize] = useState<PageSize>(() =>
+    getStoredRowsPerPage()
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,7 +89,10 @@ export const TablePanel = <
   useEffect(() => {
     if (router.isReady) {
       const currentPage = Number(router.query.currentPage) || 1;
-      const currentPageSize = Number(router.query.currentPageSize) || 10;
+      const parsed = Number(router.query.currentPageSize);
+      const currentPageSize = isPageSize(parsed)
+        ? parsed
+        : getStoredRowsPerPage();
       const query = router.query.searchQuery?.toString() || '';
 
       setSearchInputValue(query);
@@ -94,9 +105,11 @@ export const TablePanel = <
 
   const { callback: handleSearch } = useDebounce(
     (e: ChangeEvent<HTMLInputElement>) => {
+      const parsed = Number(router.query.currentPageSize);
+      const pageSize = isPageSize(parsed) ? parsed : getStoredRowsPerPage();
       updateQueryParams(router, {
         currentPage: 1,
-        currentPageSize: Number(router.query.currentPageSize) || 10,
+        currentPageSize: pageSize,
         searchQuery: e.target.value,
       });
     },

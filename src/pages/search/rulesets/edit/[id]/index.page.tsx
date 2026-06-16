@@ -4,10 +4,12 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ROUTES } from '@/libs/constants/routes';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -49,6 +51,13 @@ const Page = ({ id }: PageProps): ReactElement => {
   });
 
   const { updateRuleSet, isSaving } = useSearchRuleSetUpdate();
+
+  useTrackRecentlyViewed({
+    id: rulesetData?.id,
+    label: rulesetData?.searchTerms?.join(' | '),
+    url: ROUTES.SEARCH.RULESETS.EDIT(id),
+    type: 'search',
+  });
 
   const saveRuleSet = async ({
     searchTerms,

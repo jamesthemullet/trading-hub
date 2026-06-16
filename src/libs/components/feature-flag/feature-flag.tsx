@@ -18,6 +18,7 @@ export type FeatureFlags = {
   hasStickyBar: boolean;
   stickyBarVariant: StickyBarVariant;
   hasUndoButton: boolean;
+  hasProfilePage: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -30,6 +31,7 @@ export const defaultFeatureFlags: FeatureFlags = {
   hasStickyBar: false,
   stickyBarVariant: 'variant-a',
   hasUndoButton: false,
+  hasProfilePage: false,
 };
 
 export const FeatureFlagContext =
@@ -86,4 +88,15 @@ export const useUndoButtonFlag = () => {
   }, [featureFlags.hasUndoButton]);
 
   return undoButtonEnabled;
+};
+
+export const useProfilePageFlag = () => {
+  const featureFlags = useContext(FeatureFlagContext);
+  const [profilePageEnabled, setProfilePageEnabled] = useState(false);
+
+  useEffect(() => {
+    setProfilePageEnabled(featureFlags.hasProfilePage);
+  }, [featureFlags.hasProfilePage]);
+
+  return profilePageEnabled;
 };

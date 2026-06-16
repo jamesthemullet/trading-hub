@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ROUTES } from '@/libs/constants/routes';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { FacetsList } from '@/libs/features';
@@ -11,6 +12,8 @@ import { useRuleSetDetail, useUpdateRuleSet } from '@/libs/hooks';
 import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
+import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -95,6 +98,15 @@ const Page = ({ id }: { id: string }): ReactElement => {
   });
 
   const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Cat');
+
+  useTrackRecentlyViewed({
+    id,
+    label: rulesetData?.categoriesInfo
+      ? formatCategoriesInfo(rulesetData.categoriesInfo)
+      : undefined,
+    url: ROUTES.CATEGORY.RULESETS.EDIT(id),
+    type: 'category',
+  });
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;

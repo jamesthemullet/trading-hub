@@ -4,12 +4,15 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ROUTES } from '@/libs/constants/routes';
 import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 import { useRuleSetDetail } from '@/libs/hooks/category/rulesets/use-rule-set-detail';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 import { useUpdateRuleSet } from '@/libs/hooks/use-rule-set-update';
+import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
+import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -44,6 +47,15 @@ const Page = ({ id }: PageProps): ReactElement => {
   });
 
   const { updateCategoryRuleSet, isSaving, error } = useUpdateRuleSet();
+
+  useTrackRecentlyViewed({
+    id: rulesetData?.id,
+    label: rulesetData?.categoriesInfo
+      ? formatCategoriesInfo(rulesetData.categoriesInfo)
+      : undefined,
+    url: ROUTES.CATEGORY.RULESETS.EDIT(id),
+    type: 'category',
+  });
 
   const saveRuleSet = async ({
     categoryIds,

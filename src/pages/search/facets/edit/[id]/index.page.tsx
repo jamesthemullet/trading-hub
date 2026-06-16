@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ROUTES } from '@/libs/constants/routes';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { FacetsList } from '@/libs/features';
@@ -11,6 +12,7 @@ import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -96,6 +98,13 @@ const Page = ({ id }: { id: string }): ReactElement => {
 
   const { hasReadAccess, requiredReadRole, hasWriteAccess } =
     useAccess('Search');
+
+  useTrackRecentlyViewed({
+    id,
+    label: rulesetData?.searchTerms?.join(' | '),
+    url: ROUTES.SEARCH.RULESETS.EDIT(id),
+    type: 'search',
+  });
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;

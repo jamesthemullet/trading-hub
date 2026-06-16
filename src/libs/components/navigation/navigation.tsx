@@ -1,7 +1,9 @@
 import { Button, Typography } from '@/libs/components';
+import { useProfilePageFlag } from '@/libs/components/feature-flag/feature-flag';
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 import type { MenuItem } from '../navigation-menu/navigation-menu';
@@ -11,6 +13,9 @@ import styles from './navigation.module.css';
 export const Navigation = () => {
   const session = useSession();
   const isLoggedIn = session?.status === 'authenticated';
+  const isProfilePageEnabled = useProfilePageFlag();
+  const pathname = usePathname();
+  const isProfileActive = pathname === '/profile';
 
   const menuItems: MenuItem = [
     {
@@ -72,24 +77,47 @@ export const Navigation = () => {
           <NavigationMenu menuItems={menuItems} />
         </li>
         <li className={styles.navigationListItem}>
+          {isProfilePageEnabled && (
+            <Link
+              className={styles.profileLink}
+              href="/profile"
+              data-is-active={isProfileActive}
+            >
+              <Image
+                src={
+                  isProfileActive
+                    ? '/trading-hub/asset/menu-profile-active.svg'
+                    : '/trading-hub/asset/menu-profile.svg'
+                }
+                alt=""
+                height={25}
+                width={25}
+              />
+              <Typography align="center" variant="bodySmall">
+                Profile
+              </Typography>
+            </Link>
+          )}
           {isLoggedIn ? (
             <Button
               type="button"
               appearance="plain"
-              className={styles.link}
+              className={styles.profileLink}
               onClick={() => signOut({ callbackUrl: '/api/auth/azure-logout' })}
             >
-              <Typography variant="bodySmall">Sign out</Typography>
+              <Typography align="center" variant="bodySmall">
+                Sign out
+              </Typography>
             </Button>
           ) : (
             <Link
-              className={styles.link}
+              className={styles.profileLink}
               href="/"
               onClick={() => signIn()}
-              style={{ textDecoration: 'none' }}
-              prefetch
             >
-              <Typography variant="bodySmall">Sign in</Typography>
+              <Typography align="center" variant="bodySmall">
+                Sign in
+              </Typography>
             </Link>
           )}
         </li>

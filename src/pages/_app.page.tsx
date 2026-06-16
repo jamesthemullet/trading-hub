@@ -45,6 +45,7 @@ const FeatureFlagWrapper = ({
     'flagStickyBar',
     'flagStickyBarVariant',
     'flagUndoButton',
+    'flagProfilePage',
   ]);
 
   return (
@@ -62,6 +63,7 @@ const FeatureFlagWrapper = ({
             ? 'variant-b'
             : 'variant-a',
         hasUndoButton: cookies.flagUndoButton === true,
+        hasProfilePage: cookies.flagProfilePage === true,
       }}
     >
       {children}
