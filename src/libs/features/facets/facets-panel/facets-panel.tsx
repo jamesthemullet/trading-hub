@@ -27,6 +27,7 @@ import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
 import { useFacetsFilter } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
+import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import {
   type FacetDisplayType,
@@ -172,7 +173,7 @@ export const FacetsPanel = ({
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearch?.(val);
-  }, 300);
+  }, DEBOUNCE_DELAY_MS);
 
   const handleIncludedDragEnd = useMemo(
     () =>

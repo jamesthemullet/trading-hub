@@ -28,6 +28,7 @@ import {
 } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { track } from '@/libs/hooks/utils/analytics';
+import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
 
@@ -261,7 +262,7 @@ export const FacetsList = ({
 
   const { callback: handleFilter } = useDebounce((val: string) => {
     dispatchFacetList({ type: 'setFilter', payload: val });
-  }, 300);
+  }, DEBOUNCE_DELAY_MS);
 
   const handleSetPreviewValue = useCallback((value: string | undefined) => {
     dispatchFacetList({ type: 'setPreviewValue', payload: value });

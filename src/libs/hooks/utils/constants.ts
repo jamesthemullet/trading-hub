@@ -1,5 +1,7 @@
 import type { MerchandisingRules } from '@/libs/api';
 
+export const DEBOUNCE_DELAY_MS = 300;
+
 export const EMPTY_MERCHANDISING_RULES: MerchandisingRules = {
   pinnedProducts: [],
   blockedProducts: [],

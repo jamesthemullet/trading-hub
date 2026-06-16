@@ -119,10 +119,6 @@ export const SearchKeywords = ({
     (term) => term !== previewSearchTerm
   );
 
-  const sortedSearchTerms = [...searchTerms].sort((a, b) =>
-    a === previewSearchTerm ? -1 : b === previewSearchTerm ? 1 : 0
-  );
-
   return (
     <>
       <div>
@@ -146,7 +142,7 @@ export const SearchKeywords = ({
               className={dropdownStyles.dropdownButton}
               data-is-dropdown-open={isDropdownOpen}
               onClick={() =>
-                sortedSearchTerms.length > 1
+                searchTerms.length > 1
                   ? setIsDropdownOpen(!isDropdownOpen)
                   : setShowModal(true)
               }

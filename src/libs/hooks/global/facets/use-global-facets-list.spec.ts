@@ -68,4 +68,21 @@ describe('useFacetsList', () => {
       expect(result.current.facets.length).toEqual(5);
     });
   });
+
+  it('should not fetch when enabled is false', () => {
+    const fetchSpy = jest.spyOn(global, 'fetch');
+
+    const { result } = renderHook(() =>
+      useGlobalFacetsList({ enabled: false })
+    );
+
+    expect(result.current).toEqual({
+      facets: [],
+      isLoading: false,
+      error: '',
+      onRefreshFacetList: expect.any(Function),
+    });
+    expect(fetchSpy).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
 });

@@ -27,6 +27,7 @@ import type { PageSize } from '@/libs/hooks/use-rows-per-page-setting';
 import { getStoredRowsPerPage } from '@/libs/hooks/use-rows-per-page-setting';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import { track } from '@/libs/hooks/utils/analytics';
+import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -113,7 +114,7 @@ export const TablePanel = <
         searchQuery: e.target.value,
       });
     },
-    300
+    DEBOUNCE_DELAY_MS
   );
 
   const handlePageChange = (page: number, pageSize: number) => {

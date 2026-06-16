@@ -457,4 +457,120 @@ describe('HistoryPage', () => {
 
     expect(useGlobalFacetsList).toHaveBeenCalledWith({ enabled: false });
   });
+
+  it('should render AccessDeny when user lacks read access', () => {
+    const { useAccess } = jest.requireMock('@/libs/hooks/use-access');
+    (useAccess as jest.Mock).mockReturnValueOnce({
+      hasReadAccess: false,
+      requiredReadRole: 'Cat.R',
+    });
+
+    renderWithProviders(
+      <HistoryPage
+        title="Category History"
+        breadcrumbs={['Categories', 'Ranking rules']}
+        accessType="Cat"
+        ruleType={RuleType.CategoryRanking}
+        history={{ changes: [], pagination: { totalItems: 0 } }}
+        isLoading={false}
+        error=""
+      />
+    );
+
+    expect(screen.getByText('Access denied')).toBeInTheDocument();
+  });
+
+  it('should display an error message and not render the history list when error is set', () => {
+    renderWithProviders(
+      <HistoryPage
+        title="Category History"
+        breadcrumbs={['Categories', 'Ranking rules']}
+        accessType="Cat"
+        ruleType={RuleType.CategoryRanking}
+        history={{
+          changes: [
+            {
+              id: 'change-1',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'user-1' },
+              },
+            },
+          ],
+          pagination: { totalItems: 1 },
+        }}
+        isLoading={false}
+        error="Something went wrong"
+      />
+    );
+
+    expect(
+      screen.getByText('Error whilst retrieving history: Something went wrong')
+    ).toBeInTheDocument();
+    expect(mockHistoryList).not.toHaveBeenCalled();
+  });
+
+  it('should not render the history list while loading', () => {
+    renderWithProviders(
+      <HistoryPage
+        title="Category History"
+        breadcrumbs={['Categories', 'Ranking rules']}
+        accessType="Cat"
+        ruleType={RuleType.CategoryRanking}
+        history={{
+          changes: [
+            {
+              id: 'change-1',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'user-1' },
+              },
+            },
+          ],
+          pagination: { totalItems: 1 },
+        }}
+        isLoading
+        error=""
+      />
+    );
+
+    expect(mockHistoryList).not.toHaveBeenCalled();
+  });
+
+  it('should default to page 1 and page size 20 when query params are absent', () => {
+    jest.mocked(useRouter).mockReturnValueOnce({
+      ...router,
+      query: { identifier: 'SUB-CAT-1' },
+    } as never);
+
+    renderWithProviders(
+      <HistoryPage
+        title="Category History"
+        breadcrumbs={['Categories', 'Ranking rules']}
+        accessType="Cat"
+        ruleType={RuleType.CategoryRanking}
+        history={{
+          changes: [
+            {
+              id: 'change-1',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'user-1' },
+              },
+            },
+          ],
+          pagination: { totalItems: 1 },
+        }}
+        isLoading={false}
+        error=""
+      />
+    );
+
+    expect(mockHistoryList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentPage: 1,
+        currentPageSize: 20,
+      })
+    );
+  });
 });

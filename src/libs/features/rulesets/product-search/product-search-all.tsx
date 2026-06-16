@@ -11,6 +11,7 @@ import { Search } from '@/libs/components/search/search';
 import type { RuleSetActions } from '@/libs/components/types';
 import { Product } from '@/libs/containers/rulesets/product/product';
 import { useCategoryProductSearch } from '@/libs/hooks';
+import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import pluralize from 'pluralize';
@@ -94,7 +95,7 @@ export const ProductSearchAll = ({
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     onSearch(val);
-  }, 300);
+  }, DEBOUNCE_DELAY_MS);
 
   const onSelectAllProducts = () => {
     const allProductIds = products.map(({ id }) => id);
