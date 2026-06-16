@@ -14,6 +14,7 @@
 
 .toolsContainer {
   display: flex;
+  flex-wrap: wrap;
   margin: var(--mns-spacing-2);
   gap: var(--mns-spacing-2);
   max-width: 100%;
@@ -21,7 +22,6 @@
 }
 
 .buttonGroup {
-  width: 410px;
   display: flex;
   margin-left: auto;
   gap: var(--mns-spacing-2);
