@@ -37,18 +37,18 @@ export const useAccess = (
 
   const roles = session.data?.roles ?? [];
 
-  function resolveRole(key: 'Cat'): AccessMap['Cat'];
-  function resolveRole(key: 'Search'): AccessMap['Search'];
-  function resolveRole(key: 'Glob'): AccessMap['Glob'];
-  function resolveRole(key: AccessType) {
-    const writeRole = `${key}.W`;
+  const roleValues: { [K in AccessType]: [AccessMap[K], AccessMap[K]] } = {
+    Cat: ['Cat.W', 'Cat.R'],
+    Search: ['Search.W', 'Search.R'],
+    Glob: ['Glob.W', 'Glob.R'],
+  };
+
+  const resolveRole = <K extends AccessType>(key: K): AccessMap[K] => {
+    const [writeRole, readRole] = roleValues[key];
     if (roles.includes(writeRole)) return writeRole;
-
-    const readRole = `${key}.R`;
     if (roles.includes(readRole)) return readRole;
-
     return '';
-  }
+  };
 
   const roleMap: AccessMap = {
     Cat: resolveRole('Cat'),
@@ -56,22 +56,29 @@ export const useAccess = (
     Glob: resolveRole('Glob'),
   };
 
-  if (override.catOverride !== 'No Override') {
+  if (override.catOverride !== 'No Override' && override.catOverride !== '') {
     // eslint-disable-next-line functional/immutable-data
     roleMap.Cat = override.catOverride;
   }
 
-  if (override.searchOverride !== 'No Override') {
+  if (
+    override.searchOverride !== 'No Override' &&
+    override.searchOverride !== ''
+  ) {
     // eslint-disable-next-line functional/immutable-data
     roleMap.Search = override.searchOverride;
   }
 
-  if (override.globalOverride !== 'No Override') {
+  if (
+    override.globalOverride !== 'No Override' &&
+    override.globalOverride !== ''
+  ) {
     // eslint-disable-next-line functional/immutable-data
     roleMap.Glob = override.globalOverride;
   }
 
   const hasWriteAccess = roleMap[type] === `${type}.W`;
+
   const hasReadAccess = hasWriteAccess || roleMap[type] === `${type}.R`;
 
   return {
