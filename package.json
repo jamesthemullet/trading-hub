@@ -133,7 +133,7 @@
   },
   "overrides": {
     "storybook": "$storybook",
-    "nodemailer": "^8.0.0"
+    "nodemailer": "^9.0.0"
   },
   "pnpm": {
     "overrides": {
