@@ -194,7 +194,7 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, isLoading: false, error: action.payload };
     case 'ADD_RECENT_SEARCH': {
       const filtered = state.recentSearches.filter(
-        (s) => s.displayId !== action.payload.displayId
+        (search) => search.displayId !== action.payload.displayId
       );
       const next = [action.payload, ...filtered].slice(0, MAX_RECENT_SEARCHES);
       saveSearches(next);

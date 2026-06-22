@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { checkAccessibility } from '../accessibility-utils';
 import {
   mockNonOperationalProduct,
   mockOperationalProduct,
@@ -15,6 +16,7 @@ test.describe('Product Status', () => {
     await expect(
       page.getByRole('heading', { name: 'Product status search' })
     ).toBeVisible();
+    await checkAccessibility(page);
   });
 
   test('displays operational status for a product with no issues', async ({
@@ -34,6 +36,7 @@ test.describe('Product Status', () => {
     await expect(page.getByRole('main')).toContainText(
       'Product is operational'
     );
+    await checkAccessibility(page);
   });
 
   test('displays issue count for a non-operational product', async ({
@@ -51,5 +54,6 @@ test.describe('Product Status', () => {
     await searchBox.press('Enter');
 
     await expect(page.getByRole('main')).toContainText('2 issues detected');
+    await checkAccessibility(page);
   });
 });

@@ -34,7 +34,7 @@ type ProductSections = {
 const getRankingValue = (
   ranking: MerchandisingRankingAttribute[] | undefined,
   property: string
-) => ranking?.find((r) => r.property === property)?.values[0];
+) => ranking?.find((attribute) => attribute.property === property)?.values[0];
 
 export enum ProductError {
   NotSaleable = 'Product is not marked saleable in Product Assembly',
@@ -130,15 +130,15 @@ export const getProductDetails = (
     }
   } else {
     const outOfStockIssues = issues.filter(
-      (i) => i.reason === ProductError.OutOfStock
+      (issue) => issue.reason === ProductError.OutOfStock
     );
     const notSaleableIssues = issues.filter(
-      (i) => i.reason === ProductError.NotSaleable
+      (issue) => issue.reason === ProductError.NotSaleable
     );
     const unknownIssues = issues.filter(
-      (i) =>
-        i.reason !== ProductError.OutOfStock &&
-        i.reason !== ProductError.NotSaleable
+      (issue) =>
+        issue.reason !== ProductError.OutOfStock &&
+        issue.reason !== ProductError.NotSaleable
     );
 
     sections = {
