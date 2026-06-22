@@ -8,7 +8,7 @@
     "node": "20.20.2",
     "pnpm": ">=10.28.2"
   },
-  "packageManager": "pnpm@10.34.3",
+  "packageManager": "pnpm@10.34.4",
   "scripts": {
     "dev": "pnpm run codegen && next dev --turbo",
     "dev:turbo-verbose": "pnpm run codegen && next dev --turbo --show-all",
@@ -78,7 +78,7 @@
     "@testing-library/user-event": "14.6.1",
     "@types/jest": "30.0.0",
     "@types/lodash": "4.17.24",
-    "@types/node": "22.19.21",
+    "@types/node": "22.20.0",
     "@types/pluralize": "0.0.33",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
