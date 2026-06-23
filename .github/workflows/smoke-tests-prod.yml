@@ -19,7 +19,7 @@ jobs:
       PROD_TEST_USER: ${{ secrets.PROD_TEST_USER }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Prepare node and install dependencies

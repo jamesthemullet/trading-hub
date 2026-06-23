@@ -35,7 +35,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
@@ -114,7 +114,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
@@ -128,7 +128,7 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
@@ -149,7 +149,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
@@ -222,7 +222,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
@@ -368,7 +368,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -494,7 +494,7 @@ jobs:
         run: echo "start_time=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Prepare node and install dependencies
         uses: ./.github/actions/prepare
