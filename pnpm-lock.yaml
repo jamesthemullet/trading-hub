@@ -169,8 +169,8 @@ importers:
         specifier: 8.61.1
         version: 8.61.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
       accented:
-        specifier: 1.3.2
-        version: 1.3.2
+        specifier: 1.4.0
+        version: 1.4.0
       all-contributors-cli:
         specifier: 6.26.1
         version: 6.26.1
@@ -2016,8 +2016,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@preact/signals-core@1.14.2':
-    resolution: {integrity: sha512-RZHdBj9ZF4n40Rp4jS052EHHjBWf96P9oNdXPfhQTovCuWY9iQn3Gq+gOTJSgBO9A/JBuPfMOWsSX/lIU9Pc/A==}
+  '@preact/signals-core@1.14.3':
+    resolution: {integrity: sha512-m0K3vnbSLC5rHs2ZVfeAMvBtT1zIyq4mxx5OlNncSgMj5Iz6W5Rn3kPrDxAC+iIKmiVe0lSl6U37t5ZkEWoVAw==}
 
   '@rolldown/binding-android-arm64@1.0.3':
     resolution: {integrity: sha512-454rs7jHngixp/NMxd5srYD57OnzSlZ/eFTETjORQHLwJG1lRtmNOJcBerZlfu4GjKqeq8aCCIQrMdHyhI51Hw==}
@@ -3036,8 +3036,8 @@ packages:
   '@webcontainer/env@1.1.1':
     resolution: {integrity: sha512-6aN99yL695Hi9SuIk1oC88l9o0gmxL1nGWWQ/kNy81HigJ0FoaoTXpytCj6ItzgyCEwA9kF1wixsTuv5cjsgng==}
 
-  accented@1.3.2:
-    resolution: {integrity: sha512-VQ7qSj906T+HcArnkyk4yyDTdCeGblZdMcEFKpx+Z1TIeUcU1XnnIFYwP41AojOg4OTacQL+HwV6ip5qrFMX1A==}
+  accented@1.4.0:
+    resolution: {integrity: sha512-wmkxcL1/6grE22pai6Sj2al5FQPxvYW+BIxSI8hNvja5XHYGQVlUdeqZm9Wa2wF0Vqic3pEIDnERAXE+YdVNFw==}
 
   acorn-import-attributes@1.9.5:
     resolution: {integrity: sha512-n02Vykv5uA3eHGM/Z2dQrcD56kL8TyDb2p1+0P83PClMnC/nc+anbQRhIOWnSq4Ke/KvDPrY3C9hDtC/A3eHnQ==}
@@ -3216,6 +3216,10 @@ packages:
 
   axe-core@4.11.4:
     resolution: {integrity: sha512-KunSNx+TVpkAw/6ULfhnx+HWRecjqZGTOyquAoWHYLRSdK1tB5Ihce1ZW+UY3fj33bYAFWPu7W/GRSmmrCGuxA==}
+    engines: {node: '>=4'}
+
+  axe-core@4.12.1:
+    resolution: {integrity: sha512-s7iGf5GaVMxEG0ENN9x+xTr7GFZCb1ZP/1uATUpCEK2X78nDB3RwbtFCo9pGAf9ru+VwoQ464DkaLEeRM08wJA==}
     engines: {node: '>=4'}
 
   axios@1.16.0:
@@ -8517,7 +8521,7 @@ snapshots:
     dependencies:
       playwright: 1.61.0
 
-  '@preact/signals-core@1.14.2': {}
+  '@preact/signals-core@1.14.3': {}
 
   '@rolldown/binding-android-arm64@1.0.3':
     optional: true
@@ -9494,10 +9498,10 @@ snapshots:
 
   '@webcontainer/env@1.1.1': {}
 
-  accented@1.3.2:
+  accented@1.4.0:
     dependencies:
-      '@preact/signals-core': 1.14.2
-      axe-core: 4.11.4
+      '@preact/signals-core': 1.14.3
+      axe-core: 4.12.1
 
   acorn-import-attributes@1.9.5(acorn@8.16.0):
     dependencies:
@@ -9696,6 +9700,8 @@ snapshots:
   axe-core@4.11.1: {}
 
   axe-core@4.11.4: {}
+
+  axe-core@4.12.1: {}
 
   axios@1.16.0:
     dependencies:
