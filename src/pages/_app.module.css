@@ -9,3 +9,24 @@
   overflow-y: auto;
   height: 100vh;
 }
+
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skipLink:focus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  background: var(--color-surface-bright-surface-bright);
+  color: var(--color-content-default-on-surface);
+  z-index: 9999;
+  text-decoration: underline;
+}

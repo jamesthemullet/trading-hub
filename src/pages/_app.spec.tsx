@@ -145,4 +145,23 @@ describe('App', () => {
 
     expect(screen.getByText('hello')).toBeInTheDocument();
   });
+
+  it('renders a skip to main content link', () => {
+    render(
+      <CookiesProvider>
+        <App
+          Component={() => <div>hello</div>}
+          pageProps={{ session: null }}
+          router={createMockNextRouter()}
+        />
+      </CookiesProvider>
+    );
+
+    const skipLink = screen.getByRole('link', { name: 'Skip to main content' });
+    expect(skipLink).toBeInTheDocument();
+    expect(skipLink).toHaveAttribute('href', '#main-content');
+
+    const main = screen.getByRole('main');
+    expect(main).toHaveAttribute('id', 'main-content');
+  });
 });

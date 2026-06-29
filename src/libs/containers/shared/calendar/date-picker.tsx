@@ -50,11 +50,13 @@ export const DatePicker = (
     ? value[0] === null && value[1] === null
     : false;
 
-  const valueLabelContent = isToggleEnabled
-    ? 'All the time'
-    : props.value
-      ? formatMonthDayDateTimeRange(props.value, startTime, endTime)
-      : '';
+  let valueLabelContent = '';
+
+  if (isToggleEnabled) {
+    valueLabelContent = 'All the time';
+  } else if (value) {
+    valueLabelContent = formatMonthDayDateTimeRange(value, startTime, endTime);
+  }
 
   const shouldRenderTimeElement = Boolean(value) && !isToggleEnabled;
 
@@ -78,6 +80,7 @@ export const DatePicker = (
         <div className={styles.onAllTimeContainer}>
           <Toggle
             checked={isToggleEnabled}
+            aria-label="On all the time"
             onChange={() => {
               if (isToggleEnabled) {
                 onChange([new Date(), null]);

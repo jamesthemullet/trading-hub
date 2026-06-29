@@ -7,18 +7,26 @@ import { Toggle } from './toggle';
 
 describe('Toggle', () => {
   it('should render correctly', () => {
-    render(<Toggle checked onChange={jest.fn()} />);
+    render(<Toggle checked onChange={jest.fn()} aria-label="Test toggle" />);
 
-    expect(screen.getByTitle('Toggle')).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', { name: 'Test toggle' })
+    ).toBeInTheDocument();
   });
 
   it('should call an onClick handler', async () => {
     const mockOnChange = jest.fn();
     const user = userEvent.setup({ delay: null });
 
-    render(<Toggle checked={false} onChange={mockOnChange} />);
+    render(
+      <Toggle
+        checked={false}
+        onChange={mockOnChange}
+        aria-label="Test toggle"
+      />
+    );
 
-    await user.click(screen.getByTitle('Toggle'));
+    await user.click(screen.getByRole('checkbox', { name: 'Test toggle' }));
 
     expect(mockOnChange).toHaveBeenCalled();
   });

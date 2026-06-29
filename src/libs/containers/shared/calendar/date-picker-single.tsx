@@ -36,11 +36,14 @@ export const DatePickerSingle = ({
   const startTimeRef = useRef<HTMLInputElement>(null);
 
   const isToggleEnabled = value === null;
-  const valueLabelText = isToggleEnabled
-    ? 'All the time'
-    : value
-      ? formatMonthDayDateTimeRange([value, null], startTime)
-      : '';
+  let valueLabelText = '';
+
+  if (isToggleEnabled) {
+    valueLabelText = 'All the time';
+  } else if (value) {
+    valueLabelText = formatMonthDayDateTimeRange([value, null], startTime);
+  }
+
   const isTimeValueLabel = Boolean(value) && !isToggleEnabled;
 
   // istanbul ignore next
@@ -53,6 +56,7 @@ export const DatePickerSingle = ({
         <div className={styles.onAllTimeContainer}>
           <Toggle
             checked={isToggleEnabled}
+            aria-label="On all the time"
             onChange={() => {
               if (isToggleEnabled) {
                 onChange(new Date());

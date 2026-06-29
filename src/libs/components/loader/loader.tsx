@@ -13,7 +13,7 @@ export const Loader = ({ isInModal = false }: { isInModal?: boolean }) => (
     <div className={styles.animatedLoader}>
       <Image
         src="https://static.marksandspencer.com/icons/svgs/Loader.svg"
-        alt="loader"
+        alt=""
         width={64}
         height={64}
       />

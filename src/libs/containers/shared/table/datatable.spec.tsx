@@ -42,6 +42,7 @@ jest.mock('@/libs/hooks/utils/analytics', () => {
     track: jest.fn(),
   };
 });
+
 const analyticsSpy = jest.spyOn(analytics, 'track');
 
 const headings = ['Identifier', 'Enable', 'Last Changed', 'User', 'Actions'];

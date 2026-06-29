@@ -114,8 +114,11 @@ export default function App({
                 autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
               />
               <div className={styles.layout}>
+                <a href="#main-content" className={styles.skipLink}>
+                  Skip to main content
+                </a>
                 <Navigation />
-                <main className={styles.main}>
+                <main id="main-content" className={styles.main}>
                   <Component {...pageProps} />
                 </main>
               </div>

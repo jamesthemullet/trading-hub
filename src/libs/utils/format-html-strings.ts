@@ -4,6 +4,13 @@
  * From looking at Onyx the Euro is the only value that needs updating
  */
 
-export const formatHTMLStrings = (
+export function formatHTMLStrings(string: string): string;
+export function formatHTMLStrings(string: undefined): undefined;
+export function formatHTMLStrings(
   string: string | undefined
-): string | undefined => string?.replace('&euro;', '€');
+): string | undefined;
+export function formatHTMLStrings(
+  string: string | undefined
+): string | undefined {
+  return string?.replace('&euro;', '€');
+}

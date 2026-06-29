@@ -36,6 +36,7 @@ const FeatureFlags = () => {
         <Typography>Authorization:&nbsp;</Typography>
         <Toggle
           checked={flagAuthorization}
+          aria-label="Authorization"
           onChange={() => {
             setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
           }}
@@ -106,6 +107,7 @@ const FeatureFlags = () => {
         <Typography>Sticky Bar:&nbsp;</Typography>
         <Toggle
           checked={flagStickyBar}
+          aria-label="Sticky Bar"
           onChange={() => {
             setCookie('flagStickyBar', JSON.stringify(!flagStickyBar));
           }}
@@ -133,6 +135,7 @@ const FeatureFlags = () => {
         <Typography>Undo Button:&nbsp;</Typography>
         <Toggle
           checked={flagUndoButton}
+          aria-label="Undo Button"
           onChange={() => {
             setCookie('flagUndoButton', JSON.stringify(!flagUndoButton));
           }}
@@ -142,6 +145,7 @@ const FeatureFlags = () => {
         <Typography>Profile Page:&nbsp;</Typography>
         <Toggle
           checked={flagProfilePage}
+          aria-label="Profile Page"
           onChange={() => {
             setCookie('flagProfilePage', JSON.stringify(!flagProfilePage));
           }}

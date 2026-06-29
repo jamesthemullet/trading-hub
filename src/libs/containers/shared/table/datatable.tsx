@@ -233,7 +233,10 @@ export const DataTable = ({
                   setIsModalOpen(true);
                 };
 
-                const formattedIdentifier = formatHTMLStrings(identifier)!;
+                const formattedIdentifier = formatHTMLStrings(identifier);
+                const toggleAriaLabel = `${
+                  isEnabled ? 'Disable' : 'Enable'
+                } ruleset ${formattedIdentifier}`;
 
                 return (
                   <div
@@ -334,6 +337,7 @@ export const DataTable = ({
                     </div>
                     <div className={styles.tableCol}>
                       <Toggle
+                        aria-label={toggleAriaLabel}
                         checked={isEnabled}
                         disabled={!writeEnabled}
                         onChange={() => {

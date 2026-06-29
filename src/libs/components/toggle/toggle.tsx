@@ -2,12 +2,14 @@ import type { DetailedHTMLProps, InputHTMLAttributes } from 'react';
 
 import styles from './toggle.module.css';
 
-export const Toggle = (
-  props: DetailedHTMLProps<
-    InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >
-) => {
+type ToggleProps = Omit<
+  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
+  'aria-label'
+> & {
+  'aria-label': string;
+};
+
+export const Toggle = (props: ToggleProps) => {
   return (
     <label className={styles.toggle} title="Toggle">
       <input type="checkbox" {...props} />
