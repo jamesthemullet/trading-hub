@@ -154,3 +154,5 @@ const FeatureFlags = () => {
 export default dynamic(() => Promise.resolve(FeatureFlags), {
   ssr: false,
 });
+
+export { getServerSideProps } from './flags-access';

@@ -27,6 +27,14 @@
    pnpm run build
    ```
 
+## Flags Page Access
+
+The /flags page uses server-side email allowlisting.
+
+- Add FLAGS_ALLOWED_EMAILS to your local .env as a comma-separated email list.
+- Example: FLAGS_ALLOWED_EMAILS=you@marks-and-spencer.com,teammate@marks-and-spencer.com
+- If /flags redirects to /, verify your signed-in email appears in FLAGS_ALLOWED_EMAILS (matching is case-insensitive).
+
 ## Migrating from npm to pnpm
 
 If you were previously using npm, follow these steps to switch to pnpm:
