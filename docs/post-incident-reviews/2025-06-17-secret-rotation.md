@@ -68,7 +68,7 @@ I tried various solutions:
   [Commit](https://github.com/DigitalInnovation/trading-hub/pull/1344/commits/765098ff6f0a9d10f16500767459c77f76ce25aa).
 
 - **15:53**  
-   The deploy to dev step worked, though I remained unsure about the previous solution of removing the failing step – however, dev was still working.
+  The deploy to dev step worked, though I remained unsure about the previous solution of removing the failing step – however, dev was still working.
 
 ### Incident Timeline
 

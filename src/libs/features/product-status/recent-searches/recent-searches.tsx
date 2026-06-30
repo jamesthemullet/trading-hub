@@ -37,8 +37,7 @@ const SearchCard = ({ search, onSelect }: CardProps) => {
         <StatusBadge
           variant={
             search.mainStatusVariant as
-              | ProductStatusVariant
-              | OperationalStatusVariant
+              ProductStatusVariant | OperationalStatusVariant
           }
           label={search.mainStatusLabel}
         />

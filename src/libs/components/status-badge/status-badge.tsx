@@ -48,9 +48,7 @@ type Props = {
 };
 
 export type ProductStatusVariant =
-  | 'product-operational'
-  | 'issue-detected'
-  | 'push-available';
+  'product-operational' | 'issue-detected' | 'push-available';
 export type OperationalStatusVariant =
   | 'operational'
   | 'waiting'
