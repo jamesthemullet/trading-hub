@@ -17,7 +17,6 @@ export type FeatureFlags = {
   authorizationRoleOverride: AuthorizationRoleOverride;
   hasStickyBar: boolean;
   stickyBarVariant: StickyBarVariant;
-  hasUndoButton: boolean;
   hasProfilePage: boolean;
 };
 
@@ -30,7 +29,6 @@ export const defaultFeatureFlags: FeatureFlags = {
   },
   hasStickyBar: false,
   stickyBarVariant: 'variant-a',
-  hasUndoButton: false,
   hasProfilePage: false,
 };
 
@@ -77,17 +75,6 @@ export const useStickyBarFlag = () => {
   }, [featureFlags.stickyBarVariant]);
 
   return { stickyBarEnabled, stickyBarVariant };
-};
-
-export const useUndoButtonFlag = () => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [undoButtonEnabled, setUndoButtonEnabled] = useState(false);
-
-  useEffect(() => {
-    setUndoButtonEnabled(featureFlags.hasUndoButton);
-  }, [featureFlags.hasUndoButton]);
-
-  return undoButtonEnabled;
 };
 
 export const useProfilePageFlag = () => {

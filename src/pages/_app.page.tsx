@@ -44,7 +44,6 @@ const FeatureFlagWrapper = ({
     'flagAuthorizationRoleOverride',
     'flagStickyBar',
     'flagStickyBarVariant',
-    'flagUndoButton',
     'flagProfilePage',
   ]);
 
@@ -62,7 +61,6 @@ const FeatureFlagWrapper = ({
           cookies.flagStickyBarVariant === 'variant-b'
             ? 'variant-b'
             : 'variant-a',
-        hasUndoButton: cookies.flagUndoButton === true,
         hasProfilePage: cookies.flagProfilePage === true,
       }}
     >

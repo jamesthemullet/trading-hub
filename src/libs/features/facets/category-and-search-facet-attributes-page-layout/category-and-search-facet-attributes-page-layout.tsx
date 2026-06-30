@@ -1,12 +1,12 @@
 import type { ChangeEvent } from 'react';
 import { useCallback, useMemo, useReducer, useState } from 'react';
+import { useHotkeys } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 
 import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import { useUndoButtonFlag } from '@/libs/components/feature-flag/feature-flag';
 import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
@@ -34,6 +34,8 @@ type PageLayout = {
   countryCode?: string;
   isDraftRuleset?: boolean;
 };
+
+const UNDO_HISTORY_LIMIT = 50;
 
 export const CategoryAndSearchFacetsPanelPageLayout = ({
   attributeValues,
@@ -81,9 +83,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
     facetLocalState.excludedValues?.includes(value.displayValue)
   );
 
-  const isUndoFlagEnabled = useUndoButtonFlag();
-  const isUndoButtonVisible =
-    isUndoFlagEnabled && facetType === FacetType.Category;
+  const isUndoButtonVisible = facetType === FacetType.Category;
 
   const [stateHistory, setStateHistory] = useState<
     MerchandisingRuleSetFacetConfigWithId[]
@@ -91,7 +91,10 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
 
   const dispatchWithHistory = useCallback(
     (action: Action) => {
-      setStateHistory((prev) => [...prev, { ...facetLocalState }]);
+      setStateHistory((prev) => {
+        const next = [...prev, { ...facetLocalState }];
+        return next.length > UNDO_HISTORY_LIMIT ? next.slice(1) : next;
+      });
       dispatch(action);
     },
     [facetLocalState]
@@ -106,6 +109,13 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   }, [stateHistory]);
 
   const hasChanges = stateHistory.length > 0;
+
+  const handleUndoHotkey = useCallback(() => {
+    if (!isUndoButtonVisible || !hasChanges) return;
+    handleUndo();
+  }, [isUndoButtonVisible, hasChanges, handleUndo]);
+
+  useHotkeys([['mod+z', handleUndoHotkey]]);
 
   const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] =
     useState(false);
@@ -128,6 +138,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
 
   const handleSave = () => {
     onSave(facetLocalState);
+    setStateHistory([]);
   };
 
   return (

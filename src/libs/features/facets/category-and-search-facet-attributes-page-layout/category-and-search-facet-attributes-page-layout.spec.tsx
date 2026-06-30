@@ -167,7 +167,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
   describe('unsaved changes modal', () => {
     it('shows modal when closing with unsaved changes', async () => {
       const user = userEvent.setup({ delay: null });
-      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+      setup({ facetType: FacetType.Category });
 
       const row = screen.getByTestId('included attribute 0 13 - 14.4');
       const dropdown = within(row).getByLabelText(
@@ -190,10 +190,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
 
     it('navigates away when confirming close without saving', async () => {
       const user = userEvent.setup({ delay: null });
-      const { mockRouter } = setup(
-        { facetType: FacetType.Category },
-        { hasUndoButton: true }
-      );
+      const { mockRouter } = setup({ facetType: FacetType.Category });
 
       const row = screen.getByTestId('included attribute 0 13 - 14.4');
       const dropdown = within(row).getByLabelText(
@@ -217,7 +214,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
 
     it('dismisses modal when continuing editing', async () => {
       const user = userEvent.setup({ delay: null });
-      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+      setup({ facetType: FacetType.Category });
 
       const row = screen.getByTestId('included attribute 0 13 - 14.4');
       const dropdown = within(row).getByLabelText(
@@ -245,22 +242,14 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
   });
 
   describe('undo button', () => {
-    it('does not render undo button when flag is off', () => {
-      setup();
-
-      expect(
-        screen.queryByRole('button', { name: 'Undo' })
-      ).not.toBeInTheDocument();
-    });
-
-    it('renders a disabled undo button when flag is on and no changes made', () => {
-      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+    it('renders a disabled undo button when no changes made', () => {
+      setup({ facetType: FacetType.Category });
 
       expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
     });
 
-    it('does not render undo button for search facet type even when flag is on', () => {
-      setup({ facetType: FacetType.Search }, { hasUndoButton: true });
+    it('does not render undo button for search facet type', () => {
+      setup({ facetType: FacetType.Search });
 
       expect(
         screen.queryByRole('button', { name: 'Undo' })
@@ -269,7 +258,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
 
     it('renders an enabled undo button after a change is made', async () => {
       const user = userEvent.setup({ delay: null });
-      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+      setup({ facetType: FacetType.Category });
 
       expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
 
@@ -289,7 +278,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
 
     it('reverts the last change and disables the undo button when history is empty', async () => {
       const user = userEvent.setup({ delay: null });
-      setup({ facetType: FacetType.Category }, { hasUndoButton: true });
+      setup({ facetType: FacetType.Category });
 
       const row = screen.getByTestId('included attribute 0 13 - 14.4');
       const dropdown = within(row).getByLabelText(
@@ -304,6 +293,109 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
       await user.click(screen.getByRole('button', { name: 'Undo' }));
 
       expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+    });
+
+    it('triggers undo via Ctrl+Z keyboard shortcut', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category });
+
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
+        /Select to set as included, excluded or algo control/i
+      );
+      await user.click(dropdown);
+      const excludeOption = within(row).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      });
+      await user.click(excludeOption);
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeEnabled();
+
+      await user.keyboard('{Control>}z{/Control}');
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+    });
+
+    it('triggers undo via Meta+Z keyboard shortcut', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category });
+
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
+        /Select to set as included, excluded or algo control/i
+      );
+      await user.click(dropdown);
+      const excludeOption = within(row).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      });
+      await user.click(excludeOption);
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeEnabled();
+
+      await user.keyboard('{Meta>}z{/Meta}');
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+    });
+
+    it('does not trigger undo keyboard shortcut for search facet type', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Search });
+
+      await user.keyboard('{Control>}z{/Control}');
+
+      expect(
+        screen.queryByRole('button', { name: 'Undo' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('clears undo history after saving', async () => {
+      const user = userEvent.setup({ delay: null });
+      const { props } = setup({ facetType: FacetType.Category });
+
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
+        /Select to set as included, excluded or algo control/i
+      );
+      await user.click(dropdown);
+      const excludeOption = within(row).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      });
+      await user.click(excludeOption);
+
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeEnabled();
+
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+
+      expect(props.onSave).toHaveBeenCalled();
+      expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+    });
+
+    it('keeps only the latest 50 undo states', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category });
+
+      for (let i = 0; i < 51; i += 1) {
+        const row = screen.getByTestId(
+          /(included|excluded|algoControl) attribute \d+ 13 - 14\.4/
+        );
+        const dropdown = within(row).getByLabelText(
+          /Select to set as included, excluded or algo control/i
+        );
+
+        await user.click(dropdown);
+        await user.click(
+          within(row).getByRole('menuitemradio', { name: 'Exclude only' })
+        );
+      }
+
+      const undoButton = screen.getByRole('button', { name: 'Undo' });
+      expect(undoButton).toBeEnabled();
+
+      for (let i = 0; i < 50; i += 1) {
+        await user.click(undoButton);
+      }
+
+      expect(undoButton).toBeDisabled();
     });
   });
 });
